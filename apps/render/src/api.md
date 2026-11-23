@@ -7457,9 +7457,9 @@ Status Code **200**
 |» » system|boolean|true|none|Edge Cache Change was triggered by Render|
 |» *oneOf*|object|false|none|none|
 |» reason|string|true|none|Why auto-deploy was disabled (manual_deploy, rollback, or setting_change)|
-|» fromTrigger|string|false|none|The auto-deploy trigger value immediately before it was disabled|
+|» fromTrigger|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|none|The auto-deploy trigger value immediately before it was disabled|
 |» *oneOf*|object|false|none|none|
-|» newTrigger|string|false|none|The auto-deploy trigger value after it was re-enabled|
+|» newTrigger|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|none|The auto-deploy trigger value after it was re-enabled|
 |» *oneOf*|object|false|none|none|
 |» *oneOf*|object|false|none|none|
 |» *oneOf*|object|false|none|none|
@@ -15504,7 +15504,7 @@ Create a new Postgres instance.
 |» enableHighAvailability|body|boolean|false|none|
 |» environmentId|body|string|false|none|
 |» ownerId|body|string|true|The ID of the workspace to create the database for|
-|» plan|body|string|true|none|
+|» plan|body|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|true|none|
 |» diskSizeGB|body|integer|false|The number of gigabytes of disk space to allocate for the database|
 |» enableDiskAutoscaling|body|boolean|false|none|
 |» connectionPool|body|string|false|What connection pool to use (if any) out of 'pgbouncer' and 'none'|
@@ -16085,7 +16085,7 @@ Update a Postgres instance by ID.
 |postgresId|path|string|true|none|
 |body|body|[postgresPATCHInput](#schemapostgrespatchinput)|true|none|
 |» name|body|string|false|none|
-|» plan|body|string|false|none|
+|» plan|body|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|false|none|
 |» diskSizeGB|body|integer|false|The number of gigabytes of disk space to allocate for the database|
 |» enableDiskAutoscaling|body|boolean|false|none|
 |» connectionPool|body|string|false|What connection pool to use (if any) out of 'pgbouncer' and 'none'|
@@ -26524,7 +26524,7 @@ Build Source in a different region than the service.
 |» ownerId|body|string|true|The ID of the workspace the service belongs to. Obtain your workspace's ID from its Settings page in the Render Dashboard.|
 |» repo|body|string|false|The service's repository URL. Do not specify a branch in this string (use the `branch` parameter instead).|
 |» autoDeploy|body|[autoDeploy](#schemaautodeploy)|false|**Deprecated.** Deprecated: use `autoDeployTrigger` instead. You can't set both `autoDeploy` and `autoDeployTrigger` in the same request.<br><br>- `yes` is equivalent to `autoDeployTrigger: commit`.<br>- `no` is equivalent to `autoDeployTrigger: off`.<br>|
-|» autoDeployTrigger|body|string|false|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
+|» autoDeployTrigger|body|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
 |» branch|body|string|false|The repo branch to pull, build, and deploy. If omitted, uses the repository's default branch.|
 |» image|body|[image](#schemaimage)|false|none|
 |» buildFilter|body|[buildFilter](#schemabuildfilter)|false|none|
@@ -27178,7 +27178,7 @@ Build Source in a different region than the service.
 |body|body|[servicePATCH](#schemaservicepatch)|true|none|
 |» buildSourceId|body|string|false|The ID of the Build Source to link this service to. Cannot be combined with build-configuration changes or other `serviceDetails` fields, except `startCommand`. Linking to a Build Source with a native runtime requires a start command, either in this request or already set on the service. Linking to a Build Source with a Docker or image runtime rejects a start command. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.|
 |» autoDeploy|body|[autoDeploy](#schemaautodeploy)|false|**Deprecated.** Deprecated: use `autoDeployTrigger` instead. You can't set both `autoDeploy` and `autoDeployTrigger` in the same request.<br><br>- `yes` is equivalent to `autoDeployTrigger: commit`.<br>- `no` is equivalent to `autoDeployTrigger: off`.<br>|
-|» autoDeployTrigger|body|string|false|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
+|» autoDeployTrigger|body|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
 |» repo|body|string|false|none|
 |» branch|body|string|false|none|
 |» image|body|[image](#schemaimage)|false|none|
@@ -43715,7 +43715,7 @@ BearerAuth
 |id|string|true|none|none|
 |buildSourceId|string|false|none|The ID of the Build Source the service builds and deploys from, if any. A git-backed Build Source must be in the same region as the service.|
 |autoDeploy|[autoDeploy](#schemaautodeploy)|true|none|**Deprecated.** Deprecated: use `autoDeployTrigger` instead. You can't set both `autoDeploy` and `autoDeployTrigger` in the same request.<br><br>- `yes` is equivalent to `autoDeployTrigger: commit`.<br>- `no` is equivalent to `autoDeployTrigger: off`.<br>|
-|autoDeployTrigger|string|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
+|autoDeployTrigger|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
 |branch|string|false|none|none|
 |buildFilter|[buildFilter](#schemabuildfilter)|false|none|none|
 |createdAt|string(date-time)|true|none|none|
@@ -44517,7 +44517,7 @@ The maximum amount of time (in seconds) that Render waits for your application p
 |---|---|---|---|---|
 |autoscaling|object|false|none|none|
 |cache|[cache](#schemacache)|false|none|none|
-|disk|object|false|none|none|
+|disk|[webServiceDetailsDisk](#schemawebservicedetailsdisk)|false|none|none|
 |env|[serviceEnv](#schemaserviceenv)|true|none|**Deprecated.** This field has been deprecated, runtime should be used in its place.|
 |envSpecificDetails|[envSpecificDetails](#schemaenvspecificdetails)|true|none|none|
 |healthCheckPath|string|true|none|none|
@@ -44769,7 +44769,7 @@ The maximum amount of time (in seconds) that Render waits for your application p
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |autoscaling|object|false|none|none|
-|disk|object|false|none|none|
+|disk|[webServiceDetailsDisk](#schemawebservicedetailsdisk)|false|none|none|
 |env|[serviceEnv](#schemaserviceenv)|true|none|**Deprecated.** This field has been deprecated, runtime should be used in its place.|
 |envSpecificDetails|[envSpecificDetails](#schemaenvspecificdetails)|true|none|none|
 |numInstances|integer|true|none|For a *manually* scaled service, this is the number of instances the service is scaled to. DOES NOT indicate the number of running instances for an *autoscaled* service.|
@@ -45047,7 +45047,7 @@ When a service with a disk is scaled, the instanceId is used to identify the ins
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |autoscaling|object|false|none|none|
-|disk|object|false|none|none|
+|disk|[webServiceDetailsDisk](#schemawebservicedetailsdisk)|false|none|none|
 |env|[serviceEnv](#schemaserviceenv)|true|none|**Deprecated.** This field has been deprecated, runtime should be used in its place.|
 |envSpecificDetails|[envSpecificDetails](#schemaenvspecificdetails)|true|none|none|
 |numInstances|integer|true|none|For a *manually* scaled service, this is the number of instances the service is scaled to. DOES NOT indicate the number of running instances for an *autoscaled* service.|
@@ -45454,7 +45454,7 @@ When a service with a disk is scaled, the instanceId is used to identify the ins
 |ownerId|string|true|none|The ID of the workspace the service belongs to. Obtain your workspace's ID from its Settings page in the Render Dashboard.|
 |repo|string|false|none|The service's repository URL. Do not specify a branch in this string (use the `branch` parameter instead).|
 |autoDeploy|[autoDeploy](#schemaautodeploy)|false|none|**Deprecated.** Deprecated: use `autoDeployTrigger` instead. You can't set both `autoDeploy` and `autoDeployTrigger` in the same request.<br><br>- `yes` is equivalent to `autoDeployTrigger: commit`.<br>- `no` is equivalent to `autoDeployTrigger: off`.<br>|
-|autoDeployTrigger|string|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
+|autoDeployTrigger|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
 |branch|string|false|none|The repo branch to pull, build, and deploy. If omitted, uses the repository's default branch.|
 |image|[image](#schemaimage)|false|none|none|
 |buildFilter|[buildFilter](#schemabuildfilter)|false|none|none|
@@ -46106,7 +46106,7 @@ Fields for native environment (runtime) services
 |---|---|---|---|---|
 |buildSourceId|string|false|none|The ID of the Build Source to link this service to. Cannot be combined with build-configuration changes or other `serviceDetails` fields, except `startCommand`. Linking to a Build Source with a native runtime requires a start command, either in this request or already set on the service. Linking to a Build Source with a Docker or image runtime rejects a start command. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.|
 |autoDeploy|[autoDeploy](#schemaautodeploy)|false|none|**Deprecated.** Deprecated: use `autoDeployTrigger` instead. You can't set both `autoDeploy` and `autoDeployTrigger` in the same request.<br><br>- `yes` is equivalent to `autoDeployTrigger: commit`.<br>- `no` is equivalent to `autoDeployTrigger: off`.<br>|
-|autoDeployTrigger|string|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
+|autoDeployTrigger|[servicePOSTAutoDeployTrigger](#schemaservicepostautodeploytrigger)|false|none|Controls autodeploy behavior.<br><br>- `commit`: Deploy each time a commit is pushed to the service's linked branch.<br>- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.<br>- `off`: Disable autodeploys.<br>|
 |repo|string|false|none|none|
 |branch|string|false|none|none|
 |image|[image](#schemaimage)|false|none|none|
@@ -47869,7 +47869,7 @@ A Key Value instance
 |ipAllowList|[[cidrBlockAndDescription](#schemacidrblockanddescription)]|true|none|The IP allow list for the Key Value instance|
 |environmentId|string|false|none|The ID of the environment the Key Value instance is associated with|
 |version|string|true|none|The version of Key Value|
-|maintenance|object|false|none|none|
+|maintenance|[redisDetailMaintenance](#schemaredisdetailmaintenance)|false|none|none|
 
 #### Enumerated Values
 
@@ -48349,7 +48349,7 @@ A Redis instance
 |ipAllowList|[[cidrBlockAndDescription](#schemacidrblockanddescription)]|true|none|The IP allow list for the Redis instance|
 |environmentId|string|false|none|The ID of the environment the Redis instance is associated with|
 |version|string|true|none|The version of Redis|
-|maintenance|object|false|none|none|
+|maintenance|[redisDetailMaintenance](#schemaredisdetailmaintenance)|false|none|none|
 
 #### Enumerated Values
 
@@ -49165,7 +49165,7 @@ Input for creating a database
 |enableHighAvailability|boolean|false|none|none|
 |environmentId|string|false|none|none|
 |ownerId|string|true|none|The ID of the workspace to create the database for|
-|plan|string|true|none|none|
+|plan|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|true|none|none|
 |diskSizeGB|integer|false|none|The number of gigabytes of disk space to allocate for the database|
 |enableDiskAutoscaling|boolean|false|none|none|
 |connectionPool|string|false|none|What connection pool to use (if any) out of 'pgbouncer' and 'none'|
@@ -49279,7 +49279,7 @@ Input for creating a database
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |name|string|false|none|none|
-|plan|string|false|none|none|
+|plan|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|false|none|none|
 |diskSizeGB|integer|false|none|The number of gigabytes of disk space to allocate for the database|
 |enableDiskAutoscaling|boolean|false|none|none|
 |connectionPool|string|false|none|What connection pool to use (if any) out of 'pgbouncer' and 'none'|
@@ -49590,7 +49590,7 @@ Input for creating a database
 |highAvailabilityEnabled|boolean|true|none|none|
 |name|string|true|none|none|
 |owner|[owner](#schemaowner)|true|none|none|
-|plan|string|true|none|none|
+|plan|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|true|none|none|
 |diskSizeGB|integer|false|none|none|
 |primaryPostgresID|string|false|none|none|
 |region|[region](#schemaregion)|true|none|Defaults to "oregon"|
@@ -49776,10 +49776,10 @@ Input for creating a database
 |databaseUser|string|true|none|none|
 |environmentId|string|false|none|none|
 |highAvailabilityEnabled|boolean|true|none|none|
-|maintenance|object|false|none|none|
+|maintenance|[redisDetailMaintenance](#schemaredisdetailmaintenance)|false|none|none|
 |name|string|true|none|none|
 |owner|[owner](#schemaowner)|true|none|none|
-|plan|string|true|none|none|
+|plan|[postgresPOSTInputPlan](#schemapostgrespostinputplan)|true|none|none|
 |diskSizeGB|integer|false|none|none|
 |primaryPostgresID|string|false|none|none|
 |region|[region](#schemaregion)|true|none|Defaults to "oregon"|
@@ -50500,3 +50500,94 @@ A service event with a cursor
 |---|---|---|---|---|
 |flowRun|object|true|none|none|
 |cursor|[cursor](#schemacursor)|true|none|none|
+
+<h2 id="tocS_servicePOSTAutoDeployTrigger">servicePOSTAutoDeployTrigger</h2>
+<!-- backwards compatibility -->
+<a id="schemaservicepostautodeploytrigger"></a>
+<a id="schema_servicePOSTAutoDeployTrigger"></a>
+<a id="tocSservicepostautodeploytrigger"></a>
+<a id="tocsservicepostautodeploytrigger"></a>
+
+```json
+"commit"
+```
+
+Controls autodeploy behavior.
+
+- `commit`: Deploy each time a commit is pushed to the service's linked branch.
+- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.
+- `off`: Disable autodeploys.
+
+<h2 id="tocS_webServiceDetailsDisk">webServiceDetailsDisk</h2>
+<!-- backwards compatibility -->
+<a id="schemawebservicedetailsdisk"></a>
+<a id="schema_webServiceDetailsDisk"></a>
+<a id="tocSwebservicedetailsdisk"></a>
+<a id="tocswebservicedetailsdisk"></a>
+
+```json
+{
+  "id": "dsk-cph1rs3idesc73a2b2mg",
+  "name": "string",
+  "sizeGB": 0,
+  "mountPath": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string|true|none|none|
+|sizeGB|integer|true|none|none|
+|mountPath|string|true|none|none|
+
+<h2 id="tocS_redisDetailMaintenance">redisDetailMaintenance</h2>
+<!-- backwards compatibility -->
+<a id="schemaredisdetailmaintenance"></a>
+<a id="schema_redisDetailMaintenance"></a>
+<a id="tocSredisdetailmaintenance"></a>
+<a id="tocsredisdetailmaintenance"></a>
+
+```json
+{
+  "id": "mrn-cph1rs3idesc73a2b2mg",
+  "type": "string",
+  "scheduledAt": "1970-01-01T00:00:00Z",
+  "pendingMaintenanceBy": "1970-01-01T00:00:00Z",
+  "state": "scheduled"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|type|string|true|none|none|
+|scheduledAt|string(date-time)|true|none|none|
+|pendingMaintenanceBy|string(date-time)|false|none|If present, the maintenance run cannot be scheduled for later than this date-time.|
+|state|string|true|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|state|scheduled|
+|state|in_progress|
+|state|user_fix_required|
+|state|cancelled|
+|state|succeeded|
+|state|failed|
+
+<h2 id="tocS_postgresPOSTInputPlan">postgresPOSTInputPlan</h2>
+<!-- backwards compatibility -->
+<a id="schemapostgrespostinputplan"></a>
+<a id="schema_postgresPOSTInputPlan"></a>
+<a id="tocSpostgrespostinputplan"></a>
+<a id="tocspostgrespostinputplan"></a>
+
+```json
+"free"
+```

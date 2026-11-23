@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEdgarFilingsArchiveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEdgarFilingsArchiveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const edgarFilingsHandler = app.openapi(getEdgarFilingsArchiveRoute, (c) => {
+export const getEdgarFilingsArchiveRouteHandler: RouteHandler<
+  typeof getEdgarFilingsArchiveRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

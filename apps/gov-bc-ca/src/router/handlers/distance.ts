@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDistanceBetweenPairsOutputFormatRoute,
   postDistanceBetweenPairsOutputFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDistanceBetweenPairsOutputFormatRouteHandler: RouteHandler<
+  typeof getDistanceBetweenPairsOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const distanceHandler = app
-  .openapi(getDistanceBetweenPairsOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDistanceBetweenPairsOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDistanceBetweenPairsOutputFormatRouteHandler: RouteHandler<
+  typeof postDistanceBetweenPairsOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

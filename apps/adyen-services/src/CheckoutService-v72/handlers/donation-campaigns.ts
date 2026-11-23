@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDonationCampaignsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDonationCampaignsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const donationCampaignsHandler = app.openapi(postDonationCampaignsRoute, (c) => {
+export const postDonationCampaignsRouteHandler: RouteHandler<
+  typeof postDonationCampaignsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUtilsAddressesXpubXpubRoleIndexRoute,
   postUtilsTxsEvaluateRoute,
   postUtilsTxsEvaluateUtxosRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUtilsAddressesXpubXpubRoleIndexRouteHandler: RouteHandler<
+  typeof getUtilsAddressesXpubXpubRoleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const utilsHandler = app
-  .openapi(getUtilsAddressesXpubXpubRoleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUtilsTxsEvaluateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUtilsTxsEvaluateUtxosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUtilsTxsEvaluateRouteHandler: RouteHandler<
+  typeof postUtilsTxsEvaluateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUtilsTxsEvaluateUtxosRouteHandler: RouteHandler<
+  typeof postUtilsTxsEvaluateUtxosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

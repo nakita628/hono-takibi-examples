@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/hookdeck/hookdeck-api-schema/blob/b1daf8b8f817f4e5d5f416e6ffb99e5a5caeee73/openapi.json
   input: 'https://raw.githubusercontent.com/hookdeck/hookdeck-api-schema/main/openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

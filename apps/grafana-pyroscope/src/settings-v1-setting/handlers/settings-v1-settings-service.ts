@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSettingsV1SettingsServiceDeleteRoute,
   postSettingsV1SettingsServiceGetRoute,
   postSettingsV1SettingsServiceSetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSettingsV1SettingsServiceDeleteRouteHandler: RouteHandler<
+  typeof postSettingsV1SettingsServiceDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const settingsV1SettingsServiceHandler = app
-  .openapi(postSettingsV1SettingsServiceDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSettingsV1SettingsServiceGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSettingsV1SettingsServiceSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSettingsV1SettingsServiceGetRouteHandler: RouteHandler<
+  typeof postSettingsV1SettingsServiceGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSettingsV1SettingsServiceSetRouteHandler: RouteHandler<
+  typeof postSettingsV1SettingsServiceSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

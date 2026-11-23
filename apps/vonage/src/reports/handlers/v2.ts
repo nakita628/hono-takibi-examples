@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2ReportsReportIdRoute,
   getV2ReportsRecordsRoute,
   getV2ReportsReportIdRoute,
@@ -7,21 +7,28 @@ import {
   postV2ReportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2ReportsRouteHandler: RouteHandler<typeof getV2ReportsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2ReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ReportsRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2ReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2ReportsRouteHandler: RouteHandler<typeof postV2ReportsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ReportsRecordsRouteHandler: RouteHandler<
+  typeof getV2ReportsRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2ReportsReportIdRouteHandler: RouteHandler<
+  typeof deleteV2ReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ReportsReportIdRouteHandler: RouteHandler<
+  typeof getV2ReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

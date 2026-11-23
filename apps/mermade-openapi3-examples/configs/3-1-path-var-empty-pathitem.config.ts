@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/path_var_empty_pathitem.yaml',
   output: './src/3-1-path-var-empty-pathitem/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-1-path-var-empty-pathitem/types.ts' },
   client: { output: './src/3-1-path-var-empty-pathitem/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-1-path-var-empty-pathitem/rpc.ts', parseResponse: true },

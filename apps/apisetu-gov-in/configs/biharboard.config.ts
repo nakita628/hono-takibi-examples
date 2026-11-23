@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/biharboard/3.0.0/openapi.yaml',
   output: './src/biharboard/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/biharboard/types.ts' },
   client: { output: './src/biharboard/client.ts', baseUrl: '/' },
   rpc: { output: './src/biharboard/rpc.ts', parseResponse: true },

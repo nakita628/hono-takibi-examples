@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPluginCsiPluginIDRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPluginCsiPluginIDRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pluginHandler = app.openapi(getPluginCsiPluginIDRoute, (c) => {
+export const getPluginCsiPluginIDRouteHandler: RouteHandler<
+  typeof getPluginCsiPluginIDRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

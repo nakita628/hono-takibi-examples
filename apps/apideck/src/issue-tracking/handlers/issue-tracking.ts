@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute,
   deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute,
   getIssueTrackingCollectionsCollectionIdRoute,
@@ -17,51 +17,92 @@ import {
   postIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIssueTrackingCollectionsRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const issueTrackingHandler = app
-  .openapi(getIssueTrackingCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdTicketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIssueTrackingCollectionsCollectionIdTicketsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIssueTrackingCollectionsCollectionIdUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIssueTrackingCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdTagsRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdTicketsRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdTicketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIssueTrackingCollectionsCollectionIdTicketsRouteHandler: RouteHandler<
+  typeof postIssueTrackingCollectionsCollectionIdTicketsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdRouteHandler: RouteHandler<
+  typeof deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdTicketsTicketIdRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIssueTrackingCollectionsCollectionIdTicketsTicketIdRouteHandler: RouteHandler<
+  typeof patchIssueTrackingCollectionsCollectionIdTicketsTicketIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRouteHandler: RouteHandler<
+  typeof postIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRouteHandler: RouteHandler<
+  typeof deleteIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRouteHandler: RouteHandler<
+  typeof patchIssueTrackingCollectionsCollectionIdTicketsTicketIdCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdUsersRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIssueTrackingCollectionsCollectionIdUsersIdRouteHandler: RouteHandler<
+  typeof getIssueTrackingCollectionsCollectionIdUsersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

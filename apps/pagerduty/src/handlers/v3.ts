@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3SchedulesIdCustomShiftsCustomShiftIdRoute,
   deleteV3SchedulesIdOverridesOverrideIdRoute,
   deleteV3SchedulesIdRotationsRotationIdEventsEventIdRoute,
@@ -27,81 +27,148 @@ import {
   putV3SchedulesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3SchedulesRouteHandler: RouteHandler<typeof getV3SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3SchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdAuditRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdCustomShiftsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SchedulesIdCustomShiftsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdCustomShiftsCustomShiftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3SchedulesIdCustomShiftsCustomShiftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SchedulesIdCustomShiftsCustomShiftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SchedulesIdOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdOverridesOverrideIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3SchedulesIdOverridesOverrideIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SchedulesIdOverridesOverrideIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdRotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SchedulesIdRotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdRotationsRotationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SchedulesIdRotationsRotationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdRotationsRotationIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SchedulesIdRotationsRotationIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SchedulesIdRotationsRotationIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV3SchedulesIdRotationsRotationIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SchedulesIdRotationsRotationIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV3SchedulesRouteHandler: RouteHandler<typeof postV3SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdRouteHandler: RouteHandler<typeof getV3SchedulesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3SchedulesIdRouteHandler: RouteHandler<typeof putV3SchedulesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SchedulesIdRouteHandler: RouteHandler<
+  typeof deleteV3SchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdAuditRecordsRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdAuditRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdCustomShiftsRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdCustomShiftsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SchedulesIdCustomShiftsRouteHandler: RouteHandler<
+  typeof postV3SchedulesIdCustomShiftsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdCustomShiftsCustomShiftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler: RouteHandler<
+  typeof putV3SchedulesIdCustomShiftsCustomShiftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SchedulesIdCustomShiftsCustomShiftIdRouteHandler: RouteHandler<
+  typeof deleteV3SchedulesIdCustomShiftsCustomShiftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdOverridesRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SchedulesIdOverridesRouteHandler: RouteHandler<
+  typeof postV3SchedulesIdOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdOverridesOverrideIdRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdOverridesOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3SchedulesIdOverridesOverrideIdRouteHandler: RouteHandler<
+  typeof putV3SchedulesIdOverridesOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SchedulesIdOverridesOverrideIdRouteHandler: RouteHandler<
+  typeof deleteV3SchedulesIdOverridesOverrideIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdRotationsRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdRotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SchedulesIdRotationsRouteHandler: RouteHandler<
+  typeof postV3SchedulesIdRotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdRotationsRotationIdRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdRotationsRotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SchedulesIdRotationsRotationIdRouteHandler: RouteHandler<
+  typeof deleteV3SchedulesIdRotationsRotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdRotationsRotationIdEventsRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdRotationsRotationIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SchedulesIdRotationsRotationIdEventsRouteHandler: RouteHandler<
+  typeof postV3SchedulesIdRotationsRotationIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler: RouteHandler<
+  typeof getV3SchedulesIdRotationsRotationIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler: RouteHandler<
+  typeof putV3SchedulesIdRotationsRotationIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SchedulesIdRotationsRotationIdEventsEventIdRouteHandler: RouteHandler<
+  typeof deleteV3SchedulesIdRotationsRotationIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

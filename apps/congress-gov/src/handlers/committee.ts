@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCommitteeChamberCommitteeCodeBillsRoute,
   getCommitteeChamberCommitteeCodeHouseCommunicationRoute,
   getCommitteeChamberCommitteeCodeNominationsRoute,
@@ -13,39 +13,66 @@ import {
   getCommitteeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommitteeRouteHandler: RouteHandler<typeof getCommitteeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const committeeHandler = app
-  .openapi(getCommitteeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeCongressChamberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeCongressChamberCommitteeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeBillsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeNominationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeHouseCommunicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommitteeChamberCommitteeCodeSenateCommunicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCommitteeChamberRouteHandler: RouteHandler<
+  typeof getCommitteeChamberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeCongressRouteHandler: RouteHandler<
+  typeof getCommitteeCongressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeCongressChamberRouteHandler: RouteHandler<
+  typeof getCommitteeCongressChamberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeCongressChamberCommitteeCodeRouteHandler: RouteHandler<
+  typeof getCommitteeCongressChamberCommitteeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeBillsRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeBillsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeReportsRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeNominationsRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeNominationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeHouseCommunicationRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeHouseCommunicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommitteeChamberCommitteeCodeSenateCommunicationRouteHandler: RouteHandler<
+  typeof getCommitteeChamberCommitteeCodeSenateCommunicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

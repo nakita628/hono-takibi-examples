@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/querier/v1/querier.openapi.yaml',
   output: './src/querier-v1-querier/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/querier-v1-querier/types.ts' },
   client: { output: './src/querier-v1-querier/client.ts', baseUrl: '/' },
   rpc: { output: './src/querier-v1-querier/rpc.ts', parseResponse: true },

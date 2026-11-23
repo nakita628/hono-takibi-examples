@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerRegistryV20150921GetRegistryScanningConfigurationHandler =
-  app.openapi(
-    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

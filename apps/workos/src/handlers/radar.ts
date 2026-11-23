@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRadarListsTypeActionRoute,
   postRadarAttemptsRoute,
   postRadarListsTypeActionRoute,
   putRadarAttemptsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRadarAttemptsRouteHandler: RouteHandler<typeof postRadarAttemptsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const radarHandler = app
-  .openapi(postRadarAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRadarAttemptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRadarListsTypeActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRadarListsTypeActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRadarAttemptsIdRouteHandler: RouteHandler<typeof putRadarAttemptsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRadarListsTypeActionRouteHandler: RouteHandler<
+  typeof postRadarListsTypeActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRadarListsTypeActionRouteHandler: RouteHandler<
+  typeof deleteRadarListsTypeActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

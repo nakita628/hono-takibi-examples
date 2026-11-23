@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler, configHandler } from './handlers'
+import { postApiPricingHubPricesRoute, putConfigRoute } from './routes'
+import { postApiPricingHubPricesRouteHandler, putConfigRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler).route('/', configHandler)
+export const api = app
+  .openapi(postApiPricingHubPricesRoute, postApiPricingHubPricesRouteHandler)
+  .openapi(putConfigRoute, putConfigRouteHandler)
 
 export default app

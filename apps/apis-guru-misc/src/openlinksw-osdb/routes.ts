@@ -579,7 +579,7 @@ export const postApiV1ActionsServiceIdActionIdExecRoute = createRoute({
     },
   },
   responses: {
-    '2XX': { description: 'Response from an OSDB action invocation.', content: {} },
+    '2XX': { description: 'Response from an OSDB action invocation.' },
     default: {
       description: 'Error response',
       content: { 'application/json': { schema: ErrorModelSchema } },

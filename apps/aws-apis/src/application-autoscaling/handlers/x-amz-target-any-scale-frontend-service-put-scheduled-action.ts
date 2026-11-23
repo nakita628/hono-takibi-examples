@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAnyScaleFrontendServicePutScheduledActionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAnyScaleFrontendServicePutScheduledActionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAnyScaleFrontendServicePutScheduledActionHandler = app.openapi(
-  postXAmzTargetAnyScaleFrontendServicePutScheduledActionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAnyScaleFrontendServicePutScheduledActionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAnyScaleFrontendServicePutScheduledActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

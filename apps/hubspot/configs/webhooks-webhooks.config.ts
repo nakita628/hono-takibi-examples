@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Webhooks/Webhooks/Rollouts/147891/2026-09/webhooks.json',
   output: './src/webhooks-webhooks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/webhooks-webhooks/types.ts' },
   client: { output: './src/webhooks-webhooks/client.ts', baseUrl: '/' },
   rpc: { output: './src/webhooks-webhooks/rpc.ts', parseResponse: true },

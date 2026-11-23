@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRulesInstanceIdRuleIdRoute,
   getRulesInstanceIdRoute,
   getRulesInstanceIdRuleIdRoute,
@@ -7,21 +7,32 @@ import {
   putRulesInstanceIdRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRulesInstanceIdRouteHandler: RouteHandler<
+  typeof postRulesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rulesHandler = app
-  .openapi(postRulesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesInstanceIdRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesInstanceIdRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesInstanceIdRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRulesInstanceIdRouteHandler: RouteHandler<typeof getRulesInstanceIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesInstanceIdRuleIdRouteHandler: RouteHandler<
+  typeof deleteRulesInstanceIdRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesInstanceIdRuleIdRouteHandler: RouteHandler<
+  typeof getRulesInstanceIdRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRulesInstanceIdRuleIdRouteHandler: RouteHandler<
+  typeof putRulesInstanceIdRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

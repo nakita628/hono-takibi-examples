@@ -5298,6 +5298,34 @@ const ApiV1MonthlyAttendanceUpdateRequestSchema = z
   .openapi({ required: ['company_id', 'approval_flow_route_id'] })
   .openapi('ApiV1MonthlyAttendanceUpdateRequest')
 
+const ApiV1WorkTimeIndexResponseParamsWorkRecordsItemsSchema = z
+  .object({
+    clock_in_at: z
+      .string()
+      .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '開始時刻', example: '12:00' }),
+    clock_out_at: z
+      .string()
+      .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '終了時刻', example: '23:59' }),
+  })
+  .openapi({ required: ['clock_in_at', 'clock_out_at'] })
+  .openapi('ApiV1WorkTimeIndexResponseParamsWorkRecordsItems')
+
+const ApiV1WorkTimeIndexResponseParamsBreakRecordsItemsSchema = z
+  .object({
+    clock_in_at: z
+      .string()
+      .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '開始時刻', example: '12:00' }),
+    clock_out_at: z
+      .string()
+      .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
+      .openapi({ description: '終了時刻', example: '23:59' }),
+  })
+  .openapi({ required: ['clock_in_at', 'clock_out_at'] })
+  .openapi('ApiV1WorkTimeIndexResponseParamsBreakRecordsItems')
+
 const ApiV1WorkTimeIndexResponseParamsSchema = z
   .object({
     id: z.int32().min(1).max(2147483647).openapi({ description: '申請ID', example: 1 }),
@@ -5356,20 +5384,7 @@ const ApiV1WorkTimeIndexResponseParamsSchema = z
         example: '23:59',
       }),
     work_records: z
-      .array(
-        z
-          .object({
-            clock_in_at: z
-              .string()
-              .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
-              .openapi({ description: '開始時刻', example: '12:00' }),
-            clock_out_at: z
-              .string()
-              .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
-              .openapi({ description: '終了時刻', example: '23:59' }),
-          })
-          .openapi({ required: ['clock_in_at', 'clock_out_at'] }),
-      )
+      .array(ApiV1WorkTimeIndexResponseParamsWorkRecordsItemsSchema)
       .exactOptional()
       .openapi({
         description: '勤務時間のリスト\n  - 登録されている全ての勤務時間のリストを返します。',
@@ -5377,20 +5392,7 @@ const ApiV1WorkTimeIndexResponseParamsSchema = z
     lateness_mins: z.int32().openapi({ description: '遅刻分の時間（分単位）' }),
     early_leaving_mins: z.int32().openapi({ description: '早退分の時間（分単位）' }),
     break_records: z
-      .array(
-        z
-          .object({
-            clock_in_at: z
-              .string()
-              .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
-              .openapi({ description: '開始時刻', example: '12:00' }),
-            clock_out_at: z
-              .string()
-              .regex(/^[0-9]{2}:[0-9]{2}(:[0-9]{2})?$/)
-              .openapi({ description: '終了時刻', example: '23:59' }),
-          })
-          .openapi({ required: ['clock_in_at', 'clock_out_at'] }),
-      )
+      .array(ApiV1WorkTimeIndexResponseParamsBreakRecordsItemsSchema)
       .exactOptional()
       .openapi({ description: '休憩時間のリスト' }),
     issue_date: z.iso
@@ -5495,7 +5497,7 @@ const ApiV1WorkTimeResponseParamsSchema = z
         example: '23:59',
       }),
     work_records: z
-      .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+      .array(ApiV1WorkTimeIndexResponseParamsWorkRecordsItemsSchema)
       .exactOptional()
       .openapi({
         description: '勤務時間のリスト\n  - 登録されている全ての勤務時間のリストを返します。',
@@ -5503,7 +5505,7 @@ const ApiV1WorkTimeResponseParamsSchema = z
     lateness_mins: z.int32().openapi({ description: '遅刻分の時間（分単位）' }),
     early_leaving_mins: z.int32().openapi({ description: '早退分の時間（分単位）' }),
     break_records: z
-      .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+      .array(ApiV1WorkTimeIndexResponseParamsBreakRecordsItemsSchema)
       .exactOptional()
       .openapi({ description: '休憩時間のリスト' }),
     issue_date: z.iso
@@ -15844,7 +15846,7 @@ export const postApiV1ApprovalRequestsWorkTimesRoute = createRoute({
                     'false: 勤務時間を修正する  \ntrue: 勤務時間を削除する\n\n勤務時間を削除する場合は以下のパラメータは指定しないでください。\n- work_records\n- lateness_mins\n- early_leaving_mins\n- break_records',
                 }),
               work_records: z
-                .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+                .array(ApiV1WorkTimeIndexResponseParamsWorkRecordsItemsSchema)
                 .exactOptional()
                 .openapi({ description: '勤務時間のリスト' }),
               lateness_mins: z
@@ -15856,7 +15858,7 @@ export const postApiV1ApprovalRequestsWorkTimesRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: '早退分の時間（分単位）' }),
               break_records: z
-                .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+                .array(ApiV1WorkTimeIndexResponseParamsBreakRecordsItemsSchema)
                 .exactOptional()
                 .openapi({ description: '休憩時間のリスト' }),
               comment: z
@@ -16045,7 +16047,7 @@ export const putApiV1ApprovalRequestsWorkTimesIdRoute = createRoute({
                     'false: 勤務時間を修正する  \ntrue: 勤務時間を削除する\n\n勤務時間を削除する場合は以下のパラメータは指定しないでください。\n- work_records\n- lateness_mins\n- early_leaving_mins\n- break_records',
                 }),
               work_records: z
-                .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+                .array(ApiV1WorkTimeIndexResponseParamsWorkRecordsItemsSchema)
                 .exactOptional()
                 .openapi({ description: '勤務時間のリスト' }),
               lateness_mins: z
@@ -16057,7 +16059,7 @@ export const putApiV1ApprovalRequestsWorkTimesIdRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: '早退分の時間（分単位）' }),
               break_records: z
-                .array(z.lazy(() => ApiV1WorkTimeIndexResponseParamsSchema))
+                .array(ApiV1WorkTimeIndexResponseParamsBreakRecordsItemsSchema)
                 .exactOptional()
                 .openapi({ description: '休憩時間のリスト' }),
               comment: z

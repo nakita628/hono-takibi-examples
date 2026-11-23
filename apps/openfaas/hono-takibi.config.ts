@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/openfaas/faas/master/api-docs/spec.openapi.yml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

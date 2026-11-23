@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonAthenaCreateNotebookRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonAthenaCreateNotebookRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonAthenaCreateNotebookHandler = app.openapi(
-  postXAmzTargetAmazonAthenaCreateNotebookRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonAthenaCreateNotebookRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonAthenaCreateNotebookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

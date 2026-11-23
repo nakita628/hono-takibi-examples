@@ -18,18 +18,18 @@ export function getReviewsFormatKey() {
 }
 
 export function getGetListsFormatKey(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
 ) {
-  return ['lists.:format', '/lists.:format', args] as const
+  return ['lists.{format}', '/lists.{format}', args] as const
 }
 
 export function useGetListsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
         >
       >,
       TError
@@ -46,25 +46,25 @@ export function useGetListsFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['lists.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['lists.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetListsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
         >
       >,
       TError
@@ -81,13 +81,13 @@ export function useImmutableGetListsFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['lists.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['lists.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -188,18 +188,18 @@ export function useImmutableGetListsBestSellersHistoryJson<TError = unknown>(
 }
 
 export function getGetListsNamesFormatKey(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
 ) {
-  return ['lists', '/lists/names.:format', args] as const
+  return ['lists', '/lists/names.{format}', args] as const
 }
 
 export function useGetListsNamesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
         >
       >,
       TError
@@ -220,25 +220,25 @@ export function useGetListsNamesFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.lists['names.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.lists['names.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetListsNamesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
         >
       >,
       TError
@@ -259,32 +259,32 @@ export function useImmutableGetListsNamesFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.lists['names.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.lists['names.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetListsOverviewFormatKey(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
 ) {
-  return ['lists', '/lists/overview.:format', args] as const
+  return ['lists', '/lists/overview.{format}', args] as const
 }
 
 export function useGetListsOverviewFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
           >
         >
       >,
@@ -307,27 +307,27 @@ export function useGetListsOverviewFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.lists['overview.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.lists['overview.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetListsOverviewFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
           >
         >
       >,
@@ -350,14 +350,14 @@ export function useImmutableGetListsOverviewFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.lists['overview.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.lists['overview.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -456,18 +456,18 @@ export function useImmutableGetListsDateListJson<TError = unknown>(
 }
 
 export function getGetReviewsFormatKey(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
 ) {
-  return ['reviews.:format', '/reviews.:format', args] as const
+  return ['reviews.{format}', '/reviews.{format}', args] as const
 }
 
 export function useGetReviewsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
         >
       >,
       TError
@@ -484,25 +484,25 @@ export function useGetReviewsFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['reviews.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['reviews.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetReviewsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
         >
       >,
       TError
@@ -519,13 +519,13 @@ export function useImmutableGetReviewsFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['reviews.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client['reviews.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

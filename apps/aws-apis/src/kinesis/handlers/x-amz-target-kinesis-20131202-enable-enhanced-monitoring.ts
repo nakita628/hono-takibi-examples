@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesis20131202EnableEnhancedMonitoringHandler = app.openapi(
-  postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesis20131202EnableEnhancedMonitoringRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

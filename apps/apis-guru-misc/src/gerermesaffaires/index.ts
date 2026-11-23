@@ -1,25 +1,1334 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  boxHandler,
-  businessGroupsHandler,
-  hubHandler,
-  menusHandler,
-  profileHandler,
-  registrationHandler,
-  sessionHandler,
-  spacesHandler,
+  deleteBusinessGroupsIdSpacesSpaceIdRoute,
+  deleteSpacesIdCompanyEntitiesPersonIdDetailsDesignationRoute,
+  deleteSpacesIdGroupsGroupIdFoldersFolderIdRoute,
+  deleteSpacesIdGroupsGroupIdPersonsMemberIdRoute,
+  deleteSpacesIdPersonsPersonIdDetailsDesignationRoute,
+  deleteSpacesIdPersonsPersonIdRoute,
+  deleteSpacesIdRoute,
+  deleteSpacesIdStatusCodeRoute,
+  deleteSpacesIdTriggersNameRoute,
+  deleteSpacesSpaceIdCommonFoldersIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersIdAccountingYearRoute,
+  deleteSpacesSpaceIdFoldersIdBankRoute,
+  deleteSpacesSpaceIdFoldersIdCustomerRoute,
+  deleteSpacesSpaceIdFoldersIdDocumentClassRoute,
+  deleteSpacesSpaceIdFoldersIdEmployeeRoute,
+  deleteSpacesSpaceIdFoldersIdInsuranceRoute,
+  deleteSpacesSpaceIdFoldersIdLoanRoute,
+  deleteSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+  deleteSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRoute,
+  deleteSpacesSpaceIdFoldersIdPortfolioPortfolioIdRoute,
+  deleteSpacesSpaceIdFoldersIdProfessionalVehicleRoute,
+  deleteSpacesSpaceIdFoldersIdProviderRoute,
+  deleteSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidDocumentsDocumentIdRoute,
+  deleteSpacesSpaceIdFoldersIdSocialRegimesRoute,
+  deleteSpacesSpaceIdFoldersIdTaxContractRoute,
+  deleteSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+  deleteSpacesSpaceIdPersonsIdInvitationRoute,
+  getBoxMenusRoute,
+  getBusinessGroupsAllRoute,
+  getBusinessGroupsIdRoute,
+  getBusinessGroupsIdSpacesRoute,
+  getBusinessGroupsRoute,
+  getHubBusinessGroupsIdMenusRoute,
+  getHubMenusAllRoute,
+  getHubMenusRoute,
+  getHubSpacesSpaceIdMenusRoute,
+  getMenusRoute,
+  getProfileIdFileRoute,
+  getProfileRoute,
+  getRegistrationRoute,
+  getSessionRoute,
+  getSpacesAllRoute,
+  getSpacesIdAccountingYearRoute,
+  getSpacesIdCollectiveDecisionRoute,
+  getSpacesIdCompanyEntitiesAllRoute,
+  getSpacesIdCompanyEntitiesCompanyIdRoute,
+  getSpacesIdCompanyEntitiesPersonIdDetailsRoute,
+  getSpacesIdCompanyEntitiesRoute,
+  getSpacesIdFoldersFolderIdPersonsMemberIdRoute,
+  getSpacesIdGroupsAllRoute,
+  getSpacesIdGroupsGroupIdRoute,
+  getSpacesIdGroupsRoute,
+  getSpacesIdLegalRoute,
+  getSpacesIdLogoRoute,
+  getSpacesIdPersonsAllRoute,
+  getSpacesIdPersonsPersonIdDetailsRoute,
+  getSpacesIdPersonsPersonIdFoldersRoute,
+  getSpacesIdPersonsPersonIdGroupsRoute,
+  getSpacesIdPersonsPersonIdPortfoliosRoute,
+  getSpacesIdPersonsPersonIdRoute,
+  getSpacesIdPersonsRoute,
+  getSpacesIdProfessionalVehiclesRoute,
+  getSpacesIdRoute,
+  getSpacesIdSettingsNf203LogsRoute,
+  getSpacesIdStatusRoute,
+  getSpacesIdTaxContractsRoute,
+  getSpacesIdTriggersRoute,
+  getSpacesRoute,
+  getSpacesSpaceIdCompanyEntitiesIdFollowUpsRoute,
+  getSpacesSpaceIdCustomersAllRoute,
+  getSpacesSpaceIdCustomersRoute,
+  getSpacesSpaceIdDocumentsDocumentIdExtendRoute,
+  getSpacesSpaceIdDocumentsDocumentIdFoldersRoute,
+  getSpacesSpaceIdDocumentsDocumentIdMailingpriceRoute,
+  getSpacesSpaceIdDocumentsDocumentIdVersionsCurrentRoute,
+  getSpacesSpaceIdDocumentsDocumentIdVersionsRoute,
+  getSpacesSpaceIdDocumentsIdAccessRoute,
+  getSpacesSpaceIdDocumentsIdAccountingRoute,
+  getSpacesSpaceIdDocumentsIdDownloadRoute,
+  getSpacesSpaceIdDocumentsRoute,
+  getSpacesSpaceIdEmployeesAllRoute,
+  getSpacesSpaceIdEmployeesRoute,
+  getSpacesSpaceIdEmployersAllRoute,
+  getSpacesSpaceIdEmployersRoute,
+  getSpacesSpaceIdExtendRoute,
+  getSpacesSpaceIdFoldersAllRoute,
+  getSpacesSpaceIdFoldersFolderIdNominativeSocialDeclarationsDocumentIdRoute,
+  getSpacesSpaceIdFoldersIdAccountingsJournalRoute,
+  getSpacesSpaceIdFoldersIdAccountingsRoute,
+  getSpacesSpaceIdFoldersIdBankRoute,
+  getSpacesSpaceIdFoldersIdBankStatementsRoute,
+  getSpacesSpaceIdFoldersIdCommonFoldersAllRoute,
+  getSpacesSpaceIdFoldersIdCommonFoldersRoute,
+  getSpacesSpaceIdFoldersIdContractingPartnerRoute,
+  getSpacesSpaceIdFoldersIdContractingPartnerSpaceRoute,
+  getSpacesSpaceIdFoldersIdContractualDocumentsRoute,
+  getSpacesSpaceIdFoldersIdContractualRelationshipRoute,
+  getSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRoute,
+  getSpacesSpaceIdFoldersIdCustomerRoute,
+  getSpacesSpaceIdFoldersIdDeliveriesJournalRoute,
+  getSpacesSpaceIdFoldersIdDocumentClassRoute,
+  getSpacesSpaceIdFoldersIdDocumentsRoute,
+  getSpacesSpaceIdFoldersIdEmployeeRoute,
+  getSpacesSpaceIdFoldersIdExpenseProofsRoute,
+  getSpacesSpaceIdFoldersIdExpenseReportsExpenseReportIdExpenseProofsRoute,
+  getSpacesSpaceIdFoldersIdExpenseReportsRoute,
+  getSpacesSpaceIdFoldersIdInsuranceRoute,
+  getSpacesSpaceIdFoldersIdInvoicesRoute,
+  getSpacesSpaceIdFoldersIdLegalEntityRoute,
+  getSpacesSpaceIdFoldersIdLoanRoute,
+  getSpacesSpaceIdFoldersIdMessagesMessageIdRoute,
+  getSpacesSpaceIdFoldersIdMessagesRoute,
+  getSpacesSpaceIdFoldersIdNominativeSocialDeclarationsRoute,
+  getSpacesSpaceIdFoldersIdOtherTaxesRoute,
+  getSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+  getSpacesSpaceIdFoldersIdPasswordsRoute,
+  getSpacesSpaceIdFoldersIdPayrollsRoute,
+  getSpacesSpaceIdFoldersIdPayslipsRoute,
+  getSpacesSpaceIdFoldersIdProviderRoute,
+  getSpacesSpaceIdFoldersIdRequiredDocumentsRoute,
+  getSpacesSpaceIdFoldersIdRoute,
+  getSpacesSpaceIdFoldersIdSectionsRoute,
+  getSpacesSpaceIdFoldersIdSocialContractsRoute,
+  getSpacesSpaceIdFoldersIdSocialDeclarationsRoute,
+  getSpacesSpaceIdFoldersIdSocialRegimesRoute,
+  getSpacesSpaceIdFoldersIdSumInvoicesRoute,
+  getSpacesSpaceIdFoldersIdVatDeclarationsRoute,
+  getSpacesSpaceIdFoldersRoute,
+  getSpacesSpaceIdLegalEntitiesIdBanksAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdBanksRoute,
+  getSpacesSpaceIdLegalEntitiesIdContractsRoute,
+  getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsRoute,
+  getSpacesSpaceIdLegalEntitiesIdCustomersAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdCustomersRoute,
+  getSpacesSpaceIdLegalEntitiesIdInsurancesAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdInsurancesRoute,
+  getSpacesSpaceIdLegalEntitiesIdLoansAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdLoansRoute,
+  getSpacesSpaceIdLegalEntitiesIdProvidersAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdProvidersRoute,
+  getSpacesSpaceIdLegalEntitiesIdSocialRegimesAllRoute,
+  getSpacesSpaceIdLegalEntitiesIdSocialRegimesRoute,
+  getSpacesSpaceIdLoansAllRoute,
+  getSpacesSpaceIdLoansRoute,
+  getSpacesSpaceIdPersonsIdEmployeesAllRoute,
+  getSpacesSpaceIdPersonsIdEmployeesRoute,
+  getSpacesSpaceIdPersonsIdExchangeRoute,
+  getSpacesSpaceIdPersonsIdFollowUpsRoute,
+  getSpacesSpaceIdPersonsIdInvitationRoute,
+  getSpacesSpaceIdPersonsMemberIdFoldersIdRoute,
+  getSpacesSpaceIdProvidersAllRoute,
+  getSpacesSpaceIdProvidersRoute,
+  getSpacesSpaceIdSearchRoute,
+  getSpacesSpaceIdSocialRegimesAllRoute,
+  getSpacesSpaceIdSocialRegimesRoute,
+  getSpacesSpaceIdSpacesInvoicingsRoute,
+  patchBusinessGroupsRoute,
+  patchProfileEmailRoute,
+  patchProfileMobileRoute,
+  patchProfileRoute,
+  patchSpacesIdCompanyEntitiesCompanyIdRoute,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdActiveaccessRoute,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdRoute,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdUnactiveaccessRoute,
+  patchSpacesIdGroupsGroupIdFoldersFolderIdRoute,
+  patchSpacesIdGroupsGroupIdPersonsMemberIdRoute,
+  patchSpacesIdGroupsGroupIdRoute,
+  patchSpacesIdLegalRoute,
+  patchSpacesIdPersonsMemberIdPlayerRoute,
+  patchSpacesIdPersonsPersonIdRoute,
+  patchSpacesIdPortfoliosPortfolioIdPersonsMemberIdRoute,
+  patchSpacesIdRoute,
+  patchSpacesSpaceIdCommonFoldersIdRoute,
+  patchSpacesSpaceIdDocumentsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRoute,
+  patchSpacesSpaceIdFoldersIdAccountingYearRoute,
+  patchSpacesSpaceIdFoldersIdBankRoute,
+  patchSpacesSpaceIdFoldersIdCollectiveDecisionRoute,
+  patchSpacesSpaceIdFoldersIdCustomerRoute,
+  patchSpacesSpaceIdFoldersIdDocumentsDocumentIdDetachRoute,
+  patchSpacesSpaceIdFoldersIdEmployeeRoute,
+  patchSpacesSpaceIdFoldersIdInsuranceRoute,
+  patchSpacesSpaceIdFoldersIdLoanRoute,
+  patchSpacesSpaceIdFoldersIdMessagesMessageIdRoute,
+  patchSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+  patchSpacesSpaceIdFoldersIdProfessionalVehicleRoute,
+  patchSpacesSpaceIdFoldersIdProviderRoute,
+  patchSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRoute,
+  patchSpacesSpaceIdFoldersIdRoute,
+  patchSpacesSpaceIdFoldersIdSocialRegimesRoute,
+  patchSpacesSpaceIdFoldersIdTaxContractRoute,
+  patchSpacesSpaceIdPersonsIdCallForDocumentRoute,
+  patchSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+  patchSpacesSpaceIdPersonsIdInvitationRoute,
+  patchSpacesSpaceIdPersonsMemberIdFoldersIdRoute,
+  postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRoute,
+  postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRoute,
+  postBusinessGroupsRoute,
+  postHubDocumentsRoute,
+  postHubPayslipsRoute,
+  postHubSpacesSpaceIdDocumentsRoute,
+  postHubSpacesSpaceIdPayslipsRoute,
+  postMenusMenuIdDocumentsRoute,
+  postProfileRoute,
+  postRegistrationRoute,
+  postSpacesIdAccountingYearRoute,
+  postSpacesIdCollectiveDecisionRoute,
+  postSpacesIdCompanyEntitiesPersonIdDetailsRoute,
+  postSpacesIdCompanyEntitiesRoute,
+  postSpacesIdDocumentsDownloadRoute,
+  postSpacesIdFoldersFolderIdPersonsPersonIdGuestInSpaceRoute,
+  postSpacesIdGroupsRoute,
+  postSpacesIdPersonsPersonIdDetailsRoute,
+  postSpacesIdPersonsPersonIdPortfoliosRoute,
+  postSpacesIdPersonsRoute,
+  postSpacesIdProfessionalVehiclesRoute,
+  postSpacesIdSettingsNf203LogsRoute,
+  postSpacesIdStatusRoute,
+  postSpacesIdTaxContractsRoute,
+  postSpacesIdTriggersNameRoute,
+  postSpacesRoute,
+  postSpacesSpaceIdDocumentsDocumentIdExtendRoute,
+  postSpacesSpaceIdDocumentsDocumentIdMailingRoute,
+  postSpacesSpaceIdDocumentsDocumentIdVersionsRoute,
+  postSpacesSpaceIdExtendRoute,
+  postSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRefreshRoute,
+  postSpacesSpaceIdFoldersIdBankStatementsRoute,
+  postSpacesSpaceIdFoldersIdCommonFoldersRoute,
+  postSpacesSpaceIdFoldersIdContractualDocumentsRoute,
+  postSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRoute,
+  postSpacesSpaceIdFoldersIdDocumentClassRoute,
+  postSpacesSpaceIdFoldersIdDocumentsRoute,
+  postSpacesSpaceIdFoldersIdExpenseProofsRoute,
+  postSpacesSpaceIdFoldersIdExpenseReportsRoute,
+  postSpacesSpaceIdFoldersIdInvoicesRoute,
+  postSpacesSpaceIdFoldersIdMessagesRoute,
+  postSpacesSpaceIdFoldersIdOtherTaxesRoute,
+  postSpacesSpaceIdFoldersIdPasswordsRoute,
+  postSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRoute,
+  postSpacesSpaceIdFoldersIdPayrollsRoute,
+  postSpacesSpaceIdFoldersIdPayslipsRoute,
+  postSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRoute,
+  postSpacesSpaceIdFoldersIdSocialContractsRoute,
+  postSpacesSpaceIdFoldersIdSocialDeclarationsRoute,
+  postSpacesSpaceIdFoldersIdVatDeclarationsRoute,
+  postSpacesSpaceIdLegalEntitiesIdBanksRoute,
+  postSpacesSpaceIdLegalEntitiesIdCustomersRoute,
+  postSpacesSpaceIdLegalEntitiesIdInsurancesRoute,
+  postSpacesSpaceIdLegalEntitiesIdLoansRoute,
+  postSpacesSpaceIdLegalEntitiesIdProvidersRoute,
+  postSpacesSpaceIdLegalEntitiesIdSocialRegimesRoute,
+  postSpacesSpaceIdPersonsIdCallForDocumentRoute,
+  postSpacesSpaceIdPersonsIdEmployeesRoute,
+  postSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+  postSpacesSpaceIdPersonsIdInvitationInvitationIdSendRoute,
+  postSpacesSpaceIdPersonsIdInvitationRoute,
+} from './routes'
+import {
+  deleteBusinessGroupsIdSpacesSpaceIdRouteHandler,
+  deleteSpacesIdCompanyEntitiesPersonIdDetailsDesignationRouteHandler,
+  deleteSpacesIdGroupsGroupIdFoldersFolderIdRouteHandler,
+  deleteSpacesIdGroupsGroupIdPersonsMemberIdRouteHandler,
+  deleteSpacesIdPersonsPersonIdDetailsDesignationRouteHandler,
+  deleteSpacesIdPersonsPersonIdRouteHandler,
+  deleteSpacesIdRouteHandler,
+  deleteSpacesIdStatusCodeRouteHandler,
+  deleteSpacesIdTriggersNameRouteHandler,
+  deleteSpacesSpaceIdCommonFoldersIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersIdAccountingYearRouteHandler,
+  deleteSpacesSpaceIdFoldersIdBankRouteHandler,
+  deleteSpacesSpaceIdFoldersIdCustomerRouteHandler,
+  deleteSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  deleteSpacesSpaceIdFoldersIdEmployeeRouteHandler,
+  deleteSpacesSpaceIdFoldersIdInsuranceRouteHandler,
+  deleteSpacesSpaceIdFoldersIdLoanRouteHandler,
+  deleteSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  deleteSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRouteHandler,
+  deleteSpacesSpaceIdFoldersIdPortfolioPortfolioIdRouteHandler,
+  deleteSpacesSpaceIdFoldersIdProfessionalVehicleRouteHandler,
+  deleteSpacesSpaceIdFoldersIdProviderRouteHandler,
+  deleteSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidDocumentsDocumentIdRouteHandler,
+  deleteSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  deleteSpacesSpaceIdFoldersIdTaxContractRouteHandler,
+  deleteSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  deleteSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  getBoxMenusRouteHandler,
+  getBusinessGroupsAllRouteHandler,
+  getBusinessGroupsIdRouteHandler,
+  getBusinessGroupsIdSpacesRouteHandler,
+  getBusinessGroupsRouteHandler,
+  getHubBusinessGroupsIdMenusRouteHandler,
+  getHubMenusAllRouteHandler,
+  getHubMenusRouteHandler,
+  getHubSpacesSpaceIdMenusRouteHandler,
+  getMenusRouteHandler,
+  getProfileIdFileRouteHandler,
+  getProfileRouteHandler,
+  getRegistrationRouteHandler,
+  getSessionRouteHandler,
+  getSpacesAllRouteHandler,
+  getSpacesIdAccountingYearRouteHandler,
+  getSpacesIdCollectiveDecisionRouteHandler,
+  getSpacesIdCompanyEntitiesAllRouteHandler,
+  getSpacesIdCompanyEntitiesCompanyIdRouteHandler,
+  getSpacesIdCompanyEntitiesPersonIdDetailsRouteHandler,
+  getSpacesIdCompanyEntitiesRouteHandler,
+  getSpacesIdFoldersFolderIdPersonsMemberIdRouteHandler,
+  getSpacesIdGroupsAllRouteHandler,
+  getSpacesIdGroupsGroupIdRouteHandler,
+  getSpacesIdGroupsRouteHandler,
+  getSpacesIdLegalRouteHandler,
+  getSpacesIdLogoRouteHandler,
+  getSpacesIdPersonsAllRouteHandler,
+  getSpacesIdPersonsPersonIdDetailsRouteHandler,
+  getSpacesIdPersonsPersonIdFoldersRouteHandler,
+  getSpacesIdPersonsPersonIdGroupsRouteHandler,
+  getSpacesIdPersonsPersonIdPortfoliosRouteHandler,
+  getSpacesIdPersonsPersonIdRouteHandler,
+  getSpacesIdPersonsRouteHandler,
+  getSpacesIdProfessionalVehiclesRouteHandler,
+  getSpacesIdRouteHandler,
+  getSpacesIdSettingsNf203LogsRouteHandler,
+  getSpacesIdStatusRouteHandler,
+  getSpacesIdTaxContractsRouteHandler,
+  getSpacesIdTriggersRouteHandler,
+  getSpacesRouteHandler,
+  getSpacesSpaceIdCompanyEntitiesIdFollowUpsRouteHandler,
+  getSpacesSpaceIdCustomersAllRouteHandler,
+  getSpacesSpaceIdCustomersRouteHandler,
+  getSpacesSpaceIdDocumentsDocumentIdExtendRouteHandler,
+  getSpacesSpaceIdDocumentsDocumentIdFoldersRouteHandler,
+  getSpacesSpaceIdDocumentsDocumentIdMailingpriceRouteHandler,
+  getSpacesSpaceIdDocumentsDocumentIdVersionsCurrentRouteHandler,
+  getSpacesSpaceIdDocumentsDocumentIdVersionsRouteHandler,
+  getSpacesSpaceIdDocumentsIdAccessRouteHandler,
+  getSpacesSpaceIdDocumentsIdAccountingRouteHandler,
+  getSpacesSpaceIdDocumentsIdDownloadRouteHandler,
+  getSpacesSpaceIdDocumentsRouteHandler,
+  getSpacesSpaceIdEmployeesAllRouteHandler,
+  getSpacesSpaceIdEmployeesRouteHandler,
+  getSpacesSpaceIdEmployersAllRouteHandler,
+  getSpacesSpaceIdEmployersRouteHandler,
+  getSpacesSpaceIdExtendRouteHandler,
+  getSpacesSpaceIdFoldersAllRouteHandler,
+  getSpacesSpaceIdFoldersFolderIdNominativeSocialDeclarationsDocumentIdRouteHandler,
+  getSpacesSpaceIdFoldersIdAccountingsJournalRouteHandler,
+  getSpacesSpaceIdFoldersIdAccountingsRouteHandler,
+  getSpacesSpaceIdFoldersIdBankRouteHandler,
+  getSpacesSpaceIdFoldersIdBankStatementsRouteHandler,
+  getSpacesSpaceIdFoldersIdCommonFoldersAllRouteHandler,
+  getSpacesSpaceIdFoldersIdCommonFoldersRouteHandler,
+  getSpacesSpaceIdFoldersIdContractingPartnerRouteHandler,
+  getSpacesSpaceIdFoldersIdContractingPartnerSpaceRouteHandler,
+  getSpacesSpaceIdFoldersIdContractualDocumentsRouteHandler,
+  getSpacesSpaceIdFoldersIdContractualRelationshipRouteHandler,
+  getSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRouteHandler,
+  getSpacesSpaceIdFoldersIdCustomerRouteHandler,
+  getSpacesSpaceIdFoldersIdDeliveriesJournalRouteHandler,
+  getSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  getSpacesSpaceIdFoldersIdDocumentsRouteHandler,
+  getSpacesSpaceIdFoldersIdEmployeeRouteHandler,
+  getSpacesSpaceIdFoldersIdExpenseProofsRouteHandler,
+  getSpacesSpaceIdFoldersIdExpenseReportsExpenseReportIdExpenseProofsRouteHandler,
+  getSpacesSpaceIdFoldersIdExpenseReportsRouteHandler,
+  getSpacesSpaceIdFoldersIdInsuranceRouteHandler,
+  getSpacesSpaceIdFoldersIdInvoicesRouteHandler,
+  getSpacesSpaceIdFoldersIdLegalEntityRouteHandler,
+  getSpacesSpaceIdFoldersIdLoanRouteHandler,
+  getSpacesSpaceIdFoldersIdMessagesMessageIdRouteHandler,
+  getSpacesSpaceIdFoldersIdMessagesRouteHandler,
+  getSpacesSpaceIdFoldersIdNominativeSocialDeclarationsRouteHandler,
+  getSpacesSpaceIdFoldersIdOtherTaxesRouteHandler,
+  getSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  getSpacesSpaceIdFoldersIdPasswordsRouteHandler,
+  getSpacesSpaceIdFoldersIdPayrollsRouteHandler,
+  getSpacesSpaceIdFoldersIdPayslipsRouteHandler,
+  getSpacesSpaceIdFoldersIdProviderRouteHandler,
+  getSpacesSpaceIdFoldersIdRequiredDocumentsRouteHandler,
+  getSpacesSpaceIdFoldersIdRouteHandler,
+  getSpacesSpaceIdFoldersIdSectionsRouteHandler,
+  getSpacesSpaceIdFoldersIdSocialContractsRouteHandler,
+  getSpacesSpaceIdFoldersIdSocialDeclarationsRouteHandler,
+  getSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  getSpacesSpaceIdFoldersIdSumInvoicesRouteHandler,
+  getSpacesSpaceIdFoldersIdVatDeclarationsRouteHandler,
+  getSpacesSpaceIdFoldersRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdBanksAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdBanksRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdContractsRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdCustomersAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdCustomersRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdInsurancesAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdInsurancesRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdLoansAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdLoansRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdProvidersAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdProvidersRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdSocialRegimesAllRouteHandler,
+  getSpacesSpaceIdLegalEntitiesIdSocialRegimesRouteHandler,
+  getSpacesSpaceIdLoansAllRouteHandler,
+  getSpacesSpaceIdLoansRouteHandler,
+  getSpacesSpaceIdPersonsIdEmployeesAllRouteHandler,
+  getSpacesSpaceIdPersonsIdEmployeesRouteHandler,
+  getSpacesSpaceIdPersonsIdExchangeRouteHandler,
+  getSpacesSpaceIdPersonsIdFollowUpsRouteHandler,
+  getSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  getSpacesSpaceIdPersonsMemberIdFoldersIdRouteHandler,
+  getSpacesSpaceIdProvidersAllRouteHandler,
+  getSpacesSpaceIdProvidersRouteHandler,
+  getSpacesSpaceIdSearchRouteHandler,
+  getSpacesSpaceIdSocialRegimesAllRouteHandler,
+  getSpacesSpaceIdSocialRegimesRouteHandler,
+  getSpacesSpaceIdSpacesInvoicingsRouteHandler,
+  patchBusinessGroupsRouteHandler,
+  patchProfileEmailRouteHandler,
+  patchProfileMobileRouteHandler,
+  patchProfileRouteHandler,
+  patchSpacesIdCompanyEntitiesCompanyIdRouteHandler,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdActiveaccessRouteHandler,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdRouteHandler,
+  patchSpacesIdFoldersFolderIdPersonsMemberIdUnactiveaccessRouteHandler,
+  patchSpacesIdGroupsGroupIdFoldersFolderIdRouteHandler,
+  patchSpacesIdGroupsGroupIdPersonsMemberIdRouteHandler,
+  patchSpacesIdGroupsGroupIdRouteHandler,
+  patchSpacesIdLegalRouteHandler,
+  patchSpacesIdPersonsMemberIdPlayerRouteHandler,
+  patchSpacesIdPersonsPersonIdRouteHandler,
+  patchSpacesIdPortfoliosPortfolioIdPersonsMemberIdRouteHandler,
+  patchSpacesIdRouteHandler,
+  patchSpacesSpaceIdCommonFoldersIdRouteHandler,
+  patchSpacesSpaceIdDocumentsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRouteHandler,
+  patchSpacesSpaceIdFoldersIdAccountingYearRouteHandler,
+  patchSpacesSpaceIdFoldersIdBankRouteHandler,
+  patchSpacesSpaceIdFoldersIdCollectiveDecisionRouteHandler,
+  patchSpacesSpaceIdFoldersIdCustomerRouteHandler,
+  patchSpacesSpaceIdFoldersIdDocumentsDocumentIdDetachRouteHandler,
+  patchSpacesSpaceIdFoldersIdEmployeeRouteHandler,
+  patchSpacesSpaceIdFoldersIdInsuranceRouteHandler,
+  patchSpacesSpaceIdFoldersIdLoanRouteHandler,
+  patchSpacesSpaceIdFoldersIdMessagesMessageIdRouteHandler,
+  patchSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  patchSpacesSpaceIdFoldersIdProfessionalVehicleRouteHandler,
+  patchSpacesSpaceIdFoldersIdProviderRouteHandler,
+  patchSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRouteHandler,
+  patchSpacesSpaceIdFoldersIdRouteHandler,
+  patchSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  patchSpacesSpaceIdFoldersIdTaxContractRouteHandler,
+  patchSpacesSpaceIdPersonsIdCallForDocumentRouteHandler,
+  patchSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  patchSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  patchSpacesSpaceIdPersonsMemberIdFoldersIdRouteHandler,
+  postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRouteHandler,
+  postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRouteHandler,
+  postBusinessGroupsRouteHandler,
+  postHubDocumentsRouteHandler,
+  postHubPayslipsRouteHandler,
+  postHubSpacesSpaceIdDocumentsRouteHandler,
+  postHubSpacesSpaceIdPayslipsRouteHandler,
+  postMenusMenuIdDocumentsRouteHandler,
+  postProfileRouteHandler,
+  postRegistrationRouteHandler,
+  postSpacesIdAccountingYearRouteHandler,
+  postSpacesIdCollectiveDecisionRouteHandler,
+  postSpacesIdCompanyEntitiesPersonIdDetailsRouteHandler,
+  postSpacesIdCompanyEntitiesRouteHandler,
+  postSpacesIdDocumentsDownloadRouteHandler,
+  postSpacesIdFoldersFolderIdPersonsPersonIdGuestInSpaceRouteHandler,
+  postSpacesIdGroupsRouteHandler,
+  postSpacesIdPersonsPersonIdDetailsRouteHandler,
+  postSpacesIdPersonsPersonIdPortfoliosRouteHandler,
+  postSpacesIdPersonsRouteHandler,
+  postSpacesIdProfessionalVehiclesRouteHandler,
+  postSpacesIdSettingsNf203LogsRouteHandler,
+  postSpacesIdStatusRouteHandler,
+  postSpacesIdTaxContractsRouteHandler,
+  postSpacesIdTriggersNameRouteHandler,
+  postSpacesRouteHandler,
+  postSpacesSpaceIdDocumentsDocumentIdExtendRouteHandler,
+  postSpacesSpaceIdDocumentsDocumentIdMailingRouteHandler,
+  postSpacesSpaceIdDocumentsDocumentIdVersionsRouteHandler,
+  postSpacesSpaceIdExtendRouteHandler,
+  postSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRefreshRouteHandler,
+  postSpacesSpaceIdFoldersIdBankStatementsRouteHandler,
+  postSpacesSpaceIdFoldersIdCommonFoldersRouteHandler,
+  postSpacesSpaceIdFoldersIdContractualDocumentsRouteHandler,
+  postSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRouteHandler,
+  postSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  postSpacesSpaceIdFoldersIdDocumentsRouteHandler,
+  postSpacesSpaceIdFoldersIdExpenseProofsRouteHandler,
+  postSpacesSpaceIdFoldersIdExpenseReportsRouteHandler,
+  postSpacesSpaceIdFoldersIdInvoicesRouteHandler,
+  postSpacesSpaceIdFoldersIdMessagesRouteHandler,
+  postSpacesSpaceIdFoldersIdOtherTaxesRouteHandler,
+  postSpacesSpaceIdFoldersIdPasswordsRouteHandler,
+  postSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRouteHandler,
+  postSpacesSpaceIdFoldersIdPayrollsRouteHandler,
+  postSpacesSpaceIdFoldersIdPayslipsRouteHandler,
+  postSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRouteHandler,
+  postSpacesSpaceIdFoldersIdSocialContractsRouteHandler,
+  postSpacesSpaceIdFoldersIdSocialDeclarationsRouteHandler,
+  postSpacesSpaceIdFoldersIdVatDeclarationsRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdBanksRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdCustomersRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdInsurancesRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdLoansRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdProvidersRouteHandler,
+  postSpacesSpaceIdLegalEntitiesIdSocialRegimesRouteHandler,
+  postSpacesSpaceIdPersonsIdCallForDocumentRouteHandler,
+  postSpacesSpaceIdPersonsIdEmployeesRouteHandler,
+  postSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  postSpacesSpaceIdPersonsIdInvitationInvitationIdSendRouteHandler,
+  postSpacesSpaceIdPersonsIdInvitationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', boxHandler)
-  .route('/', businessGroupsHandler)
-  .route('/', hubHandler)
-  .route('/', menusHandler)
-  .route('/', profileHandler)
-  .route('/', registrationHandler)
-  .route('/', sessionHandler)
-  .route('/', spacesHandler)
+  .openapi(getBoxMenusRoute, getBoxMenusRouteHandler)
+  .openapi(getBusinessGroupsRoute, getBusinessGroupsRouteHandler)
+  .openapi(patchBusinessGroupsRoute, patchBusinessGroupsRouteHandler)
+  .openapi(postBusinessGroupsRoute, postBusinessGroupsRouteHandler)
+  .openapi(getBusinessGroupsAllRoute, getBusinessGroupsAllRouteHandler)
+  .openapi(getBusinessGroupsIdRoute, getBusinessGroupsIdRouteHandler)
+  .openapi(getBusinessGroupsIdSpacesRoute, getBusinessGroupsIdSpacesRouteHandler)
+  .openapi(
+    deleteBusinessGroupsIdSpacesSpaceIdRoute,
+    deleteBusinessGroupsIdSpacesSpaceIdRouteHandler,
+  )
+  .openapi(
+    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRoute,
+    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRouteHandler,
+  )
+  .openapi(
+    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRoute,
+    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRouteHandler,
+  )
+  .openapi(getHubBusinessGroupsIdMenusRoute, getHubBusinessGroupsIdMenusRouteHandler)
+  .openapi(postHubDocumentsRoute, postHubDocumentsRouteHandler)
+  .openapi(getHubMenusRoute, getHubMenusRouteHandler)
+  .openapi(getHubMenusAllRoute, getHubMenusAllRouteHandler)
+  .openapi(postHubPayslipsRoute, postHubPayslipsRouteHandler)
+  .openapi(postHubSpacesSpaceIdDocumentsRoute, postHubSpacesSpaceIdDocumentsRouteHandler)
+  .openapi(getHubSpacesSpaceIdMenusRoute, getHubSpacesSpaceIdMenusRouteHandler)
+  .openapi(postHubSpacesSpaceIdPayslipsRoute, postHubSpacesSpaceIdPayslipsRouteHandler)
+  .openapi(getMenusRoute, getMenusRouteHandler)
+  .openapi(postMenusMenuIdDocumentsRoute, postMenusMenuIdDocumentsRouteHandler)
+  .openapi(getProfileRoute, getProfileRouteHandler)
+  .openapi(patchProfileRoute, patchProfileRouteHandler)
+  .openapi(postProfileRoute, postProfileRouteHandler)
+  .openapi(patchProfileEmailRoute, patchProfileEmailRouteHandler)
+  .openapi(getProfileIdFileRoute, getProfileIdFileRouteHandler)
+  .openapi(patchProfileMobileRoute, patchProfileMobileRouteHandler)
+  .openapi(getRegistrationRoute, getRegistrationRouteHandler)
+  .openapi(postRegistrationRoute, postRegistrationRouteHandler)
+  .openapi(getSessionRoute, getSessionRouteHandler)
+  .openapi(getSpacesRoute, getSpacesRouteHandler)
+  .openapi(postSpacesRoute, postSpacesRouteHandler)
+  .openapi(getSpacesAllRoute, getSpacesAllRouteHandler)
+  .openapi(deleteSpacesIdRoute, deleteSpacesIdRouteHandler)
+  .openapi(getSpacesIdRoute, getSpacesIdRouteHandler)
+  .openapi(patchSpacesIdRoute, patchSpacesIdRouteHandler)
+  .openapi(getSpacesIdAccountingYearRoute, getSpacesIdAccountingYearRouteHandler)
+  .openapi(postSpacesIdAccountingYearRoute, postSpacesIdAccountingYearRouteHandler)
+  .openapi(getSpacesIdCollectiveDecisionRoute, getSpacesIdCollectiveDecisionRouteHandler)
+  .openapi(postSpacesIdCollectiveDecisionRoute, postSpacesIdCollectiveDecisionRouteHandler)
+  .openapi(getSpacesIdCompanyEntitiesRoute, getSpacesIdCompanyEntitiesRouteHandler)
+  .openapi(postSpacesIdCompanyEntitiesRoute, postSpacesIdCompanyEntitiesRouteHandler)
+  .openapi(getSpacesIdCompanyEntitiesAllRoute, getSpacesIdCompanyEntitiesAllRouteHandler)
+  .openapi(
+    getSpacesIdCompanyEntitiesCompanyIdRoute,
+    getSpacesIdCompanyEntitiesCompanyIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdCompanyEntitiesCompanyIdRoute,
+    patchSpacesIdCompanyEntitiesCompanyIdRouteHandler,
+  )
+  .openapi(
+    getSpacesIdCompanyEntitiesPersonIdDetailsRoute,
+    getSpacesIdCompanyEntitiesPersonIdDetailsRouteHandler,
+  )
+  .openapi(
+    postSpacesIdCompanyEntitiesPersonIdDetailsRoute,
+    postSpacesIdCompanyEntitiesPersonIdDetailsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesIdCompanyEntitiesPersonIdDetailsDesignationRoute,
+    deleteSpacesIdCompanyEntitiesPersonIdDetailsDesignationRouteHandler,
+  )
+  .openapi(postSpacesIdDocumentsDownloadRoute, postSpacesIdDocumentsDownloadRouteHandler)
+  .openapi(
+    getSpacesIdFoldersFolderIdPersonsMemberIdRoute,
+    getSpacesIdFoldersFolderIdPersonsMemberIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdFoldersFolderIdPersonsMemberIdRoute,
+    patchSpacesIdFoldersFolderIdPersonsMemberIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdFoldersFolderIdPersonsMemberIdActiveaccessRoute,
+    patchSpacesIdFoldersFolderIdPersonsMemberIdActiveaccessRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdFoldersFolderIdPersonsMemberIdUnactiveaccessRoute,
+    patchSpacesIdFoldersFolderIdPersonsMemberIdUnactiveaccessRouteHandler,
+  )
+  .openapi(
+    postSpacesIdFoldersFolderIdPersonsPersonIdGuestInSpaceRoute,
+    postSpacesIdFoldersFolderIdPersonsPersonIdGuestInSpaceRouteHandler,
+  )
+  .openapi(getSpacesIdGroupsRoute, getSpacesIdGroupsRouteHandler)
+  .openapi(postSpacesIdGroupsRoute, postSpacesIdGroupsRouteHandler)
+  .openapi(getSpacesIdGroupsAllRoute, getSpacesIdGroupsAllRouteHandler)
+  .openapi(getSpacesIdGroupsGroupIdRoute, getSpacesIdGroupsGroupIdRouteHandler)
+  .openapi(patchSpacesIdGroupsGroupIdRoute, patchSpacesIdGroupsGroupIdRouteHandler)
+  .openapi(
+    deleteSpacesIdGroupsGroupIdFoldersFolderIdRoute,
+    deleteSpacesIdGroupsGroupIdFoldersFolderIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdGroupsGroupIdFoldersFolderIdRoute,
+    patchSpacesIdGroupsGroupIdFoldersFolderIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesIdGroupsGroupIdPersonsMemberIdRoute,
+    deleteSpacesIdGroupsGroupIdPersonsMemberIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdGroupsGroupIdPersonsMemberIdRoute,
+    patchSpacesIdGroupsGroupIdPersonsMemberIdRouteHandler,
+  )
+  .openapi(getSpacesIdLegalRoute, getSpacesIdLegalRouteHandler)
+  .openapi(patchSpacesIdLegalRoute, patchSpacesIdLegalRouteHandler)
+  .openapi(getSpacesIdLogoRoute, getSpacesIdLogoRouteHandler)
+  .openapi(getSpacesIdPersonsRoute, getSpacesIdPersonsRouteHandler)
+  .openapi(postSpacesIdPersonsRoute, postSpacesIdPersonsRouteHandler)
+  .openapi(getSpacesIdPersonsAllRoute, getSpacesIdPersonsAllRouteHandler)
+  .openapi(patchSpacesIdPersonsMemberIdPlayerRoute, patchSpacesIdPersonsMemberIdPlayerRouteHandler)
+  .openapi(deleteSpacesIdPersonsPersonIdRoute, deleteSpacesIdPersonsPersonIdRouteHandler)
+  .openapi(getSpacesIdPersonsPersonIdRoute, getSpacesIdPersonsPersonIdRouteHandler)
+  .openapi(patchSpacesIdPersonsPersonIdRoute, patchSpacesIdPersonsPersonIdRouteHandler)
+  .openapi(getSpacesIdPersonsPersonIdDetailsRoute, getSpacesIdPersonsPersonIdDetailsRouteHandler)
+  .openapi(postSpacesIdPersonsPersonIdDetailsRoute, postSpacesIdPersonsPersonIdDetailsRouteHandler)
+  .openapi(
+    deleteSpacesIdPersonsPersonIdDetailsDesignationRoute,
+    deleteSpacesIdPersonsPersonIdDetailsDesignationRouteHandler,
+  )
+  .openapi(getSpacesIdPersonsPersonIdFoldersRoute, getSpacesIdPersonsPersonIdFoldersRouteHandler)
+  .openapi(getSpacesIdPersonsPersonIdGroupsRoute, getSpacesIdPersonsPersonIdGroupsRouteHandler)
+  .openapi(
+    getSpacesIdPersonsPersonIdPortfoliosRoute,
+    getSpacesIdPersonsPersonIdPortfoliosRouteHandler,
+  )
+  .openapi(
+    postSpacesIdPersonsPersonIdPortfoliosRoute,
+    postSpacesIdPersonsPersonIdPortfoliosRouteHandler,
+  )
+  .openapi(
+    patchSpacesIdPortfoliosPortfolioIdPersonsMemberIdRoute,
+    patchSpacesIdPortfoliosPortfolioIdPersonsMemberIdRouteHandler,
+  )
+  .openapi(getSpacesIdProfessionalVehiclesRoute, getSpacesIdProfessionalVehiclesRouteHandler)
+  .openapi(postSpacesIdProfessionalVehiclesRoute, postSpacesIdProfessionalVehiclesRouteHandler)
+  .openapi(getSpacesIdSettingsNf203LogsRoute, getSpacesIdSettingsNf203LogsRouteHandler)
+  .openapi(postSpacesIdSettingsNf203LogsRoute, postSpacesIdSettingsNf203LogsRouteHandler)
+  .openapi(getSpacesIdStatusRoute, getSpacesIdStatusRouteHandler)
+  .openapi(postSpacesIdStatusRoute, postSpacesIdStatusRouteHandler)
+  .openapi(deleteSpacesIdStatusCodeRoute, deleteSpacesIdStatusCodeRouteHandler)
+  .openapi(getSpacesIdTaxContractsRoute, getSpacesIdTaxContractsRouteHandler)
+  .openapi(postSpacesIdTaxContractsRoute, postSpacesIdTaxContractsRouteHandler)
+  .openapi(getSpacesIdTriggersRoute, getSpacesIdTriggersRouteHandler)
+  .openapi(deleteSpacesIdTriggersNameRoute, deleteSpacesIdTriggersNameRouteHandler)
+  .openapi(postSpacesIdTriggersNameRoute, postSpacesIdTriggersNameRouteHandler)
+  .openapi(deleteSpacesSpaceIdCommonFoldersIdRoute, deleteSpacesSpaceIdCommonFoldersIdRouteHandler)
+  .openapi(patchSpacesSpaceIdCommonFoldersIdRoute, patchSpacesSpaceIdCommonFoldersIdRouteHandler)
+  .openapi(
+    getSpacesSpaceIdCompanyEntitiesIdFollowUpsRoute,
+    getSpacesSpaceIdCompanyEntitiesIdFollowUpsRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdCustomersRoute, getSpacesSpaceIdCustomersRouteHandler)
+  .openapi(getSpacesSpaceIdCustomersAllRoute, getSpacesSpaceIdCustomersAllRouteHandler)
+  .openapi(getSpacesSpaceIdDocumentsRoute, getSpacesSpaceIdDocumentsRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdDocumentsDocumentIdRoute,
+    patchSpacesSpaceIdDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsDocumentIdExtendRoute,
+    getSpacesSpaceIdDocumentsDocumentIdExtendRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdDocumentsDocumentIdExtendRoute,
+    postSpacesSpaceIdDocumentsDocumentIdExtendRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsDocumentIdFoldersRoute,
+    getSpacesSpaceIdDocumentsDocumentIdFoldersRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdDocumentsDocumentIdMailingRoute,
+    postSpacesSpaceIdDocumentsDocumentIdMailingRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsDocumentIdMailingpriceRoute,
+    getSpacesSpaceIdDocumentsDocumentIdMailingpriceRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsDocumentIdVersionsRoute,
+    getSpacesSpaceIdDocumentsDocumentIdVersionsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdDocumentsDocumentIdVersionsRoute,
+    postSpacesSpaceIdDocumentsDocumentIdVersionsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsDocumentIdVersionsCurrentRoute,
+    getSpacesSpaceIdDocumentsDocumentIdVersionsCurrentRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdDocumentsIdAccessRoute, getSpacesSpaceIdDocumentsIdAccessRouteHandler)
+  .openapi(
+    getSpacesSpaceIdDocumentsIdAccountingRoute,
+    getSpacesSpaceIdDocumentsIdAccountingRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdDocumentsIdDownloadRoute,
+    getSpacesSpaceIdDocumentsIdDownloadRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdEmployeesRoute, getSpacesSpaceIdEmployeesRouteHandler)
+  .openapi(getSpacesSpaceIdEmployeesAllRoute, getSpacesSpaceIdEmployeesAllRouteHandler)
+  .openapi(getSpacesSpaceIdEmployersRoute, getSpacesSpaceIdEmployersRouteHandler)
+  .openapi(getSpacesSpaceIdEmployersAllRoute, getSpacesSpaceIdEmployersAllRouteHandler)
+  .openapi(getSpacesSpaceIdExtendRoute, getSpacesSpaceIdExtendRouteHandler)
+  .openapi(postSpacesSpaceIdExtendRoute, postSpacesSpaceIdExtendRouteHandler)
+  .openapi(getSpacesSpaceIdFoldersRoute, getSpacesSpaceIdFoldersRouteHandler)
+  .openapi(getSpacesSpaceIdFoldersAllRoute, getSpacesSpaceIdFoldersAllRouteHandler)
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdBankStatementsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdContractualDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdCorporateTaxDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdExpenseProofsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdExpenseReportsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdInvoicesDocumentIdRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersFolderIdNominativeSocialDeclarationsDocumentIdRoute,
+    getSpacesSpaceIdFoldersFolderIdNominativeSocialDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdOtherTaxesDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRefreshRoute,
+    postSpacesSpaceIdFoldersFolderIdPayrollsDocumentIdRefreshRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdPayslipsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdSocialContractsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdSocialDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRoute,
+    patchSpacesSpaceIdFoldersFolderIdVatDeclarationsDocumentIdRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdRoute, getSpacesSpaceIdFoldersIdRouteHandler)
+  .openapi(patchSpacesSpaceIdFoldersIdRoute, patchSpacesSpaceIdFoldersIdRouteHandler)
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdAccountingYearRoute,
+    deleteSpacesSpaceIdFoldersIdAccountingYearRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdAccountingYearRoute,
+    patchSpacesSpaceIdFoldersIdAccountingYearRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdAccountingsRoute,
+    getSpacesSpaceIdFoldersIdAccountingsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdAccountingsJournalRoute,
+    getSpacesSpaceIdFoldersIdAccountingsJournalRouteHandler,
+  )
+  .openapi(deleteSpacesSpaceIdFoldersIdBankRoute, deleteSpacesSpaceIdFoldersIdBankRouteHandler)
+  .openapi(getSpacesSpaceIdFoldersIdBankRoute, getSpacesSpaceIdFoldersIdBankRouteHandler)
+  .openapi(patchSpacesSpaceIdFoldersIdBankRoute, patchSpacesSpaceIdFoldersIdBankRouteHandler)
+  .openapi(
+    getSpacesSpaceIdFoldersIdBankStatementsRoute,
+    getSpacesSpaceIdFoldersIdBankStatementsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdBankStatementsRoute,
+    postSpacesSpaceIdFoldersIdBankStatementsRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdCollectiveDecisionRoute,
+    patchSpacesSpaceIdFoldersIdCollectiveDecisionRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdCommonFoldersRoute,
+    getSpacesSpaceIdFoldersIdCommonFoldersRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdCommonFoldersRoute,
+    postSpacesSpaceIdFoldersIdCommonFoldersRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdCommonFoldersAllRoute,
+    getSpacesSpaceIdFoldersIdCommonFoldersAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdContractingPartnerRoute,
+    getSpacesSpaceIdFoldersIdContractingPartnerRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdContractingPartnerSpaceRoute,
+    getSpacesSpaceIdFoldersIdContractingPartnerSpaceRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdContractualDocumentsRoute,
+    getSpacesSpaceIdFoldersIdContractualDocumentsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdContractualDocumentsRoute,
+    postSpacesSpaceIdFoldersIdContractualDocumentsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdContractualRelationshipRoute,
+    getSpacesSpaceIdFoldersIdContractualRelationshipRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRoute,
+    getSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRoute,
+    postSpacesSpaceIdFoldersIdCoporateTaxDeclarationsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdCustomerRoute,
+    deleteSpacesSpaceIdFoldersIdCustomerRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdCustomerRoute, getSpacesSpaceIdFoldersIdCustomerRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdFoldersIdCustomerRoute,
+    patchSpacesSpaceIdFoldersIdCustomerRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdDeliveriesJournalRoute,
+    getSpacesSpaceIdFoldersIdDeliveriesJournalRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdDocumentsRoute, getSpacesSpaceIdFoldersIdDocumentsRouteHandler)
+  .openapi(
+    postSpacesSpaceIdFoldersIdDocumentsRoute,
+    postSpacesSpaceIdFoldersIdDocumentsRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdDocumentsDocumentIdDetachRoute,
+    patchSpacesSpaceIdFoldersIdDocumentsDocumentIdDetachRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdEmployeeRoute,
+    deleteSpacesSpaceIdFoldersIdEmployeeRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdEmployeeRoute, getSpacesSpaceIdFoldersIdEmployeeRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdFoldersIdEmployeeRoute,
+    patchSpacesSpaceIdFoldersIdEmployeeRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdExpenseProofsRoute,
+    getSpacesSpaceIdFoldersIdExpenseProofsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdExpenseProofsRoute,
+    postSpacesSpaceIdFoldersIdExpenseProofsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdExpenseReportsRoute,
+    getSpacesSpaceIdFoldersIdExpenseReportsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdExpenseReportsRoute,
+    postSpacesSpaceIdFoldersIdExpenseReportsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdExpenseReportsExpenseReportIdExpenseProofsRoute,
+    getSpacesSpaceIdFoldersIdExpenseReportsExpenseReportIdExpenseProofsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdInsuranceRoute,
+    deleteSpacesSpaceIdFoldersIdInsuranceRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdInsuranceRoute, getSpacesSpaceIdFoldersIdInsuranceRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdFoldersIdInsuranceRoute,
+    patchSpacesSpaceIdFoldersIdInsuranceRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdInvoicesRoute, getSpacesSpaceIdFoldersIdInvoicesRouteHandler)
+  .openapi(postSpacesSpaceIdFoldersIdInvoicesRoute, postSpacesSpaceIdFoldersIdInvoicesRouteHandler)
+  .openapi(
+    getSpacesSpaceIdFoldersIdLegalEntityRoute,
+    getSpacesSpaceIdFoldersIdLegalEntityRouteHandler,
+  )
+  .openapi(deleteSpacesSpaceIdFoldersIdLoanRoute, deleteSpacesSpaceIdFoldersIdLoanRouteHandler)
+  .openapi(getSpacesSpaceIdFoldersIdLoanRoute, getSpacesSpaceIdFoldersIdLoanRouteHandler)
+  .openapi(patchSpacesSpaceIdFoldersIdLoanRoute, patchSpacesSpaceIdFoldersIdLoanRouteHandler)
+  .openapi(getSpacesSpaceIdFoldersIdMessagesRoute, getSpacesSpaceIdFoldersIdMessagesRouteHandler)
+  .openapi(postSpacesSpaceIdFoldersIdMessagesRoute, postSpacesSpaceIdFoldersIdMessagesRouteHandler)
+  .openapi(
+    getSpacesSpaceIdFoldersIdMessagesMessageIdRoute,
+    getSpacesSpaceIdFoldersIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdMessagesMessageIdRoute,
+    patchSpacesSpaceIdFoldersIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdNominativeSocialDeclarationsRoute,
+    getSpacesSpaceIdFoldersIdNominativeSocialDeclarationsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdOtherTaxesRoute,
+    getSpacesSpaceIdFoldersIdOtherTaxesRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdOtherTaxesRoute,
+    postSpacesSpaceIdFoldersIdOtherTaxesRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdPasswordsRoute, getSpacesSpaceIdFoldersIdPasswordsRouteHandler)
+  .openapi(
+    postSpacesSpaceIdFoldersIdPasswordsRoute,
+    postSpacesSpaceIdFoldersIdPasswordsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+    deleteSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+    getSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdPasswordsPasswordIdRoute,
+    patchSpacesSpaceIdFoldersIdPasswordsPasswordIdRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdPayrollsRoute, getSpacesSpaceIdFoldersIdPayrollsRouteHandler)
+  .openapi(postSpacesSpaceIdFoldersIdPayrollsRoute, postSpacesSpaceIdFoldersIdPayrollsRouteHandler)
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRoute,
+    deleteSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRoute,
+    postSpacesSpaceIdFoldersIdPayrollsPayrollIdNominativeSocialDeclarationRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdPayslipsRoute, getSpacesSpaceIdFoldersIdPayslipsRouteHandler)
+  .openapi(postSpacesSpaceIdFoldersIdPayslipsRoute, postSpacesSpaceIdFoldersIdPayslipsRouteHandler)
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdPortfolioPortfolioIdRoute,
+    deleteSpacesSpaceIdFoldersIdPortfolioPortfolioIdRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdProfessionalVehicleRoute,
+    deleteSpacesSpaceIdFoldersIdProfessionalVehicleRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdProfessionalVehicleRoute,
+    patchSpacesSpaceIdFoldersIdProfessionalVehicleRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdProviderRoute,
+    deleteSpacesSpaceIdFoldersIdProviderRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdProviderRoute, getSpacesSpaceIdFoldersIdProviderRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdFoldersIdProviderRoute,
+    patchSpacesSpaceIdFoldersIdProviderRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdRequiredDocumentsRoute,
+    getSpacesSpaceIdFoldersIdRequiredDocumentsRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRoute,
+    patchSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRoute,
+    postSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidDocumentsDocumentIdRoute,
+    deleteSpacesSpaceIdFoldersIdRequiredDocumentsRequireddocumentidDocumentsDocumentIdRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdFoldersIdSectionsRoute, getSpacesSpaceIdFoldersIdSectionsRouteHandler)
+  .openapi(
+    getSpacesSpaceIdFoldersIdSocialContractsRoute,
+    getSpacesSpaceIdFoldersIdSocialContractsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdSocialContractsRoute,
+    postSpacesSpaceIdFoldersIdSocialContractsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdSocialDeclarationsRoute,
+    getSpacesSpaceIdFoldersIdSocialDeclarationsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdSocialDeclarationsRoute,
+    postSpacesSpaceIdFoldersIdSocialDeclarationsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdSocialRegimesRoute,
+    deleteSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdSocialRegimesRoute,
+    getSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdSocialRegimesRoute,
+    patchSpacesSpaceIdFoldersIdSocialRegimesRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdSumInvoicesRoute,
+    getSpacesSpaceIdFoldersIdSumInvoicesRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdTaxContractRoute,
+    deleteSpacesSpaceIdFoldersIdTaxContractRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdFoldersIdTaxContractRoute,
+    patchSpacesSpaceIdFoldersIdTaxContractRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdVatDeclarationsRoute,
+    getSpacesSpaceIdFoldersIdVatDeclarationsRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdVatDeclarationsRoute,
+    postSpacesSpaceIdFoldersIdVatDeclarationsRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdFoldersIdDocumentClassRoute,
+    deleteSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdFoldersIdDocumentClassRoute,
+    getSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdFoldersIdDocumentClassRoute,
+    postSpacesSpaceIdFoldersIdDocumentClassRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdBanksRoute,
+    getSpacesSpaceIdLegalEntitiesIdBanksRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdBanksRoute,
+    postSpacesSpaceIdLegalEntitiesIdBanksRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdBanksAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdBanksAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdContractsRoute,
+    getSpacesSpaceIdLegalEntitiesIdContractsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsRoute,
+    getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdContractualRelationshipsAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdCustomersRoute,
+    getSpacesSpaceIdLegalEntitiesIdCustomersRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdCustomersRoute,
+    postSpacesSpaceIdLegalEntitiesIdCustomersRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdCustomersAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdCustomersAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdInsurancesRoute,
+    getSpacesSpaceIdLegalEntitiesIdInsurancesRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdInsurancesRoute,
+    postSpacesSpaceIdLegalEntitiesIdInsurancesRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdInsurancesAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdInsurancesAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdLoansRoute,
+    getSpacesSpaceIdLegalEntitiesIdLoansRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdLoansRoute,
+    postSpacesSpaceIdLegalEntitiesIdLoansRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdLoansAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdLoansAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdProvidersRoute,
+    getSpacesSpaceIdLegalEntitiesIdProvidersRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdProvidersRoute,
+    postSpacesSpaceIdLegalEntitiesIdProvidersRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdProvidersAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdProvidersAllRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdSocialRegimesRoute,
+    getSpacesSpaceIdLegalEntitiesIdSocialRegimesRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdLegalEntitiesIdSocialRegimesRoute,
+    postSpacesSpaceIdLegalEntitiesIdSocialRegimesRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdLegalEntitiesIdSocialRegimesAllRoute,
+    getSpacesSpaceIdLegalEntitiesIdSocialRegimesAllRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdLoansRoute, getSpacesSpaceIdLoansRouteHandler)
+  .openapi(getSpacesSpaceIdLoansAllRoute, getSpacesSpaceIdLoansAllRouteHandler)
+  .openapi(
+    patchSpacesSpaceIdPersonsIdCallForDocumentRoute,
+    patchSpacesSpaceIdPersonsIdCallForDocumentRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdPersonsIdCallForDocumentRoute,
+    postSpacesSpaceIdPersonsIdCallForDocumentRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdPersonsIdEmployeesRoute, getSpacesSpaceIdPersonsIdEmployeesRouteHandler)
+  .openapi(
+    postSpacesSpaceIdPersonsIdEmployeesRoute,
+    postSpacesSpaceIdPersonsIdEmployeesRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdPersonsIdEmployeesAllRoute,
+    getSpacesSpaceIdPersonsIdEmployeesAllRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdPersonsIdExchangeRoute, getSpacesSpaceIdPersonsIdExchangeRouteHandler)
+  .openapi(getSpacesSpaceIdPersonsIdFollowUpsRoute, getSpacesSpaceIdPersonsIdFollowUpsRouteHandler)
+  .openapi(
+    deleteSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+    deleteSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+    patchSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdPersonsIdGuestInSpaceRoute,
+    postSpacesSpaceIdPersonsIdGuestInSpaceRouteHandler,
+  )
+  .openapi(
+    deleteSpacesSpaceIdPersonsIdInvitationRoute,
+    deleteSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdPersonsIdInvitationRoute,
+    getSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdPersonsIdInvitationRoute,
+    patchSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdPersonsIdInvitationRoute,
+    postSpacesSpaceIdPersonsIdInvitationRouteHandler,
+  )
+  .openapi(
+    postSpacesSpaceIdPersonsIdInvitationInvitationIdSendRoute,
+    postSpacesSpaceIdPersonsIdInvitationInvitationIdSendRouteHandler,
+  )
+  .openapi(
+    getSpacesSpaceIdPersonsMemberIdFoldersIdRoute,
+    getSpacesSpaceIdPersonsMemberIdFoldersIdRouteHandler,
+  )
+  .openapi(
+    patchSpacesSpaceIdPersonsMemberIdFoldersIdRoute,
+    patchSpacesSpaceIdPersonsMemberIdFoldersIdRouteHandler,
+  )
+  .openapi(getSpacesSpaceIdProvidersRoute, getSpacesSpaceIdProvidersRouteHandler)
+  .openapi(getSpacesSpaceIdProvidersAllRoute, getSpacesSpaceIdProvidersAllRouteHandler)
+  .openapi(getSpacesSpaceIdSearchRoute, getSpacesSpaceIdSearchRouteHandler)
+  .openapi(getSpacesSpaceIdSocialRegimesRoute, getSpacesSpaceIdSocialRegimesRouteHandler)
+  .openapi(getSpacesSpaceIdSocialRegimesAllRoute, getSpacesSpaceIdSocialRegimesAllRouteHandler)
+  .openapi(getSpacesSpaceIdSpacesInvoicingsRoute, getSpacesSpaceIdSpacesInvoicingsRouteHandler)
 
 export default app

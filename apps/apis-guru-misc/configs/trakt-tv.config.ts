@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/trakt.tv/1.0.0/openapi.yaml',
   output: './src/trakt-tv/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/trakt-tv/types.ts' },
   client: { output: './src/trakt-tv/client.ts', baseUrl: '/' },
   rpc: { output: './src/trakt-tv/rpc.ts', parseResponse: true },

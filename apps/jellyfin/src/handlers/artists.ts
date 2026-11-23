@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getArtistsAlbumArtistsRoute,
   getArtistsItemIdInstantMixRoute,
   getArtistsItemIdSimilarRoute,
@@ -9,27 +9,40 @@ import {
   headArtistsNameImagesImageTypeImageIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getArtistsRouteHandler: RouteHandler<typeof getArtistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const artistsHandler = app
-  .openapi(getArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsAlbumArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsNameImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headArtistsNameImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsItemIdInstantMixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArtistsItemIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getArtistsNameRouteHandler: RouteHandler<typeof getArtistsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsAlbumArtistsRouteHandler: RouteHandler<
+  typeof getArtistsAlbumArtistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsNameImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof getArtistsNameImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headArtistsNameImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof headArtistsNameImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsItemIdInstantMixRouteHandler: RouteHandler<
+  typeof getArtistsItemIdInstantMixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArtistsItemIdSimilarRouteHandler: RouteHandler<
+  typeof getArtistsItemIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

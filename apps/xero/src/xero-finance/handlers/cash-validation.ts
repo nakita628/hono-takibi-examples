@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCashValidationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCashValidationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cashValidationHandler = app.openapi(getCashValidationRoute, (c) => {
+export const getCashValidationRouteHandler: RouteHandler<typeof getCashValidationRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteClustersNameAddonsAddonNameRoute,
   deleteClustersNameFargateProfilesFargateProfileNameRoute,
   deleteClustersNameNodeGroupsNodegroupNameRoute,
@@ -30,90 +30,164 @@ import {
   postClustersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postClustersNameEncryptionConfigAssociateRouteHandler: RouteHandler<
+  typeof postClustersNameEncryptionConfigAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const clustersHandler = app
-  .openapi(postClustersNameEncryptionConfigAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameIdentityProviderConfigsAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameFargateProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameFargateProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClustersNameAddonsAddonNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameAddonsAddonNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClustersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClustersNameFargateProfilesFargateProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameFargateProfilesFargateProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClustersNameNodeGroupsNodegroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameNodeGroupsNodegroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameIdentityProviderConfigsDescribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameUpdatesUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameIdentityProviderConfigsDisassociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameIdentityProviderConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClustersNameUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameAddonsAddonNameUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameUpdateConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameNodeGroupsNodegroupNameUpdateConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClustersNameNodeGroupsNodegroupNameUpdateVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postClustersNameIdentityProviderConfigsAssociateRouteHandler: RouteHandler<
+  typeof postClustersNameIdentityProviderConfigsAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameAddonsRouteHandler: RouteHandler<
+  typeof postClustersNameAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameAddonsRouteHandler: RouteHandler<
+  typeof getClustersNameAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersRouteHandler: RouteHandler<typeof postClustersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersRouteHandler: RouteHandler<typeof getClustersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameFargateProfilesRouteHandler: RouteHandler<
+  typeof postClustersNameFargateProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameFargateProfilesRouteHandler: RouteHandler<
+  typeof getClustersNameFargateProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameNodeGroupsRouteHandler: RouteHandler<
+  typeof postClustersNameNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameNodeGroupsRouteHandler: RouteHandler<
+  typeof getClustersNameNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClustersNameAddonsAddonNameRouteHandler: RouteHandler<
+  typeof deleteClustersNameAddonsAddonNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameAddonsAddonNameRouteHandler: RouteHandler<
+  typeof getClustersNameAddonsAddonNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClustersNameRouteHandler: RouteHandler<typeof deleteClustersNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameRouteHandler: RouteHandler<typeof getClustersNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClustersNameFargateProfilesFargateProfileNameRouteHandler: RouteHandler<
+  typeof deleteClustersNameFargateProfilesFargateProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameFargateProfilesFargateProfileNameRouteHandler: RouteHandler<
+  typeof getClustersNameFargateProfilesFargateProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClustersNameNodeGroupsNodegroupNameRouteHandler: RouteHandler<
+  typeof deleteClustersNameNodeGroupsNodegroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameNodeGroupsNodegroupNameRouteHandler: RouteHandler<
+  typeof getClustersNameNodeGroupsNodegroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameIdentityProviderConfigsDescribeRouteHandler: RouteHandler<
+  typeof postClustersNameIdentityProviderConfigsDescribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameUpdatesUpdateIdRouteHandler: RouteHandler<
+  typeof getClustersNameUpdatesUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameIdentityProviderConfigsDisassociateRouteHandler: RouteHandler<
+  typeof postClustersNameIdentityProviderConfigsDisassociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameIdentityProviderConfigsRouteHandler: RouteHandler<
+  typeof getClustersNameIdentityProviderConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClustersNameUpdatesRouteHandler: RouteHandler<
+  typeof getClustersNameUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameUpdatesRouteHandler: RouteHandler<
+  typeof postClustersNameUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameAddonsAddonNameUpdateRouteHandler: RouteHandler<
+  typeof postClustersNameAddonsAddonNameUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameUpdateConfigRouteHandler: RouteHandler<
+  typeof postClustersNameUpdateConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameNodeGroupsNodegroupNameUpdateConfigRouteHandler: RouteHandler<
+  typeof postClustersNameNodeGroupsNodegroupNameUpdateConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClustersNameNodeGroupsNodegroupNameUpdateVersionRouteHandler: RouteHandler<
+  typeof postClustersNameNodeGroupsNodegroupNameUpdateVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

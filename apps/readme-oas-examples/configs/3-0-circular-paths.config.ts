@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/circular-paths.yaml',
   output: './src/3-0-circular-paths/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-circular-paths/types.ts' },
   client: { output: './src/3-0-circular-paths/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-circular-paths/rpc.ts', parseResponse: true },

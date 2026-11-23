@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWordlistSourceLangFiltersAdvancedRoute,
   getWordlistSourceLangFiltersBasicRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWordlistSourceLangFiltersAdvancedRouteHandler: RouteHandler<
+  typeof getWordlistSourceLangFiltersAdvancedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wordlistHandler = app
-  .openapi(getWordlistSourceLangFiltersAdvancedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordlistSourceLangFiltersBasicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWordlistSourceLangFiltersBasicRouteHandler: RouteHandler<
+  typeof getWordlistSourceLangFiltersBasicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

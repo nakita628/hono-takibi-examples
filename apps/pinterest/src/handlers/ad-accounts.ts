@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRoute,
   deleteAdAccountsAdAccountIdCampaignAdPreviewRoute,
   deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute,
@@ -148,450 +148,874 @@ import {
   postAdAccountsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdAccountsRouteHandler: RouteHandler<typeof getAdAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adAccountsHandler = app
-  .openapi(getAdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsEntityHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAbTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAbTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAbTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAbTestsAbTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdGroupsAudienceSizingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAdGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdPreviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdsTargetingAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdsAdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdsCreditDiscountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdsCreditRedeemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAdvertiserDefinedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAdvertiserDefinedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAdvertiserDefinedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAllowedDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAudienceInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAudiencesBusinessesSharedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAudiencesSharedAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdAudiencesAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdAudiencesAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdBidFloorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdBillingInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdBillingProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdBulkDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdBulkUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdBulkBulkRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCampaignAdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCampaignAdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdCampaignAdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCampaignsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionDeletionRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdConversionDeletionRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionEqsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdConversionSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdConversionTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionTagsOcpmEligibleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionTagsPageVisitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdConversionTagsConversionTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCustomerListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCustomerListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdCustomerListsCustomerListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdCustomerListsCustomerListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAdAccountsAdAccountIdCustomerSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdCustomerSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdCustomerSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdInsightsAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdKeywordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdKeywordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdKeywordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdKeywordsMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLabelsLabelIdApplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLabelsLabelIdRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLeadFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLeadFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdLeadFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLeadFormsLeadFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLeadsSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLeadsSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdLeadsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdLeadsExportLeadsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdMmmReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdMmmReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdMsotEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdOrderLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdOrderLinesOrderLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdPinsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdProductGroupPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdProductGroupPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdProductGroupPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdProductGroupsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdPromotionAppliedEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdPromotionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdPromotionsPromotionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdPromotionsPromotionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdPublisherBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdPublisherBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdReportsBrandCategorySkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdReportsBrandCategorySkuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdAccountsAdAccountIdSandboxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdSsioAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdSsioInsertionOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdSsioInsertionOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdSsioInsertionOrdersStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdSsioOrderLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdTargetingAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdTargetingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdTargetingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdAccountsAdAccountIdTargetingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdAccountsAdAccountIdTemplatesTemplateIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdAccountsAdAccountIdTermsOfServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdAccountsRouteHandler: RouteHandler<typeof postAdAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsEntityHistoryRouteHandler: RouteHandler<
+  typeof getAdAccountsEntityHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAbTestsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAbTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAbTestsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAbTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAbTestsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAbTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAbTestsAbTestIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAbTestsAbTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdGroupsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAdGroupsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdGroupsAudienceSizingRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdGroupsAudienceSizingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsTargetingAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAdGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAdGroupIdDynamicTitlesUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAdGroupsAdGroupIdPublisherBlocklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdPreviewsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdPreviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAdsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdsAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdsAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdsTargetingAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdsTargetingAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdsAdIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdsAdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdsCreditDiscountsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdsCreditDiscountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdsCreditRedeemRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdsCreditRedeemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAdvertiserDefinedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAdvertiserDefinedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAdvertiserDefinedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdAdvertiserDefinedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAllowedDomainsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAllowedDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAudienceInsightsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAudienceInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdAudiencesRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAudiencesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAudiencesAdAccountsSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAudiencesBusinessesSharedRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAudiencesBusinessesSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAudiencesSharedAccountsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAudiencesSharedAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdAudiencesAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdAudiencesAudienceIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdAudiencesAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdBidFloorRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdBidFloorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdBillingInvoiceBillingInvoiceIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdBillingInvoicesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdBillingInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdBillingProfilesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdBillingProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdBulkDownloadRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdBulkDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdBulkUpsertRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdBulkUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdBulkBulkRequestIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdBulkBulkRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCampaignAdPreviewRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCampaignAdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCampaignAdPreviewRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCampaignAdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdCampaignAdPreviewRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdCampaignAdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCampaignsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCampaignsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdCampaignsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCampaignsAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCampaignsAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCampaignsDeliveryEstimatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCampaignsTargetingAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionDeletionRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdConversionDeletionRequestsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdConversionDeletionRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdConversionDeletionRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionEqsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionEqsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdConversionSegmentsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdConversionSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdConversionSegmentsConversionSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdConversionTagsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdConversionTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionTagsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionTagsOcpmEligibleRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionTagsOcpmEligibleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionTagsPageVisitRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionTagsPageVisitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdConversionTagsConversionTagIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdConversionTagsConversionTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCustomerListsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCustomerListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCustomerListsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCustomerListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCustomerListsCustomerListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdCustomerListsCustomerListIdRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdCustomerListsCustomerListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCustomerListsCustomerListIdUploadsCustomerListUploadIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdCustomerSegmentsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdCustomerSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdCustomerSegmentsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdCustomerSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdCustomerSegmentsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdCustomerSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdEventsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdInsightsAudiencesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdInsightsAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdKeywordsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdKeywordsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdKeywordsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdKeywordsMetricsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdKeywordsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLabelsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLabelsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdLabelsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLabelsLabelIdApplyRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLabelsLabelIdApplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLabelsLabelIdRemoveRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLabelsLabelIdRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLeadFormsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLeadFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLeadFormsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLeadFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdLeadFormsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdLeadFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLeadFormsLeadFormIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLeadFormsLeadFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLeadFormsLeadFormIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLeadsSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLeadsSubscriptionsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLeadsSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdLeadsSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdLeadsExportRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdLeadsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdLeadsExportLeadsExportIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdLeadsExportLeadsExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdMmmReportsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdMmmReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdMmmReportsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdMmmReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdMsotEventsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdMsotEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdOrderLinesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdOrderLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdOrderLinesOrderLineIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdOrderLinesOrderLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdPinsAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdPinsAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdProductGroupPromotionsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdProductGroupPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdProductGroupPromotionsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdProductGroupPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdProductGroupPromotionsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdProductGroupPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdProductGroupPromotionsProductGroupPromotionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdProductGroupsAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdProductGroupsAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdPromotionAppliedEntitiesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdPromotionAppliedEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdPromotionsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdPromotionsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdPromotionsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdPromotionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdPromotionsPromotionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdPromotionsPromotionIdRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdPromotionsPromotionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdPublisherBlocklistsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdPublisherBlocklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdPublisherBlocklistsRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdPublisherBlocklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdReportsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdReportsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdReportsBrandCategorySkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdReportsBrandCategorySkuRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdReportsBrandCategorySkuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdAccountsAdAccountIdSandboxRouteHandler: RouteHandler<
+  typeof deleteAdAccountsAdAccountIdSandboxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdSchedulesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdSchedulesRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdSchedulesRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdSsioAccountsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdSsioAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdSsioInsertionOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdSsioInsertionOrdersRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdSsioInsertionOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdSsioInsertionOrdersStatusRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdSsioInsertionOrdersStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdSsioInsertionOrdersPinOrderIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdSsioOrderLinesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdSsioOrderLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdTargetingAnalyticsRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdTargetingAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdTargetingTemplatesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdTargetingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdTargetingTemplatesRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdTargetingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdAccountsAdAccountIdTargetingTemplatesRouteHandler: RouteHandler<
+  typeof patchAdAccountsAdAccountIdTargetingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdTemplatesRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdAccountsAdAccountIdTemplatesTemplateIdReportsRouteHandler: RouteHandler<
+  typeof postAdAccountsAdAccountIdTemplatesTemplateIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdAccountsAdAccountIdTermsOfServiceRouteHandler: RouteHandler<
+  typeof getAdAccountsAdAccountIdTermsOfServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

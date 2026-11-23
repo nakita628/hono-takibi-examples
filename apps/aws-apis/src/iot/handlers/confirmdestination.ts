@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getConfirmdestinationConfirmationTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getConfirmdestinationConfirmationTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const confirmdestinationHandler = app.openapi(
-  getConfirmdestinationConfirmationTokenRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getConfirmdestinationConfirmationTokenRouteHandler: RouteHandler<
+  typeof getConfirmdestinationConfirmationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -252,7 +252,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/campaigns/:id/syndicate.:format': {
+    '/resources/campaigns/:id/syndicate.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -562,7 +562,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/media/mostPopularMedia.:format': {
+    '/resources/media/mostPopularMedia.{format}': {
       $get:
         | {
             input: { param: { format: string } } & {
@@ -713,7 +713,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: bigint } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/resources/media/:id/relatedMedia.:format': {
+    '/resources/media/:id/relatedMedia.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -753,7 +753,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/media/:id/syndicate.:format': {
+    '/resources/media/:id/syndicate.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -845,7 +845,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: bigint } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/resources/mediaTypes.:format': {
+    '/resources/mediaTypes.{format}': {
       $get:
         | {
             input: { param: { format: string } }
@@ -909,7 +909,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { id: bigint } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/resources/sources/:id/syndicate.:format': {
+    '/resources/sources/:id/syndicate.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -937,7 +937,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/tags.:format': {
+    '/resources/tags.{format}': {
       $get:
         | {
             input: { param: { format: string } } & {
@@ -992,7 +992,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/tags/tagLanguages.:format': {
+    '/resources/tags/tagLanguages.{format}': {
       $get:
         | {
             input: { param: { format: string } }
@@ -1004,7 +1004,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { format: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/resources/tags/tagTypes.:format': {
+    '/resources/tags/tagTypes.{format}': {
       $get:
         | {
             input: { param: { format: string } }
@@ -1016,7 +1016,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { format: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
-    '/resources/tags/:id.:format': {
+    '/resources/tags/:id.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } }
@@ -1038,7 +1038,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/tags/:id/media.:format': {
+    '/resources/tags/:id/media.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -1078,7 +1078,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/tags/:id/related.:format': {
+    '/resources/tags/:id/related.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {
@@ -1118,7 +1118,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/resources/tags/:id/syndicate.:format': {
+    '/resources/tags/:id/syndicate.{format}': {
       $get:
         | {
             input: { param: { id: bigint; format: string } } & {

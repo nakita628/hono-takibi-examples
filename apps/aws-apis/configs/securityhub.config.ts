@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/securityhub/2018-10-26/openapi.yaml',
   output: './src/securityhub/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/securityhub/types.ts' },
   client: { output: './src/securityhub/client.ts', baseUrl: '/' },
   rpc: { output: './src/securityhub/rpc.ts', parseResponse: true },

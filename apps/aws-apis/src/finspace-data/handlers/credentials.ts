@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCredentialsProgrammaticEnvironmentIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCredentialsProgrammaticEnvironmentIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const credentialsHandler = app.openapi(getCredentialsProgrammaticEnvironmentIdRoute, (c) => {
+export const getCredentialsProgrammaticEnvironmentIdRouteHandler: RouteHandler<
+  typeof getCredentialsProgrammaticEnvironmentIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

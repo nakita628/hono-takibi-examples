@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteServicesHaproxyConfigurationAcmeNameRoute,
   deleteServicesHaproxyConfigurationBackendsNameRoute,
   deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute,
@@ -545,1692 +545,3258 @@ import {
   putServicesHaproxyTransactionsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServicesRouteHandler: RouteHandler<typeof getServicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const servicesHandler = app
-  .openapi(getServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationAcmeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationAcmeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationAcmeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameStickRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameStickRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationCachesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCachesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationCachesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCrtStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationCrtStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationCrtStoresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFcgiAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFcgiAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFcgiAppsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameCapturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameCapturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationGlobalLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationGlobalLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationGlobalLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationHealthchecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHealthchecksNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHttpErrorsSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationHttpErrorsSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationHttpErrorsSectionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationLogForwardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogForwardsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationLogProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationLogProfilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationMailerEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationMailerEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationMailerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationMailersSectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationMailersSectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationMailersSectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationNameserversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationNameserversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationNameserversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationNameserversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationNameserversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeerEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeerEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeerEntriesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeerSectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeerSectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeerSectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeerSectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeersParentNameBindsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeersParentNameBindsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeersParentNameLogTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeersParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeersParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationPeersParentNameTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationPeersParentNameTablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationResolversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationResolversRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationResolversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationResolversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationResolversNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationRingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationRingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationRingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRingsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationRingsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationRingsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationTracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationTracesEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationTracesEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationUserlistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationUserlistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationUserlistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationUserlistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyConfigurationUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyConfigurationUsersUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyConfigurationVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyReloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyReloadsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeAclsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeAclsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeAclsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeAclsParentNameEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeAclsParentNameEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeBackendsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeBackendsParentNameServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeBackendsParentNameServersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeMapsParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeMapsParentNameEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCaFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeSslCaFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeSslCaFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeSslCaFilesNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCaFilesNameEntriesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeSslCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeSslCertsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCrlFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeSslCrlFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyRuntimeSslCrlFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCrtListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeSslCrtListsEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeStickTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeStickTablesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyRuntimeStickTablesParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyRuntimeStickTablesParentNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySitesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySitesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxySitesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeParentNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStatsNativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageGeneralRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyStorageGeneralRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyStorageGeneralNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageGeneralNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyStorageGeneralNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyStorageMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyStorageMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyStorageMapsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyStorageSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyStorageSslCertificatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageSslCrtListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyStorageSslCrtListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyStorageSslCrtListsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyStorageSslCrtListsNameEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postServicesHaproxyTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServicesHaproxyTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServicesHaproxyTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServicesHaproxyTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getServicesHaproxyRouteHandler: RouteHandler<typeof getServicesHaproxyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationAcmeRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationAcmeRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationAcmeNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationAcmeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationAcmeNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationAcmeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationAcmeNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationAcmeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameAclsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameAclsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameFiltersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameFiltersRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameServerSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServerTemplatesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameServerTemplatesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameServerTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameServerTemplatesPrefixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameServersRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameStickRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameStickRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameStickRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameStickRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameStickRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationBackendsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCachesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationCachesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationCachesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationCachesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCachesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCachesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationCachesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationCachesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCrtStoresRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCrtStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationCrtStoresRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationCrtStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationCrtStoresCrtStoreCrtLoadsCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationCrtStoresNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationCrtStoresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationCrtStoresNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationCrtStoresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationCrtStoresNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationCrtStoresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameAclsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameAclsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationDefaultsParentNameTcpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFcgiAppsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFcgiAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFcgiAppsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFcgiAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFcgiAppsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFcgiAppsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFcgiAppsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFcgiAppsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFcgiAppsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFcgiAppsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFcgiAppsParentNameAclsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFcgiAppsParentNameAclsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFcgiAppsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFcgiAppsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameAclsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameAclsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameAclsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameAclsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameBackendSwitchingRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameBindsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameBindsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameCapturesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameCapturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameCapturesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameCapturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameCapturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameFiltersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameFiltersRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameFiltersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameForceBeSwitchesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpAfterResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpErrorRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameHttpResponseRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameQuicInitialRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameSslFrontUsesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationFrontendsParentNameTcpRequestRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationGlobalRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationGlobalRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationGlobalLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationGlobalLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationGlobalLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationGlobalLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationGlobalLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationGlobalLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationGlobalLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationGlobalLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationGlobalLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationGlobalLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationGlobalLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationGlobalLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationGroupsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationGroupsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationGroupsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationGroupsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationGroupsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationHealthchecksRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationHealthchecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationHealthchecksNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationHealthchecksNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHealthchecksNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHealthchecksNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHealthchecksParentNameHttpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHealthchecksParentNameTcpChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHttpErrorsSectionsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHttpErrorsSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationHttpErrorsSectionsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationHttpErrorsSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationHttpErrorsSectionsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationHttpErrorsSectionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationHttpErrorsSectionsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationHttpErrorsSectionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationHttpErrorsSectionsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationHttpErrorsSectionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationLogForwardsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationLogForwardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationLogForwardsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationLogForwardsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogForwardsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogForwardsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameBindsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationLogForwardsParentNameBindsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationLogForwardsParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationLogForwardsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogForwardsParentNameBindsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogForwardsParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationLogForwardsParentNameDgramBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogForwardsParentNameDgramBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogForwardsParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogProfilesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationLogProfilesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationLogProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationLogProfilesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationLogProfilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationLogProfilesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationLogProfilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationLogProfilesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationLogProfilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationMailerEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationMailerEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationMailerEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationMailerEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationMailerEntriesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationMailerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationMailerEntriesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationMailerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationMailerEntriesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationMailerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationMailersSectionRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationMailersSectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationMailersSectionRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationMailersSectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationMailersSectionNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationMailersSectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationMailersSectionNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationMailersSectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationMailersSectionNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationMailersSectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationNameserversRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationNameserversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationNameserversRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationNameserversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationNameserversNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationNameserversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationNameserversNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationNameserversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationNameserversNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationNameserversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeerEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeerEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeerEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeerEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeerEntriesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeerEntriesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeerEntriesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeerEntriesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeerSectionRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeerSectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeerSectionRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeerSectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeerSectionNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeerSectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeerSectionNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeerSectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameBindsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeersParentNameBindsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeersParentNameBindsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeersParentNameBindsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeersParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameBindsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeersParentNameBindsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeersParentNameBindsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeersParentNameLogTargetsRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeersParentNameLogTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeersParentNameLogTargetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameServersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeersParentNameServersRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeersParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeersParentNameServersNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeersParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameServersNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeersParentNameServersNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeersParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameTablesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationPeersParentNameTablesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationPeersParentNameTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationPeersParentNameTablesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationPeersParentNameTablesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationPeersParentNameTablesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationPeersParentNameTablesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationPeersParentNameTablesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationPeersParentNameTablesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRawRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationRawRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationResolversRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationResolversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationResolversRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationResolversRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationResolversNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationResolversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationResolversNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationResolversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationResolversNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationResolversNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRingsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationRingsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationRingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationRingsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationRingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRingsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationRingsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationRingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRingsParentNameServersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRingsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationRingsParentNameServersRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationRingsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationRingsParentNameServersNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationRingsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationRingsParentNameServersNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationRingsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationRingsParentNameServersNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationRingsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationTracesRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationTracesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationTracesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationTracesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationTracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationTracesEntriesRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationTracesEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationTracesEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationTracesEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationUserlistsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationUserlistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationUserlistsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationUserlistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationUserlistsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationUserlistsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationUserlistsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationUserlistsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationUsersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyConfigurationUsersRouteHandler: RouteHandler<
+  typeof postServicesHaproxyConfigurationUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyConfigurationUsersUsernameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyConfigurationUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationUsersUsernameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyConfigurationUsersUsernameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyConfigurationUsersUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyConfigurationVersionRouteHandler: RouteHandler<
+  typeof getServicesHaproxyConfigurationVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyReloadsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyReloadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyReloadsIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxyReloadsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeAclsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeAclsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeAclsIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeAclsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeAclsParentNameEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeAclsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeAclsParentNameEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeAclsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeAclsParentNameEntriesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeAclsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeAclsParentNameEntriesIdRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeAclsParentNameEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeAclsParentNameEntriesIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeAclsParentNameEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeAcmeRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeAcmeRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeBackendsParentNameServersRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeBackendsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeBackendsParentNameServersRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeBackendsParentNameServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeBackendsParentNameServersNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeBackendsParentNameServersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeInfoRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeMapsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeMapsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeMapsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeMapsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeMapsParentNameEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeMapsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeMapsParentNameEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeMapsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeMapsParentNameEntriesRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeMapsParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeMapsParentNameEntriesIdRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeMapsParentNameEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeMapsParentNameEntriesIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeMapsParentNameEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeMapsParentNameEntriesIdRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeMapsParentNameEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCaFilesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCaFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeSslCaFilesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeSslCaFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeSslCaFilesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeSslCaFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCaFilesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCaFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeSslCaFilesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeSslCaFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeSslCaFilesNameEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeSslCaFilesNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCaFilesNameEntriesIndexRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCaFilesNameEntriesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCertsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeSslCertsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeSslCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeSslCertsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeSslCertsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCertsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCertsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeSslCertsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeSslCertsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCrlFilesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCrlFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeSslCrlFilesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeSslCrlFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeSslCrlFilesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeSslCrlFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCrlFilesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCrlFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyRuntimeSslCrlFilesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyRuntimeSslCrlFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCrtListsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCrtListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyRuntimeSslCrtListsEntriesRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyRuntimeSslCrtListsEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeSslCrtListsEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeSslCrtListsEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeSslCrtListsEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeSslCrtListsEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeStickTablesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeStickTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeStickTablesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeStickTablesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyRuntimeStickTablesParentNameEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyRuntimeStickTablesParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyRuntimeStickTablesParentNameEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyRuntimeStickTablesParentNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySitesRouteHandler: RouteHandler<
+  typeof getServicesHaproxySitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySitesRouteHandler: RouteHandler<
+  typeof postServicesHaproxySitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySitesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySitesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySitesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySitesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxySitesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxySitesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeParentNameVersionRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeParentNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesParentNameScopesRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesParentNameScopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesParentNameScopesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameAgentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameGroupsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxySpoeSpoeFilesParentNameScopesScopeNameMessagesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameTransactionsRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxySpoeSpoeFilesParentNameTransactionsRouteHandler: RouteHandler<
+  typeof postServicesHaproxySpoeSpoeFilesParentNameTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRouteHandler: RouteHandler<
+  typeof putServicesHaproxySpoeSpoeFilesParentNameTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStatsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStatsNativeRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStatsNativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageGeneralRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageGeneralRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyStorageGeneralRouteHandler: RouteHandler<
+  typeof postServicesHaproxyStorageGeneralRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyStorageGeneralNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyStorageGeneralNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageGeneralNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageGeneralNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyStorageGeneralNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyStorageGeneralNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageMapsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyStorageMapsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyStorageMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyStorageMapsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyStorageMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageMapsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyStorageMapsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyStorageMapsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageSslCertificatesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyStorageSslCertificatesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyStorageSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyStorageSslCertificatesNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyStorageSslCertificatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageSslCertificatesNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageSslCertificatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyStorageSslCertificatesNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyStorageSslCertificatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageSslCrtListsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageSslCrtListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyStorageSslCrtListsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyStorageSslCrtListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyStorageSslCrtListsNameRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyStorageSslCrtListsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageSslCrtListsNameRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageSslCrtListsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyStorageSslCrtListsNameRouteHandler: RouteHandler<
+  typeof putServicesHaproxyStorageSslCrtListsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyStorageSslCrtListsNameEntriesRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyStorageSslCrtListsNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyStorageSslCrtListsNameEntriesRouteHandler: RouteHandler<
+  typeof getServicesHaproxyStorageSslCrtListsNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyStorageSslCrtListsNameEntriesRouteHandler: RouteHandler<
+  typeof postServicesHaproxyStorageSslCrtListsNameEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyTransactionsRouteHandler: RouteHandler<
+  typeof getServicesHaproxyTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postServicesHaproxyTransactionsRouteHandler: RouteHandler<
+  typeof postServicesHaproxyTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServicesHaproxyTransactionsIdRouteHandler: RouteHandler<
+  typeof deleteServicesHaproxyTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServicesHaproxyTransactionsIdRouteHandler: RouteHandler<
+  typeof getServicesHaproxyTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putServicesHaproxyTransactionsIdRouteHandler: RouteHandler<
+  typeof putServicesHaproxyTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

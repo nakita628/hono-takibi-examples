@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCargoGetRouteOriginDestinationFromDateProductCodeRoute,
   getCargoShipmentTrackingAWBPrefixAWBNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCargoGetRouteOriginDestinationFromDateProductCodeRouteHandler: RouteHandler<
+  typeof getCargoGetRouteOriginDestinationFromDateProductCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cargoHandler = app
-  .openapi(getCargoGetRouteOriginDestinationFromDateProductCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCargoShipmentTrackingAWBPrefixAWBNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCargoShipmentTrackingAWBPrefixAWBNumberRouteHandler: RouteHandler<
+  typeof getCargoShipmentTrackingAWBPrefixAWBNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

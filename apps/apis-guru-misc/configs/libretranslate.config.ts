@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/libretranslate.local/1.3.9/openapi.yaml',
   output: './src/libretranslate/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/libretranslate/types.ts' },
   client: { output: './src/libretranslate/client.ts', baseUrl: '/' },
   rpc: { output: './src/libretranslate/rpc.ts', parseResponse: true },

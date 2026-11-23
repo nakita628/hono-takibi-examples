@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMGetCalendarStateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMGetCalendarStateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmGetCalendarStateHandler = app.openapi(
-  postXAmzTargetAmazonSSMGetCalendarStateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMGetCalendarStateRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMGetCalendarStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchEcommerceDeliveryConfirmCarbonOffsetRoute,
   patchEcommerceDeliveryConfirmPaymentRoute,
   patchEcommerceDeliveryConfirmPlantingRoute,
@@ -7,21 +7,32 @@ import {
   postEcommerceDeliveryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEcommerceDeliveryRouteHandler: RouteHandler<
+  typeof postEcommerceDeliveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ecommerceDeliveryHandler = app
-  .openapi(postEcommerceDeliveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEcommerceDeliveryConfirmCarbonOffsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEcommerceDeliveryConfirmPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEcommerceDeliveryConfirmPlantingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEcommerceDeliveryConfirmTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchEcommerceDeliveryConfirmCarbonOffsetRouteHandler: RouteHandler<
+  typeof patchEcommerceDeliveryConfirmCarbonOffsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEcommerceDeliveryConfirmPaymentRouteHandler: RouteHandler<
+  typeof patchEcommerceDeliveryConfirmPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEcommerceDeliveryConfirmPlantingRouteHandler: RouteHandler<
+  typeof patchEcommerceDeliveryConfirmPlantingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEcommerceDeliveryConfirmTransactionRouteHandler: RouteHandler<
+  typeof patchEcommerceDeliveryConfirmTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

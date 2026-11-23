@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApplicationsApplicationAttributeGroupsAttributeGroupRoute,
   deleteApplicationsApplicationResourcesResourceTypeResourceRoute,
   deleteApplicationsApplicationRoute,
@@ -15,45 +15,78 @@ import {
   putApplicationsApplicationResourcesResourceTypeResourceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putApplicationsApplicationAttributeGroupsAttributeGroupRouteHandler: RouteHandler<
+  typeof putApplicationsApplicationAttributeGroupsAttributeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const applicationsHandler = app
-  .openapi(putApplicationsApplicationAttributeGroupsAttributeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApplicationsApplicationAttributeGroupsAttributeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApplicationsApplicationResourcesResourceTypeResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApplicationsApplicationResourcesResourceTypeResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationResourcesResourceTypeResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApplicationsApplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApplicationsApplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationAttributeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApplicationsApplicationAttributeGroupDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApplicationsApplicationAttributeGroupsAttributeGroupRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationAttributeGroupsAttributeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApplicationsApplicationResourcesResourceTypeResourceRouteHandler: RouteHandler<
+  typeof putApplicationsApplicationResourcesResourceTypeResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationResourcesResourceTypeResourceRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationResourcesResourceTypeResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationResourcesResourceTypeResourceRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationResourcesResourceTypeResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApplicationsRouteHandler: RouteHandler<typeof postApplicationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsRouteHandler: RouteHandler<typeof getApplicationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApplicationsApplicationRouteHandler: RouteHandler<
+  typeof deleteApplicationsApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApplicationsApplicationRouteHandler: RouteHandler<
+  typeof patchApplicationsApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationAttributeGroupsRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationAttributeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationResourcesRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApplicationsApplicationAttributeGroupDetailsRouteHandler: RouteHandler<
+  typeof getApplicationsApplicationAttributeGroupDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

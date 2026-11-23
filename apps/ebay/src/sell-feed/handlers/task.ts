@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTaskRoute,
   getTaskTaskIdDownloadInputFileRoute,
   getTaskTaskIdDownloadResultFileRoute,
@@ -8,24 +8,32 @@ import {
   postTaskTaskIdUploadFileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaskRouteHandler: RouteHandler<typeof getTaskRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const taskHandler = app
-  .openapi(getTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskTaskIdDownloadInputFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskTaskIdDownloadResultFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaskTaskIdUploadFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTaskRouteHandler: RouteHandler<typeof postTaskRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaskTaskIdRouteHandler: RouteHandler<typeof getTaskTaskIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaskTaskIdDownloadInputFileRouteHandler: RouteHandler<
+  typeof getTaskTaskIdDownloadInputFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaskTaskIdDownloadResultFileRouteHandler: RouteHandler<
+  typeof getTaskTaskIdDownloadResultFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaskTaskIdUploadFileRouteHandler: RouteHandler<
+  typeof postTaskTaskIdUploadFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

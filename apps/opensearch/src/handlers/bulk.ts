@@ -1,18 +1,23 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBulkRoute, postBulkStreamRoute, putBulkRoute, putBulkStreamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postBulkRoute,
+  postBulkStreamRoute,
+  putBulkRoute,
+  putBulkStreamRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postBulkRouteHandler: RouteHandler<typeof postBulkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bulkHandler = app
-  .openapi(postBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBulkStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBulkRouteHandler: RouteHandler<typeof putBulkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkStreamRouteHandler: RouteHandler<typeof postBulkStreamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBulkStreamRouteHandler: RouteHandler<typeof putBulkStreamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

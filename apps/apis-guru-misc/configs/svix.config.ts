@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/svix.com/1.4/openapi.yaml',
   output: './src/svix/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/svix/types.ts' },
   client: { output: './src/svix/client.ts', baseUrl: '/' },
   rpc: { output: './src/svix/rpc.ts', parseResponse: true },

@@ -104,11 +104,11 @@ export async function postAsyncFunctionFunctionName(
 }
 
 export async function postAsyncFunctionFunctionNameNamespace(
-  args: InferRequestType<(typeof client)['async-function'][':functionName.:namespace']['$post']>,
+  args: InferRequestType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client['async-function'][':functionName.:namespace'].$post(args, options),
+    client['async-function'][':functionName.{namespace}'].$post(args, options),
   )
 }
 
@@ -120,8 +120,8 @@ export async function postFunctionFunctionName(
 }
 
 export async function postFunctionFunctionNameNamespace(
-  args: InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']>,
+  args: InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.function[':functionName.:namespace'].$post(args, options))
+  return await parseResponse(client.function[':functionName.{namespace}'].$post(args, options))
 }

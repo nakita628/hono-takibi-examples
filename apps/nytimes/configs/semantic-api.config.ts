@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/semantic_api/2.0.0/openapi.yaml',
   output: './src/semantic-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/semantic-api/types.ts' },
   client: { output: './src/semantic-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/semantic-api/rpc.ts', parseResponse: true },

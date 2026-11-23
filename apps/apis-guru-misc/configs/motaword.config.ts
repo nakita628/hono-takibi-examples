@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/motaword.com/1.0/openapi.yaml',
   output: './src/motaword/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/motaword/types.ts' },
   client: { output: './src/motaword/client.ts', baseUrl: '/' },
   rpc: { output: './src/motaword/rpc.ts', parseResponse: true },

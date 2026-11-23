@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getQrRoute, postQrRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getQrRoute, postQrRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQrRouteHandler: RouteHandler<typeof getQrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const qrHandler = app
-  .openapi(getQrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQrRouteHandler: RouteHandler<typeof postQrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

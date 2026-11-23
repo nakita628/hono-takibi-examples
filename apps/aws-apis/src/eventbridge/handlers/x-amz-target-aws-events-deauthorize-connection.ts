@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsDeauthorizeConnectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsDeauthorizeConnectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsDeauthorizeConnectionHandler = app.openapi(
-  postXAmzTargetAWSEventsDeauthorizeConnectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsDeauthorizeConnectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsDeauthorizeConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

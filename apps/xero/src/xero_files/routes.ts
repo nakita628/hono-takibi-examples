@@ -437,7 +437,7 @@ export const postFilesRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })
@@ -537,7 +537,7 @@ export const putFilesFileIdRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })
@@ -618,7 +618,7 @@ export const postFilesFolderIdRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })
@@ -762,7 +762,7 @@ export const postFilesFileIdAssociationsRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })
@@ -1065,7 +1065,7 @@ export const postFoldersRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })
@@ -1161,7 +1161,7 @@ export const putFoldersFolderIdRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['files'] }],
 })

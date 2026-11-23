@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLogsEventTimeAndIdRoute,
   getLogsGroupsGroupIdEventsRoute,
   getLogsRoute,
@@ -7,21 +7,26 @@ import {
   getLogsTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLogsRouteHandler: RouteHandler<typeof getLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const logsHandler = app
-  .openapi(getLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsGroupsGroupIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogsEventTimeAndIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLogsSchemasRouteHandler: RouteHandler<typeof getLogsSchemasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsTypesRouteHandler: RouteHandler<typeof getLogsTypesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsGroupsGroupIdEventsRouteHandler: RouteHandler<
+  typeof getLogsGroupsGroupIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogsEventTimeAndIdRouteHandler: RouteHandler<
+  typeof getLogsEventTimeAndIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

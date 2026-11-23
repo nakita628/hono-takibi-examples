@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630AssociateFileSystemRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630AssociateFileSystemRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630AssociateFileSystemHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630AssociateFileSystemRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630AssociateFileSystemRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630AssociateFileSystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

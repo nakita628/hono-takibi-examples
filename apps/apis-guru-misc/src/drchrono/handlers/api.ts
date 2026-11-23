@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiAmendmentsIdRoute,
   deleteApiAppointmentProfilesIdRoute,
   deleteApiAppointmentsIdRoute,
@@ -265,795 +265,1510 @@ import {
   putApiTaskTemplatesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiAllergiesRouteHandler: RouteHandler<typeof getApiAllergiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiAllergiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAllergiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAllergiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAllergiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAllergiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAmendmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAmendmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAmendmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAmendmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAmendmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAmendmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAppointmentProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAppointmentProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAppointmentProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAppointmentProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAppointmentTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAppointmentTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAppointmentTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAppointmentTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAppointmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiAppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiAppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBillingProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBillingProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCarePlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCarePlansIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCareTeamMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCareTeamMembersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClaimBillingNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiClaimBillingNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClaimBillingNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteFieldTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteFieldTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteFieldValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiClinicalNoteFieldValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteFieldValuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiClinicalNoteFieldValuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiClinicalNoteFieldValuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNoteTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClinicalNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCommLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCommLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCommLogsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiCommLogsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCommLogsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiConsentFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiConsentFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiConsentFormsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiConsentFormsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiConsentFormsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiConsentFormsIdApplyToAppointmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiConsentFormsIdUnapplyFromAppointmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomAppointmentFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCustomAppointmentFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomAppointmentFieldsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiCustomAppointmentFieldsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCustomAppointmentFieldsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomDemographicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCustomDemographicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomDemographicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiCustomDemographicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiCustomDemographicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomInsurancePlanNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomInsurancePlanNamesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomVitalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomVitalsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDoctorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDoctorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEligibilityChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEligibilityChecksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiEobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFeeSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFeeSchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiImplantableDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiImplantableDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInsurancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInsurancesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInventoryCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInventoryCategoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInventoryVaccinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiInventoryVaccinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiInventoryVaccinesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLabDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLabDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiLabDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLabDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLabOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLabOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiLabOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLabOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabOrdersSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabOrdersSummaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLabResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLabTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLabTestsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLabTestsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiLabTestsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLabTestsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLineItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLineItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLineItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLineItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiLineItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLineItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMedicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiMedicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMedicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiMedicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiMedicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiMedicationsIdAppendToPharmacyNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOfficesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOfficesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiOfficesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiOfficesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiOfficesIdAddExamRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientCommunicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientCommunicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientCommunicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientCommunicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientCommunicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientFlagTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientFlagTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientFlagTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientFlagTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientFlagTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientInterventionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientInterventionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientInterventionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientInterventionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientInterventionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientLabResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientLabResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiPatientLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientLabResultsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPaymentLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPaymentLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPaymentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPhysicalExamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientPhysicalExamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientPhysicalExamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientPhysicalExamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientPhysicalExamsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientRiskAssessmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientRiskAssessmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientRiskAssessmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientRiskAssessmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientRiskAssessmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientVaccineRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientVaccineRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientVaccineRecordsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientVaccineRecordsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientVaccineRecordsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiPatientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsIdCcdaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiPatientsIdOnpatientAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsIdOnpatientAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientsIdOnpatientAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsIdQrda1Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPatientsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiPatientsSummaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPatientsSummaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatientsSummaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPatientsSummaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPrescriptionMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPrescriptionMessagesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProblemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiProblemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProblemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiProblemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiProblemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProceduresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProceduresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReminderProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiReminderProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiReminderProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReminderProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiReminderProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiReminderProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSublabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSublabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiSublabsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSublabsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiSublabsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiSublabsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTaskCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskCategoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiTaskCategoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiTaskCategoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTaskNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiTaskNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiTaskNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTaskStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskStatusesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiTaskStatusesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiTaskStatusesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTaskTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTaskTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiTaskTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiTaskTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTransactionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiAllergiesRouteHandler: RouteHandler<typeof postApiAllergiesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAllergiesIdRouteHandler: RouteHandler<typeof getApiAllergiesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAllergiesIdRouteHandler: RouteHandler<
+  typeof patchApiAllergiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAllergiesIdRouteHandler: RouteHandler<typeof putApiAllergiesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAmendmentsRouteHandler: RouteHandler<typeof getApiAmendmentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAmendmentsRouteHandler: RouteHandler<typeof postApiAmendmentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAmendmentsIdRouteHandler: RouteHandler<
+  typeof deleteApiAmendmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAmendmentsIdRouteHandler: RouteHandler<typeof getApiAmendmentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAmendmentsIdRouteHandler: RouteHandler<
+  typeof patchApiAmendmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAmendmentsIdRouteHandler: RouteHandler<typeof putApiAmendmentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentProfilesRouteHandler: RouteHandler<
+  typeof getApiAppointmentProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAppointmentProfilesRouteHandler: RouteHandler<
+  typeof postApiAppointmentProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAppointmentProfilesIdRouteHandler: RouteHandler<
+  typeof deleteApiAppointmentProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentProfilesIdRouteHandler: RouteHandler<
+  typeof getApiAppointmentProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAppointmentProfilesIdRouteHandler: RouteHandler<
+  typeof patchApiAppointmentProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAppointmentProfilesIdRouteHandler: RouteHandler<
+  typeof putApiAppointmentProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentTemplatesRouteHandler: RouteHandler<
+  typeof getApiAppointmentTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAppointmentTemplatesRouteHandler: RouteHandler<
+  typeof postApiAppointmentTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAppointmentTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteApiAppointmentTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentTemplatesIdRouteHandler: RouteHandler<
+  typeof getApiAppointmentTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAppointmentTemplatesIdRouteHandler: RouteHandler<
+  typeof patchApiAppointmentTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAppointmentTemplatesIdRouteHandler: RouteHandler<
+  typeof putApiAppointmentTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentsRouteHandler: RouteHandler<typeof getApiAppointmentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAppointmentsRouteHandler: RouteHandler<
+  typeof postApiAppointmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAppointmentsIdRouteHandler: RouteHandler<
+  typeof deleteApiAppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppointmentsIdRouteHandler: RouteHandler<
+  typeof getApiAppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiAppointmentsIdRouteHandler: RouteHandler<
+  typeof patchApiAppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiAppointmentsIdRouteHandler: RouteHandler<
+  typeof putApiAppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBillingProfilesRouteHandler: RouteHandler<
+  typeof getApiBillingProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBillingProfilesIdRouteHandler: RouteHandler<
+  typeof getApiBillingProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCarePlansRouteHandler: RouteHandler<typeof getApiCarePlansRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCarePlansIdRouteHandler: RouteHandler<typeof getApiCarePlansIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCareTeamMembersRouteHandler: RouteHandler<
+  typeof getApiCareTeamMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCareTeamMembersIdRouteHandler: RouteHandler<
+  typeof getApiCareTeamMembersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClaimBillingNotesRouteHandler: RouteHandler<
+  typeof getApiClaimBillingNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiClaimBillingNotesRouteHandler: RouteHandler<
+  typeof postApiClaimBillingNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClaimBillingNotesIdRouteHandler: RouteHandler<
+  typeof getApiClaimBillingNotesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteFieldTypesRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteFieldTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteFieldTypesIdRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteFieldTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteFieldValuesRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteFieldValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiClinicalNoteFieldValuesRouteHandler: RouteHandler<
+  typeof postApiClinicalNoteFieldValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteFieldValuesIdRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteFieldValuesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiClinicalNoteFieldValuesIdRouteHandler: RouteHandler<
+  typeof patchApiClinicalNoteFieldValuesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiClinicalNoteFieldValuesIdRouteHandler: RouteHandler<
+  typeof putApiClinicalNoteFieldValuesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteTemplatesRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNoteTemplatesIdRouteHandler: RouteHandler<
+  typeof getApiClinicalNoteTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNotesRouteHandler: RouteHandler<
+  typeof getApiClinicalNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClinicalNotesIdRouteHandler: RouteHandler<
+  typeof getApiClinicalNotesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCommLogsRouteHandler: RouteHandler<typeof getApiCommLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCommLogsRouteHandler: RouteHandler<typeof postApiCommLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCommLogsIdRouteHandler: RouteHandler<typeof getApiCommLogsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiCommLogsIdRouteHandler: RouteHandler<typeof patchApiCommLogsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCommLogsIdRouteHandler: RouteHandler<typeof putApiCommLogsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiConsentFormsRouteHandler: RouteHandler<typeof getApiConsentFormsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiConsentFormsRouteHandler: RouteHandler<
+  typeof postApiConsentFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiConsentFormsIdRouteHandler: RouteHandler<
+  typeof getApiConsentFormsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiConsentFormsIdRouteHandler: RouteHandler<
+  typeof patchApiConsentFormsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiConsentFormsIdRouteHandler: RouteHandler<
+  typeof putApiConsentFormsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiConsentFormsIdApplyToAppointmentRouteHandler: RouteHandler<
+  typeof postApiConsentFormsIdApplyToAppointmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiConsentFormsIdUnapplyFromAppointmentRouteHandler: RouteHandler<
+  typeof postApiConsentFormsIdUnapplyFromAppointmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomAppointmentFieldsRouteHandler: RouteHandler<
+  typeof getApiCustomAppointmentFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCustomAppointmentFieldsRouteHandler: RouteHandler<
+  typeof postApiCustomAppointmentFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomAppointmentFieldsIdRouteHandler: RouteHandler<
+  typeof getApiCustomAppointmentFieldsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiCustomAppointmentFieldsIdRouteHandler: RouteHandler<
+  typeof patchApiCustomAppointmentFieldsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCustomAppointmentFieldsIdRouteHandler: RouteHandler<
+  typeof putApiCustomAppointmentFieldsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomDemographicsRouteHandler: RouteHandler<
+  typeof getApiCustomDemographicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCustomDemographicsRouteHandler: RouteHandler<
+  typeof postApiCustomDemographicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomDemographicsIdRouteHandler: RouteHandler<
+  typeof getApiCustomDemographicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiCustomDemographicsIdRouteHandler: RouteHandler<
+  typeof patchApiCustomDemographicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiCustomDemographicsIdRouteHandler: RouteHandler<
+  typeof putApiCustomDemographicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomInsurancePlanNamesRouteHandler: RouteHandler<
+  typeof getApiCustomInsurancePlanNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomInsurancePlanNamesIdRouteHandler: RouteHandler<
+  typeof getApiCustomInsurancePlanNamesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomVitalsRouteHandler: RouteHandler<typeof getApiCustomVitalsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCustomVitalsIdRouteHandler: RouteHandler<
+  typeof getApiCustomVitalsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDoctorsRouteHandler: RouteHandler<typeof getApiDoctorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDoctorsIdRouteHandler: RouteHandler<typeof getApiDoctorsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDocumentsRouteHandler: RouteHandler<typeof getApiDocumentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDocumentsRouteHandler: RouteHandler<typeof postApiDocumentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDocumentsIdRouteHandler: RouteHandler<
+  typeof deleteApiDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDocumentsIdRouteHandler: RouteHandler<typeof getApiDocumentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiDocumentsIdRouteHandler: RouteHandler<
+  typeof patchApiDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDocumentsIdRouteHandler: RouteHandler<typeof putApiDocumentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEligibilityChecksRouteHandler: RouteHandler<
+  typeof getApiEligibilityChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEligibilityChecksIdRouteHandler: RouteHandler<
+  typeof getApiEligibilityChecksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEobsRouteHandler: RouteHandler<typeof getApiEobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiEobsRouteHandler: RouteHandler<typeof postApiEobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEobsIdRouteHandler: RouteHandler<typeof getApiEobsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFeeSchedulesRouteHandler: RouteHandler<typeof getApiFeeSchedulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFeeSchedulesIdRouteHandler: RouteHandler<
+  typeof getApiFeeSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiImplantableDevicesRouteHandler: RouteHandler<
+  typeof getApiImplantableDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiImplantableDevicesIdRouteHandler: RouteHandler<
+  typeof getApiImplantableDevicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInsurancesRouteHandler: RouteHandler<typeof getApiInsurancesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInsurancesIdRouteHandler: RouteHandler<typeof getApiInsurancesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInventoryCategoriesRouteHandler: RouteHandler<
+  typeof getApiInventoryCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInventoryCategoriesIdRouteHandler: RouteHandler<
+  typeof getApiInventoryCategoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInventoryVaccinesRouteHandler: RouteHandler<
+  typeof getApiInventoryVaccinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiInventoryVaccinesRouteHandler: RouteHandler<
+  typeof postApiInventoryVaccinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiInventoryVaccinesIdRouteHandler: RouteHandler<
+  typeof getApiInventoryVaccinesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabDocumentsRouteHandler: RouteHandler<typeof getApiLabDocumentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLabDocumentsRouteHandler: RouteHandler<
+  typeof postApiLabDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLabDocumentsIdRouteHandler: RouteHandler<
+  typeof deleteApiLabDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabDocumentsIdRouteHandler: RouteHandler<
+  typeof getApiLabDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiLabDocumentsIdRouteHandler: RouteHandler<
+  typeof patchApiLabDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLabDocumentsIdRouteHandler: RouteHandler<
+  typeof putApiLabDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabOrdersRouteHandler: RouteHandler<typeof getApiLabOrdersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLabOrdersRouteHandler: RouteHandler<typeof postApiLabOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLabOrdersIdRouteHandler: RouteHandler<
+  typeof deleteApiLabOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabOrdersIdRouteHandler: RouteHandler<typeof getApiLabOrdersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiLabOrdersIdRouteHandler: RouteHandler<
+  typeof patchApiLabOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLabOrdersIdRouteHandler: RouteHandler<typeof putApiLabOrdersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabOrdersSummaryRouteHandler: RouteHandler<
+  typeof getApiLabOrdersSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabOrdersSummaryIdRouteHandler: RouteHandler<
+  typeof getApiLabOrdersSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabResultsRouteHandler: RouteHandler<typeof getApiLabResultsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLabResultsRouteHandler: RouteHandler<typeof postApiLabResultsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLabResultsIdRouteHandler: RouteHandler<
+  typeof deleteApiLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabResultsIdRouteHandler: RouteHandler<typeof getApiLabResultsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiLabResultsIdRouteHandler: RouteHandler<
+  typeof patchApiLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLabResultsIdRouteHandler: RouteHandler<typeof putApiLabResultsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabTestsRouteHandler: RouteHandler<typeof getApiLabTestsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLabTestsRouteHandler: RouteHandler<typeof postApiLabTestsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLabTestsIdRouteHandler: RouteHandler<
+  typeof deleteApiLabTestsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLabTestsIdRouteHandler: RouteHandler<typeof getApiLabTestsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiLabTestsIdRouteHandler: RouteHandler<typeof patchApiLabTestsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLabTestsIdRouteHandler: RouteHandler<typeof putApiLabTestsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLineItemsRouteHandler: RouteHandler<typeof getApiLineItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLineItemsRouteHandler: RouteHandler<typeof postApiLineItemsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLineItemsIdRouteHandler: RouteHandler<
+  typeof deleteApiLineItemsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLineItemsIdRouteHandler: RouteHandler<typeof getApiLineItemsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiLineItemsIdRouteHandler: RouteHandler<
+  typeof patchApiLineItemsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLineItemsIdRouteHandler: RouteHandler<typeof putApiLineItemsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMedicationsRouteHandler: RouteHandler<typeof getApiMedicationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiMedicationsRouteHandler: RouteHandler<typeof postApiMedicationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMedicationsIdRouteHandler: RouteHandler<
+  typeof getApiMedicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiMedicationsIdRouteHandler: RouteHandler<
+  typeof patchApiMedicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiMedicationsIdRouteHandler: RouteHandler<
+  typeof putApiMedicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiMedicationsIdAppendToPharmacyNoteRouteHandler: RouteHandler<
+  typeof patchApiMedicationsIdAppendToPharmacyNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMessagesRouteHandler: RouteHandler<typeof getApiMessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiMessagesRouteHandler: RouteHandler<typeof postApiMessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiMessagesIdRouteHandler: RouteHandler<
+  typeof deleteApiMessagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMessagesIdRouteHandler: RouteHandler<typeof getApiMessagesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiMessagesIdRouteHandler: RouteHandler<typeof patchApiMessagesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiMessagesIdRouteHandler: RouteHandler<typeof putApiMessagesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOfficesRouteHandler: RouteHandler<typeof getApiOfficesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOfficesIdRouteHandler: RouteHandler<typeof getApiOfficesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiOfficesIdRouteHandler: RouteHandler<typeof patchApiOfficesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiOfficesIdRouteHandler: RouteHandler<typeof putApiOfficesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiOfficesIdAddExamRoomRouteHandler: RouteHandler<
+  typeof postApiOfficesIdAddExamRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientCommunicationsRouteHandler: RouteHandler<
+  typeof getApiPatientCommunicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientCommunicationsRouteHandler: RouteHandler<
+  typeof postApiPatientCommunicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientCommunicationsIdRouteHandler: RouteHandler<
+  typeof getApiPatientCommunicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientCommunicationsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientCommunicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientCommunicationsIdRouteHandler: RouteHandler<
+  typeof putApiPatientCommunicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientFlagTypesRouteHandler: RouteHandler<
+  typeof getApiPatientFlagTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientFlagTypesRouteHandler: RouteHandler<
+  typeof postApiPatientFlagTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientFlagTypesIdRouteHandler: RouteHandler<
+  typeof getApiPatientFlagTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientFlagTypesIdRouteHandler: RouteHandler<
+  typeof patchApiPatientFlagTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientFlagTypesIdRouteHandler: RouteHandler<
+  typeof putApiPatientFlagTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientInterventionsRouteHandler: RouteHandler<
+  typeof getApiPatientInterventionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientInterventionsRouteHandler: RouteHandler<
+  typeof postApiPatientInterventionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientInterventionsIdRouteHandler: RouteHandler<
+  typeof getApiPatientInterventionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientInterventionsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientInterventionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientInterventionsIdRouteHandler: RouteHandler<
+  typeof putApiPatientInterventionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientLabResultsRouteHandler: RouteHandler<
+  typeof getApiPatientLabResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientLabResultsRouteHandler: RouteHandler<
+  typeof postApiPatientLabResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiPatientLabResultsIdRouteHandler: RouteHandler<
+  typeof deleteApiPatientLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientLabResultsIdRouteHandler: RouteHandler<
+  typeof getApiPatientLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientLabResultsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientLabResultsIdRouteHandler: RouteHandler<
+  typeof putApiPatientLabResultsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientMessagesRouteHandler: RouteHandler<
+  typeof getApiPatientMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientMessagesRouteHandler: RouteHandler<
+  typeof postApiPatientMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientMessagesIdRouteHandler: RouteHandler<
+  typeof getApiPatientMessagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientMessagesIdRouteHandler: RouteHandler<
+  typeof patchApiPatientMessagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientMessagesIdRouteHandler: RouteHandler<
+  typeof putApiPatientMessagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPaymentLogRouteHandler: RouteHandler<
+  typeof getApiPatientPaymentLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPaymentLogIdRouteHandler: RouteHandler<
+  typeof getApiPatientPaymentLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPaymentsRouteHandler: RouteHandler<
+  typeof getApiPatientPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientPaymentsRouteHandler: RouteHandler<
+  typeof postApiPatientPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPaymentsIdRouteHandler: RouteHandler<
+  typeof getApiPatientPaymentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPhysicalExamsRouteHandler: RouteHandler<
+  typeof getApiPatientPhysicalExamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientPhysicalExamsRouteHandler: RouteHandler<
+  typeof postApiPatientPhysicalExamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientPhysicalExamsIdRouteHandler: RouteHandler<
+  typeof getApiPatientPhysicalExamsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientPhysicalExamsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientPhysicalExamsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientPhysicalExamsIdRouteHandler: RouteHandler<
+  typeof putApiPatientPhysicalExamsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientRiskAssessmentsRouteHandler: RouteHandler<
+  typeof getApiPatientRiskAssessmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientRiskAssessmentsRouteHandler: RouteHandler<
+  typeof postApiPatientRiskAssessmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientRiskAssessmentsIdRouteHandler: RouteHandler<
+  typeof getApiPatientRiskAssessmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientRiskAssessmentsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientRiskAssessmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientRiskAssessmentsIdRouteHandler: RouteHandler<
+  typeof putApiPatientRiskAssessmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientVaccineRecordsRouteHandler: RouteHandler<
+  typeof getApiPatientVaccineRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientVaccineRecordsRouteHandler: RouteHandler<
+  typeof postApiPatientVaccineRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientVaccineRecordsIdRouteHandler: RouteHandler<
+  typeof getApiPatientVaccineRecordsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientVaccineRecordsIdRouteHandler: RouteHandler<
+  typeof patchApiPatientVaccineRecordsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientVaccineRecordsIdRouteHandler: RouteHandler<
+  typeof putApiPatientVaccineRecordsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsRouteHandler: RouteHandler<typeof getApiPatientsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientsRouteHandler: RouteHandler<typeof postApiPatientsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiPatientsIdRouteHandler: RouteHandler<
+  typeof deleteApiPatientsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsIdRouteHandler: RouteHandler<typeof getApiPatientsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientsIdRouteHandler: RouteHandler<typeof patchApiPatientsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientsIdRouteHandler: RouteHandler<typeof putApiPatientsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsIdCcdaRouteHandler: RouteHandler<
+  typeof getApiPatientsIdCcdaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiPatientsIdOnpatientAccessRouteHandler: RouteHandler<
+  typeof deleteApiPatientsIdOnpatientAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsIdOnpatientAccessRouteHandler: RouteHandler<
+  typeof getApiPatientsIdOnpatientAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientsIdOnpatientAccessRouteHandler: RouteHandler<
+  typeof postApiPatientsIdOnpatientAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsIdQrda1RouteHandler: RouteHandler<
+  typeof getApiPatientsIdQrda1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsSummaryRouteHandler: RouteHandler<
+  typeof getApiPatientsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPatientsSummaryRouteHandler: RouteHandler<
+  typeof postApiPatientsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiPatientsSummaryIdRouteHandler: RouteHandler<
+  typeof deleteApiPatientsSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPatientsSummaryIdRouteHandler: RouteHandler<
+  typeof getApiPatientsSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatientsSummaryIdRouteHandler: RouteHandler<
+  typeof patchApiPatientsSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPatientsSummaryIdRouteHandler: RouteHandler<
+  typeof putApiPatientsSummaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPrescriptionMessagesRouteHandler: RouteHandler<
+  typeof getApiPrescriptionMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPrescriptionMessagesIdRouteHandler: RouteHandler<
+  typeof getApiPrescriptionMessagesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProblemsRouteHandler: RouteHandler<typeof getApiProblemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiProblemsRouteHandler: RouteHandler<typeof postApiProblemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProblemsIdRouteHandler: RouteHandler<typeof getApiProblemsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiProblemsIdRouteHandler: RouteHandler<typeof patchApiProblemsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiProblemsIdRouteHandler: RouteHandler<typeof putApiProblemsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProceduresRouteHandler: RouteHandler<typeof getApiProceduresRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProceduresIdRouteHandler: RouteHandler<typeof getApiProceduresIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReminderProfilesRouteHandler: RouteHandler<
+  typeof getApiReminderProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiReminderProfilesRouteHandler: RouteHandler<
+  typeof postApiReminderProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiReminderProfilesIdRouteHandler: RouteHandler<
+  typeof deleteApiReminderProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReminderProfilesIdRouteHandler: RouteHandler<
+  typeof getApiReminderProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiReminderProfilesIdRouteHandler: RouteHandler<
+  typeof patchApiReminderProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiReminderProfilesIdRouteHandler: RouteHandler<
+  typeof putApiReminderProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSublabsRouteHandler: RouteHandler<typeof getApiSublabsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSublabsRouteHandler: RouteHandler<typeof postApiSublabsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiSublabsIdRouteHandler: RouteHandler<typeof deleteApiSublabsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSublabsIdRouteHandler: RouteHandler<typeof getApiSublabsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiSublabsIdRouteHandler: RouteHandler<typeof patchApiSublabsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiSublabsIdRouteHandler: RouteHandler<typeof putApiSublabsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskCategoriesRouteHandler: RouteHandler<
+  typeof getApiTaskCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTaskCategoriesRouteHandler: RouteHandler<
+  typeof postApiTaskCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskCategoriesIdRouteHandler: RouteHandler<
+  typeof getApiTaskCategoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiTaskCategoriesIdRouteHandler: RouteHandler<
+  typeof patchApiTaskCategoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiTaskCategoriesIdRouteHandler: RouteHandler<
+  typeof putApiTaskCategoriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskNotesRouteHandler: RouteHandler<typeof getApiTaskNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTaskNotesRouteHandler: RouteHandler<typeof postApiTaskNotesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskNotesIdRouteHandler: RouteHandler<typeof getApiTaskNotesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiTaskNotesIdRouteHandler: RouteHandler<
+  typeof patchApiTaskNotesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiTaskNotesIdRouteHandler: RouteHandler<typeof putApiTaskNotesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskStatusesRouteHandler: RouteHandler<typeof getApiTaskStatusesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTaskStatusesRouteHandler: RouteHandler<
+  typeof postApiTaskStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskStatusesIdRouteHandler: RouteHandler<
+  typeof getApiTaskStatusesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiTaskStatusesIdRouteHandler: RouteHandler<
+  typeof patchApiTaskStatusesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiTaskStatusesIdRouteHandler: RouteHandler<
+  typeof putApiTaskStatusesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskTemplatesRouteHandler: RouteHandler<
+  typeof getApiTaskTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTaskTemplatesRouteHandler: RouteHandler<
+  typeof postApiTaskTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTaskTemplatesIdRouteHandler: RouteHandler<
+  typeof getApiTaskTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiTaskTemplatesIdRouteHandler: RouteHandler<
+  typeof patchApiTaskTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiTaskTemplatesIdRouteHandler: RouteHandler<
+  typeof putApiTaskTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTasksRouteHandler: RouteHandler<typeof getApiTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTasksRouteHandler: RouteHandler<typeof postApiTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTasksIdRouteHandler: RouteHandler<typeof getApiTasksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiTasksIdRouteHandler: RouteHandler<typeof patchApiTasksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiTasksIdRouteHandler: RouteHandler<typeof putApiTasksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTransactionsRouteHandler: RouteHandler<typeof getApiTransactionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTransactionsIdRouteHandler: RouteHandler<
+  typeof getApiTransactionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserGroupsRouteHandler: RouteHandler<typeof getApiUserGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserGroupsIdRouteHandler: RouteHandler<typeof getApiUserGroupsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersRouteHandler: RouteHandler<typeof getApiUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdRouteHandler: RouteHandler<typeof getApiUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

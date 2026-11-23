@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLightsail20161128CreateBucketAccessKeyHandler = app.openapi(
-  postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLightsail20161128CreateBucketAccessKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetLightsail20161128CreateBucketAccessKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePlaylistsPlaylistIdItemsRoute,
   deletePlaylistsPlaylistIdUsersUserIdRoute,
   getPlaylistsItemIdInstantMixRoute,
@@ -14,42 +14,72 @@ import {
   postPlaylistsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlaylistsItemIdInstantMixRouteHandler: RouteHandler<
+  typeof getPlaylistsItemIdInstantMixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const playlistsHandler = app
-  .openapi(getPlaylistsItemIdInstantMixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsPlaylistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsPlaylistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsPlaylistIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlaylistsPlaylistIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsPlaylistIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsPlaylistIdItemsItemIdMoveNewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsPlaylistIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsPlaylistIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsPlaylistIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlaylistsPlaylistIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPlaylistsRouteHandler: RouteHandler<typeof postPlaylistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlaylistsPlaylistIdRouteHandler: RouteHandler<
+  typeof postPlaylistsPlaylistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsPlaylistIdRouteHandler: RouteHandler<
+  typeof getPlaylistsPlaylistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlaylistsPlaylistIdItemsRouteHandler: RouteHandler<
+  typeof postPlaylistsPlaylistIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlaylistsPlaylistIdItemsRouteHandler: RouteHandler<
+  typeof deletePlaylistsPlaylistIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsPlaylistIdItemsRouteHandler: RouteHandler<
+  typeof getPlaylistsPlaylistIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlaylistsPlaylistIdItemsItemIdMoveNewIndexRouteHandler: RouteHandler<
+  typeof postPlaylistsPlaylistIdItemsItemIdMoveNewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsPlaylistIdUsersRouteHandler: RouteHandler<
+  typeof getPlaylistsPlaylistIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsPlaylistIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getPlaylistsPlaylistIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlaylistsPlaylistIdUsersUserIdRouteHandler: RouteHandler<
+  typeof postPlaylistsPlaylistIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlaylistsPlaylistIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deletePlaylistsPlaylistIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

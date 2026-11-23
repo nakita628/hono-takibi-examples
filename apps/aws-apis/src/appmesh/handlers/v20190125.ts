@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV20190125MeshesMeshNameRoute,
   deleteV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute,
   deleteV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute,
@@ -40,129 +40,230 @@ import {
   putV20190125UntagResourceArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v20190125Handler = app
-  .openapi(putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualGatewaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualRoutersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualRoutersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV20190125MeshesMeshNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20190125TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125TagResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20190125UntagResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesRouteHandler: RouteHandler<typeof putV20190125MeshesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesRouteHandler: RouteHandler<typeof getV20190125MeshesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualGatewaysRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualGatewaysRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualGatewaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualNodesRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualNodesRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualRoutersRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualRoutersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualRoutersRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualRoutersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualServicesRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualServicesRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualGatewayVirtualGatewayNameGatewayRoutesGatewayRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualRouterVirtualRouterNameRoutesRouteNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualGatewaysVirtualGatewayNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualNodesVirtualNodeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualRoutersVirtualRouterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRouteHandler: RouteHandler<
+  typeof deleteV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRouteHandler: RouteHandler<
+  typeof getV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRouteHandler: RouteHandler<
+  typeof putV20190125MeshesMeshNameVirtualServicesVirtualServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20190125TagsResourceArnRouteHandler: RouteHandler<
+  typeof getV20190125TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125TagResourceArnRouteHandler: RouteHandler<
+  typeof putV20190125TagResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20190125UntagResourceArnRouteHandler: RouteHandler<
+  typeof putV20190125UntagResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

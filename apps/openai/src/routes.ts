@@ -11471,8 +11471,8 @@ type CreateThreadAndRunRequestType = {
   stream?: boolean | null
   max_prompt_tokens?: number | null
   max_completion_tokens?: number | null
-  truncation_strategy?: z.infer<typeof TruncationObjectSchema> & (unknown | null)
-  tool_choice?: z.infer<typeof AssistantsApiToolChoiceOptionSchema> & (unknown | null)
+  truncation_strategy?: z.infer<typeof TruncationObjectSchema> | null
+  tool_choice?: z.infer<typeof AssistantsApiToolChoiceOptionSchema> | null
   parallel_tool_calls?: z.infer<typeof ParallelToolCallsSchema>
   response_format?: z.infer<typeof AssistantsApiResponseFormatOptionSchema> | null
 }

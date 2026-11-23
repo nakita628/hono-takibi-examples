@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDocumentsDuplicateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDocumentsDuplicateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const documentsDuplicateHandler = app.openapi(postDocumentsDuplicateRoute, (c) => {
+export const postDocumentsDuplicateRouteHandler: RouteHandler<
+  typeof postDocumentsDuplicateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

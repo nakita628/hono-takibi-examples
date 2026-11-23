@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV0CustomersCustomerIdCustomColumnsRoute,
   getV0ResourceNameRoute,
   postV0CustomersCustomerIdSearchAds360SearchRoute,
@@ -7,21 +7,32 @@ import {
   postV0SearchAds360FieldsSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV0CustomersCustomerIdCustomColumnsRouteHandler: RouteHandler<
+  typeof getV0CustomersCustomerIdCustomColumnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v0Handler = app
-  .openapi(getV0CustomersCustomerIdCustomColumnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV0CustomersCustomerIdSearchAds360SearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV0CustomersCustomerIdSearchAds360SearchStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV0SearchAds360FieldsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV0ResourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV0CustomersCustomerIdSearchAds360SearchRouteHandler: RouteHandler<
+  typeof postV0CustomersCustomerIdSearchAds360SearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV0CustomersCustomerIdSearchAds360SearchStreamRouteHandler: RouteHandler<
+  typeof postV0CustomersCustomerIdSearchAds360SearchStreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV0SearchAds360FieldsSearchRouteHandler: RouteHandler<
+  typeof postV0SearchAds360FieldsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV0ResourceNameRouteHandler: RouteHandler<typeof getV0ResourceNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

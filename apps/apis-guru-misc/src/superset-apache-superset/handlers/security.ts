@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSecurityCsrfTokenIndexRoute,
   postSecurityLoginRoute,
   postSecurityRefreshRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSecurityCsrfTokenIndexRouteHandler: RouteHandler<
+  typeof getSecurityCsrfTokenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const securityHandler = app
-  .openapi(getSecurityCsrfTokenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecurityRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSecurityLoginRouteHandler: RouteHandler<typeof postSecurityLoginRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSecurityRefreshRouteHandler: RouteHandler<
+  typeof postSecurityRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

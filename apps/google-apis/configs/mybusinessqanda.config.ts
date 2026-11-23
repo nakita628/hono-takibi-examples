@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/mybusinessqanda/v1/openapi.yaml',
   output: './src/mybusinessqanda/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mybusinessqanda/types.ts' },
   client: { output: './src/mybusinessqanda/client.ts', baseUrl: '/' },
   rpc: { output: './src/mybusinessqanda/rpc.ts', parseResponse: true },

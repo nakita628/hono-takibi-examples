@@ -6,7 +6,7 @@ export default defineConfig({
   // (nakita628/hono-takibi#417); 0.32.0 dropped that on purpose and defers to swagger-parser.
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.1/pass/comp_pathitems.yaml',
   output: './src/3-1-comp-pathitems/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-1-comp-pathitems/types.ts' },
   client: { output: './src/3-1-comp-pathitems/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-1-comp-pathitems/rpc.ts', parseResponse: true },

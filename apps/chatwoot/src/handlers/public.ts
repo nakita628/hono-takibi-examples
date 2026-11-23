@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRoute,
   getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdRoute,
   getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute,
@@ -15,69 +15,80 @@ import {
   postPublicApiV1InboxesInboxIdentifierContactsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPublicApiV1InboxesInboxIdentifierRouteHandler: RouteHandler<
+  typeof getPublicApiV1InboxesInboxIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const publicHandler = app
-  .openapi(getPublicApiV1InboxesInboxIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublicApiV1InboxesInboxIdentifierContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleStatusRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleTypingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdUpdateLastSeenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesMessageIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postPublicApiV1InboxesInboxIdentifierContactsRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRouteHandler: RouteHandler<
+  typeof getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRouteHandler: RouteHandler<
+  typeof patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRouteHandler: RouteHandler<
+  typeof getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdRouteHandler: RouteHandler<
+  typeof getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleStatusRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleTypingRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdToggleTypingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdUpdateLastSeenRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdUpdateLastSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRouteHandler: RouteHandler<
+  typeof postPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRouteHandler: RouteHandler<
+  typeof getPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesMessageIdRouteHandler: RouteHandler<
+  typeof patchPublicApiV1InboxesInboxIdentifierContactsContactIdentifierConversationsConversationIdMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/nsidc.org/1.0.0/openapi.yaml',
   output: './src/nsidc-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nsidc-org/types.ts' },
   client: { output: './src/nsidc-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/nsidc-org/rpc.ts', parseResponse: true },

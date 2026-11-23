@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/elasticmapreduce/2009-03-31/openapi.yaml',
   output: './src/elasticmapreduce/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elasticmapreduce/types.ts' },
   client: { output: './src/elasticmapreduce/client.ts', baseUrl: '/' },
   rpc: { output: './src/elasticmapreduce/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListenPathTykBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListenPathTykBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listenPathHandler = app.openapi(postListenPathTykBatchRoute, (c) => {
+export const postListenPathTykBatchRouteHandler: RouteHandler<
+  typeof postListenPathTykBatchRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

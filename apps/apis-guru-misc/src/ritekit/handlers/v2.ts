@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV2InstagramHashtagsCleanerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV2InstagramHashtagsCleanerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v2Handler = app.openapi(getV2InstagramHashtagsCleanerRoute, (c) => {
+export const getV2InstagramHashtagsCleanerRouteHandler: RouteHandler<
+  typeof getV2InstagramHashtagsCleanerRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

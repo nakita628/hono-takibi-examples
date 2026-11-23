@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIsochroneRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIsochroneRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const isochroneHandler = app.openapi(getIsochroneRoute, (c) => {
+export const getIsochroneRouteHandler: RouteHandler<typeof getIsochroneRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

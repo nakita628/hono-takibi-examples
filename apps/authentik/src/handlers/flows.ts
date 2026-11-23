@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFlowsBindingsFsbUuidIndexRoute,
   deleteFlowsInstancesSlugIndexRoute,
   getFlowsBindingsFsbUuidIndexRoute,
@@ -24,72 +24,134 @@ import {
   putFlowsInstancesSlugIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFlowsBindingsIndexRouteHandler: RouteHandler<
+  typeof getFlowsBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const flowsHandler = app
-  .openapi(getFlowsBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlowsBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsBindingsFsbUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFlowsBindingsFsbUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFlowsBindingsFsbUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFlowsBindingsFsbUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsBindingsFsbUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsExecutorFlowSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlowsExecutorFlowSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInspectorFlowSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlowsInstancesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFlowsInstancesSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFlowsInstancesSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFlowsInstancesSlugIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesSlugDiagramIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesSlugExecuteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesSlugExportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesSlugUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlowsInstancesCacheClearIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFlowsInstancesCacheInfoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFlowsBindingsIndexRouteHandler: RouteHandler<
+  typeof postFlowsBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsBindingsFsbUuidIndexRouteHandler: RouteHandler<
+  typeof getFlowsBindingsFsbUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFlowsBindingsFsbUuidIndexRouteHandler: RouteHandler<
+  typeof putFlowsBindingsFsbUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFlowsBindingsFsbUuidIndexRouteHandler: RouteHandler<
+  typeof patchFlowsBindingsFsbUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFlowsBindingsFsbUuidIndexRouteHandler: RouteHandler<
+  typeof deleteFlowsBindingsFsbUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsBindingsFsbUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getFlowsBindingsFsbUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsExecutorFlowSlugIndexRouteHandler: RouteHandler<
+  typeof getFlowsExecutorFlowSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFlowsExecutorFlowSlugIndexRouteHandler: RouteHandler<
+  typeof postFlowsExecutorFlowSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInspectorFlowSlugIndexRouteHandler: RouteHandler<
+  typeof getFlowsInspectorFlowSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFlowsInstancesIndexRouteHandler: RouteHandler<
+  typeof postFlowsInstancesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesSlugIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFlowsInstancesSlugIndexRouteHandler: RouteHandler<
+  typeof putFlowsInstancesSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFlowsInstancesSlugIndexRouteHandler: RouteHandler<
+  typeof patchFlowsInstancesSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFlowsInstancesSlugIndexRouteHandler: RouteHandler<
+  typeof deleteFlowsInstancesSlugIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesSlugDiagramIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesSlugDiagramIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesSlugExecuteIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesSlugExecuteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesSlugExportIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesSlugExportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesSlugUsedByIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesSlugUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFlowsInstancesCacheClearIndexRouteHandler: RouteHandler<
+  typeof postFlowsInstancesCacheClearIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFlowsInstancesCacheInfoIndexRouteHandler: RouteHandler<
+  typeof getFlowsInstancesCacheInfoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCostEstimationRoute, putCostEstimationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCostEstimationRoute, putCostEstimationRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCostEstimationRouteHandler: RouteHandler<typeof getCostEstimationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const costEstimationHandler = app
-  .openapi(getCostEstimationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCostEstimationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putCostEstimationRouteHandler: RouteHandler<typeof putCostEstimationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

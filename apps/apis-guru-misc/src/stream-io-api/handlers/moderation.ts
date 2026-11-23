@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteModerationBanRoute,
   getModerationFlagsMessageRoute,
   postModerationBanRoute,
@@ -11,33 +11,56 @@ import {
   postModerationUnmuteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteModerationBanRouteHandler: RouteHandler<
+  typeof deleteModerationBanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moderationHandler = app
-  .openapi(deleteModerationBanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationBanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationFlagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModerationFlagsMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationMuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationMuteChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationUnflagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationUnmuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModerationUnmuteChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postModerationBanRouteHandler: RouteHandler<typeof postModerationBanRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationFlagRouteHandler: RouteHandler<typeof postModerationFlagRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getModerationFlagsMessageRouteHandler: RouteHandler<
+  typeof getModerationFlagsMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationMuteRouteHandler: RouteHandler<typeof postModerationMuteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationMuteChannelRouteHandler: RouteHandler<
+  typeof postModerationMuteChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationUnflagRouteHandler: RouteHandler<
+  typeof postModerationUnflagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationUnmuteRouteHandler: RouteHandler<
+  typeof postModerationUnmuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModerationUnmuteChannelRouteHandler: RouteHandler<
+  typeof postModerationUnmuteChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

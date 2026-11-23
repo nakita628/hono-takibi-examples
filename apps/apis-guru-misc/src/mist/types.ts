@@ -11967,7 +11967,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/api/v1/sites/:site_id/devices/:device_id/image:image_number': {
+    '/api/v1/sites/:site_id/devices/:device_id/image{image_number}': {
       $delete: {
         input: { param: { site_id: string; device_id: string; image_number: number } }
         output: { [x: string]: unknown }

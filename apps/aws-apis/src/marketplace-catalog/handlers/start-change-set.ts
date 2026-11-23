@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postStartChangeSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postStartChangeSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const startChangeSetHandler = app.openapi(postStartChangeSetRoute, (c) => {
+export const postStartChangeSetRouteHandler: RouteHandler<typeof postStartChangeSetRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

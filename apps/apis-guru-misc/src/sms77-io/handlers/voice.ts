@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postVoiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postVoiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const voiceHandler = app.openapi(postVoiceRoute, (c) => {
+export const postVoiceRouteHandler: RouteHandler<typeof postVoiceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLinearregangleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLinearregangleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const linearregangleHandler = app.openapi(getLinearregangleRoute, (c) => {
+export const getLinearregangleRouteHandler: RouteHandler<typeof getLinearregangleRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteServiceSpecificCredentialRoute,
   postActionDeleteServiceSpecificCredentialRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteServiceSpecificCredentialRouteHandler: RouteHandler<
+  typeof getActionDeleteServiceSpecificCredentialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteServiceSpecificCredentialHandler = app
-  .openapi(getActionDeleteServiceSpecificCredentialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteServiceSpecificCredentialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteServiceSpecificCredentialRouteHandler: RouteHandler<
+  typeof postActionDeleteServiceSpecificCredentialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

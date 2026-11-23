@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSnippetsWorkspaceEncodedIdCommentsCommentIdRoute,
   deleteSnippetsWorkspaceEncodedIdNodeIdRoute,
   deleteSnippetsWorkspaceEncodedIdRoute,
@@ -26,78 +26,144 @@ import {
   putSnippetsWorkspaceEncodedIdWatchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSnippetsRouteHandler: RouteHandler<typeof postSnippetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snippetsHandler = app
-  .openapi(postSnippetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnippetsWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnippetsWorkspaceEncodedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnippetsWorkspaceEncodedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnippetsWorkspaceEncodedIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnippetsWorkspaceEncodedIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnippetsWorkspaceEncodedIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdCommitsRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdFilesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnippetsWorkspaceEncodedIdWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnippetsWorkspaceEncodedIdWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdWatchersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnippetsWorkspaceEncodedIdNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnippetsWorkspaceEncodedIdNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdNodeIdFilesPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdRevisionDiffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnippetsWorkspaceEncodedIdRevisionPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSnippetsWorkspaceRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnippetsWorkspaceRouteHandler: RouteHandler<
+  typeof postSnippetsWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnippetsWorkspaceEncodedIdRouteHandler: RouteHandler<
+  typeof deleteSnippetsWorkspaceEncodedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnippetsWorkspaceEncodedIdRouteHandler: RouteHandler<
+  typeof putSnippetsWorkspaceEncodedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdCommentsRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnippetsWorkspaceEncodedIdCommentsRouteHandler: RouteHandler<
+  typeof postSnippetsWorkspaceEncodedIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnippetsWorkspaceEncodedIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteSnippetsWorkspaceEncodedIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnippetsWorkspaceEncodedIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof putSnippetsWorkspaceEncodedIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdCommitsRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdCommitsRevisionRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdCommitsRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdFilesPathRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdFilesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnippetsWorkspaceEncodedIdWatchRouteHandler: RouteHandler<
+  typeof deleteSnippetsWorkspaceEncodedIdWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdWatchRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnippetsWorkspaceEncodedIdWatchRouteHandler: RouteHandler<
+  typeof putSnippetsWorkspaceEncodedIdWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdWatchersRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdWatchersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnippetsWorkspaceEncodedIdNodeIdRouteHandler: RouteHandler<
+  typeof deleteSnippetsWorkspaceEncodedIdNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdNodeIdRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnippetsWorkspaceEncodedIdNodeIdRouteHandler: RouteHandler<
+  typeof putSnippetsWorkspaceEncodedIdNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdNodeIdFilesPathRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdNodeIdFilesPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdRevisionDiffRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdRevisionDiffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnippetsWorkspaceEncodedIdRevisionPatchRouteHandler: RouteHandler<
+  typeof getSnippetsWorkspaceEncodedIdRevisionPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

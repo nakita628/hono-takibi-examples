@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/go-gitea/gitea/main/templates/swagger/v1-openapi3.generated.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

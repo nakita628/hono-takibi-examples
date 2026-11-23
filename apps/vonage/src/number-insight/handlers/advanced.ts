@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdvancedAsyncFormatRoute, getAdvancedFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdvancedAsyncFormatRoute, getAdvancedFormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdvancedAsyncFormatRouteHandler: RouteHandler<
+  typeof getAdvancedAsyncFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const advancedHandler = app
-  .openapi(getAdvancedAsyncFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdvancedFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdvancedFormatRouteHandler: RouteHandler<typeof getAdvancedFormatRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

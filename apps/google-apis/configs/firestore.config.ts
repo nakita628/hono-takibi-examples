@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/firestore/v1beta2/openapi.yaml',
   output: './src/firestore/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firestore/types.ts' },
   client: { output: './src/firestore/client.ts', baseUrl: '/' },
   rpc: { output: './src/firestore/rpc.ts', parseResponse: true },

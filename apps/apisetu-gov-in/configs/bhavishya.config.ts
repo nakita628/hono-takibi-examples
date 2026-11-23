@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/bhavishya/3.0.0/openapi.yaml',
   output: './src/bhavishya/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bhavishya/types.ts' },
   client: { output: './src/bhavishya/client.ts', baseUrl: '/' },
   rpc: { output: './src/bhavishya/rpc.ts', parseResponse: true },

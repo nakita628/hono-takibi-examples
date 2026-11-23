@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/eventarc/v1beta1/openapi.yaml',
   output: './src/eventarc/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/eventarc/types.ts' },
   client: { output: './src/eventarc/client.ts', baseUrl: '/' },
   rpc: { output: './src/eventarc/rpc.ts', parseResponse: true },

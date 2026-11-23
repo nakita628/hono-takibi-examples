@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDisableUserRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDisableUserRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const disableUserHandler = app.openapi(postDisableUserRoute, (c) => {
+export const postDisableUserRouteHandler: RouteHandler<typeof postDisableUserRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePeopleIdRoute,
   deletePeopleRoute,
   deletePeopleUsersRoute,
@@ -17,51 +17,72 @@ import {
   putPeopleUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePeopleRouteHandler: RouteHandler<typeof deletePeopleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const peopleHandler = app
-  .openapi(deletePeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPeopleMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePeopleUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeopleUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPeopleUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePeopleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeopleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPeopleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPeopleIdMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPeopleIdReassignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeopleIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeopleIdThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPeopleRouteHandler: RouteHandler<typeof getPeopleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPeopleRouteHandler: RouteHandler<typeof postPeopleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPeopleRouteHandler: RouteHandler<typeof putPeopleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPeopleMergeRouteHandler: RouteHandler<typeof postPeopleMergeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePeopleUsersRouteHandler: RouteHandler<typeof deletePeopleUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPeopleUsersRouteHandler: RouteHandler<typeof getPeopleUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPeopleUsersRouteHandler: RouteHandler<typeof putPeopleUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePeopleIdRouteHandler: RouteHandler<typeof deletePeopleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPeopleIdRouteHandler: RouteHandler<typeof getPeopleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPeopleIdRouteHandler: RouteHandler<typeof putPeopleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPeopleIdMergeRouteHandler: RouteHandler<typeof postPeopleIdMergeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putPeopleIdReassignRouteHandler: RouteHandler<
+  typeof putPeopleIdReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPeopleIdStatisticsRouteHandler: RouteHandler<
+  typeof getPeopleIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPeopleIdThumbnailRouteHandler: RouteHandler<
+  typeof getPeopleIdThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

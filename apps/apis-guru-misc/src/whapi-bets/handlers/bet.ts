@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBetComplexRoute, postBetSingleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBetComplexRoute, postBetSingleRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBetComplexRouteHandler: RouteHandler<typeof postBetComplexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const betHandler = app
-  .openapi(postBetComplexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetSingleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBetSingleRouteHandler: RouteHandler<typeof postBetSingleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

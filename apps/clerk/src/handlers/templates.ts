@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTemplatesTemplateTypeRoute,
   getTemplatesTemplateTypeSlugRoute,
   postTemplatesTemplateTypeSlugPreviewRoute,
@@ -8,24 +8,38 @@ import {
   putTemplatesTemplateTypeSlugRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTemplatesTemplateTypeRouteHandler: RouteHandler<
+  typeof getTemplatesTemplateTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templatesHandler = app
-  .openapi(getTemplatesTemplateTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplatesTemplateTypeSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTemplatesTemplateTypeSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateTypeSlugRevertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateTypeSlugPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTemplateTypeSlugToggleDeliveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTemplatesTemplateTypeSlugRouteHandler: RouteHandler<
+  typeof getTemplatesTemplateTypeSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTemplatesTemplateTypeSlugRouteHandler: RouteHandler<
+  typeof putTemplatesTemplateTypeSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateTypeSlugRevertRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateTypeSlugRevertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateTypeSlugPreviewRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateTypeSlugPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTemplateTypeSlugToggleDeliveryRouteHandler: RouteHandler<
+  typeof postTemplatesTemplateTypeSlugToggleDeliveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

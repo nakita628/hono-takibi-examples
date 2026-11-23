@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMetadataCascadePoliciesMetadataCascadePolicyIdRoute,
   getMetadataCascadePoliciesMetadataCascadePolicyIdRoute,
   getMetadataCascadePoliciesRoute,
@@ -7,21 +7,32 @@ import {
   postMetadataCascadePoliciesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetadataCascadePoliciesRouteHandler: RouteHandler<
+  typeof getMetadataCascadePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metadataCascadePoliciesHandler = app
-  .openapi(getMetadataCascadePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataCascadePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataCascadePoliciesMetadataCascadePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMetadataCascadePoliciesMetadataCascadePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataCascadePoliciesMetadataCascadePolicyIdApplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetadataCascadePoliciesRouteHandler: RouteHandler<
+  typeof postMetadataCascadePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetadataCascadePoliciesMetadataCascadePolicyIdRouteHandler: RouteHandler<
+  typeof getMetadataCascadePoliciesMetadataCascadePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMetadataCascadePoliciesMetadataCascadePolicyIdRouteHandler: RouteHandler<
+  typeof deleteMetadataCascadePoliciesMetadataCascadePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataCascadePoliciesMetadataCascadePolicyIdApplyRouteHandler: RouteHandler<
+  typeof postMetadataCascadePoliciesMetadataCascadePolicyIdApplyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

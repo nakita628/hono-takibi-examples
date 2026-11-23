@@ -1156,14 +1156,13 @@ const CurrencyRangeSchema = z
   })
   .openapi('CurrencyRange')
 
-type BusinessEntityType = z.infer<typeof BusinessSchema> &
-  unknown & {
-    beneficial_owners?: z.infer<typeof BeneficialOwnersSchema>
-    annual_sales_volume_range?: z.infer<typeof CurrencyRangeSchema>
-    average_monthly_volume_range?: z.infer<typeof CurrencyRangeSchema>
-    purpose_code?: unknown
-    business_description?: string
-  } & unknown
+type BusinessEntityType = z.infer<typeof BusinessSchema> & {
+  beneficial_owners?: z.infer<typeof BeneficialOwnersSchema>
+  annual_sales_volume_range?: z.infer<typeof CurrencyRangeSchema>
+  average_monthly_volume_range?: z.infer<typeof CurrencyRangeSchema>
+  purpose_code?: unknown
+  business_description?: string
+}
 
 const PurposeCodeEnumSchema = z
   .enum([

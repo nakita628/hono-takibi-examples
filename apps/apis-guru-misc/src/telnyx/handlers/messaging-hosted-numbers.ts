@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteMessagingHostedNumbersIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteMessagingHostedNumbersIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const messagingHostedNumbersHandler = app.openapi(
-  deleteMessagingHostedNumbersIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteMessagingHostedNumbersIdRouteHandler: RouteHandler<
+  typeof deleteMessagingHostedNumbersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

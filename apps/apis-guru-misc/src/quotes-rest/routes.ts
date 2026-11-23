@@ -106,7 +106,7 @@ export const getQodRoute = createRoute({
         },
       },
     },
-    400: { description: '400  response', content: {} },
+    400: { description: '400  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -148,10 +148,7 @@ export const getQodCategoriesRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    400: { description: '400  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 400: { description: '400  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -160,7 +157,7 @@ export const getQodLanguagesRoute = createRoute({
   path: '/qod/languages',
   tags: ['Quote of the day'],
   description: 'Gets a list of supported languages for `Quote of the Day`. \n',
-  responses: { 200: { description: '200  response', content: {} } },
+  responses: { 200: { description: '200  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -185,9 +182,9 @@ export const getQshowRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -240,10 +237,7 @@ export const putQshowRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -268,9 +262,9 @@ export const deleteQshowRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -336,9 +330,9 @@ export const patchQshowRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -387,10 +381,7 @@ export const getQshowListRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -415,9 +406,9 @@ export const getQshowQuotesRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -454,9 +445,9 @@ export const postQshowQuotesAddRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -493,9 +484,9 @@ export const postQshowQuotesRemoveRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -536,7 +527,7 @@ export const getQuoteRoute = createRoute({
         },
       },
     },
-    401: { description: '401  response', content: {} },
+    401: { description: '401  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -599,10 +590,7 @@ export const putQuoteRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -665,10 +653,7 @@ export const postQuoteRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -694,9 +679,9 @@ export const deleteQuoteRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -771,10 +756,7 @@ export const patchQuoteRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -859,10 +841,7 @@ export const getQuoteAuthorsPopularRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    400: { description: '400  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 400: { description: '400  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -959,10 +938,7 @@ export const getQuoteAuthorsSearchRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    400: { description: '400  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 400: { description: '400  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -1019,7 +995,7 @@ export const getQuoteCategoriesPopularRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '200  response', content: {} } },
+  responses: { 200: { description: '200  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -1089,7 +1065,7 @@ export const getQuoteCategoriesSearchRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '200  response', content: {} } },
+  responses: { 200: { description: '200  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -1115,9 +1091,9 @@ export const putQuoteDislikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1144,9 +1120,9 @@ export const postQuoteDislikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1172,9 +1148,9 @@ export const deleteQuoteDislikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1215,9 +1191,9 @@ export const getQuoteImageRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1404,9 +1380,9 @@ export const putQuoteImageRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1433,9 +1409,9 @@ export const deleteQuoteImageRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1468,10 +1444,7 @@ export const postQuoteImageBackgroundRoute = createRoute({
       },
     },
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -1497,9 +1470,9 @@ export const deleteQuoteImageBackgroundRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1535,9 +1508,9 @@ export const getQuoteImageBackgroundListRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1564,9 +1537,9 @@ export const getQuoteImageBackgroundSearchRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1603,9 +1576,9 @@ export const postQuoteImageBackgroundTagsAddRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1642,9 +1615,9 @@ export const postQuoteImageBackgroundTagsRemoveRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1678,10 +1651,7 @@ export const postQuoteImageFontRoute = createRoute({
       },
     },
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -1707,9 +1677,9 @@ export const deleteQuoteImageFontRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1745,9 +1715,9 @@ export const getQuoteImageFontListRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1774,9 +1744,9 @@ export const getQuoteImageFontSearchRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1813,9 +1783,9 @@ export const postQuoteImageFontTagsAddRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1852,9 +1822,9 @@ export const postQuoteImageFontTagsRemoveRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1908,9 +1878,9 @@ export const getQuoteImageSearchRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1937,9 +1907,9 @@ export const putQuoteLikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1966,9 +1936,9 @@ export const postQuoteLikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -1994,9 +1964,9 @@ export const deleteQuoteLikeRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -2054,10 +2024,7 @@ export const getQuoteListRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
 
@@ -2120,7 +2087,7 @@ export const getQuoteRandomRoute = createRoute({
         },
       },
     },
-    401: { description: '401  response', content: {} },
+    401: { description: '401  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -2288,8 +2255,8 @@ export const getQuoteSearchRoute = createRoute({
         },
       },
     },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -2326,9 +2293,9 @@ export const postQuoteTagsAddRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })
@@ -2365,9 +2332,9 @@ export const postQuoteTagsRemoveRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-    404: { description: '404  response', content: {} },
+    200: { description: '200  response' },
+    401: { description: '401  response' },
+    404: { description: '404  response' },
   },
   security: [{ 'X-TheySaidSo-Api-Secret': [] }],
 })

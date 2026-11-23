@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/user-management.yaml',
   output: './src/user-management/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/user-management/types.ts' },
   client: { output: './src/user-management/client.ts', baseUrl: '/' },
   rpc: { output: './src/user-management/rpc.ts', parseResponse: true },

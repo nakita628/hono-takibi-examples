@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUnbanChatMemberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUnbanChatMemberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const unbanChatMemberHandler = app.openapi(postUnbanChatMemberRoute, (c) => {
+export const postUnbanChatMemberRouteHandler: RouteHandler<
+  typeof postUnbanChatMemberRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

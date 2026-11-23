@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAssessmentFrameworkShareRequestsRequestTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAssessmentFrameworkShareRequestsRequestTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const assessmentFrameworkShareRequestsRequestTypeHandler = app.openapi(
-  getAssessmentFrameworkShareRequestsRequestTypeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAssessmentFrameworkShareRequestsRequestTypeRouteHandler: RouteHandler<
+  typeof getAssessmentFrameworkShareRequestsRequestTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

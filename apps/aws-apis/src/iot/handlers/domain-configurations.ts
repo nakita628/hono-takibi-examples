@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDomainConfigurationsDomainConfigurationNameRoute,
   getDomainConfigurationsDomainConfigurationNameRoute,
   getDomainConfigurationsRoute,
@@ -7,21 +7,32 @@ import {
   putDomainConfigurationsDomainConfigurationNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDomainConfigurationsDomainConfigurationNameRouteHandler: RouteHandler<
+  typeof postDomainConfigurationsDomainConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const domainConfigurationsHandler = app
-  .openapi(postDomainConfigurationsDomainConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainConfigurationsDomainConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainConfigurationsDomainConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainConfigurationsDomainConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDomainConfigurationsDomainConfigurationNameRouteHandler: RouteHandler<
+  typeof deleteDomainConfigurationsDomainConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainConfigurationsDomainConfigurationNameRouteHandler: RouteHandler<
+  typeof getDomainConfigurationsDomainConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainConfigurationsDomainConfigurationNameRouteHandler: RouteHandler<
+  typeof putDomainConfigurationsDomainConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainConfigurationsRouteHandler: RouteHandler<
+  typeof getDomainConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

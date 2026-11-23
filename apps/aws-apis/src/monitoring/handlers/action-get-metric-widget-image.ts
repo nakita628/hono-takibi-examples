@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionGetMetricWidgetImageRoute, postActionGetMetricWidgetImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionGetMetricWidgetImageRoute,
+  postActionGetMetricWidgetImageRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetMetricWidgetImageRouteHandler: RouteHandler<
+  typeof getActionGetMetricWidgetImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetMetricWidgetImageHandler = app
-  .openapi(getActionGetMetricWidgetImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetMetricWidgetImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetMetricWidgetImageRouteHandler: RouteHandler<
+  typeof postActionGetMetricWidgetImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

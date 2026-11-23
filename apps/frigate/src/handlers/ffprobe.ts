@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFfprobeRoute, getFfprobeSnapshotRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFfprobeRoute, getFfprobeSnapshotRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFfprobeRouteHandler: RouteHandler<typeof getFfprobeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ffprobeHandler = app
-  .openapi(getFfprobeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFfprobeSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFfprobeSnapshotRouteHandler: RouteHandler<typeof getFfprobeSnapshotRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

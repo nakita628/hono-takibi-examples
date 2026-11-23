@@ -1025,20 +1025,20 @@ export async function getCameraNamePtzInfo(
 }
 
 export async function getCameraNameLatestExtension(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client[':camera_name']['latest.:extension'].$get(args, options))
+  return await parseResponse(client[':camera_name']['latest.{extension}'].$get(args, options))
 }
 
 export async function getCameraNameRecordingsFrameTimeSnapshotFormat(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client[':camera_name'].recordings[':frame_time']['snapshot.:format'].$get(args, options),
+    client[':camera_name'].recordings[':frame_time']['snapshot.{format}'].$get(args, options),
   )
 }
 
@@ -1130,10 +1130,12 @@ export async function getEventsEventIdSnapshotJpg(
 }
 
 export async function getEventsEventIdThumbnailExtension(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.events[':event_id']['thumbnail.:extension'].$get(args, options))
+  return await parseResponse(
+    client.events[':event_id']['thumbnail.{extension}'].$get(args, options),
+  )
 }
 
 export async function getCameraNameGridJpg(

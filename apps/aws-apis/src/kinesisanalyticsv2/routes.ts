@@ -1096,27 +1096,22 @@ const ZeppelinApplicationConfigurationDescriptionSchema = z
 type ApplicationConfigurationDescriptionType = {
   SqlApplicationConfigurationDescription?: z.infer<
     typeof SqlApplicationConfigurationDescriptionSchema
-  > &
-    unknown
+  >
   ApplicationCodeConfigurationDescription?: z.infer<
     typeof ApplicationCodeConfigurationDescriptionSchema
-  > &
-    unknown
-  RunConfigurationDescription?: z.infer<typeof RunConfigurationDescriptionSchema> & unknown
+  >
+  RunConfigurationDescription?: z.infer<typeof RunConfigurationDescriptionSchema>
   FlinkApplicationConfigurationDescription?: z.infer<
     typeof FlinkApplicationConfigurationDescriptionSchema
-  > &
-    unknown
-  EnvironmentPropertyDescriptions?: z.infer<typeof EnvironmentPropertyDescriptionsSchema> & unknown
+  >
+  EnvironmentPropertyDescriptions?: z.infer<typeof EnvironmentPropertyDescriptionsSchema>
   ApplicationSnapshotConfigurationDescription?: z.infer<
     typeof ApplicationSnapshotConfigurationDescriptionSchema
-  > &
-    unknown
-  VpcConfigurationDescriptions?: z.infer<typeof VpcConfigurationDescriptionsSchema> & unknown
+  >
+  VpcConfigurationDescriptions?: z.infer<typeof VpcConfigurationDescriptionsSchema>
   ZeppelinApplicationConfigurationDescription?: z.infer<
     typeof ZeppelinApplicationConfigurationDescriptionSchema
-  > &
-    unknown
+  >
 }
 
 const ApplicationConfigurationDescriptionSchema: z.ZodType<ApplicationConfigurationDescriptionType> =
@@ -1234,28 +1229,25 @@ const ConditionalTokenSchema = z
 const ApplicationModeSchema = z.enum(['STREAMING', 'INTERACTIVE']).openapi('ApplicationMode')
 
 type ApplicationDetailType = {
-  ApplicationARN: z.infer<typeof ResourceARNSchema> & unknown
-  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema> & unknown
-  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
-  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema> & unknown
-  ServiceExecutionRole?: z.infer<typeof RoleARNSchema> & unknown
-  ApplicationStatus: z.infer<typeof ApplicationStatusSchema> & unknown
-  ApplicationVersionId: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  CreateTimestamp?: z.infer<typeof TimestampSchema> & unknown
-  LastUpdateTimestamp?: z.infer<typeof TimestampSchema> & unknown
-  ApplicationConfigurationDescription?: z.infer<typeof ApplicationConfigurationDescriptionSchema> &
-    unknown
-  CloudWatchLoggingOptionDescriptions?: z.infer<typeof CloudWatchLoggingOptionDescriptionsSchema> &
-    unknown
+  ApplicationARN: z.infer<typeof ResourceARNSchema>
+  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema>
+  ApplicationName: z.infer<typeof ApplicationNameSchema>
+  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema>
+  ServiceExecutionRole?: z.infer<typeof RoleARNSchema>
+  ApplicationStatus: z.infer<typeof ApplicationStatusSchema>
+  ApplicationVersionId: z.infer<typeof ApplicationVersionIdSchema>
+  CreateTimestamp?: z.infer<typeof TimestampSchema>
+  LastUpdateTimestamp?: z.infer<typeof TimestampSchema>
+  ApplicationConfigurationDescription?: z.infer<typeof ApplicationConfigurationDescriptionSchema>
+  CloudWatchLoggingOptionDescriptions?: z.infer<typeof CloudWatchLoggingOptionDescriptionsSchema>
   ApplicationMaintenanceConfigurationDescription?: z.infer<
     typeof ApplicationMaintenanceConfigurationDescriptionSchema
-  > &
-    unknown
-  ApplicationVersionUpdatedFrom?: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  ApplicationVersionRolledBackFrom?: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  ConditionalToken?: z.infer<typeof ConditionalTokenSchema> & unknown
-  ApplicationVersionRolledBackTo?: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  ApplicationMode?: z.infer<typeof ApplicationModeSchema> & unknown
+  >
+  ApplicationVersionUpdatedFrom?: z.infer<typeof ApplicationVersionIdSchema>
+  ApplicationVersionRolledBackFrom?: z.infer<typeof ApplicationVersionIdSchema>
+  ConditionalToken?: z.infer<typeof ConditionalTokenSchema>
+  ApplicationVersionRolledBackTo?: z.infer<typeof ApplicationVersionIdSchema>
+  ApplicationMode?: z.infer<typeof ApplicationModeSchema>
 }
 
 const ApplicationDetailSchema: z.ZodType<ApplicationDetailType> = z
@@ -1329,9 +1321,7 @@ const ApplicationDetailSchema: z.ZodType<ApplicationDetailType> = z
   })
   .openapi('ApplicationDetail')
 
-type CreateApplicationResponseType = {
-  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
-}
+type CreateApplicationResponseType = { ApplicationDetail: z.infer<typeof ApplicationDetailSchema> }
 
 const InputsSchema = z.array(InputSchema).openapi('Inputs')
 
@@ -1757,15 +1747,13 @@ const ZeppelinApplicationConfigurationSchema = z
   .openapi('ZeppelinApplicationConfiguration')
 
 type ApplicationConfigurationType = {
-  SqlApplicationConfiguration?: z.infer<typeof SqlApplicationConfigurationSchema> & unknown
-  FlinkApplicationConfiguration?: z.infer<typeof FlinkApplicationConfigurationSchema> & unknown
-  EnvironmentProperties?: z.infer<typeof EnvironmentPropertiesSchema> & unknown
-  ApplicationCodeConfiguration?: z.infer<typeof ApplicationCodeConfigurationSchema> & unknown
-  ApplicationSnapshotConfiguration?: z.infer<typeof ApplicationSnapshotConfigurationSchema> &
-    unknown
-  VpcConfigurations?: z.infer<typeof VpcConfigurationsSchema> & unknown
-  ZeppelinApplicationConfiguration?: z.infer<typeof ZeppelinApplicationConfigurationSchema> &
-    unknown
+  SqlApplicationConfiguration?: z.infer<typeof SqlApplicationConfigurationSchema>
+  FlinkApplicationConfiguration?: z.infer<typeof FlinkApplicationConfigurationSchema>
+  EnvironmentProperties?: z.infer<typeof EnvironmentPropertiesSchema>
+  ApplicationCodeConfiguration?: z.infer<typeof ApplicationCodeConfigurationSchema>
+  ApplicationSnapshotConfiguration?: z.infer<typeof ApplicationSnapshotConfigurationSchema>
+  VpcConfigurations?: z.infer<typeof VpcConfigurationsSchema>
+  ZeppelinApplicationConfiguration?: z.infer<typeof ZeppelinApplicationConfigurationSchema>
 }
 
 const ApplicationConfigurationSchema: z.ZodType<ApplicationConfigurationType> = z
@@ -1843,18 +1831,18 @@ const TagSchema = z
 const TagsSchema = z.array(TagSchema).min(1).max(200).openapi('Tags')
 
 type CreateApplicationRequestType = {
-  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
-  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema> & unknown
-  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema> & unknown
-  ServiceExecutionRole: z.infer<typeof RoleARNSchema> & unknown
-  ApplicationConfiguration?: z.infer<typeof ApplicationConfigurationSchema> & unknown
-  CloudWatchLoggingOptions?: z.infer<typeof CloudWatchLoggingOptionsSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  ApplicationMode?: z.infer<typeof ApplicationModeSchema> & unknown
+  ApplicationName: z.infer<typeof ApplicationNameSchema>
+  ApplicationDescription?: z.infer<typeof ApplicationDescriptionSchema>
+  RuntimeEnvironment: z.infer<typeof RuntimeEnvironmentSchema>
+  ServiceExecutionRole: z.infer<typeof RoleARNSchema>
+  ApplicationConfiguration?: z.infer<typeof ApplicationConfigurationSchema>
+  CloudWatchLoggingOptions?: z.infer<typeof CloudWatchLoggingOptionsSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  ApplicationMode?: z.infer<typeof ApplicationModeSchema>
 }
 
 type DescribeApplicationResponseType = {
-  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema>
 }
 
 type DescribeApplicationVersionResponseType = {
@@ -1865,9 +1853,7 @@ type RollbackApplicationResponseType = {
   ApplicationDetail: z.infer<typeof ApplicationDetailSchema>
 }
 
-type UpdateApplicationResponseType = {
-  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
-}
+type UpdateApplicationResponseType = { ApplicationDetail: z.infer<typeof ApplicationDetailSchema> }
 
 const InputLambdaProcessorUpdateSchema = z
   .object({
@@ -2430,22 +2416,17 @@ const ZeppelinApplicationConfigurationUpdateSchema = z
   .openapi('ZeppelinApplicationConfigurationUpdate')
 
 type ApplicationConfigurationUpdateType = {
-  SqlApplicationConfigurationUpdate?: z.infer<typeof SqlApplicationConfigurationUpdateSchema> &
-    unknown
-  ApplicationCodeConfigurationUpdate?: z.infer<typeof ApplicationCodeConfigurationUpdateSchema> &
-    unknown
-  FlinkApplicationConfigurationUpdate?: z.infer<typeof FlinkApplicationConfigurationUpdateSchema> &
-    unknown
-  EnvironmentPropertyUpdates?: z.infer<typeof EnvironmentPropertyUpdatesSchema> & unknown
+  SqlApplicationConfigurationUpdate?: z.infer<typeof SqlApplicationConfigurationUpdateSchema>
+  ApplicationCodeConfigurationUpdate?: z.infer<typeof ApplicationCodeConfigurationUpdateSchema>
+  FlinkApplicationConfigurationUpdate?: z.infer<typeof FlinkApplicationConfigurationUpdateSchema>
+  EnvironmentPropertyUpdates?: z.infer<typeof EnvironmentPropertyUpdatesSchema>
   ApplicationSnapshotConfigurationUpdate?: z.infer<
     typeof ApplicationSnapshotConfigurationUpdateSchema
-  > &
-    unknown
-  VpcConfigurationUpdates?: z.infer<typeof VpcConfigurationUpdatesSchema> & unknown
+  >
+  VpcConfigurationUpdates?: z.infer<typeof VpcConfigurationUpdatesSchema>
   ZeppelinApplicationConfigurationUpdate?: z.infer<
     typeof ZeppelinApplicationConfigurationUpdateSchema
-  > &
-    unknown
+  >
 }
 
 const ApplicationConfigurationUpdateSchema: z.ZodType<ApplicationConfigurationUpdateType> = z
@@ -2523,13 +2504,13 @@ const CloudWatchLoggingOptionUpdatesSchema = z
   .openapi('CloudWatchLoggingOptionUpdates')
 
 type UpdateApplicationRequestType = {
-  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
-  CurrentApplicationVersionId?: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  ApplicationConfigurationUpdate?: z.infer<typeof ApplicationConfigurationUpdateSchema> & unknown
-  ServiceExecutionRoleUpdate?: z.infer<typeof RoleARNSchema> & unknown
-  RunConfigurationUpdate?: z.infer<typeof RunConfigurationUpdateSchema> & unknown
-  CloudWatchLoggingOptionUpdates?: z.infer<typeof CloudWatchLoggingOptionUpdatesSchema> & unknown
-  ConditionalToken?: z.infer<typeof ConditionalTokenSchema> & unknown
+  ApplicationName: z.infer<typeof ApplicationNameSchema>
+  CurrentApplicationVersionId?: z.infer<typeof ApplicationVersionIdSchema>
+  ApplicationConfigurationUpdate?: z.infer<typeof ApplicationConfigurationUpdateSchema>
+  ServiceExecutionRoleUpdate?: z.infer<typeof RoleARNSchema>
+  RunConfigurationUpdate?: z.infer<typeof RunConfigurationUpdateSchema>
+  CloudWatchLoggingOptionUpdates?: z.infer<typeof CloudWatchLoggingOptionUpdatesSchema>
+  ConditionalToken?: z.infer<typeof ConditionalTokenSchema>
 }
 
 const InputLambdaProcessorSchema = z
@@ -2587,12 +2568,12 @@ const KinesisFirehoseInputSchema = z
   .openapi('KinesisFirehoseInput')
 
 type InputType = {
-  NamePrefix: z.infer<typeof InAppStreamNameSchema> & unknown
-  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema> & unknown
-  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema> & unknown
-  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema> & unknown
-  InputParallelism?: z.infer<typeof InputParallelismSchema> & unknown
-  InputSchema: z.infer<typeof SourceSchemaSchema> & unknown
+  NamePrefix: z.infer<typeof InAppStreamNameSchema>
+  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema>
+  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema>
+  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema>
+  InputParallelism?: z.infer<typeof InputParallelismSchema>
+  InputSchema: z.infer<typeof SourceSchemaSchema>
 }
 
 const AddApplicationCloudWatchLoggingOptionResponseSchema = z

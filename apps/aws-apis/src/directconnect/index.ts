@@ -1,135 +1,389 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalHandler,
-  xAmzTargetOvertureServiceAllocateConnectionOnInterconnectHandler,
-  xAmzTargetOvertureServiceAllocateHostedConnectionHandler,
-  xAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceAllocatePublicVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceAllocateTransitVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceAssociateConnectionWithLagHandler,
-  xAmzTargetOvertureServiceAssociateHostedConnectionHandler,
-  xAmzTargetOvertureServiceAssociateMacSecKeyHandler,
-  xAmzTargetOvertureServiceAssociateVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceConfirmConnectionHandler,
-  xAmzTargetOvertureServiceConfirmCustomerAgreementHandler,
-  xAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceConfirmPublicVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceConfirmTransitVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceCreateBgpPeerHandler,
-  xAmzTargetOvertureServiceCreateConnectionHandler,
-  xAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationHandler,
-  xAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalHandler,
-  xAmzTargetOvertureServiceCreateDirectConnectGatewayHandler,
-  xAmzTargetOvertureServiceCreateInterconnectHandler,
-  xAmzTargetOvertureServiceCreateLagHandler,
-  xAmzTargetOvertureServiceCreatePrivateVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceCreatePublicVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceCreateTransitVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceDeleteBgpPeerHandler,
-  xAmzTargetOvertureServiceDeleteConnectionHandler,
-  xAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationHandler,
-  xAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalHandler,
-  xAmzTargetOvertureServiceDeleteDirectConnectGatewayHandler,
-  xAmzTargetOvertureServiceDeleteInterconnectHandler,
-  xAmzTargetOvertureServiceDeleteLagHandler,
-  xAmzTargetOvertureServiceDeleteVirtualInterfaceHandler,
-  xAmzTargetOvertureServiceDescribeConnectionLoaHandler,
-  xAmzTargetOvertureServiceDescribeConnectionsHandler,
-  xAmzTargetOvertureServiceDescribeConnectionsOnInterconnectHandler,
-  xAmzTargetOvertureServiceDescribeCustomerMetadataHandler,
-  xAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsHandler,
-  xAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsHandler,
-  xAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsHandler,
-  xAmzTargetOvertureServiceDescribeDirectConnectGatewaysHandler,
-  xAmzTargetOvertureServiceDescribeHostedConnectionsHandler,
-  xAmzTargetOvertureServiceDescribeInterconnectLoaHandler,
-  xAmzTargetOvertureServiceDescribeInterconnectsHandler,
-  xAmzTargetOvertureServiceDescribeLagsHandler,
-  xAmzTargetOvertureServiceDescribeLoaHandler,
-  xAmzTargetOvertureServiceDescribeLocationsHandler,
-  xAmzTargetOvertureServiceDescribeRouterConfigurationHandler,
-  xAmzTargetOvertureServiceDescribeTagsHandler,
-  xAmzTargetOvertureServiceDescribeVirtualGatewaysHandler,
-  xAmzTargetOvertureServiceDescribeVirtualInterfacesHandler,
-  xAmzTargetOvertureServiceDisassociateConnectionFromLagHandler,
-  xAmzTargetOvertureServiceDisassociateMacSecKeyHandler,
-  xAmzTargetOvertureServiceListVirtualInterfaceTestHistoryHandler,
-  xAmzTargetOvertureServiceStartBgpFailoverTestHandler,
-  xAmzTargetOvertureServiceStopBgpFailoverTestHandler,
-  xAmzTargetOvertureServiceTagResourceHandler,
-  xAmzTargetOvertureServiceUntagResourceHandler,
-  xAmzTargetOvertureServiceUpdateConnectionHandler,
-  xAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationHandler,
-  xAmzTargetOvertureServiceUpdateDirectConnectGatewayHandler,
-  xAmzTargetOvertureServiceUpdateLagHandler,
-  xAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesHandler,
+  postXAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalRoute,
+  postXAmzTargetOvertureServiceAllocateConnectionOnInterconnectRoute,
+  postXAmzTargetOvertureServiceAllocateHostedConnectionRoute,
+  postXAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceAllocatePublicVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceAllocateTransitVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute,
+  postXAmzTargetOvertureServiceAssociateHostedConnectionRoute,
+  postXAmzTargetOvertureServiceAssociateMacSecKeyRoute,
+  postXAmzTargetOvertureServiceAssociateVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceConfirmConnectionRoute,
+  postXAmzTargetOvertureServiceConfirmCustomerAgreementRoute,
+  postXAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceConfirmPublicVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceConfirmTransitVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceCreateBGPPeerRoute,
+  postXAmzTargetOvertureServiceCreateConnectionRoute,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalRoute,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationRoute,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayRoute,
+  postXAmzTargetOvertureServiceCreateInterconnectRoute,
+  postXAmzTargetOvertureServiceCreateLagRoute,
+  postXAmzTargetOvertureServiceCreatePrivateVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceCreatePublicVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceDeleteBGPPeerRoute,
+  postXAmzTargetOvertureServiceDeleteConnectionRoute,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalRoute,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayRoute,
+  postXAmzTargetOvertureServiceDeleteInterconnectRoute,
+  postXAmzTargetOvertureServiceDeleteLagRoute,
+  postXAmzTargetOvertureServiceDeleteVirtualInterfaceRoute,
+  postXAmzTargetOvertureServiceDescribeConnectionLoaRoute,
+  postXAmzTargetOvertureServiceDescribeConnectionsOnInterconnectRoute,
+  postXAmzTargetOvertureServiceDescribeConnectionsRoute,
+  postXAmzTargetOvertureServiceDescribeCustomerMetadataRoute,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsRoute,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsRoute,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsRoute,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewaysRoute,
+  postXAmzTargetOvertureServiceDescribeHostedConnectionsRoute,
+  postXAmzTargetOvertureServiceDescribeInterconnectLoaRoute,
+  postXAmzTargetOvertureServiceDescribeInterconnectsRoute,
+  postXAmzTargetOvertureServiceDescribeLagsRoute,
+  postXAmzTargetOvertureServiceDescribeLoaRoute,
+  postXAmzTargetOvertureServiceDescribeLocationsRoute,
+  postXAmzTargetOvertureServiceDescribeRouterConfigurationRoute,
+  postXAmzTargetOvertureServiceDescribeTagsRoute,
+  postXAmzTargetOvertureServiceDescribeVirtualGatewaysRoute,
+  postXAmzTargetOvertureServiceDescribeVirtualInterfacesRoute,
+  postXAmzTargetOvertureServiceDisassociateConnectionFromLagRoute,
+  postXAmzTargetOvertureServiceDisassociateMacSecKeyRoute,
+  postXAmzTargetOvertureServiceListVirtualInterfaceTestHistoryRoute,
+  postXAmzTargetOvertureServiceStartBgpFailoverTestRoute,
+  postXAmzTargetOvertureServiceStopBgpFailoverTestRoute,
+  postXAmzTargetOvertureServiceTagResourceRoute,
+  postXAmzTargetOvertureServiceUntagResourceRoute,
+  postXAmzTargetOvertureServiceUpdateConnectionRoute,
+  postXAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationRoute,
+  postXAmzTargetOvertureServiceUpdateDirectConnectGatewayRoute,
+  postXAmzTargetOvertureServiceUpdateLagRoute,
+  postXAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesRoute,
+} from './routes'
+import {
+  postXAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalRouteHandler,
+  postXAmzTargetOvertureServiceAllocateConnectionOnInterconnectRouteHandler,
+  postXAmzTargetOvertureServiceAllocateHostedConnectionRouteHandler,
+  postXAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceAllocatePublicVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceAllocateTransitVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceAssociateConnectionWithLagRouteHandler,
+  postXAmzTargetOvertureServiceAssociateHostedConnectionRouteHandler,
+  postXAmzTargetOvertureServiceAssociateMacSecKeyRouteHandler,
+  postXAmzTargetOvertureServiceAssociateVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceConfirmConnectionRouteHandler,
+  postXAmzTargetOvertureServiceConfirmCustomerAgreementRouteHandler,
+  postXAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceConfirmPublicVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceConfirmTransitVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceCreateBGPPeerRouteHandler,
+  postXAmzTargetOvertureServiceCreateConnectionRouteHandler,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalRouteHandler,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationRouteHandler,
+  postXAmzTargetOvertureServiceCreateDirectConnectGatewayRouteHandler,
+  postXAmzTargetOvertureServiceCreateInterconnectRouteHandler,
+  postXAmzTargetOvertureServiceCreateLagRouteHandler,
+  postXAmzTargetOvertureServiceCreatePrivateVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceCreatePublicVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceDeleteBGPPeerRouteHandler,
+  postXAmzTargetOvertureServiceDeleteConnectionRouteHandler,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalRouteHandler,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRouteHandler,
+  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayRouteHandler,
+  postXAmzTargetOvertureServiceDeleteInterconnectRouteHandler,
+  postXAmzTargetOvertureServiceDeleteLagRouteHandler,
+  postXAmzTargetOvertureServiceDeleteVirtualInterfaceRouteHandler,
+  postXAmzTargetOvertureServiceDescribeConnectionLoaRouteHandler,
+  postXAmzTargetOvertureServiceDescribeConnectionsOnInterconnectRouteHandler,
+  postXAmzTargetOvertureServiceDescribeConnectionsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeCustomerMetadataRouteHandler,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeDirectConnectGatewaysRouteHandler,
+  postXAmzTargetOvertureServiceDescribeHostedConnectionsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeInterconnectLoaRouteHandler,
+  postXAmzTargetOvertureServiceDescribeInterconnectsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeLagsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeLoaRouteHandler,
+  postXAmzTargetOvertureServiceDescribeLocationsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeRouterConfigurationRouteHandler,
+  postXAmzTargetOvertureServiceDescribeTagsRouteHandler,
+  postXAmzTargetOvertureServiceDescribeVirtualGatewaysRouteHandler,
+  postXAmzTargetOvertureServiceDescribeVirtualInterfacesRouteHandler,
+  postXAmzTargetOvertureServiceDisassociateConnectionFromLagRouteHandler,
+  postXAmzTargetOvertureServiceDisassociateMacSecKeyRouteHandler,
+  postXAmzTargetOvertureServiceListVirtualInterfaceTestHistoryRouteHandler,
+  postXAmzTargetOvertureServiceStartBgpFailoverTestRouteHandler,
+  postXAmzTargetOvertureServiceStopBgpFailoverTestRouteHandler,
+  postXAmzTargetOvertureServiceTagResourceRouteHandler,
+  postXAmzTargetOvertureServiceUntagResourceRouteHandler,
+  postXAmzTargetOvertureServiceUpdateConnectionRouteHandler,
+  postXAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationRouteHandler,
+  postXAmzTargetOvertureServiceUpdateDirectConnectGatewayRouteHandler,
+  postXAmzTargetOvertureServiceUpdateLagRouteHandler,
+  postXAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalHandler)
-  .route('/', xAmzTargetOvertureServiceAllocateConnectionOnInterconnectHandler)
-  .route('/', xAmzTargetOvertureServiceAllocateHostedConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceAllocatePublicVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceAllocateTransitVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceAssociateConnectionWithLagHandler)
-  .route('/', xAmzTargetOvertureServiceAssociateHostedConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceAssociateMacSecKeyHandler)
-  .route('/', xAmzTargetOvertureServiceAssociateVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceConfirmConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceConfirmCustomerAgreementHandler)
-  .route('/', xAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceConfirmPublicVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceConfirmTransitVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceCreateBgpPeerHandler)
-  .route('/', xAmzTargetOvertureServiceCreateConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceCreateDirectConnectGatewayHandler)
-  .route('/', xAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationHandler)
-  .route('/', xAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalHandler)
-  .route('/', xAmzTargetOvertureServiceCreateInterconnectHandler)
-  .route('/', xAmzTargetOvertureServiceCreateLagHandler)
-  .route('/', xAmzTargetOvertureServiceCreatePrivateVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceCreatePublicVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceCreateTransitVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteBgpPeerHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteDirectConnectGatewayHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteInterconnectHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteLagHandler)
-  .route('/', xAmzTargetOvertureServiceDeleteVirtualInterfaceHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeConnectionLoaHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeConnectionsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeConnectionsOnInterconnectHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeCustomerMetadataHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeDirectConnectGatewaysHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeHostedConnectionsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeInterconnectLoaHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeInterconnectsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeLagsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeLoaHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeLocationsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeRouterConfigurationHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeTagsHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeVirtualGatewaysHandler)
-  .route('/', xAmzTargetOvertureServiceDescribeVirtualInterfacesHandler)
-  .route('/', xAmzTargetOvertureServiceDisassociateConnectionFromLagHandler)
-  .route('/', xAmzTargetOvertureServiceDisassociateMacSecKeyHandler)
-  .route('/', xAmzTargetOvertureServiceListVirtualInterfaceTestHistoryHandler)
-  .route('/', xAmzTargetOvertureServiceStartBgpFailoverTestHandler)
-  .route('/', xAmzTargetOvertureServiceStopBgpFailoverTestHandler)
-  .route('/', xAmzTargetOvertureServiceTagResourceHandler)
-  .route('/', xAmzTargetOvertureServiceUntagResourceHandler)
-  .route('/', xAmzTargetOvertureServiceUpdateConnectionHandler)
-  .route('/', xAmzTargetOvertureServiceUpdateDirectConnectGatewayHandler)
-  .route('/', xAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationHandler)
-  .route('/', xAmzTargetOvertureServiceUpdateLagHandler)
-  .route('/', xAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesHandler)
+  .openapi(
+    postXAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalRoute,
+    postXAmzTargetOvertureServiceAcceptDirectConnectGatewayAssociationProposalRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAllocateConnectionOnInterconnectRoute,
+    postXAmzTargetOvertureServiceAllocateConnectionOnInterconnectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAllocateHostedConnectionRoute,
+    postXAmzTargetOvertureServiceAllocateHostedConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceAllocatePrivateVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAllocatePublicVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceAllocatePublicVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAllocateTransitVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceAllocateTransitVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute,
+    postXAmzTargetOvertureServiceAssociateConnectionWithLagRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAssociateHostedConnectionRoute,
+    postXAmzTargetOvertureServiceAssociateHostedConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAssociateMacSecKeyRoute,
+    postXAmzTargetOvertureServiceAssociateMacSecKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceAssociateVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceAssociateVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceConfirmConnectionRoute,
+    postXAmzTargetOvertureServiceConfirmConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceConfirmCustomerAgreementRoute,
+    postXAmzTargetOvertureServiceConfirmCustomerAgreementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceConfirmPrivateVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceConfirmPublicVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceConfirmPublicVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceConfirmTransitVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceConfirmTransitVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateBGPPeerRoute,
+    postXAmzTargetOvertureServiceCreateBGPPeerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateConnectionRoute,
+    postXAmzTargetOvertureServiceCreateConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayRoute,
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationRoute,
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalRoute,
+    postXAmzTargetOvertureServiceCreateDirectConnectGatewayAssociationProposalRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateInterconnectRoute,
+    postXAmzTargetOvertureServiceCreateInterconnectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateLagRoute,
+    postXAmzTargetOvertureServiceCreateLagRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreatePrivateVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceCreatePrivateVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreatePublicVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceCreatePublicVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceCreateTransitVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteBGPPeerRoute,
+    postXAmzTargetOvertureServiceDeleteBGPPeerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteConnectionRoute,
+    postXAmzTargetOvertureServiceDeleteConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayRoute,
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute,
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalRoute,
+    postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationProposalRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteInterconnectRoute,
+    postXAmzTargetOvertureServiceDeleteInterconnectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteLagRoute,
+    postXAmzTargetOvertureServiceDeleteLagRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDeleteVirtualInterfaceRoute,
+    postXAmzTargetOvertureServiceDeleteVirtualInterfaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeConnectionLoaRoute,
+    postXAmzTargetOvertureServiceDescribeConnectionLoaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeConnectionsRoute,
+    postXAmzTargetOvertureServiceDescribeConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeConnectionsOnInterconnectRoute,
+    postXAmzTargetOvertureServiceDescribeConnectionsOnInterconnectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeCustomerMetadataRoute,
+    postXAmzTargetOvertureServiceDescribeCustomerMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsRoute,
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationProposalsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsRoute,
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsRoute,
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewayAttachmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewaysRoute,
+    postXAmzTargetOvertureServiceDescribeDirectConnectGatewaysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeHostedConnectionsRoute,
+    postXAmzTargetOvertureServiceDescribeHostedConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeInterconnectLoaRoute,
+    postXAmzTargetOvertureServiceDescribeInterconnectLoaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeInterconnectsRoute,
+    postXAmzTargetOvertureServiceDescribeInterconnectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeLagsRoute,
+    postXAmzTargetOvertureServiceDescribeLagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeLoaRoute,
+    postXAmzTargetOvertureServiceDescribeLoaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeLocationsRoute,
+    postXAmzTargetOvertureServiceDescribeLocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeRouterConfigurationRoute,
+    postXAmzTargetOvertureServiceDescribeRouterConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeTagsRoute,
+    postXAmzTargetOvertureServiceDescribeTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeVirtualGatewaysRoute,
+    postXAmzTargetOvertureServiceDescribeVirtualGatewaysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDescribeVirtualInterfacesRoute,
+    postXAmzTargetOvertureServiceDescribeVirtualInterfacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDisassociateConnectionFromLagRoute,
+    postXAmzTargetOvertureServiceDisassociateConnectionFromLagRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceDisassociateMacSecKeyRoute,
+    postXAmzTargetOvertureServiceDisassociateMacSecKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceListVirtualInterfaceTestHistoryRoute,
+    postXAmzTargetOvertureServiceListVirtualInterfaceTestHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceStartBgpFailoverTestRoute,
+    postXAmzTargetOvertureServiceStartBgpFailoverTestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceStopBgpFailoverTestRoute,
+    postXAmzTargetOvertureServiceStopBgpFailoverTestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceTagResourceRoute,
+    postXAmzTargetOvertureServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUntagResourceRoute,
+    postXAmzTargetOvertureServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUpdateConnectionRoute,
+    postXAmzTargetOvertureServiceUpdateConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUpdateDirectConnectGatewayRoute,
+    postXAmzTargetOvertureServiceUpdateDirectConnectGatewayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationRoute,
+    postXAmzTargetOvertureServiceUpdateDirectConnectGatewayAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUpdateLagRoute,
+    postXAmzTargetOvertureServiceUpdateLagRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesRoute,
+    postXAmzTargetOvertureServiceUpdateVirtualInterfaceAttributesRouteHandler,
+  )
 
 export default app

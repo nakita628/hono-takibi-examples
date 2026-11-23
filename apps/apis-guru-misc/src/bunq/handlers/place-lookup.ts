@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPlaceLookupPlaceLookupIDPhotoPhotoIDContentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPlaceLookupPlaceLookupIDPhotoPhotoIDContentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const placeLookupHandler = app.openapi(
-  getPlaceLookupPlaceLookupIDPhotoPhotoIDContentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getPlaceLookupPlaceLookupIDPhotoPhotoIDContentRouteHandler: RouteHandler<
+  typeof getPlaceLookupPlaceLookupIDPhotoPhotoIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

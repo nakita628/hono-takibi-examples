@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/vpcaccess/v1/openapi.yaml',
   output: './src/vpcaccess/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vpcaccess/types.ts' },
   client: { output: './src/vpcaccess/client.ts', baseUrl: '/' },
   rpc: { output: './src/vpcaccess/rpc.ts', parseResponse: true },

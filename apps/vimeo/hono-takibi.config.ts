@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/vimeo/openapi/blob/febb90093551f9e00571c5c25230df08e9af78dd/api.yaml
   input: 'https://raw.githubusercontent.com/vimeo/openapi/master/api.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

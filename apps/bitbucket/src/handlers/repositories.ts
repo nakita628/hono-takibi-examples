@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute,
   deleteRepositoriesWorkspaceRepoSlugCommitCommitApproveRoute,
   deleteRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute,
@@ -191,645 +191,1136 @@ import {
   putRepositoriesWorkspaceRepoSlugRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRepositoriesWorkspaceRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const repositoriesHandler = app
-  .openapi(getRepositoriesWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugBranchRestrictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugBranchRestrictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugBranchingModelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugBranchingModelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugBranchingModelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugCommitCommitApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitCommitApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitCommitCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitPullrequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugCommitsRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugCommitsRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDefaultReviewersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDeployKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugDeployKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDeploymentsDeploymentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugDiffSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDiffstatSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugDownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugDownloadsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugDownloadsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugEffectiveBranchingModelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugEffectiveDefaultReviewersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugFileConflictsSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugFilehistoryCommitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugForksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugForksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugMergeBaseRevspecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugMergeQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugOverrideSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugOverrideSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPatchSpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidContentUriRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogsLogUuidRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesTestCaseUuidTestCaseReasonsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStopPipelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigBuildNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidExecutionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdConflictsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffstatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeTaskStatusTaskIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeabilityChecksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRepositoriesWorkspaceRepoSlugRefsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugRefsBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugRefsBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugRefsBranchesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugRefsBranchesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugRefsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugRefsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRepositoriesWorkspaceRepoSlugRefsTagsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugRefsTagsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugSrcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRepositoriesWorkspaceRepoSlugSrcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugSrcCommitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositoriesWorkspaceRepoSlugWatchersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteRepositoriesWorkspaceRepoSlugRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugBranchRestrictionsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugBranchRestrictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugBranchRestrictionsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugBranchRestrictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugBranchRestrictionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugBranchingModelRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugBranchingModelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugBranchingModelSettingsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugBranchingModelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugBranchingModelSettingsRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugBranchingModelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugCommitCommitApproveRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugCommitCommitApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitCommitApproveRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitCommitApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitCommentsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitCommitCommentsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitCommitCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugCommitCommitCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitPullrequestsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitPullrequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitReportsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugCommitCommitReportsReportIdAnnotationsAnnotationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitStatusesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugCommitCommitStatusesBuildKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugCommitsRevisionRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugCommitsRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugCommitsRevisionRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugCommitsRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDefaultReviewersRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDefaultReviewersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugDefaultReviewersTargetUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDeployKeysRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDeployKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugDeployKeysRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugDeployKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugDeployKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDeploymentsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDeploymentsDeploymentUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDeploymentsDeploymentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugDeploymentsConfigEnvironmentsEnvironmentUuidVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDiffSpecRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDiffSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDiffstatSpecRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDiffstatSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDownloadsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDownloadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugDownloadsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugDownloadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugDownloadsFilenameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugDownloadsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugDownloadsFilenameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugDownloadsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugEffectiveBranchingModelRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugEffectiveBranchingModelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugEffectiveDefaultReviewersRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugEffectiveDefaultReviewersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugEnvironmentsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugEnvironmentsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugEnvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidChangesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugEnvironmentsEnvironmentUuidChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugFileConflictsSpecRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugFileConflictsSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugFilehistoryCommitPathRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugFilehistoryCommitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugForksRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugForksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugForksRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugForksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugHooksRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugHooksRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugHooksUidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugHooksUidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugHooksUidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugMergeBaseRevspecRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugMergeBaseRevspecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugMergeQueuesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugMergeQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueueRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugMergeQueuesMergeQueueUuidQueuePullrequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugOverrideSettingsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugOverrideSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugOverrideSettingsRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugOverrideSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPatchSpecRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPatchSpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPermissionsConfigGroupsGroupSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPermissionsConfigUsersSelectedUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidContentUriRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigCachesCacheUuidContentUriRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigRunnersRunnerUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogsLogUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidLogsLogUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesTestCaseUuidTestCaseReasonsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStepsStepUuidTestReportsTestCasesTestCaseUuidTestCaseReasonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStopPipelineRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesPipelineUuidStopPipelineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigBuildNumberRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigBuildNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidExecutionsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSchedulesScheduleUuidExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigSshKnownHostsKnownHostUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsActivityRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdActivityRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommentsCommentIdResolveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommitsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdConflictsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdConflictsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDeclineRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffstatRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdDiffstatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeTaskStatusTaskIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeTaskStatusTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeabilityChecksRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdMergeabilityChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdPatchRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdRequestChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdStatusesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPullrequestsPullRequestIdTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof putRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugPullrequestsPullrequestIdPropertiesAppKeyPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRefsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRefsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRefsBranchesRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRefsBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugRefsBranchesRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugRefsBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugRefsBranchesNameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugRefsBranchesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRefsBranchesNameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRefsBranchesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRefsTagsRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRefsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugRefsTagsRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugRefsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRepositoriesWorkspaceRepoSlugRefsTagsNameRouteHandler: RouteHandler<
+  typeof deleteRepositoriesWorkspaceRepoSlugRefsTagsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugRefsTagsNameRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugRefsTagsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugSrcRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugSrcRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRepositoriesWorkspaceRepoSlugSrcRouteHandler: RouteHandler<
+  typeof postRepositoriesWorkspaceRepoSlugSrcRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugSrcCommitPathRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugSrcCommitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositoriesWorkspaceRepoSlugWatchersRouteHandler: RouteHandler<
+  typeof getRepositoriesWorkspaceRepoSlugWatchersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

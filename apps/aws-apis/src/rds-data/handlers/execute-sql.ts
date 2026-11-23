@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postExecuteSqlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postExecuteSqlRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const executeSqlHandler = app.openapi(postExecuteSqlRoute, (c) => {
+export const postExecuteSqlRouteHandler: RouteHandler<typeof postExecuteSqlRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDistrictsYearRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDistrictsYearRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const districtsHandler = app.openapi(getDistrictsYearRoute, (c) => {
+export const getDistrictsYearRouteHandler: RouteHandler<typeof getDistrictsYearRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

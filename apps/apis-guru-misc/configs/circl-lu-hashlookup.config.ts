@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/circl.lu/hashlookup/1.2/openapi.yaml',
   output: './src/circl-lu-hashlookup/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/circl-lu-hashlookup/types.ts' },
   client: { output: './src/circl-lu-hashlookup/client.ts', baseUrl: '/' },
   rpc: { output: './src/circl-lu-hashlookup/rpc.ts', parseResponse: true },

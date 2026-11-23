@@ -1,10 +1,5 @@
 type String1To255 = string
 type AddProfileKeyResponse = { KeyName?: {} | undefined; Values?: {} | undefined }
-type BadRequestException = { [x: string]: unknown }
-type AccessDeniedException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ThrottlingException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type TagValue = string
 type CreateDomainResponse = {
   DomainName: {}
@@ -310,6010 +305,1079 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/domains/:DomainName/profiles/keys': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: AddProfileKeyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
+        output: AddProfileKeyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateDomainResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            DefaultExpirationDays: number
+            DefaultEncryptionKey?: string | undefined
+            DeadLetterQueueUrl?: string | undefined
+            Matching?:
+              | {
+                  Enabled?: {} | undefined
+                  JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
+                  AutoMerging?:
+                    | {
+                        Enabled: {}
+                        Consolidation?: { MatchingAttributesList: {} } | undefined
+                        ConflictResolution?:
+                          | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
+                          | undefined
+                        MinAllowedConfidenceScoreForMerging?: {} | undefined
+                      }
+                    | undefined
+                  ExportingConfig?:
+                    | { S3Exporting?: { S3BucketName: {}; S3KeyName?: {} | undefined } | undefined }
+                    | undefined
+                }
+              | undefined
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateDomainResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: DeleteDomainResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
+        }
+        output: GetDomainResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays: number
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
+        } & {
+          json: {
+            DefaultExpirationDays?: number | undefined
+            DefaultEncryptionKey?: string | undefined
+            DeadLetterQueueUrl?: string | undefined
+            Matching?:
+              | {
+                  Enabled?: {} | undefined
+                  JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
+                  AutoMerging?:
+                    | {
+                        Enabled: {}
+                        Consolidation?: { MatchingAttributesList: {} } | undefined
+                        ConflictResolution?:
+                          | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
+                          | undefined
+                        MinAllowedConfidenceScoreForMerging?: {} | undefined
+                      }
+                    | undefined
+                  ExportingConfig?:
+                    | { S3Exporting?: { S3BucketName: {}; S3KeyName?: {} | undefined } | undefined }
+                    | undefined
+                }
+              | undefined
+            Tags?: { [x: string]: TagValue } | undefined
           }
-      $delete:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteDomainResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetDomainResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: UpdateDomainResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultExpirationDays?: number | undefined
-                DefaultEncryptionKey?: string | undefined
-                DeadLetterQueueUrl?: string | undefined
-                Matching?:
-                  | {
-                      Enabled?: {} | undefined
-                      JobSchedule?: { DayOfTheWeek: {}; Time: {} } | undefined
-                      AutoMerging?:
-                        | {
-                            Enabled: {}
-                            Consolidation?: { MatchingAttributesList: {} } | undefined
-                            ConflictResolution?:
-                              | { ConflictResolvingModel: {}; SourceName?: {} | undefined }
-                              | undefined
-                            MinAllowedConfidenceScoreForMerging?: {} | undefined
-                          }
-                        | undefined
-                      ExportingConfig?:
-                        | {
-                            S3Exporting?:
-                              | { S3BucketName: {}; S3KeyName?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateDomainResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/workflows/integrations': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateIntegrationWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
+        } & {
+          json: {
+            WorkflowType: 'APPFLOW_INTEGRATION'
+            IntegrationConfig: {
+              AppflowIntegration?:
+                | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
+                | undefined
             }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+            ObjectTypeName: string
+            RoleArn: string
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType: 'APPFLOW_INTEGRATION'
-                IntegrationConfig: {
-                  AppflowIntegration?:
-                    | { FlowDefinition: FlowDefinition; Batches?: {} | undefined }
-                    | undefined
-                }
-                ObjectTypeName: string
-                RoleArn: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: CreateIntegrationWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: CreateProfileResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AccountNumber?: string | undefined
+            AdditionalInformation?: string | undefined
+            PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
+            BusinessName?: string | undefined
+            FirstName?: string | undefined
+            MiddleName?: string | undefined
+            LastName?: string | undefined
+            BirthDate?: string | undefined
+            Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
+            PhoneNumber?: string | undefined
+            MobilePhoneNumber?: string | undefined
+            HomePhoneNumber?: string | undefined
+            BusinessPhoneNumber?: string | undefined
+            EmailAddress?: string | undefined
+            PersonalEmailAddress?: string | undefined
+            BusinessEmailAddress?: string | undefined
+            Address?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            ShippingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            MailingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            BillingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            Attributes?: { [x: string]: String1To255 } | undefined
+            PartyTypeString?: string | undefined
+            GenderString?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            ProfileId: string
+            AdditionalInformation?: string | undefined
+            AccountNumber?: string | undefined
+            PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
+            BusinessName?: string | undefined
+            FirstName?: string | undefined
+            MiddleName?: string | undefined
+            LastName?: string | undefined
+            BirthDate?: string | undefined
+            Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
+            PhoneNumber?: string | undefined
+            MobilePhoneNumber?: string | undefined
+            HomePhoneNumber?: string | undefined
+            BusinessPhoneNumber?: string | undefined
+            EmailAddress?: string | undefined
+            PersonalEmailAddress?: string | undefined
+            BusinessEmailAddress?: string | undefined
+            Address?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            ShippingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            MailingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            BillingAddress?:
+              | {
+                  Address1?: {} | undefined
+                  Address2?: {} | undefined
+                  Address3?: {} | undefined
+                  Address4?: {} | undefined
+                  City?: {} | undefined
+                  County?: {} | undefined
+                  State?: {} | undefined
+                  Province?: {} | undefined
+                  Country?: {} | undefined
+                  PostalCode?: {} | undefined
+                }
+              | undefined
+            Attributes?: { [x: string]: String0To255 } | undefined
+            PartyTypeString?: string | undefined
+            GenderString?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AccountNumber?: string | undefined
-                AdditionalInformation?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String1To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: UpdateProfileResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ProfileId: string
-                AdditionalInformation?: string | undefined
-                AccountNumber?: string | undefined
-                PartyType?: 'INDIVIDUAL' | 'BUSINESS' | 'OTHER' | undefined
-                BusinessName?: string | undefined
-                FirstName?: string | undefined
-                MiddleName?: string | undefined
-                LastName?: string | undefined
-                BirthDate?: string | undefined
-                Gender?: 'MALE' | 'FEMALE' | 'UNSPECIFIED' | undefined
-                PhoneNumber?: string | undefined
-                MobilePhoneNumber?: string | undefined
-                HomePhoneNumber?: string | undefined
-                BusinessPhoneNumber?: string | undefined
-                EmailAddress?: string | undefined
-                PersonalEmailAddress?: string | undefined
-                BusinessEmailAddress?: string | undefined
-                Address?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                ShippingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                MailingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                BillingAddress?:
-                  | {
-                      Address1?: {} | undefined
-                      Address2?: {} | undefined
-                      Address3?: {} | undefined
-                      Address4?: {} | undefined
-                      City?: {} | undefined
-                      County?: {} | undefined
-                      State?: {} | undefined
-                      Province?: {} | undefined
-                      Country?: {} | undefined
-                      PostalCode?: {} | undefined
-                    }
-                  | undefined
-                Attributes?: { [x: string]: String0To255 } | undefined
-                PartyTypeString?: string | undefined
-                GenderString?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/integrations/delete': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: DeleteIntegrationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { Uri: string } }
+        output: DeleteIntegrationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/delete': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: DeleteProfileResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { ProfileId: string } }
+        output: DeleteProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/keys/delete': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: DeleteProfileKeyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { ProfileId: string; KeyName: string; Values: String1To255[] } }
+        output: DeleteProfileKeyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/objects/delete': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: DeleteProfileObjectResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { ProfileId: string; ProfileObjectUniqueKey: string; ObjectTypeName: string } }
+        output: DeleteProfileObjectResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/object-types/:ObjectTypeName': {
-      $delete:
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteProfileObjectTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { DomainName: string; ObjectTypeName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteProfileObjectTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DomainName: string; ObjectTypeName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetProfileObjectTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DomainName: string; ObjectTypeName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            Description: string
+            TemplateId?: string | undefined
+            ExpirationDays?: number | undefined
+            EncryptionKey?: string | undefined
+            AllowProfileCreation?: boolean | undefined
+            SourceLastUpdatedTimestampFormat?: string | undefined
+            Fields?: { [x: string]: ObjectTypeField } | undefined
+            Keys?: { [x: string]: ObjectTypeKeyList } | undefined
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetProfileObjectTypeResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: PutProfileObjectTypeResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; ObjectTypeName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Description: string
-                TemplateId?: string | undefined
-                ExpirationDays?: number | undefined
-                EncryptionKey?: string | undefined
-                AllowProfileCreation?: boolean | undefined
-                SourceLastUpdatedTimestampFormat?: string | undefined
-                Fields?: { [x: string]: ObjectTypeField } | undefined
-                Keys?: { [x: string]: ObjectTypeKeyList } | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutProfileObjectTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/workflows/:WorkflowId': {
-      $delete:
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { DomainName: string; WorkflowId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DomainName: string; WorkflowId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetWorkflowResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/identity-resolution-jobs/auto-merging-preview': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
-            }
-            output: GetAutoMergingPreviewResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
+        } & {
+          json: {
+            Consolidation: { MatchingAttributesList?: {} | undefined }
+            ConflictResolution: {
+              ConflictResolvingModel?: {} | undefined
+              SourceName?: {} | undefined
             }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+            MinAllowedConfidenceScoreForMerging?: number | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Consolidation: { MatchingAttributesList?: {} | undefined }
-                ConflictResolution: {
-                  ConflictResolvingModel?: {} | undefined
-                  SourceName?: {} | undefined
-                }
-                MinAllowedConfidenceScoreForMerging?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetAutoMergingPreviewResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/identity-resolution-jobs/:JobId': {
-      $get:
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetIdentityResolutionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DomainName: string; JobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; JobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetIdentityResolutionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/integrations': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: GetIntegrationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Uri: string } }
+        output: GetIntegrationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DomainName: string } } & {
+          query: {
+            'next-token'?: string | undefined
+            'max-results'?: number | undefined
+            'include-hidden'?: boolean | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: ListIntegrationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListIntegrationsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
+        } & {
+          json: {
+            Uri?: string | undefined
+            ObjectTypeName?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
+            FlowDefinition?:
+              | {
+                  Description?: {} | undefined
+                  FlowName?: {} | undefined
+                  KmsArn?: {} | undefined
+                  SourceFlowConfig?:
+                    | {
+                        ConnectorProfileName?: {} | undefined
+                        ConnectorType: {}
+                        IncrementalPullConfig?:
+                          | { DatetimeTypeFieldName?: {} | undefined }
+                          | undefined
+                        SourceConnectorProperties: {
+                          Marketo?: { Object: {} } | undefined
+                          S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
+                          Salesforce?:
+                            | {
+                                Object: {}
+                                EnableDynamicFieldUpdate?: {} | undefined
+                                IncludeDeletedRecords?: {} | undefined
+                              }
+                            | undefined
+                          ServiceNow?: { Object: {} } | undefined
+                          Zendesk?: { Object: {} } | undefined
+                        }
+                      }
+                    | undefined
+                  Tasks?: {} | undefined
+                  TriggerConfig?:
+                    | {
+                        TriggerType: {}
+                        TriggerProperties?:
+                          | {
+                              Scheduled?:
                                 | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
+                                    ScheduleExpression: {}
+                                    DataPullMode?: {} | undefined
+                                    ScheduleStartTime?: {} | undefined
+                                    ScheduleEndTime?: {} | undefined
+                                    Timezone?: {} | undefined
+                                    ScheduleOffset?: {} | undefined
+                                    FirstExecutionFrom?: {} | undefined
                                   }
                                 | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
                             }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: PutIntegrationResponse
-            outputFormat: 'json'
-            status: 200
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            ObjectTypeNames?: { [x: string]: TypeName } | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
-                                | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
-                                  }
-                                | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
-                                | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
-                                  }
-                                | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
-                                | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
-                                  }
-                                | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
-                                | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
-                                  }
-                                | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Uri?: string | undefined
-                ObjectTypeName?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                FlowDefinition?:
-                  | {
-                      Description?: {} | undefined
-                      FlowName?: {} | undefined
-                      KmsArn?: {} | undefined
-                      SourceFlowConfig?:
-                        | {
-                            ConnectorProfileName?: {} | undefined
-                            ConnectorType: {}
-                            IncrementalPullConfig?:
-                              | { DatetimeTypeFieldName?: {} | undefined }
-                              | undefined
-                            SourceConnectorProperties: {
-                              Marketo?: { Object: {} } | undefined
-                              S3?: { BucketName: {}; BucketPrefix?: {} | undefined } | undefined
-                              Salesforce?:
-                                | {
-                                    Object: {}
-                                    EnableDynamicFieldUpdate?: {} | undefined
-                                    IncludeDeletedRecords?: {} | undefined
-                                  }
-                                | undefined
-                              ServiceNow?: { Object: {} } | undefined
-                              Zendesk?: { Object: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      Tasks?: {} | undefined
-                      TriggerConfig?:
-                        | {
-                            TriggerType: {}
-                            TriggerProperties?:
-                              | {
-                                  Scheduled?:
-                                    | {
-                                        ScheduleExpression: {}
-                                        DataPullMode?: {} | undefined
-                                        ScheduleStartTime?: {} | undefined
-                                        ScheduleEndTime?: {} | undefined
-                                        Timezone?: {} | undefined
-                                        ScheduleOffset?: {} | undefined
-                                        FirstExecutionFrom?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                ObjectTypeNames?: { [x: string]: TypeName } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutIntegrationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/matches': {
-      $get:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetMatchesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetMatchesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/templates/:TemplateId': {
-      $get:
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetProfileObjectTypeTemplateResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { TemplateId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { TemplateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetProfileObjectTypeTemplateResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/workflows/:WorkflowId/steps': {
-      $get:
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetWorkflowStepsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DomainName: string; WorkflowId: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string; WorkflowId: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetWorkflowStepsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/integrations': {
-      $post:
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ListAccountIntegrationsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: {
+            'next-token'?: string | undefined
+            'max-results'?: number | undefined
+            'include-hidden'?: boolean | undefined
           }
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                'next-token'?: string | undefined
-                'max-results'?: number | undefined
-                'include-hidden'?: boolean | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Uri: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { Uri: string } }
+        output: ListAccountIntegrationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains': {
-      $get:
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListDomainsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListDomainsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/identity-resolution-jobs': {
-      $get:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListIdentityResolutionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListIdentityResolutionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/templates': {
-      $get:
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListProfileObjectTypeTemplatesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListProfileObjectTypeTemplatesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/object-types': {
-      $get:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListProfileObjectTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListProfileObjectTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/objects': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: ListProfileObjectsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            ObjectTypeName: string
+            ProfileId: string
+            ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: ListProfileObjectsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ObjectTypeName: string
-                ProfileId: string
-                ObjectFilter?: { KeyName?: {} | undefined; Values?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: PutProfileObjectResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ObjectTypeName: string; Object: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { ObjectTypeName: string; Object: string } }
+        output: PutProfileObjectResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/workflows': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: ListWorkflowsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
+            Status?:
+              | 'NOT_STARTED'
+              | 'IN_PROGRESS'
+              | 'COMPLETE'
+              | 'FAILED'
+              | 'SPLIT'
+              | 'RETRY'
+              | 'CANCELLED'
+              | undefined
+            QueryStartDate?: string | undefined
+            QueryEndDate?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkflowType?: 'APPFLOW_INTEGRATION' | undefined
-                Status?:
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'FAILED'
-                  | 'SPLIT'
-                  | 'RETRY'
-                  | 'CANCELLED'
-                  | undefined
-                QueryStartDate?: string | undefined
-                QueryEndDate?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListWorkflowsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/objects/merge': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MainProfileId: string
-                ProfileIdsToBeMerged: Uuid[]
-                FieldSourceProfileIds?:
-                  | {
-                      AccountNumber?: {} | undefined
-                      AdditionalInformation?: {} | undefined
-                      PartyType?: {} | undefined
-                      BusinessName?: {} | undefined
-                      FirstName?: {} | undefined
-                      MiddleName?: {} | undefined
-                      LastName?: {} | undefined
-                      BirthDate?: {} | undefined
-                      Gender?: {} | undefined
-                      PhoneNumber?: {} | undefined
-                      MobilePhoneNumber?: {} | undefined
-                      HomePhoneNumber?: {} | undefined
-                      BusinessPhoneNumber?: {} | undefined
-                      EmailAddress?: {} | undefined
-                      PersonalEmailAddress?: {} | undefined
-                      BusinessEmailAddress?: {} | undefined
-                      Address?: {} | undefined
-                      ShippingAddress?: {} | undefined
-                      MailingAddress?: {} | undefined
-                      BillingAddress?: {} | undefined
-                      Attributes?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: MergeProfilesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MainProfileId: string
-                ProfileIdsToBeMerged: Uuid[]
-                FieldSourceProfileIds?:
-                  | {
-                      AccountNumber?: {} | undefined
-                      AdditionalInformation?: {} | undefined
-                      PartyType?: {} | undefined
-                      BusinessName?: {} | undefined
-                      FirstName?: {} | undefined
-                      MiddleName?: {} | undefined
-                      LastName?: {} | undefined
-                      BirthDate?: {} | undefined
-                      Gender?: {} | undefined
-                      PhoneNumber?: {} | undefined
-                      MobilePhoneNumber?: {} | undefined
-                      HomePhoneNumber?: {} | undefined
-                      BusinessPhoneNumber?: {} | undefined
-                      EmailAddress?: {} | undefined
-                      PersonalEmailAddress?: {} | undefined
-                      BusinessEmailAddress?: {} | undefined
-                      Address?: {} | undefined
-                      ShippingAddress?: {} | undefined
-                      MailingAddress?: {} | undefined
-                      BillingAddress?: {} | undefined
-                      Attributes?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            MainProfileId: string
+            ProfileIdsToBeMerged: Uuid[]
+            FieldSourceProfileIds?:
+              | {
+                  AccountNumber?: {} | undefined
+                  AdditionalInformation?: {} | undefined
+                  PartyType?: {} | undefined
+                  BusinessName?: {} | undefined
+                  FirstName?: {} | undefined
+                  MiddleName?: {} | undefined
+                  LastName?: {} | undefined
+                  BirthDate?: {} | undefined
+                  Gender?: {} | undefined
+                  PhoneNumber?: {} | undefined
+                  MobilePhoneNumber?: {} | undefined
+                  HomePhoneNumber?: {} | undefined
+                  BusinessPhoneNumber?: {} | undefined
+                  EmailAddress?: {} | undefined
+                  PersonalEmailAddress?: {} | undefined
+                  BusinessEmailAddress?: {} | undefined
+                  Address?: {} | undefined
+                  ShippingAddress?: {} | undefined
+                  MailingAddress?: {} | undefined
+                  BillingAddress?: {} | undefined
+                  Attributes?: {} | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MainProfileId: string
-                ProfileIdsToBeMerged: Uuid[]
-                FieldSourceProfileIds?:
-                  | {
-                      AccountNumber?: {} | undefined
-                      AdditionalInformation?: {} | undefined
-                      PartyType?: {} | undefined
-                      BusinessName?: {} | undefined
-                      FirstName?: {} | undefined
-                      MiddleName?: {} | undefined
-                      LastName?: {} | undefined
-                      BirthDate?: {} | undefined
-                      Gender?: {} | undefined
-                      PhoneNumber?: {} | undefined
-                      MobilePhoneNumber?: {} | undefined
-                      HomePhoneNumber?: {} | undefined
-                      BusinessPhoneNumber?: {} | undefined
-                      EmailAddress?: {} | undefined
-                      PersonalEmailAddress?: {} | undefined
-                      BusinessEmailAddress?: {} | undefined
-                      Address?: {} | undefined
-                      ShippingAddress?: {} | undefined
-                      MailingAddress?: {} | undefined
-                      BillingAddress?: {} | undefined
-                      Attributes?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MainProfileId: string
-                ProfileIdsToBeMerged: Uuid[]
-                FieldSourceProfileIds?:
-                  | {
-                      AccountNumber?: {} | undefined
-                      AdditionalInformation?: {} | undefined
-                      PartyType?: {} | undefined
-                      BusinessName?: {} | undefined
-                      FirstName?: {} | undefined
-                      MiddleName?: {} | undefined
-                      LastName?: {} | undefined
-                      BirthDate?: {} | undefined
-                      Gender?: {} | undefined
-                      PhoneNumber?: {} | undefined
-                      MobilePhoneNumber?: {} | undefined
-                      HomePhoneNumber?: {} | undefined
-                      BusinessPhoneNumber?: {} | undefined
-                      EmailAddress?: {} | undefined
-                      PersonalEmailAddress?: {} | undefined
-                      BusinessEmailAddress?: {} | undefined
-                      Address?: {} | undefined
-                      ShippingAddress?: {} | undefined
-                      MailingAddress?: {} | undefined
-                      BillingAddress?: {} | undefined
-                      Attributes?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MainProfileId: string
-                ProfileIdsToBeMerged: Uuid[]
-                FieldSourceProfileIds?:
-                  | {
-                      AccountNumber?: {} | undefined
-                      AdditionalInformation?: {} | undefined
-                      PartyType?: {} | undefined
-                      BusinessName?: {} | undefined
-                      FirstName?: {} | undefined
-                      MiddleName?: {} | undefined
-                      LastName?: {} | undefined
-                      BirthDate?: {} | undefined
-                      Gender?: {} | undefined
-                      PhoneNumber?: {} | undefined
-                      MobilePhoneNumber?: {} | undefined
-                      HomePhoneNumber?: {} | undefined
-                      BusinessPhoneNumber?: {} | undefined
-                      EmailAddress?: {} | undefined
-                      PersonalEmailAddress?: {} | undefined
-                      BusinessEmailAddress?: {} | undefined
-                      Address?: {} | undefined
-                      ShippingAddress?: {} | undefined
-                      MailingAddress?: {} | undefined
-                      BillingAddress?: {} | undefined
-                      Attributes?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: MergeProfilesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/domains/:DomainName/profiles/search': {
-      $post:
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: SearchProfilesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DomainName: string } } & {
+          query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            KeyName: string
+            Values: String1To255[]
+            AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
+            LogicalOperator?: 'AND' | 'OR' | undefined
           }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { DomainName: string } } & {
-              query: { 'next-token'?: string | undefined; 'max-results'?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                KeyName: string
-                Values: String1To255[]
-                AdditionalSearchKeys?: AdditionalSearchKey[] | undefined
-                LogicalOperator?: 'AND' | 'OR' | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: SearchProfilesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

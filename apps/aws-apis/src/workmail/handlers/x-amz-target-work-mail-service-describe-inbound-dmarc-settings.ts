@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceDescribeInboundDmarcSettingsHandler = app.openapi(
-  postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceDescribeInboundDmarcSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTeamTeamKeyAwardsRoute,
   getTeamTeamKeyAwardsYearRoute,
   getTeamTeamKeyDistrictsRoute,
@@ -28,84 +28,156 @@ import {
   getTeamTeamKeyYearsParticipatedRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamTeamKeyRouteHandler: RouteHandler<typeof getTeamTeamKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamHandler = app
-  .openapi(getTeamTeamKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyAwardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyAwardsYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyDistrictsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventEventKeyAwardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventEventKeyMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventEventKeyMatchesKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventEventKeyMatchesSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventEventKeyStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsYearKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsYearSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyEventsYearStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMatchesYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMatchesYearKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMatchesYearSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMediaTagMediaTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMediaTagMediaTagYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyMediaYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyRobotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeySimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeySocialMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamTeamKeyYearsParticipatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamTeamKeyAwardsRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyAwardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyAwardsYearRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyAwardsYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyDistrictsRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyDistrictsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventEventKeyAwardsRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventEventKeyAwardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventEventKeyMatchesRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventEventKeyMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventEventKeyMatchesKeysRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventEventKeyMatchesKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventEventKeyMatchesSimpleRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventEventKeyMatchesSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventEventKeyStatusRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventEventKeyStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsKeysRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsSimpleRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsYearRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsYearKeysRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsYearKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsYearSimpleRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsYearSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyEventsYearStatusesRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyEventsYearStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMatchesYearRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMatchesYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMatchesYearKeysRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMatchesYearKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMatchesYearSimpleRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMatchesYearSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMediaTagMediaTagRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMediaTagMediaTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMediaTagMediaTagYearRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMediaTagMediaTagYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyMediaYearRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyMediaYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyRobotsRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyRobotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeySimpleRouteHandler: RouteHandler<
+  typeof getTeamTeamKeySimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeySocialMediaRouteHandler: RouteHandler<
+  typeof getTeamTeamKeySocialMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamTeamKeyYearsParticipatedRouteHandler: RouteHandler<
+  typeof getTeamTeamKeyYearsParticipatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

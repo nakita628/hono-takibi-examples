@@ -5764,7 +5764,6 @@ export const postTransfersApproveRoute = createRoute({
   responses: {
     200: {
       description: 'No Content - look at the actual response code for the status of the request. ',
-      content: {},
       headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
     },
     401: {
@@ -5811,7 +5810,6 @@ export const postTransfersCancelRoute = createRoute({
   responses: {
     200: {
       description: 'No Content - look at the actual response code for the status of the request. ',
-      content: {},
       headers: z.object({ 'Idempotency-Key': IdempotencyKeyHeaderSchema }),
     },
     401: {

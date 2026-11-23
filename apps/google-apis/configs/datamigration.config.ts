@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/datamigration/v1beta1/openapi.yaml',
   output: './src/datamigration/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/datamigration/types.ts' },
   client: { output: './src/datamigration/client.ts', baseUrl: '/' },
   rpc: { output: './src/datamigration/rpc.ts', parseResponse: true },

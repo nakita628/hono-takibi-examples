@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAssociateresourcesharepermissionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAssociateresourcesharepermissionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const associateresourcesharepermissionHandler = app.openapi(
-  postAssociateresourcesharepermissionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postAssociateresourcesharepermissionRouteHandler: RouteHandler<
+  typeof postAssociateresourcesharepermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

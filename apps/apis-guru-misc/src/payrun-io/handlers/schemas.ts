@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSchemasDtoDataTypeRoute, getSchemasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSchemasDtoDataTypeRoute, getSchemasRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSchemasRouteHandler: RouteHandler<typeof getSchemasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schemasHandler = app
-  .openapi(getSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasDtoDataTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSchemasDtoDataTypeRouteHandler: RouteHandler<
+  typeof getSchemasDtoDataTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

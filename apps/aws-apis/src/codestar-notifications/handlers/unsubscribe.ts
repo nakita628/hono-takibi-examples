@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUnsubscribeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUnsubscribeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const unsubscribeHandler = app.openapi(postUnsubscribeRoute, (c) => {
+export const postUnsubscribeRouteHandler: RouteHandler<typeof postUnsubscribeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

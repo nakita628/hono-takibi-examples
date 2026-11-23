@@ -9,7 +9,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & { '/status/206': { $get: { input: {}; output: {}; outputFormat: string; status: 206 } } } & {
     '/status/207': { $get: { input: {}; output: {}; outputFormat: string; status: 207 } }
   } & { '/status/208': { $get: { input: {}; output: {}; outputFormat: string; status: 208 } } } & {
-    '/status/218': { $get: { input: {}; output: {}; outputFormat: string; status: 218 } }
+    '/status/218': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & { '/status/226': { $get: { input: {}; output: {}; outputFormat: string; status: 226 } } } & {
     '/status/300': { $get: { input: {}; output: {}; outputFormat: string; status: 300 } }
   } & { '/status/301': { $get: { input: {}; output: {}; outputFormat: string; status: 301 } } } & {
@@ -39,8 +39,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & { '/status/416': { $get: { input: {}; output: {}; outputFormat: string; status: 416 } } } & {
     '/status/417': { $get: { input: {}; output: {}; outputFormat: string; status: 417 } }
   } & { '/status/418': { $get: { input: {}; output: {}; outputFormat: string; status: 418 } } } & {
-    '/status/419': { $get: { input: {}; output: {}; outputFormat: string; status: 419 } }
-  } & { '/status/420': { $get: { input: {}; output: {}; outputFormat: string; status: 420 } } } & {
+    '/status/419': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/420': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
     '/status/421': { $get: { input: {}; output: {}; outputFormat: string; status: 421 } }
   } & { '/status/422': { $get: { input: {}; output: {}; outputFormat: string; status: 422 } } } & {
     '/status/423': { $get: { input: {}; output: {}; outputFormat: string; status: 423 } }
@@ -49,19 +49,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & { '/status/426': { $get: { input: {}; output: {}; outputFormat: string; status: 426 } } } & {
     '/status/428': { $get: { input: {}; output: {}; outputFormat: string; status: 428 } }
   } & { '/status/429': { $get: { input: {}; output: {}; outputFormat: string; status: 429 } } } & {
-    '/status/430': { $get: { input: {}; output: {}; outputFormat: string; status: 430 } }
+    '/status/430': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & { '/status/431': { $get: { input: {}; output: {}; outputFormat: string; status: 431 } } } & {
-    '/status/440': { $get: { input: {}; output: {}; outputFormat: string; status: 440 } }
-  } & { '/status/444': { $get: { input: {}; output: {}; outputFormat: string; status: 444 } } } & {
-    '/status/449': { $get: { input: {}; output: {}; outputFormat: string; status: 449 } }
-  } & { '/status/450': { $get: { input: {}; output: {}; outputFormat: string; status: 450 } } } & {
+    '/status/440': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/444': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/449': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/450': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
     '/status/451': { $get: { input: {}; output: {}; outputFormat: string; status: 451 } }
-  } & { '/status/494': { $get: { input: {}; output: {}; outputFormat: string; status: 494 } } } & {
-    '/status/495': { $get: { input: {}; output: {}; outputFormat: string; status: 495 } }
-  } & { '/status/496': { $get: { input: {}; output: {}; outputFormat: string; status: 496 } } } & {
-    '/status/497': { $get: { input: {}; output: {}; outputFormat: string; status: 497 } }
-  } & { '/status/498': { $get: { input: {}; output: {}; outputFormat: string; status: 498 } } } & {
-    '/status/499': { $get: { input: {}; output: {}; outputFormat: string; status: 499 } }
+  } & { '/status/494': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/495': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/496': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/497': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/498': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/499': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & { '/status/500': { $get: { input: {}; output: {}; outputFormat: string; status: 500 } } } & {
     '/status/501': { $get: { input: {}; output: {}; outputFormat: string; status: 501 } }
   } & { '/status/502': { $get: { input: {}; output: {}; outputFormat: string; status: 502 } } } & {
@@ -71,20 +71,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & { '/status/506': { $get: { input: {}; output: {}; outputFormat: string; status: 506 } } } & {
     '/status/507': { $get: { input: {}; output: {}; outputFormat: string; status: 507 } }
   } & { '/status/508': { $get: { input: {}; output: {}; outputFormat: string; status: 508 } } } & {
-    '/status/509': { $get: { input: {}; output: {}; outputFormat: string; status: 509 } }
+    '/status/509': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & { '/status/510': { $get: { input: {}; output: {}; outputFormat: string; status: 510 } } } & {
     '/status/511': { $get: { input: {}; output: {}; outputFormat: string; status: 511 } }
-  } & { '/status/520': { $get: { input: {}; output: {}; outputFormat: string; status: 520 } } } & {
-    '/status/512': { $get: { input: {}; output: {}; outputFormat: string; status: 521 } }
-  } & { '/status/522': { $get: { input: {}; output: {}; outputFormat: string; status: 522 } } } & {
-    '/status/523': { $get: { input: {}; output: {}; outputFormat: string; status: 523 } }
-  } & { '/status/524': { $get: { input: {}; output: {}; outputFormat: string; status: 524 } } } & {
-    '/status/525': { $get: { input: {}; output: {}; outputFormat: string; status: 525 } }
-  } & { '/status/526': { $get: { input: {}; output: {}; outputFormat: string; status: 526 } } } & {
-    '/status/527': { $get: { input: {}; output: {}; outputFormat: string; status: 527 } }
-  } & { '/status/529': { $get: { input: {}; output: {}; outputFormat: string; status: 529 } } } & {
-    '/status/530': { $get: { input: {}; output: {}; outputFormat: string; status: 530 } }
-  } & { '/status/598': { $get: { input: {}; output: {}; outputFormat: string; status: 598 } } } & {
+  } & { '/status/520': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/512': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/522': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/523': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/524': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/525': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/526': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/527': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/529': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
+    '/status/530': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
+  } & { '/status/598': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
     '/status/100': { $get: { input: {}; output: {}; outputFormat: string; status: 100 } }
   } & { '/status/101': { $get: { input: {}; output: {}; outputFormat: string; status: 101 } } } & {
     '/status/102': { $get: { input: {}; output: {}; outputFormat: string; status: 102 } }

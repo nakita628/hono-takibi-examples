@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMacieServiceUpdateS3ResourcesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMacieServiceUpdateS3ResourcesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMacieServiceUpdateS3ResourcesHandler = app.openapi(
-  postXAmzTargetMacieServiceUpdateS3ResourcesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMacieServiceUpdateS3ResourcesRouteHandler: RouteHandler<
+  typeof postXAmzTargetMacieServiceUpdateS3ResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

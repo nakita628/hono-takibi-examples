@@ -1,12 +1,18 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { accountHandler, htmlHandler, selectedHandler, selectedMultipleHandler } from './handlers'
+import { getAccountRoute, getHtmlRoute, getSelectedMultipleRoute, getSelectedRoute } from './routes'
+import {
+  getAccountRouteHandler,
+  getHtmlRouteHandler,
+  getSelectedMultipleRouteHandler,
+  getSelectedRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', accountHandler)
-  .route('/', htmlHandler)
-  .route('/', selectedHandler)
-  .route('/', selectedMultipleHandler)
+  .openapi(getAccountRoute, getAccountRouteHandler)
+  .openapi(getHtmlRoute, getHtmlRouteHandler)
+  .openapi(getSelectedRoute, getSelectedRouteHandler)
+  .openapi(getSelectedMultipleRoute, getSelectedMultipleRouteHandler)
 
 export default app

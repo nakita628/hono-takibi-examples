@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/iptwist.com/1.0.0/openapi.yaml',
   output: './src/iptwist/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iptwist/types.ts' },
   client: { output: './src/iptwist/client.ts', baseUrl: '/' },
   rpc: { output: './src/iptwist/rpc.ts', parseResponse: true },

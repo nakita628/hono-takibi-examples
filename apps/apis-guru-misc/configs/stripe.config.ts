@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/stripe.com/2022-11-15/openapi.yaml',
   output: './src/stripe/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/stripe/types.ts' },
   client: { output: './src/stripe/client.ts', baseUrl: '/' },
   rpc: { output: './src/stripe/rpc.ts', parseResponse: true },

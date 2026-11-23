@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAttributeGroupListJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAttributeGroupListJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const attributeGroupListJsonHandler = app.openapi(getAttributeGroupListJsonRoute, (c) => {
+export const getAttributeGroupListJsonRouteHandler: RouteHandler<
+  typeof getAttributeGroupListJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

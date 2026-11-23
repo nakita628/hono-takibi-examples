@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53ResolverDeleteResolverRuleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53ResolverDeleteResolverRuleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53ResolverDeleteResolverRuleHandler = app.openapi(
-  postXAmzTargetRoute53ResolverDeleteResolverRuleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53ResolverDeleteResolverRuleRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53ResolverDeleteResolverRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateServiceLinkedRoleRoute,
   postActionCreateServiceLinkedRoleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateServiceLinkedRoleRouteHandler: RouteHandler<
+  typeof getActionCreateServiceLinkedRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateServiceLinkedRoleHandler = app
-  .openapi(getActionCreateServiceLinkedRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateServiceLinkedRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateServiceLinkedRoleRouteHandler: RouteHandler<
+  typeof postActionCreateServiceLinkedRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

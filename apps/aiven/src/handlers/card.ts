@@ -1,18 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteCardCardIdRoute, getCardRoute, postCardRoute, putCardCardIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteCardCardIdRoute,
+  getCardRoute,
+  postCardRoute,
+  putCardCardIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postCardRouteHandler: RouteHandler<typeof postCardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cardHandler = app
-  .openapi(postCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardCardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardCardIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCardRouteHandler: RouteHandler<typeof getCardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardCardIdRouteHandler: RouteHandler<typeof deleteCardCardIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardCardIdRouteHandler: RouteHandler<typeof putCardCardIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

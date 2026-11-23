@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountAccountIdBusinessProfileProfileIdRoute,
   deleteAccountAccountIdConnectorsMerchantConnectorIdRoute,
   getAccountAccountIdBusinessProfileProfileIdRoute,
@@ -19,69 +19,104 @@ import {
   postAccountAccountIdWebhooksMerchantConnectorIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountAccountIdConnectorsRouteHandler: RouteHandler<
+  typeof postAccountAccountIdConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountHandler = app
-  .openapi(postAccountAccountIdConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountAccountIdConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountAccountIdConnectorsMerchantConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountAccountIdConnectorsMerchantConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountAccountIdConnectorsMerchantConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountAccountIdWebhooksMerchantConnectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountAccountIdBusinessProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountAccountIdBusinessProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountAccountIdBusinessProfileProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountAccountIdBusinessProfileProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountAccountIdBusinessProfileProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedToggleRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationToggleRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedCreateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationCreateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAccountAccountIdBusinessProfileProfileIdDynamicRoutingContractsToggleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAccountAccountIdConnectorsRouteHandler: RouteHandler<
+  typeof getAccountAccountIdConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountAccountIdConnectorsMerchantConnectorIdRouteHandler: RouteHandler<
+  typeof getAccountAccountIdConnectorsMerchantConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdConnectorsMerchantConnectorIdRouteHandler: RouteHandler<
+  typeof postAccountAccountIdConnectorsMerchantConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountAccountIdConnectorsMerchantConnectorIdRouteHandler: RouteHandler<
+  typeof deleteAccountAccountIdConnectorsMerchantConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdWebhooksMerchantConnectorIdRouteHandler: RouteHandler<
+  typeof postAccountAccountIdWebhooksMerchantConnectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountPaymentMethodsRouteHandler: RouteHandler<
+  typeof getAccountPaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountAccountIdBusinessProfileRouteHandler: RouteHandler<
+  typeof getAccountAccountIdBusinessProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountAccountIdBusinessProfileProfileIdRouteHandler: RouteHandler<
+  typeof getAccountAccountIdBusinessProfileProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountAccountIdBusinessProfileProfileIdRouteHandler: RouteHandler<
+  typeof deleteAccountAccountIdBusinessProfileProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedToggleRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationToggleRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedCreateRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdDynamicRoutingSuccessBasedCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationCreateRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdDynamicRoutingEliminationCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountAccountIdBusinessProfileProfileIdDynamicRoutingContractsToggleRouteHandler: RouteHandler<
+  typeof postAccountAccountIdBusinessProfileProfileIdDynamicRoutingContractsToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

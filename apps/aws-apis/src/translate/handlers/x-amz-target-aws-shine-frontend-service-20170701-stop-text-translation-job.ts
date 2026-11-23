@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShineFrontendService20170701StopTextTranslationJobHandler = app.openapi(
-  postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShineFrontendService20170701StopTextTranslationJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

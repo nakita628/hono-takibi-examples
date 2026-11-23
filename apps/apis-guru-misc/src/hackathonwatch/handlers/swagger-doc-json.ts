@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSwaggerDocJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSwaggerDocJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const swaggerDocJsonHandler = app.openapi(getSwaggerDocJsonRoute, (c) => {
+export const getSwaggerDocJsonRouteHandler: RouteHandler<typeof getSwaggerDocJsonRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

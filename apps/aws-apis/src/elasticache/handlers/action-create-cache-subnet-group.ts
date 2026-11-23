@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateCacheSubnetGroupRoute,
   postActionCreateCacheSubnetGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateCacheSubnetGroupRouteHandler: RouteHandler<
+  typeof getActionCreateCacheSubnetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateCacheSubnetGroupHandler = app
-  .openapi(getActionCreateCacheSubnetGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateCacheSubnetGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateCacheSubnetGroupRouteHandler: RouteHandler<
+  typeof postActionCreateCacheSubnetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotfleethub/2020-11-03/openapi.yaml',
   output: './src/iotfleethub/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iotfleethub/types.ts' },
   client: { output: './src/iotfleethub/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotfleethub/rpc.ts', parseResponse: true },

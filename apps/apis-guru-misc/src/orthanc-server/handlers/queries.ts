@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQueriesIdRoute,
   getQueriesIdAnswersIndexContentRoute,
   getQueriesIdAnswersIndexRoute,
@@ -16,48 +16,80 @@ import {
   postQueriesIdRetrieveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueriesRouteHandler: RouteHandler<typeof getQueriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queriesHandler = app
-  .openapi(getQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdAnswersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdAnswersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdAnswersIndexContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueriesIdAnswersIndexQueryInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueriesIdAnswersIndexQuerySeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueriesIdAnswersIndexQueryStudiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueriesIdAnswersIndexRetrieveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdModalityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueriesIdQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueriesIdRetrieveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteQueriesIdRouteHandler: RouteHandler<typeof deleteQueriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdRouteHandler: RouteHandler<typeof getQueriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdAnswersRouteHandler: RouteHandler<
+  typeof getQueriesIdAnswersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdAnswersIndexRouteHandler: RouteHandler<
+  typeof getQueriesIdAnswersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdAnswersIndexContentRouteHandler: RouteHandler<
+  typeof getQueriesIdAnswersIndexContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueriesIdAnswersIndexQueryInstancesRouteHandler: RouteHandler<
+  typeof postQueriesIdAnswersIndexQueryInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueriesIdAnswersIndexQuerySeriesRouteHandler: RouteHandler<
+  typeof postQueriesIdAnswersIndexQuerySeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueriesIdAnswersIndexQueryStudiesRouteHandler: RouteHandler<
+  typeof postQueriesIdAnswersIndexQueryStudiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueriesIdAnswersIndexRetrieveRouteHandler: RouteHandler<
+  typeof postQueriesIdAnswersIndexRetrieveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdLevelRouteHandler: RouteHandler<typeof getQueriesIdLevelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdModalityRouteHandler: RouteHandler<
+  typeof getQueriesIdModalityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueriesIdQueryRouteHandler: RouteHandler<typeof getQueriesIdQueryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueriesIdRetrieveRouteHandler: RouteHandler<
+  typeof postQueriesIdRetrieveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

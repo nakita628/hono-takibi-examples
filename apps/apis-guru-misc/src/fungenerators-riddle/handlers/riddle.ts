@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRiddleRoute,
   getRiddleRandomRoute,
   getRiddleRoute,
@@ -8,24 +8,26 @@ import {
   putRiddleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteRiddleRouteHandler: RouteHandler<typeof deleteRiddleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const riddleHandler = app
-  .openapi(deleteRiddleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiddleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRiddleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRiddleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiddleRandomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiddleSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRiddleRouteHandler: RouteHandler<typeof getRiddleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRiddleRouteHandler: RouteHandler<typeof postRiddleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRiddleRouteHandler: RouteHandler<typeof putRiddleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRiddleRandomRouteHandler: RouteHandler<typeof getRiddleRandomRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRiddleSearchRouteHandler: RouteHandler<typeof getRiddleSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

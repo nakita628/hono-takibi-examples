@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGifsGifIdRoute,
   getGifsRandomRoute,
   getGifsRoute,
@@ -8,24 +8,28 @@ import {
   getGifsTrendingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGifsRouteHandler: RouteHandler<typeof getGifsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gifsHandler = app
-  .openapi(getGifsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGifsRandomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGifsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGifsTranslateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGifsTrendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGifsGifIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGifsRandomRouteHandler: RouteHandler<typeof getGifsRandomRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGifsSearchRouteHandler: RouteHandler<typeof getGifsSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGifsTranslateRouteHandler: RouteHandler<typeof getGifsTranslateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGifsTrendingRouteHandler: RouteHandler<typeof getGifsTrendingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGifsGifIdRouteHandler: RouteHandler<typeof getGifsGifIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

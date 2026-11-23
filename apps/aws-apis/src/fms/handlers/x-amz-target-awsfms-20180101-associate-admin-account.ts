@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsfms20180101AssociateAdminAccountHandler = app.openapi(
-  postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSFMS20180101AssociateAdminAccountRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSFMS20180101AssociateAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

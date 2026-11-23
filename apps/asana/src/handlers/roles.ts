@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRolesRoleGidRoute,
   getRolesRoleGidRoute,
   getRolesRoute,
@@ -7,21 +7,24 @@ import {
   putRolesRoleGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRolesRouteHandler: RouteHandler<typeof getRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rolesHandler = app
-  .openapi(getRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRolesRoleGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRolesRoleGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRolesRoleGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRolesRouteHandler: RouteHandler<typeof postRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRolesRoleGidRouteHandler: RouteHandler<typeof getRolesRoleGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRolesRoleGidRouteHandler: RouteHandler<typeof putRolesRoleGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRolesRoleGidRouteHandler: RouteHandler<typeof deleteRolesRoleGidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

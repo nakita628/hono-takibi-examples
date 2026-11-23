@@ -28,7 +28,6 @@ type CreateAnomalyMonitorRequest = {
   ResourceTags?: {} | undefined
 }
 type CreateAnomalyMonitorResponse = { MonitorArn: {} }
-type LimitExceededException = { [x: string]: unknown }
 type CreateAnomalySubscriptionRequest = {
   AnomalySubscription: {
     SubscriptionArn?: {} | undefined
@@ -62,7 +61,6 @@ type CreateAnomalySubscriptionRequest = {
   ResourceTags?: {} | undefined
 }
 type CreateAnomalySubscriptionResponse = { SubscriptionArn: {} }
-type UnknownMonitorException = { [x: string]: unknown }
 type CostCategoryRuleVersion = 'CostCategoryExpression.v1'
 type CostCategoryValue = string
 type CreateCostCategoryDefinitionRequest = {
@@ -78,18 +76,15 @@ type CreateCostCategoryDefinitionResponse = {
   CostCategoryArn?: {} | undefined
   EffectiveStart?: {} | undefined
 }
-type ServiceQuotaExceededException = { [x: string]: unknown }
 type DeleteAnomalyMonitorRequest = { MonitorArn: {} }
 type DeleteAnomalyMonitorResponse = { [x: string]: unknown }
 type DeleteAnomalySubscriptionRequest = { SubscriptionArn: {} }
 type DeleteAnomalySubscriptionResponse = { [x: string]: unknown }
-type UnknownSubscriptionException = { [x: string]: unknown }
 type DeleteCostCategoryDefinitionRequest = { CostCategoryArn: {} }
 type DeleteCostCategoryDefinitionResponse = {
   CostCategoryArn?: {} | undefined
   EffectiveEnd?: {} | undefined
 }
-type ResourceNotFoundException = { [x: string]: unknown }
 type DescribeCostCategoryDefinitionRequest = { CostCategoryArn: {}; EffectiveOn?: {} | undefined }
 type CostCategory = {
   CostCategoryArn: {}
@@ -112,7 +107,6 @@ type GetAnomaliesRequest = {
   MaxResults?: {} | undefined
 }
 type GetAnomaliesResponse = { Anomalies: {}; NextPageToken?: {} | undefined }
-type InvalidNextTokenException = { [x: string]: unknown }
 type GetAnomalyMonitorsRequest = {
   MonitorArnList?: {} | undefined
   NextPageToken?: {} | undefined
@@ -159,9 +153,6 @@ type GetCostAndUsageResponse = {
   ResultsByTime?: {} | undefined
   DimensionValueAttributes?: {} | undefined
 }
-type BillExpirationException = { [x: string]: unknown }
-type DataUnavailableException = { [x: string]: unknown }
-type RequestChangedException = { [x: string]: unknown }
 type GetCostAndUsageWithResourcesRequest = {
   TimePeriod: { Start: {}; End: {} }
   Granularity: {}
@@ -640,7 +631,6 @@ type GetUsageForecastResponse = {
   Total?: { Amount?: {} | undefined; Unit?: {} | undefined } | undefined
   ForecastResultsByTime?: {} | undefined
 }
-type UnresolvableUsageUnitException = { [x: string]: unknown }
 type ListCostAllocationTagsRequest = {
   Status?: {} | undefined
   TagKeys?: {} | undefined
@@ -681,10 +671,8 @@ type StartSavingsPlansPurchaseRecommendationGenerationResponse = {
   GenerationStartedTime?: {} | undefined
   EstimatedCompletionTime?: {} | undefined
 }
-type GenerationExistsException = { [x: string]: unknown }
 type TagResourceRequest = { ResourceArn: {}; ResourceTags: {} }
 type TagResourceResponse = { [x: string]: unknown }
-type TooManyTagsException = { [x: string]: unknown }
 type UntagResourceRequest = { ResourceArn: {}; ResourceTagKeys: {} }
 type UntagResourceResponse = { [x: string]: unknown }
 type UpdateAnomalyMonitorRequest = { MonitorArn: {}; MonitorName?: {} | undefined }
@@ -736,2455 +724,743 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=AWSInsightsIndexService.CreateAnomalyMonitor': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAnomalyMonitorRequest }
-            output: CreateAnomalyMonitorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalyMonitor'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAnomalyMonitorRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: CreateAnomalyMonitorRequest }
+        output: CreateAnomalyMonitorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.CreateAnomalySubscription': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAnomalySubscriptionRequest }
-            output: CreateAnomalySubscriptionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalySubscription'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAnomalySubscriptionRequest }
-            output: UnknownMonitorException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAnomalySubscriptionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CreateAnomalySubscriptionRequest }
+        output: CreateAnomalySubscriptionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.CreateCostCategoryDefinition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCostCategoryDefinitionRequest }
-            output: CreateCostCategoryDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.CreateCostCategoryDefinition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCostCategoryDefinitionRequest }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.CreateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCostCategoryDefinitionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CreateCostCategoryDefinitionRequest }
+        output: CreateCostCategoryDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.DeleteAnomalyMonitor': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalyMonitorRequest }
-            output: DeleteAnomalyMonitorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalyMonitor'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalyMonitorRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalyMonitorRequest }
-            output: UnknownMonitorException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteAnomalyMonitorRequest }
+        output: DeleteAnomalyMonitorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.DeleteAnomalySubscription': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalySubscriptionRequest }
-            output: DeleteAnomalySubscriptionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalySubscription'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalySubscriptionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAnomalySubscriptionRequest }
-            output: UnknownSubscriptionException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteAnomalySubscriptionRequest }
+        output: DeleteAnomalySubscriptionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.DeleteCostCategoryDefinition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCostCategoryDefinitionRequest }
-            output: DeleteCostCategoryDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.DeleteCostCategoryDefinition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCostCategoryDefinitionRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DeleteCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCostCategoryDefinitionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteCostCategoryDefinitionRequest }
+        output: DeleteCostCategoryDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.DescribeCostCategoryDefinition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DescribeCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeCostCategoryDefinitionRequest }
-            output: DescribeCostCategoryDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.DescribeCostCategoryDefinition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DescribeCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeCostCategoryDefinitionRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.DescribeCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeCostCategoryDefinitionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeCostCategoryDefinitionRequest }
+        output: DescribeCostCategoryDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetAnomalies': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomaliesRequest }
-            output: GetAnomaliesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalies'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomaliesRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomaliesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetAnomaliesRequest }
+        output: GetAnomaliesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetAnomalyMonitors': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalyMonitors'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalyMonitorsRequest }
-            output: GetAnomalyMonitorsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalyMonitors'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalyMonitors'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalyMonitorsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalyMonitors'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalyMonitorsRequest }
-            output: UnknownMonitorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalyMonitors'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalyMonitorsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetAnomalyMonitorsRequest }
+        output: GetAnomalyMonitorsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetAnomalySubscriptions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalySubscriptions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalySubscriptionsRequest }
-            output: GetAnomalySubscriptionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalySubscriptions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalySubscriptions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalySubscriptionsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalySubscriptions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalySubscriptionsRequest }
-            output: UnknownSubscriptionException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetAnomalySubscriptions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAnomalySubscriptionsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetAnomalySubscriptionsRequest }
+        output: GetAnomalySubscriptionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetCostAndUsage': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: GetCostAndUsageResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: BillExpirationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageRequest }
-            output: RequestChangedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetCostAndUsageRequest }
+        output: GetCostAndUsageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetCostAndUsageWithResources': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: GetCostAndUsageWithResourcesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: BillExpirationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostAndUsageWithResources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostAndUsageWithResourcesRequest }
-            output: RequestChangedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetCostAndUsageWithResourcesRequest }
+        output: GetCostAndUsageWithResourcesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetCostCategories': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: GetCostCategoriesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: BillExpirationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostCategories'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostCategoriesRequest }
-            output: RequestChangedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetCostCategoriesRequest }
+        output: GetCostCategoriesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetCostForecast': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostForecastRequest }
-            output: GetCostForecastResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetCostForecast'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostForecastRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetCostForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCostForecastRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetCostForecastRequest }
+        output: GetCostForecastResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetDimensionValues': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: GetDimensionValuesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: BillExpirationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetDimensionValues'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDimensionValuesRequest }
-            output: RequestChangedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetDimensionValuesRequest }
+        output: GetDimensionValuesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetReservationCoverage': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationCoverageRequest }
-            output: GetReservationCoverageResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetReservationCoverage'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationCoverageRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationCoverageRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationCoverageRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetReservationCoverageRequest }
+        output: GetReservationCoverageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetReservationPurchaseRecommendation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationPurchaseRecommendationRequest }
-            output: GetReservationPurchaseRecommendationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetReservationPurchaseRecommendation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationPurchaseRecommendationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationPurchaseRecommendationRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationPurchaseRecommendationRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetReservationPurchaseRecommendationRequest }
+        output: GetReservationPurchaseRecommendationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetReservationUtilization': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationUtilizationRequest }
-            output: GetReservationUtilizationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetReservationUtilization'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationUtilizationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationUtilizationRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetReservationUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetReservationUtilizationRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetReservationUtilizationRequest }
+        output: GetReservationUtilizationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetRightsizingRecommendation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetRightsizingRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRightsizingRecommendationRequest }
-            output: GetRightsizingRecommendationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetRightsizingRecommendation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetRightsizingRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRightsizingRecommendationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetRightsizingRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRightsizingRecommendationRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetRightsizingRecommendationRequest }
+        output: GetRightsizingRecommendationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetSavingsPlansCoverage': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansCoverageRequest }
-            output: GetSavingsPlansCoverageResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansCoverage'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansCoverageRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansCoverageRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansCoverage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansCoverageRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetSavingsPlansCoverageRequest }
+        output: GetSavingsPlansCoverageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetSavingsPlansPurchaseRecommendation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansPurchaseRecommendationRequest }
-            output: GetSavingsPlansPurchaseRecommendationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansPurchaseRecommendation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansPurchaseRecommendationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansPurchaseRecommendation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansPurchaseRecommendationRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetSavingsPlansPurchaseRecommendationRequest }
+        output: GetSavingsPlansPurchaseRecommendationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetSavingsPlansUtilization': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationRequest }
-            output: GetSavingsPlansUtilizationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilization'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilization'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetSavingsPlansUtilizationRequest }
+        output: GetSavingsPlansUtilizationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetSavingsPlansUtilizationDetails': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilizationDetails'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationDetailsRequest }
-            output: GetSavingsPlansUtilizationDetailsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilizationDetails'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilizationDetails'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationDetailsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilizationDetails'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationDetailsRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetSavingsPlansUtilizationDetails'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSavingsPlansUtilizationDetailsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetSavingsPlansUtilizationDetailsRequest }
+        output: GetSavingsPlansUtilizationDetailsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetTags': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: GetTagsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: BillExpirationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: RequestChangedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetTagsRequest }
+        output: GetTagsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.GetUsageForecast': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetUsageForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUsageForecastRequest }
-            output: GetUsageForecastResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.GetUsageForecast'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetUsageForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUsageForecastRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetUsageForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUsageForecastRequest }
-            output: DataUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.GetUsageForecast'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUsageForecastRequest }
-            output: UnresolvableUsageUnitException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetUsageForecastRequest }
+        output: GetUsageForecastResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.ListCostAllocationTags': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListCostAllocationTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCostAllocationTagsRequest }
-            output: ListCostAllocationTagsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.ListCostAllocationTags'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListCostAllocationTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCostAllocationTagsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListCostAllocationTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCostAllocationTagsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListCostAllocationTagsRequest }
+        output: ListCostAllocationTagsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.ListCostCategoryDefinitions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListCostCategoryDefinitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCostCategoryDefinitionsRequest }
-            output: ListCostCategoryDefinitionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.ListCostCategoryDefinitions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListCostCategoryDefinitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCostCategoryDefinitionsRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ListCostCategoryDefinitionsRequest }
+        output: ListCostCategoryDefinitionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.ListSavingsPlansPurchaseRecommendationGeneration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: ListSavingsPlansPurchaseRecommendationGenerationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.ListSavingsPlansPurchaseRecommendationGeneration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListSavingsPlansPurchaseRecommendationGenerationRequest }
+        output: ListSavingsPlansPurchaseRecommendationGenerationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.ListTagsForResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.ListTagsForResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListTagsForResourceRequest }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.ProvideAnomalyFeedback': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ProvideAnomalyFeedback'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ProvideAnomalyFeedbackRequest }
-            output: ProvideAnomalyFeedbackResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.ProvideAnomalyFeedback'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.ProvideAnomalyFeedback'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ProvideAnomalyFeedbackRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ProvideAnomalyFeedbackRequest }
+        output: ProvideAnomalyFeedbackResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: StartSavingsPlansPurchaseRecommendationGenerationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.StartSavingsPlansPurchaseRecommendationGeneration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSavingsPlansPurchaseRecommendationGenerationRequest }
-            output: GenerationExistsException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StartSavingsPlansPurchaseRecommendationGenerationRequest }
+        output: StartSavingsPlansPurchaseRecommendationGenerationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.TagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.TagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: TagResourceRequest }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.UntagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.UntagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UntagResourceRequest }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.UpdateAnomalyMonitor': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalyMonitorRequest }
-            output: UpdateAnomalyMonitorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalyMonitor'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalyMonitorRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalyMonitor'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalyMonitorRequest }
-            output: UnknownMonitorException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateAnomalyMonitorRequest }
+        output: UpdateAnomalyMonitorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.UpdateAnomalySubscription': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalySubscriptionRequest }
-            output: UpdateAnomalySubscriptionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalySubscription'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalySubscriptionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalySubscriptionRequest }
-            output: UnknownMonitorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateAnomalySubscription'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAnomalySubscriptionRequest }
-            output: UnknownSubscriptionException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UpdateAnomalySubscriptionRequest }
+        output: UpdateAnomalySubscriptionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.UpdateCostAllocationTagsStatus': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostAllocationTagsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostAllocationTagsStatusRequest }
-            output: UpdateCostAllocationTagsStatusResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostAllocationTagsStatus'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostAllocationTagsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostAllocationTagsStatusRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: UpdateCostAllocationTagsStatusRequest }
+        output: UpdateCostAllocationTagsStatusResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSInsightsIndexService.UpdateCostCategoryDefinition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostCategoryDefinitionRequest }
-            output: UpdateCostCategoryDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostCategoryDefinition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostCategoryDefinitionRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostCategoryDefinitionRequest }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSInsightsIndexService.UpdateCostCategoryDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCostCategoryDefinitionRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UpdateCostCategoryDefinitionRequest }
+        output: UpdateCostCategoryDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

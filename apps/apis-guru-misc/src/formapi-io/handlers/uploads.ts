@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUploadsPresignRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUploadsPresignRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const uploadsHandler = app.openapi(getUploadsPresignRoute, (c) => {
+export const getUploadsPresignRouteHandler: RouteHandler<typeof getUploadsPresignRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

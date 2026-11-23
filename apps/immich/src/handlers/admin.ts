@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminDatabaseBackupsRoute,
   deleteAdminIntegrityReportIdRoute,
   deleteAdminUsersIdRoute,
@@ -37,111 +37,200 @@ import {
   putAdminUsersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAdminAuthUnlinkAllRouteHandler: RouteHandler<
+  typeof postAdminAuthUnlinkAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(postAdminAuthUnlinkAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminConfigDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminConfigStorageTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminConfigStorageTemplatePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDatabaseBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDatabaseBackupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDatabaseBackupsStartRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDatabaseBackupsUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDatabaseBackupsFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminIntegrityReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminIntegrityReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminIntegrityReportIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminIntegrityReportTypeCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminIntegritySummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminMaintenanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminMaintenanceDetectInstallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminMaintenanceLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminMaintenanceStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminNotificationsTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminNotificationsTemplatesNamePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminNotificationsTestEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdCalendarHeatmapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersIdPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdminConfigRouteHandler: RouteHandler<typeof getAdminConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminConfigRouteHandler: RouteHandler<typeof putAdminConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminConfigDefaultsRouteHandler: RouteHandler<
+  typeof getAdminConfigDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminConfigStorageTemplateRouteHandler: RouteHandler<
+  typeof getAdminConfigStorageTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminConfigStorageTemplatePreviewRouteHandler: RouteHandler<
+  typeof postAdminConfigStorageTemplatePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDatabaseBackupsRouteHandler: RouteHandler<
+  typeof deleteAdminDatabaseBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDatabaseBackupsRouteHandler: RouteHandler<
+  typeof getAdminDatabaseBackupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDatabaseBackupsStartRestoreRouteHandler: RouteHandler<
+  typeof postAdminDatabaseBackupsStartRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDatabaseBackupsUploadRouteHandler: RouteHandler<
+  typeof postAdminDatabaseBackupsUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDatabaseBackupsFilenameRouteHandler: RouteHandler<
+  typeof getAdminDatabaseBackupsFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminIntegrityReportRouteHandler: RouteHandler<
+  typeof getAdminIntegrityReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminIntegrityReportIdRouteHandler: RouteHandler<
+  typeof deleteAdminIntegrityReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminIntegrityReportIdFileRouteHandler: RouteHandler<
+  typeof getAdminIntegrityReportIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminIntegrityReportTypeCsvRouteHandler: RouteHandler<
+  typeof getAdminIntegrityReportTypeCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminIntegritySummaryRouteHandler: RouteHandler<
+  typeof getAdminIntegritySummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminMaintenanceRouteHandler: RouteHandler<
+  typeof postAdminMaintenanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminMaintenanceDetectInstallRouteHandler: RouteHandler<
+  typeof getAdminMaintenanceDetectInstallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminMaintenanceLoginRouteHandler: RouteHandler<
+  typeof postAdminMaintenanceLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminMaintenanceStatusRouteHandler: RouteHandler<
+  typeof getAdminMaintenanceStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminNotificationsRouteHandler: RouteHandler<
+  typeof postAdminNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminNotificationsTemplatesNameRouteHandler: RouteHandler<
+  typeof postAdminNotificationsTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminNotificationsTemplatesNamePreviewRouteHandler: RouteHandler<
+  typeof postAdminNotificationsTemplatesNamePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminNotificationsTestEmailRouteHandler: RouteHandler<
+  typeof postAdminNotificationsTestEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersRouteHandler: RouteHandler<typeof getAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersRouteHandler: RouteHandler<typeof postAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersIdRouteHandler: RouteHandler<typeof deleteAdminUsersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdRouteHandler: RouteHandler<typeof getAdminUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdRouteHandler: RouteHandler<typeof putAdminUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdCalendarHeatmapRouteHandler: RouteHandler<
+  typeof getAdminUsersIdCalendarHeatmapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdPreferencesRouteHandler: RouteHandler<
+  typeof getAdminUsersIdPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersIdPreferencesRouteHandler: RouteHandler<
+  typeof putAdminUsersIdPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersIdRestoreRouteHandler: RouteHandler<
+  typeof postAdminUsersIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdSessionsRouteHandler: RouteHandler<
+  typeof getAdminUsersIdSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdStatisticsRouteHandler: RouteHandler<
+  typeof getAdminUsersIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAliasesAliasNameRoute,
   getAliasesAliasNameRoute,
   getAliasesRoute,
   putAliasesAliasNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAliasesRouteHandler: RouteHandler<typeof getAliasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aliasesHandler = app
-  .openapi(getAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAliasesAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAliasesAliasNameRouteHandler: RouteHandler<
+  typeof putAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAliasesAliasNameRouteHandler: RouteHandler<
+  typeof getAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAliasesAliasNameRouteHandler: RouteHandler<
+  typeof deleteAliasesAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

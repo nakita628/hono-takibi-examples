@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getExportsExportIdRoute,
   postExportsAttachedItemsRoute,
   postExportsCouponsRoute,
@@ -19,57 +19,104 @@ import {
   postExportsTransactionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postExportsCustomersRouteHandler: RouteHandler<
+  typeof postExportsCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const exportsHandler = app
-  .openapi(postExportsCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsAttachedItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsRampsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsDifferentialPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsItemFamiliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExportsExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsPriceVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsDeferredRevenueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsRevenueRecognitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsCreditNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsItemPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportsSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postExportsAttachedItemsRouteHandler: RouteHandler<
+  typeof postExportsAttachedItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsTransactionsRouteHandler: RouteHandler<
+  typeof postExportsTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsRampsRouteHandler: RouteHandler<typeof postExportsRampsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsDifferentialPricesRouteHandler: RouteHandler<
+  typeof postExportsDifferentialPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsItemFamiliesRouteHandler: RouteHandler<
+  typeof postExportsItemFamiliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsInvoicesRouteHandler: RouteHandler<
+  typeof postExportsInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExportsExportIdRouteHandler: RouteHandler<typeof getExportsExportIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsPriceVariantsRouteHandler: RouteHandler<
+  typeof postExportsPriceVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsItemsRouteHandler: RouteHandler<typeof postExportsItemsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsDeferredRevenueRouteHandler: RouteHandler<
+  typeof postExportsDeferredRevenueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsRevenueRecognitionRouteHandler: RouteHandler<
+  typeof postExportsRevenueRecognitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsCreditNotesRouteHandler: RouteHandler<
+  typeof postExportsCreditNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsCouponsRouteHandler: RouteHandler<typeof postExportsCouponsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsOrdersRouteHandler: RouteHandler<typeof postExportsOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsItemPricesRouteHandler: RouteHandler<
+  typeof postExportsItemPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportsSubscriptionsRouteHandler: RouteHandler<
+  typeof postExportsSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

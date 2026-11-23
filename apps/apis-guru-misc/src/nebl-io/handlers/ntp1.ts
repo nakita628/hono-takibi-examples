@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNtp1AddressinfoAddressRoute,
   getNtp1StakeholdersTokenidRoute,
   getNtp1TokenidTokensymbolRoute,
@@ -12,36 +12,60 @@ import {
   postNtp1SendtokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNtp1AddressinfoAddressRouteHandler: RouteHandler<
+  typeof getNtp1AddressinfoAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ntp1Handler = app
-  .openapi(getNtp1AddressinfoAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNtp1BroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNtp1BurntokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNtp1IssueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNtp1SendtokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNtp1StakeholdersTokenidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNtp1TokenidTokensymbolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNtp1TokenmetadataTokenidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNtp1TokenmetadataTokenidUtxoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNtp1TransactioninfoTxidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNtp1BroadcastRouteHandler: RouteHandler<typeof postNtp1BroadcastRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postNtp1BurntokenRouteHandler: RouteHandler<typeof postNtp1BurntokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postNtp1IssueRouteHandler: RouteHandler<typeof postNtp1IssueRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNtp1SendtokenRouteHandler: RouteHandler<typeof postNtp1SendtokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getNtp1StakeholdersTokenidRouteHandler: RouteHandler<
+  typeof getNtp1StakeholdersTokenidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNtp1TokenidTokensymbolRouteHandler: RouteHandler<
+  typeof getNtp1TokenidTokensymbolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNtp1TokenmetadataTokenidRouteHandler: RouteHandler<
+  typeof getNtp1TokenmetadataTokenidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNtp1TokenmetadataTokenidUtxoRouteHandler: RouteHandler<
+  typeof getNtp1TokenmetadataTokenidUtxoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNtp1TransactioninfoTxidRouteHandler: RouteHandler<
+  typeof getNtp1TransactioninfoTxidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

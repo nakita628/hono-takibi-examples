@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/spinitron.com/1.0.0/openapi.yaml',
   output: './src/spinitron/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/spinitron/types.ts' },
   client: { output: './src/spinitron/client.ts', baseUrl: '/' },
   rpc: { output: './src/spinitron/rpc.ts', parseResponse: true },

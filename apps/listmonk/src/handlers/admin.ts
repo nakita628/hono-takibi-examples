@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminReloadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminReloadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminHandler = app.openapi(postAdminReloadRoute, (c) => {
+export const postAdminReloadRouteHandler: RouteHandler<typeof postAdminReloadRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -5424,3548 +5424,21253 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/api/allergies': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientAllergy[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientAllergy[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientAllergy
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientAllergy
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/allergies/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientAllergy
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientAllergy
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/amendments': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientAmendment[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientAmendment[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientAmendment
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientAmendment
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/amendments/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientAmendment
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            appointment?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientAmendment
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointment_profiles': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: AppointmentProfile[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: AppointmentProfile[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: AppointmentProfile
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: AppointmentProfile
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointment_profiles/:id': {
-      $delete: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: AppointmentProfile
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: AppointmentProfile
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointment_templates': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: AppointmentTemplate[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: AppointmentTemplate[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: AppointmentTemplate
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: AppointmentTemplate
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointment_templates/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: AppointmentTemplate
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            profile?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: AppointmentTemplate
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                profile?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointments': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {
+              data?: Appointment[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Appointment[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Appointment
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: Appointment
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/appointments/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Appointment
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: Appointment
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/billing_profiles': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: BillingProfile[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: BillingProfile[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/billing_profiles/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: BillingProfile
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: BillingProfile
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/care_plans': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            plan_type?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CarePlan[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CarePlan[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/care_plans/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            plan_type?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CarePlan
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CarePlan
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                plan_type?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/care_team_members': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            appointment?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CareTeamMember[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CareTeamMember[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/care_team_members/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            appointment?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CareTeamMember
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CareTeamMember
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/claim_billing_notes': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            appointment?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: ClaimBillingNotes[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ClaimBillingNotes[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
-        output: ClaimBillingNotes
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: ClaimBillingNotes
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { appointment?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/claim_billing_notes/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { appointment?: number | undefined; doctor?: number | undefined }
-        }
-        output: ClaimBillingNotes
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: ClaimBillingNotes
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { appointment?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_field_types': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: SoapNoteLineItemFieldType[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: SoapNoteLineItemFieldType[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_field_types/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
-        }
-        output: SoapNoteLineItemFieldType
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: SoapNoteLineItemFieldType
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { clinical_note_template?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_field_values': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            clinical_note_field?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: SoapNoteLineItemFieldValue[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: SoapNoteLineItemFieldValue[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            clinical_note_field?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: SoapNoteLineItemFieldValue
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: SoapNoteLineItemFieldValue
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_field_values/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            clinical_note_field?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: SoapNoteLineItemFieldValue
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: SoapNoteLineItemFieldValue
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            clinical_note_field?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            clinical_note_field?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            clinical_note_template?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                clinical_note_field?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                clinical_note_template?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_templates': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: SoapNoteCustomReport[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: SoapNoteCustomReport[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_note_templates/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: SoapNoteCustomReport
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: SoapNoteCustomReport
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_notes': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {
+              data?: ClinicalNote[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ClinicalNote[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/clinical_notes/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            date_range?: string | undefined
-            date?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: ClinicalNote
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ClinicalNote
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                date_range?: string | undefined
+                date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/comm_logs': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PhoneCallLog[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PhoneCallLog[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PhoneCallLog
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PhoneCallLog
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/comm_logs/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PhoneCallLog
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: PhoneCallLog
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/consent_forms': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: ConsentForm[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ConsentForm[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: ConsentForm
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: ConsentForm
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/consent_forms/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: ConsentForm
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: ConsentForm
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/consent_forms/:id/apply_to_appointment': {
-      $post: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/consent_forms/:id/unapply_from_appointment': {
-      $post: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_appointment_fields': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CustomAppointmentFieldType[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CustomAppointmentFieldType[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: CustomAppointmentFieldType
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: CustomAppointmentFieldType
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_appointment_fields/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: CustomAppointmentFieldType
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: CustomAppointmentFieldType
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_demographics': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CustomPatientFieldType[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CustomPatientFieldType[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: CustomPatientFieldType
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: CustomPatientFieldType
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_demographics/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: CustomPatientFieldType
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: CustomPatientFieldType
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_insurance_plan_names': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            user?: number | undefined
-            name?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CustomInsurancePlanName[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CustomInsurancePlanName[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_insurance_plan_names/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            user?: number | undefined
-            name?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CustomInsurancePlanName
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CustomInsurancePlanName
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                user?: number | undefined
+                name?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_vitals': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CustomVitalType[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CustomVitalType[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/custom_vitals/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: CustomVitalType
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: CustomVitalType
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/doctors': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: Doctor[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Doctor[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/doctors/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: Doctor
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: Doctor
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/documents': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: ScannedClinicalDocument[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ScannedClinicalDocument[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: ScannedClinicalDocument
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: ScannedClinicalDocument
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/documents/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: ScannedClinicalDocument
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: ScannedClinicalDocument
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/eligibility_checks': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            appointment?: number | undefined
-            appointment_date?: string | undefined
-            doctor?: number | undefined
-            query_date_range?: string | undefined
-            appointment_date_range?: string | undefined
-            query_date?: string | undefined
-            patient?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {
+              data?: Coverage[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Coverage[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/eligibility_checks/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            appointment?: number | undefined
-            appointment_date?: string | undefined
-            doctor?: number | undefined
-            query_date_range?: string | undefined
-            appointment_date_range?: string | undefined
-            query_date?: string | undefined
-            patient?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: Coverage
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: Coverage
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                appointment?: number | undefined
+                appointment_date?: string | undefined
+                doctor?: number | undefined
+                query_date_range?: string | undefined
+                appointment_date_range?: string | undefined
+                query_date?: string | undefined
+                patient?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/eobs': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: EOBObject[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: EOBObject[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: EOBObject
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: EOBObject
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/eobs/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: EOBObject
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: EOBObject
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/fee_schedules': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            code?: string | undefined
-            code_type?: string | undefined
-            since?: string | undefined
-            payer_id?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: DoctorFeeSchedule[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: DoctorFeeSchedule[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/fee_schedules/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            code?: string | undefined
-            code_type?: string | undefined
-            since?: string | undefined
-            payer_id?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: DoctorFeeSchedule
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: DoctorFeeSchedule
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                code?: string | undefined
+                code_type?: string | undefined
+                since?: string | undefined
+                payer_id?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/implantable_devices': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            mu_date?: string | undefined
-            patient?: number | undefined
-            mu_date_range?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: ImplantableDevice[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ImplantableDevice[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/implantable_devices/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            mu_date?: string | undefined
-            patient?: number | undefined
-            mu_date_range?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: ImplantableDevice
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ImplantableDevice
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                mu_date_range?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/insurances': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            payer_type: string
-            term?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {
+              data?: Insurance[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Insurance[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                payer_type: string
+                term?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/insurances/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { payer_type: string; term?: string | undefined }
-        }
-        output: Insurance
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: Insurance
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { payer_type: string; term?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/inventory_categories': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: InventoryCategory[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: InventoryCategory[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/inventory_categories/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: InventoryCategory
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: InventoryCategory
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/inventory_vaccines': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            status?: string | undefined
-            cvx_code?: string | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: InventoryVaccine[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: InventoryVaccine[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            status?: string | undefined
-            cvx_code?: string | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: InventoryVaccine
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: InventoryVaccine
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/inventory_vaccines/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: string | undefined
-            cvx_code?: string | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: InventoryVaccine
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: InventoryVaccine
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: string | undefined
+                cvx_code?: string | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_documents': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LabOrderDocument[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LabOrderDocument[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { since?: string | undefined; doctor?: number | undefined } }
-        output: LabOrderDocument
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: LabOrderDocument
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_documents/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: LabOrderDocument
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: LabOrderDocument
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_orders': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LabOrder[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LabOrder[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { since?: string | undefined; doctor?: number | undefined } }
-        output: LabOrder
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: LabOrder
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { since?: string | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_orders/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: LabOrder
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { since?: string | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: LabOrder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { since?: string | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_orders_summary': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LabOrder[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LabOrder[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_orders_summary/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: LabOrder
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: LabOrder
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_results': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            order?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LabResult[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LabResult[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { order?: number | undefined; doctor?: number | undefined } }
-        output: LabResult
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: LabResult
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_results/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: LabResult
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: LabResult
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_tests': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            order?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LabTest[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LabTest[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { order?: number | undefined; doctor?: number | undefined } }
-        output: LabTest
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                order?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: LabTest
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { order?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/lab_tests/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: LabTest
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { order?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: LabTest
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { order?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/line_items': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {
+              data?: BillingLineItem[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: BillingLineItem[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: BillingLineItem
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: BillingLineItem
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/line_items/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: BillingLineItem
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            posted_date?: string | undefined
-            patient?: number | undefined
-            office?: number | undefined
-            doctor?: number | undefined
-            since?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: BillingLineItem
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                posted_date?: string | undefined
+                patient?: number | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+                since?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/medications': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientDrug[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientDrug[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientDrug
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientDrug
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/medications/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientDrug
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientDrug
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/medications/:id/append_to_pharmacy_note': {
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/messages': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {
+              data?: DoctorMessage[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: DoctorMessage[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: DoctorMessage
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: DoctorMessage
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/messages/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: DoctorMessage
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            patient?: number | undefined
-            doctor?: number | undefined
-            responsible_user?: number | undefined
-            updated_since?: string | undefined
-            received_since?: string | undefined
-            owner?: number | undefined
-            type?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: DoctorMessage
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                patient?: number | undefined
+                doctor?: number | undefined
+                responsible_user?: number | undefined
+                updated_since?: string | undefined
+                received_since?: string | undefined
+                owner?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/offices': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: Office[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Office[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/offices/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: Office
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: Office
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/offices/:id/add_exam_room': {
-      $post: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: Office
-        outputFormat: 'json'
-        status: 201
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: Office
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_communications': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientCommunication[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientCommunication[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientCommunication
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientCommunication
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_communications/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientCommunication
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientCommunication
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_flag_types': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientFlagType[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientFlagType[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: PatientFlagType
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: PatientFlagType
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_flag_types/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: PatientFlagType
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: PatientFlagType
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_interventions': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientIntervention[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientIntervention[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientIntervention
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientIntervention
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_interventions/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientIntervention
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientIntervention
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_lab_results': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientLabResultSet[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientLabResultSet[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientLabResultSet
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientLabResultSet
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_lab_results/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientLabResultSet
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            ordering_doctor?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientLabResultSet
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                ordering_doctor?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_messages': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientMessage[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientMessage[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientMessage
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientMessage
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_messages/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientMessage
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: PatientMessage
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_payment_log': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CashPaymentLog[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CashPaymentLog[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_payment_log/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            office?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CashPaymentLog
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CashPaymentLog
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                office?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_payments': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: CashPayment[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: CashPayment[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: CashPayment
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CashPayment
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_payments/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: CashPayment
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: CashPayment
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_physical_exams': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientPhysicalExam[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientPhysicalExam[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientPhysicalExam
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientPhysicalExam
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_physical_exams/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientPhysicalExam
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientPhysicalExam
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_risk_assessments': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientRiskAssessment[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientRiskAssessment[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientRiskAssessment
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientRiskAssessment
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_risk_assessments/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientRiskAssessment
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientRiskAssessment
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_vaccine_records': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            cvx_code?: string | undefined
-            patient?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientVaccineRecord[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientVaccineRecord[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            cvx_code?: string | undefined
-            patient?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: PatientVaccineRecord
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientVaccineRecord
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patient_vaccine_records/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            cvx_code?: string | undefined
-            patient?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PatientVaccineRecord
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: PatientVaccineRecord
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            cvx_code?: string | undefined
-            patient?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            cvx_code?: string | undefined
-            patient?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                cvx_code?: string | undefined
+                patient?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {
+              data?: Patient[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Patient[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients/:id/ccda': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: { [x: string]: unknown }
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients/:id/onpatient_access': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients/:id/qrda1': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            preferred_language?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
-            race?: string | undefined
-            chart_id?: string | undefined
-            email?: string | undefined
-            ethnicity?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: { [x: string]: unknown }
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: { [x: string]: unknown }
-        outputFormat: 'text'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                preferred_language?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+                race?: string | undefined
+                chart_id?: string | undefined
+                email?: string | undefined
+                ethnicity?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients_summary': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {
+              data?: Patient[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Patient[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/patients_summary/:id': {
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Patient
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            first_name?: string | undefined
-            last_name?: string | undefined
-            doctor?: number | undefined
-            gender?: string | undefined
-            since?: string | undefined
-            date_of_birth?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: Patient
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                first_name?: string | undefined
+                last_name?: string | undefined
+                doctor?: number | undefined
+                gender?: string | undefined
+                since?: string | undefined
+                date_of_birth?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/prescription_messages': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            parent_message?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PrescriptionMessage[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PrescriptionMessage[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/prescription_messages/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            parent_message?: number | undefined
-            since?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: PrescriptionMessage
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: PrescriptionMessage
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                parent_message?: number | undefined
+                since?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/problems': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: PatientProblem[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: PatientProblem[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { patient?: number | undefined; doctor?: number | undefined } }
-        output: PatientProblem
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: PatientProblem
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { patient?: number | undefined; doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/problems/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: PatientProblem
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { patient?: number | undefined; doctor?: number | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: PatientProblem
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { patient?: number | undefined; doctor?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/procedures': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            mu_date?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
-            mu_date_range?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {
+              data?: BillingLineItem[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: BillingLineItem[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/procedures/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            mu_date?: string | undefined
-            patient?: number | undefined
-            doctor?: number | undefined
-            mu_date_range?: string | undefined
-            appointment?: number | undefined
-            service_date?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: BillingLineItem
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: BillingLineItem
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                mu_date?: string | undefined
+                patient?: number | undefined
+                doctor?: number | undefined
+                mu_date_range?: string | undefined
+                appointment?: number | undefined
+                service_date?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/reminder_profiles': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: ReminderProfile[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: ReminderProfile[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { doctor?: number | undefined } }
-        output: ReminderProfile
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: ReminderProfile
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/reminder_profiles/:id': {
-      $delete: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: ReminderProfile
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: ReminderProfile
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/sublabs': {
-      $get: {
-        input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
-        output: {
-          data?: LabVendorLocation[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: { input: {}; output: LabVendorLocation; outputFormat: 'json'; status: 201 }
+      $get:
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {
+              data?: LabVendorLocation[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { cursor?: string | undefined; page_size?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | { input: {}; output: LabVendorLocation; outputFormat: 'json'; status: 201 }
+        | { input: {}; output: {}; outputFormat: string; status: 400 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 403 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+        | { input: {}; output: {}; outputFormat: string; status: 405 }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/api/sublabs/:id': {
-      $delete: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
-      $get: {
-        input: { param: { id: number } }
-        output: LabVendorLocation
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
-      $put: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $delete:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 405 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 500 }
+      $get:
+        | {
+            input: { param: { id: number } }
+            output: LabVendorLocation
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 405 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 500 }
+      $patch:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 405 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 500 }
+      $put:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 405 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/api/task_categories': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {
+              data?: TaskCategory[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: TaskCategory[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { since?: string | undefined } }
-        output: TaskCategory
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { since?: string | undefined } }
+            output: TaskCategory
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_categories/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: TaskCategory
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: TaskCategory
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_notes': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            task?: number | undefined
-            since?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {
+              data?: TaskNote[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: TaskNote[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { task?: number | undefined; since?: string | undefined } }
-        output: TaskNote
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                task?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: TaskNote
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { task?: number | undefined; since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_notes/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { task?: number | undefined; since?: string | undefined }
-        }
-        output: TaskNote
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: { task?: number | undefined; since?: string | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: { task?: number | undefined; since?: string | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: TaskNote
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { task?: number | undefined; since?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_statuses': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            since?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {
+              data?: TaskStatus[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: TaskStatus[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { query: { since?: string | undefined } }
-        output: TaskStatus
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                since?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { query: { since?: string | undefined } }
+            output: TaskStatus
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_statuses/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: TaskStatus
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & { query: { since?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: TaskStatus
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { since?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_templates': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            assignee_user?: number | undefined
-            status?: number | undefined
-            assignee_group?: number | undefined
-            since?: string | undefined
-            category?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {
+              data?: TaskTemplate[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: TaskTemplate[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            assignee_user?: number | undefined
-            status?: number | undefined
-            assignee_group?: number | undefined
-            since?: string | undefined
-            category?: number | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: TaskTemplate
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: TaskTemplate
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/task_templates/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            assignee_user?: number | undefined
-            status?: number | undefined
-            assignee_group?: number | undefined
-            since?: string | undefined
-            category?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: TaskTemplate
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: TaskTemplate
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            assignee_user?: number | undefined
-            status?: number | undefined
-            assignee_group?: number | undefined
-            since?: string | undefined
-            category?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            assignee_user?: number | undefined
-            status?: number | undefined
-            assignee_group?: number | undefined
-            since?: string | undefined
-            category?: number | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                assignee_user?: number | undefined
+                status?: number | undefined
+                assignee_group?: number | undefined
+                since?: string | undefined
+                category?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/tasks': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            status?: number | undefined
-            category?: number | undefined
-            due_at_date?: string | undefined
-            due_at_unknown?: string | undefined
-            since?: string | undefined
-            due_at_since?: string | undefined
-            assignee_user?: number | undefined
-            assignee_group?: number | undefined
-            due_at_range?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {
+              data?: Task[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: Task[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: {
-          query: {
-            status?: number | undefined
-            category?: number | undefined
-            due_at_date?: string | undefined
-            due_at_unknown?: string | undefined
-            since?: string | undefined
-            due_at_since?: string | undefined
-            assignee_user?: number | undefined
-            assignee_group?: number | undefined
-            due_at_range?: string | undefined
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Task
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: Task
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/tasks/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: number | undefined
-            category?: number | undefined
-            due_at_date?: string | undefined
-            due_at_unknown?: string | undefined
-            since?: string | undefined
-            due_at_since?: string | undefined
-            assignee_user?: number | undefined
-            assignee_group?: number | undefined
-            due_at_range?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: Task
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: Task
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: number | undefined
-            category?: number | undefined
-            due_at_date?: string | undefined
-            due_at_unknown?: string | undefined
-            since?: string | undefined
-            due_at_since?: string | undefined
-            assignee_user?: number | undefined
-            assignee_group?: number | undefined
-            due_at_range?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            status?: number | undefined
-            category?: number | undefined
-            due_at_date?: string | undefined
-            due_at_unknown?: string | undefined
-            since?: string | undefined
-            due_at_since?: string | undefined
-            assignee_user?: number | undefined
-            assignee_group?: number | undefined
-            due_at_range?: string | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                status?: number | undefined
+                category?: number | undefined
+                due_at_date?: string | undefined
+                due_at_unknown?: string | undefined
+                since?: string | undefined
+                due_at_since?: string | undefined
+                assignee_user?: number | undefined
+                assignee_group?: number | undefined
+                due_at_range?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/transactions': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            line_item?: number | undefined
-            posted_date?: string | undefined
-            appointment?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: LineItemTransaction[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: LineItemTransaction[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/transactions/:id': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            line_item?: number | undefined
-            posted_date?: string | undefined
-            appointment?: number | undefined
-            since?: string | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: LineItemTransaction
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: LineItemTransaction
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                line_item?: number | undefined
+                posted_date?: string | undefined
+                appointment?: number | undefined
+                since?: string | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/user_groups': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: UserProfilesGroup[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: UserProfilesGroup[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/user_groups/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: UserProfilesGroup
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: UserProfilesGroup
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/users': {
-      $get: {
-        input: {
-          query: {
-            cursor?: string | undefined
-            page_size?: number | undefined
-            doctor?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {
+              data?: UserProfile[] | undefined
+              next?: string | undefined
+              previous?: string | undefined
+            }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          data?: UserProfile[] | undefined
-          next?: string | undefined
-          previous?: string | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: {
+              query: {
+                cursor?: string | undefined
+                page_size?: number | undefined
+                doctor?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/api/users/:id': {
-      $get: {
-        input: { param: { id: string } } & { query: { doctor?: number | undefined } }
-        output: UserProfile
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: UserProfile
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 405
+          }
+        | {
+            input: { param: { id: string } } & { query: { doctor?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   },
   '/'

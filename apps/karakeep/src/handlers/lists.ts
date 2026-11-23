@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteListsListIdBookmarksBookmarkIdRoute,
   deleteListsListIdRoute,
   getListsListIdBookmarksRoute,
@@ -10,30 +10,44 @@ import {
   putListsListIdBookmarksBookmarkIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getListsRouteHandler: RouteHandler<typeof getListsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const listsHandler = app
-  .openapi(getListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsListIdBookmarksBookmarkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteListsListIdBookmarksBookmarkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postListsRouteHandler: RouteHandler<typeof postListsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdRouteHandler: RouteHandler<typeof getListsListIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteListsListIdRouteHandler: RouteHandler<typeof deleteListsListIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchListsListIdRouteHandler: RouteHandler<typeof patchListsListIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdBookmarksRouteHandler: RouteHandler<
+  typeof getListsListIdBookmarksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsListIdBookmarksBookmarkIdRouteHandler: RouteHandler<
+  typeof putListsListIdBookmarksBookmarkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteListsListIdBookmarksBookmarkIdRouteHandler: RouteHandler<
+  typeof deleteListsListIdBookmarksBookmarkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

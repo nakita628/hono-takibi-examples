@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTopWriterTopicSlugRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTopWriterTopicSlugRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const topWriterHandler = app.openapi(getTopWriterTopicSlugRoute, (c) => {
+export const getTopWriterTopicSlugRouteHandler: RouteHandler<
+  typeof getTopWriterTopicSlugRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

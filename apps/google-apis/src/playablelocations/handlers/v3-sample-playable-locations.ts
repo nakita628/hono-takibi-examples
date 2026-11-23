@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV3SamplePlayableLocationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV3SamplePlayableLocationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v3SamplePlayableLocationsHandler = app.openapi(
-  postV3SamplePlayableLocationsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postV3SamplePlayableLocationsRouteHandler: RouteHandler<
+  typeof postV3SamplePlayableLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

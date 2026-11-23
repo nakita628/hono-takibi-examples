@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBroadcastsIdRoute,
   getBroadcastsIdClickedLinksRoute,
   getBroadcastsIdRecipientsRoute,
@@ -12,36 +12,56 @@ import {
   postBroadcastsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBroadcastsRouteHandler: RouteHandler<typeof postBroadcastsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const broadcastsHandler = app
-  .openapi(postBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBroadcastsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBroadcastsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastsIdSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastsIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBroadcastsIdDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastsIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBroadcastsIdClickedLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBroadcastsRouteHandler: RouteHandler<typeof getBroadcastsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBroadcastsIdRouteHandler: RouteHandler<typeof deleteBroadcastsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBroadcastsIdRouteHandler: RouteHandler<typeof getBroadcastsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBroadcastsIdRouteHandler: RouteHandler<typeof patchBroadcastsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastsIdSendRouteHandler: RouteHandler<
+  typeof postBroadcastsIdSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastsIdCancelRouteHandler: RouteHandler<
+  typeof postBroadcastsIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBroadcastsIdDuplicateRouteHandler: RouteHandler<
+  typeof postBroadcastsIdDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBroadcastsIdRecipientsRouteHandler: RouteHandler<
+  typeof getBroadcastsIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBroadcastsIdClickedLinksRouteHandler: RouteHandler<
+  typeof getBroadcastsIdClickedLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

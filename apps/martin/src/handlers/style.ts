@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStyleStyleIdRoute,
   getStyleStyleIdStaticCameraSizeFormatRoute,
   getStyleStyleIdZXYFormatRoute,
   postStyleStyleIdStaticCameraSizeFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStyleStyleIdRouteHandler: RouteHandler<typeof getStyleStyleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const styleHandler = app
-  .openapi(getStyleStyleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStyleStyleIdZXYFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStyleStyleIdStaticCameraSizeFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStyleStyleIdStaticCameraSizeFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStyleStyleIdZXYFormatRouteHandler: RouteHandler<
+  typeof getStyleStyleIdZXYFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStyleStyleIdStaticCameraSizeFormatRouteHandler: RouteHandler<
+  typeof getStyleStyleIdStaticCameraSizeFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStyleStyleIdStaticCameraSizeFormatRouteHandler: RouteHandler<
+  typeof postStyleStyleIdStaticCameraSizeFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

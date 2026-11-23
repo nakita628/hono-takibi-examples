@@ -369,8 +369,8 @@ const GlacierJobDescriptionSchema = z
 const JobListSchema = z.array(GlacierJobDescriptionSchema).openapi('JobList')
 
 type ListJobsOutputType = {
-  JobList?: z.infer<typeof JobListSchema> & unknown
-  Marker?: z.infer<typeof StringSchema> & unknown
+  JobList?: z.infer<typeof JobListSchema>
+  Marker?: z.infer<typeof StringSchema>
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')

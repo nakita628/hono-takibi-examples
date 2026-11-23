@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMultischemaOfEverythingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMultischemaOfEverythingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const multischemaHandler = app.openapi(postMultischemaOfEverythingRoute, (c) => {
+export const postMultischemaOfEverythingRouteHandler: RouteHandler<
+  typeof postMultischemaOfEverythingRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

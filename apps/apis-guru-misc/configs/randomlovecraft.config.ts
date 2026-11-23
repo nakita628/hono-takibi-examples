@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/randomlovecraft.com/1.0/openapi.yaml',
   output: './src/randomlovecraft/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/randomlovecraft/types.ts' },
   client: { output: './src/randomlovecraft/client.ts', baseUrl: '/' },
   rpc: { output: './src/randomlovecraft/rpc.ts', parseResponse: true },

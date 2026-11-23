@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeStar20170419AssociateTeamMemberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeStar20170419AssociateTeamMemberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeStar20170419AssociateTeamMemberHandler = app.openapi(
-  postXAmzTargetCodeStar20170419AssociateTeamMemberRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeStar20170419AssociateTeamMemberRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeStar20170419AssociateTeamMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

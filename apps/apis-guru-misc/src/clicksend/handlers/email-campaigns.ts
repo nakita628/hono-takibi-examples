@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEmailCampaignsCampaignIdHistoryRoute,
   getEmailCampaignsEmailCampaignIdRoute,
   getEmailCampaignsRoute,
@@ -9,27 +9,44 @@ import {
   putEmailCampaignsEmailCampaignIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEmailCampaignsRouteHandler: RouteHandler<typeof getEmailCampaignsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const emailCampaignsHandler = app
-  .openapi(getEmailCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailCampaignsPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailCampaignsSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailCampaignsCampaignIdHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailCampaignsEmailCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmailCampaignsEmailCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmailCampaignsEmailCampaignIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEmailCampaignsPriceRouteHandler: RouteHandler<
+  typeof postEmailCampaignsPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailCampaignsSendRouteHandler: RouteHandler<
+  typeof postEmailCampaignsSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailCampaignsCampaignIdHistoryRouteHandler: RouteHandler<
+  typeof getEmailCampaignsCampaignIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailCampaignsEmailCampaignIdRouteHandler: RouteHandler<
+  typeof getEmailCampaignsEmailCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmailCampaignsEmailCampaignIdRouteHandler: RouteHandler<
+  typeof putEmailCampaignsEmailCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmailCampaignsEmailCampaignIdCancelRouteHandler: RouteHandler<
+  typeof putEmailCampaignsEmailCampaignIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

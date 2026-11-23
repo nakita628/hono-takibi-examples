@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGeometriesGeometryRoute,
   getGeometriesRegionsIntersectingLatitudeLongitudeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGeometriesGeometryRouteHandler: RouteHandler<
+  typeof getGeometriesGeometryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const geometriesHandler = app
-  .openapi(getGeometriesGeometryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeometriesRegionsIntersectingLatitudeLongitudeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGeometriesRegionsIntersectingLatitudeLongitudeRouteHandler: RouteHandler<
+  typeof getGeometriesRegionsIntersectingLatitudeLongitudeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

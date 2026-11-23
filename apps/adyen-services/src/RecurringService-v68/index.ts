@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  createPermitHandler,
-  disableHandler,
-  disablePermitHandler,
-  listRecurringDetailsHandler,
-  notifyShopperHandler,
-  scheduleAccountUpdaterHandler,
+  postCreatePermitRoute,
+  postDisablePermitRoute,
+  postDisableRoute,
+  postListRecurringDetailsRoute,
+  postNotifyShopperRoute,
+  postScheduleAccountUpdaterRoute,
+} from './routes'
+import {
+  postCreatePermitRouteHandler,
+  postDisablePermitRouteHandler,
+  postDisableRouteHandler,
+  postListRecurringDetailsRouteHandler,
+  postNotifyShopperRouteHandler,
+  postScheduleAccountUpdaterRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', createPermitHandler)
-  .route('/', disableHandler)
-  .route('/', disablePermitHandler)
-  .route('/', listRecurringDetailsHandler)
-  .route('/', notifyShopperHandler)
-  .route('/', scheduleAccountUpdaterHandler)
+  .openapi(postCreatePermitRoute, postCreatePermitRouteHandler)
+  .openapi(postDisableRoute, postDisableRouteHandler)
+  .openapi(postDisablePermitRoute, postDisablePermitRouteHandler)
+  .openapi(postListRecurringDetailsRoute, postListRecurringDetailsRouteHandler)
+  .openapi(postNotifyShopperRoute, postNotifyShopperRouteHandler)
+  .openapi(postScheduleAccountUpdaterRoute, postScheduleAccountUpdaterRouteHandler)
 
 export default app

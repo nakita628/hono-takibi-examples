@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/slack.com/openai/v1/openapi.yaml',
   output: './src/slack-openai/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/slack-openai/types.ts' },
   client: { output: './src/slack-openai/client.ts', baseUrl: '/' },
   rpc: { output: './src/slack-openai/rpc.ts', parseResponse: true },

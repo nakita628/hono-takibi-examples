@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueStopWorkflowRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueStopWorkflowRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueStopWorkflowRunHandler = app.openapi(
-  postXAmzTargetAWSGlueStopWorkflowRunRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueStopWorkflowRunRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueStopWorkflowRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

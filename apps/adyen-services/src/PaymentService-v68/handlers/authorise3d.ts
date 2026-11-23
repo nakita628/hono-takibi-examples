@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAuthorise3dRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAuthorise3dRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const authorise3dHandler = app.openapi(postAuthorise3dRoute, (c) => {
+export const postAuthorise3dRouteHandler: RouteHandler<typeof postAuthorise3dRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

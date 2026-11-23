@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getContentSearchRoute, postContentBulkActionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getContentSearchRoute, postContentBulkActionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postContentBulkActionsRouteHandler: RouteHandler<
+  typeof postContentBulkActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contentHandler = app
-  .openapi(postContentBulkActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContentSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getContentSearchRouteHandler: RouteHandler<typeof getContentSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

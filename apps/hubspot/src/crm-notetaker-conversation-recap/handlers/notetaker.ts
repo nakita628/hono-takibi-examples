@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const notetakerHandler = app.openapi(
-  getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getNotetaker202609ConversationRecapObjectTypeIdObjectIdRouteHandler: RouteHandler<
+  typeof getNotetaker202609ConversationRecapObjectTypeIdObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

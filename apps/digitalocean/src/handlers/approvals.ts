@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postApprovalsApprovalIdRoute,
   postApprovalsSessionSessionIdApprovalIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApprovalsSessionSessionIdApprovalIdRouteHandler: RouteHandler<
+  typeof postApprovalsSessionSessionIdApprovalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const approvalsHandler = app
-  .openapi(postApprovalsSessionSessionIdApprovalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApprovalsApprovalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApprovalsApprovalIdRouteHandler: RouteHandler<
+  typeof postApprovalsApprovalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

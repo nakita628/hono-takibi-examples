@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getInferenceCostTimeseriesRoute, getInferenceCostTotalRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getInferenceCostTimeseriesRoute, getInferenceCostTotalRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInferenceCostTotalRouteHandler: RouteHandler<
+  typeof getInferenceCostTotalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const inferenceCostHandler = app
-  .openapi(getInferenceCostTotalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInferenceCostTimeseriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInferenceCostTimeseriesRouteHandler: RouteHandler<
+  typeof getInferenceCostTimeseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

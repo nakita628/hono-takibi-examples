@@ -63,12 +63,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { taskId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { taskId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { taskId: bigint } }; output: Error; outputFormat: 'text'; status: 200 }
       $patch:
         | {
             input: { param: { taskId: bigint } } & { json: UpdateTaskSeriesBody }

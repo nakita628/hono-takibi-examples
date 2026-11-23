@@ -1246,26 +1246,58 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/wiki/rest/api/audit': {
-      $get: {
-        input: {
-          query: {
-            startDate?: string | undefined
-            endDate?: string | undefined
-            searchString?: string | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                startDate?: string | undefined
+                endDate?: string | undefined
+                searchString?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: AuditRecordArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: AuditRecordArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: AuditRecordCreate }
-        output: AuditRecord
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                startDate?: string | undefined
+                endDate?: string | undefined
+                searchString?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                startDate?: string | undefined
+                endDate?: string | undefined
+                searchString?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+      $post:
+        | {
+            input: { json: AuditRecordCreate }
+            output: AuditRecord
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: AuditRecordCreate }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: AuditRecordCreate }; output: {}; outputFormat: string; status: 401 }
     }
   } & {
     '/wiki/rest/api/audit/export': {
@@ -1296,153 +1328,392 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
+        | {
+            input: {
+              query: {
+                startDate?: string | undefined
+                endDate?: string | undefined
+                searchString?: string | undefined
+                format?: 'csv' | 'zip' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/audit/retention': {
-      $get: { input: {}; output: RetentionPeriod; outputFormat: 'json'; status: 200 }
-      $put: {
-        input: { json: RetentionPeriod }
-        output: RetentionPeriod
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: {}; output: RetentionPeriod; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 403 }
+      $put:
+        | {
+            input: { json: RetentionPeriod }
+            output: RetentionPeriod
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: RetentionPeriod }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/audit/since': {
-      $get: {
-        input: {
-          query: {
-            number?: bigint | undefined
-            units?:
-              | 'NANOS'
-              | 'MICROS'
-              | 'MILLIS'
-              | 'SECONDS'
-              | 'MINUTES'
-              | 'HOURS'
-              | 'HALF_DAYS'
-              | 'DAYS'
-              | 'WEEKS'
-              | 'MONTHS'
-              | 'YEARS'
-              | 'DECADES'
-              | 'CENTURIES'
-              | undefined
-            searchString?: string | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                number?: bigint | undefined
+                units?:
+                  | 'NANOS'
+                  | 'MICROS'
+                  | 'MILLIS'
+                  | 'SECONDS'
+                  | 'MINUTES'
+                  | 'HOURS'
+                  | 'HALF_DAYS'
+                  | 'DAYS'
+                  | 'WEEKS'
+                  | 'MONTHS'
+                  | 'YEARS'
+                  | 'DECADES'
+                  | 'CENTURIES'
+                  | undefined
+                searchString?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: AuditRecordArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: AuditRecordArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                number?: bigint | undefined
+                units?:
+                  | 'NANOS'
+                  | 'MICROS'
+                  | 'MILLIS'
+                  | 'SECONDS'
+                  | 'MINUTES'
+                  | 'HOURS'
+                  | 'HALF_DAYS'
+                  | 'DAYS'
+                  | 'WEEKS'
+                  | 'MONTHS'
+                  | 'YEARS'
+                  | 'DECADES'
+                  | 'CENTURIES'
+                  | undefined
+                searchString?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/content/archive': {
-      $post: {
-        input: { json: { pages?: { id: bigint }[] | undefined } }
-        output: LongTask
-        outputFormat: 'json'
-        status: 202
-      }
+      $post:
+        | {
+            input: { json: { pages?: { id: bigint }[] | undefined } }
+            output: LongTask
+            outputFormat: 'json'
+            status: 202
+          }
+        | {
+            input: { json: { pages?: { id: bigint }[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: { pages?: { id: bigint }[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/content/blueprint/instance/:draftId': {
-      $put: {
-        input: { param: { draftId: string } } & {
-          query: { status?: string | undefined; expand?: string[] | undefined }
-        } & { json: ContentBlueprintDraft }
-        output: Content
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { draftId: string } } & {
-          query: { status?: string | undefined; expand?: string[] | undefined }
-        } & { json: ContentBlueprintDraft }
-        output: Content
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: Content
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+      $post:
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: Content
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { draftId: string } } & {
+              query: { status?: string | undefined; expand?: string[] | undefined }
+            } & { json: ContentBlueprintDraft }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/wiki/rest/api/content/search': {
-      $get: {
-        input: {
-          query: {
-            cql: string
-            cqlcontext?: string | undefined
-            expand?: string[] | undefined
-            cursor?: string | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                expand?: string[] | undefined
+                cursor?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: ContentArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ContentArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                expand?: string[] | undefined
+                cursor?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                expand?: string[] | undefined
+                cursor?: string | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/pageTree': {
-      $delete: {
-        input: { param: { id: string } }
-        output: LongTask
-        outputFormat: 'json'
-        status: 202
-      }
+      $delete:
+        | { input: { param: { id: string } }; output: LongTask; outputFormat: 'json'; status: 202 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/content/:pageId/move/:position/:targetId': {
-      $put: {
-        input: {
-          param: { pageId: string; position: 'before' | 'after' | 'append'; targetId: string }
-        }
-        output: { pageId?: ContentId | undefined }
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: {
+              param: { pageId: string; position: 'before' | 'after' | 'append'; targetId: string }
+            }
+            output: { pageId?: ContentId | undefined }
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              param: { pageId: string; position: 'before' | 'after' | 'append'; targetId: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              param: { pageId: string; position: 'before' | 'after' | 'append'; targetId: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              param: { pageId: string; position: 'before' | 'after' | 'append'; targetId: string }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/child/attachment': {
-      $put: {
-        input: { param: { id: string } } & {
-          query: { status?: 'current' | 'draft' | undefined }
-        } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
-        output: ContentArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { id: string } } & {
-          query: { status?: 'current' | 'draft' | undefined }
-        } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
-        output: ContentArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: ContentArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: ContentArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { status?: 'current' | 'draft' | undefined }
+            } & { form: { file: File; comment?: File | undefined; minorEdit: File } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/child/attachment/:attachmentId': {
-      $put: {
-        input: { param: { id: string; attachmentId: string } } & {
-          json: AttachmentPropertiesUpdateBody
-        }
-        output: Content
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              json: AttachmentPropertiesUpdateBody
+            }
+            output: Content
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              json: AttachmentPropertiesUpdateBody
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              json: AttachmentPropertiesUpdateBody
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              json: AttachmentPropertiesUpdateBody
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              json: AttachmentPropertiesUpdateBody
+            }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/child/attachment/:attachmentId/data': {
-      $post: {
-        input: { param: { id: string; attachmentId: string } } & {
-          form: { file: File; comment?: File | undefined; minorEdit: File }
-        }
-        output: Content
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              form: { file: File; comment?: File | undefined; minorEdit: File }
+            }
+            output: Content
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              form: { file: File; comment?: File | undefined; minorEdit: File }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; attachmentId: string } } & {
+              form: { file: File; comment?: File | undefined; minorEdit: File }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/child/attachment/:attachmentId/download': {
@@ -1482,43 +1753,100 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/content/:id/descendant': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { expand?: ('attachment' | 'comment' | 'page')[] | undefined }
-        }
-        output: ContentChildren
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { expand?: ('attachment' | 'comment' | 'page')[] | undefined }
+            }
+            output: ContentChildren
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { expand?: ('attachment' | 'comment' | 'page')[] | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/descendant/:type': {
-      $get: {
-        input: { param: { id: string; type: 'page' | 'comment' | 'attachment' } } & {
-          query: {
-            depth?:
-              | 'all'
-              | 'root'
-              | '<any positive integer argument in the range of 1 and 100>'
-              | undefined
-            expand?: string[] | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string; type: 'page' | 'comment' | 'attachment' } } & {
+              query: {
+                depth?:
+                  | 'all'
+                  | 'root'
+                  | '<any positive integer argument in the range of 1 and 100>'
+                  | undefined
+                expand?: string[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: ContentArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ContentArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string; type: 'page' | 'comment' | 'attachment' } } & {
+              query: {
+                depth?:
+                  | 'all'
+                  | 'root'
+                  | '<any positive integer argument in the range of 1 and 100>'
+                  | undefined
+                expand?: string[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; type: 'page' | 'comment' | 'attachment' } } & {
+              query: {
+                depth?:
+                  | 'all'
+                  | 'root'
+                  | '<any positive integer argument in the range of 1 and 100>'
+                  | undefined
+                expand?: string[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/history/:version/macro/id/:macroId': {
-      $get: {
-        input: { param: { id: string; version: number; macroId: string } }
-        output: MacroInstance
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string; version: number; macroId: string } }
+            output: MacroInstance
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string; version: number; macroId: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string; version: number; macroId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/history/:version/macro/id/:macroId/convert/:to': {
@@ -1547,189 +1875,566 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { id: string; version: number; macroId: string; to: string } } & {
+              query: {
+                expand?: string[] | undefined
+                spaceKeyContext?: string | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string; version: number; macroId: string; to: string } } & {
+              query: {
+                expand?: string[] | undefined
+                spaceKeyContext?: string | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/history/:version/macro/id/:macroId/convert/async/:to': {
-      $get: {
-        input: {
-          param: {
-            id: string
-            version: number
-            macroId: string
-            to: 'export_view' | 'view' | 'styled_view'
+      $get:
+        | {
+            input: {
+              param: {
+                id: string
+                version: number
+                macroId: string
+                to: 'export_view' | 'view' | 'styled_view'
+              }
+            } & {
+              query: {
+                expand?: string[] | undefined
+                allowCache?: boolean | undefined
+                spaceKeyContext?: string | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            }
+            output: AsyncId
+            outputFormat: 'json'
+            status: 200
           }
-        } & {
-          query: {
-            expand?: string[] | undefined
-            allowCache?: boolean | undefined
-            spaceKeyContext?: string | undefined
-            embeddedContentRender?: 'current' | 'version-at-save' | undefined
+        | {
+            input: {
+              param: {
+                id: string
+                version: number
+                macroId: string
+                to: 'export_view' | 'view' | 'styled_view'
+              }
+            } & {
+              query: {
+                expand?: string[] | undefined
+                allowCache?: boolean | undefined
+                spaceKeyContext?: string | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        }
-        output: AsyncId
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                id: string
+                version: number
+                macroId: string
+                to: 'export_view' | 'view' | 'styled_view'
+              }
+            } & {
+              query: {
+                expand?: string[] | undefined
+                allowCache?: boolean | undefined
+                spaceKeyContext?: string | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/label': {
-      $post: {
-        input: { param: { id: string } } & { json: LabelCreateArray | LabelCreate }
-        output: LabelArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { id: string } } & { query: { name: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { json: LabelCreateArray | LabelCreate }
+            output: LabelArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { json: LabelCreateArray | LabelCreate }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { json: LabelCreateArray | LabelCreate }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { json: LabelCreateArray | LabelCreate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { id: string } } & { query: { name: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & { query: { name: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { name: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/label/:label': {
-      $delete: {
-        input: { param: { id: string; label: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string; label: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string; label: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; label: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string; label: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/notification/child-created': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { start?: number | undefined; limit?: number | undefined }
-        }
-        output: WatchArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: WatchArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/notification/created': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: { start?: number | undefined; limit?: number | undefined }
-        }
-        output: SpaceWatchArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: SpaceWatchArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/pagehierarchy/copy': {
-      $post: {
-        input: { param: { id: string } } & { json: CopyPageHierarchyRequest }
-        output: LongTask
-        outputFormat: 'json'
-        status: 202
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { json: CopyPageHierarchyRequest }
+            output: LongTask
+            outputFormat: 'json'
+            status: 202
+          }
+        | {
+            input: { param: { id: string } } & { json: CopyPageHierarchyRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { json: CopyPageHierarchyRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { json: CopyPageHierarchyRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/copy': {
-      $post: {
-        input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
-          json: CopyPageRequest
-        }
-        output: Content
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: CopyPageRequest
+            }
+            output: Content
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: CopyPageRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: CopyPageRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: CopyPageRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: CopyPageRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/permission/check': {
-      $post: {
-        input: { param: { id: string } } & { json: ContentPermissionRequest }
-        output: PermissionCheckResponse
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { json: ContentPermissionRequest }
+            output: PermissionCheckResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { json: ContentPermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { json: ContentPermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: string } } & { json: ContentPermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & { json: ContentPermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/restriction': {
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            expand?:
-              | (
-                  | 'restrictions.user'
-                  | 'read.restrictions.user'
-                  | 'update.restrictions.user'
-                  | 'restrictions.group'
-                  | 'read.restrictions.group'
-                  | 'update.restrictions.group'
-                  | 'content'
-                )[]
-              | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: ContentRestrictionArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ContentRestrictionArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string } } & {
-          query: {
-            expand?:
-              | (
-                  | 'restrictions.user'
-                  | 'read.restrictions.user'
-                  | 'update.restrictions.user'
-                  | 'restrictions.group'
-                  | 'read.restrictions.group'
-                  | 'update.restrictions.group'
-                  | 'content'
-                )[]
-              | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        } & { json: ContentRestrictionAddOrUpdateArray }
-        output: ContentRestrictionArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { id: string } } & {
-          query: {
-            expand?:
-              | (
-                  | 'restrictions.user'
-                  | 'read.restrictions.user'
-                  | 'update.restrictions.user'
-                  | 'restrictions.group'
-                  | 'read.restrictions.group'
-                  | 'update.restrictions.group'
-                  | 'content'
-                )[]
-              | undefined
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: ContentRestrictionArray
+            outputFormat: 'json'
+            status: 200
           }
-        } & { json: ContentRestrictionAddOrUpdateArray }
-        output: ContentRestrictionArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { id: string } } & {
-          query: {
-            expand?:
-              | (
-                  | 'restrictions.user'
-                  | 'read.restrictions.user'
-                  | 'update.restrictions.user'
-                  | 'restrictions.group'
-                  | 'read.restrictions.group'
-                  | 'update.restrictions.group'
-                  | 'content'
-                )[]
-              | undefined
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: ContentRestrictionArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: ContentRestrictionArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            } & { json: ContentRestrictionAddOrUpdateArray }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            }
+            output: ContentRestrictionArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                expand?:
+                  | (
+                      | 'restrictions.user'
+                      | 'read.restrictions.user'
+                      | 'update.restrictions.user'
+                      | 'restrictions.group'
+                      | 'read.restrictions.group'
+                      | 'update.restrictions.group'
+                      | 'content'
+                    )[]
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/restriction/byOperation': {
@@ -1764,63 +2469,177 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/content/:id/restriction/byOperation/:operationKey/byGroupId/:groupId': {
-      $get: {
-        input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update'; groupId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/restriction/byOperation/:operationKey/user': {
-      $get: {
-        input: { param: { id: string; operationKey: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+      $get:
+        | {
+            input: { param: { id: string; operationKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $put: {
-        input: { param: { id: string; operationKey: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { id: string; operationKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: { param: { id: string; operationKey: 'read' | 'update' } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+      $put:
+        | {
+            input: { param: { id: string; operationKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: string; operationKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; operationKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update' } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update' } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; operationKey: 'read' | 'update' } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/state': {
@@ -1948,23 +2767,53 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/content/:id/version': {
-      $post: {
-        input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
-          json: VersionRestore
-        }
-        output: Version
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: VersionRestore
+            }
+            output: Version
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: VersionRestore
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string } } & { query: { expand?: string[] | undefined } } & {
+              json: VersionRestore
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/content/:id/version/:versionNumber': {
-      $delete: {
-        input: { param: { id: string; versionNumber: number } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { id: string; versionNumber: number } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string; versionNumber: number } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: string; versionNumber: number } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/content-states': {
@@ -1974,360 +2823,1146 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/contentbody/convert/async/:to': {
-      $post: {
-        input: { param: { to: 'export_view' } } & {
-          query: {
-            expand?: string[] | undefined
-            spaceKeyContext?: string | undefined
-            contentIdContext?: string | undefined
-            allowCache?: boolean | undefined
-            embeddedContentRender?: 'current' | 'version-at-save' | undefined
+      $post:
+        | {
+            input: { param: { to: 'export_view' } } & {
+              query: {
+                expand?: string[] | undefined
+                spaceKeyContext?: string | undefined
+                contentIdContext?: string | undefined
+                allowCache?: boolean | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            } & { json: ContentBodyCreate }
+            output: AsyncId
+            outputFormat: 'json'
+            status: 200
           }
-        } & { json: ContentBodyCreate }
-        output: AsyncId
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { to: 'export_view' } } & {
+              query: {
+                expand?: string[] | undefined
+                spaceKeyContext?: string | undefined
+                contentIdContext?: string | undefined
+                allowCache?: boolean | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            } & { json: ContentBodyCreate }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { to: 'export_view' } } & {
+              query: {
+                expand?: string[] | undefined
+                spaceKeyContext?: string | undefined
+                contentIdContext?: string | undefined
+                allowCache?: boolean | undefined
+                embeddedContentRender?: 'current' | 'version-at-save' | undefined
+              }
+            } & { json: ContentBodyCreate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/contentbody/convert/async/:id': {
-      $get: {
-        input: { param: { id: string } }
-        output: AsyncContentBody
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } }
+            output: AsyncContentBody
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/contentbody/convert/async/bulk/tasks': {
-      $post: {
-        input: { json: BulkContentBodyConversionInput }
-        output: AsyncIdArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $get: {
-        input: { query: { ids: string[] } }
-        output: AsyncContentBodyArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BulkContentBodyConversionInput }
+            output: AsyncIdArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { json: BulkContentBodyConversionInput }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+      $get:
+        | {
+            input: { query: { ids: string[] } }
+            output: AsyncContentBodyArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { query: { ids: string[] } }; output: {}; outputFormat: string; status: 400 }
     }
   } & {
     '/wiki/rest/api/label': {
-      $get: {
-        input: {
-          query: {
-            name: string
-            type?: 'page' | 'blogpost' | 'attachment' | 'page_template' | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                name: string
+                type?: 'page' | 'blogpost' | 'attachment' | 'page_template' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: LabelDetails
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: LabelDetails
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                name: string
+                type?: 'page' | 'blogpost' | 'attachment' | 'page_template' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                name: string
+                type?: 'page' | 'blogpost' | 'attachment' | 'page_template' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                name: string
+                type?: 'page' | 'blogpost' | 'attachment' | 'page_template' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/group': {
-      $get: {
-        input: {
-          query: {
-            start?: number | undefined
-            limit?: number | undefined
-            accessType?: 'user' | 'admin' | 'site-admin' | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                start?: number | undefined
+                limit?: number | undefined
+                accessType?: 'user' | 'admin' | 'site-admin' | undefined
+              }
+            }
+            output: GroupArrayWithLinks
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: GroupArrayWithLinks
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: { input: { json: GroupName }; output: Group; outputFormat: 'json'; status: 201 }
+        | {
+            input: {
+              query: {
+                start?: number | undefined
+                limit?: number | undefined
+                accessType?: 'user' | 'admin' | 'site-admin' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+      $post:
+        | { input: { json: GroupName }; output: Group; outputFormat: 'json'; status: 201 }
+        | { input: { json: GroupName }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: GroupName }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: GroupName }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/group/by-id': {
-      $get: { input: { query: { id: string } }; output: Group; outputFormat: 'json'; status: 200 }
-      $delete: { input: { query: { id: string } }; output: {}; outputFormat: string; status: 200 }
+      $get:
+        | { input: { query: { id: string } }; output: Group; outputFormat: 'json'; status: 200 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 404 }
+      $delete:
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { query: { id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/group/picker': {
-      $get: {
-        input: {
-          query: {
-            query: string
-            start?: number | undefined
-            limit?: number | undefined
-            shouldReturnTotalSize?: boolean | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                query: string
+                start?: number | undefined
+                limit?: number | undefined
+                shouldReturnTotalSize?: boolean | undefined
+              }
+            }
+            output: GroupArrayWithLinks
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: GroupArrayWithLinks
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                query: string
+                start?: number | undefined
+                limit?: number | undefined
+                shouldReturnTotalSize?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/group/:groupId/membersByGroupId': {
-      $get: {
-        input: { param: { groupId: string } } & {
-          query: {
-            start?: number | undefined
-            limit?: number | undefined
-            shouldReturnTotalSize?: boolean | undefined
-            expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+      $get:
+        | {
+            input: { param: { groupId: string } } & {
+              query: {
+                start?: number | undefined
+                limit?: number | undefined
+                shouldReturnTotalSize?: boolean | undefined
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: UserArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: UserArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { groupId: string } } & {
+              query: {
+                start?: number | undefined
+                limit?: number | undefined
+                shouldReturnTotalSize?: boolean | undefined
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: {
+                start?: number | undefined
+                limit?: number | undefined
+                shouldReturnTotalSize?: boolean | undefined
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/group/userByGroupId': {
-      $post: {
-        input: { query: { groupId: string } } & { json: AccountId }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: {
-          query: {
-            groupId: string
-            accountId: string
-            key?: string | undefined
-            username?: string | undefined
+      $post:
+        | {
+            input: { query: { groupId: string } } & { json: AccountId }
+            output: {}
+            outputFormat: string
+            status: 201
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { query: { groupId: string } } & { json: AccountId }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { groupId: string } } & { json: AccountId }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { groupId: string } } & { json: AccountId }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { groupId: string } } & { json: AccountId }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: {
+              query: {
+                groupId: string
+                accountId: string
+                key?: string | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              query: {
+                groupId: string
+                accountId: string
+                key?: string | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                groupId: string
+                accountId: string
+                key?: string | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                groupId: string
+                accountId: string
+                key?: string | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                groupId: string
+                accountId: string
+                key?: string | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/longtask': {
-      $get: {
-        input: {
-          query: {
-            key?: string | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                key?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: LongTaskStatusArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: LongTaskStatusArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                key?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/longtask/:id': {
-      $get: {
-        input: { param: { id: string } }
-        output: LongTaskStatusWithLinks
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: string } }
+            output: LongTaskStatusWithLinks
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/relation/:relationName/from/:sourceType/:sourceKey/to/:targetType': {
-      $get: {
-        input: {
-          param: {
-            relationName: string
-            sourceType: 'user' | 'content' | 'space'
-            sourceKey: string
-            targetType: 'user' | 'content' | 'space'
+      $get:
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: RelationArray
+            outputFormat: 'json'
+            status: 200
           }
-        } & {
-          query: {
-            sourceStatus?: string | undefined
-            targetStatus?: string | undefined
-            sourceVersion?: number | undefined
-            targetVersion?: number | undefined
-            expand?: ('relationData' | 'source' | 'target')[] | undefined
-            start?: number | undefined
-            limit?: number | undefined
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: RelationArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/relation/:relationName/from/:sourceType/:sourceKey/to/:targetType/:targetKey': {
-      $get: {
-        input: {
-          param: {
-            relationName: string
-            sourceType: 'user' | 'content' | 'space'
-            sourceKey: string
-            targetType: 'user' | 'content' | 'space'
-            targetKey: string
+      $get:
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+              }
+            }
+            output: Relation
+            outputFormat: 'json'
+            status: 200
           }
-        } & {
-          query: {
-            sourceStatus?: string | undefined
-            targetStatus?: string | undefined
-            sourceVersion?: number | undefined
-            targetVersion?: number | undefined
-            expand?: ('relationData' | 'source' | 'target')[] | undefined
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: Relation
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: {
-          param: {
-            relationName: string
-            sourceType: 'user' | 'content' | 'space'
-            sourceKey: string
-            targetType: 'user' | 'content' | 'space'
-            targetKey: string
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
           }
-        } & {
-          query: {
-            sourceStatus?: string | undefined
-            targetStatus?: string | undefined
-            sourceVersion?: number | undefined
-            targetVersion?: number | undefined
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: Relation
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: {
-          param: {
-            relationName: string
-            sourceType: 'user' | 'content' | 'space'
-            sourceKey: string
-            targetType: 'user' | 'content' | 'space'
-            targetKey: string
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        } & {
-          query: {
-            sourceStatus?: string | undefined
-            targetStatus?: string | undefined
-            sourceVersion?: number | undefined
-            targetVersion?: number | undefined
+      $put:
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: Relation
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                sourceKey: string
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/relation/:relationName/to/:targetType/:targetKey/from/:sourceType': {
-      $get: {
-        input: {
-          param: {
-            relationName: string
-            sourceType: 'user' | 'content' | 'space'
-            targetType: 'user' | 'content' | 'space'
-            targetKey: string
+      $get:
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: RelationArray
+            outputFormat: 'json'
+            status: 200
           }
-        } & {
-          query: {
-            sourceStatus?: string | undefined
-            targetStatus?: string | undefined
-            sourceVersion?: number | undefined
-            targetVersion?: number | undefined
-            expand?: ('relationData' | 'source' | 'target')[] | undefined
-            start?: number | undefined
-            limit?: number | undefined
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: RelationArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              param: {
+                relationName: string
+                sourceType: 'user' | 'content' | 'space'
+                targetType: 'user' | 'content' | 'space'
+                targetKey: string
+              }
+            } & {
+              query: {
+                sourceStatus?: string | undefined
+                targetStatus?: string | undefined
+                sourceVersion?: number | undefined
+                targetVersion?: number | undefined
+                expand?: ('relationData' | 'source' | 'target')[] | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/search': {
-      $get: {
-        input: {
-          query: {
-            cql: string
-            cqlcontext?: string | undefined
-            cursor?: string | undefined
-            next?: boolean | undefined
-            prev?: boolean | undefined
-            limit?: number | undefined
-            start?: number | undefined
-            includeArchivedSpaces?: boolean | undefined
-            excludeCurrentSpaces?: boolean | undefined
-            excerpt?:
-              | 'highlight'
-              | 'indexed'
-              | 'none'
-              | 'highlight_unescaped'
-              | 'indexed_unescaped'
-              | undefined
-            sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
-            _?: bigint | undefined
-            expand?: string[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                cursor?: string | undefined
+                next?: boolean | undefined
+                prev?: boolean | undefined
+                limit?: number | undefined
+                start?: number | undefined
+                includeArchivedSpaces?: boolean | undefined
+                excludeCurrentSpaces?: boolean | undefined
+                excerpt?:
+                  | 'highlight'
+                  | 'indexed'
+                  | 'none'
+                  | 'highlight_unescaped'
+                  | 'indexed_unescaped'
+                  | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+                _?: bigint | undefined
+                expand?: string[] | undefined
+              }
+            }
+            output: SearchPageResponseSearchResult
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: SearchPageResponseSearchResult
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                cursor?: string | undefined
+                next?: boolean | undefined
+                prev?: boolean | undefined
+                limit?: number | undefined
+                start?: number | undefined
+                includeArchivedSpaces?: boolean | undefined
+                excludeCurrentSpaces?: boolean | undefined
+                excerpt?:
+                  | 'highlight'
+                  | 'indexed'
+                  | 'none'
+                  | 'highlight_unescaped'
+                  | 'indexed_unescaped'
+                  | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+                _?: bigint | undefined
+                expand?: string[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cql: string
+                cqlcontext?: string | undefined
+                cursor?: string | undefined
+                next?: boolean | undefined
+                prev?: boolean | undefined
+                limit?: number | undefined
+                start?: number | undefined
+                includeArchivedSpaces?: boolean | undefined
+                excludeCurrentSpaces?: boolean | undefined
+                excerpt?:
+                  | 'highlight'
+                  | 'indexed'
+                  | 'none'
+                  | 'highlight_unescaped'
+                  | 'indexed_unescaped'
+                  | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+                _?: bigint | undefined
+                expand?: string[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/search/user': {
-      $get: {
-        input: {
-          query: {
-            cql: string
-            start?: number | undefined
-            limit?: number | undefined
-            expand?: string[] | undefined
-            sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                cql: string
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: string[] | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+              }
+            }
+            output: SearchPageResponseSearchResult
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: SearchPageResponseSearchResult
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                cql: string
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: string[] | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                cql: string
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: string[] | undefined
+                sitePermissionTypeFilter?: 'all' | 'externalCollaborator' | 'none' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/settings/lookandfeel': {
-      $get: {
-        input: { query: { spaceKey?: string | undefined } }
-        output: LookAndFeelSettings
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { json: LookAndFeelSelection }
-        output: LookAndFeelSelection
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: LookAndFeelSettings
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { json: LookAndFeelSelection }
+            output: LookAndFeelSelection
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: LookAndFeelSelection }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: LookAndFeelSelection }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: LookAndFeelSelection }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: LookAndFeelSelection }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/wiki/rest/api/settings/lookandfeel/custom': {
-      $post: {
-        input: { query: { spaceKey?: string | undefined } } & { json: LookAndFeel }
-        output: LookAndFeelWithLinks
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { query: { spaceKey?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { spaceKey?: string | undefined } } & { json: LookAndFeel }
+            output: LookAndFeelWithLinks
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } } & { json: LookAndFeel }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } } & { json: LookAndFeel }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } } & { json: LookAndFeel }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { query: { spaceKey?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/settings/systemInfo': {
-      $get: { input: {}; output: SystemInfoEntity; outputFormat: 'json'; status: 200 }
+      $get:
+        | { input: {}; output: SystemInfoEntity; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/settings/theme': {
@@ -2340,81 +3975,200 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/settings/theme/selected': {
-      $get: { input: {}; output: Theme; outputFormat: 'json'; status: 200 }
+      $get:
+        | { input: {}; output: Theme; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/settings/theme/:themeKey': {
-      $get: {
-        input: { param: { themeKey: string } }
-        output: Theme
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { themeKey: string } }
+            output: Theme
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { themeKey: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/space': {
-      $post: { input: { json: SpaceCreate }; output: Space; outputFormat: 'json'; status: 200 }
+      $post:
+        | { input: { json: SpaceCreate }; output: Space; outputFormat: 'json'; status: 200 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/space/_private': {
-      $post: { input: { json: SpaceCreate }; output: Space; outputFormat: 'json'; status: 200 }
+      $post:
+        | { input: { json: SpaceCreate }; output: Space; outputFormat: 'json'; status: 200 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: SpaceCreate }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey': {
-      $put: {
-        input: { param: { spaceKey: string } } & { json: SpaceUpdate }
-        output: Space
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { spaceKey: string } }
-        output: LongTask
-        outputFormat: 'json'
-        status: 202
-      }
+      $put:
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceUpdate }
+            output: Space
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceUpdate }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceUpdate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { spaceKey: string } }
+            output: LongTask
+            outputFormat: 'json'
+            status: 202
+          }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/permission': {
-      $post: {
-        input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
-        output: SpacePermissionV2
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
+            output: SpacePermissionV2
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/permission/custom-content': {
-      $post: {
-        input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpacePermissionCustomContent }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/permission/:id': {
-      $delete: {
-        input: { param: { spaceKey: string; id: number } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { spaceKey: string; id: number } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { spaceKey: string; id: number } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { spaceKey: string; id: number } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { spaceKey: string; id: number } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string; id: number } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/settings': {
-      $get: {
-        input: { param: { spaceKey: string } }
-        output: SpaceSettings
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { param: { spaceKey: string } } & { json: SpaceSettingsUpdate }
-        output: SpaceSettings
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { spaceKey: string } }
+            output: SpaceSettings
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 404 }
+      $put:
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceSettingsUpdate }
+            output: SpaceSettings
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceSettingsUpdate }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: SpaceSettingsUpdate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/state': {
@@ -2513,324 +4267,767 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/theme': {
-      $get: {
-        input: { param: { spaceKey: string } }
-        output: Theme
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { param: { spaceKey: string } } & { json: ThemeUpdate }
-        output: Theme
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { spaceKey: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { spaceKey: string } }
+            output: Theme
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 404 }
+      $put:
+        | {
+            input: { param: { spaceKey: string } } & { json: ThemeUpdate }
+            output: Theme
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: ThemeUpdate }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: ThemeUpdate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { spaceKey: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/watch': {
-      $get: {
-        input: { param: { spaceKey: string } } & {
-          query: { start?: string | undefined; limit?: string | undefined }
-        }
-        output: SpaceWatchArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: { start?: string | undefined; limit?: string | undefined }
+            }
+            output: SpaceWatchArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: { start?: string | undefined; limit?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/space/:spaceKey/label': {
-      $get: {
-        input: { param: { spaceKey: string } } & {
-          query: {
-            prefix?: 'global' | 'my' | 'team' | undefined
-            start?: number | undefined
-            limit?: number | undefined
+      $get:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                prefix?: 'global' | 'my' | 'team' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: LabelArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: LabelArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { spaceKey: string } } & { json: LabelCreate[] }
-        output: LabelArray
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { spaceKey: string } } & {
-          query: { name: string; prefix?: string | undefined }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                prefix?: 'global' | 'my' | 'team' | undefined
+                start?: number | undefined
+                limit?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { spaceKey: string } } & { json: LabelCreate[] }
+            output: LabelArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: LabelCreate[] }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: LabelCreate[] }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & { json: LabelCreate[] }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: { name: string; prefix?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: { name: string; prefix?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: { name: string; prefix?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/template': {
-      $put: {
-        input: { json: ContentTemplateUpdate }
-        output: ContentTemplate
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: ContentTemplateCreate }
-        output: ContentTemplate
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { json: ContentTemplateUpdate }
+            output: ContentTemplate
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: ContentTemplateUpdate }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: ContentTemplateUpdate }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: ContentTemplateUpdate }; output: {}; outputFormat: string; status: 404 }
+      $post:
+        | {
+            input: { json: ContentTemplateCreate }
+            output: ContentTemplate
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: ContentTemplateCreate }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: ContentTemplateCreate }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/wiki/rest/api/template/blueprint': {
-      $get: {
-        input: {
-          query: {
-            spaceKey?: string | undefined
-            start?: number | undefined
-            limit?: number | undefined
-            expand?: ('body' | 'body.storage')[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                spaceKey?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: ('body' | 'body.storage')[] | undefined
+              }
+            }
+            output: BlueprintTemplateArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: BlueprintTemplateArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                spaceKey?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: ('body' | 'body.storage')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/template/page': {
-      $get: {
-        input: {
-          query: {
-            spaceKey?: string | undefined
-            start?: number | undefined
-            limit?: number | undefined
-            expand?: ('body' | 'body.storage')[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                spaceKey?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: ('body' | 'body.storage')[] | undefined
+              }
+            }
+            output: ContentTemplateArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ContentTemplateArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                spaceKey?: string | undefined
+                start?: number | undefined
+                limit?: number | undefined
+                expand?: ('body' | 'body.storage')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/template/:contentTemplateId': {
-      $get: {
-        input: { param: { contentTemplateId: string } } & {
-          query: { expand?: ('body' | 'body.storage')[] | undefined }
-        }
-        output: ContentTemplate
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { contentTemplateId: string } }
-        output: {}
-        outputFormat: string
-        status: 403
-      }
+      $get:
+        | {
+            input: { param: { contentTemplateId: string } } & {
+              query: { expand?: ('body' | 'body.storage')[] | undefined }
+            }
+            output: ContentTemplate
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { contentTemplateId: string } } & {
+              query: { expand?: ('body' | 'body.storage')[] | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+      $delete:
+        | {
+            input: { param: { contentTemplateId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { contentTemplateId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/user': {
-      $get: {
-        input: {
-          query: {
-            accountId: string
-            expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: User
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: User
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/user/anonymous': {
-      $get: {
-        input: { query: { expand?: 'operations'[] | undefined } }
-        output: UserAnonymous
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { expand?: 'operations'[] | undefined } }
+            output: UserAnonymous
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { expand?: 'operations'[] | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/user/current': {
-      $get: {
-        input: {
-          query: {
-            expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: User
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: User
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/user/memberof': {
-      $get: {
-        input: {
-          query: { accountId: string; start?: number | undefined; limit?: number | undefined }
-        }
-        output: GroupArrayWithLinks
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: {
+              query: { accountId: string; start?: number | undefined; limit?: number | undefined }
+            }
+            output: GroupArrayWithLinks
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              query: { accountId: string; start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/user/bulk': {
-      $get: {
-        input: {
-          query: {
-            accountId: string
-            expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: BulkUserLookupArray
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: BulkUserLookupArray
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                accountId: string
+                expand?: ('operations' | 'personalSpace' | 'isExternalCollaborator')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/wiki/rest/api/user/watch/content/:contentId': {
-      $get: {
-        input: { param: { contentId: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+      $get:
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: UserWatch
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: UserWatch
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { contentId: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: { param: { contentId: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        } & { header: { 'X-Atlassian-Token': string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { contentId: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/user/watch/label/:labelName': {
-      $get: {
-        input: { param: { labelName: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+      $get:
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: UserWatch
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: UserWatch
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { labelName: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        } & { header: { 'X-Atlassian-Token': string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: { param: { labelName: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { labelName: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/user/watch/space/:spaceKey': {
-      $get: {
-        input: { param: { spaceKey: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+      $get:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: UserWatch
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: UserWatch
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { spaceKey: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
-        } & { header: { 'X-Atlassian-Token': string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
-      $delete: {
-        input: { param: { spaceKey: string } } & {
-          query: {
-            key?: string | undefined
-            username?: string | undefined
-            accountId?: string | undefined
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            } & { header: { 'X-Atlassian-Token': string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $delete:
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { spaceKey: string } } & {
+              query: {
+                key?: string | undefined
+                username?: string | undefined
+                accountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/user/email': {
-      $get: {
-        input: { query: { accountId: string } }
-        output: AccountIdEmailRecord
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { accountId: string } }
+            output: AccountIdEmailRecord
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { query: { accountId: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { query: { accountId: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { query: { accountId: string } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { query: { accountId: string } }; output: {}; outputFormat: string; status: 501 }
     }
   } & {
     '/wiki/rest/api/user/email/bulk': {
-      $get: {
-        input: { query: { accountId: string[] } }
-        output: AccountIdEmailRecordArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { accountId: string[] } }
+            output: AccountIdEmailRecordArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { accountId: string[] } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { accountId: string[] } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { accountId: string[] } }
+            output: {}
+            outputFormat: string
+            status: 501
+          }
     }
   } & {
     '/wiki/rest/atlassian-connect/1/app/module/dynamic': {
@@ -2838,14 +5035,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ConnectModules; outputFormat: 'text'; status: 200 }
         | { input: {}; output: DynamicModulesErrorMessage; outputFormat: 'text'; status: 401 }
       $post:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
         | { input: {}; output: DynamicModulesErrorMessage; outputFormat: 'text'; status: 400 }
         | { input: {}; output: DynamicModulesErrorMessage; outputFormat: 'text'; status: 401 }
-      $delete: {
-        input: { query: { moduleKey: string[] } }
-        output: DynamicModulesErrorMessage
-        outputFormat: 'text'
-        status: 401
-      }
+      $delete:
+        | {
+            input: { query: { moduleKey: string[] } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { query: { moduleKey: string[] } }
+            output: DynamicModulesErrorMessage
+            outputFormat: 'text'
+            status: 401
+          }
     }
   } & {
     '/wiki/rest/api/analytics/content/:contentId/views': {
@@ -2861,6 +5066,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
@@ -2888,46 +5105,197 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
             output: {}
             outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { contentId: string } } & { query: { fromDate?: string | undefined } }
+            output: {}
+            outputFormat: string
             status: 404
           }
     }
   } & {
     '/wiki/rest/api/user/:userId/property': {
-      $get: {
-        input: { param: { userId: string } } & {
-          query: { start?: number | undefined; limit?: number | undefined }
-        }
-        output: UserPropertyKeyArray
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { userId: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: UserPropertyKeyArray
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { userId: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { userId: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { userId: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { userId: string } } & {
+              query: { start?: number | undefined; limit?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/wiki/rest/api/user/:userId/property/:key': {
-      $get: {
-        input: { param: { userId: string; key: string } }
-        output: UserProperty
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
-      $post: {
-        input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
-        output: {}
-        outputFormat: string
-        status: 201
-      }
-      $delete: {
-        input: { param: { userId: string; key: string } }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
+      $get:
+        | {
+            input: { param: { userId: string; key: string } }
+            output: UserProperty
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyUpdate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { userId: string; key: string } } & { json: UserPropertyCreate }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+      $delete:
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { userId: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   },
   '/'

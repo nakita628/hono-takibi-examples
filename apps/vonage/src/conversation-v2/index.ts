@@ -1,8 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { conversationsHandler, usersHandler } from './handlers'
+import {
+  getConversationsConversationIdEventsRoute,
+  getConversationsConversationIdMembersRoute,
+  getConversationsRoute,
+  getUsersRoute,
+} from './routes'
+import {
+  getConversationsConversationIdEventsRouteHandler,
+  getConversationsConversationIdMembersRouteHandler,
+  getConversationsRouteHandler,
+  getUsersRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', conversationsHandler).route('/', usersHandler)
+export const api = app
+  .openapi(getConversationsRoute, getConversationsRouteHandler)
+  .openapi(
+    getConversationsConversationIdEventsRoute,
+    getConversationsConversationIdEventsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversationIdMembersRoute,
+    getConversationsConversationIdMembersRouteHandler,
+  )
+  .openapi(getUsersRoute, getUsersRouteHandler)
 
 export default app

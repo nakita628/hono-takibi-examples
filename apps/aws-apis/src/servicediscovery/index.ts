@@ -1,61 +1,167 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314CreateServiceHandler,
-  xAmzTargetRoute53AutoNamingV20170314DeleteNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314DeleteServiceHandler,
-  xAmzTargetRoute53AutoNamingV20170314DeregisterInstanceHandler,
-  xAmzTargetRoute53AutoNamingV20170314DiscoverInstancesHandler,
-  xAmzTargetRoute53AutoNamingV20170314GetInstanceHandler,
-  xAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusHandler,
-  xAmzTargetRoute53AutoNamingV20170314GetNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314GetOperationHandler,
-  xAmzTargetRoute53AutoNamingV20170314GetServiceHandler,
-  xAmzTargetRoute53AutoNamingV20170314ListInstancesHandler,
-  xAmzTargetRoute53AutoNamingV20170314ListNamespacesHandler,
-  xAmzTargetRoute53AutoNamingV20170314ListOperationsHandler,
-  xAmzTargetRoute53AutoNamingV20170314ListServicesHandler,
-  xAmzTargetRoute53AutoNamingV20170314ListTagsForResourceHandler,
-  xAmzTargetRoute53AutoNamingV20170314RegisterInstanceHandler,
-  xAmzTargetRoute53AutoNamingV20170314TagResourceHandler,
-  xAmzTargetRoute53AutoNamingV20170314UntagResourceHandler,
-  xAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusHandler,
-  xAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceHandler,
-  xAmzTargetRoute53AutoNamingV20170314UpdateServiceHandler,
+  postXAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314CreateServiceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314DeleteNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314DeleteServiceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314DeregisterInstanceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314DiscoverInstancesRoute,
+  postXAmzTargetRoute53AutoNamingV20170314GetInstanceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusRoute,
+  postXAmzTargetRoute53AutoNamingV20170314GetNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314GetOperationRoute,
+  postXAmzTargetRoute53AutoNamingV20170314GetServiceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314ListInstancesRoute,
+  postXAmzTargetRoute53AutoNamingV20170314ListNamespacesRoute,
+  postXAmzTargetRoute53AutoNamingV20170314ListOperationsRoute,
+  postXAmzTargetRoute53AutoNamingV20170314ListServicesRoute,
+  postXAmzTargetRoute53AutoNamingV20170314ListTagsForResourceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314RegisterInstanceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314TagResourceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UntagResourceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceRoute,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateServiceRoute,
+} from './routes'
+import {
+  postXAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314CreateServiceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314DeleteNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314DeleteServiceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314DeregisterInstanceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314DiscoverInstancesRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314GetInstanceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314GetNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314GetOperationRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314GetServiceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314ListInstancesRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314ListNamespacesRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314ListOperationsRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314ListServicesRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314ListTagsForResourceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314RegisterInstanceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314TagResourceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UntagResourceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceRouteHandler,
+  postXAmzTargetRoute53AutoNamingV20170314UpdateServiceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314CreateServiceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314DeleteNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314DeleteServiceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314DeregisterInstanceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314DiscoverInstancesHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314GetInstanceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314GetNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314GetOperationHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314GetServiceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314ListInstancesHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314ListNamespacesHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314ListOperationsHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314ListServicesHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314ListTagsForResourceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314RegisterInstanceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314TagResourceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UntagResourceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceHandler)
-  .route('/', xAmzTargetRoute53AutoNamingV20170314UpdateServiceHandler)
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314CreateHttpNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314CreatePrivateDnsNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314CreatePublicDnsNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314CreateServiceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314CreateServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314DeleteNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314DeleteNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314DeleteServiceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314DeleteServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314DeregisterInstanceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314DeregisterInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314DiscoverInstancesRoute,
+    postXAmzTargetRoute53AutoNamingV20170314DiscoverInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314GetInstanceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314GetInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusRoute,
+    postXAmzTargetRoute53AutoNamingV20170314GetInstancesHealthStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314GetNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314GetNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314GetOperationRoute,
+    postXAmzTargetRoute53AutoNamingV20170314GetOperationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314GetServiceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314GetServiceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314ListInstancesRoute,
+    postXAmzTargetRoute53AutoNamingV20170314ListInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314ListNamespacesRoute,
+    postXAmzTargetRoute53AutoNamingV20170314ListNamespacesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314ListOperationsRoute,
+    postXAmzTargetRoute53AutoNamingV20170314ListOperationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314ListServicesRoute,
+    postXAmzTargetRoute53AutoNamingV20170314ListServicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314ListTagsForResourceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314RegisterInstanceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314RegisterInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314TagResourceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UntagResourceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UpdateHttpNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UpdateInstanceCustomHealthStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UpdatePrivateDnsNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UpdatePublicDnsNamespaceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53AutoNamingV20170314UpdateServiceRoute,
+    postXAmzTargetRoute53AutoNamingV20170314UpdateServiceRouteHandler,
+  )
 
 export default app

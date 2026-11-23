@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNoticelistsRoute,
   getNoticelistsViewNoticelistIdRoute,
   postNoticelistsToggleEnableNoticelistIdRoute,
   postNoticelistsUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNoticelistsRouteHandler: RouteHandler<typeof getNoticelistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const noticelistsHandler = app
-  .openapi(getNoticelistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNoticelistsViewNoticelistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNoticelistsToggleEnableNoticelistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNoticelistsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNoticelistsViewNoticelistIdRouteHandler: RouteHandler<
+  typeof getNoticelistsViewNoticelistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNoticelistsToggleEnableNoticelistIdRouteHandler: RouteHandler<
+  typeof postNoticelistsToggleEnableNoticelistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNoticelistsUpdateRouteHandler: RouteHandler<
+  typeof postNoticelistsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

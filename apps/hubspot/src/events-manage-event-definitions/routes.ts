@@ -4684,7 +4684,7 @@ export const deleteEvents202609EventDefinitionsEventNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['behavioral_events.event_definitions.read_write'] }],
 })
 
@@ -4839,7 +4839,7 @@ export const deleteEvents202609EventDefinitionsEventNamePropertyPropertyNameRout
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['behavioral_events.event_definitions.read_write'] }],
 })
 
@@ -4931,6 +4931,6 @@ export const postEvents202609SendBatchRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['analytics.behavioral_events.send'] }],
 })

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/contentgroove.com/1.0.0/openapi.yaml',
   output: './src/contentgroove/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/contentgroove/types.ts' },
   client: { output: './src/contentgroove/client.ts', baseUrl: '/' },
   rpc: { output: './src/contentgroove/rpc.ts', parseResponse: true },

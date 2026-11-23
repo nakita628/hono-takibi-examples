@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminAppsRestrictRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminAppsRestrictRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminAppsRestrictHandler = app.openapi(postAdminAppsRestrictRoute, (c) => {
+export const postAdminAppsRestrictRouteHandler: RouteHandler<
+  typeof postAdminAppsRestrictRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/vcs/v1/vcs.openapi.yaml',
   output: './src/vcs-v1-vcs/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vcs-v1-vcs/types.ts' },
   client: { output: './src/vcs-v1-vcs/client.ts', baseUrl: '/' },
   rpc: { output: './src/vcs-v1-vcs/rpc.ts', parseResponse: true },

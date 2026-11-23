@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteNotificationConfigurationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteNotificationConfigurationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteNotificationConfigurationsHandler = app.openapi(
-  postDeleteNotificationConfigurationsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDeleteNotificationConfigurationsRouteHandler: RouteHandler<
+  typeof postDeleteNotificationConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

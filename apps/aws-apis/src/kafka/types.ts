@@ -3,13 +3,6 @@ type BatchAssociateScramSecretResponse = {
   ClusterArn?: {} | undefined
   UnprocessedScramSecrets?: {} | undefined
 }
-type BadRequestException = { [x: string]: unknown }
-type UnauthorizedException = { [x: string]: unknown }
-type InternalServerErrorException = { [x: string]: unknown }
-type ForbiddenException = { [x: string]: unknown }
-type NotFoundException = { [x: string]: unknown }
-type ServiceUnavailableException = { [x: string]: unknown }
-type TooManyRequestsException = { [x: string]: unknown }
 type BatchDisassociateScramSecretResponse = {
   ClusterArn?: {} | undefined
   UnprocessedScramSecrets?: {} | undefined
@@ -20,7 +13,6 @@ type CreateClusterResponse = {
   ClusterName?: {} | undefined
   State?: {} | undefined
 }
-type ConflictException = { [x: string]: unknown }
 type ListClustersResponse = { ClusterInfoList?: {} | undefined; NextToken?: {} | undefined }
 type CreateClusterV2Response = {
   ClusterArn?: {} | undefined
@@ -742,7992 +734,1268 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/v1/clusters/:clusterArn/scram-secrets': {
-      $post:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: BatchAssociateScramSecretResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { secretArnList: String[] } }
+        output: BatchAssociateScramSecretResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
+        } & { json: { secretArnList: String[] } }
+        output: BatchDisassociateScramSecretResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
-      $patch:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: BatchDisassociateScramSecretResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { secretArnList: String[] } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListScramSecretsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: ListScramSecretsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        } & {
+          json: {
+            brokerNodeGroupInfo: {
+              BrokerAZDistribution?: {} | undefined
+              ClientSubnets?: {} | undefined
+              InstanceType?: {} | undefined
+              SecurityGroups?: {} | undefined
+              StorageInfo?:
+                | {
+                    EbsStorageInfo?:
+                      | {
+                          ProvisionedThroughput?:
+                            | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
+                            | undefined
+                          VolumeSize?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
+              ConnectivityInfo?:
+                | {
+                    PublicAccess?: { Type?: {} | undefined } | undefined
+                    VpcConnectivity?:
+                      | {
+                          ClientAuthentication?:
+                            | {
+                                Sasl?:
+                                  | {
+                                      Scram?: { Enabled?: {} | undefined } | undefined
+                                      Iam?: { Enabled?: {} | undefined } | undefined
+                                    }
+                                  | undefined
+                                Tls?: { Enabled?: {} | undefined } | undefined
+                              }
+                            | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
+              ZoneIds?: {} | undefined
+            }
+            clientAuthentication?:
+              | {
+                  Sasl?:
                     | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
+                        Scram?: { Enabled?: {} | undefined } | undefined
+                        Iam?: { Enabled?: {} | undefined } | undefined
                       }
                     | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
+                  Tls?:
+                    | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
                     | undefined
-                  ZoneIds?: {} | undefined
+                  Unauthenticated?: { Enabled?: {} | undefined } | undefined
                 }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: CreateClusterResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
-                    | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
-                      }
+              | undefined
+            clusterName: string
+            configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
+            encryptionInfo?:
+              | {
+                  EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
+                  EncryptionInTransit?:
+                    | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
                     | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
                 }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
+              | undefined
+            enhancedMonitoring?:
+              | 'DEFAULT'
+              | 'PER_BROKER'
+              | 'PER_TOPIC_PER_BROKER'
+              | 'PER_TOPIC_PER_PARTITION'
+              | undefined
+            openMonitoring?:
+              | {
+                  Prometheus?:
                     | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
+                        JmxExporter?: { EnabledInBroker: {} } | undefined
+                        NodeExporter?: { EnabledInBroker: {} } | undefined
                       }
                     | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
                 }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
+              | undefined
+            kafkaVersion: string
+            loggingInfo?:
+              | {
+                  BrokerLogs?:
                     | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
+                        CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
+                        Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
+                        S3?:
+                          | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
                           | undefined
                       }
                     | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
                 }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
+              | undefined
+            numberOfBrokerNodes: number
+            tags?: { [x: string]: String } | undefined
+            storageMode?: 'LOCAL' | 'TIERED' | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
-                    | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
-                }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
+        }
+        output: CreateClusterResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            clusterNameFilter?: string | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
-                    | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
-                }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
-                    | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
-                }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                brokerNodeGroupInfo: {
-                  BrokerAZDistribution?: {} | undefined
-                  ClientSubnets?: {} | undefined
-                  InstanceType?: {} | undefined
-                  SecurityGroups?: {} | undefined
-                  StorageInfo?:
-                    | {
-                        EbsStorageInfo?:
-                          | {
-                              ProvisionedThroughput?:
-                                | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                                | undefined
-                              VolumeSize?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ConnectivityInfo?:
-                    | {
-                        PublicAccess?: { Type?: {} | undefined } | undefined
-                        VpcConnectivity?:
-                          | {
-                              ClientAuthentication?:
-                                | {
-                                    Sasl?:
-                                      | {
-                                          Scram?: { Enabled?: {} | undefined } | undefined
-                                          Iam?: { Enabled?: {} | undefined } | undefined
-                                        }
-                                      | undefined
-                                    Tls?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  ZoneIds?: {} | undefined
-                }
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                clusterName: string
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                kafkaVersion: string
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                numberOfBrokerNodes: number
-                tags?: { [x: string]: String } | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListClustersResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListClustersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/api/v2/clusters': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: CreateClusterV2Response
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
+        } & {
+          json: {
+            clusterName: string
+            tags?: { [x: string]: String } | undefined
+            provisioned?:
+              | {
+                  BrokerNodeGroupInfo?:
+                    | {
+                        BrokerAZDistribution?: {} | undefined
+                        ClientSubnets: {}
+                        InstanceType: {}
+                        SecurityGroups?: {} | undefined
+                        StorageInfo?:
+                          | {
+                              EbsStorageInfo?:
+                                | {
+                                    ProvisionedThroughput?:
+                                      | {
+                                          Enabled?: {} | undefined
+                                          VolumeThroughput?: {} | undefined
+                                        }
+                                      | undefined
+                                    VolumeSize?: {} | undefined
+                                  }
                                 | undefined
                             }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+                          | undefined
+                        ConnectivityInfo?:
+                          | {
+                              PublicAccess?: { Type?: {} | undefined } | undefined
+                              VpcConnectivity?:
+                                | {
+                                    ClientAuthentication?:
+                                      | {
+                                          Sasl?:
+                                            | {
+                                                Scram?: { Enabled?: {} | undefined } | undefined
+                                                Iam?: { Enabled?: {} | undefined } | undefined
+                                              }
+                                            | undefined
+                                          Tls?: { Enabled?: {} | undefined } | undefined
+                                        }
+                                      | undefined
+                                  }
+                                | undefined
+                            }
+                          | undefined
+                        ZoneIds?: {} | undefined
+                      }
+                    | undefined
+                  ClientAuthentication?:
+                    | {
+                        Sasl?:
+                          | {
+                              Scram?: { Enabled?: {} | undefined } | undefined
+                              Iam?: { Enabled?: {} | undefined } | undefined
+                            }
+                          | undefined
+                        Tls?:
+                          | {
+                              CertificateAuthorityArnList?: {} | undefined
+                              Enabled?: {} | undefined
+                            }
+                          | undefined
+                        Unauthenticated?: { Enabled?: {} | undefined } | undefined
+                      }
+                    | undefined
+                  ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
+                  EncryptionInfo?:
+                    | {
+                        EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
+                        EncryptionInTransit?:
+                          | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
+                          | undefined
+                      }
+                    | undefined
+                  EnhancedMonitoring?: {} | undefined
+                  OpenMonitoring?:
+                    | {
+                        Prometheus: {
+                          JmxExporter?: { EnabledInBroker: {} } | undefined
+                          NodeExporter?: { EnabledInBroker: {} } | undefined
+                        }
+                      }
+                    | undefined
+                  KafkaVersion?: {} | undefined
+                  LoggingInfo?:
+                    | {
+                        BrokerLogs: {
+                          CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
+                          Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
+                          S3?:
+                            | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
+                            | undefined
+                        }
+                      }
+                    | undefined
+                  NumberOfBrokerNodes?: {} | undefined
+                  StorageMode?: {} | undefined
+                }
+              | undefined
+            serverless?:
+              | {
+                  VpcConfigs?: {} | undefined
+                  ClientAuthentication?:
+                    | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
+                    | undefined
+                }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateClusterV2Response
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            clusterNameFilter?: string | undefined
+            clusterTypeFilter?: string | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clusterName: string
-                tags?: { [x: string]: String } | undefined
-                provisioned?:
-                  | {
-                      BrokerNodeGroupInfo?:
-                        | {
-                            BrokerAZDistribution?: {} | undefined
-                            ClientSubnets: {}
-                            InstanceType: {}
-                            SecurityGroups?: {} | undefined
-                            StorageInfo?:
-                              | {
-                                  EbsStorageInfo?:
-                                    | {
-                                        ProvisionedThroughput?:
-                                          | {
-                                              Enabled?: {} | undefined
-                                              VolumeThroughput?: {} | undefined
-                                            }
-                                          | undefined
-                                        VolumeSize?: {} | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ConnectivityInfo?:
-                              | {
-                                  PublicAccess?: { Type?: {} | undefined } | undefined
-                                  VpcConnectivity?:
-                                    | {
-                                        ClientAuthentication?:
-                                          | {
-                                              Sasl?:
-                                                | {
-                                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                                  }
-                                                | undefined
-                                              Tls?: { Enabled?: {} | undefined } | undefined
-                                            }
-                                          | undefined
-                                      }
-                                    | undefined
-                                }
-                              | undefined
-                            ZoneIds?: {} | undefined
-                          }
-                        | undefined
-                      ClientAuthentication?:
-                        | {
-                            Sasl?:
-                              | {
-                                  Scram?: { Enabled?: {} | undefined } | undefined
-                                  Iam?: { Enabled?: {} | undefined } | undefined
-                                }
-                              | undefined
-                            Tls?:
-                              | {
-                                  CertificateAuthorityArnList?: {} | undefined
-                                  Enabled?: {} | undefined
-                                }
-                              | undefined
-                            Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      ConfigurationInfo?: { Arn: {}; Revision: {} } | undefined
-                      EncryptionInfo?:
-                        | {
-                            EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                            EncryptionInTransit?:
-                              | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                      EnhancedMonitoring?: {} | undefined
-                      OpenMonitoring?:
-                        | {
-                            Prometheus: {
-                              JmxExporter?: { EnabledInBroker: {} } | undefined
-                              NodeExporter?: { EnabledInBroker: {} } | undefined
-                            }
-                          }
-                        | undefined
-                      KafkaVersion?: {} | undefined
-                      LoggingInfo?:
-                        | {
-                            BrokerLogs: {
-                              CloudWatchLogs?:
-                                | { Enabled: {}; LogGroup?: {} | undefined }
-                                | undefined
-                              Firehose?:
-                                | { DeliveryStream?: {} | undefined; Enabled: {} }
-                                | undefined
-                              S3?:
-                                | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                                | undefined
-                            }
-                          }
-                        | undefined
-                      NumberOfBrokerNodes?: {} | undefined
-                      StorageMode?: {} | undefined
-                    }
-                  | undefined
-                serverless?:
-                  | {
-                      VpcConfigs?: {} | undefined
-                      ClientAuthentication?:
-                        | { Sasl?: { Iam?: { Enabled?: {} | undefined } | undefined } | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                clusterTypeFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListClustersV2Response
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                clusterTypeFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                clusterTypeFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                clusterTypeFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                clusterNameFilter?: string | undefined
-                clusterTypeFilter?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListClustersV2Response
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/configurations': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: CreateConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            description?: string | undefined
+            kafkaVersions?: String[] | undefined
+            name: string
+            serverProperties: string
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                description?: string | undefined
-                kafkaVersions?: String[] | undefined
-                name: string
-                serverProperties: string
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListConfigurationsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListConfigurationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/vpc-connection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateVpcConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            targetClusterArn: string
+            authentication: string
+            vpcId: string
+            clientSubnets: String[]
+            securityGroups: String[]
+            tags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                targetClusterArn: string
-                authentication: string
-                vpcId: string
-                clientSubnets: String[]
-                securityGroups: String[]
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: CreateVpcConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn': {
-      $delete:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: { currentVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteClusterResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { clusterArn: string } } & {
+          query: { currentVersion?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: { currentVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteClusterResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: { currentVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: { currentVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: { currentVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeClusterResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeClusterResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/policy': {
-      $delete:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteClusterPolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteClusterPolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetClusterPolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetClusterPolicyResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion?: string | undefined; policy: string } }
-            output: PutClusterPolicyResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion?: string | undefined; policy: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion?: string | undefined; policy: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion?: string | undefined; policy: string } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { currentVersion?: string | undefined; policy: string } }
+        output: PutClusterPolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/configurations/:arn': {
-      $delete:
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { arn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { arn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { arn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeConfigurationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-      $put:
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: UpdateConfigurationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { description?: string | undefined; serverProperties: string } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { description?: string | undefined; serverProperties: string } }
+        output: UpdateConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/vpc-connection/:arn': {
-      $delete:
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteVpcConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { arn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteVpcConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { arn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeVpcConnectionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { arn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: DescribeVpcConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/api/v2/clusters/:clusterArn': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeClusterV2Response
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeClusterV2Response
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/operations/:clusterOperationArn': {
-      $get:
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeClusterOperationResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterOperationArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeClusterOperationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/api/v2/operations/:clusterOperationArn': {
-      $get:
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeClusterOperationV2Response
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterOperationArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterOperationArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: DescribeClusterOperationV2Response
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/configurations/:arn/revisions/:revision': {
-      $get:
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeConfigurationRevisionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { arn: string; revision: number } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { arn: string; revision: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: DescribeConfigurationRevisionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/bootstrap-brokers': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBootstrapBrokersResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetBootstrapBrokersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/compatible-kafka-versions': {
-      $get:
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetCompatibleKafkaVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { query: { clusterArn?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { query: { clusterArn?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: GetCompatibleKafkaVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/operations': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListClusterOperationsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListClusterOperationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/api/v2/clusters/:clusterArn/operations': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListClusterOperationsV2Response
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: ListClusterOperationsV2Response
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/configurations/:arn/revisions': {
-      $get:
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListConfigurationRevisionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { arn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { arn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: ListConfigurationRevisionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/kafka-versions': {
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListKafkaVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListKafkaVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/nodes': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListNodesResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListNodesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: {}
-            outputFormat: string
-            status: 204
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { tags: { [x: string]: String } } }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/client-vpc-connections': {
-      $get:
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListClientVpcConnectionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { clusterArn: string } } & {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListClientVpcConnectionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/vpc-connections': {
-      $get:
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListVpcConnectionsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            maxResults?: number | undefined
+            nextToken?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListVpcConnectionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/client-vpc-connection': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: RejectClientVpcConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { vpcConnectionArn: string } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { vpcConnectionArn: string } }
+        output: RejectClientVpcConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/reboot-broker': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: RebootBrokerResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { brokerIds: String[] } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: { brokerIds: String[] } }
+        output: RebootBrokerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: String[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/nodes/count': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: UpdateBrokerCountResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { currentVersion: string; targetNumberOfBrokerNodes: number } }
+        output: UpdateBrokerCountResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/nodes/type': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: UpdateBrokerTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { currentVersion: string; targetInstanceType: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: { currentVersion: string; targetInstanceType: string } }
+        output: UpdateBrokerTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/nodes/storage': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: UpdateBrokerStorageResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { currentVersion: string; targetBrokerEBSVolumeInfo: BrokerEBSVolumeInfo[] } }
+        output: UpdateBrokerStorageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/connectivity': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: UpdateConnectivityResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
+        } & {
+          json: {
+            connectivityInfo: {
+              PublicAccess?: { Type?: {} | undefined } | undefined
+              VpcConnectivity?:
+                | {
+                    ClientAuthentication?:
+                      | {
+                          Sasl?:
+                            | {
+                                Scram?: { Enabled?: {} | undefined } | undefined
+                                Iam?: { Enabled?: {} | undefined } | undefined
+                              }
+                            | undefined
+                          Tls?: { Enabled?: {} | undefined } | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+            currentVersion: string
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectivityInfo: {
-                  PublicAccess?: { Type?: {} | undefined } | undefined
-                  VpcConnectivity?:
-                    | {
-                        ClientAuthentication?:
-                          | {
-                              Sasl?:
-                                | {
-                                    Scram?: { Enabled?: {} | undefined } | undefined
-                                    Iam?: { Enabled?: {} | undefined } | undefined
-                                  }
-                                | undefined
-                              Tls?: { Enabled?: {} | undefined } | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                currentVersion: string
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateConnectivityResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/configuration': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: UpdateClusterConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
+            currentVersion: string
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo: { Arn?: {} | undefined; Revision?: {} | undefined }
-                currentVersion: string
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateClusterConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/version': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: UpdateClusterKafkaVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
+            currentVersion: string
+            targetKafkaVersion: string
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                configurationInfo?: { Arn?: {} | undefined; Revision?: {} | undefined } | undefined
-                currentVersion: string
-                targetKafkaVersion: string
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: UpdateClusterKafkaVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/monitoring': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UpdateMonitoringResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            currentVersion: string
+            enhancedMonitoring?:
+              | 'DEFAULT'
+              | 'PER_BROKER'
+              | 'PER_TOPIC_PER_BROKER'
+              | 'PER_TOPIC_PER_PARTITION'
+              | undefined
+            openMonitoring?:
+              | {
+                  Prometheus?:
+                    | {
+                        JmxExporter?: { EnabledInBroker: {} } | undefined
+                        NodeExporter?: { EnabledInBroker: {} } | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            loggingInfo?:
+              | {
+                  BrokerLogs?:
+                    | {
+                        CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
+                        Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
+                        S3?:
+                          | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                enhancedMonitoring?:
-                  | 'DEFAULT'
-                  | 'PER_BROKER'
-                  | 'PER_TOPIC_PER_BROKER'
-                  | 'PER_TOPIC_PER_PARTITION'
-                  | undefined
-                openMonitoring?:
-                  | {
-                      Prometheus?:
-                        | {
-                            JmxExporter?: { EnabledInBroker: {} } | undefined
-                            NodeExporter?: { EnabledInBroker: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                loggingInfo?:
-                  | {
-                      BrokerLogs?:
-                        | {
-                            CloudWatchLogs?: { Enabled: {}; LogGroup?: {} | undefined } | undefined
-                            Firehose?: { DeliveryStream?: {} | undefined; Enabled: {} } | undefined
-                            S3?:
-                              | { Bucket?: {} | undefined; Enabled: {}; Prefix?: {} | undefined }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateMonitoringResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/security': {
-      $patch:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UpdateSecurityResponse
-            outputFormat: 'json'
-            status: 200
+      $patch: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            clientAuthentication?:
+              | {
+                  Sasl?:
+                    | {
+                        Scram?: { Enabled?: {} | undefined } | undefined
+                        Iam?: { Enabled?: {} | undefined } | undefined
+                      }
+                    | undefined
+                  Tls?:
+                    | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
+                    | undefined
+                  Unauthenticated?: { Enabled?: {} | undefined } | undefined
+                }
+              | undefined
+            currentVersion: string
+            encryptionInfo?:
+              | {
+                  EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
+                  EncryptionInTransit?:
+                    | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
+                    | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                clientAuthentication?:
-                  | {
-                      Sasl?:
-                        | {
-                            Scram?: { Enabled?: {} | undefined } | undefined
-                            Iam?: { Enabled?: {} | undefined } | undefined
-                          }
-                        | undefined
-                      Tls?:
-                        | { CertificateAuthorityArnList?: {} | undefined; Enabled?: {} | undefined }
-                        | undefined
-                      Unauthenticated?: { Enabled?: {} | undefined } | undefined
-                    }
-                  | undefined
-                currentVersion: string
-                encryptionInfo?:
-                  | {
-                      EncryptionAtRest?: { DataVolumeKMSKeyId: {} } | undefined
-                      EncryptionInTransit?:
-                        | { ClientBroker?: {} | undefined; InCluster?: {} | undefined }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: UpdateSecurityResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/v1/clusters/:clusterArn/storage': {
-      $put:
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: UpdateStorageResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { clusterArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            currentVersion: string
+            provisionedThroughput?:
+              | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
+              | undefined
+            storageMode?: 'LOCAL' | 'TIERED' | undefined
+            volumeSizeGB?: number | undefined
           }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: UnauthorizedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: ForbiddenException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { clusterArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                currentVersion: string
-                provisionedThroughput?:
-                  | { Enabled?: {} | undefined; VolumeThroughput?: {} | undefined }
-                  | undefined
-                storageMode?: 'LOCAL' | 'TIERED' | undefined
-                volumeSizeGB?: number | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: UpdateStorageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

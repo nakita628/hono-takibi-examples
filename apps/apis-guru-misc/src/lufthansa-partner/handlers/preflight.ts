@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putPreflightAutocheckinTicketnumberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putPreflightAutocheckinTicketnumberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const preflightHandler = app.openapi(putPreflightAutocheckinTicketnumberRoute, (c) => {
+export const putPreflightAutocheckinTicketnumberRouteHandler: RouteHandler<
+  typeof putPreflightAutocheckinTicketnumberRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

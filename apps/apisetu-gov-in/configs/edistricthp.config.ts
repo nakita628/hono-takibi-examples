@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/edistricthp/3.0.0/openapi.yaml',
   output: './src/edistricthp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/edistricthp/types.ts' },
   client: { output: './src/edistricthp/client.ts', baseUrl: '/' },
   rpc: { output: './src/edistricthp/rpc.ts', parseResponse: true },

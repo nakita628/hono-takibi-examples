@@ -500,11 +500,11 @@ const TagMapSchema = z
   .openapi('TagMap')
 
 type AssessmentType = {
-  arn?: z.infer<typeof AuditManagerArnSchema> & unknown
-  awsAccount?: z.infer<typeof AWSAccountSchema> & unknown
-  metadata?: z.infer<typeof AssessmentMetadataSchema> & unknown
-  framework?: z.infer<typeof AssessmentFrameworkSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  arn?: z.infer<typeof AuditManagerArnSchema>
+  awsAccount?: z.infer<typeof AWSAccountSchema>
+  metadata?: z.infer<typeof AssessmentMetadataSchema>
+  framework?: z.infer<typeof AssessmentFrameworkSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 const AssessmentSchema: z.ZodType<AssessmentType> = z
@@ -751,20 +751,20 @@ const ControlSetSchema = z
 const ControlSetsSchema = z.array(ControlSetSchema).min(1).openapi('ControlSets')
 
 type FrameworkType = {
-  arn?: z.infer<typeof AuditManagerArnSchema> & unknown
-  id?: z.infer<typeof UUIDSchema> & unknown
-  name?: z.infer<typeof FrameworkNameSchema> & unknown
-  type?: z.infer<typeof FrameworkTypeSchema> & unknown
-  complianceType?: z.infer<typeof ComplianceTypeSchema> & unknown
-  description?: z.infer<typeof FrameworkDescriptionSchema> & unknown
-  logo?: z.infer<typeof FilenameSchema> & unknown
-  controlSources?: z.infer<typeof ControlSourcesSchema> & unknown
-  controlSets?: z.infer<typeof ControlSetsSchema> & unknown
-  createdAt?: z.infer<typeof TimestampSchema> & unknown
-  lastUpdatedAt?: z.infer<typeof TimestampSchema> & unknown
-  createdBy?: z.infer<typeof CreatedBySchema> & unknown
-  lastUpdatedBy?: z.infer<typeof LastUpdatedBySchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  arn?: z.infer<typeof AuditManagerArnSchema>
+  id?: z.infer<typeof UUIDSchema>
+  name?: z.infer<typeof FrameworkNameSchema>
+  type?: z.infer<typeof FrameworkTypeSchema>
+  complianceType?: z.infer<typeof ComplianceTypeSchema>
+  description?: z.infer<typeof FrameworkDescriptionSchema>
+  logo?: z.infer<typeof FilenameSchema>
+  controlSources?: z.infer<typeof ControlSourcesSchema>
+  controlSets?: z.infer<typeof ControlSetsSchema>
+  createdAt?: z.infer<typeof TimestampSchema>
+  lastUpdatedAt?: z.infer<typeof TimestampSchema>
+  createdBy?: z.infer<typeof CreatedBySchema>
+  lastUpdatedBy?: z.infer<typeof LastUpdatedBySchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 const FrameworkSchema: z.ZodType<FrameworkType> = z
@@ -820,26 +820,20 @@ const FrameworkSchema: z.ZodType<FrameworkType> = z
   })
   .openapi('Framework')
 
-type CreateAssessmentFrameworkResponseType = {
-  framework?: z.infer<typeof FrameworkSchema> & unknown
-}
+type CreateAssessmentFrameworkResponseType = { framework?: z.infer<typeof FrameworkSchema> }
 
 type GetAssessmentResponseType = {
   assessment?: z.infer<typeof AssessmentSchema>
   userRole?: z.infer<typeof RoleSchema>
 }
 
-type GetAssessmentFrameworkResponseType = { framework?: z.infer<typeof FrameworkSchema> & unknown }
+type GetAssessmentFrameworkResponseType = { framework?: z.infer<typeof FrameworkSchema> }
 
-type UpdateAssessmentResponseType = { assessment?: z.infer<typeof AssessmentSchema> & unknown }
+type UpdateAssessmentResponseType = { assessment?: z.infer<typeof AssessmentSchema> }
 
-type UpdateAssessmentFrameworkResponseType = {
-  framework?: z.infer<typeof FrameworkSchema> & unknown
-}
+type UpdateAssessmentFrameworkResponseType = { framework?: z.infer<typeof FrameworkSchema> }
 
-type UpdateAssessmentStatusResponseType = {
-  assessment?: z.infer<typeof AssessmentSchema> & unknown
-}
+type UpdateAssessmentStatusResponseType = { assessment?: z.infer<typeof AssessmentSchema> }
 
 const AssociateAssessmentReportEvidenceFolderResponseSchema = z
   .looseObject({})

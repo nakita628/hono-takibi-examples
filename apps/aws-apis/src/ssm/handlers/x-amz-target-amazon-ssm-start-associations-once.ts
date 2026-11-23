@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMStartAssociationsOnceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMStartAssociationsOnceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmStartAssociationsOnceHandler = app.openapi(
-  postXAmzTargetAmazonSSMStartAssociationsOnceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMStartAssociationsOnceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMStartAssociationsOnceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

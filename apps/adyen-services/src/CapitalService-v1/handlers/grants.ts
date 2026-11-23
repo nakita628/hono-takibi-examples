@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGrantsGrantIdDisbursementsDisbursementIdRoute,
   getGrantsGrantIdDisbursementsRoute,
   getGrantsGrantIdRoute,
@@ -8,24 +8,34 @@ import {
   postGrantsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGrantsRouteHandler: RouteHandler<typeof getGrantsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const grantsHandler = app
-  .openapi(getGrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGrantsGrantIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGrantsGrantIdDisbursementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGrantsGrantIdDisbursementsDisbursementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGrantsGrantIdDisbursementsDisbursementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGrantsRouteHandler: RouteHandler<typeof postGrantsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGrantsGrantIdRouteHandler: RouteHandler<typeof getGrantsGrantIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGrantsGrantIdDisbursementsRouteHandler: RouteHandler<
+  typeof getGrantsGrantIdDisbursementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGrantsGrantIdDisbursementsDisbursementIdRouteHandler: RouteHandler<
+  typeof getGrantsGrantIdDisbursementsDisbursementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchGrantsGrantIdDisbursementsDisbursementIdRouteHandler: RouteHandler<
+  typeof patchGrantsGrantIdDisbursementsDisbursementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

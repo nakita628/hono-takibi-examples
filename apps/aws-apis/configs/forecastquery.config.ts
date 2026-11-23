@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/forecastquery/2018-06-26/openapi.yaml',
   output: './src/forecastquery/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/forecastquery/types.ts' },
   client: { output: './src/forecastquery/client.ts', baseUrl: '/' },
   rpc: { output: './src/forecastquery/rpc.ts', parseResponse: true },

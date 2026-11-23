@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSetAlarmStateRoute, postActionSetAlarmStateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSetAlarmStateRoute, postActionSetAlarmStateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetAlarmStateRouteHandler: RouteHandler<
+  typeof getActionSetAlarmStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetAlarmStateHandler = app
-  .openapi(getActionSetAlarmStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetAlarmStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetAlarmStateRouteHandler: RouteHandler<
+  typeof postActionSetAlarmStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

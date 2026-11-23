@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionAttachVolumeRoute, postActionAttachVolumeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionAttachVolumeRoute, postActionAttachVolumeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionAttachVolumeRouteHandler: RouteHandler<
+  typeof getActionAttachVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionAttachVolumeHandler = app
-  .openapi(getActionAttachVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionAttachVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionAttachVolumeRouteHandler: RouteHandler<
+  typeof postActionAttachVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCommunicationPreferences202609DefinitionsRoute,
   getCommunicationPreferences202609StatusesSubscriberIdStringRoute,
   getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute,
@@ -12,36 +12,62 @@ import {
   postCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommunicationPreferences202609DefinitionsRouteHandler: RouteHandler<
+  typeof getCommunicationPreferences202609DefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const communicationPreferencesHandler = app
-  .openapi(getCommunicationPreferences202609DefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609LinksGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesBatchUnsubscribeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesBatchUnsubscribeAllReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesBatchWriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommunicationPreferences202609StatusesSubscriberIdStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesSubscriberIdStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCommunicationPreferences202609LinksGenerateRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609LinksGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesBatchReadRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesBatchUnsubscribeAllRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesBatchUnsubscribeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesBatchUnsubscribeAllReadRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesBatchUnsubscribeAllReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesBatchWriteRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesBatchWriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommunicationPreferences202609StatusesSubscriberIdStringRouteHandler: RouteHandler<
+  typeof getCommunicationPreferences202609StatusesSubscriberIdStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesSubscriberIdStringRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesSubscriberIdStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRouteHandler: RouteHandler<
+  typeof getCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRouteHandler: RouteHandler<
+  typeof postCommunicationPreferences202609StatusesSubscriberIdStringUnsubscribeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/surevoip.co.uk/9dcb0dc8/openapi.yaml',
   output: './src/surevoip-co-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/surevoip-co-uk/types.ts' },
   client: { output: './src/surevoip-co-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/surevoip-co-uk/rpc.ts', parseResponse: true },

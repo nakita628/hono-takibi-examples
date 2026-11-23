@@ -733,7 +733,6 @@ export const postCmcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -793,7 +792,6 @@ export const postCncerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -853,7 +851,6 @@ export const postCtcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -913,7 +910,6 @@ export const postDmcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -973,7 +969,6 @@ export const postDpcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1033,7 +1028,6 @@ export const postDscerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1093,7 +1087,6 @@ export const postFmcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1153,7 +1146,6 @@ export const postIdcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1213,7 +1205,6 @@ export const postImcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1273,7 +1264,6 @@ export const postIncerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1333,7 +1323,6 @@ export const postLfcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1393,7 +1382,6 @@ export const postLhcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1453,7 +1441,6 @@ export const postLocerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1513,7 +1500,6 @@ export const postMncerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1573,7 +1559,6 @@ export const postNrcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1633,7 +1618,6 @@ export const postNtcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1693,7 +1677,6 @@ export const postOscerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1753,7 +1736,6 @@ export const postPncerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1813,7 +1795,6 @@ export const postPscerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1873,7 +1854,6 @@ export const postRlcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1933,7 +1913,6 @@ export const postRscerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -1993,7 +1972,6 @@ export const postSlcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -2053,7 +2031,6 @@ export const postVlcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,
@@ -2113,7 +2090,6 @@ export const postWwcerCertificateRoute = createRoute({
     200: {
       description:
         'The certificate data in response body in PDF, XML or JSON format as requested in format parameter.',
-      content: {},
     },
     400: _400ErrorResponse,
     401: _401ErrorResponse,

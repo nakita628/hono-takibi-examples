@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueDeletePartitionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueDeletePartitionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueDeletePartitionHandler = app.openapi(
-  postXAmzTargetAWSGlueDeletePartitionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueDeletePartitionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueDeletePartitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsAccountIdRoute,
   getAccountsAccountIdRoute,
   getAccountsHistoricalBalancesRoute,
@@ -9,27 +9,40 @@ import {
   putAccountsAccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsEvaluateAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsHistoricalBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountsRouteHandler: RouteHandler<typeof postAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsEvaluateAddressRouteHandler: RouteHandler<
+  typeof postAccountsEvaluateAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsHistoricalBalancesRouteHandler: RouteHandler<
+  typeof getAccountsHistoricalBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIdRouteHandler: RouteHandler<
+  typeof putAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

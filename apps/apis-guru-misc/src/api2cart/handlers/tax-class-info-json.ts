@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTaxClassInfoJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTaxClassInfoJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const taxClassInfoJsonHandler = app.openapi(getTaxClassInfoJsonRoute, (c) => {
+export const getTaxClassInfoJsonRouteHandler: RouteHandler<
+  typeof getTaxClassInfoJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

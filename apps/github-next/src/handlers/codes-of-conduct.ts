@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCodesOfConductKeyRoute, getCodesOfConductRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCodesOfConductKeyRoute, getCodesOfConductRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCodesOfConductRouteHandler: RouteHandler<typeof getCodesOfConductRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const codesOfConductHandler = app
-  .openapi(getCodesOfConductRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCodesOfConductKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCodesOfConductKeyRouteHandler: RouteHandler<
+  typeof getCodesOfConductKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

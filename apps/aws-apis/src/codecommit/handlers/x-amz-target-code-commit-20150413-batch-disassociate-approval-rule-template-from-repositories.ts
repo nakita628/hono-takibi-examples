@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesHandler =
-  app.openapi(
-    postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeCommit20150413BatchDisassociateApprovalRuleTemplateFromRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

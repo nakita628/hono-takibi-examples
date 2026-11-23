@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGameLiftDeleteGameSessionQueueRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGameLiftDeleteGameSessionQueueRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGameLiftDeleteGameSessionQueueHandler = app.openapi(
-  postXAmzTargetGameLiftDeleteGameSessionQueueRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGameLiftDeleteGameSessionQueueRouteHandler: RouteHandler<
+  typeof postXAmzTargetGameLiftDeleteGameSessionQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

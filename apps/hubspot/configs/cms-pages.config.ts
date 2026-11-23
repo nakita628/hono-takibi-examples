@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Pages/Rollouts/59888/2026-09/pages.json',
   output: './src/cms-pages/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cms-pages/types.ts' },
   client: { output: './src/cms-pages/client.ts', baseUrl: '/' },
   rpc: { output: './src/cms-pages/rpc.ts', parseResponse: true },

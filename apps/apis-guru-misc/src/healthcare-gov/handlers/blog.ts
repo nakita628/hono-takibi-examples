@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBlogPageNameMediaTypeExtensionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBlogPageNameMediaTypeExtensionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const blogHandler = app.openapi(getBlogPageNameMediaTypeExtensionRoute, (c) => {
+export const getBlogPageNameMediaTypeExtensionRouteHandler: RouteHandler<
+  typeof getBlogPageNameMediaTypeExtensionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

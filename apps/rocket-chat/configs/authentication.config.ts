@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/authentication.yaml',
   output: './src/authentication/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/authentication/types.ts' },
   client: { output: './src/authentication/client.ts', baseUrl: '/' },
   rpc: { output: './src/authentication/rpc.ts', parseResponse: true },

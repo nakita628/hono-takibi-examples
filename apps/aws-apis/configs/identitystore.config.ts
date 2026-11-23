@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/identitystore/2020-06-15/openapi.yaml',
   output: './src/identitystore/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/identitystore/types.ts' },
   client: { output: './src/identitystore/client.ts', baseUrl: '/' },
   rpc: { output: './src/identitystore/rpc.ts', parseResponse: true },

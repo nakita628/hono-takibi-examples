@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2UsersUserIdRoute,
   getV2CurrenciesRoute,
   getV2FundingAccountsFundingAccountIdRoute,
@@ -29,87 +29,158 @@ import {
   postV2UsersUserIdUserDetailsUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2CurrenciesRouteHandler: RouteHandler<typeof getV2CurrenciesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2CurrenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FundingAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FundingAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FundingAccountsFundingAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PayorsPayorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SourceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SourceAccountsSourceAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SourceAccountsSourceAccountIdFundingRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SourceAccountsSourceAccountIdTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SupportedCountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersRegistrationSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UsersSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersSelfMfaUnregisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersSelfPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersSelfPasswordValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersSelfUserDetailsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdMfaUnregisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdRoleUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdUnlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdUserDetailsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2FundingAccountsRouteHandler: RouteHandler<
+  typeof getV2FundingAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FundingAccountsRouteHandler: RouteHandler<
+  typeof postV2FundingAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FundingAccountsFundingAccountIdRouteHandler: RouteHandler<
+  typeof getV2FundingAccountsFundingAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PayorsPayorIdRouteHandler: RouteHandler<typeof getV2PayorsPayorIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SourceAccountsRouteHandler: RouteHandler<
+  typeof getV2SourceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SourceAccountsSourceAccountIdRouteHandler: RouteHandler<
+  typeof getV2SourceAccountsSourceAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SourceAccountsSourceAccountIdFundingRequestRouteHandler: RouteHandler<
+  typeof postV2SourceAccountsSourceAccountIdFundingRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SourceAccountsSourceAccountIdTransfersRouteHandler: RouteHandler<
+  typeof postV2SourceAccountsSourceAccountIdTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SupportedCountriesRouteHandler: RouteHandler<
+  typeof getV2SupportedCountriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UsersRouteHandler: RouteHandler<typeof getV2UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersInviteRouteHandler: RouteHandler<typeof postV2UsersInviteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersRegistrationSmsRouteHandler: RouteHandler<
+  typeof postV2UsersRegistrationSmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UsersSelfRouteHandler: RouteHandler<typeof getV2UsersSelfRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersSelfMfaUnregisterRouteHandler: RouteHandler<
+  typeof postV2UsersSelfMfaUnregisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersSelfPasswordRouteHandler: RouteHandler<
+  typeof postV2UsersSelfPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersSelfPasswordValidateRouteHandler: RouteHandler<
+  typeof postV2UsersSelfPasswordValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersSelfUserDetailsUpdateRouteHandler: RouteHandler<
+  typeof postV2UsersSelfUserDetailsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2UsersUserIdRouteHandler: RouteHandler<
+  typeof deleteV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UsersUserIdRouteHandler: RouteHandler<typeof getV2UsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdDisableRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdEnableRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdMfaUnregisterRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdMfaUnregisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdRoleUpdateRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdRoleUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdTokensRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdUnlockRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdUserDetailsUpdateRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdUserDetailsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

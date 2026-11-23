@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPaymentScheduleSchemesPaymentScheduleSchemeIdRoute,
   getPaymentScheduleSchemesRoute,
   postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRoute,
   postPaymentScheduleSchemesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentScheduleSchemesPaymentScheduleSchemeIdRouteHandler: RouteHandler<
+  typeof getPaymentScheduleSchemesPaymentScheduleSchemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentScheduleSchemesHandler = app
-  .openapi(getPaymentScheduleSchemesPaymentScheduleSchemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentScheduleSchemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentScheduleSchemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPaymentScheduleSchemesRouteHandler: RouteHandler<
+  typeof getPaymentScheduleSchemesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentScheduleSchemesRouteHandler: RouteHandler<
+  typeof postPaymentScheduleSchemesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRouteHandler: RouteHandler<
+  typeof postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

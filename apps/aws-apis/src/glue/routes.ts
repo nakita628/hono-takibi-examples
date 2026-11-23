@@ -3450,29 +3450,29 @@ const SourceControlDetailsSchema = z
   .openapi('SourceControlDetails')
 
 type JobType = {
-  Name?: z.infer<typeof NameStringSchema> & unknown
-  Description?: z.infer<typeof DescriptionStringSchema> & unknown
-  LogUri?: z.infer<typeof UriStringSchema> & unknown
-  Role?: z.infer<typeof RoleStringSchema> & unknown
-  CreatedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  LastModifiedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema> & unknown
-  Command?: z.infer<typeof JobCommandSchema> & unknown
-  DefaultArguments?: z.infer<typeof GenericMapSchema> & unknown
-  NonOverridableArguments?: z.infer<typeof GenericMapSchema> & unknown
-  Connections?: z.infer<typeof ConnectionsListSchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
-  AllocatedCapacity?: z.infer<typeof IntegerValueSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  MaxCapacity?: z.infer<typeof NullableDoubleSchema> & unknown
-  WorkerType?: z.infer<typeof WorkerTypeSchema> & unknown
-  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema> & unknown
-  SecurityConfiguration?: z.infer<typeof NameStringSchema> & unknown
-  NotificationProperty?: z.infer<typeof NotificationPropertySchema> & unknown
-  GlueVersion?: z.infer<typeof GlueVersionStringSchema> & unknown
-  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema> & unknown
-  ExecutionClass?: z.infer<typeof ExecutionClassSchema> & unknown
-  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema> & unknown
+  Name?: z.infer<typeof NameStringSchema>
+  Description?: z.infer<typeof DescriptionStringSchema>
+  LogUri?: z.infer<typeof UriStringSchema>
+  Role?: z.infer<typeof RoleStringSchema>
+  CreatedOn?: z.infer<typeof TimestampValueSchema>
+  LastModifiedOn?: z.infer<typeof TimestampValueSchema>
+  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema>
+  Command?: z.infer<typeof JobCommandSchema>
+  DefaultArguments?: z.infer<typeof GenericMapSchema>
+  NonOverridableArguments?: z.infer<typeof GenericMapSchema>
+  Connections?: z.infer<typeof ConnectionsListSchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
+  AllocatedCapacity?: z.infer<typeof IntegerValueSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  MaxCapacity?: z.infer<typeof NullableDoubleSchema>
+  WorkerType?: z.infer<typeof WorkerTypeSchema>
+  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema>
+  SecurityConfiguration?: z.infer<typeof NameStringSchema>
+  NotificationProperty?: z.infer<typeof NotificationPropertySchema>
+  GlueVersion?: z.infer<typeof GlueVersionStringSchema>
+  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema>
+  ExecutionClass?: z.infer<typeof ExecutionClassSchema>
+  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema>
 }
 
 const JobSchema: z.ZodType<JobType> = z
@@ -3572,8 +3572,8 @@ const JobListSchema: z.ZodType<JobListType> = z.array(JobSchema).openapi('JobLis
 const JobNameListSchema = z.array(NameStringSchema).openapi('JobNameList')
 
 type BatchGetJobsResponseType = {
-  Jobs?: z.infer<typeof JobListSchema> & unknown
-  JobsNotFound?: z.infer<typeof JobNameListSchema> & unknown
+  Jobs?: z.infer<typeof JobListSchema>
+  JobsNotFound?: z.infer<typeof JobNameListSchema>
 }
 
 const WorkflowRunPropertiesSchema = z
@@ -4021,8 +4021,8 @@ const EdgeSchema = z
 const EdgeListSchema = z.array(EdgeSchema).openapi('EdgeList')
 
 type WorkflowGraphType = {
-  Nodes?: z.infer<typeof NodeListSchema> & unknown
-  Edges?: z.infer<typeof EdgeListSchema> & unknown
+  Nodes?: z.infer<typeof NodeListSchema>
+  Edges?: z.infer<typeof EdgeListSchema>
 }
 
 const WorkflowGraphSchema: z.ZodType<WorkflowGraphType> = z
@@ -4059,17 +4059,17 @@ const StartingEventBatchConditionSchema = z
   .openapi('StartingEventBatchCondition')
 
 type WorkflowRunType = {
-  Name?: z.infer<typeof NameStringSchema> & unknown
-  WorkflowRunId?: z.infer<typeof IdStringSchema> & unknown
-  PreviousRunId?: z.infer<typeof IdStringSchema> & unknown
-  WorkflowRunProperties?: z.infer<typeof WorkflowRunPropertiesSchema> & unknown
-  StartedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  CompletedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  Status?: z.infer<typeof WorkflowRunStatusSchema> & unknown
-  ErrorMessage?: z.infer<typeof ErrorStringSchema> & unknown
-  Statistics?: z.infer<typeof WorkflowRunStatisticsSchema> & unknown
-  Graph?: z.infer<typeof WorkflowGraphSchema> & unknown
-  StartingEventBatchCondition?: z.infer<typeof StartingEventBatchConditionSchema> & unknown
+  Name?: z.infer<typeof NameStringSchema>
+  WorkflowRunId?: z.infer<typeof IdStringSchema>
+  PreviousRunId?: z.infer<typeof IdStringSchema>
+  WorkflowRunProperties?: z.infer<typeof WorkflowRunPropertiesSchema>
+  StartedOn?: z.infer<typeof TimestampValueSchema>
+  CompletedOn?: z.infer<typeof TimestampValueSchema>
+  Status?: z.infer<typeof WorkflowRunStatusSchema>
+  ErrorMessage?: z.infer<typeof ErrorStringSchema>
+  Statistics?: z.infer<typeof WorkflowRunStatisticsSchema>
+  Graph?: z.infer<typeof WorkflowGraphSchema>
+  StartingEventBatchCondition?: z.infer<typeof StartingEventBatchConditionSchema>
 }
 
 const WorkflowRunSchema: z.ZodType<WorkflowRunType> = z
@@ -4137,15 +4137,15 @@ const BlueprintDetailsSchema = z
   .openapi('BlueprintDetails')
 
 type WorkflowType = {
-  Name?: z.infer<typeof NameStringSchema> & unknown
-  Description?: z.infer<typeof GenericStringSchema> & unknown
-  DefaultRunProperties?: z.infer<typeof WorkflowRunPropertiesSchema> & unknown
-  CreatedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  LastModifiedOn?: z.infer<typeof TimestampValueSchema> & unknown
-  LastRun?: z.infer<typeof WorkflowRunSchema> & unknown
-  Graph?: z.infer<typeof WorkflowGraphSchema> & unknown
-  MaxConcurrentRuns?: z.infer<typeof NullableIntegerSchema> & unknown
-  BlueprintDetails?: z.infer<typeof BlueprintDetailsSchema> & unknown
+  Name?: z.infer<typeof NameStringSchema>
+  Description?: z.infer<typeof GenericStringSchema>
+  DefaultRunProperties?: z.infer<typeof WorkflowRunPropertiesSchema>
+  CreatedOn?: z.infer<typeof TimestampValueSchema>
+  LastModifiedOn?: z.infer<typeof TimestampValueSchema>
+  LastRun?: z.infer<typeof WorkflowRunSchema>
+  Graph?: z.infer<typeof WorkflowGraphSchema>
+  MaxConcurrentRuns?: z.infer<typeof NullableIntegerSchema>
+  BlueprintDetails?: z.infer<typeof BlueprintDetailsSchema>
 }
 
 const WorkflowSchema: z.ZodType<WorkflowType> = z
@@ -4198,8 +4198,8 @@ const WorkflowsSchema: z.ZodType<WorkflowsType> = z
 const WorkflowNamesSchema = z.array(NameStringSchema).min(1).max(25).openapi('WorkflowNames')
 
 type BatchGetWorkflowsResponseType = {
-  Workflows?: z.infer<typeof WorkflowsSchema> & unknown
-  MissingWorkflows?: z.infer<typeof WorkflowNamesSchema> & unknown
+  Workflows?: z.infer<typeof WorkflowsSchema>
+  MissingWorkflows?: z.infer<typeof WorkflowNamesSchema>
 }
 
 const ValueStringSchema = z.string().max(1024).openapi('ValueString')
@@ -4257,10 +4257,10 @@ const BatchUpdatePartitionRequestEntryListSchema = z
   .openapi('BatchUpdatePartitionRequestEntryList')
 
 type BatchUpdatePartitionRequestType = {
-  CatalogId?: z.infer<typeof CatalogIdStringSchema> & unknown
-  DatabaseName: z.infer<typeof NameStringSchema> & unknown
-  TableName: z.infer<typeof NameStringSchema> & unknown
-  Entries: z.infer<typeof BatchUpdatePartitionRequestEntryListSchema> & unknown
+  CatalogId?: z.infer<typeof CatalogIdStringSchema>
+  DatabaseName: z.infer<typeof NameStringSchema>
+  TableName: z.infer<typeof NameStringSchema>
+  Entries: z.infer<typeof BatchUpdatePartitionRequestEntryListSchema>
 }
 
 const TagValueSchema = z.string().min(0).max(256).openapi('TagValue')
@@ -4272,35 +4272,35 @@ const TagsMapSchema = z
   .openapi('TagsMap')
 
 type CreateJobRequestType = {
-  Name: z.infer<typeof NameStringSchema> & unknown
-  Description?: z.infer<typeof DescriptionStringSchema> & unknown
-  LogUri?: z.infer<typeof UriStringSchema> & unknown
-  Role: z.infer<typeof RoleStringSchema> & unknown
-  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema> & unknown
-  Command: z.infer<typeof JobCommandSchema> & unknown
-  DefaultArguments?: z.infer<typeof GenericMapSchema> & unknown
-  NonOverridableArguments?: z.infer<typeof GenericMapSchema> & unknown
-  Connections?: z.infer<typeof ConnectionsListSchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
-  AllocatedCapacity?: z.infer<typeof IntegerValueSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  MaxCapacity?: z.infer<typeof NullableDoubleSchema> & unknown
-  SecurityConfiguration?: z.infer<typeof NameStringSchema> & unknown
-  Tags?: z.infer<typeof TagsMapSchema> & unknown
-  NotificationProperty?: z.infer<typeof NotificationPropertySchema> & unknown
-  GlueVersion?: z.infer<typeof GlueVersionStringSchema> & unknown
-  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema> & unknown
-  WorkerType?: z.infer<typeof WorkerTypeSchema> & unknown
-  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema> & unknown
-  ExecutionClass?: z.infer<typeof ExecutionClassSchema> & unknown
-  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema> & unknown
+  Name: z.infer<typeof NameStringSchema>
+  Description?: z.infer<typeof DescriptionStringSchema>
+  LogUri?: z.infer<typeof UriStringSchema>
+  Role: z.infer<typeof RoleStringSchema>
+  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema>
+  Command: z.infer<typeof JobCommandSchema>
+  DefaultArguments?: z.infer<typeof GenericMapSchema>
+  NonOverridableArguments?: z.infer<typeof GenericMapSchema>
+  Connections?: z.infer<typeof ConnectionsListSchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
+  AllocatedCapacity?: z.infer<typeof IntegerValueSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  MaxCapacity?: z.infer<typeof NullableDoubleSchema>
+  SecurityConfiguration?: z.infer<typeof NameStringSchema>
+  Tags?: z.infer<typeof TagsMapSchema>
+  NotificationProperty?: z.infer<typeof NotificationPropertySchema>
+  GlueVersion?: z.infer<typeof GlueVersionStringSchema>
+  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema>
+  WorkerType?: z.infer<typeof WorkerTypeSchema>
+  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema>
+  ExecutionClass?: z.infer<typeof ExecutionClassSchema>
+  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema>
 }
 
-type GetJobResponseType = { Job?: z.infer<typeof JobSchema> & unknown }
+type GetJobResponseType = { Job?: z.infer<typeof JobSchema> }
 
 type GetJobsResponseType = {
-  Jobs?: z.infer<typeof JobListSchema> & unknown
-  NextToken?: z.infer<typeof GenericStringSchema> & unknown
+  Jobs?: z.infer<typeof JobListSchema>
+  NextToken?: z.infer<typeof GenericStringSchema>
 }
 
 const KeySchemaElementSchema = z
@@ -4390,8 +4390,8 @@ const PartitionIndexDescriptorListSchema = z
 const TokenSchema = z.string().openapi('Token')
 
 type GetPartitionIndexesResponseType = {
-  PartitionIndexDescriptorList?: z.infer<typeof PartitionIndexDescriptorListSchema> & unknown
-  NextToken?: z.infer<typeof TokenSchema> & unknown
+  PartitionIndexDescriptorList?: z.infer<typeof PartitionIndexDescriptorListSchema>
+  NextToken?: z.infer<typeof TokenSchema>
 }
 
 const TableVersionSchema = z
@@ -4408,8 +4408,8 @@ const TableVersionSchema = z
 const GetTableVersionsListSchema = z.array(TableVersionSchema).openapi('GetTableVersionsList')
 
 type GetTableVersionsResponseType = {
-  TableVersions?: z.infer<typeof GetTableVersionsListSchema> & unknown
-  NextToken?: z.infer<typeof TokenSchema> & unknown
+  TableVersions?: z.infer<typeof GetTableVersionsListSchema>
+  NextToken?: z.infer<typeof TokenSchema>
 }
 
 const PartitionSchema = z
@@ -4465,13 +4465,13 @@ const UnfilteredPartitionListSchema = z
   .openapi('UnfilteredPartitionList')
 
 type GetUnfilteredPartitionsMetadataResponseType = {
-  UnfilteredPartitions?: z.infer<typeof UnfilteredPartitionListSchema> & unknown
-  NextToken?: z.infer<typeof TokenSchema> & unknown
+  UnfilteredPartitions?: z.infer<typeof UnfilteredPartitionListSchema>
+  NextToken?: z.infer<typeof TokenSchema>
 }
 
-type GetWorkflowResponseType = { Workflow?: z.infer<typeof WorkflowSchema> & unknown }
+type GetWorkflowResponseType = { Workflow?: z.infer<typeof WorkflowSchema> }
 
-type GetWorkflowRunResponseType = { Run?: z.infer<typeof WorkflowRunSchema> & unknown }
+type GetWorkflowRunResponseType = { Run?: z.infer<typeof WorkflowRunSchema> }
 
 type WorkflowRunsType = z.infer<typeof WorkflowRunSchema>[]
 
@@ -4482,31 +4482,31 @@ const WorkflowRunsSchema: z.ZodType<WorkflowRunsType> = z
   .openapi('WorkflowRuns')
 
 type GetWorkflowRunsResponseType = {
-  Runs?: z.infer<typeof WorkflowRunsSchema> & unknown
-  NextToken?: z.infer<typeof GenericStringSchema> & unknown
+  Runs?: z.infer<typeof WorkflowRunsSchema>
+  NextToken?: z.infer<typeof GenericStringSchema>
 }
 
 type JobUpdateType = {
-  Description?: z.infer<typeof DescriptionStringSchema> & unknown
-  LogUri?: z.infer<typeof UriStringSchema> & unknown
-  Role?: z.infer<typeof RoleStringSchema> & unknown
-  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema> & unknown
-  Command?: z.infer<typeof JobCommandSchema> & unknown
-  DefaultArguments?: z.infer<typeof GenericMapSchema> & unknown
-  NonOverridableArguments?: z.infer<typeof GenericMapSchema> & unknown
-  Connections?: z.infer<typeof ConnectionsListSchema> & unknown
-  MaxRetries?: z.infer<typeof MaxRetriesSchema> & unknown
-  AllocatedCapacity?: z.infer<typeof IntegerValueSchema> & unknown
-  Timeout?: z.infer<typeof TimeoutSchema> & unknown
-  MaxCapacity?: z.infer<typeof NullableDoubleSchema> & unknown
-  WorkerType?: z.infer<typeof WorkerTypeSchema> & unknown
-  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema> & unknown
-  SecurityConfiguration?: z.infer<typeof NameStringSchema> & unknown
-  NotificationProperty?: z.infer<typeof NotificationPropertySchema> & unknown
-  GlueVersion?: z.infer<typeof GlueVersionStringSchema> & unknown
-  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema> & unknown
-  ExecutionClass?: z.infer<typeof ExecutionClassSchema> & unknown
-  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema> & unknown
+  Description?: z.infer<typeof DescriptionStringSchema>
+  LogUri?: z.infer<typeof UriStringSchema>
+  Role?: z.infer<typeof RoleStringSchema>
+  ExecutionProperty?: z.infer<typeof ExecutionPropertySchema>
+  Command?: z.infer<typeof JobCommandSchema>
+  DefaultArguments?: z.infer<typeof GenericMapSchema>
+  NonOverridableArguments?: z.infer<typeof GenericMapSchema>
+  Connections?: z.infer<typeof ConnectionsListSchema>
+  MaxRetries?: z.infer<typeof MaxRetriesSchema>
+  AllocatedCapacity?: z.infer<typeof IntegerValueSchema>
+  Timeout?: z.infer<typeof TimeoutSchema>
+  MaxCapacity?: z.infer<typeof NullableDoubleSchema>
+  WorkerType?: z.infer<typeof WorkerTypeSchema>
+  NumberOfWorkers?: z.infer<typeof NullableIntegerSchema>
+  SecurityConfiguration?: z.infer<typeof NameStringSchema>
+  NotificationProperty?: z.infer<typeof NotificationPropertySchema>
+  GlueVersion?: z.infer<typeof GlueVersionStringSchema>
+  CodeGenConfigurationNodes?: z.infer<typeof CodeGenConfigurationNodesSchema>
+  ExecutionClass?: z.infer<typeof ExecutionClassSchema>
+  SourceControlDetails?: z.infer<typeof SourceControlDetailsSchema>
 }
 
 const JobUpdateSchema: z.ZodType<JobUpdateType> = z
@@ -4595,8 +4595,8 @@ const JobUpdateSchema: z.ZodType<JobUpdateType> = z
   .openapi('JobUpdate')
 
 type UpdateJobRequestType = {
-  JobName: z.infer<typeof NameStringSchema> & unknown
-  JobUpdate: z.infer<typeof JobUpdateSchema> & unknown
+  JobName: z.infer<typeof NameStringSchema>
+  JobUpdate: z.infer<typeof JobUpdateSchema>
 }
 
 const MappingSchema: z.ZodType<MappingType> = z
@@ -4631,12 +4631,12 @@ const MappingSchema: z.ZodType<MappingType> = z
 type MappingsType = z.infer<typeof MappingSchema>[]
 
 type MappingType = {
-  ToKey?: z.infer<typeof EnclosedInStringPropertySchema> & unknown
-  FromPath?: z.infer<typeof EnclosedInStringPropertiesSchema> & unknown
-  FromType?: z.infer<typeof EnclosedInStringPropertySchema> & unknown
-  ToType?: z.infer<typeof EnclosedInStringPropertySchema> & unknown
-  Dropped?: z.infer<typeof BoxedBooleanSchema> & unknown
-  Children?: z.infer<typeof MappingsSchema> & unknown
+  ToKey?: z.infer<typeof EnclosedInStringPropertySchema>
+  FromPath?: z.infer<typeof EnclosedInStringPropertiesSchema>
+  FromType?: z.infer<typeof EnclosedInStringPropertySchema>
+  ToType?: z.infer<typeof EnclosedInStringPropertySchema>
+  Dropped?: z.infer<typeof BoxedBooleanSchema>
+  Children?: z.infer<typeof MappingsSchema>
 }
 
 const ErrorDetailSchema = z

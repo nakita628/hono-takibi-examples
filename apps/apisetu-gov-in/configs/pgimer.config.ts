@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/pgimer/3.0.0/openapi.yaml',
   output: './src/pgimer/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pgimer/types.ts' },
   client: { output: './src/pgimer/client.ts', baseUrl: '/' },
   rpc: { output: './src/pgimer/rpc.ts', parseResponse: true },

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDnsBlockingRoute, postDnsBlockingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDnsBlockingRoute, postDnsBlockingRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDnsBlockingRouteHandler: RouteHandler<typeof getDnsBlockingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dnsHandler = app
-  .openapi(getDnsBlockingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDnsBlockingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDnsBlockingRouteHandler: RouteHandler<typeof postDnsBlockingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

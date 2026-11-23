@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersRoute,
   getUsersUserIdCommentsRoute,
   getUsersUserIdFavoritesRoute,
@@ -13,39 +13,64 @@ import {
   getUsersUserIdWebProfilesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersRouteHandler: RouteHandler<typeof getUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdFavoritesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdFollowingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdFollowingsFollowingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdLikesTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdWebProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUsersUserIdRouteHandler: RouteHandler<typeof getUsersUserIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdCommentsRouteHandler: RouteHandler<
+  typeof getUsersUserIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdFavoritesRouteHandler: RouteHandler<
+  typeof getUsersUserIdFavoritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdFollowersRouteHandler: RouteHandler<
+  typeof getUsersUserIdFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdFollowingsRouteHandler: RouteHandler<
+  typeof getUsersUserIdFollowingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdFollowingsFollowingIdRouteHandler: RouteHandler<
+  typeof getUsersUserIdFollowingsFollowingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdLikesTracksRouteHandler: RouteHandler<
+  typeof getUsersUserIdLikesTracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdPlaylistsRouteHandler: RouteHandler<
+  typeof getUsersUserIdPlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdTracksRouteHandler: RouteHandler<
+  typeof getUsersUserIdTracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdWebProfilesRouteHandler: RouteHandler<
+  typeof getUsersUserIdWebProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

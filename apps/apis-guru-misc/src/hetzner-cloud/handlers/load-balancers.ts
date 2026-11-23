@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLoadBalancersIdRoute,
   getLoadBalancersIdActionsActionIdRoute,
   getLoadBalancersIdActionsRoute,
@@ -23,69 +23,128 @@ import {
   putLoadBalancersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLoadBalancersRouteHandler: RouteHandler<typeof getLoadBalancersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const loadBalancersHandler = app
-  .openapi(getLoadBalancersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLoadBalancersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLoadBalancersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancersIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsAddServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsAddTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsAttachToNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsChangeAlgorithmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsChangeDnsPtrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsChangeProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsChangeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsDeleteServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsDetachFromNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsDisablePublicInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsEnablePublicInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsRemoveTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancersIdActionsUpdateServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancersIdActionsActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancersIdMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLoadBalancersRouteHandler: RouteHandler<typeof postLoadBalancersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLoadBalancersIdRouteHandler: RouteHandler<
+  typeof deleteLoadBalancersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancersIdRouteHandler: RouteHandler<typeof getLoadBalancersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putLoadBalancersIdRouteHandler: RouteHandler<typeof putLoadBalancersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancersIdActionsRouteHandler: RouteHandler<
+  typeof getLoadBalancersIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsAddServiceRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsAddServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsAddTargetRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsAddTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsAttachToNetworkRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsAttachToNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsChangeAlgorithmRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsChangeAlgorithmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsChangeDnsPtrRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsChangeDnsPtrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsChangeProtectionRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsChangeProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsChangeTypeRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsChangeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsDeleteServiceRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsDeleteServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsDetachFromNetworkRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsDetachFromNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsDisablePublicInterfaceRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsDisablePublicInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsEnablePublicInterfaceRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsEnablePublicInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsRemoveTargetRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsRemoveTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancersIdActionsUpdateServiceRouteHandler: RouteHandler<
+  typeof postLoadBalancersIdActionsUpdateServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancersIdActionsActionIdRouteHandler: RouteHandler<
+  typeof getLoadBalancersIdActionsActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancersIdMetricsRouteHandler: RouteHandler<
+  typeof getLoadBalancersIdMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

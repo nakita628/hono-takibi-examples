@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIndexPhpSettingsAdminLogDownloadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIndexPhpSettingsAdminLogDownloadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const indexPhpHandler = app.openapi(getIndexPhpSettingsAdminLogDownloadRoute, (c) => {
+export const getIndexPhpSettingsAdminLogDownloadRouteHandler: RouteHandler<
+  typeof getIndexPhpSettingsAdminLogDownloadRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

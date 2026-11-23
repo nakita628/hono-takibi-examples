@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteListsListIdContactsContactIdRoute,
   deleteListsListIdRoute,
   getListsListIdContactsContactIdRoute,
@@ -19,57 +19,96 @@ import {
   putListsListIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getListsRouteHandler: RouteHandler<typeof getListsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const listsHandler = app
-  .openapi(getListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsFromListIdContactsContactIdToListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsListIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteListsListIdContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsListIdContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsListIdImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postListsListIdImportCsvPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getListsListIdImportFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsListIdRemoveDuplicatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putListsListIdRemoveOptedOutContactsOptOutListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postListsRouteHandler: RouteHandler<typeof postListsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsFromListIdContactsContactIdToListIdRouteHandler: RouteHandler<
+  typeof putListsFromListIdContactsContactIdToListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteListsListIdRouteHandler: RouteHandler<typeof deleteListsListIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdRouteHandler: RouteHandler<typeof getListsListIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsListIdRouteHandler: RouteHandler<typeof putListsListIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdContactsRouteHandler: RouteHandler<
+  typeof getListsListIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsListIdContactsRouteHandler: RouteHandler<
+  typeof postListsListIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteListsListIdContactsContactIdRouteHandler: RouteHandler<
+  typeof deleteListsListIdContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdContactsContactIdRouteHandler: RouteHandler<
+  typeof getListsListIdContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsListIdContactsContactIdRouteHandler: RouteHandler<
+  typeof putListsListIdContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getListsListIdExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsListIdImportRouteHandler: RouteHandler<
+  typeof postListsListIdImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postListsListIdImportCsvPreviewRouteHandler: RouteHandler<
+  typeof postListsListIdImportCsvPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getListsListIdImportFieldsRouteHandler: RouteHandler<
+  typeof getListsListIdImportFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsListIdRemoveDuplicatesRouteHandler: RouteHandler<
+  typeof putListsListIdRemoveDuplicatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putListsListIdRemoveOptedOutContactsOptOutListIdRouteHandler: RouteHandler<
+  typeof putListsListIdRemoveOptedOutContactsOptOutListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

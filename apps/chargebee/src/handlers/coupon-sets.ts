@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCouponSetsCouponSetIdRoute,
   getCouponSetsRoute,
   postCouponSetsCouponSetIdAddCouponCodesRoute,
@@ -9,27 +9,40 @@ import {
   postCouponSetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCouponSetsRouteHandler: RouteHandler<typeof getCouponSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const couponSetsHandler = app
-  .openapi(getCouponSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponSetsCouponSetIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCouponSetsCouponSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponSetsCouponSetIdAddCouponCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponSetsCouponSetIdDeleteUnusedCouponCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCouponSetsCouponSetIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCouponSetsRouteHandler: RouteHandler<typeof postCouponSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponSetsCouponSetIdUpdateRouteHandler: RouteHandler<
+  typeof postCouponSetsCouponSetIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCouponSetsCouponSetIdRouteHandler: RouteHandler<
+  typeof getCouponSetsCouponSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponSetsCouponSetIdAddCouponCodesRouteHandler: RouteHandler<
+  typeof postCouponSetsCouponSetIdAddCouponCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponSetsCouponSetIdDeleteUnusedCouponCodesRouteHandler: RouteHandler<
+  typeof postCouponSetsCouponSetIdDeleteUnusedCouponCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCouponSetsCouponSetIdDeleteRouteHandler: RouteHandler<
+  typeof postCouponSetsCouponSetIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

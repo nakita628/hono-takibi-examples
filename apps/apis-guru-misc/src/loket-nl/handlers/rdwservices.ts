@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRdwservicesAdditionaltaxliabilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRdwservicesAdditionaltaxliabilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rdwservicesHandler = app.openapi(getRdwservicesAdditionaltaxliabilityRoute, (c) => {
+export const getRdwservicesAdditionaltaxliabilityRouteHandler: RouteHandler<
+  typeof getRdwservicesAdditionaltaxliabilityRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

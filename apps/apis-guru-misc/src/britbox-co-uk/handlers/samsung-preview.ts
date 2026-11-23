@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSamsungPreviewRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSamsungPreviewRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const samsungPreviewHandler = app.openapi(getSamsungPreviewRoute, (c) => {
+export const getSamsungPreviewRouteHandler: RouteHandler<typeof getSamsungPreviewRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

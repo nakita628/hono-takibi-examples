@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openbanking.org.uk/confirmation-funds-openapi/3.1.7/openapi.yaml',
   output: './src/openbanking-org-uk-confirmation-funds-openapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openbanking-org-uk-confirmation-funds-openapi/types.ts' },
   client: { output: './src/openbanking-org-uk-confirmation-funds-openapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/openbanking-org-uk-confirmation-funds-openapi/rpc.ts', parseResponse: true },

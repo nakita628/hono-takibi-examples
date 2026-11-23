@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3PayeesPayeeIdRoute,
   deleteV3PayoutsPayoutIdRoute,
   deleteV3PayoutsPayoutIdScheduleRoute,
@@ -31,93 +31,170 @@ import {
   postV3SourceAccountsSourceAccountIdTransfersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3PayeesRouteHandler: RouteHandler<typeof getV3PayeesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3PayeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayeesBatchBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayeesDeltasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayeesPayorsPayorIdInvitationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3PayeesPayeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayeesPayeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayeesPayeeIdInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayeesPayeeIdPayeeDetailsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayeesPayeeIdRemoteIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PaymentauditPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PaymentauditPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PaymentauditPayoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PaymentauditPayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PaymentauditTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3PayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayoutsPayoutIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3PayoutsPayoutIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayoutsPayoutIdQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3PayoutsPayoutIdScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3PayoutsPayoutIdScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SourceAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3SourceAccountsSourceAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3SourceAccountsSourceAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SourceAccountsSourceAccountIdFundingRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SourceAccountsSourceAccountIdNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SourceAccountsSourceAccountIdTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV3PayeesRouteHandler: RouteHandler<typeof postV3PayeesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayeesBatchBatchIdRouteHandler: RouteHandler<
+  typeof getV3PayeesBatchBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayeesDeltasRouteHandler: RouteHandler<typeof getV3PayeesDeltasRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayeesPayorsPayorIdInvitationStatusRouteHandler: RouteHandler<
+  typeof getV3PayeesPayorsPayorIdInvitationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3PayeesPayeeIdRouteHandler: RouteHandler<
+  typeof deleteV3PayeesPayeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayeesPayeeIdRouteHandler: RouteHandler<typeof getV3PayeesPayeeIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayeesPayeeIdInviteRouteHandler: RouteHandler<
+  typeof postV3PayeesPayeeIdInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayeesPayeeIdPayeeDetailsUpdateRouteHandler: RouteHandler<
+  typeof postV3PayeesPayeeIdPayeeDetailsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayeesPayeeIdRemoteIdUpdateRouteHandler: RouteHandler<
+  typeof postV3PayeesPayeeIdRemoteIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PaymentauditPaymentsRouteHandler: RouteHandler<
+  typeof getV3PaymentauditPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PaymentauditPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getV3PaymentauditPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PaymentauditPayoutsRouteHandler: RouteHandler<
+  typeof getV3PaymentauditPayoutsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PaymentauditPayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof getV3PaymentauditPayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PaymentauditTransactionsRouteHandler: RouteHandler<
+  typeof getV3PaymentauditTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayoutsRouteHandler: RouteHandler<typeof postV3PayoutsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3PayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof deleteV3PayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof getV3PayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayoutsPayoutIdRouteHandler: RouteHandler<
+  typeof postV3PayoutsPayoutIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3PayoutsPayoutIdPaymentsRouteHandler: RouteHandler<
+  typeof getV3PayoutsPayoutIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayoutsPayoutIdQuoteRouteHandler: RouteHandler<
+  typeof postV3PayoutsPayoutIdQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3PayoutsPayoutIdScheduleRouteHandler: RouteHandler<
+  typeof deleteV3PayoutsPayoutIdScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3PayoutsPayoutIdScheduleRouteHandler: RouteHandler<
+  typeof postV3PayoutsPayoutIdScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SourceAccountsRouteHandler: RouteHandler<
+  typeof getV3SourceAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3SourceAccountsSourceAccountIdRouteHandler: RouteHandler<
+  typeof deleteV3SourceAccountsSourceAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3SourceAccountsSourceAccountIdRouteHandler: RouteHandler<
+  typeof getV3SourceAccountsSourceAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SourceAccountsSourceAccountIdFundingRequestRouteHandler: RouteHandler<
+  typeof postV3SourceAccountsSourceAccountIdFundingRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SourceAccountsSourceAccountIdNotificationsRouteHandler: RouteHandler<
+  typeof postV3SourceAccountsSourceAccountIdNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SourceAccountsSourceAccountIdTransfersRouteHandler: RouteHandler<
+  typeof postV3SourceAccountsSourceAccountIdTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

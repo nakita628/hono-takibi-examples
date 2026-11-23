@@ -1453,20 +1453,20 @@ export function useGlossary<
 }
 
 export function getGridpointsWfoXYQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y', toValue(args)] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}', toValue(args)] as const
 }
 
 export function getGridpointsWfoXYQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getGridpointsWfoXYQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].$get(toValue(args), {
+        client.gridpoints[':wfo'][':x,{y}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1478,12 +1478,14 @@ export function getGridpointsWfoXYQueryOptions(
 export function useGridpointsWfoXY<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -1491,7 +1493,7 @@ export function useGridpointsWfoXY<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
               >
             >
           >,
@@ -1500,7 +1502,7 @@ export function useGridpointsWfoXY<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
               >
             >
           >,
@@ -1519,7 +1521,7 @@ export function useGridpointsWfoXY<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['$get']>>
         >
       >
     >,
@@ -1532,7 +1534,7 @@ export function useGridpointsWfoXY<
       queryKey: computed(() => getGridpointsWfoXYQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.gridpoints[':wfo'][':x,:y'].$get(toValue(args), {
+          client.gridpoints[':wfo'][':x,{y}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1545,16 +1547,16 @@ export function useGridpointsWfoXY<
 
 export function getGridpointsWfoXYForecastQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast', keyArgs] as const
 }
 
 export function getGridpointsWfoXYForecastQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1562,7 +1564,7 @@ export function getGridpointsWfoXYForecastQueryOptions(
     queryKey: computed(() => getGridpointsWfoXYForecastQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].forecast.$get(toValue(args), {
+        client.gridpoints[':wfo'][':x,{y}'].forecast.$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1575,14 +1577,14 @@ export function useGridpointsWfoXYForecast<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1591,7 +1593,9 @@ export function useGridpointsWfoXYForecast<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>
+                >
               >
             >
           >,
@@ -1600,7 +1604,9 @@ export function useGridpointsWfoXYForecast<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>
+                >
               >
             >
           >,
@@ -1619,7 +1625,7 @@ export function useGridpointsWfoXYForecast<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['$get']>>
         >
       >
     >,
@@ -1632,7 +1638,7 @@ export function useGridpointsWfoXYForecast<
       queryKey: computed(() => getGridpointsWfoXYForecastQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.gridpoints[':wfo'][':x,:y'].forecast.$get(toValue(args), {
+          client.gridpoints[':wfo'][':x,{y}'].forecast.$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1645,16 +1651,16 @@ export function useGridpointsWfoXYForecast<
 
 export function getGridpointsWfoXYForecastHourlyQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/forecast/hourly', keyArgs] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/forecast/hourly', keyArgs] as const
 }
 
 export function getGridpointsWfoXYForecastHourlyQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1662,7 +1668,7 @@ export function getGridpointsWfoXYForecastHourlyQueryOptions(
     queryKey: computed(() => getGridpointsWfoXYForecastHourlyQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(toValue(args), {
+        client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1676,7 +1682,7 @@ export function useGridpointsWfoXYForecastHourly<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+          ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
         >
       >
     >
@@ -1684,7 +1690,7 @@ export function useGridpointsWfoXYForecastHourly<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1695,7 +1701,7 @@ export function useGridpointsWfoXYForecastHourly<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']
+                    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
                   >
                 >
               >
@@ -1708,7 +1714,7 @@ export function useGridpointsWfoXYForecastHourly<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']
+                    (typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']
                   >
                 >
               >
@@ -1730,7 +1736,7 @@ export function useGridpointsWfoXYForecastHourly<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['forecast']['hourly']['$get']>
+            ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['forecast']['hourly']['$get']>
           >
         >
       >
@@ -1744,7 +1750,7 @@ export function useGridpointsWfoXYForecastHourly<
       queryKey: computed(() => getGridpointsWfoXYForecastHourlyQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.gridpoints[':wfo'][':x,:y'].forecast.hourly.$get(toValue(args), {
+          client.gridpoints[':wfo'][':x,{y}'].forecast.hourly.$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1757,15 +1763,15 @@ export function useGridpointsWfoXYForecastHourly<
 
 export function getGridpointsWfoXYStationsQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>
   >,
 ) {
-  return ['gridpoints', '/gridpoints/:wfo/:x,:y/stations', toValue(args)] as const
+  return ['gridpoints', '/gridpoints/:wfo/:x,{y}/stations', toValue(args)] as const
 }
 
 export function getGridpointsWfoXYStationsQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1773,7 +1779,7 @@ export function getGridpointsWfoXYStationsQueryOptions(
     queryKey: computed(() => getGridpointsWfoXYStationsQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.gridpoints[':wfo'][':x,:y'].stations.$get(toValue(args), {
+        client.gridpoints[':wfo'][':x,{y}'].stations.$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1786,14 +1792,14 @@ export function useGridpointsWfoXYStations<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>
+    InferRequestType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1802,7 +1808,9 @@ export function useGridpointsWfoXYStations<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>
+                >
               >
             >
           >,
@@ -1811,7 +1819,9 @@ export function useGridpointsWfoXYStations<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>
+                >
               >
             >
           >,
@@ -1830,7 +1840,7 @@ export function useGridpointsWfoXYStations<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,:y']['stations']['$get']>>
+          Awaited<ReturnType<(typeof client.gridpoints)[':wfo'][':x,{y}']['stations']['$get']>>
         >
       >
     >,
@@ -1843,7 +1853,7 @@ export function useGridpointsWfoXYStations<
       queryKey: computed(() => getGridpointsWfoXYStationsQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.gridpoints[':wfo'][':x,:y'].stations.$get(toValue(args), {
+          client.gridpoints[':wfo'][':x,{y}'].stations.$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -3754,20 +3764,20 @@ export function useOfficesOfficeIdWeatherstoriesDownloadImageId<
 }
 
 export function getPointsLatitudeLongitudeQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>>,
 ) {
-  return ['points', '/points/:latitude,:longitude', toValue(args)] as const
+  return ['points', '/points/:latitude,{longitude}', toValue(args)] as const
 }
 
 export function getPointsLatitudeLongitudeQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getPointsLatitudeLongitudeQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.points[':latitude,:longitude'].$get(toValue(args), {
+        client.points[':latitude,{longitude}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3780,13 +3790,13 @@ export function usePointsLatitudeLongitude<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,:longitude']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.points)[':latitude,{longitude}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -3794,7 +3804,7 @@ export function usePointsLatitudeLongitude<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+                Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
               >
             >
           >,
@@ -3803,7 +3813,7 @@ export function usePointsLatitudeLongitude<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+                Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
               >
             >
           >,
@@ -3822,7 +3832,7 @@ export function usePointsLatitudeLongitude<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['$get']>>
         >
       >
     >,
@@ -3835,7 +3845,7 @@ export function usePointsLatitudeLongitude<
       queryKey: computed(() => getPointsLatitudeLongitudeQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.points[':latitude,:longitude'].$get(toValue(args), {
+          client.points[':latitude,{longitude}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -3848,15 +3858,15 @@ export function usePointsLatitudeLongitude<
 
 export function getPointsLatitudeLongitudeRadioQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>
   >,
 ) {
-  return ['points', '/points/:latitude,:longitude/radio', toValue(args)] as const
+  return ['points', '/points/:latitude,{longitude}/radio', toValue(args)] as const
 }
 
 export function getPointsLatitudeLongitudeRadioQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -3864,7 +3874,7 @@ export function getPointsLatitudeLongitudeRadioQueryOptions(
     queryKey: computed(() => getPointsLatitudeLongitudeRadioQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.points[':latitude,:longitude'].radio.$get(toValue(args), {
+        client.points[':latitude,{longitude}'].radio.$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3877,14 +3887,14 @@ export function usePointsLatitudeLongitudeRadio<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -3893,7 +3903,9 @@ export function usePointsLatitudeLongitudeRadio<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>
+                >
               >
             >
           >,
@@ -3902,7 +3914,9 @@ export function usePointsLatitudeLongitudeRadio<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>
+                >
               >
             >
           >,
@@ -3921,7 +3935,7 @@ export function usePointsLatitudeLongitudeRadio<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['radio']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['radio']['$get']>>
         >
       >
     >,
@@ -3934,7 +3948,7 @@ export function usePointsLatitudeLongitudeRadio<
       queryKey: computed(() => getPointsLatitudeLongitudeRadioQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.points[':latitude,:longitude'].radio.$get(toValue(args), {
+          client.points[':latitude,{longitude}'].radio.$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -3947,15 +3961,15 @@ export function usePointsLatitudeLongitudeRadio<
 
 export function getPointsLatitudeLongitudeStationsQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
   >,
 ) {
-  return ['points', '/points/:latitude,:longitude/stations', toValue(args)] as const
+  return ['points', '/points/:latitude,{longitude}/stations', toValue(args)] as const
 }
 
 export function getPointsLatitudeLongitudeStationsQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -3963,7 +3977,7 @@ export function getPointsLatitudeLongitudeStationsQueryOptions(
     queryKey: computed(() => getPointsLatitudeLongitudeStationsQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.points[':latitude,:longitude'].stations.$get(toValue(args), {
+        client.points[':latitude,{longitude}'].stations.$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3976,14 +3990,14 @@ export function usePointsLatitudeLongitudeStations<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+        Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+    InferRequestType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -3993,7 +4007,7 @@ export function usePointsLatitudeLongitudeStations<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+                  ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
                 >
               >
             >
@@ -4004,7 +4018,7 @@ export function usePointsLatitudeLongitudeStations<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>
+                  ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>
                 >
               >
             >
@@ -4024,7 +4038,7 @@ export function usePointsLatitudeLongitudeStations<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.points)[':latitude,:longitude']['stations']['$get']>>
+          Awaited<ReturnType<(typeof client.points)[':latitude,{longitude}']['stations']['$get']>>
         >
       >
     >,
@@ -4037,7 +4051,7 @@ export function usePointsLatitudeLongitudeStations<
       queryKey: computed(() => getPointsLatitudeLongitudeStationsQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.points[':latitude,:longitude'].stations.$get(toValue(args), {
+          client.points[':latitude,{longitude}'].stations.$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getComicCollectionRoute,
   getComicCollectionSearchRoute,
   postComicCollectionSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getComicCollectionRouteHandler: RouteHandler<typeof getComicCollectionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const comicCollectionHandler = app
-  .openapi(getComicCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getComicCollectionSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postComicCollectionSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getComicCollectionSearchRouteHandler: RouteHandler<
+  typeof getComicCollectionSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postComicCollectionSearchRouteHandler: RouteHandler<
+  typeof postComicCollectionSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

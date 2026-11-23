@@ -1,17 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  facetsHandler,
-  openSearchDescriptionHandler,
-  openSearchHandler,
-  suggestHandler,
+  getFacetsRoute,
+  getOpenSearchDescriptionRoute,
+  getOpenSearchRoute,
+  getSuggestRoute,
+} from './routes'
+import {
+  getFacetsRouteHandler,
+  getOpenSearchDescriptionRouteHandler,
+  getOpenSearchRouteHandler,
+  getSuggestRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', facetsHandler)
-  .route('/', openSearchHandler)
-  .route('/', openSearchDescriptionHandler)
-  .route('/', suggestHandler)
+  .openapi(getFacetsRoute, getFacetsRouteHandler)
+  .openapi(getOpenSearchRoute, getOpenSearchRouteHandler)
+  .openapi(getOpenSearchDescriptionRoute, getOpenSearchDescriptionRouteHandler)
+  .openapi(getSuggestRoute, getSuggestRouteHandler)
 
 export default app

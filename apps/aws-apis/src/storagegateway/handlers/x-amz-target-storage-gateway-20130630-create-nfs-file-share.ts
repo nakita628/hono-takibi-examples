@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630CreateNFSFileShareRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630CreateNFSFileShareRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630CreateNfsFileShareHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630CreateNFSFileShareRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630CreateNFSFileShareRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630CreateNFSFileShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

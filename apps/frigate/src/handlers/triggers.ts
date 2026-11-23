@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTriggersStatusCameraNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTriggersStatusCameraNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const triggersHandler = app.openapi(getTriggersStatusCameraNameRoute, (c) => {
+export const getTriggersStatusCameraNameRouteHandler: RouteHandler<
+  typeof getTriggersStatusCameraNameRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,143 +1,413 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetDirectoryService20150416AcceptSharedDirectoryHandler,
-  xAmzTargetDirectoryService20150416AddIpRoutesHandler,
-  xAmzTargetDirectoryService20150416AddRegionHandler,
-  xAmzTargetDirectoryService20150416AddTagsToResourceHandler,
-  xAmzTargetDirectoryService20150416CancelSchemaExtensionHandler,
-  xAmzTargetDirectoryService20150416ConnectDirectoryHandler,
-  xAmzTargetDirectoryService20150416CreateAliasHandler,
-  xAmzTargetDirectoryService20150416CreateComputerHandler,
-  xAmzTargetDirectoryService20150416CreateConditionalForwarderHandler,
-  xAmzTargetDirectoryService20150416CreateDirectoryHandler,
-  xAmzTargetDirectoryService20150416CreateLogSubscriptionHandler,
-  xAmzTargetDirectoryService20150416CreateMicrosoftAdHandler,
-  xAmzTargetDirectoryService20150416CreateSnapshotHandler,
-  xAmzTargetDirectoryService20150416CreateTrustHandler,
-  xAmzTargetDirectoryService20150416DeleteConditionalForwarderHandler,
-  xAmzTargetDirectoryService20150416DeleteDirectoryHandler,
-  xAmzTargetDirectoryService20150416DeleteLogSubscriptionHandler,
-  xAmzTargetDirectoryService20150416DeleteSnapshotHandler,
-  xAmzTargetDirectoryService20150416DeleteTrustHandler,
-  xAmzTargetDirectoryService20150416DeregisterCertificateHandler,
-  xAmzTargetDirectoryService20150416DeregisterEventTopicHandler,
-  xAmzTargetDirectoryService20150416DescribeCertificateHandler,
-  xAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsHandler,
-  xAmzTargetDirectoryService20150416DescribeConditionalForwardersHandler,
-  xAmzTargetDirectoryService20150416DescribeDirectoriesHandler,
-  xAmzTargetDirectoryService20150416DescribeDomainControllersHandler,
-  xAmzTargetDirectoryService20150416DescribeEventTopicsHandler,
-  xAmzTargetDirectoryService20150416DescribeLdapsSettingsHandler,
-  xAmzTargetDirectoryService20150416DescribeRegionsHandler,
-  xAmzTargetDirectoryService20150416DescribeSettingsHandler,
-  xAmzTargetDirectoryService20150416DescribeSharedDirectoriesHandler,
-  xAmzTargetDirectoryService20150416DescribeSnapshotsHandler,
-  xAmzTargetDirectoryService20150416DescribeTrustsHandler,
-  xAmzTargetDirectoryService20150416DescribeUpdateDirectoryHandler,
-  xAmzTargetDirectoryService20150416DisableClientAuthenticationHandler,
-  xAmzTargetDirectoryService20150416DisableLdapsHandler,
-  xAmzTargetDirectoryService20150416DisableRadiusHandler,
-  xAmzTargetDirectoryService20150416DisableSsoHandler,
-  xAmzTargetDirectoryService20150416EnableClientAuthenticationHandler,
-  xAmzTargetDirectoryService20150416EnableLdapsHandler,
-  xAmzTargetDirectoryService20150416EnableRadiusHandler,
-  xAmzTargetDirectoryService20150416EnableSsoHandler,
-  xAmzTargetDirectoryService20150416GetDirectoryLimitsHandler,
-  xAmzTargetDirectoryService20150416GetSnapshotLimitsHandler,
-  xAmzTargetDirectoryService20150416ListCertificatesHandler,
-  xAmzTargetDirectoryService20150416ListIpRoutesHandler,
-  xAmzTargetDirectoryService20150416ListLogSubscriptionsHandler,
-  xAmzTargetDirectoryService20150416ListSchemaExtensionsHandler,
-  xAmzTargetDirectoryService20150416ListTagsForResourceHandler,
-  xAmzTargetDirectoryService20150416RegisterCertificateHandler,
-  xAmzTargetDirectoryService20150416RegisterEventTopicHandler,
-  xAmzTargetDirectoryService20150416RejectSharedDirectoryHandler,
-  xAmzTargetDirectoryService20150416RemoveIpRoutesHandler,
-  xAmzTargetDirectoryService20150416RemoveRegionHandler,
-  xAmzTargetDirectoryService20150416RemoveTagsFromResourceHandler,
-  xAmzTargetDirectoryService20150416ResetUserPasswordHandler,
-  xAmzTargetDirectoryService20150416RestoreFromSnapshotHandler,
-  xAmzTargetDirectoryService20150416ShareDirectoryHandler,
-  xAmzTargetDirectoryService20150416StartSchemaExtensionHandler,
-  xAmzTargetDirectoryService20150416UnshareDirectoryHandler,
-  xAmzTargetDirectoryService20150416UpdateConditionalForwarderHandler,
-  xAmzTargetDirectoryService20150416UpdateDirectorySetupHandler,
-  xAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersHandler,
-  xAmzTargetDirectoryService20150416UpdateRadiusHandler,
-  xAmzTargetDirectoryService20150416UpdateSettingsHandler,
-  xAmzTargetDirectoryService20150416UpdateTrustHandler,
-  xAmzTargetDirectoryService20150416VerifyTrustHandler,
+  postXAmzTargetDirectoryService20150416AcceptSharedDirectoryRoute,
+  postXAmzTargetDirectoryService20150416AddIpRoutesRoute,
+  postXAmzTargetDirectoryService20150416AddRegionRoute,
+  postXAmzTargetDirectoryService20150416AddTagsToResourceRoute,
+  postXAmzTargetDirectoryService20150416CancelSchemaExtensionRoute,
+  postXAmzTargetDirectoryService20150416ConnectDirectoryRoute,
+  postXAmzTargetDirectoryService20150416CreateAliasRoute,
+  postXAmzTargetDirectoryService20150416CreateComputerRoute,
+  postXAmzTargetDirectoryService20150416CreateConditionalForwarderRoute,
+  postXAmzTargetDirectoryService20150416CreateDirectoryRoute,
+  postXAmzTargetDirectoryService20150416CreateLogSubscriptionRoute,
+  postXAmzTargetDirectoryService20150416CreateMicrosoftADRoute,
+  postXAmzTargetDirectoryService20150416CreateSnapshotRoute,
+  postXAmzTargetDirectoryService20150416CreateTrustRoute,
+  postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute,
+  postXAmzTargetDirectoryService20150416DeleteDirectoryRoute,
+  postXAmzTargetDirectoryService20150416DeleteLogSubscriptionRoute,
+  postXAmzTargetDirectoryService20150416DeleteSnapshotRoute,
+  postXAmzTargetDirectoryService20150416DeleteTrustRoute,
+  postXAmzTargetDirectoryService20150416DeregisterCertificateRoute,
+  postXAmzTargetDirectoryService20150416DeregisterEventTopicRoute,
+  postXAmzTargetDirectoryService20150416DescribeCertificateRoute,
+  postXAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsRoute,
+  postXAmzTargetDirectoryService20150416DescribeConditionalForwardersRoute,
+  postXAmzTargetDirectoryService20150416DescribeDirectoriesRoute,
+  postXAmzTargetDirectoryService20150416DescribeDomainControllersRoute,
+  postXAmzTargetDirectoryService20150416DescribeEventTopicsRoute,
+  postXAmzTargetDirectoryService20150416DescribeLDAPSSettingsRoute,
+  postXAmzTargetDirectoryService20150416DescribeRegionsRoute,
+  postXAmzTargetDirectoryService20150416DescribeSettingsRoute,
+  postXAmzTargetDirectoryService20150416DescribeSharedDirectoriesRoute,
+  postXAmzTargetDirectoryService20150416DescribeSnapshotsRoute,
+  postXAmzTargetDirectoryService20150416DescribeTrustsRoute,
+  postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute,
+  postXAmzTargetDirectoryService20150416DisableClientAuthenticationRoute,
+  postXAmzTargetDirectoryService20150416DisableLDAPSRoute,
+  postXAmzTargetDirectoryService20150416DisableRadiusRoute,
+  postXAmzTargetDirectoryService20150416DisableSsoRoute,
+  postXAmzTargetDirectoryService20150416EnableClientAuthenticationRoute,
+  postXAmzTargetDirectoryService20150416EnableLDAPSRoute,
+  postXAmzTargetDirectoryService20150416EnableRadiusRoute,
+  postXAmzTargetDirectoryService20150416EnableSsoRoute,
+  postXAmzTargetDirectoryService20150416GetDirectoryLimitsRoute,
+  postXAmzTargetDirectoryService20150416GetSnapshotLimitsRoute,
+  postXAmzTargetDirectoryService20150416ListCertificatesRoute,
+  postXAmzTargetDirectoryService20150416ListIpRoutesRoute,
+  postXAmzTargetDirectoryService20150416ListLogSubscriptionsRoute,
+  postXAmzTargetDirectoryService20150416ListSchemaExtensionsRoute,
+  postXAmzTargetDirectoryService20150416ListTagsForResourceRoute,
+  postXAmzTargetDirectoryService20150416RegisterCertificateRoute,
+  postXAmzTargetDirectoryService20150416RegisterEventTopicRoute,
+  postXAmzTargetDirectoryService20150416RejectSharedDirectoryRoute,
+  postXAmzTargetDirectoryService20150416RemoveIpRoutesRoute,
+  postXAmzTargetDirectoryService20150416RemoveRegionRoute,
+  postXAmzTargetDirectoryService20150416RemoveTagsFromResourceRoute,
+  postXAmzTargetDirectoryService20150416ResetUserPasswordRoute,
+  postXAmzTargetDirectoryService20150416RestoreFromSnapshotRoute,
+  postXAmzTargetDirectoryService20150416ShareDirectoryRoute,
+  postXAmzTargetDirectoryService20150416StartSchemaExtensionRoute,
+  postXAmzTargetDirectoryService20150416UnshareDirectoryRoute,
+  postXAmzTargetDirectoryService20150416UpdateConditionalForwarderRoute,
+  postXAmzTargetDirectoryService20150416UpdateDirectorySetupRoute,
+  postXAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersRoute,
+  postXAmzTargetDirectoryService20150416UpdateRadiusRoute,
+  postXAmzTargetDirectoryService20150416UpdateSettingsRoute,
+  postXAmzTargetDirectoryService20150416UpdateTrustRoute,
+  postXAmzTargetDirectoryService20150416VerifyTrustRoute,
+} from './routes'
+import {
+  postXAmzTargetDirectoryService20150416AcceptSharedDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416AddIpRoutesRouteHandler,
+  postXAmzTargetDirectoryService20150416AddRegionRouteHandler,
+  postXAmzTargetDirectoryService20150416AddTagsToResourceRouteHandler,
+  postXAmzTargetDirectoryService20150416CancelSchemaExtensionRouteHandler,
+  postXAmzTargetDirectoryService20150416ConnectDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateAliasRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateComputerRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateConditionalForwarderRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateLogSubscriptionRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateMicrosoftADRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateSnapshotRouteHandler,
+  postXAmzTargetDirectoryService20150416CreateTrustRouteHandler,
+  postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRouteHandler,
+  postXAmzTargetDirectoryService20150416DeleteDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416DeleteLogSubscriptionRouteHandler,
+  postXAmzTargetDirectoryService20150416DeleteSnapshotRouteHandler,
+  postXAmzTargetDirectoryService20150416DeleteTrustRouteHandler,
+  postXAmzTargetDirectoryService20150416DeregisterCertificateRouteHandler,
+  postXAmzTargetDirectoryService20150416DeregisterEventTopicRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeCertificateRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeConditionalForwardersRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeDirectoriesRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeDomainControllersRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeEventTopicsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeLDAPSSettingsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeRegionsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeSettingsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeSharedDirectoriesRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeSnapshotsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeTrustsRouteHandler,
+  postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416DisableClientAuthenticationRouteHandler,
+  postXAmzTargetDirectoryService20150416DisableLDAPSRouteHandler,
+  postXAmzTargetDirectoryService20150416DisableRadiusRouteHandler,
+  postXAmzTargetDirectoryService20150416DisableSsoRouteHandler,
+  postXAmzTargetDirectoryService20150416EnableClientAuthenticationRouteHandler,
+  postXAmzTargetDirectoryService20150416EnableLDAPSRouteHandler,
+  postXAmzTargetDirectoryService20150416EnableRadiusRouteHandler,
+  postXAmzTargetDirectoryService20150416EnableSsoRouteHandler,
+  postXAmzTargetDirectoryService20150416GetDirectoryLimitsRouteHandler,
+  postXAmzTargetDirectoryService20150416GetSnapshotLimitsRouteHandler,
+  postXAmzTargetDirectoryService20150416ListCertificatesRouteHandler,
+  postXAmzTargetDirectoryService20150416ListIpRoutesRouteHandler,
+  postXAmzTargetDirectoryService20150416ListLogSubscriptionsRouteHandler,
+  postXAmzTargetDirectoryService20150416ListSchemaExtensionsRouteHandler,
+  postXAmzTargetDirectoryService20150416ListTagsForResourceRouteHandler,
+  postXAmzTargetDirectoryService20150416RegisterCertificateRouteHandler,
+  postXAmzTargetDirectoryService20150416RegisterEventTopicRouteHandler,
+  postXAmzTargetDirectoryService20150416RejectSharedDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416RemoveIpRoutesRouteHandler,
+  postXAmzTargetDirectoryService20150416RemoveRegionRouteHandler,
+  postXAmzTargetDirectoryService20150416RemoveTagsFromResourceRouteHandler,
+  postXAmzTargetDirectoryService20150416ResetUserPasswordRouteHandler,
+  postXAmzTargetDirectoryService20150416RestoreFromSnapshotRouteHandler,
+  postXAmzTargetDirectoryService20150416ShareDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416StartSchemaExtensionRouteHandler,
+  postXAmzTargetDirectoryService20150416UnshareDirectoryRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateConditionalForwarderRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateDirectorySetupRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateRadiusRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateSettingsRouteHandler,
+  postXAmzTargetDirectoryService20150416UpdateTrustRouteHandler,
+  postXAmzTargetDirectoryService20150416VerifyTrustRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetDirectoryService20150416AcceptSharedDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416AddIpRoutesHandler)
-  .route('/', xAmzTargetDirectoryService20150416AddRegionHandler)
-  .route('/', xAmzTargetDirectoryService20150416AddTagsToResourceHandler)
-  .route('/', xAmzTargetDirectoryService20150416CancelSchemaExtensionHandler)
-  .route('/', xAmzTargetDirectoryService20150416ConnectDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateAliasHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateComputerHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateConditionalForwarderHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateLogSubscriptionHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateMicrosoftAdHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateSnapshotHandler)
-  .route('/', xAmzTargetDirectoryService20150416CreateTrustHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeleteConditionalForwarderHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeleteDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeleteLogSubscriptionHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeleteSnapshotHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeleteTrustHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeregisterCertificateHandler)
-  .route('/', xAmzTargetDirectoryService20150416DeregisterEventTopicHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeCertificateHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeConditionalForwardersHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeDirectoriesHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeDomainControllersHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeEventTopicsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeLdapsSettingsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeRegionsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeSettingsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeSharedDirectoriesHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeSnapshotsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeTrustsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DescribeUpdateDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416DisableClientAuthenticationHandler)
-  .route('/', xAmzTargetDirectoryService20150416DisableLdapsHandler)
-  .route('/', xAmzTargetDirectoryService20150416DisableRadiusHandler)
-  .route('/', xAmzTargetDirectoryService20150416DisableSsoHandler)
-  .route('/', xAmzTargetDirectoryService20150416EnableClientAuthenticationHandler)
-  .route('/', xAmzTargetDirectoryService20150416EnableLdapsHandler)
-  .route('/', xAmzTargetDirectoryService20150416EnableRadiusHandler)
-  .route('/', xAmzTargetDirectoryService20150416EnableSsoHandler)
-  .route('/', xAmzTargetDirectoryService20150416GetDirectoryLimitsHandler)
-  .route('/', xAmzTargetDirectoryService20150416GetSnapshotLimitsHandler)
-  .route('/', xAmzTargetDirectoryService20150416ListCertificatesHandler)
-  .route('/', xAmzTargetDirectoryService20150416ListIpRoutesHandler)
-  .route('/', xAmzTargetDirectoryService20150416ListLogSubscriptionsHandler)
-  .route('/', xAmzTargetDirectoryService20150416ListSchemaExtensionsHandler)
-  .route('/', xAmzTargetDirectoryService20150416ListTagsForResourceHandler)
-  .route('/', xAmzTargetDirectoryService20150416RegisterCertificateHandler)
-  .route('/', xAmzTargetDirectoryService20150416RegisterEventTopicHandler)
-  .route('/', xAmzTargetDirectoryService20150416RejectSharedDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416RemoveIpRoutesHandler)
-  .route('/', xAmzTargetDirectoryService20150416RemoveRegionHandler)
-  .route('/', xAmzTargetDirectoryService20150416RemoveTagsFromResourceHandler)
-  .route('/', xAmzTargetDirectoryService20150416ResetUserPasswordHandler)
-  .route('/', xAmzTargetDirectoryService20150416RestoreFromSnapshotHandler)
-  .route('/', xAmzTargetDirectoryService20150416ShareDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416StartSchemaExtensionHandler)
-  .route('/', xAmzTargetDirectoryService20150416UnshareDirectoryHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateConditionalForwarderHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateDirectorySetupHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateRadiusHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateSettingsHandler)
-  .route('/', xAmzTargetDirectoryService20150416UpdateTrustHandler)
-  .route('/', xAmzTargetDirectoryService20150416VerifyTrustHandler)
+  .openapi(
+    postXAmzTargetDirectoryService20150416AcceptSharedDirectoryRoute,
+    postXAmzTargetDirectoryService20150416AcceptSharedDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416AddIpRoutesRoute,
+    postXAmzTargetDirectoryService20150416AddIpRoutesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416AddRegionRoute,
+    postXAmzTargetDirectoryService20150416AddRegionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416AddTagsToResourceRoute,
+    postXAmzTargetDirectoryService20150416AddTagsToResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CancelSchemaExtensionRoute,
+    postXAmzTargetDirectoryService20150416CancelSchemaExtensionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ConnectDirectoryRoute,
+    postXAmzTargetDirectoryService20150416ConnectDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateAliasRoute,
+    postXAmzTargetDirectoryService20150416CreateAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateComputerRoute,
+    postXAmzTargetDirectoryService20150416CreateComputerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateConditionalForwarderRoute,
+    postXAmzTargetDirectoryService20150416CreateConditionalForwarderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateDirectoryRoute,
+    postXAmzTargetDirectoryService20150416CreateDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateLogSubscriptionRoute,
+    postXAmzTargetDirectoryService20150416CreateLogSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateMicrosoftADRoute,
+    postXAmzTargetDirectoryService20150416CreateMicrosoftADRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateSnapshotRoute,
+    postXAmzTargetDirectoryService20150416CreateSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416CreateTrustRoute,
+    postXAmzTargetDirectoryService20150416CreateTrustRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRoute,
+    postXAmzTargetDirectoryService20150416DeleteConditionalForwarderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeleteDirectoryRoute,
+    postXAmzTargetDirectoryService20150416DeleteDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeleteLogSubscriptionRoute,
+    postXAmzTargetDirectoryService20150416DeleteLogSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeleteSnapshotRoute,
+    postXAmzTargetDirectoryService20150416DeleteSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeleteTrustRoute,
+    postXAmzTargetDirectoryService20150416DeleteTrustRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeregisterCertificateRoute,
+    postXAmzTargetDirectoryService20150416DeregisterCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DeregisterEventTopicRoute,
+    postXAmzTargetDirectoryService20150416DeregisterEventTopicRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeCertificateRoute,
+    postXAmzTargetDirectoryService20150416DescribeCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsRoute,
+    postXAmzTargetDirectoryService20150416DescribeClientAuthenticationSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeConditionalForwardersRoute,
+    postXAmzTargetDirectoryService20150416DescribeConditionalForwardersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeDirectoriesRoute,
+    postXAmzTargetDirectoryService20150416DescribeDirectoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeDomainControllersRoute,
+    postXAmzTargetDirectoryService20150416DescribeDomainControllersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeEventTopicsRoute,
+    postXAmzTargetDirectoryService20150416DescribeEventTopicsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeLDAPSSettingsRoute,
+    postXAmzTargetDirectoryService20150416DescribeLDAPSSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeRegionsRoute,
+    postXAmzTargetDirectoryService20150416DescribeRegionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeSettingsRoute,
+    postXAmzTargetDirectoryService20150416DescribeSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeSharedDirectoriesRoute,
+    postXAmzTargetDirectoryService20150416DescribeSharedDirectoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeSnapshotsRoute,
+    postXAmzTargetDirectoryService20150416DescribeSnapshotsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeTrustsRoute,
+    postXAmzTargetDirectoryService20150416DescribeTrustsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute,
+    postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DisableClientAuthenticationRoute,
+    postXAmzTargetDirectoryService20150416DisableClientAuthenticationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DisableLDAPSRoute,
+    postXAmzTargetDirectoryService20150416DisableLDAPSRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DisableRadiusRoute,
+    postXAmzTargetDirectoryService20150416DisableRadiusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416DisableSsoRoute,
+    postXAmzTargetDirectoryService20150416DisableSsoRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416EnableClientAuthenticationRoute,
+    postXAmzTargetDirectoryService20150416EnableClientAuthenticationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416EnableLDAPSRoute,
+    postXAmzTargetDirectoryService20150416EnableLDAPSRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416EnableRadiusRoute,
+    postXAmzTargetDirectoryService20150416EnableRadiusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416EnableSsoRoute,
+    postXAmzTargetDirectoryService20150416EnableSsoRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416GetDirectoryLimitsRoute,
+    postXAmzTargetDirectoryService20150416GetDirectoryLimitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416GetSnapshotLimitsRoute,
+    postXAmzTargetDirectoryService20150416GetSnapshotLimitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ListCertificatesRoute,
+    postXAmzTargetDirectoryService20150416ListCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ListIpRoutesRoute,
+    postXAmzTargetDirectoryService20150416ListIpRoutesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ListLogSubscriptionsRoute,
+    postXAmzTargetDirectoryService20150416ListLogSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ListSchemaExtensionsRoute,
+    postXAmzTargetDirectoryService20150416ListSchemaExtensionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ListTagsForResourceRoute,
+    postXAmzTargetDirectoryService20150416ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RegisterCertificateRoute,
+    postXAmzTargetDirectoryService20150416RegisterCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RegisterEventTopicRoute,
+    postXAmzTargetDirectoryService20150416RegisterEventTopicRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RejectSharedDirectoryRoute,
+    postXAmzTargetDirectoryService20150416RejectSharedDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RemoveIpRoutesRoute,
+    postXAmzTargetDirectoryService20150416RemoveIpRoutesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RemoveRegionRoute,
+    postXAmzTargetDirectoryService20150416RemoveRegionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RemoveTagsFromResourceRoute,
+    postXAmzTargetDirectoryService20150416RemoveTagsFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ResetUserPasswordRoute,
+    postXAmzTargetDirectoryService20150416ResetUserPasswordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416RestoreFromSnapshotRoute,
+    postXAmzTargetDirectoryService20150416RestoreFromSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416ShareDirectoryRoute,
+    postXAmzTargetDirectoryService20150416ShareDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416StartSchemaExtensionRoute,
+    postXAmzTargetDirectoryService20150416StartSchemaExtensionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UnshareDirectoryRoute,
+    postXAmzTargetDirectoryService20150416UnshareDirectoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateConditionalForwarderRoute,
+    postXAmzTargetDirectoryService20150416UpdateConditionalForwarderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateDirectorySetupRoute,
+    postXAmzTargetDirectoryService20150416UpdateDirectorySetupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersRoute,
+    postXAmzTargetDirectoryService20150416UpdateNumberOfDomainControllersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateRadiusRoute,
+    postXAmzTargetDirectoryService20150416UpdateRadiusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateSettingsRoute,
+    postXAmzTargetDirectoryService20150416UpdateSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416UpdateTrustRoute,
+    postXAmzTargetDirectoryService20150416UpdateTrustRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDirectoryService20150416VerifyTrustRoute,
+    postXAmzTargetDirectoryService20150416VerifyTrustRouteHandler,
+  )
 
 export default app

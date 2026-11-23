@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMetricsWpPregameRoute, getMetricsWpRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMetricsWpPregameRoute, getMetricsWpRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetricsWpRouteHandler: RouteHandler<typeof getMetricsWpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsHandler = app
-  .openapi(getMetricsWpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWpPregameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetricsWpPregameRouteHandler: RouteHandler<
+  typeof getMetricsWpPregameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

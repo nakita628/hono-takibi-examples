@@ -605,7 +605,7 @@ const BucketLifecycleConfigurationSchema = z
   .openapi('BucketLifecycleConfiguration')
 
 type PutBucketLifecycleConfigurationRequestType = {
-  LifecycleConfiguration?: z.infer<typeof BucketLifecycleConfigurationSchema> & unknown
+  LifecycleConfiguration?: z.infer<typeof BucketLifecycleConfigurationSchema>
 }
 
 const NotificationIdSchema = z

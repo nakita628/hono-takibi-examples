@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/metastore/v1/compactor.openapi.yaml',
   output: './src/metastore-v1-compactor/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/metastore-v1-compactor/types.ts' },
   client: { output: './src/metastore-v1-compactor/client.ts', baseUrl: '/' },
   rpc: { output: './src/metastore-v1-compactor/rpc.ts', parseResponse: true },

@@ -466,11 +466,11 @@ const EnhancedImageScanFindingListSchema = z
   .openapi('EnhancedImageScanFindingList')
 
 type ImageScanFindingsType = {
-  imageScanCompletedAt?: z.infer<typeof ScanTimestampSchema> & unknown
-  vulnerabilitySourceUpdatedAt?: z.infer<typeof VulnerabilitySourceUpdateTimestampSchema> & unknown
-  findingSeverityCounts?: z.infer<typeof FindingSeverityCountsSchema> & unknown
-  findings?: z.infer<typeof ImageScanFindingListSchema> & unknown
-  enhancedFindings?: z.infer<typeof EnhancedImageScanFindingListSchema> & unknown
+  imageScanCompletedAt?: z.infer<typeof ScanTimestampSchema>
+  vulnerabilitySourceUpdatedAt?: z.infer<typeof VulnerabilitySourceUpdateTimestampSchema>
+  findingSeverityCounts?: z.infer<typeof FindingSeverityCountsSchema>
+  findings?: z.infer<typeof ImageScanFindingListSchema>
+  enhancedFindings?: z.infer<typeof EnhancedImageScanFindingListSchema>
 }
 
 const ImageScanFindingsSchema: z.ZodType<ImageScanFindingsType> = z
@@ -497,12 +497,12 @@ const ImageScanFindingsSchema: z.ZodType<ImageScanFindingsType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type DescribeImageScanFindingsResponseType = {
-  registryId?: z.infer<typeof RegistryIdSchema> & unknown
-  repositoryName?: z.infer<typeof RepositoryNameSchema> & unknown
+  registryId?: z.infer<typeof RegistryIdSchema>
+  repositoryName?: z.infer<typeof RepositoryNameSchema>
   imageId?: z.infer<typeof ImageIdentifierSchema>
-  imageScanStatus?: z.infer<typeof ImageScanStatusSchema> & unknown
-  imageScanFindings?: z.infer<typeof ImageScanFindingsSchema> & unknown
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
+  imageScanStatus?: z.infer<typeof ImageScanStatusSchema>
+  imageScanFindings?: z.infer<typeof ImageScanFindingsSchema>
+  nextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const LayerDigestSchema = z

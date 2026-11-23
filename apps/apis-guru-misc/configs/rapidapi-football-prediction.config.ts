@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rapidapi.com/football-prediction/2/openapi.yaml',
   output: './src/rapidapi-football-prediction/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rapidapi-football-prediction/types.ts' },
   client: { output: './src/rapidapi-football-prediction/client.ts', baseUrl: '/' },
   rpc: { output: './src/rapidapi-football-prediction/rpc.ts', parseResponse: true },

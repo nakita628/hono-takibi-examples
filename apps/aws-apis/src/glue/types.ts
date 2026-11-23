@@ -5,13 +5,6 @@ type BatchCreatePartitionRequest = {
   PartitionInputList: {}
 }
 type BatchCreatePartitionResponse = { Errors?: {} | undefined }
-type InvalidInputException = { [x: string]: unknown }
-type AlreadyExistsException = { [x: string]: unknown }
-type ResourceNumberLimitExceededException = { [x: string]: unknown }
-type InternalServiceException = { [x: string]: unknown }
-type EntityNotFoundException = { [x: string]: unknown }
-type OperationTimeoutException = { [x: string]: unknown }
-type GlueEncryptionException = { [x: string]: unknown }
 type BatchDeleteConnectionRequest = { CatalogId?: {} | undefined; ConnectionNameList: {} }
 type BatchDeleteConnectionResponse = { Succeeded?: {} | undefined; Errors?: {} | undefined }
 type BatchDeletePartitionRequest = {
@@ -28,7 +21,6 @@ type BatchDeleteTableRequest = {
   TransactionId?: {} | undefined
 }
 type BatchDeleteTableResponse = { Errors?: {} | undefined }
-type ResourceNotReadyException = { [x: string]: unknown }
 type BatchDeleteTableVersionRequest = {
   CatalogId?: {} | undefined
   DatabaseName: {}
@@ -59,7 +51,6 @@ type BatchGetDevEndpointsResponse = {
   DevEndpoints?: {} | undefined
   DevEndpointsNotFound?: {} | undefined
 }
-type AccessDeniedException = { [x: string]: unknown }
 type BatchGetJobsRequest = { JobNames: {} }
 type BatchGetJobsResponse = { Jobs?: {} | undefined; JobsNotFound?: {} | undefined }
 type BatchGetPartitionRequest = {
@@ -69,9 +60,6 @@ type BatchGetPartitionRequest = {
   PartitionsToGet: {}
 }
 type BatchGetPartitionResponse = { Partitions?: {} | undefined; UnprocessedKeys?: {} | undefined }
-type InvalidStateException = { [x: string]: unknown }
-type FederationSourceException = { [x: string]: unknown }
-type FederationSourceRetryableException = { [x: string]: unknown }
 type BatchGetTriggersRequest = { TriggerNames: {} }
 type BatchGetTriggersResponse = { Triggers?: {} | undefined; TriggersNotFound?: {} | undefined }
 type BatchGetWorkflowsRequest = { Names: {}; IncludeGraph?: {} | undefined }
@@ -97,7 +85,6 @@ type CancelMLTaskRunResponse = {
 }
 type CancelStatementRequest = { SessionId: {}; Id: {}; RequestOrigin?: {} | undefined }
 type CancelStatementResponse = { [x: string]: unknown }
-type IllegalSessionStateException = { [x: string]: unknown }
 type CheckSchemaVersionValidityInput = { DataFormat: {}; SchemaDefinition: {} }
 type CheckSchemaVersionValidityResponse = { Valid?: {} | undefined; Error?: {} | undefined }
 type CreateBlueprintRequest = {
@@ -185,7 +172,6 @@ type CreateCustomEntityTypeRequest = {
   Tags?: {} | undefined
 }
 type CreateCustomEntityTypeResponse = { Name?: {} | undefined }
-type IdempotentParameterMismatchException = { [x: string]: unknown }
 type CreateDataQualityRulesetRequest = {
   Name: {}
   Description?: {} | undefined
@@ -211,8 +197,6 @@ type CreateDatabaseRequest = {
   Tags?: {} | undefined
 }
 type CreateDatabaseResponse = { [x: string]: unknown }
-type ConcurrentModificationException = { [x: string]: unknown }
-type FederatedResourceAlreadyExistsException = { [x: string]: unknown }
 type CreateDevEndpointRequest = {
   EndpointName: {}
   RoleArn: {}
@@ -251,7 +235,6 @@ type CreateDevEndpointResponse = {
   CreatedTimestamp?: {} | undefined
   Arguments?: {} | undefined
 }
-type ValidationException = { [x: string]: unknown }
 type CreateJobRequest = {
   Name: {}
   Description?: {} | undefined
@@ -606,8 +589,6 @@ type DeleteConnectionRequest = { CatalogId?: {} | undefined; ConnectionName: {} 
 type DeleteConnectionResponse = { [x: string]: unknown }
 type DeleteCrawlerRequest = { Name: {} }
 type DeleteCrawlerResponse = { [x: string]: unknown }
-type CrawlerRunningException = { [x: string]: unknown }
-type SchedulerTransitioningException = { [x: string]: unknown }
 type DeleteCustomEntityTypeRequest = { Name: {} }
 type DeleteCustomEntityTypeResponse = { Name?: {} | undefined }
 type DeleteDataQualityRulesetRequest = { Name: {} }
@@ -634,7 +615,6 @@ type DeletePartitionIndexRequest = {
   IndexName: {}
 }
 type DeletePartitionIndexResponse = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
 type DeleteRegistryInput = {
   RegistryId: { RegistryName?: {} | undefined; RegistryArn?: {} | undefined }
 }
@@ -648,7 +628,6 @@ type DeleteResourcePolicyRequest = {
   ResourceArn?: {} | undefined
 }
 type DeleteResourcePolicyResponse = { [x: string]: unknown }
-type ConditionCheckFailureException = { [x: string]: unknown }
 type DeleteSchemaInput = {
   SchemaId: {
     SchemaArn?: {} | undefined
@@ -1863,7 +1842,6 @@ type GetUnfilteredPartitionMetadataResponse = {
   AuthorizedColumns?: {} | undefined
   IsRegisteredWithLakeFormation?: {} | undefined
 }
-type PermissionTypeMismatchException = { [x: string]: unknown }
 type GetUnfilteredPartitionsMetadataRequest = {
   CatalogId: {}
   DatabaseName: {}
@@ -2394,8 +2372,6 @@ type ResetJobBookmarkResponse = {
 }
 type ResumeWorkflowRunRequest = { Name: {}; RunId: {}; NodeIds: {} }
 type ResumeWorkflowRunResponse = { RunId?: {} | undefined; NodeIds?: {} | undefined }
-type ConcurrentRunsExceededException = { [x: string]: unknown }
-type IllegalWorkflowStateException = { [x: string]: unknown }
 type RunStatementRequest = { SessionId: {}; Code: {}; RequestOrigin?: {} | undefined }
 type RunStatementResponse = { Id?: {} | undefined }
 type SearchTablesRequest = {
@@ -2410,13 +2386,10 @@ type SearchTablesRequest = {
 type SearchTablesResponse = { NextToken?: {} | undefined; TableList?: {} | undefined }
 type StartBlueprintRunRequest = { BlueprintName: {}; Parameters?: {} | undefined; RoleArn: {} }
 type StartBlueprintRunResponse = { RunId?: {} | undefined }
-type IllegalBlueprintStateException = { [x: string]: unknown }
 type StartCrawlerRequest = { Name: {} }
 type StartCrawlerResponse = { [x: string]: unknown }
 type StartCrawlerScheduleRequest = { CrawlerName: {} }
 type StartCrawlerScheduleResponse = { [x: string]: unknown }
-type SchedulerRunningException = { [x: string]: unknown }
-type NoScheduleException = { [x: string]: unknown }
 type StartDataQualityRuleRecommendationRunRequest = {
   DataSource: {
     GlueTable: {
@@ -2479,7 +2452,6 @@ type StartJobRunRequest = {
 type StartJobRunResponse = { JobRunId?: {} | undefined }
 type StartMLEvaluationTaskRunRequest = { TransformId: {} }
 type StartMLEvaluationTaskRunResponse = { TaskRunId?: {} | undefined }
-type MLTransformNotReadyException = { [x: string]: unknown }
 type StartMLLabelingSetGenerationTaskRunRequest = { TransformId: {}; OutputS3Path: {} }
 type StartMLLabelingSetGenerationTaskRunResponse = { TaskRunId?: {} | undefined }
 type StartTriggerRequest = { Name: {} }
@@ -2488,11 +2460,8 @@ type StartWorkflowRunRequest = { Name: {}; RunProperties?: {} | undefined }
 type StartWorkflowRunResponse = { RunId?: {} | undefined }
 type StopCrawlerRequest = { Name: {} }
 type StopCrawlerResponse = { [x: string]: unknown }
-type CrawlerNotRunningException = { [x: string]: unknown }
-type CrawlerStoppingException = { [x: string]: unknown }
 type StopCrawlerScheduleRequest = { CrawlerName: {} }
 type StopCrawlerScheduleResponse = { [x: string]: unknown }
-type SchedulerNotRunningException = { [x: string]: unknown }
 type StopSessionRequest = { Id: {}; RequestOrigin?: {} | undefined }
 type StopSessionResponse = { Id?: {} | undefined }
 type StopTriggerRequest = { Name: {} }
@@ -2531,7 +2500,6 @@ type UpdateClassifierRequest = {
     | undefined
 }
 type UpdateClassifierResponse = { [x: string]: unknown }
-type VersionMismatchException = { [x: string]: unknown }
 type UpdateColumnStatisticsForPartitionRequest = {
   CatalogId?: {} | undefined
   DatabaseName: {}
@@ -2932,20396 +2900,4043 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=AWSGlue.BatchCreatePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: BatchCreatePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchCreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchCreatePartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: BatchCreatePartitionRequest }
+        output: BatchCreatePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchDeleteConnection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteConnectionRequest }
-            output: BatchDeleteConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchDeleteConnection'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteConnectionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteConnectionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: BatchDeleteConnectionRequest }
+        output: BatchDeleteConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchDeletePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeletePartitionRequest }
-            output: BatchDeletePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeletePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeletePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeletePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeletePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: BatchDeletePartitionRequest }
+        output: BatchDeletePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchDeleteTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: BatchDeleteTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: BatchDeleteTableRequest }
+        output: BatchDeleteTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchDeleteTableVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableVersionRequest }
-            output: BatchDeleteTableVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableVersionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableVersionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableVersionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchDeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteTableVersionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: BatchDeleteTableVersionRequest }
+        output: BatchDeleteTableVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetBlueprints': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetBlueprintsRequest }
-            output: BatchGetBlueprintsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetBlueprints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetBlueprintsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetBlueprintsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetBlueprintsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetBlueprintsRequest }
+        output: BatchGetBlueprintsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetCrawlers': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCrawlersRequest }
-            output: BatchGetCrawlersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetCrawlers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCrawlersRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCrawlersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: BatchGetCrawlersRequest }
+        output: BatchGetCrawlersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetCustomEntityTypes': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCustomEntityTypesRequest }
-            output: BatchGetCustomEntityTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetCustomEntityTypes'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCustomEntityTypesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCustomEntityTypesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetCustomEntityTypesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetCustomEntityTypesRequest }
+        output: BatchGetCustomEntityTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetDataQualityResult': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDataQualityResultRequest }
-            output: BatchGetDataQualityResultResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetDataQualityResult'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDataQualityResultRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDataQualityResultRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDataQualityResultRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetDataQualityResultRequest }
+        output: BatchGetDataQualityResultResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetDevEndpoints': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDevEndpointsRequest }
-            output: BatchGetDevEndpointsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDevEndpointsRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDevEndpointsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDevEndpointsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetDevEndpointsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: BatchGetDevEndpointsRequest }
+        output: BatchGetDevEndpointsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetJobs': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetJobsRequest }
-            output: BatchGetJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetJobsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetJobsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetJobsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetJobsRequest }
+        output: BatchGetJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetPartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: BatchGetPartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetPartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: InvalidStateException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetPartitionRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: BatchGetPartitionRequest }
+        output: BatchGetPartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetTriggers': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetTriggersRequest }
-            output: BatchGetTriggersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetTriggers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetTriggersRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetTriggersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetTriggersRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetTriggersRequest }
+        output: BatchGetTriggersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchGetWorkflows': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetWorkflowsRequest }
-            output: BatchGetWorkflowsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchGetWorkflows'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetWorkflowsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetWorkflowsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchGetWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchGetWorkflowsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchGetWorkflowsRequest }
+        output: BatchGetWorkflowsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchStopJobRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchStopJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchStopJobRunRequest }
-            output: BatchStopJobRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchStopJobRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchStopJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchStopJobRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchStopJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchStopJobRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchStopJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchStopJobRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: BatchStopJobRunRequest }
+        output: BatchStopJobRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.BatchUpdatePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: BatchUpdatePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.BatchUpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchUpdatePartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchUpdatePartitionRequest }
+        output: BatchUpdatePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CancelDataQualityRuleRecommendationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRuleRecommendationRunRequest }
-            output: CancelDataQualityRuleRecommendationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRuleRecommendationRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRuleRecommendationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRuleRecommendationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRuleRecommendationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CancelDataQualityRuleRecommendationRunRequest }
+        output: CancelDataQualityRuleRecommendationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CancelDataQualityRulesetEvaluationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRulesetEvaluationRunRequest }
-            output: CancelDataQualityRulesetEvaluationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRulesetEvaluationRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRulesetEvaluationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRulesetEvaluationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelDataQualityRulesetEvaluationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CancelDataQualityRulesetEvaluationRunRequest }
+        output: CancelDataQualityRulesetEvaluationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CancelMLTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMLTaskRunRequest }
-            output: CancelMLTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMLTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMLTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMLTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMLTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CancelMLTaskRunRequest }
+        output: CancelMLTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CancelStatement': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: CancelStatementResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CancelStatement'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CancelStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelStatementRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: CancelStatementRequest }
+        output: CancelStatementResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CheckSchemaVersionValidity': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CheckSchemaVersionValidity'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CheckSchemaVersionValidityInput }
-            output: CheckSchemaVersionValidityResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CheckSchemaVersionValidity'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CheckSchemaVersionValidity'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CheckSchemaVersionValidityInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CheckSchemaVersionValidity'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CheckSchemaVersionValidityInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CheckSchemaVersionValidity'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CheckSchemaVersionValidityInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CheckSchemaVersionValidityInput }
+        output: CheckSchemaVersionValidityResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateBlueprint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: CreateBlueprintResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateBlueprint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateBlueprintRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateBlueprintRequest }
+        output: CreateBlueprintResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClassifierRequest }
-            output: CreateClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClassifierRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClassifierRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClassifierRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CreateClassifierRequest }
+        output: CreateClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateConnection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: CreateConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateConnection'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConnectionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateConnectionRequest }
+        output: CreateConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCrawlerRequest }
-            output: CreateCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCrawlerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCrawlerRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCrawlerRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CreateCrawlerRequest }
+        output: CreateCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateCustomEntityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: CreateCustomEntityTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomEntityTypeRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateCustomEntityTypeRequest }
+        output: CreateCustomEntityTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateDataQualityRuleset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: CreateDataQualityRulesetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDataQualityRulesetRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateDataQualityRulesetRequest }
+        output: CreateDataQualityRulesetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateDatabase': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: CreateDatabaseResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateDatabase'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatabaseRequest }
-            output: FederatedResourceAlreadyExistsException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateDatabaseRequest }
+        output: CreateDatabaseResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateDevEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: CreateDevEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDevEndpointRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateDevEndpointRequest }
+        output: CreateDevEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: CreateJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateJobRequest }
+        output: CreateJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateMLTransform': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: CreateMLTransformResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateMLTransform'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMLTransformRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateMLTransformRequest }
+        output: CreateMLTransformResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreatePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: CreatePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreatePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreatePartitionRequest }
+        output: CreatePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreatePartitionIndex': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: CreatePartitionIndexResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreatePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePartitionIndexRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreatePartitionIndexRequest }
+        output: CreatePartitionIndexResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateRegistry': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: CreateRegistryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateRegistry'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateRegistryInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: CreateRegistryInput }
+        output: CreateRegistryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateSchema': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: CreateSchemaResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateSchema'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSchemaInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateSchemaInput }
+        output: CreateSchemaResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateScript': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateScript'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateScriptRequest }
-            output: CreateScriptResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateScript'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateScript'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateScriptRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateScript'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateScriptRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateScript'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateScriptRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CreateScriptRequest }
+        output: CreateScriptResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateSecurityConfiguration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: CreateSecurityConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSecurityConfigurationRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateSecurityConfigurationRequest }
+        output: CreateSecurityConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: CreateSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateSessionRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateSessionRequest }
+        output: CreateSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: CreateTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTableRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 488
-          }
+        } & { json: CreateTableRequest }
+        output: CreateTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: CreateTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTriggerRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateTriggerRequest }
+        output: CreateTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateUserDefinedFunction': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: CreateUserDefinedFunctionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateUserDefinedFunctionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateUserDefinedFunctionRequest }
+        output: CreateUserDefinedFunctionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.CreateWorkflow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: CreateWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.CreateWorkflow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.CreateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateWorkflowRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: CreateWorkflowRequest }
+        output: CreateWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteBlueprint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteBlueprintRequest }
-            output: DeleteBlueprintResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteBlueprint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteBlueprintRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteBlueprintRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteBlueprintRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteBlueprintRequest }
+        output: DeleteBlueprintResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteClassifierRequest }
-            output: DeleteClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteClassifierRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteClassifierRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteClassifierRequest }
+        output: DeleteClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteColumnStatisticsForPartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: DeleteColumnStatisticsForPartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForPartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteColumnStatisticsForPartitionRequest }
+        output: DeleteColumnStatisticsForPartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteColumnStatisticsForTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: DeleteColumnStatisticsForTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteColumnStatisticsForTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteColumnStatisticsForTableRequest }
+        output: DeleteColumnStatisticsForTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteConnection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConnectionRequest }
-            output: DeleteConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteConnection'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConnectionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConnectionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteConnectionRequest }
+        output: DeleteConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCrawlerRequest }
-            output: DeleteCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCrawlerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCrawlerRequest }
-            output: CrawlerRunningException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCrawlerRequest }
-            output: SchedulerTransitioningException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteCrawlerRequest }
+        output: DeleteCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteCustomEntityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: DeleteCustomEntityTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteCustomEntityTypeRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteCustomEntityTypeRequest }
+        output: DeleteCustomEntityTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteDataQualityRuleset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDataQualityRulesetRequest }
-            output: DeleteDataQualityRulesetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDataQualityRulesetRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDataQualityRulesetRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDataQualityRulesetRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDataQualityRulesetRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteDataQualityRulesetRequest }
+        output: DeleteDataQualityRulesetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteDatabase': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: DeleteDatabaseResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteDatabase'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDatabaseRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteDatabaseRequest }
+        output: DeleteDatabaseResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteDevEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDevEndpointRequest }
-            output: DeleteDevEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDevEndpointRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDevEndpointRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDevEndpointRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDevEndpointRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteDevEndpointRequest }
+        output: DeleteDevEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteJobRequest }
-            output: DeleteJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteJobRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteJobRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteJobRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteJobRequest }
+        output: DeleteJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteMLTransform': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMLTransformRequest }
-            output: DeleteMLTransformResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMLTransformRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMLTransformRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMLTransformRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMLTransformRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteMLTransformRequest }
+        output: DeleteMLTransformResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeletePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionRequest }
-            output: DeletePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeletePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeletePartitionRequest }
+        output: DeletePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeletePartitionIndex': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: DeletePartitionIndexResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeletePartitionIndex'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePartitionIndexRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeletePartitionIndexRequest }
+        output: DeletePartitionIndexResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteRegistry': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteRegistryInput }
-            output: DeleteRegistryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteRegistry'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteRegistryInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteRegistryInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteRegistryInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteRegistryInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteRegistryInput }
+        output: DeleteRegistryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: DeleteResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: ConditionCheckFailureException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteResourcePolicyRequest }
+        output: DeleteResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteSchema': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaInput }
-            output: DeleteSchemaResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteSchema'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteSchemaInput }
+        output: DeleteSchemaResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteSchemaVersions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaVersionsInput }
-            output: DeleteSchemaVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaVersionsInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaVersionsInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaVersionsInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSchemaVersionsInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteSchemaVersionsInput }
+        output: DeleteSchemaVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteSecurityConfiguration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSecurityConfigurationRequest }
-            output: DeleteSecurityConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSecurityConfigurationRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSecurityConfigurationRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSecurityConfigurationRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSecurityConfigurationRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteSecurityConfigurationRequest }
+        output: DeleteSecurityConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: DeleteSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteSessionRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeleteSessionRequest }
+        output: DeleteSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: DeleteTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeleteTableRequest }
+        output: DeleteTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteTableVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableVersionRequest }
-            output: DeleteTableVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableVersionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableVersionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableVersionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTableVersionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteTableVersionRequest }
+        output: DeleteTableVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTriggerRequest }
-            output: DeleteTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTriggerRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteTriggerRequest }
+        output: DeleteTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteUserDefinedFunction': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteUserDefinedFunctionRequest }
-            output: DeleteUserDefinedFunctionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteUserDefinedFunctionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteUserDefinedFunctionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteUserDefinedFunctionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteUserDefinedFunctionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteUserDefinedFunctionRequest }
+        output: DeleteUserDefinedFunctionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.DeleteWorkflow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWorkflowRequest }
-            output: DeleteWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWorkflowRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWorkflowRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWorkflowRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.DeleteWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWorkflowRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteWorkflowRequest }
+        output: DeleteWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetBlueprint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRequest }
-            output: GetBlueprintResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetBlueprint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetBlueprintRequest }
+        output: GetBlueprintResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetBlueprintRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunRequest }
-            output: GetBlueprintRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetBlueprintRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetBlueprintRunRequest }
+        output: GetBlueprintRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetBlueprintRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunsRequest }
-            output: GetBlueprintRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetBlueprintRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetBlueprintRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetBlueprintRunsRequest }
+        output: GetBlueprintRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetCatalogImportStatus': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCatalogImportStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCatalogImportStatusRequest }
-            output: GetCatalogImportStatusResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetCatalogImportStatus'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCatalogImportStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCatalogImportStatusRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCatalogImportStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCatalogImportStatusRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetCatalogImportStatusRequest }
+        output: GetCatalogImportStatusResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetClassifierRequest }
-            output: GetClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetClassifierRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetClassifierRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetClassifierRequest }
+        output: GetClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetClassifiers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetClassifiersRequest }
-            output: GetClassifiersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetClassifiers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetClassifiersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetClassifiersRequest }
+        output: GetClassifiersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetColumnStatisticsForPartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: GetColumnStatisticsForPartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForPartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetColumnStatisticsForPartitionRequest }
+        output: GetColumnStatisticsForPartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetColumnStatisticsForTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: GetColumnStatisticsForTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetColumnStatisticsForTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetColumnStatisticsForTableRequest }
+        output: GetColumnStatisticsForTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetConnection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionRequest }
-            output: GetConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetConnection'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetConnectionRequest }
+        output: GetConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetConnections': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnections'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionsRequest }
-            output: GetConnectionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetConnections'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnections'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnections'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnections'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetConnections'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionsRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetConnectionsRequest }
+        output: GetConnectionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlerRequest }
-            output: GetCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetCrawlerRequest }
+        output: GetCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetCrawlerMetrics': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawlerMetrics'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlerMetricsRequest }
-            output: GetCrawlerMetricsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetCrawlerMetrics'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawlerMetrics'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlerMetricsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetCrawlerMetricsRequest }
+        output: GetCrawlerMetricsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetCrawlers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlersRequest }
-            output: GetCrawlersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetCrawlers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCrawlersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetCrawlersRequest }
+        output: GetCrawlersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetCustomEntityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: GetCustomEntityTypeResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetCustomEntityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomEntityTypeRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetCustomEntityTypeRequest }
+        output: GetCustomEntityTypeResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataCatalogEncryptionSettings': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataCatalogEncryptionSettingsRequest }
-            output: GetDataCatalogEncryptionSettingsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataCatalogEncryptionSettings'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataCatalogEncryptionSettingsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataCatalogEncryptionSettingsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataCatalogEncryptionSettingsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetDataCatalogEncryptionSettingsRequest }
+        output: GetDataCatalogEncryptionSettingsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataQualityResult': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityResultRequest }
-            output: GetDataQualityResultResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityResultRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityResultRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityResultRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityResult'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityResultRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDataQualityResultRequest }
+        output: GetDataQualityResultResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataQualityRuleRecommendationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRuleRecommendationRunRequest }
-            output: GetDataQualityRuleRecommendationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRuleRecommendationRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRuleRecommendationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRuleRecommendationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRuleRecommendationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDataQualityRuleRecommendationRunRequest }
+        output: GetDataQualityRuleRecommendationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataQualityRuleset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetRequest }
-            output: GetDataQualityRulesetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDataQualityRulesetRequest }
+        output: GetDataQualityRulesetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataQualityRulesetEvaluationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetEvaluationRunRequest }
-            output: GetDataQualityRulesetEvaluationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetEvaluationRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetEvaluationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetEvaluationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataQualityRulesetEvaluationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDataQualityRulesetEvaluationRunRequest }
+        output: GetDataQualityRulesetEvaluationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDatabase': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: GetDatabaseResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDatabase'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabaseRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: GetDatabaseRequest }
+        output: GetDatabaseResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDatabases': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabasesRequest }
-            output: GetDatabasesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDatabases'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabasesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabasesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabasesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDatabases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDatabasesRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDatabasesRequest }
+        output: GetDatabasesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDataflowGraph': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataflowGraph'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataflowGraphRequest }
-            output: GetDataflowGraphResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDataflowGraph'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataflowGraph'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataflowGraphRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataflowGraph'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataflowGraphRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDataflowGraph'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDataflowGraphRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetDataflowGraphRequest }
+        output: GetDataflowGraphResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDevEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointRequest }
-            output: GetDevEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDevEndpointRequest }
+        output: GetDevEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetDevEndpoints': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointsRequest }
-            output: GetDevEndpointsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDevEndpointsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetDevEndpointsRequest }
+        output: GetDevEndpointsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRequest }
-            output: GetJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetJobRequest }
+        output: GetJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetJobBookmark': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: GetJobBookmarkResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetJobBookmark'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobBookmarkRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetJobBookmarkRequest }
+        output: GetJobBookmarkResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetJobRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunRequest }
-            output: GetJobRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetJobRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetJobRunRequest }
+        output: GetJobRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetJobRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunsRequest }
-            output: GetJobRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetJobRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetJobRunsRequest }
+        output: GetJobRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobsRequest }
-            output: GetJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetJobsRequest }
+        output: GetJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetMLTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunRequest }
-            output: GetMLTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetMLTaskRunRequest }
+        output: GetMLTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetMLTaskRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunsRequest }
-            output: GetMLTaskRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTaskRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTaskRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetMLTaskRunsRequest }
+        output: GetMLTaskRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetMLTransform': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformRequest }
-            output: GetMLTransformResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetMLTransform'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetMLTransformRequest }
+        output: GetMLTransformResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetMLTransforms': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformsRequest }
-            output: GetMLTransformsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetMLTransforms'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMLTransformsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetMLTransformsRequest }
+        output: GetMLTransformsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetMapping': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMapping'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMappingRequest }
-            output: GetMappingResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetMapping'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMapping'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMappingRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMapping'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMappingRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMapping'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMappingRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetMapping'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMappingRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetMappingRequest }
+        output: GetMappingResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetPartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: GetPartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetPartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: GetPartitionRequest }
+        output: GetPartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetPartitionIndexes': {
-      $post:
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: GetPartitionIndexesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitionIndexes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionIndexesRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetPartitionIndexesRequest }
+        output: GetPartitionIndexesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetPartitions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: GetPartitionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetPartitions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: InvalidStateException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPartitions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPartitionsRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 488
-          }
+        } & { json: GetPartitionsRequest }
+        output: GetPartitionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetPlan': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPlan'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPlanRequest }
-            output: GetPlanResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetPlan'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPlan'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPlanRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPlan'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPlanRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetPlan'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPlanRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetPlanRequest }
+        output: GetPlanResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetRegistry': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRegistryInput }
-            output: GetRegistryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetRegistry'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRegistryInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRegistryInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRegistryInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetRegistryInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetRegistryInput }
+        output: GetRegistryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetResourcePolicies': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: GetResourcePoliciesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetResourcePoliciesRequest }
+        output: GetResourcePoliciesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePolicyRequest }
-            output: GetResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePolicyRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePolicyRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePolicyRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePolicyRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetResourcePolicyRequest }
+        output: GetResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSchema': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaInput }
-            output: GetSchemaResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSchema'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSchemaInput }
+        output: GetSchemaResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSchemaByDefinition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaByDefinitionInput }
-            output: GetSchemaByDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaByDefinitionInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaByDefinitionInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaByDefinitionInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaByDefinition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaByDefinitionInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSchemaByDefinitionInput }
+        output: GetSchemaByDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSchemaVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionInput }
-            output: GetSchemaVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSchemaVersionInput }
+        output: GetSchemaVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSchemaVersionsDiff': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionsDiffInput }
-            output: GetSchemaVersionsDiffResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionsDiffInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionsDiffInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionsDiffInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSchemaVersionsDiff'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSchemaVersionsDiffInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSchemaVersionsDiffInput }
+        output: GetSchemaVersionsDiffResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSecurityConfiguration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationRequest }
-            output: GetSecurityConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfiguration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSecurityConfigurationRequest }
+        output: GetSecurityConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSecurityConfigurations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationsRequest }
-            output: GetSecurityConfigurationsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSecurityConfigurations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSecurityConfigurationsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetSecurityConfigurationsRequest }
+        output: GetSecurityConfigurationsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: GetSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSessionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetSessionRequest }
+        output: GetSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetStatement': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: GetStatementResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetStatement'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetStatementRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: GetStatementRequest }
+        output: GetStatementResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: GetTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: GetTableRequest }
+        output: GetTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTableVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: GetTableVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTableVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetTableVersionRequest }
+        output: GetTableVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTableVersions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: GetTableVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTableVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTableVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTableVersionsRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetTableVersionsRequest }
+        output: GetTableVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTables': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: GetTablesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTables'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTablesRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: GetTablesRequest }
+        output: GetTablesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTags': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: GetTagsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTags'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTags'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTagsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetTagsRequest }
+        output: GetTagsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggerRequest }
-            output: GetTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetTriggerRequest }
+        output: GetTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetTriggers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggersRequest }
-            output: GetTriggersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetTriggers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggersRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggersRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggersRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTriggersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetTriggersRequest }
+        output: GetTriggersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetUnfilteredPartitionMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: GetUnfilteredPartitionMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: PermissionTypeMismatchException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionMetadataRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: GetUnfilteredPartitionMetadataRequest }
+        output: GetUnfilteredPartitionMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetUnfilteredPartitionsMetadata': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: GetUnfilteredPartitionsMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: PermissionTypeMismatchException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredPartitionsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredPartitionsMetadataRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: GetUnfilteredPartitionsMetadataRequest }
+        output: GetUnfilteredPartitionsMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetUnfilteredTableMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: GetUnfilteredTableMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: PermissionTypeMismatchException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: FederationSourceException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUnfilteredTableMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUnfilteredTableMetadataRequest }
-            output: FederationSourceRetryableException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: GetUnfilteredTableMetadataRequest }
+        output: GetUnfilteredTableMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetUserDefinedFunction': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: GetUserDefinedFunctionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetUserDefinedFunctionRequest }
+        output: GetUserDefinedFunctionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetUserDefinedFunctions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: GetUserDefinedFunctionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetUserDefinedFunctions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetUserDefinedFunctionsRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetUserDefinedFunctionsRequest }
+        output: GetUserDefinedFunctionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetWorkflow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRequest }
-            output: GetWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetWorkflow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetWorkflowRequest }
+        output: GetWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetWorkflowRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunRequest }
-            output: GetWorkflowRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetWorkflowRunRequest }
+        output: GetWorkflowRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetWorkflowRunProperties': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunPropertiesRequest }
-            output: GetWorkflowRunPropertiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunPropertiesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunPropertiesRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunPropertiesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunPropertiesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetWorkflowRunPropertiesRequest }
+        output: GetWorkflowRunPropertiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.GetWorkflowRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunsRequest }
-            output: GetWorkflowRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.GetWorkflowRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetWorkflowRunsRequest }
+        output: GetWorkflowRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ImportCatalogToGlue': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ImportCatalogToGlue'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportCatalogToGlueRequest }
-            output: ImportCatalogToGlueResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ImportCatalogToGlue'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ImportCatalogToGlue'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportCatalogToGlueRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ImportCatalogToGlue'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportCatalogToGlueRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ImportCatalogToGlueRequest }
+        output: ImportCatalogToGlueResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListBlueprints': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListBlueprintsRequest }
-            output: ListBlueprintsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListBlueprints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListBlueprintsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListBlueprintsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListBlueprints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListBlueprintsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListBlueprintsRequest }
+        output: ListBlueprintsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListCrawlers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlersRequest }
-            output: ListCrawlersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListCrawlers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawlers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ListCrawlersRequest }
+        output: ListCrawlersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListCrawls': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawls'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlsRequest }
-            output: ListCrawlsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListCrawls'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawls'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawls'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCrawls'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCrawlsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListCrawlsRequest }
+        output: ListCrawlsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListCustomEntityTypes': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCustomEntityTypesRequest }
-            output: ListCustomEntityTypesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListCustomEntityTypes'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCustomEntityTypesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCustomEntityTypesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListCustomEntityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCustomEntityTypesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListCustomEntityTypesRequest }
+        output: ListCustomEntityTypesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListDataQualityResults': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityResults'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityResultsRequest }
-            output: ListDataQualityResultsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListDataQualityResults'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityResults'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityResultsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityResults'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityResultsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityResults'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityResultsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDataQualityResultsRequest }
+        output: ListDataQualityResultsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListDataQualityRuleRecommendationRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRuleRecommendationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRuleRecommendationRunsRequest }
-            output: ListDataQualityRuleRecommendationRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListDataQualityRuleRecommendationRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRuleRecommendationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRuleRecommendationRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRuleRecommendationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRuleRecommendationRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRuleRecommendationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRuleRecommendationRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDataQualityRuleRecommendationRunsRequest }
+        output: ListDataQualityRuleRecommendationRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListDataQualityRulesetEvaluationRuns': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesetEvaluationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetEvaluationRunsRequest }
-            output: ListDataQualityRulesetEvaluationRunsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListDataQualityRulesetEvaluationRuns'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesetEvaluationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetEvaluationRunsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesetEvaluationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetEvaluationRunsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesetEvaluationRuns'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetEvaluationRunsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDataQualityRulesetEvaluationRunsRequest }
+        output: ListDataQualityRulesetEvaluationRunsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListDataQualityRulesets': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetsRequest }
-            output: ListDataQualityRulesetsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDataQualityRulesets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDataQualityRulesetsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDataQualityRulesetsRequest }
+        output: ListDataQualityRulesetsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListDevEndpoints': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDevEndpointsRequest }
-            output: ListDevEndpointsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDevEndpointsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDevEndpointsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDevEndpointsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListDevEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDevEndpointsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDevEndpointsRequest }
+        output: ListDevEndpointsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: ListJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListJobsRequest }
+        output: ListJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListMLTransforms': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMLTransformsRequest }
-            output: ListMLTransformsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListMLTransforms'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMLTransformsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMLTransformsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMLTransformsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListMLTransforms'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMLTransformsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListMLTransformsRequest }
+        output: ListMLTransformsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListRegistries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListRegistries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListRegistriesInput }
-            output: ListRegistriesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListRegistries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListRegistries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListRegistriesInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListRegistries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListRegistriesInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListRegistries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListRegistriesInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListRegistriesInput }
+        output: ListRegistriesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListSchemaVersions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemaVersionsInput }
-            output: ListSchemaVersionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemaVersionsInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemaVersionsInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemaVersionsInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemaVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemaVersionsInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListSchemaVersionsInput }
+        output: ListSchemaVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListSchemas': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemas'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemasInput }
-            output: ListSchemasResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListSchemas'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemas'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemasInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemas'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemasInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemas'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemasInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSchemas'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSchemasInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListSchemasInput }
+        output: ListSchemasResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListSessions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSessionsRequest }
-            output: ListSessionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListSessions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSessionsRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSessionsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSessionsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSessionsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListSessionsRequest }
+        output: ListSessionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListStatements': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: ListStatementsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListStatements'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListStatements'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListStatementsRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: ListStatementsRequest }
+        output: ListStatementsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListTriggers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTriggersRequest }
-            output: ListTriggersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListTriggers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTriggersRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTriggersRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTriggersRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListTriggers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTriggersRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListTriggersRequest }
+        output: ListTriggersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ListWorkflows': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowsRequest }
-            output: ListWorkflowsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ListWorkflows'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ListWorkflows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListWorkflowsRequest }
+        output: ListWorkflowsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.PutDataCatalogEncryptionSettings': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutDataCatalogEncryptionSettingsRequest }
-            output: PutDataCatalogEncryptionSettingsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.PutDataCatalogEncryptionSettings'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutDataCatalogEncryptionSettingsRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutDataCatalogEncryptionSettingsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutDataCatalogEncryptionSettings'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutDataCatalogEncryptionSettingsRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: PutDataCatalogEncryptionSettingsRequest }
+        output: PutDataCatalogEncryptionSettingsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.PutResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: PutResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: ConditionCheckFailureException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: PutResourcePolicyRequest }
+        output: PutResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.PutSchemaVersionMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: PutSchemaVersionMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutSchemaVersionMetadataInput }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: PutSchemaVersionMetadataInput }
+        output: PutSchemaVersionMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.PutWorkflowRunProperties': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: PutWorkflowRunPropertiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.PutWorkflowRunProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWorkflowRunPropertiesRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: PutWorkflowRunPropertiesRequest }
+        output: PutWorkflowRunPropertiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.QuerySchemaVersionMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.QuerySchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: QuerySchemaVersionMetadataInput }
-            output: QuerySchemaVersionMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.QuerySchemaVersionMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.QuerySchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: QuerySchemaVersionMetadataInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.QuerySchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: QuerySchemaVersionMetadataInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.QuerySchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: QuerySchemaVersionMetadataInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: QuerySchemaVersionMetadataInput }
+        output: QuerySchemaVersionMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.RegisterSchemaVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: RegisterSchemaVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RegisterSchemaVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterSchemaVersionInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: RegisterSchemaVersionInput }
+        output: RegisterSchemaVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.RemoveSchemaVersionMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RemoveSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveSchemaVersionMetadataInput }
-            output: RemoveSchemaVersionMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.RemoveSchemaVersionMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RemoveSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveSchemaVersionMetadataInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RemoveSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveSchemaVersionMetadataInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RemoveSchemaVersionMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveSchemaVersionMetadataInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: RemoveSchemaVersionMetadataInput }
+        output: RemoveSchemaVersionMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ResetJobBookmark': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetJobBookmarkRequest }
-            output: ResetJobBookmarkResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetJobBookmarkRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetJobBookmarkRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetJobBookmarkRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResetJobBookmark'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetJobBookmarkRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ResetJobBookmarkRequest }
+        output: ResetJobBookmarkResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.ResumeWorkflowRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: ResumeWorkflowRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.ResumeWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeWorkflowRunRequest }
-            output: IllegalWorkflowStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: ResumeWorkflowRunRequest }
+        output: ResumeWorkflowRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.RunStatement': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: RunStatementResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.RunStatement'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.RunStatement'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RunStatementRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: RunStatementRequest }
+        output: RunStatementResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.SearchTables': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.SearchTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SearchTablesRequest }
-            output: SearchTablesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSGlue.SearchTables'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.SearchTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SearchTablesRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.SearchTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SearchTablesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSGlue.SearchTables'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SearchTablesRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: SearchTablesRequest }
+        output: SearchTablesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartBlueprintRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: StartBlueprintRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartBlueprintRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartBlueprintRunRequest }
-            output: IllegalBlueprintStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartBlueprintRunRequest }
+        output: StartBlueprintRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerRequest }
-            output: StartCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerRequest }
-            output: CrawlerRunningException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StartCrawlerRequest }
+        output: StartCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartCrawlerSchedule': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: StartCrawlerScheduleResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: SchedulerRunningException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: SchedulerTransitioningException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: NoScheduleException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartCrawlerScheduleRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StartCrawlerScheduleRequest }
+        output: StartCrawlerScheduleResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartDataQualityRuleRecommendationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRuleRecommendationRunRequest }
-            output: StartDataQualityRuleRecommendationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRuleRecommendationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRuleRecommendationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRuleRecommendationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRuleRecommendationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRuleRecommendationRunRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StartDataQualityRuleRecommendationRunRequest }
+        output: StartDataQualityRuleRecommendationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartDataQualityRulesetEvaluationRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: StartDataQualityRulesetEvaluationRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartDataQualityRulesetEvaluationRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDataQualityRulesetEvaluationRunRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StartDataQualityRulesetEvaluationRunRequest }
+        output: StartDataQualityRulesetEvaluationRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartExportLabelsTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartExportLabelsTaskRunRequest }
-            output: StartExportLabelsTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartExportLabelsTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartExportLabelsTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartExportLabelsTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartExportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartExportLabelsTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StartExportLabelsTaskRunRequest }
+        output: StartExportLabelsTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartImportLabelsTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: StartImportLabelsTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartImportLabelsTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartImportLabelsTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StartImportLabelsTaskRunRequest }
+        output: StartImportLabelsTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartJobRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: StartJobRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartJobRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartJobRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartJobRunRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartJobRunRequest }
+        output: StartJobRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartMLEvaluationTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: StartMLEvaluationTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLEvaluationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLEvaluationTaskRunRequest }
-            output: MLTransformNotReadyException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartMLEvaluationTaskRunRequest }
+        output: StartMLEvaluationTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartMLLabelingSetGenerationTaskRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: StartMLLabelingSetGenerationTaskRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartMLLabelingSetGenerationTaskRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartMLLabelingSetGenerationTaskRunRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StartMLLabelingSetGenerationTaskRunRequest }
+        output: StartMLLabelingSetGenerationTaskRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: StartTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTriggerRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartTriggerRequest }
+        output: StartTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StartWorkflowRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: StartWorkflowRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StartWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowRunRequest }
-            output: ConcurrentRunsExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartWorkflowRunRequest }
+        output: StartWorkflowRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StopCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerRequest }
-            output: StopCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StopCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerRequest }
-            output: CrawlerNotRunningException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerRequest }
-            output: CrawlerStoppingException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StopCrawlerRequest }
+        output: StopCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StopCrawlerSchedule': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerScheduleRequest }
-            output: StopCrawlerScheduleResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerScheduleRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerScheduleRequest }
-            output: SchedulerNotRunningException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerScheduleRequest }
-            output: SchedulerTransitioningException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopCrawlerScheduleRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StopCrawlerScheduleRequest }
+        output: StopCrawlerScheduleResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StopSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: StopSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StopSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: IllegalSessionStateException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSessionRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StopSessionRequest }
+        output: StopSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StopTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: StopTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StopTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTriggerRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StopTriggerRequest }
+        output: StopTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.StopWorkflowRun': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: StopWorkflowRunResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.StopWorkflowRun'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopWorkflowRunRequest }
-            output: IllegalWorkflowStateException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StopWorkflowRunRequest }
+        output: StopWorkflowRunResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.TagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.TagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: TagResourceRequest }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UntagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UntagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UntagResourceRequest }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateBlueprint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: UpdateBlueprintResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateBlueprint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateBlueprintRequest }
-            output: IllegalBlueprintStateException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: UpdateBlueprintRequest }
+        output: UpdateBlueprintResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClassifierRequest }
-            output: UpdateClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClassifierRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClassifierRequest }
-            output: VersionMismatchException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClassifierRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClassifierRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UpdateClassifierRequest }
+        output: UpdateClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateColumnStatisticsForPartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: UpdateColumnStatisticsForPartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForPartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForPartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateColumnStatisticsForPartitionRequest }
+        output: UpdateColumnStatisticsForPartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateColumnStatisticsForTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: UpdateColumnStatisticsForTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateColumnStatisticsForTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateColumnStatisticsForTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateColumnStatisticsForTableRequest }
+        output: UpdateColumnStatisticsForTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateConnection': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: UpdateConnectionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateConnection'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateConnection'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConnectionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateConnectionRequest }
+        output: UpdateConnectionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateCrawler': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: UpdateCrawlerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateCrawler'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: VersionMismatchException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: CrawlerRunningException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawler'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateCrawlerRequest }
+        output: UpdateCrawlerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateCrawlerSchedule': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: UpdateCrawlerScheduleResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: VersionMismatchException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: SchedulerTransitioningException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateCrawlerSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCrawlerScheduleRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateCrawlerScheduleRequest }
+        output: UpdateCrawlerScheduleResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateDataQualityRuleset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: UpdateDataQualityRulesetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: IdempotentParameterMismatchException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDataQualityRuleset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDataQualityRulesetRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: UpdateDataQualityRulesetRequest }
+        output: UpdateDataQualityRulesetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateDatabase': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: UpdateDatabaseResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateDatabase'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDatabase'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDatabaseRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: UpdateDatabaseRequest }
+        output: UpdateDatabaseResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateDevEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: UpdateDevEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateDevEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDevEndpointRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateDevEndpointRequest }
+        output: UpdateDevEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: UpdateJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateJobRequest }
+        output: UpdateJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateJobFromSourceControl': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: UpdateJobFromSourceControlResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateJobFromSourceControl'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobFromSourceControlRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: UpdateJobFromSourceControlRequest }
+        output: UpdateJobFromSourceControlResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateMLTransform': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: UpdateMLTransformResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateMLTransform'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMLTransformRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateMLTransformRequest }
+        output: UpdateMLTransformResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdatePartition': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: UpdatePartitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdatePartition'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdatePartition'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePartitionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdatePartitionRequest }
+        output: UpdatePartitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateRegistry': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: UpdateRegistryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateRegistry'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateRegistry'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateRegistryInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateRegistryInput }
+        output: UpdateRegistryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateSchema': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: UpdateSchemaResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateSchema'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSchemaInput }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateSchemaInput }
+        output: UpdateSchemaResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateSourceControlFromJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: UpdateSourceControlFromJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateSourceControlFromJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateSourceControlFromJobRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: UpdateSourceControlFromJobRequest }
+        output: UpdateSourceControlFromJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateTable': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: UpdateTableResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateTable'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: ResourceNumberLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTable'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTableRequest }
-            output: ResourceNotReadyException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: UpdateTableRequest }
+        output: UpdateTableResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateTrigger': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: UpdateTriggerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateTrigger'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateTrigger'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTriggerRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateTriggerRequest }
+        output: UpdateTriggerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateUserDefinedFunction': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: UpdateUserDefinedFunctionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateUserDefinedFunction'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateUserDefinedFunctionRequest }
-            output: GlueEncryptionException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateUserDefinedFunctionRequest }
+        output: UpdateUserDefinedFunctionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSGlue.UpdateWorkflow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: UpdateWorkflowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: EntityNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: InternalServiceException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: OperationTimeoutException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSGlue.UpdateWorkflow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateWorkflowRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateWorkflowRequest }
+        output: UpdateWorkflowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

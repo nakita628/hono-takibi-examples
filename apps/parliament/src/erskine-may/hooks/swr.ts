@@ -918,19 +918,19 @@ export function useImmutableGetApiSectionSectionId<TError = unknown>(
 }
 
 export function getGetApiSectionSectionIdStepKey(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
 ) {
-  return ['api', '/api/Section/:sectionId,:step', args] as const
+  return ['api', '/api/Section/:sectionId,{step}', args] as const
 }
 
 export function useGetApiSectionSectionIdStep<TError = unknown>(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
           >
         >
       >,
@@ -953,27 +953,27 @@ export function useGetApiSectionSectionIdStep<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api.Section[':sectionId,:step'].$get(args, clientOptions)),
+      async () => parseResponse(client.api.Section[':sectionId,{step}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiSectionSectionIdStep<TError = unknown>(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
           >
         >
       >,
@@ -996,14 +996,14 @@ export function useImmutableGetApiSectionSectionIdStep<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+            Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api.Section[':sectionId,:step'].$get(args, clientOptions)),
+      async () => parseResponse(client.api.Section[':sectionId,{step}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

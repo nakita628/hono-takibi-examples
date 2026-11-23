@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/knocklabs/docs/main/data/specs/mapi/openapi.yml',
   output: './src/mapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mapi/types.ts' },
   client: { output: './src/mapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/mapi/rpc.ts', parseResponse: true },

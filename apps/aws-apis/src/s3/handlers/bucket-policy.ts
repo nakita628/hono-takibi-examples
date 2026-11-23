@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBucketPolicyRoute, getBucketPolicyRoute, putBucketPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteBucketPolicyRoute, getBucketPolicyRoute, putBucketPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketPolicyRouteHandler: RouteHandler<typeof deleteBucketPolicyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketPolicyHandler = app
-  .openapi(deleteBucketPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketPolicyRouteHandler: RouteHandler<typeof getBucketPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketPolicyRouteHandler: RouteHandler<typeof putBucketPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

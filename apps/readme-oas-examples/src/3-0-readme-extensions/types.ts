@@ -10,7 +10,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/x-code-samples': {
-      $post: { input: { json: Tag }; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: { json: Tag }; output: {}; outputFormat: string; status: 200 }
+        | { input: { json: Tag }; output: {}; outputFormat: string; status: 404 }
       $get: { input: {}; output: {}; outputFormat: string; status: 200 }
     }
   } & {

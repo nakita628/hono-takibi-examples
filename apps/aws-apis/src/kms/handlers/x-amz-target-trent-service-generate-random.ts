@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceGenerateRandomRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceGenerateRandomRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceGenerateRandomHandler = app.openapi(
-  postXAmzTargetTrentServiceGenerateRandomRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceGenerateRandomRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceGenerateRandomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

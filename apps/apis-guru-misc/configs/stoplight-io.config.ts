@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/stoplight.io/api-v1/openapi.yaml',
   output: './src/stoplight-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/stoplight-io/types.ts' },
   client: { output: './src/stoplight-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/stoplight-io/rpc.ts', parseResponse: true },

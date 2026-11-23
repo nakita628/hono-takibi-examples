@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { proxyHandler } from './handlers'
+import { getProxyRoute } from './routes'
+import { getProxyRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', proxyHandler)
+export const api = app.openapi(getProxyRoute, getProxyRouteHandler)
 
 export default app

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCsvTaxRulesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCsvTaxRulesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const csvTaxRulesHandler = app.openapi(postCsvTaxRulesRoute, (c) => {
+export const postCsvTaxRulesRouteHandler: RouteHandler<typeof postCsvTaxRulesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -99,7 +99,7 @@ export const getWellKnownMercureRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Event stream opened.', content: {} },
+    200: { description: 'Event stream opened.' },
     400: { description: 'Missing topic parameter or invalid URI template.' },
     401: _401Response,
   },
@@ -174,7 +174,7 @@ export const postWellKnownMercureRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'The id of this update', content: {} },
+    200: { description: 'The id of this update' },
     400: { description: 'Invalid request' },
     401: _401Response,
   },

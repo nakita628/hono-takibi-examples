@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAdvanceReceiptsIdRoute,
   getAdvanceReceiptsRoute,
   patchAdvanceReceiptsIdRoute,
@@ -10,30 +10,50 @@ import {
   putAdvanceReceiptsIdCollectionStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdvanceReceiptsRouteHandler: RouteHandler<typeof getAdvanceReceiptsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const advanceReceiptsHandler = app
-  .openapi(getAdvanceReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvanceReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdvanceReceiptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdvanceReceiptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvanceReceiptsIdCancellationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvanceReceiptsIdReductionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdvanceReceiptsIdPeriodicReductionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdvanceReceiptsIdCollectionStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdvanceReceiptsRouteHandler: RouteHandler<
+  typeof postAdvanceReceiptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdvanceReceiptsIdRouteHandler: RouteHandler<
+  typeof getAdvanceReceiptsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdvanceReceiptsIdRouteHandler: RouteHandler<
+  typeof patchAdvanceReceiptsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdvanceReceiptsIdCancellationRouteHandler: RouteHandler<
+  typeof postAdvanceReceiptsIdCancellationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdvanceReceiptsIdReductionRouteHandler: RouteHandler<
+  typeof postAdvanceReceiptsIdReductionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdvanceReceiptsIdPeriodicReductionRouteHandler: RouteHandler<
+  typeof postAdvanceReceiptsIdPeriodicReductionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdvanceReceiptsIdCollectionStatusRouteHandler: RouteHandler<
+  typeof putAdvanceReceiptsIdCollectionStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

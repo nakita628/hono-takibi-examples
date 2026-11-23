@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAddressesAddressKeysKeyRoute,
   deleteAddressesAddressRoute,
   getAddressesAddressKeysKeyRoute,
@@ -10,30 +10,46 @@ import {
   putAddressesAddressKeysKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAddressesRouteHandler: RouteHandler<typeof getAddressesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const addressesHandler = app
-  .openapi(getAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAddressesAddressKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAddressesAddressKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAddressesAddressKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAddressesRouteHandler: RouteHandler<typeof postAddressesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAddressesAddressRouteHandler: RouteHandler<
+  typeof deleteAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressKeysRouteHandler: RouteHandler<
+  typeof getAddressesAddressKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAddressesAddressKeysRouteHandler: RouteHandler<
+  typeof postAddressesAddressKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAddressesAddressKeysKeyRouteHandler: RouteHandler<
+  typeof deleteAddressesAddressKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressKeysKeyRouteHandler: RouteHandler<
+  typeof getAddressesAddressKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAddressesAddressKeysKeyRouteHandler: RouteHandler<
+  typeof putAddressesAddressKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMetastoreSummaryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMetastoreSummaryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metastoreSummaryHandler = app.openapi(getMetastoreSummaryRoute, (c) => {
+export const getMetastoreSummaryRouteHandler: RouteHandler<
+  typeof getMetastoreSummaryRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

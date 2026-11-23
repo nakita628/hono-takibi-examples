@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSnapshotsIdRoute,
   getSnapshotsIdBuildLogsRoute,
   getSnapshotsIdBuildLogsUrlRoute,
@@ -10,30 +10,44 @@ import {
   postSnapshotsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSnapshotsRouteHandler: RouteHandler<typeof getSnapshotsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snapshotsHandler = app
-  .openapi(getSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnapshotsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsIdBuildLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsIdBuildLogsUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotsIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotsIdDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSnapshotsRouteHandler: RouteHandler<typeof postSnapshotsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnapshotsIdRouteHandler: RouteHandler<typeof deleteSnapshotsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsIdRouteHandler: RouteHandler<typeof getSnapshotsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsIdBuildLogsRouteHandler: RouteHandler<
+  typeof getSnapshotsIdBuildLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsIdBuildLogsUrlRouteHandler: RouteHandler<
+  typeof getSnapshotsIdBuildLogsUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotsIdActivateRouteHandler: RouteHandler<
+  typeof postSnapshotsIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotsIdDeactivateRouteHandler: RouteHandler<
+  typeof postSnapshotsIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

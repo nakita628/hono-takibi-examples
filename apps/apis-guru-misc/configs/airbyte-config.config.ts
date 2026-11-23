@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/airbyte.local/config/1.0.0/openapi.yaml',
   output: './src/airbyte-config/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/airbyte-config/types.ts' },
   client: { output: './src/airbyte-config/client.ts', baseUrl: '/' },
   rpc: { output: './src/airbyte-config/rpc.ts', parseResponse: true },

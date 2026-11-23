@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wikipathways.org/1.0/openapi.yaml',
   output: './src/wikipathways-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wikipathways-org/types.ts' },
   client: { output: './src/wikipathways-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/wikipathways-org/rpc.ts', parseResponse: true },

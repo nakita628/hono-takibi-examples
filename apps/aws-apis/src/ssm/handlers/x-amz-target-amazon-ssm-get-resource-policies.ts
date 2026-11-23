@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMGetResourcePoliciesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMGetResourcePoliciesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmGetResourcePoliciesHandler = app.openapi(
-  postXAmzTargetAmazonSSMGetResourcePoliciesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMGetResourcePoliciesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMGetResourcePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeletePlaybackKeyPairRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeletePlaybackKeyPairRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deletePlaybackKeyPairHandler = app.openapi(postDeletePlaybackKeyPairRoute, (c) => {
+export const postDeletePlaybackKeyPairRouteHandler: RouteHandler<
+  typeof postDeletePlaybackKeyPairRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

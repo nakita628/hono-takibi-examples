@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAlbumsIdAssetsRoute,
   deleteAlbumsIdRoute,
   deleteAlbumsIdUserUserIdRoute,
@@ -15,45 +15,68 @@ import {
   putAlbumsIdUserUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlbumsRouteHandler: RouteHandler<typeof getAlbumsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const albumsHandler = app
-  .openapi(getAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAlbumsAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlbumsIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAlbumsIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsIdMapMarkersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlbumsIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAlbumsIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAlbumsIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlbumsRouteHandler: RouteHandler<typeof postAlbumsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAlbumsAssetsRouteHandler: RouteHandler<typeof putAlbumsAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlbumsStatisticsRouteHandler: RouteHandler<
+  typeof getAlbumsStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlbumsIdRouteHandler: RouteHandler<typeof deleteAlbumsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlbumsIdRouteHandler: RouteHandler<typeof getAlbumsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAlbumsIdRouteHandler: RouteHandler<typeof patchAlbumsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlbumsIdAssetsRouteHandler: RouteHandler<
+  typeof deleteAlbumsIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAlbumsIdAssetsRouteHandler: RouteHandler<typeof putAlbumsIdAssetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlbumsIdMapMarkersRouteHandler: RouteHandler<
+  typeof getAlbumsIdMapMarkersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlbumsIdUserUserIdRouteHandler: RouteHandler<
+  typeof deleteAlbumsIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAlbumsIdUserUserIdRouteHandler: RouteHandler<
+  typeof putAlbumsIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAlbumsIdUsersRouteHandler: RouteHandler<typeof putAlbumsIdUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

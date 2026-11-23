@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSetSMSAttributesRoute, postActionSetSMSAttributesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSetSMSAttributesRoute, postActionSetSMSAttributesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetSMSAttributesRouteHandler: RouteHandler<
+  typeof getActionSetSMSAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetSmsAttributesHandler = app
-  .openapi(getActionSetSMSAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetSMSAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetSMSAttributesRouteHandler: RouteHandler<
+  typeof postActionSetSMSAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

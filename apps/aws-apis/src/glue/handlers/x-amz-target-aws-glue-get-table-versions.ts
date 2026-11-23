@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueGetTableVersionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueGetTableVersionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueGetTableVersionsHandler = app.openapi(
-  postXAmzTargetAWSGlueGetTableVersionsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueGetTableVersionsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueGetTableVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

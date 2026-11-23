@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getChartsAxesIdRoute,
   getChartsAxisDataTypesIdRoute,
   getChartsAxisDataTypesRoute,
@@ -29,87 +29,154 @@ import {
   putChartsOpenOfficeXmlIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChartsAxesIdRouteHandler: RouteHandler<typeof getChartsAxesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chartsHandler = app
-  .openapi(getChartsAxesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsAxisDataTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsAxisDataTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsAxisDataTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsChartDataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsChartUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChartsChartUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsChildObjectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsColumnCollectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsColumnsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsDataPointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsDetailsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChartsOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsPlotTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsPlotTypeTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsPlotTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowColRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowColTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowColIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowCollectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowNameFormatTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowNameFormatTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowNameFormatTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsRowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsSvgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChartsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getChartsAxisDataTypesRouteHandler: RouteHandler<
+  typeof getChartsAxisDataTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsAxisDataTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getChartsAxisDataTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsAxisDataTypesIdRouteHandler: RouteHandler<
+  typeof getChartsAxisDataTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsChartDataIdRouteHandler: RouteHandler<
+  typeof getChartsChartDataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsChartUpdateIdRouteHandler: RouteHandler<
+  typeof getChartsChartUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChartsChartUpdateIdRouteHandler: RouteHandler<
+  typeof putChartsChartUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsChildObjectsIdRouteHandler: RouteHandler<
+  typeof getChartsChildObjectsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsColumnCollectionsIdRouteHandler: RouteHandler<
+  typeof getChartsColumnCollectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsColumnsIdRouteHandler: RouteHandler<typeof getChartsColumnsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsDataPointsIdRouteHandler: RouteHandler<
+  typeof getChartsDataPointsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsDetailsIdRouteHandler: RouteHandler<typeof getChartsDetailsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof getChartsOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChartsOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof putChartsOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsPlotTypeRouteHandler: RouteHandler<typeof getChartsPlotTypeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsPlotTypeTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getChartsPlotTypeTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsPlotTypeIdRouteHandler: RouteHandler<
+  typeof getChartsPlotTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowColRouteHandler: RouteHandler<typeof getChartsRowColRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowColTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getChartsRowColTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowColIdRouteHandler: RouteHandler<typeof getChartsRowColIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowCollectionsIdRouteHandler: RouteHandler<
+  typeof getChartsRowCollectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowNameFormatTypesRouteHandler: RouteHandler<
+  typeof getChartsRowNameFormatTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowNameFormatTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getChartsRowNameFormatTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowNameFormatTypesIdRouteHandler: RouteHandler<
+  typeof getChartsRowNameFormatTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsRowsIdRouteHandler: RouteHandler<typeof getChartsRowsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsSvgIdRouteHandler: RouteHandler<typeof getChartsSvgIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChartsIdRouteHandler: RouteHandler<typeof getChartsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

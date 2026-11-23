@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRoute,
   deleteAdminRunnersIdRoute,
   getAdminAuditRoute,
@@ -24,72 +24,124 @@ import {
   postAdminWebhooksOrganizationsOrganizationIdSendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminRunnersRouteHandler: RouteHandler<typeof getAdminRunnersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminRunnersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminRunnersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminRunnersIdSchedulingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminSandboxSandboxIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersIdRegenerateKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminWebhooksOrganizationsOrganizationIdSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminWebhooksOrganizationsOrganizationIdMessagesMessageIdAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminWebhooksStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminWebhooksOrganizationsOrganizationIdInitializeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDockerRegistryIdSetDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminSnapshotsCanCleanupImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminSnapshotsIdGeneralRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminOrganizationsOrganizationIdQuotaRegionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminOrganizationsOrganizationIdQuotaRegionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminRunnersRouteHandler: RouteHandler<typeof postAdminRunnersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminRunnersIdRouteHandler: RouteHandler<
+  typeof deleteAdminRunnersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminRunnersIdRouteHandler: RouteHandler<typeof getAdminRunnersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminRunnersIdSchedulingRouteHandler: RouteHandler<
+  typeof patchAdminRunnersIdSchedulingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminSandboxSandboxIdRecoverRouteHandler: RouteHandler<
+  typeof postAdminSandboxSandboxIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersRouteHandler: RouteHandler<typeof getAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersRouteHandler: RouteHandler<typeof postAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersIdRegenerateKeyPairRouteHandler: RouteHandler<
+  typeof postAdminUsersIdRegenerateKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersIdRouteHandler: RouteHandler<typeof getAdminUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminWebhooksOrganizationsOrganizationIdSendRouteHandler: RouteHandler<
+  typeof postAdminWebhooksOrganizationsOrganizationIdSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminWebhooksOrganizationsOrganizationIdMessagesMessageIdAttemptsRouteHandler: RouteHandler<
+  typeof getAdminWebhooksOrganizationsOrganizationIdMessagesMessageIdAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminWebhooksStatusRouteHandler: RouteHandler<
+  typeof getAdminWebhooksStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminWebhooksOrganizationsOrganizationIdInitializeRouteHandler: RouteHandler<
+  typeof postAdminWebhooksOrganizationsOrganizationIdInitializeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDockerRegistryIdSetDefaultRouteHandler: RouteHandler<
+  typeof postAdminDockerRegistryIdSetDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminSnapshotsCanCleanupImageRouteHandler: RouteHandler<
+  typeof getAdminSnapshotsCanCleanupImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminSnapshotsIdGeneralRouteHandler: RouteHandler<
+  typeof patchAdminSnapshotsIdGeneralRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminAuditRouteHandler: RouteHandler<typeof getAdminAuditRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminOrganizationsOrganizationIdQuotaRegionIdRouteHandler: RouteHandler<
+  typeof patchAdminOrganizationsOrganizationIdQuotaRegionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminOrganizationsOrganizationIdQuotaRegionIdRouteHandler: RouteHandler<
+  typeof postAdminOrganizationsOrganizationIdQuotaRegionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRouteHandler: RouteHandler<
+  typeof deleteAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRouteHandler: RouteHandler<
+  typeof getAdminOrganizationsOrganizationIdQuotaRegionIdSandboxClassRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

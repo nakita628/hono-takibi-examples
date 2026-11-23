@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteSamplingRuleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteSamplingRuleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteSamplingRuleHandler = app.openapi(postDeleteSamplingRuleRoute, (c) => {
+export const postDeleteSamplingRuleRouteHandler: RouteHandler<
+  typeof postDeleteSamplingRuleRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

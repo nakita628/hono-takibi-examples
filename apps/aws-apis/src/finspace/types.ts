@@ -5,15 +5,8 @@ type CreateEnvironmentResponse = {
   environmentArn?: {} | undefined
   environmentUrl?: {} | undefined
 }
-type InternalServerException = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
-type AccessDeniedException = { [x: string]: unknown }
-type ThrottlingException = { [x: string]: unknown }
-type ServiceQuotaExceededException = { [x: string]: unknown }
-type LimitExceededException = { [x: string]: unknown }
 type ListEnvironmentsResponse = { environments?: {} | undefined; nextToken?: {} | undefined }
 type DeleteEnvironmentResponse = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
 type GetEnvironmentResponse = {
   environment?:
     | {
@@ -69,7 +62,6 @@ type UpdateEnvironmentResponse = {
     | undefined
 }
 type ListTagsForResourceResponse = { tags?: {} | undefined }
-type InvalidRequestException = { [x: string]: unknown }
 type TagResourceResponse = { [x: string]: unknown }
 type TagKey = string
 type UntagResourceResponse = { [x: string]: unknown }
@@ -77,931 +69,185 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/environment': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: CreateEnvironmentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            name: string
+            description?: string | undefined
+            kmsKeyId?: string | undefined
+            tags?: { [x: string]: TagValue } | undefined
+            federationMode?: 'FEDERATED' | 'LOCAL' | undefined
+            federationParameters?:
+              | {
+                  samlMetadataDocument?: {} | undefined
+                  samlMetadataURL?: {} | undefined
+                  applicationCallBackURL?: {} | undefined
+                  federationURN?: {} | undefined
+                  federationProviderName?: {} | undefined
+                  attributeMap?: {} | undefined
+                }
+              | undefined
+            superuserParameters?:
+              | {
+                  emailAddress?: {} | undefined
+                  firstName?: {} | undefined
+                  lastName?: {} | undefined
+                }
+              | undefined
+            dataBundles?: DataBundleArn[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateEnvironmentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { query: { nextToken?: string | undefined; maxResults?: number | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name: string
-                description?: string | undefined
-                kmsKeyId?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-                superuserParameters?:
-                  | {
-                      emailAddress?: {} | undefined
-                      firstName?: {} | undefined
-                      lastName?: {} | undefined
-                    }
-                  | undefined
-                dataBundles?: DataBundleArn[] | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListEnvironmentsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { nextToken?: string | undefined; maxResults?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListEnvironmentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/environment/:environmentId': {
-      $delete:
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteEnvironmentResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { environmentId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteEnvironmentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { environmentId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetEnvironmentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { environmentId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            name?: string | undefined
+            description?: string | undefined
+            federationMode?: 'FEDERATED' | 'LOCAL' | undefined
+            federationParameters?:
+              | {
+                  samlMetadataDocument?: {} | undefined
+                  samlMetadataURL?: {} | undefined
+                  applicationCallBackURL?: {} | undefined
+                  federationURN?: {} | undefined
+                  federationProviderName?: {} | undefined
+                  attributeMap?: {} | undefined
+                }
+              | undefined
           }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetEnvironmentResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UpdateEnvironmentResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { environmentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                name?: string | undefined
-                description?: string | undefined
-                federationMode?: 'FEDERATED' | 'LOCAL' | undefined
-                federationParameters?:
-                  | {
-                      samlMetadataDocument?: {} | undefined
-                      samlMetadataURL?: {} | undefined
-                      applicationCallBackURL?: {} | undefined
-                      federationURN?: {} | undefined
-                      federationProviderName?: {} | undefined
-                      attributeMap?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateEnvironmentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

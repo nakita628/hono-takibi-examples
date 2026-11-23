@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVersionsIdRoute,
   deleteVersionsRoute,
   getVersionsIdCompareRoute,
@@ -12,36 +12,50 @@ import {
   postVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVersionsRouteHandler: RouteHandler<typeof getVersionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const versionsHandler = app
-  .openapi(getVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVersionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVersionsIdSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVersionsIdCompareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVersionsIdPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVersionsRouteHandler: RouteHandler<typeof postVersionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVersionsRouteHandler: RouteHandler<typeof patchVersionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVersionsRouteHandler: RouteHandler<typeof deleteVersionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVersionsIdRouteHandler: RouteHandler<typeof getVersionsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVersionsIdRouteHandler: RouteHandler<typeof patchVersionsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVersionsIdRouteHandler: RouteHandler<typeof deleteVersionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVersionsIdSaveRouteHandler: RouteHandler<typeof postVersionsIdSaveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVersionsIdCompareRouteHandler: RouteHandler<
+  typeof getVersionsIdCompareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVersionsIdPromoteRouteHandler: RouteHandler<
+  typeof postVersionsIdPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

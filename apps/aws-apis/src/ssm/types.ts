@@ -1,10 +1,5 @@
 type AddTagsToResourceRequest = { ResourceType: {}; ResourceId: {}; Tags: {} }
 type AddTagsToResourceResult = { [x: string]: unknown }
-type InvalidResourceType = { [x: string]: unknown }
-type InvalidResourceId = { [x: string]: unknown }
-type InternalServerError = { [x: string]: unknown }
-type TooManyTagsError = { [x: string]: unknown }
-type TooManyUpdates = { [x: string]: unknown }
 type AssociateOpsItemRelatedItemRequest = {
   OpsItemId: {}
   AssociationType: {}
@@ -12,18 +7,10 @@ type AssociateOpsItemRelatedItemRequest = {
   ResourceUri: {}
 }
 type AssociateOpsItemRelatedItemResponse = { AssociationId?: {} | undefined }
-type OpsItemNotFoundException = { [x: string]: unknown }
-type OpsItemLimitExceededException = { [x: string]: unknown }
-type OpsItemInvalidParameterException = { [x: string]: unknown }
-type OpsItemRelatedItemAlreadyExistsException = { [x: string]: unknown }
 type CancelCommandRequest = { CommandId: {}; InstanceIds?: {} | undefined }
 type CancelCommandResult = { [x: string]: unknown }
-type InvalidCommandId = { [x: string]: unknown }
-type InvalidInstanceId = { [x: string]: unknown }
-type DuplicateInstanceId = { [x: string]: unknown }
 type CancelMaintenanceWindowExecutionRequest = { WindowExecutionId: {} }
 type CancelMaintenanceWindowExecutionResult = { WindowExecutionId?: {} | undefined }
-type DoesNotExistException = { [x: string]: unknown }
 type CreateActivationRequest = {
   Description?: {} | undefined
   DefaultInstanceName?: {} | undefined
@@ -34,7 +21,6 @@ type CreateActivationRequest = {
   RegistrationMetadata?: {} | undefined
 }
 type CreateActivationResult = { ActivationId?: {} | undefined; ActivationCode?: {} | undefined }
-type InvalidParameters = { [x: string]: unknown }
 type AlarmConfiguration = { IgnorePollAlarmFailure?: {} | undefined; Alarms: {} }
 type CreateAssociationRequest = {
   Name: {}
@@ -118,16 +104,6 @@ type CreateAssociationResult = {
       }
     | undefined
 }
-type AssociationAlreadyExists = { [x: string]: unknown }
-type AssociationLimitExceeded = { [x: string]: unknown }
-type InvalidDocument = { [x: string]: unknown }
-type InvalidDocumentVersion = { [x: string]: unknown }
-type UnsupportedPlatformType = { [x: string]: unknown }
-type InvalidOutputLocation = { [x: string]: unknown }
-type InvalidTarget = { [x: string]: unknown }
-type InvalidSchedule = { [x: string]: unknown }
-type InvalidTargetMaps = { [x: string]: unknown }
-type InvalidTag = { [x: string]: unknown }
 type CreateAssociationBatchRequest = { Entries: {} }
 type CreateAssociationBatchResult = { Successful?: {} | undefined; Failed?: {} | undefined }
 type CreateDocumentRequest = {
@@ -178,11 +154,6 @@ type CreateDocumentResult = {
       }
     | undefined
 }
-type DocumentAlreadyExists = { [x: string]: unknown }
-type MaxDocumentSizeExceeded = { [x: string]: unknown }
-type InvalidDocumentContent = { [x: string]: unknown }
-type DocumentLimitExceeded = { [x: string]: unknown }
-type InvalidDocumentSchemaVersion = { [x: string]: unknown }
 type CreateMaintenanceWindowRequest = {
   Name: {}
   Description?: {} | undefined
@@ -198,8 +169,6 @@ type CreateMaintenanceWindowRequest = {
   Tags?: {} | undefined
 }
 type CreateMaintenanceWindowResult = { WindowId?: {} | undefined }
-type IdempotentParameterMismatch = { [x: string]: unknown }
-type ResourceLimitExceededException = { [x: string]: unknown }
 type CreateOpsItemRequest = {
   Description: {}
   OpsItemType?: {} | undefined
@@ -219,14 +188,8 @@ type CreateOpsItemRequest = {
   AccountId?: {} | undefined
 }
 type CreateOpsItemResponse = { OpsItemId?: {} | undefined; OpsItemArn?: {} | undefined }
-type OpsItemAlreadyExistsException = { [x: string]: unknown }
-type OpsItemAccessDeniedException = { [x: string]: unknown }
 type CreateOpsMetadataRequest = { ResourceId: {}; Metadata?: {} | undefined; Tags?: {} | undefined }
 type CreateOpsMetadataResult = { OpsMetadataArn?: {} | undefined }
-type OpsMetadataAlreadyExistsException = { [x: string]: unknown }
-type OpsMetadataTooManyUpdatesException = { [x: string]: unknown }
-type OpsMetadataInvalidArgumentException = { [x: string]: unknown }
-type OpsMetadataLimitExceededException = { [x: string]: unknown }
 type CreatePatchBaselineRequest = {
   OperatingSystem?: {} | undefined
   Name: {}
@@ -269,20 +232,14 @@ type CreateResourceDataSyncRequest = {
     | undefined
 }
 type CreateResourceDataSyncResult = { [x: string]: unknown }
-type ResourceDataSyncCountExceededException = { [x: string]: unknown }
-type ResourceDataSyncAlreadyExistsException = { [x: string]: unknown }
-type ResourceDataSyncInvalidConfigurationException = { [x: string]: unknown }
 type DeleteActivationRequest = { ActivationId: {} }
 type DeleteActivationResult = { [x: string]: unknown }
-type InvalidActivationId = { [x: string]: unknown }
-type InvalidActivation = { [x: string]: unknown }
 type DeleteAssociationRequest = {
   Name?: {} | undefined
   InstanceId?: {} | undefined
   AssociationId?: {} | undefined
 }
 type DeleteAssociationResult = { [x: string]: unknown }
-type AssociationDoesNotExist = { [x: string]: unknown }
 type DeleteDocumentRequest = {
   Name: {}
   DocumentVersion?: {} | undefined
@@ -290,8 +247,6 @@ type DeleteDocumentRequest = {
   Force?: {} | undefined
 }
 type DeleteDocumentResult = { [x: string]: unknown }
-type InvalidDocumentOperation = { [x: string]: unknown }
-type AssociatedInstances = { [x: string]: unknown }
 type DeleteInventoryRequest = {
   TypeName: {}
   SchemaDeleteOption?: {} | undefined
@@ -309,18 +264,12 @@ type DeleteInventoryResult = {
       }
     | undefined
 }
-type InvalidTypeNameException = { [x: string]: unknown }
-type InvalidOptionException = { [x: string]: unknown }
-type InvalidDeleteInventoryParametersException = { [x: string]: unknown }
-type InvalidInventoryRequestException = { [x: string]: unknown }
 type DeleteMaintenanceWindowRequest = { WindowId: {} }
 type DeleteMaintenanceWindowResult = { WindowId?: {} | undefined }
 type DeleteOpsMetadataRequest = { OpsMetadataArn: {} }
 type DeleteOpsMetadataResult = { [x: string]: unknown }
-type OpsMetadataNotFoundException = { [x: string]: unknown }
 type DeleteParameterRequest = { Name: {} }
 type DeleteParameterResult = { [x: string]: unknown }
-type ParameterNotFound = { [x: string]: unknown }
 type DeleteParametersRequest = { Names: {} }
 type DeleteParametersResult = {
   DeletedParameters?: {} | undefined
@@ -328,14 +277,10 @@ type DeleteParametersResult = {
 }
 type DeletePatchBaselineRequest = { BaselineId: {} }
 type DeletePatchBaselineResult = { BaselineId?: {} | undefined }
-type ResourceInUseException = { [x: string]: unknown }
 type DeleteResourceDataSyncRequest = { SyncName: {}; SyncType?: {} | undefined }
 type DeleteResourceDataSyncResult = { [x: string]: unknown }
-type ResourceDataSyncNotFoundException = { [x: string]: unknown }
 type DeleteResourcePolicyRequest = { ResourceArn: {}; PolicyId: {}; PolicyHash: {} }
 type DeleteResourcePolicyResponse = { [x: string]: unknown }
-type ResourcePolicyInvalidParameterException = { [x: string]: unknown }
-type ResourcePolicyConflictException = { [x: string]: unknown }
 type DeregisterManagedInstanceRequest = { InstanceId: {} }
 type DeregisterManagedInstanceResult = { [x: string]: unknown }
 type DeregisterPatchBaselineForPatchGroupRequest = { BaselineId: {}; PatchGroup: {} }
@@ -352,7 +297,6 @@ type DeregisterTargetFromMaintenanceWindowResult = {
   WindowId?: {} | undefined
   WindowTargetId?: {} | undefined
 }
-type TargetInUseException = { [x: string]: unknown }
 type DeregisterTaskFromMaintenanceWindowRequest = { WindowId: {}; WindowTaskId: {} }
 type DeregisterTaskFromMaintenanceWindowResult = {
   WindowId?: {} | undefined
@@ -364,8 +308,6 @@ type DescribeActivationsRequest = {
   NextToken?: {} | undefined
 }
 type DescribeActivationsResult = { ActivationList?: {} | undefined; NextToken?: {} | undefined }
-type InvalidFilter = { [x: string]: unknown }
-type InvalidNextToken = { [x: string]: unknown }
 type DescribeAssociationRequest = {
   Name?: {} | undefined
   InstanceId?: {} | undefined
@@ -422,7 +364,6 @@ type DescribeAssociationResult = {
       }
     | undefined
 }
-type InvalidAssociationVersion = { [x: string]: unknown }
 type DescribeAssociationExecutionTargetsRequest = {
   AssociationId: {}
   ExecutionId: {}
@@ -434,7 +375,6 @@ type DescribeAssociationExecutionTargetsResult = {
   AssociationExecutionTargets?: {} | undefined
   NextToken?: {} | undefined
 }
-type AssociationExecutionDoesNotExist = { [x: string]: unknown }
 type DescribeAssociationExecutionsRequest = {
   AssociationId: {}
   Filters?: {} | undefined
@@ -454,8 +394,6 @@ type DescribeAutomationExecutionsResult = {
   AutomationExecutionMetadataList?: {} | undefined
   NextToken?: {} | undefined
 }
-type InvalidFilterKey = { [x: string]: unknown }
-type InvalidFilterValue = { [x: string]: unknown }
 type DescribeAutomationStepExecutionsRequest = {
   AutomationExecutionId: {}
   Filters?: {} | undefined
@@ -467,7 +405,6 @@ type DescribeAutomationStepExecutionsResult = {
   StepExecutions?: {} | undefined
   NextToken?: {} | undefined
 }
-type AutomationExecutionNotFoundException = { [x: string]: unknown }
 type DescribeAvailablePatchesRequest = {
   Filters?: {} | undefined
   MaxResults?: {} | undefined
@@ -526,7 +463,6 @@ type DescribeDocumentPermissionResponse = {
   AccountSharingInfoList?: {} | undefined
   NextToken?: {} | undefined
 }
-type InvalidPermissionType = { [x: string]: unknown }
 type DescribeEffectiveInstanceAssociationsRequest = {
   InstanceId: {}
   MaxResults?: {} | undefined
@@ -545,7 +481,6 @@ type DescribeEffectivePatchesForPatchBaselineResult = {
   EffectivePatches?: {} | undefined
   NextToken?: {} | undefined
 }
-type UnsupportedOperatingSystem = { [x: string]: unknown }
 type DescribeInstanceAssociationsStatusRequest = {
   InstanceId: {}
   MaxResults?: {} | undefined
@@ -565,7 +500,6 @@ type DescribeInstanceInformationResult = {
   InstanceInformationList?: {} | undefined
   NextToken?: {} | undefined
 }
-type InvalidInstanceInformationFilterValue = { [x: string]: unknown }
 type DescribeInstancePatchStatesRequest = {
   InstanceIds: {}
   NextToken?: {} | undefined
@@ -601,7 +535,6 @@ type DescribeInventoryDeletionsResult = {
   InventoryDeletions?: {} | undefined
   NextToken?: {} | undefined
 }
-type InvalidDeletionIdException = { [x: string]: unknown }
 type DescribeMaintenanceWindowExecutionTaskInvocationsRequest = {
   WindowExecutionId: {}
   TaskId: {}
@@ -694,7 +627,6 @@ type DescribeParametersRequest = {
   NextToken?: {} | undefined
 }
 type DescribeParametersResult = { Parameters?: {} | undefined; NextToken?: {} | undefined }
-type InvalidFilterOption = { [x: string]: unknown }
 type DescribePatchBaselinesRequest = {
   Filters?: {} | undefined
   MaxResults?: {} | undefined
@@ -742,7 +674,6 @@ type DescribeSessionsRequest = {
 type DescribeSessionsResponse = { Sessions?: {} | undefined; NextToken?: {} | undefined }
 type DisassociateOpsItemRelatedItemRequest = { OpsItemId: {}; AssociationId: {} }
 type DisassociateOpsItemRelatedItemResponse = { [x: string]: unknown }
-type OpsItemRelatedItemAssociationNotFoundException = { [x: string]: unknown }
 type GetAutomationExecutionRequest = { AutomationExecutionId: {} }
 type GetAutomationExecutionResult = {
   AutomationExecution?:
@@ -799,8 +730,6 @@ type GetCalendarStateResponse = {
   AtTime?: {} | undefined
   NextTransitionTime?: {} | undefined
 }
-type InvalidDocumentType = { [x: string]: unknown }
-type UnsupportedCalendarException = { [x: string]: unknown }
 type GetCommandInvocationRequest = { CommandId: {}; InstanceId: {}; PluginName?: {} | undefined }
 type GetCommandInvocationResult = {
   CommandId?: {} | undefined
@@ -823,8 +752,6 @@ type GetCommandInvocationResult = {
     | { CloudWatchLogGroupName?: {} | undefined; CloudWatchOutputEnabled?: {} | undefined }
     | undefined
 }
-type InvalidPluginName = { [x: string]: unknown }
-type InvocationDoesNotExist = { [x: string]: unknown }
 type GetConnectionStatusRequest = { Target: {} }
 type GetConnectionStatusResponse = { Target?: {} | undefined; Status?: {} | undefined }
 type GetDefaultPatchBaselineRequest = { OperatingSystem?: {} | undefined }
@@ -857,7 +784,6 @@ type GetDeployablePatchSnapshotForInstanceResult = {
   SnapshotDownloadUrl?: {} | undefined
   Product?: {} | undefined
 }
-type UnsupportedFeatureRequiredException = { [x: string]: unknown }
 type GetDocumentRequest = {
   Name: {}
   VersionName?: {} | undefined
@@ -887,9 +813,6 @@ type GetInventoryRequest = {
   MaxResults?: {} | undefined
 }
 type GetInventoryResult = { Entities?: {} | undefined; NextToken?: {} | undefined }
-type InvalidInventoryGroupException = { [x: string]: unknown }
-type InvalidAggregatorException = { [x: string]: unknown }
-type InvalidResultAttributeException = { [x: string]: unknown }
 type GetInventorySchemaRequest = {
   TypeName?: {} | undefined
   NextToken?: {} | undefined
@@ -1078,8 +1001,6 @@ type GetParameterResult = {
       }
     | undefined
 }
-type InvalidKeyId = { [x: string]: unknown }
-type ParameterVersionNotFound = { [x: string]: unknown }
 type GetParameterHistoryRequest = {
   Name: {}
   WithDecryption?: {} | undefined
@@ -1141,13 +1062,11 @@ type GetServiceSettingResult = {
       }
     | undefined
 }
-type ServiceSettingNotFound = { [x: string]: unknown }
 type LabelParameterVersionRequest = { Name: {}; ParameterVersion?: {} | undefined; Labels: {} }
 type LabelParameterVersionResult = {
   InvalidLabels?: {} | undefined
   ParameterVersion?: {} | undefined
 }
-type ParameterVersionLabelLimitExceeded = { [x: string]: unknown }
 type ListAssociationVersionsRequest = {
   AssociationId: {}
   MaxResults?: {} | undefined
@@ -1289,7 +1208,6 @@ type ModifyDocumentPermissionRequest = {
   SharedDocumentVersion?: {} | undefined
 }
 type ModifyDocumentPermissionResponse = { [x: string]: unknown }
-type DocumentPermissionLimit = { [x: string]: unknown }
 type PutComplianceItemsRequest = {
   ResourceId: {}
   ResourceType: {}
@@ -1304,18 +1222,8 @@ type PutComplianceItemsRequest = {
   UploadType?: {} | undefined
 }
 type PutComplianceItemsResult = { [x: string]: unknown }
-type InvalidItemContentException = { [x: string]: unknown }
-type TotalSizeLimitExceededException = { [x: string]: unknown }
-type ItemSizeLimitExceededException = { [x: string]: unknown }
-type ComplianceTypeCountLimitExceededException = { [x: string]: unknown }
 type PutInventoryRequest = { InstanceId: {}; Items: {} }
 type PutInventoryResult = { Message?: {} | undefined }
-type ItemContentMismatchException = { [x: string]: unknown }
-type CustomSchemaCountLimitExceededException = { [x: string]: unknown }
-type UnsupportedInventorySchemaVersionException = { [x: string]: unknown }
-type UnsupportedInventoryItemContextException = { [x: string]: unknown }
-type InvalidInventoryItemContextException = { [x: string]: unknown }
-type SubTypeCountLimitExceededException = { [x: string]: unknown }
 type PutParameterRequest = {
   Name: {}
   Description?: {} | undefined
@@ -1330,18 +1238,6 @@ type PutParameterRequest = {
   DataType?: {} | undefined
 }
 type PutParameterResult = { Version?: {} | undefined; Tier?: {} | undefined }
-type ParameterLimitExceeded = { [x: string]: unknown }
-type ParameterAlreadyExists = { [x: string]: unknown }
-type HierarchyLevelLimitExceededException = { [x: string]: unknown }
-type HierarchyTypeMismatchException = { [x: string]: unknown }
-type InvalidAllowedPatternException = { [x: string]: unknown }
-type ParameterMaxVersionLimitExceeded = { [x: string]: unknown }
-type ParameterPatternMismatchException = { [x: string]: unknown }
-type UnsupportedParameterType = { [x: string]: unknown }
-type PoliciesLimitExceededException = { [x: string]: unknown }
-type InvalidPolicyTypeException = { [x: string]: unknown }
-type InvalidPolicyAttributeException = { [x: string]: unknown }
-type IncompatiblePolicyException = { [x: string]: unknown }
 type PutResourcePolicyRequest = {
   ResourceArn: {}
   Policy: {}
@@ -1349,7 +1245,6 @@ type PutResourcePolicyRequest = {
   PolicyHash?: {} | undefined
 }
 type PutResourcePolicyResponse = { PolicyId?: {} | undefined; PolicyHash?: {} | undefined }
-type ResourcePolicyLimitExceededException = { [x: string]: unknown }
 type RegisterDefaultPatchBaselineRequest = { BaselineId: {} }
 type RegisterDefaultPatchBaselineResult = { BaselineId?: {} | undefined }
 type RegisterPatchBaselineForPatchGroupRequest = { BaselineId: {}; PatchGroup: {} }
@@ -1357,7 +1252,6 @@ type RegisterPatchBaselineForPatchGroupResult = {
   BaselineId?: {} | undefined
   PatchGroup?: {} | undefined
 }
-type AlreadyExistsException = { [x: string]: unknown }
 type RegisterTargetWithMaintenanceWindowRequest = {
   WindowId: {}
   ResourceType: {}
@@ -1416,7 +1310,6 @@ type RegisterTaskWithMaintenanceWindowRequest = {
   AlarmConfiguration?: { IgnorePollAlarmFailure?: {} | undefined; Alarms: {} } | undefined
 }
 type RegisterTaskWithMaintenanceWindowResult = { WindowTaskId?: {} | undefined }
-type FeatureNotAvailableException = { [x: string]: unknown }
 type RemoveTagsFromResourceRequest = { ResourceType: {}; ResourceId: {}; TagKeys: {} }
 type RemoveTagsFromResourceResult = { [x: string]: unknown }
 type ResetServiceSettingRequest = { SettingId: {} }
@@ -1444,8 +1337,6 @@ type SendAutomationSignalRequest = {
   Payload?: {} | undefined
 }
 type SendAutomationSignalResult = { [x: string]: unknown }
-type AutomationStepNotFoundException = { [x: string]: unknown }
-type InvalidAutomationSignalException = { [x: string]: unknown }
 type SendCommandRequest = {
   InstanceIds?: {} | undefined
   Targets?: {} | undefined
@@ -1514,12 +1405,8 @@ type SendCommandResult = {
       }
     | undefined
 }
-type InvalidOutputFolder = { [x: string]: unknown }
-type InvalidRole = { [x: string]: unknown }
-type InvalidNotificationConfig = { [x: string]: unknown }
 type StartAssociationsOnceRequest = { AssociationIds: {} }
 type StartAssociationsOnceResult = { [x: string]: unknown }
-type InvalidAssociation = { [x: string]: unknown }
 type StartAutomationExecutionRequest = {
   DocumentName: {}
   DocumentVersion?: {} | undefined
@@ -1536,10 +1423,6 @@ type StartAutomationExecutionRequest = {
   AlarmConfiguration?: { IgnorePollAlarmFailure?: {} | undefined; Alarms: {} } | undefined
 }
 type StartAutomationExecutionResult = { AutomationExecutionId?: {} | undefined }
-type AutomationDefinitionNotFoundException = { [x: string]: unknown }
-type InvalidAutomationExecutionParametersException = { [x: string]: unknown }
-type AutomationExecutionLimitExceededException = { [x: string]: unknown }
-type AutomationDefinitionVersionNotFoundException = { [x: string]: unknown }
 type StartChangeRequestExecutionRequest = {
   ScheduledTime?: {} | undefined
   DocumentName: {}
@@ -1554,7 +1437,6 @@ type StartChangeRequestExecutionRequest = {
   ChangeDetails?: {} | undefined
 }
 type StartChangeRequestExecutionResult = { AutomationExecutionId?: {} | undefined }
-type AutomationDefinitionNotApprovedException = { [x: string]: unknown }
 type StartSessionRequest = {
   Target: {}
   DocumentName?: {} | undefined
@@ -1566,10 +1448,8 @@ type StartSessionResponse = {
   TokenValue?: {} | undefined
   StreamUrl?: {} | undefined
 }
-type TargetNotConnected = { [x: string]: unknown }
 type StopAutomationExecutionRequest = { AutomationExecutionId: {}; Type?: {} | undefined }
 type StopAutomationExecutionResult = { [x: string]: unknown }
-type InvalidAutomationStatusUpdateException = { [x: string]: unknown }
 type TerminateSessionRequest = { SessionId: {} }
 type TerminateSessionResponse = { SessionId?: {} | undefined }
 type UnlabelParameterVersionRequest = { Name: {}; ParameterVersion: {}; Labels: {} }
@@ -1659,8 +1539,6 @@ type UpdateAssociationResult = {
       }
     | undefined
 }
-type InvalidUpdate = { [x: string]: unknown }
-type AssociationVersionLimitExceeded = { [x: string]: unknown }
 type UpdateAssociationStatusRequest = {
   Name: {}
   InstanceId: {}
@@ -1716,7 +1594,6 @@ type UpdateAssociationStatusResult = {
       }
     | undefined
 }
-type StatusUnchanged = { [x: string]: unknown }
 type UpdateDocumentRequest = {
   Content: {}
   Attachments?: {} | undefined
@@ -1763,9 +1640,6 @@ type UpdateDocumentResult = {
       }
     | undefined
 }
-type DocumentVersionLimitExceeded = { [x: string]: unknown }
-type DuplicateDocumentContent = { [x: string]: unknown }
-type DuplicateDocumentVersionName = { [x: string]: unknown }
 type UpdateDocumentDefaultVersionRequest = { Name: {}; DocumentVersion: {} }
 type UpdateDocumentDefaultVersionResult = {
   Description?:
@@ -1948,7 +1822,6 @@ type UpdateOpsMetadataRequest = {
   KeysToDelete?: {} | undefined
 }
 type UpdateOpsMetadataResult = { OpsMetadataArn?: {} | undefined }
-type OpsMetadataKeyLimitExceededException = { [x: string]: unknown }
 type UpdatePatchBaselineRequest = {
   BaselineId: {}
   Name?: {} | undefined
@@ -1993,12009 +1866,2769 @@ type UpdateResourceDataSyncRequest = {
   }
 }
 type UpdateResourceDataSyncResult = { [x: string]: unknown }
-type ResourceDataSyncConflictException = { [x: string]: unknown }
 type UpdateServiceSettingRequest = { SettingId: {}; SettingValue: {} }
 type UpdateServiceSettingResult = { [x: string]: unknown }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=AmazonSSM.AddTagsToResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: AddTagsToResourceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: InvalidResourceType
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: TooManyTagsError
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AddTagsToResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AddTagsToResourceRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: AddTagsToResourceRequest }
+        output: AddTagsToResourceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.AssociateOpsItemRelatedItem': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: AssociateOpsItemRelatedItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: OpsItemNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: OpsItemLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.AssociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateOpsItemRelatedItemRequest }
-            output: OpsItemRelatedItemAlreadyExistsException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: AssociateOpsItemRelatedItemRequest }
+        output: AssociateOpsItemRelatedItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CancelCommand': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelCommandRequest }
-            output: CancelCommandResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CancelCommand'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelCommandRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelCommandRequest }
-            output: InvalidCommandId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelCommandRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelCommandRequest }
-            output: DuplicateInstanceId
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CancelCommandRequest }
+        output: CancelCommandResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CancelMaintenanceWindowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMaintenanceWindowExecutionRequest }
-            output: CancelMaintenanceWindowExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CancelMaintenanceWindowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMaintenanceWindowExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CancelMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelMaintenanceWindowExecutionRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CancelMaintenanceWindowExecutionRequest }
+        output: CancelMaintenanceWindowExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateActivation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateActivationRequest }
-            output: CreateActivationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateActivation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateActivationRequest }
-            output: InvalidParameters
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateActivationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CreateActivationRequest }
+        output: CreateActivationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateAssociation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: CreateAssociationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateAssociation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: AssociationAlreadyExists
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: AssociationLimitExceeded
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: UnsupportedPlatformType
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidOutputLocation
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidParameters
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidTarget
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidSchedule
-            outputFormat: 'json'
-            status: 490
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidTargetMaps
-            outputFormat: 'json'
-            status: 491
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationRequest }
-            output: InvalidTag
-            outputFormat: 'json'
-            status: 492
-          }
+        } & { json: CreateAssociationRequest }
+        output: CreateAssociationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateAssociationBatch': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: CreateAssociationBatchResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidParameters
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: DuplicateInstanceId
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: AssociationLimitExceeded
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: UnsupportedPlatformType
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidOutputLocation
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidTarget
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidSchedule
-            outputFormat: 'json'
-            status: 490
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateAssociationBatch'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAssociationBatchRequest }
-            output: InvalidTargetMaps
-            outputFormat: 'json'
-            status: 491
-          }
+        } & { json: CreateAssociationBatchRequest }
+        output: CreateAssociationBatchResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: CreateDocumentResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: DocumentAlreadyExists
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: MaxDocumentSizeExceeded
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: InvalidDocumentContent
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: DocumentLimitExceeded
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentRequest }
-            output: InvalidDocumentSchemaVersion
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: CreateDocumentRequest }
+        output: CreateDocumentResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMaintenanceWindowRequest }
-            output: CreateMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMaintenanceWindowRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMaintenanceWindowRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CreateMaintenanceWindowRequest }
+        output: CreateMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateOpsItem': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: CreateOpsItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: OpsItemAlreadyExistsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: OpsItemLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsItemRequest }
-            output: OpsItemAccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateOpsItemRequest }
+        output: CreateOpsItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateOpsMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: CreateOpsMetadataResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: OpsMetadataAlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: OpsMetadataTooManyUpdatesException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: OpsMetadataInvalidArgumentException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: OpsMetadataLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOpsMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateOpsMetadataRequest }
+        output: CreateOpsMetadataResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreatePatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePatchBaselineRequest }
-            output: CreatePatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreatePatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePatchBaselineRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePatchBaselineRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreatePatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CreatePatchBaselineRequest }
+        output: CreatePatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.CreateResourceDataSync': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateResourceDataSyncRequest }
-            output: CreateResourceDataSyncResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateResourceDataSyncRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateResourceDataSyncRequest }
-            output: ResourceDataSyncCountExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateResourceDataSyncRequest }
-            output: ResourceDataSyncAlreadyExistsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.CreateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateResourceDataSyncRequest }
-            output: ResourceDataSyncInvalidConfigurationException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CreateResourceDataSyncRequest }
+        output: CreateResourceDataSyncResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteActivation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteActivationRequest }
-            output: DeleteActivationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteActivation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteActivationRequest }
-            output: InvalidActivationId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteActivationRequest }
-            output: InvalidActivation
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteActivationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteActivation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteActivationRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteActivationRequest }
+        output: DeleteActivationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteAssociation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: DeleteAssociationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAssociationRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteAssociationRequest }
+        output: DeleteAssociationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentRequest }
-            output: DeleteDocumentResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentRequest }
-            output: InvalidDocumentOperation
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentRequest }
-            output: AssociatedInstances
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DeleteDocumentRequest }
+        output: DeleteDocumentResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteInventory': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: DeleteInventoryResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteInventory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: InvalidOptionException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: InvalidDeleteInventoryParametersException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteInventoryRequest }
-            output: InvalidInventoryRequestException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteInventoryRequest }
+        output: DeleteInventoryResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMaintenanceWindowRequest }
-            output: DeleteMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DeleteMaintenanceWindowRequest }
+        output: DeleteMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteOpsMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteOpsMetadataRequest }
-            output: DeleteOpsMetadataResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteOpsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteOpsMetadataRequest }
-            output: OpsMetadataNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteOpsMetadataRequest }
-            output: OpsMetadataInvalidArgumentException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteOpsMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteOpsMetadataRequest }
+        output: DeleteOpsMetadataResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteParameter': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteParameterRequest }
-            output: DeleteParameterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteParameter'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteParameterRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteParameterRequest }
-            output: ParameterNotFound
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeleteParameterRequest }
+        output: DeleteParameterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteParameters': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteParametersRequest }
-            output: DeleteParametersResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteParameters'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteParametersRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DeleteParametersRequest }
+        output: DeleteParametersResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeletePatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeletePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePatchBaselineRequest }
-            output: DeletePatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeletePatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeletePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePatchBaselineRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeletePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeletePatchBaselineRequest }
+        output: DeletePatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteResourceDataSync': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourceDataSyncRequest }
-            output: DeleteResourceDataSyncResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteResourceDataSync'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourceDataSyncRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourceDataSyncRequest }
-            output: ResourceDataSyncNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourceDataSyncRequest }
-            output: ResourceDataSyncInvalidConfigurationException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteResourceDataSyncRequest }
+        output: DeleteResourceDataSyncResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeleteResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: DeleteResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeleteResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: ResourcePolicyInvalidParameterException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: ResourcePolicyConflictException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteResourcePolicyRequest }
+        output: DeleteResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeregisterManagedInstance': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterManagedInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterManagedInstanceRequest }
-            output: DeregisterManagedInstanceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeregisterManagedInstance'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterManagedInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterManagedInstanceRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterManagedInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterManagedInstanceRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeregisterManagedInstanceRequest }
+        output: DeregisterManagedInstanceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeregisterPatchBaselineForPatchGroup': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterPatchBaselineForPatchGroupRequest }
-            output: DeregisterPatchBaselineForPatchGroupResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeregisterPatchBaselineForPatchGroup'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterPatchBaselineForPatchGroupRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterPatchBaselineForPatchGroupRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeregisterPatchBaselineForPatchGroupRequest }
+        output: DeregisterPatchBaselineForPatchGroupResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeregisterTargetFromMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTargetFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTargetFromMaintenanceWindowRequest }
-            output: DeregisterTargetFromMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeregisterTargetFromMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTargetFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTargetFromMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTargetFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTargetFromMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTargetFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTargetFromMaintenanceWindowRequest }
-            output: TargetInUseException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeregisterTargetFromMaintenanceWindowRequest }
+        output: DeregisterTargetFromMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DeregisterTaskFromMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTaskFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTaskFromMaintenanceWindowRequest }
-            output: DeregisterTaskFromMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DeregisterTaskFromMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTaskFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTaskFromMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DeregisterTaskFromMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeregisterTaskFromMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DeregisterTaskFromMaintenanceWindowRequest }
+        output: DeregisterTaskFromMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeActivations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeActivations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivationsRequest }
-            output: DescribeActivationsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeActivations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeActivations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivationsRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeActivations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivationsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeActivations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivationsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeActivationsRequest }
+        output: DescribeActivationsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAssociation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: DescribeAssociationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: InvalidAssociationVersion
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DescribeAssociationRequest }
+        output: DescribeAssociationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAssociationExecutionTargets': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionTargetsRequest }
-            output: DescribeAssociationExecutionTargetsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionTargetsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionTargetsRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionTargetsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutionTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionTargetsRequest }
-            output: AssociationExecutionDoesNotExist
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeAssociationExecutionTargetsRequest }
+        output: DescribeAssociationExecutionTargetsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAssociationExecutions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionsRequest }
-            output: DescribeAssociationExecutionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionsRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAssociationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAssociationExecutionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeAssociationExecutionsRequest }
+        output: DescribeAssociationExecutionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAutomationExecutions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationExecutionsRequest }
-            output: DescribeAutomationExecutionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationExecutionsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationExecutionsRequest }
-            output: InvalidFilterValue
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationExecutionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationExecutionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeAutomationExecutionsRequest }
+        output: DescribeAutomationExecutionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAutomationStepExecutions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: DescribeAutomationStepExecutionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: AutomationExecutionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: InvalidFilterValue
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAutomationStepExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutomationStepExecutionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DescribeAutomationStepExecutionsRequest }
+        output: DescribeAutomationStepExecutionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeAvailablePatches': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAvailablePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailablePatchesRequest }
-            output: DescribeAvailablePatchesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeAvailablePatches'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeAvailablePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAvailablePatchesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeAvailablePatchesRequest }
+        output: DescribeAvailablePatchesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentRequest }
-            output: DescribeDocumentResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeDocumentRequest }
+        output: DescribeDocumentResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeDocumentPermission': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: DescribeDocumentPermissionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: InvalidPermissionType
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentPermissionRequest }
-            output: InvalidDocumentOperation
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DescribeDocumentPermissionRequest }
+        output: DescribeDocumentPermissionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeEffectiveInstanceAssociations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectiveInstanceAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectiveInstanceAssociationsRequest }
-            output: DescribeEffectiveInstanceAssociationsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeEffectiveInstanceAssociations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectiveInstanceAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectiveInstanceAssociationsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectiveInstanceAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectiveInstanceAssociationsRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectiveInstanceAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectiveInstanceAssociationsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeEffectiveInstanceAssociationsRequest }
+        output: DescribeEffectiveInstanceAssociationsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeEffectivePatchesForPatchBaseline': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
-            output: DescribeEffectivePatchesForPatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
-            output: UnsupportedOperatingSystem
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeEffectivePatchesForPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeEffectivePatchesForPatchBaselineRequest }
+        output: DescribeEffectivePatchesForPatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInstanceAssociationsStatus': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceAssociationsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceAssociationsStatusRequest }
-            output: DescribeInstanceAssociationsStatusResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInstanceAssociationsStatus'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceAssociationsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceAssociationsStatusRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceAssociationsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceAssociationsStatusRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceAssociationsStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceAssociationsStatusRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeInstanceAssociationsStatusRequest }
+        output: DescribeInstanceAssociationsStatusResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInstanceInformation': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: DescribeInstanceInformationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: InvalidInstanceInformationFilterValue
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstanceInformation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceInformationRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DescribeInstanceInformationRequest }
+        output: DescribeInstanceInformationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInstancePatchStates': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesRequest }
-            output: DescribeInstancePatchStatesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStates'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeInstancePatchStatesRequest }
+        output: DescribeInstancePatchStatesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInstancePatchStatesForPatchGroup': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStatesForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesForPatchGroupRequest }
-            output: DescribeInstancePatchStatesForPatchGroupResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStatesForPatchGroup'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStatesForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesForPatchGroupRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStatesForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesForPatchGroupRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatchStatesForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchStatesForPatchGroupRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeInstancePatchStatesForPatchGroupRequest }
+        output: DescribeInstancePatchStatesForPatchGroupResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInstancePatches': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchesRequest }
-            output: DescribeInstancePatchesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchesRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchesRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInstancePatches'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstancePatchesRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeInstancePatchesRequest }
+        output: DescribeInstancePatchesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeInventoryDeletions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInventoryDeletions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInventoryDeletionsRequest }
-            output: DescribeInventoryDeletionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeInventoryDeletions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInventoryDeletions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInventoryDeletionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInventoryDeletions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInventoryDeletionsRequest }
-            output: InvalidDeletionIdException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeInventoryDeletions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInventoryDeletionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeInventoryDeletionsRequest }
+        output: DescribeInventoryDeletionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowExecutionTaskInvocations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTaskInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTaskInvocationsRequest }
-            output: DescribeMaintenanceWindowExecutionTaskInvocationsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTaskInvocations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTaskInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTaskInvocationsRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTaskInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTaskInvocationsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeMaintenanceWindowExecutionTaskInvocationsRequest }
+        output: DescribeMaintenanceWindowExecutionTaskInvocationsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowExecutionTasks': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTasksRequest }
-            output: DescribeMaintenanceWindowExecutionTasksResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTasks'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTasksRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionTasksRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeMaintenanceWindowExecutionTasksRequest }
+        output: DescribeMaintenanceWindowExecutionTasksResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowExecutions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionsRequest }
-            output: DescribeMaintenanceWindowExecutionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowExecutionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeMaintenanceWindowExecutionsRequest }
+        output: DescribeMaintenanceWindowExecutionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowSchedule': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowScheduleRequest }
-            output: DescribeMaintenanceWindowScheduleResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowSchedule'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowScheduleRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowSchedule'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowScheduleRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeMaintenanceWindowScheduleRequest }
+        output: DescribeMaintenanceWindowScheduleResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowTargets': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTargetsRequest }
-            output: DescribeMaintenanceWindowTargetsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTargets'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTargetsRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTargets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTargetsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeMaintenanceWindowTargetsRequest }
+        output: DescribeMaintenanceWindowTargetsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowTasks': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTasksRequest }
-            output: DescribeMaintenanceWindowTasksResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTasks'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTasksRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowTasksRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeMaintenanceWindowTasksRequest }
+        output: DescribeMaintenanceWindowTasksResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindows': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowsRequest }
-            output: DescribeMaintenanceWindowsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindows'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindows'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeMaintenanceWindowsRequest }
+        output: DescribeMaintenanceWindowsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeMaintenanceWindowsForTarget': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowsForTarget'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowsForTargetRequest }
-            output: DescribeMaintenanceWindowsForTargetResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowsForTarget'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeMaintenanceWindowsForTarget'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeMaintenanceWindowsForTargetRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeMaintenanceWindowsForTargetRequest }
+        output: DescribeMaintenanceWindowsForTargetResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeOpsItems': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeOpsItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeOpsItemsRequest }
-            output: DescribeOpsItemsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeOpsItems'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeOpsItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeOpsItemsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeOpsItemsRequest }
+        output: DescribeOpsItemsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeParameters': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: DescribeParametersResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeParameters'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: InvalidFilterOption
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: InvalidFilterValue
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeParametersRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DescribeParametersRequest }
+        output: DescribeParametersResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribePatchBaselines': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchBaselines'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchBaselinesRequest }
-            output: DescribePatchBaselinesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribePatchBaselines'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchBaselines'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchBaselinesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribePatchBaselinesRequest }
+        output: DescribePatchBaselinesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribePatchGroupState': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchGroupState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchGroupStateRequest }
-            output: DescribePatchGroupStateResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribePatchGroupState'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchGroupState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchGroupStateRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchGroupState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchGroupStateRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribePatchGroupStateRequest }
+        output: DescribePatchGroupStateResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribePatchGroups': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchGroups'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchGroupsRequest }
-            output: DescribePatchGroupsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribePatchGroups'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchGroups'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchGroupsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribePatchGroupsRequest }
+        output: DescribePatchGroupsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribePatchProperties': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchPropertiesRequest }
-            output: DescribePatchPropertiesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribePatchProperties'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribePatchProperties'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePatchPropertiesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribePatchPropertiesRequest }
+        output: DescribePatchPropertiesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DescribeSessions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSessionsRequest }
-            output: DescribeSessionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DescribeSessions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSessionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSessionsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DescribeSessions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSessionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeSessionsRequest }
+        output: DescribeSessionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.DisassociateOpsItemRelatedItem': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateOpsItemRelatedItemRequest }
-            output: DisassociateOpsItemRelatedItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateOpsItemRelatedItemRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateOpsItemRelatedItemRequest }
-            output: OpsItemRelatedItemAssociationNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateOpsItemRelatedItemRequest }
-            output: OpsItemNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.DisassociateOpsItemRelatedItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateOpsItemRelatedItemRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DisassociateOpsItemRelatedItemRequest }
+        output: DisassociateOpsItemRelatedItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetAutomationExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAutomationExecutionRequest }
-            output: GetAutomationExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetAutomationExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAutomationExecutionRequest }
-            output: AutomationExecutionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetAutomationExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetAutomationExecutionRequest }
+        output: GetAutomationExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetCalendarState': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCalendarState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCalendarStateRequest }
-            output: GetCalendarStateResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetCalendarState'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCalendarState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCalendarStateRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCalendarState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCalendarStateRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCalendarState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCalendarStateRequest }
-            output: InvalidDocumentType
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCalendarState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCalendarStateRequest }
-            output: UnsupportedCalendarException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetCalendarStateRequest }
+        output: GetCalendarStateResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetCommandInvocation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: GetCommandInvocationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: InvalidCommandId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: InvalidPluginName
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetCommandInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCommandInvocationRequest }
-            output: InvocationDoesNotExist
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: GetCommandInvocationRequest }
+        output: GetCommandInvocationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetConnectionStatus': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetConnectionStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionStatusRequest }
-            output: GetConnectionStatusResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetConnectionStatus'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetConnectionStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetConnectionStatusRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetConnectionStatusRequest }
+        output: GetConnectionStatusResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetDefaultPatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDefaultPatchBaselineRequest }
-            output: GetDefaultPatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetDefaultPatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDefaultPatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetDefaultPatchBaselineRequest }
+        output: GetDefaultPatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetDeployablePatchSnapshotForInstance': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDeployablePatchSnapshotForInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDeployablePatchSnapshotForInstanceRequest }
-            output: GetDeployablePatchSnapshotForInstanceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetDeployablePatchSnapshotForInstance'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDeployablePatchSnapshotForInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDeployablePatchSnapshotForInstanceRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDeployablePatchSnapshotForInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDeployablePatchSnapshotForInstanceRequest }
-            output: UnsupportedOperatingSystem
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDeployablePatchSnapshotForInstance'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDeployablePatchSnapshotForInstanceRequest }
-            output: UnsupportedFeatureRequiredException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetDeployablePatchSnapshotForInstanceRequest }
+        output: GetDeployablePatchSnapshotForInstanceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDocumentRequest }
-            output: GetDocumentResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDocumentRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDocumentRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetDocumentRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetDocumentRequest }
+        output: GetDocumentResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetInventory': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: GetInventoryResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetInventory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidInventoryGroupException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidAggregatorException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventoryRequest }
-            output: InvalidResultAttributeException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: GetInventoryRequest }
+        output: GetInventoryResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetInventorySchema': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventorySchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventorySchemaRequest }
-            output: GetInventorySchemaResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetInventorySchema'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventorySchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventorySchemaRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventorySchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventorySchemaRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetInventorySchema'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetInventorySchemaRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetInventorySchemaRequest }
+        output: GetInventorySchemaResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowRequest }
-            output: GetMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetMaintenanceWindowRequest }
+        output: GetMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetMaintenanceWindowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionRequest }
-            output: GetMaintenanceWindowExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetMaintenanceWindowExecutionRequest }
+        output: GetMaintenanceWindowExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetMaintenanceWindowExecutionTask': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskRequest }
-            output: GetMaintenanceWindowExecutionTaskResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTask'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetMaintenanceWindowExecutionTaskRequest }
+        output: GetMaintenanceWindowExecutionTaskResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetMaintenanceWindowExecutionTaskInvocation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTaskInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskInvocationRequest }
-            output: GetMaintenanceWindowExecutionTaskInvocationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTaskInvocation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTaskInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskInvocationRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowExecutionTaskInvocation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowExecutionTaskInvocationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetMaintenanceWindowExecutionTaskInvocationRequest }
+        output: GetMaintenanceWindowExecutionTaskInvocationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetMaintenanceWindowTask': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowTaskRequest }
-            output: GetMaintenanceWindowTaskResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowTask'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowTaskRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetMaintenanceWindowTaskRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetMaintenanceWindowTaskRequest }
+        output: GetMaintenanceWindowTaskResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetOpsItem': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsItemRequest }
-            output: GetOpsItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetOpsItem'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsItemRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsItemRequest }
-            output: OpsItemNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsItemRequest }
-            output: OpsItemAccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetOpsItemRequest }
+        output: GetOpsItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetOpsMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsMetadataRequest }
-            output: GetOpsMetadataResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetOpsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsMetadataRequest }
-            output: OpsMetadataNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsMetadataRequest }
-            output: OpsMetadataInvalidArgumentException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetOpsMetadataRequest }
+        output: GetOpsMetadataResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetOpsSummary': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: GetOpsSummaryResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: ResourceDataSyncNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetOpsSummary'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetOpsSummaryRequest }
-            output: InvalidAggregatorException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: GetOpsSummaryRequest }
+        output: GetOpsSummaryResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetParameter': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterRequest }
-            output: GetParameterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetParameter'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterRequest }
-            output: InvalidKeyId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterRequest }
-            output: ParameterNotFound
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterRequest }
-            output: ParameterVersionNotFound
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetParameterRequest }
+        output: GetParameterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetParameterHistory': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterHistoryRequest }
-            output: GetParameterHistoryResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterHistoryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterHistoryRequest }
-            output: ParameterNotFound
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterHistoryRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameterHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParameterHistoryRequest }
-            output: InvalidKeyId
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: GetParameterHistoryRequest }
+        output: GetParameterHistoryResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetParameters': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersRequest }
-            output: GetParametersResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetParameters'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersRequest }
-            output: InvalidKeyId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParameters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetParametersRequest }
+        output: GetParametersResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetParametersByPath': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: GetParametersByPathResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InvalidFilterOption
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InvalidFilterValue
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InvalidKeyId
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetParametersByPath'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetParametersByPathRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: GetParametersByPathRequest }
+        output: GetParametersByPathResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetPatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineRequest }
-            output: GetPatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetPatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: GetPatchBaselineRequest }
+        output: GetPatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetPatchBaselineForPatchGroup': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineForPatchGroupRequest }
-            output: GetPatchBaselineForPatchGroupResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetPatchBaselineForPatchGroup'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPatchBaselineForPatchGroupRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: GetPatchBaselineForPatchGroupRequest }
+        output: GetPatchBaselineForPatchGroupResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetResourcePolicies': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: GetResourcePoliciesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetResourcePolicies'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetResourcePolicies'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetResourcePoliciesRequest }
-            output: ResourcePolicyInvalidParameterException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetResourcePoliciesRequest }
+        output: GetResourcePoliciesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.GetServiceSetting': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetServiceSettingRequest }
-            output: GetServiceSettingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.GetServiceSetting'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetServiceSettingRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.GetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetServiceSettingRequest }
-            output: ServiceSettingNotFound
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetServiceSettingRequest }
+        output: GetServiceSettingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.LabelParameterVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: LabelParameterVersionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: ParameterNotFound
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: ParameterVersionNotFound
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.LabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LabelParameterVersionRequest }
-            output: ParameterVersionLabelLimitExceeded
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: LabelParameterVersionRequest }
+        output: LabelParameterVersionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListAssociationVersions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociationVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationVersionsRequest }
-            output: ListAssociationVersionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListAssociationVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociationVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationVersionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociationVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationVersionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociationVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationVersionsRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListAssociationVersionsRequest }
+        output: ListAssociationVersionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListAssociations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationsRequest }
-            output: ListAssociationsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListAssociations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListAssociations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListAssociationsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListAssociationsRequest }
+        output: ListAssociationsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListCommandInvocations': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: ListCommandInvocationsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: InvalidCommandId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommandInvocations'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandInvocationsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListCommandInvocationsRequest }
+        output: ListCommandInvocationsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListCommands': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: ListCommandsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListCommands'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: InvalidCommandId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListCommands'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCommandsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListCommandsRequest }
+        output: ListCommandsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListComplianceItems': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: ListComplianceItemsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: InvalidResourceType
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceItemsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListComplianceItemsRequest }
+        output: ListComplianceItemsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListComplianceSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceSummariesRequest }
-            output: ListComplianceSummariesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListComplianceSummaries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceSummariesRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceSummariesRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListComplianceSummariesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListComplianceSummariesRequest }
+        output: ListComplianceSummariesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListDocumentMetadataHistory': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentMetadataHistoryRequest }
-            output: ListDocumentMetadataHistoryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentMetadataHistoryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentMetadataHistoryRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentMetadataHistoryRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentMetadataHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentMetadataHistoryRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDocumentMetadataHistoryRequest }
+        output: ListDocumentMetadataHistoryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListDocumentVersions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentVersionsRequest }
-            output: ListDocumentVersionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListDocumentVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentVersionsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentVersionsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocumentVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentVersionsRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDocumentVersionsRequest }
+        output: ListDocumentVersionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListDocuments': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocuments'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentsRequest }
-            output: ListDocumentsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListDocuments'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocuments'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocuments'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentsRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListDocuments'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentsRequest }
-            output: InvalidFilterKey
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDocumentsRequest }
+        output: ListDocumentsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListInventoryEntries': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: ListInventoryEntriesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListInventoryEntries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListInventoryEntriesRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListInventoryEntriesRequest }
+        output: ListInventoryEntriesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListOpsItemEvents': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemEventsRequest }
-            output: ListOpsItemEventsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemEventsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemEventsRequest }
-            output: OpsItemNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemEventsRequest }
-            output: OpsItemLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemEvents'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemEventsRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListOpsItemEventsRequest }
+        output: ListOpsItemEventsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListOpsItemRelatedItems': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemRelatedItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemRelatedItemsRequest }
-            output: ListOpsItemRelatedItemsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListOpsItemRelatedItems'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemRelatedItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemRelatedItemsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsItemRelatedItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsItemRelatedItemsRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListOpsItemRelatedItemsRequest }
+        output: ListOpsItemRelatedItemsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListOpsMetadata': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsMetadataRequest }
-            output: ListOpsMetadataResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListOpsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsMetadataRequest }
-            output: OpsMetadataInvalidArgumentException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpsMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListOpsMetadataRequest }
+        output: ListOpsMetadataResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListResourceComplianceSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceComplianceSummariesRequest }
-            output: ListResourceComplianceSummariesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListResourceComplianceSummaries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceComplianceSummariesRequest }
-            output: InvalidFilter
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceComplianceSummariesRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceComplianceSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceComplianceSummariesRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListResourceComplianceSummariesRequest }
+        output: ListResourceComplianceSummariesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListResourceDataSync': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceDataSyncRequest }
-            output: ListResourceDataSyncResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListResourceDataSync'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceDataSyncRequest }
-            output: ResourceDataSyncInvalidConfigurationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceDataSyncRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListResourceDataSyncRequest }
-            output: InvalidNextToken
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListResourceDataSyncRequest }
+        output: ListResourceDataSyncResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ListTagsForResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: ListTagsForResourceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ListTagsForResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: InvalidResourceType
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListTagsForResourceRequest }
+        output: ListTagsForResourceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ModifyDocumentPermission': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: ModifyDocumentPermissionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: InvalidPermissionType
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: DocumentPermissionLimit
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ModifyDocumentPermission'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ModifyDocumentPermissionRequest }
-            output: DocumentLimitExceeded
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ModifyDocumentPermissionRequest }
+        output: ModifyDocumentPermissionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.PutComplianceItems': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: PutComplianceItemsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: InvalidItemContentException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: TotalSizeLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: ItemSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: ComplianceTypeCountLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: InvalidResourceType
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutComplianceItems'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutComplianceItemsRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: PutComplianceItemsRequest }
+        output: PutComplianceItemsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.PutInventory': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: PutInventoryResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.PutInventory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: InvalidTypeNameException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: InvalidItemContentException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: TotalSizeLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: ItemSizeLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: ItemContentMismatchException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: CustomSchemaCountLimitExceededException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: UnsupportedInventorySchemaVersionException
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: UnsupportedInventoryItemContextException
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: InvalidInventoryItemContextException
-            outputFormat: 'json'
-            status: 490
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutInventory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutInventoryRequest }
-            output: SubTypeCountLimitExceededException
-            outputFormat: 'json'
-            status: 491
-          }
+        } & { json: PutInventoryRequest }
+        output: PutInventoryResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.PutParameter': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: PutParameterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.PutParameter'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: InvalidKeyId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: ParameterLimitExceeded
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: ParameterAlreadyExists
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: HierarchyLevelLimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: HierarchyTypeMismatchException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: InvalidAllowedPatternException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: ParameterMaxVersionLimitExceeded
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: ParameterPatternMismatchException
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: UnsupportedParameterType
-            outputFormat: 'json'
-            status: 490
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: PoliciesLimitExceededException
-            outputFormat: 'json'
-            status: 491
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: InvalidPolicyTypeException
-            outputFormat: 'json'
-            status: 492
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: InvalidPolicyAttributeException
-            outputFormat: 'json'
-            status: 493
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutParameter'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutParameterRequest }
-            output: IncompatiblePolicyException
-            outputFormat: 'json'
-            status: 494
-          }
+        } & { json: PutParameterRequest }
+        output: PutParameterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.PutResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: PutResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: ResourcePolicyInvalidParameterException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: ResourcePolicyLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: ResourcePolicyConflictException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: PutResourcePolicyRequest }
+        output: PutResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.RegisterDefaultPatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDefaultPatchBaselineRequest }
-            output: RegisterDefaultPatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.RegisterDefaultPatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDefaultPatchBaselineRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDefaultPatchBaselineRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterDefaultPatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDefaultPatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: RegisterDefaultPatchBaselineRequest }
+        output: RegisterDefaultPatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.RegisterPatchBaselineForPatchGroup': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: RegisterPatchBaselineForPatchGroupResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterPatchBaselineForPatchGroup'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterPatchBaselineForPatchGroupRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: RegisterPatchBaselineForPatchGroupRequest }
+        output: RegisterPatchBaselineForPatchGroupResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.RegisterTargetWithMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTargetWithMaintenanceWindowRequest }
-            output: RegisterTargetWithMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTargetWithMaintenanceWindowRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTargetWithMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTargetWithMaintenanceWindowRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTargetWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTargetWithMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: RegisterTargetWithMaintenanceWindowRequest }
+        output: RegisterTargetWithMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.RegisterTaskWithMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: RegisterTaskWithMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: FeatureNotAvailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RegisterTaskWithMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterTaskWithMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: RegisterTaskWithMaintenanceWindowRequest }
+        output: RegisterTaskWithMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.RemoveTagsFromResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveTagsFromResourceRequest }
-            output: RemoveTagsFromResourceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveTagsFromResourceRequest }
-            output: InvalidResourceType
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveTagsFromResourceRequest }
-            output: InvalidResourceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveTagsFromResourceRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.RemoveTagsFromResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RemoveTagsFromResourceRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: RemoveTagsFromResourceRequest }
+        output: RemoveTagsFromResourceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ResetServiceSetting': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetServiceSettingRequest }
-            output: ResetServiceSettingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ResetServiceSetting'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetServiceSettingRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetServiceSettingRequest }
-            output: ServiceSettingNotFound
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResetServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResetServiceSettingRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ResetServiceSettingRequest }
+        output: ResetServiceSettingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.ResumeSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResumeSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeSessionRequest }
-            output: ResumeSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.ResumeSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResumeSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeSessionRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.ResumeSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ResumeSessionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ResumeSessionRequest }
+        output: ResumeSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.SendAutomationSignal': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendAutomationSignalRequest }
-            output: SendAutomationSignalResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendAutomationSignalRequest }
-            output: AutomationExecutionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendAutomationSignalRequest }
-            output: AutomationStepNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendAutomationSignalRequest }
-            output: InvalidAutomationSignalException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendAutomationSignal'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendAutomationSignalRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: SendAutomationSignalRequest }
+        output: SendAutomationSignalResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.SendCommand': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: SendCommandResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.SendCommand'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: DuplicateInstanceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidOutputFolder
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidParameters
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: UnsupportedPlatformType
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: MaxDocumentSizeExceeded
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidRole
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.SendCommand'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCommandRequest }
-            output: InvalidNotificationConfig
-            outputFormat: 'json'
-            status: 490
-          }
+        } & { json: SendCommandRequest }
+        output: SendCommandResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.StartAssociationsOnce': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAssociationsOnce'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAssociationsOnceRequest }
-            output: StartAssociationsOnceResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.StartAssociationsOnce'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAssociationsOnce'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAssociationsOnceRequest }
-            output: InvalidAssociation
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAssociationsOnce'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAssociationsOnceRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: StartAssociationsOnceRequest }
+        output: StartAssociationsOnceResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.StartAutomationExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: StartAutomationExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: AutomationDefinitionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: InvalidAutomationExecutionParametersException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: AutomationExecutionLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: AutomationDefinitionVersionNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: InvalidTarget
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartAutomationExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: StartAutomationExecutionRequest }
+        output: StartAutomationExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.StartChangeRequestExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: StartChangeRequestExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: AutomationDefinitionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: InvalidAutomationExecutionParametersException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: AutomationExecutionLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: AutomationDefinitionVersionNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: IdempotentParameterMismatch
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartChangeRequestExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartChangeRequestExecutionRequest }
-            output: AutomationDefinitionNotApprovedException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: StartChangeRequestExecutionRequest }
+        output: StartChangeRequestExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.StartSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSessionRequest }
-            output: StartSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.StartSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSessionRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSessionRequest }
-            output: TargetNotConnected
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StartSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSessionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StartSessionRequest }
+        output: StartSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.StopAutomationExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StopAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopAutomationExecutionRequest }
-            output: StopAutomationExecutionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.StopAutomationExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StopAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopAutomationExecutionRequest }
-            output: AutomationExecutionNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StopAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopAutomationExecutionRequest }
-            output: InvalidAutomationStatusUpdateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.StopAutomationExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopAutomationExecutionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopAutomationExecutionRequest }
+        output: StopAutomationExecutionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.TerminateSession': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.TerminateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateSessionRequest }
-            output: TerminateSessionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.TerminateSession'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.TerminateSession'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateSessionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: TerminateSessionRequest }
+        output: TerminateSessionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UnlabelParameterVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UnlabelParameterVersionRequest }
-            output: UnlabelParameterVersionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UnlabelParameterVersionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UnlabelParameterVersionRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UnlabelParameterVersionRequest }
-            output: ParameterNotFound
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UnlabelParameterVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UnlabelParameterVersionRequest }
-            output: ParameterVersionNotFound
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UnlabelParameterVersionRequest }
+        output: UnlabelParameterVersionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateAssociation': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: UpdateAssociationResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidSchedule
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidParameters
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidOutputLocation
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidUpdate
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidTarget
-            outputFormat: 'json'
-            status: 489
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidAssociationVersion
-            outputFormat: 'json'
-            status: 490
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: AssociationVersionLimitExceeded
-            outputFormat: 'json'
-            status: 491
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociation'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationRequest }
-            output: InvalidTargetMaps
-            outputFormat: 'json'
-            status: 492
-          }
+        } & { json: UpdateAssociationRequest }
+        output: UpdateAssociationResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateAssociationStatus': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: UpdateAssociationStatusResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: AssociationDoesNotExist
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: StatusUnchanged
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateAssociationStatus'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAssociationStatusRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: UpdateAssociationStatusRequest }
+        output: UpdateAssociationStatusResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: UpdateDocumentResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: MaxDocumentSizeExceeded
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: DocumentVersionLimitExceeded
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: DuplicateDocumentContent
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: DuplicateDocumentVersionName
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InvalidDocumentContent
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InvalidDocumentSchemaVersion
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentRequest }
-            output: InvalidDocumentOperation
-            outputFormat: 'json'
-            status: 489
-          }
+        } & { json: UpdateDocumentRequest }
+        output: UpdateDocumentResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateDocumentDefaultVersion': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentDefaultVersionRequest }
-            output: UpdateDocumentDefaultVersionResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentDefaultVersionRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentDefaultVersionRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentDefaultVersionRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentDefaultVersion'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentDefaultVersionRequest }
-            output: InvalidDocumentSchemaVersion
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UpdateDocumentDefaultVersionRequest }
+        output: UpdateDocumentDefaultVersionResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateDocumentMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentMetadataRequest }
-            output: UpdateDocumentMetadataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentMetadataRequest }
-            output: InvalidDocument
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentMetadataRequest }
-            output: InvalidDocumentOperation
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateDocumentMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateDocumentMetadataRequest }
-            output: InvalidDocumentVersion
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UpdateDocumentMetadataRequest }
+        output: UpdateDocumentMetadataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateMaintenanceWindow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowRequest }
-            output: UpdateMaintenanceWindowResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindow'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindow'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateMaintenanceWindowRequest }
+        output: UpdateMaintenanceWindowResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateMaintenanceWindowTarget': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTarget'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTargetRequest }
-            output: UpdateMaintenanceWindowTargetResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTarget'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTarget'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTargetRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTarget'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTargetRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateMaintenanceWindowTargetRequest }
+        output: UpdateMaintenanceWindowTargetResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateMaintenanceWindowTask': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTaskRequest }
-            output: UpdateMaintenanceWindowTaskResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTask'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTaskRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateMaintenanceWindowTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateMaintenanceWindowTaskRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateMaintenanceWindowTaskRequest }
+        output: UpdateMaintenanceWindowTaskResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateManagedInstanceRole': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateManagedInstanceRole'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateManagedInstanceRoleRequest }
-            output: UpdateManagedInstanceRoleResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateManagedInstanceRole'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateManagedInstanceRole'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateManagedInstanceRoleRequest }
-            output: InvalidInstanceId
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateManagedInstanceRole'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateManagedInstanceRoleRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateManagedInstanceRoleRequest }
+        output: UpdateManagedInstanceRoleResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateOpsItem': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: UpdateOpsItemResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: OpsItemNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: OpsItemAlreadyExistsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: OpsItemLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: OpsItemInvalidParameterException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsItem'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsItemRequest }
-            output: OpsItemAccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: UpdateOpsItemRequest }
+        output: UpdateOpsItemResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateOpsMetadata': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: UpdateOpsMetadataResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: OpsMetadataNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: OpsMetadataInvalidArgumentException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: OpsMetadataKeyLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: OpsMetadataTooManyUpdatesException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateOpsMetadata'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateOpsMetadataRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateOpsMetadataRequest }
+        output: UpdateOpsMetadataResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdatePatchBaseline': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePatchBaselineRequest }
-            output: UpdatePatchBaselineResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdatePatchBaseline'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePatchBaselineRequest }
-            output: DoesNotExistException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdatePatchBaseline'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdatePatchBaselineRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdatePatchBaselineRequest }
+        output: UpdatePatchBaselineResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateResourceDataSync': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateResourceDataSyncRequest }
-            output: UpdateResourceDataSyncResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateResourceDataSyncRequest }
-            output: ResourceDataSyncNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateResourceDataSyncRequest }
-            output: ResourceDataSyncInvalidConfigurationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateResourceDataSyncRequest }
-            output: ResourceDataSyncConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateResourceDataSync'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateResourceDataSyncRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: UpdateResourceDataSyncRequest }
+        output: UpdateResourceDataSyncResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AmazonSSM.UpdateServiceSetting': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceSettingRequest }
-            output: UpdateServiceSettingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AmazonSSM.UpdateServiceSetting'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceSettingRequest }
-            output: InternalServerError
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceSettingRequest }
-            output: ServiceSettingNotFound
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AmazonSSM.UpdateServiceSetting'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateServiceSettingRequest }
-            output: TooManyUpdates
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UpdateServiceSettingRequest }
+        output: UpdateServiceSettingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

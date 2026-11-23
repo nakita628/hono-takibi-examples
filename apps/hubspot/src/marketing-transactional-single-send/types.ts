@@ -184,12 +184,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { tokenId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { tokenId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { tokenId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/marketing/transactional/2026-09/smtp-tokens/:tokenId/password-reset': {

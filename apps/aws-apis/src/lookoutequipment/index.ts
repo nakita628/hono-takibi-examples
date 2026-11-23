@@ -1,75 +1,209 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsLookoutEquipmentFrontendServiceCreateDatasetHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceCreateInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceCreateLabelGroupHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceCreateLabelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceCreateModelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteDatasetHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteLabelGroupHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteLabelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteModelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeDataIngestionJobHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeDatasetHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeLabelGroupHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeLabelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeModelHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListDataIngestionJobsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListDatasetsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceEventsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceExecutionsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceSchedulersHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListLabelGroupsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListLabelsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListModelsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListSensorStatisticsHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceListTagsForResourceHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceStartDataIngestionJobHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceStartInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceStopInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceTagResourceHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceUntagResourceHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceUpdateInferenceSchedulerHandler,
-  xAmzTargetAwsLookoutEquipmentFrontendServiceUpdateLabelGroupHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateDatasetRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateModelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelGroupRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteModelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDatasetRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelGroupRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeModelRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListDataIngestionJobsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListDatasetsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceEventsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceExecutionsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceSchedulersRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelGroupsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListModelsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListSensorStatisticsRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListTagsForResourceRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStartDataIngestionJobRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStartInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStopInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceTagResourceRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUntagResourceRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateInferenceSchedulerRoute,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateLabelGroupRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateDatasetRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateModelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelGroupRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteModelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDatasetRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelGroupRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeModelRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListDataIngestionJobsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListDatasetsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceEventsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceExecutionsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceSchedulersRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelGroupsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListModelsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListSensorStatisticsRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceListTagsForResourceRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStartDataIngestionJobRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStartInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceStopInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceTagResourceRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUntagResourceRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateInferenceSchedulerRouteHandler,
+  postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateLabelGroupRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceCreateDatasetHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceCreateInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceCreateLabelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceCreateLabelGroupHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceCreateModelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteDatasetHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteLabelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteLabelGroupHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteModelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeDataIngestionJobHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeDatasetHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeLabelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeLabelGroupHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceDescribeModelHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListDataIngestionJobsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListDatasetsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceEventsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceExecutionsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListInferenceSchedulersHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListLabelGroupsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListLabelsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListModelsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListSensorStatisticsHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceStartDataIngestionJobHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceStartInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceStopInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceTagResourceHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceUntagResourceHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceUpdateInferenceSchedulerHandler)
-  .route('/', xAmzTargetAwsLookoutEquipmentFrontendServiceUpdateLabelGroupHandler)
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateDatasetRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateModelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelGroupRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteLabelGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteModelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDataIngestionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDatasetRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeDatasetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelGroupRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeLabelGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeModelRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceDescribeModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListDataIngestionJobsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListDataIngestionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListDatasetsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListDatasetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceEventsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceExecutionsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceSchedulersRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListInferenceSchedulersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelGroupsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListModelsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListModelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListSensorStatisticsRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListSensorStatisticsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListTagsForResourceRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStartDataIngestionJobRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStartDataIngestionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStartInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStartInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStopInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceStopInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceTagResourceRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUntagResourceRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateInferenceSchedulerRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateInferenceSchedulerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateLabelGroupRoute,
+    postXAmzTargetAWSLookoutEquipmentFrontendServiceUpdateLabelGroupRouteHandler,
+  )
 
 export default app

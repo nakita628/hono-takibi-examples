@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFormatQueryRoute, postFormatQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFormatQueryRoute, postFormatQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatQueryRouteHandler: RouteHandler<typeof getFormatQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatQueryHandler = app
-  .openapi(getFormatQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFormatQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFormatQueryRouteHandler: RouteHandler<typeof postFormatQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

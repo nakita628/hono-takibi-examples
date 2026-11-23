@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBinQuerybuilderJsonRoute, postBinQuerybuilderJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBinQuerybuilderJsonRoute, postBinQuerybuilderJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBinQuerybuilderJsonRouteHandler: RouteHandler<
+  typeof getBinQuerybuilderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const binHandler = app
-  .openapi(getBinQuerybuilderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBinQuerybuilderJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBinQuerybuilderJsonRouteHandler: RouteHandler<
+  typeof postBinQuerybuilderJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

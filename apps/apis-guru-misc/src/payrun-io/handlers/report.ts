@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReportReportDefinitionIdRoute,
   getReportACTPAYINSRunRoute,
   getReportAOELIABILITYRunRoute,
@@ -26,78 +26,140 @@ import {
   putReportReportDefinitionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReportACTPAYINSRunRouteHandler: RouteHandler<
+  typeof getReportACTPAYINSRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reportHandler = app
-  .openapi(getReportACTPAYINSRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportAOELIABILITYRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportDPSMSGRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportEMPSUMRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportGRO2NETRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportHOLBALRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportJOURNALRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportLASTPAYDATERunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportNETPAYRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportNEXTPERIODRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportP11SUMRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportP32RunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportP32SUMRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportP45RunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportP60RunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPAPDISRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPASSRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPAYDASHBOARDRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPAYSLIP3RunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportPENLIABILITYRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReportReportDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportReportDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReportReportDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReportReportDefinitionIdRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReportAOELIABILITYRunRouteHandler: RouteHandler<
+  typeof getReportAOELIABILITYRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportDPSMSGRunRouteHandler: RouteHandler<typeof getReportDPSMSGRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportEMPSUMRunRouteHandler: RouteHandler<typeof getReportEMPSUMRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportGRO2NETRunRouteHandler: RouteHandler<
+  typeof getReportGRO2NETRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportHOLBALRunRouteHandler: RouteHandler<typeof getReportHOLBALRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportJOURNALRunRouteHandler: RouteHandler<
+  typeof getReportJOURNALRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportLASTPAYDATERunRouteHandler: RouteHandler<
+  typeof getReportLASTPAYDATERunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportNETPAYRunRouteHandler: RouteHandler<typeof getReportNETPAYRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportNEXTPERIODRunRouteHandler: RouteHandler<
+  typeof getReportNEXTPERIODRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportP11SUMRunRouteHandler: RouteHandler<typeof getReportP11SUMRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportP32RunRouteHandler: RouteHandler<typeof getReportP32RunRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportP32SUMRunRouteHandler: RouteHandler<typeof getReportP32SUMRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportP45RunRouteHandler: RouteHandler<typeof getReportP45RunRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportP60RunRouteHandler: RouteHandler<typeof getReportP60RunRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPAPDISRunRouteHandler: RouteHandler<typeof getReportPAPDISRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPASSRunRouteHandler: RouteHandler<typeof getReportPASSRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPAYDASHBOARDRunRouteHandler: RouteHandler<
+  typeof getReportPAYDASHBOARDRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPAYSLIP3RunRouteHandler: RouteHandler<
+  typeof getReportPAYSLIP3RunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportPENLIABILITYRunRouteHandler: RouteHandler<
+  typeof getReportPENLIABILITYRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReportReportDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteReportReportDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportReportDefinitionIdRouteHandler: RouteHandler<
+  typeof getReportReportDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putReportReportDefinitionIdRouteHandler: RouteHandler<
+  typeof putReportReportDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReportReportDefinitionIdRunRouteHandler: RouteHandler<
+  typeof getReportReportDefinitionIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

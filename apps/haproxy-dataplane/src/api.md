@@ -113224,7 +113224,7 @@ SSL Certificate ID
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|certificate_id|object|false|none|none|
+|certificate_id|[ssl_certificate_idCertificateId](#schemassl_certificate_idcertificateid)|false|none|none|
 |certificate_id_key|string|false|none|none|
 |certificate_path|string|false|none|none|
 
@@ -115552,3 +115552,28 @@ HAProxy userlist users array
 |information_list|string|false|none|A space-delimited list of WURFL capabilities|
 |information_list_separator|string|false|none|A char that will be used to separate values in a response header containing WURFL results|
 |patch_file|string|false|none|A list of WURFL patch file paths|
+
+<h2 id="tocS_ssl_certificate_idCertificateId">ssl_certificate_idCertificateId</h2>
+<!-- backwards compatibility -->
+<a id="schemassl_certificate_idcertificateid"></a>
+<a id="schema_ssl_certificate_idCertificateId"></a>
+<a id="tocSssl_certificate_idcertificateid"></a>
+<a id="tocsssl_certificate_idcertificateid"></a>
+
+```json
+{
+  "hash_algorithm": "string",
+  "issuer_key_hash": "string",
+  "issuer_name_hash": "string",
+  "serial_number": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|hash_algorithm|string|false|none|none|
+|issuer_key_hash|string|false|none|none|
+|issuer_name_hash|string|false|none|none|
+|serial_number|string|false|none|none|

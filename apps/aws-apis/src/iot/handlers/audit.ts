@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuditConfigurationRoute,
   deleteAuditScheduledauditsScheduledAuditNameRoute,
   getAuditConfigurationRoute,
@@ -27,81 +27,150 @@ import {
   putAuditTasksTaskIdCancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putAuditMitigationactionsTasksTaskIdCancelRouteHandler: RouteHandler<
+  typeof putAuditMitigationactionsTasksTaskIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const auditHandler = app
-  .openapi(putAuditMitigationactionsTasksTaskIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuditTasksTaskIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditSuppressionsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditScheduledauditsScheduledAuditNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuditScheduledauditsScheduledAuditNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditScheduledauditsScheduledAuditNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuditScheduledauditsScheduledAuditNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuditConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuditConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditSuppressionsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditFindingsFindingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditMitigationactionsTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditMitigationactionsTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditSuppressionsDescribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditMitigationactionsExecutionsTaskIdFindingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditMitigationactionsTasksStartTimeEndTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditSuppressionsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditTasksStartTimeEndTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditRelatedResourcesFindingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditScheduledauditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuditSuppressionsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAuditTasksTaskIdCancelRouteHandler: RouteHandler<
+  typeof putAuditTasksTaskIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditSuppressionsCreateRouteHandler: RouteHandler<
+  typeof postAuditSuppressionsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditScheduledauditsScheduledAuditNameRouteHandler: RouteHandler<
+  typeof postAuditScheduledauditsScheduledAuditNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuditScheduledauditsScheduledAuditNameRouteHandler: RouteHandler<
+  typeof deleteAuditScheduledauditsScheduledAuditNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditScheduledauditsScheduledAuditNameRouteHandler: RouteHandler<
+  typeof getAuditScheduledauditsScheduledAuditNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuditScheduledauditsScheduledAuditNameRouteHandler: RouteHandler<
+  typeof patchAuditScheduledauditsScheduledAuditNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuditConfigurationRouteHandler: RouteHandler<
+  typeof deleteAuditConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditConfigurationRouteHandler: RouteHandler<
+  typeof getAuditConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuditConfigurationRouteHandler: RouteHandler<
+  typeof patchAuditConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditSuppressionsDeleteRouteHandler: RouteHandler<
+  typeof postAuditSuppressionsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditFindingsFindingIdRouteHandler: RouteHandler<
+  typeof getAuditFindingsFindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditMitigationactionsTasksTaskIdRouteHandler: RouteHandler<
+  typeof getAuditMitigationactionsTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditMitigationactionsTasksTaskIdRouteHandler: RouteHandler<
+  typeof postAuditMitigationactionsTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditSuppressionsDescribeRouteHandler: RouteHandler<
+  typeof postAuditSuppressionsDescribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditTasksTaskIdRouteHandler: RouteHandler<
+  typeof getAuditTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditFindingsRouteHandler: RouteHandler<typeof postAuditFindingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditMitigationactionsExecutionsTaskIdFindingIdRouteHandler: RouteHandler<
+  typeof getAuditMitigationactionsExecutionsTaskIdFindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditMitigationactionsTasksStartTimeEndTimeRouteHandler: RouteHandler<
+  typeof getAuditMitigationactionsTasksStartTimeEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditSuppressionsListRouteHandler: RouteHandler<
+  typeof postAuditSuppressionsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditTasksStartTimeEndTimeRouteHandler: RouteHandler<
+  typeof getAuditTasksStartTimeEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditRelatedResourcesFindingIdRouteHandler: RouteHandler<
+  typeof getAuditRelatedResourcesFindingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditScheduledauditsRouteHandler: RouteHandler<
+  typeof getAuditScheduledauditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditTasksRouteHandler: RouteHandler<typeof postAuditTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuditSuppressionsUpdateRouteHandler: RouteHandler<
+  typeof patchAuditSuppressionsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

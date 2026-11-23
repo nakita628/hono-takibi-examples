@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEmailHardBouncesRoute, getEmailUnsubscribesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEmailHardBouncesRoute, getEmailUnsubscribesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEmailHardBouncesRouteHandler: RouteHandler<
+  typeof getEmailHardBouncesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const emailHandler = app
-  .openapi(getEmailHardBouncesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailUnsubscribesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmailUnsubscribesRouteHandler: RouteHandler<
+  typeof getEmailUnsubscribesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

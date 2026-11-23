@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { ratcrHandler } from './handlers'
+import { postRatcrCertificateRoute } from './routes'
+import { postRatcrCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', ratcrHandler)
+export const api = app.openapi(postRatcrCertificateRoute, postRatcrCertificateRouteHandler)
 
 export default app

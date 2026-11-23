@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPurgeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPurgeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const purgeHandler = app.openapi(postPurgeRoute, (c) => {
+export const postPurgeRouteHandler: RouteHandler<typeof postPurgeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

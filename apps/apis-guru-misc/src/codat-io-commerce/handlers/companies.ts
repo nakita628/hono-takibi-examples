@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRoute,
   getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRoute,
   getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRoute,
@@ -13,39 +13,68 @@ import {
   getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const companiesHandler = app
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRouteHandler: RouteHandler<
+  typeof getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1DonationsCarbonCalculateRoute,
   getApiV1DonationsCarbonStatsRoute,
   getApiV1DonationsCryptoCalculateRoute,
@@ -10,30 +10,50 @@ import {
   postApiV1DonationsCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1DonationsCarbonCalculateRouteHandler: RouteHandler<
+  typeof getApiV1DonationsCarbonCalculateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1DonationsCarbonCalculateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DonationsCarbonStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DonationsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DonationsCryptoCalculateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DonationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DonationsShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1NonprofitsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1NonprofitsShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV1DonationsCarbonStatsRouteHandler: RouteHandler<
+  typeof getApiV1DonationsCarbonStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DonationsCreateRouteHandler: RouteHandler<
+  typeof postApiV1DonationsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DonationsCryptoCalculateRouteHandler: RouteHandler<
+  typeof getApiV1DonationsCryptoCalculateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DonationsIndexRouteHandler: RouteHandler<
+  typeof getApiV1DonationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DonationsShowRouteHandler: RouteHandler<
+  typeof getApiV1DonationsShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1NonprofitsListRouteHandler: RouteHandler<
+  typeof getApiV1NonprofitsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1NonprofitsShowRouteHandler: RouteHandler<
+  typeof getApiV1NonprofitsShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

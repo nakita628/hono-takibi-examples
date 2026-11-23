@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRecommendationsAvailableGenreSeedsRoute, getRecommendationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRecommendationsAvailableGenreSeedsRoute, getRecommendationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRecommendationsRouteHandler: RouteHandler<typeof getRecommendationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const recommendationsHandler = app
-  .openapi(getRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecommendationsAvailableGenreSeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRecommendationsAvailableGenreSeedsRouteHandler: RouteHandler<
+  typeof getRecommendationsAvailableGenreSeedsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

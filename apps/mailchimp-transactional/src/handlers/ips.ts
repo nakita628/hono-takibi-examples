@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postIpsCancelWarmupRoute,
   postIpsCheckCustomDnsRoute,
   postIpsCreatePoolRoute,
@@ -15,45 +15,70 @@ import {
   postIpsStartWarmupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIpsListRouteHandler: RouteHandler<typeof postIpsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ipsHandler = app
-  .openapi(postIpsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsProvisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsStartWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsCancelWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsSetPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsListPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsPoolInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsCreatePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsDeletePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsCheckCustomDnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsSetCustomDnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIpsInfoRouteHandler: RouteHandler<typeof postIpsInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsProvisionRouteHandler: RouteHandler<typeof postIpsProvisionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsStartWarmupRouteHandler: RouteHandler<typeof postIpsStartWarmupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsCancelWarmupRouteHandler: RouteHandler<
+  typeof postIpsCancelWarmupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsSetPoolRouteHandler: RouteHandler<typeof postIpsSetPoolRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsDeleteRouteHandler: RouteHandler<typeof postIpsDeleteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsListPoolsRouteHandler: RouteHandler<typeof postIpsListPoolsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsPoolInfoRouteHandler: RouteHandler<typeof postIpsPoolInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsCreatePoolRouteHandler: RouteHandler<typeof postIpsCreatePoolRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsDeletePoolRouteHandler: RouteHandler<typeof postIpsDeletePoolRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsCheckCustomDnsRouteHandler: RouteHandler<
+  typeof postIpsCheckCustomDnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsSetCustomDnsRouteHandler: RouteHandler<
+  typeof postIpsSetCustomDnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

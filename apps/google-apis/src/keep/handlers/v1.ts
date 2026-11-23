@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1NameRoute,
   getV1NotesRoute,
@@ -8,24 +8,30 @@ import {
   postV1ParentPermissionsBatchDeleteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1NotesRouteHandler: RouteHandler<typeof getV1NotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1NotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentPermissionsBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentPermissionsBatchDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1NotesRouteHandler: RouteHandler<typeof postV1NotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentPermissionsBatchCreateRouteHandler: RouteHandler<
+  typeof postV1ParentPermissionsBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentPermissionsBatchDeleteRouteHandler: RouteHandler<
+  typeof postV1ParentPermissionsBatchDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

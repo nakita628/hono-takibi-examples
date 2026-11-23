@@ -1,8 +1,2030 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1Handler, v2Handler } from './handlers'
+import {
+  deleteV1ArchetypesIdRoute,
+  deleteV1AttributesPropertyRoute,
+  deleteV1ConfigsKeyRoute,
+  deleteV1ConfigsRevisionsKeyVersionProjectionRoute,
+  deleteV1ConfigsRevisionsKeyVersionPropertyRoute,
+  deleteV1ConstantsKeyRoute,
+  deleteV1ContextualBanditQueriesIdRoute,
+  deleteV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+  deleteV1ContextualBanditsIdRoute,
+  deleteV1CustomFieldsIdRoute,
+  deleteV1CustomHooksIdRoute,
+  deleteV1DashboardsIdRoute,
+  deleteV1DataSourcesIdRoute,
+  deleteV1DimensionsIdRoute,
+  deleteV1EnvironmentsIdRoute,
+  deleteV1EventWebhooksIdRoute,
+  deleteV1ExperimentsIdRoute,
+  deleteV1ExperimentsIdVariationVariationIdScreenshotRoute,
+  deleteV1ExperimentTemplatesIdRoute,
+  deleteV1FactMetricsIdRoute,
+  deleteV1FactTablesFactTableIdFiltersIdRoute,
+  deleteV1FactTablesFactTableIdVirtualColumnsIdRoute,
+  deleteV1FactTablesIdRoute,
+  deleteV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+  deleteV1FeaturesIdRevisionsVersionRulesRuleIdRoute,
+  deleteV1FeaturesIdRoute,
+  deleteV1InterleavingExposureQueriesIdRoute,
+  deleteV1InterleavingsIdRoute,
+  deleteV1LearningsIdRoute,
+  deleteV1MembersIdRoute,
+  deleteV1MetricGroupsIdRoute,
+  deleteV1MetricsIdRoute,
+  deleteV1NamespacesIdRoute,
+  deleteV1PopulationsIdRoute,
+  deleteV1ProjectsIdRoute,
+  deleteV1RampSchedulesIdRoute,
+  deleteV1RampScheduleTemplatesIdRoute,
+  deleteV1SavedGroupsIdRoute,
+  deleteV1SavedGroupsIdUploadsVersionRoute,
+  deleteV1SdkConnectionsIdRoute,
+  deleteV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRoute,
+  deleteV1SdkWebhooksIdRoute,
+  deleteV1SegmentsIdRoute,
+  deleteV1TeamsIdMembersRoute,
+  deleteV1TeamsIdRoute,
+  deleteV1WebhookSecretsIdRoute,
+  deleteV2FeaturesIdRevisionsVersionLogLogIdRoute,
+  deleteV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+  deleteV2FeaturesIdRevisionsVersionRulesRuleIdRoute,
+  deleteV2FeaturesIdRoute,
+  getV1ArchetypesIdRoute,
+  getV1ArchetypesRoute,
+  getV1AttributesRoute,
+  getV1AuditsRoute,
+  getV1AutoRunsIdRoute,
+  getV1AutoRunsRoute,
+  getV1CodeRefsIdRoute,
+  getV1CodeRefsRoute,
+  getV1ConfigsKeyKeyUsageRoute,
+  getV1ConfigsKeyLineageRoute,
+  getV1ConfigsKeyReferencesRoute,
+  getV1ConfigsKeyRoute,
+  getV1ConfigsKeySchemaRoute,
+  getV1ConfigsRevisionsKeyLatestRoute,
+  getV1ConfigsRevisionsKeyRoute,
+  getV1ConfigsRevisionsKeyVersionMergeStatusRoute,
+  getV1ConfigsRevisionsKeyVersionRoute,
+  getV1ConfigsRevisionsRoute,
+  getV1ConfigsRoute,
+  getV1ConfirmationsIdRoute,
+  getV1ConfirmationsRoute,
+  getV1ConstantsKeyReferencesRoute,
+  getV1ConstantsKeyRoute,
+  getV1ConstantsRevisionsKeyLatestRoute,
+  getV1ConstantsRevisionsKeyRoute,
+  getV1ConstantsRevisionsKeyVersionMergeStatusRoute,
+  getV1ConstantsRevisionsKeyVersionRoute,
+  getV1ConstantsRevisionsRoute,
+  getV1ConstantsRoute,
+  getV1ContextualBanditQueriesIdRoute,
+  getV1ContextualBanditQueriesRoute,
+  getV1ContextualBanditsIdCurrentRoute,
+  getV1ContextualBanditsIdEventsEventIdRoute,
+  getV1ContextualBanditsIdEventsRoute,
+  getV1ContextualBanditsIdLinkedFeaturesRoute,
+  getV1ContextualBanditsIdResultsRoute,
+  getV1ContextualBanditsIdRoute,
+  getV1ContextualBanditsIdSnapshotsRoute,
+  getV1ContextualBanditsIdSnapshotsSnapshotIdRoute,
+  getV1ContextualBanditsIdStatusRoute,
+  getV1ContextualBanditsIdVisualChangesetsRoute,
+  getV1ContextualBanditsRoute,
+  getV1CustomFieldsIdRoute,
+  getV1CustomFieldsRoute,
+  getV1CustomHooksIdHistoryRoute,
+  getV1CustomHooksIdRoute,
+  getV1CustomHooksRoute,
+  getV1DashboardsByExperimentExperimentIdRoute,
+  getV1DashboardsIdRoute,
+  getV1DashboardsRoute,
+  getV1DataSourcesDataSourceIdInformationSchemaRoute,
+  getV1DataSourcesIdQueriesRoute,
+  getV1DataSourcesIdRoute,
+  getV1DataSourcesRoute,
+  getV1DimensionsIdRoute,
+  getV1DimensionsRoute,
+  getV1EnvironmentsRoute,
+  getV1EventsIdRoute,
+  getV1EventsRoute,
+  getV1EventWebhooksIdLogsRoute,
+  getV1EventWebhooksIdRoute,
+  getV1EventWebhooksRoute,
+  getV1ExperimentNamesRoute,
+  getV1ExperimentsIdResultsRoute,
+  getV1ExperimentsIdRoute,
+  getV1ExperimentsIdStartChecklistRoute,
+  getV1ExperimentsIdVisualChangesetsRoute,
+  getV1ExperimentsResultsRoute,
+  getV1ExperimentsRoute,
+  getV1ExperimentTemplatesIdRoute,
+  getV1ExperimentTemplatesRoute,
+  getV1FactMetricsIdRoute,
+  getV1FactMetricsRoute,
+  getV1FactTablesFactTableIdFiltersIdRoute,
+  getV1FactTablesFactTableIdFiltersRoute,
+  getV1FactTablesIdAggregatedTablesRoute,
+  getV1FactTablesIdAggregatedTablesRunsRoute,
+  getV1FactTablesIdAggregatedTablesRunsRunIdRoute,
+  getV1FactTablesIdRoute,
+  getV1FactTablesRoute,
+  getV1FeatureKeysRoute,
+  getV1FeaturesIdRevisionsLatestRoute,
+  getV1FeaturesIdRevisionsRoute,
+  getV1FeaturesIdRevisionsVersionMergeStatusRoute,
+  getV1FeaturesIdRevisionsVersionRoute,
+  getV1FeaturesIdRoute,
+  getV1FeaturesRoute,
+  getV1HoldoutsIdRoute,
+  getV1HoldoutsRoute,
+  getV1InformationSchemaTablesTableIdRoute,
+  getV1InterleavingExposureQueriesIdRoute,
+  getV1InterleavingExposureQueriesRoute,
+  getV1InterleavingsIdResultsRoute,
+  getV1InterleavingsIdRoute,
+  getV1InterleavingsIdSnapshotsRoute,
+  getV1InterleavingsIdSnapshotsSnapshotIdRoute,
+  getV1InterleavingsIdStatusRoute,
+  getV1InterleavingsRoute,
+  getV1LearningsIdRoute,
+  getV1LearningsRoute,
+  getV1MembersRoute,
+  getV1MetricGroupsIdRoute,
+  getV1MetricGroupsRoute,
+  getV1MetricsIdExperimentsRoute,
+  getV1MetricsIdRoute,
+  getV1MetricsRoute,
+  getV1NamespacesIdMembershipsRoute,
+  getV1NamespacesIdRoute,
+  getV1NamespacesRoute,
+  getV1OrganizationsRoute,
+  getV1PopulationsIdRoute,
+  getV1PopulationsRoute,
+  getV1ProductAnalyticsColumnsRoute,
+  getV1ProductAnalyticsExplorationsIdRoute,
+  getV1ProductAnalyticsSearchRoute,
+  getV1ProjectsIdRoute,
+  getV1ProjectsRoute,
+  getV1QueriesIdRoute,
+  getV1RampSchedulesIdRoute,
+  getV1RampSchedulesIdStatusRoute,
+  getV1RampSchedulesRoute,
+  getV1RampScheduleTemplatesIdRoute,
+  getV1RampScheduleTemplatesRoute,
+  getV1ReportsIdRoute,
+  getV1ReportsRoute,
+  getV1RevisionsRoute,
+  getV1SavedGroupsIdReferencesRoute,
+  getV1SavedGroupsIdRoute,
+  getV1SavedGroupsIdUploadsRoute,
+  getV1SavedGroupsIdUploadsVersionRoute,
+  getV1SavedGroupsRevisionsRoute,
+  getV1SavedGroupsRevisionsSavedGroupIdLatestRoute,
+  getV1SavedGroupsRevisionsSavedGroupIdRoute,
+  getV1SavedGroupsRevisionsSavedGroupIdVersionMergeStatusRoute,
+  getV1SavedGroupsRevisionsSavedGroupIdVersionRoute,
+  getV1SavedGroupsRoute,
+  getV1SdkConnectionsIdRoute,
+  getV1SdkConnectionsIdWebhooksRoute,
+  getV1SdkConnectionsLookupKeyRoute,
+  getV1SdkConnectionsRevisionsIdLatestRoute,
+  getV1SdkConnectionsRevisionsIdRoute,
+  getV1SdkConnectionsRevisionsIdVersionMergeStatusRoute,
+  getV1SdkConnectionsRevisionsIdVersionRoute,
+  getV1SdkConnectionsRevisionsRoute,
+  getV1SdkConnectionsRoute,
+  getV1SdkPayloadKeyRoute,
+  getV1SegmentsIdRoute,
+  getV1SegmentsRoute,
+  getV1SettingsRoute,
+  getV1SnapshotsIdRoute,
+  getV1StaleFeaturesRoute,
+  getV1TeamsIdRoute,
+  getV1TeamsRoute,
+  getV1UsageMetricsRoute,
+  getV1VersionRoute,
+  getV1VisualChangesetsIdRoute,
+  getV1WebhookSecretsIdRoute,
+  getV1WebhookSecretsRoute,
+  getV2FeatureKeysRoute,
+  getV2FeatureRevisionsRoute,
+  getV2FeaturesIdRevisionsLatestRoute,
+  getV2FeaturesIdRevisionsRoute,
+  getV2FeaturesIdRevisionsVersionDiffRoute,
+  getV2FeaturesIdRevisionsVersionLogRoute,
+  getV2FeaturesIdRevisionsVersionMergeStatusRoute,
+  getV2FeaturesIdRevisionsVersionRoute,
+  getV2FeaturesIdRoute,
+  getV2FeaturesRoute,
+  getV2StaleFeaturesRoute,
+  postV1ArchetypesRoute,
+  postV1AttributesRoute,
+  postV1AutoRunsIdArtifactsRoute,
+  postV1AutoRunsRoute,
+  postV1BulkImportFactsRoute,
+  postV1CodeRefsRoute,
+  postV1ConfigsKeyArchiveRoute,
+  postV1ConfigsKeyLockRoute,
+  postV1ConfigsKeyRoute,
+  postV1ConfigsKeySchemaVerifyRoute,
+  postV1ConfigsKeyUnarchiveRoute,
+  postV1ConfigsKeyUnlockRoute,
+  postV1ConfigsRevisionsKeyRoute,
+  postV1ConfigsRevisionsKeyVersionDiscardRoute,
+  postV1ConfigsRevisionsKeyVersionPublishRoute,
+  postV1ConfigsRevisionsKeyVersionRebaseRoute,
+  postV1ConfigsRevisionsKeyVersionRecallReviewRoute,
+  postV1ConfigsRevisionsKeyVersionReopenRoute,
+  postV1ConfigsRevisionsKeyVersionRequestReviewRoute,
+  postV1ConfigsRevisionsKeyVersionRevertRoute,
+  postV1ConfigsRevisionsKeyVersionSchedulePublishRoute,
+  postV1ConfigsRevisionsKeyVersionSubmitReviewRoute,
+  postV1ConfigsRevisionsKeyVersionUndoReviewRoute,
+  postV1ConfigsRoute,
+  postV1ConstantsKeyArchiveRoute,
+  postV1ConstantsKeyRoute,
+  postV1ConstantsKeyUnarchiveRoute,
+  postV1ConstantsRevisionsKeyRoute,
+  postV1ConstantsRevisionsKeyVersionDiscardRoute,
+  postV1ConstantsRevisionsKeyVersionPublishRoute,
+  postV1ConstantsRevisionsKeyVersionRebaseRoute,
+  postV1ConstantsRevisionsKeyVersionRecallReviewRoute,
+  postV1ConstantsRevisionsKeyVersionReopenRoute,
+  postV1ConstantsRevisionsKeyVersionRequestReviewRoute,
+  postV1ConstantsRevisionsKeyVersionRevertRoute,
+  postV1ConstantsRevisionsKeyVersionSchedulePublishRoute,
+  postV1ConstantsRevisionsKeyVersionSubmitReviewRoute,
+  postV1ConstantsRevisionsKeyVersionUndoReviewRoute,
+  postV1ConstantsRoute,
+  postV1ContextualBanditQueriesRoute,
+  postV1ContextualBanditsIdCancelRoute,
+  postV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+  postV1ContextualBanditsIdRefreshRoute,
+  postV1ContextualBanditsIdStartRoute,
+  postV1ContextualBanditsIdStopRoute,
+  postV1ContextualBanditsIdVariationsRoute,
+  postV1ContextualBanditsIdVisualChangesetsRoute,
+  postV1ContextualBanditsRoute,
+  postV1CustomFieldsRoute,
+  postV1CustomHooksIdRevertRoute,
+  postV1CustomHooksIdRoute,
+  postV1CustomHooksRoute,
+  postV1CustomHooksTestRoute,
+  postV1DashboardsRoute,
+  postV1DataSourcesIdInformationSchemaRefreshRoute,
+  postV1DataSourcesIdRoute,
+  postV1DataSourcesIdSqlPreviewValuesRoute,
+  postV1DataSourcesIdSqlRunQueryRoute,
+  postV1DataSourcesIdSqlSearchTablesRoute,
+  postV1DataSourcesIdSqlTableSchemaRoute,
+  postV1DataSourcesRoute,
+  postV1DimensionsIdRoute,
+  postV1DimensionsRoute,
+  postV1EnvironmentsRoute,
+  postV1EventWebhooksIdTestRoute,
+  postV1EventWebhooksRoute,
+  postV1ExperimentsIdArchiveRoute,
+  postV1ExperimentsIdCommentRoute,
+  postV1ExperimentsIdModifyTemporaryRolloutRoute,
+  postV1ExperimentsIdRoute,
+  postV1ExperimentsIdSnapshotRoute,
+  postV1ExperimentsIdStartChecklistManualCompleteRoute,
+  postV1ExperimentsIdStartRoute,
+  postV1ExperimentsIdStopRoute,
+  postV1ExperimentsIdUnarchiveRoute,
+  postV1ExperimentsIdVariationVariationIdScreenshotUploadRoute,
+  postV1ExperimentsIdVisualChangesetsRoute,
+  postV1ExperimentsRoute,
+  postV1ExperimentTemplatesBulkImportRoute,
+  postV1ExperimentTemplatesRoute,
+  postV1FactMetricsIdAnalysisRoute,
+  postV1FactMetricsIdRoute,
+  postV1FactMetricsRoute,
+  postV1FactTablesFactTableIdFiltersIdRoute,
+  postV1FactTablesFactTableIdFiltersRoute,
+  postV1FactTablesFactTableIdVirtualColumnsIdRoute,
+  postV1FactTablesFactTableIdVirtualColumnsRoute,
+  postV1FactTablesIdAggregatedTablesRefreshRoute,
+  postV1FactTablesIdRoute,
+  postV1FactTablesRoute,
+  postV1FeaturesIdRevertRoute,
+  postV1FeaturesIdRevisionsRoute,
+  postV1FeaturesIdRevisionsVersionDiscardRoute,
+  postV1FeaturesIdRevisionsVersionPublishRoute,
+  postV1FeaturesIdRevisionsVersionRebaseRoute,
+  postV1FeaturesIdRevisionsVersionRequestReviewRoute,
+  postV1FeaturesIdRevisionsVersionRevertRoute,
+  postV1FeaturesIdRevisionsVersionRulesReorderRoute,
+  postV1FeaturesIdRevisionsVersionRulesRoute,
+  postV1FeaturesIdRevisionsVersionSubmitReviewRoute,
+  postV1FeaturesIdRevisionsVersionToggleRoute,
+  postV1FeaturesIdRoute,
+  postV1FeaturesIdToggleRoute,
+  postV1FeaturesRoute,
+  postV1HoldoutsIdStartAnalysisRoute,
+  postV1HoldoutsIdStartRoute,
+  postV1HoldoutsIdStopRoute,
+  postV1HoldoutsRoute,
+  postV1InformationSchemaTablesTableIdRefreshRoute,
+  postV1InterleavingExposureQueriesRoute,
+  postV1InterleavingsIdRefreshRoute,
+  postV1InterleavingsIdStartRoute,
+  postV1InterleavingsIdStopRoute,
+  postV1InterleavingsRoute,
+  postV1LearningsRoute,
+  postV1LearningsSearchRoute,
+  postV1MembersIdRoleRoute,
+  postV1MetricGroupsRoute,
+  postV1MetricsRoute,
+  postV1NamespacesIdRotateSeedRoute,
+  postV1NamespacesRoute,
+  postV1OrganizationsRoute,
+  postV1PopulationsRoute,
+  postV1ProductAnalyticsColumnValuesRoute,
+  postV1ProductAnalyticsDataSourceExplorationRoute,
+  postV1ProductAnalyticsFactTableExplorationRoute,
+  postV1ProductAnalyticsFunnelExplorationRoute,
+  postV1ProductAnalyticsJourneyExplorationRoute,
+  postV1ProductAnalyticsMetricExplorationRoute,
+  postV1ProductAnalyticsSqlExplorationRoute,
+  postV1ProjectsRoute,
+  postV1QueriesIdCancelRoute,
+  postV1RampSchedulesActionsPauseRoute,
+  postV1RampSchedulesActionsRollbackRoute,
+  postV1RampSchedulesIdActionsAddTargetRoute,
+  postV1RampSchedulesIdActionsAdvanceRoute,
+  postV1RampSchedulesIdActionsApproveStepRoute,
+  postV1RampSchedulesIdActionsCompleteRoute,
+  postV1RampSchedulesIdActionsEjectTargetRoute,
+  postV1RampSchedulesIdActionsJumpRoute,
+  postV1RampSchedulesIdActionsPauseRoute,
+  postV1RampSchedulesIdActionsRefreshMonitoringRoute,
+  postV1RampSchedulesIdActionsRestartRoute,
+  postV1RampSchedulesIdActionsResumeRoute,
+  postV1RampSchedulesIdActionsRetryRoute,
+  postV1RampSchedulesIdActionsRollbackRoute,
+  postV1RampSchedulesIdActionsSetAutoUpdateRoute,
+  postV1RampSchedulesIdActionsSetMonitoringModeRoute,
+  postV1RampSchedulesIdActionsStartRoute,
+  postV1RampSchedulesRoute,
+  postV1RampScheduleTemplatesRoute,
+  postV1ReleasesPublishRevisionsRoute,
+  postV1ReportsIdRefreshRoute,
+  postV1ReportsRoute,
+  postV1SavedGroupsIdArchiveRoute,
+  postV1SavedGroupsIdRoute,
+  postV1SavedGroupsIdUnarchiveRoute,
+  postV1SavedGroupsIdUploadsRoute,
+  postV1SavedGroupsIdUploadsVersionLoadsRoute,
+  postV1SavedGroupsIdUploadUrlRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionDiscardRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionItemsAddRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionItemsRemoveRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionPublishRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRebaseRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRecallReviewRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionReopenRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRequestReviewRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRevertRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionSchedulePublishRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionSubmitReviewRoute,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionUndoReviewRoute,
+  postV1SavedGroupsRoute,
+  postV1SdkConnectionsIdWebhooksRoute,
+  postV1SdkConnectionsRevisionsIdRoute,
+  postV1SdkConnectionsRevisionsIdVersionDiscardRoute,
+  postV1SdkConnectionsRevisionsIdVersionPublishRoute,
+  postV1SdkConnectionsRevisionsIdVersionRebaseRoute,
+  postV1SdkConnectionsRevisionsIdVersionRecallReviewRoute,
+  postV1SdkConnectionsRevisionsIdVersionReopenRoute,
+  postV1SdkConnectionsRevisionsIdVersionRequestReviewRoute,
+  postV1SdkConnectionsRevisionsIdVersionRevertRoute,
+  postV1SdkConnectionsRevisionsIdVersionSchedulePublishRoute,
+  postV1SdkConnectionsRevisionsIdVersionSubmitReviewRoute,
+  postV1SdkConnectionsRevisionsIdVersionUndoReviewRoute,
+  postV1SdkConnectionsRevisionsIdVersionWebhooksRoute,
+  postV1SdkConnectionsRoute,
+  postV1SdkWebhooksIdTestRoute,
+  postV1SegmentsIdRoute,
+  postV1SegmentsRoute,
+  postV1TeamsIdMembersRoute,
+  postV1TeamsRoute,
+  postV1TransformCopyRoute,
+  postV1VisualChangesetsIdVisualChangeRoute,
+  postV2DashboardsRoute,
+  postV2FeaturesIdRevertRoute,
+  postV2FeaturesIdRevisionsRoute,
+  postV2FeaturesIdRevisionsVersionDiscardRoute,
+  postV2FeaturesIdRevisionsVersionPublishRoute,
+  postV2FeaturesIdRevisionsVersionRebasePreviewRoute,
+  postV2FeaturesIdRevisionsVersionRebaseRoute,
+  postV2FeaturesIdRevisionsVersionRecallReviewRoute,
+  postV2FeaturesIdRevisionsVersionReopenRoute,
+  postV2FeaturesIdRevisionsVersionRequestReviewRoute,
+  postV2FeaturesIdRevisionsVersionRevertRoute,
+  postV2FeaturesIdRevisionsVersionRulesReorderRoute,
+  postV2FeaturesIdRevisionsVersionRulesRoute,
+  postV2FeaturesIdRevisionsVersionSchedulePublishRoute,
+  postV2FeaturesIdRevisionsVersionSubmitReviewRoute,
+  postV2FeaturesIdRevisionsVersionToggleRoute,
+  postV2FeaturesIdRevisionsVersionUndoReviewRoute,
+  postV2FeaturesIdRoute,
+  postV2FeaturesIdToggleRoute,
+  postV2FeaturesRoute,
+  putV1ArchetypesIdRoute,
+  putV1AttributesPropertyRoute,
+  putV1AutoRunsIdRoute,
+  putV1ConfigsRevisionsKeyVersionArchiveRoute,
+  putV1ConfigsRevisionsKeyVersionMetadataRoute,
+  putV1ConfigsRevisionsKeyVersionProjectionRoute,
+  putV1ConfigsRevisionsKeyVersionPropertyRoute,
+  putV1ConfigsRevisionsKeyVersionSchemaRoute,
+  putV1ConfigsRevisionsKeyVersionValueRoute,
+  putV1ConstantsRevisionsKeyVersionArchiveRoute,
+  putV1ConstantsRevisionsKeyVersionMetadataRoute,
+  putV1ConstantsRevisionsKeyVersionValueRoute,
+  putV1ContextualBanditQueriesIdRoute,
+  putV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+  putV1ContextualBanditsIdRoute,
+  putV1CustomFieldsIdRoute,
+  putV1DashboardsIdRoute,
+  putV1EnvironmentsIdRoute,
+  putV1EventWebhooksIdRoute,
+  putV1ExperimentsIdScheduleRoute,
+  putV1ExperimentTemplatesIdRoute,
+  putV1FeaturesIdRevisionsVersionArchiveRoute,
+  putV1FeaturesIdRevisionsVersionDefaultValueRoute,
+  putV1FeaturesIdRevisionsVersionHoldoutRoute,
+  putV1FeaturesIdRevisionsVersionMetadataRoute,
+  putV1FeaturesIdRevisionsVersionPrerequisitesRoute,
+  putV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+  putV1FeaturesIdRevisionsVersionRulesRuleIdRoute,
+  putV1HoldoutsIdRoute,
+  putV1InterleavingExposureQueriesIdRoute,
+  putV1InterleavingsIdRoute,
+  putV1LearningsIdRoute,
+  putV1MetricGroupsIdRoute,
+  putV1MetricsIdRoute,
+  putV1NamespacesIdRoute,
+  putV1OrganizationsIdRoute,
+  putV1PopulationsIdRoute,
+  putV1ProjectsIdRoute,
+  putV1RampSchedulesIdLockdownRoute,
+  putV1RampSchedulesIdMonitoringRoute,
+  putV1RampSchedulesIdRoute,
+  putV1RampSchedulesIdStepsRoute,
+  putV1RampScheduleTemplatesIdRoute,
+  putV1ReportsIdMetadataRoute,
+  putV1ReportsIdSettingsRoute,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionArchiveRoute,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionConditionRoute,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionMetadataRoute,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionUploadVersionRoute,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionValuesRoute,
+  putV1SdkConnectionsIdRoute,
+  putV1SdkConnectionsRevisionsIdVersionArchiveRoute,
+  putV1SdkConnectionsRevisionsIdVersionSettingsRoute,
+  putV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRoute,
+  putV1SdkWebhooksIdRoute,
+  putV1SettingsApprovalsRoute,
+  putV1TeamsIdRoute,
+  putV1VisualChangesetsIdRoute,
+  putV1VisualChangesetsIdVisualChangeVisualChangeIdRoute,
+  putV2FeaturesIdRevisionsVersionArchiveRoute,
+  putV2FeaturesIdRevisionsVersionDefaultValueRoute,
+  putV2FeaturesIdRevisionsVersionHoldoutRoute,
+  putV2FeaturesIdRevisionsVersionLogLogIdRoute,
+  putV2FeaturesIdRevisionsVersionMetadataRoute,
+  putV2FeaturesIdRevisionsVersionPrerequisitesRoute,
+  putV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+  putV2FeaturesIdRevisionsVersionRulesRuleIdRoute,
+} from './routes'
+import {
+  deleteV1ArchetypesIdRouteHandler,
+  deleteV1AttributesPropertyRouteHandler,
+  deleteV1ConfigsKeyRouteHandler,
+  deleteV1ConfigsRevisionsKeyVersionProjectionRouteHandler,
+  deleteV1ConfigsRevisionsKeyVersionPropertyRouteHandler,
+  deleteV1ConstantsKeyRouteHandler,
+  deleteV1ContextualBanditQueriesIdRouteHandler,
+  deleteV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  deleteV1ContextualBanditsIdRouteHandler,
+  deleteV1CustomFieldsIdRouteHandler,
+  deleteV1CustomHooksIdRouteHandler,
+  deleteV1DashboardsIdRouteHandler,
+  deleteV1DataSourcesIdRouteHandler,
+  deleteV1DimensionsIdRouteHandler,
+  deleteV1EnvironmentsIdRouteHandler,
+  deleteV1EventWebhooksIdRouteHandler,
+  deleteV1ExperimentsIdRouteHandler,
+  deleteV1ExperimentsIdVariationVariationIdScreenshotRouteHandler,
+  deleteV1ExperimentTemplatesIdRouteHandler,
+  deleteV1FactMetricsIdRouteHandler,
+  deleteV1FactTablesFactTableIdFiltersIdRouteHandler,
+  deleteV1FactTablesFactTableIdVirtualColumnsIdRouteHandler,
+  deleteV1FactTablesIdRouteHandler,
+  deleteV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  deleteV1FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  deleteV1FeaturesIdRouteHandler,
+  deleteV1InterleavingExposureQueriesIdRouteHandler,
+  deleteV1InterleavingsIdRouteHandler,
+  deleteV1LearningsIdRouteHandler,
+  deleteV1MembersIdRouteHandler,
+  deleteV1MetricGroupsIdRouteHandler,
+  deleteV1MetricsIdRouteHandler,
+  deleteV1NamespacesIdRouteHandler,
+  deleteV1PopulationsIdRouteHandler,
+  deleteV1ProjectsIdRouteHandler,
+  deleteV1RampSchedulesIdRouteHandler,
+  deleteV1RampScheduleTemplatesIdRouteHandler,
+  deleteV1SavedGroupsIdRouteHandler,
+  deleteV1SavedGroupsIdUploadsVersionRouteHandler,
+  deleteV1SdkConnectionsIdRouteHandler,
+  deleteV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRouteHandler,
+  deleteV1SdkWebhooksIdRouteHandler,
+  deleteV1SegmentsIdRouteHandler,
+  deleteV1TeamsIdMembersRouteHandler,
+  deleteV1TeamsIdRouteHandler,
+  deleteV1WebhookSecretsIdRouteHandler,
+  deleteV2FeaturesIdRevisionsVersionLogLogIdRouteHandler,
+  deleteV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  deleteV2FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  deleteV2FeaturesIdRouteHandler,
+  getV1ArchetypesIdRouteHandler,
+  getV1ArchetypesRouteHandler,
+  getV1AttributesRouteHandler,
+  getV1AuditsRouteHandler,
+  getV1AutoRunsIdRouteHandler,
+  getV1AutoRunsRouteHandler,
+  getV1CodeRefsIdRouteHandler,
+  getV1CodeRefsRouteHandler,
+  getV1ConfigsKeyKeyUsageRouteHandler,
+  getV1ConfigsKeyLineageRouteHandler,
+  getV1ConfigsKeyReferencesRouteHandler,
+  getV1ConfigsKeyRouteHandler,
+  getV1ConfigsKeySchemaRouteHandler,
+  getV1ConfigsRevisionsKeyLatestRouteHandler,
+  getV1ConfigsRevisionsKeyRouteHandler,
+  getV1ConfigsRevisionsKeyVersionMergeStatusRouteHandler,
+  getV1ConfigsRevisionsKeyVersionRouteHandler,
+  getV1ConfigsRevisionsRouteHandler,
+  getV1ConfigsRouteHandler,
+  getV1ConfirmationsIdRouteHandler,
+  getV1ConfirmationsRouteHandler,
+  getV1ConstantsKeyReferencesRouteHandler,
+  getV1ConstantsKeyRouteHandler,
+  getV1ConstantsRevisionsKeyLatestRouteHandler,
+  getV1ConstantsRevisionsKeyRouteHandler,
+  getV1ConstantsRevisionsKeyVersionMergeStatusRouteHandler,
+  getV1ConstantsRevisionsKeyVersionRouteHandler,
+  getV1ConstantsRevisionsRouteHandler,
+  getV1ConstantsRouteHandler,
+  getV1ContextualBanditQueriesIdRouteHandler,
+  getV1ContextualBanditQueriesRouteHandler,
+  getV1ContextualBanditsIdCurrentRouteHandler,
+  getV1ContextualBanditsIdEventsEventIdRouteHandler,
+  getV1ContextualBanditsIdEventsRouteHandler,
+  getV1ContextualBanditsIdLinkedFeaturesRouteHandler,
+  getV1ContextualBanditsIdResultsRouteHandler,
+  getV1ContextualBanditsIdRouteHandler,
+  getV1ContextualBanditsIdSnapshotsRouteHandler,
+  getV1ContextualBanditsIdSnapshotsSnapshotIdRouteHandler,
+  getV1ContextualBanditsIdStatusRouteHandler,
+  getV1ContextualBanditsIdVisualChangesetsRouteHandler,
+  getV1ContextualBanditsRouteHandler,
+  getV1CustomFieldsIdRouteHandler,
+  getV1CustomFieldsRouteHandler,
+  getV1CustomHooksIdHistoryRouteHandler,
+  getV1CustomHooksIdRouteHandler,
+  getV1CustomHooksRouteHandler,
+  getV1DashboardsByExperimentExperimentIdRouteHandler,
+  getV1DashboardsIdRouteHandler,
+  getV1DashboardsRouteHandler,
+  getV1DataSourcesDataSourceIdInformationSchemaRouteHandler,
+  getV1DataSourcesIdQueriesRouteHandler,
+  getV1DataSourcesIdRouteHandler,
+  getV1DataSourcesRouteHandler,
+  getV1DimensionsIdRouteHandler,
+  getV1DimensionsRouteHandler,
+  getV1EnvironmentsRouteHandler,
+  getV1EventsIdRouteHandler,
+  getV1EventsRouteHandler,
+  getV1EventWebhooksIdLogsRouteHandler,
+  getV1EventWebhooksIdRouteHandler,
+  getV1EventWebhooksRouteHandler,
+  getV1ExperimentNamesRouteHandler,
+  getV1ExperimentsIdResultsRouteHandler,
+  getV1ExperimentsIdRouteHandler,
+  getV1ExperimentsIdStartChecklistRouteHandler,
+  getV1ExperimentsIdVisualChangesetsRouteHandler,
+  getV1ExperimentsResultsRouteHandler,
+  getV1ExperimentsRouteHandler,
+  getV1ExperimentTemplatesIdRouteHandler,
+  getV1ExperimentTemplatesRouteHandler,
+  getV1FactMetricsIdRouteHandler,
+  getV1FactMetricsRouteHandler,
+  getV1FactTablesFactTableIdFiltersIdRouteHandler,
+  getV1FactTablesFactTableIdFiltersRouteHandler,
+  getV1FactTablesIdAggregatedTablesRouteHandler,
+  getV1FactTablesIdAggregatedTablesRunsRouteHandler,
+  getV1FactTablesIdAggregatedTablesRunsRunIdRouteHandler,
+  getV1FactTablesIdRouteHandler,
+  getV1FactTablesRouteHandler,
+  getV1FeatureKeysRouteHandler,
+  getV1FeaturesIdRevisionsLatestRouteHandler,
+  getV1FeaturesIdRevisionsRouteHandler,
+  getV1FeaturesIdRevisionsVersionMergeStatusRouteHandler,
+  getV1FeaturesIdRevisionsVersionRouteHandler,
+  getV1FeaturesIdRouteHandler,
+  getV1FeaturesRouteHandler,
+  getV1HoldoutsIdRouteHandler,
+  getV1HoldoutsRouteHandler,
+  getV1InformationSchemaTablesTableIdRouteHandler,
+  getV1InterleavingExposureQueriesIdRouteHandler,
+  getV1InterleavingExposureQueriesRouteHandler,
+  getV1InterleavingsIdResultsRouteHandler,
+  getV1InterleavingsIdRouteHandler,
+  getV1InterleavingsIdSnapshotsRouteHandler,
+  getV1InterleavingsIdSnapshotsSnapshotIdRouteHandler,
+  getV1InterleavingsIdStatusRouteHandler,
+  getV1InterleavingsRouteHandler,
+  getV1LearningsIdRouteHandler,
+  getV1LearningsRouteHandler,
+  getV1MembersRouteHandler,
+  getV1MetricGroupsIdRouteHandler,
+  getV1MetricGroupsRouteHandler,
+  getV1MetricsIdExperimentsRouteHandler,
+  getV1MetricsIdRouteHandler,
+  getV1MetricsRouteHandler,
+  getV1NamespacesIdMembershipsRouteHandler,
+  getV1NamespacesIdRouteHandler,
+  getV1NamespacesRouteHandler,
+  getV1OrganizationsRouteHandler,
+  getV1PopulationsIdRouteHandler,
+  getV1PopulationsRouteHandler,
+  getV1ProductAnalyticsColumnsRouteHandler,
+  getV1ProductAnalyticsExplorationsIdRouteHandler,
+  getV1ProductAnalyticsSearchRouteHandler,
+  getV1ProjectsIdRouteHandler,
+  getV1ProjectsRouteHandler,
+  getV1QueriesIdRouteHandler,
+  getV1RampSchedulesIdRouteHandler,
+  getV1RampSchedulesIdStatusRouteHandler,
+  getV1RampSchedulesRouteHandler,
+  getV1RampScheduleTemplatesIdRouteHandler,
+  getV1RampScheduleTemplatesRouteHandler,
+  getV1ReportsIdRouteHandler,
+  getV1ReportsRouteHandler,
+  getV1RevisionsRouteHandler,
+  getV1SavedGroupsIdReferencesRouteHandler,
+  getV1SavedGroupsIdRouteHandler,
+  getV1SavedGroupsIdUploadsRouteHandler,
+  getV1SavedGroupsIdUploadsVersionRouteHandler,
+  getV1SavedGroupsRevisionsRouteHandler,
+  getV1SavedGroupsRevisionsSavedGroupIdLatestRouteHandler,
+  getV1SavedGroupsRevisionsSavedGroupIdRouteHandler,
+  getV1SavedGroupsRevisionsSavedGroupIdVersionMergeStatusRouteHandler,
+  getV1SavedGroupsRevisionsSavedGroupIdVersionRouteHandler,
+  getV1SavedGroupsRouteHandler,
+  getV1SdkConnectionsIdRouteHandler,
+  getV1SdkConnectionsIdWebhooksRouteHandler,
+  getV1SdkConnectionsLookupKeyRouteHandler,
+  getV1SdkConnectionsRevisionsIdLatestRouteHandler,
+  getV1SdkConnectionsRevisionsIdRouteHandler,
+  getV1SdkConnectionsRevisionsIdVersionMergeStatusRouteHandler,
+  getV1SdkConnectionsRevisionsIdVersionRouteHandler,
+  getV1SdkConnectionsRevisionsRouteHandler,
+  getV1SdkConnectionsRouteHandler,
+  getV1SdkPayloadKeyRouteHandler,
+  getV1SegmentsIdRouteHandler,
+  getV1SegmentsRouteHandler,
+  getV1SettingsRouteHandler,
+  getV1SnapshotsIdRouteHandler,
+  getV1StaleFeaturesRouteHandler,
+  getV1TeamsIdRouteHandler,
+  getV1TeamsRouteHandler,
+  getV1UsageMetricsRouteHandler,
+  getV1VersionRouteHandler,
+  getV1VisualChangesetsIdRouteHandler,
+  getV1WebhookSecretsIdRouteHandler,
+  getV1WebhookSecretsRouteHandler,
+  getV2FeatureKeysRouteHandler,
+  getV2FeatureRevisionsRouteHandler,
+  getV2FeaturesIdRevisionsLatestRouteHandler,
+  getV2FeaturesIdRevisionsRouteHandler,
+  getV2FeaturesIdRevisionsVersionDiffRouteHandler,
+  getV2FeaturesIdRevisionsVersionLogRouteHandler,
+  getV2FeaturesIdRevisionsVersionMergeStatusRouteHandler,
+  getV2FeaturesIdRevisionsVersionRouteHandler,
+  getV2FeaturesIdRouteHandler,
+  getV2FeaturesRouteHandler,
+  getV2StaleFeaturesRouteHandler,
+  postV1ArchetypesRouteHandler,
+  postV1AttributesRouteHandler,
+  postV1AutoRunsIdArtifactsRouteHandler,
+  postV1AutoRunsRouteHandler,
+  postV1BulkImportFactsRouteHandler,
+  postV1CodeRefsRouteHandler,
+  postV1ConfigsKeyArchiveRouteHandler,
+  postV1ConfigsKeyLockRouteHandler,
+  postV1ConfigsKeyRouteHandler,
+  postV1ConfigsKeySchemaVerifyRouteHandler,
+  postV1ConfigsKeyUnarchiveRouteHandler,
+  postV1ConfigsKeyUnlockRouteHandler,
+  postV1ConfigsRevisionsKeyRouteHandler,
+  postV1ConfigsRevisionsKeyVersionDiscardRouteHandler,
+  postV1ConfigsRevisionsKeyVersionPublishRouteHandler,
+  postV1ConfigsRevisionsKeyVersionRebaseRouteHandler,
+  postV1ConfigsRevisionsKeyVersionRecallReviewRouteHandler,
+  postV1ConfigsRevisionsKeyVersionReopenRouteHandler,
+  postV1ConfigsRevisionsKeyVersionRequestReviewRouteHandler,
+  postV1ConfigsRevisionsKeyVersionRevertRouteHandler,
+  postV1ConfigsRevisionsKeyVersionSchedulePublishRouteHandler,
+  postV1ConfigsRevisionsKeyVersionSubmitReviewRouteHandler,
+  postV1ConfigsRevisionsKeyVersionUndoReviewRouteHandler,
+  postV1ConfigsRouteHandler,
+  postV1ConstantsKeyArchiveRouteHandler,
+  postV1ConstantsKeyRouteHandler,
+  postV1ConstantsKeyUnarchiveRouteHandler,
+  postV1ConstantsRevisionsKeyRouteHandler,
+  postV1ConstantsRevisionsKeyVersionDiscardRouteHandler,
+  postV1ConstantsRevisionsKeyVersionPublishRouteHandler,
+  postV1ConstantsRevisionsKeyVersionRebaseRouteHandler,
+  postV1ConstantsRevisionsKeyVersionRecallReviewRouteHandler,
+  postV1ConstantsRevisionsKeyVersionReopenRouteHandler,
+  postV1ConstantsRevisionsKeyVersionRequestReviewRouteHandler,
+  postV1ConstantsRevisionsKeyVersionRevertRouteHandler,
+  postV1ConstantsRevisionsKeyVersionSchedulePublishRouteHandler,
+  postV1ConstantsRevisionsKeyVersionSubmitReviewRouteHandler,
+  postV1ConstantsRevisionsKeyVersionUndoReviewRouteHandler,
+  postV1ConstantsRouteHandler,
+  postV1ContextualBanditQueriesRouteHandler,
+  postV1ContextualBanditsIdCancelRouteHandler,
+  postV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  postV1ContextualBanditsIdRefreshRouteHandler,
+  postV1ContextualBanditsIdStartRouteHandler,
+  postV1ContextualBanditsIdStopRouteHandler,
+  postV1ContextualBanditsIdVariationsRouteHandler,
+  postV1ContextualBanditsIdVisualChangesetsRouteHandler,
+  postV1ContextualBanditsRouteHandler,
+  postV1CustomFieldsRouteHandler,
+  postV1CustomHooksIdRevertRouteHandler,
+  postV1CustomHooksIdRouteHandler,
+  postV1CustomHooksRouteHandler,
+  postV1CustomHooksTestRouteHandler,
+  postV1DashboardsRouteHandler,
+  postV1DataSourcesIdInformationSchemaRefreshRouteHandler,
+  postV1DataSourcesIdRouteHandler,
+  postV1DataSourcesIdSqlPreviewValuesRouteHandler,
+  postV1DataSourcesIdSqlRunQueryRouteHandler,
+  postV1DataSourcesIdSqlSearchTablesRouteHandler,
+  postV1DataSourcesIdSqlTableSchemaRouteHandler,
+  postV1DataSourcesRouteHandler,
+  postV1DimensionsIdRouteHandler,
+  postV1DimensionsRouteHandler,
+  postV1EnvironmentsRouteHandler,
+  postV1EventWebhooksIdTestRouteHandler,
+  postV1EventWebhooksRouteHandler,
+  postV1ExperimentsIdArchiveRouteHandler,
+  postV1ExperimentsIdCommentRouteHandler,
+  postV1ExperimentsIdModifyTemporaryRolloutRouteHandler,
+  postV1ExperimentsIdRouteHandler,
+  postV1ExperimentsIdSnapshotRouteHandler,
+  postV1ExperimentsIdStartChecklistManualCompleteRouteHandler,
+  postV1ExperimentsIdStartRouteHandler,
+  postV1ExperimentsIdStopRouteHandler,
+  postV1ExperimentsIdUnarchiveRouteHandler,
+  postV1ExperimentsIdVariationVariationIdScreenshotUploadRouteHandler,
+  postV1ExperimentsIdVisualChangesetsRouteHandler,
+  postV1ExperimentsRouteHandler,
+  postV1ExperimentTemplatesBulkImportRouteHandler,
+  postV1ExperimentTemplatesRouteHandler,
+  postV1FactMetricsIdAnalysisRouteHandler,
+  postV1FactMetricsIdRouteHandler,
+  postV1FactMetricsRouteHandler,
+  postV1FactTablesFactTableIdFiltersIdRouteHandler,
+  postV1FactTablesFactTableIdFiltersRouteHandler,
+  postV1FactTablesFactTableIdVirtualColumnsIdRouteHandler,
+  postV1FactTablesFactTableIdVirtualColumnsRouteHandler,
+  postV1FactTablesIdAggregatedTablesRefreshRouteHandler,
+  postV1FactTablesIdRouteHandler,
+  postV1FactTablesRouteHandler,
+  postV1FeaturesIdRevertRouteHandler,
+  postV1FeaturesIdRevisionsRouteHandler,
+  postV1FeaturesIdRevisionsVersionDiscardRouteHandler,
+  postV1FeaturesIdRevisionsVersionPublishRouteHandler,
+  postV1FeaturesIdRevisionsVersionRebaseRouteHandler,
+  postV1FeaturesIdRevisionsVersionRequestReviewRouteHandler,
+  postV1FeaturesIdRevisionsVersionRevertRouteHandler,
+  postV1FeaturesIdRevisionsVersionRulesReorderRouteHandler,
+  postV1FeaturesIdRevisionsVersionRulesRouteHandler,
+  postV1FeaturesIdRevisionsVersionSubmitReviewRouteHandler,
+  postV1FeaturesIdRevisionsVersionToggleRouteHandler,
+  postV1FeaturesIdRouteHandler,
+  postV1FeaturesIdToggleRouteHandler,
+  postV1FeaturesRouteHandler,
+  postV1HoldoutsIdStartAnalysisRouteHandler,
+  postV1HoldoutsIdStartRouteHandler,
+  postV1HoldoutsIdStopRouteHandler,
+  postV1HoldoutsRouteHandler,
+  postV1InformationSchemaTablesTableIdRefreshRouteHandler,
+  postV1InterleavingExposureQueriesRouteHandler,
+  postV1InterleavingsIdRefreshRouteHandler,
+  postV1InterleavingsIdStartRouteHandler,
+  postV1InterleavingsIdStopRouteHandler,
+  postV1InterleavingsRouteHandler,
+  postV1LearningsRouteHandler,
+  postV1LearningsSearchRouteHandler,
+  postV1MembersIdRoleRouteHandler,
+  postV1MetricGroupsRouteHandler,
+  postV1MetricsRouteHandler,
+  postV1NamespacesIdRotateSeedRouteHandler,
+  postV1NamespacesRouteHandler,
+  postV1OrganizationsRouteHandler,
+  postV1PopulationsRouteHandler,
+  postV1ProductAnalyticsColumnValuesRouteHandler,
+  postV1ProductAnalyticsDataSourceExplorationRouteHandler,
+  postV1ProductAnalyticsFactTableExplorationRouteHandler,
+  postV1ProductAnalyticsFunnelExplorationRouteHandler,
+  postV1ProductAnalyticsJourneyExplorationRouteHandler,
+  postV1ProductAnalyticsMetricExplorationRouteHandler,
+  postV1ProductAnalyticsSqlExplorationRouteHandler,
+  postV1ProjectsRouteHandler,
+  postV1QueriesIdCancelRouteHandler,
+  postV1RampSchedulesActionsPauseRouteHandler,
+  postV1RampSchedulesActionsRollbackRouteHandler,
+  postV1RampSchedulesIdActionsAddTargetRouteHandler,
+  postV1RampSchedulesIdActionsAdvanceRouteHandler,
+  postV1RampSchedulesIdActionsApproveStepRouteHandler,
+  postV1RampSchedulesIdActionsCompleteRouteHandler,
+  postV1RampSchedulesIdActionsEjectTargetRouteHandler,
+  postV1RampSchedulesIdActionsJumpRouteHandler,
+  postV1RampSchedulesIdActionsPauseRouteHandler,
+  postV1RampSchedulesIdActionsRefreshMonitoringRouteHandler,
+  postV1RampSchedulesIdActionsRestartRouteHandler,
+  postV1RampSchedulesIdActionsResumeRouteHandler,
+  postV1RampSchedulesIdActionsRetryRouteHandler,
+  postV1RampSchedulesIdActionsRollbackRouteHandler,
+  postV1RampSchedulesIdActionsSetAutoUpdateRouteHandler,
+  postV1RampSchedulesIdActionsSetMonitoringModeRouteHandler,
+  postV1RampSchedulesIdActionsStartRouteHandler,
+  postV1RampSchedulesRouteHandler,
+  postV1RampScheduleTemplatesRouteHandler,
+  postV1ReleasesPublishRevisionsRouteHandler,
+  postV1ReportsIdRefreshRouteHandler,
+  postV1ReportsRouteHandler,
+  postV1SavedGroupsIdArchiveRouteHandler,
+  postV1SavedGroupsIdRouteHandler,
+  postV1SavedGroupsIdUnarchiveRouteHandler,
+  postV1SavedGroupsIdUploadsRouteHandler,
+  postV1SavedGroupsIdUploadsVersionLoadsRouteHandler,
+  postV1SavedGroupsIdUploadUrlRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionDiscardRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionItemsAddRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionItemsRemoveRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionPublishRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRebaseRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRecallReviewRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionReopenRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRequestReviewRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionRevertRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionSchedulePublishRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionSubmitReviewRouteHandler,
+  postV1SavedGroupsRevisionsSavedGroupIdVersionUndoReviewRouteHandler,
+  postV1SavedGroupsRouteHandler,
+  postV1SdkConnectionsIdWebhooksRouteHandler,
+  postV1SdkConnectionsRevisionsIdRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionDiscardRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionPublishRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionRebaseRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionRecallReviewRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionReopenRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionRequestReviewRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionRevertRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionSchedulePublishRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionSubmitReviewRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionUndoReviewRouteHandler,
+  postV1SdkConnectionsRevisionsIdVersionWebhooksRouteHandler,
+  postV1SdkConnectionsRouteHandler,
+  postV1SdkWebhooksIdTestRouteHandler,
+  postV1SegmentsIdRouteHandler,
+  postV1SegmentsRouteHandler,
+  postV1TeamsIdMembersRouteHandler,
+  postV1TeamsRouteHandler,
+  postV1TransformCopyRouteHandler,
+  postV1VisualChangesetsIdVisualChangeRouteHandler,
+  postV2DashboardsRouteHandler,
+  postV2FeaturesIdRevertRouteHandler,
+  postV2FeaturesIdRevisionsRouteHandler,
+  postV2FeaturesIdRevisionsVersionDiscardRouteHandler,
+  postV2FeaturesIdRevisionsVersionPublishRouteHandler,
+  postV2FeaturesIdRevisionsVersionRebasePreviewRouteHandler,
+  postV2FeaturesIdRevisionsVersionRebaseRouteHandler,
+  postV2FeaturesIdRevisionsVersionRecallReviewRouteHandler,
+  postV2FeaturesIdRevisionsVersionReopenRouteHandler,
+  postV2FeaturesIdRevisionsVersionRequestReviewRouteHandler,
+  postV2FeaturesIdRevisionsVersionRevertRouteHandler,
+  postV2FeaturesIdRevisionsVersionRulesReorderRouteHandler,
+  postV2FeaturesIdRevisionsVersionRulesRouteHandler,
+  postV2FeaturesIdRevisionsVersionSchedulePublishRouteHandler,
+  postV2FeaturesIdRevisionsVersionSubmitReviewRouteHandler,
+  postV2FeaturesIdRevisionsVersionToggleRouteHandler,
+  postV2FeaturesIdRevisionsVersionUndoReviewRouteHandler,
+  postV2FeaturesIdRouteHandler,
+  postV2FeaturesIdToggleRouteHandler,
+  postV2FeaturesRouteHandler,
+  putV1ArchetypesIdRouteHandler,
+  putV1AttributesPropertyRouteHandler,
+  putV1AutoRunsIdRouteHandler,
+  putV1ConfigsRevisionsKeyVersionArchiveRouteHandler,
+  putV1ConfigsRevisionsKeyVersionMetadataRouteHandler,
+  putV1ConfigsRevisionsKeyVersionProjectionRouteHandler,
+  putV1ConfigsRevisionsKeyVersionPropertyRouteHandler,
+  putV1ConfigsRevisionsKeyVersionSchemaRouteHandler,
+  putV1ConfigsRevisionsKeyVersionValueRouteHandler,
+  putV1ConstantsRevisionsKeyVersionArchiveRouteHandler,
+  putV1ConstantsRevisionsKeyVersionMetadataRouteHandler,
+  putV1ConstantsRevisionsKeyVersionValueRouteHandler,
+  putV1ContextualBanditQueriesIdRouteHandler,
+  putV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  putV1ContextualBanditsIdRouteHandler,
+  putV1CustomFieldsIdRouteHandler,
+  putV1DashboardsIdRouteHandler,
+  putV1EnvironmentsIdRouteHandler,
+  putV1EventWebhooksIdRouteHandler,
+  putV1ExperimentsIdScheduleRouteHandler,
+  putV1ExperimentTemplatesIdRouteHandler,
+  putV1FeaturesIdRevisionsVersionArchiveRouteHandler,
+  putV1FeaturesIdRevisionsVersionDefaultValueRouteHandler,
+  putV1FeaturesIdRevisionsVersionHoldoutRouteHandler,
+  putV1FeaturesIdRevisionsVersionMetadataRouteHandler,
+  putV1FeaturesIdRevisionsVersionPrerequisitesRouteHandler,
+  putV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  putV1FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  putV1HoldoutsIdRouteHandler,
+  putV1InterleavingExposureQueriesIdRouteHandler,
+  putV1InterleavingsIdRouteHandler,
+  putV1LearningsIdRouteHandler,
+  putV1MetricGroupsIdRouteHandler,
+  putV1MetricsIdRouteHandler,
+  putV1NamespacesIdRouteHandler,
+  putV1OrganizationsIdRouteHandler,
+  putV1PopulationsIdRouteHandler,
+  putV1ProjectsIdRouteHandler,
+  putV1RampSchedulesIdLockdownRouteHandler,
+  putV1RampSchedulesIdMonitoringRouteHandler,
+  putV1RampSchedulesIdRouteHandler,
+  putV1RampSchedulesIdStepsRouteHandler,
+  putV1RampScheduleTemplatesIdRouteHandler,
+  putV1ReportsIdMetadataRouteHandler,
+  putV1ReportsIdSettingsRouteHandler,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionArchiveRouteHandler,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionConditionRouteHandler,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionMetadataRouteHandler,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionUploadVersionRouteHandler,
+  putV1SavedGroupsRevisionsSavedGroupIdVersionValuesRouteHandler,
+  putV1SdkConnectionsIdRouteHandler,
+  putV1SdkConnectionsRevisionsIdVersionArchiveRouteHandler,
+  putV1SdkConnectionsRevisionsIdVersionSettingsRouteHandler,
+  putV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRouteHandler,
+  putV1SdkWebhooksIdRouteHandler,
+  putV1SettingsApprovalsRouteHandler,
+  putV1TeamsIdRouteHandler,
+  putV1VisualChangesetsIdRouteHandler,
+  putV1VisualChangesetsIdVisualChangeVisualChangeIdRouteHandler,
+  putV2FeaturesIdRevisionsVersionArchiveRouteHandler,
+  putV2FeaturesIdRevisionsVersionDefaultValueRouteHandler,
+  putV2FeaturesIdRevisionsVersionHoldoutRouteHandler,
+  putV2FeaturesIdRevisionsVersionLogLogIdRouteHandler,
+  putV2FeaturesIdRevisionsVersionMetadataRouteHandler,
+  putV2FeaturesIdRevisionsVersionPrerequisitesRouteHandler,
+  putV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  putV2FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler).route('/', v2Handler)
+export const api = app
+  .openapi(getV1FeaturesRoute, getV1FeaturesRouteHandler)
+  .openapi(postV1FeaturesRoute, postV1FeaturesRouteHandler)
+  .openapi(getV1FeaturesIdRoute, getV1FeaturesIdRouteHandler)
+  .openapi(postV1FeaturesIdRoute, postV1FeaturesIdRouteHandler)
+  .openapi(deleteV1FeaturesIdRoute, deleteV1FeaturesIdRouteHandler)
+  .openapi(postV1FeaturesIdToggleRoute, postV1FeaturesIdToggleRouteHandler)
+  .openapi(postV1FeaturesIdRevertRoute, postV1FeaturesIdRevertRouteHandler)
+  .openapi(getV1FeatureKeysRoute, getV1FeatureKeysRouteHandler)
+  .openapi(getV1StaleFeaturesRoute, getV1StaleFeaturesRouteHandler)
+  .openapi(getV1RevisionsRoute, getV1RevisionsRouteHandler)
+  .openapi(getV1FeaturesIdRevisionsRoute, getV1FeaturesIdRevisionsRouteHandler)
+  .openapi(postV1FeaturesIdRevisionsRoute, postV1FeaturesIdRevisionsRouteHandler)
+  .openapi(getV1FeaturesIdRevisionsLatestRoute, getV1FeaturesIdRevisionsLatestRouteHandler)
+  .openapi(getV1FeaturesIdRevisionsVersionRoute, getV1FeaturesIdRevisionsVersionRouteHandler)
+  .openapi(
+    putV1FeaturesIdRevisionsVersionMetadataRoute,
+    putV1FeaturesIdRevisionsVersionMetadataRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionDefaultValueRoute,
+    putV1FeaturesIdRevisionsVersionDefaultValueRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionPrerequisitesRoute,
+    putV1FeaturesIdRevisionsVersionPrerequisitesRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionHoldoutRoute,
+    putV1FeaturesIdRevisionsVersionHoldoutRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionArchiveRoute,
+    putV1FeaturesIdRevisionsVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionToggleRoute,
+    postV1FeaturesIdRevisionsVersionToggleRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionRulesRoute,
+    postV1FeaturesIdRevisionsVersionRulesRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionRulesRuleIdRoute,
+    putV1FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteV1FeaturesIdRevisionsVersionRulesRuleIdRoute,
+    deleteV1FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionRulesReorderRoute,
+    postV1FeaturesIdRevisionsVersionRulesReorderRouteHandler,
+  )
+  .openapi(
+    putV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+    putV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  )
+  .openapi(
+    deleteV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+    deleteV1FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionRequestReviewRoute,
+    postV1FeaturesIdRevisionsVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionSubmitReviewRoute,
+    postV1FeaturesIdRevisionsVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    getV1FeaturesIdRevisionsVersionMergeStatusRoute,
+    getV1FeaturesIdRevisionsVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionRebaseRoute,
+    postV1FeaturesIdRevisionsVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionPublishRoute,
+    postV1FeaturesIdRevisionsVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionDiscardRoute,
+    postV1FeaturesIdRevisionsVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV1FeaturesIdRevisionsVersionRevertRoute,
+    postV1FeaturesIdRevisionsVersionRevertRouteHandler,
+  )
+  .openapi(getV2FeaturesRoute, getV2FeaturesRouteHandler)
+  .openapi(postV2FeaturesRoute, postV2FeaturesRouteHandler)
+  .openapi(getV2FeaturesIdRoute, getV2FeaturesIdRouteHandler)
+  .openapi(postV2FeaturesIdRoute, postV2FeaturesIdRouteHandler)
+  .openapi(deleteV2FeaturesIdRoute, deleteV2FeaturesIdRouteHandler)
+  .openapi(postV2FeaturesIdToggleRoute, postV2FeaturesIdToggleRouteHandler)
+  .openapi(postV2FeaturesIdRevertRoute, postV2FeaturesIdRevertRouteHandler)
+  .openapi(getV2FeatureKeysRoute, getV2FeatureKeysRouteHandler)
+  .openapi(getV2StaleFeaturesRoute, getV2StaleFeaturesRouteHandler)
+  .openapi(getV2FeatureRevisionsRoute, getV2FeatureRevisionsRouteHandler)
+  .openapi(getV2FeaturesIdRevisionsRoute, getV2FeaturesIdRevisionsRouteHandler)
+  .openapi(postV2FeaturesIdRevisionsRoute, postV2FeaturesIdRevisionsRouteHandler)
+  .openapi(getV2FeaturesIdRevisionsLatestRoute, getV2FeaturesIdRevisionsLatestRouteHandler)
+  .openapi(getV2FeaturesIdRevisionsVersionRoute, getV2FeaturesIdRevisionsVersionRouteHandler)
+  .openapi(
+    getV2FeaturesIdRevisionsVersionDiffRoute,
+    getV2FeaturesIdRevisionsVersionDiffRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionMetadataRoute,
+    putV2FeaturesIdRevisionsVersionMetadataRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionDefaultValueRoute,
+    putV2FeaturesIdRevisionsVersionDefaultValueRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionPrerequisitesRoute,
+    putV2FeaturesIdRevisionsVersionPrerequisitesRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionHoldoutRoute,
+    putV2FeaturesIdRevisionsVersionHoldoutRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionArchiveRoute,
+    putV2FeaturesIdRevisionsVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionToggleRoute,
+    postV2FeaturesIdRevisionsVersionToggleRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRulesRoute,
+    postV2FeaturesIdRevisionsVersionRulesRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionRulesRuleIdRoute,
+    putV2FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteV2FeaturesIdRevisionsVersionRulesRuleIdRoute,
+    deleteV2FeaturesIdRevisionsVersionRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRulesReorderRoute,
+    postV2FeaturesIdRevisionsVersionRulesReorderRouteHandler,
+  )
+  .openapi(
+    putV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+    putV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  )
+  .openapi(
+    deleteV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRoute,
+    deleteV2FeaturesIdRevisionsVersionRulesRuleIdRampScheduleRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRequestReviewRoute,
+    postV2FeaturesIdRevisionsVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionSchedulePublishRoute,
+    postV2FeaturesIdRevisionsVersionSchedulePublishRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionSubmitReviewRoute,
+    postV2FeaturesIdRevisionsVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRecallReviewRoute,
+    postV2FeaturesIdRevisionsVersionRecallReviewRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionUndoReviewRoute,
+    postV2FeaturesIdRevisionsVersionUndoReviewRouteHandler,
+  )
+  .openapi(getV2FeaturesIdRevisionsVersionLogRoute, getV2FeaturesIdRevisionsVersionLogRouteHandler)
+  .openapi(
+    putV2FeaturesIdRevisionsVersionLogLogIdRoute,
+    putV2FeaturesIdRevisionsVersionLogLogIdRouteHandler,
+  )
+  .openapi(
+    deleteV2FeaturesIdRevisionsVersionLogLogIdRoute,
+    deleteV2FeaturesIdRevisionsVersionLogLogIdRouteHandler,
+  )
+  .openapi(
+    getV2FeaturesIdRevisionsVersionMergeStatusRoute,
+    getV2FeaturesIdRevisionsVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRebasePreviewRoute,
+    postV2FeaturesIdRevisionsVersionRebasePreviewRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRebaseRoute,
+    postV2FeaturesIdRevisionsVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionPublishRoute,
+    postV2FeaturesIdRevisionsVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionDiscardRoute,
+    postV2FeaturesIdRevisionsVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionReopenRoute,
+    postV2FeaturesIdRevisionsVersionReopenRouteHandler,
+  )
+  .openapi(
+    postV2FeaturesIdRevisionsVersionRevertRoute,
+    postV2FeaturesIdRevisionsVersionRevertRouteHandler,
+  )
+  .openapi(getV1ArchetypesRoute, getV1ArchetypesRouteHandler)
+  .openapi(postV1ArchetypesRoute, postV1ArchetypesRouteHandler)
+  .openapi(getV1ArchetypesIdRoute, getV1ArchetypesIdRouteHandler)
+  .openapi(putV1ArchetypesIdRoute, putV1ArchetypesIdRouteHandler)
+  .openapi(deleteV1ArchetypesIdRoute, deleteV1ArchetypesIdRouteHandler)
+  .openapi(getV1ExperimentsRoute, getV1ExperimentsRouteHandler)
+  .openapi(postV1ExperimentsRoute, postV1ExperimentsRouteHandler)
+  .openapi(getV1ExperimentsResultsRoute, getV1ExperimentsResultsRouteHandler)
+  .openapi(getV1ExperimentsIdRoute, getV1ExperimentsIdRouteHandler)
+  .openapi(postV1ExperimentsIdRoute, postV1ExperimentsIdRouteHandler)
+  .openapi(deleteV1ExperimentsIdRoute, deleteV1ExperimentsIdRouteHandler)
+  .openapi(getV1ExperimentsIdStartChecklistRoute, getV1ExperimentsIdStartChecklistRouteHandler)
+  .openapi(getV1ExperimentsIdResultsRoute, getV1ExperimentsIdResultsRouteHandler)
+  .openapi(postV1ExperimentsIdArchiveRoute, postV1ExperimentsIdArchiveRouteHandler)
+  .openapi(postV1ExperimentsIdUnarchiveRoute, postV1ExperimentsIdUnarchiveRouteHandler)
+  .openapi(postV1ExperimentsIdStartRoute, postV1ExperimentsIdStartRouteHandler)
+  .openapi(
+    postV1ExperimentsIdStartChecklistManualCompleteRoute,
+    postV1ExperimentsIdStartChecklistManualCompleteRouteHandler,
+  )
+  .openapi(postV1ExperimentsIdStopRoute, postV1ExperimentsIdStopRouteHandler)
+  .openapi(putV1ExperimentsIdScheduleRoute, putV1ExperimentsIdScheduleRouteHandler)
+  .openapi(
+    postV1ExperimentsIdModifyTemporaryRolloutRoute,
+    postV1ExperimentsIdModifyTemporaryRolloutRouteHandler,
+  )
+  .openapi(postV1ExperimentsIdSnapshotRoute, postV1ExperimentsIdSnapshotRouteHandler)
+  .openapi(
+    postV1ExperimentsIdVariationVariationIdScreenshotUploadRoute,
+    postV1ExperimentsIdVariationVariationIdScreenshotUploadRouteHandler,
+  )
+  .openapi(
+    deleteV1ExperimentsIdVariationVariationIdScreenshotRoute,
+    deleteV1ExperimentsIdVariationVariationIdScreenshotRouteHandler,
+  )
+  .openapi(getV1ExperimentNamesRoute, getV1ExperimentNamesRouteHandler)
+  .openapi(postV1ExperimentsIdCommentRoute, postV1ExperimentsIdCommentRouteHandler)
+  .openapi(getV1ExperimentsIdVisualChangesetsRoute, getV1ExperimentsIdVisualChangesetsRouteHandler)
+  .openapi(
+    postV1ExperimentsIdVisualChangesetsRoute,
+    postV1ExperimentsIdVisualChangesetsRouteHandler,
+  )
+  .openapi(getV1ContextualBanditsIdCurrentRoute, getV1ContextualBanditsIdCurrentRouteHandler)
+  .openapi(getV1ContextualBanditsIdSnapshotsRoute, getV1ContextualBanditsIdSnapshotsRouteHandler)
+  .openapi(
+    getV1ContextualBanditsIdSnapshotsSnapshotIdRoute,
+    getV1ContextualBanditsIdSnapshotsSnapshotIdRouteHandler,
+  )
+  .openapi(getV1ContextualBanditsIdEventsRoute, getV1ContextualBanditsIdEventsRouteHandler)
+  .openapi(
+    getV1ContextualBanditsIdEventsEventIdRoute,
+    getV1ContextualBanditsIdEventsEventIdRouteHandler,
+  )
+  .openapi(getV1ContextualBanditsIdResultsRoute, getV1ContextualBanditsIdResultsRouteHandler)
+  .openapi(getV1ContextualBanditsIdStatusRoute, getV1ContextualBanditsIdStatusRouteHandler)
+  .openapi(
+    getV1ContextualBanditsIdLinkedFeaturesRoute,
+    getV1ContextualBanditsIdLinkedFeaturesRouteHandler,
+  )
+  .openapi(
+    postV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+    postV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  )
+  .openapi(
+    putV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+    putV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ContextualBanditsIdLinkedFeatureFeatureIdRoute,
+    deleteV1ContextualBanditsIdLinkedFeatureFeatureIdRouteHandler,
+  )
+  .openapi(getV1SnapshotsIdRoute, getV1SnapshotsIdRouteHandler)
+  .openapi(getV1MetricsRoute, getV1MetricsRouteHandler)
+  .openapi(postV1MetricsRoute, postV1MetricsRouteHandler)
+  .openapi(getV1MetricsIdRoute, getV1MetricsIdRouteHandler)
+  .openapi(putV1MetricsIdRoute, putV1MetricsIdRouteHandler)
+  .openapi(deleteV1MetricsIdRoute, deleteV1MetricsIdRouteHandler)
+  .openapi(getV1MetricsIdExperimentsRoute, getV1MetricsIdExperimentsRouteHandler)
+  .openapi(getV1UsageMetricsRoute, getV1UsageMetricsRouteHandler)
+  .openapi(getV1SegmentsRoute, getV1SegmentsRouteHandler)
+  .openapi(postV1SegmentsRoute, postV1SegmentsRouteHandler)
+  .openapi(getV1SegmentsIdRoute, getV1SegmentsIdRouteHandler)
+  .openapi(postV1SegmentsIdRoute, postV1SegmentsIdRouteHandler)
+  .openapi(deleteV1SegmentsIdRoute, deleteV1SegmentsIdRouteHandler)
+  .openapi(getV1DimensionsRoute, getV1DimensionsRouteHandler)
+  .openapi(postV1DimensionsRoute, postV1DimensionsRouteHandler)
+  .openapi(getV1DimensionsIdRoute, getV1DimensionsIdRouteHandler)
+  .openapi(postV1DimensionsIdRoute, postV1DimensionsIdRouteHandler)
+  .openapi(deleteV1DimensionsIdRoute, deleteV1DimensionsIdRouteHandler)
+  .openapi(getV1ProjectsRoute, getV1ProjectsRouteHandler)
+  .openapi(postV1ProjectsRoute, postV1ProjectsRouteHandler)
+  .openapi(getV1ProjectsIdRoute, getV1ProjectsIdRouteHandler)
+  .openapi(putV1ProjectsIdRoute, putV1ProjectsIdRouteHandler)
+  .openapi(deleteV1ProjectsIdRoute, deleteV1ProjectsIdRouteHandler)
+  .openapi(getV1EnvironmentsRoute, getV1EnvironmentsRouteHandler)
+  .openapi(postV1EnvironmentsRoute, postV1EnvironmentsRouteHandler)
+  .openapi(putV1EnvironmentsIdRoute, putV1EnvironmentsIdRouteHandler)
+  .openapi(deleteV1EnvironmentsIdRoute, deleteV1EnvironmentsIdRouteHandler)
+  .openapi(getV1AttributesRoute, getV1AttributesRouteHandler)
+  .openapi(postV1AttributesRoute, postV1AttributesRouteHandler)
+  .openapi(putV1AttributesPropertyRoute, putV1AttributesPropertyRouteHandler)
+  .openapi(deleteV1AttributesPropertyRoute, deleteV1AttributesPropertyRouteHandler)
+  .openapi(getV1SdkConnectionsRoute, getV1SdkConnectionsRouteHandler)
+  .openapi(postV1SdkConnectionsRoute, postV1SdkConnectionsRouteHandler)
+  .openapi(getV1SdkConnectionsIdRoute, getV1SdkConnectionsIdRouteHandler)
+  .openapi(putV1SdkConnectionsIdRoute, putV1SdkConnectionsIdRouteHandler)
+  .openapi(deleteV1SdkConnectionsIdRoute, deleteV1SdkConnectionsIdRouteHandler)
+  .openapi(getV1SdkConnectionsLookupKeyRoute, getV1SdkConnectionsLookupKeyRouteHandler)
+  .openapi(getV1SdkConnectionsRevisionsRoute, getV1SdkConnectionsRevisionsRouteHandler)
+  .openapi(getV1SdkConnectionsRevisionsIdRoute, getV1SdkConnectionsRevisionsIdRouteHandler)
+  .openapi(postV1SdkConnectionsRevisionsIdRoute, postV1SdkConnectionsRevisionsIdRouteHandler)
+  .openapi(
+    getV1SdkConnectionsRevisionsIdLatestRoute,
+    getV1SdkConnectionsRevisionsIdLatestRouteHandler,
+  )
+  .openapi(
+    getV1SdkConnectionsRevisionsIdVersionRoute,
+    getV1SdkConnectionsRevisionsIdVersionRouteHandler,
+  )
+  .openapi(
+    getV1SdkConnectionsRevisionsIdVersionMergeStatusRoute,
+    getV1SdkConnectionsRevisionsIdVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    putV1SdkConnectionsRevisionsIdVersionSettingsRoute,
+    putV1SdkConnectionsRevisionsIdVersionSettingsRouteHandler,
+  )
+  .openapi(
+    putV1SdkConnectionsRevisionsIdVersionArchiveRoute,
+    putV1SdkConnectionsRevisionsIdVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionWebhooksRoute,
+    postV1SdkConnectionsRevisionsIdVersionWebhooksRouteHandler,
+  )
+  .openapi(
+    putV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRoute,
+    putV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(
+    deleteV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRoute,
+    deleteV1SdkConnectionsRevisionsIdVersionWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionRequestReviewRoute,
+    postV1SdkConnectionsRevisionsIdVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionSubmitReviewRoute,
+    postV1SdkConnectionsRevisionsIdVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionRecallReviewRoute,
+    postV1SdkConnectionsRevisionsIdVersionRecallReviewRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionUndoReviewRoute,
+    postV1SdkConnectionsRevisionsIdVersionUndoReviewRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionReopenRoute,
+    postV1SdkConnectionsRevisionsIdVersionReopenRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionSchedulePublishRoute,
+    postV1SdkConnectionsRevisionsIdVersionSchedulePublishRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionRebaseRoute,
+    postV1SdkConnectionsRevisionsIdVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionPublishRoute,
+    postV1SdkConnectionsRevisionsIdVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionDiscardRoute,
+    postV1SdkConnectionsRevisionsIdVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV1SdkConnectionsRevisionsIdVersionRevertRoute,
+    postV1SdkConnectionsRevisionsIdVersionRevertRouteHandler,
+  )
+  .openapi(getV1DataSourcesRoute, getV1DataSourcesRouteHandler)
+  .openapi(postV1DataSourcesRoute, postV1DataSourcesRouteHandler)
+  .openapi(getV1DataSourcesIdRoute, getV1DataSourcesIdRouteHandler)
+  .openapi(postV1DataSourcesIdRoute, postV1DataSourcesIdRouteHandler)
+  .openapi(deleteV1DataSourcesIdRoute, deleteV1DataSourcesIdRouteHandler)
+  .openapi(
+    getV1DataSourcesDataSourceIdInformationSchemaRoute,
+    getV1DataSourcesDataSourceIdInformationSchemaRouteHandler,
+  )
+  .openapi(
+    postV1DataSourcesIdInformationSchemaRefreshRoute,
+    postV1DataSourcesIdInformationSchemaRefreshRouteHandler,
+  )
+  .openapi(postV1DataSourcesIdSqlSearchTablesRoute, postV1DataSourcesIdSqlSearchTablesRouteHandler)
+  .openapi(postV1DataSourcesIdSqlTableSchemaRoute, postV1DataSourcesIdSqlTableSchemaRouteHandler)
+  .openapi(
+    postV1DataSourcesIdSqlPreviewValuesRoute,
+    postV1DataSourcesIdSqlPreviewValuesRouteHandler,
+  )
+  .openapi(postV1DataSourcesIdSqlRunQueryRoute, postV1DataSourcesIdSqlRunQueryRouteHandler)
+  .openapi(getV1VisualChangesetsIdRoute, getV1VisualChangesetsIdRouteHandler)
+  .openapi(putV1VisualChangesetsIdRoute, putV1VisualChangesetsIdRouteHandler)
+  .openapi(
+    postV1VisualChangesetsIdVisualChangeRoute,
+    postV1VisualChangesetsIdVisualChangeRouteHandler,
+  )
+  .openapi(
+    putV1VisualChangesetsIdVisualChangeVisualChangeIdRoute,
+    putV1VisualChangesetsIdVisualChangeVisualChangeIdRouteHandler,
+  )
+  .openapi(getV1SavedGroupsRoute, getV1SavedGroupsRouteHandler)
+  .openapi(postV1SavedGroupsRoute, postV1SavedGroupsRouteHandler)
+  .openapi(getV1SavedGroupsRevisionsRoute, getV1SavedGroupsRevisionsRouteHandler)
+  .openapi(getV1SavedGroupsIdRoute, getV1SavedGroupsIdRouteHandler)
+  .openapi(postV1SavedGroupsIdRoute, postV1SavedGroupsIdRouteHandler)
+  .openapi(deleteV1SavedGroupsIdRoute, deleteV1SavedGroupsIdRouteHandler)
+  .openapi(postV1SavedGroupsIdArchiveRoute, postV1SavedGroupsIdArchiveRouteHandler)
+  .openapi(postV1SavedGroupsIdUnarchiveRoute, postV1SavedGroupsIdUnarchiveRouteHandler)
+  .openapi(getV1SavedGroupsIdReferencesRoute, getV1SavedGroupsIdReferencesRouteHandler)
+  .openapi(getV1SavedGroupsIdUploadsRoute, getV1SavedGroupsIdUploadsRouteHandler)
+  .openapi(postV1SavedGroupsIdUploadsRoute, postV1SavedGroupsIdUploadsRouteHandler)
+  .openapi(postV1SavedGroupsIdUploadUrlRoute, postV1SavedGroupsIdUploadUrlRouteHandler)
+  .openapi(
+    postV1SavedGroupsIdUploadsVersionLoadsRoute,
+    postV1SavedGroupsIdUploadsVersionLoadsRouteHandler,
+  )
+  .openapi(getV1SavedGroupsIdUploadsVersionRoute, getV1SavedGroupsIdUploadsVersionRouteHandler)
+  .openapi(
+    deleteV1SavedGroupsIdUploadsVersionRoute,
+    deleteV1SavedGroupsIdUploadsVersionRouteHandler,
+  )
+  .openapi(
+    getV1SavedGroupsRevisionsSavedGroupIdRoute,
+    getV1SavedGroupsRevisionsSavedGroupIdRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdRouteHandler,
+  )
+  .openapi(
+    getV1SavedGroupsRevisionsSavedGroupIdLatestRoute,
+    getV1SavedGroupsRevisionsSavedGroupIdLatestRouteHandler,
+  )
+  .openapi(
+    getV1SavedGroupsRevisionsSavedGroupIdVersionRoute,
+    getV1SavedGroupsRevisionsSavedGroupIdVersionRouteHandler,
+  )
+  .openapi(
+    putV1SavedGroupsRevisionsSavedGroupIdVersionMetadataRoute,
+    putV1SavedGroupsRevisionsSavedGroupIdVersionMetadataRouteHandler,
+  )
+  .openapi(
+    putV1SavedGroupsRevisionsSavedGroupIdVersionConditionRoute,
+    putV1SavedGroupsRevisionsSavedGroupIdVersionConditionRouteHandler,
+  )
+  .openapi(
+    putV1SavedGroupsRevisionsSavedGroupIdVersionValuesRoute,
+    putV1SavedGroupsRevisionsSavedGroupIdVersionValuesRouteHandler,
+  )
+  .openapi(
+    putV1SavedGroupsRevisionsSavedGroupIdVersionUploadVersionRoute,
+    putV1SavedGroupsRevisionsSavedGroupIdVersionUploadVersionRouteHandler,
+  )
+  .openapi(
+    putV1SavedGroupsRevisionsSavedGroupIdVersionArchiveRoute,
+    putV1SavedGroupsRevisionsSavedGroupIdVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionItemsAddRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionItemsAddRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionItemsRemoveRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionItemsRemoveRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRequestReviewRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionSubmitReviewRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRecallReviewRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRecallReviewRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionReopenRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionReopenRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionSchedulePublishRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionSchedulePublishRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionUndoReviewRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionUndoReviewRouteHandler,
+  )
+  .openapi(
+    getV1SavedGroupsRevisionsSavedGroupIdVersionMergeStatusRoute,
+    getV1SavedGroupsRevisionsSavedGroupIdVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRebaseRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionPublishRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionDiscardRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRevertRoute,
+    postV1SavedGroupsRevisionsSavedGroupIdVersionRevertRouteHandler,
+  )
+  .openapi(getV1ConstantsRoute, getV1ConstantsRouteHandler)
+  .openapi(postV1ConstantsRoute, postV1ConstantsRouteHandler)
+  .openapi(getV1ConstantsRevisionsRoute, getV1ConstantsRevisionsRouteHandler)
+  .openapi(getV1ConstantsKeyReferencesRoute, getV1ConstantsKeyReferencesRouteHandler)
+  .openapi(getV1ConstantsKeyRoute, getV1ConstantsKeyRouteHandler)
+  .openapi(postV1ConstantsKeyRoute, postV1ConstantsKeyRouteHandler)
+  .openapi(deleteV1ConstantsKeyRoute, deleteV1ConstantsKeyRouteHandler)
+  .openapi(postV1ConstantsKeyArchiveRoute, postV1ConstantsKeyArchiveRouteHandler)
+  .openapi(postV1ConstantsKeyUnarchiveRoute, postV1ConstantsKeyUnarchiveRouteHandler)
+  .openapi(getV1ConstantsRevisionsKeyRoute, getV1ConstantsRevisionsKeyRouteHandler)
+  .openapi(postV1ConstantsRevisionsKeyRoute, postV1ConstantsRevisionsKeyRouteHandler)
+  .openapi(getV1ConstantsRevisionsKeyLatestRoute, getV1ConstantsRevisionsKeyLatestRouteHandler)
+  .openapi(getV1ConstantsRevisionsKeyVersionRoute, getV1ConstantsRevisionsKeyVersionRouteHandler)
+  .openapi(
+    putV1ConstantsRevisionsKeyVersionMetadataRoute,
+    putV1ConstantsRevisionsKeyVersionMetadataRouteHandler,
+  )
+  .openapi(
+    putV1ConstantsRevisionsKeyVersionValueRoute,
+    putV1ConstantsRevisionsKeyVersionValueRouteHandler,
+  )
+  .openapi(
+    putV1ConstantsRevisionsKeyVersionArchiveRoute,
+    putV1ConstantsRevisionsKeyVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionRequestReviewRoute,
+    postV1ConstantsRevisionsKeyVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionSubmitReviewRoute,
+    postV1ConstantsRevisionsKeyVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionRecallReviewRoute,
+    postV1ConstantsRevisionsKeyVersionRecallReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionReopenRoute,
+    postV1ConstantsRevisionsKeyVersionReopenRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionSchedulePublishRoute,
+    postV1ConstantsRevisionsKeyVersionSchedulePublishRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionUndoReviewRoute,
+    postV1ConstantsRevisionsKeyVersionUndoReviewRouteHandler,
+  )
+  .openapi(
+    getV1ConstantsRevisionsKeyVersionMergeStatusRoute,
+    getV1ConstantsRevisionsKeyVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionRebaseRoute,
+    postV1ConstantsRevisionsKeyVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionPublishRoute,
+    postV1ConstantsRevisionsKeyVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionDiscardRoute,
+    postV1ConstantsRevisionsKeyVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV1ConstantsRevisionsKeyVersionRevertRoute,
+    postV1ConstantsRevisionsKeyVersionRevertRouteHandler,
+  )
+  .openapi(getV1ConfigsRoute, getV1ConfigsRouteHandler)
+  .openapi(postV1ConfigsRoute, postV1ConfigsRouteHandler)
+  .openapi(getV1ConfigsRevisionsRoute, getV1ConfigsRevisionsRouteHandler)
+  .openapi(getV1ConfigsKeyReferencesRoute, getV1ConfigsKeyReferencesRouteHandler)
+  .openapi(getV1ConfigsKeyKeyUsageRoute, getV1ConfigsKeyKeyUsageRouteHandler)
+  .openapi(getV1ConfigsKeyLineageRoute, getV1ConfigsKeyLineageRouteHandler)
+  .openapi(postV1ConfigsKeySchemaVerifyRoute, postV1ConfigsKeySchemaVerifyRouteHandler)
+  .openapi(getV1ConfigsKeySchemaRoute, getV1ConfigsKeySchemaRouteHandler)
+  .openapi(getV1ConfigsKeyRoute, getV1ConfigsKeyRouteHandler)
+  .openapi(postV1ConfigsKeyRoute, postV1ConfigsKeyRouteHandler)
+  .openapi(deleteV1ConfigsKeyRoute, deleteV1ConfigsKeyRouteHandler)
+  .openapi(postV1ConfigsKeyArchiveRoute, postV1ConfigsKeyArchiveRouteHandler)
+  .openapi(postV1ConfigsKeyUnarchiveRoute, postV1ConfigsKeyUnarchiveRouteHandler)
+  .openapi(postV1ConfigsKeyLockRoute, postV1ConfigsKeyLockRouteHandler)
+  .openapi(postV1ConfigsKeyUnlockRoute, postV1ConfigsKeyUnlockRouteHandler)
+  .openapi(getV1ConfigsRevisionsKeyRoute, getV1ConfigsRevisionsKeyRouteHandler)
+  .openapi(postV1ConfigsRevisionsKeyRoute, postV1ConfigsRevisionsKeyRouteHandler)
+  .openapi(getV1ConfigsRevisionsKeyLatestRoute, getV1ConfigsRevisionsKeyLatestRouteHandler)
+  .openapi(getV1ConfigsRevisionsKeyVersionRoute, getV1ConfigsRevisionsKeyVersionRouteHandler)
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionMetadataRoute,
+    putV1ConfigsRevisionsKeyVersionMetadataRouteHandler,
+  )
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionValueRoute,
+    putV1ConfigsRevisionsKeyVersionValueRouteHandler,
+  )
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionPropertyRoute,
+    putV1ConfigsRevisionsKeyVersionPropertyRouteHandler,
+  )
+  .openapi(
+    deleteV1ConfigsRevisionsKeyVersionPropertyRoute,
+    deleteV1ConfigsRevisionsKeyVersionPropertyRouteHandler,
+  )
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionSchemaRoute,
+    putV1ConfigsRevisionsKeyVersionSchemaRouteHandler,
+  )
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionProjectionRoute,
+    putV1ConfigsRevisionsKeyVersionProjectionRouteHandler,
+  )
+  .openapi(
+    deleteV1ConfigsRevisionsKeyVersionProjectionRoute,
+    deleteV1ConfigsRevisionsKeyVersionProjectionRouteHandler,
+  )
+  .openapi(
+    putV1ConfigsRevisionsKeyVersionArchiveRoute,
+    putV1ConfigsRevisionsKeyVersionArchiveRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionRequestReviewRoute,
+    postV1ConfigsRevisionsKeyVersionRequestReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionSubmitReviewRoute,
+    postV1ConfigsRevisionsKeyVersionSubmitReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionUndoReviewRoute,
+    postV1ConfigsRevisionsKeyVersionUndoReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionRecallReviewRoute,
+    postV1ConfigsRevisionsKeyVersionRecallReviewRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionReopenRoute,
+    postV1ConfigsRevisionsKeyVersionReopenRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionSchedulePublishRoute,
+    postV1ConfigsRevisionsKeyVersionSchedulePublishRouteHandler,
+  )
+  .openapi(
+    getV1ConfigsRevisionsKeyVersionMergeStatusRoute,
+    getV1ConfigsRevisionsKeyVersionMergeStatusRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionRebaseRoute,
+    postV1ConfigsRevisionsKeyVersionRebaseRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionPublishRoute,
+    postV1ConfigsRevisionsKeyVersionPublishRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionDiscardRoute,
+    postV1ConfigsRevisionsKeyVersionDiscardRouteHandler,
+  )
+  .openapi(
+    postV1ConfigsRevisionsKeyVersionRevertRoute,
+    postV1ConfigsRevisionsKeyVersionRevertRouteHandler,
+  )
+  .openapi(postV1ReleasesPublishRevisionsRoute, postV1ReleasesPublishRevisionsRouteHandler)
+  .openapi(getV1CustomHooksRoute, getV1CustomHooksRouteHandler)
+  .openapi(postV1CustomHooksRoute, postV1CustomHooksRouteHandler)
+  .openapi(postV1CustomHooksTestRoute, postV1CustomHooksTestRouteHandler)
+  .openapi(getV1CustomHooksIdRoute, getV1CustomHooksIdRouteHandler)
+  .openapi(postV1CustomHooksIdRoute, postV1CustomHooksIdRouteHandler)
+  .openapi(deleteV1CustomHooksIdRoute, deleteV1CustomHooksIdRouteHandler)
+  .openapi(getV1CustomHooksIdHistoryRoute, getV1CustomHooksIdHistoryRouteHandler)
+  .openapi(postV1CustomHooksIdRevertRoute, postV1CustomHooksIdRevertRouteHandler)
+  .openapi(getV1OrganizationsRoute, getV1OrganizationsRouteHandler)
+  .openapi(postV1OrganizationsRoute, postV1OrganizationsRouteHandler)
+  .openapi(putV1OrganizationsIdRoute, putV1OrganizationsIdRouteHandler)
+  .openapi(getV1SdkPayloadKeyRoute, getV1SdkPayloadKeyRouteHandler)
+  .openapi(getV1FactTablesRoute, getV1FactTablesRouteHandler)
+  .openapi(postV1FactTablesRoute, postV1FactTablesRouteHandler)
+  .openapi(getV1FactTablesIdRoute, getV1FactTablesIdRouteHandler)
+  .openapi(postV1FactTablesIdRoute, postV1FactTablesIdRouteHandler)
+  .openapi(deleteV1FactTablesIdRoute, deleteV1FactTablesIdRouteHandler)
+  .openapi(getV1FactTablesFactTableIdFiltersRoute, getV1FactTablesFactTableIdFiltersRouteHandler)
+  .openapi(postV1FactTablesFactTableIdFiltersRoute, postV1FactTablesFactTableIdFiltersRouteHandler)
+  .openapi(
+    getV1FactTablesFactTableIdFiltersIdRoute,
+    getV1FactTablesFactTableIdFiltersIdRouteHandler,
+  )
+  .openapi(
+    postV1FactTablesFactTableIdFiltersIdRoute,
+    postV1FactTablesFactTableIdFiltersIdRouteHandler,
+  )
+  .openapi(
+    deleteV1FactTablesFactTableIdFiltersIdRoute,
+    deleteV1FactTablesFactTableIdFiltersIdRouteHandler,
+  )
+  .openapi(
+    postV1FactTablesFactTableIdVirtualColumnsRoute,
+    postV1FactTablesFactTableIdVirtualColumnsRouteHandler,
+  )
+  .openapi(
+    postV1FactTablesFactTableIdVirtualColumnsIdRoute,
+    postV1FactTablesFactTableIdVirtualColumnsIdRouteHandler,
+  )
+  .openapi(
+    deleteV1FactTablesFactTableIdVirtualColumnsIdRoute,
+    deleteV1FactTablesFactTableIdVirtualColumnsIdRouteHandler,
+  )
+  .openapi(getV1FactTablesIdAggregatedTablesRoute, getV1FactTablesIdAggregatedTablesRouteHandler)
+  .openapi(
+    postV1FactTablesIdAggregatedTablesRefreshRoute,
+    postV1FactTablesIdAggregatedTablesRefreshRouteHandler,
+  )
+  .openapi(
+    getV1FactTablesIdAggregatedTablesRunsRoute,
+    getV1FactTablesIdAggregatedTablesRunsRouteHandler,
+  )
+  .openapi(
+    getV1FactTablesIdAggregatedTablesRunsRunIdRoute,
+    getV1FactTablesIdAggregatedTablesRunsRunIdRouteHandler,
+  )
+  .openapi(getV1FactMetricsRoute, getV1FactMetricsRouteHandler)
+  .openapi(postV1FactMetricsRoute, postV1FactMetricsRouteHandler)
+  .openapi(getV1FactMetricsIdRoute, getV1FactMetricsIdRouteHandler)
+  .openapi(postV1FactMetricsIdRoute, postV1FactMetricsIdRouteHandler)
+  .openapi(deleteV1FactMetricsIdRoute, deleteV1FactMetricsIdRouteHandler)
+  .openapi(postV1FactMetricsIdAnalysisRoute, postV1FactMetricsIdAnalysisRouteHandler)
+  .openapi(postV1BulkImportFactsRoute, postV1BulkImportFactsRouteHandler)
+  .openapi(postV1CodeRefsRoute, postV1CodeRefsRouteHandler)
+  .openapi(getV1CodeRefsRoute, getV1CodeRefsRouteHandler)
+  .openapi(getV1CodeRefsIdRoute, getV1CodeRefsIdRouteHandler)
+  .openapi(getV1MembersRoute, getV1MembersRouteHandler)
+  .openapi(postV1MembersIdRoleRoute, postV1MembersIdRoleRouteHandler)
+  .openapi(deleteV1MembersIdRoute, deleteV1MembersIdRouteHandler)
+  .openapi(getV1QueriesIdRoute, getV1QueriesIdRouteHandler)
+  .openapi(getV1DataSourcesIdQueriesRoute, getV1DataSourcesIdQueriesRouteHandler)
+  .openapi(postV1QueriesIdCancelRoute, postV1QueriesIdCancelRouteHandler)
+  .openapi(getV1SettingsRoute, getV1SettingsRouteHandler)
+  .openapi(putV1SettingsApprovalsRoute, putV1SettingsApprovalsRouteHandler)
+  .openapi(getV1VersionRoute, getV1VersionRouteHandler)
+  .openapi(getV1ConfirmationsRoute, getV1ConfirmationsRouteHandler)
+  .openapi(getV1ConfirmationsIdRoute, getV1ConfirmationsIdRouteHandler)
+  .openapi(
+    getV1InformationSchemaTablesTableIdRoute,
+    getV1InformationSchemaTablesTableIdRouteHandler,
+  )
+  .openapi(
+    postV1InformationSchemaTablesTableIdRefreshRoute,
+    postV1InformationSchemaTablesTableIdRefreshRouteHandler,
+  )
+  .openapi(getV1RampSchedulesRoute, getV1RampSchedulesRouteHandler)
+  .openapi(postV1RampSchedulesRoute, postV1RampSchedulesRouteHandler)
+  .openapi(postV1RampSchedulesIdActionsStartRoute, postV1RampSchedulesIdActionsStartRouteHandler)
+  .openapi(postV1RampSchedulesIdActionsPauseRoute, postV1RampSchedulesIdActionsPauseRouteHandler)
+  .openapi(postV1RampSchedulesIdActionsResumeRoute, postV1RampSchedulesIdActionsResumeRouteHandler)
+  .openapi(postV1RampSchedulesIdActionsRetryRoute, postV1RampSchedulesIdActionsRetryRouteHandler)
+  .openapi(
+    postV1RampSchedulesIdActionsRollbackRoute,
+    postV1RampSchedulesIdActionsRollbackRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsRestartRoute,
+    postV1RampSchedulesIdActionsRestartRouteHandler,
+  )
+  .openapi(postV1RampSchedulesIdActionsJumpRoute, postV1RampSchedulesIdActionsJumpRouteHandler)
+  .openapi(
+    postV1RampSchedulesIdActionsCompleteRoute,
+    postV1RampSchedulesIdActionsCompleteRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsApproveStepRoute,
+    postV1RampSchedulesIdActionsApproveStepRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsAddTargetRoute,
+    postV1RampSchedulesIdActionsAddTargetRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsEjectTargetRoute,
+    postV1RampSchedulesIdActionsEjectTargetRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsAdvanceRoute,
+    postV1RampSchedulesIdActionsAdvanceRouteHandler,
+  )
+  .openapi(getV1RampSchedulesIdStatusRoute, getV1RampSchedulesIdStatusRouteHandler)
+  .openapi(
+    postV1RampSchedulesIdActionsSetMonitoringModeRoute,
+    postV1RampSchedulesIdActionsSetMonitoringModeRouteHandler,
+  )
+  .openapi(
+    postV1RampSchedulesIdActionsSetAutoUpdateRoute,
+    postV1RampSchedulesIdActionsSetAutoUpdateRouteHandler,
+  )
+  .openapi(putV1RampSchedulesIdMonitoringRoute, putV1RampSchedulesIdMonitoringRouteHandler)
+  .openapi(putV1RampSchedulesIdLockdownRoute, putV1RampSchedulesIdLockdownRouteHandler)
+  .openapi(putV1RampSchedulesIdStepsRoute, putV1RampSchedulesIdStepsRouteHandler)
+  .openapi(
+    postV1RampSchedulesIdActionsRefreshMonitoringRoute,
+    postV1RampSchedulesIdActionsRefreshMonitoringRouteHandler,
+  )
+  .openapi(postV1RampSchedulesActionsRollbackRoute, postV1RampSchedulesActionsRollbackRouteHandler)
+  .openapi(postV1RampSchedulesActionsPauseRoute, postV1RampSchedulesActionsPauseRouteHandler)
+  .openapi(getV1ReportsRoute, getV1ReportsRouteHandler)
+  .openapi(postV1ReportsRoute, postV1ReportsRouteHandler)
+  .openapi(getV1ReportsIdRoute, getV1ReportsIdRouteHandler)
+  .openapi(postV1ReportsIdRefreshRoute, postV1ReportsIdRefreshRouteHandler)
+  .openapi(putV1ReportsIdMetadataRoute, putV1ReportsIdMetadataRouteHandler)
+  .openapi(putV1ReportsIdSettingsRoute, putV1ReportsIdSettingsRouteHandler)
+  .openapi(getV1NamespacesRoute, getV1NamespacesRouteHandler)
+  .openapi(postV1NamespacesRoute, postV1NamespacesRouteHandler)
+  .openapi(getV1NamespacesIdRoute, getV1NamespacesIdRouteHandler)
+  .openapi(putV1NamespacesIdRoute, putV1NamespacesIdRouteHandler)
+  .openapi(deleteV1NamespacesIdRoute, deleteV1NamespacesIdRouteHandler)
+  .openapi(getV1NamespacesIdMembershipsRoute, getV1NamespacesIdMembershipsRouteHandler)
+  .openapi(postV1NamespacesIdRotateSeedRoute, postV1NamespacesIdRotateSeedRouteHandler)
+  .openapi(getV1EventWebhooksRoute, getV1EventWebhooksRouteHandler)
+  .openapi(postV1EventWebhooksRoute, postV1EventWebhooksRouteHandler)
+  .openapi(getV1EventWebhooksIdRoute, getV1EventWebhooksIdRouteHandler)
+  .openapi(putV1EventWebhooksIdRoute, putV1EventWebhooksIdRouteHandler)
+  .openapi(deleteV1EventWebhooksIdRoute, deleteV1EventWebhooksIdRouteHandler)
+  .openapi(getV1EventWebhooksIdLogsRoute, getV1EventWebhooksIdLogsRouteHandler)
+  .openapi(postV1EventWebhooksIdTestRoute, postV1EventWebhooksIdTestRouteHandler)
+  .openapi(getV1AuditsRoute, getV1AuditsRouteHandler)
+  .openapi(getV1EventsRoute, getV1EventsRouteHandler)
+  .openapi(getV1EventsIdRoute, getV1EventsIdRouteHandler)
+  .openapi(postV1TransformCopyRoute, postV1TransformCopyRouteHandler)
+  .openapi(getV1DashboardsIdRoute, getV1DashboardsIdRouteHandler)
+  .openapi(deleteV1DashboardsIdRoute, deleteV1DashboardsIdRouteHandler)
+  .openapi(putV1DashboardsIdRoute, putV1DashboardsIdRouteHandler)
+  .openapi(postV1DashboardsRoute, postV1DashboardsRouteHandler)
+  .openapi(getV1DashboardsRoute, getV1DashboardsRouteHandler)
+  .openapi(postV2DashboardsRoute, postV2DashboardsRouteHandler)
+  .openapi(
+    getV1DashboardsByExperimentExperimentIdRoute,
+    getV1DashboardsByExperimentExperimentIdRouteHandler,
+  )
+  .openapi(getV1ContextualBanditsIdRoute, getV1ContextualBanditsIdRouteHandler)
+  .openapi(putV1ContextualBanditsIdRoute, putV1ContextualBanditsIdRouteHandler)
+  .openapi(deleteV1ContextualBanditsIdRoute, deleteV1ContextualBanditsIdRouteHandler)
+  .openapi(postV1ContextualBanditsRoute, postV1ContextualBanditsRouteHandler)
+  .openapi(getV1ContextualBanditsRoute, getV1ContextualBanditsRouteHandler)
+  .openapi(postV1ContextualBanditsIdStartRoute, postV1ContextualBanditsIdStartRouteHandler)
+  .openapi(postV1ContextualBanditsIdStopRoute, postV1ContextualBanditsIdStopRouteHandler)
+  .openapi(postV1ContextualBanditsIdRefreshRoute, postV1ContextualBanditsIdRefreshRouteHandler)
+  .openapi(
+    postV1ContextualBanditsIdVariationsRoute,
+    postV1ContextualBanditsIdVariationsRouteHandler,
+  )
+  .openapi(postV1ContextualBanditsIdCancelRoute, postV1ContextualBanditsIdCancelRouteHandler)
+  .openapi(
+    postV1ContextualBanditsIdVisualChangesetsRoute,
+    postV1ContextualBanditsIdVisualChangesetsRouteHandler,
+  )
+  .openapi(
+    getV1ContextualBanditsIdVisualChangesetsRoute,
+    getV1ContextualBanditsIdVisualChangesetsRouteHandler,
+  )
+  .openapi(getV1ContextualBanditQueriesIdRoute, getV1ContextualBanditQueriesIdRouteHandler)
+  .openapi(deleteV1ContextualBanditQueriesIdRoute, deleteV1ContextualBanditQueriesIdRouteHandler)
+  .openapi(putV1ContextualBanditQueriesIdRoute, putV1ContextualBanditQueriesIdRouteHandler)
+  .openapi(postV1ContextualBanditQueriesRoute, postV1ContextualBanditQueriesRouteHandler)
+  .openapi(getV1ContextualBanditQueriesRoute, getV1ContextualBanditQueriesRouteHandler)
+  .openapi(getV1InterleavingExposureQueriesIdRoute, getV1InterleavingExposureQueriesIdRouteHandler)
+  .openapi(
+    deleteV1InterleavingExposureQueriesIdRoute,
+    deleteV1InterleavingExposureQueriesIdRouteHandler,
+  )
+  .openapi(putV1InterleavingExposureQueriesIdRoute, putV1InterleavingExposureQueriesIdRouteHandler)
+  .openapi(postV1InterleavingExposureQueriesRoute, postV1InterleavingExposureQueriesRouteHandler)
+  .openapi(getV1InterleavingExposureQueriesRoute, getV1InterleavingExposureQueriesRouteHandler)
+  .openapi(getV1InterleavingsIdRoute, getV1InterleavingsIdRouteHandler)
+  .openapi(putV1InterleavingsIdRoute, putV1InterleavingsIdRouteHandler)
+  .openapi(deleteV1InterleavingsIdRoute, deleteV1InterleavingsIdRouteHandler)
+  .openapi(postV1InterleavingsRoute, postV1InterleavingsRouteHandler)
+  .openapi(getV1InterleavingsRoute, getV1InterleavingsRouteHandler)
+  .openapi(postV1InterleavingsIdStartRoute, postV1InterleavingsIdStartRouteHandler)
+  .openapi(postV1InterleavingsIdStopRoute, postV1InterleavingsIdStopRouteHandler)
+  .openapi(postV1InterleavingsIdRefreshRoute, postV1InterleavingsIdRefreshRouteHandler)
+  .openapi(getV1InterleavingsIdResultsRoute, getV1InterleavingsIdResultsRouteHandler)
+  .openapi(getV1InterleavingsIdStatusRoute, getV1InterleavingsIdStatusRouteHandler)
+  .openapi(getV1InterleavingsIdSnapshotsRoute, getV1InterleavingsIdSnapshotsRouteHandler)
+  .openapi(
+    getV1InterleavingsIdSnapshotsSnapshotIdRoute,
+    getV1InterleavingsIdSnapshotsSnapshotIdRouteHandler,
+  )
+  .openapi(postV1CustomFieldsRoute, postV1CustomFieldsRouteHandler)
+  .openapi(getV1CustomFieldsRoute, getV1CustomFieldsRouteHandler)
+  .openapi(deleteV1CustomFieldsIdRoute, deleteV1CustomFieldsIdRouteHandler)
+  .openapi(getV1CustomFieldsIdRoute, getV1CustomFieldsIdRouteHandler)
+  .openapi(putV1CustomFieldsIdRoute, putV1CustomFieldsIdRouteHandler)
+  .openapi(getV1MetricGroupsIdRoute, getV1MetricGroupsIdRouteHandler)
+  .openapi(deleteV1MetricGroupsIdRoute, deleteV1MetricGroupsIdRouteHandler)
+  .openapi(putV1MetricGroupsIdRoute, putV1MetricGroupsIdRouteHandler)
+  .openapi(postV1MetricGroupsRoute, postV1MetricGroupsRouteHandler)
+  .openapi(getV1MetricGroupsRoute, getV1MetricGroupsRouteHandler)
+  .openapi(getV1TeamsIdRoute, getV1TeamsIdRouteHandler)
+  .openapi(putV1TeamsIdRoute, putV1TeamsIdRouteHandler)
+  .openapi(deleteV1TeamsIdRoute, deleteV1TeamsIdRouteHandler)
+  .openapi(postV1TeamsRoute, postV1TeamsRouteHandler)
+  .openapi(getV1TeamsRoute, getV1TeamsRouteHandler)
+  .openapi(postV1TeamsIdMembersRoute, postV1TeamsIdMembersRouteHandler)
+  .openapi(deleteV1TeamsIdMembersRoute, deleteV1TeamsIdMembersRouteHandler)
+  .openapi(getV1ExperimentTemplatesIdRoute, getV1ExperimentTemplatesIdRouteHandler)
+  .openapi(deleteV1ExperimentTemplatesIdRoute, deleteV1ExperimentTemplatesIdRouteHandler)
+  .openapi(putV1ExperimentTemplatesIdRoute, putV1ExperimentTemplatesIdRouteHandler)
+  .openapi(postV1ExperimentTemplatesRoute, postV1ExperimentTemplatesRouteHandler)
+  .openapi(getV1ExperimentTemplatesRoute, getV1ExperimentTemplatesRouteHandler)
+  .openapi(
+    postV1ExperimentTemplatesBulkImportRoute,
+    postV1ExperimentTemplatesBulkImportRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsMetricExplorationRoute,
+    postV1ProductAnalyticsMetricExplorationRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsFactTableExplorationRoute,
+    postV1ProductAnalyticsFactTableExplorationRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsDataSourceExplorationRoute,
+    postV1ProductAnalyticsDataSourceExplorationRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsSqlExplorationRoute,
+    postV1ProductAnalyticsSqlExplorationRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsFunnelExplorationRoute,
+    postV1ProductAnalyticsFunnelExplorationRouteHandler,
+  )
+  .openapi(
+    postV1ProductAnalyticsJourneyExplorationRoute,
+    postV1ProductAnalyticsJourneyExplorationRouteHandler,
+  )
+  .openapi(getV1ProductAnalyticsSearchRoute, getV1ProductAnalyticsSearchRouteHandler)
+  .openapi(getV1ProductAnalyticsColumnsRoute, getV1ProductAnalyticsColumnsRouteHandler)
+  .openapi(postV1ProductAnalyticsColumnValuesRoute, postV1ProductAnalyticsColumnValuesRouteHandler)
+  .openapi(
+    getV1ProductAnalyticsExplorationsIdRoute,
+    getV1ProductAnalyticsExplorationsIdRouteHandler,
+  )
+  .openapi(getV1RampScheduleTemplatesIdRoute, getV1RampScheduleTemplatesIdRouteHandler)
+  .openapi(deleteV1RampScheduleTemplatesIdRoute, deleteV1RampScheduleTemplatesIdRouteHandler)
+  .openapi(putV1RampScheduleTemplatesIdRoute, putV1RampScheduleTemplatesIdRouteHandler)
+  .openapi(postV1RampScheduleTemplatesRoute, postV1RampScheduleTemplatesRouteHandler)
+  .openapi(getV1RampScheduleTemplatesRoute, getV1RampScheduleTemplatesRouteHandler)
+  .openapi(getV1RampSchedulesIdRoute, getV1RampSchedulesIdRouteHandler)
+  .openapi(deleteV1RampSchedulesIdRoute, deleteV1RampSchedulesIdRouteHandler)
+  .openapi(putV1RampSchedulesIdRoute, putV1RampSchedulesIdRouteHandler)
+  .openapi(getV1LearningsIdRoute, getV1LearningsIdRouteHandler)
+  .openapi(deleteV1LearningsIdRoute, deleteV1LearningsIdRouteHandler)
+  .openapi(putV1LearningsIdRoute, putV1LearningsIdRouteHandler)
+  .openapi(postV1LearningsRoute, postV1LearningsRouteHandler)
+  .openapi(getV1LearningsRoute, getV1LearningsRouteHandler)
+  .openapi(postV1LearningsSearchRoute, postV1LearningsSearchRouteHandler)
+  .openapi(getV1HoldoutsIdRoute, getV1HoldoutsIdRouteHandler)
+  .openapi(putV1HoldoutsIdRoute, putV1HoldoutsIdRouteHandler)
+  .openapi(postV1HoldoutsRoute, postV1HoldoutsRouteHandler)
+  .openapi(getV1HoldoutsRoute, getV1HoldoutsRouteHandler)
+  .openapi(postV1HoldoutsIdStartRoute, postV1HoldoutsIdStartRouteHandler)
+  .openapi(postV1HoldoutsIdStartAnalysisRoute, postV1HoldoutsIdStartAnalysisRouteHandler)
+  .openapi(postV1HoldoutsIdStopRoute, postV1HoldoutsIdStopRouteHandler)
+  .openapi(postV1AutoRunsRoute, postV1AutoRunsRouteHandler)
+  .openapi(getV1AutoRunsRoute, getV1AutoRunsRouteHandler)
+  .openapi(getV1AutoRunsIdRoute, getV1AutoRunsIdRouteHandler)
+  .openapi(putV1AutoRunsIdRoute, putV1AutoRunsIdRouteHandler)
+  .openapi(postV1AutoRunsIdArtifactsRoute, postV1AutoRunsIdArtifactsRouteHandler)
+  .openapi(getV1PopulationsRoute, getV1PopulationsRouteHandler)
+  .openapi(postV1PopulationsRoute, postV1PopulationsRouteHandler)
+  .openapi(getV1PopulationsIdRoute, getV1PopulationsIdRouteHandler)
+  .openapi(putV1PopulationsIdRoute, putV1PopulationsIdRouteHandler)
+  .openapi(deleteV1PopulationsIdRoute, deleteV1PopulationsIdRouteHandler)
+  .openapi(getV1WebhookSecretsIdRoute, getV1WebhookSecretsIdRouteHandler)
+  .openapi(deleteV1WebhookSecretsIdRoute, deleteV1WebhookSecretsIdRouteHandler)
+  .openapi(getV1WebhookSecretsRoute, getV1WebhookSecretsRouteHandler)
+  .openapi(getV1SdkConnectionsIdWebhooksRoute, getV1SdkConnectionsIdWebhooksRouteHandler)
+  .openapi(postV1SdkConnectionsIdWebhooksRoute, postV1SdkConnectionsIdWebhooksRouteHandler)
+  .openapi(putV1SdkWebhooksIdRoute, putV1SdkWebhooksIdRouteHandler)
+  .openapi(deleteV1SdkWebhooksIdRoute, deleteV1SdkWebhooksIdRouteHandler)
+  .openapi(postV1SdkWebhooksIdTestRoute, postV1SdkWebhooksIdTestRouteHandler)
 
 export default app

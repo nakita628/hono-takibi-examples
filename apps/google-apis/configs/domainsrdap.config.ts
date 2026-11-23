@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/domainsrdap/v1/openapi.yaml',
   output: './src/domainsrdap/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/domainsrdap/types.ts' },
   client: { output: './src/domainsrdap/client.ts', baseUrl: '/' },
   rpc: { output: './src/domainsrdap/rpc.ts', parseResponse: true },

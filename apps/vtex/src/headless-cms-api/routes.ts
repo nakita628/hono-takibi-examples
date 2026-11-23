@@ -294,8 +294,8 @@ export const getVCmsApiBuilderIdIndexRoute = createRoute({
       },
       headers: z.object({}),
     },
-    404: { description: 'Not Found', content: {}, headers: z.object({}) },
-    500: { description: 'Internal Server Error', content: {}, headers: z.object({}) },
+    404: { description: 'Not Found', headers: z.object({}) },
+    500: { description: 'Internal Server Error', headers: z.object({}) },
   },
 })
 
@@ -547,8 +547,8 @@ export const getVCmsApiBuilderIdContentTypeRoute = createRoute({
       },
       headers: z.object({}),
     },
-    404: { description: 'Not Found', content: {}, headers: z.object({}) },
-    500: { description: 'Internal Server Error', content: {}, headers: z.object({}) },
+    404: { description: 'Not Found', headers: z.object({}) },
+    500: { description: 'Internal Server Error', headers: z.object({}) },
   },
 })
 
@@ -759,7 +759,7 @@ export const getVCmsApiBuilderIdContentTypeDocumentIdIndexRoute = createRoute({
       },
       headers: z.object({}),
     },
-    404: { description: 'Not Found', content: {}, headers: z.object({}) },
-    500: { description: 'Internal Server Error', content: {}, headers: z.object({}) },
+    404: { description: 'Not Found', headers: z.object({}) },
+    500: { description: 'Internal Server Error', headers: z.object({}) },
   },
 })

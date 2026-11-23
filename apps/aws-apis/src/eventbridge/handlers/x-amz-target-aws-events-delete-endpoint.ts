@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsDeleteEndpointRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsDeleteEndpointRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsDeleteEndpointHandler = app.openapi(
-  postXAmzTargetAWSEventsDeleteEndpointRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsDeleteEndpointRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsDeleteEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

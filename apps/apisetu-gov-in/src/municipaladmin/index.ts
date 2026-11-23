@@ -1,12 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { kecerHandler, tapcnHandler, tdlcsHandler, ugdcnHandler } from './handlers'
+import {
+  postKecerCertificateRoute,
+  postTapcnCertificateRoute,
+  postTdlcsCertificateRoute,
+  postUgdcnCertificateRoute,
+} from './routes'
+import {
+  postKecerCertificateRouteHandler,
+  postTapcnCertificateRouteHandler,
+  postTdlcsCertificateRouteHandler,
+  postUgdcnCertificateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', kecerHandler)
-  .route('/', tapcnHandler)
-  .route('/', tdlcsHandler)
-  .route('/', ugdcnHandler)
+  .openapi(postKecerCertificateRoute, postKecerCertificateRouteHandler)
+  .openapi(postTapcnCertificateRoute, postTapcnCertificateRouteHandler)
+  .openapi(postTdlcsCertificateRoute, postTdlcsCertificateRouteHandler)
+  .openapi(postUgdcnCertificateRoute, postUgdcnCertificateRouteHandler)
 
 export default app

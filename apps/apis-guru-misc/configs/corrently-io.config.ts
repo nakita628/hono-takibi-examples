@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/corrently.io/2.0.0/openapi.yaml',
   output: './src/corrently-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/corrently-io/types.ts' },
   client: { output: './src/corrently-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/corrently-io/rpc.ts', parseResponse: true },

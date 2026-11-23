@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRecipeMultitenancyAppListRoute,
   getRecipeMultitenancyAppListV2Route,
   getRecipeMultitenancyConnectionuridomainListRoute,
@@ -13,39 +13,68 @@ import {
   putRecipeMultitenancyConnectionuridomainV2Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRecipeTotpDeviceImportRouteHandler: RouteHandler<
+  typeof postRecipeTotpDeviceImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const recipeHandler = app
-  .openapi(postRecipeTotpDeviceImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeMultitenancyConnectionuridomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeMultitenancyConnectionuridomainV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeMultitenancyConnectionuridomainRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeMultitenancyConnectionuridomainListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeMultitenancyConnectionuridomainListV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeMultitenancyAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecipeMultitenancyAppV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecipeMultitenancyAppRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeMultitenancyAppListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecipeMultitenancyAppListV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRecipeMultitenancyConnectionuridomainRouteHandler: RouteHandler<
+  typeof putRecipeMultitenancyConnectionuridomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeMultitenancyConnectionuridomainV2RouteHandler: RouteHandler<
+  typeof putRecipeMultitenancyConnectionuridomainV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeMultitenancyConnectionuridomainRemoveRouteHandler: RouteHandler<
+  typeof postRecipeMultitenancyConnectionuridomainRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeMultitenancyConnectionuridomainListRouteHandler: RouteHandler<
+  typeof getRecipeMultitenancyConnectionuridomainListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeMultitenancyConnectionuridomainListV2RouteHandler: RouteHandler<
+  typeof getRecipeMultitenancyConnectionuridomainListV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeMultitenancyAppRouteHandler: RouteHandler<
+  typeof putRecipeMultitenancyAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecipeMultitenancyAppV2RouteHandler: RouteHandler<
+  typeof putRecipeMultitenancyAppV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecipeMultitenancyAppRemoveRouteHandler: RouteHandler<
+  typeof postRecipeMultitenancyAppRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeMultitenancyAppListRouteHandler: RouteHandler<
+  typeof getRecipeMultitenancyAppListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecipeMultitenancyAppListV2RouteHandler: RouteHandler<
+  typeof getRecipeMultitenancyAppListV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

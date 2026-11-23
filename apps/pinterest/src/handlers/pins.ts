@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePinsPinIdRoute,
   getPinsAnalyticsRoute,
   getPinsPinIdAnalyticsRoute,
@@ -13,39 +13,58 @@ import {
   postPinsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPinsRouteHandler: RouteHandler<typeof postPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pinsHandler = app
-  .openapi(postPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPinsAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPinsPinIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPinsPinIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePinsPinIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPinsPinIdAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPinsPinIdProductTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPinsPinIdProductTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPinsPinIdProductTagsBulkDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPinsPinIdSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPinsRouteHandler: RouteHandler<typeof getPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPinsAnalyticsRouteHandler: RouteHandler<typeof getPinsAnalyticsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPinsPinIdRouteHandler: RouteHandler<typeof getPinsPinIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPinsPinIdRouteHandler: RouteHandler<typeof patchPinsPinIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePinsPinIdRouteHandler: RouteHandler<typeof deletePinsPinIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPinsPinIdAnalyticsRouteHandler: RouteHandler<
+  typeof getPinsPinIdAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPinsPinIdProductTagsRouteHandler: RouteHandler<
+  typeof postPinsPinIdProductTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPinsPinIdProductTagsRouteHandler: RouteHandler<
+  typeof getPinsPinIdProductTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPinsPinIdProductTagsBulkDeleteRouteHandler: RouteHandler<
+  typeof postPinsPinIdProductTagsBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPinsPinIdSaveRouteHandler: RouteHandler<typeof postPinsPinIdSaveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

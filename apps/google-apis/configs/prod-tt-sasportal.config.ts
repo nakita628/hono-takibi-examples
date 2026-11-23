@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/prod_tt_sasportal/v1alpha1/openapi.yaml',
   output: './src/prod-tt-sasportal/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/prod-tt-sasportal/types.ts' },
   client: { output: './src/prod-tt-sasportal/client.ts', baseUrl: '/' },
   rpc: { output: './src/prod-tt-sasportal/rpc.ts', parseResponse: true },

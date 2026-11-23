@@ -818,7 +818,7 @@ export const postAssetsRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
   },
   security: [{ OAuth2: ['assets'] }],
 })
@@ -1025,7 +1025,7 @@ export const postAssetTypesRoute = createRoute({
         },
       },
     },
-    400: { description: 'invalid input, object invalid', content: {} },
+    400: { description: 'invalid input, object invalid' },
     409: { description: 'a type already exists' },
   },
   security: [{ OAuth2: ['assets'] }],

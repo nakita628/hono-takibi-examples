@@ -1,26 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type DataConnectionType = {
-  additionalProperties?: unknown
-  connectionInfo?: { [key: string]: string }
-  created: string
-  dataConnectionErrors?: {
-    errorMessage?: string
-    erroredOnUtc?: DataConnectionType
-    statusCode?: string
-    statusText?: string
-  }[]
-  id: string
-  integrationId: string
-  integrationKey: string
-  lastSync?: DataConnectionType
-  linkUrl: string
-  platformName: string
-  sourceId: string
-  sourceType: 'Accounting' | 'Banking' | 'Commerce' | 'Other' | 'Unknown'
-  status: 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
-}
-
 const AccountMappingInfoSchema = z
   .strictObject({
     accountType: z
@@ -253,110 +232,15 @@ const CompanyConfigurationSchema = z
   })
   .openapi('CompanyConfiguration')
 
-const DataConnectionSchema: z.ZodType<DataConnectionType> = z
-  .lazy(() =>
-    z
-      .object({
-        additionalProperties: z.never().exactOptional(),
-        connectionInfo: z.record(z.string(), z.string()).exactOptional(),
-        created: z
-          .string()
-          .openapi({
-            description:
-              'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
-            example: '2022-10-23T00:00:00Z',
-            title: 'Date time',
-          }),
-        dataConnectionErrors: z
-          .array(
-            z
-              .object({
-                errorMessage: z.string().exactOptional(),
-                erroredOnUtc: z.lazy(() => DataConnectionSchema).exactOptional(),
-                statusCode: z.string().exactOptional(),
-                statusText: z.string().exactOptional(),
-              })
-              .openapi({ title: 'Data connection error', required: [] }),
-          )
-          .exactOptional(),
-        id: z
-          .uuid()
-          .openapi({
-            description: "Unique identifier for a company's data connection.",
-            example: '2e9d2c44-f675-40ba-8049-353bfcb5e171',
-          }),
-        integrationId: z
-          .uuid()
-          .openapi({
-            description: 'A Codat ID representing the integration.',
-            example: 'fd321cb6-7963-4506-b873-e99593a45e30',
-          }),
-        integrationKey: z
-          .string()
-          .openapi({
-            description:
-              "A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.",
-          }),
-        lastSync: z.lazy(() => DataConnectionSchema).exactOptional(),
-        linkUrl: z
-          .url()
-          .openapi({
-            example:
-              'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/2e2eb431-c1fa-4dc9-93fa-d29781c12bcd/start',
-          }),
-        platformName: z.string(),
-        sourceId: z
-          .uuid()
-          .openapi({
-            description:
-              'A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.',
-            example: '35b92968-9851-4095-ad60-395c95cbcba4',
-          }),
-        sourceType: z
-          .enum(['Accounting', 'Banking', 'Commerce', 'Other', 'Unknown'])
-          .openapi({
-            description: 'The type of platform of the connection.',
-            example: 'Accounting',
-            title: 'Source Type',
-            'x-internal': true,
-          }),
-        status: z
-          .enum(['PendingAuth', 'Linked', 'Unlinked', 'Deauthorized'])
-          .openapi({
-            description: 'The current authorization status of the data connection.',
-            title: 'Data connection status',
-          }),
-      })
-      .openapi({
-        description: 'A connection represents the link between a `company` and a source of data.',
-        example: {
-          created: '2022-10-27T09:53:29Z',
-          id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
-          integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
-          integrationKey: 'dfxm',
-          lastSync: '2022-10-27T10:22:43.6464237Z',
-          linkUrl:
-            'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
-          platformName: 'Basiq',
-          sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
-          sourceType: 'Banking',
-          status: 'Linked',
-        },
-        required: [
-          'id',
-          'integrationId',
-          'integrationKey',
-          'sourceId',
-          'platformName',
-          'linkUrl',
-          'status',
-          'created',
-          'sourceType',
-        ],
-        title: 'Connection',
-      }),
-  )
-  .openapi('DataConnection')
+const DataConnectionCreatedSchema = z
+  .string()
+  .openapi({
+    description:
+      'In Codat\'s data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:\n\n```\n2020-10-08T22:40:50Z\n2021-01-01T00:00:00\n```\n\n\n\nWhen syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:\n\n- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`\n- Unqualified local time: `2021-11-15T01:00:00`\n- UTC time offsets: `2021-11-15T01:00:00-05:00`\n\n> Time zones\n> \n> Not all dates from Codat will contain information about time zones.  \n> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.',
+    example: '2022-10-23T00:00:00Z',
+    title: 'Date time',
+  })
+  .openapi('DataConnectionCreated')
 
 const CompanySyncStatusSchema = z
   .strictObject({
@@ -399,9 +283,7 @@ const CompanySyncStatusSchema = z
       .int32()
       .exactOptional()
       .openapi({ description: 'Status code of the sync.', example: 2000 }),
-    syncUtc: z
-      .lazy(() => DataConnectionSchema)
-      .nullable()
+    syncUtc: DataConnectionCreatedSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Datetime of the sync.' }),
   })
@@ -492,9 +374,9 @@ const ExpenseTransactionSchema = z
         description: 'Your unique idenfier for the transaction.',
         example: '4d7c6929-7770-412b-91bb-44d3bc71d111',
       }),
-    issueDate: z
-      .lazy(() => DataConnectionSchema)
-      .openapi({ description: 'Date of the transaction was recorded.' }),
+    issueDate: DataConnectionCreatedSchema.openapi({
+      description: 'Date of the transaction was recorded.',
+    }),
     lines: z
       .array(ExpenseTransactionLineSchema)
       .min(1)
@@ -571,6 +453,103 @@ const CreateExpenseResponseSchema = z
   })
   .openapi({ 'x-internal': true, required: [] })
   .openapi('CreateExpenseResponse')
+
+const DataConnectionDataConnectionErrorSchema = z
+  .object({
+    errorMessage: z.string().exactOptional(),
+    erroredOnUtc: DataConnectionCreatedSchema.exactOptional(),
+    statusCode: z.string().exactOptional(),
+    statusText: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Data connection error', required: [] })
+  .openapi('DataConnectionDataConnectionError')
+
+const DataConnectionDataConnectionStatusSchema = z
+  .enum(['PendingAuth', 'Linked', 'Unlinked', 'Deauthorized'])
+  .openapi({
+    description: 'The current authorization status of the data connection.',
+    title: 'Data connection status',
+  })
+  .openapi('DataConnectionDataConnectionStatus')
+
+const DataConnectionSchema = z
+  .object({
+    additionalProperties: z.never().exactOptional(),
+    connectionInfo: z.record(z.string(), z.string()).exactOptional(),
+    created: DataConnectionCreatedSchema,
+    dataConnectionErrors: z.array(DataConnectionDataConnectionErrorSchema).exactOptional(),
+    id: z
+      .uuid()
+      .openapi({
+        description: "Unique identifier for a company's data connection.",
+        example: '2e9d2c44-f675-40ba-8049-353bfcb5e171',
+      }),
+    integrationId: z
+      .uuid()
+      .openapi({
+        description: 'A Codat ID representing the integration.',
+        example: 'fd321cb6-7963-4506-b873-e99593a45e30',
+      }),
+    integrationKey: z
+      .string()
+      .openapi({
+        description:
+          "A unique four-character ID that identifies the platform of the company's data connection. This ensures continuity if the platform changes its name in the future.",
+      }),
+    lastSync: DataConnectionCreatedSchema.exactOptional(),
+    linkUrl: z
+      .url()
+      .openapi({
+        example:
+          'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/2e2eb431-c1fa-4dc9-93fa-d29781c12bcd/start',
+      }),
+    platformName: z.string(),
+    sourceId: z
+      .uuid()
+      .openapi({
+        description:
+          'A source-specific ID used to distinguish between different sources originating from the same data connection. In general, a data connection is a single data source. However, for TrueLayer, `sourceId` is associated with a specific bank and has a many-to-one relationship with the `integrationId`.',
+        example: '35b92968-9851-4095-ad60-395c95cbcba4',
+      }),
+    sourceType: z
+      .enum(['Accounting', 'Banking', 'Commerce', 'Other', 'Unknown'])
+      .openapi({
+        description: 'The type of platform of the connection.',
+        example: 'Accounting',
+        title: 'Source Type',
+        'x-internal': true,
+      }),
+    status: DataConnectionDataConnectionStatusSchema,
+  })
+  .openapi({
+    description: 'A connection represents the link between a `company` and a source of data.',
+    example: {
+      created: '2022-10-27T09:53:29Z',
+      id: 'ee2eb431-c0fa-4dc9-93fa-d29781c12bcd',
+      integrationId: 'bf083d72-62c7-493e-aec9-81b4dbba7e2c',
+      integrationKey: 'dfxm',
+      lastSync: '2022-10-27T10:22:43.6464237Z',
+      linkUrl:
+        'https://link-api.codat.io/companies/86bd88cb-44ab-4dfb-b32f-87b19b14287f/connections/ee2eb431-c0fa-4dc9-93fa-d29781c12bcd/start',
+      platformName: 'Basiq',
+      sourceId: 'bdd831ce-eebd-4896-89a7-20e5ee8989ee',
+      sourceType: 'Banking',
+      status: 'Linked',
+    },
+    required: [
+      'id',
+      'integrationId',
+      'integrationKey',
+      'sourceId',
+      'platformName',
+      'linkUrl',
+      'status',
+      'created',
+      'sourceType',
+    ],
+    title: 'Connection',
+  })
+  .openapi('DataConnection')
 
 const HalLinkSchema = z
   .object({ href: z.string().exactOptional() })
@@ -673,9 +652,7 @@ const TrackingCategoryMappingInfoSchema = z
         description: 'Unique identifier of the tracking category.',
         example: 'DEPARTMENT_2',
       }),
-    modifiedDate: z
-      .lazy(() => DataConnectionSchema)
-      .nullable()
+    modifiedDate: DataConnectionCreatedSchema.nullable()
       .exactOptional()
       .openapi({ description: 'Datetime when the tracking category was last modified.' }),
     name: z

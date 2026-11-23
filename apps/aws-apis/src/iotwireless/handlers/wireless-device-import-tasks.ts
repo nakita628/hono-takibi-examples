@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWirelessDeviceImportTasksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWirelessDeviceImportTasksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const wirelessDeviceImportTasksHandler = app.openapi(
-  getWirelessDeviceImportTasksRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getWirelessDeviceImportTasksRouteHandler: RouteHandler<
+  typeof getWirelessDeviceImportTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

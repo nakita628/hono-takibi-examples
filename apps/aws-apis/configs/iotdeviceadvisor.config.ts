@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotdeviceadvisor/2020-09-18/openapi.yaml',
   output: './src/iotdeviceadvisor/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iotdeviceadvisor/types.ts' },
   client: { output: './src/iotdeviceadvisor/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotdeviceadvisor/rpc.ts', parseResponse: true },

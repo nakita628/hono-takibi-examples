@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1beta1AcatsAccountIdAcatsIdAssetsRoute,
   getV1beta1AcatsAccountIdAcatsIdRoute,
   getV1beta1AcatsAccountIdRoute,
@@ -9,27 +9,42 @@ import {
   postV1beta1AcatsAccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1beta1AcatsRouteHandler: RouteHandler<typeof getV1beta1AcatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(getV1beta1AcatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1AcatsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1AcatsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1AcatsAccountIdAcatsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1AcatsAccountIdAcatsIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1AcatsContrabrokersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1LogosSymbolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1beta1AcatsAccountIdRouteHandler: RouteHandler<
+  typeof getV1beta1AcatsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1AcatsAccountIdRouteHandler: RouteHandler<
+  typeof postV1beta1AcatsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1AcatsAccountIdAcatsIdRouteHandler: RouteHandler<
+  typeof getV1beta1AcatsAccountIdAcatsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1AcatsAccountIdAcatsIdAssetsRouteHandler: RouteHandler<
+  typeof getV1beta1AcatsAccountIdAcatsIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1AcatsContrabrokersRouteHandler: RouteHandler<
+  typeof getV1beta1AcatsContrabrokersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1LogosSymbolRouteHandler: RouteHandler<
+  typeof getV1beta1LogosSymbolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

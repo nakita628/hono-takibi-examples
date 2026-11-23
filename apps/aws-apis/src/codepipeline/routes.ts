@@ -310,13 +310,13 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).openapi('TagList')
 
 type CreatePipelineOutputType = {
-  pipeline?: z.infer<typeof PipelineDeclarationSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
+  pipeline?: z.infer<typeof PipelineDeclarationSchema>
+  tags?: z.infer<typeof TagListSchema>
 }
 
 type CreatePipelineInputType = {
-  pipeline: z.infer<typeof PipelineDeclarationSchema> & unknown
-  tags?: z.infer<typeof TagListSchema> & unknown
+  pipeline: z.infer<typeof PipelineDeclarationSchema>
+  tags?: z.infer<typeof TagListSchema>
 }
 
 const PipelineArnSchema = z
@@ -346,8 +346,8 @@ const PipelineMetadataSchema = z
   .openapi('PipelineMetadata')
 
 type GetPipelineOutputType = {
-  pipeline?: z.infer<typeof PipelineDeclarationSchema> & unknown
-  metadata?: z.infer<typeof PipelineMetadataSchema> & unknown
+  pipeline?: z.infer<typeof PipelineDeclarationSchema>
+  metadata?: z.infer<typeof PipelineMetadataSchema>
 }
 
 const JobIdSchema = z
@@ -563,11 +563,11 @@ const JobSchema = z
 
 const JobListSchema = z.array(JobSchema).openapi('JobList')
 
-type PollForJobsOutputType = { jobs?: z.infer<typeof JobListSchema> & unknown }
+type PollForJobsOutputType = { jobs?: z.infer<typeof JobListSchema> }
 
-type UpdatePipelineOutputType = { pipeline?: z.infer<typeof PipelineDeclarationSchema> & unknown }
+type UpdatePipelineOutputType = { pipeline?: z.infer<typeof PipelineDeclarationSchema> }
 
-type UpdatePipelineInputType = { pipeline: z.infer<typeof PipelineDeclarationSchema> & unknown }
+type UpdatePipelineInputType = { pipeline: z.infer<typeof PipelineDeclarationSchema> }
 
 const JobStatusSchema = z
   .enum(['Created', 'Queued', 'Dispatched', 'InProgress', 'TimedOut', 'Succeeded', 'Failed'])

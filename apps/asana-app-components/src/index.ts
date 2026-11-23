@@ -1,33 +1,77 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  actionMetadataUrlPathPlaceholderHandler,
-  actionOnChangeCallbackPathPlaceholderHandler,
-  actionOnSubmitCallbackPathPlaceholderHandler,
-  formMetadataUrlPathPlaceholderHandler,
-  modalFormTypeaheadUrlPathPlaceholderHandler,
-  onChangeCallbackPathPlaceholderHandler,
-  onSubmitCallbackPathPlaceholderHandler,
-  resourceAttachUrlPathPlaceholderHandler,
-  resourceTypeaheadUrlPathPlaceholderHandler,
-  ruleActionTypeaheadUrlPathPlaceholderHandler,
-  runActionUrlPathPlaceholderHandler,
-  widgetMetadataUrlPathPlaceholderHandler,
+  getActionMetadataUrlPathPlaceholderRoute,
+  getFormMetadataUrlPathPlaceholderRoute,
+  getModalFormTypeaheadUrlPathPlaceholderRoute,
+  getResourceTypeaheadUrlPathPlaceholderRoute,
+  getRuleActionTypeaheadUrlPathPlaceholderRoute,
+  getWidgetMetadataUrlPathPlaceholderRoute,
+  postActionOnChangeCallbackPathPlaceholderRoute,
+  postActionOnSubmitCallbackPathPlaceholderRoute,
+  postOnChangeCallbackPathPlaceholderRoute,
+  postOnSubmitCallbackPathPlaceholderRoute,
+  postResourceAttachUrlPathPlaceholderRoute,
+  postRunActionUrlPathPlaceholderRoute,
+} from './routes'
+import {
+  getActionMetadataUrlPathPlaceholderRouteHandler,
+  getFormMetadataUrlPathPlaceholderRouteHandler,
+  getModalFormTypeaheadUrlPathPlaceholderRouteHandler,
+  getResourceTypeaheadUrlPathPlaceholderRouteHandler,
+  getRuleActionTypeaheadUrlPathPlaceholderRouteHandler,
+  getWidgetMetadataUrlPathPlaceholderRouteHandler,
+  postActionOnChangeCallbackPathPlaceholderRouteHandler,
+  postActionOnSubmitCallbackPathPlaceholderRouteHandler,
+  postOnChangeCallbackPathPlaceholderRouteHandler,
+  postOnSubmitCallbackPathPlaceholderRouteHandler,
+  postResourceAttachUrlPathPlaceholderRouteHandler,
+  postRunActionUrlPathPlaceholderRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', widgetMetadataUrlPathPlaceholderHandler)
-  .route('/', resourceAttachUrlPathPlaceholderHandler)
-  .route('/', resourceTypeaheadUrlPathPlaceholderHandler)
-  .route('/', formMetadataUrlPathPlaceholderHandler)
-  .route('/', modalFormTypeaheadUrlPathPlaceholderHandler)
-  .route('/', ruleActionTypeaheadUrlPathPlaceholderHandler)
-  .route('/', onChangeCallbackPathPlaceholderHandler)
-  .route('/', onSubmitCallbackPathPlaceholderHandler)
-  .route('/', runActionUrlPathPlaceholderHandler)
-  .route('/', actionMetadataUrlPathPlaceholderHandler)
-  .route('/', actionOnChangeCallbackPathPlaceholderHandler)
-  .route('/', actionOnSubmitCallbackPathPlaceholderHandler)
+  .openapi(
+    getWidgetMetadataUrlPathPlaceholderRoute,
+    getWidgetMetadataUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    postResourceAttachUrlPathPlaceholderRoute,
+    postResourceAttachUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    getResourceTypeaheadUrlPathPlaceholderRoute,
+    getResourceTypeaheadUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(getFormMetadataUrlPathPlaceholderRoute, getFormMetadataUrlPathPlaceholderRouteHandler)
+  .openapi(
+    getModalFormTypeaheadUrlPathPlaceholderRoute,
+    getModalFormTypeaheadUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    getRuleActionTypeaheadUrlPathPlaceholderRoute,
+    getRuleActionTypeaheadUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    postOnChangeCallbackPathPlaceholderRoute,
+    postOnChangeCallbackPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    postOnSubmitCallbackPathPlaceholderRoute,
+    postOnSubmitCallbackPathPlaceholderRouteHandler,
+  )
+  .openapi(postRunActionUrlPathPlaceholderRoute, postRunActionUrlPathPlaceholderRouteHandler)
+  .openapi(
+    getActionMetadataUrlPathPlaceholderRoute,
+    getActionMetadataUrlPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    postActionOnChangeCallbackPathPlaceholderRoute,
+    postActionOnChangeCallbackPathPlaceholderRouteHandler,
+  )
+  .openapi(
+    postActionOnSubmitCallbackPathPlaceholderRoute,
+    postActionOnSubmitCallbackPathPlaceholderRouteHandler,
+  )
 
 export default app

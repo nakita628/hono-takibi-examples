@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIpsPoolsPoolNameIpsIpRoute,
   deleteIpsPoolsPoolNameRoute,
   deleteIpsWarmupIpAddressRoute,
@@ -18,54 +18,80 @@ import {
   putIpsPoolsPoolNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIpsRouteHandler: RouteHandler<typeof getIpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ipsHandler = app
-  .openapi(getIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsAssignedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIpsPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIpsPoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsPoolsPoolNameIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIpsPoolsPoolNameIpsIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsRemainingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpsWarmupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIpsWarmupIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsWarmupIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpsIpAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIpsRouteHandler: RouteHandler<typeof postIpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsAssignedRouteHandler: RouteHandler<typeof getIpsAssignedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsPoolsRouteHandler: RouteHandler<typeof getIpsPoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsPoolsRouteHandler: RouteHandler<typeof postIpsPoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIpsPoolsPoolNameRouteHandler: RouteHandler<
+  typeof deleteIpsPoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsPoolsPoolNameRouteHandler: RouteHandler<
+  typeof getIpsPoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIpsPoolsPoolNameRouteHandler: RouteHandler<
+  typeof putIpsPoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsPoolsPoolNameIpsRouteHandler: RouteHandler<
+  typeof postIpsPoolsPoolNameIpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIpsPoolsPoolNameIpsIpRouteHandler: RouteHandler<
+  typeof deleteIpsPoolsPoolNameIpsIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsRemainingRouteHandler: RouteHandler<typeof getIpsRemainingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsWarmupRouteHandler: RouteHandler<typeof getIpsWarmupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpsWarmupRouteHandler: RouteHandler<typeof postIpsWarmupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIpsWarmupIpAddressRouteHandler: RouteHandler<
+  typeof deleteIpsWarmupIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsWarmupIpAddressRouteHandler: RouteHandler<
+  typeof getIpsWarmupIpAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpsIpAddressRouteHandler: RouteHandler<typeof getIpsIpAddressRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

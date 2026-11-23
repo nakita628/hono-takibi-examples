@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBusinessEntitiesBusinessEntityIdRoute,
   getBusinessEntitiesRoute,
   getBusinessEntitiesTransfersRoute,
@@ -8,24 +8,38 @@ import {
   postBusinessEntitiesTransfersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBusinessEntitiesBusinessEntityIdRouteHandler: RouteHandler<
+  typeof getBusinessEntitiesBusinessEntityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const businessEntitiesHandler = app
-  .openapi(getBusinessEntitiesBusinessEntityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessEntitiesBusinessEntityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessEntitiesTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessEntitiesTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBusinessEntitiesBusinessEntityIdRouteHandler: RouteHandler<
+  typeof postBusinessEntitiesBusinessEntityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessEntitiesRouteHandler: RouteHandler<
+  typeof getBusinessEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessEntitiesRouteHandler: RouteHandler<
+  typeof postBusinessEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessEntitiesTransfersRouteHandler: RouteHandler<
+  typeof getBusinessEntitiesTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessEntitiesTransfersRouteHandler: RouteHandler<
+  typeof postBusinessEntitiesTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

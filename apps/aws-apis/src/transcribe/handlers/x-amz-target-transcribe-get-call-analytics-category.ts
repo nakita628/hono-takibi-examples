@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTranscribeGetCallAnalyticsCategoryHandler = app.openapi(
-  postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTranscribeGetCallAnalyticsCategoryRouteHandler: RouteHandler<
+  typeof postXAmzTargetTranscribeGetCallAnalyticsCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

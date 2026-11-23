@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionUpdateAccountSendingEnabledRoute,
   postActionUpdateAccountSendingEnabledRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionUpdateAccountSendingEnabledRouteHandler: RouteHandler<
+  typeof getActionUpdateAccountSendingEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionUpdateAccountSendingEnabledHandler = app
-  .openapi(getActionUpdateAccountSendingEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionUpdateAccountSendingEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionUpdateAccountSendingEnabledRouteHandler: RouteHandler<
+  typeof postActionUpdateAccountSendingEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

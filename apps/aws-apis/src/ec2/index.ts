@@ -1,1191 +1,5342 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  actionAcceptAddressTransferHandler,
-  actionAcceptReservedInstancesExchangeQuoteHandler,
-  actionAcceptTransitGatewayMulticastDomainAssociationsHandler,
-  actionAcceptTransitGatewayPeeringAttachmentHandler,
-  actionAcceptTransitGatewayVpcAttachmentHandler,
-  actionAcceptVpcEndpointConnectionsHandler,
-  actionAcceptVpcPeeringConnectionHandler,
-  actionAdvertiseByoipCidrHandler,
-  actionAllocateAddressHandler,
-  actionAllocateHostsHandler,
-  actionAllocateIpamPoolCidrHandler,
-  actionApplySecurityGroupsToClientVpnTargetNetworkHandler,
-  actionAssignIpv6AddressesHandler,
-  actionAssignPrivateIpAddressesHandler,
-  actionAssignPrivateNatGatewayAddressHandler,
-  actionAssociateAddressHandler,
-  actionAssociateClientVpnTargetNetworkHandler,
-  actionAssociateDhcpOptionsHandler,
-  actionAssociateEnclaveCertificateIamRoleHandler,
-  actionAssociateIamInstanceProfileHandler,
-  actionAssociateInstanceEventWindowHandler,
-  actionAssociateIpamResourceDiscoveryHandler,
-  actionAssociateNatGatewayAddressHandler,
-  actionAssociateRouteTableHandler,
-  actionAssociateSubnetCidrBlockHandler,
-  actionAssociateTransitGatewayMulticastDomainHandler,
-  actionAssociateTransitGatewayPolicyTableHandler,
-  actionAssociateTransitGatewayRouteTableHandler,
-  actionAssociateTrunkInterfaceHandler,
-  actionAssociateVpcCidrBlockHandler,
-  actionAttachClassicLinkVpcHandler,
-  actionAttachInternetGatewayHandler,
-  actionAttachNetworkInterfaceHandler,
-  actionAttachVerifiedAccessTrustProviderHandler,
-  actionAttachVolumeHandler,
-  actionAttachVpnGatewayHandler,
-  actionAuthorizeClientVpnIngressHandler,
-  actionAuthorizeSecurityGroupEgressHandler,
-  actionAuthorizeSecurityGroupIngressHandler,
-  actionBundleInstanceHandler,
-  actionCancelBundleTaskHandler,
-  actionCancelCapacityReservationFleetsHandler,
-  actionCancelCapacityReservationHandler,
-  actionCancelConversionTaskHandler,
-  actionCancelExportTaskHandler,
-  actionCancelImageLaunchPermissionHandler,
-  actionCancelImportTaskHandler,
-  actionCancelReservedInstancesListingHandler,
-  actionCancelSpotFleetRequestsHandler,
-  actionCancelSpotInstanceRequestsHandler,
-  actionConfirmProductInstanceHandler,
-  actionCopyFpgaImageHandler,
-  actionCopyImageHandler,
-  actionCopySnapshotHandler,
-  actionCreateCapacityReservationFleetHandler,
-  actionCreateCapacityReservationHandler,
-  actionCreateCarrierGatewayHandler,
-  actionCreateClientVpnEndpointHandler,
-  actionCreateClientVpnRouteHandler,
-  actionCreateCoipCidrHandler,
-  actionCreateCoipPoolHandler,
-  actionCreateCustomerGatewayHandler,
-  actionCreateDefaultSubnetHandler,
-  actionCreateDefaultVpcHandler,
-  actionCreateDhcpOptionsHandler,
-  actionCreateEgressOnlyInternetGatewayHandler,
-  actionCreateFleetHandler,
-  actionCreateFlowLogsHandler,
-  actionCreateFpgaImageHandler,
-  actionCreateImageHandler,
-  actionCreateInstanceEventWindowHandler,
-  actionCreateInstanceExportTaskHandler,
-  actionCreateInternetGatewayHandler,
-  actionCreateIpamHandler,
-  actionCreateIpamPoolHandler,
-  actionCreateIpamResourceDiscoveryHandler,
-  actionCreateIpamScopeHandler,
-  actionCreateKeyPairHandler,
-  actionCreateLaunchTemplateHandler,
-  actionCreateLaunchTemplateVersionHandler,
-  actionCreateLocalGatewayRouteHandler,
-  actionCreateLocalGatewayRouteTableHandler,
-  actionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationHandler,
-  actionCreateLocalGatewayRouteTableVpcAssociationHandler,
-  actionCreateManagedPrefixListHandler,
-  actionCreateNatGatewayHandler,
-  actionCreateNetworkAclEntryHandler,
-  actionCreateNetworkAclHandler,
-  actionCreateNetworkInsightsAccessScopeHandler,
-  actionCreateNetworkInsightsPathHandler,
-  actionCreateNetworkInterfaceHandler,
-  actionCreateNetworkInterfacePermissionHandler,
-  actionCreatePlacementGroupHandler,
-  actionCreatePublicIpv4PoolHandler,
-  actionCreateReplaceRootVolumeTaskHandler,
-  actionCreateReservedInstancesListingHandler,
-  actionCreateRestoreImageTaskHandler,
-  actionCreateRouteHandler,
-  actionCreateRouteTableHandler,
-  actionCreateSecurityGroupHandler,
-  actionCreateSnapshotHandler,
-  actionCreateSnapshotsHandler,
-  actionCreateSpotDatafeedSubscriptionHandler,
-  actionCreateStoreImageTaskHandler,
-  actionCreateSubnetCidrReservationHandler,
-  actionCreateSubnetHandler,
-  actionCreateTagsHandler,
-  actionCreateTrafficMirrorFilterHandler,
-  actionCreateTrafficMirrorFilterRuleHandler,
-  actionCreateTrafficMirrorSessionHandler,
-  actionCreateTrafficMirrorTargetHandler,
-  actionCreateTransitGatewayConnectHandler,
-  actionCreateTransitGatewayConnectPeerHandler,
-  actionCreateTransitGatewayHandler,
-  actionCreateTransitGatewayMulticastDomainHandler,
-  actionCreateTransitGatewayPeeringAttachmentHandler,
-  actionCreateTransitGatewayPolicyTableHandler,
-  actionCreateTransitGatewayPrefixListReferenceHandler,
-  actionCreateTransitGatewayRouteHandler,
-  actionCreateTransitGatewayRouteTableAnnouncementHandler,
-  actionCreateTransitGatewayRouteTableHandler,
-  actionCreateTransitGatewayVpcAttachmentHandler,
-  actionCreateVerifiedAccessEndpointHandler,
-  actionCreateVerifiedAccessGroupHandler,
-  actionCreateVerifiedAccessInstanceHandler,
-  actionCreateVerifiedAccessTrustProviderHandler,
-  actionCreateVolumeHandler,
-  actionCreateVpcEndpointConnectionNotificationHandler,
-  actionCreateVpcEndpointHandler,
-  actionCreateVpcEndpointServiceConfigurationHandler,
-  actionCreateVpcHandler,
-  actionCreateVpcPeeringConnectionHandler,
-  actionCreateVpnConnectionHandler,
-  actionCreateVpnConnectionRouteHandler,
-  actionCreateVpnGatewayHandler,
-  actionDeleteCarrierGatewayHandler,
-  actionDeleteClientVpnEndpointHandler,
-  actionDeleteClientVpnRouteHandler,
-  actionDeleteCoipCidrHandler,
-  actionDeleteCoipPoolHandler,
-  actionDeleteCustomerGatewayHandler,
-  actionDeleteDhcpOptionsHandler,
-  actionDeleteEgressOnlyInternetGatewayHandler,
-  actionDeleteFleetsHandler,
-  actionDeleteFlowLogsHandler,
-  actionDeleteFpgaImageHandler,
-  actionDeleteInstanceEventWindowHandler,
-  actionDeleteInternetGatewayHandler,
-  actionDeleteIpamHandler,
-  actionDeleteIpamPoolHandler,
-  actionDeleteIpamResourceDiscoveryHandler,
-  actionDeleteIpamScopeHandler,
-  actionDeleteKeyPairHandler,
-  actionDeleteLaunchTemplateHandler,
-  actionDeleteLaunchTemplateVersionsHandler,
-  actionDeleteLocalGatewayRouteHandler,
-  actionDeleteLocalGatewayRouteTableHandler,
-  actionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationHandler,
-  actionDeleteLocalGatewayRouteTableVpcAssociationHandler,
-  actionDeleteManagedPrefixListHandler,
-  actionDeleteNatGatewayHandler,
-  actionDeleteNetworkAclEntryHandler,
-  actionDeleteNetworkAclHandler,
-  actionDeleteNetworkInsightsAccessScopeAnalysisHandler,
-  actionDeleteNetworkInsightsAccessScopeHandler,
-  actionDeleteNetworkInsightsAnalysisHandler,
-  actionDeleteNetworkInsightsPathHandler,
-  actionDeleteNetworkInterfaceHandler,
-  actionDeleteNetworkInterfacePermissionHandler,
-  actionDeletePlacementGroupHandler,
-  actionDeletePublicIpv4PoolHandler,
-  actionDeleteQueuedReservedInstancesHandler,
-  actionDeleteRouteHandler,
-  actionDeleteRouteTableHandler,
-  actionDeleteSecurityGroupHandler,
-  actionDeleteSnapshotHandler,
-  actionDeleteSpotDatafeedSubscriptionHandler,
-  actionDeleteSubnetCidrReservationHandler,
-  actionDeleteSubnetHandler,
-  actionDeleteTagsHandler,
-  actionDeleteTrafficMirrorFilterHandler,
-  actionDeleteTrafficMirrorFilterRuleHandler,
-  actionDeleteTrafficMirrorSessionHandler,
-  actionDeleteTrafficMirrorTargetHandler,
-  actionDeleteTransitGatewayConnectHandler,
-  actionDeleteTransitGatewayConnectPeerHandler,
-  actionDeleteTransitGatewayHandler,
-  actionDeleteTransitGatewayMulticastDomainHandler,
-  actionDeleteTransitGatewayPeeringAttachmentHandler,
-  actionDeleteTransitGatewayPolicyTableHandler,
-  actionDeleteTransitGatewayPrefixListReferenceHandler,
-  actionDeleteTransitGatewayRouteHandler,
-  actionDeleteTransitGatewayRouteTableAnnouncementHandler,
-  actionDeleteTransitGatewayRouteTableHandler,
-  actionDeleteTransitGatewayVpcAttachmentHandler,
-  actionDeleteVerifiedAccessEndpointHandler,
-  actionDeleteVerifiedAccessGroupHandler,
-  actionDeleteVerifiedAccessInstanceHandler,
-  actionDeleteVerifiedAccessTrustProviderHandler,
-  actionDeleteVolumeHandler,
-  actionDeleteVpcEndpointConnectionNotificationsHandler,
-  actionDeleteVpcEndpointServiceConfigurationsHandler,
-  actionDeleteVpcEndpointsHandler,
-  actionDeleteVpcHandler,
-  actionDeleteVpcPeeringConnectionHandler,
-  actionDeleteVpnConnectionHandler,
-  actionDeleteVpnConnectionRouteHandler,
-  actionDeleteVpnGatewayHandler,
-  actionDeprovisionByoipCidrHandler,
-  actionDeprovisionIpamPoolCidrHandler,
-  actionDeprovisionPublicIpv4PoolCidrHandler,
-  actionDeregisterImageHandler,
-  actionDeregisterInstanceEventNotificationAttributesHandler,
-  actionDeregisterTransitGatewayMulticastGroupMembersHandler,
-  actionDeregisterTransitGatewayMulticastGroupSourcesHandler,
-  actionDescribeAccountAttributesHandler,
-  actionDescribeAddressesAttributeHandler,
-  actionDescribeAddressesHandler,
-  actionDescribeAddressTransfersHandler,
-  actionDescribeAggregateIdFormatHandler,
-  actionDescribeAvailabilityZonesHandler,
-  actionDescribeAwsNetworkPerformanceMetricSubscriptionsHandler,
-  actionDescribeBundleTasksHandler,
-  actionDescribeByoipCidrsHandler,
-  actionDescribeCapacityReservationFleetsHandler,
-  actionDescribeCapacityReservationsHandler,
-  actionDescribeCarrierGatewaysHandler,
-  actionDescribeClassicLinkInstancesHandler,
-  actionDescribeClientVpnAuthorizationRulesHandler,
-  actionDescribeClientVpnConnectionsHandler,
-  actionDescribeClientVpnEndpointsHandler,
-  actionDescribeClientVpnRoutesHandler,
-  actionDescribeClientVpnTargetNetworksHandler,
-  actionDescribeCoipPoolsHandler,
-  actionDescribeConversionTasksHandler,
-  actionDescribeCustomerGatewaysHandler,
-  actionDescribeDhcpOptionsHandler,
-  actionDescribeEgressOnlyInternetGatewaysHandler,
-  actionDescribeElasticGpusHandler,
-  actionDescribeExportImageTasksHandler,
-  actionDescribeExportTasksHandler,
-  actionDescribeFastLaunchImagesHandler,
-  actionDescribeFastSnapshotRestoresHandler,
-  actionDescribeFleetHistoryHandler,
-  actionDescribeFleetInstancesHandler,
-  actionDescribeFleetsHandler,
-  actionDescribeFlowLogsHandler,
-  actionDescribeFpgaImageAttributeHandler,
-  actionDescribeFpgaImagesHandler,
-  actionDescribeHostReservationOfferingsHandler,
-  actionDescribeHostReservationsHandler,
-  actionDescribeHostsHandler,
-  actionDescribeIamInstanceProfileAssociationsHandler,
-  actionDescribeIdentityIdFormatHandler,
-  actionDescribeIdFormatHandler,
-  actionDescribeImageAttributeHandler,
-  actionDescribeImagesHandler,
-  actionDescribeImportImageTasksHandler,
-  actionDescribeImportSnapshotTasksHandler,
-  actionDescribeInstanceAttributeHandler,
-  actionDescribeInstanceCreditSpecificationsHandler,
-  actionDescribeInstanceEventNotificationAttributesHandler,
-  actionDescribeInstanceEventWindowsHandler,
-  actionDescribeInstancesHandler,
-  actionDescribeInstanceStatusHandler,
-  actionDescribeInstanceTypeOfferingsHandler,
-  actionDescribeInstanceTypesHandler,
-  actionDescribeInternetGatewaysHandler,
-  actionDescribeIpamPoolsHandler,
-  actionDescribeIpamResourceDiscoveriesHandler,
-  actionDescribeIpamResourceDiscoveryAssociationsHandler,
-  actionDescribeIpamScopesHandler,
-  actionDescribeIpamsHandler,
-  actionDescribeIpv6PoolsHandler,
-  actionDescribeKeyPairsHandler,
-  actionDescribeLaunchTemplatesHandler,
-  actionDescribeLaunchTemplateVersionsHandler,
-  actionDescribeLocalGatewayRouteTablesHandler,
-  actionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsHandler,
-  actionDescribeLocalGatewayRouteTableVpcAssociationsHandler,
-  actionDescribeLocalGatewaysHandler,
-  actionDescribeLocalGatewayVirtualInterfaceGroupsHandler,
-  actionDescribeLocalGatewayVirtualInterfacesHandler,
-  actionDescribeManagedPrefixListsHandler,
-  actionDescribeMovingAddressesHandler,
-  actionDescribeNatGatewaysHandler,
-  actionDescribeNetworkAclsHandler,
-  actionDescribeNetworkInsightsAccessScopeAnalysesHandler,
-  actionDescribeNetworkInsightsAccessScopesHandler,
-  actionDescribeNetworkInsightsAnalysesHandler,
-  actionDescribeNetworkInsightsPathsHandler,
-  actionDescribeNetworkInterfaceAttributeHandler,
-  actionDescribeNetworkInterfacePermissionsHandler,
-  actionDescribeNetworkInterfacesHandler,
-  actionDescribePlacementGroupsHandler,
-  actionDescribePrefixListsHandler,
-  actionDescribePrincipalIdFormatHandler,
-  actionDescribePublicIpv4PoolsHandler,
-  actionDescribeRegionsHandler,
-  actionDescribeReplaceRootVolumeTasksHandler,
-  actionDescribeReservedInstancesHandler,
-  actionDescribeReservedInstancesListingsHandler,
-  actionDescribeReservedInstancesModificationsHandler,
-  actionDescribeReservedInstancesOfferingsHandler,
-  actionDescribeRouteTablesHandler,
-  actionDescribeScheduledInstanceAvailabilityHandler,
-  actionDescribeScheduledInstancesHandler,
-  actionDescribeSecurityGroupReferencesHandler,
-  actionDescribeSecurityGroupRulesHandler,
-  actionDescribeSecurityGroupsHandler,
-  actionDescribeSnapshotAttributeHandler,
-  actionDescribeSnapshotsHandler,
-  actionDescribeSnapshotTierStatusHandler,
-  actionDescribeSpotDatafeedSubscriptionHandler,
-  actionDescribeSpotFleetInstancesHandler,
-  actionDescribeSpotFleetRequestHistoryHandler,
-  actionDescribeSpotFleetRequestsHandler,
-  actionDescribeSpotInstanceRequestsHandler,
-  actionDescribeSpotPriceHistoryHandler,
-  actionDescribeStaleSecurityGroupsHandler,
-  actionDescribeStoreImageTasksHandler,
-  actionDescribeSubnetsHandler,
-  actionDescribeTagsHandler,
-  actionDescribeTrafficMirrorFiltersHandler,
-  actionDescribeTrafficMirrorSessionsHandler,
-  actionDescribeTrafficMirrorTargetsHandler,
-  actionDescribeTransitGatewayAttachmentsHandler,
-  actionDescribeTransitGatewayConnectPeersHandler,
-  actionDescribeTransitGatewayConnectsHandler,
-  actionDescribeTransitGatewayMulticastDomainsHandler,
-  actionDescribeTransitGatewayPeeringAttachmentsHandler,
-  actionDescribeTransitGatewayPolicyTablesHandler,
-  actionDescribeTransitGatewayRouteTableAnnouncementsHandler,
-  actionDescribeTransitGatewayRouteTablesHandler,
-  actionDescribeTransitGatewaysHandler,
-  actionDescribeTransitGatewayVpcAttachmentsHandler,
-  actionDescribeTrunkInterfaceAssociationsHandler,
-  actionDescribeVerifiedAccessEndpointsHandler,
-  actionDescribeVerifiedAccessGroupsHandler,
-  actionDescribeVerifiedAccessInstanceLoggingConfigurationsHandler,
-  actionDescribeVerifiedAccessInstancesHandler,
-  actionDescribeVerifiedAccessTrustProvidersHandler,
-  actionDescribeVolumeAttributeHandler,
-  actionDescribeVolumesHandler,
-  actionDescribeVolumesModificationsHandler,
-  actionDescribeVolumeStatusHandler,
-  actionDescribeVpcAttributeHandler,
-  actionDescribeVpcClassicLinkDnsSupportHandler,
-  actionDescribeVpcClassicLinkHandler,
-  actionDescribeVpcEndpointConnectionNotificationsHandler,
-  actionDescribeVpcEndpointConnectionsHandler,
-  actionDescribeVpcEndpointServiceConfigurationsHandler,
-  actionDescribeVpcEndpointServicePermissionsHandler,
-  actionDescribeVpcEndpointServicesHandler,
-  actionDescribeVpcEndpointsHandler,
-  actionDescribeVpcPeeringConnectionsHandler,
-  actionDescribeVpcsHandler,
-  actionDescribeVpnConnectionsHandler,
-  actionDescribeVpnGatewaysHandler,
-  actionDetachClassicLinkVpcHandler,
-  actionDetachInternetGatewayHandler,
-  actionDetachNetworkInterfaceHandler,
-  actionDetachVerifiedAccessTrustProviderHandler,
-  actionDetachVolumeHandler,
-  actionDetachVpnGatewayHandler,
-  actionDisableAddressTransferHandler,
-  actionDisableAwsNetworkPerformanceMetricSubscriptionHandler,
-  actionDisableEbsEncryptionByDefaultHandler,
-  actionDisableFastLaunchHandler,
-  actionDisableFastSnapshotRestoresHandler,
-  actionDisableImageDeprecationHandler,
-  actionDisableIpamOrganizationAdminAccountHandler,
-  actionDisableSerialConsoleAccessHandler,
-  actionDisableTransitGatewayRouteTablePropagationHandler,
-  actionDisableVgwRoutePropagationHandler,
-  actionDisableVpcClassicLinkDnsSupportHandler,
-  actionDisableVpcClassicLinkHandler,
-  actionDisassociateAddressHandler,
-  actionDisassociateClientVpnTargetNetworkHandler,
-  actionDisassociateEnclaveCertificateIamRoleHandler,
-  actionDisassociateIamInstanceProfileHandler,
-  actionDisassociateInstanceEventWindowHandler,
-  actionDisassociateIpamResourceDiscoveryHandler,
-  actionDisassociateNatGatewayAddressHandler,
-  actionDisassociateRouteTableHandler,
-  actionDisassociateSubnetCidrBlockHandler,
-  actionDisassociateTransitGatewayMulticastDomainHandler,
-  actionDisassociateTransitGatewayPolicyTableHandler,
-  actionDisassociateTransitGatewayRouteTableHandler,
-  actionDisassociateTrunkInterfaceHandler,
-  actionDisassociateVpcCidrBlockHandler,
-  actionEnableAddressTransferHandler,
-  actionEnableAwsNetworkPerformanceMetricSubscriptionHandler,
-  actionEnableEbsEncryptionByDefaultHandler,
-  actionEnableFastLaunchHandler,
-  actionEnableFastSnapshotRestoresHandler,
-  actionEnableImageDeprecationHandler,
-  actionEnableIpamOrganizationAdminAccountHandler,
-  actionEnableReachabilityAnalyzerOrganizationSharingHandler,
-  actionEnableSerialConsoleAccessHandler,
-  actionEnableTransitGatewayRouteTablePropagationHandler,
-  actionEnableVgwRoutePropagationHandler,
-  actionEnableVolumeIoHandler,
-  actionEnableVpcClassicLinkDnsSupportHandler,
-  actionEnableVpcClassicLinkHandler,
-  actionExportClientVpnClientCertificateRevocationListHandler,
-  actionExportClientVpnClientConfigurationHandler,
-  actionExportImageHandler,
-  actionExportTransitGatewayRoutesHandler,
-  actionGetAssociatedEnclaveCertificateIamRolesHandler,
-  actionGetAssociatedIpv6PoolCidrsHandler,
-  actionGetAwsNetworkPerformanceDataHandler,
-  actionGetCapacityReservationUsageHandler,
-  actionGetCoipPoolUsageHandler,
-  actionGetConsoleOutputHandler,
-  actionGetConsoleScreenshotHandler,
-  actionGetDefaultCreditSpecificationHandler,
-  actionGetEbsDefaultKmsKeyIdHandler,
-  actionGetEbsEncryptionByDefaultHandler,
-  actionGetFlowLogsIntegrationTemplateHandler,
-  actionGetGroupsForCapacityReservationHandler,
-  actionGetHostReservationPurchasePreviewHandler,
-  actionGetInstanceTypesFromInstanceRequirementsHandler,
-  actionGetInstanceUefiDataHandler,
-  actionGetIpamAddressHistoryHandler,
-  actionGetIpamDiscoveredAccountsHandler,
-  actionGetIpamDiscoveredResourceCidrsHandler,
-  actionGetIpamPoolAllocationsHandler,
-  actionGetIpamPoolCidrsHandler,
-  actionGetIpamResourceCidrsHandler,
-  actionGetLaunchTemplateDataHandler,
-  actionGetManagedPrefixListAssociationsHandler,
-  actionGetManagedPrefixListEntriesHandler,
-  actionGetNetworkInsightsAccessScopeAnalysisFindingsHandler,
-  actionGetNetworkInsightsAccessScopeContentHandler,
-  actionGetPasswordDataHandler,
-  actionGetReservedInstancesExchangeQuoteHandler,
-  actionGetSerialConsoleAccessStatusHandler,
-  actionGetSpotPlacementScoresHandler,
-  actionGetSubnetCidrReservationsHandler,
-  actionGetTransitGatewayAttachmentPropagationsHandler,
-  actionGetTransitGatewayMulticastDomainAssociationsHandler,
-  actionGetTransitGatewayPolicyTableAssociationsHandler,
-  actionGetTransitGatewayPolicyTableEntriesHandler,
-  actionGetTransitGatewayPrefixListReferencesHandler,
-  actionGetTransitGatewayRouteTableAssociationsHandler,
-  actionGetTransitGatewayRouteTablePropagationsHandler,
-  actionGetVerifiedAccessEndpointPolicyHandler,
-  actionGetVerifiedAccessGroupPolicyHandler,
-  actionGetVpnConnectionDeviceSampleConfigurationHandler,
-  actionGetVpnConnectionDeviceTypesHandler,
-  actionGetVpnTunnelReplacementStatusHandler,
-  actionImportClientVpnClientCertificateRevocationListHandler,
-  actionImportImageHandler,
-  actionImportInstanceHandler,
-  actionImportKeyPairHandler,
-  actionImportSnapshotHandler,
-  actionImportVolumeHandler,
-  actionListImagesInRecycleBinHandler,
-  actionListSnapshotsInRecycleBinHandler,
-  actionModifyAddressAttributeHandler,
-  actionModifyAvailabilityZoneGroupHandler,
-  actionModifyCapacityReservationFleetHandler,
-  actionModifyCapacityReservationHandler,
-  actionModifyClientVpnEndpointHandler,
-  actionModifyDefaultCreditSpecificationHandler,
-  actionModifyEbsDefaultKmsKeyIdHandler,
-  actionModifyFleetHandler,
-  actionModifyFpgaImageAttributeHandler,
-  actionModifyHostsHandler,
-  actionModifyIdentityIdFormatHandler,
-  actionModifyIdFormatHandler,
-  actionModifyImageAttributeHandler,
-  actionModifyInstanceAttributeHandler,
-  actionModifyInstanceCapacityReservationAttributesHandler,
-  actionModifyInstanceCreditSpecificationHandler,
-  actionModifyInstanceEventStartTimeHandler,
-  actionModifyInstanceEventWindowHandler,
-  actionModifyInstanceMaintenanceOptionsHandler,
-  actionModifyInstanceMetadataOptionsHandler,
-  actionModifyInstancePlacementHandler,
-  actionModifyIpamHandler,
-  actionModifyIpamPoolHandler,
-  actionModifyIpamResourceCidrHandler,
-  actionModifyIpamResourceDiscoveryHandler,
-  actionModifyIpamScopeHandler,
-  actionModifyLaunchTemplateHandler,
-  actionModifyLocalGatewayRouteHandler,
-  actionModifyManagedPrefixListHandler,
-  actionModifyNetworkInterfaceAttributeHandler,
-  actionModifyPrivateDnsNameOptionsHandler,
-  actionModifyReservedInstancesHandler,
-  actionModifySecurityGroupRulesHandler,
-  actionModifySnapshotAttributeHandler,
-  actionModifySnapshotTierHandler,
-  actionModifySpotFleetRequestHandler,
-  actionModifySubnetAttributeHandler,
-  actionModifyTrafficMirrorFilterNetworkServicesHandler,
-  actionModifyTrafficMirrorFilterRuleHandler,
-  actionModifyTrafficMirrorSessionHandler,
-  actionModifyTransitGatewayHandler,
-  actionModifyTransitGatewayPrefixListReferenceHandler,
-  actionModifyTransitGatewayVpcAttachmentHandler,
-  actionModifyVerifiedAccessEndpointHandler,
-  actionModifyVerifiedAccessEndpointPolicyHandler,
-  actionModifyVerifiedAccessGroupHandler,
-  actionModifyVerifiedAccessGroupPolicyHandler,
-  actionModifyVerifiedAccessInstanceHandler,
-  actionModifyVerifiedAccessInstanceLoggingConfigurationHandler,
-  actionModifyVerifiedAccessTrustProviderHandler,
-  actionModifyVolumeAttributeHandler,
-  actionModifyVolumeHandler,
-  actionModifyVpcAttributeHandler,
-  actionModifyVpcEndpointConnectionNotificationHandler,
-  actionModifyVpcEndpointHandler,
-  actionModifyVpcEndpointServiceConfigurationHandler,
-  actionModifyVpcEndpointServicePayerResponsibilityHandler,
-  actionModifyVpcEndpointServicePermissionsHandler,
-  actionModifyVpcPeeringConnectionOptionsHandler,
-  actionModifyVpcTenancyHandler,
-  actionModifyVpnConnectionHandler,
-  actionModifyVpnConnectionOptionsHandler,
-  actionModifyVpnTunnelCertificateHandler,
-  actionModifyVpnTunnelOptionsHandler,
-  actionMonitorInstancesHandler,
-  actionMoveAddressToVpcHandler,
-  actionMoveByoipCidrToIpamHandler,
-  actionProvisionByoipCidrHandler,
-  actionProvisionIpamPoolCidrHandler,
-  actionProvisionPublicIpv4PoolCidrHandler,
-  actionPurchaseHostReservationHandler,
-  actionPurchaseReservedInstancesOfferingHandler,
-  actionPurchaseScheduledInstancesHandler,
-  actionRebootInstancesHandler,
-  actionRegisterImageHandler,
-  actionRegisterInstanceEventNotificationAttributesHandler,
-  actionRegisterTransitGatewayMulticastGroupMembersHandler,
-  actionRegisterTransitGatewayMulticastGroupSourcesHandler,
-  actionRejectTransitGatewayMulticastDomainAssociationsHandler,
-  actionRejectTransitGatewayPeeringAttachmentHandler,
-  actionRejectTransitGatewayVpcAttachmentHandler,
-  actionRejectVpcEndpointConnectionsHandler,
-  actionRejectVpcPeeringConnectionHandler,
-  actionReleaseAddressHandler,
-  actionReleaseHostsHandler,
-  actionReleaseIpamPoolAllocationHandler,
-  actionReplaceIamInstanceProfileAssociationHandler,
-  actionReplaceNetworkAclAssociationHandler,
-  actionReplaceNetworkAclEntryHandler,
-  actionReplaceRouteHandler,
-  actionReplaceRouteTableAssociationHandler,
-  actionReplaceTransitGatewayRouteHandler,
-  actionReplaceVpnTunnelHandler,
-  actionReportInstanceStatusHandler,
-  actionRequestSpotFleetHandler,
-  actionRequestSpotInstancesHandler,
-  actionResetAddressAttributeHandler,
-  actionResetEbsDefaultKmsKeyIdHandler,
-  actionResetFpgaImageAttributeHandler,
-  actionResetImageAttributeHandler,
-  actionResetInstanceAttributeHandler,
-  actionResetNetworkInterfaceAttributeHandler,
-  actionResetSnapshotAttributeHandler,
-  actionRestoreAddressToClassicHandler,
-  actionRestoreImageFromRecycleBinHandler,
-  actionRestoreManagedPrefixListVersionHandler,
-  actionRestoreSnapshotFromRecycleBinHandler,
-  actionRestoreSnapshotTierHandler,
-  actionRevokeClientVpnIngressHandler,
-  actionRevokeSecurityGroupEgressHandler,
-  actionRevokeSecurityGroupIngressHandler,
-  actionRunInstancesHandler,
-  actionRunScheduledInstancesHandler,
-  actionSearchLocalGatewayRoutesHandler,
-  actionSearchTransitGatewayMulticastGroupsHandler,
-  actionSearchTransitGatewayRoutesHandler,
-  actionSendDiagnosticInterruptHandler,
-  actionStartInstancesHandler,
-  actionStartNetworkInsightsAccessScopeAnalysisHandler,
-  actionStartNetworkInsightsAnalysisHandler,
-  actionStartVpcEndpointServicePrivateDnsVerificationHandler,
-  actionStopInstancesHandler,
-  actionTerminateClientVpnConnectionsHandler,
-  actionTerminateInstancesHandler,
-  actionUnassignIpv6AddressesHandler,
-  actionUnassignPrivateIpAddressesHandler,
-  actionUnassignPrivateNatGatewayAddressHandler,
-  actionUnmonitorInstancesHandler,
-  actionUpdateSecurityGroupRuleDescriptionsEgressHandler,
-  actionUpdateSecurityGroupRuleDescriptionsIngressHandler,
-  actionWithdrawByoipCidrHandler,
+  getActionAcceptAddressTransferRoute,
+  getActionAcceptReservedInstancesExchangeQuoteRoute,
+  getActionAcceptTransitGatewayMulticastDomainAssociationsRoute,
+  getActionAcceptTransitGatewayPeeringAttachmentRoute,
+  getActionAcceptTransitGatewayVpcAttachmentRoute,
+  getActionAcceptVpcEndpointConnectionsRoute,
+  getActionAcceptVpcPeeringConnectionRoute,
+  getActionAdvertiseByoipCidrRoute,
+  getActionAllocateAddressRoute,
+  getActionAllocateHostsRoute,
+  getActionAllocateIpamPoolCidrRoute,
+  getActionApplySecurityGroupsToClientVpnTargetNetworkRoute,
+  getActionAssignIpv6AddressesRoute,
+  getActionAssignPrivateIpAddressesRoute,
+  getActionAssignPrivateNatGatewayAddressRoute,
+  getActionAssociateAddressRoute,
+  getActionAssociateClientVpnTargetNetworkRoute,
+  getActionAssociateDhcpOptionsRoute,
+  getActionAssociateEnclaveCertificateIamRoleRoute,
+  getActionAssociateIamInstanceProfileRoute,
+  getActionAssociateInstanceEventWindowRoute,
+  getActionAssociateIpamResourceDiscoveryRoute,
+  getActionAssociateNatGatewayAddressRoute,
+  getActionAssociateRouteTableRoute,
+  getActionAssociateSubnetCidrBlockRoute,
+  getActionAssociateTransitGatewayMulticastDomainRoute,
+  getActionAssociateTransitGatewayPolicyTableRoute,
+  getActionAssociateTransitGatewayRouteTableRoute,
+  getActionAssociateTrunkInterfaceRoute,
+  getActionAssociateVpcCidrBlockRoute,
+  getActionAttachClassicLinkVpcRoute,
+  getActionAttachInternetGatewayRoute,
+  getActionAttachNetworkInterfaceRoute,
+  getActionAttachVerifiedAccessTrustProviderRoute,
+  getActionAttachVolumeRoute,
+  getActionAttachVpnGatewayRoute,
+  getActionAuthorizeClientVpnIngressRoute,
+  getActionAuthorizeSecurityGroupEgressRoute,
+  getActionAuthorizeSecurityGroupIngressRoute,
+  getActionBundleInstanceRoute,
+  getActionCancelBundleTaskRoute,
+  getActionCancelCapacityReservationFleetsRoute,
+  getActionCancelCapacityReservationRoute,
+  getActionCancelConversionTaskRoute,
+  getActionCancelExportTaskRoute,
+  getActionCancelImageLaunchPermissionRoute,
+  getActionCancelImportTaskRoute,
+  getActionCancelReservedInstancesListingRoute,
+  getActionCancelSpotFleetRequestsRoute,
+  getActionCancelSpotInstanceRequestsRoute,
+  getActionConfirmProductInstanceRoute,
+  getActionCopyFpgaImageRoute,
+  getActionCopyImageRoute,
+  getActionCopySnapshotRoute,
+  getActionCreateCapacityReservationFleetRoute,
+  getActionCreateCapacityReservationRoute,
+  getActionCreateCarrierGatewayRoute,
+  getActionCreateClientVpnEndpointRoute,
+  getActionCreateClientVpnRouteRoute,
+  getActionCreateCoipCidrRoute,
+  getActionCreateCoipPoolRoute,
+  getActionCreateCustomerGatewayRoute,
+  getActionCreateDefaultSubnetRoute,
+  getActionCreateDefaultVpcRoute,
+  getActionCreateDhcpOptionsRoute,
+  getActionCreateEgressOnlyInternetGatewayRoute,
+  getActionCreateFleetRoute,
+  getActionCreateFlowLogsRoute,
+  getActionCreateFpgaImageRoute,
+  getActionCreateImageRoute,
+  getActionCreateInstanceEventWindowRoute,
+  getActionCreateInstanceExportTaskRoute,
+  getActionCreateInternetGatewayRoute,
+  getActionCreateIpamPoolRoute,
+  getActionCreateIpamResourceDiscoveryRoute,
+  getActionCreateIpamRoute,
+  getActionCreateIpamScopeRoute,
+  getActionCreateKeyPairRoute,
+  getActionCreateLaunchTemplateRoute,
+  getActionCreateLaunchTemplateVersionRoute,
+  getActionCreateLocalGatewayRouteRoute,
+  getActionCreateLocalGatewayRouteTableRoute,
+  getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+  getActionCreateLocalGatewayRouteTableVpcAssociationRoute,
+  getActionCreateManagedPrefixListRoute,
+  getActionCreateNatGatewayRoute,
+  getActionCreateNetworkAclEntryRoute,
+  getActionCreateNetworkAclRoute,
+  getActionCreateNetworkInsightsAccessScopeRoute,
+  getActionCreateNetworkInsightsPathRoute,
+  getActionCreateNetworkInterfacePermissionRoute,
+  getActionCreateNetworkInterfaceRoute,
+  getActionCreatePlacementGroupRoute,
+  getActionCreatePublicIpv4PoolRoute,
+  getActionCreateReplaceRootVolumeTaskRoute,
+  getActionCreateReservedInstancesListingRoute,
+  getActionCreateRestoreImageTaskRoute,
+  getActionCreateRouteRoute,
+  getActionCreateRouteTableRoute,
+  getActionCreateSecurityGroupRoute,
+  getActionCreateSnapshotRoute,
+  getActionCreateSnapshotsRoute,
+  getActionCreateSpotDatafeedSubscriptionRoute,
+  getActionCreateStoreImageTaskRoute,
+  getActionCreateSubnetCidrReservationRoute,
+  getActionCreateSubnetRoute,
+  getActionCreateTagsRoute,
+  getActionCreateTrafficMirrorFilterRoute,
+  getActionCreateTrafficMirrorFilterRuleRoute,
+  getActionCreateTrafficMirrorSessionRoute,
+  getActionCreateTrafficMirrorTargetRoute,
+  getActionCreateTransitGatewayConnectPeerRoute,
+  getActionCreateTransitGatewayConnectRoute,
+  getActionCreateTransitGatewayMulticastDomainRoute,
+  getActionCreateTransitGatewayPeeringAttachmentRoute,
+  getActionCreateTransitGatewayPolicyTableRoute,
+  getActionCreateTransitGatewayPrefixListReferenceRoute,
+  getActionCreateTransitGatewayRoute,
+  getActionCreateTransitGatewayRouteRoute,
+  getActionCreateTransitGatewayRouteTableAnnouncementRoute,
+  getActionCreateTransitGatewayRouteTableRoute,
+  getActionCreateTransitGatewayVpcAttachmentRoute,
+  getActionCreateVerifiedAccessEndpointRoute,
+  getActionCreateVerifiedAccessGroupRoute,
+  getActionCreateVerifiedAccessInstanceRoute,
+  getActionCreateVerifiedAccessTrustProviderRoute,
+  getActionCreateVolumeRoute,
+  getActionCreateVpcEndpointConnectionNotificationRoute,
+  getActionCreateVpcEndpointRoute,
+  getActionCreateVpcEndpointServiceConfigurationRoute,
+  getActionCreateVpcPeeringConnectionRoute,
+  getActionCreateVpcRoute,
+  getActionCreateVpnConnectionRoute,
+  getActionCreateVpnConnectionRouteRoute,
+  getActionCreateVpnGatewayRoute,
+  getActionDeleteCarrierGatewayRoute,
+  getActionDeleteClientVpnEndpointRoute,
+  getActionDeleteClientVpnRouteRoute,
+  getActionDeleteCoipCidrRoute,
+  getActionDeleteCoipPoolRoute,
+  getActionDeleteCustomerGatewayRoute,
+  getActionDeleteDhcpOptionsRoute,
+  getActionDeleteEgressOnlyInternetGatewayRoute,
+  getActionDeleteFleetsRoute,
+  getActionDeleteFlowLogsRoute,
+  getActionDeleteFpgaImageRoute,
+  getActionDeleteInstanceEventWindowRoute,
+  getActionDeleteInternetGatewayRoute,
+  getActionDeleteIpamPoolRoute,
+  getActionDeleteIpamResourceDiscoveryRoute,
+  getActionDeleteIpamRoute,
+  getActionDeleteIpamScopeRoute,
+  getActionDeleteKeyPairRoute,
+  getActionDeleteLaunchTemplateRoute,
+  getActionDeleteLaunchTemplateVersionsRoute,
+  getActionDeleteLocalGatewayRouteRoute,
+  getActionDeleteLocalGatewayRouteTableRoute,
+  getActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+  getActionDeleteLocalGatewayRouteTableVpcAssociationRoute,
+  getActionDeleteManagedPrefixListRoute,
+  getActionDeleteNatGatewayRoute,
+  getActionDeleteNetworkAclEntryRoute,
+  getActionDeleteNetworkAclRoute,
+  getActionDeleteNetworkInsightsAccessScopeAnalysisRoute,
+  getActionDeleteNetworkInsightsAccessScopeRoute,
+  getActionDeleteNetworkInsightsAnalysisRoute,
+  getActionDeleteNetworkInsightsPathRoute,
+  getActionDeleteNetworkInterfacePermissionRoute,
+  getActionDeleteNetworkInterfaceRoute,
+  getActionDeletePlacementGroupRoute,
+  getActionDeletePublicIpv4PoolRoute,
+  getActionDeleteQueuedReservedInstancesRoute,
+  getActionDeleteRouteRoute,
+  getActionDeleteRouteTableRoute,
+  getActionDeleteSecurityGroupRoute,
+  getActionDeleteSnapshotRoute,
+  getActionDeleteSpotDatafeedSubscriptionRoute,
+  getActionDeleteSubnetCidrReservationRoute,
+  getActionDeleteSubnetRoute,
+  getActionDeleteTagsRoute,
+  getActionDeleteTrafficMirrorFilterRoute,
+  getActionDeleteTrafficMirrorFilterRuleRoute,
+  getActionDeleteTrafficMirrorSessionRoute,
+  getActionDeleteTrafficMirrorTargetRoute,
+  getActionDeleteTransitGatewayConnectPeerRoute,
+  getActionDeleteTransitGatewayConnectRoute,
+  getActionDeleteTransitGatewayMulticastDomainRoute,
+  getActionDeleteTransitGatewayPeeringAttachmentRoute,
+  getActionDeleteTransitGatewayPolicyTableRoute,
+  getActionDeleteTransitGatewayPrefixListReferenceRoute,
+  getActionDeleteTransitGatewayRoute,
+  getActionDeleteTransitGatewayRouteRoute,
+  getActionDeleteTransitGatewayRouteTableAnnouncementRoute,
+  getActionDeleteTransitGatewayRouteTableRoute,
+  getActionDeleteTransitGatewayVpcAttachmentRoute,
+  getActionDeleteVerifiedAccessEndpointRoute,
+  getActionDeleteVerifiedAccessGroupRoute,
+  getActionDeleteVerifiedAccessInstanceRoute,
+  getActionDeleteVerifiedAccessTrustProviderRoute,
+  getActionDeleteVolumeRoute,
+  getActionDeleteVpcEndpointConnectionNotificationsRoute,
+  getActionDeleteVpcEndpointServiceConfigurationsRoute,
+  getActionDeleteVpcEndpointsRoute,
+  getActionDeleteVpcPeeringConnectionRoute,
+  getActionDeleteVpcRoute,
+  getActionDeleteVpnConnectionRoute,
+  getActionDeleteVpnConnectionRouteRoute,
+  getActionDeleteVpnGatewayRoute,
+  getActionDeprovisionByoipCidrRoute,
+  getActionDeprovisionIpamPoolCidrRoute,
+  getActionDeprovisionPublicIpv4PoolCidrRoute,
+  getActionDeregisterImageRoute,
+  getActionDeregisterInstanceEventNotificationAttributesRoute,
+  getActionDeregisterTransitGatewayMulticastGroupMembersRoute,
+  getActionDeregisterTransitGatewayMulticastGroupSourcesRoute,
+  getActionDescribeAccountAttributesRoute,
+  getActionDescribeAddressesAttributeRoute,
+  getActionDescribeAddressesRoute,
+  getActionDescribeAddressTransfersRoute,
+  getActionDescribeAggregateIdFormatRoute,
+  getActionDescribeAvailabilityZonesRoute,
+  getActionDescribeAwsNetworkPerformanceMetricSubscriptionsRoute,
+  getActionDescribeBundleTasksRoute,
+  getActionDescribeByoipCidrsRoute,
+  getActionDescribeCapacityReservationFleetsRoute,
+  getActionDescribeCapacityReservationsRoute,
+  getActionDescribeCarrierGatewaysRoute,
+  getActionDescribeClassicLinkInstancesRoute,
+  getActionDescribeClientVpnAuthorizationRulesRoute,
+  getActionDescribeClientVpnConnectionsRoute,
+  getActionDescribeClientVpnEndpointsRoute,
+  getActionDescribeClientVpnRoutesRoute,
+  getActionDescribeClientVpnTargetNetworksRoute,
+  getActionDescribeCoipPoolsRoute,
+  getActionDescribeConversionTasksRoute,
+  getActionDescribeCustomerGatewaysRoute,
+  getActionDescribeDhcpOptionsRoute,
+  getActionDescribeEgressOnlyInternetGatewaysRoute,
+  getActionDescribeElasticGpusRoute,
+  getActionDescribeExportImageTasksRoute,
+  getActionDescribeExportTasksRoute,
+  getActionDescribeFastLaunchImagesRoute,
+  getActionDescribeFastSnapshotRestoresRoute,
+  getActionDescribeFleetHistoryRoute,
+  getActionDescribeFleetInstancesRoute,
+  getActionDescribeFleetsRoute,
+  getActionDescribeFlowLogsRoute,
+  getActionDescribeFpgaImageAttributeRoute,
+  getActionDescribeFpgaImagesRoute,
+  getActionDescribeHostReservationOfferingsRoute,
+  getActionDescribeHostReservationsRoute,
+  getActionDescribeHostsRoute,
+  getActionDescribeIamInstanceProfileAssociationsRoute,
+  getActionDescribeIdentityIdFormatRoute,
+  getActionDescribeIdFormatRoute,
+  getActionDescribeImageAttributeRoute,
+  getActionDescribeImagesRoute,
+  getActionDescribeImportImageTasksRoute,
+  getActionDescribeImportSnapshotTasksRoute,
+  getActionDescribeInstanceAttributeRoute,
+  getActionDescribeInstanceCreditSpecificationsRoute,
+  getActionDescribeInstanceEventNotificationAttributesRoute,
+  getActionDescribeInstanceEventWindowsRoute,
+  getActionDescribeInstancesRoute,
+  getActionDescribeInstanceStatusRoute,
+  getActionDescribeInstanceTypeOfferingsRoute,
+  getActionDescribeInstanceTypesRoute,
+  getActionDescribeInternetGatewaysRoute,
+  getActionDescribeIpamPoolsRoute,
+  getActionDescribeIpamResourceDiscoveriesRoute,
+  getActionDescribeIpamResourceDiscoveryAssociationsRoute,
+  getActionDescribeIpamScopesRoute,
+  getActionDescribeIpamsRoute,
+  getActionDescribeIpv6PoolsRoute,
+  getActionDescribeKeyPairsRoute,
+  getActionDescribeLaunchTemplatesRoute,
+  getActionDescribeLaunchTemplateVersionsRoute,
+  getActionDescribeLocalGatewayRouteTablesRoute,
+  getActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRoute,
+  getActionDescribeLocalGatewayRouteTableVpcAssociationsRoute,
+  getActionDescribeLocalGatewaysRoute,
+  getActionDescribeLocalGatewayVirtualInterfaceGroupsRoute,
+  getActionDescribeLocalGatewayVirtualInterfacesRoute,
+  getActionDescribeManagedPrefixListsRoute,
+  getActionDescribeMovingAddressesRoute,
+  getActionDescribeNatGatewaysRoute,
+  getActionDescribeNetworkAclsRoute,
+  getActionDescribeNetworkInsightsAccessScopeAnalysesRoute,
+  getActionDescribeNetworkInsightsAccessScopesRoute,
+  getActionDescribeNetworkInsightsAnalysesRoute,
+  getActionDescribeNetworkInsightsPathsRoute,
+  getActionDescribeNetworkInterfaceAttributeRoute,
+  getActionDescribeNetworkInterfacePermissionsRoute,
+  getActionDescribeNetworkInterfacesRoute,
+  getActionDescribePlacementGroupsRoute,
+  getActionDescribePrefixListsRoute,
+  getActionDescribePrincipalIdFormatRoute,
+  getActionDescribePublicIpv4PoolsRoute,
+  getActionDescribeRegionsRoute,
+  getActionDescribeReplaceRootVolumeTasksRoute,
+  getActionDescribeReservedInstancesListingsRoute,
+  getActionDescribeReservedInstancesModificationsRoute,
+  getActionDescribeReservedInstancesOfferingsRoute,
+  getActionDescribeReservedInstancesRoute,
+  getActionDescribeRouteTablesRoute,
+  getActionDescribeScheduledInstanceAvailabilityRoute,
+  getActionDescribeScheduledInstancesRoute,
+  getActionDescribeSecurityGroupReferencesRoute,
+  getActionDescribeSecurityGroupRulesRoute,
+  getActionDescribeSecurityGroupsRoute,
+  getActionDescribeSnapshotAttributeRoute,
+  getActionDescribeSnapshotsRoute,
+  getActionDescribeSnapshotTierStatusRoute,
+  getActionDescribeSpotDatafeedSubscriptionRoute,
+  getActionDescribeSpotFleetInstancesRoute,
+  getActionDescribeSpotFleetRequestHistoryRoute,
+  getActionDescribeSpotFleetRequestsRoute,
+  getActionDescribeSpotInstanceRequestsRoute,
+  getActionDescribeSpotPriceHistoryRoute,
+  getActionDescribeStaleSecurityGroupsRoute,
+  getActionDescribeStoreImageTasksRoute,
+  getActionDescribeSubnetsRoute,
+  getActionDescribeTagsRoute,
+  getActionDescribeTrafficMirrorFiltersRoute,
+  getActionDescribeTrafficMirrorSessionsRoute,
+  getActionDescribeTrafficMirrorTargetsRoute,
+  getActionDescribeTransitGatewayAttachmentsRoute,
+  getActionDescribeTransitGatewayConnectPeersRoute,
+  getActionDescribeTransitGatewayConnectsRoute,
+  getActionDescribeTransitGatewayMulticastDomainsRoute,
+  getActionDescribeTransitGatewayPeeringAttachmentsRoute,
+  getActionDescribeTransitGatewayPolicyTablesRoute,
+  getActionDescribeTransitGatewayRouteTableAnnouncementsRoute,
+  getActionDescribeTransitGatewayRouteTablesRoute,
+  getActionDescribeTransitGatewaysRoute,
+  getActionDescribeTransitGatewayVpcAttachmentsRoute,
+  getActionDescribeTrunkInterfaceAssociationsRoute,
+  getActionDescribeVerifiedAccessEndpointsRoute,
+  getActionDescribeVerifiedAccessGroupsRoute,
+  getActionDescribeVerifiedAccessInstanceLoggingConfigurationsRoute,
+  getActionDescribeVerifiedAccessInstancesRoute,
+  getActionDescribeVerifiedAccessTrustProvidersRoute,
+  getActionDescribeVolumeAttributeRoute,
+  getActionDescribeVolumesModificationsRoute,
+  getActionDescribeVolumesRoute,
+  getActionDescribeVolumeStatusRoute,
+  getActionDescribeVpcAttributeRoute,
+  getActionDescribeVpcClassicLinkDnsSupportRoute,
+  getActionDescribeVpcClassicLinkRoute,
+  getActionDescribeVpcEndpointConnectionNotificationsRoute,
+  getActionDescribeVpcEndpointConnectionsRoute,
+  getActionDescribeVpcEndpointServiceConfigurationsRoute,
+  getActionDescribeVpcEndpointServicePermissionsRoute,
+  getActionDescribeVpcEndpointServicesRoute,
+  getActionDescribeVpcEndpointsRoute,
+  getActionDescribeVpcPeeringConnectionsRoute,
+  getActionDescribeVpcsRoute,
+  getActionDescribeVpnConnectionsRoute,
+  getActionDescribeVpnGatewaysRoute,
+  getActionDetachClassicLinkVpcRoute,
+  getActionDetachInternetGatewayRoute,
+  getActionDetachNetworkInterfaceRoute,
+  getActionDetachVerifiedAccessTrustProviderRoute,
+  getActionDetachVolumeRoute,
+  getActionDetachVpnGatewayRoute,
+  getActionDisableAddressTransferRoute,
+  getActionDisableAwsNetworkPerformanceMetricSubscriptionRoute,
+  getActionDisableEbsEncryptionByDefaultRoute,
+  getActionDisableFastLaunchRoute,
+  getActionDisableFastSnapshotRestoresRoute,
+  getActionDisableImageDeprecationRoute,
+  getActionDisableIpamOrganizationAdminAccountRoute,
+  getActionDisableSerialConsoleAccessRoute,
+  getActionDisableTransitGatewayRouteTablePropagationRoute,
+  getActionDisableVgwRoutePropagationRoute,
+  getActionDisableVpcClassicLinkDnsSupportRoute,
+  getActionDisableVpcClassicLinkRoute,
+  getActionDisassociateAddressRoute,
+  getActionDisassociateClientVpnTargetNetworkRoute,
+  getActionDisassociateEnclaveCertificateIamRoleRoute,
+  getActionDisassociateIamInstanceProfileRoute,
+  getActionDisassociateInstanceEventWindowRoute,
+  getActionDisassociateIpamResourceDiscoveryRoute,
+  getActionDisassociateNatGatewayAddressRoute,
+  getActionDisassociateRouteTableRoute,
+  getActionDisassociateSubnetCidrBlockRoute,
+  getActionDisassociateTransitGatewayMulticastDomainRoute,
+  getActionDisassociateTransitGatewayPolicyTableRoute,
+  getActionDisassociateTransitGatewayRouteTableRoute,
+  getActionDisassociateTrunkInterfaceRoute,
+  getActionDisassociateVpcCidrBlockRoute,
+  getActionEnableAddressTransferRoute,
+  getActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
+  getActionEnableEbsEncryptionByDefaultRoute,
+  getActionEnableFastLaunchRoute,
+  getActionEnableFastSnapshotRestoresRoute,
+  getActionEnableImageDeprecationRoute,
+  getActionEnableIpamOrganizationAdminAccountRoute,
+  getActionEnableReachabilityAnalyzerOrganizationSharingRoute,
+  getActionEnableSerialConsoleAccessRoute,
+  getActionEnableTransitGatewayRouteTablePropagationRoute,
+  getActionEnableVgwRoutePropagationRoute,
+  getActionEnableVolumeIORoute,
+  getActionEnableVpcClassicLinkDnsSupportRoute,
+  getActionEnableVpcClassicLinkRoute,
+  getActionExportClientVpnClientCertificateRevocationListRoute,
+  getActionExportClientVpnClientConfigurationRoute,
+  getActionExportImageRoute,
+  getActionExportTransitGatewayRoutesRoute,
+  getActionGetAssociatedEnclaveCertificateIamRolesRoute,
+  getActionGetAssociatedIpv6PoolCidrsRoute,
+  getActionGetAwsNetworkPerformanceDataRoute,
+  getActionGetCapacityReservationUsageRoute,
+  getActionGetCoipPoolUsageRoute,
+  getActionGetConsoleOutputRoute,
+  getActionGetConsoleScreenshotRoute,
+  getActionGetDefaultCreditSpecificationRoute,
+  getActionGetEbsDefaultKmsKeyIdRoute,
+  getActionGetEbsEncryptionByDefaultRoute,
+  getActionGetFlowLogsIntegrationTemplateRoute,
+  getActionGetGroupsForCapacityReservationRoute,
+  getActionGetHostReservationPurchasePreviewRoute,
+  getActionGetInstanceTypesFromInstanceRequirementsRoute,
+  getActionGetInstanceUefiDataRoute,
+  getActionGetIpamAddressHistoryRoute,
+  getActionGetIpamDiscoveredAccountsRoute,
+  getActionGetIpamDiscoveredResourceCidrsRoute,
+  getActionGetIpamPoolAllocationsRoute,
+  getActionGetIpamPoolCidrsRoute,
+  getActionGetIpamResourceCidrsRoute,
+  getActionGetLaunchTemplateDataRoute,
+  getActionGetManagedPrefixListAssociationsRoute,
+  getActionGetManagedPrefixListEntriesRoute,
+  getActionGetNetworkInsightsAccessScopeAnalysisFindingsRoute,
+  getActionGetNetworkInsightsAccessScopeContentRoute,
+  getActionGetPasswordDataRoute,
+  getActionGetReservedInstancesExchangeQuoteRoute,
+  getActionGetSerialConsoleAccessStatusRoute,
+  getActionGetSpotPlacementScoresRoute,
+  getActionGetSubnetCidrReservationsRoute,
+  getActionGetTransitGatewayAttachmentPropagationsRoute,
+  getActionGetTransitGatewayMulticastDomainAssociationsRoute,
+  getActionGetTransitGatewayPolicyTableAssociationsRoute,
+  getActionGetTransitGatewayPolicyTableEntriesRoute,
+  getActionGetTransitGatewayPrefixListReferencesRoute,
+  getActionGetTransitGatewayRouteTableAssociationsRoute,
+  getActionGetTransitGatewayRouteTablePropagationsRoute,
+  getActionGetVerifiedAccessEndpointPolicyRoute,
+  getActionGetVerifiedAccessGroupPolicyRoute,
+  getActionGetVpnConnectionDeviceSampleConfigurationRoute,
+  getActionGetVpnConnectionDeviceTypesRoute,
+  getActionGetVpnTunnelReplacementStatusRoute,
+  getActionImportClientVpnClientCertificateRevocationListRoute,
+  getActionImportImageRoute,
+  getActionImportInstanceRoute,
+  getActionImportKeyPairRoute,
+  getActionImportSnapshotRoute,
+  getActionImportVolumeRoute,
+  getActionListImagesInRecycleBinRoute,
+  getActionListSnapshotsInRecycleBinRoute,
+  getActionModifyAddressAttributeRoute,
+  getActionModifyAvailabilityZoneGroupRoute,
+  getActionModifyCapacityReservationFleetRoute,
+  getActionModifyCapacityReservationRoute,
+  getActionModifyClientVpnEndpointRoute,
+  getActionModifyDefaultCreditSpecificationRoute,
+  getActionModifyEbsDefaultKmsKeyIdRoute,
+  getActionModifyFleetRoute,
+  getActionModifyFpgaImageAttributeRoute,
+  getActionModifyHostsRoute,
+  getActionModifyIdentityIdFormatRoute,
+  getActionModifyIdFormatRoute,
+  getActionModifyImageAttributeRoute,
+  getActionModifyInstanceAttributeRoute,
+  getActionModifyInstanceCapacityReservationAttributesRoute,
+  getActionModifyInstanceCreditSpecificationRoute,
+  getActionModifyInstanceEventStartTimeRoute,
+  getActionModifyInstanceEventWindowRoute,
+  getActionModifyInstanceMaintenanceOptionsRoute,
+  getActionModifyInstanceMetadataOptionsRoute,
+  getActionModifyInstancePlacementRoute,
+  getActionModifyIpamPoolRoute,
+  getActionModifyIpamResourceCidrRoute,
+  getActionModifyIpamResourceDiscoveryRoute,
+  getActionModifyIpamRoute,
+  getActionModifyIpamScopeRoute,
+  getActionModifyLaunchTemplateRoute,
+  getActionModifyLocalGatewayRouteRoute,
+  getActionModifyManagedPrefixListRoute,
+  getActionModifyNetworkInterfaceAttributeRoute,
+  getActionModifyPrivateDnsNameOptionsRoute,
+  getActionModifyReservedInstancesRoute,
+  getActionModifySecurityGroupRulesRoute,
+  getActionModifySnapshotAttributeRoute,
+  getActionModifySnapshotTierRoute,
+  getActionModifySpotFleetRequestRoute,
+  getActionModifySubnetAttributeRoute,
+  getActionModifyTrafficMirrorFilterNetworkServicesRoute,
+  getActionModifyTrafficMirrorFilterRuleRoute,
+  getActionModifyTrafficMirrorSessionRoute,
+  getActionModifyTransitGatewayPrefixListReferenceRoute,
+  getActionModifyTransitGatewayRoute,
+  getActionModifyTransitGatewayVpcAttachmentRoute,
+  getActionModifyVerifiedAccessEndpointPolicyRoute,
+  getActionModifyVerifiedAccessEndpointRoute,
+  getActionModifyVerifiedAccessGroupPolicyRoute,
+  getActionModifyVerifiedAccessGroupRoute,
+  getActionModifyVerifiedAccessInstanceLoggingConfigurationRoute,
+  getActionModifyVerifiedAccessInstanceRoute,
+  getActionModifyVerifiedAccessTrustProviderRoute,
+  getActionModifyVolumeAttributeRoute,
+  getActionModifyVolumeRoute,
+  getActionModifyVpcAttributeRoute,
+  getActionModifyVpcEndpointConnectionNotificationRoute,
+  getActionModifyVpcEndpointRoute,
+  getActionModifyVpcEndpointServiceConfigurationRoute,
+  getActionModifyVpcEndpointServicePayerResponsibilityRoute,
+  getActionModifyVpcEndpointServicePermissionsRoute,
+  getActionModifyVpcPeeringConnectionOptionsRoute,
+  getActionModifyVpcTenancyRoute,
+  getActionModifyVpnConnectionOptionsRoute,
+  getActionModifyVpnConnectionRoute,
+  getActionModifyVpnTunnelCertificateRoute,
+  getActionModifyVpnTunnelOptionsRoute,
+  getActionMonitorInstancesRoute,
+  getActionMoveAddressToVpcRoute,
+  getActionMoveByoipCidrToIpamRoute,
+  getActionProvisionByoipCidrRoute,
+  getActionProvisionIpamPoolCidrRoute,
+  getActionProvisionPublicIpv4PoolCidrRoute,
+  getActionPurchaseHostReservationRoute,
+  getActionPurchaseReservedInstancesOfferingRoute,
+  getActionPurchaseScheduledInstancesRoute,
+  getActionRebootInstancesRoute,
+  getActionRegisterImageRoute,
+  getActionRegisterInstanceEventNotificationAttributesRoute,
+  getActionRegisterTransitGatewayMulticastGroupMembersRoute,
+  getActionRegisterTransitGatewayMulticastGroupSourcesRoute,
+  getActionRejectTransitGatewayMulticastDomainAssociationsRoute,
+  getActionRejectTransitGatewayPeeringAttachmentRoute,
+  getActionRejectTransitGatewayVpcAttachmentRoute,
+  getActionRejectVpcEndpointConnectionsRoute,
+  getActionRejectVpcPeeringConnectionRoute,
+  getActionReleaseAddressRoute,
+  getActionReleaseHostsRoute,
+  getActionReleaseIpamPoolAllocationRoute,
+  getActionReplaceIamInstanceProfileAssociationRoute,
+  getActionReplaceNetworkAclAssociationRoute,
+  getActionReplaceNetworkAclEntryRoute,
+  getActionReplaceRouteRoute,
+  getActionReplaceRouteTableAssociationRoute,
+  getActionReplaceTransitGatewayRouteRoute,
+  getActionReplaceVpnTunnelRoute,
+  getActionReportInstanceStatusRoute,
+  getActionRequestSpotFleetRoute,
+  getActionRequestSpotInstancesRoute,
+  getActionResetAddressAttributeRoute,
+  getActionResetEbsDefaultKmsKeyIdRoute,
+  getActionResetFpgaImageAttributeRoute,
+  getActionResetImageAttributeRoute,
+  getActionResetInstanceAttributeRoute,
+  getActionResetNetworkInterfaceAttributeRoute,
+  getActionResetSnapshotAttributeRoute,
+  getActionRestoreAddressToClassicRoute,
+  getActionRestoreImageFromRecycleBinRoute,
+  getActionRestoreManagedPrefixListVersionRoute,
+  getActionRestoreSnapshotFromRecycleBinRoute,
+  getActionRestoreSnapshotTierRoute,
+  getActionRevokeClientVpnIngressRoute,
+  getActionRevokeSecurityGroupEgressRoute,
+  getActionRevokeSecurityGroupIngressRoute,
+  getActionRunInstancesRoute,
+  getActionRunScheduledInstancesRoute,
+  getActionSearchLocalGatewayRoutesRoute,
+  getActionSearchTransitGatewayMulticastGroupsRoute,
+  getActionSearchTransitGatewayRoutesRoute,
+  getActionSendDiagnosticInterruptRoute,
+  getActionStartInstancesRoute,
+  getActionStartNetworkInsightsAccessScopeAnalysisRoute,
+  getActionStartNetworkInsightsAnalysisRoute,
+  getActionStartVpcEndpointServicePrivateDnsVerificationRoute,
+  getActionStopInstancesRoute,
+  getActionTerminateClientVpnConnectionsRoute,
+  getActionTerminateInstancesRoute,
+  getActionUnassignIpv6AddressesRoute,
+  getActionUnassignPrivateIpAddressesRoute,
+  getActionUnassignPrivateNatGatewayAddressRoute,
+  getActionUnmonitorInstancesRoute,
+  getActionUpdateSecurityGroupRuleDescriptionsEgressRoute,
+  getActionUpdateSecurityGroupRuleDescriptionsIngressRoute,
+  getActionWithdrawByoipCidrRoute,
+  postActionAcceptAddressTransferRoute,
+  postActionAcceptReservedInstancesExchangeQuoteRoute,
+  postActionAcceptTransitGatewayMulticastDomainAssociationsRoute,
+  postActionAcceptTransitGatewayPeeringAttachmentRoute,
+  postActionAcceptTransitGatewayVpcAttachmentRoute,
+  postActionAcceptVpcEndpointConnectionsRoute,
+  postActionAcceptVpcPeeringConnectionRoute,
+  postActionAdvertiseByoipCidrRoute,
+  postActionAllocateAddressRoute,
+  postActionAllocateHostsRoute,
+  postActionAllocateIpamPoolCidrRoute,
+  postActionApplySecurityGroupsToClientVpnTargetNetworkRoute,
+  postActionAssignIpv6AddressesRoute,
+  postActionAssignPrivateIpAddressesRoute,
+  postActionAssignPrivateNatGatewayAddressRoute,
+  postActionAssociateAddressRoute,
+  postActionAssociateClientVpnTargetNetworkRoute,
+  postActionAssociateDhcpOptionsRoute,
+  postActionAssociateEnclaveCertificateIamRoleRoute,
+  postActionAssociateIamInstanceProfileRoute,
+  postActionAssociateInstanceEventWindowRoute,
+  postActionAssociateIpamResourceDiscoveryRoute,
+  postActionAssociateNatGatewayAddressRoute,
+  postActionAssociateRouteTableRoute,
+  postActionAssociateSubnetCidrBlockRoute,
+  postActionAssociateTransitGatewayMulticastDomainRoute,
+  postActionAssociateTransitGatewayPolicyTableRoute,
+  postActionAssociateTransitGatewayRouteTableRoute,
+  postActionAssociateTrunkInterfaceRoute,
+  postActionAssociateVpcCidrBlockRoute,
+  postActionAttachClassicLinkVpcRoute,
+  postActionAttachInternetGatewayRoute,
+  postActionAttachNetworkInterfaceRoute,
+  postActionAttachVerifiedAccessTrustProviderRoute,
+  postActionAttachVolumeRoute,
+  postActionAttachVpnGatewayRoute,
+  postActionAuthorizeClientVpnIngressRoute,
+  postActionAuthorizeSecurityGroupEgressRoute,
+  postActionAuthorizeSecurityGroupIngressRoute,
+  postActionBundleInstanceRoute,
+  postActionCancelBundleTaskRoute,
+  postActionCancelCapacityReservationFleetsRoute,
+  postActionCancelCapacityReservationRoute,
+  postActionCancelConversionTaskRoute,
+  postActionCancelExportTaskRoute,
+  postActionCancelImageLaunchPermissionRoute,
+  postActionCancelImportTaskRoute,
+  postActionCancelReservedInstancesListingRoute,
+  postActionCancelSpotFleetRequestsRoute,
+  postActionCancelSpotInstanceRequestsRoute,
+  postActionConfirmProductInstanceRoute,
+  postActionCopyFpgaImageRoute,
+  postActionCopyImageRoute,
+  postActionCopySnapshotRoute,
+  postActionCreateCapacityReservationFleetRoute,
+  postActionCreateCapacityReservationRoute,
+  postActionCreateCarrierGatewayRoute,
+  postActionCreateClientVpnEndpointRoute,
+  postActionCreateClientVpnRouteRoute,
+  postActionCreateCoipCidrRoute,
+  postActionCreateCoipPoolRoute,
+  postActionCreateCustomerGatewayRoute,
+  postActionCreateDefaultSubnetRoute,
+  postActionCreateDefaultVpcRoute,
+  postActionCreateDhcpOptionsRoute,
+  postActionCreateEgressOnlyInternetGatewayRoute,
+  postActionCreateFleetRoute,
+  postActionCreateFlowLogsRoute,
+  postActionCreateFpgaImageRoute,
+  postActionCreateImageRoute,
+  postActionCreateInstanceEventWindowRoute,
+  postActionCreateInstanceExportTaskRoute,
+  postActionCreateInternetGatewayRoute,
+  postActionCreateIpamPoolRoute,
+  postActionCreateIpamResourceDiscoveryRoute,
+  postActionCreateIpamRoute,
+  postActionCreateIpamScopeRoute,
+  postActionCreateKeyPairRoute,
+  postActionCreateLaunchTemplateRoute,
+  postActionCreateLaunchTemplateVersionRoute,
+  postActionCreateLocalGatewayRouteRoute,
+  postActionCreateLocalGatewayRouteTableRoute,
+  postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+  postActionCreateLocalGatewayRouteTableVpcAssociationRoute,
+  postActionCreateManagedPrefixListRoute,
+  postActionCreateNatGatewayRoute,
+  postActionCreateNetworkAclEntryRoute,
+  postActionCreateNetworkAclRoute,
+  postActionCreateNetworkInsightsAccessScopeRoute,
+  postActionCreateNetworkInsightsPathRoute,
+  postActionCreateNetworkInterfacePermissionRoute,
+  postActionCreateNetworkInterfaceRoute,
+  postActionCreatePlacementGroupRoute,
+  postActionCreatePublicIpv4PoolRoute,
+  postActionCreateReplaceRootVolumeTaskRoute,
+  postActionCreateReservedInstancesListingRoute,
+  postActionCreateRestoreImageTaskRoute,
+  postActionCreateRouteRoute,
+  postActionCreateRouteTableRoute,
+  postActionCreateSecurityGroupRoute,
+  postActionCreateSnapshotRoute,
+  postActionCreateSnapshotsRoute,
+  postActionCreateSpotDatafeedSubscriptionRoute,
+  postActionCreateStoreImageTaskRoute,
+  postActionCreateSubnetCidrReservationRoute,
+  postActionCreateSubnetRoute,
+  postActionCreateTagsRoute,
+  postActionCreateTrafficMirrorFilterRoute,
+  postActionCreateTrafficMirrorFilterRuleRoute,
+  postActionCreateTrafficMirrorSessionRoute,
+  postActionCreateTrafficMirrorTargetRoute,
+  postActionCreateTransitGatewayConnectPeerRoute,
+  postActionCreateTransitGatewayConnectRoute,
+  postActionCreateTransitGatewayMulticastDomainRoute,
+  postActionCreateTransitGatewayPeeringAttachmentRoute,
+  postActionCreateTransitGatewayPolicyTableRoute,
+  postActionCreateTransitGatewayPrefixListReferenceRoute,
+  postActionCreateTransitGatewayRoute,
+  postActionCreateTransitGatewayRouteRoute,
+  postActionCreateTransitGatewayRouteTableAnnouncementRoute,
+  postActionCreateTransitGatewayRouteTableRoute,
+  postActionCreateTransitGatewayVpcAttachmentRoute,
+  postActionCreateVerifiedAccessEndpointRoute,
+  postActionCreateVerifiedAccessGroupRoute,
+  postActionCreateVerifiedAccessInstanceRoute,
+  postActionCreateVerifiedAccessTrustProviderRoute,
+  postActionCreateVolumeRoute,
+  postActionCreateVpcEndpointConnectionNotificationRoute,
+  postActionCreateVpcEndpointRoute,
+  postActionCreateVpcEndpointServiceConfigurationRoute,
+  postActionCreateVpcPeeringConnectionRoute,
+  postActionCreateVpcRoute,
+  postActionCreateVpnConnectionRoute,
+  postActionCreateVpnConnectionRouteRoute,
+  postActionCreateVpnGatewayRoute,
+  postActionDeleteCarrierGatewayRoute,
+  postActionDeleteClientVpnEndpointRoute,
+  postActionDeleteClientVpnRouteRoute,
+  postActionDeleteCoipCidrRoute,
+  postActionDeleteCoipPoolRoute,
+  postActionDeleteCustomerGatewayRoute,
+  postActionDeleteDhcpOptionsRoute,
+  postActionDeleteEgressOnlyInternetGatewayRoute,
+  postActionDeleteFleetsRoute,
+  postActionDeleteFlowLogsRoute,
+  postActionDeleteFpgaImageRoute,
+  postActionDeleteInstanceEventWindowRoute,
+  postActionDeleteInternetGatewayRoute,
+  postActionDeleteIpamPoolRoute,
+  postActionDeleteIpamResourceDiscoveryRoute,
+  postActionDeleteIpamRoute,
+  postActionDeleteIpamScopeRoute,
+  postActionDeleteKeyPairRoute,
+  postActionDeleteLaunchTemplateRoute,
+  postActionDeleteLaunchTemplateVersionsRoute,
+  postActionDeleteLocalGatewayRouteRoute,
+  postActionDeleteLocalGatewayRouteTableRoute,
+  postActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+  postActionDeleteLocalGatewayRouteTableVpcAssociationRoute,
+  postActionDeleteManagedPrefixListRoute,
+  postActionDeleteNatGatewayRoute,
+  postActionDeleteNetworkAclEntryRoute,
+  postActionDeleteNetworkAclRoute,
+  postActionDeleteNetworkInsightsAccessScopeAnalysisRoute,
+  postActionDeleteNetworkInsightsAccessScopeRoute,
+  postActionDeleteNetworkInsightsAnalysisRoute,
+  postActionDeleteNetworkInsightsPathRoute,
+  postActionDeleteNetworkInterfacePermissionRoute,
+  postActionDeleteNetworkInterfaceRoute,
+  postActionDeletePlacementGroupRoute,
+  postActionDeletePublicIpv4PoolRoute,
+  postActionDeleteQueuedReservedInstancesRoute,
+  postActionDeleteRouteRoute,
+  postActionDeleteRouteTableRoute,
+  postActionDeleteSecurityGroupRoute,
+  postActionDeleteSnapshotRoute,
+  postActionDeleteSpotDatafeedSubscriptionRoute,
+  postActionDeleteSubnetCidrReservationRoute,
+  postActionDeleteSubnetRoute,
+  postActionDeleteTagsRoute,
+  postActionDeleteTrafficMirrorFilterRoute,
+  postActionDeleteTrafficMirrorFilterRuleRoute,
+  postActionDeleteTrafficMirrorSessionRoute,
+  postActionDeleteTrafficMirrorTargetRoute,
+  postActionDeleteTransitGatewayConnectPeerRoute,
+  postActionDeleteTransitGatewayConnectRoute,
+  postActionDeleteTransitGatewayMulticastDomainRoute,
+  postActionDeleteTransitGatewayPeeringAttachmentRoute,
+  postActionDeleteTransitGatewayPolicyTableRoute,
+  postActionDeleteTransitGatewayPrefixListReferenceRoute,
+  postActionDeleteTransitGatewayRoute,
+  postActionDeleteTransitGatewayRouteRoute,
+  postActionDeleteTransitGatewayRouteTableAnnouncementRoute,
+  postActionDeleteTransitGatewayRouteTableRoute,
+  postActionDeleteTransitGatewayVpcAttachmentRoute,
+  postActionDeleteVerifiedAccessEndpointRoute,
+  postActionDeleteVerifiedAccessGroupRoute,
+  postActionDeleteVerifiedAccessInstanceRoute,
+  postActionDeleteVerifiedAccessTrustProviderRoute,
+  postActionDeleteVolumeRoute,
+  postActionDeleteVpcEndpointConnectionNotificationsRoute,
+  postActionDeleteVpcEndpointServiceConfigurationsRoute,
+  postActionDeleteVpcEndpointsRoute,
+  postActionDeleteVpcPeeringConnectionRoute,
+  postActionDeleteVpcRoute,
+  postActionDeleteVpnConnectionRoute,
+  postActionDeleteVpnConnectionRouteRoute,
+  postActionDeleteVpnGatewayRoute,
+  postActionDeprovisionByoipCidrRoute,
+  postActionDeprovisionIpamPoolCidrRoute,
+  postActionDeprovisionPublicIpv4PoolCidrRoute,
+  postActionDeregisterImageRoute,
+  postActionDeregisterInstanceEventNotificationAttributesRoute,
+  postActionDeregisterTransitGatewayMulticastGroupMembersRoute,
+  postActionDeregisterTransitGatewayMulticastGroupSourcesRoute,
+  postActionDescribeAccountAttributesRoute,
+  postActionDescribeAddressesAttributeRoute,
+  postActionDescribeAddressesRoute,
+  postActionDescribeAddressTransfersRoute,
+  postActionDescribeAggregateIdFormatRoute,
+  postActionDescribeAvailabilityZonesRoute,
+  postActionDescribeAwsNetworkPerformanceMetricSubscriptionsRoute,
+  postActionDescribeBundleTasksRoute,
+  postActionDescribeByoipCidrsRoute,
+  postActionDescribeCapacityReservationFleetsRoute,
+  postActionDescribeCapacityReservationsRoute,
+  postActionDescribeCarrierGatewaysRoute,
+  postActionDescribeClassicLinkInstancesRoute,
+  postActionDescribeClientVpnAuthorizationRulesRoute,
+  postActionDescribeClientVpnConnectionsRoute,
+  postActionDescribeClientVpnEndpointsRoute,
+  postActionDescribeClientVpnRoutesRoute,
+  postActionDescribeClientVpnTargetNetworksRoute,
+  postActionDescribeCoipPoolsRoute,
+  postActionDescribeConversionTasksRoute,
+  postActionDescribeCustomerGatewaysRoute,
+  postActionDescribeDhcpOptionsRoute,
+  postActionDescribeEgressOnlyInternetGatewaysRoute,
+  postActionDescribeElasticGpusRoute,
+  postActionDescribeExportImageTasksRoute,
+  postActionDescribeExportTasksRoute,
+  postActionDescribeFastLaunchImagesRoute,
+  postActionDescribeFastSnapshotRestoresRoute,
+  postActionDescribeFleetHistoryRoute,
+  postActionDescribeFleetInstancesRoute,
+  postActionDescribeFleetsRoute,
+  postActionDescribeFlowLogsRoute,
+  postActionDescribeFpgaImageAttributeRoute,
+  postActionDescribeFpgaImagesRoute,
+  postActionDescribeHostReservationOfferingsRoute,
+  postActionDescribeHostReservationsRoute,
+  postActionDescribeHostsRoute,
+  postActionDescribeIamInstanceProfileAssociationsRoute,
+  postActionDescribeIdentityIdFormatRoute,
+  postActionDescribeIdFormatRoute,
+  postActionDescribeImageAttributeRoute,
+  postActionDescribeImagesRoute,
+  postActionDescribeImportImageTasksRoute,
+  postActionDescribeImportSnapshotTasksRoute,
+  postActionDescribeInstanceAttributeRoute,
+  postActionDescribeInstanceCreditSpecificationsRoute,
+  postActionDescribeInstanceEventNotificationAttributesRoute,
+  postActionDescribeInstanceEventWindowsRoute,
+  postActionDescribeInstancesRoute,
+  postActionDescribeInstanceStatusRoute,
+  postActionDescribeInstanceTypeOfferingsRoute,
+  postActionDescribeInstanceTypesRoute,
+  postActionDescribeInternetGatewaysRoute,
+  postActionDescribeIpamPoolsRoute,
+  postActionDescribeIpamResourceDiscoveriesRoute,
+  postActionDescribeIpamResourceDiscoveryAssociationsRoute,
+  postActionDescribeIpamScopesRoute,
+  postActionDescribeIpamsRoute,
+  postActionDescribeIpv6PoolsRoute,
+  postActionDescribeKeyPairsRoute,
+  postActionDescribeLaunchTemplatesRoute,
+  postActionDescribeLaunchTemplateVersionsRoute,
+  postActionDescribeLocalGatewayRouteTablesRoute,
+  postActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRoute,
+  postActionDescribeLocalGatewayRouteTableVpcAssociationsRoute,
+  postActionDescribeLocalGatewaysRoute,
+  postActionDescribeLocalGatewayVirtualInterfaceGroupsRoute,
+  postActionDescribeLocalGatewayVirtualInterfacesRoute,
+  postActionDescribeManagedPrefixListsRoute,
+  postActionDescribeMovingAddressesRoute,
+  postActionDescribeNatGatewaysRoute,
+  postActionDescribeNetworkAclsRoute,
+  postActionDescribeNetworkInsightsAccessScopeAnalysesRoute,
+  postActionDescribeNetworkInsightsAccessScopesRoute,
+  postActionDescribeNetworkInsightsAnalysesRoute,
+  postActionDescribeNetworkInsightsPathsRoute,
+  postActionDescribeNetworkInterfaceAttributeRoute,
+  postActionDescribeNetworkInterfacePermissionsRoute,
+  postActionDescribeNetworkInterfacesRoute,
+  postActionDescribePlacementGroupsRoute,
+  postActionDescribePrefixListsRoute,
+  postActionDescribePrincipalIdFormatRoute,
+  postActionDescribePublicIpv4PoolsRoute,
+  postActionDescribeRegionsRoute,
+  postActionDescribeReplaceRootVolumeTasksRoute,
+  postActionDescribeReservedInstancesListingsRoute,
+  postActionDescribeReservedInstancesModificationsRoute,
+  postActionDescribeReservedInstancesOfferingsRoute,
+  postActionDescribeReservedInstancesRoute,
+  postActionDescribeRouteTablesRoute,
+  postActionDescribeScheduledInstanceAvailabilityRoute,
+  postActionDescribeScheduledInstancesRoute,
+  postActionDescribeSecurityGroupReferencesRoute,
+  postActionDescribeSecurityGroupRulesRoute,
+  postActionDescribeSecurityGroupsRoute,
+  postActionDescribeSnapshotAttributeRoute,
+  postActionDescribeSnapshotsRoute,
+  postActionDescribeSnapshotTierStatusRoute,
+  postActionDescribeSpotDatafeedSubscriptionRoute,
+  postActionDescribeSpotFleetInstancesRoute,
+  postActionDescribeSpotFleetRequestHistoryRoute,
+  postActionDescribeSpotFleetRequestsRoute,
+  postActionDescribeSpotInstanceRequestsRoute,
+  postActionDescribeSpotPriceHistoryRoute,
+  postActionDescribeStaleSecurityGroupsRoute,
+  postActionDescribeStoreImageTasksRoute,
+  postActionDescribeSubnetsRoute,
+  postActionDescribeTagsRoute,
+  postActionDescribeTrafficMirrorFiltersRoute,
+  postActionDescribeTrafficMirrorSessionsRoute,
+  postActionDescribeTrafficMirrorTargetsRoute,
+  postActionDescribeTransitGatewayAttachmentsRoute,
+  postActionDescribeTransitGatewayConnectPeersRoute,
+  postActionDescribeTransitGatewayConnectsRoute,
+  postActionDescribeTransitGatewayMulticastDomainsRoute,
+  postActionDescribeTransitGatewayPeeringAttachmentsRoute,
+  postActionDescribeTransitGatewayPolicyTablesRoute,
+  postActionDescribeTransitGatewayRouteTableAnnouncementsRoute,
+  postActionDescribeTransitGatewayRouteTablesRoute,
+  postActionDescribeTransitGatewaysRoute,
+  postActionDescribeTransitGatewayVpcAttachmentsRoute,
+  postActionDescribeTrunkInterfaceAssociationsRoute,
+  postActionDescribeVerifiedAccessEndpointsRoute,
+  postActionDescribeVerifiedAccessGroupsRoute,
+  postActionDescribeVerifiedAccessInstanceLoggingConfigurationsRoute,
+  postActionDescribeVerifiedAccessInstancesRoute,
+  postActionDescribeVerifiedAccessTrustProvidersRoute,
+  postActionDescribeVolumeAttributeRoute,
+  postActionDescribeVolumesModificationsRoute,
+  postActionDescribeVolumesRoute,
+  postActionDescribeVolumeStatusRoute,
+  postActionDescribeVpcAttributeRoute,
+  postActionDescribeVpcClassicLinkDnsSupportRoute,
+  postActionDescribeVpcClassicLinkRoute,
+  postActionDescribeVpcEndpointConnectionNotificationsRoute,
+  postActionDescribeVpcEndpointConnectionsRoute,
+  postActionDescribeVpcEndpointServiceConfigurationsRoute,
+  postActionDescribeVpcEndpointServicePermissionsRoute,
+  postActionDescribeVpcEndpointServicesRoute,
+  postActionDescribeVpcEndpointsRoute,
+  postActionDescribeVpcPeeringConnectionsRoute,
+  postActionDescribeVpcsRoute,
+  postActionDescribeVpnConnectionsRoute,
+  postActionDescribeVpnGatewaysRoute,
+  postActionDetachClassicLinkVpcRoute,
+  postActionDetachInternetGatewayRoute,
+  postActionDetachNetworkInterfaceRoute,
+  postActionDetachVerifiedAccessTrustProviderRoute,
+  postActionDetachVolumeRoute,
+  postActionDetachVpnGatewayRoute,
+  postActionDisableAddressTransferRoute,
+  postActionDisableAwsNetworkPerformanceMetricSubscriptionRoute,
+  postActionDisableEbsEncryptionByDefaultRoute,
+  postActionDisableFastLaunchRoute,
+  postActionDisableFastSnapshotRestoresRoute,
+  postActionDisableImageDeprecationRoute,
+  postActionDisableIpamOrganizationAdminAccountRoute,
+  postActionDisableSerialConsoleAccessRoute,
+  postActionDisableTransitGatewayRouteTablePropagationRoute,
+  postActionDisableVgwRoutePropagationRoute,
+  postActionDisableVpcClassicLinkDnsSupportRoute,
+  postActionDisableVpcClassicLinkRoute,
+  postActionDisassociateAddressRoute,
+  postActionDisassociateClientVpnTargetNetworkRoute,
+  postActionDisassociateEnclaveCertificateIamRoleRoute,
+  postActionDisassociateIamInstanceProfileRoute,
+  postActionDisassociateInstanceEventWindowRoute,
+  postActionDisassociateIpamResourceDiscoveryRoute,
+  postActionDisassociateNatGatewayAddressRoute,
+  postActionDisassociateRouteTableRoute,
+  postActionDisassociateSubnetCidrBlockRoute,
+  postActionDisassociateTransitGatewayMulticastDomainRoute,
+  postActionDisassociateTransitGatewayPolicyTableRoute,
+  postActionDisassociateTransitGatewayRouteTableRoute,
+  postActionDisassociateTrunkInterfaceRoute,
+  postActionDisassociateVpcCidrBlockRoute,
+  postActionEnableAddressTransferRoute,
+  postActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
+  postActionEnableEbsEncryptionByDefaultRoute,
+  postActionEnableFastLaunchRoute,
+  postActionEnableFastSnapshotRestoresRoute,
+  postActionEnableImageDeprecationRoute,
+  postActionEnableIpamOrganizationAdminAccountRoute,
+  postActionEnableReachabilityAnalyzerOrganizationSharingRoute,
+  postActionEnableSerialConsoleAccessRoute,
+  postActionEnableTransitGatewayRouteTablePropagationRoute,
+  postActionEnableVgwRoutePropagationRoute,
+  postActionEnableVolumeIORoute,
+  postActionEnableVpcClassicLinkDnsSupportRoute,
+  postActionEnableVpcClassicLinkRoute,
+  postActionExportClientVpnClientCertificateRevocationListRoute,
+  postActionExportClientVpnClientConfigurationRoute,
+  postActionExportImageRoute,
+  postActionExportTransitGatewayRoutesRoute,
+  postActionGetAssociatedEnclaveCertificateIamRolesRoute,
+  postActionGetAssociatedIpv6PoolCidrsRoute,
+  postActionGetAwsNetworkPerformanceDataRoute,
+  postActionGetCapacityReservationUsageRoute,
+  postActionGetCoipPoolUsageRoute,
+  postActionGetConsoleOutputRoute,
+  postActionGetConsoleScreenshotRoute,
+  postActionGetDefaultCreditSpecificationRoute,
+  postActionGetEbsDefaultKmsKeyIdRoute,
+  postActionGetEbsEncryptionByDefaultRoute,
+  postActionGetFlowLogsIntegrationTemplateRoute,
+  postActionGetGroupsForCapacityReservationRoute,
+  postActionGetHostReservationPurchasePreviewRoute,
+  postActionGetInstanceTypesFromInstanceRequirementsRoute,
+  postActionGetInstanceUefiDataRoute,
+  postActionGetIpamAddressHistoryRoute,
+  postActionGetIpamDiscoveredAccountsRoute,
+  postActionGetIpamDiscoveredResourceCidrsRoute,
+  postActionGetIpamPoolAllocationsRoute,
+  postActionGetIpamPoolCidrsRoute,
+  postActionGetIpamResourceCidrsRoute,
+  postActionGetLaunchTemplateDataRoute,
+  postActionGetManagedPrefixListAssociationsRoute,
+  postActionGetManagedPrefixListEntriesRoute,
+  postActionGetNetworkInsightsAccessScopeAnalysisFindingsRoute,
+  postActionGetNetworkInsightsAccessScopeContentRoute,
+  postActionGetPasswordDataRoute,
+  postActionGetReservedInstancesExchangeQuoteRoute,
+  postActionGetSerialConsoleAccessStatusRoute,
+  postActionGetSpotPlacementScoresRoute,
+  postActionGetSubnetCidrReservationsRoute,
+  postActionGetTransitGatewayAttachmentPropagationsRoute,
+  postActionGetTransitGatewayMulticastDomainAssociationsRoute,
+  postActionGetTransitGatewayPolicyTableAssociationsRoute,
+  postActionGetTransitGatewayPolicyTableEntriesRoute,
+  postActionGetTransitGatewayPrefixListReferencesRoute,
+  postActionGetTransitGatewayRouteTableAssociationsRoute,
+  postActionGetTransitGatewayRouteTablePropagationsRoute,
+  postActionGetVerifiedAccessEndpointPolicyRoute,
+  postActionGetVerifiedAccessGroupPolicyRoute,
+  postActionGetVpnConnectionDeviceSampleConfigurationRoute,
+  postActionGetVpnConnectionDeviceTypesRoute,
+  postActionGetVpnTunnelReplacementStatusRoute,
+  postActionImportClientVpnClientCertificateRevocationListRoute,
+  postActionImportImageRoute,
+  postActionImportInstanceRoute,
+  postActionImportKeyPairRoute,
+  postActionImportSnapshotRoute,
+  postActionImportVolumeRoute,
+  postActionListImagesInRecycleBinRoute,
+  postActionListSnapshotsInRecycleBinRoute,
+  postActionModifyAddressAttributeRoute,
+  postActionModifyAvailabilityZoneGroupRoute,
+  postActionModifyCapacityReservationFleetRoute,
+  postActionModifyCapacityReservationRoute,
+  postActionModifyClientVpnEndpointRoute,
+  postActionModifyDefaultCreditSpecificationRoute,
+  postActionModifyEbsDefaultKmsKeyIdRoute,
+  postActionModifyFleetRoute,
+  postActionModifyFpgaImageAttributeRoute,
+  postActionModifyHostsRoute,
+  postActionModifyIdentityIdFormatRoute,
+  postActionModifyIdFormatRoute,
+  postActionModifyImageAttributeRoute,
+  postActionModifyInstanceAttributeRoute,
+  postActionModifyInstanceCapacityReservationAttributesRoute,
+  postActionModifyInstanceCreditSpecificationRoute,
+  postActionModifyInstanceEventStartTimeRoute,
+  postActionModifyInstanceEventWindowRoute,
+  postActionModifyInstanceMaintenanceOptionsRoute,
+  postActionModifyInstanceMetadataOptionsRoute,
+  postActionModifyInstancePlacementRoute,
+  postActionModifyIpamPoolRoute,
+  postActionModifyIpamResourceCidrRoute,
+  postActionModifyIpamResourceDiscoveryRoute,
+  postActionModifyIpamRoute,
+  postActionModifyIpamScopeRoute,
+  postActionModifyLaunchTemplateRoute,
+  postActionModifyLocalGatewayRouteRoute,
+  postActionModifyManagedPrefixListRoute,
+  postActionModifyNetworkInterfaceAttributeRoute,
+  postActionModifyPrivateDnsNameOptionsRoute,
+  postActionModifyReservedInstancesRoute,
+  postActionModifySecurityGroupRulesRoute,
+  postActionModifySnapshotAttributeRoute,
+  postActionModifySnapshotTierRoute,
+  postActionModifySpotFleetRequestRoute,
+  postActionModifySubnetAttributeRoute,
+  postActionModifyTrafficMirrorFilterNetworkServicesRoute,
+  postActionModifyTrafficMirrorFilterRuleRoute,
+  postActionModifyTrafficMirrorSessionRoute,
+  postActionModifyTransitGatewayPrefixListReferenceRoute,
+  postActionModifyTransitGatewayRoute,
+  postActionModifyTransitGatewayVpcAttachmentRoute,
+  postActionModifyVerifiedAccessEndpointPolicyRoute,
+  postActionModifyVerifiedAccessEndpointRoute,
+  postActionModifyVerifiedAccessGroupPolicyRoute,
+  postActionModifyVerifiedAccessGroupRoute,
+  postActionModifyVerifiedAccessInstanceLoggingConfigurationRoute,
+  postActionModifyVerifiedAccessInstanceRoute,
+  postActionModifyVerifiedAccessTrustProviderRoute,
+  postActionModifyVolumeAttributeRoute,
+  postActionModifyVolumeRoute,
+  postActionModifyVpcAttributeRoute,
+  postActionModifyVpcEndpointConnectionNotificationRoute,
+  postActionModifyVpcEndpointRoute,
+  postActionModifyVpcEndpointServiceConfigurationRoute,
+  postActionModifyVpcEndpointServicePayerResponsibilityRoute,
+  postActionModifyVpcEndpointServicePermissionsRoute,
+  postActionModifyVpcPeeringConnectionOptionsRoute,
+  postActionModifyVpcTenancyRoute,
+  postActionModifyVpnConnectionOptionsRoute,
+  postActionModifyVpnConnectionRoute,
+  postActionModifyVpnTunnelCertificateRoute,
+  postActionModifyVpnTunnelOptionsRoute,
+  postActionMonitorInstancesRoute,
+  postActionMoveAddressToVpcRoute,
+  postActionMoveByoipCidrToIpamRoute,
+  postActionProvisionByoipCidrRoute,
+  postActionProvisionIpamPoolCidrRoute,
+  postActionProvisionPublicIpv4PoolCidrRoute,
+  postActionPurchaseHostReservationRoute,
+  postActionPurchaseReservedInstancesOfferingRoute,
+  postActionPurchaseScheduledInstancesRoute,
+  postActionRebootInstancesRoute,
+  postActionRegisterImageRoute,
+  postActionRegisterInstanceEventNotificationAttributesRoute,
+  postActionRegisterTransitGatewayMulticastGroupMembersRoute,
+  postActionRegisterTransitGatewayMulticastGroupSourcesRoute,
+  postActionRejectTransitGatewayMulticastDomainAssociationsRoute,
+  postActionRejectTransitGatewayPeeringAttachmentRoute,
+  postActionRejectTransitGatewayVpcAttachmentRoute,
+  postActionRejectVpcEndpointConnectionsRoute,
+  postActionRejectVpcPeeringConnectionRoute,
+  postActionReleaseAddressRoute,
+  postActionReleaseHostsRoute,
+  postActionReleaseIpamPoolAllocationRoute,
+  postActionReplaceIamInstanceProfileAssociationRoute,
+  postActionReplaceNetworkAclAssociationRoute,
+  postActionReplaceNetworkAclEntryRoute,
+  postActionReplaceRouteRoute,
+  postActionReplaceRouteTableAssociationRoute,
+  postActionReplaceTransitGatewayRouteRoute,
+  postActionReplaceVpnTunnelRoute,
+  postActionReportInstanceStatusRoute,
+  postActionRequestSpotFleetRoute,
+  postActionRequestSpotInstancesRoute,
+  postActionResetAddressAttributeRoute,
+  postActionResetEbsDefaultKmsKeyIdRoute,
+  postActionResetFpgaImageAttributeRoute,
+  postActionResetImageAttributeRoute,
+  postActionResetInstanceAttributeRoute,
+  postActionResetNetworkInterfaceAttributeRoute,
+  postActionResetSnapshotAttributeRoute,
+  postActionRestoreAddressToClassicRoute,
+  postActionRestoreImageFromRecycleBinRoute,
+  postActionRestoreManagedPrefixListVersionRoute,
+  postActionRestoreSnapshotFromRecycleBinRoute,
+  postActionRestoreSnapshotTierRoute,
+  postActionRevokeClientVpnIngressRoute,
+  postActionRevokeSecurityGroupEgressRoute,
+  postActionRevokeSecurityGroupIngressRoute,
+  postActionRunInstancesRoute,
+  postActionRunScheduledInstancesRoute,
+  postActionSearchLocalGatewayRoutesRoute,
+  postActionSearchTransitGatewayMulticastGroupsRoute,
+  postActionSearchTransitGatewayRoutesRoute,
+  postActionSendDiagnosticInterruptRoute,
+  postActionStartInstancesRoute,
+  postActionStartNetworkInsightsAccessScopeAnalysisRoute,
+  postActionStartNetworkInsightsAnalysisRoute,
+  postActionStartVpcEndpointServicePrivateDnsVerificationRoute,
+  postActionStopInstancesRoute,
+  postActionTerminateClientVpnConnectionsRoute,
+  postActionTerminateInstancesRoute,
+  postActionUnassignIpv6AddressesRoute,
+  postActionUnassignPrivateIpAddressesRoute,
+  postActionUnassignPrivateNatGatewayAddressRoute,
+  postActionUnmonitorInstancesRoute,
+  postActionUpdateSecurityGroupRuleDescriptionsEgressRoute,
+  postActionUpdateSecurityGroupRuleDescriptionsIngressRoute,
+  postActionWithdrawByoipCidrRoute,
+} from './routes'
+import {
+  getActionAcceptAddressTransferRouteHandler,
+  getActionAcceptReservedInstancesExchangeQuoteRouteHandler,
+  getActionAcceptTransitGatewayMulticastDomainAssociationsRouteHandler,
+  getActionAcceptTransitGatewayPeeringAttachmentRouteHandler,
+  getActionAcceptTransitGatewayVpcAttachmentRouteHandler,
+  getActionAcceptVpcEndpointConnectionsRouteHandler,
+  getActionAcceptVpcPeeringConnectionRouteHandler,
+  getActionAdvertiseByoipCidrRouteHandler,
+  getActionAllocateAddressRouteHandler,
+  getActionAllocateHostsRouteHandler,
+  getActionAllocateIpamPoolCidrRouteHandler,
+  getActionApplySecurityGroupsToClientVpnTargetNetworkRouteHandler,
+  getActionAssignIpv6AddressesRouteHandler,
+  getActionAssignPrivateIpAddressesRouteHandler,
+  getActionAssignPrivateNatGatewayAddressRouteHandler,
+  getActionAssociateAddressRouteHandler,
+  getActionAssociateClientVpnTargetNetworkRouteHandler,
+  getActionAssociateDhcpOptionsRouteHandler,
+  getActionAssociateEnclaveCertificateIamRoleRouteHandler,
+  getActionAssociateIamInstanceProfileRouteHandler,
+  getActionAssociateInstanceEventWindowRouteHandler,
+  getActionAssociateIpamResourceDiscoveryRouteHandler,
+  getActionAssociateNatGatewayAddressRouteHandler,
+  getActionAssociateRouteTableRouteHandler,
+  getActionAssociateSubnetCidrBlockRouteHandler,
+  getActionAssociateTransitGatewayMulticastDomainRouteHandler,
+  getActionAssociateTransitGatewayPolicyTableRouteHandler,
+  getActionAssociateTransitGatewayRouteTableRouteHandler,
+  getActionAssociateTrunkInterfaceRouteHandler,
+  getActionAssociateVpcCidrBlockRouteHandler,
+  getActionAttachClassicLinkVpcRouteHandler,
+  getActionAttachInternetGatewayRouteHandler,
+  getActionAttachNetworkInterfaceRouteHandler,
+  getActionAttachVerifiedAccessTrustProviderRouteHandler,
+  getActionAttachVolumeRouteHandler,
+  getActionAttachVpnGatewayRouteHandler,
+  getActionAuthorizeClientVpnIngressRouteHandler,
+  getActionAuthorizeSecurityGroupEgressRouteHandler,
+  getActionAuthorizeSecurityGroupIngressRouteHandler,
+  getActionBundleInstanceRouteHandler,
+  getActionCancelBundleTaskRouteHandler,
+  getActionCancelCapacityReservationFleetsRouteHandler,
+  getActionCancelCapacityReservationRouteHandler,
+  getActionCancelConversionTaskRouteHandler,
+  getActionCancelExportTaskRouteHandler,
+  getActionCancelImageLaunchPermissionRouteHandler,
+  getActionCancelImportTaskRouteHandler,
+  getActionCancelReservedInstancesListingRouteHandler,
+  getActionCancelSpotFleetRequestsRouteHandler,
+  getActionCancelSpotInstanceRequestsRouteHandler,
+  getActionConfirmProductInstanceRouteHandler,
+  getActionCopyFpgaImageRouteHandler,
+  getActionCopyImageRouteHandler,
+  getActionCopySnapshotRouteHandler,
+  getActionCreateCapacityReservationFleetRouteHandler,
+  getActionCreateCapacityReservationRouteHandler,
+  getActionCreateCarrierGatewayRouteHandler,
+  getActionCreateClientVpnEndpointRouteHandler,
+  getActionCreateClientVpnRouteRouteHandler,
+  getActionCreateCoipCidrRouteHandler,
+  getActionCreateCoipPoolRouteHandler,
+  getActionCreateCustomerGatewayRouteHandler,
+  getActionCreateDefaultSubnetRouteHandler,
+  getActionCreateDefaultVpcRouteHandler,
+  getActionCreateDhcpOptionsRouteHandler,
+  getActionCreateEgressOnlyInternetGatewayRouteHandler,
+  getActionCreateFleetRouteHandler,
+  getActionCreateFlowLogsRouteHandler,
+  getActionCreateFpgaImageRouteHandler,
+  getActionCreateImageRouteHandler,
+  getActionCreateInstanceEventWindowRouteHandler,
+  getActionCreateInstanceExportTaskRouteHandler,
+  getActionCreateInternetGatewayRouteHandler,
+  getActionCreateIpamPoolRouteHandler,
+  getActionCreateIpamResourceDiscoveryRouteHandler,
+  getActionCreateIpamRouteHandler,
+  getActionCreateIpamScopeRouteHandler,
+  getActionCreateKeyPairRouteHandler,
+  getActionCreateLaunchTemplateRouteHandler,
+  getActionCreateLaunchTemplateVersionRouteHandler,
+  getActionCreateLocalGatewayRouteRouteHandler,
+  getActionCreateLocalGatewayRouteTableRouteHandler,
+  getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  getActionCreateLocalGatewayRouteTableVpcAssociationRouteHandler,
+  getActionCreateManagedPrefixListRouteHandler,
+  getActionCreateNatGatewayRouteHandler,
+  getActionCreateNetworkAclEntryRouteHandler,
+  getActionCreateNetworkAclRouteHandler,
+  getActionCreateNetworkInsightsAccessScopeRouteHandler,
+  getActionCreateNetworkInsightsPathRouteHandler,
+  getActionCreateNetworkInterfacePermissionRouteHandler,
+  getActionCreateNetworkInterfaceRouteHandler,
+  getActionCreatePlacementGroupRouteHandler,
+  getActionCreatePublicIpv4PoolRouteHandler,
+  getActionCreateReplaceRootVolumeTaskRouteHandler,
+  getActionCreateReservedInstancesListingRouteHandler,
+  getActionCreateRestoreImageTaskRouteHandler,
+  getActionCreateRouteRouteHandler,
+  getActionCreateRouteTableRouteHandler,
+  getActionCreateSecurityGroupRouteHandler,
+  getActionCreateSnapshotRouteHandler,
+  getActionCreateSnapshotsRouteHandler,
+  getActionCreateSpotDatafeedSubscriptionRouteHandler,
+  getActionCreateStoreImageTaskRouteHandler,
+  getActionCreateSubnetCidrReservationRouteHandler,
+  getActionCreateSubnetRouteHandler,
+  getActionCreateTagsRouteHandler,
+  getActionCreateTrafficMirrorFilterRouteHandler,
+  getActionCreateTrafficMirrorFilterRuleRouteHandler,
+  getActionCreateTrafficMirrorSessionRouteHandler,
+  getActionCreateTrafficMirrorTargetRouteHandler,
+  getActionCreateTransitGatewayConnectPeerRouteHandler,
+  getActionCreateTransitGatewayConnectRouteHandler,
+  getActionCreateTransitGatewayMulticastDomainRouteHandler,
+  getActionCreateTransitGatewayPeeringAttachmentRouteHandler,
+  getActionCreateTransitGatewayPolicyTableRouteHandler,
+  getActionCreateTransitGatewayPrefixListReferenceRouteHandler,
+  getActionCreateTransitGatewayRouteHandler,
+  getActionCreateTransitGatewayRouteRouteHandler,
+  getActionCreateTransitGatewayRouteTableAnnouncementRouteHandler,
+  getActionCreateTransitGatewayRouteTableRouteHandler,
+  getActionCreateTransitGatewayVpcAttachmentRouteHandler,
+  getActionCreateVerifiedAccessEndpointRouteHandler,
+  getActionCreateVerifiedAccessGroupRouteHandler,
+  getActionCreateVerifiedAccessInstanceRouteHandler,
+  getActionCreateVerifiedAccessTrustProviderRouteHandler,
+  getActionCreateVolumeRouteHandler,
+  getActionCreateVpcEndpointConnectionNotificationRouteHandler,
+  getActionCreateVpcEndpointRouteHandler,
+  getActionCreateVpcEndpointServiceConfigurationRouteHandler,
+  getActionCreateVpcPeeringConnectionRouteHandler,
+  getActionCreateVpcRouteHandler,
+  getActionCreateVpnConnectionRouteHandler,
+  getActionCreateVpnConnectionRouteRouteHandler,
+  getActionCreateVpnGatewayRouteHandler,
+  getActionDeleteCarrierGatewayRouteHandler,
+  getActionDeleteClientVpnEndpointRouteHandler,
+  getActionDeleteClientVpnRouteRouteHandler,
+  getActionDeleteCoipCidrRouteHandler,
+  getActionDeleteCoipPoolRouteHandler,
+  getActionDeleteCustomerGatewayRouteHandler,
+  getActionDeleteDhcpOptionsRouteHandler,
+  getActionDeleteEgressOnlyInternetGatewayRouteHandler,
+  getActionDeleteFleetsRouteHandler,
+  getActionDeleteFlowLogsRouteHandler,
+  getActionDeleteFpgaImageRouteHandler,
+  getActionDeleteInstanceEventWindowRouteHandler,
+  getActionDeleteInternetGatewayRouteHandler,
+  getActionDeleteIpamPoolRouteHandler,
+  getActionDeleteIpamResourceDiscoveryRouteHandler,
+  getActionDeleteIpamRouteHandler,
+  getActionDeleteIpamScopeRouteHandler,
+  getActionDeleteKeyPairRouteHandler,
+  getActionDeleteLaunchTemplateRouteHandler,
+  getActionDeleteLaunchTemplateVersionsRouteHandler,
+  getActionDeleteLocalGatewayRouteRouteHandler,
+  getActionDeleteLocalGatewayRouteTableRouteHandler,
+  getActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  getActionDeleteLocalGatewayRouteTableVpcAssociationRouteHandler,
+  getActionDeleteManagedPrefixListRouteHandler,
+  getActionDeleteNatGatewayRouteHandler,
+  getActionDeleteNetworkAclEntryRouteHandler,
+  getActionDeleteNetworkAclRouteHandler,
+  getActionDeleteNetworkInsightsAccessScopeAnalysisRouteHandler,
+  getActionDeleteNetworkInsightsAccessScopeRouteHandler,
+  getActionDeleteNetworkInsightsAnalysisRouteHandler,
+  getActionDeleteNetworkInsightsPathRouteHandler,
+  getActionDeleteNetworkInterfacePermissionRouteHandler,
+  getActionDeleteNetworkInterfaceRouteHandler,
+  getActionDeletePlacementGroupRouteHandler,
+  getActionDeletePublicIpv4PoolRouteHandler,
+  getActionDeleteQueuedReservedInstancesRouteHandler,
+  getActionDeleteRouteRouteHandler,
+  getActionDeleteRouteTableRouteHandler,
+  getActionDeleteSecurityGroupRouteHandler,
+  getActionDeleteSnapshotRouteHandler,
+  getActionDeleteSpotDatafeedSubscriptionRouteHandler,
+  getActionDeleteSubnetCidrReservationRouteHandler,
+  getActionDeleteSubnetRouteHandler,
+  getActionDeleteTagsRouteHandler,
+  getActionDeleteTrafficMirrorFilterRouteHandler,
+  getActionDeleteTrafficMirrorFilterRuleRouteHandler,
+  getActionDeleteTrafficMirrorSessionRouteHandler,
+  getActionDeleteTrafficMirrorTargetRouteHandler,
+  getActionDeleteTransitGatewayConnectPeerRouteHandler,
+  getActionDeleteTransitGatewayConnectRouteHandler,
+  getActionDeleteTransitGatewayMulticastDomainRouteHandler,
+  getActionDeleteTransitGatewayPeeringAttachmentRouteHandler,
+  getActionDeleteTransitGatewayPolicyTableRouteHandler,
+  getActionDeleteTransitGatewayPrefixListReferenceRouteHandler,
+  getActionDeleteTransitGatewayRouteHandler,
+  getActionDeleteTransitGatewayRouteRouteHandler,
+  getActionDeleteTransitGatewayRouteTableAnnouncementRouteHandler,
+  getActionDeleteTransitGatewayRouteTableRouteHandler,
+  getActionDeleteTransitGatewayVpcAttachmentRouteHandler,
+  getActionDeleteVerifiedAccessEndpointRouteHandler,
+  getActionDeleteVerifiedAccessGroupRouteHandler,
+  getActionDeleteVerifiedAccessInstanceRouteHandler,
+  getActionDeleteVerifiedAccessTrustProviderRouteHandler,
+  getActionDeleteVolumeRouteHandler,
+  getActionDeleteVpcEndpointConnectionNotificationsRouteHandler,
+  getActionDeleteVpcEndpointServiceConfigurationsRouteHandler,
+  getActionDeleteVpcEndpointsRouteHandler,
+  getActionDeleteVpcPeeringConnectionRouteHandler,
+  getActionDeleteVpcRouteHandler,
+  getActionDeleteVpnConnectionRouteHandler,
+  getActionDeleteVpnConnectionRouteRouteHandler,
+  getActionDeleteVpnGatewayRouteHandler,
+  getActionDeprovisionByoipCidrRouteHandler,
+  getActionDeprovisionIpamPoolCidrRouteHandler,
+  getActionDeprovisionPublicIpv4PoolCidrRouteHandler,
+  getActionDeregisterImageRouteHandler,
+  getActionDeregisterInstanceEventNotificationAttributesRouteHandler,
+  getActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler,
+  getActionDeregisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  getActionDescribeAccountAttributesRouteHandler,
+  getActionDescribeAddressesAttributeRouteHandler,
+  getActionDescribeAddressesRouteHandler,
+  getActionDescribeAddressTransfersRouteHandler,
+  getActionDescribeAggregateIdFormatRouteHandler,
+  getActionDescribeAvailabilityZonesRouteHandler,
+  getActionDescribeAwsNetworkPerformanceMetricSubscriptionsRouteHandler,
+  getActionDescribeBundleTasksRouteHandler,
+  getActionDescribeByoipCidrsRouteHandler,
+  getActionDescribeCapacityReservationFleetsRouteHandler,
+  getActionDescribeCapacityReservationsRouteHandler,
+  getActionDescribeCarrierGatewaysRouteHandler,
+  getActionDescribeClassicLinkInstancesRouteHandler,
+  getActionDescribeClientVpnAuthorizationRulesRouteHandler,
+  getActionDescribeClientVpnConnectionsRouteHandler,
+  getActionDescribeClientVpnEndpointsRouteHandler,
+  getActionDescribeClientVpnRoutesRouteHandler,
+  getActionDescribeClientVpnTargetNetworksRouteHandler,
+  getActionDescribeCoipPoolsRouteHandler,
+  getActionDescribeConversionTasksRouteHandler,
+  getActionDescribeCustomerGatewaysRouteHandler,
+  getActionDescribeDhcpOptionsRouteHandler,
+  getActionDescribeEgressOnlyInternetGatewaysRouteHandler,
+  getActionDescribeElasticGpusRouteHandler,
+  getActionDescribeExportImageTasksRouteHandler,
+  getActionDescribeExportTasksRouteHandler,
+  getActionDescribeFastLaunchImagesRouteHandler,
+  getActionDescribeFastSnapshotRestoresRouteHandler,
+  getActionDescribeFleetHistoryRouteHandler,
+  getActionDescribeFleetInstancesRouteHandler,
+  getActionDescribeFleetsRouteHandler,
+  getActionDescribeFlowLogsRouteHandler,
+  getActionDescribeFpgaImageAttributeRouteHandler,
+  getActionDescribeFpgaImagesRouteHandler,
+  getActionDescribeHostReservationOfferingsRouteHandler,
+  getActionDescribeHostReservationsRouteHandler,
+  getActionDescribeHostsRouteHandler,
+  getActionDescribeIamInstanceProfileAssociationsRouteHandler,
+  getActionDescribeIdentityIdFormatRouteHandler,
+  getActionDescribeIdFormatRouteHandler,
+  getActionDescribeImageAttributeRouteHandler,
+  getActionDescribeImagesRouteHandler,
+  getActionDescribeImportImageTasksRouteHandler,
+  getActionDescribeImportSnapshotTasksRouteHandler,
+  getActionDescribeInstanceAttributeRouteHandler,
+  getActionDescribeInstanceCreditSpecificationsRouteHandler,
+  getActionDescribeInstanceEventNotificationAttributesRouteHandler,
+  getActionDescribeInstanceEventWindowsRouteHandler,
+  getActionDescribeInstancesRouteHandler,
+  getActionDescribeInstanceStatusRouteHandler,
+  getActionDescribeInstanceTypeOfferingsRouteHandler,
+  getActionDescribeInstanceTypesRouteHandler,
+  getActionDescribeInternetGatewaysRouteHandler,
+  getActionDescribeIpamPoolsRouteHandler,
+  getActionDescribeIpamResourceDiscoveriesRouteHandler,
+  getActionDescribeIpamResourceDiscoveryAssociationsRouteHandler,
+  getActionDescribeIpamScopesRouteHandler,
+  getActionDescribeIpamsRouteHandler,
+  getActionDescribeIpv6PoolsRouteHandler,
+  getActionDescribeKeyPairsRouteHandler,
+  getActionDescribeLaunchTemplatesRouteHandler,
+  getActionDescribeLaunchTemplateVersionsRouteHandler,
+  getActionDescribeLocalGatewayRouteTablesRouteHandler,
+  getActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRouteHandler,
+  getActionDescribeLocalGatewayRouteTableVpcAssociationsRouteHandler,
+  getActionDescribeLocalGatewaysRouteHandler,
+  getActionDescribeLocalGatewayVirtualInterfaceGroupsRouteHandler,
+  getActionDescribeLocalGatewayVirtualInterfacesRouteHandler,
+  getActionDescribeManagedPrefixListsRouteHandler,
+  getActionDescribeMovingAddressesRouteHandler,
+  getActionDescribeNatGatewaysRouteHandler,
+  getActionDescribeNetworkAclsRouteHandler,
+  getActionDescribeNetworkInsightsAccessScopeAnalysesRouteHandler,
+  getActionDescribeNetworkInsightsAccessScopesRouteHandler,
+  getActionDescribeNetworkInsightsAnalysesRouteHandler,
+  getActionDescribeNetworkInsightsPathsRouteHandler,
+  getActionDescribeNetworkInterfaceAttributeRouteHandler,
+  getActionDescribeNetworkInterfacePermissionsRouteHandler,
+  getActionDescribeNetworkInterfacesRouteHandler,
+  getActionDescribePlacementGroupsRouteHandler,
+  getActionDescribePrefixListsRouteHandler,
+  getActionDescribePrincipalIdFormatRouteHandler,
+  getActionDescribePublicIpv4PoolsRouteHandler,
+  getActionDescribeRegionsRouteHandler,
+  getActionDescribeReplaceRootVolumeTasksRouteHandler,
+  getActionDescribeReservedInstancesListingsRouteHandler,
+  getActionDescribeReservedInstancesModificationsRouteHandler,
+  getActionDescribeReservedInstancesOfferingsRouteHandler,
+  getActionDescribeReservedInstancesRouteHandler,
+  getActionDescribeRouteTablesRouteHandler,
+  getActionDescribeScheduledInstanceAvailabilityRouteHandler,
+  getActionDescribeScheduledInstancesRouteHandler,
+  getActionDescribeSecurityGroupReferencesRouteHandler,
+  getActionDescribeSecurityGroupRulesRouteHandler,
+  getActionDescribeSecurityGroupsRouteHandler,
+  getActionDescribeSnapshotAttributeRouteHandler,
+  getActionDescribeSnapshotsRouteHandler,
+  getActionDescribeSnapshotTierStatusRouteHandler,
+  getActionDescribeSpotDatafeedSubscriptionRouteHandler,
+  getActionDescribeSpotFleetInstancesRouteHandler,
+  getActionDescribeSpotFleetRequestHistoryRouteHandler,
+  getActionDescribeSpotFleetRequestsRouteHandler,
+  getActionDescribeSpotInstanceRequestsRouteHandler,
+  getActionDescribeSpotPriceHistoryRouteHandler,
+  getActionDescribeStaleSecurityGroupsRouteHandler,
+  getActionDescribeStoreImageTasksRouteHandler,
+  getActionDescribeSubnetsRouteHandler,
+  getActionDescribeTagsRouteHandler,
+  getActionDescribeTrafficMirrorFiltersRouteHandler,
+  getActionDescribeTrafficMirrorSessionsRouteHandler,
+  getActionDescribeTrafficMirrorTargetsRouteHandler,
+  getActionDescribeTransitGatewayAttachmentsRouteHandler,
+  getActionDescribeTransitGatewayConnectPeersRouteHandler,
+  getActionDescribeTransitGatewayConnectsRouteHandler,
+  getActionDescribeTransitGatewayMulticastDomainsRouteHandler,
+  getActionDescribeTransitGatewayPeeringAttachmentsRouteHandler,
+  getActionDescribeTransitGatewayPolicyTablesRouteHandler,
+  getActionDescribeTransitGatewayRouteTableAnnouncementsRouteHandler,
+  getActionDescribeTransitGatewayRouteTablesRouteHandler,
+  getActionDescribeTransitGatewaysRouteHandler,
+  getActionDescribeTransitGatewayVpcAttachmentsRouteHandler,
+  getActionDescribeTrunkInterfaceAssociationsRouteHandler,
+  getActionDescribeVerifiedAccessEndpointsRouteHandler,
+  getActionDescribeVerifiedAccessGroupsRouteHandler,
+  getActionDescribeVerifiedAccessInstanceLoggingConfigurationsRouteHandler,
+  getActionDescribeVerifiedAccessInstancesRouteHandler,
+  getActionDescribeVerifiedAccessTrustProvidersRouteHandler,
+  getActionDescribeVolumeAttributeRouteHandler,
+  getActionDescribeVolumesModificationsRouteHandler,
+  getActionDescribeVolumesRouteHandler,
+  getActionDescribeVolumeStatusRouteHandler,
+  getActionDescribeVpcAttributeRouteHandler,
+  getActionDescribeVpcClassicLinkDnsSupportRouteHandler,
+  getActionDescribeVpcClassicLinkRouteHandler,
+  getActionDescribeVpcEndpointConnectionNotificationsRouteHandler,
+  getActionDescribeVpcEndpointConnectionsRouteHandler,
+  getActionDescribeVpcEndpointServiceConfigurationsRouteHandler,
+  getActionDescribeVpcEndpointServicePermissionsRouteHandler,
+  getActionDescribeVpcEndpointServicesRouteHandler,
+  getActionDescribeVpcEndpointsRouteHandler,
+  getActionDescribeVpcPeeringConnectionsRouteHandler,
+  getActionDescribeVpcsRouteHandler,
+  getActionDescribeVpnConnectionsRouteHandler,
+  getActionDescribeVpnGatewaysRouteHandler,
+  getActionDetachClassicLinkVpcRouteHandler,
+  getActionDetachInternetGatewayRouteHandler,
+  getActionDetachNetworkInterfaceRouteHandler,
+  getActionDetachVerifiedAccessTrustProviderRouteHandler,
+  getActionDetachVolumeRouteHandler,
+  getActionDetachVpnGatewayRouteHandler,
+  getActionDisableAddressTransferRouteHandler,
+  getActionDisableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  getActionDisableEbsEncryptionByDefaultRouteHandler,
+  getActionDisableFastLaunchRouteHandler,
+  getActionDisableFastSnapshotRestoresRouteHandler,
+  getActionDisableImageDeprecationRouteHandler,
+  getActionDisableIpamOrganizationAdminAccountRouteHandler,
+  getActionDisableSerialConsoleAccessRouteHandler,
+  getActionDisableTransitGatewayRouteTablePropagationRouteHandler,
+  getActionDisableVgwRoutePropagationRouteHandler,
+  getActionDisableVpcClassicLinkDnsSupportRouteHandler,
+  getActionDisableVpcClassicLinkRouteHandler,
+  getActionDisassociateAddressRouteHandler,
+  getActionDisassociateClientVpnTargetNetworkRouteHandler,
+  getActionDisassociateEnclaveCertificateIamRoleRouteHandler,
+  getActionDisassociateIamInstanceProfileRouteHandler,
+  getActionDisassociateInstanceEventWindowRouteHandler,
+  getActionDisassociateIpamResourceDiscoveryRouteHandler,
+  getActionDisassociateNatGatewayAddressRouteHandler,
+  getActionDisassociateRouteTableRouteHandler,
+  getActionDisassociateSubnetCidrBlockRouteHandler,
+  getActionDisassociateTransitGatewayMulticastDomainRouteHandler,
+  getActionDisassociateTransitGatewayPolicyTableRouteHandler,
+  getActionDisassociateTransitGatewayRouteTableRouteHandler,
+  getActionDisassociateTrunkInterfaceRouteHandler,
+  getActionDisassociateVpcCidrBlockRouteHandler,
+  getActionEnableAddressTransferRouteHandler,
+  getActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  getActionEnableEbsEncryptionByDefaultRouteHandler,
+  getActionEnableFastLaunchRouteHandler,
+  getActionEnableFastSnapshotRestoresRouteHandler,
+  getActionEnableImageDeprecationRouteHandler,
+  getActionEnableIpamOrganizationAdminAccountRouteHandler,
+  getActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler,
+  getActionEnableSerialConsoleAccessRouteHandler,
+  getActionEnableTransitGatewayRouteTablePropagationRouteHandler,
+  getActionEnableVgwRoutePropagationRouteHandler,
+  getActionEnableVolumeIORouteHandler,
+  getActionEnableVpcClassicLinkDnsSupportRouteHandler,
+  getActionEnableVpcClassicLinkRouteHandler,
+  getActionExportClientVpnClientCertificateRevocationListRouteHandler,
+  getActionExportClientVpnClientConfigurationRouteHandler,
+  getActionExportImageRouteHandler,
+  getActionExportTransitGatewayRoutesRouteHandler,
+  getActionGetAssociatedEnclaveCertificateIamRolesRouteHandler,
+  getActionGetAssociatedIpv6PoolCidrsRouteHandler,
+  getActionGetAwsNetworkPerformanceDataRouteHandler,
+  getActionGetCapacityReservationUsageRouteHandler,
+  getActionGetCoipPoolUsageRouteHandler,
+  getActionGetConsoleOutputRouteHandler,
+  getActionGetConsoleScreenshotRouteHandler,
+  getActionGetDefaultCreditSpecificationRouteHandler,
+  getActionGetEbsDefaultKmsKeyIdRouteHandler,
+  getActionGetEbsEncryptionByDefaultRouteHandler,
+  getActionGetFlowLogsIntegrationTemplateRouteHandler,
+  getActionGetGroupsForCapacityReservationRouteHandler,
+  getActionGetHostReservationPurchasePreviewRouteHandler,
+  getActionGetInstanceTypesFromInstanceRequirementsRouteHandler,
+  getActionGetInstanceUefiDataRouteHandler,
+  getActionGetIpamAddressHistoryRouteHandler,
+  getActionGetIpamDiscoveredAccountsRouteHandler,
+  getActionGetIpamDiscoveredResourceCidrsRouteHandler,
+  getActionGetIpamPoolAllocationsRouteHandler,
+  getActionGetIpamPoolCidrsRouteHandler,
+  getActionGetIpamResourceCidrsRouteHandler,
+  getActionGetLaunchTemplateDataRouteHandler,
+  getActionGetManagedPrefixListAssociationsRouteHandler,
+  getActionGetManagedPrefixListEntriesRouteHandler,
+  getActionGetNetworkInsightsAccessScopeAnalysisFindingsRouteHandler,
+  getActionGetNetworkInsightsAccessScopeContentRouteHandler,
+  getActionGetPasswordDataRouteHandler,
+  getActionGetReservedInstancesExchangeQuoteRouteHandler,
+  getActionGetSerialConsoleAccessStatusRouteHandler,
+  getActionGetSpotPlacementScoresRouteHandler,
+  getActionGetSubnetCidrReservationsRouteHandler,
+  getActionGetTransitGatewayAttachmentPropagationsRouteHandler,
+  getActionGetTransitGatewayMulticastDomainAssociationsRouteHandler,
+  getActionGetTransitGatewayPolicyTableAssociationsRouteHandler,
+  getActionGetTransitGatewayPolicyTableEntriesRouteHandler,
+  getActionGetTransitGatewayPrefixListReferencesRouteHandler,
+  getActionGetTransitGatewayRouteTableAssociationsRouteHandler,
+  getActionGetTransitGatewayRouteTablePropagationsRouteHandler,
+  getActionGetVerifiedAccessEndpointPolicyRouteHandler,
+  getActionGetVerifiedAccessGroupPolicyRouteHandler,
+  getActionGetVpnConnectionDeviceSampleConfigurationRouteHandler,
+  getActionGetVpnConnectionDeviceTypesRouteHandler,
+  getActionGetVpnTunnelReplacementStatusRouteHandler,
+  getActionImportClientVpnClientCertificateRevocationListRouteHandler,
+  getActionImportImageRouteHandler,
+  getActionImportInstanceRouteHandler,
+  getActionImportKeyPairRouteHandler,
+  getActionImportSnapshotRouteHandler,
+  getActionImportVolumeRouteHandler,
+  getActionListImagesInRecycleBinRouteHandler,
+  getActionListSnapshotsInRecycleBinRouteHandler,
+  getActionModifyAddressAttributeRouteHandler,
+  getActionModifyAvailabilityZoneGroupRouteHandler,
+  getActionModifyCapacityReservationFleetRouteHandler,
+  getActionModifyCapacityReservationRouteHandler,
+  getActionModifyClientVpnEndpointRouteHandler,
+  getActionModifyDefaultCreditSpecificationRouteHandler,
+  getActionModifyEbsDefaultKmsKeyIdRouteHandler,
+  getActionModifyFleetRouteHandler,
+  getActionModifyFpgaImageAttributeRouteHandler,
+  getActionModifyHostsRouteHandler,
+  getActionModifyIdentityIdFormatRouteHandler,
+  getActionModifyIdFormatRouteHandler,
+  getActionModifyImageAttributeRouteHandler,
+  getActionModifyInstanceAttributeRouteHandler,
+  getActionModifyInstanceCapacityReservationAttributesRouteHandler,
+  getActionModifyInstanceCreditSpecificationRouteHandler,
+  getActionModifyInstanceEventStartTimeRouteHandler,
+  getActionModifyInstanceEventWindowRouteHandler,
+  getActionModifyInstanceMaintenanceOptionsRouteHandler,
+  getActionModifyInstanceMetadataOptionsRouteHandler,
+  getActionModifyInstancePlacementRouteHandler,
+  getActionModifyIpamPoolRouteHandler,
+  getActionModifyIpamResourceCidrRouteHandler,
+  getActionModifyIpamResourceDiscoveryRouteHandler,
+  getActionModifyIpamRouteHandler,
+  getActionModifyIpamScopeRouteHandler,
+  getActionModifyLaunchTemplateRouteHandler,
+  getActionModifyLocalGatewayRouteRouteHandler,
+  getActionModifyManagedPrefixListRouteHandler,
+  getActionModifyNetworkInterfaceAttributeRouteHandler,
+  getActionModifyPrivateDnsNameOptionsRouteHandler,
+  getActionModifyReservedInstancesRouteHandler,
+  getActionModifySecurityGroupRulesRouteHandler,
+  getActionModifySnapshotAttributeRouteHandler,
+  getActionModifySnapshotTierRouteHandler,
+  getActionModifySpotFleetRequestRouteHandler,
+  getActionModifySubnetAttributeRouteHandler,
+  getActionModifyTrafficMirrorFilterNetworkServicesRouteHandler,
+  getActionModifyTrafficMirrorFilterRuleRouteHandler,
+  getActionModifyTrafficMirrorSessionRouteHandler,
+  getActionModifyTransitGatewayPrefixListReferenceRouteHandler,
+  getActionModifyTransitGatewayRouteHandler,
+  getActionModifyTransitGatewayVpcAttachmentRouteHandler,
+  getActionModifyVerifiedAccessEndpointPolicyRouteHandler,
+  getActionModifyVerifiedAccessEndpointRouteHandler,
+  getActionModifyVerifiedAccessGroupPolicyRouteHandler,
+  getActionModifyVerifiedAccessGroupRouteHandler,
+  getActionModifyVerifiedAccessInstanceLoggingConfigurationRouteHandler,
+  getActionModifyVerifiedAccessInstanceRouteHandler,
+  getActionModifyVerifiedAccessTrustProviderRouteHandler,
+  getActionModifyVolumeAttributeRouteHandler,
+  getActionModifyVolumeRouteHandler,
+  getActionModifyVpcAttributeRouteHandler,
+  getActionModifyVpcEndpointConnectionNotificationRouteHandler,
+  getActionModifyVpcEndpointRouteHandler,
+  getActionModifyVpcEndpointServiceConfigurationRouteHandler,
+  getActionModifyVpcEndpointServicePayerResponsibilityRouteHandler,
+  getActionModifyVpcEndpointServicePermissionsRouteHandler,
+  getActionModifyVpcPeeringConnectionOptionsRouteHandler,
+  getActionModifyVpcTenancyRouteHandler,
+  getActionModifyVpnConnectionOptionsRouteHandler,
+  getActionModifyVpnConnectionRouteHandler,
+  getActionModifyVpnTunnelCertificateRouteHandler,
+  getActionModifyVpnTunnelOptionsRouteHandler,
+  getActionMonitorInstancesRouteHandler,
+  getActionMoveAddressToVpcRouteHandler,
+  getActionMoveByoipCidrToIpamRouteHandler,
+  getActionProvisionByoipCidrRouteHandler,
+  getActionProvisionIpamPoolCidrRouteHandler,
+  getActionProvisionPublicIpv4PoolCidrRouteHandler,
+  getActionPurchaseHostReservationRouteHandler,
+  getActionPurchaseReservedInstancesOfferingRouteHandler,
+  getActionPurchaseScheduledInstancesRouteHandler,
+  getActionRebootInstancesRouteHandler,
+  getActionRegisterImageRouteHandler,
+  getActionRegisterInstanceEventNotificationAttributesRouteHandler,
+  getActionRegisterTransitGatewayMulticastGroupMembersRouteHandler,
+  getActionRegisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  getActionRejectTransitGatewayMulticastDomainAssociationsRouteHandler,
+  getActionRejectTransitGatewayPeeringAttachmentRouteHandler,
+  getActionRejectTransitGatewayVpcAttachmentRouteHandler,
+  getActionRejectVpcEndpointConnectionsRouteHandler,
+  getActionRejectVpcPeeringConnectionRouteHandler,
+  getActionReleaseAddressRouteHandler,
+  getActionReleaseHostsRouteHandler,
+  getActionReleaseIpamPoolAllocationRouteHandler,
+  getActionReplaceIamInstanceProfileAssociationRouteHandler,
+  getActionReplaceNetworkAclAssociationRouteHandler,
+  getActionReplaceNetworkAclEntryRouteHandler,
+  getActionReplaceRouteRouteHandler,
+  getActionReplaceRouteTableAssociationRouteHandler,
+  getActionReplaceTransitGatewayRouteRouteHandler,
+  getActionReplaceVpnTunnelRouteHandler,
+  getActionReportInstanceStatusRouteHandler,
+  getActionRequestSpotFleetRouteHandler,
+  getActionRequestSpotInstancesRouteHandler,
+  getActionResetAddressAttributeRouteHandler,
+  getActionResetEbsDefaultKmsKeyIdRouteHandler,
+  getActionResetFpgaImageAttributeRouteHandler,
+  getActionResetImageAttributeRouteHandler,
+  getActionResetInstanceAttributeRouteHandler,
+  getActionResetNetworkInterfaceAttributeRouteHandler,
+  getActionResetSnapshotAttributeRouteHandler,
+  getActionRestoreAddressToClassicRouteHandler,
+  getActionRestoreImageFromRecycleBinRouteHandler,
+  getActionRestoreManagedPrefixListVersionRouteHandler,
+  getActionRestoreSnapshotFromRecycleBinRouteHandler,
+  getActionRestoreSnapshotTierRouteHandler,
+  getActionRevokeClientVpnIngressRouteHandler,
+  getActionRevokeSecurityGroupEgressRouteHandler,
+  getActionRevokeSecurityGroupIngressRouteHandler,
+  getActionRunInstancesRouteHandler,
+  getActionRunScheduledInstancesRouteHandler,
+  getActionSearchLocalGatewayRoutesRouteHandler,
+  getActionSearchTransitGatewayMulticastGroupsRouteHandler,
+  getActionSearchTransitGatewayRoutesRouteHandler,
+  getActionSendDiagnosticInterruptRouteHandler,
+  getActionStartInstancesRouteHandler,
+  getActionStartNetworkInsightsAccessScopeAnalysisRouteHandler,
+  getActionStartNetworkInsightsAnalysisRouteHandler,
+  getActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler,
+  getActionStopInstancesRouteHandler,
+  getActionTerminateClientVpnConnectionsRouteHandler,
+  getActionTerminateInstancesRouteHandler,
+  getActionUnassignIpv6AddressesRouteHandler,
+  getActionUnassignPrivateIpAddressesRouteHandler,
+  getActionUnassignPrivateNatGatewayAddressRouteHandler,
+  getActionUnmonitorInstancesRouteHandler,
+  getActionUpdateSecurityGroupRuleDescriptionsEgressRouteHandler,
+  getActionUpdateSecurityGroupRuleDescriptionsIngressRouteHandler,
+  getActionWithdrawByoipCidrRouteHandler,
+  postActionAcceptAddressTransferRouteHandler,
+  postActionAcceptReservedInstancesExchangeQuoteRouteHandler,
+  postActionAcceptTransitGatewayMulticastDomainAssociationsRouteHandler,
+  postActionAcceptTransitGatewayPeeringAttachmentRouteHandler,
+  postActionAcceptTransitGatewayVpcAttachmentRouteHandler,
+  postActionAcceptVpcEndpointConnectionsRouteHandler,
+  postActionAcceptVpcPeeringConnectionRouteHandler,
+  postActionAdvertiseByoipCidrRouteHandler,
+  postActionAllocateAddressRouteHandler,
+  postActionAllocateHostsRouteHandler,
+  postActionAllocateIpamPoolCidrRouteHandler,
+  postActionApplySecurityGroupsToClientVpnTargetNetworkRouteHandler,
+  postActionAssignIpv6AddressesRouteHandler,
+  postActionAssignPrivateIpAddressesRouteHandler,
+  postActionAssignPrivateNatGatewayAddressRouteHandler,
+  postActionAssociateAddressRouteHandler,
+  postActionAssociateClientVpnTargetNetworkRouteHandler,
+  postActionAssociateDhcpOptionsRouteHandler,
+  postActionAssociateEnclaveCertificateIamRoleRouteHandler,
+  postActionAssociateIamInstanceProfileRouteHandler,
+  postActionAssociateInstanceEventWindowRouteHandler,
+  postActionAssociateIpamResourceDiscoveryRouteHandler,
+  postActionAssociateNatGatewayAddressRouteHandler,
+  postActionAssociateRouteTableRouteHandler,
+  postActionAssociateSubnetCidrBlockRouteHandler,
+  postActionAssociateTransitGatewayMulticastDomainRouteHandler,
+  postActionAssociateTransitGatewayPolicyTableRouteHandler,
+  postActionAssociateTransitGatewayRouteTableRouteHandler,
+  postActionAssociateTrunkInterfaceRouteHandler,
+  postActionAssociateVpcCidrBlockRouteHandler,
+  postActionAttachClassicLinkVpcRouteHandler,
+  postActionAttachInternetGatewayRouteHandler,
+  postActionAttachNetworkInterfaceRouteHandler,
+  postActionAttachVerifiedAccessTrustProviderRouteHandler,
+  postActionAttachVolumeRouteHandler,
+  postActionAttachVpnGatewayRouteHandler,
+  postActionAuthorizeClientVpnIngressRouteHandler,
+  postActionAuthorizeSecurityGroupEgressRouteHandler,
+  postActionAuthorizeSecurityGroupIngressRouteHandler,
+  postActionBundleInstanceRouteHandler,
+  postActionCancelBundleTaskRouteHandler,
+  postActionCancelCapacityReservationFleetsRouteHandler,
+  postActionCancelCapacityReservationRouteHandler,
+  postActionCancelConversionTaskRouteHandler,
+  postActionCancelExportTaskRouteHandler,
+  postActionCancelImageLaunchPermissionRouteHandler,
+  postActionCancelImportTaskRouteHandler,
+  postActionCancelReservedInstancesListingRouteHandler,
+  postActionCancelSpotFleetRequestsRouteHandler,
+  postActionCancelSpotInstanceRequestsRouteHandler,
+  postActionConfirmProductInstanceRouteHandler,
+  postActionCopyFpgaImageRouteHandler,
+  postActionCopyImageRouteHandler,
+  postActionCopySnapshotRouteHandler,
+  postActionCreateCapacityReservationFleetRouteHandler,
+  postActionCreateCapacityReservationRouteHandler,
+  postActionCreateCarrierGatewayRouteHandler,
+  postActionCreateClientVpnEndpointRouteHandler,
+  postActionCreateClientVpnRouteRouteHandler,
+  postActionCreateCoipCidrRouteHandler,
+  postActionCreateCoipPoolRouteHandler,
+  postActionCreateCustomerGatewayRouteHandler,
+  postActionCreateDefaultSubnetRouteHandler,
+  postActionCreateDefaultVpcRouteHandler,
+  postActionCreateDhcpOptionsRouteHandler,
+  postActionCreateEgressOnlyInternetGatewayRouteHandler,
+  postActionCreateFleetRouteHandler,
+  postActionCreateFlowLogsRouteHandler,
+  postActionCreateFpgaImageRouteHandler,
+  postActionCreateImageRouteHandler,
+  postActionCreateInstanceEventWindowRouteHandler,
+  postActionCreateInstanceExportTaskRouteHandler,
+  postActionCreateInternetGatewayRouteHandler,
+  postActionCreateIpamPoolRouteHandler,
+  postActionCreateIpamResourceDiscoveryRouteHandler,
+  postActionCreateIpamRouteHandler,
+  postActionCreateIpamScopeRouteHandler,
+  postActionCreateKeyPairRouteHandler,
+  postActionCreateLaunchTemplateRouteHandler,
+  postActionCreateLaunchTemplateVersionRouteHandler,
+  postActionCreateLocalGatewayRouteRouteHandler,
+  postActionCreateLocalGatewayRouteTableRouteHandler,
+  postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  postActionCreateLocalGatewayRouteTableVpcAssociationRouteHandler,
+  postActionCreateManagedPrefixListRouteHandler,
+  postActionCreateNatGatewayRouteHandler,
+  postActionCreateNetworkAclEntryRouteHandler,
+  postActionCreateNetworkAclRouteHandler,
+  postActionCreateNetworkInsightsAccessScopeRouteHandler,
+  postActionCreateNetworkInsightsPathRouteHandler,
+  postActionCreateNetworkInterfacePermissionRouteHandler,
+  postActionCreateNetworkInterfaceRouteHandler,
+  postActionCreatePlacementGroupRouteHandler,
+  postActionCreatePublicIpv4PoolRouteHandler,
+  postActionCreateReplaceRootVolumeTaskRouteHandler,
+  postActionCreateReservedInstancesListingRouteHandler,
+  postActionCreateRestoreImageTaskRouteHandler,
+  postActionCreateRouteRouteHandler,
+  postActionCreateRouteTableRouteHandler,
+  postActionCreateSecurityGroupRouteHandler,
+  postActionCreateSnapshotRouteHandler,
+  postActionCreateSnapshotsRouteHandler,
+  postActionCreateSpotDatafeedSubscriptionRouteHandler,
+  postActionCreateStoreImageTaskRouteHandler,
+  postActionCreateSubnetCidrReservationRouteHandler,
+  postActionCreateSubnetRouteHandler,
+  postActionCreateTagsRouteHandler,
+  postActionCreateTrafficMirrorFilterRouteHandler,
+  postActionCreateTrafficMirrorFilterRuleRouteHandler,
+  postActionCreateTrafficMirrorSessionRouteHandler,
+  postActionCreateTrafficMirrorTargetRouteHandler,
+  postActionCreateTransitGatewayConnectPeerRouteHandler,
+  postActionCreateTransitGatewayConnectRouteHandler,
+  postActionCreateTransitGatewayMulticastDomainRouteHandler,
+  postActionCreateTransitGatewayPeeringAttachmentRouteHandler,
+  postActionCreateTransitGatewayPolicyTableRouteHandler,
+  postActionCreateTransitGatewayPrefixListReferenceRouteHandler,
+  postActionCreateTransitGatewayRouteHandler,
+  postActionCreateTransitGatewayRouteRouteHandler,
+  postActionCreateTransitGatewayRouteTableAnnouncementRouteHandler,
+  postActionCreateTransitGatewayRouteTableRouteHandler,
+  postActionCreateTransitGatewayVpcAttachmentRouteHandler,
+  postActionCreateVerifiedAccessEndpointRouteHandler,
+  postActionCreateVerifiedAccessGroupRouteHandler,
+  postActionCreateVerifiedAccessInstanceRouteHandler,
+  postActionCreateVerifiedAccessTrustProviderRouteHandler,
+  postActionCreateVolumeRouteHandler,
+  postActionCreateVpcEndpointConnectionNotificationRouteHandler,
+  postActionCreateVpcEndpointRouteHandler,
+  postActionCreateVpcEndpointServiceConfigurationRouteHandler,
+  postActionCreateVpcPeeringConnectionRouteHandler,
+  postActionCreateVpcRouteHandler,
+  postActionCreateVpnConnectionRouteHandler,
+  postActionCreateVpnConnectionRouteRouteHandler,
+  postActionCreateVpnGatewayRouteHandler,
+  postActionDeleteCarrierGatewayRouteHandler,
+  postActionDeleteClientVpnEndpointRouteHandler,
+  postActionDeleteClientVpnRouteRouteHandler,
+  postActionDeleteCoipCidrRouteHandler,
+  postActionDeleteCoipPoolRouteHandler,
+  postActionDeleteCustomerGatewayRouteHandler,
+  postActionDeleteDhcpOptionsRouteHandler,
+  postActionDeleteEgressOnlyInternetGatewayRouteHandler,
+  postActionDeleteFleetsRouteHandler,
+  postActionDeleteFlowLogsRouteHandler,
+  postActionDeleteFpgaImageRouteHandler,
+  postActionDeleteInstanceEventWindowRouteHandler,
+  postActionDeleteInternetGatewayRouteHandler,
+  postActionDeleteIpamPoolRouteHandler,
+  postActionDeleteIpamResourceDiscoveryRouteHandler,
+  postActionDeleteIpamRouteHandler,
+  postActionDeleteIpamScopeRouteHandler,
+  postActionDeleteKeyPairRouteHandler,
+  postActionDeleteLaunchTemplateRouteHandler,
+  postActionDeleteLaunchTemplateVersionsRouteHandler,
+  postActionDeleteLocalGatewayRouteRouteHandler,
+  postActionDeleteLocalGatewayRouteTableRouteHandler,
+  postActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  postActionDeleteLocalGatewayRouteTableVpcAssociationRouteHandler,
+  postActionDeleteManagedPrefixListRouteHandler,
+  postActionDeleteNatGatewayRouteHandler,
+  postActionDeleteNetworkAclEntryRouteHandler,
+  postActionDeleteNetworkAclRouteHandler,
+  postActionDeleteNetworkInsightsAccessScopeAnalysisRouteHandler,
+  postActionDeleteNetworkInsightsAccessScopeRouteHandler,
+  postActionDeleteNetworkInsightsAnalysisRouteHandler,
+  postActionDeleteNetworkInsightsPathRouteHandler,
+  postActionDeleteNetworkInterfacePermissionRouteHandler,
+  postActionDeleteNetworkInterfaceRouteHandler,
+  postActionDeletePlacementGroupRouteHandler,
+  postActionDeletePublicIpv4PoolRouteHandler,
+  postActionDeleteQueuedReservedInstancesRouteHandler,
+  postActionDeleteRouteRouteHandler,
+  postActionDeleteRouteTableRouteHandler,
+  postActionDeleteSecurityGroupRouteHandler,
+  postActionDeleteSnapshotRouteHandler,
+  postActionDeleteSpotDatafeedSubscriptionRouteHandler,
+  postActionDeleteSubnetCidrReservationRouteHandler,
+  postActionDeleteSubnetRouteHandler,
+  postActionDeleteTagsRouteHandler,
+  postActionDeleteTrafficMirrorFilterRouteHandler,
+  postActionDeleteTrafficMirrorFilterRuleRouteHandler,
+  postActionDeleteTrafficMirrorSessionRouteHandler,
+  postActionDeleteTrafficMirrorTargetRouteHandler,
+  postActionDeleteTransitGatewayConnectPeerRouteHandler,
+  postActionDeleteTransitGatewayConnectRouteHandler,
+  postActionDeleteTransitGatewayMulticastDomainRouteHandler,
+  postActionDeleteTransitGatewayPeeringAttachmentRouteHandler,
+  postActionDeleteTransitGatewayPolicyTableRouteHandler,
+  postActionDeleteTransitGatewayPrefixListReferenceRouteHandler,
+  postActionDeleteTransitGatewayRouteHandler,
+  postActionDeleteTransitGatewayRouteRouteHandler,
+  postActionDeleteTransitGatewayRouteTableAnnouncementRouteHandler,
+  postActionDeleteTransitGatewayRouteTableRouteHandler,
+  postActionDeleteTransitGatewayVpcAttachmentRouteHandler,
+  postActionDeleteVerifiedAccessEndpointRouteHandler,
+  postActionDeleteVerifiedAccessGroupRouteHandler,
+  postActionDeleteVerifiedAccessInstanceRouteHandler,
+  postActionDeleteVerifiedAccessTrustProviderRouteHandler,
+  postActionDeleteVolumeRouteHandler,
+  postActionDeleteVpcEndpointConnectionNotificationsRouteHandler,
+  postActionDeleteVpcEndpointServiceConfigurationsRouteHandler,
+  postActionDeleteVpcEndpointsRouteHandler,
+  postActionDeleteVpcPeeringConnectionRouteHandler,
+  postActionDeleteVpcRouteHandler,
+  postActionDeleteVpnConnectionRouteHandler,
+  postActionDeleteVpnConnectionRouteRouteHandler,
+  postActionDeleteVpnGatewayRouteHandler,
+  postActionDeprovisionByoipCidrRouteHandler,
+  postActionDeprovisionIpamPoolCidrRouteHandler,
+  postActionDeprovisionPublicIpv4PoolCidrRouteHandler,
+  postActionDeregisterImageRouteHandler,
+  postActionDeregisterInstanceEventNotificationAttributesRouteHandler,
+  postActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler,
+  postActionDeregisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  postActionDescribeAccountAttributesRouteHandler,
+  postActionDescribeAddressesAttributeRouteHandler,
+  postActionDescribeAddressesRouteHandler,
+  postActionDescribeAddressTransfersRouteHandler,
+  postActionDescribeAggregateIdFormatRouteHandler,
+  postActionDescribeAvailabilityZonesRouteHandler,
+  postActionDescribeAwsNetworkPerformanceMetricSubscriptionsRouteHandler,
+  postActionDescribeBundleTasksRouteHandler,
+  postActionDescribeByoipCidrsRouteHandler,
+  postActionDescribeCapacityReservationFleetsRouteHandler,
+  postActionDescribeCapacityReservationsRouteHandler,
+  postActionDescribeCarrierGatewaysRouteHandler,
+  postActionDescribeClassicLinkInstancesRouteHandler,
+  postActionDescribeClientVpnAuthorizationRulesRouteHandler,
+  postActionDescribeClientVpnConnectionsRouteHandler,
+  postActionDescribeClientVpnEndpointsRouteHandler,
+  postActionDescribeClientVpnRoutesRouteHandler,
+  postActionDescribeClientVpnTargetNetworksRouteHandler,
+  postActionDescribeCoipPoolsRouteHandler,
+  postActionDescribeConversionTasksRouteHandler,
+  postActionDescribeCustomerGatewaysRouteHandler,
+  postActionDescribeDhcpOptionsRouteHandler,
+  postActionDescribeEgressOnlyInternetGatewaysRouteHandler,
+  postActionDescribeElasticGpusRouteHandler,
+  postActionDescribeExportImageTasksRouteHandler,
+  postActionDescribeExportTasksRouteHandler,
+  postActionDescribeFastLaunchImagesRouteHandler,
+  postActionDescribeFastSnapshotRestoresRouteHandler,
+  postActionDescribeFleetHistoryRouteHandler,
+  postActionDescribeFleetInstancesRouteHandler,
+  postActionDescribeFleetsRouteHandler,
+  postActionDescribeFlowLogsRouteHandler,
+  postActionDescribeFpgaImageAttributeRouteHandler,
+  postActionDescribeFpgaImagesRouteHandler,
+  postActionDescribeHostReservationOfferingsRouteHandler,
+  postActionDescribeHostReservationsRouteHandler,
+  postActionDescribeHostsRouteHandler,
+  postActionDescribeIamInstanceProfileAssociationsRouteHandler,
+  postActionDescribeIdentityIdFormatRouteHandler,
+  postActionDescribeIdFormatRouteHandler,
+  postActionDescribeImageAttributeRouteHandler,
+  postActionDescribeImagesRouteHandler,
+  postActionDescribeImportImageTasksRouteHandler,
+  postActionDescribeImportSnapshotTasksRouteHandler,
+  postActionDescribeInstanceAttributeRouteHandler,
+  postActionDescribeInstanceCreditSpecificationsRouteHandler,
+  postActionDescribeInstanceEventNotificationAttributesRouteHandler,
+  postActionDescribeInstanceEventWindowsRouteHandler,
+  postActionDescribeInstancesRouteHandler,
+  postActionDescribeInstanceStatusRouteHandler,
+  postActionDescribeInstanceTypeOfferingsRouteHandler,
+  postActionDescribeInstanceTypesRouteHandler,
+  postActionDescribeInternetGatewaysRouteHandler,
+  postActionDescribeIpamPoolsRouteHandler,
+  postActionDescribeIpamResourceDiscoveriesRouteHandler,
+  postActionDescribeIpamResourceDiscoveryAssociationsRouteHandler,
+  postActionDescribeIpamScopesRouteHandler,
+  postActionDescribeIpamsRouteHandler,
+  postActionDescribeIpv6PoolsRouteHandler,
+  postActionDescribeKeyPairsRouteHandler,
+  postActionDescribeLaunchTemplatesRouteHandler,
+  postActionDescribeLaunchTemplateVersionsRouteHandler,
+  postActionDescribeLocalGatewayRouteTablesRouteHandler,
+  postActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRouteHandler,
+  postActionDescribeLocalGatewayRouteTableVpcAssociationsRouteHandler,
+  postActionDescribeLocalGatewaysRouteHandler,
+  postActionDescribeLocalGatewayVirtualInterfaceGroupsRouteHandler,
+  postActionDescribeLocalGatewayVirtualInterfacesRouteHandler,
+  postActionDescribeManagedPrefixListsRouteHandler,
+  postActionDescribeMovingAddressesRouteHandler,
+  postActionDescribeNatGatewaysRouteHandler,
+  postActionDescribeNetworkAclsRouteHandler,
+  postActionDescribeNetworkInsightsAccessScopeAnalysesRouteHandler,
+  postActionDescribeNetworkInsightsAccessScopesRouteHandler,
+  postActionDescribeNetworkInsightsAnalysesRouteHandler,
+  postActionDescribeNetworkInsightsPathsRouteHandler,
+  postActionDescribeNetworkInterfaceAttributeRouteHandler,
+  postActionDescribeNetworkInterfacePermissionsRouteHandler,
+  postActionDescribeNetworkInterfacesRouteHandler,
+  postActionDescribePlacementGroupsRouteHandler,
+  postActionDescribePrefixListsRouteHandler,
+  postActionDescribePrincipalIdFormatRouteHandler,
+  postActionDescribePublicIpv4PoolsRouteHandler,
+  postActionDescribeRegionsRouteHandler,
+  postActionDescribeReplaceRootVolumeTasksRouteHandler,
+  postActionDescribeReservedInstancesListingsRouteHandler,
+  postActionDescribeReservedInstancesModificationsRouteHandler,
+  postActionDescribeReservedInstancesOfferingsRouteHandler,
+  postActionDescribeReservedInstancesRouteHandler,
+  postActionDescribeRouteTablesRouteHandler,
+  postActionDescribeScheduledInstanceAvailabilityRouteHandler,
+  postActionDescribeScheduledInstancesRouteHandler,
+  postActionDescribeSecurityGroupReferencesRouteHandler,
+  postActionDescribeSecurityGroupRulesRouteHandler,
+  postActionDescribeSecurityGroupsRouteHandler,
+  postActionDescribeSnapshotAttributeRouteHandler,
+  postActionDescribeSnapshotsRouteHandler,
+  postActionDescribeSnapshotTierStatusRouteHandler,
+  postActionDescribeSpotDatafeedSubscriptionRouteHandler,
+  postActionDescribeSpotFleetInstancesRouteHandler,
+  postActionDescribeSpotFleetRequestHistoryRouteHandler,
+  postActionDescribeSpotFleetRequestsRouteHandler,
+  postActionDescribeSpotInstanceRequestsRouteHandler,
+  postActionDescribeSpotPriceHistoryRouteHandler,
+  postActionDescribeStaleSecurityGroupsRouteHandler,
+  postActionDescribeStoreImageTasksRouteHandler,
+  postActionDescribeSubnetsRouteHandler,
+  postActionDescribeTagsRouteHandler,
+  postActionDescribeTrafficMirrorFiltersRouteHandler,
+  postActionDescribeTrafficMirrorSessionsRouteHandler,
+  postActionDescribeTrafficMirrorTargetsRouteHandler,
+  postActionDescribeTransitGatewayAttachmentsRouteHandler,
+  postActionDescribeTransitGatewayConnectPeersRouteHandler,
+  postActionDescribeTransitGatewayConnectsRouteHandler,
+  postActionDescribeTransitGatewayMulticastDomainsRouteHandler,
+  postActionDescribeTransitGatewayPeeringAttachmentsRouteHandler,
+  postActionDescribeTransitGatewayPolicyTablesRouteHandler,
+  postActionDescribeTransitGatewayRouteTableAnnouncementsRouteHandler,
+  postActionDescribeTransitGatewayRouteTablesRouteHandler,
+  postActionDescribeTransitGatewaysRouteHandler,
+  postActionDescribeTransitGatewayVpcAttachmentsRouteHandler,
+  postActionDescribeTrunkInterfaceAssociationsRouteHandler,
+  postActionDescribeVerifiedAccessEndpointsRouteHandler,
+  postActionDescribeVerifiedAccessGroupsRouteHandler,
+  postActionDescribeVerifiedAccessInstanceLoggingConfigurationsRouteHandler,
+  postActionDescribeVerifiedAccessInstancesRouteHandler,
+  postActionDescribeVerifiedAccessTrustProvidersRouteHandler,
+  postActionDescribeVolumeAttributeRouteHandler,
+  postActionDescribeVolumesModificationsRouteHandler,
+  postActionDescribeVolumesRouteHandler,
+  postActionDescribeVolumeStatusRouteHandler,
+  postActionDescribeVpcAttributeRouteHandler,
+  postActionDescribeVpcClassicLinkDnsSupportRouteHandler,
+  postActionDescribeVpcClassicLinkRouteHandler,
+  postActionDescribeVpcEndpointConnectionNotificationsRouteHandler,
+  postActionDescribeVpcEndpointConnectionsRouteHandler,
+  postActionDescribeVpcEndpointServiceConfigurationsRouteHandler,
+  postActionDescribeVpcEndpointServicePermissionsRouteHandler,
+  postActionDescribeVpcEndpointServicesRouteHandler,
+  postActionDescribeVpcEndpointsRouteHandler,
+  postActionDescribeVpcPeeringConnectionsRouteHandler,
+  postActionDescribeVpcsRouteHandler,
+  postActionDescribeVpnConnectionsRouteHandler,
+  postActionDescribeVpnGatewaysRouteHandler,
+  postActionDetachClassicLinkVpcRouteHandler,
+  postActionDetachInternetGatewayRouteHandler,
+  postActionDetachNetworkInterfaceRouteHandler,
+  postActionDetachVerifiedAccessTrustProviderRouteHandler,
+  postActionDetachVolumeRouteHandler,
+  postActionDetachVpnGatewayRouteHandler,
+  postActionDisableAddressTransferRouteHandler,
+  postActionDisableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  postActionDisableEbsEncryptionByDefaultRouteHandler,
+  postActionDisableFastLaunchRouteHandler,
+  postActionDisableFastSnapshotRestoresRouteHandler,
+  postActionDisableImageDeprecationRouteHandler,
+  postActionDisableIpamOrganizationAdminAccountRouteHandler,
+  postActionDisableSerialConsoleAccessRouteHandler,
+  postActionDisableTransitGatewayRouteTablePropagationRouteHandler,
+  postActionDisableVgwRoutePropagationRouteHandler,
+  postActionDisableVpcClassicLinkDnsSupportRouteHandler,
+  postActionDisableVpcClassicLinkRouteHandler,
+  postActionDisassociateAddressRouteHandler,
+  postActionDisassociateClientVpnTargetNetworkRouteHandler,
+  postActionDisassociateEnclaveCertificateIamRoleRouteHandler,
+  postActionDisassociateIamInstanceProfileRouteHandler,
+  postActionDisassociateInstanceEventWindowRouteHandler,
+  postActionDisassociateIpamResourceDiscoveryRouteHandler,
+  postActionDisassociateNatGatewayAddressRouteHandler,
+  postActionDisassociateRouteTableRouteHandler,
+  postActionDisassociateSubnetCidrBlockRouteHandler,
+  postActionDisassociateTransitGatewayMulticastDomainRouteHandler,
+  postActionDisassociateTransitGatewayPolicyTableRouteHandler,
+  postActionDisassociateTransitGatewayRouteTableRouteHandler,
+  postActionDisassociateTrunkInterfaceRouteHandler,
+  postActionDisassociateVpcCidrBlockRouteHandler,
+  postActionEnableAddressTransferRouteHandler,
+  postActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  postActionEnableEbsEncryptionByDefaultRouteHandler,
+  postActionEnableFastLaunchRouteHandler,
+  postActionEnableFastSnapshotRestoresRouteHandler,
+  postActionEnableImageDeprecationRouteHandler,
+  postActionEnableIpamOrganizationAdminAccountRouteHandler,
+  postActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler,
+  postActionEnableSerialConsoleAccessRouteHandler,
+  postActionEnableTransitGatewayRouteTablePropagationRouteHandler,
+  postActionEnableVgwRoutePropagationRouteHandler,
+  postActionEnableVolumeIORouteHandler,
+  postActionEnableVpcClassicLinkDnsSupportRouteHandler,
+  postActionEnableVpcClassicLinkRouteHandler,
+  postActionExportClientVpnClientCertificateRevocationListRouteHandler,
+  postActionExportClientVpnClientConfigurationRouteHandler,
+  postActionExportImageRouteHandler,
+  postActionExportTransitGatewayRoutesRouteHandler,
+  postActionGetAssociatedEnclaveCertificateIamRolesRouteHandler,
+  postActionGetAssociatedIpv6PoolCidrsRouteHandler,
+  postActionGetAwsNetworkPerformanceDataRouteHandler,
+  postActionGetCapacityReservationUsageRouteHandler,
+  postActionGetCoipPoolUsageRouteHandler,
+  postActionGetConsoleOutputRouteHandler,
+  postActionGetConsoleScreenshotRouteHandler,
+  postActionGetDefaultCreditSpecificationRouteHandler,
+  postActionGetEbsDefaultKmsKeyIdRouteHandler,
+  postActionGetEbsEncryptionByDefaultRouteHandler,
+  postActionGetFlowLogsIntegrationTemplateRouteHandler,
+  postActionGetGroupsForCapacityReservationRouteHandler,
+  postActionGetHostReservationPurchasePreviewRouteHandler,
+  postActionGetInstanceTypesFromInstanceRequirementsRouteHandler,
+  postActionGetInstanceUefiDataRouteHandler,
+  postActionGetIpamAddressHistoryRouteHandler,
+  postActionGetIpamDiscoveredAccountsRouteHandler,
+  postActionGetIpamDiscoveredResourceCidrsRouteHandler,
+  postActionGetIpamPoolAllocationsRouteHandler,
+  postActionGetIpamPoolCidrsRouteHandler,
+  postActionGetIpamResourceCidrsRouteHandler,
+  postActionGetLaunchTemplateDataRouteHandler,
+  postActionGetManagedPrefixListAssociationsRouteHandler,
+  postActionGetManagedPrefixListEntriesRouteHandler,
+  postActionGetNetworkInsightsAccessScopeAnalysisFindingsRouteHandler,
+  postActionGetNetworkInsightsAccessScopeContentRouteHandler,
+  postActionGetPasswordDataRouteHandler,
+  postActionGetReservedInstancesExchangeQuoteRouteHandler,
+  postActionGetSerialConsoleAccessStatusRouteHandler,
+  postActionGetSpotPlacementScoresRouteHandler,
+  postActionGetSubnetCidrReservationsRouteHandler,
+  postActionGetTransitGatewayAttachmentPropagationsRouteHandler,
+  postActionGetTransitGatewayMulticastDomainAssociationsRouteHandler,
+  postActionGetTransitGatewayPolicyTableAssociationsRouteHandler,
+  postActionGetTransitGatewayPolicyTableEntriesRouteHandler,
+  postActionGetTransitGatewayPrefixListReferencesRouteHandler,
+  postActionGetTransitGatewayRouteTableAssociationsRouteHandler,
+  postActionGetTransitGatewayRouteTablePropagationsRouteHandler,
+  postActionGetVerifiedAccessEndpointPolicyRouteHandler,
+  postActionGetVerifiedAccessGroupPolicyRouteHandler,
+  postActionGetVpnConnectionDeviceSampleConfigurationRouteHandler,
+  postActionGetVpnConnectionDeviceTypesRouteHandler,
+  postActionGetVpnTunnelReplacementStatusRouteHandler,
+  postActionImportClientVpnClientCertificateRevocationListRouteHandler,
+  postActionImportImageRouteHandler,
+  postActionImportInstanceRouteHandler,
+  postActionImportKeyPairRouteHandler,
+  postActionImportSnapshotRouteHandler,
+  postActionImportVolumeRouteHandler,
+  postActionListImagesInRecycleBinRouteHandler,
+  postActionListSnapshotsInRecycleBinRouteHandler,
+  postActionModifyAddressAttributeRouteHandler,
+  postActionModifyAvailabilityZoneGroupRouteHandler,
+  postActionModifyCapacityReservationFleetRouteHandler,
+  postActionModifyCapacityReservationRouteHandler,
+  postActionModifyClientVpnEndpointRouteHandler,
+  postActionModifyDefaultCreditSpecificationRouteHandler,
+  postActionModifyEbsDefaultKmsKeyIdRouteHandler,
+  postActionModifyFleetRouteHandler,
+  postActionModifyFpgaImageAttributeRouteHandler,
+  postActionModifyHostsRouteHandler,
+  postActionModifyIdentityIdFormatRouteHandler,
+  postActionModifyIdFormatRouteHandler,
+  postActionModifyImageAttributeRouteHandler,
+  postActionModifyInstanceAttributeRouteHandler,
+  postActionModifyInstanceCapacityReservationAttributesRouteHandler,
+  postActionModifyInstanceCreditSpecificationRouteHandler,
+  postActionModifyInstanceEventStartTimeRouteHandler,
+  postActionModifyInstanceEventWindowRouteHandler,
+  postActionModifyInstanceMaintenanceOptionsRouteHandler,
+  postActionModifyInstanceMetadataOptionsRouteHandler,
+  postActionModifyInstancePlacementRouteHandler,
+  postActionModifyIpamPoolRouteHandler,
+  postActionModifyIpamResourceCidrRouteHandler,
+  postActionModifyIpamResourceDiscoveryRouteHandler,
+  postActionModifyIpamRouteHandler,
+  postActionModifyIpamScopeRouteHandler,
+  postActionModifyLaunchTemplateRouteHandler,
+  postActionModifyLocalGatewayRouteRouteHandler,
+  postActionModifyManagedPrefixListRouteHandler,
+  postActionModifyNetworkInterfaceAttributeRouteHandler,
+  postActionModifyPrivateDnsNameOptionsRouteHandler,
+  postActionModifyReservedInstancesRouteHandler,
+  postActionModifySecurityGroupRulesRouteHandler,
+  postActionModifySnapshotAttributeRouteHandler,
+  postActionModifySnapshotTierRouteHandler,
+  postActionModifySpotFleetRequestRouteHandler,
+  postActionModifySubnetAttributeRouteHandler,
+  postActionModifyTrafficMirrorFilterNetworkServicesRouteHandler,
+  postActionModifyTrafficMirrorFilterRuleRouteHandler,
+  postActionModifyTrafficMirrorSessionRouteHandler,
+  postActionModifyTransitGatewayPrefixListReferenceRouteHandler,
+  postActionModifyTransitGatewayRouteHandler,
+  postActionModifyTransitGatewayVpcAttachmentRouteHandler,
+  postActionModifyVerifiedAccessEndpointPolicyRouteHandler,
+  postActionModifyVerifiedAccessEndpointRouteHandler,
+  postActionModifyVerifiedAccessGroupPolicyRouteHandler,
+  postActionModifyVerifiedAccessGroupRouteHandler,
+  postActionModifyVerifiedAccessInstanceLoggingConfigurationRouteHandler,
+  postActionModifyVerifiedAccessInstanceRouteHandler,
+  postActionModifyVerifiedAccessTrustProviderRouteHandler,
+  postActionModifyVolumeAttributeRouteHandler,
+  postActionModifyVolumeRouteHandler,
+  postActionModifyVpcAttributeRouteHandler,
+  postActionModifyVpcEndpointConnectionNotificationRouteHandler,
+  postActionModifyVpcEndpointRouteHandler,
+  postActionModifyVpcEndpointServiceConfigurationRouteHandler,
+  postActionModifyVpcEndpointServicePayerResponsibilityRouteHandler,
+  postActionModifyVpcEndpointServicePermissionsRouteHandler,
+  postActionModifyVpcPeeringConnectionOptionsRouteHandler,
+  postActionModifyVpcTenancyRouteHandler,
+  postActionModifyVpnConnectionOptionsRouteHandler,
+  postActionModifyVpnConnectionRouteHandler,
+  postActionModifyVpnTunnelCertificateRouteHandler,
+  postActionModifyVpnTunnelOptionsRouteHandler,
+  postActionMonitorInstancesRouteHandler,
+  postActionMoveAddressToVpcRouteHandler,
+  postActionMoveByoipCidrToIpamRouteHandler,
+  postActionProvisionByoipCidrRouteHandler,
+  postActionProvisionIpamPoolCidrRouteHandler,
+  postActionProvisionPublicIpv4PoolCidrRouteHandler,
+  postActionPurchaseHostReservationRouteHandler,
+  postActionPurchaseReservedInstancesOfferingRouteHandler,
+  postActionPurchaseScheduledInstancesRouteHandler,
+  postActionRebootInstancesRouteHandler,
+  postActionRegisterImageRouteHandler,
+  postActionRegisterInstanceEventNotificationAttributesRouteHandler,
+  postActionRegisterTransitGatewayMulticastGroupMembersRouteHandler,
+  postActionRegisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  postActionRejectTransitGatewayMulticastDomainAssociationsRouteHandler,
+  postActionRejectTransitGatewayPeeringAttachmentRouteHandler,
+  postActionRejectTransitGatewayVpcAttachmentRouteHandler,
+  postActionRejectVpcEndpointConnectionsRouteHandler,
+  postActionRejectVpcPeeringConnectionRouteHandler,
+  postActionReleaseAddressRouteHandler,
+  postActionReleaseHostsRouteHandler,
+  postActionReleaseIpamPoolAllocationRouteHandler,
+  postActionReplaceIamInstanceProfileAssociationRouteHandler,
+  postActionReplaceNetworkAclAssociationRouteHandler,
+  postActionReplaceNetworkAclEntryRouteHandler,
+  postActionReplaceRouteRouteHandler,
+  postActionReplaceRouteTableAssociationRouteHandler,
+  postActionReplaceTransitGatewayRouteRouteHandler,
+  postActionReplaceVpnTunnelRouteHandler,
+  postActionReportInstanceStatusRouteHandler,
+  postActionRequestSpotFleetRouteHandler,
+  postActionRequestSpotInstancesRouteHandler,
+  postActionResetAddressAttributeRouteHandler,
+  postActionResetEbsDefaultKmsKeyIdRouteHandler,
+  postActionResetFpgaImageAttributeRouteHandler,
+  postActionResetImageAttributeRouteHandler,
+  postActionResetInstanceAttributeRouteHandler,
+  postActionResetNetworkInterfaceAttributeRouteHandler,
+  postActionResetSnapshotAttributeRouteHandler,
+  postActionRestoreAddressToClassicRouteHandler,
+  postActionRestoreImageFromRecycleBinRouteHandler,
+  postActionRestoreManagedPrefixListVersionRouteHandler,
+  postActionRestoreSnapshotFromRecycleBinRouteHandler,
+  postActionRestoreSnapshotTierRouteHandler,
+  postActionRevokeClientVpnIngressRouteHandler,
+  postActionRevokeSecurityGroupEgressRouteHandler,
+  postActionRevokeSecurityGroupIngressRouteHandler,
+  postActionRunInstancesRouteHandler,
+  postActionRunScheduledInstancesRouteHandler,
+  postActionSearchLocalGatewayRoutesRouteHandler,
+  postActionSearchTransitGatewayMulticastGroupsRouteHandler,
+  postActionSearchTransitGatewayRoutesRouteHandler,
+  postActionSendDiagnosticInterruptRouteHandler,
+  postActionStartInstancesRouteHandler,
+  postActionStartNetworkInsightsAccessScopeAnalysisRouteHandler,
+  postActionStartNetworkInsightsAnalysisRouteHandler,
+  postActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler,
+  postActionStopInstancesRouteHandler,
+  postActionTerminateClientVpnConnectionsRouteHandler,
+  postActionTerminateInstancesRouteHandler,
+  postActionUnassignIpv6AddressesRouteHandler,
+  postActionUnassignPrivateIpAddressesRouteHandler,
+  postActionUnassignPrivateNatGatewayAddressRouteHandler,
+  postActionUnmonitorInstancesRouteHandler,
+  postActionUpdateSecurityGroupRuleDescriptionsEgressRouteHandler,
+  postActionUpdateSecurityGroupRuleDescriptionsIngressRouteHandler,
+  postActionWithdrawByoipCidrRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', actionAcceptAddressTransferHandler)
-  .route('/', actionAcceptReservedInstancesExchangeQuoteHandler)
-  .route('/', actionAcceptTransitGatewayMulticastDomainAssociationsHandler)
-  .route('/', actionAcceptTransitGatewayPeeringAttachmentHandler)
-  .route('/', actionAcceptTransitGatewayVpcAttachmentHandler)
-  .route('/', actionAcceptVpcEndpointConnectionsHandler)
-  .route('/', actionAcceptVpcPeeringConnectionHandler)
-  .route('/', actionAdvertiseByoipCidrHandler)
-  .route('/', actionAllocateAddressHandler)
-  .route('/', actionAllocateHostsHandler)
-  .route('/', actionAllocateIpamPoolCidrHandler)
-  .route('/', actionApplySecurityGroupsToClientVpnTargetNetworkHandler)
-  .route('/', actionAssignIpv6AddressesHandler)
-  .route('/', actionAssignPrivateIpAddressesHandler)
-  .route('/', actionAssignPrivateNatGatewayAddressHandler)
-  .route('/', actionAssociateAddressHandler)
-  .route('/', actionAssociateClientVpnTargetNetworkHandler)
-  .route('/', actionAssociateDhcpOptionsHandler)
-  .route('/', actionAssociateEnclaveCertificateIamRoleHandler)
-  .route('/', actionAssociateIamInstanceProfileHandler)
-  .route('/', actionAssociateInstanceEventWindowHandler)
-  .route('/', actionAssociateIpamResourceDiscoveryHandler)
-  .route('/', actionAssociateNatGatewayAddressHandler)
-  .route('/', actionAssociateRouteTableHandler)
-  .route('/', actionAssociateSubnetCidrBlockHandler)
-  .route('/', actionAssociateTransitGatewayMulticastDomainHandler)
-  .route('/', actionAssociateTransitGatewayPolicyTableHandler)
-  .route('/', actionAssociateTransitGatewayRouteTableHandler)
-  .route('/', actionAssociateTrunkInterfaceHandler)
-  .route('/', actionAssociateVpcCidrBlockHandler)
-  .route('/', actionAttachClassicLinkVpcHandler)
-  .route('/', actionAttachInternetGatewayHandler)
-  .route('/', actionAttachNetworkInterfaceHandler)
-  .route('/', actionAttachVerifiedAccessTrustProviderHandler)
-  .route('/', actionAttachVolumeHandler)
-  .route('/', actionAttachVpnGatewayHandler)
-  .route('/', actionAuthorizeClientVpnIngressHandler)
-  .route('/', actionAuthorizeSecurityGroupEgressHandler)
-  .route('/', actionAuthorizeSecurityGroupIngressHandler)
-  .route('/', actionBundleInstanceHandler)
-  .route('/', actionCancelBundleTaskHandler)
-  .route('/', actionCancelCapacityReservationHandler)
-  .route('/', actionCancelCapacityReservationFleetsHandler)
-  .route('/', actionCancelConversionTaskHandler)
-  .route('/', actionCancelExportTaskHandler)
-  .route('/', actionCancelImageLaunchPermissionHandler)
-  .route('/', actionCancelImportTaskHandler)
-  .route('/', actionCancelReservedInstancesListingHandler)
-  .route('/', actionCancelSpotFleetRequestsHandler)
-  .route('/', actionCancelSpotInstanceRequestsHandler)
-  .route('/', actionConfirmProductInstanceHandler)
-  .route('/', actionCopyFpgaImageHandler)
-  .route('/', actionCopyImageHandler)
-  .route('/', actionCopySnapshotHandler)
-  .route('/', actionCreateCapacityReservationHandler)
-  .route('/', actionCreateCapacityReservationFleetHandler)
-  .route('/', actionCreateCarrierGatewayHandler)
-  .route('/', actionCreateClientVpnEndpointHandler)
-  .route('/', actionCreateClientVpnRouteHandler)
-  .route('/', actionCreateCoipCidrHandler)
-  .route('/', actionCreateCoipPoolHandler)
-  .route('/', actionCreateCustomerGatewayHandler)
-  .route('/', actionCreateDefaultSubnetHandler)
-  .route('/', actionCreateDefaultVpcHandler)
-  .route('/', actionCreateDhcpOptionsHandler)
-  .route('/', actionCreateEgressOnlyInternetGatewayHandler)
-  .route('/', actionCreateFleetHandler)
-  .route('/', actionCreateFlowLogsHandler)
-  .route('/', actionCreateFpgaImageHandler)
-  .route('/', actionCreateImageHandler)
-  .route('/', actionCreateInstanceEventWindowHandler)
-  .route('/', actionCreateInstanceExportTaskHandler)
-  .route('/', actionCreateInternetGatewayHandler)
-  .route('/', actionCreateIpamHandler)
-  .route('/', actionCreateIpamPoolHandler)
-  .route('/', actionCreateIpamResourceDiscoveryHandler)
-  .route('/', actionCreateIpamScopeHandler)
-  .route('/', actionCreateKeyPairHandler)
-  .route('/', actionCreateLaunchTemplateHandler)
-  .route('/', actionCreateLaunchTemplateVersionHandler)
-  .route('/', actionCreateLocalGatewayRouteHandler)
-  .route('/', actionCreateLocalGatewayRouteTableHandler)
-  .route('/', actionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationHandler)
-  .route('/', actionCreateLocalGatewayRouteTableVpcAssociationHandler)
-  .route('/', actionCreateManagedPrefixListHandler)
-  .route('/', actionCreateNatGatewayHandler)
-  .route('/', actionCreateNetworkAclHandler)
-  .route('/', actionCreateNetworkAclEntryHandler)
-  .route('/', actionCreateNetworkInsightsAccessScopeHandler)
-  .route('/', actionCreateNetworkInsightsPathHandler)
-  .route('/', actionCreateNetworkInterfaceHandler)
-  .route('/', actionCreateNetworkInterfacePermissionHandler)
-  .route('/', actionCreatePlacementGroupHandler)
-  .route('/', actionCreatePublicIpv4PoolHandler)
-  .route('/', actionCreateReplaceRootVolumeTaskHandler)
-  .route('/', actionCreateReservedInstancesListingHandler)
-  .route('/', actionCreateRestoreImageTaskHandler)
-  .route('/', actionCreateRouteHandler)
-  .route('/', actionCreateRouteTableHandler)
-  .route('/', actionCreateSecurityGroupHandler)
-  .route('/', actionCreateSnapshotHandler)
-  .route('/', actionCreateSnapshotsHandler)
-  .route('/', actionCreateSpotDatafeedSubscriptionHandler)
-  .route('/', actionCreateStoreImageTaskHandler)
-  .route('/', actionCreateSubnetHandler)
-  .route('/', actionCreateSubnetCidrReservationHandler)
-  .route('/', actionCreateTagsHandler)
-  .route('/', actionCreateTrafficMirrorFilterHandler)
-  .route('/', actionCreateTrafficMirrorFilterRuleHandler)
-  .route('/', actionCreateTrafficMirrorSessionHandler)
-  .route('/', actionCreateTrafficMirrorTargetHandler)
-  .route('/', actionCreateTransitGatewayHandler)
-  .route('/', actionCreateTransitGatewayConnectHandler)
-  .route('/', actionCreateTransitGatewayConnectPeerHandler)
-  .route('/', actionCreateTransitGatewayMulticastDomainHandler)
-  .route('/', actionCreateTransitGatewayPeeringAttachmentHandler)
-  .route('/', actionCreateTransitGatewayPolicyTableHandler)
-  .route('/', actionCreateTransitGatewayPrefixListReferenceHandler)
-  .route('/', actionCreateTransitGatewayRouteHandler)
-  .route('/', actionCreateTransitGatewayRouteTableHandler)
-  .route('/', actionCreateTransitGatewayRouteTableAnnouncementHandler)
-  .route('/', actionCreateTransitGatewayVpcAttachmentHandler)
-  .route('/', actionCreateVerifiedAccessEndpointHandler)
-  .route('/', actionCreateVerifiedAccessGroupHandler)
-  .route('/', actionCreateVerifiedAccessInstanceHandler)
-  .route('/', actionCreateVerifiedAccessTrustProviderHandler)
-  .route('/', actionCreateVolumeHandler)
-  .route('/', actionCreateVpcHandler)
-  .route('/', actionCreateVpcEndpointHandler)
-  .route('/', actionCreateVpcEndpointConnectionNotificationHandler)
-  .route('/', actionCreateVpcEndpointServiceConfigurationHandler)
-  .route('/', actionCreateVpcPeeringConnectionHandler)
-  .route('/', actionCreateVpnConnectionHandler)
-  .route('/', actionCreateVpnConnectionRouteHandler)
-  .route('/', actionCreateVpnGatewayHandler)
-  .route('/', actionDeleteCarrierGatewayHandler)
-  .route('/', actionDeleteClientVpnEndpointHandler)
-  .route('/', actionDeleteClientVpnRouteHandler)
-  .route('/', actionDeleteCoipCidrHandler)
-  .route('/', actionDeleteCoipPoolHandler)
-  .route('/', actionDeleteCustomerGatewayHandler)
-  .route('/', actionDeleteDhcpOptionsHandler)
-  .route('/', actionDeleteEgressOnlyInternetGatewayHandler)
-  .route('/', actionDeleteFleetsHandler)
-  .route('/', actionDeleteFlowLogsHandler)
-  .route('/', actionDeleteFpgaImageHandler)
-  .route('/', actionDeleteInstanceEventWindowHandler)
-  .route('/', actionDeleteInternetGatewayHandler)
-  .route('/', actionDeleteIpamHandler)
-  .route('/', actionDeleteIpamPoolHandler)
-  .route('/', actionDeleteIpamResourceDiscoveryHandler)
-  .route('/', actionDeleteIpamScopeHandler)
-  .route('/', actionDeleteKeyPairHandler)
-  .route('/', actionDeleteLaunchTemplateHandler)
-  .route('/', actionDeleteLaunchTemplateVersionsHandler)
-  .route('/', actionDeleteLocalGatewayRouteHandler)
-  .route('/', actionDeleteLocalGatewayRouteTableHandler)
-  .route('/', actionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationHandler)
-  .route('/', actionDeleteLocalGatewayRouteTableVpcAssociationHandler)
-  .route('/', actionDeleteManagedPrefixListHandler)
-  .route('/', actionDeleteNatGatewayHandler)
-  .route('/', actionDeleteNetworkAclHandler)
-  .route('/', actionDeleteNetworkAclEntryHandler)
-  .route('/', actionDeleteNetworkInsightsAccessScopeHandler)
-  .route('/', actionDeleteNetworkInsightsAccessScopeAnalysisHandler)
-  .route('/', actionDeleteNetworkInsightsAnalysisHandler)
-  .route('/', actionDeleteNetworkInsightsPathHandler)
-  .route('/', actionDeleteNetworkInterfaceHandler)
-  .route('/', actionDeleteNetworkInterfacePermissionHandler)
-  .route('/', actionDeletePlacementGroupHandler)
-  .route('/', actionDeletePublicIpv4PoolHandler)
-  .route('/', actionDeleteQueuedReservedInstancesHandler)
-  .route('/', actionDeleteRouteHandler)
-  .route('/', actionDeleteRouteTableHandler)
-  .route('/', actionDeleteSecurityGroupHandler)
-  .route('/', actionDeleteSnapshotHandler)
-  .route('/', actionDeleteSpotDatafeedSubscriptionHandler)
-  .route('/', actionDeleteSubnetHandler)
-  .route('/', actionDeleteSubnetCidrReservationHandler)
-  .route('/', actionDeleteTagsHandler)
-  .route('/', actionDeleteTrafficMirrorFilterHandler)
-  .route('/', actionDeleteTrafficMirrorFilterRuleHandler)
-  .route('/', actionDeleteTrafficMirrorSessionHandler)
-  .route('/', actionDeleteTrafficMirrorTargetHandler)
-  .route('/', actionDeleteTransitGatewayHandler)
-  .route('/', actionDeleteTransitGatewayConnectHandler)
-  .route('/', actionDeleteTransitGatewayConnectPeerHandler)
-  .route('/', actionDeleteTransitGatewayMulticastDomainHandler)
-  .route('/', actionDeleteTransitGatewayPeeringAttachmentHandler)
-  .route('/', actionDeleteTransitGatewayPolicyTableHandler)
-  .route('/', actionDeleteTransitGatewayPrefixListReferenceHandler)
-  .route('/', actionDeleteTransitGatewayRouteHandler)
-  .route('/', actionDeleteTransitGatewayRouteTableHandler)
-  .route('/', actionDeleteTransitGatewayRouteTableAnnouncementHandler)
-  .route('/', actionDeleteTransitGatewayVpcAttachmentHandler)
-  .route('/', actionDeleteVerifiedAccessEndpointHandler)
-  .route('/', actionDeleteVerifiedAccessGroupHandler)
-  .route('/', actionDeleteVerifiedAccessInstanceHandler)
-  .route('/', actionDeleteVerifiedAccessTrustProviderHandler)
-  .route('/', actionDeleteVolumeHandler)
-  .route('/', actionDeleteVpcHandler)
-  .route('/', actionDeleteVpcEndpointConnectionNotificationsHandler)
-  .route('/', actionDeleteVpcEndpointServiceConfigurationsHandler)
-  .route('/', actionDeleteVpcEndpointsHandler)
-  .route('/', actionDeleteVpcPeeringConnectionHandler)
-  .route('/', actionDeleteVpnConnectionHandler)
-  .route('/', actionDeleteVpnConnectionRouteHandler)
-  .route('/', actionDeleteVpnGatewayHandler)
-  .route('/', actionDeprovisionByoipCidrHandler)
-  .route('/', actionDeprovisionIpamPoolCidrHandler)
-  .route('/', actionDeprovisionPublicIpv4PoolCidrHandler)
-  .route('/', actionDeregisterImageHandler)
-  .route('/', actionDeregisterInstanceEventNotificationAttributesHandler)
-  .route('/', actionDeregisterTransitGatewayMulticastGroupMembersHandler)
-  .route('/', actionDeregisterTransitGatewayMulticastGroupSourcesHandler)
-  .route('/', actionDescribeAccountAttributesHandler)
-  .route('/', actionDescribeAddressTransfersHandler)
-  .route('/', actionDescribeAddressesHandler)
-  .route('/', actionDescribeAddressesAttributeHandler)
-  .route('/', actionDescribeAggregateIdFormatHandler)
-  .route('/', actionDescribeAvailabilityZonesHandler)
-  .route('/', actionDescribeAwsNetworkPerformanceMetricSubscriptionsHandler)
-  .route('/', actionDescribeBundleTasksHandler)
-  .route('/', actionDescribeByoipCidrsHandler)
-  .route('/', actionDescribeCapacityReservationFleetsHandler)
-  .route('/', actionDescribeCapacityReservationsHandler)
-  .route('/', actionDescribeCarrierGatewaysHandler)
-  .route('/', actionDescribeClassicLinkInstancesHandler)
-  .route('/', actionDescribeClientVpnAuthorizationRulesHandler)
-  .route('/', actionDescribeClientVpnConnectionsHandler)
-  .route('/', actionDescribeClientVpnEndpointsHandler)
-  .route('/', actionDescribeClientVpnRoutesHandler)
-  .route('/', actionDescribeClientVpnTargetNetworksHandler)
-  .route('/', actionDescribeCoipPoolsHandler)
-  .route('/', actionDescribeConversionTasksHandler)
-  .route('/', actionDescribeCustomerGatewaysHandler)
-  .route('/', actionDescribeDhcpOptionsHandler)
-  .route('/', actionDescribeEgressOnlyInternetGatewaysHandler)
-  .route('/', actionDescribeElasticGpusHandler)
-  .route('/', actionDescribeExportImageTasksHandler)
-  .route('/', actionDescribeExportTasksHandler)
-  .route('/', actionDescribeFastLaunchImagesHandler)
-  .route('/', actionDescribeFastSnapshotRestoresHandler)
-  .route('/', actionDescribeFleetHistoryHandler)
-  .route('/', actionDescribeFleetInstancesHandler)
-  .route('/', actionDescribeFleetsHandler)
-  .route('/', actionDescribeFlowLogsHandler)
-  .route('/', actionDescribeFpgaImageAttributeHandler)
-  .route('/', actionDescribeFpgaImagesHandler)
-  .route('/', actionDescribeHostReservationOfferingsHandler)
-  .route('/', actionDescribeHostReservationsHandler)
-  .route('/', actionDescribeHostsHandler)
-  .route('/', actionDescribeIamInstanceProfileAssociationsHandler)
-  .route('/', actionDescribeIdFormatHandler)
-  .route('/', actionDescribeIdentityIdFormatHandler)
-  .route('/', actionDescribeImageAttributeHandler)
-  .route('/', actionDescribeImagesHandler)
-  .route('/', actionDescribeImportImageTasksHandler)
-  .route('/', actionDescribeImportSnapshotTasksHandler)
-  .route('/', actionDescribeInstanceAttributeHandler)
-  .route('/', actionDescribeInstanceCreditSpecificationsHandler)
-  .route('/', actionDescribeInstanceEventNotificationAttributesHandler)
-  .route('/', actionDescribeInstanceEventWindowsHandler)
-  .route('/', actionDescribeInstanceStatusHandler)
-  .route('/', actionDescribeInstanceTypeOfferingsHandler)
-  .route('/', actionDescribeInstanceTypesHandler)
-  .route('/', actionDescribeInstancesHandler)
-  .route('/', actionDescribeInternetGatewaysHandler)
-  .route('/', actionDescribeIpamPoolsHandler)
-  .route('/', actionDescribeIpamResourceDiscoveriesHandler)
-  .route('/', actionDescribeIpamResourceDiscoveryAssociationsHandler)
-  .route('/', actionDescribeIpamScopesHandler)
-  .route('/', actionDescribeIpamsHandler)
-  .route('/', actionDescribeIpv6PoolsHandler)
-  .route('/', actionDescribeKeyPairsHandler)
-  .route('/', actionDescribeLaunchTemplateVersionsHandler)
-  .route('/', actionDescribeLaunchTemplatesHandler)
-  .route('/', actionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsHandler)
-  .route('/', actionDescribeLocalGatewayRouteTableVpcAssociationsHandler)
-  .route('/', actionDescribeLocalGatewayRouteTablesHandler)
-  .route('/', actionDescribeLocalGatewayVirtualInterfaceGroupsHandler)
-  .route('/', actionDescribeLocalGatewayVirtualInterfacesHandler)
-  .route('/', actionDescribeLocalGatewaysHandler)
-  .route('/', actionDescribeManagedPrefixListsHandler)
-  .route('/', actionDescribeMovingAddressesHandler)
-  .route('/', actionDescribeNatGatewaysHandler)
-  .route('/', actionDescribeNetworkAclsHandler)
-  .route('/', actionDescribeNetworkInsightsAccessScopeAnalysesHandler)
-  .route('/', actionDescribeNetworkInsightsAccessScopesHandler)
-  .route('/', actionDescribeNetworkInsightsAnalysesHandler)
-  .route('/', actionDescribeNetworkInsightsPathsHandler)
-  .route('/', actionDescribeNetworkInterfaceAttributeHandler)
-  .route('/', actionDescribeNetworkInterfacePermissionsHandler)
-  .route('/', actionDescribeNetworkInterfacesHandler)
-  .route('/', actionDescribePlacementGroupsHandler)
-  .route('/', actionDescribePrefixListsHandler)
-  .route('/', actionDescribePrincipalIdFormatHandler)
-  .route('/', actionDescribePublicIpv4PoolsHandler)
-  .route('/', actionDescribeRegionsHandler)
-  .route('/', actionDescribeReplaceRootVolumeTasksHandler)
-  .route('/', actionDescribeReservedInstancesHandler)
-  .route('/', actionDescribeReservedInstancesListingsHandler)
-  .route('/', actionDescribeReservedInstancesModificationsHandler)
-  .route('/', actionDescribeReservedInstancesOfferingsHandler)
-  .route('/', actionDescribeRouteTablesHandler)
-  .route('/', actionDescribeScheduledInstanceAvailabilityHandler)
-  .route('/', actionDescribeScheduledInstancesHandler)
-  .route('/', actionDescribeSecurityGroupReferencesHandler)
-  .route('/', actionDescribeSecurityGroupRulesHandler)
-  .route('/', actionDescribeSecurityGroupsHandler)
-  .route('/', actionDescribeSnapshotAttributeHandler)
-  .route('/', actionDescribeSnapshotTierStatusHandler)
-  .route('/', actionDescribeSnapshotsHandler)
-  .route('/', actionDescribeSpotDatafeedSubscriptionHandler)
-  .route('/', actionDescribeSpotFleetInstancesHandler)
-  .route('/', actionDescribeSpotFleetRequestHistoryHandler)
-  .route('/', actionDescribeSpotFleetRequestsHandler)
-  .route('/', actionDescribeSpotInstanceRequestsHandler)
-  .route('/', actionDescribeSpotPriceHistoryHandler)
-  .route('/', actionDescribeStaleSecurityGroupsHandler)
-  .route('/', actionDescribeStoreImageTasksHandler)
-  .route('/', actionDescribeSubnetsHandler)
-  .route('/', actionDescribeTagsHandler)
-  .route('/', actionDescribeTrafficMirrorFiltersHandler)
-  .route('/', actionDescribeTrafficMirrorSessionsHandler)
-  .route('/', actionDescribeTrafficMirrorTargetsHandler)
-  .route('/', actionDescribeTransitGatewayAttachmentsHandler)
-  .route('/', actionDescribeTransitGatewayConnectPeersHandler)
-  .route('/', actionDescribeTransitGatewayConnectsHandler)
-  .route('/', actionDescribeTransitGatewayMulticastDomainsHandler)
-  .route('/', actionDescribeTransitGatewayPeeringAttachmentsHandler)
-  .route('/', actionDescribeTransitGatewayPolicyTablesHandler)
-  .route('/', actionDescribeTransitGatewayRouteTableAnnouncementsHandler)
-  .route('/', actionDescribeTransitGatewayRouteTablesHandler)
-  .route('/', actionDescribeTransitGatewayVpcAttachmentsHandler)
-  .route('/', actionDescribeTransitGatewaysHandler)
-  .route('/', actionDescribeTrunkInterfaceAssociationsHandler)
-  .route('/', actionDescribeVerifiedAccessEndpointsHandler)
-  .route('/', actionDescribeVerifiedAccessGroupsHandler)
-  .route('/', actionDescribeVerifiedAccessInstanceLoggingConfigurationsHandler)
-  .route('/', actionDescribeVerifiedAccessInstancesHandler)
-  .route('/', actionDescribeVerifiedAccessTrustProvidersHandler)
-  .route('/', actionDescribeVolumeAttributeHandler)
-  .route('/', actionDescribeVolumeStatusHandler)
-  .route('/', actionDescribeVolumesHandler)
-  .route('/', actionDescribeVolumesModificationsHandler)
-  .route('/', actionDescribeVpcAttributeHandler)
-  .route('/', actionDescribeVpcClassicLinkHandler)
-  .route('/', actionDescribeVpcClassicLinkDnsSupportHandler)
-  .route('/', actionDescribeVpcEndpointConnectionNotificationsHandler)
-  .route('/', actionDescribeVpcEndpointConnectionsHandler)
-  .route('/', actionDescribeVpcEndpointServiceConfigurationsHandler)
-  .route('/', actionDescribeVpcEndpointServicePermissionsHandler)
-  .route('/', actionDescribeVpcEndpointServicesHandler)
-  .route('/', actionDescribeVpcEndpointsHandler)
-  .route('/', actionDescribeVpcPeeringConnectionsHandler)
-  .route('/', actionDescribeVpcsHandler)
-  .route('/', actionDescribeVpnConnectionsHandler)
-  .route('/', actionDescribeVpnGatewaysHandler)
-  .route('/', actionDetachClassicLinkVpcHandler)
-  .route('/', actionDetachInternetGatewayHandler)
-  .route('/', actionDetachNetworkInterfaceHandler)
-  .route('/', actionDetachVerifiedAccessTrustProviderHandler)
-  .route('/', actionDetachVolumeHandler)
-  .route('/', actionDetachVpnGatewayHandler)
-  .route('/', actionDisableAddressTransferHandler)
-  .route('/', actionDisableAwsNetworkPerformanceMetricSubscriptionHandler)
-  .route('/', actionDisableEbsEncryptionByDefaultHandler)
-  .route('/', actionDisableFastLaunchHandler)
-  .route('/', actionDisableFastSnapshotRestoresHandler)
-  .route('/', actionDisableImageDeprecationHandler)
-  .route('/', actionDisableIpamOrganizationAdminAccountHandler)
-  .route('/', actionDisableSerialConsoleAccessHandler)
-  .route('/', actionDisableTransitGatewayRouteTablePropagationHandler)
-  .route('/', actionDisableVgwRoutePropagationHandler)
-  .route('/', actionDisableVpcClassicLinkHandler)
-  .route('/', actionDisableVpcClassicLinkDnsSupportHandler)
-  .route('/', actionDisassociateAddressHandler)
-  .route('/', actionDisassociateClientVpnTargetNetworkHandler)
-  .route('/', actionDisassociateEnclaveCertificateIamRoleHandler)
-  .route('/', actionDisassociateIamInstanceProfileHandler)
-  .route('/', actionDisassociateInstanceEventWindowHandler)
-  .route('/', actionDisassociateIpamResourceDiscoveryHandler)
-  .route('/', actionDisassociateNatGatewayAddressHandler)
-  .route('/', actionDisassociateRouteTableHandler)
-  .route('/', actionDisassociateSubnetCidrBlockHandler)
-  .route('/', actionDisassociateTransitGatewayMulticastDomainHandler)
-  .route('/', actionDisassociateTransitGatewayPolicyTableHandler)
-  .route('/', actionDisassociateTransitGatewayRouteTableHandler)
-  .route('/', actionDisassociateTrunkInterfaceHandler)
-  .route('/', actionDisassociateVpcCidrBlockHandler)
-  .route('/', actionEnableAddressTransferHandler)
-  .route('/', actionEnableAwsNetworkPerformanceMetricSubscriptionHandler)
-  .route('/', actionEnableEbsEncryptionByDefaultHandler)
-  .route('/', actionEnableFastLaunchHandler)
-  .route('/', actionEnableFastSnapshotRestoresHandler)
-  .route('/', actionEnableImageDeprecationHandler)
-  .route('/', actionEnableIpamOrganizationAdminAccountHandler)
-  .route('/', actionEnableReachabilityAnalyzerOrganizationSharingHandler)
-  .route('/', actionEnableSerialConsoleAccessHandler)
-  .route('/', actionEnableTransitGatewayRouteTablePropagationHandler)
-  .route('/', actionEnableVgwRoutePropagationHandler)
-  .route('/', actionEnableVolumeIoHandler)
-  .route('/', actionEnableVpcClassicLinkHandler)
-  .route('/', actionEnableVpcClassicLinkDnsSupportHandler)
-  .route('/', actionExportClientVpnClientCertificateRevocationListHandler)
-  .route('/', actionExportClientVpnClientConfigurationHandler)
-  .route('/', actionExportImageHandler)
-  .route('/', actionExportTransitGatewayRoutesHandler)
-  .route('/', actionGetAssociatedEnclaveCertificateIamRolesHandler)
-  .route('/', actionGetAssociatedIpv6PoolCidrsHandler)
-  .route('/', actionGetAwsNetworkPerformanceDataHandler)
-  .route('/', actionGetCapacityReservationUsageHandler)
-  .route('/', actionGetCoipPoolUsageHandler)
-  .route('/', actionGetConsoleOutputHandler)
-  .route('/', actionGetConsoleScreenshotHandler)
-  .route('/', actionGetDefaultCreditSpecificationHandler)
-  .route('/', actionGetEbsDefaultKmsKeyIdHandler)
-  .route('/', actionGetEbsEncryptionByDefaultHandler)
-  .route('/', actionGetFlowLogsIntegrationTemplateHandler)
-  .route('/', actionGetGroupsForCapacityReservationHandler)
-  .route('/', actionGetHostReservationPurchasePreviewHandler)
-  .route('/', actionGetInstanceTypesFromInstanceRequirementsHandler)
-  .route('/', actionGetInstanceUefiDataHandler)
-  .route('/', actionGetIpamAddressHistoryHandler)
-  .route('/', actionGetIpamDiscoveredAccountsHandler)
-  .route('/', actionGetIpamDiscoveredResourceCidrsHandler)
-  .route('/', actionGetIpamPoolAllocationsHandler)
-  .route('/', actionGetIpamPoolCidrsHandler)
-  .route('/', actionGetIpamResourceCidrsHandler)
-  .route('/', actionGetLaunchTemplateDataHandler)
-  .route('/', actionGetManagedPrefixListAssociationsHandler)
-  .route('/', actionGetManagedPrefixListEntriesHandler)
-  .route('/', actionGetNetworkInsightsAccessScopeAnalysisFindingsHandler)
-  .route('/', actionGetNetworkInsightsAccessScopeContentHandler)
-  .route('/', actionGetPasswordDataHandler)
-  .route('/', actionGetReservedInstancesExchangeQuoteHandler)
-  .route('/', actionGetSerialConsoleAccessStatusHandler)
-  .route('/', actionGetSpotPlacementScoresHandler)
-  .route('/', actionGetSubnetCidrReservationsHandler)
-  .route('/', actionGetTransitGatewayAttachmentPropagationsHandler)
-  .route('/', actionGetTransitGatewayMulticastDomainAssociationsHandler)
-  .route('/', actionGetTransitGatewayPolicyTableAssociationsHandler)
-  .route('/', actionGetTransitGatewayPolicyTableEntriesHandler)
-  .route('/', actionGetTransitGatewayPrefixListReferencesHandler)
-  .route('/', actionGetTransitGatewayRouteTableAssociationsHandler)
-  .route('/', actionGetTransitGatewayRouteTablePropagationsHandler)
-  .route('/', actionGetVerifiedAccessEndpointPolicyHandler)
-  .route('/', actionGetVerifiedAccessGroupPolicyHandler)
-  .route('/', actionGetVpnConnectionDeviceSampleConfigurationHandler)
-  .route('/', actionGetVpnConnectionDeviceTypesHandler)
-  .route('/', actionGetVpnTunnelReplacementStatusHandler)
-  .route('/', actionImportClientVpnClientCertificateRevocationListHandler)
-  .route('/', actionImportImageHandler)
-  .route('/', actionImportInstanceHandler)
-  .route('/', actionImportKeyPairHandler)
-  .route('/', actionImportSnapshotHandler)
-  .route('/', actionImportVolumeHandler)
-  .route('/', actionListImagesInRecycleBinHandler)
-  .route('/', actionListSnapshotsInRecycleBinHandler)
-  .route('/', actionModifyAddressAttributeHandler)
-  .route('/', actionModifyAvailabilityZoneGroupHandler)
-  .route('/', actionModifyCapacityReservationHandler)
-  .route('/', actionModifyCapacityReservationFleetHandler)
-  .route('/', actionModifyClientVpnEndpointHandler)
-  .route('/', actionModifyDefaultCreditSpecificationHandler)
-  .route('/', actionModifyEbsDefaultKmsKeyIdHandler)
-  .route('/', actionModifyFleetHandler)
-  .route('/', actionModifyFpgaImageAttributeHandler)
-  .route('/', actionModifyHostsHandler)
-  .route('/', actionModifyIdFormatHandler)
-  .route('/', actionModifyIdentityIdFormatHandler)
-  .route('/', actionModifyImageAttributeHandler)
-  .route('/', actionModifyInstanceAttributeHandler)
-  .route('/', actionModifyInstanceCapacityReservationAttributesHandler)
-  .route('/', actionModifyInstanceCreditSpecificationHandler)
-  .route('/', actionModifyInstanceEventStartTimeHandler)
-  .route('/', actionModifyInstanceEventWindowHandler)
-  .route('/', actionModifyInstanceMaintenanceOptionsHandler)
-  .route('/', actionModifyInstanceMetadataOptionsHandler)
-  .route('/', actionModifyInstancePlacementHandler)
-  .route('/', actionModifyIpamHandler)
-  .route('/', actionModifyIpamPoolHandler)
-  .route('/', actionModifyIpamResourceCidrHandler)
-  .route('/', actionModifyIpamResourceDiscoveryHandler)
-  .route('/', actionModifyIpamScopeHandler)
-  .route('/', actionModifyLaunchTemplateHandler)
-  .route('/', actionModifyLocalGatewayRouteHandler)
-  .route('/', actionModifyManagedPrefixListHandler)
-  .route('/', actionModifyNetworkInterfaceAttributeHandler)
-  .route('/', actionModifyPrivateDnsNameOptionsHandler)
-  .route('/', actionModifyReservedInstancesHandler)
-  .route('/', actionModifySecurityGroupRulesHandler)
-  .route('/', actionModifySnapshotAttributeHandler)
-  .route('/', actionModifySnapshotTierHandler)
-  .route('/', actionModifySpotFleetRequestHandler)
-  .route('/', actionModifySubnetAttributeHandler)
-  .route('/', actionModifyTrafficMirrorFilterNetworkServicesHandler)
-  .route('/', actionModifyTrafficMirrorFilterRuleHandler)
-  .route('/', actionModifyTrafficMirrorSessionHandler)
-  .route('/', actionModifyTransitGatewayHandler)
-  .route('/', actionModifyTransitGatewayPrefixListReferenceHandler)
-  .route('/', actionModifyTransitGatewayVpcAttachmentHandler)
-  .route('/', actionModifyVerifiedAccessEndpointHandler)
-  .route('/', actionModifyVerifiedAccessEndpointPolicyHandler)
-  .route('/', actionModifyVerifiedAccessGroupHandler)
-  .route('/', actionModifyVerifiedAccessGroupPolicyHandler)
-  .route('/', actionModifyVerifiedAccessInstanceHandler)
-  .route('/', actionModifyVerifiedAccessInstanceLoggingConfigurationHandler)
-  .route('/', actionModifyVerifiedAccessTrustProviderHandler)
-  .route('/', actionModifyVolumeHandler)
-  .route('/', actionModifyVolumeAttributeHandler)
-  .route('/', actionModifyVpcAttributeHandler)
-  .route('/', actionModifyVpcEndpointHandler)
-  .route('/', actionModifyVpcEndpointConnectionNotificationHandler)
-  .route('/', actionModifyVpcEndpointServiceConfigurationHandler)
-  .route('/', actionModifyVpcEndpointServicePayerResponsibilityHandler)
-  .route('/', actionModifyVpcEndpointServicePermissionsHandler)
-  .route('/', actionModifyVpcPeeringConnectionOptionsHandler)
-  .route('/', actionModifyVpcTenancyHandler)
-  .route('/', actionModifyVpnConnectionHandler)
-  .route('/', actionModifyVpnConnectionOptionsHandler)
-  .route('/', actionModifyVpnTunnelCertificateHandler)
-  .route('/', actionModifyVpnTunnelOptionsHandler)
-  .route('/', actionMonitorInstancesHandler)
-  .route('/', actionMoveAddressToVpcHandler)
-  .route('/', actionMoveByoipCidrToIpamHandler)
-  .route('/', actionProvisionByoipCidrHandler)
-  .route('/', actionProvisionIpamPoolCidrHandler)
-  .route('/', actionProvisionPublicIpv4PoolCidrHandler)
-  .route('/', actionPurchaseHostReservationHandler)
-  .route('/', actionPurchaseReservedInstancesOfferingHandler)
-  .route('/', actionPurchaseScheduledInstancesHandler)
-  .route('/', actionRebootInstancesHandler)
-  .route('/', actionRegisterImageHandler)
-  .route('/', actionRegisterInstanceEventNotificationAttributesHandler)
-  .route('/', actionRegisterTransitGatewayMulticastGroupMembersHandler)
-  .route('/', actionRegisterTransitGatewayMulticastGroupSourcesHandler)
-  .route('/', actionRejectTransitGatewayMulticastDomainAssociationsHandler)
-  .route('/', actionRejectTransitGatewayPeeringAttachmentHandler)
-  .route('/', actionRejectTransitGatewayVpcAttachmentHandler)
-  .route('/', actionRejectVpcEndpointConnectionsHandler)
-  .route('/', actionRejectVpcPeeringConnectionHandler)
-  .route('/', actionReleaseAddressHandler)
-  .route('/', actionReleaseHostsHandler)
-  .route('/', actionReleaseIpamPoolAllocationHandler)
-  .route('/', actionReplaceIamInstanceProfileAssociationHandler)
-  .route('/', actionReplaceNetworkAclAssociationHandler)
-  .route('/', actionReplaceNetworkAclEntryHandler)
-  .route('/', actionReplaceRouteHandler)
-  .route('/', actionReplaceRouteTableAssociationHandler)
-  .route('/', actionReplaceTransitGatewayRouteHandler)
-  .route('/', actionReplaceVpnTunnelHandler)
-  .route('/', actionReportInstanceStatusHandler)
-  .route('/', actionRequestSpotFleetHandler)
-  .route('/', actionRequestSpotInstancesHandler)
-  .route('/', actionResetAddressAttributeHandler)
-  .route('/', actionResetEbsDefaultKmsKeyIdHandler)
-  .route('/', actionResetFpgaImageAttributeHandler)
-  .route('/', actionResetImageAttributeHandler)
-  .route('/', actionResetInstanceAttributeHandler)
-  .route('/', actionResetNetworkInterfaceAttributeHandler)
-  .route('/', actionResetSnapshotAttributeHandler)
-  .route('/', actionRestoreAddressToClassicHandler)
-  .route('/', actionRestoreImageFromRecycleBinHandler)
-  .route('/', actionRestoreManagedPrefixListVersionHandler)
-  .route('/', actionRestoreSnapshotFromRecycleBinHandler)
-  .route('/', actionRestoreSnapshotTierHandler)
-  .route('/', actionRevokeClientVpnIngressHandler)
-  .route('/', actionRevokeSecurityGroupEgressHandler)
-  .route('/', actionRevokeSecurityGroupIngressHandler)
-  .route('/', actionRunInstancesHandler)
-  .route('/', actionRunScheduledInstancesHandler)
-  .route('/', actionSearchLocalGatewayRoutesHandler)
-  .route('/', actionSearchTransitGatewayMulticastGroupsHandler)
-  .route('/', actionSearchTransitGatewayRoutesHandler)
-  .route('/', actionSendDiagnosticInterruptHandler)
-  .route('/', actionStartInstancesHandler)
-  .route('/', actionStartNetworkInsightsAccessScopeAnalysisHandler)
-  .route('/', actionStartNetworkInsightsAnalysisHandler)
-  .route('/', actionStartVpcEndpointServicePrivateDnsVerificationHandler)
-  .route('/', actionStopInstancesHandler)
-  .route('/', actionTerminateClientVpnConnectionsHandler)
-  .route('/', actionTerminateInstancesHandler)
-  .route('/', actionUnassignIpv6AddressesHandler)
-  .route('/', actionUnassignPrivateIpAddressesHandler)
-  .route('/', actionUnassignPrivateNatGatewayAddressHandler)
-  .route('/', actionUnmonitorInstancesHandler)
-  .route('/', actionUpdateSecurityGroupRuleDescriptionsEgressHandler)
-  .route('/', actionUpdateSecurityGroupRuleDescriptionsIngressHandler)
-  .route('/', actionWithdrawByoipCidrHandler)
+  .openapi(getActionAcceptAddressTransferRoute, getActionAcceptAddressTransferRouteHandler)
+  .openapi(postActionAcceptAddressTransferRoute, postActionAcceptAddressTransferRouteHandler)
+  .openapi(
+    getActionAcceptReservedInstancesExchangeQuoteRoute,
+    getActionAcceptReservedInstancesExchangeQuoteRouteHandler,
+  )
+  .openapi(
+    postActionAcceptReservedInstancesExchangeQuoteRoute,
+    postActionAcceptReservedInstancesExchangeQuoteRouteHandler,
+  )
+  .openapi(
+    getActionAcceptTransitGatewayMulticastDomainAssociationsRoute,
+    getActionAcceptTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionAcceptTransitGatewayMulticastDomainAssociationsRoute,
+    postActionAcceptTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionAcceptTransitGatewayPeeringAttachmentRoute,
+    getActionAcceptTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionAcceptTransitGatewayPeeringAttachmentRoute,
+    postActionAcceptTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionAcceptTransitGatewayVpcAttachmentRoute,
+    getActionAcceptTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionAcceptTransitGatewayVpcAttachmentRoute,
+    postActionAcceptTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionAcceptVpcEndpointConnectionsRoute,
+    getActionAcceptVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionAcceptVpcEndpointConnectionsRoute,
+    postActionAcceptVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    getActionAcceptVpcPeeringConnectionRoute,
+    getActionAcceptVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(
+    postActionAcceptVpcPeeringConnectionRoute,
+    postActionAcceptVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(getActionAdvertiseByoipCidrRoute, getActionAdvertiseByoipCidrRouteHandler)
+  .openapi(postActionAdvertiseByoipCidrRoute, postActionAdvertiseByoipCidrRouteHandler)
+  .openapi(getActionAllocateAddressRoute, getActionAllocateAddressRouteHandler)
+  .openapi(postActionAllocateAddressRoute, postActionAllocateAddressRouteHandler)
+  .openapi(getActionAllocateHostsRoute, getActionAllocateHostsRouteHandler)
+  .openapi(postActionAllocateHostsRoute, postActionAllocateHostsRouteHandler)
+  .openapi(getActionAllocateIpamPoolCidrRoute, getActionAllocateIpamPoolCidrRouteHandler)
+  .openapi(postActionAllocateIpamPoolCidrRoute, postActionAllocateIpamPoolCidrRouteHandler)
+  .openapi(
+    getActionApplySecurityGroupsToClientVpnTargetNetworkRoute,
+    getActionApplySecurityGroupsToClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(
+    postActionApplySecurityGroupsToClientVpnTargetNetworkRoute,
+    postActionApplySecurityGroupsToClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(getActionAssignIpv6AddressesRoute, getActionAssignIpv6AddressesRouteHandler)
+  .openapi(postActionAssignIpv6AddressesRoute, postActionAssignIpv6AddressesRouteHandler)
+  .openapi(getActionAssignPrivateIpAddressesRoute, getActionAssignPrivateIpAddressesRouteHandler)
+  .openapi(postActionAssignPrivateIpAddressesRoute, postActionAssignPrivateIpAddressesRouteHandler)
+  .openapi(
+    getActionAssignPrivateNatGatewayAddressRoute,
+    getActionAssignPrivateNatGatewayAddressRouteHandler,
+  )
+  .openapi(
+    postActionAssignPrivateNatGatewayAddressRoute,
+    postActionAssignPrivateNatGatewayAddressRouteHandler,
+  )
+  .openapi(getActionAssociateAddressRoute, getActionAssociateAddressRouteHandler)
+  .openapi(postActionAssociateAddressRoute, postActionAssociateAddressRouteHandler)
+  .openapi(
+    getActionAssociateClientVpnTargetNetworkRoute,
+    getActionAssociateClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(
+    postActionAssociateClientVpnTargetNetworkRoute,
+    postActionAssociateClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(getActionAssociateDhcpOptionsRoute, getActionAssociateDhcpOptionsRouteHandler)
+  .openapi(postActionAssociateDhcpOptionsRoute, postActionAssociateDhcpOptionsRouteHandler)
+  .openapi(
+    getActionAssociateEnclaveCertificateIamRoleRoute,
+    getActionAssociateEnclaveCertificateIamRoleRouteHandler,
+  )
+  .openapi(
+    postActionAssociateEnclaveCertificateIamRoleRoute,
+    postActionAssociateEnclaveCertificateIamRoleRouteHandler,
+  )
+  .openapi(
+    getActionAssociateIamInstanceProfileRoute,
+    getActionAssociateIamInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postActionAssociateIamInstanceProfileRoute,
+    postActionAssociateIamInstanceProfileRouteHandler,
+  )
+  .openapi(
+    getActionAssociateInstanceEventWindowRoute,
+    getActionAssociateInstanceEventWindowRouteHandler,
+  )
+  .openapi(
+    postActionAssociateInstanceEventWindowRoute,
+    postActionAssociateInstanceEventWindowRouteHandler,
+  )
+  .openapi(
+    getActionAssociateIpamResourceDiscoveryRoute,
+    getActionAssociateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postActionAssociateIpamResourceDiscoveryRoute,
+    postActionAssociateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    getActionAssociateNatGatewayAddressRoute,
+    getActionAssociateNatGatewayAddressRouteHandler,
+  )
+  .openapi(
+    postActionAssociateNatGatewayAddressRoute,
+    postActionAssociateNatGatewayAddressRouteHandler,
+  )
+  .openapi(getActionAssociateRouteTableRoute, getActionAssociateRouteTableRouteHandler)
+  .openapi(postActionAssociateRouteTableRoute, postActionAssociateRouteTableRouteHandler)
+  .openapi(getActionAssociateSubnetCidrBlockRoute, getActionAssociateSubnetCidrBlockRouteHandler)
+  .openapi(postActionAssociateSubnetCidrBlockRoute, postActionAssociateSubnetCidrBlockRouteHandler)
+  .openapi(
+    getActionAssociateTransitGatewayMulticastDomainRoute,
+    getActionAssociateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    postActionAssociateTransitGatewayMulticastDomainRoute,
+    postActionAssociateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    getActionAssociateTransitGatewayPolicyTableRoute,
+    getActionAssociateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    postActionAssociateTransitGatewayPolicyTableRoute,
+    postActionAssociateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    getActionAssociateTransitGatewayRouteTableRoute,
+    getActionAssociateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionAssociateTransitGatewayRouteTableRoute,
+    postActionAssociateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(getActionAssociateTrunkInterfaceRoute, getActionAssociateTrunkInterfaceRouteHandler)
+  .openapi(postActionAssociateTrunkInterfaceRoute, postActionAssociateTrunkInterfaceRouteHandler)
+  .openapi(getActionAssociateVpcCidrBlockRoute, getActionAssociateVpcCidrBlockRouteHandler)
+  .openapi(postActionAssociateVpcCidrBlockRoute, postActionAssociateVpcCidrBlockRouteHandler)
+  .openapi(getActionAttachClassicLinkVpcRoute, getActionAttachClassicLinkVpcRouteHandler)
+  .openapi(postActionAttachClassicLinkVpcRoute, postActionAttachClassicLinkVpcRouteHandler)
+  .openapi(getActionAttachInternetGatewayRoute, getActionAttachInternetGatewayRouteHandler)
+  .openapi(postActionAttachInternetGatewayRoute, postActionAttachInternetGatewayRouteHandler)
+  .openapi(getActionAttachNetworkInterfaceRoute, getActionAttachNetworkInterfaceRouteHandler)
+  .openapi(postActionAttachNetworkInterfaceRoute, postActionAttachNetworkInterfaceRouteHandler)
+  .openapi(
+    getActionAttachVerifiedAccessTrustProviderRoute,
+    getActionAttachVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(
+    postActionAttachVerifiedAccessTrustProviderRoute,
+    postActionAttachVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(getActionAttachVolumeRoute, getActionAttachVolumeRouteHandler)
+  .openapi(postActionAttachVolumeRoute, postActionAttachVolumeRouteHandler)
+  .openapi(getActionAttachVpnGatewayRoute, getActionAttachVpnGatewayRouteHandler)
+  .openapi(postActionAttachVpnGatewayRoute, postActionAttachVpnGatewayRouteHandler)
+  .openapi(getActionAuthorizeClientVpnIngressRoute, getActionAuthorizeClientVpnIngressRouteHandler)
+  .openapi(
+    postActionAuthorizeClientVpnIngressRoute,
+    postActionAuthorizeClientVpnIngressRouteHandler,
+  )
+  .openapi(
+    getActionAuthorizeSecurityGroupEgressRoute,
+    getActionAuthorizeSecurityGroupEgressRouteHandler,
+  )
+  .openapi(
+    postActionAuthorizeSecurityGroupEgressRoute,
+    postActionAuthorizeSecurityGroupEgressRouteHandler,
+  )
+  .openapi(
+    getActionAuthorizeSecurityGroupIngressRoute,
+    getActionAuthorizeSecurityGroupIngressRouteHandler,
+  )
+  .openapi(
+    postActionAuthorizeSecurityGroupIngressRoute,
+    postActionAuthorizeSecurityGroupIngressRouteHandler,
+  )
+  .openapi(getActionBundleInstanceRoute, getActionBundleInstanceRouteHandler)
+  .openapi(postActionBundleInstanceRoute, postActionBundleInstanceRouteHandler)
+  .openapi(getActionCancelBundleTaskRoute, getActionCancelBundleTaskRouteHandler)
+  .openapi(postActionCancelBundleTaskRoute, postActionCancelBundleTaskRouteHandler)
+  .openapi(getActionCancelCapacityReservationRoute, getActionCancelCapacityReservationRouteHandler)
+  .openapi(
+    postActionCancelCapacityReservationRoute,
+    postActionCancelCapacityReservationRouteHandler,
+  )
+  .openapi(
+    getActionCancelCapacityReservationFleetsRoute,
+    getActionCancelCapacityReservationFleetsRouteHandler,
+  )
+  .openapi(
+    postActionCancelCapacityReservationFleetsRoute,
+    postActionCancelCapacityReservationFleetsRouteHandler,
+  )
+  .openapi(getActionCancelConversionTaskRoute, getActionCancelConversionTaskRouteHandler)
+  .openapi(postActionCancelConversionTaskRoute, postActionCancelConversionTaskRouteHandler)
+  .openapi(getActionCancelExportTaskRoute, getActionCancelExportTaskRouteHandler)
+  .openapi(postActionCancelExportTaskRoute, postActionCancelExportTaskRouteHandler)
+  .openapi(
+    getActionCancelImageLaunchPermissionRoute,
+    getActionCancelImageLaunchPermissionRouteHandler,
+  )
+  .openapi(
+    postActionCancelImageLaunchPermissionRoute,
+    postActionCancelImageLaunchPermissionRouteHandler,
+  )
+  .openapi(getActionCancelImportTaskRoute, getActionCancelImportTaskRouteHandler)
+  .openapi(postActionCancelImportTaskRoute, postActionCancelImportTaskRouteHandler)
+  .openapi(
+    getActionCancelReservedInstancesListingRoute,
+    getActionCancelReservedInstancesListingRouteHandler,
+  )
+  .openapi(
+    postActionCancelReservedInstancesListingRoute,
+    postActionCancelReservedInstancesListingRouteHandler,
+  )
+  .openapi(getActionCancelSpotFleetRequestsRoute, getActionCancelSpotFleetRequestsRouteHandler)
+  .openapi(postActionCancelSpotFleetRequestsRoute, postActionCancelSpotFleetRequestsRouteHandler)
+  .openapi(
+    getActionCancelSpotInstanceRequestsRoute,
+    getActionCancelSpotInstanceRequestsRouteHandler,
+  )
+  .openapi(
+    postActionCancelSpotInstanceRequestsRoute,
+    postActionCancelSpotInstanceRequestsRouteHandler,
+  )
+  .openapi(getActionConfirmProductInstanceRoute, getActionConfirmProductInstanceRouteHandler)
+  .openapi(postActionConfirmProductInstanceRoute, postActionConfirmProductInstanceRouteHandler)
+  .openapi(getActionCopyFpgaImageRoute, getActionCopyFpgaImageRouteHandler)
+  .openapi(postActionCopyFpgaImageRoute, postActionCopyFpgaImageRouteHandler)
+  .openapi(getActionCopyImageRoute, getActionCopyImageRouteHandler)
+  .openapi(postActionCopyImageRoute, postActionCopyImageRouteHandler)
+  .openapi(getActionCopySnapshotRoute, getActionCopySnapshotRouteHandler)
+  .openapi(postActionCopySnapshotRoute, postActionCopySnapshotRouteHandler)
+  .openapi(getActionCreateCapacityReservationRoute, getActionCreateCapacityReservationRouteHandler)
+  .openapi(
+    postActionCreateCapacityReservationRoute,
+    postActionCreateCapacityReservationRouteHandler,
+  )
+  .openapi(
+    getActionCreateCapacityReservationFleetRoute,
+    getActionCreateCapacityReservationFleetRouteHandler,
+  )
+  .openapi(
+    postActionCreateCapacityReservationFleetRoute,
+    postActionCreateCapacityReservationFleetRouteHandler,
+  )
+  .openapi(getActionCreateCarrierGatewayRoute, getActionCreateCarrierGatewayRouteHandler)
+  .openapi(postActionCreateCarrierGatewayRoute, postActionCreateCarrierGatewayRouteHandler)
+  .openapi(getActionCreateClientVpnEndpointRoute, getActionCreateClientVpnEndpointRouteHandler)
+  .openapi(postActionCreateClientVpnEndpointRoute, postActionCreateClientVpnEndpointRouteHandler)
+  .openapi(getActionCreateClientVpnRouteRoute, getActionCreateClientVpnRouteRouteHandler)
+  .openapi(postActionCreateClientVpnRouteRoute, postActionCreateClientVpnRouteRouteHandler)
+  .openapi(getActionCreateCoipCidrRoute, getActionCreateCoipCidrRouteHandler)
+  .openapi(postActionCreateCoipCidrRoute, postActionCreateCoipCidrRouteHandler)
+  .openapi(getActionCreateCoipPoolRoute, getActionCreateCoipPoolRouteHandler)
+  .openapi(postActionCreateCoipPoolRoute, postActionCreateCoipPoolRouteHandler)
+  .openapi(getActionCreateCustomerGatewayRoute, getActionCreateCustomerGatewayRouteHandler)
+  .openapi(postActionCreateCustomerGatewayRoute, postActionCreateCustomerGatewayRouteHandler)
+  .openapi(getActionCreateDefaultSubnetRoute, getActionCreateDefaultSubnetRouteHandler)
+  .openapi(postActionCreateDefaultSubnetRoute, postActionCreateDefaultSubnetRouteHandler)
+  .openapi(getActionCreateDefaultVpcRoute, getActionCreateDefaultVpcRouteHandler)
+  .openapi(postActionCreateDefaultVpcRoute, postActionCreateDefaultVpcRouteHandler)
+  .openapi(getActionCreateDhcpOptionsRoute, getActionCreateDhcpOptionsRouteHandler)
+  .openapi(postActionCreateDhcpOptionsRoute, postActionCreateDhcpOptionsRouteHandler)
+  .openapi(
+    getActionCreateEgressOnlyInternetGatewayRoute,
+    getActionCreateEgressOnlyInternetGatewayRouteHandler,
+  )
+  .openapi(
+    postActionCreateEgressOnlyInternetGatewayRoute,
+    postActionCreateEgressOnlyInternetGatewayRouteHandler,
+  )
+  .openapi(getActionCreateFleetRoute, getActionCreateFleetRouteHandler)
+  .openapi(postActionCreateFleetRoute, postActionCreateFleetRouteHandler)
+  .openapi(getActionCreateFlowLogsRoute, getActionCreateFlowLogsRouteHandler)
+  .openapi(postActionCreateFlowLogsRoute, postActionCreateFlowLogsRouteHandler)
+  .openapi(getActionCreateFpgaImageRoute, getActionCreateFpgaImageRouteHandler)
+  .openapi(postActionCreateFpgaImageRoute, postActionCreateFpgaImageRouteHandler)
+  .openapi(getActionCreateImageRoute, getActionCreateImageRouteHandler)
+  .openapi(postActionCreateImageRoute, postActionCreateImageRouteHandler)
+  .openapi(getActionCreateInstanceEventWindowRoute, getActionCreateInstanceEventWindowRouteHandler)
+  .openapi(
+    postActionCreateInstanceEventWindowRoute,
+    postActionCreateInstanceEventWindowRouteHandler,
+  )
+  .openapi(getActionCreateInstanceExportTaskRoute, getActionCreateInstanceExportTaskRouteHandler)
+  .openapi(postActionCreateInstanceExportTaskRoute, postActionCreateInstanceExportTaskRouteHandler)
+  .openapi(getActionCreateInternetGatewayRoute, getActionCreateInternetGatewayRouteHandler)
+  .openapi(postActionCreateInternetGatewayRoute, postActionCreateInternetGatewayRouteHandler)
+  .openapi(getActionCreateIpamRoute, getActionCreateIpamRouteHandler)
+  .openapi(postActionCreateIpamRoute, postActionCreateIpamRouteHandler)
+  .openapi(getActionCreateIpamPoolRoute, getActionCreateIpamPoolRouteHandler)
+  .openapi(postActionCreateIpamPoolRoute, postActionCreateIpamPoolRouteHandler)
+  .openapi(
+    getActionCreateIpamResourceDiscoveryRoute,
+    getActionCreateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postActionCreateIpamResourceDiscoveryRoute,
+    postActionCreateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(getActionCreateIpamScopeRoute, getActionCreateIpamScopeRouteHandler)
+  .openapi(postActionCreateIpamScopeRoute, postActionCreateIpamScopeRouteHandler)
+  .openapi(getActionCreateKeyPairRoute, getActionCreateKeyPairRouteHandler)
+  .openapi(postActionCreateKeyPairRoute, postActionCreateKeyPairRouteHandler)
+  .openapi(getActionCreateLaunchTemplateRoute, getActionCreateLaunchTemplateRouteHandler)
+  .openapi(postActionCreateLaunchTemplateRoute, postActionCreateLaunchTemplateRouteHandler)
+  .openapi(
+    getActionCreateLaunchTemplateVersionRoute,
+    getActionCreateLaunchTemplateVersionRouteHandler,
+  )
+  .openapi(
+    postActionCreateLaunchTemplateVersionRoute,
+    postActionCreateLaunchTemplateVersionRouteHandler,
+  )
+  .openapi(getActionCreateLocalGatewayRouteRoute, getActionCreateLocalGatewayRouteRouteHandler)
+  .openapi(postActionCreateLocalGatewayRouteRoute, postActionCreateLocalGatewayRouteRouteHandler)
+  .openapi(
+    getActionCreateLocalGatewayRouteTableRoute,
+    getActionCreateLocalGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionCreateLocalGatewayRouteTableRoute,
+    postActionCreateLocalGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+    getActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  )
+  .openapi(
+    postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+    postActionCreateLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  )
+  .openapi(
+    getActionCreateLocalGatewayRouteTableVpcAssociationRoute,
+    getActionCreateLocalGatewayRouteTableVpcAssociationRouteHandler,
+  )
+  .openapi(
+    postActionCreateLocalGatewayRouteTableVpcAssociationRoute,
+    postActionCreateLocalGatewayRouteTableVpcAssociationRouteHandler,
+  )
+  .openapi(getActionCreateManagedPrefixListRoute, getActionCreateManagedPrefixListRouteHandler)
+  .openapi(postActionCreateManagedPrefixListRoute, postActionCreateManagedPrefixListRouteHandler)
+  .openapi(getActionCreateNatGatewayRoute, getActionCreateNatGatewayRouteHandler)
+  .openapi(postActionCreateNatGatewayRoute, postActionCreateNatGatewayRouteHandler)
+  .openapi(getActionCreateNetworkAclRoute, getActionCreateNetworkAclRouteHandler)
+  .openapi(postActionCreateNetworkAclRoute, postActionCreateNetworkAclRouteHandler)
+  .openapi(getActionCreateNetworkAclEntryRoute, getActionCreateNetworkAclEntryRouteHandler)
+  .openapi(postActionCreateNetworkAclEntryRoute, postActionCreateNetworkAclEntryRouteHandler)
+  .openapi(
+    getActionCreateNetworkInsightsAccessScopeRoute,
+    getActionCreateNetworkInsightsAccessScopeRouteHandler,
+  )
+  .openapi(
+    postActionCreateNetworkInsightsAccessScopeRoute,
+    postActionCreateNetworkInsightsAccessScopeRouteHandler,
+  )
+  .openapi(getActionCreateNetworkInsightsPathRoute, getActionCreateNetworkInsightsPathRouteHandler)
+  .openapi(
+    postActionCreateNetworkInsightsPathRoute,
+    postActionCreateNetworkInsightsPathRouteHandler,
+  )
+  .openapi(getActionCreateNetworkInterfaceRoute, getActionCreateNetworkInterfaceRouteHandler)
+  .openapi(postActionCreateNetworkInterfaceRoute, postActionCreateNetworkInterfaceRouteHandler)
+  .openapi(
+    getActionCreateNetworkInterfacePermissionRoute,
+    getActionCreateNetworkInterfacePermissionRouteHandler,
+  )
+  .openapi(
+    postActionCreateNetworkInterfacePermissionRoute,
+    postActionCreateNetworkInterfacePermissionRouteHandler,
+  )
+  .openapi(getActionCreatePlacementGroupRoute, getActionCreatePlacementGroupRouteHandler)
+  .openapi(postActionCreatePlacementGroupRoute, postActionCreatePlacementGroupRouteHandler)
+  .openapi(getActionCreatePublicIpv4PoolRoute, getActionCreatePublicIpv4PoolRouteHandler)
+  .openapi(postActionCreatePublicIpv4PoolRoute, postActionCreatePublicIpv4PoolRouteHandler)
+  .openapi(
+    getActionCreateReplaceRootVolumeTaskRoute,
+    getActionCreateReplaceRootVolumeTaskRouteHandler,
+  )
+  .openapi(
+    postActionCreateReplaceRootVolumeTaskRoute,
+    postActionCreateReplaceRootVolumeTaskRouteHandler,
+  )
+  .openapi(
+    getActionCreateReservedInstancesListingRoute,
+    getActionCreateReservedInstancesListingRouteHandler,
+  )
+  .openapi(
+    postActionCreateReservedInstancesListingRoute,
+    postActionCreateReservedInstancesListingRouteHandler,
+  )
+  .openapi(getActionCreateRestoreImageTaskRoute, getActionCreateRestoreImageTaskRouteHandler)
+  .openapi(postActionCreateRestoreImageTaskRoute, postActionCreateRestoreImageTaskRouteHandler)
+  .openapi(getActionCreateRouteRoute, getActionCreateRouteRouteHandler)
+  .openapi(postActionCreateRouteRoute, postActionCreateRouteRouteHandler)
+  .openapi(getActionCreateRouteTableRoute, getActionCreateRouteTableRouteHandler)
+  .openapi(postActionCreateRouteTableRoute, postActionCreateRouteTableRouteHandler)
+  .openapi(getActionCreateSecurityGroupRoute, getActionCreateSecurityGroupRouteHandler)
+  .openapi(postActionCreateSecurityGroupRoute, postActionCreateSecurityGroupRouteHandler)
+  .openapi(getActionCreateSnapshotRoute, getActionCreateSnapshotRouteHandler)
+  .openapi(postActionCreateSnapshotRoute, postActionCreateSnapshotRouteHandler)
+  .openapi(getActionCreateSnapshotsRoute, getActionCreateSnapshotsRouteHandler)
+  .openapi(postActionCreateSnapshotsRoute, postActionCreateSnapshotsRouteHandler)
+  .openapi(
+    getActionCreateSpotDatafeedSubscriptionRoute,
+    getActionCreateSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(
+    postActionCreateSpotDatafeedSubscriptionRoute,
+    postActionCreateSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(getActionCreateStoreImageTaskRoute, getActionCreateStoreImageTaskRouteHandler)
+  .openapi(postActionCreateStoreImageTaskRoute, postActionCreateStoreImageTaskRouteHandler)
+  .openapi(getActionCreateSubnetRoute, getActionCreateSubnetRouteHandler)
+  .openapi(postActionCreateSubnetRoute, postActionCreateSubnetRouteHandler)
+  .openapi(
+    getActionCreateSubnetCidrReservationRoute,
+    getActionCreateSubnetCidrReservationRouteHandler,
+  )
+  .openapi(
+    postActionCreateSubnetCidrReservationRoute,
+    postActionCreateSubnetCidrReservationRouteHandler,
+  )
+  .openapi(getActionCreateTagsRoute, getActionCreateTagsRouteHandler)
+  .openapi(postActionCreateTagsRoute, postActionCreateTagsRouteHandler)
+  .openapi(getActionCreateTrafficMirrorFilterRoute, getActionCreateTrafficMirrorFilterRouteHandler)
+  .openapi(
+    postActionCreateTrafficMirrorFilterRoute,
+    postActionCreateTrafficMirrorFilterRouteHandler,
+  )
+  .openapi(
+    getActionCreateTrafficMirrorFilterRuleRoute,
+    getActionCreateTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    postActionCreateTrafficMirrorFilterRuleRoute,
+    postActionCreateTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    getActionCreateTrafficMirrorSessionRoute,
+    getActionCreateTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(
+    postActionCreateTrafficMirrorSessionRoute,
+    postActionCreateTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(getActionCreateTrafficMirrorTargetRoute, getActionCreateTrafficMirrorTargetRouteHandler)
+  .openapi(
+    postActionCreateTrafficMirrorTargetRoute,
+    postActionCreateTrafficMirrorTargetRouteHandler,
+  )
+  .openapi(getActionCreateTransitGatewayRoute, getActionCreateTransitGatewayRouteHandler)
+  .openapi(postActionCreateTransitGatewayRoute, postActionCreateTransitGatewayRouteHandler)
+  .openapi(
+    getActionCreateTransitGatewayConnectRoute,
+    getActionCreateTransitGatewayConnectRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayConnectRoute,
+    postActionCreateTransitGatewayConnectRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayConnectPeerRoute,
+    getActionCreateTransitGatewayConnectPeerRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayConnectPeerRoute,
+    postActionCreateTransitGatewayConnectPeerRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayMulticastDomainRoute,
+    getActionCreateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayMulticastDomainRoute,
+    postActionCreateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayPeeringAttachmentRoute,
+    getActionCreateTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayPeeringAttachmentRoute,
+    postActionCreateTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayPolicyTableRoute,
+    getActionCreateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayPolicyTableRoute,
+    postActionCreateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayPrefixListReferenceRoute,
+    getActionCreateTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayPrefixListReferenceRoute,
+    postActionCreateTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(getActionCreateTransitGatewayRouteRoute, getActionCreateTransitGatewayRouteRouteHandler)
+  .openapi(
+    postActionCreateTransitGatewayRouteRoute,
+    postActionCreateTransitGatewayRouteRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayRouteTableRoute,
+    getActionCreateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayRouteTableRoute,
+    postActionCreateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayRouteTableAnnouncementRoute,
+    getActionCreateTransitGatewayRouteTableAnnouncementRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayRouteTableAnnouncementRoute,
+    postActionCreateTransitGatewayRouteTableAnnouncementRouteHandler,
+  )
+  .openapi(
+    getActionCreateTransitGatewayVpcAttachmentRoute,
+    getActionCreateTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionCreateTransitGatewayVpcAttachmentRoute,
+    postActionCreateTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionCreateVerifiedAccessEndpointRoute,
+    getActionCreateVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(
+    postActionCreateVerifiedAccessEndpointRoute,
+    postActionCreateVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(getActionCreateVerifiedAccessGroupRoute, getActionCreateVerifiedAccessGroupRouteHandler)
+  .openapi(
+    postActionCreateVerifiedAccessGroupRoute,
+    postActionCreateVerifiedAccessGroupRouteHandler,
+  )
+  .openapi(
+    getActionCreateVerifiedAccessInstanceRoute,
+    getActionCreateVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    postActionCreateVerifiedAccessInstanceRoute,
+    postActionCreateVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    getActionCreateVerifiedAccessTrustProviderRoute,
+    getActionCreateVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(
+    postActionCreateVerifiedAccessTrustProviderRoute,
+    postActionCreateVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(getActionCreateVolumeRoute, getActionCreateVolumeRouteHandler)
+  .openapi(postActionCreateVolumeRoute, postActionCreateVolumeRouteHandler)
+  .openapi(getActionCreateVpcRoute, getActionCreateVpcRouteHandler)
+  .openapi(postActionCreateVpcRoute, postActionCreateVpcRouteHandler)
+  .openapi(getActionCreateVpcEndpointRoute, getActionCreateVpcEndpointRouteHandler)
+  .openapi(postActionCreateVpcEndpointRoute, postActionCreateVpcEndpointRouteHandler)
+  .openapi(
+    getActionCreateVpcEndpointConnectionNotificationRoute,
+    getActionCreateVpcEndpointConnectionNotificationRouteHandler,
+  )
+  .openapi(
+    postActionCreateVpcEndpointConnectionNotificationRoute,
+    postActionCreateVpcEndpointConnectionNotificationRouteHandler,
+  )
+  .openapi(
+    getActionCreateVpcEndpointServiceConfigurationRoute,
+    getActionCreateVpcEndpointServiceConfigurationRouteHandler,
+  )
+  .openapi(
+    postActionCreateVpcEndpointServiceConfigurationRoute,
+    postActionCreateVpcEndpointServiceConfigurationRouteHandler,
+  )
+  .openapi(
+    getActionCreateVpcPeeringConnectionRoute,
+    getActionCreateVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(
+    postActionCreateVpcPeeringConnectionRoute,
+    postActionCreateVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(getActionCreateVpnConnectionRoute, getActionCreateVpnConnectionRouteHandler)
+  .openapi(postActionCreateVpnConnectionRoute, postActionCreateVpnConnectionRouteHandler)
+  .openapi(getActionCreateVpnConnectionRouteRoute, getActionCreateVpnConnectionRouteRouteHandler)
+  .openapi(postActionCreateVpnConnectionRouteRoute, postActionCreateVpnConnectionRouteRouteHandler)
+  .openapi(getActionCreateVpnGatewayRoute, getActionCreateVpnGatewayRouteHandler)
+  .openapi(postActionCreateVpnGatewayRoute, postActionCreateVpnGatewayRouteHandler)
+  .openapi(getActionDeleteCarrierGatewayRoute, getActionDeleteCarrierGatewayRouteHandler)
+  .openapi(postActionDeleteCarrierGatewayRoute, postActionDeleteCarrierGatewayRouteHandler)
+  .openapi(getActionDeleteClientVpnEndpointRoute, getActionDeleteClientVpnEndpointRouteHandler)
+  .openapi(postActionDeleteClientVpnEndpointRoute, postActionDeleteClientVpnEndpointRouteHandler)
+  .openapi(getActionDeleteClientVpnRouteRoute, getActionDeleteClientVpnRouteRouteHandler)
+  .openapi(postActionDeleteClientVpnRouteRoute, postActionDeleteClientVpnRouteRouteHandler)
+  .openapi(getActionDeleteCoipCidrRoute, getActionDeleteCoipCidrRouteHandler)
+  .openapi(postActionDeleteCoipCidrRoute, postActionDeleteCoipCidrRouteHandler)
+  .openapi(getActionDeleteCoipPoolRoute, getActionDeleteCoipPoolRouteHandler)
+  .openapi(postActionDeleteCoipPoolRoute, postActionDeleteCoipPoolRouteHandler)
+  .openapi(getActionDeleteCustomerGatewayRoute, getActionDeleteCustomerGatewayRouteHandler)
+  .openapi(postActionDeleteCustomerGatewayRoute, postActionDeleteCustomerGatewayRouteHandler)
+  .openapi(getActionDeleteDhcpOptionsRoute, getActionDeleteDhcpOptionsRouteHandler)
+  .openapi(postActionDeleteDhcpOptionsRoute, postActionDeleteDhcpOptionsRouteHandler)
+  .openapi(
+    getActionDeleteEgressOnlyInternetGatewayRoute,
+    getActionDeleteEgressOnlyInternetGatewayRouteHandler,
+  )
+  .openapi(
+    postActionDeleteEgressOnlyInternetGatewayRoute,
+    postActionDeleteEgressOnlyInternetGatewayRouteHandler,
+  )
+  .openapi(getActionDeleteFleetsRoute, getActionDeleteFleetsRouteHandler)
+  .openapi(postActionDeleteFleetsRoute, postActionDeleteFleetsRouteHandler)
+  .openapi(getActionDeleteFlowLogsRoute, getActionDeleteFlowLogsRouteHandler)
+  .openapi(postActionDeleteFlowLogsRoute, postActionDeleteFlowLogsRouteHandler)
+  .openapi(getActionDeleteFpgaImageRoute, getActionDeleteFpgaImageRouteHandler)
+  .openapi(postActionDeleteFpgaImageRoute, postActionDeleteFpgaImageRouteHandler)
+  .openapi(getActionDeleteInstanceEventWindowRoute, getActionDeleteInstanceEventWindowRouteHandler)
+  .openapi(
+    postActionDeleteInstanceEventWindowRoute,
+    postActionDeleteInstanceEventWindowRouteHandler,
+  )
+  .openapi(getActionDeleteInternetGatewayRoute, getActionDeleteInternetGatewayRouteHandler)
+  .openapi(postActionDeleteInternetGatewayRoute, postActionDeleteInternetGatewayRouteHandler)
+  .openapi(getActionDeleteIpamRoute, getActionDeleteIpamRouteHandler)
+  .openapi(postActionDeleteIpamRoute, postActionDeleteIpamRouteHandler)
+  .openapi(getActionDeleteIpamPoolRoute, getActionDeleteIpamPoolRouteHandler)
+  .openapi(postActionDeleteIpamPoolRoute, postActionDeleteIpamPoolRouteHandler)
+  .openapi(
+    getActionDeleteIpamResourceDiscoveryRoute,
+    getActionDeleteIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postActionDeleteIpamResourceDiscoveryRoute,
+    postActionDeleteIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(getActionDeleteIpamScopeRoute, getActionDeleteIpamScopeRouteHandler)
+  .openapi(postActionDeleteIpamScopeRoute, postActionDeleteIpamScopeRouteHandler)
+  .openapi(getActionDeleteKeyPairRoute, getActionDeleteKeyPairRouteHandler)
+  .openapi(postActionDeleteKeyPairRoute, postActionDeleteKeyPairRouteHandler)
+  .openapi(getActionDeleteLaunchTemplateRoute, getActionDeleteLaunchTemplateRouteHandler)
+  .openapi(postActionDeleteLaunchTemplateRoute, postActionDeleteLaunchTemplateRouteHandler)
+  .openapi(
+    getActionDeleteLaunchTemplateVersionsRoute,
+    getActionDeleteLaunchTemplateVersionsRouteHandler,
+  )
+  .openapi(
+    postActionDeleteLaunchTemplateVersionsRoute,
+    postActionDeleteLaunchTemplateVersionsRouteHandler,
+  )
+  .openapi(getActionDeleteLocalGatewayRouteRoute, getActionDeleteLocalGatewayRouteRouteHandler)
+  .openapi(postActionDeleteLocalGatewayRouteRoute, postActionDeleteLocalGatewayRouteRouteHandler)
+  .openapi(
+    getActionDeleteLocalGatewayRouteTableRoute,
+    getActionDeleteLocalGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionDeleteLocalGatewayRouteTableRoute,
+    postActionDeleteLocalGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    getActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+    getActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  )
+  .openapi(
+    postActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRoute,
+    postActionDeleteLocalGatewayRouteTableVirtualInterfaceGroupAssociationRouteHandler,
+  )
+  .openapi(
+    getActionDeleteLocalGatewayRouteTableVpcAssociationRoute,
+    getActionDeleteLocalGatewayRouteTableVpcAssociationRouteHandler,
+  )
+  .openapi(
+    postActionDeleteLocalGatewayRouteTableVpcAssociationRoute,
+    postActionDeleteLocalGatewayRouteTableVpcAssociationRouteHandler,
+  )
+  .openapi(getActionDeleteManagedPrefixListRoute, getActionDeleteManagedPrefixListRouteHandler)
+  .openapi(postActionDeleteManagedPrefixListRoute, postActionDeleteManagedPrefixListRouteHandler)
+  .openapi(getActionDeleteNatGatewayRoute, getActionDeleteNatGatewayRouteHandler)
+  .openapi(postActionDeleteNatGatewayRoute, postActionDeleteNatGatewayRouteHandler)
+  .openapi(getActionDeleteNetworkAclRoute, getActionDeleteNetworkAclRouteHandler)
+  .openapi(postActionDeleteNetworkAclRoute, postActionDeleteNetworkAclRouteHandler)
+  .openapi(getActionDeleteNetworkAclEntryRoute, getActionDeleteNetworkAclEntryRouteHandler)
+  .openapi(postActionDeleteNetworkAclEntryRoute, postActionDeleteNetworkAclEntryRouteHandler)
+  .openapi(
+    getActionDeleteNetworkInsightsAccessScopeRoute,
+    getActionDeleteNetworkInsightsAccessScopeRouteHandler,
+  )
+  .openapi(
+    postActionDeleteNetworkInsightsAccessScopeRoute,
+    postActionDeleteNetworkInsightsAccessScopeRouteHandler,
+  )
+  .openapi(
+    getActionDeleteNetworkInsightsAccessScopeAnalysisRoute,
+    getActionDeleteNetworkInsightsAccessScopeAnalysisRouteHandler,
+  )
+  .openapi(
+    postActionDeleteNetworkInsightsAccessScopeAnalysisRoute,
+    postActionDeleteNetworkInsightsAccessScopeAnalysisRouteHandler,
+  )
+  .openapi(
+    getActionDeleteNetworkInsightsAnalysisRoute,
+    getActionDeleteNetworkInsightsAnalysisRouteHandler,
+  )
+  .openapi(
+    postActionDeleteNetworkInsightsAnalysisRoute,
+    postActionDeleteNetworkInsightsAnalysisRouteHandler,
+  )
+  .openapi(getActionDeleteNetworkInsightsPathRoute, getActionDeleteNetworkInsightsPathRouteHandler)
+  .openapi(
+    postActionDeleteNetworkInsightsPathRoute,
+    postActionDeleteNetworkInsightsPathRouteHandler,
+  )
+  .openapi(getActionDeleteNetworkInterfaceRoute, getActionDeleteNetworkInterfaceRouteHandler)
+  .openapi(postActionDeleteNetworkInterfaceRoute, postActionDeleteNetworkInterfaceRouteHandler)
+  .openapi(
+    getActionDeleteNetworkInterfacePermissionRoute,
+    getActionDeleteNetworkInterfacePermissionRouteHandler,
+  )
+  .openapi(
+    postActionDeleteNetworkInterfacePermissionRoute,
+    postActionDeleteNetworkInterfacePermissionRouteHandler,
+  )
+  .openapi(getActionDeletePlacementGroupRoute, getActionDeletePlacementGroupRouteHandler)
+  .openapi(postActionDeletePlacementGroupRoute, postActionDeletePlacementGroupRouteHandler)
+  .openapi(getActionDeletePublicIpv4PoolRoute, getActionDeletePublicIpv4PoolRouteHandler)
+  .openapi(postActionDeletePublicIpv4PoolRoute, postActionDeletePublicIpv4PoolRouteHandler)
+  .openapi(
+    getActionDeleteQueuedReservedInstancesRoute,
+    getActionDeleteQueuedReservedInstancesRouteHandler,
+  )
+  .openapi(
+    postActionDeleteQueuedReservedInstancesRoute,
+    postActionDeleteQueuedReservedInstancesRouteHandler,
+  )
+  .openapi(getActionDeleteRouteRoute, getActionDeleteRouteRouteHandler)
+  .openapi(postActionDeleteRouteRoute, postActionDeleteRouteRouteHandler)
+  .openapi(getActionDeleteRouteTableRoute, getActionDeleteRouteTableRouteHandler)
+  .openapi(postActionDeleteRouteTableRoute, postActionDeleteRouteTableRouteHandler)
+  .openapi(getActionDeleteSecurityGroupRoute, getActionDeleteSecurityGroupRouteHandler)
+  .openapi(postActionDeleteSecurityGroupRoute, postActionDeleteSecurityGroupRouteHandler)
+  .openapi(getActionDeleteSnapshotRoute, getActionDeleteSnapshotRouteHandler)
+  .openapi(postActionDeleteSnapshotRoute, postActionDeleteSnapshotRouteHandler)
+  .openapi(
+    getActionDeleteSpotDatafeedSubscriptionRoute,
+    getActionDeleteSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(
+    postActionDeleteSpotDatafeedSubscriptionRoute,
+    postActionDeleteSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(getActionDeleteSubnetRoute, getActionDeleteSubnetRouteHandler)
+  .openapi(postActionDeleteSubnetRoute, postActionDeleteSubnetRouteHandler)
+  .openapi(
+    getActionDeleteSubnetCidrReservationRoute,
+    getActionDeleteSubnetCidrReservationRouteHandler,
+  )
+  .openapi(
+    postActionDeleteSubnetCidrReservationRoute,
+    postActionDeleteSubnetCidrReservationRouteHandler,
+  )
+  .openapi(getActionDeleteTagsRoute, getActionDeleteTagsRouteHandler)
+  .openapi(postActionDeleteTagsRoute, postActionDeleteTagsRouteHandler)
+  .openapi(getActionDeleteTrafficMirrorFilterRoute, getActionDeleteTrafficMirrorFilterRouteHandler)
+  .openapi(
+    postActionDeleteTrafficMirrorFilterRoute,
+    postActionDeleteTrafficMirrorFilterRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTrafficMirrorFilterRuleRoute,
+    getActionDeleteTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTrafficMirrorFilterRuleRoute,
+    postActionDeleteTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTrafficMirrorSessionRoute,
+    getActionDeleteTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTrafficMirrorSessionRoute,
+    postActionDeleteTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(getActionDeleteTrafficMirrorTargetRoute, getActionDeleteTrafficMirrorTargetRouteHandler)
+  .openapi(
+    postActionDeleteTrafficMirrorTargetRoute,
+    postActionDeleteTrafficMirrorTargetRouteHandler,
+  )
+  .openapi(getActionDeleteTransitGatewayRoute, getActionDeleteTransitGatewayRouteHandler)
+  .openapi(postActionDeleteTransitGatewayRoute, postActionDeleteTransitGatewayRouteHandler)
+  .openapi(
+    getActionDeleteTransitGatewayConnectRoute,
+    getActionDeleteTransitGatewayConnectRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayConnectRoute,
+    postActionDeleteTransitGatewayConnectRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayConnectPeerRoute,
+    getActionDeleteTransitGatewayConnectPeerRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayConnectPeerRoute,
+    postActionDeleteTransitGatewayConnectPeerRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayMulticastDomainRoute,
+    getActionDeleteTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayMulticastDomainRoute,
+    postActionDeleteTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayPeeringAttachmentRoute,
+    getActionDeleteTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayPeeringAttachmentRoute,
+    postActionDeleteTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayPolicyTableRoute,
+    getActionDeleteTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayPolicyTableRoute,
+    postActionDeleteTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayPrefixListReferenceRoute,
+    getActionDeleteTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayPrefixListReferenceRoute,
+    postActionDeleteTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(getActionDeleteTransitGatewayRouteRoute, getActionDeleteTransitGatewayRouteRouteHandler)
+  .openapi(
+    postActionDeleteTransitGatewayRouteRoute,
+    postActionDeleteTransitGatewayRouteRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayRouteTableRoute,
+    getActionDeleteTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayRouteTableRoute,
+    postActionDeleteTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayRouteTableAnnouncementRoute,
+    getActionDeleteTransitGatewayRouteTableAnnouncementRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayRouteTableAnnouncementRoute,
+    postActionDeleteTransitGatewayRouteTableAnnouncementRouteHandler,
+  )
+  .openapi(
+    getActionDeleteTransitGatewayVpcAttachmentRoute,
+    getActionDeleteTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionDeleteTransitGatewayVpcAttachmentRoute,
+    postActionDeleteTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionDeleteVerifiedAccessEndpointRoute,
+    getActionDeleteVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVerifiedAccessEndpointRoute,
+    postActionDeleteVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(getActionDeleteVerifiedAccessGroupRoute, getActionDeleteVerifiedAccessGroupRouteHandler)
+  .openapi(
+    postActionDeleteVerifiedAccessGroupRoute,
+    postActionDeleteVerifiedAccessGroupRouteHandler,
+  )
+  .openapi(
+    getActionDeleteVerifiedAccessInstanceRoute,
+    getActionDeleteVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVerifiedAccessInstanceRoute,
+    postActionDeleteVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    getActionDeleteVerifiedAccessTrustProviderRoute,
+    getActionDeleteVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVerifiedAccessTrustProviderRoute,
+    postActionDeleteVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(getActionDeleteVolumeRoute, getActionDeleteVolumeRouteHandler)
+  .openapi(postActionDeleteVolumeRoute, postActionDeleteVolumeRouteHandler)
+  .openapi(getActionDeleteVpcRoute, getActionDeleteVpcRouteHandler)
+  .openapi(postActionDeleteVpcRoute, postActionDeleteVpcRouteHandler)
+  .openapi(
+    getActionDeleteVpcEndpointConnectionNotificationsRoute,
+    getActionDeleteVpcEndpointConnectionNotificationsRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVpcEndpointConnectionNotificationsRoute,
+    postActionDeleteVpcEndpointConnectionNotificationsRouteHandler,
+  )
+  .openapi(
+    getActionDeleteVpcEndpointServiceConfigurationsRoute,
+    getActionDeleteVpcEndpointServiceConfigurationsRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVpcEndpointServiceConfigurationsRoute,
+    postActionDeleteVpcEndpointServiceConfigurationsRouteHandler,
+  )
+  .openapi(getActionDeleteVpcEndpointsRoute, getActionDeleteVpcEndpointsRouteHandler)
+  .openapi(postActionDeleteVpcEndpointsRoute, postActionDeleteVpcEndpointsRouteHandler)
+  .openapi(
+    getActionDeleteVpcPeeringConnectionRoute,
+    getActionDeleteVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(
+    postActionDeleteVpcPeeringConnectionRoute,
+    postActionDeleteVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(getActionDeleteVpnConnectionRoute, getActionDeleteVpnConnectionRouteHandler)
+  .openapi(postActionDeleteVpnConnectionRoute, postActionDeleteVpnConnectionRouteHandler)
+  .openapi(getActionDeleteVpnConnectionRouteRoute, getActionDeleteVpnConnectionRouteRouteHandler)
+  .openapi(postActionDeleteVpnConnectionRouteRoute, postActionDeleteVpnConnectionRouteRouteHandler)
+  .openapi(getActionDeleteVpnGatewayRoute, getActionDeleteVpnGatewayRouteHandler)
+  .openapi(postActionDeleteVpnGatewayRoute, postActionDeleteVpnGatewayRouteHandler)
+  .openapi(getActionDeprovisionByoipCidrRoute, getActionDeprovisionByoipCidrRouteHandler)
+  .openapi(postActionDeprovisionByoipCidrRoute, postActionDeprovisionByoipCidrRouteHandler)
+  .openapi(getActionDeprovisionIpamPoolCidrRoute, getActionDeprovisionIpamPoolCidrRouteHandler)
+  .openapi(postActionDeprovisionIpamPoolCidrRoute, postActionDeprovisionIpamPoolCidrRouteHandler)
+  .openapi(
+    getActionDeprovisionPublicIpv4PoolCidrRoute,
+    getActionDeprovisionPublicIpv4PoolCidrRouteHandler,
+  )
+  .openapi(
+    postActionDeprovisionPublicIpv4PoolCidrRoute,
+    postActionDeprovisionPublicIpv4PoolCidrRouteHandler,
+  )
+  .openapi(getActionDeregisterImageRoute, getActionDeregisterImageRouteHandler)
+  .openapi(postActionDeregisterImageRoute, postActionDeregisterImageRouteHandler)
+  .openapi(
+    getActionDeregisterInstanceEventNotificationAttributesRoute,
+    getActionDeregisterInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    postActionDeregisterInstanceEventNotificationAttributesRoute,
+    postActionDeregisterInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    getActionDeregisterTransitGatewayMulticastGroupMembersRoute,
+    getActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler,
+  )
+  .openapi(
+    postActionDeregisterTransitGatewayMulticastGroupMembersRoute,
+    postActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler,
+  )
+  .openapi(
+    getActionDeregisterTransitGatewayMulticastGroupSourcesRoute,
+    getActionDeregisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  )
+  .openapi(
+    postActionDeregisterTransitGatewayMulticastGroupSourcesRoute,
+    postActionDeregisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  )
+  .openapi(getActionDescribeAccountAttributesRoute, getActionDescribeAccountAttributesRouteHandler)
+  .openapi(
+    postActionDescribeAccountAttributesRoute,
+    postActionDescribeAccountAttributesRouteHandler,
+  )
+  .openapi(getActionDescribeAddressTransfersRoute, getActionDescribeAddressTransfersRouteHandler)
+  .openapi(postActionDescribeAddressTransfersRoute, postActionDescribeAddressTransfersRouteHandler)
+  .openapi(getActionDescribeAddressesRoute, getActionDescribeAddressesRouteHandler)
+  .openapi(postActionDescribeAddressesRoute, postActionDescribeAddressesRouteHandler)
+  .openapi(
+    getActionDescribeAddressesAttributeRoute,
+    getActionDescribeAddressesAttributeRouteHandler,
+  )
+  .openapi(
+    postActionDescribeAddressesAttributeRoute,
+    postActionDescribeAddressesAttributeRouteHandler,
+  )
+  .openapi(getActionDescribeAggregateIdFormatRoute, getActionDescribeAggregateIdFormatRouteHandler)
+  .openapi(
+    postActionDescribeAggregateIdFormatRoute,
+    postActionDescribeAggregateIdFormatRouteHandler,
+  )
+  .openapi(getActionDescribeAvailabilityZonesRoute, getActionDescribeAvailabilityZonesRouteHandler)
+  .openapi(
+    postActionDescribeAvailabilityZonesRoute,
+    postActionDescribeAvailabilityZonesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeAwsNetworkPerformanceMetricSubscriptionsRoute,
+    getActionDescribeAwsNetworkPerformanceMetricSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeAwsNetworkPerformanceMetricSubscriptionsRoute,
+    postActionDescribeAwsNetworkPerformanceMetricSubscriptionsRouteHandler,
+  )
+  .openapi(getActionDescribeBundleTasksRoute, getActionDescribeBundleTasksRouteHandler)
+  .openapi(postActionDescribeBundleTasksRoute, postActionDescribeBundleTasksRouteHandler)
+  .openapi(getActionDescribeByoipCidrsRoute, getActionDescribeByoipCidrsRouteHandler)
+  .openapi(postActionDescribeByoipCidrsRoute, postActionDescribeByoipCidrsRouteHandler)
+  .openapi(
+    getActionDescribeCapacityReservationFleetsRoute,
+    getActionDescribeCapacityReservationFleetsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeCapacityReservationFleetsRoute,
+    postActionDescribeCapacityReservationFleetsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeCapacityReservationsRoute,
+    getActionDescribeCapacityReservationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeCapacityReservationsRoute,
+    postActionDescribeCapacityReservationsRouteHandler,
+  )
+  .openapi(getActionDescribeCarrierGatewaysRoute, getActionDescribeCarrierGatewaysRouteHandler)
+  .openapi(postActionDescribeCarrierGatewaysRoute, postActionDescribeCarrierGatewaysRouteHandler)
+  .openapi(
+    getActionDescribeClassicLinkInstancesRoute,
+    getActionDescribeClassicLinkInstancesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeClassicLinkInstancesRoute,
+    postActionDescribeClassicLinkInstancesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeClientVpnAuthorizationRulesRoute,
+    getActionDescribeClientVpnAuthorizationRulesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeClientVpnAuthorizationRulesRoute,
+    postActionDescribeClientVpnAuthorizationRulesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeClientVpnConnectionsRoute,
+    getActionDescribeClientVpnConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeClientVpnConnectionsRoute,
+    postActionDescribeClientVpnConnectionsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeClientVpnEndpointsRoute,
+    getActionDescribeClientVpnEndpointsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeClientVpnEndpointsRoute,
+    postActionDescribeClientVpnEndpointsRouteHandler,
+  )
+  .openapi(getActionDescribeClientVpnRoutesRoute, getActionDescribeClientVpnRoutesRouteHandler)
+  .openapi(postActionDescribeClientVpnRoutesRoute, postActionDescribeClientVpnRoutesRouteHandler)
+  .openapi(
+    getActionDescribeClientVpnTargetNetworksRoute,
+    getActionDescribeClientVpnTargetNetworksRouteHandler,
+  )
+  .openapi(
+    postActionDescribeClientVpnTargetNetworksRoute,
+    postActionDescribeClientVpnTargetNetworksRouteHandler,
+  )
+  .openapi(getActionDescribeCoipPoolsRoute, getActionDescribeCoipPoolsRouteHandler)
+  .openapi(postActionDescribeCoipPoolsRoute, postActionDescribeCoipPoolsRouteHandler)
+  .openapi(getActionDescribeConversionTasksRoute, getActionDescribeConversionTasksRouteHandler)
+  .openapi(postActionDescribeConversionTasksRoute, postActionDescribeConversionTasksRouteHandler)
+  .openapi(getActionDescribeCustomerGatewaysRoute, getActionDescribeCustomerGatewaysRouteHandler)
+  .openapi(postActionDescribeCustomerGatewaysRoute, postActionDescribeCustomerGatewaysRouteHandler)
+  .openapi(getActionDescribeDhcpOptionsRoute, getActionDescribeDhcpOptionsRouteHandler)
+  .openapi(postActionDescribeDhcpOptionsRoute, postActionDescribeDhcpOptionsRouteHandler)
+  .openapi(
+    getActionDescribeEgressOnlyInternetGatewaysRoute,
+    getActionDescribeEgressOnlyInternetGatewaysRouteHandler,
+  )
+  .openapi(
+    postActionDescribeEgressOnlyInternetGatewaysRoute,
+    postActionDescribeEgressOnlyInternetGatewaysRouteHandler,
+  )
+  .openapi(getActionDescribeElasticGpusRoute, getActionDescribeElasticGpusRouteHandler)
+  .openapi(postActionDescribeElasticGpusRoute, postActionDescribeElasticGpusRouteHandler)
+  .openapi(getActionDescribeExportImageTasksRoute, getActionDescribeExportImageTasksRouteHandler)
+  .openapi(postActionDescribeExportImageTasksRoute, postActionDescribeExportImageTasksRouteHandler)
+  .openapi(getActionDescribeExportTasksRoute, getActionDescribeExportTasksRouteHandler)
+  .openapi(postActionDescribeExportTasksRoute, postActionDescribeExportTasksRouteHandler)
+  .openapi(getActionDescribeFastLaunchImagesRoute, getActionDescribeFastLaunchImagesRouteHandler)
+  .openapi(postActionDescribeFastLaunchImagesRoute, postActionDescribeFastLaunchImagesRouteHandler)
+  .openapi(
+    getActionDescribeFastSnapshotRestoresRoute,
+    getActionDescribeFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(
+    postActionDescribeFastSnapshotRestoresRoute,
+    postActionDescribeFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(getActionDescribeFleetHistoryRoute, getActionDescribeFleetHistoryRouteHandler)
+  .openapi(postActionDescribeFleetHistoryRoute, postActionDescribeFleetHistoryRouteHandler)
+  .openapi(getActionDescribeFleetInstancesRoute, getActionDescribeFleetInstancesRouteHandler)
+  .openapi(postActionDescribeFleetInstancesRoute, postActionDescribeFleetInstancesRouteHandler)
+  .openapi(getActionDescribeFleetsRoute, getActionDescribeFleetsRouteHandler)
+  .openapi(postActionDescribeFleetsRoute, postActionDescribeFleetsRouteHandler)
+  .openapi(getActionDescribeFlowLogsRoute, getActionDescribeFlowLogsRouteHandler)
+  .openapi(postActionDescribeFlowLogsRoute, postActionDescribeFlowLogsRouteHandler)
+  .openapi(
+    getActionDescribeFpgaImageAttributeRoute,
+    getActionDescribeFpgaImageAttributeRouteHandler,
+  )
+  .openapi(
+    postActionDescribeFpgaImageAttributeRoute,
+    postActionDescribeFpgaImageAttributeRouteHandler,
+  )
+  .openapi(getActionDescribeFpgaImagesRoute, getActionDescribeFpgaImagesRouteHandler)
+  .openapi(postActionDescribeFpgaImagesRoute, postActionDescribeFpgaImagesRouteHandler)
+  .openapi(
+    getActionDescribeHostReservationOfferingsRoute,
+    getActionDescribeHostReservationOfferingsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeHostReservationOfferingsRoute,
+    postActionDescribeHostReservationOfferingsRouteHandler,
+  )
+  .openapi(getActionDescribeHostReservationsRoute, getActionDescribeHostReservationsRouteHandler)
+  .openapi(postActionDescribeHostReservationsRoute, postActionDescribeHostReservationsRouteHandler)
+  .openapi(getActionDescribeHostsRoute, getActionDescribeHostsRouteHandler)
+  .openapi(postActionDescribeHostsRoute, postActionDescribeHostsRouteHandler)
+  .openapi(
+    getActionDescribeIamInstanceProfileAssociationsRoute,
+    getActionDescribeIamInstanceProfileAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeIamInstanceProfileAssociationsRoute,
+    postActionDescribeIamInstanceProfileAssociationsRouteHandler,
+  )
+  .openapi(getActionDescribeIdFormatRoute, getActionDescribeIdFormatRouteHandler)
+  .openapi(postActionDescribeIdFormatRoute, postActionDescribeIdFormatRouteHandler)
+  .openapi(getActionDescribeIdentityIdFormatRoute, getActionDescribeIdentityIdFormatRouteHandler)
+  .openapi(postActionDescribeIdentityIdFormatRoute, postActionDescribeIdentityIdFormatRouteHandler)
+  .openapi(getActionDescribeImageAttributeRoute, getActionDescribeImageAttributeRouteHandler)
+  .openapi(postActionDescribeImageAttributeRoute, postActionDescribeImageAttributeRouteHandler)
+  .openapi(getActionDescribeImagesRoute, getActionDescribeImagesRouteHandler)
+  .openapi(postActionDescribeImagesRoute, postActionDescribeImagesRouteHandler)
+  .openapi(getActionDescribeImportImageTasksRoute, getActionDescribeImportImageTasksRouteHandler)
+  .openapi(postActionDescribeImportImageTasksRoute, postActionDescribeImportImageTasksRouteHandler)
+  .openapi(
+    getActionDescribeImportSnapshotTasksRoute,
+    getActionDescribeImportSnapshotTasksRouteHandler,
+  )
+  .openapi(
+    postActionDescribeImportSnapshotTasksRoute,
+    postActionDescribeImportSnapshotTasksRouteHandler,
+  )
+  .openapi(getActionDescribeInstanceAttributeRoute, getActionDescribeInstanceAttributeRouteHandler)
+  .openapi(
+    postActionDescribeInstanceAttributeRoute,
+    postActionDescribeInstanceAttributeRouteHandler,
+  )
+  .openapi(
+    getActionDescribeInstanceCreditSpecificationsRoute,
+    getActionDescribeInstanceCreditSpecificationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeInstanceCreditSpecificationsRoute,
+    postActionDescribeInstanceCreditSpecificationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeInstanceEventNotificationAttributesRoute,
+    getActionDescribeInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeInstanceEventNotificationAttributesRoute,
+    postActionDescribeInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeInstanceEventWindowsRoute,
+    getActionDescribeInstanceEventWindowsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeInstanceEventWindowsRoute,
+    postActionDescribeInstanceEventWindowsRouteHandler,
+  )
+  .openapi(getActionDescribeInstanceStatusRoute, getActionDescribeInstanceStatusRouteHandler)
+  .openapi(postActionDescribeInstanceStatusRoute, postActionDescribeInstanceStatusRouteHandler)
+  .openapi(
+    getActionDescribeInstanceTypeOfferingsRoute,
+    getActionDescribeInstanceTypeOfferingsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeInstanceTypeOfferingsRoute,
+    postActionDescribeInstanceTypeOfferingsRouteHandler,
+  )
+  .openapi(getActionDescribeInstanceTypesRoute, getActionDescribeInstanceTypesRouteHandler)
+  .openapi(postActionDescribeInstanceTypesRoute, postActionDescribeInstanceTypesRouteHandler)
+  .openapi(getActionDescribeInstancesRoute, getActionDescribeInstancesRouteHandler)
+  .openapi(postActionDescribeInstancesRoute, postActionDescribeInstancesRouteHandler)
+  .openapi(getActionDescribeInternetGatewaysRoute, getActionDescribeInternetGatewaysRouteHandler)
+  .openapi(postActionDescribeInternetGatewaysRoute, postActionDescribeInternetGatewaysRouteHandler)
+  .openapi(getActionDescribeIpamPoolsRoute, getActionDescribeIpamPoolsRouteHandler)
+  .openapi(postActionDescribeIpamPoolsRoute, postActionDescribeIpamPoolsRouteHandler)
+  .openapi(
+    getActionDescribeIpamResourceDiscoveriesRoute,
+    getActionDescribeIpamResourceDiscoveriesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeIpamResourceDiscoveriesRoute,
+    postActionDescribeIpamResourceDiscoveriesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeIpamResourceDiscoveryAssociationsRoute,
+    getActionDescribeIpamResourceDiscoveryAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeIpamResourceDiscoveryAssociationsRoute,
+    postActionDescribeIpamResourceDiscoveryAssociationsRouteHandler,
+  )
+  .openapi(getActionDescribeIpamScopesRoute, getActionDescribeIpamScopesRouteHandler)
+  .openapi(postActionDescribeIpamScopesRoute, postActionDescribeIpamScopesRouteHandler)
+  .openapi(getActionDescribeIpamsRoute, getActionDescribeIpamsRouteHandler)
+  .openapi(postActionDescribeIpamsRoute, postActionDescribeIpamsRouteHandler)
+  .openapi(getActionDescribeIpv6PoolsRoute, getActionDescribeIpv6PoolsRouteHandler)
+  .openapi(postActionDescribeIpv6PoolsRoute, postActionDescribeIpv6PoolsRouteHandler)
+  .openapi(getActionDescribeKeyPairsRoute, getActionDescribeKeyPairsRouteHandler)
+  .openapi(postActionDescribeKeyPairsRoute, postActionDescribeKeyPairsRouteHandler)
+  .openapi(
+    getActionDescribeLaunchTemplateVersionsRoute,
+    getActionDescribeLaunchTemplateVersionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLaunchTemplateVersionsRoute,
+    postActionDescribeLaunchTemplateVersionsRouteHandler,
+  )
+  .openapi(getActionDescribeLaunchTemplatesRoute, getActionDescribeLaunchTemplatesRouteHandler)
+  .openapi(postActionDescribeLaunchTemplatesRoute, postActionDescribeLaunchTemplatesRouteHandler)
+  .openapi(
+    getActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRoute,
+    getActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRoute,
+    postActionDescribeLocalGatewayRouteTableVirtualInterfaceGroupAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeLocalGatewayRouteTableVpcAssociationsRoute,
+    getActionDescribeLocalGatewayRouteTableVpcAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLocalGatewayRouteTableVpcAssociationsRoute,
+    postActionDescribeLocalGatewayRouteTableVpcAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeLocalGatewayRouteTablesRoute,
+    getActionDescribeLocalGatewayRouteTablesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLocalGatewayRouteTablesRoute,
+    postActionDescribeLocalGatewayRouteTablesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeLocalGatewayVirtualInterfaceGroupsRoute,
+    getActionDescribeLocalGatewayVirtualInterfaceGroupsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLocalGatewayVirtualInterfaceGroupsRoute,
+    postActionDescribeLocalGatewayVirtualInterfaceGroupsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeLocalGatewayVirtualInterfacesRoute,
+    getActionDescribeLocalGatewayVirtualInterfacesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeLocalGatewayVirtualInterfacesRoute,
+    postActionDescribeLocalGatewayVirtualInterfacesRouteHandler,
+  )
+  .openapi(getActionDescribeLocalGatewaysRoute, getActionDescribeLocalGatewaysRouteHandler)
+  .openapi(postActionDescribeLocalGatewaysRoute, postActionDescribeLocalGatewaysRouteHandler)
+  .openapi(
+    getActionDescribeManagedPrefixListsRoute,
+    getActionDescribeManagedPrefixListsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeManagedPrefixListsRoute,
+    postActionDescribeManagedPrefixListsRouteHandler,
+  )
+  .openapi(getActionDescribeMovingAddressesRoute, getActionDescribeMovingAddressesRouteHandler)
+  .openapi(postActionDescribeMovingAddressesRoute, postActionDescribeMovingAddressesRouteHandler)
+  .openapi(getActionDescribeNatGatewaysRoute, getActionDescribeNatGatewaysRouteHandler)
+  .openapi(postActionDescribeNatGatewaysRoute, postActionDescribeNatGatewaysRouteHandler)
+  .openapi(getActionDescribeNetworkAclsRoute, getActionDescribeNetworkAclsRouteHandler)
+  .openapi(postActionDescribeNetworkAclsRoute, postActionDescribeNetworkAclsRouteHandler)
+  .openapi(
+    getActionDescribeNetworkInsightsAccessScopeAnalysesRoute,
+    getActionDescribeNetworkInsightsAccessScopeAnalysesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInsightsAccessScopeAnalysesRoute,
+    postActionDescribeNetworkInsightsAccessScopeAnalysesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeNetworkInsightsAccessScopesRoute,
+    getActionDescribeNetworkInsightsAccessScopesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInsightsAccessScopesRoute,
+    postActionDescribeNetworkInsightsAccessScopesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeNetworkInsightsAnalysesRoute,
+    getActionDescribeNetworkInsightsAnalysesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInsightsAnalysesRoute,
+    postActionDescribeNetworkInsightsAnalysesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeNetworkInsightsPathsRoute,
+    getActionDescribeNetworkInsightsPathsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInsightsPathsRoute,
+    postActionDescribeNetworkInsightsPathsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeNetworkInterfaceAttributeRoute,
+    getActionDescribeNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInterfaceAttributeRoute,
+    postActionDescribeNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(
+    getActionDescribeNetworkInterfacePermissionsRoute,
+    getActionDescribeNetworkInterfacePermissionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeNetworkInterfacePermissionsRoute,
+    postActionDescribeNetworkInterfacePermissionsRouteHandler,
+  )
+  .openapi(getActionDescribeNetworkInterfacesRoute, getActionDescribeNetworkInterfacesRouteHandler)
+  .openapi(
+    postActionDescribeNetworkInterfacesRoute,
+    postActionDescribeNetworkInterfacesRouteHandler,
+  )
+  .openapi(getActionDescribePlacementGroupsRoute, getActionDescribePlacementGroupsRouteHandler)
+  .openapi(postActionDescribePlacementGroupsRoute, postActionDescribePlacementGroupsRouteHandler)
+  .openapi(getActionDescribePrefixListsRoute, getActionDescribePrefixListsRouteHandler)
+  .openapi(postActionDescribePrefixListsRoute, postActionDescribePrefixListsRouteHandler)
+  .openapi(getActionDescribePrincipalIdFormatRoute, getActionDescribePrincipalIdFormatRouteHandler)
+  .openapi(
+    postActionDescribePrincipalIdFormatRoute,
+    postActionDescribePrincipalIdFormatRouteHandler,
+  )
+  .openapi(getActionDescribePublicIpv4PoolsRoute, getActionDescribePublicIpv4PoolsRouteHandler)
+  .openapi(postActionDescribePublicIpv4PoolsRoute, postActionDescribePublicIpv4PoolsRouteHandler)
+  .openapi(getActionDescribeRegionsRoute, getActionDescribeRegionsRouteHandler)
+  .openapi(postActionDescribeRegionsRoute, postActionDescribeRegionsRouteHandler)
+  .openapi(
+    getActionDescribeReplaceRootVolumeTasksRoute,
+    getActionDescribeReplaceRootVolumeTasksRouteHandler,
+  )
+  .openapi(
+    postActionDescribeReplaceRootVolumeTasksRoute,
+    postActionDescribeReplaceRootVolumeTasksRouteHandler,
+  )
+  .openapi(getActionDescribeReservedInstancesRoute, getActionDescribeReservedInstancesRouteHandler)
+  .openapi(
+    postActionDescribeReservedInstancesRoute,
+    postActionDescribeReservedInstancesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeReservedInstancesListingsRoute,
+    getActionDescribeReservedInstancesListingsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeReservedInstancesListingsRoute,
+    postActionDescribeReservedInstancesListingsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeReservedInstancesModificationsRoute,
+    getActionDescribeReservedInstancesModificationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeReservedInstancesModificationsRoute,
+    postActionDescribeReservedInstancesModificationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeReservedInstancesOfferingsRoute,
+    getActionDescribeReservedInstancesOfferingsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeReservedInstancesOfferingsRoute,
+    postActionDescribeReservedInstancesOfferingsRouteHandler,
+  )
+  .openapi(getActionDescribeRouteTablesRoute, getActionDescribeRouteTablesRouteHandler)
+  .openapi(postActionDescribeRouteTablesRoute, postActionDescribeRouteTablesRouteHandler)
+  .openapi(
+    getActionDescribeScheduledInstanceAvailabilityRoute,
+    getActionDescribeScheduledInstanceAvailabilityRouteHandler,
+  )
+  .openapi(
+    postActionDescribeScheduledInstanceAvailabilityRoute,
+    postActionDescribeScheduledInstanceAvailabilityRouteHandler,
+  )
+  .openapi(
+    getActionDescribeScheduledInstancesRoute,
+    getActionDescribeScheduledInstancesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeScheduledInstancesRoute,
+    postActionDescribeScheduledInstancesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSecurityGroupReferencesRoute,
+    getActionDescribeSecurityGroupReferencesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSecurityGroupReferencesRoute,
+    postActionDescribeSecurityGroupReferencesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSecurityGroupRulesRoute,
+    getActionDescribeSecurityGroupRulesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSecurityGroupRulesRoute,
+    postActionDescribeSecurityGroupRulesRouteHandler,
+  )
+  .openapi(getActionDescribeSecurityGroupsRoute, getActionDescribeSecurityGroupsRouteHandler)
+  .openapi(postActionDescribeSecurityGroupsRoute, postActionDescribeSecurityGroupsRouteHandler)
+  .openapi(getActionDescribeSnapshotAttributeRoute, getActionDescribeSnapshotAttributeRouteHandler)
+  .openapi(
+    postActionDescribeSnapshotAttributeRoute,
+    postActionDescribeSnapshotAttributeRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSnapshotTierStatusRoute,
+    getActionDescribeSnapshotTierStatusRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSnapshotTierStatusRoute,
+    postActionDescribeSnapshotTierStatusRouteHandler,
+  )
+  .openapi(getActionDescribeSnapshotsRoute, getActionDescribeSnapshotsRouteHandler)
+  .openapi(postActionDescribeSnapshotsRoute, postActionDescribeSnapshotsRouteHandler)
+  .openapi(
+    getActionDescribeSpotDatafeedSubscriptionRoute,
+    getActionDescribeSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSpotDatafeedSubscriptionRoute,
+    postActionDescribeSpotDatafeedSubscriptionRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSpotFleetInstancesRoute,
+    getActionDescribeSpotFleetInstancesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSpotFleetInstancesRoute,
+    postActionDescribeSpotFleetInstancesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSpotFleetRequestHistoryRoute,
+    getActionDescribeSpotFleetRequestHistoryRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSpotFleetRequestHistoryRoute,
+    postActionDescribeSpotFleetRequestHistoryRouteHandler,
+  )
+  .openapi(getActionDescribeSpotFleetRequestsRoute, getActionDescribeSpotFleetRequestsRouteHandler)
+  .openapi(
+    postActionDescribeSpotFleetRequestsRoute,
+    postActionDescribeSpotFleetRequestsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeSpotInstanceRequestsRoute,
+    getActionDescribeSpotInstanceRequestsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeSpotInstanceRequestsRoute,
+    postActionDescribeSpotInstanceRequestsRouteHandler,
+  )
+  .openapi(getActionDescribeSpotPriceHistoryRoute, getActionDescribeSpotPriceHistoryRouteHandler)
+  .openapi(postActionDescribeSpotPriceHistoryRoute, postActionDescribeSpotPriceHistoryRouteHandler)
+  .openapi(
+    getActionDescribeStaleSecurityGroupsRoute,
+    getActionDescribeStaleSecurityGroupsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeStaleSecurityGroupsRoute,
+    postActionDescribeStaleSecurityGroupsRouteHandler,
+  )
+  .openapi(getActionDescribeStoreImageTasksRoute, getActionDescribeStoreImageTasksRouteHandler)
+  .openapi(postActionDescribeStoreImageTasksRoute, postActionDescribeStoreImageTasksRouteHandler)
+  .openapi(getActionDescribeSubnetsRoute, getActionDescribeSubnetsRouteHandler)
+  .openapi(postActionDescribeSubnetsRoute, postActionDescribeSubnetsRouteHandler)
+  .openapi(getActionDescribeTagsRoute, getActionDescribeTagsRouteHandler)
+  .openapi(postActionDescribeTagsRoute, postActionDescribeTagsRouteHandler)
+  .openapi(
+    getActionDescribeTrafficMirrorFiltersRoute,
+    getActionDescribeTrafficMirrorFiltersRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTrafficMirrorFiltersRoute,
+    postActionDescribeTrafficMirrorFiltersRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTrafficMirrorSessionsRoute,
+    getActionDescribeTrafficMirrorSessionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTrafficMirrorSessionsRoute,
+    postActionDescribeTrafficMirrorSessionsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTrafficMirrorTargetsRoute,
+    getActionDescribeTrafficMirrorTargetsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTrafficMirrorTargetsRoute,
+    postActionDescribeTrafficMirrorTargetsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayAttachmentsRoute,
+    getActionDescribeTransitGatewayAttachmentsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayAttachmentsRoute,
+    postActionDescribeTransitGatewayAttachmentsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayConnectPeersRoute,
+    getActionDescribeTransitGatewayConnectPeersRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayConnectPeersRoute,
+    postActionDescribeTransitGatewayConnectPeersRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayConnectsRoute,
+    getActionDescribeTransitGatewayConnectsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayConnectsRoute,
+    postActionDescribeTransitGatewayConnectsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayMulticastDomainsRoute,
+    getActionDescribeTransitGatewayMulticastDomainsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayMulticastDomainsRoute,
+    postActionDescribeTransitGatewayMulticastDomainsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayPeeringAttachmentsRoute,
+    getActionDescribeTransitGatewayPeeringAttachmentsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayPeeringAttachmentsRoute,
+    postActionDescribeTransitGatewayPeeringAttachmentsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayPolicyTablesRoute,
+    getActionDescribeTransitGatewayPolicyTablesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayPolicyTablesRoute,
+    postActionDescribeTransitGatewayPolicyTablesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayRouteTableAnnouncementsRoute,
+    getActionDescribeTransitGatewayRouteTableAnnouncementsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayRouteTableAnnouncementsRoute,
+    postActionDescribeTransitGatewayRouteTableAnnouncementsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayRouteTablesRoute,
+    getActionDescribeTransitGatewayRouteTablesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayRouteTablesRoute,
+    postActionDescribeTransitGatewayRouteTablesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeTransitGatewayVpcAttachmentsRoute,
+    getActionDescribeTransitGatewayVpcAttachmentsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTransitGatewayVpcAttachmentsRoute,
+    postActionDescribeTransitGatewayVpcAttachmentsRouteHandler,
+  )
+  .openapi(getActionDescribeTransitGatewaysRoute, getActionDescribeTransitGatewaysRouteHandler)
+  .openapi(postActionDescribeTransitGatewaysRoute, postActionDescribeTransitGatewaysRouteHandler)
+  .openapi(
+    getActionDescribeTrunkInterfaceAssociationsRoute,
+    getActionDescribeTrunkInterfaceAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeTrunkInterfaceAssociationsRoute,
+    postActionDescribeTrunkInterfaceAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVerifiedAccessEndpointsRoute,
+    getActionDescribeVerifiedAccessEndpointsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVerifiedAccessEndpointsRoute,
+    postActionDescribeVerifiedAccessEndpointsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVerifiedAccessGroupsRoute,
+    getActionDescribeVerifiedAccessGroupsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVerifiedAccessGroupsRoute,
+    postActionDescribeVerifiedAccessGroupsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVerifiedAccessInstanceLoggingConfigurationsRoute,
+    getActionDescribeVerifiedAccessInstanceLoggingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVerifiedAccessInstanceLoggingConfigurationsRoute,
+    postActionDescribeVerifiedAccessInstanceLoggingConfigurationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVerifiedAccessInstancesRoute,
+    getActionDescribeVerifiedAccessInstancesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVerifiedAccessInstancesRoute,
+    postActionDescribeVerifiedAccessInstancesRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVerifiedAccessTrustProvidersRoute,
+    getActionDescribeVerifiedAccessTrustProvidersRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVerifiedAccessTrustProvidersRoute,
+    postActionDescribeVerifiedAccessTrustProvidersRouteHandler,
+  )
+  .openapi(getActionDescribeVolumeAttributeRoute, getActionDescribeVolumeAttributeRouteHandler)
+  .openapi(postActionDescribeVolumeAttributeRoute, postActionDescribeVolumeAttributeRouteHandler)
+  .openapi(getActionDescribeVolumeStatusRoute, getActionDescribeVolumeStatusRouteHandler)
+  .openapi(postActionDescribeVolumeStatusRoute, postActionDescribeVolumeStatusRouteHandler)
+  .openapi(getActionDescribeVolumesRoute, getActionDescribeVolumesRouteHandler)
+  .openapi(postActionDescribeVolumesRoute, postActionDescribeVolumesRouteHandler)
+  .openapi(
+    getActionDescribeVolumesModificationsRoute,
+    getActionDescribeVolumesModificationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVolumesModificationsRoute,
+    postActionDescribeVolumesModificationsRouteHandler,
+  )
+  .openapi(getActionDescribeVpcAttributeRoute, getActionDescribeVpcAttributeRouteHandler)
+  .openapi(postActionDescribeVpcAttributeRoute, postActionDescribeVpcAttributeRouteHandler)
+  .openapi(getActionDescribeVpcClassicLinkRoute, getActionDescribeVpcClassicLinkRouteHandler)
+  .openapi(postActionDescribeVpcClassicLinkRoute, postActionDescribeVpcClassicLinkRouteHandler)
+  .openapi(
+    getActionDescribeVpcClassicLinkDnsSupportRoute,
+    getActionDescribeVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcClassicLinkDnsSupportRoute,
+    postActionDescribeVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVpcEndpointConnectionNotificationsRoute,
+    getActionDescribeVpcEndpointConnectionNotificationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcEndpointConnectionNotificationsRoute,
+    postActionDescribeVpcEndpointConnectionNotificationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVpcEndpointConnectionsRoute,
+    getActionDescribeVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcEndpointConnectionsRoute,
+    postActionDescribeVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVpcEndpointServiceConfigurationsRoute,
+    getActionDescribeVpcEndpointServiceConfigurationsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcEndpointServiceConfigurationsRoute,
+    postActionDescribeVpcEndpointServiceConfigurationsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVpcEndpointServicePermissionsRoute,
+    getActionDescribeVpcEndpointServicePermissionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcEndpointServicePermissionsRoute,
+    postActionDescribeVpcEndpointServicePermissionsRouteHandler,
+  )
+  .openapi(
+    getActionDescribeVpcEndpointServicesRoute,
+    getActionDescribeVpcEndpointServicesRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcEndpointServicesRoute,
+    postActionDescribeVpcEndpointServicesRouteHandler,
+  )
+  .openapi(getActionDescribeVpcEndpointsRoute, getActionDescribeVpcEndpointsRouteHandler)
+  .openapi(postActionDescribeVpcEndpointsRoute, postActionDescribeVpcEndpointsRouteHandler)
+  .openapi(
+    getActionDescribeVpcPeeringConnectionsRoute,
+    getActionDescribeVpcPeeringConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionDescribeVpcPeeringConnectionsRoute,
+    postActionDescribeVpcPeeringConnectionsRouteHandler,
+  )
+  .openapi(getActionDescribeVpcsRoute, getActionDescribeVpcsRouteHandler)
+  .openapi(postActionDescribeVpcsRoute, postActionDescribeVpcsRouteHandler)
+  .openapi(getActionDescribeVpnConnectionsRoute, getActionDescribeVpnConnectionsRouteHandler)
+  .openapi(postActionDescribeVpnConnectionsRoute, postActionDescribeVpnConnectionsRouteHandler)
+  .openapi(getActionDescribeVpnGatewaysRoute, getActionDescribeVpnGatewaysRouteHandler)
+  .openapi(postActionDescribeVpnGatewaysRoute, postActionDescribeVpnGatewaysRouteHandler)
+  .openapi(getActionDetachClassicLinkVpcRoute, getActionDetachClassicLinkVpcRouteHandler)
+  .openapi(postActionDetachClassicLinkVpcRoute, postActionDetachClassicLinkVpcRouteHandler)
+  .openapi(getActionDetachInternetGatewayRoute, getActionDetachInternetGatewayRouteHandler)
+  .openapi(postActionDetachInternetGatewayRoute, postActionDetachInternetGatewayRouteHandler)
+  .openapi(getActionDetachNetworkInterfaceRoute, getActionDetachNetworkInterfaceRouteHandler)
+  .openapi(postActionDetachNetworkInterfaceRoute, postActionDetachNetworkInterfaceRouteHandler)
+  .openapi(
+    getActionDetachVerifiedAccessTrustProviderRoute,
+    getActionDetachVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(
+    postActionDetachVerifiedAccessTrustProviderRoute,
+    postActionDetachVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(getActionDetachVolumeRoute, getActionDetachVolumeRouteHandler)
+  .openapi(postActionDetachVolumeRoute, postActionDetachVolumeRouteHandler)
+  .openapi(getActionDetachVpnGatewayRoute, getActionDetachVpnGatewayRouteHandler)
+  .openapi(postActionDetachVpnGatewayRoute, postActionDetachVpnGatewayRouteHandler)
+  .openapi(getActionDisableAddressTransferRoute, getActionDisableAddressTransferRouteHandler)
+  .openapi(postActionDisableAddressTransferRoute, postActionDisableAddressTransferRouteHandler)
+  .openapi(
+    getActionDisableAwsNetworkPerformanceMetricSubscriptionRoute,
+    getActionDisableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  )
+  .openapi(
+    postActionDisableAwsNetworkPerformanceMetricSubscriptionRoute,
+    postActionDisableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  )
+  .openapi(
+    getActionDisableEbsEncryptionByDefaultRoute,
+    getActionDisableEbsEncryptionByDefaultRouteHandler,
+  )
+  .openapi(
+    postActionDisableEbsEncryptionByDefaultRoute,
+    postActionDisableEbsEncryptionByDefaultRouteHandler,
+  )
+  .openapi(getActionDisableFastLaunchRoute, getActionDisableFastLaunchRouteHandler)
+  .openapi(postActionDisableFastLaunchRoute, postActionDisableFastLaunchRouteHandler)
+  .openapi(
+    getActionDisableFastSnapshotRestoresRoute,
+    getActionDisableFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(
+    postActionDisableFastSnapshotRestoresRoute,
+    postActionDisableFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(getActionDisableImageDeprecationRoute, getActionDisableImageDeprecationRouteHandler)
+  .openapi(postActionDisableImageDeprecationRoute, postActionDisableImageDeprecationRouteHandler)
+  .openapi(
+    getActionDisableIpamOrganizationAdminAccountRoute,
+    getActionDisableIpamOrganizationAdminAccountRouteHandler,
+  )
+  .openapi(
+    postActionDisableIpamOrganizationAdminAccountRoute,
+    postActionDisableIpamOrganizationAdminAccountRouteHandler,
+  )
+  .openapi(
+    getActionDisableSerialConsoleAccessRoute,
+    getActionDisableSerialConsoleAccessRouteHandler,
+  )
+  .openapi(
+    postActionDisableSerialConsoleAccessRoute,
+    postActionDisableSerialConsoleAccessRouteHandler,
+  )
+  .openapi(
+    getActionDisableTransitGatewayRouteTablePropagationRoute,
+    getActionDisableTransitGatewayRouteTablePropagationRouteHandler,
+  )
+  .openapi(
+    postActionDisableTransitGatewayRouteTablePropagationRoute,
+    postActionDisableTransitGatewayRouteTablePropagationRouteHandler,
+  )
+  .openapi(
+    getActionDisableVgwRoutePropagationRoute,
+    getActionDisableVgwRoutePropagationRouteHandler,
+  )
+  .openapi(
+    postActionDisableVgwRoutePropagationRoute,
+    postActionDisableVgwRoutePropagationRouteHandler,
+  )
+  .openapi(getActionDisableVpcClassicLinkRoute, getActionDisableVpcClassicLinkRouteHandler)
+  .openapi(postActionDisableVpcClassicLinkRoute, postActionDisableVpcClassicLinkRouteHandler)
+  .openapi(
+    getActionDisableVpcClassicLinkDnsSupportRoute,
+    getActionDisableVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(
+    postActionDisableVpcClassicLinkDnsSupportRoute,
+    postActionDisableVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(getActionDisassociateAddressRoute, getActionDisassociateAddressRouteHandler)
+  .openapi(postActionDisassociateAddressRoute, postActionDisassociateAddressRouteHandler)
+  .openapi(
+    getActionDisassociateClientVpnTargetNetworkRoute,
+    getActionDisassociateClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateClientVpnTargetNetworkRoute,
+    postActionDisassociateClientVpnTargetNetworkRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateEnclaveCertificateIamRoleRoute,
+    getActionDisassociateEnclaveCertificateIamRoleRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateEnclaveCertificateIamRoleRoute,
+    postActionDisassociateEnclaveCertificateIamRoleRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateIamInstanceProfileRoute,
+    getActionDisassociateIamInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateIamInstanceProfileRoute,
+    postActionDisassociateIamInstanceProfileRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateInstanceEventWindowRoute,
+    getActionDisassociateInstanceEventWindowRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateInstanceEventWindowRoute,
+    postActionDisassociateInstanceEventWindowRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateIpamResourceDiscoveryRoute,
+    getActionDisassociateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateIpamResourceDiscoveryRoute,
+    postActionDisassociateIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateNatGatewayAddressRoute,
+    getActionDisassociateNatGatewayAddressRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateNatGatewayAddressRoute,
+    postActionDisassociateNatGatewayAddressRouteHandler,
+  )
+  .openapi(getActionDisassociateRouteTableRoute, getActionDisassociateRouteTableRouteHandler)
+  .openapi(postActionDisassociateRouteTableRoute, postActionDisassociateRouteTableRouteHandler)
+  .openapi(
+    getActionDisassociateSubnetCidrBlockRoute,
+    getActionDisassociateSubnetCidrBlockRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateSubnetCidrBlockRoute,
+    postActionDisassociateSubnetCidrBlockRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateTransitGatewayMulticastDomainRoute,
+    getActionDisassociateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateTransitGatewayMulticastDomainRoute,
+    postActionDisassociateTransitGatewayMulticastDomainRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateTransitGatewayPolicyTableRoute,
+    getActionDisassociateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateTransitGatewayPolicyTableRoute,
+    postActionDisassociateTransitGatewayPolicyTableRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateTransitGatewayRouteTableRoute,
+    getActionDisassociateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateTransitGatewayRouteTableRoute,
+    postActionDisassociateTransitGatewayRouteTableRouteHandler,
+  )
+  .openapi(
+    getActionDisassociateTrunkInterfaceRoute,
+    getActionDisassociateTrunkInterfaceRouteHandler,
+  )
+  .openapi(
+    postActionDisassociateTrunkInterfaceRoute,
+    postActionDisassociateTrunkInterfaceRouteHandler,
+  )
+  .openapi(getActionDisassociateVpcCidrBlockRoute, getActionDisassociateVpcCidrBlockRouteHandler)
+  .openapi(postActionDisassociateVpcCidrBlockRoute, postActionDisassociateVpcCidrBlockRouteHandler)
+  .openapi(getActionEnableAddressTransferRoute, getActionEnableAddressTransferRouteHandler)
+  .openapi(postActionEnableAddressTransferRoute, postActionEnableAddressTransferRouteHandler)
+  .openapi(
+    getActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
+    getActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  )
+  .openapi(
+    postActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
+    postActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler,
+  )
+  .openapi(
+    getActionEnableEbsEncryptionByDefaultRoute,
+    getActionEnableEbsEncryptionByDefaultRouteHandler,
+  )
+  .openapi(
+    postActionEnableEbsEncryptionByDefaultRoute,
+    postActionEnableEbsEncryptionByDefaultRouteHandler,
+  )
+  .openapi(getActionEnableFastLaunchRoute, getActionEnableFastLaunchRouteHandler)
+  .openapi(postActionEnableFastLaunchRoute, postActionEnableFastLaunchRouteHandler)
+  .openapi(
+    getActionEnableFastSnapshotRestoresRoute,
+    getActionEnableFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(
+    postActionEnableFastSnapshotRestoresRoute,
+    postActionEnableFastSnapshotRestoresRouteHandler,
+  )
+  .openapi(getActionEnableImageDeprecationRoute, getActionEnableImageDeprecationRouteHandler)
+  .openapi(postActionEnableImageDeprecationRoute, postActionEnableImageDeprecationRouteHandler)
+  .openapi(
+    getActionEnableIpamOrganizationAdminAccountRoute,
+    getActionEnableIpamOrganizationAdminAccountRouteHandler,
+  )
+  .openapi(
+    postActionEnableIpamOrganizationAdminAccountRoute,
+    postActionEnableIpamOrganizationAdminAccountRouteHandler,
+  )
+  .openapi(
+    getActionEnableReachabilityAnalyzerOrganizationSharingRoute,
+    getActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler,
+  )
+  .openapi(
+    postActionEnableReachabilityAnalyzerOrganizationSharingRoute,
+    postActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler,
+  )
+  .openapi(getActionEnableSerialConsoleAccessRoute, getActionEnableSerialConsoleAccessRouteHandler)
+  .openapi(
+    postActionEnableSerialConsoleAccessRoute,
+    postActionEnableSerialConsoleAccessRouteHandler,
+  )
+  .openapi(
+    getActionEnableTransitGatewayRouteTablePropagationRoute,
+    getActionEnableTransitGatewayRouteTablePropagationRouteHandler,
+  )
+  .openapi(
+    postActionEnableTransitGatewayRouteTablePropagationRoute,
+    postActionEnableTransitGatewayRouteTablePropagationRouteHandler,
+  )
+  .openapi(getActionEnableVgwRoutePropagationRoute, getActionEnableVgwRoutePropagationRouteHandler)
+  .openapi(
+    postActionEnableVgwRoutePropagationRoute,
+    postActionEnableVgwRoutePropagationRouteHandler,
+  )
+  .openapi(getActionEnableVolumeIORoute, getActionEnableVolumeIORouteHandler)
+  .openapi(postActionEnableVolumeIORoute, postActionEnableVolumeIORouteHandler)
+  .openapi(getActionEnableVpcClassicLinkRoute, getActionEnableVpcClassicLinkRouteHandler)
+  .openapi(postActionEnableVpcClassicLinkRoute, postActionEnableVpcClassicLinkRouteHandler)
+  .openapi(
+    getActionEnableVpcClassicLinkDnsSupportRoute,
+    getActionEnableVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(
+    postActionEnableVpcClassicLinkDnsSupportRoute,
+    postActionEnableVpcClassicLinkDnsSupportRouteHandler,
+  )
+  .openapi(
+    getActionExportClientVpnClientCertificateRevocationListRoute,
+    getActionExportClientVpnClientCertificateRevocationListRouteHandler,
+  )
+  .openapi(
+    postActionExportClientVpnClientCertificateRevocationListRoute,
+    postActionExportClientVpnClientCertificateRevocationListRouteHandler,
+  )
+  .openapi(
+    getActionExportClientVpnClientConfigurationRoute,
+    getActionExportClientVpnClientConfigurationRouteHandler,
+  )
+  .openapi(
+    postActionExportClientVpnClientConfigurationRoute,
+    postActionExportClientVpnClientConfigurationRouteHandler,
+  )
+  .openapi(getActionExportImageRoute, getActionExportImageRouteHandler)
+  .openapi(postActionExportImageRoute, postActionExportImageRouteHandler)
+  .openapi(
+    getActionExportTransitGatewayRoutesRoute,
+    getActionExportTransitGatewayRoutesRouteHandler,
+  )
+  .openapi(
+    postActionExportTransitGatewayRoutesRoute,
+    postActionExportTransitGatewayRoutesRouteHandler,
+  )
+  .openapi(
+    getActionGetAssociatedEnclaveCertificateIamRolesRoute,
+    getActionGetAssociatedEnclaveCertificateIamRolesRouteHandler,
+  )
+  .openapi(
+    postActionGetAssociatedEnclaveCertificateIamRolesRoute,
+    postActionGetAssociatedEnclaveCertificateIamRolesRouteHandler,
+  )
+  .openapi(
+    getActionGetAssociatedIpv6PoolCidrsRoute,
+    getActionGetAssociatedIpv6PoolCidrsRouteHandler,
+  )
+  .openapi(
+    postActionGetAssociatedIpv6PoolCidrsRoute,
+    postActionGetAssociatedIpv6PoolCidrsRouteHandler,
+  )
+  .openapi(
+    getActionGetAwsNetworkPerformanceDataRoute,
+    getActionGetAwsNetworkPerformanceDataRouteHandler,
+  )
+  .openapi(
+    postActionGetAwsNetworkPerformanceDataRoute,
+    postActionGetAwsNetworkPerformanceDataRouteHandler,
+  )
+  .openapi(
+    getActionGetCapacityReservationUsageRoute,
+    getActionGetCapacityReservationUsageRouteHandler,
+  )
+  .openapi(
+    postActionGetCapacityReservationUsageRoute,
+    postActionGetCapacityReservationUsageRouteHandler,
+  )
+  .openapi(getActionGetCoipPoolUsageRoute, getActionGetCoipPoolUsageRouteHandler)
+  .openapi(postActionGetCoipPoolUsageRoute, postActionGetCoipPoolUsageRouteHandler)
+  .openapi(getActionGetConsoleOutputRoute, getActionGetConsoleOutputRouteHandler)
+  .openapi(postActionGetConsoleOutputRoute, postActionGetConsoleOutputRouteHandler)
+  .openapi(getActionGetConsoleScreenshotRoute, getActionGetConsoleScreenshotRouteHandler)
+  .openapi(postActionGetConsoleScreenshotRoute, postActionGetConsoleScreenshotRouteHandler)
+  .openapi(
+    getActionGetDefaultCreditSpecificationRoute,
+    getActionGetDefaultCreditSpecificationRouteHandler,
+  )
+  .openapi(
+    postActionGetDefaultCreditSpecificationRoute,
+    postActionGetDefaultCreditSpecificationRouteHandler,
+  )
+  .openapi(getActionGetEbsDefaultKmsKeyIdRoute, getActionGetEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(postActionGetEbsDefaultKmsKeyIdRoute, postActionGetEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(getActionGetEbsEncryptionByDefaultRoute, getActionGetEbsEncryptionByDefaultRouteHandler)
+  .openapi(
+    postActionGetEbsEncryptionByDefaultRoute,
+    postActionGetEbsEncryptionByDefaultRouteHandler,
+  )
+  .openapi(
+    getActionGetFlowLogsIntegrationTemplateRoute,
+    getActionGetFlowLogsIntegrationTemplateRouteHandler,
+  )
+  .openapi(
+    postActionGetFlowLogsIntegrationTemplateRoute,
+    postActionGetFlowLogsIntegrationTemplateRouteHandler,
+  )
+  .openapi(
+    getActionGetGroupsForCapacityReservationRoute,
+    getActionGetGroupsForCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postActionGetGroupsForCapacityReservationRoute,
+    postActionGetGroupsForCapacityReservationRouteHandler,
+  )
+  .openapi(
+    getActionGetHostReservationPurchasePreviewRoute,
+    getActionGetHostReservationPurchasePreviewRouteHandler,
+  )
+  .openapi(
+    postActionGetHostReservationPurchasePreviewRoute,
+    postActionGetHostReservationPurchasePreviewRouteHandler,
+  )
+  .openapi(
+    getActionGetInstanceTypesFromInstanceRequirementsRoute,
+    getActionGetInstanceTypesFromInstanceRequirementsRouteHandler,
+  )
+  .openapi(
+    postActionGetInstanceTypesFromInstanceRequirementsRoute,
+    postActionGetInstanceTypesFromInstanceRequirementsRouteHandler,
+  )
+  .openapi(getActionGetInstanceUefiDataRoute, getActionGetInstanceUefiDataRouteHandler)
+  .openapi(postActionGetInstanceUefiDataRoute, postActionGetInstanceUefiDataRouteHandler)
+  .openapi(getActionGetIpamAddressHistoryRoute, getActionGetIpamAddressHistoryRouteHandler)
+  .openapi(postActionGetIpamAddressHistoryRoute, postActionGetIpamAddressHistoryRouteHandler)
+  .openapi(getActionGetIpamDiscoveredAccountsRoute, getActionGetIpamDiscoveredAccountsRouteHandler)
+  .openapi(
+    postActionGetIpamDiscoveredAccountsRoute,
+    postActionGetIpamDiscoveredAccountsRouteHandler,
+  )
+  .openapi(
+    getActionGetIpamDiscoveredResourceCidrsRoute,
+    getActionGetIpamDiscoveredResourceCidrsRouteHandler,
+  )
+  .openapi(
+    postActionGetIpamDiscoveredResourceCidrsRoute,
+    postActionGetIpamDiscoveredResourceCidrsRouteHandler,
+  )
+  .openapi(getActionGetIpamPoolAllocationsRoute, getActionGetIpamPoolAllocationsRouteHandler)
+  .openapi(postActionGetIpamPoolAllocationsRoute, postActionGetIpamPoolAllocationsRouteHandler)
+  .openapi(getActionGetIpamPoolCidrsRoute, getActionGetIpamPoolCidrsRouteHandler)
+  .openapi(postActionGetIpamPoolCidrsRoute, postActionGetIpamPoolCidrsRouteHandler)
+  .openapi(getActionGetIpamResourceCidrsRoute, getActionGetIpamResourceCidrsRouteHandler)
+  .openapi(postActionGetIpamResourceCidrsRoute, postActionGetIpamResourceCidrsRouteHandler)
+  .openapi(getActionGetLaunchTemplateDataRoute, getActionGetLaunchTemplateDataRouteHandler)
+  .openapi(postActionGetLaunchTemplateDataRoute, postActionGetLaunchTemplateDataRouteHandler)
+  .openapi(
+    getActionGetManagedPrefixListAssociationsRoute,
+    getActionGetManagedPrefixListAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionGetManagedPrefixListAssociationsRoute,
+    postActionGetManagedPrefixListAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionGetManagedPrefixListEntriesRoute,
+    getActionGetManagedPrefixListEntriesRouteHandler,
+  )
+  .openapi(
+    postActionGetManagedPrefixListEntriesRoute,
+    postActionGetManagedPrefixListEntriesRouteHandler,
+  )
+  .openapi(
+    getActionGetNetworkInsightsAccessScopeAnalysisFindingsRoute,
+    getActionGetNetworkInsightsAccessScopeAnalysisFindingsRouteHandler,
+  )
+  .openapi(
+    postActionGetNetworkInsightsAccessScopeAnalysisFindingsRoute,
+    postActionGetNetworkInsightsAccessScopeAnalysisFindingsRouteHandler,
+  )
+  .openapi(
+    getActionGetNetworkInsightsAccessScopeContentRoute,
+    getActionGetNetworkInsightsAccessScopeContentRouteHandler,
+  )
+  .openapi(
+    postActionGetNetworkInsightsAccessScopeContentRoute,
+    postActionGetNetworkInsightsAccessScopeContentRouteHandler,
+  )
+  .openapi(getActionGetPasswordDataRoute, getActionGetPasswordDataRouteHandler)
+  .openapi(postActionGetPasswordDataRoute, postActionGetPasswordDataRouteHandler)
+  .openapi(
+    getActionGetReservedInstancesExchangeQuoteRoute,
+    getActionGetReservedInstancesExchangeQuoteRouteHandler,
+  )
+  .openapi(
+    postActionGetReservedInstancesExchangeQuoteRoute,
+    postActionGetReservedInstancesExchangeQuoteRouteHandler,
+  )
+  .openapi(
+    getActionGetSerialConsoleAccessStatusRoute,
+    getActionGetSerialConsoleAccessStatusRouteHandler,
+  )
+  .openapi(
+    postActionGetSerialConsoleAccessStatusRoute,
+    postActionGetSerialConsoleAccessStatusRouteHandler,
+  )
+  .openapi(getActionGetSpotPlacementScoresRoute, getActionGetSpotPlacementScoresRouteHandler)
+  .openapi(postActionGetSpotPlacementScoresRoute, postActionGetSpotPlacementScoresRouteHandler)
+  .openapi(getActionGetSubnetCidrReservationsRoute, getActionGetSubnetCidrReservationsRouteHandler)
+  .openapi(
+    postActionGetSubnetCidrReservationsRoute,
+    postActionGetSubnetCidrReservationsRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayAttachmentPropagationsRoute,
+    getActionGetTransitGatewayAttachmentPropagationsRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayAttachmentPropagationsRoute,
+    postActionGetTransitGatewayAttachmentPropagationsRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayMulticastDomainAssociationsRoute,
+    getActionGetTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayMulticastDomainAssociationsRoute,
+    postActionGetTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayPolicyTableAssociationsRoute,
+    getActionGetTransitGatewayPolicyTableAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayPolicyTableAssociationsRoute,
+    postActionGetTransitGatewayPolicyTableAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayPolicyTableEntriesRoute,
+    getActionGetTransitGatewayPolicyTableEntriesRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayPolicyTableEntriesRoute,
+    postActionGetTransitGatewayPolicyTableEntriesRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayPrefixListReferencesRoute,
+    getActionGetTransitGatewayPrefixListReferencesRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayPrefixListReferencesRoute,
+    postActionGetTransitGatewayPrefixListReferencesRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayRouteTableAssociationsRoute,
+    getActionGetTransitGatewayRouteTableAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayRouteTableAssociationsRoute,
+    postActionGetTransitGatewayRouteTableAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionGetTransitGatewayRouteTablePropagationsRoute,
+    getActionGetTransitGatewayRouteTablePropagationsRouteHandler,
+  )
+  .openapi(
+    postActionGetTransitGatewayRouteTablePropagationsRoute,
+    postActionGetTransitGatewayRouteTablePropagationsRouteHandler,
+  )
+  .openapi(
+    getActionGetVerifiedAccessEndpointPolicyRoute,
+    getActionGetVerifiedAccessEndpointPolicyRouteHandler,
+  )
+  .openapi(
+    postActionGetVerifiedAccessEndpointPolicyRoute,
+    postActionGetVerifiedAccessEndpointPolicyRouteHandler,
+  )
+  .openapi(
+    getActionGetVerifiedAccessGroupPolicyRoute,
+    getActionGetVerifiedAccessGroupPolicyRouteHandler,
+  )
+  .openapi(
+    postActionGetVerifiedAccessGroupPolicyRoute,
+    postActionGetVerifiedAccessGroupPolicyRouteHandler,
+  )
+  .openapi(
+    getActionGetVpnConnectionDeviceSampleConfigurationRoute,
+    getActionGetVpnConnectionDeviceSampleConfigurationRouteHandler,
+  )
+  .openapi(
+    postActionGetVpnConnectionDeviceSampleConfigurationRoute,
+    postActionGetVpnConnectionDeviceSampleConfigurationRouteHandler,
+  )
+  .openapi(
+    getActionGetVpnConnectionDeviceTypesRoute,
+    getActionGetVpnConnectionDeviceTypesRouteHandler,
+  )
+  .openapi(
+    postActionGetVpnConnectionDeviceTypesRoute,
+    postActionGetVpnConnectionDeviceTypesRouteHandler,
+  )
+  .openapi(
+    getActionGetVpnTunnelReplacementStatusRoute,
+    getActionGetVpnTunnelReplacementStatusRouteHandler,
+  )
+  .openapi(
+    postActionGetVpnTunnelReplacementStatusRoute,
+    postActionGetVpnTunnelReplacementStatusRouteHandler,
+  )
+  .openapi(
+    getActionImportClientVpnClientCertificateRevocationListRoute,
+    getActionImportClientVpnClientCertificateRevocationListRouteHandler,
+  )
+  .openapi(
+    postActionImportClientVpnClientCertificateRevocationListRoute,
+    postActionImportClientVpnClientCertificateRevocationListRouteHandler,
+  )
+  .openapi(getActionImportImageRoute, getActionImportImageRouteHandler)
+  .openapi(postActionImportImageRoute, postActionImportImageRouteHandler)
+  .openapi(getActionImportInstanceRoute, getActionImportInstanceRouteHandler)
+  .openapi(postActionImportInstanceRoute, postActionImportInstanceRouteHandler)
+  .openapi(getActionImportKeyPairRoute, getActionImportKeyPairRouteHandler)
+  .openapi(postActionImportKeyPairRoute, postActionImportKeyPairRouteHandler)
+  .openapi(getActionImportSnapshotRoute, getActionImportSnapshotRouteHandler)
+  .openapi(postActionImportSnapshotRoute, postActionImportSnapshotRouteHandler)
+  .openapi(getActionImportVolumeRoute, getActionImportVolumeRouteHandler)
+  .openapi(postActionImportVolumeRoute, postActionImportVolumeRouteHandler)
+  .openapi(getActionListImagesInRecycleBinRoute, getActionListImagesInRecycleBinRouteHandler)
+  .openapi(postActionListImagesInRecycleBinRoute, postActionListImagesInRecycleBinRouteHandler)
+  .openapi(getActionListSnapshotsInRecycleBinRoute, getActionListSnapshotsInRecycleBinRouteHandler)
+  .openapi(
+    postActionListSnapshotsInRecycleBinRoute,
+    postActionListSnapshotsInRecycleBinRouteHandler,
+  )
+  .openapi(getActionModifyAddressAttributeRoute, getActionModifyAddressAttributeRouteHandler)
+  .openapi(postActionModifyAddressAttributeRoute, postActionModifyAddressAttributeRouteHandler)
+  .openapi(
+    getActionModifyAvailabilityZoneGroupRoute,
+    getActionModifyAvailabilityZoneGroupRouteHandler,
+  )
+  .openapi(
+    postActionModifyAvailabilityZoneGroupRoute,
+    postActionModifyAvailabilityZoneGroupRouteHandler,
+  )
+  .openapi(getActionModifyCapacityReservationRoute, getActionModifyCapacityReservationRouteHandler)
+  .openapi(
+    postActionModifyCapacityReservationRoute,
+    postActionModifyCapacityReservationRouteHandler,
+  )
+  .openapi(
+    getActionModifyCapacityReservationFleetRoute,
+    getActionModifyCapacityReservationFleetRouteHandler,
+  )
+  .openapi(
+    postActionModifyCapacityReservationFleetRoute,
+    postActionModifyCapacityReservationFleetRouteHandler,
+  )
+  .openapi(getActionModifyClientVpnEndpointRoute, getActionModifyClientVpnEndpointRouteHandler)
+  .openapi(postActionModifyClientVpnEndpointRoute, postActionModifyClientVpnEndpointRouteHandler)
+  .openapi(
+    getActionModifyDefaultCreditSpecificationRoute,
+    getActionModifyDefaultCreditSpecificationRouteHandler,
+  )
+  .openapi(
+    postActionModifyDefaultCreditSpecificationRoute,
+    postActionModifyDefaultCreditSpecificationRouteHandler,
+  )
+  .openapi(getActionModifyEbsDefaultKmsKeyIdRoute, getActionModifyEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(postActionModifyEbsDefaultKmsKeyIdRoute, postActionModifyEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(getActionModifyFleetRoute, getActionModifyFleetRouteHandler)
+  .openapi(postActionModifyFleetRoute, postActionModifyFleetRouteHandler)
+  .openapi(getActionModifyFpgaImageAttributeRoute, getActionModifyFpgaImageAttributeRouteHandler)
+  .openapi(postActionModifyFpgaImageAttributeRoute, postActionModifyFpgaImageAttributeRouteHandler)
+  .openapi(getActionModifyHostsRoute, getActionModifyHostsRouteHandler)
+  .openapi(postActionModifyHostsRoute, postActionModifyHostsRouteHandler)
+  .openapi(getActionModifyIdFormatRoute, getActionModifyIdFormatRouteHandler)
+  .openapi(postActionModifyIdFormatRoute, postActionModifyIdFormatRouteHandler)
+  .openapi(getActionModifyIdentityIdFormatRoute, getActionModifyIdentityIdFormatRouteHandler)
+  .openapi(postActionModifyIdentityIdFormatRoute, postActionModifyIdentityIdFormatRouteHandler)
+  .openapi(getActionModifyImageAttributeRoute, getActionModifyImageAttributeRouteHandler)
+  .openapi(postActionModifyImageAttributeRoute, postActionModifyImageAttributeRouteHandler)
+  .openapi(getActionModifyInstanceAttributeRoute, getActionModifyInstanceAttributeRouteHandler)
+  .openapi(postActionModifyInstanceAttributeRoute, postActionModifyInstanceAttributeRouteHandler)
+  .openapi(
+    getActionModifyInstanceCapacityReservationAttributesRoute,
+    getActionModifyInstanceCapacityReservationAttributesRouteHandler,
+  )
+  .openapi(
+    postActionModifyInstanceCapacityReservationAttributesRoute,
+    postActionModifyInstanceCapacityReservationAttributesRouteHandler,
+  )
+  .openapi(
+    getActionModifyInstanceCreditSpecificationRoute,
+    getActionModifyInstanceCreditSpecificationRouteHandler,
+  )
+  .openapi(
+    postActionModifyInstanceCreditSpecificationRoute,
+    postActionModifyInstanceCreditSpecificationRouteHandler,
+  )
+  .openapi(
+    getActionModifyInstanceEventStartTimeRoute,
+    getActionModifyInstanceEventStartTimeRouteHandler,
+  )
+  .openapi(
+    postActionModifyInstanceEventStartTimeRoute,
+    postActionModifyInstanceEventStartTimeRouteHandler,
+  )
+  .openapi(getActionModifyInstanceEventWindowRoute, getActionModifyInstanceEventWindowRouteHandler)
+  .openapi(
+    postActionModifyInstanceEventWindowRoute,
+    postActionModifyInstanceEventWindowRouteHandler,
+  )
+  .openapi(
+    getActionModifyInstanceMaintenanceOptionsRoute,
+    getActionModifyInstanceMaintenanceOptionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyInstanceMaintenanceOptionsRoute,
+    postActionModifyInstanceMaintenanceOptionsRouteHandler,
+  )
+  .openapi(
+    getActionModifyInstanceMetadataOptionsRoute,
+    getActionModifyInstanceMetadataOptionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyInstanceMetadataOptionsRoute,
+    postActionModifyInstanceMetadataOptionsRouteHandler,
+  )
+  .openapi(getActionModifyInstancePlacementRoute, getActionModifyInstancePlacementRouteHandler)
+  .openapi(postActionModifyInstancePlacementRoute, postActionModifyInstancePlacementRouteHandler)
+  .openapi(getActionModifyIpamRoute, getActionModifyIpamRouteHandler)
+  .openapi(postActionModifyIpamRoute, postActionModifyIpamRouteHandler)
+  .openapi(getActionModifyIpamPoolRoute, getActionModifyIpamPoolRouteHandler)
+  .openapi(postActionModifyIpamPoolRoute, postActionModifyIpamPoolRouteHandler)
+  .openapi(getActionModifyIpamResourceCidrRoute, getActionModifyIpamResourceCidrRouteHandler)
+  .openapi(postActionModifyIpamResourceCidrRoute, postActionModifyIpamResourceCidrRouteHandler)
+  .openapi(
+    getActionModifyIpamResourceDiscoveryRoute,
+    getActionModifyIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(
+    postActionModifyIpamResourceDiscoveryRoute,
+    postActionModifyIpamResourceDiscoveryRouteHandler,
+  )
+  .openapi(getActionModifyIpamScopeRoute, getActionModifyIpamScopeRouteHandler)
+  .openapi(postActionModifyIpamScopeRoute, postActionModifyIpamScopeRouteHandler)
+  .openapi(getActionModifyLaunchTemplateRoute, getActionModifyLaunchTemplateRouteHandler)
+  .openapi(postActionModifyLaunchTemplateRoute, postActionModifyLaunchTemplateRouteHandler)
+  .openapi(getActionModifyLocalGatewayRouteRoute, getActionModifyLocalGatewayRouteRouteHandler)
+  .openapi(postActionModifyLocalGatewayRouteRoute, postActionModifyLocalGatewayRouteRouteHandler)
+  .openapi(getActionModifyManagedPrefixListRoute, getActionModifyManagedPrefixListRouteHandler)
+  .openapi(postActionModifyManagedPrefixListRoute, postActionModifyManagedPrefixListRouteHandler)
+  .openapi(
+    getActionModifyNetworkInterfaceAttributeRoute,
+    getActionModifyNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(
+    postActionModifyNetworkInterfaceAttributeRoute,
+    postActionModifyNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(
+    getActionModifyPrivateDnsNameOptionsRoute,
+    getActionModifyPrivateDnsNameOptionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyPrivateDnsNameOptionsRoute,
+    postActionModifyPrivateDnsNameOptionsRouteHandler,
+  )
+  .openapi(getActionModifyReservedInstancesRoute, getActionModifyReservedInstancesRouteHandler)
+  .openapi(postActionModifyReservedInstancesRoute, postActionModifyReservedInstancesRouteHandler)
+  .openapi(getActionModifySecurityGroupRulesRoute, getActionModifySecurityGroupRulesRouteHandler)
+  .openapi(postActionModifySecurityGroupRulesRoute, postActionModifySecurityGroupRulesRouteHandler)
+  .openapi(getActionModifySnapshotAttributeRoute, getActionModifySnapshotAttributeRouteHandler)
+  .openapi(postActionModifySnapshotAttributeRoute, postActionModifySnapshotAttributeRouteHandler)
+  .openapi(getActionModifySnapshotTierRoute, getActionModifySnapshotTierRouteHandler)
+  .openapi(postActionModifySnapshotTierRoute, postActionModifySnapshotTierRouteHandler)
+  .openapi(getActionModifySpotFleetRequestRoute, getActionModifySpotFleetRequestRouteHandler)
+  .openapi(postActionModifySpotFleetRequestRoute, postActionModifySpotFleetRequestRouteHandler)
+  .openapi(getActionModifySubnetAttributeRoute, getActionModifySubnetAttributeRouteHandler)
+  .openapi(postActionModifySubnetAttributeRoute, postActionModifySubnetAttributeRouteHandler)
+  .openapi(
+    getActionModifyTrafficMirrorFilterNetworkServicesRoute,
+    getActionModifyTrafficMirrorFilterNetworkServicesRouteHandler,
+  )
+  .openapi(
+    postActionModifyTrafficMirrorFilterNetworkServicesRoute,
+    postActionModifyTrafficMirrorFilterNetworkServicesRouteHandler,
+  )
+  .openapi(
+    getActionModifyTrafficMirrorFilterRuleRoute,
+    getActionModifyTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    postActionModifyTrafficMirrorFilterRuleRoute,
+    postActionModifyTrafficMirrorFilterRuleRouteHandler,
+  )
+  .openapi(
+    getActionModifyTrafficMirrorSessionRoute,
+    getActionModifyTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(
+    postActionModifyTrafficMirrorSessionRoute,
+    postActionModifyTrafficMirrorSessionRouteHandler,
+  )
+  .openapi(getActionModifyTransitGatewayRoute, getActionModifyTransitGatewayRouteHandler)
+  .openapi(postActionModifyTransitGatewayRoute, postActionModifyTransitGatewayRouteHandler)
+  .openapi(
+    getActionModifyTransitGatewayPrefixListReferenceRoute,
+    getActionModifyTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(
+    postActionModifyTransitGatewayPrefixListReferenceRoute,
+    postActionModifyTransitGatewayPrefixListReferenceRouteHandler,
+  )
+  .openapi(
+    getActionModifyTransitGatewayVpcAttachmentRoute,
+    getActionModifyTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionModifyTransitGatewayVpcAttachmentRoute,
+    postActionModifyTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessEndpointRoute,
+    getActionModifyVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessEndpointRoute,
+    postActionModifyVerifiedAccessEndpointRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessEndpointPolicyRoute,
+    getActionModifyVerifiedAccessEndpointPolicyRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessEndpointPolicyRoute,
+    postActionModifyVerifiedAccessEndpointPolicyRouteHandler,
+  )
+  .openapi(getActionModifyVerifiedAccessGroupRoute, getActionModifyVerifiedAccessGroupRouteHandler)
+  .openapi(
+    postActionModifyVerifiedAccessGroupRoute,
+    postActionModifyVerifiedAccessGroupRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessGroupPolicyRoute,
+    getActionModifyVerifiedAccessGroupPolicyRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessGroupPolicyRoute,
+    postActionModifyVerifiedAccessGroupPolicyRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessInstanceRoute,
+    getActionModifyVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessInstanceRoute,
+    postActionModifyVerifiedAccessInstanceRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessInstanceLoggingConfigurationRoute,
+    getActionModifyVerifiedAccessInstanceLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessInstanceLoggingConfigurationRoute,
+    postActionModifyVerifiedAccessInstanceLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    getActionModifyVerifiedAccessTrustProviderRoute,
+    getActionModifyVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(
+    postActionModifyVerifiedAccessTrustProviderRoute,
+    postActionModifyVerifiedAccessTrustProviderRouteHandler,
+  )
+  .openapi(getActionModifyVolumeRoute, getActionModifyVolumeRouteHandler)
+  .openapi(postActionModifyVolumeRoute, postActionModifyVolumeRouteHandler)
+  .openapi(getActionModifyVolumeAttributeRoute, getActionModifyVolumeAttributeRouteHandler)
+  .openapi(postActionModifyVolumeAttributeRoute, postActionModifyVolumeAttributeRouteHandler)
+  .openapi(getActionModifyVpcAttributeRoute, getActionModifyVpcAttributeRouteHandler)
+  .openapi(postActionModifyVpcAttributeRoute, postActionModifyVpcAttributeRouteHandler)
+  .openapi(getActionModifyVpcEndpointRoute, getActionModifyVpcEndpointRouteHandler)
+  .openapi(postActionModifyVpcEndpointRoute, postActionModifyVpcEndpointRouteHandler)
+  .openapi(
+    getActionModifyVpcEndpointConnectionNotificationRoute,
+    getActionModifyVpcEndpointConnectionNotificationRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpcEndpointConnectionNotificationRoute,
+    postActionModifyVpcEndpointConnectionNotificationRouteHandler,
+  )
+  .openapi(
+    getActionModifyVpcEndpointServiceConfigurationRoute,
+    getActionModifyVpcEndpointServiceConfigurationRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpcEndpointServiceConfigurationRoute,
+    postActionModifyVpcEndpointServiceConfigurationRouteHandler,
+  )
+  .openapi(
+    getActionModifyVpcEndpointServicePayerResponsibilityRoute,
+    getActionModifyVpcEndpointServicePayerResponsibilityRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpcEndpointServicePayerResponsibilityRoute,
+    postActionModifyVpcEndpointServicePayerResponsibilityRouteHandler,
+  )
+  .openapi(
+    getActionModifyVpcEndpointServicePermissionsRoute,
+    getActionModifyVpcEndpointServicePermissionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpcEndpointServicePermissionsRoute,
+    postActionModifyVpcEndpointServicePermissionsRouteHandler,
+  )
+  .openapi(
+    getActionModifyVpcPeeringConnectionOptionsRoute,
+    getActionModifyVpcPeeringConnectionOptionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpcPeeringConnectionOptionsRoute,
+    postActionModifyVpcPeeringConnectionOptionsRouteHandler,
+  )
+  .openapi(getActionModifyVpcTenancyRoute, getActionModifyVpcTenancyRouteHandler)
+  .openapi(postActionModifyVpcTenancyRoute, postActionModifyVpcTenancyRouteHandler)
+  .openapi(getActionModifyVpnConnectionRoute, getActionModifyVpnConnectionRouteHandler)
+  .openapi(postActionModifyVpnConnectionRoute, postActionModifyVpnConnectionRouteHandler)
+  .openapi(
+    getActionModifyVpnConnectionOptionsRoute,
+    getActionModifyVpnConnectionOptionsRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpnConnectionOptionsRoute,
+    postActionModifyVpnConnectionOptionsRouteHandler,
+  )
+  .openapi(
+    getActionModifyVpnTunnelCertificateRoute,
+    getActionModifyVpnTunnelCertificateRouteHandler,
+  )
+  .openapi(
+    postActionModifyVpnTunnelCertificateRoute,
+    postActionModifyVpnTunnelCertificateRouteHandler,
+  )
+  .openapi(getActionModifyVpnTunnelOptionsRoute, getActionModifyVpnTunnelOptionsRouteHandler)
+  .openapi(postActionModifyVpnTunnelOptionsRoute, postActionModifyVpnTunnelOptionsRouteHandler)
+  .openapi(getActionMonitorInstancesRoute, getActionMonitorInstancesRouteHandler)
+  .openapi(postActionMonitorInstancesRoute, postActionMonitorInstancesRouteHandler)
+  .openapi(getActionMoveAddressToVpcRoute, getActionMoveAddressToVpcRouteHandler)
+  .openapi(postActionMoveAddressToVpcRoute, postActionMoveAddressToVpcRouteHandler)
+  .openapi(getActionMoveByoipCidrToIpamRoute, getActionMoveByoipCidrToIpamRouteHandler)
+  .openapi(postActionMoveByoipCidrToIpamRoute, postActionMoveByoipCidrToIpamRouteHandler)
+  .openapi(getActionProvisionByoipCidrRoute, getActionProvisionByoipCidrRouteHandler)
+  .openapi(postActionProvisionByoipCidrRoute, postActionProvisionByoipCidrRouteHandler)
+  .openapi(getActionProvisionIpamPoolCidrRoute, getActionProvisionIpamPoolCidrRouteHandler)
+  .openapi(postActionProvisionIpamPoolCidrRoute, postActionProvisionIpamPoolCidrRouteHandler)
+  .openapi(
+    getActionProvisionPublicIpv4PoolCidrRoute,
+    getActionProvisionPublicIpv4PoolCidrRouteHandler,
+  )
+  .openapi(
+    postActionProvisionPublicIpv4PoolCidrRoute,
+    postActionProvisionPublicIpv4PoolCidrRouteHandler,
+  )
+  .openapi(getActionPurchaseHostReservationRoute, getActionPurchaseHostReservationRouteHandler)
+  .openapi(postActionPurchaseHostReservationRoute, postActionPurchaseHostReservationRouteHandler)
+  .openapi(
+    getActionPurchaseReservedInstancesOfferingRoute,
+    getActionPurchaseReservedInstancesOfferingRouteHandler,
+  )
+  .openapi(
+    postActionPurchaseReservedInstancesOfferingRoute,
+    postActionPurchaseReservedInstancesOfferingRouteHandler,
+  )
+  .openapi(
+    getActionPurchaseScheduledInstancesRoute,
+    getActionPurchaseScheduledInstancesRouteHandler,
+  )
+  .openapi(
+    postActionPurchaseScheduledInstancesRoute,
+    postActionPurchaseScheduledInstancesRouteHandler,
+  )
+  .openapi(getActionRebootInstancesRoute, getActionRebootInstancesRouteHandler)
+  .openapi(postActionRebootInstancesRoute, postActionRebootInstancesRouteHandler)
+  .openapi(getActionRegisterImageRoute, getActionRegisterImageRouteHandler)
+  .openapi(postActionRegisterImageRoute, postActionRegisterImageRouteHandler)
+  .openapi(
+    getActionRegisterInstanceEventNotificationAttributesRoute,
+    getActionRegisterInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    postActionRegisterInstanceEventNotificationAttributesRoute,
+    postActionRegisterInstanceEventNotificationAttributesRouteHandler,
+  )
+  .openapi(
+    getActionRegisterTransitGatewayMulticastGroupMembersRoute,
+    getActionRegisterTransitGatewayMulticastGroupMembersRouteHandler,
+  )
+  .openapi(
+    postActionRegisterTransitGatewayMulticastGroupMembersRoute,
+    postActionRegisterTransitGatewayMulticastGroupMembersRouteHandler,
+  )
+  .openapi(
+    getActionRegisterTransitGatewayMulticastGroupSourcesRoute,
+    getActionRegisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  )
+  .openapi(
+    postActionRegisterTransitGatewayMulticastGroupSourcesRoute,
+    postActionRegisterTransitGatewayMulticastGroupSourcesRouteHandler,
+  )
+  .openapi(
+    getActionRejectTransitGatewayMulticastDomainAssociationsRoute,
+    getActionRejectTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    postActionRejectTransitGatewayMulticastDomainAssociationsRoute,
+    postActionRejectTransitGatewayMulticastDomainAssociationsRouteHandler,
+  )
+  .openapi(
+    getActionRejectTransitGatewayPeeringAttachmentRoute,
+    getActionRejectTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionRejectTransitGatewayPeeringAttachmentRoute,
+    postActionRejectTransitGatewayPeeringAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionRejectTransitGatewayVpcAttachmentRoute,
+    getActionRejectTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    postActionRejectTransitGatewayVpcAttachmentRoute,
+    postActionRejectTransitGatewayVpcAttachmentRouteHandler,
+  )
+  .openapi(
+    getActionRejectVpcEndpointConnectionsRoute,
+    getActionRejectVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionRejectVpcEndpointConnectionsRoute,
+    postActionRejectVpcEndpointConnectionsRouteHandler,
+  )
+  .openapi(
+    getActionRejectVpcPeeringConnectionRoute,
+    getActionRejectVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(
+    postActionRejectVpcPeeringConnectionRoute,
+    postActionRejectVpcPeeringConnectionRouteHandler,
+  )
+  .openapi(getActionReleaseAddressRoute, getActionReleaseAddressRouteHandler)
+  .openapi(postActionReleaseAddressRoute, postActionReleaseAddressRouteHandler)
+  .openapi(getActionReleaseHostsRoute, getActionReleaseHostsRouteHandler)
+  .openapi(postActionReleaseHostsRoute, postActionReleaseHostsRouteHandler)
+  .openapi(getActionReleaseIpamPoolAllocationRoute, getActionReleaseIpamPoolAllocationRouteHandler)
+  .openapi(
+    postActionReleaseIpamPoolAllocationRoute,
+    postActionReleaseIpamPoolAllocationRouteHandler,
+  )
+  .openapi(
+    getActionReplaceIamInstanceProfileAssociationRoute,
+    getActionReplaceIamInstanceProfileAssociationRouteHandler,
+  )
+  .openapi(
+    postActionReplaceIamInstanceProfileAssociationRoute,
+    postActionReplaceIamInstanceProfileAssociationRouteHandler,
+  )
+  .openapi(
+    getActionReplaceNetworkAclAssociationRoute,
+    getActionReplaceNetworkAclAssociationRouteHandler,
+  )
+  .openapi(
+    postActionReplaceNetworkAclAssociationRoute,
+    postActionReplaceNetworkAclAssociationRouteHandler,
+  )
+  .openapi(getActionReplaceNetworkAclEntryRoute, getActionReplaceNetworkAclEntryRouteHandler)
+  .openapi(postActionReplaceNetworkAclEntryRoute, postActionReplaceNetworkAclEntryRouteHandler)
+  .openapi(getActionReplaceRouteRoute, getActionReplaceRouteRouteHandler)
+  .openapi(postActionReplaceRouteRoute, postActionReplaceRouteRouteHandler)
+  .openapi(
+    getActionReplaceRouteTableAssociationRoute,
+    getActionReplaceRouteTableAssociationRouteHandler,
+  )
+  .openapi(
+    postActionReplaceRouteTableAssociationRoute,
+    postActionReplaceRouteTableAssociationRouteHandler,
+  )
+  .openapi(
+    getActionReplaceTransitGatewayRouteRoute,
+    getActionReplaceTransitGatewayRouteRouteHandler,
+  )
+  .openapi(
+    postActionReplaceTransitGatewayRouteRoute,
+    postActionReplaceTransitGatewayRouteRouteHandler,
+  )
+  .openapi(getActionReplaceVpnTunnelRoute, getActionReplaceVpnTunnelRouteHandler)
+  .openapi(postActionReplaceVpnTunnelRoute, postActionReplaceVpnTunnelRouteHandler)
+  .openapi(getActionReportInstanceStatusRoute, getActionReportInstanceStatusRouteHandler)
+  .openapi(postActionReportInstanceStatusRoute, postActionReportInstanceStatusRouteHandler)
+  .openapi(getActionRequestSpotFleetRoute, getActionRequestSpotFleetRouteHandler)
+  .openapi(postActionRequestSpotFleetRoute, postActionRequestSpotFleetRouteHandler)
+  .openapi(getActionRequestSpotInstancesRoute, getActionRequestSpotInstancesRouteHandler)
+  .openapi(postActionRequestSpotInstancesRoute, postActionRequestSpotInstancesRouteHandler)
+  .openapi(getActionResetAddressAttributeRoute, getActionResetAddressAttributeRouteHandler)
+  .openapi(postActionResetAddressAttributeRoute, postActionResetAddressAttributeRouteHandler)
+  .openapi(getActionResetEbsDefaultKmsKeyIdRoute, getActionResetEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(postActionResetEbsDefaultKmsKeyIdRoute, postActionResetEbsDefaultKmsKeyIdRouteHandler)
+  .openapi(getActionResetFpgaImageAttributeRoute, getActionResetFpgaImageAttributeRouteHandler)
+  .openapi(postActionResetFpgaImageAttributeRoute, postActionResetFpgaImageAttributeRouteHandler)
+  .openapi(getActionResetImageAttributeRoute, getActionResetImageAttributeRouteHandler)
+  .openapi(postActionResetImageAttributeRoute, postActionResetImageAttributeRouteHandler)
+  .openapi(getActionResetInstanceAttributeRoute, getActionResetInstanceAttributeRouteHandler)
+  .openapi(postActionResetInstanceAttributeRoute, postActionResetInstanceAttributeRouteHandler)
+  .openapi(
+    getActionResetNetworkInterfaceAttributeRoute,
+    getActionResetNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(
+    postActionResetNetworkInterfaceAttributeRoute,
+    postActionResetNetworkInterfaceAttributeRouteHandler,
+  )
+  .openapi(getActionResetSnapshotAttributeRoute, getActionResetSnapshotAttributeRouteHandler)
+  .openapi(postActionResetSnapshotAttributeRoute, postActionResetSnapshotAttributeRouteHandler)
+  .openapi(getActionRestoreAddressToClassicRoute, getActionRestoreAddressToClassicRouteHandler)
+  .openapi(postActionRestoreAddressToClassicRoute, postActionRestoreAddressToClassicRouteHandler)
+  .openapi(
+    getActionRestoreImageFromRecycleBinRoute,
+    getActionRestoreImageFromRecycleBinRouteHandler,
+  )
+  .openapi(
+    postActionRestoreImageFromRecycleBinRoute,
+    postActionRestoreImageFromRecycleBinRouteHandler,
+  )
+  .openapi(
+    getActionRestoreManagedPrefixListVersionRoute,
+    getActionRestoreManagedPrefixListVersionRouteHandler,
+  )
+  .openapi(
+    postActionRestoreManagedPrefixListVersionRoute,
+    postActionRestoreManagedPrefixListVersionRouteHandler,
+  )
+  .openapi(
+    getActionRestoreSnapshotFromRecycleBinRoute,
+    getActionRestoreSnapshotFromRecycleBinRouteHandler,
+  )
+  .openapi(
+    postActionRestoreSnapshotFromRecycleBinRoute,
+    postActionRestoreSnapshotFromRecycleBinRouteHandler,
+  )
+  .openapi(getActionRestoreSnapshotTierRoute, getActionRestoreSnapshotTierRouteHandler)
+  .openapi(postActionRestoreSnapshotTierRoute, postActionRestoreSnapshotTierRouteHandler)
+  .openapi(getActionRevokeClientVpnIngressRoute, getActionRevokeClientVpnIngressRouteHandler)
+  .openapi(postActionRevokeClientVpnIngressRoute, postActionRevokeClientVpnIngressRouteHandler)
+  .openapi(getActionRevokeSecurityGroupEgressRoute, getActionRevokeSecurityGroupEgressRouteHandler)
+  .openapi(
+    postActionRevokeSecurityGroupEgressRoute,
+    postActionRevokeSecurityGroupEgressRouteHandler,
+  )
+  .openapi(
+    getActionRevokeSecurityGroupIngressRoute,
+    getActionRevokeSecurityGroupIngressRouteHandler,
+  )
+  .openapi(
+    postActionRevokeSecurityGroupIngressRoute,
+    postActionRevokeSecurityGroupIngressRouteHandler,
+  )
+  .openapi(getActionRunInstancesRoute, getActionRunInstancesRouteHandler)
+  .openapi(postActionRunInstancesRoute, postActionRunInstancesRouteHandler)
+  .openapi(getActionRunScheduledInstancesRoute, getActionRunScheduledInstancesRouteHandler)
+  .openapi(postActionRunScheduledInstancesRoute, postActionRunScheduledInstancesRouteHandler)
+  .openapi(getActionSearchLocalGatewayRoutesRoute, getActionSearchLocalGatewayRoutesRouteHandler)
+  .openapi(postActionSearchLocalGatewayRoutesRoute, postActionSearchLocalGatewayRoutesRouteHandler)
+  .openapi(
+    getActionSearchTransitGatewayMulticastGroupsRoute,
+    getActionSearchTransitGatewayMulticastGroupsRouteHandler,
+  )
+  .openapi(
+    postActionSearchTransitGatewayMulticastGroupsRoute,
+    postActionSearchTransitGatewayMulticastGroupsRouteHandler,
+  )
+  .openapi(
+    getActionSearchTransitGatewayRoutesRoute,
+    getActionSearchTransitGatewayRoutesRouteHandler,
+  )
+  .openapi(
+    postActionSearchTransitGatewayRoutesRoute,
+    postActionSearchTransitGatewayRoutesRouteHandler,
+  )
+  .openapi(getActionSendDiagnosticInterruptRoute, getActionSendDiagnosticInterruptRouteHandler)
+  .openapi(postActionSendDiagnosticInterruptRoute, postActionSendDiagnosticInterruptRouteHandler)
+  .openapi(getActionStartInstancesRoute, getActionStartInstancesRouteHandler)
+  .openapi(postActionStartInstancesRoute, postActionStartInstancesRouteHandler)
+  .openapi(
+    getActionStartNetworkInsightsAccessScopeAnalysisRoute,
+    getActionStartNetworkInsightsAccessScopeAnalysisRouteHandler,
+  )
+  .openapi(
+    postActionStartNetworkInsightsAccessScopeAnalysisRoute,
+    postActionStartNetworkInsightsAccessScopeAnalysisRouteHandler,
+  )
+  .openapi(
+    getActionStartNetworkInsightsAnalysisRoute,
+    getActionStartNetworkInsightsAnalysisRouteHandler,
+  )
+  .openapi(
+    postActionStartNetworkInsightsAnalysisRoute,
+    postActionStartNetworkInsightsAnalysisRouteHandler,
+  )
+  .openapi(
+    getActionStartVpcEndpointServicePrivateDnsVerificationRoute,
+    getActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler,
+  )
+  .openapi(
+    postActionStartVpcEndpointServicePrivateDnsVerificationRoute,
+    postActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler,
+  )
+  .openapi(getActionStopInstancesRoute, getActionStopInstancesRouteHandler)
+  .openapi(postActionStopInstancesRoute, postActionStopInstancesRouteHandler)
+  .openapi(
+    getActionTerminateClientVpnConnectionsRoute,
+    getActionTerminateClientVpnConnectionsRouteHandler,
+  )
+  .openapi(
+    postActionTerminateClientVpnConnectionsRoute,
+    postActionTerminateClientVpnConnectionsRouteHandler,
+  )
+  .openapi(getActionTerminateInstancesRoute, getActionTerminateInstancesRouteHandler)
+  .openapi(postActionTerminateInstancesRoute, postActionTerminateInstancesRouteHandler)
+  .openapi(getActionUnassignIpv6AddressesRoute, getActionUnassignIpv6AddressesRouteHandler)
+  .openapi(postActionUnassignIpv6AddressesRoute, postActionUnassignIpv6AddressesRouteHandler)
+  .openapi(
+    getActionUnassignPrivateIpAddressesRoute,
+    getActionUnassignPrivateIpAddressesRouteHandler,
+  )
+  .openapi(
+    postActionUnassignPrivateIpAddressesRoute,
+    postActionUnassignPrivateIpAddressesRouteHandler,
+  )
+  .openapi(
+    getActionUnassignPrivateNatGatewayAddressRoute,
+    getActionUnassignPrivateNatGatewayAddressRouteHandler,
+  )
+  .openapi(
+    postActionUnassignPrivateNatGatewayAddressRoute,
+    postActionUnassignPrivateNatGatewayAddressRouteHandler,
+  )
+  .openapi(getActionUnmonitorInstancesRoute, getActionUnmonitorInstancesRouteHandler)
+  .openapi(postActionUnmonitorInstancesRoute, postActionUnmonitorInstancesRouteHandler)
+  .openapi(
+    getActionUpdateSecurityGroupRuleDescriptionsEgressRoute,
+    getActionUpdateSecurityGroupRuleDescriptionsEgressRouteHandler,
+  )
+  .openapi(
+    postActionUpdateSecurityGroupRuleDescriptionsEgressRoute,
+    postActionUpdateSecurityGroupRuleDescriptionsEgressRouteHandler,
+  )
+  .openapi(
+    getActionUpdateSecurityGroupRuleDescriptionsIngressRoute,
+    getActionUpdateSecurityGroupRuleDescriptionsIngressRouteHandler,
+  )
+  .openapi(
+    postActionUpdateSecurityGroupRuleDescriptionsIngressRoute,
+    postActionUpdateSecurityGroupRuleDescriptionsIngressRouteHandler,
+  )
+  .openapi(getActionWithdrawByoipCidrRoute, getActionWithdrawByoipCidrRouteHandler)
+  .openapi(postActionWithdrawByoipCidrRoute, postActionWithdrawByoipCidrRouteHandler)
 
 export default app

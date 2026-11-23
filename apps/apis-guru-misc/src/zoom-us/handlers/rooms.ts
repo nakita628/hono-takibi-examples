@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRoomsRoomIdRoute,
   getRoomsAccountProfileRoute,
   getRoomsAccountSettingsRoute,
@@ -28,84 +28,152 @@ import {
   putRoomsRoomIdLocationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRoomsRouteHandler: RouteHandler<typeof getRoomsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const roomsHandler = app
-  .openapi(getRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsAccountProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsAccountProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsAccountSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsAccountSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsDigitalSignageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoomsLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsLocationsStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsLocationsStructureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsLocationsLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsLocationsLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRoomsLocationsLocationIdLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsLocationsLocationIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsLocationsLocationIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsRoomIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRoomsRoomIdDevicesDeviceIdAppVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRoomsRoomIdLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsRoomIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoomsRoomIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRoomsRouteHandler: RouteHandler<typeof postRoomsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsAccountProfileRouteHandler: RouteHandler<
+  typeof getRoomsAccountProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsAccountProfileRouteHandler: RouteHandler<
+  typeof patchRoomsAccountProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsAccountSettingsRouteHandler: RouteHandler<
+  typeof getRoomsAccountSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsAccountSettingsRouteHandler: RouteHandler<
+  typeof patchRoomsAccountSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsDigitalSignageRouteHandler: RouteHandler<
+  typeof getRoomsDigitalSignageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsEventsRouteHandler: RouteHandler<typeof patchRoomsEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsLocationsRouteHandler: RouteHandler<typeof getRoomsLocationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoomsLocationsRouteHandler: RouteHandler<typeof postRoomsLocationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsLocationsStructureRouteHandler: RouteHandler<
+  typeof getRoomsLocationsStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsLocationsStructureRouteHandler: RouteHandler<
+  typeof patchRoomsLocationsStructureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsLocationsLocationIdRouteHandler: RouteHandler<
+  typeof getRoomsLocationsLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsLocationsLocationIdRouteHandler: RouteHandler<
+  typeof patchRoomsLocationsLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRoomsLocationsLocationIdLocationRouteHandler: RouteHandler<
+  typeof putRoomsLocationsLocationIdLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsLocationsLocationIdSettingsRouteHandler: RouteHandler<
+  typeof getRoomsLocationsLocationIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsLocationsLocationIdSettingsRouteHandler: RouteHandler<
+  typeof patchRoomsLocationsLocationIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsIdEventsRouteHandler: RouteHandler<typeof patchRoomsIdEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoomsRoomIdRouteHandler: RouteHandler<typeof deleteRoomsRoomIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsRoomIdRouteHandler: RouteHandler<typeof getRoomsRoomIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsRoomIdRouteHandler: RouteHandler<typeof patchRoomsRoomIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsRoomIdDevicesRouteHandler: RouteHandler<
+  typeof getRoomsRoomIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRoomsRoomIdDevicesDeviceIdAppVersionRouteHandler: RouteHandler<
+  typeof putRoomsRoomIdDevicesDeviceIdAppVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRoomsRoomIdLocationRouteHandler: RouteHandler<
+  typeof putRoomsRoomIdLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsRoomIdSettingsRouteHandler: RouteHandler<
+  typeof getRoomsRoomIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoomsRoomIdSettingsRouteHandler: RouteHandler<
+  typeof patchRoomsRoomIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

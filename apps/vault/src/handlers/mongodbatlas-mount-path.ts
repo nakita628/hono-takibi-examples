@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMongodbatlasMountPathRolesNameRoute,
   getMongodbatlasMountPathConfigRoute,
   getMongodbatlasMountPathCredsNameRoute,
@@ -10,30 +10,50 @@ import {
   postMongodbatlasMountPathRolesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMongodbatlasMountPathConfigRouteHandler: RouteHandler<
+  typeof getMongodbatlasMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mongodbatlasMountPathHandler = app
-  .openapi(getMongodbatlasMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMongodbatlasMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMongodbatlasMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMongodbatlasMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMongodbatlasMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMongodbatlasMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMongodbatlasMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMongodbatlasMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMongodbatlasMountPathConfigRouteHandler: RouteHandler<
+  typeof postMongodbatlasMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMongodbatlasMountPathCredsNameRouteHandler: RouteHandler<
+  typeof getMongodbatlasMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMongodbatlasMountPathCredsNameRouteHandler: RouteHandler<
+  typeof postMongodbatlasMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMongodbatlasMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getMongodbatlasMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMongodbatlasMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getMongodbatlasMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMongodbatlasMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postMongodbatlasMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMongodbatlasMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deleteMongodbatlasMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

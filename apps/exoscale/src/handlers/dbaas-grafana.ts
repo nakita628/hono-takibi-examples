@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasGrafanaNameRoute,
   getDbaasGrafanaNameRoute,
   getDbaasGrafanaServiceNameUserUsernamePasswordRevealRoute,
@@ -9,27 +9,44 @@ import {
   putDbaasGrafanaServiceNameUserUsernamePasswordResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putDbaasGrafanaNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasGrafanaNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasGrafanaHandler = app
-  .openapi(putDbaasGrafanaNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasGrafanaServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasGrafanaServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasGrafanaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasGrafanaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasGrafanaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasGrafanaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDbaasGrafanaServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasGrafanaServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasGrafanaServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasGrafanaServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasGrafanaNameRouteHandler: RouteHandler<
+  typeof deleteDbaasGrafanaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasGrafanaNameRouteHandler: RouteHandler<
+  typeof getDbaasGrafanaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasGrafanaNameRouteHandler: RouteHandler<
+  typeof putDbaasGrafanaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasGrafanaNameRouteHandler: RouteHandler<
+  typeof postDbaasGrafanaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

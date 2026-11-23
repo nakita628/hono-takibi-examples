@@ -1,92 +1,82 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const WebhookEventEventsItemsSchema = z
+  .object({
+    resourceUrl: z
+      .url()
+      .openapi({ description: 'The URL to retrieve the resource that has changed' }),
+    resourceId: z
+      .uuid()
+      .openapi({ description: 'The ID of the resource that has changed (e.g. ContactID)' }),
+    eventDateUtc: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date and time that event occurred (UTC time)' }),
+    eventType: z
+      .xor([
+        z.literal('CREATE').openapi({ description: 'When a new resource is created' }),
+        z
+          .literal('UPDATE')
+          .openapi({
+            description: 'When an existing resource is updated (including when they are archived)',
+          }),
+      ])
+      .openapi({ description: 'The type of event of that occurred (e.g. UPDATE)' }),
+    eventCategory: z
+      .xor([
+        z.literal('CONTACT').openapi({ description: 'For organisation contact-related events' }),
+        z.literal('INVOICE').openapi({ description: 'For organisation invoice-related events' }),
+        z
+          .literal('SUBSCRIPTION')
+          .openapi({ description: 'For application subscription-related events' }),
+        z
+          .literal('CREDITNOTE')
+          .openapi({ description: 'For organisation credit note-related events' }),
+        z
+          .literal('PREPAYMENT')
+          .openapi({ description: 'For organisation prepayment-related events' }),
+        z
+          .literal('OVERPAYMENT')
+          .openapi({ description: 'For organisation overpayment-related events' }),
+        z.literal('PAYMENT').openapi({ description: 'For organisation payment-related events' }),
+      ])
+      .openapi({
+        description:
+          'The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to',
+      }),
+    tenantId: z
+      .uuid()
+      .openapi({
+        description:
+          'The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)',
+      }),
+    tenantType: z
+      .xor([
+        z
+          .literal('ORGANISATION')
+          .openapi({ description: 'Represents a Xero organisation (for non-Subscription events)' }),
+        z
+          .literal('APPLICATION')
+          .openapi({ description: 'Represents a Xero application (for Subscription events)' }),
+      ])
+      .openapi({ description: 'The type of tenant' }),
+  })
+  .openapi({
+    required: [
+      'resourceUrl',
+      'resourceId',
+      'eventDateUtc',
+      'eventType',
+      'eventCategory',
+      'tenantId',
+      'tenantType',
+    ],
+  })
+  .openapi('WebhookEventEventsItems')
+
 const WebhookEventSchema = z
   .object({
     events: z
-      .array(
-        z
-          .object({
-            resourceUrl: z
-              .url()
-              .openapi({ description: 'The URL to retrieve the resource that has changed' }),
-            resourceId: z
-              .uuid()
-              .openapi({ description: 'The ID of the resource that has changed (e.g. ContactID)' }),
-            eventDateUtc: z.iso
-              .datetime({ offset: true })
-              .openapi({ description: 'The date and time that event occurred (UTC time)' }),
-            eventType: z
-              .xor([
-                z.literal('CREATE').openapi({ description: 'When a new resource is created' }),
-                z
-                  .literal('UPDATE')
-                  .openapi({
-                    description:
-                      'When an existing resource is updated (including when they are archived)',
-                  }),
-              ])
-              .openapi({ description: 'The type of event of that occurred (e.g. UPDATE)' }),
-            eventCategory: z
-              .xor([
-                z
-                  .literal('CONTACT')
-                  .openapi({ description: 'For organisation contact-related events' }),
-                z
-                  .literal('INVOICE')
-                  .openapi({ description: 'For organisation invoice-related events' }),
-                z
-                  .literal('SUBSCRIPTION')
-                  .openapi({ description: 'For application subscription-related events' }),
-                z
-                  .literal('CREDITNOTE')
-                  .openapi({ description: 'For organisation credit note-related events' }),
-                z
-                  .literal('PREPAYMENT')
-                  .openapi({ description: 'For organisation prepayment-related events' }),
-                z
-                  .literal('OVERPAYMENT')
-                  .openapi({ description: 'For organisation overpayment-related events' }),
-                z
-                  .literal('PAYMENT')
-                  .openapi({ description: 'For organisation payment-related events' }),
-              ])
-              .openapi({
-                description:
-                  'The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to',
-              }),
-            tenantId: z
-              .uuid()
-              .openapi({
-                description:
-                  'The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)',
-              }),
-            tenantType: z
-              .xor([
-                z
-                  .literal('ORGANISATION')
-                  .openapi({
-                    description: 'Represents a Xero organisation (for non-Subscription events)',
-                  }),
-                z
-                  .literal('APPLICATION')
-                  .openapi({
-                    description: 'Represents a Xero application (for Subscription events)',
-                  }),
-              ])
-              .openapi({ description: 'The type of tenant' }),
-          })
-          .openapi({
-            required: [
-              'resourceUrl',
-              'resourceId',
-              'eventDateUtc',
-              'eventType',
-              'eventCategory',
-              'tenantId',
-              'tenantType',
-            ],
-          }),
-      )
+      .array(WebhookEventEventsItemsSchema)
       .openapi({ description: 'A list of events that have occurred' }),
     lastEventSequence: z
       .int()
@@ -110,56 +100,50 @@ const CreditNoteWebhookEventSchema = WebhookEventSchema.and(
     .object({
       events: z
         .array(
-          z
-            .lazy(() => WebhookEventSchema)
-            .and(
-              z
-                .object({
-                  eventCategory: z.literal('CREDITNOTE').exactOptional(),
-                  data: z
-                    .object({
-                      Type: z
-                        .xor([
-                          z
-                            .literal('ACCPAYCREDIT')
-                            .openapi({ description: 'An Accounts Payable(supplier) Credit Note' }),
-                          z
-                            .literal('ACCRECCREDIT')
-                            .openapi({
-                              description: 'An Account Receivable(customer) Credit Note',
-                            }),
-                        ])
-                        .openapi({
-                          description: 'The type of credit note',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#credit-notes',
-                          },
-                        }),
-                      Status: z
-                        .xor([
-                          z.literal('DRAFT').openapi({ description: 'Draft credit note' }),
-                          z.literal('SUBMITTED').openapi({ description: 'Submitted credit note' }),
-                          z.literal('DELETED').openapi({ description: 'Deleted credit note' }),
-                          z
-                            .literal('AUTHORISED')
-                            .openapi({ description: 'Authorised credit note' }),
-                          z.literal('PAID').openapi({ description: 'Paid credit note' }),
-                          z.literal('VOIDED').openapi({ description: 'Voided credit note' }),
-                        ])
-                        .openapi({
-                          description: 'The status of the credit note',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#invoice-status-codes',
-                          },
-                        }),
-                    })
-                    .openapi({
-                      description: 'Additional data for credit note events',
-                      required: ['Type', 'Status'],
-                    }),
-                })
-                .openapi({ required: ['data'] }),
-            ),
+          WebhookEventEventsItemsSchema.and(
+            z
+              .object({
+                eventCategory: z.literal('CREDITNOTE').exactOptional(),
+                data: z
+                  .object({
+                    Type: z
+                      .xor([
+                        z
+                          .literal('ACCPAYCREDIT')
+                          .openapi({ description: 'An Accounts Payable(supplier) Credit Note' }),
+                        z
+                          .literal('ACCRECCREDIT')
+                          .openapi({ description: 'An Account Receivable(customer) Credit Note' }),
+                      ])
+                      .openapi({
+                        description: 'The type of credit note',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#credit-notes',
+                        },
+                      }),
+                    Status: z
+                      .xor([
+                        z.literal('DRAFT').openapi({ description: 'Draft credit note' }),
+                        z.literal('SUBMITTED').openapi({ description: 'Submitted credit note' }),
+                        z.literal('DELETED').openapi({ description: 'Deleted credit note' }),
+                        z.literal('AUTHORISED').openapi({ description: 'Authorised credit note' }),
+                        z.literal('PAID').openapi({ description: 'Paid credit note' }),
+                        z.literal('VOIDED').openapi({ description: 'Voided credit note' }),
+                      ])
+                      .openapi({
+                        description: 'The status of the credit note',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#invoice-status-codes',
+                        },
+                      }),
+                  })
+                  .openapi({
+                    description: 'Additional data for credit note events',
+                    required: ['Type', 'Status'],
+                  }),
+              })
+              .openapi({ required: ['data'] }),
+          ),
         )
         .exactOptional(),
     })
@@ -171,56 +155,54 @@ const PrepaymentWebhookEventSchema = WebhookEventSchema.and(
     .object({
       events: z
         .array(
-          z
-            .lazy(() => WebhookEventSchema)
-            .and(
-              z
-                .object({
-                  eventCategory: z.literal('PREPAYMENT').exactOptional(),
-                  data: z
-                    .object({
-                      Type: z
-                        .xor([
-                          z
-                            .literal('RECEIVE-PREPAYMENT')
-                            .openapi({ description: 'A customer prepayment' }),
-                          z
-                            .literal('SPEND-PREPAYMENT')
-                            .openapi({ description: 'A supplier prepayment' }),
-                        ])
-                        .openapi({
-                          description: 'The specific type of prepayment',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#prepayments',
-                          },
-                        }),
-                      Status: z
-                        .xor([
-                          z.literal('AUTHORISED').openapi({ description: 'Authorised prepayment' }),
-                          z.literal('PAID').openapi({ description: 'Paid prepayment' }),
-                          z.literal('VOIDED').openapi({ description: 'Voided prepayment' }),
-                        ])
-                        .openapi({
-                          description: 'The current lifecycle status of the prepayment',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#prepayment-status-codes',
-                          },
-                        }),
-                      UpdatedDateUTCString: z.iso
-                        .datetime({ offset: true })
-                        .openapi({
-                          description:
-                            'The date and time the prepayment was last updated in UTC ISO format',
-                        }),
-                    })
-                    .openapi({
-                      description:
-                        'Prepayment document lifecycle events for customer/supplier advance payments',
-                      required: ['Type', 'Status', 'UpdatedDateUTCString'],
-                    }),
-                })
-                .openapi({ required: ['data'] }),
-            ),
+          WebhookEventEventsItemsSchema.and(
+            z
+              .object({
+                eventCategory: z.literal('PREPAYMENT').exactOptional(),
+                data: z
+                  .object({
+                    Type: z
+                      .xor([
+                        z
+                          .literal('RECEIVE-PREPAYMENT')
+                          .openapi({ description: 'A customer prepayment' }),
+                        z
+                          .literal('SPEND-PREPAYMENT')
+                          .openapi({ description: 'A supplier prepayment' }),
+                      ])
+                      .openapi({
+                        description: 'The specific type of prepayment',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#prepayments',
+                        },
+                      }),
+                    Status: z
+                      .xor([
+                        z.literal('AUTHORISED').openapi({ description: 'Authorised prepayment' }),
+                        z.literal('PAID').openapi({ description: 'Paid prepayment' }),
+                        z.literal('VOIDED').openapi({ description: 'Voided prepayment' }),
+                      ])
+                      .openapi({
+                        description: 'The current lifecycle status of the prepayment',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#prepayment-status-codes',
+                        },
+                      }),
+                    UpdatedDateUTCString: z.iso
+                      .datetime({ offset: true })
+                      .openapi({
+                        description:
+                          'The date and time the prepayment was last updated in UTC ISO format',
+                      }),
+                  })
+                  .openapi({
+                    description:
+                      'Prepayment document lifecycle events for customer/supplier advance payments',
+                    required: ['Type', 'Status', 'UpdatedDateUTCString'],
+                  }),
+              })
+              .openapi({ required: ['data'] }),
+          ),
         )
         .exactOptional(),
     })
@@ -232,58 +214,54 @@ const OverpaymentWebhookEventSchema = WebhookEventSchema.and(
     .object({
       events: z
         .array(
-          z
-            .lazy(() => WebhookEventSchema)
-            .and(
-              z
-                .object({
-                  eventCategory: z.literal('OVERPAYMENT').exactOptional(),
-                  data: z
-                    .object({
-                      Type: z
-                        .xor([
-                          z
-                            .literal('RECEIVE-OVERPAYMENT')
-                            .openapi({ description: 'A customer overpayment' }),
-                          z
-                            .literal('SPEND-OVERPAYMENT')
-                            .openapi({ description: 'A supplier overpayment' }),
-                        ])
-                        .openapi({
-                          description: 'The specific type of overpayment',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#overpayments',
-                          },
-                        }),
-                      Status: z
-                        .xor([
-                          z
-                            .literal('AUTHORISED')
-                            .openapi({ description: 'Authorised overpayment' }),
-                          z.literal('PAID').openapi({ description: 'Paid overpayment' }),
-                          z.literal('VOIDED').openapi({ description: 'Voided overpayment' }),
-                        ])
-                        .openapi({
-                          description: 'The current lifecycle status of the overpayment',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#overpayment-status-codes',
-                          },
-                        }),
-                      UpdatedDateUTCString: z.iso
-                        .datetime({ offset: true })
-                        .openapi({
-                          description:
-                            'The date and time the overpayment was last updated in UTC ISO format',
-                        }),
-                    })
-                    .openapi({
-                      description:
-                        'Overpayment document lifecycle events for excess customer/supplier payments',
-                      required: ['Type', 'Status', 'UpdatedDateUTCString'],
-                    }),
-                })
-                .openapi({ required: ['data'] }),
-            ),
+          WebhookEventEventsItemsSchema.and(
+            z
+              .object({
+                eventCategory: z.literal('OVERPAYMENT').exactOptional(),
+                data: z
+                  .object({
+                    Type: z
+                      .xor([
+                        z
+                          .literal('RECEIVE-OVERPAYMENT')
+                          .openapi({ description: 'A customer overpayment' }),
+                        z
+                          .literal('SPEND-OVERPAYMENT')
+                          .openapi({ description: 'A supplier overpayment' }),
+                      ])
+                      .openapi({
+                        description: 'The specific type of overpayment',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#overpayments',
+                        },
+                      }),
+                    Status: z
+                      .xor([
+                        z.literal('AUTHORISED').openapi({ description: 'Authorised overpayment' }),
+                        z.literal('PAID').openapi({ description: 'Paid overpayment' }),
+                        z.literal('VOIDED').openapi({ description: 'Voided overpayment' }),
+                      ])
+                      .openapi({
+                        description: 'The current lifecycle status of the overpayment',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#overpayment-status-codes',
+                        },
+                      }),
+                    UpdatedDateUTCString: z.iso
+                      .datetime({ offset: true })
+                      .openapi({
+                        description:
+                          'The date and time the overpayment was last updated in UTC ISO format',
+                      }),
+                  })
+                  .openapi({
+                    description:
+                      'Overpayment document lifecycle events for excess customer/supplier payments',
+                    required: ['Type', 'Status', 'UpdatedDateUTCString'],
+                  }),
+              })
+              .openapi({ required: ['data'] }),
+          ),
         )
         .exactOptional(),
     })
@@ -295,84 +273,78 @@ const PaymentWebhookEventSchema = WebhookEventSchema.and(
     .object({
       events: z
         .array(
-          z
-            .lazy(() => WebhookEventSchema)
-            .and(
-              z
-                .object({
-                  eventCategory: z.literal('PAYMENT').exactOptional(),
-                  data: z
-                    .object({
-                      PaymentType: z
-                        .xor([
-                          z
-                            .literal('ACCRECPAYMENT')
-                            .openapi({ description: 'Accounts Receivable Payment' }),
-                          z
-                            .literal('ACCPAYPAYMENT')
-                            .openapi({ description: 'Accounts Payable Payment' }),
-                          z
-                            .literal('ARCREDITPAYMENT')
-                            .openapi({
-                              description: 'Accounts Receivable Credit Payment (Refund)',
-                            }),
-                          z
-                            .literal('APCREDITPAYMENT')
-                            .openapi({ description: 'Accounts Payable Credit Payment (Refund)' }),
-                          z
-                            .literal('AROVERPAYMENTPAYMENT')
-                            .openapi({
-                              description: 'Accounts Receivable Overpayment Payment (Refund)',
-                            }),
-                          z
-                            .literal('ARPREPAYMENTPAYMENT')
-                            .openapi({
-                              description: 'Accounts Receivable Prepayment Payment (Refund)',
-                            }),
-                          z
-                            .literal('APPREPAYMENTPAYMENT')
-                            .openapi({
-                              description: 'Accounts Payable Prepayment Payment (Refund)',
-                            }),
-                          z
-                            .literal('APOVERPAYMENTPAYMENT')
-                            .openapi({
-                              description: 'Accounts Payable Overpayment Payment (Refund)',
-                            }),
-                        ])
-                        .openapi({
-                          description:
-                            'The specific type of payment, determined by the type of the document the payment was applied to',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#payments',
-                          },
-                        }),
-                      Status: z
-                        .xor([
-                          z.literal('AUTHORISED').openapi({ description: 'Authorised payment' }),
-                          z.literal('DELETED').openapi({ description: 'Deleted payment' }),
-                        ])
-                        .openapi({
-                          description: 'The current lifecycle status of the payment',
-                          externalDocs: {
-                            url: 'https://developer.xero.com/documentation/api/accounting/types#payment-status-codes',
-                          },
-                        }),
-                      UpdatedDateUTCString: z.iso
-                        .datetime({ offset: true })
-                        .openapi({
-                          description:
-                            'The date and time the parent document was last updated in UTC ISO format',
-                        }),
-                    })
-                    .openapi({
-                      description:
-                        'Payment lifecycle events for payments applied to and removed from accounting documents',
-                      required: ['PaymentType', 'Status', 'UpdatedDateUTCString'],
-                    }),
-                })
-                .openapi({ required: ['data'] }),
-            ),
+          WebhookEventEventsItemsSchema.and(
+            z
+              .object({
+                eventCategory: z.literal('PAYMENT').exactOptional(),
+                data: z
+                  .object({
+                    PaymentType: z
+                      .xor([
+                        z
+                          .literal('ACCRECPAYMENT')
+                          .openapi({ description: 'Accounts Receivable Payment' }),
+                        z
+                          .literal('ACCPAYPAYMENT')
+                          .openapi({ description: 'Accounts Payable Payment' }),
+                        z
+                          .literal('ARCREDITPAYMENT')
+                          .openapi({ description: 'Accounts Receivable Credit Payment (Refund)' }),
+                        z
+                          .literal('APCREDITPAYMENT')
+                          .openapi({ description: 'Accounts Payable Credit Payment (Refund)' }),
+                        z
+                          .literal('AROVERPAYMENTPAYMENT')
+                          .openapi({
+                            description: 'Accounts Receivable Overpayment Payment (Refund)',
+                          }),
+                        z
+                          .literal('ARPREPAYMENTPAYMENT')
+                          .openapi({
+                            description: 'Accounts Receivable Prepayment Payment (Refund)',
+                          }),
+                        z
+                          .literal('APPREPAYMENTPAYMENT')
+                          .openapi({ description: 'Accounts Payable Prepayment Payment (Refund)' }),
+                        z
+                          .literal('APOVERPAYMENTPAYMENT')
+                          .openapi({
+                            description: 'Accounts Payable Overpayment Payment (Refund)',
+                          }),
+                      ])
+                      .openapi({
+                        description:
+                          'The specific type of payment, determined by the type of the document the payment was applied to',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#payments',
+                        },
+                      }),
+                    Status: z
+                      .xor([
+                        z.literal('AUTHORISED').openapi({ description: 'Authorised payment' }),
+                        z.literal('DELETED').openapi({ description: 'Deleted payment' }),
+                      ])
+                      .openapi({
+                        description: 'The current lifecycle status of the payment',
+                        externalDocs: {
+                          url: 'https://developer.xero.com/documentation/api/accounting/types#payment-status-codes',
+                        },
+                      }),
+                    UpdatedDateUTCString: z.iso
+                      .datetime({ offset: true })
+                      .openapi({
+                        description:
+                          'The date and time the parent document was last updated in UTC ISO format',
+                      }),
+                  })
+                  .openapi({
+                    description:
+                      'Payment lifecycle events for payments applied to and removed from accounting documents',
+                    required: ['PaymentType', 'Status', 'UpdatedDateUTCString'],
+                  }),
+              })
+              .openapi({ required: ['data'] }),
+          ),
         )
         .exactOptional(),
     })

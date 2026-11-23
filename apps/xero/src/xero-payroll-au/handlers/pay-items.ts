@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPayItemsRoute, postPayItemsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPayItemsRoute, postPayItemsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPayItemsRouteHandler: RouteHandler<typeof getPayItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const payItemsHandler = app
-  .openapi(getPayItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPayItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPayItemsRouteHandler: RouteHandler<typeof postPayItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

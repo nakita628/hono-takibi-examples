@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getProductVariantCountJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getProductVariantCountJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const productVariantCountJsonHandler = app.openapi(getProductVariantCountJsonRoute, (c) => {
+export const getProductVariantCountJsonRouteHandler: RouteHandler<
+  typeof getProductVariantCountJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMasterDataAreaOfLawAreaOfLawIdRoute,
   getMasterDataAreaOfLawRoute,
   getMasterDataAttorneyRepresentationTypeAttorneyRepresentationTypeIdRoute,
@@ -59,177 +59,344 @@ import {
   getMasterDataPartyRoleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMasterDataAreaOfLawRouteHandler: RouteHandler<
+  typeof getMasterDataAreaOfLawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const masterDataHandler = app
-  .openapi(getMasterDataAreaOfLawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataAreaOfLawAreaOfLawIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataAttorneyRepresentationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataAttorneyRepresentationTypeAttorneyRepresentationTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataAttorneyTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataAttorneyTypeAttorneyTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseClassCaseClassIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseRelationshipTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseRelationshipTypeCaseRelationshipTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseStatusCaseStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseStatusGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseStatusGroupCaseStatusGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseTypeCaseTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseTypeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCaseTypeGroupCaseTypeGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionCauseOfActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionAdditionalDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionAdditionalDataCauseOfActionAdditionalDataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCauseOfActionGroupCauseOfActionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeChargeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeAdditionalDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeAdditionalDataChargeAdditionalDataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeDegreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeDegreeChargeDegreeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeGroupChargeGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeSeverityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataChargeSeverityChargeSeverityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtCourtIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtCourtIdAppealCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtCourtIdCourtLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtCourtIdJurisdictionGeoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtLocationCourtLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtLocationCourtLocationIdCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtServiceStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtServiceStatusCourtServiceStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtSystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtSystemCourtSystemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataCourtTypeCourtTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataJudgeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataJudgeTypeJudgeTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataJurisdictionGeoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataJurisdictionGeoJurisdictionGeoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataJurisdictionGeoJurisdictionGeoIdCourtsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataPartyRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataPartyRolePartyRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataPartyRoleGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMasterDataPartyRoleGroupPartyRoleGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMasterDataAreaOfLawAreaOfLawIdRouteHandler: RouteHandler<
+  typeof getMasterDataAreaOfLawAreaOfLawIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataAttorneyRepresentationTypeRouteHandler: RouteHandler<
+  typeof getMasterDataAttorneyRepresentationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataAttorneyRepresentationTypeAttorneyRepresentationTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataAttorneyRepresentationTypeAttorneyRepresentationTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataAttorneyTypeRouteHandler: RouteHandler<
+  typeof getMasterDataAttorneyTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataAttorneyTypeAttorneyTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataAttorneyTypeAttorneyTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseClassRouteHandler: RouteHandler<
+  typeof getMasterDataCaseClassRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseClassCaseClassIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseClassCaseClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseRelationshipTypeRouteHandler: RouteHandler<
+  typeof getMasterDataCaseRelationshipTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseRelationshipTypeCaseRelationshipTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseRelationshipTypeCaseRelationshipTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseStatusRouteHandler: RouteHandler<
+  typeof getMasterDataCaseStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseStatusCaseStatusIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseStatusCaseStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseStatusGroupRouteHandler: RouteHandler<
+  typeof getMasterDataCaseStatusGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseStatusGroupCaseStatusGroupIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseStatusGroupCaseStatusGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseTypeRouteHandler: RouteHandler<
+  typeof getMasterDataCaseTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseTypeCaseTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseTypeCaseTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseTypeGroupRouteHandler: RouteHandler<
+  typeof getMasterDataCaseTypeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCaseTypeGroupCaseTypeGroupIdRouteHandler: RouteHandler<
+  typeof getMasterDataCaseTypeGroupCaseTypeGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionCauseOfActionIdRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionCauseOfActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionAdditionalDataRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionAdditionalDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionAdditionalDataCauseOfActionAdditionalDataIdRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionAdditionalDataCauseOfActionAdditionalDataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionGroupRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCauseOfActionGroupCauseOfActionGroupIdRouteHandler: RouteHandler<
+  typeof getMasterDataCauseOfActionGroupCauseOfActionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeRouteHandler: RouteHandler<
+  typeof getMasterDataChargeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeChargeIdRouteHandler: RouteHandler<
+  typeof getMasterDataChargeChargeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeAdditionalDataRouteHandler: RouteHandler<
+  typeof getMasterDataChargeAdditionalDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeAdditionalDataChargeAdditionalDataIdRouteHandler: RouteHandler<
+  typeof getMasterDataChargeAdditionalDataChargeAdditionalDataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeDegreeRouteHandler: RouteHandler<
+  typeof getMasterDataChargeDegreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeDegreeChargeDegreeIdRouteHandler: RouteHandler<
+  typeof getMasterDataChargeDegreeChargeDegreeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeGroupRouteHandler: RouteHandler<
+  typeof getMasterDataChargeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeGroupChargeGroupIdRouteHandler: RouteHandler<
+  typeof getMasterDataChargeGroupChargeGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeSeverityRouteHandler: RouteHandler<
+  typeof getMasterDataChargeSeverityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataChargeSeverityChargeSeverityIdRouteHandler: RouteHandler<
+  typeof getMasterDataChargeSeverityChargeSeverityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtRouteHandler: RouteHandler<typeof getMasterDataCourtRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtCourtIdRouteHandler: RouteHandler<
+  typeof getMasterDataCourtCourtIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtCourtIdAppealCourtsRouteHandler: RouteHandler<
+  typeof getMasterDataCourtCourtIdAppealCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtCourtIdCourtLocationsRouteHandler: RouteHandler<
+  typeof getMasterDataCourtCourtIdCourtLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtCourtIdJurisdictionGeoRouteHandler: RouteHandler<
+  typeof getMasterDataCourtCourtIdJurisdictionGeoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtLocationRouteHandler: RouteHandler<
+  typeof getMasterDataCourtLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtLocationCourtLocationIdRouteHandler: RouteHandler<
+  typeof getMasterDataCourtLocationCourtLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtLocationCourtLocationIdCourtsRouteHandler: RouteHandler<
+  typeof getMasterDataCourtLocationCourtLocationIdCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtServiceStatusRouteHandler: RouteHandler<
+  typeof getMasterDataCourtServiceStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtServiceStatusCourtServiceStatusIdRouteHandler: RouteHandler<
+  typeof getMasterDataCourtServiceStatusCourtServiceStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtSystemRouteHandler: RouteHandler<
+  typeof getMasterDataCourtSystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtSystemCourtSystemIdRouteHandler: RouteHandler<
+  typeof getMasterDataCourtSystemCourtSystemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtTypeRouteHandler: RouteHandler<
+  typeof getMasterDataCourtTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataCourtTypeCourtTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataCourtTypeCourtTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataJudgeTypeRouteHandler: RouteHandler<
+  typeof getMasterDataJudgeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataJudgeTypeJudgeTypeIdRouteHandler: RouteHandler<
+  typeof getMasterDataJudgeTypeJudgeTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataJurisdictionGeoRouteHandler: RouteHandler<
+  typeof getMasterDataJurisdictionGeoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataJurisdictionGeoJurisdictionGeoIdRouteHandler: RouteHandler<
+  typeof getMasterDataJurisdictionGeoJurisdictionGeoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataJurisdictionGeoJurisdictionGeoIdCourtsRouteHandler: RouteHandler<
+  typeof getMasterDataJurisdictionGeoJurisdictionGeoIdCourtsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataPartyRoleRouteHandler: RouteHandler<
+  typeof getMasterDataPartyRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataPartyRolePartyRoleIdRouteHandler: RouteHandler<
+  typeof getMasterDataPartyRolePartyRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataPartyRoleGroupRouteHandler: RouteHandler<
+  typeof getMasterDataPartyRoleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMasterDataPartyRoleGroupPartyRoleGroupIdRouteHandler: RouteHandler<
+  typeof getMasterDataPartyRoleGroupPartyRoleGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

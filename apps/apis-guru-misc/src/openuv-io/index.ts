@@ -1,11 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { forecastHandler, protectionHandler, uvHandler } from './handlers'
+import { getForecastRoute, getProtectionRoute, getUvRoute } from './routes'
+import { getForecastRouteHandler, getProtectionRouteHandler, getUvRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', forecastHandler)
-  .route('/', protectionHandler)
-  .route('/', uvHandler)
+  .openapi(getForecastRoute, getForecastRouteHandler)
+  .openapi(getProtectionRoute, getProtectionRouteHandler)
+  .openapi(getUvRoute, getUvRouteHandler)
 
 export default app

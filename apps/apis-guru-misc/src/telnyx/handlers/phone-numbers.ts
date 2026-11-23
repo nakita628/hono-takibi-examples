@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePhoneNumbersIdRoute,
   getPhoneNumbersCsvDownloadsIdRoute,
   getPhoneNumbersCsvDownloadsRoute,
@@ -23,69 +23,126 @@ import {
   postPhoneNumbersJobsUpdatePhoneNumbersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPhoneNumbersRouteHandler: RouteHandler<typeof getPhoneNumbersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const phoneNumbersHandler = app
-  .openapi(getPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersCsvDownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersCsvDownloadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersCsvDownloadsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersInboundChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersInboundChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersJobsDeletePhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersJobsUpdateEmergencySettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersJobsUpdatePhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersMessagingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersVoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneNumbersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersIdActionsEnableEmergencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersIdMessagingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersIdMessagingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersIdVoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersIdVoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPhoneNumbersCsvDownloadsRouteHandler: RouteHandler<
+  typeof getPhoneNumbersCsvDownloadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersCsvDownloadsRouteHandler: RouteHandler<
+  typeof postPhoneNumbersCsvDownloadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersCsvDownloadsIdRouteHandler: RouteHandler<
+  typeof getPhoneNumbersCsvDownloadsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersInboundChannelsRouteHandler: RouteHandler<
+  typeof getPhoneNumbersInboundChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersInboundChannelsRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersInboundChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersJobsRouteHandler: RouteHandler<
+  typeof getPhoneNumbersJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersJobsDeletePhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneNumbersJobsDeletePhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersJobsUpdateEmergencySettingsRouteHandler: RouteHandler<
+  typeof postPhoneNumbersJobsUpdateEmergencySettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersJobsUpdatePhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneNumbersJobsUpdatePhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersJobsIdRouteHandler: RouteHandler<
+  typeof getPhoneNumbersJobsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersMessagingRouteHandler: RouteHandler<
+  typeof getPhoneNumbersMessagingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersVoiceRouteHandler: RouteHandler<
+  typeof getPhoneNumbersVoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneNumbersIdRouteHandler: RouteHandler<
+  typeof deletePhoneNumbersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersIdRouteHandler: RouteHandler<typeof getPhoneNumbersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersIdRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersIdActionsEnableEmergencyRouteHandler: RouteHandler<
+  typeof postPhoneNumbersIdActionsEnableEmergencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersIdMessagingRouteHandler: RouteHandler<
+  typeof getPhoneNumbersIdMessagingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersIdMessagingRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersIdMessagingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersIdVoiceRouteHandler: RouteHandler<
+  typeof getPhoneNumbersIdVoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersIdVoiceRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersIdVoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

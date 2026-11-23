@@ -1,18 +1,23 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAuthkeyRoute, patchAuthkeyRoute, postAuthkeyRoute, putAuthkeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getAuthkeyRoute,
+  patchAuthkeyRoute,
+  postAuthkeyRoute,
+  putAuthkeyRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getAuthkeyRouteHandler: RouteHandler<typeof getAuthkeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authkeyHandler = app
-  .openapi(getAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchAuthkeyRouteHandler: RouteHandler<typeof patchAuthkeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthkeyRouteHandler: RouteHandler<typeof postAuthkeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthkeyRouteHandler: RouteHandler<typeof putAuthkeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

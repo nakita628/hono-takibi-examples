@@ -2194,7 +2194,7 @@ export const postCrmObjects20260903BatchArchiveRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.tickets.read'] },
@@ -2852,7 +2852,7 @@ export const postCrmObjects20260903GdprDeleteRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.tickets.read'] },
@@ -3430,7 +3430,7 @@ export const deleteCrmObjects20260903DealIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.tickets.read'] },
@@ -4306,7 +4306,7 @@ export const deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToO
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [
       { oauth2: ['crm.objects.tickets.write'] },
       { oauth2: ['crm.objects.tickets.read'] },

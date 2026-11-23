@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTrappedFluxMeanRoute, getTrappedFluxPercentileRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTrappedFluxMeanRoute, getTrappedFluxPercentileRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTrappedFluxMeanRouteHandler: RouteHandler<typeof getTrappedFluxMeanRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const trappedHandler = app
-  .openapi(getTrappedFluxMeanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTrappedFluxPercentileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTrappedFluxPercentileRouteHandler: RouteHandler<
+  typeof getTrappedFluxPercentileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

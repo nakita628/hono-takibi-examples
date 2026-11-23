@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/emr-containers/2020-10-01/openapi.yaml',
   output: './src/emr-containers/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/emr-containers/types.ts' },
   client: { output: './src/emr-containers/client.ts', baseUrl: '/' },
   rpc: { output: './src/emr-containers/rpc.ts', parseResponse: true },

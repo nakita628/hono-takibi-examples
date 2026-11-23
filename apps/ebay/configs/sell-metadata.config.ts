@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-metadata/v1.6.0/openapi.yaml',
   output: './src/sell-metadata/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sell-metadata/types.ts' },
   client: { output: './src/sell-metadata/client.ts', baseUrl: '/' },
   rpc: { output: './src/sell-metadata/rpc.ts', parseResponse: true },

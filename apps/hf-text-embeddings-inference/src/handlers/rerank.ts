@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRerankRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRerankRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rerankHandler = app.openapi(postRerankRoute, (c) => {
+export const postRerankRouteHandler: RouteHandler<typeof postRerankRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

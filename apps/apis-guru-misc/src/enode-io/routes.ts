@@ -306,7 +306,7 @@ export const postChargersChargerIdChargingRoute = createRoute({
       },
     },
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ UserAccessToken: ['all'] }, { UserAccessToken: ['control:charger:charging'] }],
 })
 
@@ -611,7 +611,7 @@ export const deleteChargingLocationsChargingLocationIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ UserAccessToken: ['all'] }, { UserAccessToken: ['charging_location'] }],
 })
 
@@ -624,7 +624,7 @@ export const getHealthReadyRoute = createRoute({
     'Gets the combined health status of the service and all functionalities and dependencies.',
   operationId: 'getHealthReady',
   responses: {
-    204: { description: 'All functionalities are operating nominally', content: {} },
+    204: { description: 'All functionalities are operating nominally' },
     503: {
       description: 'At least one functionality of the system is not operating nominally',
       content: {
@@ -766,7 +766,7 @@ export const deleteMeVendorsVendorRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ UserAccessToken: [] }],
 })
 
@@ -934,7 +934,7 @@ export const deleteUsersUserIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ ClientAccessToken: [] }],
 })
 
@@ -962,7 +962,7 @@ export const deleteUsersUserIdAuthorizationRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ ClientAccessToken: [] }],
 })
 
@@ -1682,7 +1682,7 @@ export const postVehiclesVehicleIdChargingRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ UserAccessToken: ['all'] }, { UserAccessToken: ['control:vehicle:charging'] }],
 })
 
@@ -2100,7 +2100,7 @@ export const putWebhooksFirehoseRoute = createRoute({
       },
     },
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   security: [{ ClientAccessToken: [] }],
 })
 

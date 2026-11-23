@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNetworkTokensNetworkTokenIdRoute,
   patchNetworkTokensNetworkTokenIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworkTokensNetworkTokenIdRouteHandler: RouteHandler<
+  typeof getNetworkTokensNetworkTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const networkTokensHandler = app
-  .openapi(getNetworkTokensNetworkTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNetworkTokensNetworkTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchNetworkTokensNetworkTokenIdRouteHandler: RouteHandler<
+  typeof patchNetworkTokensNetworkTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

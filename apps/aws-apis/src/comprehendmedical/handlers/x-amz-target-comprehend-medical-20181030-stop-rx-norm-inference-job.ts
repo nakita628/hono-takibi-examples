@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComprehendMedical20181030StopRxNormInferenceJobHandler = app.openapi(
-  postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

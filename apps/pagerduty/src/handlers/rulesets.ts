@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRulesetsIdRoute,
   deleteRulesetsIdRulesRuleIdRoute,
   getRulesetsIdRoute,
@@ -12,36 +12,54 @@ import {
   putRulesetsIdRulesRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRulesetsRouteHandler: RouteHandler<typeof getRulesetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rulesetsHandler = app
-  .openapi(getRulesetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRulesetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesetsIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRulesetsIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesetsIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesetsIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesetsIdRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRulesetsRouteHandler: RouteHandler<typeof postRulesetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesetsIdRouteHandler: RouteHandler<typeof getRulesetsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRulesetsIdRouteHandler: RouteHandler<typeof putRulesetsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesetsIdRouteHandler: RouteHandler<typeof deleteRulesetsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesetsIdRulesRouteHandler: RouteHandler<typeof getRulesetsIdRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRulesetsIdRulesRouteHandler: RouteHandler<
+  typeof postRulesetsIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesetsIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof getRulesetsIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRulesetsIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof putRulesetsIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesetsIdRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteRulesetsIdRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

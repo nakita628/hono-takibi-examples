@@ -1061,20 +1061,20 @@ export function useNamesSearch<
 }
 
 export function getNamesNameIdOutputFormatQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>,
 ) {
-  return ['names', '/names/:nameId.:outputFormat', toValue(args)] as const
+  return ['names', '/names/:nameId.{outputFormat}', toValue(args)] as const
 }
 
 export function getNamesNameIdOutputFormatQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getNamesNameIdOutputFormatQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.names[':nameId.:outputFormat'].$get(toValue(args), {
+        client.names[':nameId.{outputFormat}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1087,13 +1087,13 @@ export function useNamesNameIdOutputFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+        Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
@@ -1101,7 +1101,7 @@ export function useNamesNameIdOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1110,7 +1110,7 @@ export function useNamesNameIdOutputFormat<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+                Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
               >
             >
           >,
@@ -1129,7 +1129,7 @@ export function useNamesNameIdOutputFormat<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+          Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
         >
       >
     >,
@@ -1142,7 +1142,7 @@ export function useNamesNameIdOutputFormat<
       queryKey: computed(() => getNamesNameIdOutputFormatQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.names[':nameId.:outputFormat'].$get(toValue(args), {
+          client.names[':nameId.{outputFormat}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

@@ -24197,6 +24197,10 @@ const APIEntitiesAiSettingsSchema = z
     prompt_injection_protection_level: z.string().exactOptional().openapi({ example: 'no_checks' }),
     web_search_enabled: z.boolean().exactOptional().openapi({ example: false }),
     duo_workflow_file_attachments_enabled: z.boolean().exactOptional().openapi({ example: false }),
+    external_agent_audit_event_content_enabled: z
+      .boolean()
+      .exactOptional()
+      .openapi({ example: true }),
     include_recommended_allowed: z.boolean().exactOptional().openapi({ example: false }),
     allow_all_unix_sockets: z.boolean().exactOptional().openapi({ example: false }),
     allow_project_extension: z.boolean().exactOptional().openapi({ example: true }),
@@ -63054,6 +63058,14 @@ const PostApiV4GroupsRequestSchema = z
             description:
               'Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.',
           }),
+        external_agent_audit_event_content_enabled: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.',
+          }),
         foundational_agents_default_enabled: z
           .boolean()
           .nullable()
@@ -63504,6 +63516,14 @@ const PutApiV4GroupsIdRequestSchema = z
           .openapi({
             description:
               'Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.',
+          }),
+        external_agent_audit_event_content_enabled: z
+          .boolean()
+          .nullable()
+          .exactOptional()
+          .openapi({
+            description:
+              'Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.',
           }),
         foundational_agents_default_enabled: z
           .boolean()
@@ -201825,6 +201845,24 @@ export const postApiV4GroupsRoute = createRoute({
                       description:
                         'Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.',
                     }),
+                  external_agent_audit_event_content_enabled: z
+                    .preprocess(
+                      (val) => (val === 'null' ? null : val),
+                      z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .nullable(),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.',
+                    }),
                   foundational_agents_default_enabled: z
                     .preprocess(
                       (val) => (val === 'null' ? null : val),
@@ -202954,6 +202992,24 @@ export const putApiV4GroupsIdRoute = createRoute({
                     .openapi({
                       description:
                         'Allow file attachments in GitLab Duo Chat for this top-level group. Can only be set on top-level groups. GitLab.com only.',
+                    }),
+                  external_agent_audit_event_content_enabled: z
+                    .preprocess(
+                      (val) => (val === 'null' ? null : val),
+                      z
+                        .preprocess(
+                          ((read) => (val: unknown) => {
+                            const result = read.safeParse(val)
+                            return result.success ? result.data : val
+                          })(z.stringbool()),
+                          z.boolean(),
+                        )
+                        .nullable(),
+                    )
+                    .exactOptional()
+                    .openapi({
+                      description:
+                        'Whether AI audit events from external agent sessions that glab uploads keep prompts, tool arguments and other content. When `false`, they keep metadata only. Can only be set on top-level groups.',
                     }),
                   foundational_agents_default_enabled: z
                     .preprocess(

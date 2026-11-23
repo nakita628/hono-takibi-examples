@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectionsIdConnectionSourcesIdSourceRoute,
   getConnectionsIdConnectionLogsRoute,
   getConnectionsIdConnectionSourcesRoute,
@@ -8,24 +8,36 @@ import {
   putConnectionsIdConnectionSourcesIdSourceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConnectionsRouteHandler: RouteHandler<typeof getConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectionsHandler = app
-  .openapi(getConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsIdConnectionLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsIdConnectionSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsIdConnectionSourcesIdSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionsIdConnectionSourcesIdSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdConnectionSourcesIdSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConnectionsIdConnectionLogsRouteHandler: RouteHandler<
+  typeof getConnectionsIdConnectionLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsIdConnectionSourcesRouteHandler: RouteHandler<
+  typeof getConnectionsIdConnectionSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsIdConnectionSourcesIdSourceRouteHandler: RouteHandler<
+  typeof deleteConnectionsIdConnectionSourcesIdSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionsIdConnectionSourcesIdSourceRouteHandler: RouteHandler<
+  typeof postConnectionsIdConnectionSourcesIdSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdConnectionSourcesIdSourceRouteHandler: RouteHandler<
+  typeof putConnectionsIdConnectionSourcesIdSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV2ClustersClusterArnOperationsRoute,
   getApiV2ClustersClusterArnRoute,
   getApiV2ClustersRoute,
@@ -7,21 +7,32 @@ import {
   postApiV2ClustersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiV2ClustersRouteHandler: RouteHandler<typeof postApiV2ClustersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiV2ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ClustersClusterArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2OperationsClusterOperationArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ClustersClusterArnOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV2ClustersRouteHandler: RouteHandler<typeof getApiV2ClustersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ClustersClusterArnRouteHandler: RouteHandler<
+  typeof getApiV2ClustersClusterArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2OperationsClusterOperationArnRouteHandler: RouteHandler<
+  typeof getApiV2OperationsClusterOperationArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ClustersClusterArnOperationsRouteHandler: RouteHandler<
+  typeof getApiV2ClustersClusterArnOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

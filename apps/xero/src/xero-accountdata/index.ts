@@ -1,15 +1,20 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  accountBalancesHandler,
-  accountMovementsHandler,
-  accountTransactionsHandler,
+  getAccountBalancesRoute,
+  getAccountMovementsRoute,
+  getAccountTransactionsRoute,
+} from './routes'
+import {
+  getAccountBalancesRouteHandler,
+  getAccountMovementsRouteHandler,
+  getAccountTransactionsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', accountBalancesHandler)
-  .route('/', accountMovementsHandler)
-  .route('/', accountTransactionsHandler)
+  .openapi(getAccountBalancesRoute, getAccountBalancesRouteHandler)
+  .openapi(getAccountMovementsRoute, getAccountMovementsRouteHandler)
+  .openapi(getAccountTransactionsRoute, getAccountTransactionsRouteHandler)
 
 export default app

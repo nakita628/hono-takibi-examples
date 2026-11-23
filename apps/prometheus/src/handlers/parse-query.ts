@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getParseQueryRoute, postParseQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getParseQueryRoute, postParseQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getParseQueryRouteHandler: RouteHandler<typeof getParseQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const parseQueryHandler = app
-  .openapi(getParseQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParseQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postParseQueryRouteHandler: RouteHandler<typeof postParseQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

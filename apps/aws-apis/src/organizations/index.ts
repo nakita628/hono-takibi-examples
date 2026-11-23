@@ -1,119 +1,341 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsOrganizationsV20161128AcceptHandshakeHandler,
-  xAmzTargetAwsOrganizationsV20161128AttachPolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128CancelHandshakeHandler,
-  xAmzTargetAwsOrganizationsV20161128CloseAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128CreateAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128CreateGovCloudAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128CreateOrganizationalUnitHandler,
-  xAmzTargetAwsOrganizationsV20161128CreateOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128CreatePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DeclineHandshakeHandler,
-  xAmzTargetAwsOrganizationsV20161128DeleteOrganizationalUnitHandler,
-  xAmzTargetAwsOrganizationsV20161128DeleteOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128DeletePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DeleteResourcePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DeregisterDelegatedAdministratorHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeCreateAccountStatusHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeEffectivePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeHandshakeHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeOrganizationalUnitHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DescribeResourcePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DetachPolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128DisableAwsServiceAccessHandler,
-  xAmzTargetAwsOrganizationsV20161128DisablePolicyTypeHandler,
-  xAmzTargetAwsOrganizationsV20161128EnableAllFeaturesHandler,
-  xAmzTargetAwsOrganizationsV20161128EnableAwsServiceAccessHandler,
-  xAmzTargetAwsOrganizationsV20161128EnablePolicyTypeHandler,
-  xAmzTargetAwsOrganizationsV20161128InviteAccountToOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128LeaveOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128ListAccountsForParentHandler,
-  xAmzTargetAwsOrganizationsV20161128ListAccountsHandler,
-  xAmzTargetAwsOrganizationsV20161128ListAwsServiceAccessForOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128ListChildrenHandler,
-  xAmzTargetAwsOrganizationsV20161128ListCreateAccountStatusHandler,
-  xAmzTargetAwsOrganizationsV20161128ListDelegatedAdministratorsHandler,
-  xAmzTargetAwsOrganizationsV20161128ListDelegatedServicesForAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128ListHandshakesForAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128ListHandshakesForOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128ListOrganizationalUnitsForParentHandler,
-  xAmzTargetAwsOrganizationsV20161128ListParentsHandler,
-  xAmzTargetAwsOrganizationsV20161128ListPoliciesForTargetHandler,
-  xAmzTargetAwsOrganizationsV20161128ListPoliciesHandler,
-  xAmzTargetAwsOrganizationsV20161128ListRootsHandler,
-  xAmzTargetAwsOrganizationsV20161128ListTagsForResourceHandler,
-  xAmzTargetAwsOrganizationsV20161128ListTargetsForPolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128MoveAccountHandler,
-  xAmzTargetAwsOrganizationsV20161128PutResourcePolicyHandler,
-  xAmzTargetAwsOrganizationsV20161128RegisterDelegatedAdministratorHandler,
-  xAmzTargetAwsOrganizationsV20161128RemoveAccountFromOrganizationHandler,
-  xAmzTargetAwsOrganizationsV20161128TagResourceHandler,
-  xAmzTargetAwsOrganizationsV20161128UntagResourceHandler,
-  xAmzTargetAwsOrganizationsV20161128UpdateOrganizationalUnitHandler,
-  xAmzTargetAwsOrganizationsV20161128UpdatePolicyHandler,
+  postXAmzTargetAWSOrganizationsV20161128AcceptHandshakeRoute,
+  postXAmzTargetAWSOrganizationsV20161128AttachPolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128CancelHandshakeRoute,
+  postXAmzTargetAWSOrganizationsV20161128CloseAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128CreateAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128CreateGovCloudAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128CreateOrganizationalUnitRoute,
+  postXAmzTargetAWSOrganizationsV20161128CreateOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128CreatePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeclineHandshakeRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationalUnitRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeletePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeleteResourcePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeCreateAccountStatusRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeEffectivePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeHandshakeRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationalUnitRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DescribeResourcePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DetachPolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128DisableAWSServiceAccessRoute,
+  postXAmzTargetAWSOrganizationsV20161128DisablePolicyTypeRoute,
+  postXAmzTargetAWSOrganizationsV20161128EnableAllFeaturesRoute,
+  postXAmzTargetAWSOrganizationsV20161128EnableAWSServiceAccessRoute,
+  postXAmzTargetAWSOrganizationsV20161128EnablePolicyTypeRoute,
+  postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128LeaveOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListAccountsForParentRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListAccountsRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListAWSServiceAccessForOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListChildrenRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListCreateAccountStatusRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListDelegatedAdministratorsRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListDelegatedServicesForAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListHandshakesForAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListHandshakesForOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListOrganizationalUnitsForParentRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListParentsRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListPoliciesForTargetRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListPoliciesRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListRootsRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListTagsForResourceRoute,
+  postXAmzTargetAWSOrganizationsV20161128ListTargetsForPolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128MoveAccountRoute,
+  postXAmzTargetAWSOrganizationsV20161128PutResourcePolicyRoute,
+  postXAmzTargetAWSOrganizationsV20161128RegisterDelegatedAdministratorRoute,
+  postXAmzTargetAWSOrganizationsV20161128RemoveAccountFromOrganizationRoute,
+  postXAmzTargetAWSOrganizationsV20161128TagResourceRoute,
+  postXAmzTargetAWSOrganizationsV20161128UntagResourceRoute,
+  postXAmzTargetAWSOrganizationsV20161128UpdateOrganizationalUnitRoute,
+  postXAmzTargetAWSOrganizationsV20161128UpdatePolicyRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSOrganizationsV20161128AcceptHandshakeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128AttachPolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CancelHandshakeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CloseAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CreateAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CreateGovCloudAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CreateOrganizationalUnitRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CreateOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128CreatePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeclineHandshakeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationalUnitRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeletePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeleteResourcePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeCreateAccountStatusRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeEffectivePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeHandshakeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationalUnitRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DescribeResourcePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DetachPolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DisableAWSServiceAccessRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128DisablePolicyTypeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128EnableAllFeaturesRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128EnableAWSServiceAccessRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128EnablePolicyTypeRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128LeaveOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListAccountsForParentRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListAccountsRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListAWSServiceAccessForOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListChildrenRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListCreateAccountStatusRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListDelegatedAdministratorsRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListDelegatedServicesForAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListHandshakesForAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListHandshakesForOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListOrganizationalUnitsForParentRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListParentsRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListPoliciesForTargetRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListPoliciesRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListRootsRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128ListTargetsForPolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128MoveAccountRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128PutResourcePolicyRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128RegisterDelegatedAdministratorRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128RemoveAccountFromOrganizationRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128TagResourceRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128UntagResourceRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128UpdateOrganizationalUnitRouteHandler,
+  postXAmzTargetAWSOrganizationsV20161128UpdatePolicyRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsOrganizationsV20161128AcceptHandshakeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128AttachPolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CancelHandshakeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CloseAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CreateAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CreateGovCloudAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CreateOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CreateOrganizationalUnitHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128CreatePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeclineHandshakeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeleteOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeleteOrganizationalUnitHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeletePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeleteResourcePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DeregisterDelegatedAdministratorHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeCreateAccountStatusHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeEffectivePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeHandshakeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeOrganizationalUnitHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DescribeResourcePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DetachPolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DisableAwsServiceAccessHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128DisablePolicyTypeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128EnableAwsServiceAccessHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128EnableAllFeaturesHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128EnablePolicyTypeHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128InviteAccountToOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128LeaveOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListAwsServiceAccessForOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListAccountsHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListAccountsForParentHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListChildrenHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListCreateAccountStatusHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListDelegatedAdministratorsHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListDelegatedServicesForAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListHandshakesForAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListHandshakesForOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListOrganizationalUnitsForParentHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListParentsHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListPoliciesHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListPoliciesForTargetHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListRootsHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128ListTargetsForPolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128MoveAccountHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128PutResourcePolicyHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128RegisterDelegatedAdministratorHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128RemoveAccountFromOrganizationHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128TagResourceHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128UntagResourceHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128UpdateOrganizationalUnitHandler)
-  .route('/', xAmzTargetAwsOrganizationsV20161128UpdatePolicyHandler)
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128AcceptHandshakeRoute,
+    postXAmzTargetAWSOrganizationsV20161128AcceptHandshakeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128AttachPolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128AttachPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CancelHandshakeRoute,
+    postXAmzTargetAWSOrganizationsV20161128CancelHandshakeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CloseAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128CloseAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CreateAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128CreateAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CreateGovCloudAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128CreateGovCloudAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CreateOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128CreateOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CreateOrganizationalUnitRoute,
+    postXAmzTargetAWSOrganizationsV20161128CreateOrganizationalUnitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128CreatePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128CreatePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeclineHandshakeRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeclineHandshakeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationalUnitRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeleteOrganizationalUnitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeletePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeletePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeleteResourcePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRoute,
+    postXAmzTargetAWSOrganizationsV20161128DeregisterDelegatedAdministratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeCreateAccountStatusRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeCreateAccountStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeEffectivePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeEffectivePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeHandshakeRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeHandshakeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationalUnitRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeOrganizationalUnitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DescribeResourcePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DescribeResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DetachPolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128DetachPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DisableAWSServiceAccessRoute,
+    postXAmzTargetAWSOrganizationsV20161128DisableAWSServiceAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128DisablePolicyTypeRoute,
+    postXAmzTargetAWSOrganizationsV20161128DisablePolicyTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128EnableAWSServiceAccessRoute,
+    postXAmzTargetAWSOrganizationsV20161128EnableAWSServiceAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128EnableAllFeaturesRoute,
+    postXAmzTargetAWSOrganizationsV20161128EnableAllFeaturesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128EnablePolicyTypeRoute,
+    postXAmzTargetAWSOrganizationsV20161128EnablePolicyTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128LeaveOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128LeaveOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListAWSServiceAccessForOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListAWSServiceAccessForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListAccountsRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListAccountsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListAccountsForParentRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListAccountsForParentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListChildrenRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListChildrenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListCreateAccountStatusRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListCreateAccountStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListDelegatedAdministratorsRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListDelegatedAdministratorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListDelegatedServicesForAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListDelegatedServicesForAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListHandshakesForAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListHandshakesForAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListHandshakesForOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListHandshakesForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListOrganizationalUnitsForParentRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListOrganizationalUnitsForParentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListParentsRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListParentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListPoliciesRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListPoliciesForTargetRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListPoliciesForTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListRootsRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListRootsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListTagsForResourceRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128ListTargetsForPolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128ListTargetsForPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128MoveAccountRoute,
+    postXAmzTargetAWSOrganizationsV20161128MoveAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128PutResourcePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128PutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128RegisterDelegatedAdministratorRoute,
+    postXAmzTargetAWSOrganizationsV20161128RegisterDelegatedAdministratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128RemoveAccountFromOrganizationRoute,
+    postXAmzTargetAWSOrganizationsV20161128RemoveAccountFromOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128TagResourceRoute,
+    postXAmzTargetAWSOrganizationsV20161128TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128UntagResourceRoute,
+    postXAmzTargetAWSOrganizationsV20161128UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128UpdateOrganizationalUnitRoute,
+    postXAmzTargetAWSOrganizationsV20161128UpdateOrganizationalUnitRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSOrganizationsV20161128UpdatePolicyRoute,
+    postXAmzTargetAWSOrganizationsV20161128UpdatePolicyRouteHandler,
+  )
 
 export default app

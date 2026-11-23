@@ -94,8 +94,8 @@ export async function getNamesSearch(
 }
 
 export async function getNamesNameIdOutputFormat(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.names[':nameId.:outputFormat'].$get(args, options))
+  return await parseResponse(client.names[':nameId.{outputFormat}'].$get(args, options))
 }

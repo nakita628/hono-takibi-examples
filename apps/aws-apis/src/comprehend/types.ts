@@ -1,12 +1,7 @@
 type BatchDetectDominantLanguageRequest = { TextList: {} }
 type BatchDetectDominantLanguageResponse = { ResultList: {}; ErrorList: {} }
-type InvalidRequestException = { [x: string]: unknown }
-type TextSizeLimitExceededException = { [x: string]: unknown }
-type BatchSizeLimitExceededException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type BatchDetectEntitiesRequest = { TextList: {}; LanguageCode: {} }
 type BatchDetectEntitiesResponse = { ResultList: {}; ErrorList: {} }
-type UnsupportedLanguageException = { [x: string]: unknown }
 type BatchDetectKeyPhrasesRequest = { TextList: {}; LanguageCode: {} }
 type BatchDetectKeyPhrasesResponse = { ResultList: {}; ErrorList: {} }
 type BatchDetectSentimentRequest = { TextList: {}; LanguageCode: {} }
@@ -31,7 +26,6 @@ type ClassifyDocumentResponse = {
   Errors?: {} | undefined
   Warnings?: {} | undefined
 }
-type ResourceUnavailableException = { [x: string]: unknown }
 type ContainsPiiEntitiesRequest = { Text: {}; LanguageCode: {} }
 type ContainsPiiEntitiesResponse = { Labels?: {} | undefined }
 type CreateDatasetRequest = {
@@ -55,11 +49,6 @@ type CreateDatasetRequest = {
   Tags?: {} | undefined
 }
 type CreateDatasetResponse = { DatasetArn?: {} | undefined }
-type ResourceInUseException = { [x: string]: unknown }
-type TooManyTagsException = { [x: string]: unknown }
-type TooManyRequestsException = { [x: string]: unknown }
-type ResourceLimitExceededException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
 type DocumentReaderConfig = {
   DocumentReadAction: {}
   DocumentReadMode?: {} | undefined
@@ -92,7 +81,6 @@ type CreateDocumentClassifierRequest = {
   ModelPolicy?: {} | undefined
 }
 type CreateDocumentClassifierResponse = { DocumentClassifierArn?: {} | undefined }
-type KmsKeyValidationException = { [x: string]: unknown }
 type CreateEndpointRequest = {
   EndpointName: {}
   ModelArn?: {} | undefined
@@ -210,7 +198,6 @@ type DescribeDocumentClassificationJobResponse = {
       }
     | undefined
 }
-type JobNotFoundException = { [x: string]: unknown }
 type DescribeDocumentClassifierRequest = { DocumentClassifierArn: {} }
 type DescribeDocumentClassifierResponse = {
   DocumentClassifierProperties?:
@@ -720,7 +707,6 @@ type ListDatasetsRequest = {
   MaxResults?: {} | undefined
 }
 type ListDatasetsResponse = { DatasetPropertiesList?: {} | undefined; NextToken?: {} | undefined }
-type InvalidFilterException = { [x: string]: unknown }
 type ListDocumentClassificationJobsRequest = {
   Filter?:
     | {
@@ -1184,10 +1170,8 @@ type StopTrainingEntityRecognizerRequest = { EntityRecognizerArn: {} }
 type StopTrainingEntityRecognizerResponse = { [x: string]: unknown }
 type TagResourceRequest = { ResourceArn: {}; Tags: {} }
 type TagResourceResponse = { [x: string]: unknown }
-type ConcurrentModificationException = { [x: string]: unknown }
 type UntagResourceRequest = { ResourceArn: {}; TagKeys: {} }
 type UntagResourceResponse = { [x: string]: unknown }
-type TooManyTagKeysException = { [x: string]: unknown }
 type UpdateEndpointRequest = {
   EndpointArn: {}
   DesiredModelArn?: {} | undefined
@@ -1243,8582 +1227,1683 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectDominantLanguage': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectDominantLanguageRequest }
-            output: BatchDetectDominantLanguageResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectDominantLanguageRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectDominantLanguageRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectDominantLanguageRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectDominantLanguageRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: BatchDetectDominantLanguageRequest }
+        output: BatchDetectDominantLanguageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectEntities': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: BatchDetectEntitiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectEntitiesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchDetectEntitiesRequest }
+        output: BatchDetectEntitiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectKeyPhrases': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: BatchDetectKeyPhrasesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectKeyPhrasesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchDetectKeyPhrasesRequest }
+        output: BatchDetectKeyPhrasesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectSentiment': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: BatchDetectSentimentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSentimentRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchDetectSentimentRequest }
+        output: BatchDetectSentimentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectSyntax': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: BatchDetectSyntaxResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectSyntaxRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchDetectSyntaxRequest }
+        output: BatchDetectSyntaxResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.BatchDetectTargetedSentiment': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: BatchDetectTargetedSentimentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: BatchSizeLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.BatchDetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDetectTargetedSentimentRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: BatchDetectTargetedSentimentRequest }
+        output: BatchDetectTargetedSentimentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ClassifyDocument': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ClassifyDocumentRequest }
-            output: ClassifyDocumentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ClassifyDocumentRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ClassifyDocumentRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ClassifyDocumentRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ClassifyDocument'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ClassifyDocumentRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ClassifyDocumentRequest }
+        output: ClassifyDocumentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ContainsPiiEntities': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ContainsPiiEntitiesRequest }
-            output: ContainsPiiEntitiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ContainsPiiEntitiesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ContainsPiiEntitiesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ContainsPiiEntitiesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ContainsPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ContainsPiiEntitiesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ContainsPiiEntitiesRequest }
+        output: ContainsPiiEntitiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.CreateDataset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: CreateDatasetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDatasetRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: CreateDatasetRequest }
+        output: CreateDatasetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.CreateDocumentClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: CreateDocumentClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateDocumentClassifierRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateDocumentClassifierRequest }
+        output: CreateDocumentClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.CreateEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: CreateEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEndpointRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateEndpointRequest }
+        output: CreateEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.CreateEntityRecognizer': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: CreateEntityRecognizerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateEntityRecognizerRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: CreateEntityRecognizerRequest }
+        output: CreateEntityRecognizerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.CreateFlywheel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: CreateFlywheelResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 488
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.CreateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateFlywheelRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 489
-          }
+        } & { json: CreateFlywheelRequest }
+        output: CreateFlywheelResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DeleteDocumentClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: DeleteDocumentClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteDocumentClassifierRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeleteDocumentClassifierRequest }
+        output: DeleteDocumentClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DeleteEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: DeleteEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEndpointRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DeleteEndpointRequest }
+        output: DeleteEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DeleteEntityRecognizer': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: DeleteEntityRecognizerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteEntityRecognizerRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeleteEntityRecognizerRequest }
+        output: DeleteEntityRecognizerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DeleteFlywheel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: DeleteFlywheelResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteFlywheelRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: DeleteFlywheelRequest }
+        output: DeleteFlywheelResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DeleteResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: DeleteResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DeleteResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DeleteResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteResourcePolicyRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeleteResourcePolicyRequest }
+        output: DeleteResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeDataset': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDatasetRequest }
-            output: DescribeDatasetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDatasetRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDatasetRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDatasetRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDataset'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDatasetRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeDatasetRequest }
+        output: DescribeDatasetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeDocumentClassificationJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassificationJobRequest }
-            output: DescribeDocumentClassificationJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassificationJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassificationJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassificationJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassificationJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeDocumentClassificationJobRequest }
+        output: DescribeDocumentClassificationJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeDocumentClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassifierRequest }
-            output: DescribeDocumentClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassifierRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassifierRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassifierRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDocumentClassifierRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeDocumentClassifierRequest }
+        output: DescribeDocumentClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeDominantLanguageDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDominantLanguageDetectionJobRequest }
-            output: DescribeDominantLanguageDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDominantLanguageDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDominantLanguageDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDominantLanguageDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDominantLanguageDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeDominantLanguageDetectionJobRequest }
+        output: DescribeDominantLanguageDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEndpointRequest }
-            output: DescribeEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEndpointRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEndpointRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEndpointRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEndpointRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeEndpointRequest }
+        output: DescribeEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntitiesDetectionJobRequest }
-            output: DescribeEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntitiesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntitiesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeEntitiesDetectionJobRequest }
+        output: DescribeEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeEntityRecognizer': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntityRecognizerRequest }
-            output: DescribeEntityRecognizerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntityRecognizerRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntityRecognizerRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntityRecognizerRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEntityRecognizerRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeEntityRecognizerRequest }
+        output: DescribeEntityRecognizerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeEventsDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEventsDetectionJobRequest }
-            output: DescribeEventsDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEventsDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEventsDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEventsDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeEventsDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeEventsDetectionJobRequest }
+        output: DescribeEventsDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeFlywheel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelRequest }
-            output: DescribeFlywheelResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeFlywheelRequest }
+        output: DescribeFlywheelResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeFlywheelIteration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelIterationRequest }
-            output: DescribeFlywheelIterationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelIterationRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelIterationRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelIterationRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeFlywheelIterationRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeFlywheelIterationRequest }
+        output: DescribeFlywheelIterationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeKeyPhrasesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeKeyPhrasesDetectionJobRequest }
-            output: DescribeKeyPhrasesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeKeyPhrasesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeKeyPhrasesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeKeyPhrasesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeKeyPhrasesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeKeyPhrasesDetectionJobRequest }
+        output: DescribeKeyPhrasesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribePiiEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePiiEntitiesDetectionJobRequest }
-            output: DescribePiiEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePiiEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePiiEntitiesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePiiEntitiesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribePiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePiiEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribePiiEntitiesDetectionJobRequest }
+        output: DescribePiiEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeResourcePolicyRequest }
-            output: DescribeResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeResourcePolicyRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeResourcePolicyRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeResourcePolicyRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeResourcePolicyRequest }
+        output: DescribeResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSentimentDetectionJobRequest }
-            output: DescribeSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSentimentDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSentimentDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeSentimentDetectionJobRequest }
+        output: DescribeSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeTargetedSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTargetedSentimentDetectionJobRequest }
-            output: DescribeTargetedSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTargetedSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTargetedSentimentDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTargetedSentimentDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTargetedSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeTargetedSentimentDetectionJobRequest }
+        output: DescribeTargetedSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DescribeTopicsDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTopicsDetectionJobRequest }
-            output: DescribeTopicsDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTopicsDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTopicsDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTopicsDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DescribeTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTopicsDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DescribeTopicsDetectionJobRequest }
+        output: DescribeTopicsDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectDominantLanguage': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectDominantLanguageRequest }
-            output: DetectDominantLanguageResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectDominantLanguage'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectDominantLanguageRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectDominantLanguageRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectDominantLanguage'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectDominantLanguageRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DetectDominantLanguageRequest }
+        output: DetectDominantLanguageResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectEntities': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: DetectEntitiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectEntitiesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: DetectEntitiesRequest }
+        output: DetectEntitiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectKeyPhrases': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectKeyPhrasesRequest }
-            output: DetectKeyPhrasesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectKeyPhrasesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectKeyPhrasesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectKeyPhrasesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectKeyPhrases'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectKeyPhrasesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DetectKeyPhrasesRequest }
+        output: DetectKeyPhrasesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectPiiEntities': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectPiiEntitiesRequest }
-            output: DetectPiiEntitiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectPiiEntitiesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectPiiEntitiesRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectPiiEntitiesRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectPiiEntities'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectPiiEntitiesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DetectPiiEntitiesRequest }
+        output: DetectPiiEntitiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectSentiment': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSentimentRequest }
-            output: DetectSentimentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSentimentRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSentimentRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSentimentRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSentimentRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DetectSentimentRequest }
+        output: DetectSentimentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectSyntax': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSyntaxRequest }
-            output: DetectSyntaxResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSyntaxRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSyntaxRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSyntaxRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectSyntax'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectSyntaxRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DetectSyntaxRequest }
+        output: DetectSyntaxResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.DetectTargetedSentiment': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectTargetedSentimentRequest }
-            output: DetectTargetedSentimentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectTargetedSentimentRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectTargetedSentimentRequest }
-            output: TextSizeLimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectTargetedSentimentRequest }
-            output: UnsupportedLanguageException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.DetectTargetedSentiment'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetectTargetedSentimentRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: DetectTargetedSentimentRequest }
+        output: DetectTargetedSentimentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ImportModel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: ImportModelResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ImportModel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ImportModel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ImportModelRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 488
-          }
+        } & { json: ImportModelRequest }
+        output: ImportModelResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListDatasets': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: ListDatasetsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDatasets'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDatasetsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListDatasetsRequest }
+        output: ListDatasetsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListDocumentClassificationJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassificationJobsRequest }
-            output: ListDocumentClassificationJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassificationJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassificationJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassificationJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassificationJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassificationJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDocumentClassificationJobsRequest }
+        output: ListDocumentClassificationJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListDocumentClassifierSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifierSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifierSummariesRequest }
-            output: ListDocumentClassifierSummariesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifierSummaries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifierSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifierSummariesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifierSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifierSummariesRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifierSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifierSummariesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListDocumentClassifierSummariesRequest }
+        output: ListDocumentClassifierSummariesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListDocumentClassifiers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifiersRequest }
-            output: ListDocumentClassifiersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifiersRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifiersRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifiersRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDocumentClassifiers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDocumentClassifiersRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDocumentClassifiersRequest }
+        output: ListDocumentClassifiersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListDominantLanguageDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDominantLanguageDetectionJobsRequest }
-            output: ListDominantLanguageDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDominantLanguageDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDominantLanguageDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDominantLanguageDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListDominantLanguageDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDominantLanguageDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListDominantLanguageDetectionJobsRequest }
+        output: ListDominantLanguageDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListEndpoints': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEndpointsRequest }
-            output: ListEndpointsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListEndpoints'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEndpointsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEndpointsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEndpoints'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEndpointsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListEndpointsRequest }
+        output: ListEndpointsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListEntitiesDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntitiesDetectionJobsRequest }
-            output: ListEntitiesDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntitiesDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntitiesDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntitiesDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntitiesDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListEntitiesDetectionJobsRequest }
+        output: ListEntitiesDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListEntityRecognizerSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizerSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizerSummariesRequest }
-            output: ListEntityRecognizerSummariesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizerSummaries'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizerSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizerSummariesRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizerSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizerSummariesRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizerSummaries'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizerSummariesRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListEntityRecognizerSummariesRequest }
+        output: ListEntityRecognizerSummariesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListEntityRecognizers': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizersRequest }
-            output: ListEntityRecognizersResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizersRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizersRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizersRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEntityRecognizers'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEntityRecognizersRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListEntityRecognizersRequest }
+        output: ListEntityRecognizersResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListEventsDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEventsDetectionJobsRequest }
-            output: ListEventsDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEventsDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEventsDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEventsDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListEventsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListEventsDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListEventsDetectionJobsRequest }
+        output: ListEventsDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListFlywheelIterationHistory': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: ListFlywheelIterationHistoryResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheelIterationHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelIterationHistoryRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: ListFlywheelIterationHistoryRequest }
+        output: ListFlywheelIterationHistoryResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListFlywheels': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelsRequest }
-            output: ListFlywheelsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListFlywheels'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListFlywheelsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListFlywheelsRequest }
+        output: ListFlywheelsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListKeyPhrasesDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListKeyPhrasesDetectionJobsRequest }
-            output: ListKeyPhrasesDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListKeyPhrasesDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListKeyPhrasesDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListKeyPhrasesDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListKeyPhrasesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListKeyPhrasesDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListKeyPhrasesDetectionJobsRequest }
+        output: ListKeyPhrasesDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListPiiEntitiesDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPiiEntitiesDetectionJobsRequest }
-            output: ListPiiEntitiesDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPiiEntitiesDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPiiEntitiesDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPiiEntitiesDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListPiiEntitiesDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListPiiEntitiesDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListPiiEntitiesDetectionJobsRequest }
+        output: ListPiiEntitiesDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListSentimentDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSentimentDetectionJobsRequest }
-            output: ListSentimentDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSentimentDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSentimentDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSentimentDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListSentimentDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListSentimentDetectionJobsRequest }
+        output: ListSentimentDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListTagsForResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListTagsForResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListTagsForResourceRequest }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListTargetedSentimentDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTargetedSentimentDetectionJobsRequest }
-            output: ListTargetedSentimentDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTargetedSentimentDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTargetedSentimentDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTargetedSentimentDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTargetedSentimentDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTargetedSentimentDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListTargetedSentimentDetectionJobsRequest }
+        output: ListTargetedSentimentDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.ListTopicsDetectionJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTopicsDetectionJobsRequest }
-            output: ListTopicsDetectionJobsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTopicsDetectionJobsRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTopicsDetectionJobsRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTopicsDetectionJobsRequest }
-            output: InvalidFilterException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.ListTopicsDetectionJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTopicsDetectionJobsRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: ListTopicsDetectionJobsRequest }
+        output: ListTopicsDetectionJobsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.PutResourcePolicy': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: PutResourcePolicyResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.PutResourcePolicy'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.PutResourcePolicy'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutResourcePolicyRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: PutResourcePolicyRequest }
+        output: PutResourcePolicyResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartDocumentClassificationJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: StartDocumentClassificationJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDocumentClassificationJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDocumentClassificationJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: StartDocumentClassificationJobRequest }
+        output: StartDocumentClassificationJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartDominantLanguageDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: StartDominantLanguageDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartDominantLanguageDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartDominantLanguageDetectionJobRequest }
+        output: StartDominantLanguageDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: StartEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 487
-          }
+        } & { json: StartEntitiesDetectionJobRequest }
+        output: StartEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartEventsDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: StartEventsDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartEventsDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartEventsDetectionJobRequest }
+        output: StartEventsDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartFlywheelIteration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: StartFlywheelIterationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartFlywheelIteration'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartFlywheelIterationRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: StartFlywheelIterationRequest }
+        output: StartFlywheelIterationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartKeyPhrasesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: StartKeyPhrasesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartKeyPhrasesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartKeyPhrasesDetectionJobRequest }
+        output: StartKeyPhrasesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartPiiEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: StartPiiEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartPiiEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartPiiEntitiesDetectionJobRequest }
+        output: StartPiiEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: StartSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartSentimentDetectionJobRequest }
+        output: StartSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartTargetedSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: StartTargetedSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTargetedSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartTargetedSentimentDetectionJobRequest }
+        output: StartTargetedSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StartTopicsDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: StartTopicsDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StartTopicsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartTopicsDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartTopicsDetectionJobRequest }
+        output: StartTopicsDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopDominantLanguageDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopDominantLanguageDetectionJobRequest }
-            output: StopDominantLanguageDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopDominantLanguageDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopDominantLanguageDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopDominantLanguageDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopDominantLanguageDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopDominantLanguageDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopDominantLanguageDetectionJobRequest }
+        output: StopDominantLanguageDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEntitiesDetectionJobRequest }
-            output: StopEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEntitiesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopEntitiesDetectionJobRequest }
+        output: StopEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopEventsDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEventsDetectionJobRequest }
-            output: StopEventsDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopEventsDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEventsDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEventsDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopEventsDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopEventsDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopEventsDetectionJobRequest }
+        output: StopEventsDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopKeyPhrasesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopKeyPhrasesDetectionJobRequest }
-            output: StopKeyPhrasesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopKeyPhrasesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopKeyPhrasesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopKeyPhrasesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopKeyPhrasesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopKeyPhrasesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopKeyPhrasesDetectionJobRequest }
+        output: StopKeyPhrasesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopPiiEntitiesDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopPiiEntitiesDetectionJobRequest }
-            output: StopPiiEntitiesDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopPiiEntitiesDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopPiiEntitiesDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopPiiEntitiesDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopPiiEntitiesDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopPiiEntitiesDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopPiiEntitiesDetectionJobRequest }
+        output: StopPiiEntitiesDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSentimentDetectionJobRequest }
-            output: StopSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSentimentDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopSentimentDetectionJobRequest }
+        output: StopSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopTargetedSentimentDetectionJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTargetedSentimentDetectionJobRequest }
-            output: StopTargetedSentimentDetectionJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopTargetedSentimentDetectionJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTargetedSentimentDetectionJobRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTargetedSentimentDetectionJobRequest }
-            output: JobNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTargetedSentimentDetectionJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTargetedSentimentDetectionJobRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: StopTargetedSentimentDetectionJobRequest }
+        output: StopTargetedSentimentDetectionJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopTrainingDocumentClassifier': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingDocumentClassifierRequest }
-            output: StopTrainingDocumentClassifierResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingDocumentClassifierRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingDocumentClassifierRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingDocumentClassifierRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingDocumentClassifier'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingDocumentClassifierRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StopTrainingDocumentClassifierRequest }
+        output: StopTrainingDocumentClassifierResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.StopTrainingEntityRecognizer': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingEntityRecognizerRequest }
-            output: StopTrainingEntityRecognizerResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingEntityRecognizerRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingEntityRecognizerRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingEntityRecognizerRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.StopTrainingEntityRecognizer'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StopTrainingEntityRecognizerRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: StopTrainingEntityRecognizerRequest }
+        output: StopTrainingEntityRecognizerResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.TagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.TagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: TooManyTagsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: TagResourceRequest }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.UntagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.UntagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: TooManyTagKeysException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: ConcurrentModificationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UntagResourceRequest }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.UpdateEndpoint': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: UpdateEndpointResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: ResourceInUseException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: ResourceLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: ResourceUnavailableException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateEndpoint'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateEndpointRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: UpdateEndpointRequest }
+        output: UpdateEndpointResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=Comprehend_20171127.UpdateFlywheel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: UpdateFlywheelResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: KmsKeyValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'Comprehend_20171127.UpdateFlywheel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateFlywheelRequest }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateFlywheelRequest }
+        output: UpdateFlywheelResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

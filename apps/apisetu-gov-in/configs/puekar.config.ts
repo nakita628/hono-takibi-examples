@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/puekar/3.0.0/openapi.yaml',
   output: './src/puekar/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/puekar/types.ts' },
   client: { output: './src/puekar/client.ts', baseUrl: '/' },
   rpc: { output: './src/puekar/rpc.ts', parseResponse: true },

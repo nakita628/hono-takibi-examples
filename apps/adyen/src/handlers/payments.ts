@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postPaymentsDetailsRoute,
   postPaymentsPaymentPspReferenceAmountUpdatesRoute,
   postPaymentsPaymentPspReferenceCancelsRoute,
@@ -9,27 +9,42 @@ import {
   postPaymentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPaymentsRouteHandler: RouteHandler<typeof postPaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentsHandler = app
-  .openapi(postPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentPspReferenceAmountUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentPspReferenceCancelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentPspReferenceCapturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentPspReferenceRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentPspReferenceReversalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentsDetailsRouteHandler: RouteHandler<
+  typeof postPaymentsDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentPspReferenceAmountUpdatesRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentPspReferenceAmountUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentPspReferenceCancelsRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentPspReferenceCancelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentPspReferenceCapturesRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentPspReferenceCapturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentPspReferenceRefundsRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentPspReferenceRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentPspReferenceReversalsRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentPspReferenceReversalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

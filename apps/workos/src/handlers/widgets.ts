@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWidgetsTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWidgetsTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const widgetsHandler = app.openapi(postWidgetsTokenRoute, (c) => {
+export const postWidgetsTokenRouteHandler: RouteHandler<typeof postWidgetsTokenRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

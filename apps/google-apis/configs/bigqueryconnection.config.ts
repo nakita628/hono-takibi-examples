@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/bigqueryconnection/v1beta1/openapi.yaml',
   output: './src/bigqueryconnection/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigqueryconnection/types.ts' },
   client: { output: './src/bigqueryconnection/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigqueryconnection/rpc.ts', parseResponse: true },

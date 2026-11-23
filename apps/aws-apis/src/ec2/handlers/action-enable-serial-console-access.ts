@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionEnableSerialConsoleAccessRoute,
   postActionEnableSerialConsoleAccessRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionEnableSerialConsoleAccessRouteHandler: RouteHandler<
+  typeof getActionEnableSerialConsoleAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionEnableSerialConsoleAccessHandler = app
-  .openapi(getActionEnableSerialConsoleAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionEnableSerialConsoleAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionEnableSerialConsoleAccessRouteHandler: RouteHandler<
+  typeof postActionEnableSerialConsoleAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

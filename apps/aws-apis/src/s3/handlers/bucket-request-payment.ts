@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketRequestPaymentRoute, putBucketRequestPaymentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBucketRequestPaymentRoute, putBucketRequestPaymentRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBucketRequestPaymentRouteHandler: RouteHandler<
+  typeof getBucketRequestPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketRequestPaymentHandler = app
-  .openapi(getBucketRequestPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketRequestPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBucketRequestPaymentRouteHandler: RouteHandler<
+  typeof putBucketRequestPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

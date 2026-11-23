@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMbusApiRoute,
   getMbusHatRoute,
   postMbusGetDeviceBaudrateAddressRoute,
@@ -9,27 +9,36 @@ import {
   postMbusScanDeviceBaudrateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMbusApiRouteHandler: RouteHandler<typeof getMbusApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mbusHandler = app
-  .openapi(getMbusApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMbusGetDeviceBaudrateAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMbusGetMultiDeviceBaudrateAddressMaxframesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMbusHatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMbusHatOffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMbusHatOnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMbusScanDeviceBaudrateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMbusGetDeviceBaudrateAddressRouteHandler: RouteHandler<
+  typeof postMbusGetDeviceBaudrateAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMbusGetMultiDeviceBaudrateAddressMaxframesRouteHandler: RouteHandler<
+  typeof postMbusGetMultiDeviceBaudrateAddressMaxframesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMbusHatRouteHandler: RouteHandler<typeof getMbusHatRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMbusHatOffRouteHandler: RouteHandler<typeof postMbusHatOffRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMbusHatOnRouteHandler: RouteHandler<typeof postMbusHatOnRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMbusScanDeviceBaudrateRouteHandler: RouteHandler<
+  typeof postMbusScanDeviceBaudrateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -450,16 +450,16 @@ export function useImmutableGetApiFleetFileId<TError = unknown>(
 
 export function getGetApiAgentsUpgradesMajorMinorPatchPgpPublicKeyKey(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['api', '/api/agents/upgrades/:major.:minor.:patch/pgp-public-key', keyArgs] as const
+  return ['api', '/api/agents/upgrades/:major.{minor}.{patch}/pgp-public-key', keyArgs] as const
 }
 
 export function useGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unknown>(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -468,7 +468,7 @@ export function useGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
               >
             >
           >
@@ -495,7 +495,7 @@ export function useGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
               >
             >
           >
@@ -506,7 +506,7 @@ export function useGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unkn
       swrKey,
       async () =>
         parseResponse(
-          client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(
+          client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(
             args,
             clientOptions,
           ),
@@ -518,7 +518,7 @@ export function useGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unkn
 
 export function useImmutableGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TError = unknown>(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -527,7 +527,7 @@ export function useImmutableGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
               >
             >
           >
@@ -554,7 +554,7 @@ export function useImmutableGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TErr
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
               >
             >
           >
@@ -565,7 +565,7 @@ export function useImmutableGetApiAgentsUpgradesMajorMinorPatchPgpPublicKey<TErr
       swrKey,
       async () =>
         parseResponse(
-          client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(
+          client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(
             args,
             clientOptions,
           ),

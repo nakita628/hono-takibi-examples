@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/sagemaker/2017-07-24/openapi.yaml',
   output: './src/sagemaker/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sagemaker/types.ts' },
   client: { output: './src/sagemaker/client.ts', baseUrl: '/' },
   rpc: { output: './src/sagemaker/rpc.ts', parseResponse: true },

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRidesPagePagePerPagePerPageRoute,
   postRidesPagePagePerPagePerPageRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRidesPagePagePerPagePerPageRouteHandler: RouteHandler<
+  typeof getRidesPagePagePerPagePerPageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ridesPagePagePerPagePerPageHandler = app
-  .openapi(getRidesPagePagePerPagePerPageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRidesPagePagePerPagePerPageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRidesPagePagePerPagePerPageRouteHandler: RouteHandler<
+  typeof postRidesPagePagePerPagePerPageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

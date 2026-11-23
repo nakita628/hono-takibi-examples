@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCreateDhcpOptionsRoute, postActionCreateDhcpOptionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionCreateDhcpOptionsRoute, postActionCreateDhcpOptionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateDhcpOptionsRouteHandler: RouteHandler<
+  typeof getActionCreateDhcpOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateDhcpOptionsHandler = app
-  .openapi(getActionCreateDhcpOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateDhcpOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateDhcpOptionsRouteHandler: RouteHandler<
+  typeof postActionCreateDhcpOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

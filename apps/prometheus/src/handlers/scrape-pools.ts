@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getScrapePoolsConfigRoute, getScrapePoolsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getScrapePoolsConfigRoute, getScrapePoolsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScrapePoolsRouteHandler: RouteHandler<typeof getScrapePoolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scrapePoolsHandler = app
-  .openapi(getScrapePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapePoolsConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScrapePoolsConfigRouteHandler: RouteHandler<
+  typeof getScrapePoolsConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

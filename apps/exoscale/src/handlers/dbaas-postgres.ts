@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasPostgresNameRoute,
   deleteDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRoute,
   deleteDbaasPostgresServiceNameDatabaseDatabaseNameRoute,
@@ -19,57 +19,104 @@ import {
   putDbaasPostgresServiceNameUserUsernamePasswordResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDbaasPostgresServiceUpgradeCheckRouteHandler: RouteHandler<
+  typeof postDbaasPostgresServiceUpgradeCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasPostgresHandler = app
-  .openapi(postDbaasPostgresServiceUpgradeCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasPostgresServiceNameConnectionPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasPostgresServiceNameDatabaseDatabaseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasPostgresNameMigrationStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasPostgresServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasPostgresServiceNameDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasPostgresServiceNameUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasPostgresServiceNameUserUsernameAllowReplicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasPostgresNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasPostgresServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasPostgresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasPostgresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasPostgresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasPostgresNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasPostgresServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDbaasPostgresServiceNameConnectionPoolRouteHandler: RouteHandler<
+  typeof postDbaasPostgresServiceNameConnectionPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasPostgresServiceNameDatabaseDatabaseNameRouteHandler: RouteHandler<
+  typeof deleteDbaasPostgresServiceNameDatabaseDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasPostgresNameMigrationStopRouteHandler: RouteHandler<
+  typeof postDbaasPostgresNameMigrationStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasPostgresServiceNameUserRouteHandler: RouteHandler<
+  typeof postDbaasPostgresServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasPostgresServiceNameDatabaseRouteHandler: RouteHandler<
+  typeof postDbaasPostgresServiceNameDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasPostgresServiceNameUserUsernameRouteHandler: RouteHandler<
+  typeof deleteDbaasPostgresServiceNameUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasPostgresServiceNameUserUsernameAllowReplicationRouteHandler: RouteHandler<
+  typeof putDbaasPostgresServiceNameUserUsernameAllowReplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasPostgresNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasPostgresNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRouteHandler: RouteHandler<
+  typeof putDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRouteHandler: RouteHandler<
+  typeof deleteDbaasPostgresServiceNameConnectionPoolConnectionPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasPostgresServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasPostgresServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasPostgresNameRouteHandler: RouteHandler<
+  typeof putDbaasPostgresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasPostgresNameRouteHandler: RouteHandler<
+  typeof getDbaasPostgresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasPostgresNameRouteHandler: RouteHandler<
+  typeof postDbaasPostgresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasPostgresNameRouteHandler: RouteHandler<
+  typeof deleteDbaasPostgresNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasPostgresServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasPostgresServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

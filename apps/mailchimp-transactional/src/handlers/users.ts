@@ -1,23 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postUsersInfoRoute,
   postUsersPing2Route,
   postUsersPingRoute,
   postUsersSendersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postUsersInfoRouteHandler: RouteHandler<typeof postUsersInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(postUsersInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersPing2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUsersPingRouteHandler: RouteHandler<typeof postUsersPingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersPing2RouteHandler: RouteHandler<typeof postUsersPing2Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersSendersRouteHandler: RouteHandler<typeof postUsersSendersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

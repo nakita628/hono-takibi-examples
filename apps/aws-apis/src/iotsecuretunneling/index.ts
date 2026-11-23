@@ -1,25 +1,59 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetIoTSecuredTunnelingCloseTunnelHandler,
-  xAmzTargetIoTSecuredTunnelingDescribeTunnelHandler,
-  xAmzTargetIoTSecuredTunnelingListTagsForResourceHandler,
-  xAmzTargetIoTSecuredTunnelingListTunnelsHandler,
-  xAmzTargetIoTSecuredTunnelingOpenTunnelHandler,
-  xAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenHandler,
-  xAmzTargetIoTSecuredTunnelingTagResourceHandler,
-  xAmzTargetIoTSecuredTunnelingUntagResourceHandler,
+  postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute,
+  postXAmzTargetIoTSecuredTunnelingDescribeTunnelRoute,
+  postXAmzTargetIoTSecuredTunnelingListTagsForResourceRoute,
+  postXAmzTargetIoTSecuredTunnelingListTunnelsRoute,
+  postXAmzTargetIoTSecuredTunnelingOpenTunnelRoute,
+  postXAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenRoute,
+  postXAmzTargetIoTSecuredTunnelingTagResourceRoute,
+  postXAmzTargetIoTSecuredTunnelingUntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetIoTSecuredTunnelingCloseTunnelRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingDescribeTunnelRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingListTagsForResourceRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingListTunnelsRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingOpenTunnelRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingTagResourceRouteHandler,
+  postXAmzTargetIoTSecuredTunnelingUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetIoTSecuredTunnelingCloseTunnelHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingDescribeTunnelHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingListTagsForResourceHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingListTunnelsHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingOpenTunnelHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingTagResourceHandler)
-  .route('/', xAmzTargetIoTSecuredTunnelingUntagResourceHandler)
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute,
+    postXAmzTargetIoTSecuredTunnelingCloseTunnelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingDescribeTunnelRoute,
+    postXAmzTargetIoTSecuredTunnelingDescribeTunnelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingListTagsForResourceRoute,
+    postXAmzTargetIoTSecuredTunnelingListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingListTunnelsRoute,
+    postXAmzTargetIoTSecuredTunnelingListTunnelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingOpenTunnelRoute,
+    postXAmzTargetIoTSecuredTunnelingOpenTunnelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenRoute,
+    postXAmzTargetIoTSecuredTunnelingRotateTunnelAccessTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingTagResourceRoute,
+    postXAmzTargetIoTSecuredTunnelingTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetIoTSecuredTunnelingUntagResourceRoute,
+    postXAmzTargetIoTSecuredTunnelingUntagResourceRouteHandler,
+  )
 
 export default app

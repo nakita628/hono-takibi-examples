@@ -12894,9 +12894,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
               json: CreatePhoneSwitchRequest
             }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+              json: CreatePhoneSwitchRequest
+            }
             output: Error
             outputFormat: 'json'
             status: 401
+          }
+        | {
+            input: { header: { 'Intercom-Version'?: IntercomVersion | undefined } } & {
+              json: CreatePhoneSwitchRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 422
           }
     }
   } & {
@@ -13887,9 +13903,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 assignee_id?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { ticket_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            } & {
+              json: {
+                ticket_attributes?: { [x: string]: unknown } | undefined
+                ticket_state_id?: string | undefined
+                company_id?: string | undefined
+                open?: boolean | undefined
+                is_shared?: boolean | undefined
+                snoozed_until?: number | undefined
+                admin_id?: number | undefined
+                assignee_id?: string | undefined
+              }
+            }
             output: Error
             outputFormat: 'json'
             status: 401
+          }
+        | {
+            input: { param: { ticket_id: string } } & {
+              header: { 'Intercom-Version'?: IntercomVersion | undefined }
+            } & {
+              json: {
+                ticket_attributes?: { [x: string]: unknown } | undefined
+                ticket_state_id?: string | undefined
+                company_id?: string | undefined
+                open?: boolean | undefined
+                is_shared?: boolean | undefined
+                snoozed_until?: number | undefined
+                admin_id?: number | undefined
+                assignee_id?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
         | {
             input: { param: { ticket_id: string } } & {

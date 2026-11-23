@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGlossaryPageNameMediaTypeExtensionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGlossaryPageNameMediaTypeExtensionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const glossaryHandler = app.openapi(getGlossaryPageNameMediaTypeExtensionRoute, (c) => {
+export const getGlossaryPageNameMediaTypeExtensionRouteHandler: RouteHandler<
+  typeof getGlossaryPageNameMediaTypeExtensionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

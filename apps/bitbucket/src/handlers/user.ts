@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUserEmailsEmailRoute,
   getUserEmailsRoute,
   getUserRoute,
@@ -8,24 +8,34 @@ import {
   getUserWorkspacesWorkspacePermissionsRepositoriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserRouteHandler: RouteHandler<typeof getUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHandler = app
-  .openapi(getUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserEmailsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserWorkspacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserWorkspacesWorkspacePermissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserWorkspacesWorkspacePermissionsRepositoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserEmailsRouteHandler: RouteHandler<typeof getUserEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserEmailsEmailRouteHandler: RouteHandler<typeof getUserEmailsEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserWorkspacesRouteHandler: RouteHandler<typeof getUserWorkspacesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserWorkspacesWorkspacePermissionRouteHandler: RouteHandler<
+  typeof getUserWorkspacesWorkspacePermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserWorkspacesWorkspacePermissionsRepositoriesRouteHandler: RouteHandler<
+  typeof getUserWorkspacesWorkspacePermissionsRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

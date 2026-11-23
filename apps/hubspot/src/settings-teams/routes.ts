@@ -599,7 +599,7 @@ export const deleteSettingsTeams202609TeamIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['settings.users.teams.write'] }],
 })
 
@@ -883,6 +883,6 @@ export const deleteSettingsTeams202609TeamIdMembersUserIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['settings.users.teams.write'] }],
 })

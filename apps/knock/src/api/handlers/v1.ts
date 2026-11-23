@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1AudiencesKeyMembersRoute,
   deleteV1MessagesMessageIdArchivedRoute,
   deleteV1MessagesMessageIdReadRoute,
@@ -120,360 +120,692 @@ import {
   putV1UsersUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1ObjectsCollectionIdRouteHandler: RouteHandler<
+  typeof deleteV1ObjectsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(deleteV1ObjectsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesInteractedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1IntegrationsCensusCustomDestinationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1WorkflowsKeyCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1UsersUserIdGuidesMessagesArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdChannelTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdChannelTypesTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvidersMsTeamsChannelIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MessagesMessageIdInteractedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesMessageIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvidersSlackChannelIdRevokeAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ObjectsCollectionBulkDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdGuidesChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdCategoriesKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesMessageIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvidersMsTeamsChannelIdAuthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvidersMsTeamsChannelIdRevokeAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdFeedsIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesEngagementsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionObjectIdPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesMessageIdActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TenantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NotifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdFeedsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchUnarchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvidersMsTeamsChannelIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UsersUserIdMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ObjectsCollectionBulkSubscriptionsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1WorkflowRecipientRunsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MessagesMessageIdSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvidersSlackChannelIdAuthCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UsersBulkDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NotifyCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UsersBulkIdentifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TenantsBulkSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1AudiencesKeyMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1AudiencesKeyMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AudiencesKeyMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MessagesMessageIdArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1WorkflowsKeyTriggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesMessageIdArchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TenantsBulkDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdUnreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchInteractedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TenantsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TenantsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1TenantsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdUnseenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ObjectsCollectionObjectIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionObjectIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ObjectsCollectionObjectIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MessagesMessageIdReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdPreferenceCenterConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1UsersUserIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdWorkflowsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ObjectsCollectionObjectIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionObjectIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesMessageIdSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ObjectsCollectionBulkSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1IntegrationsHightouchEmbeddedDestinationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchUnseenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionIdSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SchedulesBulkCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ObjectsCollectionObjectIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ObjectsCollectionObjectIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ObjectsCollectionObjectIdChannelDataChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchUnreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvidersSlackChannelIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1WorkflowRecipientRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UsersBulkPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MessagesBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesBatchContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesMessageIdDeliveryLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdGuidesMessagesMessageIdInteractedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ChannelsChannelIdMessagesBulkActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1MessagesMessageIdUnarchivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BulkOperationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1UsersUserIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UsersUserIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1UsersUserIdPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ObjectsCollectionBulkSubscriptionsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UsersUserIdPreferenceCenterSignedUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1ObjectsCollectionIdRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionIdRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesInteractedRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesInteractedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1IntegrationsCensusCustomDestinationRouteHandler: RouteHandler<
+  typeof postV1IntegrationsCensusCustomDestinationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdSubscriptionsRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1WorkflowsKeyCancelRouteHandler: RouteHandler<
+  typeof postV1WorkflowsKeyCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1UsersUserIdGuidesMessagesArchivedRouteHandler: RouteHandler<
+  typeof deleteV1UsersUserIdGuidesMessagesArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesArchivedRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdChannelTypesRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdChannelTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdCategoriesRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesRouteHandler: RouteHandler<typeof getV1MessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdChannelTypesTypeRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdChannelTypesTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvidersMsTeamsChannelIdChannelsRouteHandler: RouteHandler<
+  typeof getV1ProvidersMsTeamsChannelIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MessagesMessageIdInteractedRouteHandler: RouteHandler<
+  typeof putV1MessagesMessageIdInteractedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesMessageIdEventsRouteHandler: RouteHandler<
+  typeof getV1MessagesMessageIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdMessagesRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvidersSlackChannelIdRevokeAccessRouteHandler: RouteHandler<
+  typeof putV1ProvidersSlackChannelIdRevokeAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ObjectsCollectionBulkDeleteRouteHandler: RouteHandler<
+  typeof postV1ObjectsCollectionBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdWorkflowsRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdGuidesChannelIdRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdGuidesChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdSchedulesRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdCategoriesKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdCategoriesKeyRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdCategoriesKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesMessageIdContentRouteHandler: RouteHandler<
+  typeof getV1MessagesMessageIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvidersMsTeamsChannelIdAuthCheckRouteHandler: RouteHandler<
+  typeof getV1ProvidersMsTeamsChannelIdAuthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvidersMsTeamsChannelIdRevokeAccessRouteHandler: RouteHandler<
+  typeof putV1ProvidersMsTeamsChannelIdRevokeAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdFeedsIdSettingsRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdFeedsIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesEngagementsResetRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesEngagementsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionObjectIdPreferencesRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionObjectIdPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesMessageIdActivitiesRouteHandler: RouteHandler<
+  typeof getV1MessagesMessageIdActivitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TenantsRouteHandler: RouteHandler<typeof getV1TenantsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionIdMessagesRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NotifyRouteHandler: RouteHandler<typeof postV1NotifyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchArchivedRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdFeedsIdRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdFeedsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchUnarchivedRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchUnarchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvidersMsTeamsChannelIdTeamsRouteHandler: RouteHandler<
+  typeof getV1ProvidersMsTeamsChannelIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UsersUserIdMergeRouteHandler: RouteHandler<
+  typeof postV1UsersUserIdMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ObjectsCollectionBulkSubscriptionsDeleteRouteHandler: RouteHandler<
+  typeof postV1ObjectsCollectionBulkSubscriptionsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdCategoriesRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersRouteHandler: RouteHandler<typeof getV1UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1WorkflowRecipientRunsIdRouteHandler: RouteHandler<
+  typeof getV1WorkflowRecipientRunsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdSeenRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MessagesMessageIdSeenRouteHandler: RouteHandler<
+  typeof putV1MessagesMessageIdSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvidersSlackChannelIdAuthCheckRouteHandler: RouteHandler<
+  typeof getV1ProvidersSlackChannelIdAuthCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UsersBulkDeleteRouteHandler: RouteHandler<
+  typeof postV1UsersBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NotifyCancelRouteHandler: RouteHandler<typeof postV1NotifyCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdChannelTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UsersBulkIdentifyRouteHandler: RouteHandler<
+  typeof postV1UsersBulkIdentifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TenantsBulkSetRouteHandler: RouteHandler<
+  typeof postV1TenantsBulkSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1AudiencesKeyMembersRouteHandler: RouteHandler<
+  typeof deleteV1AudiencesKeyMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1AudiencesKeyMembersRouteHandler: RouteHandler<
+  typeof getV1AudiencesKeyMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1AudiencesKeyMembersRouteHandler: RouteHandler<
+  typeof postV1AudiencesKeyMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdArchivedRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MessagesMessageIdArchivedRouteHandler: RouteHandler<
+  typeof putV1MessagesMessageIdArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1WorkflowsKeyTriggerRouteHandler: RouteHandler<
+  typeof postV1WorkflowsKeyTriggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesMessageIdArchivedRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesMessageIdArchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TenantsBulkDeleteRouteHandler: RouteHandler<
+  typeof postV1TenantsBulkDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdUnreadRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdUnreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1UsersUserIdRouteHandler: RouteHandler<
+  typeof deleteV1UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdRouteHandler: RouteHandler<typeof getV1UsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdRouteHandler: RouteHandler<typeof putV1UsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchInteractedRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchInteractedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TenantsIdRouteHandler: RouteHandler<typeof deleteV1TenantsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TenantsIdRouteHandler: RouteHandler<typeof getV1TenantsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1TenantsIdRouteHandler: RouteHandler<typeof putV1TenantsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesSeenRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdUnseenRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdUnseenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ObjectsCollectionObjectIdSubscriptionsRouteHandler: RouteHandler<
+  typeof deleteV1ObjectsCollectionObjectIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionObjectIdSubscriptionsRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionObjectIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ObjectsCollectionObjectIdSubscriptionsRouteHandler: RouteHandler<
+  typeof postV1ObjectsCollectionObjectIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdWorkflowsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdReadRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MessagesMessageIdReadRouteHandler: RouteHandler<
+  typeof putV1MessagesMessageIdReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdPreferenceCenterConfigRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdPreferenceCenterConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1UsersUserIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof deleteV1UsersUserIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdWorkflowsKeyRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdWorkflowsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SchedulesRouteHandler: RouteHandler<typeof deleteV1SchedulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SchedulesRouteHandler: RouteHandler<typeof getV1SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SchedulesRouteHandler: RouteHandler<typeof postV1SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1SchedulesRouteHandler: RouteHandler<typeof putV1SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ObjectsCollectionObjectIdPreferencesIdRouteHandler: RouteHandler<
+  typeof deleteV1ObjectsCollectionObjectIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionObjectIdPreferencesIdRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionObjectIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdPreferencesIdRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesMessageIdSeenRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesMessageIdSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ObjectsCollectionBulkSetRouteHandler: RouteHandler<
+  typeof postV1ObjectsCollectionBulkSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1IntegrationsHightouchEmbeddedDestinationRouteHandler: RouteHandler<
+  typeof postV1IntegrationsHightouchEmbeddedDestinationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchUnseenRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchUnseenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionIdSchedulesRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionIdSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SchedulesBulkCreateRouteHandler: RouteHandler<
+  typeof postV1SchedulesBulkCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ObjectsCollectionObjectIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof deleteV1ObjectsCollectionObjectIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ObjectsCollectionObjectIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof getV1ObjectsCollectionObjectIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ObjectsCollectionObjectIdChannelDataChannelIdRouteHandler: RouteHandler<
+  typeof putV1ObjectsCollectionObjectIdChannelDataChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchUnreadRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchUnreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvidersSlackChannelIdChannelsRouteHandler: RouteHandler<
+  typeof getV1ProvidersSlackChannelIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1WorkflowRecipientRunsRouteHandler: RouteHandler<
+  typeof getV1WorkflowRecipientRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchSeenRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UsersBulkPreferencesRouteHandler: RouteHandler<
+  typeof postV1UsersBulkPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MessagesBatchReadRouteHandler: RouteHandler<
+  typeof postV1MessagesBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesBatchContentRouteHandler: RouteHandler<
+  typeof getV1MessagesBatchContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesMessageIdDeliveryLogsRouteHandler: RouteHandler<
+  typeof getV1MessagesMessageIdDeliveryLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdGuidesMessagesMessageIdInteractedRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdGuidesMessagesMessageIdInteractedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MessagesMessageIdRouteHandler: RouteHandler<
+  typeof getV1MessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ChannelsChannelIdMessagesBulkActionRouteHandler: RouteHandler<
+  typeof postV1ChannelsChannelIdMessagesBulkActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1MessagesMessageIdUnarchivedRouteHandler: RouteHandler<
+  typeof deleteV1MessagesMessageIdUnarchivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1BulkOperationsIdRouteHandler: RouteHandler<
+  typeof getV1BulkOperationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdPreferencesRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1UsersUserIdPreferencesIdRouteHandler: RouteHandler<
+  typeof deleteV1UsersUserIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UsersUserIdPreferencesIdRouteHandler: RouteHandler<
+  typeof getV1UsersUserIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1UsersUserIdPreferencesIdRouteHandler: RouteHandler<
+  typeof putV1UsersUserIdPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ObjectsCollectionBulkSubscriptionsAddRouteHandler: RouteHandler<
+  typeof postV1ObjectsCollectionBulkSubscriptionsAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UsersUserIdPreferenceCenterSignedUrlRouteHandler: RouteHandler<
+  typeof postV1UsersUserIdPreferenceCenterSignedUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

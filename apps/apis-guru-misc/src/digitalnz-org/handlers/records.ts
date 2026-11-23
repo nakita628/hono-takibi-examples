@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRecordsRecordIdFormatRoute, getRecordsRecordIdMoreLikeThisFormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getRecordsRecordIdFormatRoute,
+  getRecordsRecordIdMoreLikeThisFormatRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getRecordsRecordIdFormatRouteHandler: RouteHandler<
+  typeof getRecordsRecordIdFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const recordsHandler = app
-  .openapi(getRecordsRecordIdFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecordsRecordIdMoreLikeThisFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRecordsRecordIdMoreLikeThisFormatRouteHandler: RouteHandler<
+  typeof getRecordsRecordIdMoreLikeThisFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

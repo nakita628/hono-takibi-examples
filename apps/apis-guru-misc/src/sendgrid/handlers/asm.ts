@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAsmGroupsGroupIdRoute,
   deleteAsmGroupsGroupIdSuppressionsEmailRoute,
   deleteAsmSuppressionsGlobalEmailRoute,
@@ -16,48 +16,82 @@ import {
   postAsmSuppressionsGlobalRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAsmGroupsRouteHandler: RouteHandler<typeof getAsmGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const asmHandler = app
-  .openapi(getAsmGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAsmGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAsmGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAsmGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAsmGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAsmGroupsGroupIdSuppressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAsmGroupsGroupIdSuppressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAsmGroupsGroupIdSuppressionsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAsmGroupsGroupIdSuppressionsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAsmSuppressionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAsmSuppressionsGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAsmSuppressionsGlobalEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAsmSuppressionsGlobalEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAsmSuppressionsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAsmGroupsRouteHandler: RouteHandler<typeof postAsmGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAsmGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteAsmGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAsmGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getAsmGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAsmGroupsGroupIdRouteHandler: RouteHandler<
+  typeof patchAsmGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAsmGroupsGroupIdSuppressionsRouteHandler: RouteHandler<
+  typeof getAsmGroupsGroupIdSuppressionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAsmGroupsGroupIdSuppressionsRouteHandler: RouteHandler<
+  typeof postAsmGroupsGroupIdSuppressionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAsmGroupsGroupIdSuppressionsSearchRouteHandler: RouteHandler<
+  typeof postAsmGroupsGroupIdSuppressionsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAsmGroupsGroupIdSuppressionsEmailRouteHandler: RouteHandler<
+  typeof deleteAsmGroupsGroupIdSuppressionsEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAsmSuppressionsRouteHandler: RouteHandler<typeof getAsmSuppressionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAsmSuppressionsGlobalRouteHandler: RouteHandler<
+  typeof postAsmSuppressionsGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAsmSuppressionsGlobalEmailRouteHandler: RouteHandler<
+  typeof deleteAsmSuppressionsGlobalEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAsmSuppressionsGlobalEmailRouteHandler: RouteHandler<
+  typeof getAsmSuppressionsGlobalEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAsmSuppressionsEmailRouteHandler: RouteHandler<
+  typeof getAsmSuppressionsEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

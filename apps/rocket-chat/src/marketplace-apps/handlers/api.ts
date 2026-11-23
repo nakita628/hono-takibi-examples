@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiAppsAppIdRoute,
   getApiAppsAppIdRoute,
   getApiAppsCategoriesRoute,
@@ -12,36 +12,56 @@ import {
   postApiV1VideoConferenceJitsiUpdateTimeoutRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiAppsPublicAppIdIncomingRouteHandler: RouteHandler<
+  typeof postApiAppsPublicAppIdIncomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiAppsPublicAppIdIncomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAppsPublicAppIdTemplateMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppsLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceJitsiUpdateTimeoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppsMarketplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppsInstalledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAppsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAppsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiAppsPublicAppIdTemplateMessageRouteHandler: RouteHandler<
+  typeof postApiAppsPublicAppIdTemplateMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAppsRouteHandler: RouteHandler<typeof postApiAppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppsLogsRouteHandler: RouteHandler<typeof getApiAppsLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceJitsiUpdateTimeoutRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceJitsiUpdateTimeoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppsMarketplaceRouteHandler: RouteHandler<
+  typeof getApiAppsMarketplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppsCategoriesRouteHandler: RouteHandler<
+  typeof getApiAppsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppsInstalledRouteHandler: RouteHandler<
+  typeof getApiAppsInstalledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAppsAppIdRouteHandler: RouteHandler<typeof getApiAppsAppIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAppsAppIdRouteHandler: RouteHandler<typeof deleteApiAppsAppIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

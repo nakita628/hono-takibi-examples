@@ -13,13 +13,13 @@ export function getApiKey() {
 
 export function getGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesKey(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames',
     keyArgs,
   ] as const
 }
@@ -28,7 +28,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -37,7 +37,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
               >
             >
           >
@@ -64,7 +64,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
               >
             >
           >
@@ -75,7 +75,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
       swrKey,
       async () =>
         parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
           ].$get(args, clientOptions),
         ),
@@ -88,7 +88,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -97,7 +97,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
               >
             >
           >
@@ -124,7 +124,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
               >
             >
           >
@@ -135,7 +135,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
       swrKey,
       async () =>
         parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
           ].$get(args, clientOptions),
         ),
@@ -146,13 +146,13 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
 
 export function getGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTimeKey(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames/:windowDayF:windowStartTimeT:windowEndTime',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames/:windowDayF{windowStartTime}T{windowEndTime}',
     keyArgs,
   ] as const
 }
@@ -161,7 +161,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -170,7 +170,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
               >
             >
           >
@@ -199,7 +199,7 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
               >
             >
           >
@@ -210,9 +210,9 @@ export function useGetApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
       swrKey,
       async () =>
         parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
-          ][':windowDayF:windowStartTimeT:windowEndTime'].$get(args, clientOptions),
+          ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -223,7 +223,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -232,7 +232,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
               >
             >
           >
@@ -261,7 +261,7 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
               >
             >
           >
@@ -272,9 +272,9 @@ export function useImmutableGetApiLogisticsCapacityResourcesCarrierCapacityTypeS
       swrKey,
       async () =>
         parseResponse(
-          client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+          client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
             'time-frames'
-          ][':windowDayF:windowStartTimeT:windowEndTime'].$get(args, clientOptions),
+          ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPgDatabaseMetadataQueryRoute,
   postPgQueryMetadataValidateRoute,
   postPgQueryValidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPgDatabaseMetadataQueryRouteHandler: RouteHandler<
+  typeof getPgDatabaseMetadataQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pgHandler = app
-  .openapi(getPgDatabaseMetadataQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPgQueryMetadataValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPgQueryValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPgQueryMetadataValidateRouteHandler: RouteHandler<
+  typeof postPgQueryMetadataValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPgQueryValidateRouteHandler: RouteHandler<
+  typeof postPgQueryValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

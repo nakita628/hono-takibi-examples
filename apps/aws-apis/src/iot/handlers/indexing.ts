@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIndexingConfigRoute, postIndexingConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIndexingConfigRoute, postIndexingConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIndexingConfigRouteHandler: RouteHandler<typeof getIndexingConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const indexingHandler = app
-  .openapi(getIndexingConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexingConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIndexingConfigRouteHandler: RouteHandler<typeof postIndexingConfigRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

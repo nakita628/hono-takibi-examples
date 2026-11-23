@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/circleci.com/v1/openapi.yaml',
   output: './src/circleci/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/circleci/types.ts' },
   client: { output: './src/circleci/client.ts', baseUrl: '/' },
   rpc: { output: './src/circleci/rpc.ts', parseResponse: true },

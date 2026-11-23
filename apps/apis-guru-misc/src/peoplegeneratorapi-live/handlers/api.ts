@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiAddressIndexRoute,
   getApiAddressRoute,
   getApiLifestoryIndexRoute,
@@ -48,144 +48,266 @@ import {
   getApiPersonWeightRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiAddressRouteHandler: RouteHandler<typeof getApiAddressRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAddressIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLifestoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLifestoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonAgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonAgeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonBloodtypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonBloodtypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonCreditcardnumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonCreditcardnumberIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonCreditscoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonCreditscoreIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonEyecolorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonEyecolorIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonGenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonGenderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonGpaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonGpaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHaschildrenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHaschildrenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHasdegreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHasdegreeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHeightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonHeightIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonIncomeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonIncomeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonJobIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonMaritalstatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonMaritalstatusIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonNameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonPoliticalleaningRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonPoliticalleaningIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonReligionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonReligionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonUsernameIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonWeightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonWeightIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPersonNumberIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiAddressIndexRouteHandler: RouteHandler<typeof getApiAddressIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLifestoryRouteHandler: RouteHandler<typeof getApiLifestoryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLifestoryIndexRouteHandler: RouteHandler<
+  typeof getApiLifestoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonRouteHandler: RouteHandler<typeof getApiPersonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonIndexRouteHandler: RouteHandler<typeof getApiPersonIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonAgeRouteHandler: RouteHandler<typeof getApiPersonAgeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonAgeIndexRouteHandler: RouteHandler<
+  typeof getApiPersonAgeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonBloodtypeRouteHandler: RouteHandler<
+  typeof getApiPersonBloodtypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonBloodtypeIndexRouteHandler: RouteHandler<
+  typeof getApiPersonBloodtypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonCreditcardnumberRouteHandler: RouteHandler<
+  typeof getApiPersonCreditcardnumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonCreditcardnumberIndexRouteHandler: RouteHandler<
+  typeof getApiPersonCreditcardnumberIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonCreditscoreRouteHandler: RouteHandler<
+  typeof getApiPersonCreditscoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonCreditscoreIndexRouteHandler: RouteHandler<
+  typeof getApiPersonCreditscoreIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonEmailRouteHandler: RouteHandler<typeof getApiPersonEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonEmailIndexRouteHandler: RouteHandler<
+  typeof getApiPersonEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonEyecolorRouteHandler: RouteHandler<
+  typeof getApiPersonEyecolorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonEyecolorIndexRouteHandler: RouteHandler<
+  typeof getApiPersonEyecolorIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonGenderRouteHandler: RouteHandler<typeof getApiPersonGenderRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonGenderIndexRouteHandler: RouteHandler<
+  typeof getApiPersonGenderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonGpaRouteHandler: RouteHandler<typeof getApiPersonGpaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonGpaIndexRouteHandler: RouteHandler<
+  typeof getApiPersonGpaIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHaschildrenRouteHandler: RouteHandler<
+  typeof getApiPersonHaschildrenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHaschildrenIndexRouteHandler: RouteHandler<
+  typeof getApiPersonHaschildrenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHasdegreeRouteHandler: RouteHandler<
+  typeof getApiPersonHasdegreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHasdegreeIndexRouteHandler: RouteHandler<
+  typeof getApiPersonHasdegreeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHeightRouteHandler: RouteHandler<typeof getApiPersonHeightRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonHeightIndexRouteHandler: RouteHandler<
+  typeof getApiPersonHeightIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonIncomeRouteHandler: RouteHandler<typeof getApiPersonIncomeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonIncomeIndexRouteHandler: RouteHandler<
+  typeof getApiPersonIncomeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonJobRouteHandler: RouteHandler<typeof getApiPersonJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonJobIndexRouteHandler: RouteHandler<
+  typeof getApiPersonJobIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonMaritalstatusRouteHandler: RouteHandler<
+  typeof getApiPersonMaritalstatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonMaritalstatusIndexRouteHandler: RouteHandler<
+  typeof getApiPersonMaritalstatusIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonNameRouteHandler: RouteHandler<typeof getApiPersonNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonNameIndexRouteHandler: RouteHandler<
+  typeof getApiPersonNameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonPoliticalleaningRouteHandler: RouteHandler<
+  typeof getApiPersonPoliticalleaningRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonPoliticalleaningIndexRouteHandler: RouteHandler<
+  typeof getApiPersonPoliticalleaningIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonReligionRouteHandler: RouteHandler<
+  typeof getApiPersonReligionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonReligionIndexRouteHandler: RouteHandler<
+  typeof getApiPersonReligionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonUsernameRouteHandler: RouteHandler<
+  typeof getApiPersonUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonUsernameIndexRouteHandler: RouteHandler<
+  typeof getApiPersonUsernameIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonWeightRouteHandler: RouteHandler<typeof getApiPersonWeightRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonWeightIndexRouteHandler: RouteHandler<
+  typeof getApiPersonWeightIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonNumberRouteHandler: RouteHandler<typeof getApiPersonNumberRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPersonNumberIndexRouteHandler: RouteHandler<
+  typeof getApiPersonNumberIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

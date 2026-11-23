@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/autoscaling-plans/2018-01-06/openapi.yaml',
   output: './src/autoscaling-plans/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/autoscaling-plans/types.ts' },
   client: { output: './src/autoscaling-plans/client.ts', baseUrl: '/' },
   rpc: { output: './src/autoscaling-plans/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTopicSentimentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTopicSentimentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const topicSentimentHandler = app.openapi(postTopicSentimentRoute, (c) => {
+export const postTopicSentimentRouteHandler: RouteHandler<typeof postTopicSentimentRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

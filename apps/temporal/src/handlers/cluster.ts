@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteClusterNexusEndpointsIdRoute,
   getClusterNamespacesNamespaceRoute,
   getClusterNamespacesNamespaceSearchAttributesRoute,
@@ -13,39 +13,66 @@ import {
   postClusterNexusEndpointsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getClusterRouteHandler: RouteHandler<typeof getClusterRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const clusterHandler = app
-  .openapi(getClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusterNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClusterNamespacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusterNamespacesNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusterNamespacesNamespaceSearchAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClusterNamespacesNamespaceUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusterNexusEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClusterNexusEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClusterNexusEndpointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClusterNexusEndpointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClusterNexusEndpointsIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getClusterNamespacesRouteHandler: RouteHandler<
+  typeof getClusterNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClusterNamespacesRouteHandler: RouteHandler<
+  typeof postClusterNamespacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClusterNamespacesNamespaceRouteHandler: RouteHandler<
+  typeof getClusterNamespacesNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClusterNamespacesNamespaceSearchAttributesRouteHandler: RouteHandler<
+  typeof getClusterNamespacesNamespaceSearchAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClusterNamespacesNamespaceUpdateRouteHandler: RouteHandler<
+  typeof postClusterNamespacesNamespaceUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClusterNexusEndpointsRouteHandler: RouteHandler<
+  typeof getClusterNexusEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClusterNexusEndpointsRouteHandler: RouteHandler<
+  typeof postClusterNexusEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClusterNexusEndpointsIdRouteHandler: RouteHandler<
+  typeof getClusterNexusEndpointsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClusterNexusEndpointsIdRouteHandler: RouteHandler<
+  typeof deleteClusterNexusEndpointsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClusterNexusEndpointsIdUpdateRouteHandler: RouteHandler<
+  typeof postClusterNexusEndpointsIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

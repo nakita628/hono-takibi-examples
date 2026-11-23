@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSrchIndexSearchCountServiceLogsRoute,
   getSrchIndexSearchServiceLogsRoute,
   getSrchIndexStorageDiskRoute,
   getSrchWWorkspaceIndexSearchJobRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSrchWWorkspaceIndexSearchJobRouteHandler: RouteHandler<
+  typeof getSrchWWorkspaceIndexSearchJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const srchHandler = app
-  .openapi(getSrchWWorkspaceIndexSearchJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSrchIndexSearchServiceLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSrchIndexSearchCountServiceLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSrchIndexStorageDiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSrchIndexSearchServiceLogsRouteHandler: RouteHandler<
+  typeof getSrchIndexSearchServiceLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSrchIndexSearchCountServiceLogsRouteHandler: RouteHandler<
+  typeof getSrchIndexSearchCountServiceLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSrchIndexStorageDiskRouteHandler: RouteHandler<
+  typeof getSrchIndexStorageDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

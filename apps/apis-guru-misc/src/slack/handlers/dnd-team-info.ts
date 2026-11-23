@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDndTeamInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDndTeamInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dndTeamInfoHandler = app.openapi(getDndTeamInfoRoute, (c) => {
+export const getDndTeamInfoRouteHandler: RouteHandler<typeof getDndTeamInfoRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

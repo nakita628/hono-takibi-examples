@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postClutterAddRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postClutterAddRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const clutterHandler = app.openapi(postClutterAddRoute, (c) => {
+export const postClutterAddRouteHandler: RouteHandler<typeof postClutterAddRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

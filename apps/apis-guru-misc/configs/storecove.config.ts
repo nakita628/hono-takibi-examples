@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/storecove.com/2.0.1/openapi.yaml',
   output: './src/storecove/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/storecove/types.ts' },
   client: { output: './src/storecove/client.ts', baseUrl: '/' },
   rpc: { output: './src/storecove/rpc.ts', parseResponse: true },

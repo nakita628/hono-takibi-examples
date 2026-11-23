@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV4SpreadsheetsSpreadsheetIdDeveloperMetadataMetadataIdRoute,
   getV4SpreadsheetsSpreadsheetIdRoute,
   getV4SpreadsheetsSpreadsheetIdValuesBatchGetRoute,
@@ -19,57 +19,104 @@ import {
   putV4SpreadsheetsSpreadsheetIdValuesRangeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV4SpreadsheetsRouteHandler: RouteHandler<typeof postV4SpreadsheetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v4Handler = app
-  .openapi(postV4SpreadsheetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4SpreadsheetsSpreadsheetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4SpreadsheetsSpreadsheetIdDeveloperMetadataMetadataIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdDeveloperMetadataSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdSheetsSheetIdCopyToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4SpreadsheetsSpreadsheetIdValuesRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV4SpreadsheetsSpreadsheetIdValuesRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesRangeAppendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesRangeClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesBatchClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesBatchClearByDataFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4SpreadsheetsSpreadsheetIdValuesBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesBatchGetByDataFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateByDataFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4SpreadsheetsSpreadsheetIdGetByDataFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV4SpreadsheetsSpreadsheetIdRouteHandler: RouteHandler<
+  typeof getV4SpreadsheetsSpreadsheetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4SpreadsheetsSpreadsheetIdDeveloperMetadataMetadataIdRouteHandler: RouteHandler<
+  typeof getV4SpreadsheetsSpreadsheetIdDeveloperMetadataMetadataIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdDeveloperMetadataSearchRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdDeveloperMetadataSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdSheetsSheetIdCopyToRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdSheetsSheetIdCopyToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4SpreadsheetsSpreadsheetIdValuesRangeRouteHandler: RouteHandler<
+  typeof getV4SpreadsheetsSpreadsheetIdValuesRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV4SpreadsheetsSpreadsheetIdValuesRangeRouteHandler: RouteHandler<
+  typeof putV4SpreadsheetsSpreadsheetIdValuesRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesRangeAppendRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesRangeAppendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesRangeClearRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesRangeClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesBatchClearRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesBatchClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesBatchClearByDataFilterRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesBatchClearByDataFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4SpreadsheetsSpreadsheetIdValuesBatchGetRouteHandler: RouteHandler<
+  typeof getV4SpreadsheetsSpreadsheetIdValuesBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesBatchGetByDataFilterRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesBatchGetByDataFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateByDataFilterRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdValuesBatchUpdateByDataFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdBatchUpdateRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4SpreadsheetsSpreadsheetIdGetByDataFilterRouteHandler: RouteHandler<
+  typeof postV4SpreadsheetsSpreadsheetIdGetByDataFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

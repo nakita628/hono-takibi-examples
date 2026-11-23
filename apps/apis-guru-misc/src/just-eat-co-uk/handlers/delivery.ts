@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute,
   deleteDeliveryPoolsDeliveryPoolIdRoute,
   getDeliveryEstimateRoute,
@@ -14,42 +14,74 @@ import {
   putDeliveryPoolsDeliveryPoolIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeliveryEstimateRouteHandler: RouteHandler<
+  typeof getDeliveryEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deliveryHandler = app
-  .openapi(getDeliveryEstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliveryPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeliveryPoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDeliveryPoolsDeliveryPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliveryPoolsDeliveryPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDeliveryPoolsDeliveryPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveryPoolsDeliveryPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveryPoolsDeliveryPoolIdHoursRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveryPoolsDeliveryPoolIdRestaurantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDeliveryPoolsRouteHandler: RouteHandler<typeof getDeliveryPoolsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeliveryPoolsRouteHandler: RouteHandler<typeof postDeliveryPoolsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeliveryPoolsDeliveryPoolIdRouteHandler: RouteHandler<
+  typeof deleteDeliveryPoolsDeliveryPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeliveryPoolsDeliveryPoolIdRouteHandler: RouteHandler<
+  typeof getDeliveryPoolsDeliveryPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeliveryPoolsDeliveryPoolIdRouteHandler: RouteHandler<
+  typeof patchDeliveryPoolsDeliveryPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveryPoolsDeliveryPoolIdRouteHandler: RouteHandler<
+  typeof putDeliveryPoolsDeliveryPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRouteHandler: RouteHandler<
+  typeof getDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRouteHandler: RouteHandler<
+  typeof putDeliveryPoolsDeliveryPoolIdAvailabilityRelativeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveryPoolsDeliveryPoolIdHoursRouteHandler: RouteHandler<
+  typeof putDeliveryPoolsDeliveryPoolIdHoursRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeliveryPoolsDeliveryPoolIdRestaurantsRouteHandler: RouteHandler<
+  typeof deleteDeliveryPoolsDeliveryPoolIdRestaurantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveryPoolsDeliveryPoolIdRestaurantsRouteHandler: RouteHandler<
+  typeof putDeliveryPoolsDeliveryPoolIdRestaurantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

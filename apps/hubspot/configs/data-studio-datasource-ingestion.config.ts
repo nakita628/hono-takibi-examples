@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Data%20Studio/Datasource%20Ingestion/Rollouts/248886/2026-09/datasourceIngestion.json',
   output: './src/data-studio-datasource-ingestion/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/data-studio-datasource-ingestion/types.ts' },
   client: { output: './src/data-studio-datasource-ingestion/client.ts', baseUrl: '/' },
   rpc: { output: './src/data-studio-datasource-ingestion/rpc.ts', parseResponse: true },

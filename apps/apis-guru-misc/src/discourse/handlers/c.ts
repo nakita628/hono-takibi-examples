@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCIdShowJsonRoute, getCSlugIdJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCIdShowJsonRoute, getCSlugIdJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCIdShowJsonRouteHandler: RouteHandler<typeof getCIdShowJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cHandler = app
-  .openapi(getCIdShowJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCSlugIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCSlugIdJsonRouteHandler: RouteHandler<typeof getCSlugIdJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServiceTagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServiceTagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServiceTagResourceHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServiceTagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServiceTagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServiceTagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

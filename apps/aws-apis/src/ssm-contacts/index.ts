@@ -1,87 +1,245 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetSsmContactsAcceptPageHandler,
-  xAmzTargetSsmContactsActivateContactChannelHandler,
-  xAmzTargetSsmContactsCreateContactChannelHandler,
-  xAmzTargetSsmContactsCreateContactHandler,
-  xAmzTargetSsmContactsCreateRotationHandler,
-  xAmzTargetSsmContactsCreateRotationOverrideHandler,
-  xAmzTargetSsmContactsDeactivateContactChannelHandler,
-  xAmzTargetSsmContactsDeleteContactChannelHandler,
-  xAmzTargetSsmContactsDeleteContactHandler,
-  xAmzTargetSsmContactsDeleteRotationHandler,
-  xAmzTargetSsmContactsDeleteRotationOverrideHandler,
-  xAmzTargetSsmContactsDescribeEngagementHandler,
-  xAmzTargetSsmContactsDescribePageHandler,
-  xAmzTargetSsmContactsGetContactChannelHandler,
-  xAmzTargetSsmContactsGetContactHandler,
-  xAmzTargetSsmContactsGetContactPolicyHandler,
-  xAmzTargetSsmContactsGetRotationHandler,
-  xAmzTargetSsmContactsGetRotationOverrideHandler,
-  xAmzTargetSsmContactsListContactChannelsHandler,
-  xAmzTargetSsmContactsListContactsHandler,
-  xAmzTargetSsmContactsListEngagementsHandler,
-  xAmzTargetSsmContactsListPageReceiptsHandler,
-  xAmzTargetSsmContactsListPageResolutionsHandler,
-  xAmzTargetSsmContactsListPagesByContactHandler,
-  xAmzTargetSsmContactsListPagesByEngagementHandler,
-  xAmzTargetSsmContactsListPreviewRotationShiftsHandler,
-  xAmzTargetSsmContactsListRotationOverridesHandler,
-  xAmzTargetSsmContactsListRotationsHandler,
-  xAmzTargetSsmContactsListRotationShiftsHandler,
-  xAmzTargetSsmContactsListTagsForResourceHandler,
-  xAmzTargetSsmContactsPutContactPolicyHandler,
-  xAmzTargetSsmContactsSendActivationCodeHandler,
-  xAmzTargetSsmContactsStartEngagementHandler,
-  xAmzTargetSsmContactsStopEngagementHandler,
-  xAmzTargetSsmContactsTagResourceHandler,
-  xAmzTargetSsmContactsUntagResourceHandler,
-  xAmzTargetSsmContactsUpdateContactChannelHandler,
-  xAmzTargetSsmContactsUpdateContactHandler,
-  xAmzTargetSsmContactsUpdateRotationHandler,
+  postXAmzTargetSSMContactsAcceptPageRoute,
+  postXAmzTargetSSMContactsActivateContactChannelRoute,
+  postXAmzTargetSSMContactsCreateContactChannelRoute,
+  postXAmzTargetSSMContactsCreateContactRoute,
+  postXAmzTargetSSMContactsCreateRotationOverrideRoute,
+  postXAmzTargetSSMContactsCreateRotationRoute,
+  postXAmzTargetSSMContactsDeactivateContactChannelRoute,
+  postXAmzTargetSSMContactsDeleteContactChannelRoute,
+  postXAmzTargetSSMContactsDeleteContactRoute,
+  postXAmzTargetSSMContactsDeleteRotationOverrideRoute,
+  postXAmzTargetSSMContactsDeleteRotationRoute,
+  postXAmzTargetSSMContactsDescribeEngagementRoute,
+  postXAmzTargetSSMContactsDescribePageRoute,
+  postXAmzTargetSSMContactsGetContactChannelRoute,
+  postXAmzTargetSSMContactsGetContactPolicyRoute,
+  postXAmzTargetSSMContactsGetContactRoute,
+  postXAmzTargetSSMContactsGetRotationOverrideRoute,
+  postXAmzTargetSSMContactsGetRotationRoute,
+  postXAmzTargetSSMContactsListContactChannelsRoute,
+  postXAmzTargetSSMContactsListContactsRoute,
+  postXAmzTargetSSMContactsListEngagementsRoute,
+  postXAmzTargetSSMContactsListPageReceiptsRoute,
+  postXAmzTargetSSMContactsListPageResolutionsRoute,
+  postXAmzTargetSSMContactsListPagesByContactRoute,
+  postXAmzTargetSSMContactsListPagesByEngagementRoute,
+  postXAmzTargetSSMContactsListPreviewRotationShiftsRoute,
+  postXAmzTargetSSMContactsListRotationOverridesRoute,
+  postXAmzTargetSSMContactsListRotationShiftsRoute,
+  postXAmzTargetSSMContactsListRotationsRoute,
+  postXAmzTargetSSMContactsListTagsForResourceRoute,
+  postXAmzTargetSSMContactsPutContactPolicyRoute,
+  postXAmzTargetSSMContactsSendActivationCodeRoute,
+  postXAmzTargetSSMContactsStartEngagementRoute,
+  postXAmzTargetSSMContactsStopEngagementRoute,
+  postXAmzTargetSSMContactsTagResourceRoute,
+  postXAmzTargetSSMContactsUntagResourceRoute,
+  postXAmzTargetSSMContactsUpdateContactChannelRoute,
+  postXAmzTargetSSMContactsUpdateContactRoute,
+  postXAmzTargetSSMContactsUpdateRotationRoute,
+} from './routes'
+import {
+  postXAmzTargetSSMContactsAcceptPageRouteHandler,
+  postXAmzTargetSSMContactsActivateContactChannelRouteHandler,
+  postXAmzTargetSSMContactsCreateContactChannelRouteHandler,
+  postXAmzTargetSSMContactsCreateContactRouteHandler,
+  postXAmzTargetSSMContactsCreateRotationOverrideRouteHandler,
+  postXAmzTargetSSMContactsCreateRotationRouteHandler,
+  postXAmzTargetSSMContactsDeactivateContactChannelRouteHandler,
+  postXAmzTargetSSMContactsDeleteContactChannelRouteHandler,
+  postXAmzTargetSSMContactsDeleteContactRouteHandler,
+  postXAmzTargetSSMContactsDeleteRotationOverrideRouteHandler,
+  postXAmzTargetSSMContactsDeleteRotationRouteHandler,
+  postXAmzTargetSSMContactsDescribeEngagementRouteHandler,
+  postXAmzTargetSSMContactsDescribePageRouteHandler,
+  postXAmzTargetSSMContactsGetContactChannelRouteHandler,
+  postXAmzTargetSSMContactsGetContactPolicyRouteHandler,
+  postXAmzTargetSSMContactsGetContactRouteHandler,
+  postXAmzTargetSSMContactsGetRotationOverrideRouteHandler,
+  postXAmzTargetSSMContactsGetRotationRouteHandler,
+  postXAmzTargetSSMContactsListContactChannelsRouteHandler,
+  postXAmzTargetSSMContactsListContactsRouteHandler,
+  postXAmzTargetSSMContactsListEngagementsRouteHandler,
+  postXAmzTargetSSMContactsListPageReceiptsRouteHandler,
+  postXAmzTargetSSMContactsListPageResolutionsRouteHandler,
+  postXAmzTargetSSMContactsListPagesByContactRouteHandler,
+  postXAmzTargetSSMContactsListPagesByEngagementRouteHandler,
+  postXAmzTargetSSMContactsListPreviewRotationShiftsRouteHandler,
+  postXAmzTargetSSMContactsListRotationOverridesRouteHandler,
+  postXAmzTargetSSMContactsListRotationShiftsRouteHandler,
+  postXAmzTargetSSMContactsListRotationsRouteHandler,
+  postXAmzTargetSSMContactsListTagsForResourceRouteHandler,
+  postXAmzTargetSSMContactsPutContactPolicyRouteHandler,
+  postXAmzTargetSSMContactsSendActivationCodeRouteHandler,
+  postXAmzTargetSSMContactsStartEngagementRouteHandler,
+  postXAmzTargetSSMContactsStopEngagementRouteHandler,
+  postXAmzTargetSSMContactsTagResourceRouteHandler,
+  postXAmzTargetSSMContactsUntagResourceRouteHandler,
+  postXAmzTargetSSMContactsUpdateContactChannelRouteHandler,
+  postXAmzTargetSSMContactsUpdateContactRouteHandler,
+  postXAmzTargetSSMContactsUpdateRotationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetSsmContactsAcceptPageHandler)
-  .route('/', xAmzTargetSsmContactsActivateContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsCreateContactHandler)
-  .route('/', xAmzTargetSsmContactsCreateContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsCreateRotationHandler)
-  .route('/', xAmzTargetSsmContactsCreateRotationOverrideHandler)
-  .route('/', xAmzTargetSsmContactsDeactivateContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsDeleteContactHandler)
-  .route('/', xAmzTargetSsmContactsDeleteContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsDeleteRotationHandler)
-  .route('/', xAmzTargetSsmContactsDeleteRotationOverrideHandler)
-  .route('/', xAmzTargetSsmContactsDescribeEngagementHandler)
-  .route('/', xAmzTargetSsmContactsDescribePageHandler)
-  .route('/', xAmzTargetSsmContactsGetContactHandler)
-  .route('/', xAmzTargetSsmContactsGetContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsGetContactPolicyHandler)
-  .route('/', xAmzTargetSsmContactsGetRotationHandler)
-  .route('/', xAmzTargetSsmContactsGetRotationOverrideHandler)
-  .route('/', xAmzTargetSsmContactsListContactChannelsHandler)
-  .route('/', xAmzTargetSsmContactsListContactsHandler)
-  .route('/', xAmzTargetSsmContactsListEngagementsHandler)
-  .route('/', xAmzTargetSsmContactsListPageReceiptsHandler)
-  .route('/', xAmzTargetSsmContactsListPageResolutionsHandler)
-  .route('/', xAmzTargetSsmContactsListPagesByContactHandler)
-  .route('/', xAmzTargetSsmContactsListPagesByEngagementHandler)
-  .route('/', xAmzTargetSsmContactsListPreviewRotationShiftsHandler)
-  .route('/', xAmzTargetSsmContactsListRotationOverridesHandler)
-  .route('/', xAmzTargetSsmContactsListRotationShiftsHandler)
-  .route('/', xAmzTargetSsmContactsListRotationsHandler)
-  .route('/', xAmzTargetSsmContactsListTagsForResourceHandler)
-  .route('/', xAmzTargetSsmContactsPutContactPolicyHandler)
-  .route('/', xAmzTargetSsmContactsSendActivationCodeHandler)
-  .route('/', xAmzTargetSsmContactsStartEngagementHandler)
-  .route('/', xAmzTargetSsmContactsStopEngagementHandler)
-  .route('/', xAmzTargetSsmContactsTagResourceHandler)
-  .route('/', xAmzTargetSsmContactsUntagResourceHandler)
-  .route('/', xAmzTargetSsmContactsUpdateContactHandler)
-  .route('/', xAmzTargetSsmContactsUpdateContactChannelHandler)
-  .route('/', xAmzTargetSsmContactsUpdateRotationHandler)
+  .openapi(
+    postXAmzTargetSSMContactsAcceptPageRoute,
+    postXAmzTargetSSMContactsAcceptPageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsActivateContactChannelRoute,
+    postXAmzTargetSSMContactsActivateContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsCreateContactRoute,
+    postXAmzTargetSSMContactsCreateContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsCreateContactChannelRoute,
+    postXAmzTargetSSMContactsCreateContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsCreateRotationRoute,
+    postXAmzTargetSSMContactsCreateRotationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsCreateRotationOverrideRoute,
+    postXAmzTargetSSMContactsCreateRotationOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDeactivateContactChannelRoute,
+    postXAmzTargetSSMContactsDeactivateContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDeleteContactRoute,
+    postXAmzTargetSSMContactsDeleteContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDeleteContactChannelRoute,
+    postXAmzTargetSSMContactsDeleteContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDeleteRotationRoute,
+    postXAmzTargetSSMContactsDeleteRotationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDeleteRotationOverrideRoute,
+    postXAmzTargetSSMContactsDeleteRotationOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDescribeEngagementRoute,
+    postXAmzTargetSSMContactsDescribeEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsDescribePageRoute,
+    postXAmzTargetSSMContactsDescribePageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsGetContactRoute,
+    postXAmzTargetSSMContactsGetContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsGetContactChannelRoute,
+    postXAmzTargetSSMContactsGetContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsGetContactPolicyRoute,
+    postXAmzTargetSSMContactsGetContactPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsGetRotationRoute,
+    postXAmzTargetSSMContactsGetRotationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsGetRotationOverrideRoute,
+    postXAmzTargetSSMContactsGetRotationOverrideRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListContactChannelsRoute,
+    postXAmzTargetSSMContactsListContactChannelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListContactsRoute,
+    postXAmzTargetSSMContactsListContactsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListEngagementsRoute,
+    postXAmzTargetSSMContactsListEngagementsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListPageReceiptsRoute,
+    postXAmzTargetSSMContactsListPageReceiptsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListPageResolutionsRoute,
+    postXAmzTargetSSMContactsListPageResolutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListPagesByContactRoute,
+    postXAmzTargetSSMContactsListPagesByContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListPagesByEngagementRoute,
+    postXAmzTargetSSMContactsListPagesByEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListPreviewRotationShiftsRoute,
+    postXAmzTargetSSMContactsListPreviewRotationShiftsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListRotationOverridesRoute,
+    postXAmzTargetSSMContactsListRotationOverridesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListRotationShiftsRoute,
+    postXAmzTargetSSMContactsListRotationShiftsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListRotationsRoute,
+    postXAmzTargetSSMContactsListRotationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsListTagsForResourceRoute,
+    postXAmzTargetSSMContactsListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsPutContactPolicyRoute,
+    postXAmzTargetSSMContactsPutContactPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsSendActivationCodeRoute,
+    postXAmzTargetSSMContactsSendActivationCodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsStartEngagementRoute,
+    postXAmzTargetSSMContactsStartEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsStopEngagementRoute,
+    postXAmzTargetSSMContactsStopEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsTagResourceRoute,
+    postXAmzTargetSSMContactsTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsUntagResourceRoute,
+    postXAmzTargetSSMContactsUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsUpdateContactRoute,
+    postXAmzTargetSSMContactsUpdateContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsUpdateContactChannelRoute,
+    postXAmzTargetSSMContactsUpdateContactChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSSMContactsUpdateRotationRoute,
+    postXAmzTargetSSMContactsUpdateRotationRouteHandler,
+  )
 
 export default app

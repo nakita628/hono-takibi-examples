@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGroupMembershipsGroupMembershipIdRoute,
   getGroupMembershipsGroupMembershipIdRoute,
   postGroupMembershipsRoute,
   putGroupMembershipsGroupMembershipIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGroupMembershipsRouteHandler: RouteHandler<
+  typeof postGroupMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const groupMembershipsHandler = app
-  .openapi(postGroupMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupMembershipsGroupMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGroupMembershipsGroupMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGroupMembershipsGroupMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGroupMembershipsGroupMembershipIdRouteHandler: RouteHandler<
+  typeof getGroupMembershipsGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGroupMembershipsGroupMembershipIdRouteHandler: RouteHandler<
+  typeof putGroupMembershipsGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGroupMembershipsGroupMembershipIdRouteHandler: RouteHandler<
+  typeof deleteGroupMembershipsGroupMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCmsBlogs202609PostsObjectIdRoute,
   getCmsBlogs202609AuthorsCursorQueryRoute,
   getCmsBlogs202609AuthorsCursorRoute,
@@ -32,96 +32,182 @@ import {
   putCmsBlogs202609PostsMultiLanguageSetNewLangPrimaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCmsBlogs202609AuthorsCursorRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609AuthorsCursorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cmsHandler = app
-  .openapi(getCmsBlogs202609AuthorsCursorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609AuthorsCursorQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsCursorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsCursorQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsMultiLanguageAttachToLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsMultiLanguageCreateLanguageVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsMultiLanguageDetachFromLangGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCmsBlogs202609PostsMultiLanguageSetNewLangPrimaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsMultiLanguageUpdateLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsBlogs202609PostsObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsBlogs202609PostsObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsBlogs202609PostsObjectIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsObjectIdDraftPushLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsObjectIdDraftResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsObjectIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609PostsObjectIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreToDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609TagsCursorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsBlogs202609TagsCursorQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCmsBlogs202609AuthorsCursorQueryRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609AuthorsCursorQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsBatchArchiveRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsBatchCreateRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsBatchReadRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsBatchUpdateRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsCloneRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsCursorRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsCursorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsCursorQueryRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsCursorQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsMultiLanguageAttachToLangGroupRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsMultiLanguageAttachToLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsMultiLanguageCreateLanguageVariationRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsMultiLanguageCreateLanguageVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsMultiLanguageDetachFromLangGroupRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsMultiLanguageDetachFromLangGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCmsBlogs202609PostsMultiLanguageSetNewLangPrimaryRouteHandler: RouteHandler<
+  typeof putCmsBlogs202609PostsMultiLanguageSetNewLangPrimaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsMultiLanguageUpdateLanguagesRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsMultiLanguageUpdateLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsScheduleRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsObjectIdRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsBlogs202609PostsObjectIdRouteHandler: RouteHandler<
+  typeof deleteCmsBlogs202609PostsObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsBlogs202609PostsObjectIdRouteHandler: RouteHandler<
+  typeof patchCmsBlogs202609PostsObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsObjectIdDraftRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsBlogs202609PostsObjectIdDraftRouteHandler: RouteHandler<
+  typeof patchCmsBlogs202609PostsObjectIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsObjectIdDraftPushLiveRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsObjectIdDraftPushLiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsObjectIdDraftResetRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsObjectIdDraftResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsObjectIdRevisionsRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsObjectIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609PostsObjectIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609PostsObjectIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreToDraftRouteHandler: RouteHandler<
+  typeof postCmsBlogs202609PostsObjectIdRevisionsRevisionIdRestoreToDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609TagsCursorRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609TagsCursorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsBlogs202609TagsCursorQueryRouteHandler: RouteHandler<
+  typeof getCmsBlogs202609TagsCursorQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

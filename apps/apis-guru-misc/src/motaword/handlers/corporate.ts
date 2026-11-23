@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCorporatePermissionsRoute,
   getCorporateRoute,
   getCorporateUserGroupsRoute,
@@ -8,24 +8,36 @@ import {
   postCorporateUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCorporateRouteHandler: RouteHandler<typeof getCorporateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const corporateHandler = app
-  .openapi(getCorporateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporatePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateUserGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateUserGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCorporateUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCorporateUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCorporatePermissionsRouteHandler: RouteHandler<
+  typeof getCorporatePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateUserGroupsRouteHandler: RouteHandler<
+  typeof getCorporateUserGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateUserGroupsRouteHandler: RouteHandler<
+  typeof postCorporateUserGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCorporateUsersRouteHandler: RouteHandler<typeof getCorporateUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCorporateUsersRouteHandler: RouteHandler<typeof postCorporateUsersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

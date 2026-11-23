@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRiotAccountV1AccountsByPuuidPuuidRoute,
   getRiotAccountV1AccountsByRiotIdGameNameTagLineRoute,
   getRiotAccountV1AccountsMeRoute,
@@ -7,21 +7,32 @@ import {
   getRiotAccountV1RegionByGameGameByPuuidPuuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRiotAccountV1AccountsByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getRiotAccountV1AccountsByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const riotHandler = app
-  .openapi(getRiotAccountV1AccountsByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiotAccountV1AccountsByRiotIdGameNameTagLineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiotAccountV1AccountsMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiotAccountV1ActiveShardsByGameGameByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRiotAccountV1RegionByGameGameByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRiotAccountV1AccountsByRiotIdGameNameTagLineRouteHandler: RouteHandler<
+  typeof getRiotAccountV1AccountsByRiotIdGameNameTagLineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRiotAccountV1AccountsMeRouteHandler: RouteHandler<
+  typeof getRiotAccountV1AccountsMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRiotAccountV1ActiveShardsByGameGameByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getRiotAccountV1ActiveShardsByGameGameByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRiotAccountV1RegionByGameGameByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getRiotAccountV1RegionByGameGameByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { getweatherzipcodeHandler } from './handlers'
+import { getGetweatherzipcodeRoute } from './routes'
+import { getGetweatherzipcodeRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', getweatherzipcodeHandler)
+export const api = app.openapi(getGetweatherzipcodeRoute, getGetweatherzipcodeRouteHandler)
 
 export default app

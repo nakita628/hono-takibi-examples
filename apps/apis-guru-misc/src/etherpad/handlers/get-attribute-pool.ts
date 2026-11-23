@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetAttributePoolRoute, postGetAttributePoolRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetAttributePoolRoute, postGetAttributePoolRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGetAttributePoolRouteHandler: RouteHandler<
+  typeof getGetAttributePoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const getAttributePoolHandler = app
-  .openapi(getGetAttributePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGetAttributePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGetAttributePoolRouteHandler: RouteHandler<
+  typeof postGetAttributePoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

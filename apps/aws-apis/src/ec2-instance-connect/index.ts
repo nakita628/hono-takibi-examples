@@ -1,13 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsec2InstanceConnectServiceSendSerialConsoleSshPublicKeyHandler,
-  xAmzTargetAwsec2InstanceConnectServiceSendSshPublicKeyHandler,
+  postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute,
+  postXAmzTargetAWSEC2InstanceConnectServiceSendSSHPublicKeyRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRouteHandler,
+  postXAmzTargetAWSEC2InstanceConnectServiceSendSSHPublicKeyRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsec2InstanceConnectServiceSendSshPublicKeyHandler)
-  .route('/', xAmzTargetAwsec2InstanceConnectServiceSendSerialConsoleSshPublicKeyHandler)
+  .openapi(
+    postXAmzTargetAWSEC2InstanceConnectServiceSendSSHPublicKeyRoute,
+    postXAmzTargetAWSEC2InstanceConnectServiceSendSSHPublicKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRoute,
+    postXAmzTargetAWSEC2InstanceConnectServiceSendSerialConsoleSSHPublicKeyRouteHandler,
+  )
 
 export default app

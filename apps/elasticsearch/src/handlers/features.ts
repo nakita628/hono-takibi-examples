@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFeaturesRoute, postFeaturesResetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFeaturesRoute, postFeaturesResetRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeaturesRouteHandler: RouteHandler<typeof getFeaturesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const featuresHandler = app
-  .openapi(getFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFeaturesResetRouteHandler: RouteHandler<typeof postFeaturesResetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTagsIdAssetsRoute,
   deleteTagsIdRoute,
   getTagsIdRoute,
@@ -11,33 +11,40 @@ import {
   putTagsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTagsRouteHandler: RouteHandler<typeof getTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tagsHandler = app
-  .openapi(getTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTagsAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTagsIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTagsIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTagsRouteHandler: RouteHandler<typeof postTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTagsRouteHandler: RouteHandler<typeof putTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTagsAssetsRouteHandler: RouteHandler<typeof putTagsAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTagsIdRouteHandler: RouteHandler<typeof deleteTagsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsIdRouteHandler: RouteHandler<typeof getTagsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTagsIdRouteHandler: RouteHandler<typeof putTagsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTagsIdAssetsRouteHandler: RouteHandler<typeof deleteTagsIdAssetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putTagsIdAssetsRouteHandler: RouteHandler<typeof putTagsIdAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

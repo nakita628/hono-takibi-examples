@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiAbilityScoresIndexRoute,
   getApiAlignmentsIndexRoute,
   getApiBackgroundsIndexRoute,
@@ -49,147 +49,276 @@ import {
   getApiWeaponPropertiesIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiRouteHandler: RouteHandler<typeof getApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAbilityScoresIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlignmentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBackgroundsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexLevelsClassLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexLevelsClassLevelFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexLevelsSpellLevelSpellsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexMultiClassingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexProficienciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexSpellcastingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexSpellsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiClassesIndexSubclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiConditionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDamageTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEquipmentCategoriesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEquipmentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFeatsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFeaturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLanguagesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMagicItemsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMagicSchoolsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMonstersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMonstersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProficienciesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRacesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRacesIndexProficienciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRacesIndexSubracesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRacesIndexTraitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRuleSectionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSkillsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSpellsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSpellsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubclassesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubclassesIndexFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubclassesIndexLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubclassesIndexLevelsSubclassLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubclassesIndexLevelsSubclassLevelFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubracesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubracesIndexProficienciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSubracesIndexTraitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTraitsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWeaponPropertiesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiAbilityScoresIndexRouteHandler: RouteHandler<
+  typeof getApiAbilityScoresIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlignmentsIndexRouteHandler: RouteHandler<
+  typeof getApiAlignmentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBackgroundsIndexRouteHandler: RouteHandler<
+  typeof getApiBackgroundsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexRouteHandler: RouteHandler<typeof getApiClassesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexFeaturesRouteHandler: RouteHandler<
+  typeof getApiClassesIndexFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexLevelsRouteHandler: RouteHandler<
+  typeof getApiClassesIndexLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexLevelsClassLevelRouteHandler: RouteHandler<
+  typeof getApiClassesIndexLevelsClassLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexLevelsClassLevelFeaturesRouteHandler: RouteHandler<
+  typeof getApiClassesIndexLevelsClassLevelFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexLevelsSpellLevelSpellsRouteHandler: RouteHandler<
+  typeof getApiClassesIndexLevelsSpellLevelSpellsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexMultiClassingRouteHandler: RouteHandler<
+  typeof getApiClassesIndexMultiClassingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexProficienciesRouteHandler: RouteHandler<
+  typeof getApiClassesIndexProficienciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexSpellcastingRouteHandler: RouteHandler<
+  typeof getApiClassesIndexSpellcastingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexSpellsRouteHandler: RouteHandler<
+  typeof getApiClassesIndexSpellsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiClassesIndexSubclassesRouteHandler: RouteHandler<
+  typeof getApiClassesIndexSubclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiConditionsIndexRouteHandler: RouteHandler<
+  typeof getApiConditionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDamageTypesIndexRouteHandler: RouteHandler<
+  typeof getApiDamageTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEquipmentCategoriesIndexRouteHandler: RouteHandler<
+  typeof getApiEquipmentCategoriesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEquipmentIndexRouteHandler: RouteHandler<
+  typeof getApiEquipmentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFeatsIndexRouteHandler: RouteHandler<typeof getApiFeatsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFeaturesIndexRouteHandler: RouteHandler<
+  typeof getApiFeaturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLanguagesIndexRouteHandler: RouteHandler<
+  typeof getApiLanguagesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMagicItemsIndexRouteHandler: RouteHandler<
+  typeof getApiMagicItemsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMagicSchoolsIndexRouteHandler: RouteHandler<
+  typeof getApiMagicSchoolsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMonstersRouteHandler: RouteHandler<typeof getApiMonstersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMonstersIndexRouteHandler: RouteHandler<
+  typeof getApiMonstersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProficienciesIndexRouteHandler: RouteHandler<
+  typeof getApiProficienciesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRacesIndexRouteHandler: RouteHandler<typeof getApiRacesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRacesIndexProficienciesRouteHandler: RouteHandler<
+  typeof getApiRacesIndexProficienciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRacesIndexSubracesRouteHandler: RouteHandler<
+  typeof getApiRacesIndexSubracesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRacesIndexTraitsRouteHandler: RouteHandler<
+  typeof getApiRacesIndexTraitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRuleSectionsIndexRouteHandler: RouteHandler<
+  typeof getApiRuleSectionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRulesIndexRouteHandler: RouteHandler<typeof getApiRulesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSkillsIndexRouteHandler: RouteHandler<typeof getApiSkillsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSpellsRouteHandler: RouteHandler<typeof getApiSpellsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSpellsIndexRouteHandler: RouteHandler<typeof getApiSpellsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubclassesIndexRouteHandler: RouteHandler<
+  typeof getApiSubclassesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubclassesIndexFeaturesRouteHandler: RouteHandler<
+  typeof getApiSubclassesIndexFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubclassesIndexLevelsRouteHandler: RouteHandler<
+  typeof getApiSubclassesIndexLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubclassesIndexLevelsSubclassLevelRouteHandler: RouteHandler<
+  typeof getApiSubclassesIndexLevelsSubclassLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubclassesIndexLevelsSubclassLevelFeaturesRouteHandler: RouteHandler<
+  typeof getApiSubclassesIndexLevelsSubclassLevelFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubracesIndexRouteHandler: RouteHandler<
+  typeof getApiSubracesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubracesIndexProficienciesRouteHandler: RouteHandler<
+  typeof getApiSubracesIndexProficienciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSubracesIndexTraitsRouteHandler: RouteHandler<
+  typeof getApiSubracesIndexTraitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTraitsIndexRouteHandler: RouteHandler<typeof getApiTraitsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWeaponPropertiesIndexRouteHandler: RouteHandler<
+  typeof getApiWeaponPropertiesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEndpointRouteHandler: RouteHandler<typeof getApiEndpointRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

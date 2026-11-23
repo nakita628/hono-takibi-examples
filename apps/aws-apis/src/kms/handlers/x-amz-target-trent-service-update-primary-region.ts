@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceUpdatePrimaryRegionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceUpdatePrimaryRegionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceUpdatePrimaryRegionHandler = app.openapi(
-  postXAmzTargetTrentServiceUpdatePrimaryRegionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceUpdatePrimaryRegionRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceUpdatePrimaryRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

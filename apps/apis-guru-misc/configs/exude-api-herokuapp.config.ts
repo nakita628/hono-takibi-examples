@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/exude-api.herokuapp.com/1.0.0/openapi.yaml',
   output: './src/exude-api-herokuapp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/exude-api-herokuapp/types.ts' },
   client: { output: './src/exude-api-herokuapp/client.ts', baseUrl: '/' },
   rpc: { output: './src/exude-api-herokuapp/rpc.ts', parseResponse: true },

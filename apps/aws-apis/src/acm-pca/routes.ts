@@ -300,10 +300,10 @@ const CsrExtensionsSchema = z
   .openapi('CsrExtensions')
 
 type CertificateAuthorityConfigurationType = {
-  KeyAlgorithm: z.infer<typeof KeyAlgorithmSchema> & unknown
-  SigningAlgorithm: z.infer<typeof SigningAlgorithmSchema> & unknown
-  Subject: z.infer<typeof ASN1SubjectSchema> & unknown
-  CsrExtensions?: z.infer<typeof CsrExtensionsSchema> & unknown
+  KeyAlgorithm: z.infer<typeof KeyAlgorithmSchema>
+  SigningAlgorithm: z.infer<typeof SigningAlgorithmSchema>
+  Subject: z.infer<typeof ASN1SubjectSchema>
+  CsrExtensions?: z.infer<typeof CsrExtensionsSchema>
 }
 
 const CertificateAuthorityConfigurationSchema: z.ZodType<CertificateAuthorityConfigurationType> = z
@@ -455,22 +455,21 @@ const CertificateAuthorityUsageModeSchema = z
   .openapi('CertificateAuthorityUsageMode')
 
 type CertificateAuthorityType = {
-  Arn?: z.infer<typeof ArnSchema> & unknown
-  OwnerAccount?: z.infer<typeof AccountIdSchema> & unknown
-  CreatedAt?: z.infer<typeof TStampSchema> & unknown
-  LastStateChangeAt?: z.infer<typeof TStampSchema> & unknown
-  Type?: z.infer<typeof CertificateAuthorityTypeSchema> & unknown
-  Serial?: z.infer<typeof StringSchema> & unknown
-  Status?: z.infer<typeof CertificateAuthorityStatusSchema> & unknown
-  NotBefore?: z.infer<typeof TStampSchema> & unknown
-  NotAfter?: z.infer<typeof TStampSchema> & unknown
-  FailureReason?: z.infer<typeof FailureReasonSchema> & unknown
-  CertificateAuthorityConfiguration?: z.infer<typeof CertificateAuthorityConfigurationSchema> &
-    unknown
-  RevocationConfiguration?: z.infer<typeof RevocationConfigurationSchema> & unknown
-  RestorableUntil?: z.infer<typeof TStampSchema> & unknown
-  KeyStorageSecurityStandard?: z.infer<typeof KeyStorageSecurityStandardSchema> & unknown
-  UsageMode?: z.infer<typeof CertificateAuthorityUsageModeSchema> & unknown
+  Arn?: z.infer<typeof ArnSchema>
+  OwnerAccount?: z.infer<typeof AccountIdSchema>
+  CreatedAt?: z.infer<typeof TStampSchema>
+  LastStateChangeAt?: z.infer<typeof TStampSchema>
+  Type?: z.infer<typeof CertificateAuthorityTypeSchema>
+  Serial?: z.infer<typeof StringSchema>
+  Status?: z.infer<typeof CertificateAuthorityStatusSchema>
+  NotBefore?: z.infer<typeof TStampSchema>
+  NotAfter?: z.infer<typeof TStampSchema>
+  FailureReason?: z.infer<typeof FailureReasonSchema>
+  CertificateAuthorityConfiguration?: z.infer<typeof CertificateAuthorityConfigurationSchema>
+  RevocationConfiguration?: z.infer<typeof RevocationConfigurationSchema>
+  RestorableUntil?: z.infer<typeof TStampSchema>
+  KeyStorageSecurityStandard?: z.infer<typeof KeyStorageSecurityStandardSchema>
+  UsageMode?: z.infer<typeof CertificateAuthorityUsageModeSchema>
 }
 
 const IdempotencyTokenSchema = z
@@ -509,14 +508,13 @@ const TagSchema = z
 const TagListSchema = z.array(TagSchema).min(1).max(50).openapi('TagList')
 
 type CreateCertificateAuthorityRequestType = {
-  CertificateAuthorityConfiguration: z.infer<typeof CertificateAuthorityConfigurationSchema> &
-    unknown
-  RevocationConfiguration?: z.infer<typeof RevocationConfigurationSchema> & unknown
-  CertificateAuthorityType: z.infer<typeof CertificateAuthorityTypeSchema> & unknown
-  IdempotencyToken?: z.infer<typeof IdempotencyTokenSchema> & unknown
-  KeyStorageSecurityStandard?: z.infer<typeof KeyStorageSecurityStandardSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  UsageMode?: z.infer<typeof CertificateAuthorityUsageModeSchema> & unknown
+  CertificateAuthorityConfiguration: z.infer<typeof CertificateAuthorityConfigurationSchema>
+  RevocationConfiguration?: z.infer<typeof RevocationConfigurationSchema>
+  CertificateAuthorityType: z.infer<typeof CertificateAuthorityTypeSchema>
+  IdempotencyToken?: z.infer<typeof IdempotencyTokenSchema>
+  KeyStorageSecurityStandard?: z.infer<typeof KeyStorageSecurityStandardSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  UsageMode?: z.infer<typeof CertificateAuthorityUsageModeSchema>
 }
 
 const CertificateAuthoritySchema: z.ZodType<CertificateAuthorityType> = z
@@ -581,7 +579,7 @@ const CertificateAuthoritySchema: z.ZodType<CertificateAuthorityType> = z
   .openapi('CertificateAuthority')
 
 type DescribeCertificateAuthorityResponseType = {
-  CertificateAuthority?: z.infer<typeof CertificateAuthoritySchema> & unknown
+  CertificateAuthority?: z.infer<typeof CertificateAuthoritySchema>
 }
 
 const PolicyQualifierIdSchema = z.literal('CPS').openapi('PolicyQualifierId')
@@ -782,14 +780,14 @@ const ValiditySchema = z
   .openapi('Validity')
 
 type IssueCertificateRequestType = {
-  ApiPassthrough?: z.infer<typeof ApiPassthroughSchema> & unknown
-  CertificateAuthorityArn: z.infer<typeof ArnSchema> & unknown
-  Csr: z.infer<typeof CsrBlobSchema> & unknown
-  SigningAlgorithm: z.infer<typeof SigningAlgorithmSchema> & unknown
-  TemplateArn?: z.infer<typeof ArnSchema> & unknown
-  Validity: z.infer<typeof ValiditySchema> & unknown
-  ValidityNotBefore?: z.infer<typeof ValiditySchema> & unknown
-  IdempotencyToken?: z.infer<typeof IdempotencyTokenSchema> & unknown
+  ApiPassthrough?: z.infer<typeof ApiPassthroughSchema>
+  CertificateAuthorityArn: z.infer<typeof ArnSchema>
+  Csr: z.infer<typeof CsrBlobSchema>
+  SigningAlgorithm: z.infer<typeof SigningAlgorithmSchema>
+  TemplateArn?: z.infer<typeof ArnSchema>
+  Validity: z.infer<typeof ValiditySchema>
+  ValidityNotBefore?: z.infer<typeof ValiditySchema>
+  IdempotencyToken?: z.infer<typeof IdempotencyTokenSchema>
 }
 
 type CertificateAuthoritiesType = z.infer<typeof CertificateAuthoritySchema>[]
@@ -801,8 +799,8 @@ const CertificateAuthoritiesSchema: z.ZodType<CertificateAuthoritiesType> = z
 const NextTokenSchema = z.string().min(1).max(500).openapi('NextToken')
 
 type ListCertificateAuthoritiesResponseType = {
-  CertificateAuthorities?: z.infer<typeof CertificateAuthoritiesSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  CertificateAuthorities?: z.infer<typeof CertificateAuthoritiesSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const CreateCertificateAuthorityResponseSchema = z

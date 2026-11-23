@@ -311,21 +311,21 @@ const VolumeSchema: z.ZodType<VolumeType> = z
   .openapi('Volume')
 
 type BackupType = {
-  BackupId: z.infer<typeof BackupIdSchema> & unknown
-  Lifecycle: z.infer<typeof BackupLifecycleSchema> & unknown
-  FailureDetails?: z.infer<typeof BackupFailureDetailsSchema> & unknown
-  Type: z.infer<typeof BackupTypeSchema> & unknown
+  BackupId: z.infer<typeof BackupIdSchema>
+  Lifecycle: z.infer<typeof BackupLifecycleSchema>
+  FailureDetails?: z.infer<typeof BackupFailureDetailsSchema>
+  Type: z.infer<typeof BackupTypeSchema>
   ProgressPercent?: z.infer<typeof ProgressPercentSchema>
-  CreationTime: z.infer<typeof CreationTimeSchema> & unknown
-  KmsKeyId?: z.infer<typeof KmsKeyIdSchema> & unknown
-  ResourceARN?: z.infer<typeof ResourceARNSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  FileSystem: z.infer<typeof FileSystemSchema> & unknown
-  DirectoryInformation?: z.infer<typeof ActiveDirectoryBackupAttributesSchema> & unknown
+  CreationTime: z.infer<typeof CreationTimeSchema>
+  KmsKeyId?: z.infer<typeof KmsKeyIdSchema>
+  ResourceARN?: z.infer<typeof ResourceARNSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  FileSystem: z.infer<typeof FileSystemSchema>
+  DirectoryInformation?: z.infer<typeof ActiveDirectoryBackupAttributesSchema>
   OwnerId?: z.infer<typeof AWSAccountIdSchema>
   SourceBackupId?: z.infer<typeof BackupIdSchema>
-  SourceBackupRegion?: z.infer<typeof RegionSchema> & unknown
-  ResourceType?: z.infer<typeof ResourceTypeSchema> & unknown
+  SourceBackupRegion?: z.infer<typeof RegionSchema>
+  ResourceType?: z.infer<typeof ResourceTypeSchema>
   Volume?: z.infer<typeof VolumeSchema>
 }
 
@@ -382,9 +382,9 @@ const BackupSchema: z.ZodType<BackupType> = z
 
 type CopyBackupResponseType = { Backup?: z.infer<typeof BackupSchema> }
 
-type CreateBackupResponseType = { Backup?: z.infer<typeof BackupSchema> & unknown }
+type CreateBackupResponseType = { Backup?: z.infer<typeof BackupSchema> }
 
-type CreateFileSystemResponseType = { FileSystem?: z.infer<typeof FileSystemSchema> & unknown }
+type CreateFileSystemResponseType = { FileSystem?: z.infer<typeof FileSystemSchema> }
 
 const ClientRequestTokenSchema = z
   .string()
@@ -436,7 +436,7 @@ const FileSystemLifecycleSchema: z.ZodType<FileSystemLifecycleType> = z
   .openapi({ description: 'The lifecycle status of the file system.' })
   .openapi('FileSystemLifecycle')
 
-type FileSystemFailureDetailsType = { Message?: z.infer<typeof ErrorMessageSchema> & unknown }
+type FileSystemFailureDetailsType = { Message?: z.infer<typeof ErrorMessageSchema> }
 
 const FileSystemFailureDetailsSchema: z.ZodType<FileSystemFailureDetailsType> = z
   .object({
@@ -726,22 +726,22 @@ const WindowsAuditLogConfigurationSchema = z
   .openapi('WindowsAuditLogConfiguration')
 
 type WindowsFileSystemConfigurationType = {
-  ActiveDirectoryId?: z.infer<typeof DirectoryIdSchema> & unknown
+  ActiveDirectoryId?: z.infer<typeof DirectoryIdSchema>
   SelfManagedActiveDirectoryConfiguration?: z.infer<
     typeof SelfManagedActiveDirectoryAttributesSchema
   >
-  DeploymentType?: z.infer<typeof WindowsDeploymentTypeSchema> & unknown
-  RemoteAdministrationEndpoint?: z.infer<typeof DNSNameSchema> & unknown
-  PreferredSubnetId?: z.infer<typeof SubnetIdSchema> & unknown
-  PreferredFileServerIp?: z.infer<typeof IpAddressSchema> & unknown
-  ThroughputCapacity?: z.infer<typeof MegabytesPerSecondSchema> & unknown
-  MaintenanceOperationsInProgress?: z.infer<typeof FileSystemMaintenanceOperationsSchema> & unknown
-  WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema> & unknown
-  DailyAutomaticBackupStartTime?: z.infer<typeof DailyTimeSchema> & unknown
-  AutomaticBackupRetentionDays?: z.infer<typeof AutomaticBackupRetentionDaysSchema> & unknown
-  CopyTagsToBackups?: z.infer<typeof FlagSchema> & unknown
+  DeploymentType?: z.infer<typeof WindowsDeploymentTypeSchema>
+  RemoteAdministrationEndpoint?: z.infer<typeof DNSNameSchema>
+  PreferredSubnetId?: z.infer<typeof SubnetIdSchema>
+  PreferredFileServerIp?: z.infer<typeof IpAddressSchema>
+  ThroughputCapacity?: z.infer<typeof MegabytesPerSecondSchema>
+  MaintenanceOperationsInProgress?: z.infer<typeof FileSystemMaintenanceOperationsSchema>
+  WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema>
+  DailyAutomaticBackupStartTime?: z.infer<typeof DailyTimeSchema>
+  AutomaticBackupRetentionDays?: z.infer<typeof AutomaticBackupRetentionDaysSchema>
+  CopyTagsToBackups?: z.infer<typeof FlagSchema>
   Aliases?: z.infer<typeof AliasesSchema>
-  AuditLogConfiguration?: z.infer<typeof WindowsAuditLogConfigurationSchema> & unknown
+  AuditLogConfiguration?: z.infer<typeof WindowsAuditLogConfigurationSchema>
 }
 
 const WindowsFileSystemConfigurationSchema: z.ZodType<WindowsFileSystemConfigurationType> = z
@@ -936,18 +936,18 @@ const LustreRootSquashConfigurationSchema = z
   .openapi('LustreRootSquashConfiguration')
 
 type LustreFileSystemConfigurationType = {
-  WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema> & unknown
+  WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema>
   DataRepositoryConfiguration?: z.infer<typeof DataRepositoryConfigurationSchema>
-  DeploymentType?: z.infer<typeof LustreDeploymentTypeSchema> & unknown
-  PerUnitStorageThroughput?: z.infer<typeof PerUnitStorageThroughputSchema> & unknown
-  MountName?: z.infer<typeof LustreFileSystemMountNameSchema> & unknown
+  DeploymentType?: z.infer<typeof LustreDeploymentTypeSchema>
+  PerUnitStorageThroughput?: z.infer<typeof PerUnitStorageThroughputSchema>
+  MountName?: z.infer<typeof LustreFileSystemMountNameSchema>
   DailyAutomaticBackupStartTime?: z.infer<typeof DailyTimeSchema>
   AutomaticBackupRetentionDays?: z.infer<typeof AutomaticBackupRetentionDaysSchema>
-  CopyTagsToBackups?: z.infer<typeof FlagSchema> & unknown
-  DriveCacheType?: z.infer<typeof DriveCacheTypeSchema> & unknown
-  DataCompressionType?: z.infer<typeof DataCompressionTypeSchema> & unknown
-  LogConfiguration?: z.infer<typeof LustreLogConfigurationSchema> & unknown
-  RootSquashConfiguration?: z.infer<typeof LustreRootSquashConfigurationSchema> & unknown
+  CopyTagsToBackups?: z.infer<typeof FlagSchema>
+  DriveCacheType?: z.infer<typeof DriveCacheTypeSchema>
+  DataCompressionType?: z.infer<typeof DataCompressionTypeSchema>
+  LogConfiguration?: z.infer<typeof LustreLogConfigurationSchema>
+  RootSquashConfiguration?: z.infer<typeof LustreRootSquashConfigurationSchema>
 }
 
 const LustreFileSystemConfigurationSchema: z.ZodType<LustreFileSystemConfigurationType> = z
@@ -1086,12 +1086,12 @@ const RouteTableIdsSchema = z.array(RouteTableIdSchema).max(50).openapi('RouteTa
 type OntapFileSystemConfigurationType = {
   AutomaticBackupRetentionDays?: z.infer<typeof AutomaticBackupRetentionDaysSchema>
   DailyAutomaticBackupStartTime?: z.infer<typeof DailyTimeSchema>
-  DeploymentType?: z.infer<typeof OntapDeploymentTypeSchema> & unknown
-  EndpointIpAddressRange?: z.infer<typeof IpAddressRangeSchema> & unknown
-  Endpoints?: z.infer<typeof FileSystemEndpointsSchema> & unknown
-  DiskIopsConfiguration?: z.infer<typeof DiskIopsConfigurationSchema> & unknown
+  DeploymentType?: z.infer<typeof OntapDeploymentTypeSchema>
+  EndpointIpAddressRange?: z.infer<typeof IpAddressRangeSchema>
+  Endpoints?: z.infer<typeof FileSystemEndpointsSchema>
+  DiskIopsConfiguration?: z.infer<typeof DiskIopsConfigurationSchema>
   PreferredSubnetId?: z.infer<typeof SubnetIdSchema>
-  RouteTableIds?: z.infer<typeof RouteTableIdsSchema> & unknown
+  RouteTableIds?: z.infer<typeof RouteTableIdsSchema>
   ThroughputCapacity?: z.infer<typeof MegabytesPerSecondSchema>
   WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema>
 }
@@ -1150,14 +1150,14 @@ const VolumeIdSchema: z.ZodType<VolumeIdType> = z
 
 type OpenZFSFileSystemConfigurationType = {
   AutomaticBackupRetentionDays?: z.infer<typeof AutomaticBackupRetentionDaysSchema>
-  CopyTagsToBackups?: z.infer<typeof FlagSchema> & unknown
-  CopyTagsToVolumes?: z.infer<typeof FlagSchema> & unknown
+  CopyTagsToBackups?: z.infer<typeof FlagSchema>
+  CopyTagsToVolumes?: z.infer<typeof FlagSchema>
   DailyAutomaticBackupStartTime?: z.infer<typeof DailyTimeSchema>
-  DeploymentType?: z.infer<typeof OpenZFSDeploymentTypeSchema> & unknown
-  ThroughputCapacity?: z.infer<typeof MegabytesPerSecondSchema> & unknown
+  DeploymentType?: z.infer<typeof OpenZFSDeploymentTypeSchema>
+  ThroughputCapacity?: z.infer<typeof MegabytesPerSecondSchema>
   WeeklyMaintenanceStartTime?: z.infer<typeof WeeklyTimeSchema>
   DiskIopsConfiguration?: z.infer<typeof DiskIopsConfigurationSchema>
-  RootVolumeId?: z.infer<typeof VolumeIdSchema> & unknown
+  RootVolumeId?: z.infer<typeof VolumeIdSchema>
 }
 
 const OpenZFSFileSystemConfigurationSchema: z.ZodType<OpenZFSFileSystemConfigurationType> = z
@@ -1193,27 +1193,27 @@ const OpenZFSFileSystemConfigurationSchema: z.ZodType<OpenZFSFileSystemConfigura
   .openapi('OpenZFSFileSystemConfiguration')
 
 type FileSystemType = {
-  OwnerId?: z.infer<typeof AWSAccountIdSchema> & unknown
-  CreationTime?: z.infer<typeof CreationTimeSchema> & unknown
-  FileSystemId?: z.infer<typeof FileSystemIdSchema> & unknown
-  FileSystemType?: z.infer<typeof FileSystemTypeSchema> & unknown
-  Lifecycle?: z.infer<typeof FileSystemLifecycleSchema> & unknown
+  OwnerId?: z.infer<typeof AWSAccountIdSchema>
+  CreationTime?: z.infer<typeof CreationTimeSchema>
+  FileSystemId?: z.infer<typeof FileSystemIdSchema>
+  FileSystemType?: z.infer<typeof FileSystemTypeSchema>
+  Lifecycle?: z.infer<typeof FileSystemLifecycleSchema>
   FailureDetails?: z.infer<typeof FileSystemFailureDetailsSchema>
-  StorageCapacity?: z.infer<typeof StorageCapacitySchema> & unknown
-  StorageType?: z.infer<typeof StorageTypeSchema> & unknown
-  VpcId?: z.infer<typeof VpcIdSchema> & unknown
-  SubnetIds?: z.infer<typeof SubnetIdsSchema> & unknown
-  NetworkInterfaceIds?: z.infer<typeof NetworkInterfaceIdsSchema> & unknown
-  DNSName?: z.infer<typeof DNSNameSchema> & unknown
-  KmsKeyId?: z.infer<typeof KmsKeyIdSchema> & unknown
-  ResourceARN?: z.infer<typeof ResourceARNSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  WindowsConfiguration?: z.infer<typeof WindowsFileSystemConfigurationSchema> & unknown
+  StorageCapacity?: z.infer<typeof StorageCapacitySchema>
+  StorageType?: z.infer<typeof StorageTypeSchema>
+  VpcId?: z.infer<typeof VpcIdSchema>
+  SubnetIds?: z.infer<typeof SubnetIdsSchema>
+  NetworkInterfaceIds?: z.infer<typeof NetworkInterfaceIdsSchema>
+  DNSName?: z.infer<typeof DNSNameSchema>
+  KmsKeyId?: z.infer<typeof KmsKeyIdSchema>
+  ResourceARN?: z.infer<typeof ResourceARNSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  WindowsConfiguration?: z.infer<typeof WindowsFileSystemConfigurationSchema>
   LustreConfiguration?: z.infer<typeof LustreFileSystemConfigurationSchema>
-  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema> & unknown
-  OntapConfiguration?: z.infer<typeof OntapFileSystemConfigurationSchema> & unknown
-  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema> & unknown
-  OpenZFSConfiguration?: z.infer<typeof OpenZFSFileSystemConfigurationSchema> & unknown
+  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema>
+  OntapConfiguration?: z.infer<typeof OntapFileSystemConfigurationSchema>
+  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema>
+  OpenZFSConfiguration?: z.infer<typeof OpenZFSFileSystemConfigurationSchema>
 }
 
 const SecurityGroupIdSchema = z
@@ -1637,43 +1637,41 @@ const CreateFileSystemOpenZFSConfigurationSchema = z
   .openapi('CreateFileSystemOpenZFSConfiguration')
 
 type CreateFileSystemRequestType = {
-  ClientRequestToken?: z.infer<typeof ClientRequestTokenSchema> & unknown
-  FileSystemType: z.infer<typeof FileSystemTypeSchema> & unknown
-  StorageCapacity: z.infer<typeof StorageCapacitySchema> & unknown
-  StorageType?: z.infer<typeof StorageTypeSchema> & unknown
-  SubnetIds: z.infer<typeof SubnetIdsSchema> & unknown
-  SecurityGroupIds?: z.infer<typeof SecurityGroupIdsSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
+  ClientRequestToken?: z.infer<typeof ClientRequestTokenSchema>
+  FileSystemType: z.infer<typeof FileSystemTypeSchema>
+  StorageCapacity: z.infer<typeof StorageCapacitySchema>
+  StorageType?: z.infer<typeof StorageTypeSchema>
+  SubnetIds: z.infer<typeof SubnetIdsSchema>
+  SecurityGroupIds?: z.infer<typeof SecurityGroupIdsSchema>
+  Tags?: z.infer<typeof TagsSchema>
   KmsKeyId?: z.infer<typeof KmsKeyIdSchema>
-  WindowsConfiguration?: z.infer<typeof CreateFileSystemWindowsConfigurationSchema> & unknown
+  WindowsConfiguration?: z.infer<typeof CreateFileSystemWindowsConfigurationSchema>
   LustreConfiguration?: z.infer<typeof CreateFileSystemLustreConfigurationSchema>
   OntapConfiguration?: z.infer<typeof CreateFileSystemOntapConfigurationSchema>
-  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema> & unknown
-  OpenZFSConfiguration?: z.infer<typeof CreateFileSystemOpenZFSConfigurationSchema> & unknown
+  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema>
+  OpenZFSConfiguration?: z.infer<typeof CreateFileSystemOpenZFSConfigurationSchema>
 }
 
-type CreateFileSystemFromBackupResponseType = {
-  FileSystem?: z.infer<typeof FileSystemSchema> & unknown
-}
+type CreateFileSystemFromBackupResponseType = { FileSystem?: z.infer<typeof FileSystemSchema> }
 
 type CreateFileSystemFromBackupRequestType = {
   BackupId: z.infer<typeof BackupIdSchema>
-  ClientRequestToken?: z.infer<typeof ClientRequestTokenSchema> & unknown
-  SubnetIds: z.infer<typeof SubnetIdsSchema> & unknown
-  SecurityGroupIds?: z.infer<typeof SecurityGroupIdsSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  WindowsConfiguration?: z.infer<typeof CreateFileSystemWindowsConfigurationSchema> & unknown
+  ClientRequestToken?: z.infer<typeof ClientRequestTokenSchema>
+  SubnetIds: z.infer<typeof SubnetIdsSchema>
+  SecurityGroupIds?: z.infer<typeof SecurityGroupIdsSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  WindowsConfiguration?: z.infer<typeof CreateFileSystemWindowsConfigurationSchema>
   LustreConfiguration?: z.infer<typeof CreateFileSystemLustreConfigurationSchema>
-  StorageType?: z.infer<typeof StorageTypeSchema> & unknown
+  StorageType?: z.infer<typeof StorageTypeSchema>
   KmsKeyId?: z.infer<typeof KmsKeyIdSchema>
-  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema> & unknown
-  OpenZFSConfiguration?: z.infer<typeof CreateFileSystemOpenZFSConfigurationSchema> & unknown
-  StorageCapacity?: z.infer<typeof StorageCapacitySchema> & unknown
+  FileSystemTypeVersion?: z.infer<typeof FileSystemTypeVersionSchema>
+  OpenZFSConfiguration?: z.infer<typeof CreateFileSystemOpenZFSConfigurationSchema>
+  StorageCapacity?: z.infer<typeof StorageCapacitySchema>
 }
 
-type CreateVolumeResponseType = { Volume?: z.infer<typeof VolumeSchema> & unknown }
+type CreateVolumeResponseType = { Volume?: z.infer<typeof VolumeSchema> }
 
-type CreateVolumeFromBackupResponseType = { Volume?: z.infer<typeof VolumeSchema> & unknown }
+type CreateVolumeFromBackupResponseType = { Volume?: z.infer<typeof VolumeSchema> }
 
 type BackupsType = z.infer<typeof BackupSchema>[]
 
@@ -1695,8 +1693,8 @@ const NextTokenSchema = z
   .openapi('NextToken')
 
 type DescribeBackupsResponseType = {
-  Backups?: z.infer<typeof BackupsSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Backups?: z.infer<typeof BackupsSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type FileSystemsType = z.infer<typeof FileSystemSchema>[]
@@ -1708,8 +1706,8 @@ const FileSystemsSchema: z.ZodType<FileSystemsType> = z
   .openapi('FileSystems')
 
 type DescribeFileSystemsResponseType = {
-  FileSystems?: z.infer<typeof FileSystemsSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  FileSystems?: z.infer<typeof FileSystemsSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type VolumesType = z.infer<typeof VolumeSchema>[]
@@ -1717,7 +1715,7 @@ type VolumesType = z.infer<typeof VolumeSchema>[]
 const VolumesSchema: z.ZodType<VolumesType> = z.array(VolumeSchema).max(50).openapi('Volumes')
 
 type DescribeVolumesResponseType = {
-  Volumes?: z.infer<typeof VolumesSchema> & unknown
+  Volumes?: z.infer<typeof VolumesSchema>
   NextToken?: z.infer<typeof NextTokenSchema>
 }
 
@@ -1737,14 +1735,14 @@ const VolumeLifecycleSchema: z.ZodType<VolumeLifecycleType> = z
   .openapi('VolumeLifecycle')
 
 type RestoreVolumeFromSnapshotResponseType = {
-  VolumeId?: z.infer<typeof VolumeIdSchema> & unknown
-  Lifecycle?: z.infer<typeof VolumeLifecycleSchema> & unknown
-  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema> & unknown
+  VolumeId?: z.infer<typeof VolumeIdSchema>
+  Lifecycle?: z.infer<typeof VolumeLifecycleSchema>
+  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema>
 }
 
-type UpdateFileSystemResponseType = { FileSystem?: z.infer<typeof FileSystemSchema> & unknown }
+type UpdateFileSystemResponseType = { FileSystem?: z.infer<typeof FileSystemSchema> }
 
-type UpdateVolumeResponseType = { Volume?: z.infer<typeof VolumeSchema> & unknown }
+type UpdateVolumeResponseType = { Volume?: z.infer<typeof VolumeSchema> }
 
 type AdministrativeActionTypeType =
   | 'FILE_SYSTEM_UPDATE'
@@ -1760,9 +1758,7 @@ type RequestTimeType = string
 
 type StatusType = 'FAILED' | 'IN_PROGRESS' | 'PENDING' | 'COMPLETED' | 'UPDATED_OPTIMIZING'
 
-type AdministrativeActionFailureDetailsType = {
-  Message?: z.infer<typeof ErrorMessageSchema> & unknown
-}
+type AdministrativeActionFailureDetailsType = { Message?: z.infer<typeof ErrorMessageSchema> }
 
 type VolumeNameType = string
 
@@ -1829,18 +1825,18 @@ const OntapVolumeTypeSchema = z.enum(['RW', 'DP', 'LS']).openapi('OntapVolumeTyp
 const SnapshotPolicySchema = z.string().min(1).max(255).openapi('SnapshotPolicy')
 
 type OntapVolumeConfigurationType = {
-  FlexCacheEndpointType?: z.infer<typeof FlexCacheEndpointTypeSchema> & unknown
-  JunctionPath?: z.infer<typeof JunctionPathSchema> & unknown
-  SecurityStyle?: z.infer<typeof SecurityStyleSchema> & unknown
-  SizeInMegabytes?: z.infer<typeof VolumeCapacitySchema> & unknown
-  StorageEfficiencyEnabled?: z.infer<typeof FlagSchema> & unknown
-  StorageVirtualMachineId?: z.infer<typeof StorageVirtualMachineIdSchema> & unknown
-  StorageVirtualMachineRoot?: z.infer<typeof FlagSchema> & unknown
-  TieringPolicy?: z.infer<typeof TieringPolicySchema> & unknown
-  UUID?: z.infer<typeof UUIDSchema> & unknown
-  OntapVolumeType?: z.infer<typeof OntapVolumeTypeSchema> & unknown
-  SnapshotPolicy?: z.infer<typeof SnapshotPolicySchema> & unknown
-  CopyTagsToBackups?: z.infer<typeof FlagSchema> & unknown
+  FlexCacheEndpointType?: z.infer<typeof FlexCacheEndpointTypeSchema>
+  JunctionPath?: z.infer<typeof JunctionPathSchema>
+  SecurityStyle?: z.infer<typeof SecurityStyleSchema>
+  SizeInMegabytes?: z.infer<typeof VolumeCapacitySchema>
+  StorageEfficiencyEnabled?: z.infer<typeof FlagSchema>
+  StorageVirtualMachineId?: z.infer<typeof StorageVirtualMachineIdSchema>
+  StorageVirtualMachineRoot?: z.infer<typeof FlagSchema>
+  TieringPolicy?: z.infer<typeof TieringPolicySchema>
+  UUID?: z.infer<typeof UUIDSchema>
+  OntapVolumeType?: z.infer<typeof OntapVolumeTypeSchema>
+  SnapshotPolicy?: z.infer<typeof SnapshotPolicySchema>
+  CopyTagsToBackups?: z.infer<typeof FlagSchema>
 }
 
 const OntapVolumeConfigurationSchema: z.ZodType<OntapVolumeConfigurationType> = z
@@ -1942,20 +1938,20 @@ const SnapshotIdSchema: z.ZodType<SnapshotIdType> = z
   .openapi('SnapshotId')
 
 type OpenZFSVolumeConfigurationType = {
-  ParentVolumeId?: z.infer<typeof VolumeIdSchema> & unknown
-  VolumePath?: z.infer<typeof VolumePathSchema> & unknown
-  StorageCapacityReservationGiB?: z.infer<typeof IntegerNoMaxSchema> & unknown
-  StorageCapacityQuotaGiB?: z.infer<typeof IntegerNoMaxSchema> & unknown
-  RecordSizeKiB?: z.infer<typeof IntegerRecordSizeKiBSchema> & unknown
-  DataCompressionType?: z.infer<typeof OpenZFSDataCompressionTypeSchema> & unknown
-  CopyTagsToSnapshots?: z.infer<typeof FlagSchema> & unknown
-  OriginSnapshot?: z.infer<typeof OpenZFSOriginSnapshotConfigurationSchema> & unknown
-  ReadOnly?: z.infer<typeof ReadOnlySchema> & unknown
-  NfsExports?: z.infer<typeof OpenZFSNfsExportsSchema> & unknown
-  UserAndGroupQuotas?: z.infer<typeof OpenZFSUserAndGroupQuotasSchema> & unknown
-  RestoreToSnapshot?: z.infer<typeof SnapshotIdSchema> & unknown
-  DeleteIntermediateSnaphots?: z.infer<typeof FlagSchema> & unknown
-  DeleteClonedVolumes?: z.infer<typeof FlagSchema> & unknown
+  ParentVolumeId?: z.infer<typeof VolumeIdSchema>
+  VolumePath?: z.infer<typeof VolumePathSchema>
+  StorageCapacityReservationGiB?: z.infer<typeof IntegerNoMaxSchema>
+  StorageCapacityQuotaGiB?: z.infer<typeof IntegerNoMaxSchema>
+  RecordSizeKiB?: z.infer<typeof IntegerRecordSizeKiBSchema>
+  DataCompressionType?: z.infer<typeof OpenZFSDataCompressionTypeSchema>
+  CopyTagsToSnapshots?: z.infer<typeof FlagSchema>
+  OriginSnapshot?: z.infer<typeof OpenZFSOriginSnapshotConfigurationSchema>
+  ReadOnly?: z.infer<typeof ReadOnlySchema>
+  NfsExports?: z.infer<typeof OpenZFSNfsExportsSchema>
+  UserAndGroupQuotas?: z.infer<typeof OpenZFSUserAndGroupQuotasSchema>
+  RestoreToSnapshot?: z.infer<typeof SnapshotIdSchema>
+  DeleteIntermediateSnaphots?: z.infer<typeof FlagSchema>
+  DeleteClonedVolumes?: z.infer<typeof FlagSchema>
 }
 
 const OpenZFSVolumeConfigurationSchema: z.ZodType<OpenZFSVolumeConfigurationType> = z
@@ -2018,16 +2014,16 @@ const OpenZFSVolumeConfigurationSchema: z.ZodType<OpenZFSVolumeConfigurationType
 type VolumeType = {
   CreationTime?: z.infer<typeof CreationTimeSchema>
   FileSystemId?: z.infer<typeof FileSystemIdSchema>
-  Lifecycle?: z.infer<typeof VolumeLifecycleSchema> & unknown
-  Name?: z.infer<typeof VolumeNameSchema> & unknown
+  Lifecycle?: z.infer<typeof VolumeLifecycleSchema>
+  Name?: z.infer<typeof VolumeNameSchema>
   OntapConfiguration?: z.infer<typeof OntapVolumeConfigurationSchema>
   ResourceARN?: z.infer<typeof ResourceARNSchema>
   Tags?: z.infer<typeof TagsSchema>
-  VolumeId?: z.infer<typeof VolumeIdSchema> & unknown
-  VolumeType?: z.infer<typeof VolumeTypeSchema> & unknown
-  LifecycleTransitionReason?: z.infer<typeof LifecycleTransitionReasonSchema> & unknown
-  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema> & unknown
-  OpenZFSConfiguration?: z.infer<typeof OpenZFSVolumeConfigurationSchema> & unknown
+  VolumeId?: z.infer<typeof VolumeIdSchema>
+  VolumeType?: z.infer<typeof VolumeTypeSchema>
+  LifecycleTransitionReason?: z.infer<typeof LifecycleTransitionReasonSchema>
+  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema>
+  OpenZFSConfiguration?: z.infer<typeof OpenZFSVolumeConfigurationSchema>
 }
 
 type SnapshotNameType = string
@@ -2047,14 +2043,14 @@ const SnapshotLifecycleSchema: z.ZodType<SnapshotLifecycleType> = z
 
 type SnapshotType = {
   ResourceARN?: z.infer<typeof ResourceARNSchema>
-  SnapshotId?: z.infer<typeof SnapshotIdSchema> & unknown
-  Name?: z.infer<typeof SnapshotNameSchema> & unknown
-  VolumeId?: z.infer<typeof VolumeIdSchema> & unknown
+  SnapshotId?: z.infer<typeof SnapshotIdSchema>
+  Name?: z.infer<typeof SnapshotNameSchema>
+  VolumeId?: z.infer<typeof VolumeIdSchema>
   CreationTime?: z.infer<typeof CreationTimeSchema>
-  Lifecycle?: z.infer<typeof SnapshotLifecycleSchema> & unknown
+  Lifecycle?: z.infer<typeof SnapshotLifecycleSchema>
   LifecycleTransitionReason?: z.infer<typeof LifecycleTransitionReasonSchema>
   Tags?: z.infer<typeof TagsSchema>
-  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema> & unknown
+  AdministrativeActions?: z.infer<typeof AdministrativeActionsSchema>
 }
 
 const AdministrativeActionTypeSchema: z.ZodType<AdministrativeActionTypeType> = z
@@ -2127,10 +2123,10 @@ const SnapshotSchema: z.ZodType<SnapshotType> = z
 
 type AdministrativeActionType = {
   AdministrativeActionType?: z.infer<typeof AdministrativeActionTypeSchema>
-  ProgressPercent?: z.infer<typeof ProgressPercentSchema> & unknown
-  RequestTime?: z.infer<typeof RequestTimeSchema> & unknown
-  Status?: z.infer<typeof StatusSchema> & unknown
-  TargetFileSystemValues?: z.infer<typeof FileSystemSchema> & unknown
+  ProgressPercent?: z.infer<typeof ProgressPercentSchema>
+  RequestTime?: z.infer<typeof RequestTimeSchema>
+  Status?: z.infer<typeof StatusSchema>
+  TargetFileSystemValues?: z.infer<typeof FileSystemSchema>
   FailureDetails?: z.infer<typeof AdministrativeActionFailureDetailsSchema>
   TargetVolumeValues?: z.infer<typeof VolumeSchema>
   TargetSnapshotValues?: z.infer<typeof SnapshotSchema>

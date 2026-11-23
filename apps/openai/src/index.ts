@@ -1,75 +1,1619 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  agentsHandler,
-  assistantsHandler,
-  audioHandler,
-  batchesHandler,
-  chatHandler,
-  chatkitHandler,
-  completionsHandler,
-  containersHandler,
-  contentProvenanceChecksHandler,
-  conversationsHandler,
-  decisionsHandler,
-  embeddingsHandler,
-  evalsHandler,
-  filesHandler,
-  fineTuningHandler,
-  imagesHandler,
-  liveHandler,
-  modelsHandler,
-  moderationsHandler,
-  organizationHandler,
-  projectsHandler,
-  realtimeHandler,
-  responsesBetaTrueHandler,
-  responsesHandler,
-  safetyHandler,
-  skillsHandler,
-  threadsHandler,
-  uploadsHandler,
-  vaultsHandler,
-  vectorStoresHandler,
-  videosHandler,
-  webhookEndpointsHandler,
-  webhookEventTypesHandler,
+  deleteAgentsAgentIdRoute,
+  deleteAgentsAutomationsAutomationIdRoute,
+  deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+  deleteAgentsSessionsSessionIdArtifactsArtifactIdRoute,
+  deleteAgentsSessionsSessionIdRoute,
+  deleteAssistantsAssistantIdRoute,
+  deleteAudioVoiceConsentsConsentIdRoute,
+  deleteAudioVoicesVoiceIdRoute,
+  deleteChatCompletionsCompletionIdRoute,
+  deleteChatkitThreadsThreadIdRoute,
+  deleteContainersContainerIdFilesFileIdRoute,
+  deleteContainersContainerIdRoute,
+  deleteConversationsConversationIdItemsItemIdRoute,
+  deleteConversationsConversationIdRoute,
+  deleteEvalsEvalIdRoute,
+  deleteEvalsEvalIdRunsRunIdRoute,
+  deleteFilesFileIdRoute,
+  deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRoute,
+  deleteModelsModelRoute,
+  deleteOrganizationAdminApiKeysKeyIdRoute,
+  deleteOrganizationCertificatesCertificateIdRoute,
+  deleteOrganizationExternalKeysExternalKeyIdRoute,
+  deleteOrganizationExternalStorageExternalStorageIdRoute,
+  deleteOrganizationGroupsGroupIdRolesRoleIdRoute,
+  deleteOrganizationGroupsGroupIdRoute,
+  deleteOrganizationGroupsGroupIdUsersUserIdRoute,
+  deleteOrganizationInvitesInviteIdRoute,
+  deleteOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+  deleteOrganizationProjectsProjectIdGroupsGroupIdRoute,
+  deleteOrganizationProjectsProjectIdModelPermissionsRoute,
+  deleteOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+  deleteOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+  deleteOrganizationProjectsProjectIdSpendLimitRoute,
+  deleteOrganizationProjectsProjectIdUsersUserIdRoute,
+  deleteOrganizationRolesRoleIdRoute,
+  deleteOrganizationSpendAlertsAlertIdRoute,
+  deleteOrganizationSpendLimitRoute,
+  deleteOrganizationUsersUserIdRolesRoleIdRoute,
+  deleteOrganizationUsersUserIdRoute,
+  deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+  deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+  deleteProjectsProjectIdGroupsGroupIdRolesRoleIdRoute,
+  deleteProjectsProjectIdRolesRoleIdRoute,
+  deleteProjectsProjectIdUsersUserIdRolesRoleIdRoute,
+  deleteResponsesResponseIdBetaTrueRoute,
+  deleteResponsesResponseIdRoute,
+  deleteSkillsSkillIdRoute,
+  deleteSkillsSkillIdVersionsVersionRoute,
+  deleteThreadsThreadIdMessagesMessageIdRoute,
+  deleteThreadsThreadIdRoute,
+  deleteVaultsVaultIdCredentialsCredentialIdRoute,
+  deleteVaultsVaultIdRoute,
+  deleteVectorStoresVectorStoreIdFilesFileIdRoute,
+  deleteVectorStoresVectorStoreIdRoute,
+  deleteVideosVideoIdRoute,
+  deleteWebhookEndpointsWebhookEndpointIdRoute,
+  getAgentsAgentIdRoute,
+  getAgentsAutomationsAutomationIdInvocationsInvocationIdRoute,
+  getAgentsAutomationsAutomationIdInvocationsRoute,
+  getAgentsAutomationsAutomationIdRoute,
+  getAgentsAutomationsRoute,
+  getAgentsEnvironmentsEnvironmentIdFilesRoute,
+  getAgentsEnvironmentsEnvironmentIdRoute,
+  getAgentsEnvironmentsRoute,
+  getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+  getAgentsEnvironmentsTemplatesRoute,
+  getAgentsRoute,
+  getAgentsSessionsRoute,
+  getAgentsSessionsSessionIdArtifactsArtifactIdContentRoute,
+  getAgentsSessionsSessionIdArtifactsArtifactIdRoute,
+  getAgentsSessionsSessionIdArtifactsRoute,
+  getAgentsSessionsSessionIdEventsRoute,
+  getAgentsSessionsSessionIdItemsRoute,
+  getAgentsSessionsSessionIdRoute,
+  getAgentsSessionsSessionIdSubagentsRoute,
+  getAgentsSessionsSessionIdSubagentsSubagentIdItemsRoute,
+  getAgentsSessionsSessionIdSubagentsSubagentIdRoute,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRoute,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRoute,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRoute,
+  getAgentsSessionsSessionIdTracesRoute,
+  getAgentsSessionsSessionIdTurnsRoute,
+  getAgentsSessionsSessionIdTurnsTurnIdItemsRoute,
+  getAgentsSessionsSessionIdTurnsTurnIdRoute,
+  getAssistantsAssistantIdRoute,
+  getAssistantsRoute,
+  getAudioVoiceConsentsConsentIdRoute,
+  getAudioVoiceConsentsRoute,
+  getBatchesBatchIdRoute,
+  getBatchesRoute,
+  getChatCompletionsCompletionIdMessagesRoute,
+  getChatCompletionsCompletionIdRoute,
+  getChatCompletionsRoute,
+  getChatkitThreadsRoute,
+  getChatkitThreadsThreadIdItemsRoute,
+  getChatkitThreadsThreadIdRoute,
+  getContainersContainerIdFilesFileIdContentRoute,
+  getContainersContainerIdFilesFileIdRoute,
+  getContainersContainerIdFilesRoute,
+  getContainersContainerIdRoute,
+  getContainersRoute,
+  getConversationsConversationIdItemsItemIdRoute,
+  getConversationsConversationIdItemsRoute,
+  getConversationsConversationIdRoute,
+  getEvalsEvalIdRoute,
+  getEvalsEvalIdRunsRoute,
+  getEvalsEvalIdRunsRunIdOutputItemsOutputItemIdRoute,
+  getEvalsEvalIdRunsRunIdOutputItemsRoute,
+  getEvalsEvalIdRunsRunIdRoute,
+  getEvalsRoute,
+  getFilesFileIdContentRoute,
+  getFilesFileIdRoute,
+  getFilesRoute,
+  getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute,
+  getFineTuningJobsFineTuningJobIdCheckpointsRoute,
+  getFineTuningJobsFineTuningJobIdEventsRoute,
+  getFineTuningJobsFineTuningJobIdRoute,
+  getFineTuningJobsRoute,
+  getLiveSessionsSessionIdContentRoute,
+  getModelsModelRoute,
+  getModelsRoute,
+  getOrganizationAdminApiKeysKeyIdRoute,
+  getOrganizationAdminApiKeysRoute,
+  getOrganizationAuditLogsRoute,
+  getOrganizationCertificatesCertificateIdRoute,
+  getOrganizationCertificatesRoute,
+  getOrganizationCostsRoute,
+  getOrganizationDataRetentionRoute,
+  getOrganizationExternalKeysExternalKeyIdRoute,
+  getOrganizationExternalKeysRoute,
+  getOrganizationExternalStorageExternalStorageIdRoute,
+  getOrganizationExternalStorageRoute,
+  getOrganizationGroupsGroupIdRolesRoleIdRoute,
+  getOrganizationGroupsGroupIdRolesRoute,
+  getOrganizationGroupsGroupIdRoute,
+  getOrganizationGroupsGroupIdUsersRoute,
+  getOrganizationGroupsGroupIdUsersUserIdRoute,
+  getOrganizationGroupsRoute,
+  getOrganizationInvitesInviteIdRoute,
+  getOrganizationInvitesRoute,
+  getOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+  getOrganizationProjectsProjectIdApiKeysRoute,
+  getOrganizationProjectsProjectIdCertificatesRoute,
+  getOrganizationProjectsProjectIdDataRetentionRoute,
+  getOrganizationProjectsProjectIdGroupsGroupIdRoute,
+  getOrganizationProjectsProjectIdGroupsRoute,
+  getOrganizationProjectsProjectIdHostedToolPermissionsRoute,
+  getOrganizationProjectsProjectIdModelPermissionsRoute,
+  getOrganizationProjectsProjectIdRateLimitsRoute,
+  getOrganizationProjectsProjectIdRoute,
+  getOrganizationProjectsProjectIdServiceAccountsRoute,
+  getOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+  getOrganizationProjectsProjectIdServiceTierSettingsRoute,
+  getOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+  getOrganizationProjectsProjectIdSpendAlertsRoute,
+  getOrganizationProjectsProjectIdSpendLimitRoute,
+  getOrganizationProjectsProjectIdUsersRoute,
+  getOrganizationProjectsProjectIdUsersUserIdRoute,
+  getOrganizationProjectsRoute,
+  getOrganizationRolesRoleIdRoute,
+  getOrganizationRolesRoute,
+  getOrganizationSpendAlertsAlertIdRoute,
+  getOrganizationSpendAlertsRoute,
+  getOrganizationSpendLimitRoute,
+  getOrganizationUsageAudioSpeechesRoute,
+  getOrganizationUsageAudioTranscriptionsRoute,
+  getOrganizationUsageCodeInterpreterSessionsRoute,
+  getOrganizationUsageCompletionsRoute,
+  getOrganizationUsageDecisionsRoute,
+  getOrganizationUsageEmbeddingsRoute,
+  getOrganizationUsageFileSearchCallsRoute,
+  getOrganizationUsageImagesRoute,
+  getOrganizationUsageModerationsRoute,
+  getOrganizationUsageVectorStoresRoute,
+  getOrganizationUsageWebSearchCallsRoute,
+  getOrganizationUsersRoute,
+  getOrganizationUsersUserIdRolesRoleIdRoute,
+  getOrganizationUsersUserIdRolesRoute,
+  getOrganizationUsersUserIdRoute,
+  getOrganizationWorkloadIdentityProvidersRoute,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRoute,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+  getProjectsProjectIdGroupsGroupIdRolesRoleIdRoute,
+  getProjectsProjectIdGroupsGroupIdRolesRoute,
+  getProjectsProjectIdRolesRoleIdRoute,
+  getProjectsProjectIdRolesRoute,
+  getProjectsProjectIdUsersUserIdRolesRoleIdRoute,
+  getProjectsProjectIdUsersUserIdRolesRoute,
+  getResponsesResponseIdBetaTrueRoute,
+  getResponsesResponseIdInputItemsBetaTrueRoute,
+  getResponsesResponseIdInputItemsRoute,
+  getResponsesResponseIdRoute,
+  getSafetyAlertsIdRoute,
+  getSafetyCasesIdRoute,
+  getSkillsRoute,
+  getSkillsSkillIdContentRoute,
+  getSkillsSkillIdRoute,
+  getSkillsSkillIdVersionsRoute,
+  getSkillsSkillIdVersionsVersionContentRoute,
+  getSkillsSkillIdVersionsVersionRoute,
+  getThreadsThreadIdMessagesMessageIdRoute,
+  getThreadsThreadIdMessagesRoute,
+  getThreadsThreadIdRoute,
+  getThreadsThreadIdRunsRoute,
+  getThreadsThreadIdRunsRunIdRoute,
+  getThreadsThreadIdRunsRunIdStepsRoute,
+  getThreadsThreadIdRunsRunIdStepsStepIdRoute,
+  getVaultsRoute,
+  getVaultsVaultIdCredentialsCredentialIdRoute,
+  getVaultsVaultIdCredentialsRoute,
+  getVaultsVaultIdRoute,
+  getVectorStoresRoute,
+  getVectorStoresVectorStoreIdFileBatchesBatchIdFilesRoute,
+  getVectorStoresVectorStoreIdFileBatchesBatchIdRoute,
+  getVectorStoresVectorStoreIdFilesFileIdContentRoute,
+  getVectorStoresVectorStoreIdFilesFileIdRoute,
+  getVectorStoresVectorStoreIdFilesRoute,
+  getVectorStoresVectorStoreIdRoute,
+  getVideosCharactersCharacterIdRoute,
+  getVideosRoute,
+  getVideosVideoIdContentRoute,
+  getVideosVideoIdRoute,
+  getWebhookEndpointsRoute,
+  getWebhookEndpointsWebhookEndpointIdRoute,
+  getWebhookEventTypesRoute,
+  postAgentsAgentIdRoute,
+  postAgentsAutomationsAutomationIdInvocationsRoute,
+  postAgentsAutomationsAutomationIdPauseRoute,
+  postAgentsAutomationsAutomationIdResumeRoute,
+  postAgentsAutomationsAutomationIdRoute,
+  postAgentsAutomationsRoute,
+  postAgentsEnvironmentsEnvironmentIdFilesRoute,
+  postAgentsEnvironmentsRoute,
+  postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+  postAgentsEnvironmentsTemplatesRoute,
+  postAgentsRoute,
+  postAgentsSessionsRoute,
+  postAgentsSessionsSessionIdEventsRoute,
+  postAgentsSessionsSessionIdRoute,
+  postAssistantsAssistantIdRoute,
+  postAssistantsRoute,
+  postAudioSpeechRoute,
+  postAudioTranscriptionsRoute,
+  postAudioTranslationsRoute,
+  postAudioVoiceConsentsConsentIdRoute,
+  postAudioVoiceConsentsRoute,
+  postAudioVoicesRoute,
+  postBatchesBatchIdCancelRoute,
+  postBatchesRoute,
+  postChatCompletionsCompletionIdRoute,
+  postChatCompletionsRoute,
+  postChatkitSessionsRoute,
+  postChatkitSessionsSessionIdCancelRoute,
+  postCompletionsRoute,
+  postContainersContainerIdFilesRoute,
+  postContainersRoute,
+  postContentProvenanceChecksRoute,
+  postConversationsConversationIdItemsRoute,
+  postConversationsConversationIdRoute,
+  postConversationsRoute,
+  postDecisionsRoute,
+  postEmbeddingsRoute,
+  postEvalsEvalIdRoute,
+  postEvalsEvalIdRunsRoute,
+  postEvalsEvalIdRunsRunIdCancelRoute,
+  postEvalsRoute,
+  postFilesRoute,
+  postFineTuningAlphaGradersRunRoute,
+  postFineTuningAlphaGradersValidateRoute,
+  postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute,
+  postFineTuningJobsFineTuningJobIdCancelRoute,
+  postFineTuningJobsFineTuningJobIdPauseRoute,
+  postFineTuningJobsFineTuningJobIdResumeRoute,
+  postFineTuningJobsRoute,
+  postImagesEditsRoute,
+  postImagesGenerationsRoute,
+  postImagesVariationsRoute,
+  postLiveSessionsRoute,
+  postLiveSessionsSessionIdAcceptRoute,
+  postLiveSessionsSessionIdForkRoute,
+  postLiveSessionsSessionIdHangupRoute,
+  postLiveSessionsSessionIdReferRoute,
+  postLiveSessionsSessionIdRejectRoute,
+  postModerationsRoute,
+  postOrganizationAdminApiKeysRoute,
+  postOrganizationCertificatesActivateRoute,
+  postOrganizationCertificatesCertificateIdRoute,
+  postOrganizationCertificatesDeactivateRoute,
+  postOrganizationCertificatesRoute,
+  postOrganizationDataRetentionRoute,
+  postOrganizationExternalKeysExternalKeyIdValidateRoute,
+  postOrganizationExternalKeysRoute,
+  postOrganizationExternalStorageExternalStorageIdValidateRoute,
+  postOrganizationExternalStorageRoute,
+  postOrganizationGroupsGroupIdRolesRoute,
+  postOrganizationGroupsGroupIdRoute,
+  postOrganizationGroupsGroupIdUsersRoute,
+  postOrganizationGroupsRoute,
+  postOrganizationInvitesRoute,
+  postOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+  postOrganizationProjectsProjectIdArchiveRoute,
+  postOrganizationProjectsProjectIdCertificatesActivateRoute,
+  postOrganizationProjectsProjectIdCertificatesDeactivateRoute,
+  postOrganizationProjectsProjectIdDataRetentionRoute,
+  postOrganizationProjectsProjectIdGroupsRoute,
+  postOrganizationProjectsProjectIdHostedToolPermissionsRoute,
+  postOrganizationProjectsProjectIdModelPermissionsRoute,
+  postOrganizationProjectsProjectIdRateLimitsRateLimitIdRoute,
+  postOrganizationProjectsProjectIdRoute,
+  postOrganizationProjectsProjectIdServiceAccountsRoute,
+  postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdApiKeysRoute,
+  postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+  postOrganizationProjectsProjectIdServiceTierSettingsRoute,
+  postOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+  postOrganizationProjectsProjectIdSpendAlertsRoute,
+  postOrganizationProjectsProjectIdSpendLimitRoute,
+  postOrganizationProjectsProjectIdUsersRoute,
+  postOrganizationProjectsProjectIdUsersUserIdRoute,
+  postOrganizationProjectsRoute,
+  postOrganizationRolesRoleIdRoute,
+  postOrganizationRolesRoute,
+  postOrganizationSpendAlertsAlertIdRoute,
+  postOrganizationSpendAlertsRoute,
+  postOrganizationSpendLimitRoute,
+  postOrganizationUsersUserIdRolesRoute,
+  postOrganizationUsersUserIdRoute,
+  postOrganizationWorkloadIdentityProvidersRoute,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRoute,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+  postProjectsProjectIdGroupsGroupIdRolesRoute,
+  postProjectsProjectIdRolesRoleIdRoute,
+  postProjectsProjectIdRolesRoute,
+  postProjectsProjectIdUsersUserIdRolesRoute,
+  postRealtimeCallsCallIdAcceptRoute,
+  postRealtimeCallsCallIdHangupRoute,
+  postRealtimeCallsCallIdReferRoute,
+  postRealtimeCallsCallIdRejectRoute,
+  postRealtimeCallsRoute,
+  postRealtimeClientSecretsRoute,
+  postRealtimeSessionsRoute,
+  postRealtimeTranscriptionSessionsRoute,
+  postRealtimeTranslationsClientSecretsRoute,
+  postResponsesBetaTrueRoute,
+  postResponsesCompactBetaTrueRoute,
+  postResponsesCompactRoute,
+  postResponsesInputTokensBetaTrueRoute,
+  postResponsesInputTokensRoute,
+  postResponsesResponseIdCancelBetaTrueRoute,
+  postResponsesResponseIdCancelRoute,
+  postResponsesRoute,
+  postSkillsRoute,
+  postSkillsSkillIdRoute,
+  postSkillsSkillIdVersionsRoute,
+  postThreadsRoute,
+  postThreadsRunsRoute,
+  postThreadsThreadIdMessagesMessageIdRoute,
+  postThreadsThreadIdMessagesRoute,
+  postThreadsThreadIdRoute,
+  postThreadsThreadIdRunsRoute,
+  postThreadsThreadIdRunsRunIdCancelRoute,
+  postThreadsThreadIdRunsRunIdRoute,
+  postThreadsThreadIdRunsRunIdSubmitToolOutputsRoute,
+  postUploadsRoute,
+  postUploadsUploadIdCancelRoute,
+  postUploadsUploadIdCompleteRoute,
+  postUploadsUploadIdPartsRoute,
+  postVaultsRoute,
+  postVaultsVaultIdCredentialsCredentialIdRoute,
+  postVaultsVaultIdCredentialsRoute,
+  postVaultsVaultIdRoute,
+  postVectorStoresRoute,
+  postVectorStoresVectorStoreIdFileBatchesBatchIdCancelRoute,
+  postVectorStoresVectorStoreIdFileBatchesRoute,
+  postVectorStoresVectorStoreIdFilesFileIdRoute,
+  postVectorStoresVectorStoreIdFilesRoute,
+  postVectorStoresVectorStoreIdRoute,
+  postVectorStoresVectorStoreIdSearchRoute,
+  postVideosCharactersRoute,
+  postVideosEditsRoute,
+  postVideosExtensionsRoute,
+  postVideosRoute,
+  postVideosVideoIdRemixRoute,
+  postWebhookEndpointsRoute,
+  postWebhookEndpointsWebhookEndpointIdRotateSecretRoute,
+  postWebhookEndpointsWebhookEndpointIdRoute,
+  postWebhookEndpointsWebhookEndpointIdTestRoute,
+} from './routes'
+import {
+  deleteAgentsAgentIdRouteHandler,
+  deleteAgentsAutomationsAutomationIdRouteHandler,
+  deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  deleteAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler,
+  deleteAgentsSessionsSessionIdRouteHandler,
+  deleteAssistantsAssistantIdRouteHandler,
+  deleteAudioVoiceConsentsConsentIdRouteHandler,
+  deleteAudioVoicesVoiceIdRouteHandler,
+  deleteChatCompletionsCompletionIdRouteHandler,
+  deleteChatkitThreadsThreadIdRouteHandler,
+  deleteContainersContainerIdFilesFileIdRouteHandler,
+  deleteContainersContainerIdRouteHandler,
+  deleteConversationsConversationIdItemsItemIdRouteHandler,
+  deleteConversationsConversationIdRouteHandler,
+  deleteEvalsEvalIdRouteHandler,
+  deleteEvalsEvalIdRunsRunIdRouteHandler,
+  deleteFilesFileIdRouteHandler,
+  deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRouteHandler,
+  deleteModelsModelRouteHandler,
+  deleteOrganizationAdminApiKeysKeyIdRouteHandler,
+  deleteOrganizationCertificatesCertificateIdRouteHandler,
+  deleteOrganizationExternalKeysExternalKeyIdRouteHandler,
+  deleteOrganizationExternalStorageExternalStorageIdRouteHandler,
+  deleteOrganizationGroupsGroupIdRolesRoleIdRouteHandler,
+  deleteOrganizationGroupsGroupIdRouteHandler,
+  deleteOrganizationGroupsGroupIdUsersUserIdRouteHandler,
+  deleteOrganizationInvitesInviteIdRouteHandler,
+  deleteOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  deleteOrganizationProjectsProjectIdGroupsGroupIdRouteHandler,
+  deleteOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  deleteOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  deleteOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  deleteOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  deleteOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  deleteOrganizationRolesRoleIdRouteHandler,
+  deleteOrganizationSpendAlertsAlertIdRouteHandler,
+  deleteOrganizationSpendLimitRouteHandler,
+  deleteOrganizationUsersUserIdRolesRoleIdRouteHandler,
+  deleteOrganizationUsersUserIdRouteHandler,
+  deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  deleteProjectsProjectIdGroupsGroupIdRolesRoleIdRouteHandler,
+  deleteProjectsProjectIdRolesRoleIdRouteHandler,
+  deleteProjectsProjectIdUsersUserIdRolesRoleIdRouteHandler,
+  deleteResponsesResponseIdBetaTrueRouteHandler,
+  deleteResponsesResponseIdRouteHandler,
+  deleteSkillsSkillIdRouteHandler,
+  deleteSkillsSkillIdVersionsVersionRouteHandler,
+  deleteThreadsThreadIdMessagesMessageIdRouteHandler,
+  deleteThreadsThreadIdRouteHandler,
+  deleteVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  deleteVaultsVaultIdRouteHandler,
+  deleteVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  deleteVectorStoresVectorStoreIdRouteHandler,
+  deleteVideosVideoIdRouteHandler,
+  deleteWebhookEndpointsWebhookEndpointIdRouteHandler,
+  getAgentsAgentIdRouteHandler,
+  getAgentsAutomationsAutomationIdInvocationsInvocationIdRouteHandler,
+  getAgentsAutomationsAutomationIdInvocationsRouteHandler,
+  getAgentsAutomationsAutomationIdRouteHandler,
+  getAgentsAutomationsRouteHandler,
+  getAgentsEnvironmentsEnvironmentIdFilesRouteHandler,
+  getAgentsEnvironmentsEnvironmentIdRouteHandler,
+  getAgentsEnvironmentsRouteHandler,
+  getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  getAgentsEnvironmentsTemplatesRouteHandler,
+  getAgentsRouteHandler,
+  getAgentsSessionsRouteHandler,
+  getAgentsSessionsSessionIdArtifactsArtifactIdContentRouteHandler,
+  getAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler,
+  getAgentsSessionsSessionIdArtifactsRouteHandler,
+  getAgentsSessionsSessionIdEventsRouteHandler,
+  getAgentsSessionsSessionIdItemsRouteHandler,
+  getAgentsSessionsSessionIdRouteHandler,
+  getAgentsSessionsSessionIdSubagentsRouteHandler,
+  getAgentsSessionsSessionIdSubagentsSubagentIdItemsRouteHandler,
+  getAgentsSessionsSessionIdSubagentsSubagentIdRouteHandler,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRouteHandler,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRouteHandler,
+  getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRouteHandler,
+  getAgentsSessionsSessionIdTracesRouteHandler,
+  getAgentsSessionsSessionIdTurnsRouteHandler,
+  getAgentsSessionsSessionIdTurnsTurnIdItemsRouteHandler,
+  getAgentsSessionsSessionIdTurnsTurnIdRouteHandler,
+  getAssistantsAssistantIdRouteHandler,
+  getAssistantsRouteHandler,
+  getAudioVoiceConsentsConsentIdRouteHandler,
+  getAudioVoiceConsentsRouteHandler,
+  getBatchesBatchIdRouteHandler,
+  getBatchesRouteHandler,
+  getChatCompletionsCompletionIdMessagesRouteHandler,
+  getChatCompletionsCompletionIdRouteHandler,
+  getChatCompletionsRouteHandler,
+  getChatkitThreadsRouteHandler,
+  getChatkitThreadsThreadIdItemsRouteHandler,
+  getChatkitThreadsThreadIdRouteHandler,
+  getContainersContainerIdFilesFileIdContentRouteHandler,
+  getContainersContainerIdFilesFileIdRouteHandler,
+  getContainersContainerIdFilesRouteHandler,
+  getContainersContainerIdRouteHandler,
+  getContainersRouteHandler,
+  getConversationsConversationIdItemsItemIdRouteHandler,
+  getConversationsConversationIdItemsRouteHandler,
+  getConversationsConversationIdRouteHandler,
+  getEvalsEvalIdRouteHandler,
+  getEvalsEvalIdRunsRouteHandler,
+  getEvalsEvalIdRunsRunIdOutputItemsOutputItemIdRouteHandler,
+  getEvalsEvalIdRunsRunIdOutputItemsRouteHandler,
+  getEvalsEvalIdRunsRunIdRouteHandler,
+  getEvalsRouteHandler,
+  getFilesFileIdContentRouteHandler,
+  getFilesFileIdRouteHandler,
+  getFilesRouteHandler,
+  getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler,
+  getFineTuningJobsFineTuningJobIdCheckpointsRouteHandler,
+  getFineTuningJobsFineTuningJobIdEventsRouteHandler,
+  getFineTuningJobsFineTuningJobIdRouteHandler,
+  getFineTuningJobsRouteHandler,
+  getLiveSessionsSessionIdContentRouteHandler,
+  getModelsModelRouteHandler,
+  getModelsRouteHandler,
+  getOrganizationAdminApiKeysKeyIdRouteHandler,
+  getOrganizationAdminApiKeysRouteHandler,
+  getOrganizationAuditLogsRouteHandler,
+  getOrganizationCertificatesCertificateIdRouteHandler,
+  getOrganizationCertificatesRouteHandler,
+  getOrganizationCostsRouteHandler,
+  getOrganizationDataRetentionRouteHandler,
+  getOrganizationExternalKeysExternalKeyIdRouteHandler,
+  getOrganizationExternalKeysRouteHandler,
+  getOrganizationExternalStorageExternalStorageIdRouteHandler,
+  getOrganizationExternalStorageRouteHandler,
+  getOrganizationGroupsGroupIdRolesRoleIdRouteHandler,
+  getOrganizationGroupsGroupIdRolesRouteHandler,
+  getOrganizationGroupsGroupIdRouteHandler,
+  getOrganizationGroupsGroupIdUsersRouteHandler,
+  getOrganizationGroupsGroupIdUsersUserIdRouteHandler,
+  getOrganizationGroupsRouteHandler,
+  getOrganizationInvitesInviteIdRouteHandler,
+  getOrganizationInvitesRouteHandler,
+  getOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  getOrganizationProjectsProjectIdApiKeysRouteHandler,
+  getOrganizationProjectsProjectIdCertificatesRouteHandler,
+  getOrganizationProjectsProjectIdDataRetentionRouteHandler,
+  getOrganizationProjectsProjectIdGroupsGroupIdRouteHandler,
+  getOrganizationProjectsProjectIdGroupsRouteHandler,
+  getOrganizationProjectsProjectIdHostedToolPermissionsRouteHandler,
+  getOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  getOrganizationProjectsProjectIdRateLimitsRouteHandler,
+  getOrganizationProjectsProjectIdRouteHandler,
+  getOrganizationProjectsProjectIdServiceAccountsRouteHandler,
+  getOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  getOrganizationProjectsProjectIdServiceTierSettingsRouteHandler,
+  getOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  getOrganizationProjectsProjectIdSpendAlertsRouteHandler,
+  getOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  getOrganizationProjectsProjectIdUsersRouteHandler,
+  getOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  getOrganizationProjectsRouteHandler,
+  getOrganizationRolesRoleIdRouteHandler,
+  getOrganizationRolesRouteHandler,
+  getOrganizationSpendAlertsAlertIdRouteHandler,
+  getOrganizationSpendAlertsRouteHandler,
+  getOrganizationSpendLimitRouteHandler,
+  getOrganizationUsageAudioSpeechesRouteHandler,
+  getOrganizationUsageAudioTranscriptionsRouteHandler,
+  getOrganizationUsageCodeInterpreterSessionsRouteHandler,
+  getOrganizationUsageCompletionsRouteHandler,
+  getOrganizationUsageDecisionsRouteHandler,
+  getOrganizationUsageEmbeddingsRouteHandler,
+  getOrganizationUsageFileSearchCallsRouteHandler,
+  getOrganizationUsageImagesRouteHandler,
+  getOrganizationUsageModerationsRouteHandler,
+  getOrganizationUsageVectorStoresRouteHandler,
+  getOrganizationUsageWebSearchCallsRouteHandler,
+  getOrganizationUsersRouteHandler,
+  getOrganizationUsersUserIdRolesRoleIdRouteHandler,
+  getOrganizationUsersUserIdRolesRouteHandler,
+  getOrganizationUsersUserIdRouteHandler,
+  getOrganizationWorkloadIdentityProvidersRouteHandler,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRouteHandler,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  getProjectsProjectIdGroupsGroupIdRolesRoleIdRouteHandler,
+  getProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  getProjectsProjectIdRolesRoleIdRouteHandler,
+  getProjectsProjectIdRolesRouteHandler,
+  getProjectsProjectIdUsersUserIdRolesRoleIdRouteHandler,
+  getProjectsProjectIdUsersUserIdRolesRouteHandler,
+  getResponsesResponseIdBetaTrueRouteHandler,
+  getResponsesResponseIdInputItemsBetaTrueRouteHandler,
+  getResponsesResponseIdInputItemsRouteHandler,
+  getResponsesResponseIdRouteHandler,
+  getSafetyAlertsIdRouteHandler,
+  getSafetyCasesIdRouteHandler,
+  getSkillsRouteHandler,
+  getSkillsSkillIdContentRouteHandler,
+  getSkillsSkillIdRouteHandler,
+  getSkillsSkillIdVersionsRouteHandler,
+  getSkillsSkillIdVersionsVersionContentRouteHandler,
+  getSkillsSkillIdVersionsVersionRouteHandler,
+  getThreadsThreadIdMessagesMessageIdRouteHandler,
+  getThreadsThreadIdMessagesRouteHandler,
+  getThreadsThreadIdRouteHandler,
+  getThreadsThreadIdRunsRouteHandler,
+  getThreadsThreadIdRunsRunIdRouteHandler,
+  getThreadsThreadIdRunsRunIdStepsRouteHandler,
+  getThreadsThreadIdRunsRunIdStepsStepIdRouteHandler,
+  getVaultsRouteHandler,
+  getVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  getVaultsVaultIdCredentialsRouteHandler,
+  getVaultsVaultIdRouteHandler,
+  getVectorStoresRouteHandler,
+  getVectorStoresVectorStoreIdFileBatchesBatchIdFilesRouteHandler,
+  getVectorStoresVectorStoreIdFileBatchesBatchIdRouteHandler,
+  getVectorStoresVectorStoreIdFilesFileIdContentRouteHandler,
+  getVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  getVectorStoresVectorStoreIdFilesRouteHandler,
+  getVectorStoresVectorStoreIdRouteHandler,
+  getVideosCharactersCharacterIdRouteHandler,
+  getVideosRouteHandler,
+  getVideosVideoIdContentRouteHandler,
+  getVideosVideoIdRouteHandler,
+  getWebhookEndpointsRouteHandler,
+  getWebhookEndpointsWebhookEndpointIdRouteHandler,
+  getWebhookEventTypesRouteHandler,
+  postAgentsAgentIdRouteHandler,
+  postAgentsAutomationsAutomationIdInvocationsRouteHandler,
+  postAgentsAutomationsAutomationIdPauseRouteHandler,
+  postAgentsAutomationsAutomationIdResumeRouteHandler,
+  postAgentsAutomationsAutomationIdRouteHandler,
+  postAgentsAutomationsRouteHandler,
+  postAgentsEnvironmentsEnvironmentIdFilesRouteHandler,
+  postAgentsEnvironmentsRouteHandler,
+  postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  postAgentsEnvironmentsTemplatesRouteHandler,
+  postAgentsRouteHandler,
+  postAgentsSessionsRouteHandler,
+  postAgentsSessionsSessionIdEventsRouteHandler,
+  postAgentsSessionsSessionIdRouteHandler,
+  postAssistantsAssistantIdRouteHandler,
+  postAssistantsRouteHandler,
+  postAudioSpeechRouteHandler,
+  postAudioTranscriptionsRouteHandler,
+  postAudioTranslationsRouteHandler,
+  postAudioVoiceConsentsConsentIdRouteHandler,
+  postAudioVoiceConsentsRouteHandler,
+  postAudioVoicesRouteHandler,
+  postBatchesBatchIdCancelRouteHandler,
+  postBatchesRouteHandler,
+  postChatCompletionsCompletionIdRouteHandler,
+  postChatCompletionsRouteHandler,
+  postChatkitSessionsRouteHandler,
+  postChatkitSessionsSessionIdCancelRouteHandler,
+  postCompletionsRouteHandler,
+  postContainersContainerIdFilesRouteHandler,
+  postContainersRouteHandler,
+  postContentProvenanceChecksRouteHandler,
+  postConversationsConversationIdItemsRouteHandler,
+  postConversationsConversationIdRouteHandler,
+  postConversationsRouteHandler,
+  postDecisionsRouteHandler,
+  postEmbeddingsRouteHandler,
+  postEvalsEvalIdRouteHandler,
+  postEvalsEvalIdRunsRouteHandler,
+  postEvalsEvalIdRunsRunIdCancelRouteHandler,
+  postEvalsRouteHandler,
+  postFilesRouteHandler,
+  postFineTuningAlphaGradersRunRouteHandler,
+  postFineTuningAlphaGradersValidateRouteHandler,
+  postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler,
+  postFineTuningJobsFineTuningJobIdCancelRouteHandler,
+  postFineTuningJobsFineTuningJobIdPauseRouteHandler,
+  postFineTuningJobsFineTuningJobIdResumeRouteHandler,
+  postFineTuningJobsRouteHandler,
+  postImagesEditsRouteHandler,
+  postImagesGenerationsRouteHandler,
+  postImagesVariationsRouteHandler,
+  postLiveSessionsRouteHandler,
+  postLiveSessionsSessionIdAcceptRouteHandler,
+  postLiveSessionsSessionIdForkRouteHandler,
+  postLiveSessionsSessionIdHangupRouteHandler,
+  postLiveSessionsSessionIdReferRouteHandler,
+  postLiveSessionsSessionIdRejectRouteHandler,
+  postModerationsRouteHandler,
+  postOrganizationAdminApiKeysRouteHandler,
+  postOrganizationCertificatesActivateRouteHandler,
+  postOrganizationCertificatesCertificateIdRouteHandler,
+  postOrganizationCertificatesDeactivateRouteHandler,
+  postOrganizationCertificatesRouteHandler,
+  postOrganizationDataRetentionRouteHandler,
+  postOrganizationExternalKeysExternalKeyIdValidateRouteHandler,
+  postOrganizationExternalKeysRouteHandler,
+  postOrganizationExternalStorageExternalStorageIdValidateRouteHandler,
+  postOrganizationExternalStorageRouteHandler,
+  postOrganizationGroupsGroupIdRolesRouteHandler,
+  postOrganizationGroupsGroupIdRouteHandler,
+  postOrganizationGroupsGroupIdUsersRouteHandler,
+  postOrganizationGroupsRouteHandler,
+  postOrganizationInvitesRouteHandler,
+  postOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  postOrganizationProjectsProjectIdArchiveRouteHandler,
+  postOrganizationProjectsProjectIdCertificatesActivateRouteHandler,
+  postOrganizationProjectsProjectIdCertificatesDeactivateRouteHandler,
+  postOrganizationProjectsProjectIdDataRetentionRouteHandler,
+  postOrganizationProjectsProjectIdGroupsRouteHandler,
+  postOrganizationProjectsProjectIdHostedToolPermissionsRouteHandler,
+  postOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  postOrganizationProjectsProjectIdRateLimitsRateLimitIdRouteHandler,
+  postOrganizationProjectsProjectIdRouteHandler,
+  postOrganizationProjectsProjectIdServiceAccountsRouteHandler,
+  postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdApiKeysRouteHandler,
+  postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  postOrganizationProjectsProjectIdServiceTierSettingsRouteHandler,
+  postOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  postOrganizationProjectsProjectIdSpendAlertsRouteHandler,
+  postOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  postOrganizationProjectsProjectIdUsersRouteHandler,
+  postOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  postOrganizationProjectsRouteHandler,
+  postOrganizationRolesRoleIdRouteHandler,
+  postOrganizationRolesRouteHandler,
+  postOrganizationSpendAlertsAlertIdRouteHandler,
+  postOrganizationSpendAlertsRouteHandler,
+  postOrganizationSpendLimitRouteHandler,
+  postOrganizationUsersUserIdRolesRouteHandler,
+  postOrganizationUsersUserIdRouteHandler,
+  postOrganizationWorkloadIdentityProvidersRouteHandler,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRouteHandler,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  postProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  postProjectsProjectIdRolesRoleIdRouteHandler,
+  postProjectsProjectIdRolesRouteHandler,
+  postProjectsProjectIdUsersUserIdRolesRouteHandler,
+  postRealtimeCallsCallIdAcceptRouteHandler,
+  postRealtimeCallsCallIdHangupRouteHandler,
+  postRealtimeCallsCallIdReferRouteHandler,
+  postRealtimeCallsCallIdRejectRouteHandler,
+  postRealtimeCallsRouteHandler,
+  postRealtimeClientSecretsRouteHandler,
+  postRealtimeSessionsRouteHandler,
+  postRealtimeTranscriptionSessionsRouteHandler,
+  postRealtimeTranslationsClientSecretsRouteHandler,
+  postResponsesBetaTrueRouteHandler,
+  postResponsesCompactBetaTrueRouteHandler,
+  postResponsesCompactRouteHandler,
+  postResponsesInputTokensBetaTrueRouteHandler,
+  postResponsesInputTokensRouteHandler,
+  postResponsesResponseIdCancelBetaTrueRouteHandler,
+  postResponsesResponseIdCancelRouteHandler,
+  postResponsesRouteHandler,
+  postSkillsRouteHandler,
+  postSkillsSkillIdRouteHandler,
+  postSkillsSkillIdVersionsRouteHandler,
+  postThreadsRouteHandler,
+  postThreadsRunsRouteHandler,
+  postThreadsThreadIdMessagesMessageIdRouteHandler,
+  postThreadsThreadIdMessagesRouteHandler,
+  postThreadsThreadIdRouteHandler,
+  postThreadsThreadIdRunsRouteHandler,
+  postThreadsThreadIdRunsRunIdCancelRouteHandler,
+  postThreadsThreadIdRunsRunIdRouteHandler,
+  postThreadsThreadIdRunsRunIdSubmitToolOutputsRouteHandler,
+  postUploadsRouteHandler,
+  postUploadsUploadIdCancelRouteHandler,
+  postUploadsUploadIdCompleteRouteHandler,
+  postUploadsUploadIdPartsRouteHandler,
+  postVaultsRouteHandler,
+  postVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  postVaultsVaultIdCredentialsRouteHandler,
+  postVaultsVaultIdRouteHandler,
+  postVectorStoresRouteHandler,
+  postVectorStoresVectorStoreIdFileBatchesBatchIdCancelRouteHandler,
+  postVectorStoresVectorStoreIdFileBatchesRouteHandler,
+  postVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  postVectorStoresVectorStoreIdFilesRouteHandler,
+  postVectorStoresVectorStoreIdRouteHandler,
+  postVectorStoresVectorStoreIdSearchRouteHandler,
+  postVideosCharactersRouteHandler,
+  postVideosEditsRouteHandler,
+  postVideosExtensionsRouteHandler,
+  postVideosRouteHandler,
+  postVideosVideoIdRemixRouteHandler,
+  postWebhookEndpointsRouteHandler,
+  postWebhookEndpointsWebhookEndpointIdRotateSecretRouteHandler,
+  postWebhookEndpointsWebhookEndpointIdRouteHandler,
+  postWebhookEndpointsWebhookEndpointIdTestRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', assistantsHandler)
-  .route('/', audioHandler)
-  .route('/', batchesHandler)
-  .route('/', chatHandler)
-  .route('/', completionsHandler)
-  .route('/', containersHandler)
-  .route('/', conversationsHandler)
-  .route('/', embeddingsHandler)
-  .route('/', evalsHandler)
-  .route('/', filesHandler)
-  .route('/', fineTuningHandler)
-  .route('/', imagesHandler)
-  .route('/', liveHandler)
-  .route('/', modelsHandler)
-  .route('/', moderationsHandler)
-  .route('/', organizationHandler)
-  .route('/', projectsHandler)
-  .route('/', realtimeHandler)
-  .route('/', responsesHandler)
-  .route('/', threadsHandler)
-  .route('/', uploadsHandler)
-  .route('/', vectorStoresHandler)
-  .route('/', safetyHandler)
-  .route('/', contentProvenanceChecksHandler)
-  .route('/', videosHandler)
-  .route('/', skillsHandler)
-  .route('/', chatkitHandler)
-  .route('/', decisionsHandler)
-  .route('/', agentsHandler)
-  .route('/', vaultsHandler)
-  .route('/', webhookEndpointsHandler)
-  .route('/', webhookEventTypesHandler)
-  .route('/', responsesBetaTrueHandler)
+  .openapi(getAssistantsRoute, getAssistantsRouteHandler)
+  .openapi(postAssistantsRoute, postAssistantsRouteHandler)
+  .openapi(getAssistantsAssistantIdRoute, getAssistantsAssistantIdRouteHandler)
+  .openapi(postAssistantsAssistantIdRoute, postAssistantsAssistantIdRouteHandler)
+  .openapi(deleteAssistantsAssistantIdRoute, deleteAssistantsAssistantIdRouteHandler)
+  .openapi(postAudioSpeechRoute, postAudioSpeechRouteHandler)
+  .openapi(postAudioTranscriptionsRoute, postAudioTranscriptionsRouteHandler)
+  .openapi(postAudioTranslationsRoute, postAudioTranslationsRouteHandler)
+  .openapi(postAudioVoiceConsentsRoute, postAudioVoiceConsentsRouteHandler)
+  .openapi(getAudioVoiceConsentsRoute, getAudioVoiceConsentsRouteHandler)
+  .openapi(getAudioVoiceConsentsConsentIdRoute, getAudioVoiceConsentsConsentIdRouteHandler)
+  .openapi(postAudioVoiceConsentsConsentIdRoute, postAudioVoiceConsentsConsentIdRouteHandler)
+  .openapi(deleteAudioVoiceConsentsConsentIdRoute, deleteAudioVoiceConsentsConsentIdRouteHandler)
+  .openapi(postAudioVoicesRoute, postAudioVoicesRouteHandler)
+  .openapi(deleteAudioVoicesVoiceIdRoute, deleteAudioVoicesVoiceIdRouteHandler)
+  .openapi(postBatchesRoute, postBatchesRouteHandler)
+  .openapi(getBatchesRoute, getBatchesRouteHandler)
+  .openapi(getBatchesBatchIdRoute, getBatchesBatchIdRouteHandler)
+  .openapi(postBatchesBatchIdCancelRoute, postBatchesBatchIdCancelRouteHandler)
+  .openapi(getChatCompletionsRoute, getChatCompletionsRouteHandler)
+  .openapi(postChatCompletionsRoute, postChatCompletionsRouteHandler)
+  .openapi(getChatCompletionsCompletionIdRoute, getChatCompletionsCompletionIdRouteHandler)
+  .openapi(postChatCompletionsCompletionIdRoute, postChatCompletionsCompletionIdRouteHandler)
+  .openapi(deleteChatCompletionsCompletionIdRoute, deleteChatCompletionsCompletionIdRouteHandler)
+  .openapi(
+    getChatCompletionsCompletionIdMessagesRoute,
+    getChatCompletionsCompletionIdMessagesRouteHandler,
+  )
+  .openapi(postCompletionsRoute, postCompletionsRouteHandler)
+  .openapi(getContainersRoute, getContainersRouteHandler)
+  .openapi(postContainersRoute, postContainersRouteHandler)
+  .openapi(getContainersContainerIdRoute, getContainersContainerIdRouteHandler)
+  .openapi(deleteContainersContainerIdRoute, deleteContainersContainerIdRouteHandler)
+  .openapi(postContainersContainerIdFilesRoute, postContainersContainerIdFilesRouteHandler)
+  .openapi(getContainersContainerIdFilesRoute, getContainersContainerIdFilesRouteHandler)
+  .openapi(
+    getContainersContainerIdFilesFileIdRoute,
+    getContainersContainerIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    deleteContainersContainerIdFilesFileIdRoute,
+    deleteContainersContainerIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    getContainersContainerIdFilesFileIdContentRoute,
+    getContainersContainerIdFilesFileIdContentRouteHandler,
+  )
+  .openapi(
+    postConversationsConversationIdItemsRoute,
+    postConversationsConversationIdItemsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversationIdItemsRoute,
+    getConversationsConversationIdItemsRouteHandler,
+  )
+  .openapi(
+    getConversationsConversationIdItemsItemIdRoute,
+    getConversationsConversationIdItemsItemIdRouteHandler,
+  )
+  .openapi(
+    deleteConversationsConversationIdItemsItemIdRoute,
+    deleteConversationsConversationIdItemsItemIdRouteHandler,
+  )
+  .openapi(postEmbeddingsRoute, postEmbeddingsRouteHandler)
+  .openapi(getEvalsRoute, getEvalsRouteHandler)
+  .openapi(postEvalsRoute, postEvalsRouteHandler)
+  .openapi(getEvalsEvalIdRoute, getEvalsEvalIdRouteHandler)
+  .openapi(postEvalsEvalIdRoute, postEvalsEvalIdRouteHandler)
+  .openapi(deleteEvalsEvalIdRoute, deleteEvalsEvalIdRouteHandler)
+  .openapi(getEvalsEvalIdRunsRoute, getEvalsEvalIdRunsRouteHandler)
+  .openapi(postEvalsEvalIdRunsRoute, postEvalsEvalIdRunsRouteHandler)
+  .openapi(getEvalsEvalIdRunsRunIdRoute, getEvalsEvalIdRunsRunIdRouteHandler)
+  .openapi(deleteEvalsEvalIdRunsRunIdRoute, deleteEvalsEvalIdRunsRunIdRouteHandler)
+  .openapi(postEvalsEvalIdRunsRunIdCancelRoute, postEvalsEvalIdRunsRunIdCancelRouteHandler)
+  .openapi(getEvalsEvalIdRunsRunIdOutputItemsRoute, getEvalsEvalIdRunsRunIdOutputItemsRouteHandler)
+  .openapi(
+    getEvalsEvalIdRunsRunIdOutputItemsOutputItemIdRoute,
+    getEvalsEvalIdRunsRunIdOutputItemsOutputItemIdRouteHandler,
+  )
+  .openapi(getFilesRoute, getFilesRouteHandler)
+  .openapi(postFilesRoute, postFilesRouteHandler)
+  .openapi(deleteFilesFileIdRoute, deleteFilesFileIdRouteHandler)
+  .openapi(getFilesFileIdRoute, getFilesFileIdRouteHandler)
+  .openapi(getFilesFileIdContentRoute, getFilesFileIdContentRouteHandler)
+  .openapi(postFineTuningAlphaGradersRunRoute, postFineTuningAlphaGradersRunRouteHandler)
+  .openapi(postFineTuningAlphaGradersValidateRoute, postFineTuningAlphaGradersValidateRouteHandler)
+  .openapi(
+    getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute,
+    getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler,
+  )
+  .openapi(
+    postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute,
+    postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler,
+  )
+  .openapi(
+    deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRoute,
+    deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRouteHandler,
+  )
+  .openapi(postFineTuningJobsRoute, postFineTuningJobsRouteHandler)
+  .openapi(getFineTuningJobsRoute, getFineTuningJobsRouteHandler)
+  .openapi(getFineTuningJobsFineTuningJobIdRoute, getFineTuningJobsFineTuningJobIdRouteHandler)
+  .openapi(
+    postFineTuningJobsFineTuningJobIdCancelRoute,
+    postFineTuningJobsFineTuningJobIdCancelRouteHandler,
+  )
+  .openapi(
+    getFineTuningJobsFineTuningJobIdCheckpointsRoute,
+    getFineTuningJobsFineTuningJobIdCheckpointsRouteHandler,
+  )
+  .openapi(
+    getFineTuningJobsFineTuningJobIdEventsRoute,
+    getFineTuningJobsFineTuningJobIdEventsRouteHandler,
+  )
+  .openapi(
+    postFineTuningJobsFineTuningJobIdPauseRoute,
+    postFineTuningJobsFineTuningJobIdPauseRouteHandler,
+  )
+  .openapi(
+    postFineTuningJobsFineTuningJobIdResumeRoute,
+    postFineTuningJobsFineTuningJobIdResumeRouteHandler,
+  )
+  .openapi(postImagesEditsRoute, postImagesEditsRouteHandler)
+  .openapi(postImagesGenerationsRoute, postImagesGenerationsRouteHandler)
+  .openapi(postImagesVariationsRoute, postImagesVariationsRouteHandler)
+  .openapi(postLiveSessionsRoute, postLiveSessionsRouteHandler)
+  .openapi(postLiveSessionsSessionIdAcceptRoute, postLiveSessionsSessionIdAcceptRouteHandler)
+  .openapi(postLiveSessionsSessionIdForkRoute, postLiveSessionsSessionIdForkRouteHandler)
+  .openapi(postLiveSessionsSessionIdHangupRoute, postLiveSessionsSessionIdHangupRouteHandler)
+  .openapi(postLiveSessionsSessionIdReferRoute, postLiveSessionsSessionIdReferRouteHandler)
+  .openapi(postLiveSessionsSessionIdRejectRoute, postLiveSessionsSessionIdRejectRouteHandler)
+  .openapi(getModelsRoute, getModelsRouteHandler)
+  .openapi(getModelsModelRoute, getModelsModelRouteHandler)
+  .openapi(deleteModelsModelRoute, deleteModelsModelRouteHandler)
+  .openapi(postModerationsRoute, postModerationsRouteHandler)
+  .openapi(getOrganizationAdminApiKeysRoute, getOrganizationAdminApiKeysRouteHandler)
+  .openapi(postOrganizationAdminApiKeysRoute, postOrganizationAdminApiKeysRouteHandler)
+  .openapi(getOrganizationAdminApiKeysKeyIdRoute, getOrganizationAdminApiKeysKeyIdRouteHandler)
+  .openapi(
+    deleteOrganizationAdminApiKeysKeyIdRoute,
+    deleteOrganizationAdminApiKeysKeyIdRouteHandler,
+  )
+  .openapi(getOrganizationAuditLogsRoute, getOrganizationAuditLogsRouteHandler)
+  .openapi(getOrganizationCertificatesRoute, getOrganizationCertificatesRouteHandler)
+  .openapi(postOrganizationCertificatesRoute, postOrganizationCertificatesRouteHandler)
+  .openapi(
+    postOrganizationCertificatesActivateRoute,
+    postOrganizationCertificatesActivateRouteHandler,
+  )
+  .openapi(
+    postOrganizationCertificatesDeactivateRoute,
+    postOrganizationCertificatesDeactivateRouteHandler,
+  )
+  .openapi(
+    getOrganizationCertificatesCertificateIdRoute,
+    getOrganizationCertificatesCertificateIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationCertificatesCertificateIdRoute,
+    postOrganizationCertificatesCertificateIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationCertificatesCertificateIdRoute,
+    deleteOrganizationCertificatesCertificateIdRouteHandler,
+  )
+  .openapi(getOrganizationCostsRoute, getOrganizationCostsRouteHandler)
+  .openapi(getOrganizationDataRetentionRoute, getOrganizationDataRetentionRouteHandler)
+  .openapi(postOrganizationDataRetentionRoute, postOrganizationDataRetentionRouteHandler)
+  .openapi(getOrganizationGroupsRoute, getOrganizationGroupsRouteHandler)
+  .openapi(postOrganizationGroupsRoute, postOrganizationGroupsRouteHandler)
+  .openapi(getOrganizationGroupsGroupIdRoute, getOrganizationGroupsGroupIdRouteHandler)
+  .openapi(postOrganizationGroupsGroupIdRoute, postOrganizationGroupsGroupIdRouteHandler)
+  .openapi(deleteOrganizationGroupsGroupIdRoute, deleteOrganizationGroupsGroupIdRouteHandler)
+  .openapi(getOrganizationGroupsGroupIdRolesRoute, getOrganizationGroupsGroupIdRolesRouteHandler)
+  .openapi(postOrganizationGroupsGroupIdRolesRoute, postOrganizationGroupsGroupIdRolesRouteHandler)
+  .openapi(
+    getOrganizationGroupsGroupIdRolesRoleIdRoute,
+    getOrganizationGroupsGroupIdRolesRoleIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationGroupsGroupIdRolesRoleIdRoute,
+    deleteOrganizationGroupsGroupIdRolesRoleIdRouteHandler,
+  )
+  .openapi(getOrganizationGroupsGroupIdUsersRoute, getOrganizationGroupsGroupIdUsersRouteHandler)
+  .openapi(postOrganizationGroupsGroupIdUsersRoute, postOrganizationGroupsGroupIdUsersRouteHandler)
+  .openapi(
+    getOrganizationGroupsGroupIdUsersUserIdRoute,
+    getOrganizationGroupsGroupIdUsersUserIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationGroupsGroupIdUsersUserIdRoute,
+    deleteOrganizationGroupsGroupIdUsersUserIdRouteHandler,
+  )
+  .openapi(getOrganizationInvitesRoute, getOrganizationInvitesRouteHandler)
+  .openapi(postOrganizationInvitesRoute, postOrganizationInvitesRouteHandler)
+  .openapi(getOrganizationInvitesInviteIdRoute, getOrganizationInvitesInviteIdRouteHandler)
+  .openapi(deleteOrganizationInvitesInviteIdRoute, deleteOrganizationInvitesInviteIdRouteHandler)
+  .openapi(getOrganizationProjectsRoute, getOrganizationProjectsRouteHandler)
+  .openapi(postOrganizationProjectsRoute, postOrganizationProjectsRouteHandler)
+  .openapi(getOrganizationProjectsProjectIdRoute, getOrganizationProjectsProjectIdRouteHandler)
+  .openapi(postOrganizationProjectsProjectIdRoute, postOrganizationProjectsProjectIdRouteHandler)
+  .openapi(
+    getOrganizationProjectsProjectIdApiKeysRoute,
+    getOrganizationProjectsProjectIdApiKeysRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+    getOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+    deleteOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdApiKeysApiKeyIdRoute,
+    postOrganizationProjectsProjectIdApiKeysApiKeyIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdArchiveRoute,
+    postOrganizationProjectsProjectIdArchiveRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdCertificatesRoute,
+    getOrganizationProjectsProjectIdCertificatesRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdCertificatesActivateRoute,
+    postOrganizationProjectsProjectIdCertificatesActivateRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdCertificatesDeactivateRoute,
+    postOrganizationProjectsProjectIdCertificatesDeactivateRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdDataRetentionRoute,
+    getOrganizationProjectsProjectIdDataRetentionRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdDataRetentionRoute,
+    postOrganizationProjectsProjectIdDataRetentionRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdGroupsRoute,
+    getOrganizationProjectsProjectIdGroupsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdGroupsRoute,
+    postOrganizationProjectsProjectIdGroupsRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdGroupsGroupIdRoute,
+    getOrganizationProjectsProjectIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdGroupsGroupIdRoute,
+    deleteOrganizationProjectsProjectIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdHostedToolPermissionsRoute,
+    getOrganizationProjectsProjectIdHostedToolPermissionsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdHostedToolPermissionsRoute,
+    postOrganizationProjectsProjectIdHostedToolPermissionsRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdModelPermissionsRoute,
+    getOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdModelPermissionsRoute,
+    postOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdModelPermissionsRoute,
+    deleteOrganizationProjectsProjectIdModelPermissionsRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdRateLimitsRoute,
+    getOrganizationProjectsProjectIdRateLimitsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdRateLimitsRateLimitIdRoute,
+    postOrganizationProjectsProjectIdRateLimitsRateLimitIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdServiceAccountsRoute,
+    getOrganizationProjectsProjectIdServiceAccountsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdServiceAccountsRoute,
+    postOrganizationProjectsProjectIdServiceAccountsRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+    getOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+    postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRoute,
+    deleteOrganizationProjectsProjectIdServiceAccountsServiceAccountIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdSpendAlertsRoute,
+    getOrganizationProjectsProjectIdSpendAlertsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdSpendAlertsRoute,
+    postOrganizationProjectsProjectIdSpendAlertsRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+    getOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+    postOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdSpendAlertsAlertIdRoute,
+    deleteOrganizationProjectsProjectIdSpendAlertsAlertIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdUsersRoute,
+    getOrganizationProjectsProjectIdUsersRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdUsersRoute,
+    postOrganizationProjectsProjectIdUsersRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdUsersUserIdRoute,
+    getOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdUsersUserIdRoute,
+    postOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdUsersUserIdRoute,
+    deleteOrganizationProjectsProjectIdUsersUserIdRouteHandler,
+  )
+  .openapi(getOrganizationRolesRoute, getOrganizationRolesRouteHandler)
+  .openapi(postOrganizationRolesRoute, postOrganizationRolesRouteHandler)
+  .openapi(getOrganizationRolesRoleIdRoute, getOrganizationRolesRoleIdRouteHandler)
+  .openapi(postOrganizationRolesRoleIdRoute, postOrganizationRolesRoleIdRouteHandler)
+  .openapi(deleteOrganizationRolesRoleIdRoute, deleteOrganizationRolesRoleIdRouteHandler)
+  .openapi(getOrganizationSpendAlertsRoute, getOrganizationSpendAlertsRouteHandler)
+  .openapi(postOrganizationSpendAlertsRoute, postOrganizationSpendAlertsRouteHandler)
+  .openapi(getOrganizationSpendAlertsAlertIdRoute, getOrganizationSpendAlertsAlertIdRouteHandler)
+  .openapi(postOrganizationSpendAlertsAlertIdRoute, postOrganizationSpendAlertsAlertIdRouteHandler)
+  .openapi(
+    deleteOrganizationSpendAlertsAlertIdRoute,
+    deleteOrganizationSpendAlertsAlertIdRouteHandler,
+  )
+  .openapi(getOrganizationUsageAudioSpeechesRoute, getOrganizationUsageAudioSpeechesRouteHandler)
+  .openapi(
+    getOrganizationUsageAudioTranscriptionsRoute,
+    getOrganizationUsageAudioTranscriptionsRouteHandler,
+  )
+  .openapi(
+    getOrganizationUsageCodeInterpreterSessionsRoute,
+    getOrganizationUsageCodeInterpreterSessionsRouteHandler,
+  )
+  .openapi(getOrganizationUsageCompletionsRoute, getOrganizationUsageCompletionsRouteHandler)
+  .openapi(getOrganizationUsageEmbeddingsRoute, getOrganizationUsageEmbeddingsRouteHandler)
+  .openapi(
+    getOrganizationUsageFileSearchCallsRoute,
+    getOrganizationUsageFileSearchCallsRouteHandler,
+  )
+  .openapi(getOrganizationUsageImagesRoute, getOrganizationUsageImagesRouteHandler)
+  .openapi(getOrganizationUsageModerationsRoute, getOrganizationUsageModerationsRouteHandler)
+  .openapi(getOrganizationUsageVectorStoresRoute, getOrganizationUsageVectorStoresRouteHandler)
+  .openapi(getOrganizationUsageWebSearchCallsRoute, getOrganizationUsageWebSearchCallsRouteHandler)
+  .openapi(getOrganizationUsersRoute, getOrganizationUsersRouteHandler)
+  .openapi(getOrganizationUsersUserIdRoute, getOrganizationUsersUserIdRouteHandler)
+  .openapi(postOrganizationUsersUserIdRoute, postOrganizationUsersUserIdRouteHandler)
+  .openapi(deleteOrganizationUsersUserIdRoute, deleteOrganizationUsersUserIdRouteHandler)
+  .openapi(getOrganizationUsersUserIdRolesRoute, getOrganizationUsersUserIdRolesRouteHandler)
+  .openapi(postOrganizationUsersUserIdRolesRoute, postOrganizationUsersUserIdRolesRouteHandler)
+  .openapi(
+    getOrganizationUsersUserIdRolesRoleIdRoute,
+    getOrganizationUsersUserIdRolesRoleIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationUsersUserIdRolesRoleIdRoute,
+    deleteOrganizationUsersUserIdRolesRoleIdRouteHandler,
+  )
+  .openapi(
+    getProjectsProjectIdGroupsGroupIdRolesRoute,
+    getProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  )
+  .openapi(
+    postProjectsProjectIdGroupsGroupIdRolesRoute,
+    postProjectsProjectIdGroupsGroupIdRolesRouteHandler,
+  )
+  .openapi(
+    getProjectsProjectIdGroupsGroupIdRolesRoleIdRoute,
+    getProjectsProjectIdGroupsGroupIdRolesRoleIdRouteHandler,
+  )
+  .openapi(
+    deleteProjectsProjectIdGroupsGroupIdRolesRoleIdRoute,
+    deleteProjectsProjectIdGroupsGroupIdRolesRoleIdRouteHandler,
+  )
+  .openapi(getProjectsProjectIdRolesRoute, getProjectsProjectIdRolesRouteHandler)
+  .openapi(postProjectsProjectIdRolesRoute, postProjectsProjectIdRolesRouteHandler)
+  .openapi(getProjectsProjectIdRolesRoleIdRoute, getProjectsProjectIdRolesRoleIdRouteHandler)
+  .openapi(postProjectsProjectIdRolesRoleIdRoute, postProjectsProjectIdRolesRoleIdRouteHandler)
+  .openapi(deleteProjectsProjectIdRolesRoleIdRoute, deleteProjectsProjectIdRolesRoleIdRouteHandler)
+  .openapi(
+    getProjectsProjectIdUsersUserIdRolesRoute,
+    getProjectsProjectIdUsersUserIdRolesRouteHandler,
+  )
+  .openapi(
+    postProjectsProjectIdUsersUserIdRolesRoute,
+    postProjectsProjectIdUsersUserIdRolesRouteHandler,
+  )
+  .openapi(
+    getProjectsProjectIdUsersUserIdRolesRoleIdRoute,
+    getProjectsProjectIdUsersUserIdRolesRoleIdRouteHandler,
+  )
+  .openapi(
+    deleteProjectsProjectIdUsersUserIdRolesRoleIdRoute,
+    deleteProjectsProjectIdUsersUserIdRolesRoleIdRouteHandler,
+  )
+  .openapi(postRealtimeCallsRoute, postRealtimeCallsRouteHandler)
+  .openapi(postRealtimeCallsCallIdAcceptRoute, postRealtimeCallsCallIdAcceptRouteHandler)
+  .openapi(postRealtimeCallsCallIdHangupRoute, postRealtimeCallsCallIdHangupRouteHandler)
+  .openapi(postRealtimeCallsCallIdReferRoute, postRealtimeCallsCallIdReferRouteHandler)
+  .openapi(postRealtimeCallsCallIdRejectRoute, postRealtimeCallsCallIdRejectRouteHandler)
+  .openapi(postRealtimeClientSecretsRoute, postRealtimeClientSecretsRouteHandler)
+  .openapi(postRealtimeSessionsRoute, postRealtimeSessionsRouteHandler)
+  .openapi(postRealtimeTranscriptionSessionsRoute, postRealtimeTranscriptionSessionsRouteHandler)
+  .openapi(
+    postRealtimeTranslationsClientSecretsRoute,
+    postRealtimeTranslationsClientSecretsRouteHandler,
+  )
+  .openapi(postResponsesRoute, postResponsesRouteHandler)
+  .openapi(getResponsesResponseIdRoute, getResponsesResponseIdRouteHandler)
+  .openapi(deleteResponsesResponseIdRoute, deleteResponsesResponseIdRouteHandler)
+  .openapi(postResponsesResponseIdCancelRoute, postResponsesResponseIdCancelRouteHandler)
+  .openapi(getResponsesResponseIdInputItemsRoute, getResponsesResponseIdInputItemsRouteHandler)
+  .openapi(postThreadsRoute, postThreadsRouteHandler)
+  .openapi(postThreadsRunsRoute, postThreadsRunsRouteHandler)
+  .openapi(getThreadsThreadIdRoute, getThreadsThreadIdRouteHandler)
+  .openapi(postThreadsThreadIdRoute, postThreadsThreadIdRouteHandler)
+  .openapi(deleteThreadsThreadIdRoute, deleteThreadsThreadIdRouteHandler)
+  .openapi(getThreadsThreadIdMessagesRoute, getThreadsThreadIdMessagesRouteHandler)
+  .openapi(postThreadsThreadIdMessagesRoute, postThreadsThreadIdMessagesRouteHandler)
+  .openapi(
+    getThreadsThreadIdMessagesMessageIdRoute,
+    getThreadsThreadIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(
+    postThreadsThreadIdMessagesMessageIdRoute,
+    postThreadsThreadIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(
+    deleteThreadsThreadIdMessagesMessageIdRoute,
+    deleteThreadsThreadIdMessagesMessageIdRouteHandler,
+  )
+  .openapi(getThreadsThreadIdRunsRoute, getThreadsThreadIdRunsRouteHandler)
+  .openapi(postThreadsThreadIdRunsRoute, postThreadsThreadIdRunsRouteHandler)
+  .openapi(getThreadsThreadIdRunsRunIdRoute, getThreadsThreadIdRunsRunIdRouteHandler)
+  .openapi(postThreadsThreadIdRunsRunIdRoute, postThreadsThreadIdRunsRunIdRouteHandler)
+  .openapi(postThreadsThreadIdRunsRunIdCancelRoute, postThreadsThreadIdRunsRunIdCancelRouteHandler)
+  .openapi(getThreadsThreadIdRunsRunIdStepsRoute, getThreadsThreadIdRunsRunIdStepsRouteHandler)
+  .openapi(
+    getThreadsThreadIdRunsRunIdStepsStepIdRoute,
+    getThreadsThreadIdRunsRunIdStepsStepIdRouteHandler,
+  )
+  .openapi(
+    postThreadsThreadIdRunsRunIdSubmitToolOutputsRoute,
+    postThreadsThreadIdRunsRunIdSubmitToolOutputsRouteHandler,
+  )
+  .openapi(postUploadsRoute, postUploadsRouteHandler)
+  .openapi(postUploadsUploadIdCancelRoute, postUploadsUploadIdCancelRouteHandler)
+  .openapi(postUploadsUploadIdCompleteRoute, postUploadsUploadIdCompleteRouteHandler)
+  .openapi(postUploadsUploadIdPartsRoute, postUploadsUploadIdPartsRouteHandler)
+  .openapi(getVectorStoresRoute, getVectorStoresRouteHandler)
+  .openapi(postVectorStoresRoute, postVectorStoresRouteHandler)
+  .openapi(getVectorStoresVectorStoreIdRoute, getVectorStoresVectorStoreIdRouteHandler)
+  .openapi(postVectorStoresVectorStoreIdRoute, postVectorStoresVectorStoreIdRouteHandler)
+  .openapi(deleteVectorStoresVectorStoreIdRoute, deleteVectorStoresVectorStoreIdRouteHandler)
+  .openapi(
+    postVectorStoresVectorStoreIdFileBatchesRoute,
+    postVectorStoresVectorStoreIdFileBatchesRouteHandler,
+  )
+  .openapi(
+    getVectorStoresVectorStoreIdFileBatchesBatchIdRoute,
+    getVectorStoresVectorStoreIdFileBatchesBatchIdRouteHandler,
+  )
+  .openapi(
+    postVectorStoresVectorStoreIdFileBatchesBatchIdCancelRoute,
+    postVectorStoresVectorStoreIdFileBatchesBatchIdCancelRouteHandler,
+  )
+  .openapi(
+    getVectorStoresVectorStoreIdFileBatchesBatchIdFilesRoute,
+    getVectorStoresVectorStoreIdFileBatchesBatchIdFilesRouteHandler,
+  )
+  .openapi(getVectorStoresVectorStoreIdFilesRoute, getVectorStoresVectorStoreIdFilesRouteHandler)
+  .openapi(postVectorStoresVectorStoreIdFilesRoute, postVectorStoresVectorStoreIdFilesRouteHandler)
+  .openapi(
+    getVectorStoresVectorStoreIdFilesFileIdRoute,
+    getVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    deleteVectorStoresVectorStoreIdFilesFileIdRoute,
+    deleteVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    postVectorStoresVectorStoreIdFilesFileIdRoute,
+    postVectorStoresVectorStoreIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    getVectorStoresVectorStoreIdFilesFileIdContentRoute,
+    getVectorStoresVectorStoreIdFilesFileIdContentRouteHandler,
+  )
+  .openapi(
+    postVectorStoresVectorStoreIdSearchRoute,
+    postVectorStoresVectorStoreIdSearchRouteHandler,
+  )
+  .openapi(postConversationsRoute, postConversationsRouteHandler)
+  .openapi(getConversationsConversationIdRoute, getConversationsConversationIdRouteHandler)
+  .openapi(deleteConversationsConversationIdRoute, deleteConversationsConversationIdRouteHandler)
+  .openapi(postConversationsConversationIdRoute, postConversationsConversationIdRouteHandler)
+  .openapi(getSafetyCasesIdRoute, getSafetyCasesIdRouteHandler)
+  .openapi(getSafetyAlertsIdRoute, getSafetyAlertsIdRouteHandler)
+  .openapi(postOrganizationExternalKeysRoute, postOrganizationExternalKeysRouteHandler)
+  .openapi(getOrganizationExternalKeysRoute, getOrganizationExternalKeysRouteHandler)
+  .openapi(
+    getOrganizationExternalKeysExternalKeyIdRoute,
+    getOrganizationExternalKeysExternalKeyIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationExternalKeysExternalKeyIdRoute,
+    deleteOrganizationExternalKeysExternalKeyIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationExternalKeysExternalKeyIdValidateRoute,
+    postOrganizationExternalKeysExternalKeyIdValidateRouteHandler,
+  )
+  .openapi(getLiveSessionsSessionIdContentRoute, getLiveSessionsSessionIdContentRouteHandler)
+  .openapi(
+    getOrganizationWorkloadIdentityProvidersRoute,
+    getOrganizationWorkloadIdentityProvidersRouteHandler,
+  )
+  .openapi(
+    postOrganizationWorkloadIdentityProvidersRoute,
+    postOrganizationWorkloadIdentityProvidersRouteHandler,
+  )
+  .openapi(
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRoute,
+    deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRoute,
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRouteHandler,
+  )
+  .openapi(
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRoute,
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesRouteHandler,
+  )
+  .openapi(
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+    getOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+    postOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRoute,
+    deleteOrganizationWorkloadIdentityProvidersWorkloadIdentityProviderIdFederationRulesWorkloadIdentityFederationRuleIdRouteHandler,
+  )
+  .openapi(getOrganizationUsageDecisionsRoute, getOrganizationUsageDecisionsRouteHandler)
+  .openapi(getOrganizationExternalStorageRoute, getOrganizationExternalStorageRouteHandler)
+  .openapi(postOrganizationExternalStorageRoute, postOrganizationExternalStorageRouteHandler)
+  .openapi(
+    getOrganizationExternalStorageExternalStorageIdRoute,
+    getOrganizationExternalStorageExternalStorageIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationExternalStorageExternalStorageIdRoute,
+    deleteOrganizationExternalStorageExternalStorageIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationExternalStorageExternalStorageIdValidateRoute,
+    postOrganizationExternalStorageExternalStorageIdValidateRouteHandler,
+  )
+  .openapi(getOrganizationSpendLimitRoute, getOrganizationSpendLimitRouteHandler)
+  .openapi(postOrganizationSpendLimitRoute, postOrganizationSpendLimitRouteHandler)
+  .openapi(deleteOrganizationSpendLimitRoute, deleteOrganizationSpendLimitRouteHandler)
+  .openapi(
+    getOrganizationProjectsProjectIdSpendLimitRoute,
+    getOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationProjectsProjectIdSpendLimitRoute,
+    deleteOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdSpendLimitRoute,
+    postOrganizationProjectsProjectIdSpendLimitRouteHandler,
+  )
+  .openapi(
+    getOrganizationProjectsProjectIdServiceTierSettingsRoute,
+    getOrganizationProjectsProjectIdServiceTierSettingsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdServiceTierSettingsRoute,
+    postOrganizationProjectsProjectIdServiceTierSettingsRouteHandler,
+  )
+  .openapi(
+    postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdApiKeysRoute,
+    postOrganizationProjectsProjectIdServiceAccountsServiceAccountIdApiKeysRouteHandler,
+  )
+  .openapi(postContentProvenanceChecksRoute, postContentProvenanceChecksRouteHandler)
+  .openapi(postVideosRoute, postVideosRouteHandler)
+  .openapi(getVideosRoute, getVideosRouteHandler)
+  .openapi(postVideosCharactersRoute, postVideosCharactersRouteHandler)
+  .openapi(getVideosCharactersCharacterIdRoute, getVideosCharactersCharacterIdRouteHandler)
+  .openapi(postVideosEditsRoute, postVideosEditsRouteHandler)
+  .openapi(postVideosExtensionsRoute, postVideosExtensionsRouteHandler)
+  .openapi(getVideosVideoIdRoute, getVideosVideoIdRouteHandler)
+  .openapi(deleteVideosVideoIdRoute, deleteVideosVideoIdRouteHandler)
+  .openapi(getVideosVideoIdContentRoute, getVideosVideoIdContentRouteHandler)
+  .openapi(postVideosVideoIdRemixRoute, postVideosVideoIdRemixRouteHandler)
+  .openapi(postResponsesInputTokensRoute, postResponsesInputTokensRouteHandler)
+  .openapi(postResponsesCompactRoute, postResponsesCompactRouteHandler)
+  .openapi(postSkillsRoute, postSkillsRouteHandler)
+  .openapi(getSkillsRoute, getSkillsRouteHandler)
+  .openapi(deleteSkillsSkillIdRoute, deleteSkillsSkillIdRouteHandler)
+  .openapi(getSkillsSkillIdRoute, getSkillsSkillIdRouteHandler)
+  .openapi(postSkillsSkillIdRoute, postSkillsSkillIdRouteHandler)
+  .openapi(getSkillsSkillIdContentRoute, getSkillsSkillIdContentRouteHandler)
+  .openapi(postSkillsSkillIdVersionsRoute, postSkillsSkillIdVersionsRouteHandler)
+  .openapi(getSkillsSkillIdVersionsRoute, getSkillsSkillIdVersionsRouteHandler)
+  .openapi(getSkillsSkillIdVersionsVersionRoute, getSkillsSkillIdVersionsVersionRouteHandler)
+  .openapi(deleteSkillsSkillIdVersionsVersionRoute, deleteSkillsSkillIdVersionsVersionRouteHandler)
+  .openapi(
+    getSkillsSkillIdVersionsVersionContentRoute,
+    getSkillsSkillIdVersionsVersionContentRouteHandler,
+  )
+  .openapi(postChatkitSessionsSessionIdCancelRoute, postChatkitSessionsSessionIdCancelRouteHandler)
+  .openapi(postChatkitSessionsRoute, postChatkitSessionsRouteHandler)
+  .openapi(getChatkitThreadsThreadIdItemsRoute, getChatkitThreadsThreadIdItemsRouteHandler)
+  .openapi(getChatkitThreadsThreadIdRoute, getChatkitThreadsThreadIdRouteHandler)
+  .openapi(deleteChatkitThreadsThreadIdRoute, deleteChatkitThreadsThreadIdRouteHandler)
+  .openapi(getChatkitThreadsRoute, getChatkitThreadsRouteHandler)
+  .openapi(postDecisionsRoute, postDecisionsRouteHandler)
+  .openapi(postAgentsAutomationsRoute, postAgentsAutomationsRouteHandler)
+  .openapi(getAgentsAutomationsRoute, getAgentsAutomationsRouteHandler)
+  .openapi(getAgentsAutomationsAutomationIdRoute, getAgentsAutomationsAutomationIdRouteHandler)
+  .openapi(postAgentsAutomationsAutomationIdRoute, postAgentsAutomationsAutomationIdRouteHandler)
+  .openapi(
+    deleteAgentsAutomationsAutomationIdRoute,
+    deleteAgentsAutomationsAutomationIdRouteHandler,
+  )
+  .openapi(
+    postAgentsAutomationsAutomationIdPauseRoute,
+    postAgentsAutomationsAutomationIdPauseRouteHandler,
+  )
+  .openapi(
+    postAgentsAutomationsAutomationIdResumeRoute,
+    postAgentsAutomationsAutomationIdResumeRouteHandler,
+  )
+  .openapi(
+    postAgentsAutomationsAutomationIdInvocationsRoute,
+    postAgentsAutomationsAutomationIdInvocationsRouteHandler,
+  )
+  .openapi(
+    getAgentsAutomationsAutomationIdInvocationsRoute,
+    getAgentsAutomationsAutomationIdInvocationsRouteHandler,
+  )
+  .openapi(
+    getAgentsAutomationsAutomationIdInvocationsInvocationIdRoute,
+    getAgentsAutomationsAutomationIdInvocationsInvocationIdRouteHandler,
+  )
+  .openapi(getAgentsEnvironmentsRoute, getAgentsEnvironmentsRouteHandler)
+  .openapi(postAgentsEnvironmentsRoute, postAgentsEnvironmentsRouteHandler)
+  .openapi(getAgentsEnvironmentsEnvironmentIdRoute, getAgentsEnvironmentsEnvironmentIdRouteHandler)
+  .openapi(
+    getAgentsEnvironmentsEnvironmentIdFilesRoute,
+    getAgentsEnvironmentsEnvironmentIdFilesRouteHandler,
+  )
+  .openapi(
+    postAgentsEnvironmentsEnvironmentIdFilesRoute,
+    postAgentsEnvironmentsEnvironmentIdFilesRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsRoute,
+    getAgentsSessionsSessionIdSubagentsRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsSubagentIdRoute,
+    getAgentsSessionsSessionIdSubagentsSubagentIdRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsSubagentIdItemsRoute,
+    getAgentsSessionsSessionIdSubagentsSubagentIdItemsRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRoute,
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRoute,
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRoute,
+    getAgentsSessionsSessionIdSubagentsSubagentIdTurnsTurnIdItemsRouteHandler,
+  )
+  .openapi(getAgentsRoute, getAgentsRouteHandler)
+  .openapi(postAgentsRoute, postAgentsRouteHandler)
+  .openapi(getAgentsAgentIdRoute, getAgentsAgentIdRouteHandler)
+  .openapi(postAgentsAgentIdRoute, postAgentsAgentIdRouteHandler)
+  .openapi(deleteAgentsAgentIdRoute, deleteAgentsAgentIdRouteHandler)
+  .openapi(getAgentsEnvironmentsTemplatesRoute, getAgentsEnvironmentsTemplatesRouteHandler)
+  .openapi(postAgentsEnvironmentsTemplatesRoute, postAgentsEnvironmentsTemplatesRouteHandler)
+  .openapi(
+    getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+    getAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  )
+  .openapi(
+    postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+    postAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  )
+  .openapi(
+    deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRoute,
+    deleteAgentsEnvironmentsTemplatesEnvironmentTemplateIdRouteHandler,
+  )
+  .openapi(getAgentsSessionsRoute, getAgentsSessionsRouteHandler)
+  .openapi(postAgentsSessionsRoute, postAgentsSessionsRouteHandler)
+  .openapi(getAgentsSessionsSessionIdRoute, getAgentsSessionsSessionIdRouteHandler)
+  .openapi(postAgentsSessionsSessionIdRoute, postAgentsSessionsSessionIdRouteHandler)
+  .openapi(deleteAgentsSessionsSessionIdRoute, deleteAgentsSessionsSessionIdRouteHandler)
+  .openapi(
+    getAgentsSessionsSessionIdArtifactsRoute,
+    getAgentsSessionsSessionIdArtifactsRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdArtifactsArtifactIdRoute,
+    getAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler,
+  )
+  .openapi(
+    deleteAgentsSessionsSessionIdArtifactsArtifactIdRoute,
+    deleteAgentsSessionsSessionIdArtifactsArtifactIdRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdArtifactsArtifactIdContentRoute,
+    getAgentsSessionsSessionIdArtifactsArtifactIdContentRouteHandler,
+  )
+  .openapi(getAgentsSessionsSessionIdEventsRoute, getAgentsSessionsSessionIdEventsRouteHandler)
+  .openapi(postAgentsSessionsSessionIdEventsRoute, postAgentsSessionsSessionIdEventsRouteHandler)
+  .openapi(getAgentsSessionsSessionIdItemsRoute, getAgentsSessionsSessionIdItemsRouteHandler)
+  .openapi(getAgentsSessionsSessionIdTracesRoute, getAgentsSessionsSessionIdTracesRouteHandler)
+  .openapi(getAgentsSessionsSessionIdTurnsRoute, getAgentsSessionsSessionIdTurnsRouteHandler)
+  .openapi(
+    getAgentsSessionsSessionIdTurnsTurnIdRoute,
+    getAgentsSessionsSessionIdTurnsTurnIdRouteHandler,
+  )
+  .openapi(
+    getAgentsSessionsSessionIdTurnsTurnIdItemsRoute,
+    getAgentsSessionsSessionIdTurnsTurnIdItemsRouteHandler,
+  )
+  .openapi(getVaultsRoute, getVaultsRouteHandler)
+  .openapi(postVaultsRoute, postVaultsRouteHandler)
+  .openapi(getVaultsVaultIdRoute, getVaultsVaultIdRouteHandler)
+  .openapi(postVaultsVaultIdRoute, postVaultsVaultIdRouteHandler)
+  .openapi(deleteVaultsVaultIdRoute, deleteVaultsVaultIdRouteHandler)
+  .openapi(getVaultsVaultIdCredentialsRoute, getVaultsVaultIdCredentialsRouteHandler)
+  .openapi(postVaultsVaultIdCredentialsRoute, postVaultsVaultIdCredentialsRouteHandler)
+  .openapi(
+    getVaultsVaultIdCredentialsCredentialIdRoute,
+    getVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(
+    postVaultsVaultIdCredentialsCredentialIdRoute,
+    postVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(
+    deleteVaultsVaultIdCredentialsCredentialIdRoute,
+    deleteVaultsVaultIdCredentialsCredentialIdRouteHandler,
+  )
+  .openapi(getWebhookEndpointsRoute, getWebhookEndpointsRouteHandler)
+  .openapi(postWebhookEndpointsRoute, postWebhookEndpointsRouteHandler)
+  .openapi(
+    getWebhookEndpointsWebhookEndpointIdRoute,
+    getWebhookEndpointsWebhookEndpointIdRouteHandler,
+  )
+  .openapi(
+    postWebhookEndpointsWebhookEndpointIdRoute,
+    postWebhookEndpointsWebhookEndpointIdRouteHandler,
+  )
+  .openapi(
+    deleteWebhookEndpointsWebhookEndpointIdRoute,
+    deleteWebhookEndpointsWebhookEndpointIdRouteHandler,
+  )
+  .openapi(
+    postWebhookEndpointsWebhookEndpointIdRotateSecretRoute,
+    postWebhookEndpointsWebhookEndpointIdRotateSecretRouteHandler,
+  )
+  .openapi(
+    postWebhookEndpointsWebhookEndpointIdTestRoute,
+    postWebhookEndpointsWebhookEndpointIdTestRouteHandler,
+  )
+  .openapi(getWebhookEventTypesRoute, getWebhookEventTypesRouteHandler)
+  .openapi(postResponsesBetaTrueRoute, postResponsesBetaTrueRouteHandler)
+  .openapi(getResponsesResponseIdBetaTrueRoute, getResponsesResponseIdBetaTrueRouteHandler)
+  .openapi(deleteResponsesResponseIdBetaTrueRoute, deleteResponsesResponseIdBetaTrueRouteHandler)
+  .openapi(
+    postResponsesResponseIdCancelBetaTrueRoute,
+    postResponsesResponseIdCancelBetaTrueRouteHandler,
+  )
+  .openapi(postResponsesCompactBetaTrueRoute, postResponsesCompactBetaTrueRouteHandler)
+  .openapi(
+    getResponsesResponseIdInputItemsBetaTrueRoute,
+    getResponsesResponseIdInputItemsBetaTrueRouteHandler,
+  )
+  .openapi(postResponsesInputTokensBetaTrueRoute, postResponsesInputTokensBetaTrueRouteHandler)
 
 export default app

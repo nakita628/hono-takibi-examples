@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesis20131202IncreaseStreamRetentionPeriodHandler = app.openapi(
-  postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

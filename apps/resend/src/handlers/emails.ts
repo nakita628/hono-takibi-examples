@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEmailsEmailIdAttachmentsAttachmentIdRoute,
   getEmailsEmailIdAttachmentsRoute,
   getEmailsEmailIdRoute,
@@ -16,48 +16,80 @@ import {
   postEmailsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEmailsRouteHandler: RouteHandler<typeof postEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const emailsHandler = app
-  .openapi(postEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsEmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmailsEmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailsEmailIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailsEmailIdShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsEmailIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsEmailIdAttachmentsAttachmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsReceivingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsReceivingEmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsReceivingEmailIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsReceivingEmailIdAttachmentsAttachmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmailsMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmailsRouteHandler: RouteHandler<typeof getEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsEmailIdRouteHandler: RouteHandler<typeof getEmailsEmailIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmailsEmailIdRouteHandler: RouteHandler<typeof patchEmailsEmailIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailsEmailIdCancelRouteHandler: RouteHandler<
+  typeof postEmailsEmailIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailsEmailIdShareRouteHandler: RouteHandler<
+  typeof postEmailsEmailIdShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmailsBatchRouteHandler: RouteHandler<typeof postEmailsBatchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsEmailIdAttachmentsRouteHandler: RouteHandler<
+  typeof getEmailsEmailIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsEmailIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof getEmailsEmailIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsReceivingRouteHandler: RouteHandler<typeof getEmailsReceivingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsReceivingEmailIdRouteHandler: RouteHandler<
+  typeof getEmailsReceivingEmailIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsReceivingEmailIdAttachmentsRouteHandler: RouteHandler<
+  typeof getEmailsReceivingEmailIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsReceivingEmailIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof getEmailsReceivingEmailIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmailsMetricsRouteHandler: RouteHandler<typeof getEmailsMetricsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

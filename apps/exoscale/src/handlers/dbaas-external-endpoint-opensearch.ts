@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasExternalEndpointOpensearchEndpointIdRoute,
   getDbaasExternalEndpointOpensearchEndpointIdRoute,
   postDbaasExternalEndpointOpensearchNameRoute,
   putDbaasExternalEndpointOpensearchEndpointIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDbaasExternalEndpointOpensearchEndpointIdRouteHandler: RouteHandler<
+  typeof deleteDbaasExternalEndpointOpensearchEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasExternalEndpointOpensearchHandler = app
-  .openapi(deleteDbaasExternalEndpointOpensearchEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasExternalEndpointOpensearchEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasExternalEndpointOpensearchEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasExternalEndpointOpensearchNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDbaasExternalEndpointOpensearchEndpointIdRouteHandler: RouteHandler<
+  typeof getDbaasExternalEndpointOpensearchEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasExternalEndpointOpensearchEndpointIdRouteHandler: RouteHandler<
+  typeof putDbaasExternalEndpointOpensearchEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasExternalEndpointOpensearchNameRouteHandler: RouteHandler<
+  typeof postDbaasExternalEndpointOpensearchNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

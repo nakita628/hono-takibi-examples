@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/getthedata.com/bng2latlong/1.0/openapi.yaml',
   output: './src/getthedata-bng2latlong/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getthedata-bng2latlong/types.ts' },
   client: { output: './src/getthedata-bng2latlong/client.ts', baseUrl: '/' },
   rpc: { output: './src/getthedata-bng2latlong/rpc.ts', parseResponse: true },

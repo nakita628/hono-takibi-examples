@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFactRoute,
   getFactCategoriesRoute,
   getFactFodCategoriesRoute,
@@ -14,42 +14,60 @@ import {
   putFactRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteFactRouteHandler: RouteHandler<typeof deleteFactRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const factHandler = app
-  .openapi(deleteFactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactFodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactFodCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactOnthisdayBornRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactOnthisdayDiedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactOnthisdayEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactRandomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFactSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFactRouteHandler: RouteHandler<typeof getFactRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFactRouteHandler: RouteHandler<typeof putFactRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactCategoriesRouteHandler: RouteHandler<typeof getFactCategoriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactFodRouteHandler: RouteHandler<typeof getFactFodRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactFodCategoriesRouteHandler: RouteHandler<
+  typeof getFactFodCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactNumbersRouteHandler: RouteHandler<typeof getFactNumbersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactOnthisdayBornRouteHandler: RouteHandler<
+  typeof getFactOnthisdayBornRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactOnthisdayDiedRouteHandler: RouteHandler<
+  typeof getFactOnthisdayDiedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactOnthisdayEventRouteHandler: RouteHandler<
+  typeof getFactOnthisdayEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactRandomRouteHandler: RouteHandler<typeof getFactRandomRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFactSearchRouteHandler: RouteHandler<typeof getFactSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

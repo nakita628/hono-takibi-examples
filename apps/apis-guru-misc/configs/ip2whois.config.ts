@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ip2whois.com/1.0/openapi.yaml',
   output: './src/ip2whois/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ip2whois/types.ts' },
   client: { output: './src/ip2whois/client.ts', baseUrl: '/' },
   rpc: { output: './src/ip2whois/rpc.ts', parseResponse: true },

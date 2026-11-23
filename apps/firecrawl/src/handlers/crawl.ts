@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrawlIdRoute,
   getCrawlActiveRoute,
   getCrawlIdErrorsRoute,
@@ -8,24 +8,30 @@ import {
   postCrawlRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrawlIdRouteHandler: RouteHandler<typeof getCrawlIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crawlHandler = app
-  .openapi(getCrawlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrawlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrawlIdErrorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrawlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrawlParamsPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrawlActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCrawlIdRouteHandler: RouteHandler<typeof deleteCrawlIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrawlIdErrorsRouteHandler: RouteHandler<typeof getCrawlIdErrorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrawlRouteHandler: RouteHandler<typeof postCrawlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrawlParamsPreviewRouteHandler: RouteHandler<
+  typeof postCrawlParamsPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrawlActiveRouteHandler: RouteHandler<typeof getCrawlActiveRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

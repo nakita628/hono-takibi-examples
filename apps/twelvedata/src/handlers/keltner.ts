@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getKeltnerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getKeltnerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const keltnerHandler = app.openapi(getKeltnerRoute, (c) => {
+export const getKeltnerRouteHandler: RouteHandler<typeof getKeltnerRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

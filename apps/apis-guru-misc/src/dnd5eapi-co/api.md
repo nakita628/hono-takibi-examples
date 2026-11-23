@@ -5955,7 +5955,7 @@ This operation does not require authentication
 |intelligence|number|false|none|The monster's ability to outsmart a player.|
 |strength|number|false|none|How hard a monster can hit a player.|
 |wisdom|number|false|none|A monster's ability to ascertain the player's plan.|
-|actions|[object]|false|none|A list of actions that are available to the monster to take during combat.|
+|actions|[[MonsterAllOf3ActionsItems](#schemamonsterallof3actionsitems)]|false|none|A list of actions that are available to the monster to take during combat.|
 |alignments|string|false|none|A creature's general moral and personal attitudes.|
 |armor_class|[object]|false|none|The difficulty for a player to successfully deal damage to a monster.|
 |challenge_rating|number|false|none|A monster's challenge rating is a guideline number that says when a monster becomes an appropriate challenge against the party's average level. For example. A group of 4 players with an average level of 4 would have an appropriate combat challenge against a monster with a challenge rating of 4 but a monster with a challenge rating of 8 against the same group of players would pose a significant threat.|
@@ -5969,9 +5969,9 @@ This operation does not require authentication
 |hit_points_roll|string|false|none|The roll for determining a monster's hit points, which consists of the hit dice (e.g. 18d10) and the modifier determined by its Constitution (e.g. +36). For example, 18d10+36|
 |image|string|false|none|The image url of the monster.|
 |languages|string|false|none|The languages a monster is able to speak.|
-|legendary_actions|[object]|false|none|A list of legendary actions that are available to the monster to take during combat.|
+|legendary_actions|[[MonsterAllOf3ActionsItems](#schemamonsterallof3actionsitems)]|false|none|A list of legendary actions that are available to the monster to take during combat.|
 |proficiencies|[object]|false|none|A list of proficiencies of a monster.|
-|reactions|[object]|false|none|A list of reactions that is available to the monster to take during combat.|
+|reactions|[[MonsterAllOf3ActionsItems](#schemamonsterallof3actionsitems)]|false|none|A list of reactions that is available to the monster to take during combat.|
 |senses|object|false|none|Monsters typically have a passive perception but they might also have other senses to detect players.|
 |size|string|false|none|The size of the monster ranging from Tiny to Gargantuan."|
 |special_abilities|[object]|false|none|A list of the monster's special abilities.|
@@ -7046,3 +7046,89 @@ WeaponProperty
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |error|string|true|none|none|
+
+<h2 id="tocS_MonsterAllOf3ActionsItems">MonsterAllOf3ActionsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemamonsterallof3actionsitems"></a>
+<a id="schema_MonsterAllOf3ActionsItems"></a>
+<a id="tocSmonsterallof3actionsitems"></a>
+<a id="tocsmonsterallof3actionsitems"></a>
+
+```json
+{
+  "action_options": {
+    "choose": 0,
+    "desc": "string",
+    "from": {},
+    "type": "string"
+  },
+  "actions": [
+    {
+      "action_name": "string",
+      "count": 0,
+      "type": "melee"
+    }
+  ],
+  "attack_bonus": 0,
+  "attacks": [
+    {
+      "damage": null,
+      "dc": {
+        "dc_type": {
+          "index": "string",
+          "name": "string",
+          "url": "string"
+        },
+        "dc_value": 0,
+        "success_type": "string"
+      },
+      "name": "string"
+    }
+  ],
+  "damage": [
+    {
+      "damage_dice": "2d6+5",
+      "damage_type": {
+        "index": "string",
+        "name": "string",
+        "url": "string"
+      }
+    }
+  ],
+  "dc": {
+    "dc_type": {
+      "index": "string",
+      "name": "string",
+      "url": "string"
+    },
+    "dc_value": 0,
+    "success_type": "string"
+  },
+  "desc": "string",
+  "multiattack_type": "string",
+  "name": "string",
+  "options": {
+    "choose": 0,
+    "desc": "string",
+    "from": {},
+    "type": "string"
+  }
+}
+```
+
+Action available to a `Monster` in addition to the standard creature actions.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|action_options|[Choice](#schemachoice)|false|none|`Choice`<br>|
+|actions|[object]|false|none|none|
+|attack_bonus|number|false|none|none|
+|attacks|[object]|false|none|none|
+|damage|[object]|false|none|none|
+|dc|[DC](#schemadc)|false|none|`DC`<br>|
+|desc|string|false|none|none|
+|multiattack_type|string|false|none|none|
+|name|string|false|none|none|
+|options|[Choice](#schemachoice)|false|none|`Choice`<br>|

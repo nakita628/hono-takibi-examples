@@ -181,8 +181,8 @@ const RotationSchema = z
 const RotationsSchema = z.array(RotationSchema).openapi('Rotations')
 
 type ListRotationsResultType = {
-  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
-  Rotations: z.infer<typeof RotationsSchema> & unknown
+  NextToken?: z.infer<typeof PaginationTokenSchema>
+  Rotations: z.infer<typeof RotationsSchema>
 }
 
 const AcceptPageResultSchema = z.looseObject({}).openapi('AcceptPageResult')

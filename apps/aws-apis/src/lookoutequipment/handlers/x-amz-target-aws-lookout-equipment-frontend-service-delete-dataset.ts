@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsLookoutEquipmentFrontendServiceDeleteDatasetHandler = app.openapi(
-  postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSLookoutEquipmentFrontendServiceDeleteDatasetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSignalDecisionReportRoute,
   postSignalEvaluateRoute,
   postSignalPrepareRoute,
   postSignalReturnReportRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSignalDecisionReportRouteHandler: RouteHandler<
+  typeof postSignalDecisionReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const signalHandler = app
-  .openapi(postSignalDecisionReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignalEvaluateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignalPrepareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignalReturnReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSignalEvaluateRouteHandler: RouteHandler<typeof postSignalEvaluateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSignalPrepareRouteHandler: RouteHandler<typeof postSignalPrepareRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSignalReturnReportRouteHandler: RouteHandler<
+  typeof postSignalReturnReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

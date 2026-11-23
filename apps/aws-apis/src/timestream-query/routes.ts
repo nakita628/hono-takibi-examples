@@ -401,7 +401,7 @@ const ScheduledQueryDescriptionSchema = z
   .openapi('ScheduledQueryDescription')
 
 type DescribeScheduledQueryResponseType = {
-  ScheduledQuery: z.infer<typeof ScheduledQueryDescriptionSchema> & unknown
+  ScheduledQuery: z.infer<typeof ScheduledQueryDescriptionSchema>
 }
 
 type StringType = string
@@ -461,10 +461,10 @@ const ColumnInfoListSchema: z.ZodType<ColumnInfoListType> = z
   .openapi('ColumnInfoList')
 
 type TypeType = {
-  ScalarType?: z.infer<typeof ScalarTypeSchema> & unknown
-  ArrayColumnInfo?: z.infer<typeof ColumnInfoSchema> & unknown
-  TimeSeriesMeasureValueColumnInfo?: z.infer<typeof ColumnInfoSchema> & unknown
-  RowColumnInfo?: z.infer<typeof ColumnInfoListSchema> & unknown
+  ScalarType?: z.infer<typeof ScalarTypeSchema>
+  ArrayColumnInfo?: z.infer<typeof ColumnInfoSchema>
+  TimeSeriesMeasureValueColumnInfo?: z.infer<typeof ColumnInfoSchema>
+  RowColumnInfo?: z.infer<typeof ColumnInfoListSchema>
 }
 
 const StringSchema: z.ZodType<StringType> = z.string().openapi('String')
@@ -495,10 +495,7 @@ const TypeSchema: z.ZodType<TypeType> = z
   )
   .openapi('Type')
 
-type ColumnInfoType = {
-  Name?: z.infer<typeof StringSchema> & unknown
-  Type: z.infer<typeof TypeSchema> & unknown
-}
+type ColumnInfoType = { Name?: z.infer<typeof StringSchema>; Type: z.infer<typeof TypeSchema> }
 
 type ColumnInfoListType = z.infer<typeof ColumnInfoSchema>[]
 
@@ -557,7 +554,7 @@ const DatumListSchema: z.ZodType<DatumListType> = z
   .lazy(() => z.array(DatumSchema))
   .openapi('DatumList')
 
-type RowType = { Data: z.infer<typeof DatumListSchema> & unknown }
+type RowType = { Data: z.infer<typeof DatumListSchema> }
 
 type NullableBooleanType = boolean
 
@@ -585,11 +582,11 @@ const RowSchema: z.ZodType<RowType> = z
 const NullableBooleanSchema: z.ZodType<NullableBooleanType> = z.boolean().openapi('NullableBoolean')
 
 type DatumType = {
-  ScalarValue?: z.infer<typeof ScalarValueSchema> & unknown
-  TimeSeriesValue?: z.infer<typeof TimeSeriesDataPointListSchema> & unknown
-  ArrayValue?: z.infer<typeof DatumListSchema> & unknown
-  RowValue?: z.infer<typeof RowSchema> & unknown
-  NullValue?: z.infer<typeof NullableBooleanSchema> & unknown
+  ScalarValue?: z.infer<typeof ScalarValueSchema>
+  TimeSeriesValue?: z.infer<typeof TimeSeriesDataPointListSchema>
+  ArrayValue?: z.infer<typeof DatumListSchema>
+  RowValue?: z.infer<typeof RowSchema>
+  NullValue?: z.infer<typeof NullableBooleanSchema>
 }
 
 type TimestampType = string
@@ -597,8 +594,8 @@ type TimestampType = string
 const TimestampSchema: z.ZodType<TimestampType> = z.string().openapi('Timestamp')
 
 type TimeSeriesDataPointType = {
-  Time: z.infer<typeof TimestampSchema> & unknown
-  Value: z.infer<typeof DatumSchema> & unknown
+  Time: z.infer<typeof TimestampSchema>
+  Value: z.infer<typeof DatumSchema>
 }
 
 const CancelQueryResponseSchema = z

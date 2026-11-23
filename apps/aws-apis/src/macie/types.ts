@@ -1,10 +1,6 @@
 type AssociateMemberAccountRequest = { memberAccountId: {} }
-type InvalidInputException = { [x: string]: unknown }
-type LimitExceededException = { [x: string]: unknown }
-type InternalException = { [x: string]: unknown }
 type AssociateS3ResourcesRequest = { memberAccountId?: {} | undefined; s3Resources: {} }
 type AssociateS3ResourcesResult = { failedS3Resources?: {} | undefined }
-type AccessDeniedException = { [x: string]: unknown }
 type DisassociateMemberAccountRequest = { memberAccountId: {} }
 type DisassociateS3ResourcesRequest = {
   memberAccountId?: {} | undefined
@@ -25,504 +21,143 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=MacieService.AssociateMemberAccount': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateMemberAccountRequest }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MacieService.AssociateMemberAccount'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateMemberAccountRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateMemberAccountRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateMemberAccountRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: AssociateMemberAccountRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.AssociateS3Resources': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateS3ResourcesRequest }
-            output: AssociateS3ResourcesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MacieService.AssociateS3Resources'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateS3ResourcesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateS3ResourcesRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateS3ResourcesRequest }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.AssociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AssociateS3ResourcesRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: AssociateS3ResourcesRequest }
+        output: AssociateS3ResourcesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.DisassociateMemberAccount': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateMemberAccountRequest }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MacieService.DisassociateMemberAccount'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateMemberAccountRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateMemberAccount'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateMemberAccountRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DisassociateMemberAccountRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.DisassociateS3Resources': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateS3ResourcesRequest }
-            output: DisassociateS3ResourcesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MacieService.DisassociateS3Resources'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateS3ResourcesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateS3ResourcesRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.DisassociateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisassociateS3ResourcesRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DisassociateS3ResourcesRequest }
+        output: DisassociateS3ResourcesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.ListMemberAccounts': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListMemberAccounts'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMemberAccountsRequest }
-            output: ListMemberAccountsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'MacieService.ListMemberAccounts'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListMemberAccounts'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMemberAccountsRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListMemberAccounts'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListMemberAccountsRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListMemberAccountsRequest }
+        output: ListMemberAccountsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.ListS3Resources': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListS3ResourcesRequest }
-            output: ListS3ResourcesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'MacieService.ListS3Resources'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListS3ResourcesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListS3ResourcesRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'MacieService.ListS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListS3ResourcesRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListS3ResourcesRequest }
+        output: ListS3ResourcesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=MacieService.UpdateS3Resources': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.UpdateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateS3ResourcesRequest }
-            output: UpdateS3ResourcesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'MacieService.UpdateS3Resources'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.UpdateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateS3ResourcesRequest }
-            output: InvalidInputException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.UpdateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateS3ResourcesRequest }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'MacieService.UpdateS3Resources'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateS3ResourcesRequest }
-            output: InternalException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UpdateS3ResourcesRequest }
+        output: UpdateS3ResourcesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

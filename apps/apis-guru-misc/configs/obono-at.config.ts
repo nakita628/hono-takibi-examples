@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/obono.at/1.4.0.0/openapi.yaml',
   output: './src/obono-at/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/obono-at/types.ts' },
   client: { output: './src/obono-at/client.ts', baseUrl: '/' },
   rpc: { output: './src/obono-at/rpc.ts', parseResponse: true },

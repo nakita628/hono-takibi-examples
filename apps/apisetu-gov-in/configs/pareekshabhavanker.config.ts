@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/pareekshabhavanker/3.0.0/openapi.yaml',
   output: './src/pareekshabhavanker/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pareekshabhavanker/types.ts' },
   client: { output: './src/pareekshabhavanker/client.ts', baseUrl: '/' },
   rpc: { output: './src/pareekshabhavanker/rpc.ts', parseResponse: true },

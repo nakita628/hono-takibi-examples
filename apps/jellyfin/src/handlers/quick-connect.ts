@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuickConnectConnectRoute,
   getQuickConnectEnabledRoute,
   postQuickConnectAuthorizeRoute,
   postQuickConnectInitiateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQuickConnectAuthorizeRouteHandler: RouteHandler<
+  typeof postQuickConnectAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quickConnectHandler = app
-  .openapi(postQuickConnectAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuickConnectConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuickConnectEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuickConnectInitiateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQuickConnectConnectRouteHandler: RouteHandler<
+  typeof getQuickConnectConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuickConnectEnabledRouteHandler: RouteHandler<
+  typeof getQuickConnectEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuickConnectInitiateRouteHandler: RouteHandler<
+  typeof postQuickConnectInitiateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

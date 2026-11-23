@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTimeTrackingCategoriesTimeTrackingCategoryGidRoute,
   getTimeTrackingCategoriesRoute,
   getTimeTrackingCategoriesTimeTrackingCategoryGidRoute,
@@ -8,24 +8,38 @@ import {
   putTimeTrackingCategoriesTimeTrackingCategoryGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimeTrackingCategoriesTimeTrackingCategoryGidRouteHandler: RouteHandler<
+  typeof getTimeTrackingCategoriesTimeTrackingCategoryGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const timeTrackingCategoriesHandler = app
-  .openapi(getTimeTrackingCategoriesTimeTrackingCategoryGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTimeTrackingCategoriesTimeTrackingCategoryGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTimeTrackingCategoriesTimeTrackingCategoryGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimeTrackingCategoriesTimeTrackingCategoryGidTimeTrackingEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimeTrackingCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTimeTrackingCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putTimeTrackingCategoriesTimeTrackingCategoryGidRouteHandler: RouteHandler<
+  typeof putTimeTrackingCategoriesTimeTrackingCategoryGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTimeTrackingCategoriesTimeTrackingCategoryGidRouteHandler: RouteHandler<
+  typeof deleteTimeTrackingCategoriesTimeTrackingCategoryGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimeTrackingCategoriesTimeTrackingCategoryGidTimeTrackingEntriesRouteHandler: RouteHandler<
+  typeof getTimeTrackingCategoriesTimeTrackingCategoryGidTimeTrackingEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimeTrackingCategoriesRouteHandler: RouteHandler<
+  typeof getTimeTrackingCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTimeTrackingCategoriesRouteHandler: RouteHandler<
+  typeof postTimeTrackingCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

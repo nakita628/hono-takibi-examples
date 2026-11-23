@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOctocatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOctocatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const octocatHandler = app.openapi(getOctocatRoute, (c) => {
+export const getOctocatRouteHandler: RouteHandler<typeof getOctocatRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

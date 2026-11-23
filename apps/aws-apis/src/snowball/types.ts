@@ -1,8 +1,5 @@
 type CancelClusterRequest = { ClusterId: {} }
 type CancelClusterResult = { [x: string]: unknown }
-type KMSRequestFailedException = { [x: string]: unknown }
-type InvalidJobStateException = { [x: string]: unknown }
-type InvalidResourceException = { [x: string]: unknown }
 type CancelJobRequest = { JobId: {} }
 type CancelJobResult = { [x: string]: unknown }
 type CreateAddressRequest = {
@@ -24,8 +21,6 @@ type CreateAddressRequest = {
   }
 }
 type CreateAddressResult = { AddressId?: {} | undefined }
-type InvalidAddressException = { [x: string]: unknown }
-type UnsupportedAddressException = { [x: string]: unknown }
 type INDTaxDocuments = { GSTIN?: {} | undefined }
 type CreateClusterRequest = {
   JobType: {}
@@ -79,8 +74,6 @@ type CreateClusterRequest = {
   SnowballCapacityPreference?: {} | undefined
 }
 type CreateClusterResult = { ClusterId?: {} | undefined; JobListEntries?: {} | undefined }
-type InvalidInputCombinationException = { [x: string]: unknown }
-type Ec2RequestFailedException = { [x: string]: unknown }
 type CreateJobRequest = {
   JobType?: {} | undefined
   Resources?:
@@ -139,7 +132,6 @@ type CreateJobRequest = {
   LongTermPricingId?: {} | undefined
 }
 type CreateJobResult = { JobId?: {} | undefined }
-type ClusterLimitExceededException = { [x: string]: unknown }
 type CreateLongTermPricingRequest = {
   LongTermPricingType: {}
   IsLongTermPricingAutoRenew?: {} | undefined
@@ -148,8 +140,6 @@ type CreateLongTermPricingRequest = {
 type CreateLongTermPricingResult = { LongTermPricingId?: {} | undefined }
 type CreateReturnShippingLabelRequest = { JobId: {}; ShippingOption?: {} | undefined }
 type CreateReturnShippingLabelResult = { Status?: {} | undefined }
-type ConflictException = { [x: string]: unknown }
-type ReturnShippingLabelAlreadyExistsException = { [x: string]: unknown }
 type DescribeAddressRequest = { AddressId: {} }
 type DescribeAddressResult = {
   Address?:
@@ -173,7 +163,6 @@ type DescribeAddressResult = {
 }
 type DescribeAddressesRequest = { MaxResults?: {} | undefined; NextToken?: {} | undefined }
 type DescribeAddressesResult = { Addresses?: {} | undefined; NextToken?: {} | undefined }
-type InvalidNextTokenException = { [x: string]: unknown }
 type DescribeClusterRequest = { ClusterId: {} }
 type DescribeClusterResult = {
   ClusterMetadata?:
@@ -462,898 +451,283 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CancelCluster': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelClusterRequest }
-            output: CancelClusterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelCluster'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelClusterRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelClusterRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelClusterRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CancelClusterRequest }
+        output: CancelClusterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CancelJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelJobRequest }
-            output: CancelJobResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelJobRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelJobRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CancelJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelJobRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: CancelJobRequest }
+        output: CancelJobResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CreateAddress': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateAddress'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAddressRequest }
-            output: CreateAddressResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateAddress'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateAddress'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAddressRequest }
-            output: InvalidAddressException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateAddress'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAddressRequest }
-            output: UnsupportedAddressException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CreateAddressRequest }
+        output: CreateAddressResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CreateCluster': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClusterRequest }
-            output: CreateClusterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClusterRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClusterRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClusterRequest }
-            output: InvalidInputCombinationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateClusterRequest }
-            output: Ec2RequestFailedException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: CreateClusterRequest }
+        output: CreateClusterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CreateJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: CreateJobResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: InvalidInputCombinationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: ClusterLimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateJobRequest }
-            output: Ec2RequestFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateJobRequest }
+        output: CreateJobResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CreateLongTermPricing': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLongTermPricingRequest }
-            output: CreateLongTermPricingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateLongTermPricing'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLongTermPricingRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: CreateLongTermPricingRequest }
+        output: CreateLongTermPricingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.CreateReturnShippingLabel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: CreateReturnShippingLabelResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: InvalidInputCombinationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.CreateReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReturnShippingLabelRequest }
-            output: ReturnShippingLabelAlreadyExistsException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: CreateReturnShippingLabelRequest }
+        output: CreateReturnShippingLabelResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.DescribeAddress': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddress'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAddressRequest }
-            output: DescribeAddressResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddress'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddress'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAddressRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeAddressRequest }
+        output: DescribeAddressResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.DescribeAddresses': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddresses'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAddressesRequest }
-            output: DescribeAddressesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddresses'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddresses'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAddressesRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeAddresses'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAddressesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeAddressesRequest }
+        output: DescribeAddressesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.DescribeCluster': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeClusterRequest }
-            output: DescribeClusterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeCluster'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeClusterRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeClusterRequest }
+        output: DescribeClusterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.DescribeJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeJobRequest }
-            output: DescribeJobResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeJobRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: DescribeJobRequest }
+        output: DescribeJobResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.DescribeReturnShippingLabel': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReturnShippingLabelRequest }
-            output: DescribeReturnShippingLabelResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeReturnShippingLabel'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReturnShippingLabelRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReturnShippingLabelRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.DescribeReturnShippingLabel'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReturnShippingLabelRequest }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DescribeReturnShippingLabelRequest }
+        output: DescribeReturnShippingLabelResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.GetJobManifest': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobManifest'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobManifestRequest }
-            output: GetJobManifestResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobManifest'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobManifest'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobManifestRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobManifest'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobManifestRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetJobManifestRequest }
+        output: GetJobManifestResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.GetJobUnlockCode': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobUnlockCode'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobUnlockCodeRequest }
-            output: GetJobUnlockCodeResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobUnlockCode'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobUnlockCode'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobUnlockCodeRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetJobUnlockCode'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetJobUnlockCodeRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetJobUnlockCodeRequest }
+        output: GetJobUnlockCodeResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.GetSnowballUsage': {
@@ -1377,702 +751,223 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.GetSoftwareUpdates': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetSoftwareUpdates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSoftwareUpdatesRequest }
-            output: GetSoftwareUpdatesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.GetSoftwareUpdates'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetSoftwareUpdates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSoftwareUpdatesRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.GetSoftwareUpdates'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetSoftwareUpdatesRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetSoftwareUpdatesRequest }
+        output: GetSoftwareUpdatesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListClusterJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusterJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClusterJobsRequest }
-            output: ListClusterJobsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusterJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusterJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClusterJobsRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusterJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClusterJobsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListClusterJobsRequest }
+        output: ListClusterJobsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListClusters': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClustersRequest }
-            output: ListClustersResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusters'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListClusters'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClustersRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ListClustersRequest }
+        output: ListClustersResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListCompatibleImages': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListCompatibleImages'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCompatibleImagesRequest }
-            output: ListCompatibleImagesResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListCompatibleImages'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListCompatibleImages'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCompatibleImagesRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListCompatibleImages'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListCompatibleImagesRequest }
-            output: Ec2RequestFailedException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListCompatibleImagesRequest }
+        output: ListCompatibleImagesResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListJobs': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: ListJobsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListJobs'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListJobs'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListJobsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ListJobsRequest }
+        output: ListJobsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListLongTermPricing': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListLongTermPricingRequest }
-            output: ListLongTermPricingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListLongTermPricing'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListLongTermPricingRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListLongTermPricingRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListLongTermPricingRequest }
+        output: ListLongTermPricingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.ListServiceVersions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListServiceVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListServiceVersionsRequest }
-            output: ListServiceVersionsResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.ListServiceVersions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListServiceVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListServiceVersionsRequest }
-            output: InvalidNextTokenException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.ListServiceVersions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListServiceVersionsRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListServiceVersionsRequest }
+        output: ListServiceVersionsResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.UpdateCluster': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: UpdateClusterResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: InvalidInputCombinationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateCluster'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateClusterRequest }
-            output: Ec2RequestFailedException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: UpdateClusterRequest }
+        output: UpdateClusterResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.UpdateJob': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: UpdateJobResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: KMSRequestFailedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: InvalidInputCombinationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: ClusterLimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJob'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobRequest }
-            output: Ec2RequestFailedException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: UpdateJobRequest }
+        output: UpdateJobResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.UpdateJobShipmentState': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJobShipmentState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobShipmentStateRequest }
-            output: UpdateJobShipmentStateResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJobShipmentState'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJobShipmentState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobShipmentStateRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateJobShipmentState'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateJobShipmentStateRequest }
-            output: InvalidJobStateException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: UpdateJobShipmentStateRequest }
+        output: UpdateJobShipmentStateResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=AWSIESnowballJobManagementService.UpdateLongTermPricing': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateLongTermPricingRequest }
-            output: UpdateLongTermPricingResult
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateLongTermPricing'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'AWSIESnowballJobManagementService.UpdateLongTermPricing'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateLongTermPricingRequest }
-            output: InvalidResourceException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: UpdateLongTermPricingRequest }
+        output: UpdateLongTermPricingResult
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

@@ -5268,7 +5268,7 @@ export const postApiPvtTransactionsTransactionIdAdditionalDataRoute = createRout
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postApiPvtTransactionsTransactionIdAuthorizationRequestRoute = createRoute({

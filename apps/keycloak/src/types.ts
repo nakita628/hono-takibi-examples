@@ -7408,7 +7408,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { realm: string } } & { json: UserRepresentation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { realm: string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { realm: string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { realm: string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -7548,7 +7566,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { realm: string; 'user-id': string } } & { json: UserRepresentation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & { json: UserRepresentation }
+            output: {}
+            outputFormat: string
+            status: 500
           }
       $delete:
         | {
@@ -7556,6 +7592,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 204
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } }
+            output: {}
+            outputFormat: string
+            status: 400
           }
         | {
             input: { param: { realm: string; 'user-id': string } }
@@ -7790,6 +7832,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & { json: string[] }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: {
+                client_id?: string | undefined
+                lifespan?: number | undefined
+                redirect_uri?: string | undefined
+              }
+            } & { json: string[] }
+            output: {}
+            outputFormat: string
             status: 403
           }
         | {
@@ -7803,6 +7857,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: {
+                client_id?: string | undefined
+                lifespan?: number | undefined
+                redirect_uri?: string | undefined
+              }
+            } & { json: string[] }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -7839,6 +7905,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { provider: string; realm: string; 'user-id': string } } & {
+              json: FederatedIdentityRepresentation
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
       $delete:
         | {
@@ -7956,6 +8030,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 404
           }
+        | {
+            input: { param: { groupId: string; realm: string; 'user-id': string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/admin/realms/:realm/users/:user-id/impersonation': {
@@ -8044,6 +8124,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 403
           }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              json: CredentialRepresentation
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/admin/realms/:realm/users/:user-id/reset-password-email': {
@@ -8062,6 +8150,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: { client_id?: string | undefined; redirect_uri?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
             status: 403
           }
         | {
@@ -8071,6 +8167,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: { client_id?: string | undefined; redirect_uri?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -8273,7 +8377,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: {
+                client_id?: string | undefined
+                lifespan?: number | undefined
+                redirect_uri?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { realm: string; 'user-id': string } } & {
+              query: {
+                client_id?: string | undefined
+                lifespan?: number | undefined
+                redirect_uri?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {

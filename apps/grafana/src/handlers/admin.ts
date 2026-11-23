@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminUsersUserIdRoute,
   getAdminLdapStatusRoute,
   getAdminLdapSyncStatusRoute,
@@ -24,72 +24,130 @@ import {
   putAdminUsersUserIdQuotasQuotaTargetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminLdapSyncStatusRouteHandler: RouteHandler<
+  typeof getAdminLdapSyncStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminLdapSyncStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminLdapReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminLdapStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminLdapSyncUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminLdapUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminProvisioningAccessControlReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminProvisioningDashboardsReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminProvisioningDatasourcesReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminProvisioningPluginsReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersUserIdAuthTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUserIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUserIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUserIdLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersUserIdPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersUserIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminUsersUserIdQuotasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminUsersUserIdQuotasQuotaTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminUsersUserIdRevokeAuthTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminLdapReloadRouteHandler: RouteHandler<
+  typeof postAdminLdapReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminLdapStatusRouteHandler: RouteHandler<typeof getAdminLdapStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminLdapSyncUserIdRouteHandler: RouteHandler<
+  typeof postAdminLdapSyncUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminLdapUserNameRouteHandler: RouteHandler<
+  typeof getAdminLdapUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminProvisioningAccessControlReloadRouteHandler: RouteHandler<
+  typeof postAdminProvisioningAccessControlReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminProvisioningDashboardsReloadRouteHandler: RouteHandler<
+  typeof postAdminProvisioningDashboardsReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminProvisioningDatasourcesReloadRouteHandler: RouteHandler<
+  typeof postAdminProvisioningDatasourcesReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminProvisioningPluginsReloadRouteHandler: RouteHandler<
+  typeof postAdminProvisioningPluginsReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminSettingsRouteHandler: RouteHandler<typeof getAdminSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminStatsRouteHandler: RouteHandler<typeof getAdminStatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersRouteHandler: RouteHandler<typeof postAdminUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteAdminUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersUserIdAuthTokensRouteHandler: RouteHandler<
+  typeof getAdminUsersUserIdAuthTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUserIdDisableRouteHandler: RouteHandler<
+  typeof postAdminUsersUserIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUserIdEnableRouteHandler: RouteHandler<
+  typeof postAdminUsersUserIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUserIdLogoutRouteHandler: RouteHandler<
+  typeof postAdminUsersUserIdLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersUserIdPasswordRouteHandler: RouteHandler<
+  typeof putAdminUsersUserIdPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersUserIdPermissionsRouteHandler: RouteHandler<
+  typeof putAdminUsersUserIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminUsersUserIdQuotasRouteHandler: RouteHandler<
+  typeof getAdminUsersUserIdQuotasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminUsersUserIdQuotasQuotaTargetRouteHandler: RouteHandler<
+  typeof putAdminUsersUserIdQuotasQuotaTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminUsersUserIdRevokeAuthTokenRouteHandler: RouteHandler<
+  typeof postAdminUsersUserIdRevokeAuthTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

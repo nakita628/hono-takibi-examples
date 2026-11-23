@@ -1,48 +1,28 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type Uint64Type = string
+const Uint64Schema = z.string().openapi({ example: '1' }).openapi('Uint64')
 
-const Uint64Schema: z.ZodType<Uint64Type> = z.string().openapi({ example: '1' }).openapi('Uint64')
+const RootSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{64}$/)
+  .openapi({ example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2' })
+  .openapi('Root')
 
-const ValidatorStatusSchema = z
-  .enum([
-    'pending_initialized',
-    'pending_queued',
-    'active_ongoing',
-    'active_exiting',
-    'active_slashed',
-    'exited_unslashed',
-    'exited_slashed',
-    'withdrawal_possible',
-    'withdrawal_done',
-  ])
-  .openapi({
-    description:
-      "Possible statuses:\n- **pending_initialized** - When the first deposit is processed, but not enough funds are available (or not yet the end of the first epoch) to get validator into the activation queue.\n- **pending_queued** - When validator is waiting to get activated, and have enough funds etc. while in the queue, validator activation epoch keeps changing until it gets to the front and make it through (finalization is a requirement here too).\n- **active_ongoing** - When validator must be attesting, and have not initiated any exit.\n- **active_exiting** - When validator is still active, but filed a voluntary request to exit.\n- **active_slashed** - When validator is still active, but have a slashed status and is scheduled to exit.\n- **exited_unslashed** - When validator has reached regular exit epoch, not being slashed, and doesn't have to attest any more, but cannot withdraw yet.\n- **exited_slashed** - When validator has reached regular exit epoch, but was slashed, have to wait for a longer withdrawal period.\n- **withdrawal_possible** - After validator has exited, a while later is permitted to move funds, and is truly out of the system.\n- **withdrawal_done** - (not possible in phase0, except slashing full balance) - actually having moved funds away\n\n[Validator status specification](https://hackmd.io/ofFJ5gOmQpu1jjHilHbdQQ)\n",
-    example: 'active_ongoing',
-  })
-  .openapi('ValidatorStatus')
-
-const GloasBuilderRequestAuthSchema = z
+const Phase0BeaconBlockAllOf0Schema = z
   .object({
-    data: z
-      .hex()
-      .regex(/^0x(?:[a-fA-F0-9]{2}){1,4096}$/)
-      .openapi({
-        description:
-          "Opaque authentication data unique to the builder, agreed upon out of band. The meaning of\nthe up to `MAX_BUILDER_AUTH_DATA_SIZE` (4096) bytes is left to the two parties; the builder checks the\nexact bytes when it verifies. When no value has been agreed out of band, implementations\nSHOULD default to the builder's hostname derived from its URL, see\n[default auth data](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#default-auth-data),\nso proposers with no prior relationship can construct an identical `data`\ndeterministically. A zero-length `data` is invalid.\n",
-        example: '0x1234567890abcdef',
-      }),
-    slot: Uint64Schema.openapi({
-      description: 'The proposal slot this request is authorized for.',
+    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
+    proposer_index: Uint64Schema.openapi({
+      description: 'Index of validator in validator registry.',
+    }),
+    parent_root: RootSchema.openapi({
+      description: 'The signing merkle root of the parent `BeaconBlock`.',
+    }),
+    state_root: RootSchema.openapi({
+      description: 'The tree hash merkle root of the `BeaconState` for the `BeaconBlock`.',
     }),
   })
-  .openapi({
-    description:
-      'The [`BuilderRequestAuth`](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#builderrequestauth) object from the Builder API Gloas spec.',
-    required: ['data', 'slot'],
-  })
-  .openapi('GloasBuilderRequestAuth')
+  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
+  .openapi('Phase0BeaconBlockAllOf0')
 
 const SignatureSchema = z
   .hex()
@@ -53,422 +33,70 @@ const SignatureSchema = z
   })
   .openapi('Signature')
 
-const GloasSignedBuilderRequestAuthSchema = z
-  .object({ message: GloasBuilderRequestAuthSchema, signature: SignatureSchema })
-  .openapi({
-    description:
-      'The [`SignedBuilderRequestAuth`](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#signedbuilderrequestauth) object from the Builder API Gloas spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('GloasSignedBuilderRequestAuth')
-
-type GloasBuilderPreferencesEntryType = {
-  proposer_pubkey: string
-  url: string
-  auth: z.infer<typeof GloasSignedBuilderRequestAuthSchema>
-  max_execution_payment: z.infer<typeof Uint64Schema> & unknown
-}
-
-const GloasBuilderPreferencesEntrySchema: z.ZodType<GloasBuilderPreferencesEntryType> = z
-  .object({
-    proposer_pubkey: z
-      .hex()
-      .regex(/^0x[a-fA-F0-9]{96}$/)
-      .openapi({
-        description:
-          "The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._",
-        example:
-          '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-      })
-      .openapi({ description: 'The BLS public key of the proposer these preferences apply to.' }),
-    url: z
-      .url()
-      .max(2048)
-      .openapi({
-        description:
-          "The URL this entry's preferences are submitted to. Multiple entries MAY share a `url`; the beacon node makes one submission per entry.",
-        example: 'https://builder.example.com',
-      }),
-    auth: GloasSignedBuilderRequestAuthSchema.openapi({
-      description:
-        'Authenticates this submission to the builder. The beacon node MUST forward `message` and `signature` byte-for-byte unchanged.',
-    }),
-    max_execution_payment: Uint64Schema.openapi({
-      description:
-        'Maximum execution-layer payment, in Gwei, submitted to this builder so it can shape its bid.',
-      example: '1000000000',
-    }),
-  })
-  .openapi({
-    description:
-      "A per-builder preference the validator client asks the beacon node to submit ahead of the bid\nrequest, one entry per builder per proposer. A single submission batches these across the\nvalidator client's proposers, so each entry names the proposer it belongs to in\n`proposer_pubkey`. It is a dedicated type, distinct from the block-production `BuilderEntry`.\n\nThe entry pairs the beacon node's routing with the payload the builder receives, so like\n`BuilderEntry` it has no Builder API definition. Its SSZ container uses that type's constants\nand the `SignedBuilderRequestAuth` object from the Builder API Gloas spec:\n\n    class BuilderPreferencesEntry(Container):\n        proposer_pubkey: BLSPubkey  # the proposer these preferences belong to\n        url: ByteList[MAX_BUILDER_URL_SIZE]  # UTF-8 bytes of `url`, exactly as in JSON\n        auth: SignedBuilderRequestAuth\n        max_execution_payment: Gwei\n\nIn either encoding, a zero-length `url` is invalid.\n",
-    required: ['proposer_pubkey', 'url', 'auth', 'max_execution_payment'],
-  })
-  .openapi('GloasBuilderPreferencesEntry')
-
-type RootType = string
-
-const RootSchema: z.ZodType<RootType> = z
+const GloasBeaconStateLatestBlockHashSchema = z
   .hex()
   .regex(/^0x[a-fA-F0-9]{64}$/)
   .openapi({ example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2' })
-  .openapi('Root')
+  .openapi('GloasBeaconStateLatestBlockHash')
 
-type ValidatorResponseType = {
-  index: z.infer<typeof Uint64Schema>
-  balance: z.infer<typeof Uint64Schema>
-  status: z.infer<typeof ValidatorStatusSchema>
-  validator: {
-    pubkey: z.infer<typeof GloasBuilderPreferencesEntrySchema>
-    withdrawal_credentials: z.infer<typeof RootSchema>
-    effective_balance: z.infer<typeof Uint64Schema>
-    slashed: boolean
-    activation_eligibility_epoch: z.infer<typeof Uint64Schema>
-    activation_epoch: z.infer<typeof Uint64Schema>
-    exit_epoch: z.infer<typeof Uint64Schema>
-    withdrawable_epoch: z.infer<typeof Uint64Schema>
-  }
-}
+const GloasBeaconStateEth1DataSchema = z
+  .object({
+    deposit_root: RootSchema.openapi({ description: 'Root of the deposit tree.' }),
+    deposit_count: Uint64Schema.openapi({ description: 'Total number of deposits.' }),
+    block_hash: GloasBeaconStateLatestBlockHashSchema.openapi({
+      description: 'Ethereum 1.x block hash.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.',
+    required: ['deposit_root', 'deposit_count', 'block_hash'],
+  })
+  .openapi('GloasBeaconStateEth1Data')
 
-const ForkVersionSchema = z
+const GraffitiSchema = z
   .hex()
-  .regex(/^0x[a-fA-F0-9]{8}$/)
-  .openapi({ description: 'a fork version number', example: '0x00000000' })
-  .openapi('ForkVersion')
+  .regex(/^0x[a-fA-F0-9]{64}$/)
+  .openapi({ example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2' })
+  .openapi('Graffiti')
 
-type ForkType = {
-  previous_version: z.infer<typeof ForkVersionSchema>
-  current_version: z.infer<typeof ForkVersionSchema>
-  epoch: z.infer<typeof Uint64Schema>
-}
-
-type CheckpointType = { epoch: z.infer<typeof Uint64Schema>; root: z.infer<typeof RootSchema> }
-
-const PeerIdSchema = z
-  .string()
+const GloasBeaconStateLatestBlockHeaderSchema = Phase0BeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body_root: RootSchema.openapi({
+        description: 'The tree hash merkle root of the `BeaconBlockBody` for the `BeaconBlock`',
+      }),
+    })
+    .openapi({ required: ['body_root'] }),
+)
   .openapi({
     description:
-      'Cryptographic hash of a peer’s public key. [Read more](https://docs.libp2p.io/concepts/peer-id/)',
-    example: 'QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N',
+      'The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.',
   })
-  .openapi('PeerId')
+  .openapi('GloasBeaconStateLatestBlockHeader')
 
-const GloasBeaconStateSchema: z.ZodType<GloasBeaconStateType> = z
-  .lazy(() =>
-    z
-      .object({
-        genesis_time: Uint64Schema,
-        genesis_validators_root: RootSchema,
-        slot: Uint64Schema,
-        fork: ForkSchema,
-        latest_block_header: z
-          .object({
-            slot: Uint64Schema.openapi({
-              description: 'The slot to which this block corresponds.',
-            }),
-            proposer_index: Uint64Schema.openapi({
-              description: 'Index of validator in validator registry.',
-            }),
-            parent_root: RootSchema.openapi({
-              description: 'The signing merkle root of the parent `BeaconBlock`.',
-            }),
-            state_root: RootSchema.openapi({
-              description: 'The tree hash merkle root of the `BeaconState` for the `BeaconBlock`.',
-            }),
-          })
-          .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-          .and(
-            z
-              .object({
-                body_root: RootSchema.openapi({
-                  description:
-                    'The tree hash merkle root of the `BeaconBlockBody` for the `BeaconBlock`',
-                }),
-              })
-              .openapi({ required: ['body_root'] }),
-          )
-          .openapi({
-            description:
-              'The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.',
-          }),
-        block_roots: z
-          .array(RootSchema)
-          .length(8192)
-          .openapi({ description: 'Fixed vector of 8192 roots.' }),
-        state_roots: z
-          .array(RootSchema)
-          .length(8192)
-          .openapi({ description: 'Fixed vector of 8192 roots.' }),
-        historical_roots: z
-          .array(RootSchema)
-          .max(16777216)
-          .openapi({
-            description:
-              'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by `historical_summaries`.',
-          }),
-        eth1_data: z
-          .object({
-            deposit_root: RootSchema.openapi({ description: 'Root of the deposit tree.' }),
-            deposit_count: Uint64Schema.openapi({ description: 'Total number of deposits.' }),
-            block_hash: z
-              .lazy(() => GloasBeaconStateSchema)
-              .openapi({ description: 'Ethereum 1.x block hash.' }),
-          })
-          .openapi({
-            description:
-              'The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.',
-            required: ['deposit_root', 'deposit_count', 'block_hash'],
-          }),
-        eth1_data_votes: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .max(2048)
-          .openapi({ description: 'Variable length list, maximum 2048 items.' }),
-        eth1_deposit_index: Uint64Schema,
-        validators: z
-          .array(z.lazy(() => ValidatorResponseSchema))
-          .openapi({ description: 'Progressive list of validators.' }),
-        balances: z
-          .array(Uint64Schema)
-          .openapi({ description: 'Progressive list of validator balances in gwei.' }),
-        randao_mixes: z
-          .array(
-            z
-              .hex()
-              .regex(/^0x[a-fA-F0-9]{64}$/)
-              .openapi({
-                example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2',
-              }),
-          )
-          .length(65536)
-          .openapi({ description: 'Fixed vector of 65536 roots.' }),
-        slashings: z
-          .array(Uint64Schema)
-          .length(8192)
-          .openapi({
-            description: 'Fixed vector of 8192 per-epoch slashed effective balance totals.',
-          }),
-        previous_epoch_participation: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .openapi({
-            description:
-              'Progressive list of validator participation flags for the previous epoch.',
-          }),
-        current_epoch_participation: z
-          .array(
-            z
-              .string()
-              .regex(/^([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)
-              .openapi({ description: 'Unsigned 8 bit integer, max value 255', example: '0' }),
-          )
-          .openapi({
-            description: 'Progressive list of validator participation flags for the current epoch.',
-          }),
-        justification_bits: z
-          .hex()
-          .regex(/^0x[a-fA-F0-9]{2,}$/)
-          .openapi({ description: 'Bit set for every recent justified epoch.', example: '0x01' }),
-        previous_justified_checkpoint: CheckpointSchema,
-        current_justified_checkpoint: CheckpointSchema,
-        finalized_checkpoint: CheckpointSchema,
-        inactivity_scores: z
-          .array(Uint64Schema)
-          .openapi({ description: 'Progressive list of per-validator inactivity scores.' }),
-        current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-        next_sync_committee: z
-          .object({
-            pubkeys: z.array(z.lazy(() => GloasBuilderPreferencesEntrySchema)).length(512),
-            aggregate_pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-          })
-          .openapi({ required: ['pubkeys', 'aggregate_pubkey'] }),
-        latest_block_hash: z
-          .hex()
-          .regex(/^0x[a-fA-F0-9]{64}$/)
-          .openapi({
-            example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2',
-          }),
-        next_withdrawal_index: Uint64Schema,
-        next_withdrawal_validator_index: Uint64Schema,
-        historical_summaries: z
-          .array(
-            z
-              .object({ block_summary_root: RootSchema, state_summary_root: RootSchema })
-              .openapi({
-                description:
-                  'The [`HistoricalSummary`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#historicalsummary) object from the CL Capella spec.',
-                required: ['block_summary_root', 'state_summary_root'],
-              }),
-          )
-          .max(16777216)
-          .openapi({ description: 'Variable length list, maximum 16777216 items.' }),
-        deposit_requests_start_index: Uint64Schema,
-        deposit_balance_to_consume: Uint64Schema,
-        exit_balance_to_consume: Uint64Schema,
-        earliest_exit_epoch: Uint64Schema,
-        consolidation_balance_to_consume: Uint64Schema,
-        earliest_consolidation_epoch: Uint64Schema,
-        pending_deposits: GloasPendingDepositsSchema,
-        pending_partial_withdrawals: GloasPendingPartialWithdrawalsSchema,
-        pending_consolidations: GloasPendingConsolidationsSchema,
-        proposer_lookahead: z
-          .array(Uint64Schema)
-          .length(64)
-          .openapi({
-            description: 'Fixed vector of proposer indices for the current and next epoch.',
-          }),
-        builders: z
-          .array(GloasBuilderSchema)
-          .openapi({ description: 'Progressive list of builders.' }),
-        next_withdrawal_builder_index: Uint64Schema,
-        execution_payload_availability: z
-          .lazy(() => GloasBeaconStateSchema)
-          .openapi({
-            description: 'Payload availability for the slots in SLOTS_PER_HISTORICAL_ROOT (8192).',
-            example:
-              '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          }),
-        builder_pending_payments: GloasBuilderPendingPaymentsSchema,
-        builder_pending_withdrawals: GloasBuilderPendingWithdrawalsSchema,
-        latest_execution_payload_bid: GloasExecutionPayloadBidSchema,
-        payload_expected_withdrawals: z
-          .array(CapellaWithdrawalSchema)
-          .max(16)
-          .openapi({
-            description: 'Progressive list of withdrawals expected in the next execution payload.',
-          }),
-        ptc_window: z
-          .array(GloasPayloadTimelinessCommitteeSchema)
-          .length(96)
-          .openapi({ description: 'Fixed vector of 96 payload-timeliness committees.' }),
-      })
-      .openapi({
-        description:
-          'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#beaconstate) object from the CL Gloas spec.',
-        required: [
-          'genesis_time',
-          'genesis_validators_root',
-          'slot',
-          'fork',
-          'latest_block_header',
-          'block_roots',
-          'state_roots',
-          'historical_roots',
-          'eth1_data',
-          'eth1_data_votes',
-          'eth1_deposit_index',
-          'validators',
-          'balances',
-          'randao_mixes',
-          'slashings',
-          'previous_epoch_participation',
-          'current_epoch_participation',
-          'justification_bits',
-          'previous_justified_checkpoint',
-          'current_justified_checkpoint',
-          'finalized_checkpoint',
-          'inactivity_scores',
-          'current_sync_committee',
-          'next_sync_committee',
-          'latest_block_hash',
-          'next_withdrawal_index',
-          'next_withdrawal_validator_index',
-          'historical_summaries',
-          'deposit_requests_start_index',
-          'deposit_balance_to_consume',
-          'exit_balance_to_consume',
-          'earliest_exit_epoch',
-          'consolidation_balance_to_consume',
-          'earliest_consolidation_epoch',
-          'pending_deposits',
-          'pending_partial_withdrawals',
-          'pending_consolidations',
-          'proposer_lookahead',
-          'builders',
-          'next_withdrawal_builder_index',
-          'execution_payload_availability',
-          'builder_pending_payments',
-          'builder_pending_withdrawals',
-          'latest_execution_payload_bid',
-          'payload_expected_withdrawals',
-          'ptc_window',
-        ],
-      }),
-  )
-  .openapi('GloasBeaconState')
+const Phase0SignedBeaconBlockHeaderSchema = z
+  .object({ message: GloasBeaconStateLatestBlockHeaderSchema, signature: SignatureSchema })
+  .openapi({
+    description:
+      'The [`SignedBeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#signedbeaconblockheader) object envelope from the CL spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('Phase0SignedBeaconBlockHeader')
 
-type NetworkIdentityType = {
-  peer_id: z.infer<typeof PeerIdSchema>
-  enr: string
-  p2p_addresses: string[]
-  discovery_addresses: NetworkIdentityType[]
-  metadata: {
-    seq_number: z.infer<typeof Uint64Schema>
-    attnets: z.infer<typeof GloasBeaconStateSchema>
-    syncnets?: z.infer<typeof GloasBeaconStateSchema>
-    custody_group_count?: z.infer<typeof Uint64Schema>
-  }
-}
-
-const ForkSchema: z.ZodType<ForkType> = z
+const Phase0ProposerSlashingSchema = z
   .object({
-    previous_version: ForkVersionSchema,
-    current_version: ForkVersionSchema,
-    epoch: Uint64Schema,
+    signed_header_1: Phase0SignedBeaconBlockHeaderSchema,
+    signed_header_2: Phase0SignedBeaconBlockHeaderSchema,
   })
   .openapi({
     description:
-      'The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.',
-    required: ['previous_version', 'current_version', 'epoch'],
+      'The [`ProposerSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#proposerslashing) object from the CL spec.',
+    required: ['signed_header_1', 'signed_header_2'],
   })
-  .openapi('Fork')
+  .openapi('Phase0ProposerSlashing')
 
-const ValidatorResponseSchema: z.ZodType<ValidatorResponseType> = z
-  .object({
-    index: Uint64Schema.openapi({ description: 'Index of validator in validator registry.' }),
-    balance: Uint64Schema.openapi({ description: 'Current validator balance in gwei.' }),
-    status: ValidatorStatusSchema,
-    validator: z
-      .object({
-        pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-        withdrawal_credentials: RootSchema.openapi({
-          description: 'Root of withdrawal credentials',
-        }),
-        effective_balance: Uint64Schema.openapi({ description: 'Balance at stake in Gwei.' }),
-        slashed: z
-          .boolean()
-          .openapi({ example: false, description: 'Was validator slashed (not longer active).' }),
-        activation_eligibility_epoch: Uint64Schema.openapi({
-          description: 'When criteria for activation were met.',
-        }),
-        activation_epoch: Uint64Schema.openapi({
-          description: "Epoch when validator activated. 'FAR_FUTURE_EPOCH' if not activated",
-        }),
-        exit_epoch: Uint64Schema.openapi({
-          description: "Epoch when validator exited. 'FAR_FUTURE_EPOCH' if not exited.",
-        }),
-        withdrawable_epoch: Uint64Schema.openapi({
-          description:
-            "When validator can withdraw or transfer funds. 'FAR_FUTURE_EPOCH' if not defined",
-        }),
-      })
-      .openapi({
-        description:
-          'The [`Validator`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#validator) object from the CL spec.',
-        required: [
-          'pubkey',
-          'withdrawal_credentials',
-          'effective_balance',
-          'slashed',
-          'activation_eligibility_epoch',
-          'activation_epoch',
-          'exit_epoch',
-          'withdrawable_epoch',
-        ],
-      }),
-  })
-  .openapi({ required: ['index', 'balance', 'status', 'validator'] })
-  .openapi('ValidatorResponse')
-
-const CheckpointSchema: z.ZodType<CheckpointType> = z
+const CheckpointSchema = z
   .object({ epoch: Uint64Schema, root: RootSchema })
   .openapi({
     description:
@@ -492,82 +120,29 @@ const Phase0AttestationDataSchema = z
   })
   .openapi('Phase0AttestationData')
 
-type Phase0BeaconStateType = {
-  genesis_time: z.infer<typeof Uint64Schema>
-  genesis_validators_root: z.infer<typeof RootSchema>
-  slot: z.infer<typeof Uint64Schema>
-  fork: z.infer<typeof ForkSchema>
-  latest_block_header: z.infer<typeof GloasBeaconStateSchema>
-  block_roots: z.infer<typeof RootSchema>[]
-  state_roots: z.infer<typeof RootSchema>[]
-  historical_roots: z.infer<typeof RootSchema>[]
-  eth1_data: z.infer<typeof GloasBeaconStateSchema>
-  eth1_data_votes: z.infer<typeof GloasBeaconStateSchema>[]
-  eth1_deposit_index: z.infer<typeof Uint64Schema>
-  validators: z.infer<typeof ValidatorResponseSchema>[]
-  balances: z.infer<typeof Uint64Schema>[]
-  randao_mixes: z.infer<typeof GloasBeaconStateSchema>[]
-  slashings: z.infer<typeof Uint64Schema>[]
-  previous_epoch_attestations: Phase0BeaconStateType[]
-  current_epoch_attestations: {
-    aggregation_bits: string
-    data: z.infer<typeof Phase0AttestationDataSchema>
-    inclusion_delay: z.infer<typeof Uint64Schema>
-    proposer_index: z.infer<typeof Uint64Schema>
-  }[]
-  justification_bits: z.infer<typeof GloasBeaconStateSchema>
-  previous_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  current_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  finalized_checkpoint: z.infer<typeof CheckpointSchema>
-}
-
-const GraffitiSchema = z
-  .hex()
-  .regex(/^0x[a-fA-F0-9]{64}$/)
-  .openapi({ example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2' })
-  .openapi('Graffiti')
-
-const Phase0SignedBeaconBlockHeaderSchema = z
-  .object({ message: z.lazy(() => GloasBeaconStateSchema), signature: SignatureSchema })
-  .openapi({
-    description:
-      'The [`SignedBeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#signedbeaconblockheader) object envelope from the CL spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('Phase0SignedBeaconBlockHeader')
-
-const Phase0ProposerSlashingSchema = z
+const Phase0AttesterSlashingAttestation1Schema = z
   .object({
-    signed_header_1: Phase0SignedBeaconBlockHeaderSchema,
-    signed_header_2: Phase0SignedBeaconBlockHeaderSchema,
+    attesting_indices: z
+      .array(Uint64Schema)
+      .max(2048)
+      .openapi({ description: 'Attesting validator indices' }),
+    data: Phase0AttestationDataSchema,
+    signature: SignatureSchema.openapi({
+      description:
+        'The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.',
+    }),
   })
   .openapi({
     description:
-      'The [`ProposerSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#proposerslashing) object from the CL spec.',
-    required: ['signed_header_1', 'signed_header_2'],
+      'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.',
+    required: ['attesting_indices', 'data', 'signature'],
   })
-  .openapi('Phase0ProposerSlashing')
+  .openapi('Phase0AttesterSlashingAttestation1')
 
 const Phase0AttesterSlashingSchema = z
   .object({
-    attestation_1: z
-      .object({
-        attesting_indices: z
-          .array(Uint64Schema)
-          .max(2048)
-          .openapi({ description: 'Attesting validator indices' }),
-        data: Phase0AttestationDataSchema,
-        signature: SignatureSchema.openapi({
-          description:
-            'The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.',
-        }),
-      })
-      .openapi({
-        description:
-          'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.',
-        required: ['attesting_indices', 'data', 'signature'],
-      }),
-    attestation_2: Attestation_1Schema,
+    attestation_1: Phase0AttesterSlashingAttestation1Schema,
+    attestation_2: Phase0AttesterSlashingAttestation1Schema,
   })
   .openapi({
     description:
@@ -576,103 +151,17 @@ const Phase0AttesterSlashingSchema = z
   })
   .openapi('Phase0AttesterSlashing')
 
-const Phase0BeaconStateSchema: z.ZodType<Phase0BeaconStateType> = z
-  .lazy(() =>
-    z
-      .object({
-        genesis_time: Uint64Schema,
-        genesis_validators_root: RootSchema,
-        slot: Uint64Schema,
-        fork: ForkSchema,
-        latest_block_header: z.lazy(() => GloasBeaconStateSchema),
-        block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-        state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-        historical_roots: z
-          .array(RootSchema)
-          .openapi({ description: 'Variable length list, maximum 16777216 items' }),
-        eth1_data: z.lazy(() => GloasBeaconStateSchema),
-        eth1_data_votes: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .max(2048)
-          .openapi({ description: 'Variable length list, maximum 2048 items.' }),
-        eth1_deposit_index: Uint64Schema,
-        validators: z
-          .array(z.lazy(() => ValidatorResponseSchema))
-          .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
-        balances: z
-          .array(Uint64Schema)
-          .openapi({
-            description:
-              'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
-          }),
-        randao_mixes: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .openapi({ description: 'Fixed length of 65536 items' }),
-        slashings: z
-          .array(Uint64Schema)
-          .openapi({
-            description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
-          }),
-        previous_epoch_attestations: z.array(z.lazy(() => Phase0BeaconStateSchema)),
-        current_epoch_attestations: z.array(
-          z
-            .object({
-              aggregation_bits: z
-                .hex()
-                .regex(/^0x[a-fA-F0-9]{2,}$/)
-                .openapi({ description: 'Attester aggregation bits.', example: '0x01' }),
-              data: Phase0AttestationDataSchema,
-              inclusion_delay: Uint64Schema,
-              proposer_index: Uint64Schema,
-            })
-            .openapi({
-              description:
-                'The [`PendingAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#pendingattestation) object from the CL spec.',
-              required: ['aggregation_bits', 'data', 'inclusion_delay', 'proposer_index'],
-            }),
-        ),
-        justification_bits: z
-          .lazy(() => GloasBeaconStateSchema)
-          .openapi({ description: 'Bit set for every recent justified epoch' }),
-        previous_justified_checkpoint: CheckpointSchema,
-        current_justified_checkpoint: CheckpointSchema,
-        finalized_checkpoint: CheckpointSchema,
-      })
-      .openapi({
-        description:
-          'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beacon-state) object from the CL spec.',
-        required: [
-          'genesis_time',
-          'genesis_validators_root',
-          'slot',
-          'fork',
-          'latest_block_header',
-          'block_roots',
-          'state_roots',
-          'historical_roots',
-          'eth1_data',
-          'eth1_data_votes',
-          'eth1_deposit_index',
-          'validators',
-          'balances',
-          'randao_mixes',
-          'slashings',
-          'previous_epoch_attestations',
-          'current_epoch_attestations',
-          'justification_bits',
-          'previous_justified_checkpoint',
-          'current_justified_checkpoint',
-          'finalized_checkpoint',
-        ],
-      }),
-  )
-  .openapi('Phase0BeaconState')
+const Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{2,}$/)
+  .openapi({ description: 'Attester aggregation bits.', example: '0x01' })
+  .openapi('Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBits')
 
 const Phase0AttestationSchema = z
   .object({
-    aggregation_bits: z
-      .lazy(() => Phase0BeaconStateSchema)
-      .openapi({ description: 'Attester aggregation bits.' }),
+    aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsSchema.openapi({
+      description: 'Attester aggregation bits.',
+    }),
     data: Phase0AttestationDataSchema,
     signature: SignatureSchema.openapi({ description: 'BLS aggregate signature.' }),
   })
@@ -682,6 +171,40 @@ const Phase0AttestationSchema = z
     required: ['aggregation_bits', 'data', 'signature'],
   })
   .openapi('Phase0Attestation')
+
+const GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{96}$/)
+  .openapi({
+    description:
+      "The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._",
+    example:
+      '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
+  })
+  .openapi('GloasBuilderPreferencesEntryProposerPubkeyAllOf0')
+
+const GloasBeaconBlockAllOf1BodyDepositsItemsSchema = z
+  .object({
+    proof: z.array(RootSchema).length(33).openapi({ description: 'Branch in the deposit tree.' }),
+    data: z
+      .object({
+        pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
+        withdrawal_credentials: RootSchema.openapi({ description: 'The withdrawal credentials.' }),
+        amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
+        signature: SignatureSchema.openapi({ description: 'Container self-signature.' }),
+      })
+      .openapi({
+        description:
+          'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
+        required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
+      }),
+  })
+  .openapi({
+    description:
+      'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
+    required: ['proof', 'data'],
+  })
+  .openapi('GloasBeaconBlockAllOf1BodyDepositsItems')
 
 const Phase0SignedVoluntaryExitSchema = z
   .object({
@@ -704,82 +227,39 @@ const Phase0SignedVoluntaryExitSchema = z
   })
   .openapi('Phase0SignedVoluntaryExit')
 
-const Phase0BeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockbody) object from the CL spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-            ],
+const Phase0BeaconBlockSchema = Phase0BeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: z
+        .object({
+          randao_reveal: SignatureSchema.openapi({
+            description: 'The RanDAO reveal value provided by the validator.',
           }),
-      })
-      .openapi({ required: ['body'] }),
-  )
+          eth1_data: GloasBeaconStateEth1DataSchema,
+          graffiti: GraffitiSchema,
+          proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+          attester_slashings: z.array(Phase0AttesterSlashingSchema),
+          attestations: z.array(Phase0AttestationSchema),
+          deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+          voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+        })
+        .openapi({
+          description:
+            'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockbody) object from the CL spec.',
+          required: [
+            'randao_reveal',
+            'eth1_data',
+            'graffiti',
+            'proposer_slashings',
+            'attester_slashings',
+            'attestations',
+            'deposits',
+            'voluntary_exits',
+          ],
+        }),
+    })
+    .openapi({ required: ['body'] }),
+)
   .openapi({
     description:
       'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL spec.',
@@ -791,78 +271,7 @@ type Phase0SignedBeaconBlockType = {
   signature: z.infer<typeof SignatureSchema>
 }
 
-const GloasLightClientBootstrapSchema = z
-  .object({
-    header: z
-      .object({
-        beacon: z.lazy(() => GloasBeaconStateSchema),
-        execution_block_hash: z.lazy(() => GloasBeaconStateSchema),
-        execution_branch: z
-          .array(RootSchema)
-          .length(11)
-          .openapi({
-            description:
-              'Merkle proof consisting of [`floorlog2(EXECUTION_BLOCK_HASH_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
-          }),
-      })
-      .openapi({
-        description:
-          'The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.',
-        required: ['beacon', 'execution_block_hash', 'execution_branch'],
-      }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    current_sync_committee_branch: z
-      .array(RootSchema)
-      .length(11)
-      .openapi({
-        description:
-          'Merkle proof consisting of [`floorlog2(CURRENT_SYNC_COMMITTEE_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
-      }),
-  })
-  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
-  .openapi('GloasLightClientBootstrap')
-
-const GloasLightClientFinalityUpdateSchema = z
-  .object({
-    attested_header: z.lazy(() => GloasLightClientBootstrapSchema),
-    finalized_header: z.lazy(() => GloasLightClientBootstrapSchema),
-    finality_branch: z
-      .array(RootSchema)
-      .length(9)
-      .openapi({
-        description:
-          'Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
-      }),
-    sync_aggregate: z
-      .object({
-        sync_committee_bits: z
-          .lazy(() => GloasBeaconStateSchema)
-          .openapi({
-            description: 'Aggregation bits of sync',
-            example:
-              '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-          }),
-        sync_committee_signature: SignatureSchema,
-      })
-      .openapi({
-        description:
-          'The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.',
-        required: ['sync_committee_bits', 'sync_committee_signature'],
-      }),
-    signature_slot: Uint64Schema,
-  })
-  .openapi({
-    required: [
-      'attested_header',
-      'finalized_header',
-      'finality_branch',
-      'sync_aggregate',
-      'signature_slot',
-    ],
-  })
-  .openapi('GloasLightClientFinalityUpdate')
-
-const AltairBeaconBlockSchema = z
+const GloasBeaconBlockAllOf0Schema = z
   .object({
     slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
     proposer_index: Uint64Schema.openapi({
@@ -876,70 +285,65 @@ const AltairBeaconBlockSchema = z
     }),
   })
   .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#beaconblockbody) object from the CL Altair spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-            ],
+  .openapi('GloasBeaconBlockAllOf0')
+
+const GloasBeaconStateJustificationBitsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{2,}$/)
+  .openapi({ description: 'Bit set for every recent justified epoch.', example: '0x01' })
+  .openapi('GloasBeaconStateJustificationBits')
+
+const GloasLightClientFinalityUpdateSyncAggregateSchema = z
+  .object({
+    sync_committee_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Aggregation bits of sync',
+      example:
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+    }),
+    sync_committee_signature: SignatureSchema,
+  })
+  .openapi({
+    description:
+      'The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.',
+    required: ['sync_committee_bits', 'sync_committee_signature'],
+  })
+  .openapi('GloasLightClientFinalityUpdateSyncAggregate')
+
+const AltairBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: z
+        .object({
+          randao_reveal: SignatureSchema.openapi({
+            description: 'The RanDAO reveal value provided by the validator.',
           }),
-      })
-      .openapi({ required: ['body'] }),
-  )
+          eth1_data: GloasBeaconStateEth1DataSchema,
+          graffiti: GraffitiSchema,
+          proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+          attester_slashings: z.array(Phase0AttesterSlashingSchema),
+          attestations: z.array(Phase0AttestationSchema),
+          deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+          voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+          sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+        })
+        .openapi({
+          description:
+            'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#beaconblockbody) object from the CL Altair spec.',
+          required: [
+            'randao_reveal',
+            'eth1_data',
+            'graffiti',
+            'proposer_slashings',
+            'attester_slashings',
+            'attestations',
+            'deposits',
+            'voluntary_exits',
+            'sync_aggregate',
+          ],
+        }),
+    })
+    .openapi({ required: ['body'] }),
+)
   .openapi({
     description:
       'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Altair spec.',
@@ -951,14 +355,38 @@ type AltairSignedBeaconBlockType = {
   signature: z.infer<typeof SignatureSchema>
 }
 
-type AltairSyncCommitteeType = {
-  validators: z.infer<typeof Uint64Schema>[]
-  validator_aggregates: AltairSyncCommitteeType[]
-}
+const BellatrixBeaconBlockAllOf1BodyAllOf0Schema = z
+  .object({
+    randao_reveal: SignatureSchema.openapi({
+      description: 'The RanDAO reveal value provided by the validator.',
+    }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    graffiti: GraffitiSchema,
+    proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+    attester_slashings: z.array(Phase0AttesterSlashingSchema),
+    attestations: z.array(Phase0AttestationSchema),
+    deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+    voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+  })
+  .openapi({
+    description:
+      'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec.',
+    required: [
+      'randao_reveal',
+      'eth1_data',
+      'graffiti',
+      'proposer_slashings',
+      'attester_slashings',
+      'attestations',
+      'deposits',
+      'voluntary_exits',
+      'sync_aggregate',
+    ],
+  })
+  .openapi('BellatrixBeaconBlockAllOf1BodyAllOf0')
 
-type ExecutionAddressType = string
-
-const ExecutionAddressSchema: z.ZodType<ExecutionAddressType> = z
+const ExecutionAddressSchema = z
   .hex()
   .regex(/^0x[a-fA-F0-9]{40}$/)
   .openapi({
@@ -967,14 +395,248 @@ const ExecutionAddressSchema: z.ZodType<ExecutionAddressType> = z
   })
   .openapi('ExecutionAddress')
 
-type CapellaWithdrawalType = {
-  index: z.infer<typeof Uint64Schema>
-  validator_index: z.infer<typeof Uint64Schema>
-  address: z.infer<typeof ExecutionAddressSchema>
-  amount: z.infer<typeof Uint64Schema>
+const GloasExecutionPayloadLogsBloomSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{512}$/)
+  .openapi({
+    example:
+      '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+  })
+  .openapi('GloasExecutionPayloadLogsBloom')
+
+const GloasBeaconStateRandaoMixesItemsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{64}$/)
+  .openapi({ example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2' })
+  .openapi('GloasBeaconStateRandaoMixesItems')
+
+const GloasExecutionPayloadExtraDataSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{0,64}$/)
+  .openapi({
+    description: 'Extra data on the execution (Ethereum 1) network.',
+    example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2',
+  })
+  .openapi('GloasExecutionPayloadExtraData')
+
+const BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema = z
+  .object({
+    parent_hash: GloasBeaconStateLatestBlockHashSchema,
+    fee_recipient: ExecutionAddressSchema,
+    state_root: RootSchema,
+    receipts_root: RootSchema,
+    logs_bloom: GloasExecutionPayloadLogsBloomSchema,
+    prev_randao: GloasBeaconStateRandaoMixesItemsSchema,
+    block_number: Uint64Schema,
+    gas_limit: Uint64Schema,
+    gas_used: Uint64Schema,
+    timestamp: Uint64Schema,
+    extra_data: GloasExecutionPayloadExtraDataSchema,
+    base_fee_per_gas: z.string().openapi({ example: '1' }),
+    block_hash: GloasBeaconStateLatestBlockHashSchema,
+  })
+  .openapi({
+    description:
+      'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayload) object from the CL Bellatrix spec.',
+    required: [
+      'parent_hash',
+      'fee_recipient',
+      'state_root',
+      'receipts_root',
+      'logs_bloom',
+      'prev_randao',
+      'block_number',
+      'gas_limit',
+      'gas_used',
+      'timestamp',
+      'extra_data',
+      'base_fee_per_gas',
+      'block_hash',
+    ],
+  })
+  .openapi('BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0')
+
+const CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsSchema = z
+  .array(
+    z
+      .hex()
+      .regex(/^0x[a-fA-F0-9]{0,2147483648}$/)
+      .openapi({
+        description: 'A transaction on the execution (Ethereum 1) network.',
+        example:
+          '0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86',
+      }),
+  )
+  .max(1048576)
+  .openapi('CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions')
+
+const BellatrixBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: BellatrixBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload: BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema.and(
+              z
+                .object({
+                  transactions:
+                    CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsSchema,
+                })
+                .openapi({ required: ['transactions'] }),
+            ),
+          })
+          .openapi({ required: ['execution_payload'] }),
+      ),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Bellatrix spec.',
+  })
+  .openapi('BellatrixBeaconBlock')
+
+type BellatrixSignedBeaconBlockType = {
+  message: z.infer<typeof BellatrixBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
 }
 
-const CapellaWithdrawalSchema: z.ZodType<CapellaWithdrawalType> = z
+const BellatrixBeaconStateLatestExecutionPayloadHeaderSchema =
+  BellatrixBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema.and(
+    z.object({ transactions_root: RootSchema }).openapi({ required: ['transactions_root'] }),
+  )
+    .openapi({
+      description:
+        'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayloadheader) object from the CL Bellatrix spec.',
+    })
+    .openapi('BellatrixBeaconStateLatestExecutionPayloadHeader')
+
+const BellatrixBlindedBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: BellatrixBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeaderSchema,
+          })
+          .openapi({ required: ['execution_payload_header'] }),
+      ).openapi({
+        description:
+          'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec, which contains a transactions root rather than a full transactions list.',
+      }),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Bellatrix spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
+  })
+  .openapi('BellatrixBlindedBeaconBlock')
+
+type BellatrixSignedBlindedBeaconBlockType = {
+  message: z.infer<typeof BellatrixBlindedBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const CapellaSignedBLSToExecutionChangeSchema = z
+  .object({
+    message: z
+      .object({
+        validator_index: Uint64Schema.openapi({
+          description: 'Index of the validator for which credentials will be changed.',
+        }),
+        from_bls_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+          description: 'Public key of existing credentials.',
+        }),
+        to_execution_address: ExecutionAddressSchema.openapi({
+          description: 'Execution address to which the credentials will be changed.',
+        }),
+      })
+      .openapi({
+        description:
+          'The [`BLSToExecutionChange`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#blstoexecutionchange) object from the CL spec.',
+        required: ['validator_index', 'from_bls_pubkey', 'to_execution_address'],
+      }),
+    signature: SignatureSchema,
+  })
+  .openapi({
+    description:
+      'The [`SignedBLSToExecutionChange`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#signedblstoexecutionchange) object from the CL spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('CapellaSignedBLSToExecutionChange')
+
+const CapellaBeaconBlockAllOf1BodyAllOf0Schema = z
+  .object({
+    randao_reveal: SignatureSchema.openapi({
+      description: 'The RanDAO reveal value provided by the validator.',
+    }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    graffiti: GraffitiSchema,
+    proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+    attester_slashings: z.array(Phase0AttesterSlashingSchema),
+    attestations: z.array(Phase0AttestationSchema),
+    deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+    voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
+  })
+  .openapi({
+    description:
+      'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec.',
+    required: [
+      'randao_reveal',
+      'eth1_data',
+      'graffiti',
+      'proposer_slashings',
+      'attester_slashings',
+      'attestations',
+      'deposits',
+      'voluntary_exits',
+      'sync_aggregate',
+      'bls_to_execution_changes',
+    ],
+  })
+  .openapi('CapellaBeaconBlockAllOf1BodyAllOf0')
+
+const CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema = z
+  .object({
+    parent_hash: GloasBeaconStateLatestBlockHashSchema,
+    fee_recipient: ExecutionAddressSchema,
+    state_root: RootSchema,
+    receipts_root: RootSchema,
+    logs_bloom: GloasExecutionPayloadLogsBloomSchema,
+    prev_randao: GloasBeaconStateRandaoMixesItemsSchema,
+    block_number: Uint64Schema,
+    gas_limit: Uint64Schema,
+    gas_used: Uint64Schema,
+    timestamp: Uint64Schema,
+    extra_data: GloasExecutionPayloadExtraDataSchema,
+    base_fee_per_gas: z.string().openapi({ example: '1' }),
+    block_hash: GloasBeaconStateLatestBlockHashSchema,
+  })
+  .openapi({
+    description:
+      'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayload) object from the CL Capella spec.',
+    required: [
+      'parent_hash',
+      'fee_recipient',
+      'state_root',
+      'receipts_root',
+      'logs_bloom',
+      'prev_randao',
+      'block_number',
+      'gas_limit',
+      'gas_used',
+      'timestamp',
+      'extra_data',
+      'base_fee_per_gas',
+      'block_hash',
+    ],
+  })
+  .openapi('CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0')
+
+const CapellaWithdrawalSchema = z
   .object({
     index: Uint64Schema.openapi({ description: 'The index of the withdrawal.' }),
     validator_index: Uint64Schema.openapi({
@@ -988,33 +650,797 @@ const CapellaWithdrawalSchema: z.ZodType<CapellaWithdrawalType> = z
   .openapi({ required: ['index', 'validator_index', 'address', 'amount'] })
   .openapi('CapellaWithdrawal')
 
-const GloasExecutionPayloadSchema = z
-  .object({
-    parent_hash: z.lazy(() => GloasBeaconStateSchema),
-    fee_recipient: ExecutionAddressSchema,
-    state_root: z.lazy(() => GloasBeaconStateSchema),
-    receipts_root: z.lazy(() => GloasBeaconStateSchema),
-    logs_bloom: z
-      .hex()
-      .regex(/^0x[a-fA-F0-9]{512}$/)
-      .openapi({
-        example:
-          '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+const CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsSchema = z
+  .array(CapellaWithdrawalSchema)
+  .max(16)
+  .openapi('CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals')
+
+const CapellaBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: CapellaBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema.and(
+              z
+                .object({
+                  transactions:
+                    CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsSchema,
+                  withdrawals:
+                    CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsSchema,
+                })
+                .openapi({ required: ['transactions', 'withdrawals'] }),
+            ),
+          })
+          .openapi({ required: ['execution_payload'] }),
+      ),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Capella spec.',
+  })
+  .openapi('CapellaBeaconBlock')
+
+type CapellaSignedBeaconBlockType = {
+  message: z.infer<typeof CapellaBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const CapellaBeaconStateLatestExecutionPayloadHeaderSchema =
+  CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0Schema.and(
+    z
+      .object({ transactions_root: RootSchema, withdrawals_root: RootSchema })
+      .openapi({ required: ['transactions_root', 'withdrawals_root'] }),
+  )
+    .openapi({
+      description:
+        'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.',
+    })
+    .openapi('CapellaBeaconStateLatestExecutionPayloadHeader')
+
+const CapellaBlindedBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: CapellaBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeaderSchema,
+          })
+          .openapi({ required: ['execution_payload_header'] }),
+      ).openapi({
+        description:
+          'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec, which contains a transactions root rather than a full transactions list.',
       }),
-    prev_randao: z.lazy(() => GloasBeaconStateSchema),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Capella spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
+  })
+  .openapi('CapellaBlindedBeaconBlock')
+
+type CapellaSignedBlindedBeaconBlockType = {
+  message: z.infer<typeof CapellaBlindedBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const FuluDataColumnSidecarsItemsKzgCommitmentsItemsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{96}$/)
+  .openapi({
+    description:
+      'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
+    example:
+      '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
+  })
+  .openapi('FuluDataColumnSidecarsItemsKzgCommitmentsItems')
+
+const DenebBlindedBeaconBlockAllOf1BodyAllOf0Schema = z
+  .object({
+    randao_reveal: SignatureSchema.openapi({
+      description: 'The RANDAO reveal value provided by the validator.',
+    }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    graffiti: GraffitiSchema,
+    proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+    attester_slashings: z.array(Phase0AttesterSlashingSchema),
+    attestations: z.array(Phase0AttestationSchema),
+    deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+    voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
+    blob_kzg_commitments: z.array(FuluDataColumnSidecarsItemsKzgCommitmentsItemsSchema),
+  })
+  .openapi({
+    description:
+      'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec.',
+    required: [
+      'randao_reveal',
+      'eth1_data',
+      'graffiti',
+      'proposer_slashings',
+      'attester_slashings',
+      'attestations',
+      'deposits',
+      'voluntary_exits',
+      'sync_aggregate',
+      'bls_to_execution_changes',
+      'blob_kzg_commitments',
+    ],
+  })
+  .openapi('DenebBlindedBeaconBlockAllOf1BodyAllOf0')
+
+const FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Schema = z
+  .object({
+    parent_hash: GloasBeaconStateLatestBlockHashSchema,
+    fee_recipient: ExecutionAddressSchema,
+    state_root: RootSchema,
+    receipts_root: RootSchema,
+    logs_bloom: GloasExecutionPayloadLogsBloomSchema,
+    prev_randao: GloasBeaconStateRandaoMixesItemsSchema,
     block_number: Uint64Schema,
     gas_limit: Uint64Schema,
     gas_used: Uint64Schema,
     timestamp: Uint64Schema,
-    extra_data: z
-      .hex()
-      .regex(/^0x[a-fA-F0-9]{0,64}$/)
-      .openapi({
-        description: 'Extra data on the execution (Ethereum 1) network.',
-        example: '0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2',
-      }),
+    extra_data: GloasExecutionPayloadExtraDataSchema,
     base_fee_per_gas: z.string().openapi({ example: '1' }),
-    block_hash: z.lazy(() => GloasBeaconStateSchema),
+    blob_gas_used: Uint64Schema,
+    excess_blob_gas: Uint64Schema,
+    block_hash: GloasBeaconStateLatestBlockHashSchema,
+  })
+  .openapi({
+    description:
+      'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayload) object from the CL Deneb spec.',
+    required: [
+      'parent_hash',
+      'fee_recipient',
+      'state_root',
+      'receipts_root',
+      'logs_bloom',
+      'prev_randao',
+      'block_number',
+      'gas_limit',
+      'gas_used',
+      'timestamp',
+      'extra_data',
+      'base_fee_per_gas',
+      'blob_gas_used',
+      'excess_blob_gas',
+      'block_hash',
+    ],
+  })
+  .openapi('FuluBeaconStateLatestExecutionPayloadHeaderAllOf0')
+
+const FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadSchema =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Schema.and(
+    z
+      .object({
+        transactions: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1TransactionsSchema,
+        withdrawals: CapellaBeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1WithdrawalsSchema,
+      })
+      .openapi({ required: ['transactions', 'withdrawals'] }),
+  ).openapi('FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayload')
+
+const DenebBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: DenebBlindedBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadSchema,
+          })
+          .openapi({ required: ['execution_payload'] }),
+      ),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Deneb spec.',
+  })
+  .openapi('DenebBeaconBlock')
+
+const GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{96}$/)
+  .openapi({
+    description:
+      'A G1 curve point. Used for verifying that the `KZGCommitment` for a given `Blob` is correct.',
+  })
+  .openapi('GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItems')
+
+const ElectraSignedBlockContentsKzgProofsSchema = z
+  .array(GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsSchema)
+  .min(0)
+  .max(4096)
+  .openapi('ElectraSignedBlockContentsKzgProofs')
+
+const BlobSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{262144}$/)
+  .openapi({
+    description:
+      'A blob is `FIELD_ELEMENTS_PER_BLOB * size_of(BLSFieldElement) = 4096 * 32 = 131072` bytes (`DATA`) representing a Blob as defined in Deneb',
+  })
+  .openapi('Blob')
+
+const BlobsSchema = z.array(BlobSchema).min(0).max(4096).openapi('Blobs')
+
+type DenebBlockContentsType = {
+  block: z.infer<typeof DenebBeaconBlockSchema>
+  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
+}
+
+type DenebSignedBeaconBlockType = {
+  message: z.infer<typeof DenebBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const DenebSignedBeaconBlockSchema: z.ZodType<DenebSignedBeaconBlockType> = z
+  .object({ message: DenebBeaconBlockSchema, signature: SignatureSchema })
+  .openapi({
+    description:
+      'The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Deneb spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('DenebSignedBeaconBlock')
+
+type DenebSignedBlockContentsType = {
+  signed_block: z.infer<typeof DenebSignedBeaconBlockSchema>
+  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
+}
+
+const FuluBeaconStateLatestExecutionPayloadHeaderSchema =
+  FuluBeaconStateLatestExecutionPayloadHeaderAllOf0Schema.and(
+    z
+      .object({ transactions_root: RootSchema, withdrawals_root: RootSchema })
+      .openapi({ required: ['transactions_root', 'withdrawals_root'] }),
+  )
+    .openapi({
+      description:
+        'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.',
+    })
+    .openapi('FuluBeaconStateLatestExecutionPayloadHeader')
+
+const DenebBlindedBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: DenebBlindedBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({ execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderSchema })
+          .openapi({ required: ['execution_payload_header'] }),
+      ).openapi({
+        description:
+          'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec, which contains a transactions root rather than a full transactions list.',
+      }),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Deneb spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
+  })
+  .openapi('DenebBlindedBeaconBlock')
+
+type DenebSignedBlindedBeaconBlockType = {
+  message: z.infer<typeof DenebBlindedBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const ElectraAttesterSlashingAttestation1Schema = z
+  .object({
+    attesting_indices: z
+      .array(Uint64Schema)
+      .max(131072)
+      .openapi({ description: 'Attesting validator indices' }),
+    data: Phase0AttestationDataSchema,
+    signature: SignatureSchema.openapi({
+      description:
+        'The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.',
+    required: ['attesting_indices', 'data', 'signature'],
+  })
+  .openapi('ElectraAttesterSlashingAttestation1')
+
+const ElectraAttesterSlashingSchema = z
+  .object({
+    attestation_1: ElectraAttesterSlashingAttestation1Schema,
+    attestation_2: ElectraAttesterSlashingAttestation1Schema,
+  })
+  .openapi({
+    description:
+      'The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#attesterslashing) object from the CL spec.',
+    required: ['attestation_1', 'attestation_2'],
+  })
+  .openapi('ElectraAttesterSlashing')
+
+const ElectraAttestationSchema = z
+  .object({
+    aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsSchema.openapi({
+      description: 'Attester aggregation bits.',
+    }),
+    data: Phase0AttestationDataSchema,
+    signature: SignatureSchema.openapi({ description: 'BLS aggregate signature.' }),
+    committee_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Committee bits.',
+      example: '0x0000000000000001',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#attestation) object from the CL spec.',
+    required: ['aggregation_bits', 'data', 'signature', 'committee_bits'],
+  })
+  .openapi('ElectraAttestation')
+
+const ElectraBlindedBeaconBlockAllOf1BodyAllOf0Schema = z
+  .object({
+    randao_reveal: SignatureSchema.openapi({
+      description: 'The RANDAO reveal value provided by the validator.',
+    }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    graffiti: GraffitiSchema,
+    proposer_slashings: z.array(Phase0ProposerSlashingSchema),
+    attester_slashings: z.array(ElectraAttesterSlashingSchema),
+    attestations: z.array(ElectraAttestationSchema),
+    deposits: z.array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema),
+    voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
+    blob_kzg_commitments: z.array(FuluDataColumnSidecarsItemsKzgCommitmentsItemsSchema),
+  })
+  .openapi({
+    description:
+      'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec.',
+    required: [
+      'randao_reveal',
+      'eth1_data',
+      'graffiti',
+      'proposer_slashings',
+      'attester_slashings',
+      'attestations',
+      'deposits',
+      'voluntary_exits',
+      'sync_aggregate',
+      'bls_to_execution_changes',
+      'blob_kzg_commitments',
+    ],
+  })
+  .openapi('ElectraBlindedBeaconBlockAllOf1BodyAllOf0')
+
+const GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsSchema = z
+  .object({
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'BLS public key of validator.',
+    }),
+    withdrawal_credentials: RootSchema.openapi({ description: 'The withdrawal credentials.' }),
+    amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
+    signature: SignatureSchema,
+    index: Uint64Schema.openapi({ description: 'The index of the deposit request.' }),
+  })
+  .openapi({
+    description:
+      'The [`DepositRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#depositrequest) object from the CL Electra spec.',
+    required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature', 'index'],
+  })
+  .openapi('GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItems')
+
+const GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsSchema = z
+  .object({
+    source_address: ExecutionAddressSchema.openapi({
+      description: 'Execution address which sent the request.',
+    }),
+    validator_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'BLS public key of validator.',
+    }),
+    amount: Uint64Schema.openapi({ description: 'The value to be withdrawn (gwei).' }),
+  })
+  .openapi({
+    description:
+      'The [`WithdrawalRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#withdrawalrequest) object from the CL Electra spec.',
+    required: ['source_address', 'validator_pubkey', 'amount'],
+  })
+  .openapi('GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems')
+
+const GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsSchema = z
+  .object({
+    source_address: ExecutionAddressSchema.openapi({
+      description: 'Execution address which sent the request.',
+    }),
+    source_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'BLS public key of validator to consolidate from.',
+    }),
+    target_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'BLS public key of validator to consolidate to.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`ConsolidationRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#consolidationrequest) object from the CL Electra spec.',
+    required: ['source_address', 'source_pubkey', 'target_pubkey'],
+  })
+  .openapi('GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems')
+
+const ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsSchema = z
+  .object({
+    deposits: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsSchema)
+      .max(8192)
+      .openapi({ description: 'List of deposit requests.' }),
+    withdrawals: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsSchema)
+      .max(16)
+      .openapi({ description: 'List of withdrawal requests.' }),
+    consolidations: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsSchema)
+      .max(2)
+      .openapi({ description: 'List of consolidation requests.' }),
+  })
+  .openapi({
+    description:
+      'The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#executionrequests) object from the CL Electra spec.',
+    required: ['deposits', 'withdrawals', 'consolidations'],
+  })
+  .openapi('ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests')
+
+const FuluBlockContentsBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload: FuluBlockContentsBlockAllOf1BodyAllOf1ExecutionPayloadSchema,
+            execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsSchema,
+          })
+          .openapi({ required: ['execution_payload', 'execution_requests'] }),
+      ),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.',
+  })
+  .openapi('FuluBlockContentsBlock')
+
+type ElectraBlockContentsType = {
+  block: z.infer<typeof FuluBlockContentsBlockSchema>
+  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
+}
+
+type ElectraSignedBeaconBlockType = {
+  message: z.infer<typeof FuluBlockContentsBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const ElectraSignedBeaconBlockSchema: z.ZodType<ElectraSignedBeaconBlockType> = z
+  .object({ message: FuluBlockContentsBlockSchema, signature: SignatureSchema })
+  .openapi({
+    description:
+      'The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Electra spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('ElectraSignedBeaconBlock')
+
+type ElectraSignedBlockContentsType = {
+  signed_block: z.infer<typeof ElectraSignedBeaconBlockSchema>
+  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
+}
+
+const ElectraBlindedBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: ElectraBlindedBeaconBlockAllOf1BodyAllOf0Schema.and(
+        z
+          .object({
+            execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderSchema,
+            execution_requests: ElectraBlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequestsSchema,
+          })
+          .openapi({ required: ['execution_payload_header', 'execution_requests'] }),
+      ).openapi({
+        description:
+          'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec, which contains a transactions root rather than a full transactions list.',
+      }),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
+  })
+  .openapi('ElectraBlindedBeaconBlock')
+
+type ElectraSignedBlindedBeaconBlockType = {
+  message: z.infer<typeof ElectraBlindedBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const GloasAttesterSlashingAttestation1Schema = z
+  .object({
+    attesting_indices: z
+      .array(Uint64Schema)
+      .max(131072)
+      .openapi({ description: 'Progressive list of attesting validator indices.' }),
+    data: Phase0AttestationDataSchema,
+    signature: SignatureSchema.openapi({
+      description: 'The BLS signature of the indexed attestation.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.',
+    required: ['attesting_indices', 'data', 'signature'],
+  })
+  .openapi('GloasAttesterSlashingAttestation1')
+
+const GloasAttesterSlashingSchema = z
+  .object({
+    attestation_1: GloasAttesterSlashingAttestation1Schema,
+    attestation_2: GloasAttesterSlashingAttestation1Schema,
+  })
+  .openapi({
+    description:
+      'The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/electra/beacon-chain.md#attesterslashing) object from the CL spec.',
+    required: ['attestation_1', 'attestation_2'],
+  })
+  .openapi('GloasAttesterSlashing')
+
+const GloasAttestationSchema = z
+  .object({
+    aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsSchema.openapi({
+      description:
+        'Progressive bitlist of attester aggregation bits, limited to MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT (131072) bits.',
+    }),
+    data: Phase0AttestationDataSchema,
+    signature: SignatureSchema.openapi({ description: 'BLS aggregate signature.' }),
+    committee_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Committee bits, a fixed vector of MAX_COMMITTEES_PER_SLOT (64) bits.',
+      example: '0x0000000000000001',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#attestation) object from the CL Gloas spec.',
+    required: ['aggregation_bits', 'data', 'signature', 'committee_bits'],
+  })
+  .openapi('GloasAttestation')
+
+const GloasExecutionPayloadBidSchema = z
+  .object({
+    parent_block_hash: GloasBeaconStateLatestBlockHashSchema,
+    parent_block_root: RootSchema,
+    block_hash: GloasBeaconStateLatestBlockHashSchema,
+    prev_randao: GloasBeaconStateRandaoMixesItemsSchema,
+    fee_recipient: ExecutionAddressSchema,
+    gas_limit: Uint64Schema,
+    builder_index: Uint64Schema,
+    slot: Uint64Schema,
+    value: Uint64Schema,
+    execution_payment: Uint64Schema,
+    blob_kzg_commitments: z.array(FuluDataColumnSidecarsItemsKzgCommitmentsItemsSchema).max(4096),
+    execution_requests_root: RootSchema,
+  })
+  .openapi({
+    description:
+      'The [`ExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionpayloadbid) object from the CL Gloas spec.',
+    required: [
+      'parent_block_hash',
+      'parent_block_root',
+      'block_hash',
+      'prev_randao',
+      'fee_recipient',
+      'gas_limit',
+      'builder_index',
+      'slot',
+      'value',
+      'execution_payment',
+      'blob_kzg_commitments',
+      'execution_requests_root',
+    ],
+  })
+  .openapi('GloasExecutionPayloadBid')
+
+const GloasSignedExecutionPayloadBidSchema = z
+  .object({ message: GloasExecutionPayloadBidSchema, signature: SignatureSchema })
+  .openapi({
+    description:
+      'The [`SignedExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#signedexecutionpayloadbid) object from the CL Gloas spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('GloasSignedExecutionPayloadBid')
+
+const GloasPayloadAttestationDataSchema = z
+  .object({
+    beacon_block_root: RootSchema.openapi({
+      description: 'Hash tree root of the beacon block associated with this PTC attestation',
+    }),
+    slot: Uint64Schema.openapi({
+      description: 'The slot for which the payload attestation is being made',
+    }),
+    payload_present: z
+      .boolean()
+      .openapi({
+        description:
+          'True if a `SignedExecutionPayloadEnvelope` has been seen referencing this block',
+      }),
+    blob_data_available: z
+      .boolean()
+      .openapi({ description: 'True if blob data is available for this block' }),
+  })
+  .openapi({
+    description:
+      'The [`PayloadAttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#payloadattestationdata) object from the CL Gloas spec.',
+    required: ['beacon_block_root', 'slot', 'payload_present', 'blob_data_available'],
+  })
+  .openapi('GloasPayloadAttestationData')
+
+const GloasPayloadAttestationSchema = z
+  .object({
+    aggregation_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Fixed vector of PTC_SIZE (512) bits.',
+      example:
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+    }),
+    data: GloasPayloadAttestationDataSchema,
+    signature: SignatureSchema,
+  })
+  .openapi({
+    description:
+      'The [`PayloadAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#payloadattestation) object from the CL Gloas spec.',
+    required: ['aggregation_bits', 'data', 'signature'],
+  })
+  .openapi('GloasPayloadAttestation')
+
+const GloasExecutionPayloadEnvelopeExecutionRequestsSchema = z
+  .object({
+    deposits: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsDepositsItemsSchema)
+      .openapi({ description: 'Progressive list of deposit requests.' }),
+    withdrawals: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItemsSchema)
+      .max(16)
+      .openapi({ description: 'Progressive list of withdrawal requests.' }),
+    consolidations: z
+      .array(GloasExecutionPayloadEnvelopeExecutionRequestsConsolidationsItemsSchema)
+      .max(2)
+      .openapi({ description: 'Progressive list of consolidation requests.' }),
+    builder_deposits: z
+      .array(
+        z
+          .object({
+            pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+              description: 'BLS public key of builder.',
+            }),
+            withdrawal_credentials: GloasBeaconStateRandaoMixesItemsSchema.openapi({
+              description: 'The withdrawal credentials.',
+            }),
+            amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
+            signature: SignatureSchema,
+          })
+          .openapi({
+            description:
+              'The [`BuilderDepositRequest`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderdepositrequest) object from the CL Gloas spec.',
+            required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
+          }),
+      )
+      .max(64)
+      .openapi({ description: 'Progressive list of builder deposit requests.' }),
+    builder_exits: z
+      .array(
+        z
+          .object({
+            source_address: ExecutionAddressSchema.openapi({
+              description: 'Execution address which sent the request.',
+            }),
+            pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+              description: 'BLS public key of builder.',
+            }),
+          })
+          .openapi({
+            description:
+              'The [`BuilderExitRequest`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderexitrequest) object from the CL Gloas spec.',
+            required: ['source_address', 'pubkey'],
+          }),
+      )
+      .max(16)
+      .openapi({ description: 'Progressive list of builder exit requests.' }),
+  })
+  .openapi({
+    description:
+      'The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionrequests) object from the CL Gloas spec.',
+    required: ['deposits', 'withdrawals', 'consolidations', 'builder_deposits', 'builder_exits'],
+  })
+  .openapi('GloasExecutionPayloadEnvelopeExecutionRequests')
+
+const GloasBeaconBlockSchema = GloasBeaconBlockAllOf0Schema.and(
+  z
+    .object({
+      body: z
+        .object({
+          randao_reveal: SignatureSchema.openapi({
+            description: 'The RANDAO reveal value provided by the validator.',
+          }),
+          eth1_data: GloasBeaconStateEth1DataSchema,
+          graffiti: GraffitiSchema,
+          proposer_slashings: z.array(Phase0ProposerSlashingSchema).max(16),
+          attester_slashings: z.array(GloasAttesterSlashingSchema).max(1),
+          attestations: z.array(GloasAttestationSchema).max(8),
+          deposits: z
+            .array(GloasBeaconBlockAllOf1BodyDepositsItemsSchema)
+            .max(0)
+            .openapi({
+              description:
+                'Legacy deposits have been disabled since Fulu. This list must be empty.',
+            }),
+          voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema).max(16),
+          sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+          bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema).max(16),
+          signed_execution_payload_bid: GloasSignedExecutionPayloadBidSchema,
+          payload_attestations: z
+            .array(GloasPayloadAttestationSchema)
+            .max(4)
+            .openapi({ description: 'Payload attestations for the parent beacon block.' }),
+          parent_execution_requests: GloasExecutionPayloadEnvelopeExecutionRequestsSchema,
+        })
+        .openapi({
+          description:
+            'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#beaconblockbody) object from the CL Gloas spec.',
+          required: [
+            'randao_reveal',
+            'eth1_data',
+            'graffiti',
+            'proposer_slashings',
+            'attester_slashings',
+            'attestations',
+            'deposits',
+            'voluntary_exits',
+            'sync_aggregate',
+            'bls_to_execution_changes',
+            'signed_execution_payload_bid',
+            'payload_attestations',
+            'parent_execution_requests',
+          ],
+        }),
+    })
+    .openapi({ required: ['body'] }),
+)
+  .openapi({
+    description:
+      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/phase0/beacon-chain.md#beaconblock) object from the CL Gloas spec.',
+  })
+  .openapi('GloasBeaconBlock')
+
+type GloasSignedBeaconBlockType = {
+  message: z.infer<typeof GloasBeaconBlockSchema>
+  signature: z.infer<typeof SignatureSchema>
+}
+
+const GloasExecutionPayloadSchema = z
+  .object({
+    parent_hash: GloasBeaconStateLatestBlockHashSchema,
+    fee_recipient: ExecutionAddressSchema,
+    state_root: GloasBeaconStateRandaoMixesItemsSchema,
+    receipts_root: GloasBeaconStateRandaoMixesItemsSchema,
+    logs_bloom: GloasExecutionPayloadLogsBloomSchema,
+    prev_randao: GloasBeaconStateRandaoMixesItemsSchema,
+    block_number: Uint64Schema,
+    gas_limit: Uint64Schema,
+    gas_used: Uint64Schema,
+    timestamp: Uint64Schema,
+    extra_data: GloasExecutionPayloadExtraDataSchema,
+    base_fee_per_gas: z.string().openapi({ example: '1' }),
+    block_hash: GloasBeaconStateLatestBlockHashSchema,
     transactions: z
       .array(
         z
@@ -1071,1234 +1497,10 @@ const GloasExecutionPayloadSchema = z
   })
   .openapi('GloasExecutionPayload')
 
-const BellatrixBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-            ],
-          })
-          .and(
-            z
-              .object({
-                execution_payload: z
-                  .object({
-                    parent_hash: z.lazy(() => GloasBeaconStateSchema),
-                    fee_recipient: ExecutionAddressSchema,
-                    state_root: RootSchema,
-                    receipts_root: RootSchema,
-                    logs_bloom: z.lazy(() => GloasExecutionPayloadSchema),
-                    prev_randao: z.lazy(() => GloasBeaconStateSchema),
-                    block_number: Uint64Schema,
-                    gas_limit: Uint64Schema,
-                    gas_used: Uint64Schema,
-                    timestamp: Uint64Schema,
-                    extra_data: z.lazy(() => GloasExecutionPayloadSchema),
-                    base_fee_per_gas: z.string().openapi({ example: '1' }),
-                    block_hash: z.lazy(() => GloasBeaconStateSchema),
-                  })
-                  .openapi({
-                    description:
-                      'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayload) object from the CL Bellatrix spec.',
-                    required: [
-                      'parent_hash',
-                      'fee_recipient',
-                      'state_root',
-                      'receipts_root',
-                      'logs_bloom',
-                      'prev_randao',
-                      'block_number',
-                      'gas_limit',
-                      'gas_used',
-                      'timestamp',
-                      'extra_data',
-                      'base_fee_per_gas',
-                      'block_hash',
-                    ],
-                  })
-                  .and(
-                    z
-                      .object({
-                        transactions: z
-                          .array(
-                            z
-                              .hex()
-                              .regex(/^0x[a-fA-F0-9]{0,2147483648}$/)
-                              .openapi({
-                                description: 'A transaction on the execution (Ethereum 1) network.',
-                                example:
-                                  '0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86',
-                              }),
-                          )
-                          .max(1048576),
-                      })
-                      .openapi({ required: ['transactions'] }),
-                  ),
-              })
-              .openapi({ required: ['execution_payload'] }),
-          ),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Bellatrix spec.',
-  })
-  .openapi('BellatrixBeaconBlock')
-
-type BellatrixSignedBeaconBlockType = {
-  message: z.infer<typeof BellatrixBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const FuluBeaconStateSchema: z.ZodType<FuluBeaconStateType> = z
-  .lazy(() =>
-    z
-      .object({
-        genesis_time: Uint64Schema,
-        genesis_validators_root: RootSchema,
-        slot: Uint64Schema,
-        fork: ForkSchema,
-        latest_block_header: z.lazy(() => GloasBeaconStateSchema),
-        block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-        state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-        historical_roots: z
-          .array(RootSchema)
-          .openapi({
-            description:
-              'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
-          }),
-        eth1_data: z.lazy(() => GloasBeaconStateSchema),
-        eth1_data_votes: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .max(2048)
-          .openapi({ description: 'Variable length list, maximum 2048 items.' }),
-        eth1_deposit_index: Uint64Schema,
-        validators: z
-          .array(z.lazy(() => ValidatorResponseSchema))
-          .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
-        balances: z
-          .array(Uint64Schema)
-          .openapi({
-            description:
-              'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
-          }),
-        randao_mixes: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .openapi({ description: 'Fixed length of 65536 items' }),
-        slashings: z
-          .array(Uint64Schema)
-          .openapi({
-            description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
-          }),
-        previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-        current_epoch_participation: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .max(1099511627776),
-        justification_bits: z
-          .lazy(() => GloasBeaconStateSchema)
-          .openapi({ description: 'Bit set for every recent justified epoch' }),
-        previous_justified_checkpoint: CheckpointSchema,
-        current_justified_checkpoint: CheckpointSchema,
-        finalized_checkpoint: CheckpointSchema,
-        inactivity_scores: z
-          .array(Uint64Schema)
-          .openapi({
-            description:
-              'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
-          }),
-        current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-        next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-        latest_execution_payload_header: z
-          .object({
-            parent_hash: z.lazy(() => GloasBeaconStateSchema),
-            fee_recipient: ExecutionAddressSchema,
-            state_root: RootSchema,
-            receipts_root: RootSchema,
-            logs_bloom: z.lazy(() => GloasExecutionPayloadSchema),
-            prev_randao: z.lazy(() => GloasBeaconStateSchema),
-            block_number: Uint64Schema,
-            gas_limit: Uint64Schema,
-            gas_used: Uint64Schema,
-            timestamp: Uint64Schema,
-            extra_data: z.lazy(() => GloasExecutionPayloadSchema),
-            base_fee_per_gas: z.string().openapi({ example: '1' }),
-            blob_gas_used: Uint64Schema,
-            excess_blob_gas: Uint64Schema,
-            block_hash: z.lazy(() => GloasBeaconStateSchema),
-          })
-          .openapi({
-            description:
-              'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayload) object from the CL Deneb spec.',
-            required: [
-              'parent_hash',
-              'fee_recipient',
-              'state_root',
-              'receipts_root',
-              'logs_bloom',
-              'prev_randao',
-              'block_number',
-              'gas_limit',
-              'gas_used',
-              'timestamp',
-              'extra_data',
-              'base_fee_per_gas',
-              'blob_gas_used',
-              'excess_blob_gas',
-              'block_hash',
-            ],
-          })
-          .and(
-            z
-              .object({ transactions_root: RootSchema, withdrawals_root: RootSchema })
-              .openapi({ required: ['transactions_root', 'withdrawals_root'] }),
-          )
-          .openapi({
-            description:
-              'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.',
-          }),
-        next_withdrawal_index: Uint64Schema,
-        next_withdrawal_validator_index: Uint64Schema,
-        historical_summaries: z
-          .array(z.lazy(() => GloasBeaconStateSchema))
-          .openapi({ description: 'Variable length list, maximum 16777216 items' }),
-        deposit_requests_start_index: Uint64Schema,
-        deposit_balance_to_consume: Uint64Schema,
-        exit_balance_to_consume: Uint64Schema,
-        earliest_exit_epoch: Uint64Schema,
-        consolidation_balance_to_consume: Uint64Schema,
-        earliest_consolidation_epoch: Uint64Schema,
-        pending_deposits: ElectraPendingDepositsSchema,
-        pending_partial_withdrawals: ElectraPendingPartialWithdrawalsSchema,
-        pending_consolidations: ElectraPendingConsolidationsSchema,
-        proposer_lookahead: z.array(Uint64Schema).length(64),
-      })
-      .openapi({
-        description:
-          'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.6.0/specs/fulu/beacon-chain.md#beaconstate) object from the CL Fulu spec.',
-        required: [
-          'genesis_time',
-          'genesis_validators_root',
-          'slot',
-          'fork',
-          'latest_block_header',
-          'block_roots',
-          'state_roots',
-          'historical_roots',
-          'eth1_data',
-          'eth1_data_votes',
-          'eth1_deposit_index',
-          'validators',
-          'balances',
-          'randao_mixes',
-          'slashings',
-          'previous_epoch_participation',
-          'current_epoch_participation',
-          'justification_bits',
-          'previous_justified_checkpoint',
-          'current_justified_checkpoint',
-          'finalized_checkpoint',
-          'inactivity_scores',
-          'current_sync_committee',
-          'next_sync_committee',
-          'latest_execution_payload_header',
-          'next_withdrawal_index',
-          'next_withdrawal_validator_index',
-          'historical_summaries',
-          'deposit_requests_start_index',
-          'deposit_balance_to_consume',
-          'exit_balance_to_consume',
-          'earliest_exit_epoch',
-          'consolidation_balance_to_consume',
-          'earliest_consolidation_epoch',
-          'pending_deposits',
-          'pending_partial_withdrawals',
-          'pending_consolidations',
-          'proposer_lookahead',
-        ],
-      }),
-  )
-  .openapi('FuluBeaconState')
-
-const BellatrixBeaconStateSchema = z
-  .object({
-    genesis_time: Uint64Schema,
-    genesis_validators_root: RootSchema,
-    slot: Uint64Schema,
-    fork: ForkSchema,
-    latest_block_header: z.lazy(() => GloasBeaconStateSchema),
-    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-    historical_roots: z
-      .array(RootSchema)
-      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
-    eth1_data: z.lazy(() => GloasBeaconStateSchema),
-    eth1_data_votes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
-      .max(2048)
-      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
-    eth1_deposit_index: Uint64Schema,
-    validators: z
-      .array(z.lazy(() => ValidatorResponseSchema))
-      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
-    balances: z
-      .array(Uint64Schema)
-      .openapi({
-        description:
-          'Validator balances in Gwei. Variable length list, maximum 1099511627776 items',
-      }),
-    randao_mixes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
-      .openapi({ description: 'Fixed length of 65536 items' }),
-    slashings: z
-      .array(Uint64Schema)
-      .openapi({
-        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
-      }),
-    previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    current_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    justification_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Bit set for every recent justified epoch' }),
-    previous_justified_checkpoint: CheckpointSchema,
-    current_justified_checkpoint: CheckpointSchema,
-    finalized_checkpoint: CheckpointSchema,
-    inactivity_scores: z
-      .array(Uint64Schema)
-      .openapi({
-        description:
-          'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
-      }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    latest_execution_payload_header: z
-      .object({
-        parent_hash: z.lazy(() => GloasBeaconStateSchema),
-        fee_recipient: ExecutionAddressSchema,
-        state_root: RootSchema,
-        receipts_root: RootSchema,
-        logs_bloom: z.lazy(() => GloasExecutionPayloadSchema),
-        prev_randao: z.lazy(() => GloasBeaconStateSchema),
-        block_number: Uint64Schema,
-        gas_limit: Uint64Schema,
-        gas_used: Uint64Schema,
-        timestamp: Uint64Schema,
-        extra_data: z.lazy(() => GloasExecutionPayloadSchema),
-        base_fee_per_gas: z.string().openapi({ example: '1' }),
-        block_hash: z.lazy(() => GloasBeaconStateSchema),
-      })
-      .openapi({
-        description:
-          'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayload) object from the CL Bellatrix spec.',
-        required: [
-          'parent_hash',
-          'fee_recipient',
-          'state_root',
-          'receipts_root',
-          'logs_bloom',
-          'prev_randao',
-          'block_number',
-          'gas_limit',
-          'gas_used',
-          'timestamp',
-          'extra_data',
-          'base_fee_per_gas',
-          'block_hash',
-        ],
-      })
-      .and(z.object({ transactions_root: RootSchema }).openapi({ required: ['transactions_root'] }))
-      .openapi({
-        description:
-          'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayloadheader) object from the CL Bellatrix spec.',
-      }),
-  })
-  .openapi({
-    description:
-      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconstate) object from the Eth2.0 Bellatrix spec.',
-    required: [
-      'genesis_time',
-      'genesis_validators_root',
-      'slot',
-      'fork',
-      'latest_block_header',
-      'block_roots',
-      'state_roots',
-      'historical_roots',
-      'eth1_data',
-      'eth1_data_votes',
-      'eth1_deposit_index',
-      'validators',
-      'balances',
-      'randao_mixes',
-      'slashings',
-      'previous_epoch_participation',
-      'current_epoch_participation',
-      'justification_bits',
-      'previous_justified_checkpoint',
-      'current_justified_checkpoint',
-      'finalized_checkpoint',
-      'inactivity_scores',
-      'current_sync_committee',
-      'next_sync_committee',
-      'latest_execution_payload_header',
-    ],
-  })
-  .openapi('BellatrixBeaconState')
-
-const BellatrixBlindedBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-            ],
-          })
-          .and(
-            z
-              .object({ execution_payload_header: z.lazy(() => BellatrixBeaconStateSchema) })
-              .openapi({ required: ['execution_payload_header'] }),
-          )
-          .openapi({
-            description:
-              'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec, which contains a transactions root rather than a full transactions list.',
-          }),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Bellatrix spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
-  })
-  .openapi('BellatrixBlindedBeaconBlock')
-
-type BellatrixSignedBlindedBeaconBlockType = {
-  message: z.infer<typeof BellatrixBlindedBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const CapellaSignedBLSToExecutionChangeSchema = z
-  .object({
-    message: z
-      .object({
-        validator_index: Uint64Schema.openapi({
-          description: 'Index of the validator for which credentials will be changed.',
-        }),
-        from_bls_pubkey: z
-          .lazy(() => GloasBuilderPreferencesEntrySchema)
-          .openapi({ description: 'Public key of existing credentials.' }),
-        to_execution_address: ExecutionAddressSchema.openapi({
-          description: 'Execution address to which the credentials will be changed.',
-        }),
-      })
-      .openapi({
-        description:
-          'The [`BLSToExecutionChange`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#blstoexecutionchange) object from the CL spec.',
-        required: ['validator_index', 'from_bls_pubkey', 'to_execution_address'],
-      }),
-    signature: SignatureSchema,
-  })
-  .openapi({
-    description:
-      'The [`SignedBLSToExecutionChange`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#signedblstoexecutionchange) object from the CL spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('CapellaSignedBLSToExecutionChange')
-
-const CapellaBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-            ],
-          })
-          .and(
-            z
-              .object({
-                execution_payload: z
-                  .object({
-                    parent_hash: z.lazy(() => GloasBeaconStateSchema),
-                    fee_recipient: ExecutionAddressSchema,
-                    state_root: RootSchema,
-                    receipts_root: RootSchema,
-                    logs_bloom: z.lazy(() => GloasExecutionPayloadSchema),
-                    prev_randao: z.lazy(() => GloasBeaconStateSchema),
-                    block_number: Uint64Schema,
-                    gas_limit: Uint64Schema,
-                    gas_used: Uint64Schema,
-                    timestamp: Uint64Schema,
-                    extra_data: z.lazy(() => GloasExecutionPayloadSchema),
-                    base_fee_per_gas: z.string().openapi({ example: '1' }),
-                    block_hash: z.lazy(() => GloasBeaconStateSchema),
-                  })
-                  .openapi({
-                    description:
-                      'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayload) object from the CL Capella spec.',
-                    required: [
-                      'parent_hash',
-                      'fee_recipient',
-                      'state_root',
-                      'receipts_root',
-                      'logs_bloom',
-                      'prev_randao',
-                      'block_number',
-                      'gas_limit',
-                      'gas_used',
-                      'timestamp',
-                      'extra_data',
-                      'base_fee_per_gas',
-                      'block_hash',
-                    ],
-                  })
-                  .and(
-                    z
-                      .object({
-                        transactions: z
-                          .array(
-                            z
-                              .hex()
-                              .regex(/^0x[a-fA-F0-9]{0,2147483648}$/)
-                              .openapi({
-                                description: 'A transaction on the execution (Ethereum 1) network.',
-                                example:
-                                  '0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86',
-                              }),
-                          )
-                          .max(1048576),
-                        withdrawals: z.array(CapellaWithdrawalSchema).max(16),
-                      })
-                      .openapi({ required: ['transactions', 'withdrawals'] }),
-                  ),
-              })
-              .openapi({ required: ['execution_payload'] }),
-          ),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Capella spec.',
-  })
-  .openapi('CapellaBeaconBlock')
-
-type CapellaSignedBeaconBlockType = {
-  message: z.infer<typeof CapellaBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const CapellaBeaconStateSchema = z
-  .object({
-    genesis_time: Uint64Schema,
-    genesis_validators_root: RootSchema,
-    slot: Uint64Schema,
-    fork: ForkSchema,
-    latest_block_header: z.lazy(() => GloasBeaconStateSchema),
-    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
-    historical_roots: z
-      .array(RootSchema)
-      .openapi({
-        description:
-          'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
-      }),
-    eth1_data: z.lazy(() => GloasBeaconStateSchema),
-    eth1_data_votes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
-      .max(2048)
-      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
-    eth1_deposit_index: Uint64Schema,
-    validators: z
-      .array(z.lazy(() => ValidatorResponseSchema))
-      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
-    balances: z
-      .array(Uint64Schema)
-      .openapi({
-        description:
-          'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
-      }),
-    randao_mixes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
-      .openapi({ description: 'Fixed length of 65536 items' }),
-    slashings: z
-      .array(Uint64Schema)
-      .openapi({
-        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
-      }),
-    previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    current_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    justification_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Bit set for every recent justified epoch' }),
-    previous_justified_checkpoint: CheckpointSchema,
-    current_justified_checkpoint: CheckpointSchema,
-    finalized_checkpoint: CheckpointSchema,
-    inactivity_scores: z
-      .array(Uint64Schema)
-      .openapi({
-        description:
-          'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
-      }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    latest_execution_payload_header: z
-      .object({
-        parent_hash: z.lazy(() => GloasBeaconStateSchema),
-        fee_recipient: ExecutionAddressSchema,
-        state_root: RootSchema,
-        receipts_root: RootSchema,
-        logs_bloom: z.lazy(() => GloasExecutionPayloadSchema),
-        prev_randao: z.lazy(() => GloasBeaconStateSchema),
-        block_number: Uint64Schema,
-        gas_limit: Uint64Schema,
-        gas_used: Uint64Schema,
-        timestamp: Uint64Schema,
-        extra_data: z.lazy(() => GloasExecutionPayloadSchema),
-        base_fee_per_gas: z.string().openapi({ example: '1' }),
-        block_hash: z.lazy(() => GloasBeaconStateSchema),
-      })
-      .openapi({
-        description:
-          'The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayload) object from the CL Capella spec.',
-        required: [
-          'parent_hash',
-          'fee_recipient',
-          'state_root',
-          'receipts_root',
-          'logs_bloom',
-          'prev_randao',
-          'block_number',
-          'gas_limit',
-          'gas_used',
-          'timestamp',
-          'extra_data',
-          'base_fee_per_gas',
-          'block_hash',
-        ],
-      })
-      .and(
-        z
-          .object({ transactions_root: RootSchema, withdrawals_root: RootSchema })
-          .openapi({ required: ['transactions_root', 'withdrawals_root'] }),
-      )
-      .openapi({
-        description:
-          'The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.',
-      }),
-    next_withdrawal_index: Uint64Schema,
-    next_withdrawal_validator_index: Uint64Schema,
-    historical_summaries: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
-      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
-  })
-  .openapi({
-    description:
-      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconstate) object from the Eth2.0 Capella spec.',
-    required: [
-      'genesis_time',
-      'genesis_validators_root',
-      'slot',
-      'fork',
-      'latest_block_header',
-      'block_roots',
-      'state_roots',
-      'historical_roots',
-      'eth1_data',
-      'eth1_data_votes',
-      'eth1_deposit_index',
-      'validators',
-      'balances',
-      'randao_mixes',
-      'slashings',
-      'previous_epoch_participation',
-      'current_epoch_participation',
-      'justification_bits',
-      'previous_justified_checkpoint',
-      'current_justified_checkpoint',
-      'finalized_checkpoint',
-      'inactivity_scores',
-      'current_sync_committee',
-      'next_sync_committee',
-      'latest_execution_payload_header',
-      'next_withdrawal_index',
-      'next_withdrawal_validator_index',
-      'historical_summaries',
-    ],
-  })
-  .openapi('CapellaBeaconState')
-
-const CapellaBlindedBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RanDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-            ],
-          })
-          .and(
-            z
-              .object({ execution_payload_header: z.lazy(() => CapellaBeaconStateSchema) })
-              .openapi({ required: ['execution_payload_header'] }),
-          )
-          .openapi({
-            description:
-              'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec, which contains a transactions root rather than a full transactions list.',
-          }),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Capella spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
-  })
-  .openapi('CapellaBlindedBeaconBlock')
-
-type CapellaSignedBlindedBeaconBlockType = {
-  message: z.infer<typeof CapellaBlindedBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const DenebBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RANDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-            blob_kzg_commitments: z.array(
-              z
-                .hex()
-                .regex(/^0x[a-fA-F0-9]{96}$/)
-                .openapi({
-                  description:
-                    'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                  example:
-                    '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-                }),
-            ),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-              'blob_kzg_commitments',
-            ],
-          })
-          .and(
-            z
-              .object({ execution_payload: ExecutionPayloadSchema })
-              .openapi({ required: ['execution_payload'] }),
-          ),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Deneb spec.',
-  })
-  .openapi('DenebBeaconBlock')
-
-const ElectraAttesterSlashingSchema = z
-  .object({
-    attestation_1: z
-      .object({
-        attesting_indices: z
-          .array(Uint64Schema)
-          .max(131072)
-          .openapi({ description: 'Attesting validator indices' }),
-        data: Phase0AttestationDataSchema,
-        signature: SignatureSchema.openapi({
-          description:
-            'The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.',
-        }),
-      })
-      .openapi({
-        description:
-          'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.',
-        required: ['attesting_indices', 'data', 'signature'],
-      }),
-    attestation_2: Attestation_1Schema,
-  })
-  .openapi({
-    description:
-      'The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#attesterslashing) object from the CL spec.',
-    required: ['attestation_1', 'attestation_2'],
-  })
-  .openapi('ElectraAttesterSlashing')
-
-const ElectraAttestationSchema = z
-  .object({
-    aggregation_bits: z
-      .lazy(() => Phase0BeaconStateSchema)
-      .openapi({ description: 'Attester aggregation bits.' }),
-    data: Phase0AttestationDataSchema,
-    signature: SignatureSchema.openapi({ description: 'BLS aggregate signature.' }),
-    committee_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Committee bits.', example: '0x0000000000000001' }),
-  })
-  .openapi({
-    description:
-      'The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#attestation) object from the CL spec.',
-    required: ['aggregation_bits', 'data', 'signature', 'committee_bits'],
-  })
-  .openapi('ElectraAttestation')
-
 const GloasExecutionPayloadEnvelopeSchema = z
   .object({
     payload: GloasExecutionPayloadSchema,
-    execution_requests: z
-      .object({
-        deposits: z
-          .array(
-            z
-              .object({
-                pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of validator.' }),
-                withdrawal_credentials: RootSchema.openapi({
-                  description: 'The withdrawal credentials.',
-                }),
-                amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
-                signature: SignatureSchema,
-                index: Uint64Schema.openapi({ description: 'The index of the deposit request.' }),
-              })
-              .openapi({
-                description:
-                  'The [`DepositRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#depositrequest) object from the CL Electra spec.',
-                required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature', 'index'],
-              }),
-          )
-          .openapi({ description: 'Progressive list of deposit requests.' }),
-        withdrawals: z
-          .array(
-            z
-              .object({
-                source_address: ExecutionAddressSchema.openapi({
-                  description: 'Execution address which sent the request.',
-                }),
-                validator_pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of validator.' }),
-                amount: Uint64Schema.openapi({ description: 'The value to be withdrawn (gwei).' }),
-              })
-              .openapi({
-                description:
-                  'The [`WithdrawalRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#withdrawalrequest) object from the CL Electra spec.',
-                required: ['source_address', 'validator_pubkey', 'amount'],
-              }),
-          )
-          .max(16)
-          .openapi({ description: 'Progressive list of withdrawal requests.' }),
-        consolidations: z
-          .array(
-            z
-              .object({
-                source_address: ExecutionAddressSchema.openapi({
-                  description: 'Execution address which sent the request.',
-                }),
-                source_pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of validator to consolidate from.' }),
-                target_pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of validator to consolidate to.' }),
-              })
-              .openapi({
-                description:
-                  'The [`ConsolidationRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#consolidationrequest) object from the CL Electra spec.',
-                required: ['source_address', 'source_pubkey', 'target_pubkey'],
-              }),
-          )
-          .max(2)
-          .openapi({ description: 'Progressive list of consolidation requests.' }),
-        builder_deposits: z
-          .array(
-            z
-              .object({
-                pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of builder.' }),
-                withdrawal_credentials: z
-                  .lazy(() => GloasBeaconStateSchema)
-                  .openapi({ description: 'The withdrawal credentials.' }),
-                amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
-                signature: SignatureSchema,
-              })
-              .openapi({
-                description:
-                  'The [`BuilderDepositRequest`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderdepositrequest) object from the CL Gloas spec.',
-                required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-              }),
-          )
-          .max(64)
-          .openapi({ description: 'Progressive list of builder deposit requests.' }),
-        builder_exits: z
-          .array(
-            z
-              .object({
-                source_address: ExecutionAddressSchema.openapi({
-                  description: 'Execution address which sent the request.',
-                }),
-                pubkey: z
-                  .lazy(() => GloasBuilderPreferencesEntrySchema)
-                  .openapi({ description: 'BLS public key of builder.' }),
-              })
-              .openapi({
-                description:
-                  'The [`BuilderExitRequest`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderexitrequest) object from the CL Gloas spec.',
-                required: ['source_address', 'pubkey'],
-              }),
-          )
-          .max(16)
-          .openapi({ description: 'Progressive list of builder exit requests.' }),
-      })
-      .openapi({
-        description:
-          'The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionrequests) object from the CL Gloas spec.',
-        required: [
-          'deposits',
-          'withdrawals',
-          'consolidations',
-          'builder_deposits',
-          'builder_exits',
-        ],
-      }),
+    execution_requests: GloasExecutionPayloadEnvelopeExecutionRequestsSchema,
     builder_index: Uint64Schema.openapi({
       description: 'Index of the builder that created this execution payload',
     }),
@@ -2322,1143 +1524,29 @@ const GloasExecutionPayloadEnvelopeSchema = z
   })
   .openapi('GloasExecutionPayloadEnvelope')
 
-const GloasSignedExecutionPayloadEnvelopeSchema = z
-  .object({
-    message: GloasExecutionPayloadEnvelopeSchema,
-    signature: SignatureSchema.openapi({
-      description: 'BLS signature of the execution payload envelope',
-    }),
-  })
-  .openapi({
-    description:
-      'The [`SignedExecutionPayloadEnvelope`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#signedexecutionpayloadenvelope) object from the CL Gloas spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('GloasSignedExecutionPayloadEnvelope')
-
-const BlobSchema = z
-  .hex()
-  .regex(/^0x[a-fA-F0-9]{262144}$/)
-  .openapi({
-    description:
-      'A blob is `FIELD_ELEMENTS_PER_BLOB * size_of(BLSFieldElement) = 4096 * 32 = 131072` bytes (`DATA`) representing a Blob as defined in Deneb',
-  })
-  .openapi('Blob')
-
-const BlobsSchema = z.array(BlobSchema).min(0).max(4096).openapi('Blobs')
-
-const GloasSignedExecutionPayloadEnvelopeContentsSchema = z
-  .object({
-    signed_execution_payload_envelope: GloasSignedExecutionPayloadEnvelopeSchema,
-    kzg_proofs: z
-      .array(
-        z
-          .hex()
-          .regex(/^0x[a-fA-F0-9]{96}$/)
-          .openapi({
-            description:
-              'A G1 curve point. Used for verifying that the `KZGCommitment` for a given `Blob` is correct.',
-          }),
-      )
-      .min(0)
-      .max(33554432),
-    blobs: BlobsSchema,
-  })
-  .openapi({
-    description:
-      'Signed execution payload envelope bundled with blobs and KZG proofs for stateless\npublishing. Used when the validator client publishes to a beacon node that does not\nhave the blobs cached (e.g. multi-BN setups, distributed validators, failover).\n',
-    required: ['signed_execution_payload_envelope', 'kzg_proofs', 'blobs'],
-  })
-  .openapi('GloasSignedExecutionPayloadEnvelopeContents')
-
-type FuluBlockContentsType = {
-  block: {
-    slot: z.infer<typeof Uint64Schema>
-    proposer_index: z.infer<typeof Uint64Schema>
-    parent_root: z.infer<typeof RootSchema>
-    state_root: z.infer<typeof RootSchema>
-  } & {
-    body: {
-      randao_reveal: z.infer<typeof SignatureSchema> & unknown
-      eth1_data: z.infer<typeof GloasBeaconStateSchema>
-      graffiti: z.infer<typeof GraffitiSchema>
-      proposer_slashings: z.infer<typeof Phase0ProposerSlashingSchema>[]
-      attester_slashings: z.infer<typeof ElectraAttesterSlashingSchema>[]
-      attestations: z.infer<typeof ElectraAttestationSchema>[]
-      deposits: {
-        proof: z.infer<typeof RootSchema>[]
-        data: {
-          pubkey: z.infer<typeof GloasBuilderPreferencesEntrySchema>
-          withdrawal_credentials: z.infer<typeof RootSchema>
-          amount: z.infer<typeof Uint64Schema>
-          signature: z.infer<typeof SignatureSchema>
-        }
-      }[]
-      voluntary_exits: z.infer<typeof Phase0SignedVoluntaryExitSchema>[]
-      sync_aggregate: z.infer<typeof GloasLightClientFinalityUpdateSchema>
-      bls_to_execution_changes: z.infer<typeof CapellaSignedBLSToExecutionChangeSchema>[]
-      blob_kzg_commitments: string[]
-    } & {
-      execution_payload: z.infer<typeof _0Schema> & {
-        transactions: string[]
-        withdrawals: z.infer<typeof CapellaWithdrawalSchema>[]
-      }
-      execution_requests: {
-        deposits: z.infer<typeof ItemsSchema>[]
-        withdrawals: z.infer<typeof ItemsSchema>[]
-        consolidations: z.infer<typeof ItemsSchema>[]
-      }
-    }
-  }
-  kzg_proofs: z.infer<typeof GloasSignedExecutionPayloadEnvelopeContentsSchema>
-  blobs: z.infer<typeof BlobsSchema>
-}
-
-const FuluBlockContentsSchema: z.ZodType<FuluBlockContentsType> = z
-  .object({
-    block: z
-      .object({
-        slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-        proposer_index: Uint64Schema.openapi({
-          description: 'Index of validator in validator registry.',
-        }),
-        parent_root: RootSchema.openapi({
-          description: 'The signing Merkle root of the parent `BeaconBlock`.',
-        }),
-        state_root: RootSchema.openapi({
-          description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-        }),
-      })
-      .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-      .and(
-        z
-          .object({
-            body: z
-              .object({
-                randao_reveal: SignatureSchema.openapi({
-                  description: 'The RANDAO reveal value provided by the validator.',
-                }),
-                eth1_data: z.lazy(() => GloasBeaconStateSchema),
-                graffiti: GraffitiSchema,
-                proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-                attester_slashings: z.array(ElectraAttesterSlashingSchema),
-                attestations: z.array(ElectraAttestationSchema),
-                deposits: z.array(
-                  z
-                    .object({
-                      proof: z
-                        .array(RootSchema)
-                        .length(33)
-                        .openapi({ description: 'Branch in the deposit tree.' }),
-                      data: z
-                        .object({
-                          pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                          withdrawal_credentials: RootSchema.openapi({
-                            description: 'The withdrawal credentials.',
-                          }),
-                          amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                          signature: SignatureSchema.openapi({
-                            description: 'Container self-signature.',
-                          }),
-                        })
-                        .openapi({
-                          description:
-                            'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                          required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                        }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                      required: ['proof', 'data'],
-                    }),
-                ),
-                voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-                sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-                bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-                blob_kzg_commitments: z.array(
-                  z
-                    .hex()
-                    .regex(/^0x[a-fA-F0-9]{96}$/)
-                    .openapi({
-                      description:
-                        'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                      example:
-                        '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-                    }),
-                ),
-              })
-              .openapi({
-                description:
-                  'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec.',
-                required: [
-                  'randao_reveal',
-                  'eth1_data',
-                  'graffiti',
-                  'proposer_slashings',
-                  'attester_slashings',
-                  'attestations',
-                  'deposits',
-                  'voluntary_exits',
-                  'sync_aggregate',
-                  'bls_to_execution_changes',
-                  'blob_kzg_commitments',
-                ],
-              })
-              .and(
-                z
-                  .object({
-                    execution_payload: _0Schema.and(
-                      z
-                        .object({
-                          transactions: z
-                            .array(
-                              z
-                                .hex()
-                                .regex(/^0x[a-fA-F0-9]{0,2147483648}$/)
-                                .openapi({
-                                  description:
-                                    'A transaction on the execution (Ethereum 1) network.',
-                                  example:
-                                    '0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86',
-                                }),
-                            )
-                            .max(1048576),
-                          withdrawals: z.array(CapellaWithdrawalSchema).max(16),
-                        })
-                        .openapi({ required: ['transactions', 'withdrawals'] }),
-                    ),
-                    execution_requests: z
-                      .object({
-                        deposits: z
-                          .array(ItemsSchema)
-                          .max(8192)
-                          .openapi({ description: 'List of deposit requests.' }),
-                        withdrawals: z
-                          .array(ItemsSchema)
-                          .max(16)
-                          .openapi({ description: 'List of withdrawal requests.' }),
-                        consolidations: z
-                          .array(ItemsSchema)
-                          .max(2)
-                          .openapi({ description: 'List of consolidation requests.' }),
-                      })
-                      .openapi({
-                        description:
-                          'The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#executionrequests) object from the CL Electra spec.',
-                        required: ['deposits', 'withdrawals', 'consolidations'],
-                      }),
-                  })
-                  .openapi({ required: ['execution_payload', 'execution_requests'] }),
-              ),
-          })
-          .openapi({ required: ['body'] }),
-      )
-      .openapi({
-        description:
-          'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.',
-      }),
-    kzg_proofs: z
-      .lazy(() => GloasSignedExecutionPayloadEnvelopeContentsSchema)
-      .openapi({ description: 'Cell proofs of the blobs as defined in EIP-7594' }),
-    blobs: BlobsSchema,
-  })
-  .openapi({
-    description: 'The required object for block production according to the Fulu CL spec.',
-    required: ['block', 'kzg_proofs', 'blobs'],
-  })
-  .openapi('FuluBlockContents')
-
-const ElectraSignedBeaconBlockSchema = z
-  .object({ message: z.lazy(() => FuluBlockContentsSchema), signature: SignatureSchema })
-  .openapi({
-    description:
-      'The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Electra spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('ElectraSignedBeaconBlock')
-
-const ElectraSignedBlockContentsSchema = z
-  .object({
-    signed_block: ElectraSignedBeaconBlockSchema,
-    kzg_proofs: z.array(ItemsSchema).min(0).max(4096),
-    blobs: BlobsSchema,
-  })
-  .openapi({
-    description:
-      'The required signed components of block production according to the Electra CL spec.',
-    required: ['signed_block', 'kzg_proofs', 'blobs'],
-  })
-  .openapi('ElectraSignedBlockContents')
-
-type DenebBlockContentsType = {
-  block: z.infer<typeof DenebBeaconBlockSchema>
-  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsSchema>
-  blobs: z.infer<typeof BlobsSchema>
-}
-
-type DenebSignedBeaconBlockType = {
-  message: z.infer<typeof DenebBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const DenebSignedBeaconBlockSchema: z.ZodType<DenebSignedBeaconBlockType> = z
-  .object({ message: DenebBeaconBlockSchema, signature: SignatureSchema })
-  .openapi({
-    description:
-      'The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Deneb spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('DenebSignedBeaconBlock')
-
-type DenebSignedBlockContentsType = {
-  signed_block: z.infer<typeof DenebSignedBeaconBlockSchema>
-  kzg_proofs: z.infer<typeof ElectraSignedBlockContentsSchema>
-  blobs: z.infer<typeof BlobsSchema>
-}
-
-const DenebBlindedBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RANDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(Phase0AttesterSlashingSchema),
-            attestations: z.array(Phase0AttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-            blob_kzg_commitments: z.array(
-              z
-                .hex()
-                .regex(/^0x[a-fA-F0-9]{96}$/)
-                .openapi({
-                  description:
-                    'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                  example:
-                    '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-                }),
-            ),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-              'blob_kzg_commitments',
-            ],
-          })
-          .and(
-            z
-              .object({ execution_payload_header: z.lazy(() => FuluBeaconStateSchema) })
-              .openapi({ required: ['execution_payload_header'] }),
-          )
-          .openapi({
-            description:
-              'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec, which contains a transactions root rather than a full transactions list.',
-          }),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Deneb spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
-  })
-  .openapi('DenebBlindedBeaconBlock')
-
-type DenebSignedBlindedBeaconBlockType = {
-  message: z.infer<typeof DenebBlindedBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const ElectraBlindedBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RANDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema),
-            attester_slashings: z.array(ElectraAttesterSlashingSchema),
-            attestations: z.array(ElectraAttestationSchema),
-            deposits: z.array(
-              z
-                .object({
-                  proof: z
-                    .array(RootSchema)
-                    .length(33)
-                    .openapi({ description: 'Branch in the deposit tree.' }),
-                  data: z
-                    .object({
-                      pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                      withdrawal_credentials: RootSchema.openapi({
-                        description: 'The withdrawal credentials.',
-                      }),
-                      amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                      signature: SignatureSchema.openapi({
-                        description: 'Container self-signature.',
-                      }),
-                    })
-                    .openapi({
-                      description:
-                        'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                      required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                    }),
-                })
-                .openapi({
-                  description:
-                    'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                  required: ['proof', 'data'],
-                }),
-            ),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema),
-            blob_kzg_commitments: z.array(
-              z
-                .hex()
-                .regex(/^0x[a-fA-F0-9]{96}$/)
-                .openapi({
-                  description:
-                    'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                  example:
-                    '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-                }),
-            ),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-              'blob_kzg_commitments',
-            ],
-          })
-          .and(
-            z
-              .object({
-                execution_payload_header: z.lazy(() => FuluBeaconStateSchema),
-                execution_requests: z
-                  .object({
-                    deposits: z
-                      .array(ItemsSchema)
-                      .max(8192)
-                      .openapi({ description: 'List of deposit requests.' }),
-                    withdrawals: z
-                      .array(ItemsSchema)
-                      .max(16)
-                      .openapi({ description: 'List of withdrawal requests.' }),
-                    consolidations: z
-                      .array(ItemsSchema)
-                      .max(2)
-                      .openapi({ description: 'List of consolidation requests.' }),
-                  })
-                  .openapi({
-                    description:
-                      'The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#executionrequests) object from the CL Electra spec.',
-                    required: ['deposits', 'withdrawals', 'consolidations'],
-                  }),
-              })
-              .openapi({ required: ['execution_payload_header', 'execution_requests'] }),
-          )
-          .openapi({
-            description:
-              'A variant of the [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec, which contains a transactions root rather than a full transactions list.',
-          }),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec, which contains a `BlindedBeaconBlockBody` rather than a `BeaconBlockBody`.',
-  })
-  .openapi('ElectraBlindedBeaconBlock')
-
-type ElectraSignedBlindedBeaconBlockType = {
-  message: z.infer<typeof ElectraBlindedBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-const ElectraPendingDepositSchema = z
-  .object({
-    pubkey: z
-      .lazy(() => GloasBuilderPreferencesEntrySchema)
-      .openapi({ description: 'BLS public key of validator.' }),
-    withdrawal_credentials: RootSchema.openapi({ description: 'The withdrawal credentials.' }),
-    amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
-    signature: SignatureSchema,
-    slot: Uint64Schema.openapi({
-      description: 'The slot at which the deposit request was processed.',
-    }),
-  })
-  .openapi({
-    description:
-      'The [`PendingDeposit`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingdeposit) object from the CL Electra spec.',
-    required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature', 'slot'],
-  })
-  .openapi('ElectraPendingDeposit')
-
-const ElectraPendingDepositsSchema = z
-  .array(ElectraPendingDepositSchema)
-  .max(134217728)
-  .openapi({ description: 'List of pending deposits.' })
-  .openapi('ElectraPendingDeposits')
-
-const ElectraPendingPartialWithdrawalSchema = z
-  .object({
-    validator_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    amount: Uint64Schema.openapi({ description: 'The value to be withdrawn (gwei).' }),
-    withdrawable_epoch: Uint64Schema.openapi({
-      description: 'The epoch when the amount is withdrawable.',
-    }),
-  })
-  .openapi({
-    description:
-      'The [`PendingPartialWithdrawal`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingpartialwithdrawal) object from the CL Electra spec.',
-    required: ['validator_index', 'amount', 'withdrawable_epoch'],
-  })
-  .openapi('ElectraPendingPartialWithdrawal')
-
-const ElectraPendingPartialWithdrawalsSchema = z
-  .array(ElectraPendingPartialWithdrawalSchema)
-  .max(134217728)
-  .openapi({ description: 'List of pending partial withdrawals.' })
-  .openapi('ElectraPendingPartialWithdrawals')
-
-const ElectraPendingConsolidationSchema = z
-  .object({
-    source_index: Uint64Schema.openapi({ description: 'Index of validator to consolidate from.' }),
-    target_index: Uint64Schema.openapi({ description: 'Index of validator to consolidate to.' }),
-  })
-  .openapi({
-    description:
-      'The [`PendingConsolidation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingconsolidation) object from the CL Electra spec.',
-    required: ['source_index', 'target_index'],
-  })
-  .openapi('ElectraPendingConsolidation')
-
-const ElectraPendingConsolidationsSchema = z
-  .array(ElectraPendingConsolidationSchema)
-  .max(262144)
-  .openapi({ description: 'List of pending consolidations.' })
-  .openapi('ElectraPendingConsolidations')
-
-type FuluBeaconStateType = {
-  genesis_time: z.infer<typeof Uint64Schema>
-  genesis_validators_root: z.infer<typeof RootSchema>
-  slot: z.infer<typeof Uint64Schema>
-  fork: z.infer<typeof ForkSchema>
-  latest_block_header: z.infer<typeof GloasBeaconStateSchema>
-  block_roots: z.infer<typeof RootSchema>[]
-  state_roots: z.infer<typeof RootSchema>[]
-  historical_roots: z.infer<typeof RootSchema>[]
-  eth1_data: z.infer<typeof GloasBeaconStateSchema>
-  eth1_data_votes: z.infer<typeof GloasBeaconStateSchema>[]
-  eth1_deposit_index: z.infer<typeof Uint64Schema>
-  validators: z.infer<typeof ValidatorResponseSchema>[]
-  balances: z.infer<typeof Uint64Schema>[]
-  randao_mixes: z.infer<typeof GloasBeaconStateSchema>[]
-  slashings: z.infer<typeof Uint64Schema>[]
-  previous_epoch_participation: FuluBeaconStateType
-  current_epoch_participation: z.infer<typeof GloasBeaconStateSchema>[]
-  justification_bits: z.infer<typeof GloasBeaconStateSchema>
-  previous_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  current_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  finalized_checkpoint: z.infer<typeof CheckpointSchema>
-  inactivity_scores: z.infer<typeof Uint64Schema>[]
-  current_sync_committee: z.infer<typeof GloasBeaconStateSchema>
-  next_sync_committee: z.infer<typeof GloasBeaconStateSchema>
-  latest_execution_payload_header: {
-    parent_hash: z.infer<typeof GloasBeaconStateSchema>
-    fee_recipient: z.infer<typeof ExecutionAddressSchema>
-    state_root: z.infer<typeof RootSchema>
-    receipts_root: z.infer<typeof RootSchema>
-    logs_bloom: z.infer<typeof GloasExecutionPayloadSchema>
-    prev_randao: z.infer<typeof GloasBeaconStateSchema>
-    block_number: z.infer<typeof Uint64Schema>
-    gas_limit: z.infer<typeof Uint64Schema>
-    gas_used: z.infer<typeof Uint64Schema>
-    timestamp: z.infer<typeof Uint64Schema>
-    extra_data: z.infer<typeof GloasExecutionPayloadSchema>
-    base_fee_per_gas: string
-    blob_gas_used: z.infer<typeof Uint64Schema>
-    excess_blob_gas: z.infer<typeof Uint64Schema>
-    block_hash: z.infer<typeof GloasBeaconStateSchema>
-  } & {
-    transactions_root: z.infer<typeof RootSchema>
-    withdrawals_root: z.infer<typeof RootSchema>
-  }
-  next_withdrawal_index: z.infer<typeof Uint64Schema>
-  next_withdrawal_validator_index: z.infer<typeof Uint64Schema>
-  historical_summaries: z.infer<typeof GloasBeaconStateSchema>[]
-  deposit_requests_start_index: z.infer<typeof Uint64Schema>
-  deposit_balance_to_consume: z.infer<typeof Uint64Schema>
-  exit_balance_to_consume: z.infer<typeof Uint64Schema>
-  earliest_exit_epoch: z.infer<typeof Uint64Schema>
-  consolidation_balance_to_consume: z.infer<typeof Uint64Schema>
-  earliest_consolidation_epoch: z.infer<typeof Uint64Schema>
-  pending_deposits: z.infer<typeof ElectraPendingDepositsSchema>
-  pending_partial_withdrawals: z.infer<typeof ElectraPendingPartialWithdrawalsSchema>
-  pending_consolidations: z.infer<typeof ElectraPendingConsolidationsSchema>
-  proposer_lookahead: z.infer<typeof Uint64Schema>[]
-}
-
-type GloasPendingDepositsType = z.infer<typeof ElectraPendingDepositSchema>[]
-
-type GloasPendingPartialWithdrawalsType = z.infer<typeof ElectraPendingPartialWithdrawalSchema>[]
-
-type GloasPendingConsolidationsType = z.infer<typeof ElectraPendingConsolidationSchema>[]
-
-const GloasPendingDepositsSchema: z.ZodType<GloasPendingDepositsType> = z
-  .array(ElectraPendingDepositSchema)
-  .openapi({ description: 'Progressive list of pending deposits.' })
-  .openapi('GloasPendingDeposits')
-
-const GloasPendingPartialWithdrawalsSchema: z.ZodType<GloasPendingPartialWithdrawalsType> = z
-  .array(ElectraPendingPartialWithdrawalSchema)
-  .openapi({ description: 'Progressive list of pending partial withdrawals.' })
-  .openapi('GloasPendingPartialWithdrawals')
-
-const GloasPendingConsolidationsSchema: z.ZodType<GloasPendingConsolidationsType> = z
-  .array(ElectraPendingConsolidationSchema)
-  .openapi({ description: 'Progressive list of pending consolidations.' })
-  .openapi('GloasPendingConsolidations')
-
-const GloasBuilderSchema: z.ZodType<GloasBuilderType> = z
-  .lazy(() =>
-    z
-      .object({
-        pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-        version: z.lazy(() => GloasBeaconStateSchema).openapi({ description: 'Builder version.' }),
-        execution_address: ExecutionAddressSchema.openapi({
-          description: 'Execution-layer address that receives builder withdrawals.',
-        }),
-        balance: Uint64Schema.openapi({ description: 'Current builder balance in gwei.' }),
-        deposit_epoch: Uint64Schema.openapi({
-          description: 'Epoch when the builder deposit was processed.',
-        }),
-        withdrawable_epoch: Uint64Schema.openapi({
-          description: "Epoch when the builder can withdraw. 'FAR_FUTURE_EPOCH' if not exiting.",
-        }),
-      })
-      .openapi({
-        description:
-          'The [`Builder`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builder) object from the CL Gloas spec.',
-        required: [
-          'pubkey',
-          'version',
-          'execution_address',
-          'balance',
-          'deposit_epoch',
-          'withdrawable_epoch',
-        ],
-      }),
-  )
-  .openapi('GloasBuilder')
-
-const GloasBuilderPendingWithdrawalSchema = z
-  .object({
-    fee_recipient: ExecutionAddressSchema,
-    amount: Uint64Schema,
-    builder_index: Uint64Schema,
-  })
-  .openapi({
-    description:
-      'The [`BuilderPendingWithdrawal`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderpendingwithdrawal) object from the CL Gloas spec.',
-    required: ['fee_recipient', 'amount', 'builder_index'],
-  })
-  .openapi('GloasBuilderPendingWithdrawal')
-
-const GloasBuilderPendingPaymentSchema = z
-  .object({
-    weight: Uint64Schema,
-    withdrawal: GloasBuilderPendingWithdrawalSchema,
-    proposer_index: Uint64Schema,
-  })
-  .openapi({
-    description:
-      'The [`BuilderPendingPayment`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderpendingpayment) object from the CL Gloas spec.',
-    required: ['weight', 'withdrawal', 'proposer_index'],
-  })
-  .openapi('GloasBuilderPendingPayment')
-
-type GloasBuilderPendingPaymentsType = z.infer<typeof GloasBuilderPendingPaymentSchema>[]
-
-const GloasBuilderPendingPaymentsSchema: z.ZodType<GloasBuilderPendingPaymentsType> = z
-  .array(GloasBuilderPendingPaymentSchema)
-  .length(64)
-  .openapi({ description: 'Fixed vector of pending builder payments covering two epochs.' })
-  .openapi('GloasBuilderPendingPayments')
-
-type GloasBuilderPendingWithdrawalsType = z.infer<typeof GloasBuilderPendingWithdrawalSchema>[]
-
-const GloasBuilderPendingWithdrawalsSchema: z.ZodType<GloasBuilderPendingWithdrawalsType> = z
-  .array(GloasBuilderPendingWithdrawalSchema)
-  .openapi({ description: 'Progressive list of pending builder withdrawals.' })
-  .openapi('GloasBuilderPendingWithdrawals')
-
-const GloasExecutionPayloadBidSchema: z.ZodType<GloasExecutionPayloadBidType> = z
-  .lazy(() =>
-    z
-      .object({
-        parent_block_hash: z.lazy(() => GloasBeaconStateSchema),
-        parent_block_root: RootSchema,
-        block_hash: z.lazy(() => GloasBeaconStateSchema),
-        prev_randao: z.lazy(() => GloasBeaconStateSchema),
-        fee_recipient: ExecutionAddressSchema,
-        gas_limit: Uint64Schema,
-        builder_index: Uint64Schema,
-        slot: Uint64Schema,
-        value: Uint64Schema,
-        execution_payment: Uint64Schema,
-        blob_kzg_commitments: z
-          .array(
-            z
-              .hex()
-              .regex(/^0x[a-fA-F0-9]{96}$/)
-              .openapi({
-                description:
-                  'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                example:
-                  '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-              }),
-          )
-          .max(4096),
-        execution_requests_root: RootSchema,
-      })
-      .openapi({
-        description:
-          'The [`ExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionpayloadbid) object from the CL Gloas spec.',
-        required: [
-          'parent_block_hash',
-          'parent_block_root',
-          'block_hash',
-          'prev_randao',
-          'fee_recipient',
-          'gas_limit',
-          'builder_index',
-          'slot',
-          'value',
-          'execution_payment',
-          'blob_kzg_commitments',
-          'execution_requests_root',
-        ],
-      }),
-  )
-  .openapi('GloasExecutionPayloadBid')
-
-type GloasPayloadTimelinessCommitteeType = z.infer<typeof Uint64Schema>[]
-
-const GloasPayloadTimelinessCommitteeSchema: z.ZodType<GloasPayloadTimelinessCommitteeType> = z
-  .array(Uint64Schema)
-  .length(512)
-  .openapi({
-    description:
-      'The [`PayloadTimelinessCommittee`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#new-payloadtimelinesscommittee) vector from the CL Gloas spec. Validator indices are in committee order and may contain duplicates.',
-  })
-  .openapi('GloasPayloadTimelinessCommittee')
-
-type GloasBeaconStateType = {
-  genesis_time: z.infer<typeof Uint64Schema>
-  genesis_validators_root: z.infer<typeof RootSchema>
-  slot: z.infer<typeof Uint64Schema>
-  fork: z.infer<typeof ForkSchema>
-  latest_block_header: {
-    slot: z.infer<typeof Uint64Schema>
-    proposer_index: z.infer<typeof Uint64Schema>
-    parent_root: z.infer<typeof RootSchema>
-    state_root: z.infer<typeof RootSchema>
-  } & { body_root: z.infer<typeof RootSchema> }
-  block_roots: z.infer<typeof RootSchema>[]
-  state_roots: z.infer<typeof RootSchema>[]
-  historical_roots: z.infer<typeof RootSchema>[]
-  eth1_data: {
-    deposit_root: z.infer<typeof RootSchema>
-    deposit_count: z.infer<typeof Uint64Schema>
-    block_hash: GloasBeaconStateType
-  }
-  eth1_data_votes: GloasBeaconStateType[]
-  eth1_deposit_index: z.infer<typeof Uint64Schema>
-  validators: z.infer<typeof ValidatorResponseSchema>[]
-  balances: z.infer<typeof Uint64Schema>[]
-  randao_mixes: string[]
-  slashings: z.infer<typeof Uint64Schema>[]
-  previous_epoch_participation: GloasBeaconStateType[]
-  current_epoch_participation: string[]
-  justification_bits: string
-  previous_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  current_justified_checkpoint: z.infer<typeof CheckpointSchema>
-  finalized_checkpoint: z.infer<typeof CheckpointSchema>
-  inactivity_scores: z.infer<typeof Uint64Schema>[]
-  current_sync_committee: GloasBeaconStateType
-  next_sync_committee: {
-    pubkeys: z.infer<typeof GloasBuilderPreferencesEntrySchema>[]
-    aggregate_pubkey: z.infer<typeof GloasBuilderPreferencesEntrySchema>
-  }
-  latest_block_hash: string
-  next_withdrawal_index: z.infer<typeof Uint64Schema>
-  next_withdrawal_validator_index: z.infer<typeof Uint64Schema>
-  historical_summaries: {
-    block_summary_root: z.infer<typeof RootSchema>
-    state_summary_root: z.infer<typeof RootSchema>
-  }[]
-  deposit_requests_start_index: z.infer<typeof Uint64Schema>
-  deposit_balance_to_consume: z.infer<typeof Uint64Schema>
-  exit_balance_to_consume: z.infer<typeof Uint64Schema>
-  earliest_exit_epoch: z.infer<typeof Uint64Schema>
-  consolidation_balance_to_consume: z.infer<typeof Uint64Schema>
-  earliest_consolidation_epoch: z.infer<typeof Uint64Schema>
-  pending_deposits: z.infer<typeof GloasPendingDepositsSchema>
-  pending_partial_withdrawals: z.infer<typeof GloasPendingPartialWithdrawalsSchema>
-  pending_consolidations: z.infer<typeof GloasPendingConsolidationsSchema>
-  proposer_lookahead: z.infer<typeof Uint64Schema>[]
-  builders: z.infer<typeof GloasBuilderSchema>[]
-  next_withdrawal_builder_index: z.infer<typeof Uint64Schema>
-  execution_payload_availability: GloasBeaconStateType
-  builder_pending_payments: z.infer<typeof GloasBuilderPendingPaymentsSchema>
-  builder_pending_withdrawals: z.infer<typeof GloasBuilderPendingWithdrawalsSchema>
-  latest_execution_payload_bid: z.infer<typeof GloasExecutionPayloadBidSchema>
-  payload_expected_withdrawals: z.infer<typeof CapellaWithdrawalSchema>[]
-  ptc_window: z.infer<typeof GloasPayloadTimelinessCommitteeSchema>[]
-}
-
-const GloasAttesterSlashingSchema: z.ZodType<GloasAttesterSlashingType> = z
-  .lazy(() =>
-    z
-      .object({
-        attestation_1: z
-          .object({
-            attesting_indices: z
-              .array(Uint64Schema)
-              .max(131072)
-              .openapi({ description: 'Progressive list of attesting validator indices.' }),
-            data: Phase0AttestationDataSchema,
-            signature: SignatureSchema.openapi({
-              description: 'The BLS signature of the indexed attestation.',
-            }),
-          })
-          .openapi({
-            description:
-              'The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.',
-            required: ['attesting_indices', 'data', 'signature'],
-          }),
-        attestation_2: z.lazy(() => GloasAttesterSlashingSchema),
-      })
-      .openapi({
-        description:
-          'The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/electra/beacon-chain.md#attesterslashing) object from the CL spec.',
-        required: ['attestation_1', 'attestation_2'],
-      }),
-  )
-  .openapi('GloasAttesterSlashing')
-
-const GloasAttestationSchema = z
-  .object({
-    aggregation_bits: z
-      .lazy(() => Phase0BeaconStateSchema)
-      .openapi({
-        description:
-          'Progressive bitlist of attester aggregation bits, limited to MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT (131072) bits.',
-      }),
-    data: Phase0AttestationDataSchema,
-    signature: SignatureSchema.openapi({ description: 'BLS aggregate signature.' }),
-    committee_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({
-        description: 'Committee bits, a fixed vector of MAX_COMMITTEES_PER_SLOT (64) bits.',
-        example: '0x0000000000000001',
-      }),
-  })
-  .openapi({
-    description:
-      'The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#attestation) object from the CL Gloas spec.',
-    required: ['aggregation_bits', 'data', 'signature', 'committee_bits'],
-  })
-  .openapi('GloasAttestation')
-
-const GloasSignedExecutionPayloadBidSchema = z
-  .object({ message: GloasExecutionPayloadBidSchema, signature: SignatureSchema })
-  .openapi({
-    description:
-      'The [`SignedExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#signedexecutionpayloadbid) object from the CL Gloas spec.',
-    required: ['message', 'signature'],
-  })
-  .openapi('GloasSignedExecutionPayloadBid')
-
-const GloasPayloadAttestationDataSchema = z
-  .object({
-    beacon_block_root: RootSchema.openapi({
-      description: 'Hash tree root of the beacon block associated with this PTC attestation',
-    }),
-    slot: Uint64Schema.openapi({
-      description: 'The slot for which the payload attestation is being made',
-    }),
-    payload_present: z
-      .boolean()
-      .openapi({
-        description:
-          'True if a `SignedExecutionPayloadEnvelope` has been seen referencing this block',
-      }),
-    blob_data_available: z
-      .boolean()
-      .openapi({ description: 'True if blob data is available for this block' }),
-  })
-  .openapi({
-    description:
-      'The [`PayloadAttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#payloadattestationdata) object from the CL Gloas spec.',
-    required: ['beacon_block_root', 'slot', 'payload_present', 'blob_data_available'],
-  })
-  .openapi('GloasPayloadAttestationData')
-
-const GloasPayloadAttestationSchema = z
-  .object({
-    aggregation_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({
-        description: 'Fixed vector of PTC_SIZE (512) bits.',
-        example:
-          '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-      }),
-    data: GloasPayloadAttestationDataSchema,
-    signature: SignatureSchema,
-  })
-  .openapi({
-    description:
-      'The [`PayloadAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#payloadattestation) object from the CL Gloas spec.',
-    required: ['aggregation_bits', 'data', 'signature'],
-  })
-  .openapi('GloasPayloadAttestation')
-
-const GloasBeaconBlockSchema = z
-  .object({
-    slot: Uint64Schema.openapi({ description: 'The slot to which this block corresponds.' }),
-    proposer_index: Uint64Schema.openapi({
-      description: 'Index of validator in validator registry.',
-    }),
-    parent_root: RootSchema.openapi({
-      description: 'The signing Merkle root of the parent `BeaconBlock`.',
-    }),
-    state_root: RootSchema.openapi({
-      description: 'The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.',
-    }),
-  })
-  .openapi({ required: ['slot', 'proposer_index', 'parent_root', 'state_root'] })
-  .and(
-    z
-      .object({
-        body: z
-          .object({
-            randao_reveal: SignatureSchema.openapi({
-              description: 'The RANDAO reveal value provided by the validator.',
-            }),
-            eth1_data: z.lazy(() => GloasBeaconStateSchema),
-            graffiti: GraffitiSchema,
-            proposer_slashings: z.array(Phase0ProposerSlashingSchema).max(16),
-            attester_slashings: z.array(GloasAttesterSlashingSchema).max(1),
-            attestations: z.array(GloasAttestationSchema).max(8),
-            deposits: z
-              .array(
-                z
-                  .object({
-                    proof: z
-                      .array(RootSchema)
-                      .length(33)
-                      .openapi({ description: 'Branch in the deposit tree.' }),
-                    data: z
-                      .object({
-                        pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
-                        withdrawal_credentials: RootSchema.openapi({
-                          description: 'The withdrawal credentials.',
-                        }),
-                        amount: Uint64Schema.openapi({ description: 'Amount in Gwei.' }),
-                        signature: SignatureSchema.openapi({
-                          description: 'Container self-signature.',
-                        }),
-                      })
-                      .openapi({
-                        description:
-                          'The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.',
-                        required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature'],
-                      }),
-                  })
-                  .openapi({
-                    description:
-                      'The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.',
-                    required: ['proof', 'data'],
-                  }),
-              )
-              .max(0)
-              .openapi({
-                description:
-                  'Legacy deposits have been disabled since Fulu. This list must be empty.',
-              }),
-            voluntary_exits: z.array(Phase0SignedVoluntaryExitSchema).max(16),
-            sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-            bls_to_execution_changes: z.array(CapellaSignedBLSToExecutionChangeSchema).max(16),
-            signed_execution_payload_bid: GloasSignedExecutionPayloadBidSchema,
-            payload_attestations: z
-              .array(GloasPayloadAttestationSchema)
-              .max(4)
-              .openapi({ description: 'Payload attestations for the parent beacon block.' }),
-            parent_execution_requests: z.lazy(() => GloasExecutionPayloadEnvelopeSchema),
-          })
-          .openapi({
-            description:
-              'The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#beaconblockbody) object from the CL Gloas spec.',
-            required: [
-              'randao_reveal',
-              'eth1_data',
-              'graffiti',
-              'proposer_slashings',
-              'attester_slashings',
-              'attestations',
-              'deposits',
-              'voluntary_exits',
-              'sync_aggregate',
-              'bls_to_execution_changes',
-              'signed_execution_payload_bid',
-              'payload_attestations',
-              'parent_execution_requests',
-            ],
-          }),
-      })
-      .openapi({ required: ['body'] }),
-  )
-  .openapi({
-    description:
-      'The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/phase0/beacon-chain.md#beaconblock) object from the CL Gloas spec.',
-  })
-  .openapi('GloasBeaconBlock')
-
-type GloasSignedBeaconBlockType = {
-  message: z.infer<typeof GloasBeaconBlockSchema>
-  signature: z.infer<typeof SignatureSchema>
-}
-
-type GloasBuilderType = {
-  pubkey: z.infer<typeof GloasBuilderPreferencesEntrySchema>
-  version: z.infer<typeof GloasBeaconStateSchema>
-  execution_address: z.infer<typeof ExecutionAddressSchema>
-  balance: z.infer<typeof Uint64Schema>
-  deposit_epoch: z.infer<typeof Uint64Schema>
-  withdrawable_epoch: z.infer<typeof Uint64Schema>
-}
+const GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema = z
+  .array(GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsSchema)
+  .min(0)
+  .max(33554432)
+  .openapi('GloasSignedExecutionPayloadEnvelopeContentsKzgProofs')
 
 type GloasBlockContentsType = {
   block: z.infer<typeof GloasBeaconBlockSchema>
   execution_payload_envelope: z.infer<typeof GloasExecutionPayloadEnvelopeSchema>
-  kzg_proofs: z.infer<typeof GloasSignedExecutionPayloadEnvelopeContentsSchema>
+  kzg_proofs: z.infer<typeof GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema>
   blobs: z.infer<typeof BlobsSchema>
 }
 
-type GloasExecutionPayloadBidType = {
-  parent_block_hash: z.infer<typeof GloasBeaconStateSchema>
-  parent_block_root: z.infer<typeof RootSchema>
-  block_hash: z.infer<typeof GloasBeaconStateSchema>
-  prev_randao: z.infer<typeof GloasBeaconStateSchema>
-  fee_recipient: z.infer<typeof ExecutionAddressSchema>
-  gas_limit: z.infer<typeof Uint64Schema>
-  builder_index: z.infer<typeof Uint64Schema>
-  slot: z.infer<typeof Uint64Schema>
-  value: z.infer<typeof Uint64Schema>
-  execution_payment: z.infer<typeof Uint64Schema>
-  blob_kzg_commitments: string[]
-  execution_requests_root: z.infer<typeof RootSchema>
+type FuluBlockContentsType = {
+  block: z.infer<typeof FuluBlockContentsBlockSchema>
+  kzg_proofs: z.infer<typeof GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
 }
 
-type GloasAttesterSlashingType = {
-  attestation_1: {
-    attesting_indices: z.infer<typeof Uint64Schema>[]
-    data: z.infer<typeof Phase0AttestationDataSchema>
-    signature: z.infer<typeof SignatureSchema>
-  }
-  attestation_2: GloasAttesterSlashingType
+type FuluSignedBlockContentsType = {
+  signed_block: z.infer<typeof ElectraSignedBeaconBlockSchema>
+  kzg_proofs: z.infer<typeof GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema>
+  blobs: z.infer<typeof BlobsSchema>
 }
 
 const BroadcastValidationSchema = z
@@ -3467,6 +1555,73 @@ const BroadcastValidationSchema = z
     description: 'Level of validation that must be applied to a block before it is broadcast.',
   })
   .openapi('BroadcastValidation')
+
+const ValidatorStatusSchema = z
+  .enum([
+    'pending_initialized',
+    'pending_queued',
+    'active_ongoing',
+    'active_exiting',
+    'active_slashed',
+    'exited_unslashed',
+    'exited_slashed',
+    'withdrawal_possible',
+    'withdrawal_done',
+  ])
+  .openapi({
+    description:
+      "Possible statuses:\n- **pending_initialized** - When the first deposit is processed, but not enough funds are available (or not yet the end of the first epoch) to get validator into the activation queue.\n- **pending_queued** - When validator is waiting to get activated, and have enough funds etc. while in the queue, validator activation epoch keeps changing until it gets to the front and make it through (finalization is a requirement here too).\n- **active_ongoing** - When validator must be attesting, and have not initiated any exit.\n- **active_exiting** - When validator is still active, but filed a voluntary request to exit.\n- **active_slashed** - When validator is still active, but have a slashed status and is scheduled to exit.\n- **exited_unslashed** - When validator has reached regular exit epoch, not being slashed, and doesn't have to attest any more, but cannot withdraw yet.\n- **exited_slashed** - When validator has reached regular exit epoch, but was slashed, have to wait for a longer withdrawal period.\n- **withdrawal_possible** - After validator has exited, a while later is permitted to move funds, and is truly out of the system.\n- **withdrawal_done** - (not possible in phase0, except slashing full balance) - actually having moved funds away\n\n[Validator status specification](https://hackmd.io/ofFJ5gOmQpu1jjHilHbdQQ)\n",
+    example: 'active_ongoing',
+  })
+  .openapi('ValidatorStatus')
+
+const ValidatorResponseValidatorSchema = z
+  .object({
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
+    withdrawal_credentials: RootSchema.openapi({ description: 'Root of withdrawal credentials' }),
+    effective_balance: Uint64Schema.openapi({ description: 'Balance at stake in Gwei.' }),
+    slashed: z
+      .boolean()
+      .openapi({ example: false, description: 'Was validator slashed (not longer active).' }),
+    activation_eligibility_epoch: Uint64Schema.openapi({
+      description: 'When criteria for activation were met.',
+    }),
+    activation_epoch: Uint64Schema.openapi({
+      description: "Epoch when validator activated. 'FAR_FUTURE_EPOCH' if not activated",
+    }),
+    exit_epoch: Uint64Schema.openapi({
+      description: "Epoch when validator exited. 'FAR_FUTURE_EPOCH' if not exited.",
+    }),
+    withdrawable_epoch: Uint64Schema.openapi({
+      description:
+        "When validator can withdraw or transfer funds. 'FAR_FUTURE_EPOCH' if not defined",
+    }),
+  })
+  .openapi({
+    description:
+      'The [`Validator`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#validator) object from the CL spec.',
+    required: [
+      'pubkey',
+      'withdrawal_credentials',
+      'effective_balance',
+      'slashed',
+      'activation_eligibility_epoch',
+      'activation_epoch',
+      'exit_epoch',
+      'withdrawable_epoch',
+    ],
+  })
+  .openapi('ValidatorResponseValidator')
+
+const ValidatorResponseSchema = z
+  .object({
+    index: Uint64Schema.openapi({ description: 'Index of validator in validator registry.' }),
+    balance: Uint64Schema.openapi({ description: 'Current validator balance in gwei.' }),
+    status: ValidatorStatusSchema,
+    validator: ValidatorResponseValidatorSchema,
+  })
+  .openapi({ required: ['index', 'balance', 'status', 'validator'] })
+  .openapi('ValidatorResponse')
 
 const ValidatorBalanceResponseSchema = z
   .object({
@@ -3479,9 +1634,9 @@ const ValidatorBalanceResponseSchema = z
 const ValidatorIdentityResponseSchema = z
   .object({
     index: Uint64Schema.openapi({ description: 'Index of validator in validator registry.' }),
-    pubkey: z
-      .lazy(() => GloasBuilderPreferencesEntrySchema)
-      .openapi({ description: 'Public key of validator.' }),
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'Public key of validator.',
+    }),
     activation_epoch: Uint64Schema.openapi({
       description: "Epoch when validator activated. 'FAR_FUTURE_EPOCH' if not activated",
     }),
@@ -3497,6 +1652,43 @@ const BuilderStatusSchema = z
     example: 'active',
   })
   .openapi('BuilderStatus')
+
+const GloasBeaconStateCurrentEpochParticipationItemsSchema = z
+  .string()
+  .regex(/^([0-9]{1,2}|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/)
+  .openapi({ description: 'Unsigned 8 bit integer, max value 255', example: '0' })
+  .openapi('GloasBeaconStateCurrentEpochParticipationItems')
+
+const GloasBuilderSchema = z
+  .object({
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
+    version: GloasBeaconStateCurrentEpochParticipationItemsSchema.openapi({
+      description: 'Builder version.',
+    }),
+    execution_address: ExecutionAddressSchema.openapi({
+      description: 'Execution-layer address that receives builder withdrawals.',
+    }),
+    balance: Uint64Schema.openapi({ description: 'Current builder balance in gwei.' }),
+    deposit_epoch: Uint64Schema.openapi({
+      description: 'Epoch when the builder deposit was processed.',
+    }),
+    withdrawable_epoch: Uint64Schema.openapi({
+      description: "Epoch when the builder can withdraw. 'FAR_FUTURE_EPOCH' if not exiting.",
+    }),
+  })
+  .openapi({
+    description:
+      'The [`Builder`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builder) object from the CL Gloas spec.',
+    required: [
+      'pubkey',
+      'version',
+      'execution_address',
+      'balance',
+      'deposit_epoch',
+      'withdrawable_epoch',
+    ],
+  })
+  .openapi('GloasBuilder')
 
 const BuilderResponseSchema = z
   .object({
@@ -3524,7 +1716,7 @@ const CommitteeSchema = z
 
 const AttesterDutySchema = z
   .object({
-    pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
     validator_index: Uint64Schema.openapi({
       description: 'Index of validator in validator registry',
     }),
@@ -3553,7 +1745,7 @@ const AttesterDutySchema = z
 
 const ProposerDutySchema = z
   .object({
-    pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
     validator_index: Uint64Schema.openapi({
       description: 'Index of validator in validator registry.',
     }),
@@ -3566,7 +1758,7 @@ const ProposerDutySchema = z
 
 const PtcDutySchema = z
   .object({
-    pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
     validator_index: Uint64Schema.openapi({
       description: 'Index of validator in validator registry.',
     }),
@@ -3579,7 +1771,7 @@ const PtcDutySchema = z
 
 const AltairSyncDutySchema = z
   .object({
-    pubkey: z.lazy(() => GloasBuilderPreferencesEntrySchema),
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
     validator_index: Uint64Schema.openapi({
       description: 'Index of validator in validator registry.',
     }),
@@ -3623,65 +1815,86 @@ const SyncCommitteeSelectionSchema = z
   .openapi({ required: ['validator_index', 'slot', 'subcommittee_index', 'selection_proof'] })
   .openapi('SyncCommitteeSelection')
 
-const NetworkIdentitySchema: z.ZodType<NetworkIdentityType> = z
-  .lazy(() =>
-    z
+const ForkVersionSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{8}$/)
+  .openapi({ description: 'a fork version number', example: '0x00000000' })
+  .openapi('ForkVersion')
+
+const ForkSchema = z
+  .object({
+    previous_version: ForkVersionSchema,
+    current_version: ForkVersionSchema,
+    epoch: Uint64Schema,
+  })
+  .openapi({
+    description:
+      'The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.',
+    required: ['previous_version', 'current_version', 'epoch'],
+  })
+  .openapi('Fork')
+
+const PeerIdSchema = z
+  .string()
+  .openapi({
+    description:
+      'Cryptographic hash of a peer’s public key. [Read more](https://docs.libp2p.io/concepts/peer-id/)',
+    example: 'QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N',
+  })
+  .openapi('PeerId')
+
+const NetworkIdentityEnrSchema = z
+  .string()
+  .openapi({
+    description: 'Ethereum node record. [Read more](https://eips.ethereum.org/EIPS/eip-778)',
+    example:
+      'enr:-IS4QHCYrYZbAKWCBRlAy5zzaDZXJBGkcnh4MHcBFZntXNFrdvJjX04jRzjzCBOonrkTfj499SZuOh8R33Ls8RRcy5wBgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQPKY0yuDUmstAHYpMa2_oxVtw0RW_QAdpzBQA8yWM0xOIN1ZHCCdl8',
+  })
+  .openapi('NetworkIdentityEnr')
+
+const NetworkIdentityP2pAddressesItemsSchema = z
+  .string()
+  .openapi({
+    description:
+      "Node's addresses on which eth2 RPC requests are served. [Read more](https://docs.libp2p.io/reference/glossary/#multiaddr)",
+    example: '/ip4/7.7.7.7/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N',
+  })
+  .openapi('NetworkIdentityP2pAddressesItems')
+
+const NetworkIdentitySchema = z
+  .object({
+    peer_id: PeerIdSchema,
+    enr: NetworkIdentityEnrSchema,
+    p2p_addresses: z.array(NetworkIdentityP2pAddressesItemsSchema),
+    discovery_addresses: z.array(NetworkIdentityP2pAddressesItemsSchema),
+    metadata: z
       .object({
-        peer_id: PeerIdSchema,
-        enr: z
-          .string()
-          .openapi({
-            description:
-              'Ethereum node record. [Read more](https://eips.ethereum.org/EIPS/eip-778)',
-            example:
-              'enr:-IS4QHCYrYZbAKWCBRlAy5zzaDZXJBGkcnh4MHcBFZntXNFrdvJjX04jRzjzCBOonrkTfj499SZuOh8R33Ls8RRcy5wBgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQPKY0yuDUmstAHYpMa2_oxVtw0RW_QAdpzBQA8yWM0xOIN1ZHCCdl8',
-          }),
-        p2p_addresses: z.array(
-          z
-            .string()
-            .openapi({
-              description:
-                "Node's addresses on which eth2 RPC requests are served. [Read more](https://docs.libp2p.io/reference/glossary/#multiaddr)",
-              example: '/ip4/7.7.7.7/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N',
-            }),
-        ),
-        discovery_addresses: z.array(z.lazy(() => NetworkIdentitySchema)),
-        metadata: z
-          .object({
-            seq_number: Uint64Schema.openapi({
-              description:
-                "Uint64 starting at 0 used to version the node's metadata. If any other field in the local MetaData changes, the node MUST increment seq_number by 1.",
-            }),
-            attnets: z
-              .lazy(() => GloasBeaconStateSchema)
-              .openapi({
-                description:
-                  "Bitvector representing the node's persistent attestation subnet subscriptions.",
-                example: '0x0000000000000000',
-              }),
-            syncnets: z
-              .lazy(() => GloasBeaconStateSchema)
-              .exactOptional()
-              .openapi({
-                description:
-                  "Bitvector representing the node's sync committee subnet subscriptions. This metadata is not present in phase0, but will be present in Altair.",
-                example: '0x0f',
-              }),
-            custody_group_count: Uint64Schema.exactOptional().openapi({
-              description:
-                "Uint64 representing the node's custody group count. The metadata is present from the Fulu fork.",
-            }),
-          })
-          .openapi({
-            description:
-              'Based on eth2 [Metadata object](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/p2p-interface.md#metadata)',
-            required: ['seq_number', 'attnets'],
-          }),
+        seq_number: Uint64Schema.openapi({
+          description:
+            "Uint64 starting at 0 used to version the node's metadata. If any other field in the local MetaData changes, the node MUST increment seq_number by 1.",
+        }),
+        attnets: GloasBeaconStateJustificationBitsSchema.openapi({
+          description:
+            "Bitvector representing the node's persistent attestation subnet subscriptions.",
+          example: '0x0000000000000000',
+        }),
+        syncnets: GloasBeaconStateJustificationBitsSchema.exactOptional().openapi({
+          description:
+            "Bitvector representing the node's sync committee subnet subscriptions. This metadata is not present in phase0, but will be present in Altair.",
+          example: '0x0f',
+        }),
+        custody_group_count: Uint64Schema.exactOptional().openapi({
+          description:
+            "Uint64 representing the node's custody group count. The metadata is present from the Fulu fork.",
+        }),
       })
       .openapi({
-        required: ['peer_id', 'enr', 'p2p_addresses', 'discovery_addresses', 'metadata'],
+        description:
+          'Based on eth2 [Metadata object](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/p2p-interface.md#metadata)',
+        required: ['seq_number', 'attnets'],
       }),
-  )
+  })
+  .openapi({ required: ['peer_id', 'enr', 'p2p_addresses', 'discovery_addresses', 'metadata'] })
   .openapi('NetworkIdentity')
 
 const PeerConnectionStateSchema = z
@@ -3695,10 +1908,10 @@ const PeerConnectionDirectionSchema = z
 const PeerSchema = z
   .object({
     peer_id: PeerIdSchema,
-    enr: z.xor([z.null().nullable(), z.lazy(() => NetworkIdentitySchema)]),
-    last_seen_p2p_address: z
-      .lazy(() => NetworkIdentitySchema)
-      .openapi({ description: 'Multiaddrs used in last peer connection.' }),
+    enr: z.xor([z.null().nullable(), NetworkIdentityEnrSchema]),
+    last_seen_p2p_address: NetworkIdentityP2pAddressesItemsSchema.openapi({
+      description: 'Multiaddrs used in last peer connection.',
+    }),
     state: PeerConnectionStateSchema,
     direction: PeerConnectionDirectionSchema,
   })
@@ -3837,6 +2050,93 @@ const IndexedErrorMessageSchema = z
   .openapi({ required: ['code', 'message', 'failures'] })
   .openapi('IndexedErrorMessage')
 
+const Phase0BeaconStateCurrentEpochAttestationsItemsSchema = z
+  .object({
+    aggregation_bits: Phase0BeaconStateCurrentEpochAttestationsItemsAggregationBitsSchema,
+    data: Phase0AttestationDataSchema,
+    inclusion_delay: Uint64Schema,
+    proposer_index: Uint64Schema,
+  })
+  .openapi({
+    description:
+      'The [`PendingAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#pendingattestation) object from the CL spec.',
+    required: ['aggregation_bits', 'data', 'inclusion_delay', 'proposer_index'],
+  })
+  .openapi('Phase0BeaconStateCurrentEpochAttestationsItems')
+
+const Phase0BeaconStateSchema = z
+  .object({
+    genesis_time: Uint64Schema,
+    genesis_validators_root: RootSchema,
+    slot: Uint64Schema,
+    fork: ForkSchema,
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
+    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    historical_roots: z
+      .array(RootSchema)
+      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    eth1_data_votes: z
+      .array(GloasBeaconStateEth1DataSchema)
+      .max(2048)
+      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
+    eth1_deposit_index: Uint64Schema,
+    validators: z
+      .array(ValidatorResponseValidatorSchema)
+      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
+    balances: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
+      }),
+    randao_mixes: z
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
+      .openapi({ description: 'Fixed length of 65536 items' }),
+    slashings: z
+      .array(Uint64Schema)
+      .openapi({
+        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
+      }),
+    previous_epoch_attestations: z.array(Phase0BeaconStateCurrentEpochAttestationsItemsSchema),
+    current_epoch_attestations: z.array(Phase0BeaconStateCurrentEpochAttestationsItemsSchema),
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
+    previous_justified_checkpoint: CheckpointSchema,
+    current_justified_checkpoint: CheckpointSchema,
+    finalized_checkpoint: CheckpointSchema,
+  })
+  .openapi({
+    description:
+      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beacon-state) object from the CL spec.',
+    required: [
+      'genesis_time',
+      'genesis_validators_root',
+      'slot',
+      'fork',
+      'latest_block_header',
+      'block_roots',
+      'state_roots',
+      'historical_roots',
+      'eth1_data',
+      'eth1_data_votes',
+      'eth1_deposit_index',
+      'validators',
+      'balances',
+      'randao_mixes',
+      'slashings',
+      'previous_epoch_attestations',
+      'current_epoch_attestations',
+      'justification_bits',
+      'previous_justified_checkpoint',
+      'current_justified_checkpoint',
+      'finalized_checkpoint',
+    ],
+  })
+  .openapi('Phase0BeaconState')
+
 const Phase0SignedBeaconBlockSchema: z.ZodType<Phase0SignedBeaconBlockType> = z
   .object({ message: Phase0BeaconBlockSchema, signature: SignatureSchema })
   .openapi({
@@ -3876,91 +2176,51 @@ const AltairSignedBeaconBlockSchema: z.ZodType<AltairSignedBeaconBlockType> = z
   })
   .openapi('AltairSignedBeaconBlock')
 
-const ElectraLightClientBootstrapSchema = z
-  .object({
-    header: z
-      .object({
-        beacon: z.lazy(() => GloasBeaconStateSchema),
-        execution: z.lazy(() => FuluBeaconStateSchema),
-        execution_branch: z.array(RootSchema).length(4),
-      })
-      .openapi({ required: ['beacon', 'execution', 'execution_branch'] }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    current_sync_committee_branch: z.array(RootSchema).length(6),
-  })
-  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
-  .openapi('ElectraLightClientBootstrap')
+const AltairLightClientBootstrapHeaderSchema = z
+  .object({ beacon: GloasBeaconStateLatestBlockHeaderSchema })
+  .openapi({ required: ['beacon'] })
+  .openapi('AltairLightClientBootstrapHeader')
 
-const DenebLightClientBootstrapSchema = z
+const GloasBeaconStateNextSyncCommitteeSchema = z
   .object({
-    header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    current_sync_committee_branch: z.array(RootSchema).length(5),
+    pubkeys: z.array(GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema).length(512),
+    aggregate_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema,
   })
-  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
-  .openapi('DenebLightClientBootstrap')
+  .openapi({ required: ['pubkeys', 'aggregate_pubkey'] })
+  .openapi('GloasBeaconStateNextSyncCommittee')
+
+const DenebLightClientBootstrapCurrentSyncCommitteeBranchSchema = z
+  .array(RootSchema)
+  .length(5)
+  .openapi('DenebLightClientBootstrapCurrentSyncCommitteeBranch')
 
 const AltairLightClientBootstrapSchema = z
   .object({
-    header: z
-      .object({ beacon: z.lazy(() => GloasBeaconStateSchema) })
-      .openapi({ required: ['beacon'] }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    current_sync_committee_branch: z.lazy(() => DenebLightClientBootstrapSchema),
+    header: AltairLightClientBootstrapHeaderSchema,
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranchSchema,
   })
   .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
   .openapi('AltairLightClientBootstrap')
 
-const DenebLightClientFinalityUpdateSchema = z
-  .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finalized_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finality_branch: z.array(RootSchema).length(6),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-    signature_slot: Uint64Schema,
-  })
-  .openapi({
-    required: [
-      'attested_header',
-      'finalized_header',
-      'finality_branch',
-      'sync_aggregate',
-      'signature_slot',
-    ],
-  })
-  .openapi('DenebLightClientFinalityUpdate')
+const DenebLightClientUpdateNextSyncCommitteeBranchSchema = z
+  .array(RootSchema)
+  .length(5)
+  .openapi('DenebLightClientUpdateNextSyncCommitteeBranch')
 
-const DenebLightClientUpdateSchema = z
-  .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee_branch: z.array(RootSchema).length(5),
-    finalized_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => DenebLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-    signature_slot: Uint64Schema,
-  })
-  .openapi({
-    required: [
-      'attested_header',
-      'next_sync_committee',
-      'next_sync_committee_branch',
-      'finalized_header',
-      'finality_branch',
-      'sync_aggregate',
-      'signature_slot',
-    ],
-  })
-  .openapi('DenebLightClientUpdate')
+const DenebLightClientFinalityUpdateFinalityBranchSchema = z
+  .array(RootSchema)
+  .length(6)
+  .openapi('DenebLightClientFinalityUpdateFinalityBranch')
 
 const AltairLightClientUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => AltairLightClientBootstrapSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee_branch: z.lazy(() => DenebLightClientUpdateSchema),
-    finalized_header: z.lazy(() => AltairLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => DenebLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: AltairLightClientBootstrapHeaderSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranchSchema,
+    finalized_header: AltairLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -3978,10 +2238,10 @@ const AltairLightClientUpdateSchema = z
 
 const AltairLightClientFinalityUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => AltairLightClientBootstrapSchema),
-    finalized_header: z.lazy(() => AltairLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => DenebLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: AltairLightClientBootstrapHeaderSchema,
+    finalized_header: AltairLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -3997,12 +2257,17 @@ const AltairLightClientFinalityUpdateSchema = z
 
 const AltairLightClientOptimisticUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => AltairLightClientBootstrapSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: AltairLightClientBootstrapHeaderSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({ required: ['attested_header', 'sync_aggregate', 'signature_slot'] })
   .openapi('AltairLightClientOptimisticUpdate')
+
+const FuluBeaconStateCurrentEpochParticipationSchema = z
+  .array(GloasBeaconStateCurrentEpochParticipationItemsSchema)
+  .max(1099511627776)
+  .openapi('FuluBeaconStateCurrentEpochParticipation')
 
 const AltairBeaconStateSchema = z
   .object({
@@ -4010,20 +2275,20 @@ const AltairBeaconStateSchema = z
     genesis_validators_root: RootSchema,
     slot: Uint64Schema,
     fork: ForkSchema,
-    latest_block_header: z.lazy(() => GloasBeaconStateSchema),
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
     block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     historical_roots: z
       .array(RootSchema)
       .openapi({ description: 'Variable length list, maximum 16777216 items' }),
-    eth1_data: z.lazy(() => GloasBeaconStateSchema),
+    eth1_data: GloasBeaconStateEth1DataSchema,
     eth1_data_votes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateEth1DataSchema)
       .max(2048)
       .openapi({ description: 'Variable length list, maximum 2048 items.' }),
     eth1_deposit_index: Uint64Schema,
     validators: z
-      .array(z.lazy(() => ValidatorResponseSchema))
+      .array(ValidatorResponseValidatorSchema)
       .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
     balances: z
       .array(Uint64Schema)
@@ -4032,18 +2297,18 @@ const AltairBeaconStateSchema = z
           'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
       }),
     randao_mixes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
       .openapi({ description: 'Fixed length of 65536 items' }),
     slashings: z
       .array(Uint64Schema)
       .openapi({
         description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
       }),
-    previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    current_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    justification_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Bit set for every recent justified epoch' }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
     previous_justified_checkpoint: CheckpointSchema,
     current_justified_checkpoint: CheckpointSchema,
     finalized_checkpoint: CheckpointSchema,
@@ -4053,8 +2318,8 @@ const AltairBeaconStateSchema = z
         description:
           'Per-validator inactivity scores. New in Altair. Variable length list, maximum 1099511627776 items',
       }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
   })
   .openapi({
     description:
@@ -4119,13 +2384,11 @@ const AltairSyncCommitteeContributionSchema = z
     subcommittee_index: Uint64Schema.openapi({
       description: 'The index of the subcommittee that the contribution pertains to.',
     }),
-    aggregation_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({
-        description:
-          'A bit is set if a signature from the validator at the corresponding index in the subcommittee is present in the aggregate `signature`.',
-        example: '0xffffffffffffffffffffffffffffffff',
-      }),
+    aggregation_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description:
+        'A bit is set if a signature from the validator at the corresponding index in the subcommittee is present in the aggregate `signature`.',
+      example: '0xffffffffffffffffffffffffffffffff',
+    }),
     signature: SignatureSchema.openapi({
       description: 'Signature by the validator(s) over the block root of `slot`',
     }),
@@ -4151,18 +2414,104 @@ const AltairSignedContributionAndProofSchema = z
   .openapi({ required: ['message', 'signature'] })
   .openapi('AltairSignedContributionAndProof')
 
-const AltairSyncCommitteeSchema: z.ZodType<AltairSyncCommitteeType> = z
-  .lazy(() =>
-    z
-      .object({
-        validators: z
-          .array(Uint64Schema)
-          .openapi({ description: 'all of the validator indices in the current sync committee' }),
-        validator_aggregates: z.array(z.lazy(() => AltairSyncCommitteeSchema)),
-      })
-      .openapi({ required: ['validators', 'validator_aggregates'] }),
-  )
+const AltairSyncCommitteeValidatorsSchema = z
+  .array(Uint64Schema)
+  .openapi({ description: 'all of the validator indices in the current sync committee' })
+  .openapi('AltairSyncCommitteeValidators')
+
+const AltairSyncCommitteeSchema = z
+  .object({
+    validators: AltairSyncCommitteeValidatorsSchema,
+    validator_aggregates: z.array(AltairSyncCommitteeValidatorsSchema),
+  })
+  .openapi({ required: ['validators', 'validator_aggregates'] })
   .openapi('AltairSyncCommittee')
+
+const BellatrixBeaconStateSchema = z
+  .object({
+    genesis_time: Uint64Schema,
+    genesis_validators_root: RootSchema,
+    slot: Uint64Schema,
+    fork: ForkSchema,
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
+    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    historical_roots: z
+      .array(RootSchema)
+      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    eth1_data_votes: z
+      .array(GloasBeaconStateEth1DataSchema)
+      .max(2048)
+      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
+    eth1_deposit_index: Uint64Schema,
+    validators: z
+      .array(ValidatorResponseValidatorSchema)
+      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
+    balances: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Validator balances in Gwei. Variable length list, maximum 1099511627776 items',
+      }),
+    randao_mixes: z
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
+      .openapi({ description: 'Fixed length of 65536 items' }),
+    slashings: z
+      .array(Uint64Schema)
+      .openapi({
+        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
+      }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
+    previous_justified_checkpoint: CheckpointSchema,
+    current_justified_checkpoint: CheckpointSchema,
+    finalized_checkpoint: CheckpointSchema,
+    inactivity_scores: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
+      }),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_execution_payload_header: BellatrixBeaconStateLatestExecutionPayloadHeaderSchema,
+  })
+  .openapi({
+    description:
+      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconstate) object from the Eth2.0 Bellatrix spec.',
+    required: [
+      'genesis_time',
+      'genesis_validators_root',
+      'slot',
+      'fork',
+      'latest_block_header',
+      'block_roots',
+      'state_roots',
+      'historical_roots',
+      'eth1_data',
+      'eth1_data_votes',
+      'eth1_deposit_index',
+      'validators',
+      'balances',
+      'randao_mixes',
+      'slashings',
+      'previous_epoch_participation',
+      'current_epoch_participation',
+      'justification_bits',
+      'previous_justified_checkpoint',
+      'current_justified_checkpoint',
+      'finalized_checkpoint',
+      'inactivity_scores',
+      'current_sync_committee',
+      'next_sync_committee',
+      'latest_execution_payload_header',
+    ],
+  })
+  .openapi('BellatrixBeaconState')
 
 const BellatrixSignedBeaconBlockSchema: z.ZodType<BellatrixSignedBeaconBlockType> = z
   .object({ message: BellatrixBeaconBlockSchema, signature: SignatureSchema })
@@ -4196,9 +2545,9 @@ const SignedValidatorRegistrationSchema = z
         }),
         gas_limit: Uint64Schema.openapi({ description: 'Preferred gas limit of validator.' }),
         timestamp: Uint64Schema.openapi({ description: 'Unix timestamp of registration.' }),
-        pubkey: z
-          .lazy(() => GloasBuilderPreferencesEntrySchema)
-          .openapi({ description: 'BLS public key of validator.' }),
+        pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+          description: 'BLS public key of validator.',
+        }),
       })
       .openapi({
         description: 'The `ValidatorRegistration` object from the Builder API specification.',
@@ -4211,6 +2560,112 @@ const SignedValidatorRegistrationSchema = z
     required: ['message', 'signature'],
   })
   .openapi('SignedValidatorRegistration')
+
+const GloasBeaconStateHistoricalSummariesItemsSchema = z
+  .object({ block_summary_root: RootSchema, state_summary_root: RootSchema })
+  .openapi({
+    description:
+      'The [`HistoricalSummary`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#historicalsummary) object from the CL Capella spec.',
+    required: ['block_summary_root', 'state_summary_root'],
+  })
+  .openapi('GloasBeaconStateHistoricalSummariesItems')
+
+const CapellaBeaconStateSchema = z
+  .object({
+    genesis_time: Uint64Schema,
+    genesis_validators_root: RootSchema,
+    slot: Uint64Schema,
+    fork: ForkSchema,
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
+    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    historical_roots: z
+      .array(RootSchema)
+      .openapi({
+        description:
+          'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
+      }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    eth1_data_votes: z
+      .array(GloasBeaconStateEth1DataSchema)
+      .max(2048)
+      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
+    eth1_deposit_index: Uint64Schema,
+    validators: z
+      .array(ValidatorResponseValidatorSchema)
+      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
+    balances: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
+      }),
+    randao_mixes: z
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
+      .openapi({ description: 'Fixed length of 65536 items' }),
+    slashings: z
+      .array(Uint64Schema)
+      .openapi({
+        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
+      }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
+    previous_justified_checkpoint: CheckpointSchema,
+    current_justified_checkpoint: CheckpointSchema,
+    finalized_checkpoint: CheckpointSchema,
+    inactivity_scores: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
+      }),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_execution_payload_header: CapellaBeaconStateLatestExecutionPayloadHeaderSchema,
+    next_withdrawal_index: Uint64Schema,
+    next_withdrawal_validator_index: Uint64Schema,
+    historical_summaries: z
+      .array(GloasBeaconStateHistoricalSummariesItemsSchema)
+      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
+  })
+  .openapi({
+    description:
+      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconstate) object from the Eth2.0 Capella spec.',
+    required: [
+      'genesis_time',
+      'genesis_validators_root',
+      'slot',
+      'fork',
+      'latest_block_header',
+      'block_roots',
+      'state_roots',
+      'historical_roots',
+      'eth1_data',
+      'eth1_data_votes',
+      'eth1_deposit_index',
+      'validators',
+      'balances',
+      'randao_mixes',
+      'slashings',
+      'previous_epoch_participation',
+      'current_epoch_participation',
+      'justification_bits',
+      'previous_justified_checkpoint',
+      'current_justified_checkpoint',
+      'finalized_checkpoint',
+      'inactivity_scores',
+      'current_sync_committee',
+      'next_sync_committee',
+      'latest_execution_payload_header',
+      'next_withdrawal_index',
+      'next_withdrawal_validator_index',
+      'historical_summaries',
+    ],
+  })
+  .openapi('CapellaBeaconState')
 
 const CapellaSignedBeaconBlockSchema: z.ZodType<CapellaSignedBeaconBlockType> = z
   .object({ message: CapellaBeaconBlockSchema, signature: SignatureSchema })
@@ -4230,29 +2685,37 @@ const CapellaSignedBlindedBeaconBlockSchema: z.ZodType<CapellaSignedBlindedBeaco
   })
   .openapi('CapellaSignedBlindedBeaconBlock')
 
+const ElectraLightClientBootstrapHeaderExecutionBranchSchema = z
+  .array(RootSchema)
+  .length(4)
+  .openapi('ElectraLightClientBootstrapHeaderExecutionBranch')
+
+const CapellaLightClientBootstrapHeaderSchema = z
+  .object({
+    beacon: GloasBeaconStateLatestBlockHeaderSchema,
+    execution: CapellaBeaconStateLatestExecutionPayloadHeaderSchema,
+    execution_branch: ElectraLightClientBootstrapHeaderExecutionBranchSchema,
+  })
+  .openapi({ required: ['beacon', 'execution', 'execution_branch'] })
+  .openapi('CapellaLightClientBootstrapHeader')
+
 const CapellaLightClientBootstrapSchema = z
   .object({
-    header: z
-      .object({
-        beacon: z.lazy(() => GloasBeaconStateSchema),
-        execution: z.lazy(() => CapellaBeaconStateSchema),
-        execution_branch: ExecutionBranchSchema,
-      })
-      .openapi({ required: ['beacon', 'execution', 'execution_branch'] }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    current_sync_committee_branch: z.lazy(() => DenebLightClientBootstrapSchema),
+    header: CapellaLightClientBootstrapHeaderSchema,
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranchSchema,
   })
   .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
   .openapi('CapellaLightClientBootstrap')
 
 const CapellaLightClientUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => CapellaLightClientBootstrapSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee_branch: z.lazy(() => DenebLightClientUpdateSchema),
-    finalized_header: z.lazy(() => CapellaLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => DenebLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: CapellaLightClientBootstrapHeaderSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranchSchema,
+    finalized_header: CapellaLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -4270,10 +2733,10 @@ const CapellaLightClientUpdateSchema = z
 
 const CapellaLightClientFinalityUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => CapellaLightClientBootstrapSchema),
-    finalized_header: z.lazy(() => CapellaLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => DenebLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: CapellaLightClientBootstrapHeaderSchema,
+    finalized_header: CapellaLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -4289,8 +2752,8 @@ const CapellaLightClientFinalityUpdateSchema = z
 
 const CapellaLightClientOptimisticUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => CapellaLightClientBootstrapSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: CapellaLightClientBootstrapHeaderSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({ required: ['attested_header', 'sync_aggregate', 'signature_slot'] })
@@ -4302,7 +2765,7 @@ const DenebBeaconStateSchema = z
     genesis_validators_root: RootSchema,
     slot: Uint64Schema,
     fork: ForkSchema,
-    latest_block_header: z.lazy(() => GloasBeaconStateSchema),
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
     block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     historical_roots: z
@@ -4311,14 +2774,14 @@ const DenebBeaconStateSchema = z
         description:
           'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
       }),
-    eth1_data: z.lazy(() => GloasBeaconStateSchema),
+    eth1_data: GloasBeaconStateEth1DataSchema,
     eth1_data_votes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateEth1DataSchema)
       .max(2048)
       .openapi({ description: 'Variable length list, maximum 2048 items.' }),
     eth1_deposit_index: Uint64Schema,
     validators: z
-      .array(z.lazy(() => ValidatorResponseSchema))
+      .array(ValidatorResponseValidatorSchema)
       .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
     balances: z
       .array(Uint64Schema)
@@ -4327,18 +2790,18 @@ const DenebBeaconStateSchema = z
           'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
       }),
     randao_mixes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
       .openapi({ description: 'Fixed length of 65536 items' }),
     slashings: z
       .array(Uint64Schema)
       .openapi({
         description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
       }),
-    previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    current_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    justification_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Bit set for every recent justified epoch' }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
     previous_justified_checkpoint: CheckpointSchema,
     current_justified_checkpoint: CheckpointSchema,
     finalized_checkpoint: CheckpointSchema,
@@ -4348,13 +2811,13 @@ const DenebBeaconStateSchema = z
         description:
           'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
       }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    latest_execution_payload_header: z.lazy(() => FuluBeaconStateSchema),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderSchema,
     next_withdrawal_index: Uint64Schema,
     next_withdrawal_validator_index: Uint64Schema,
     historical_summaries: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateHistoricalSummariesItemsSchema)
       .openapi({ description: 'Variable length list, maximum 16777216 items' }),
   })
   .openapi({
@@ -4396,7 +2859,7 @@ const DenebBeaconStateSchema = z
 const DenebBlockContentsSchema: z.ZodType<DenebBlockContentsType> = z
   .object({
     block: DenebBeaconBlockSchema,
-    kzg_proofs: z.lazy(() => ElectraSignedBlockContentsSchema),
+    kzg_proofs: ElectraSignedBlockContentsKzgProofsSchema,
     blobs: BlobsSchema,
   })
   .openapi({
@@ -4408,7 +2871,7 @@ const DenebBlockContentsSchema: z.ZodType<DenebBlockContentsType> = z
 const DenebSignedBlockContentsSchema: z.ZodType<DenebSignedBlockContentsType> = z
   .object({
     signed_block: DenebSignedBeaconBlockSchema,
-    kzg_proofs: z.lazy(() => ElectraSignedBlockContentsSchema),
+    kzg_proofs: ElectraSignedBlockContentsKzgProofsSchema,
     blobs: BlobsSchema,
   })
   .openapi({
@@ -4427,10 +2890,70 @@ const DenebSignedBlindedBeaconBlockSchema: z.ZodType<DenebSignedBlindedBeaconBlo
   })
   .openapi('DenebSignedBlindedBeaconBlock')
 
+const ElectraLightClientBootstrapHeaderSchema = z
+  .object({
+    beacon: GloasBeaconStateLatestBlockHeaderSchema,
+    execution: FuluBeaconStateLatestExecutionPayloadHeaderSchema,
+    execution_branch: ElectraLightClientBootstrapHeaderExecutionBranchSchema,
+  })
+  .openapi({ required: ['beacon', 'execution', 'execution_branch'] })
+  .openapi('ElectraLightClientBootstrapHeader')
+
+const DenebLightClientBootstrapSchema = z
+  .object({
+    header: ElectraLightClientBootstrapHeaderSchema,
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    current_sync_committee_branch: DenebLightClientBootstrapCurrentSyncCommitteeBranchSchema,
+  })
+  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
+  .openapi('DenebLightClientBootstrap')
+
+const DenebLightClientUpdateSchema = z
+  .object({
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee_branch: DenebLightClientUpdateNextSyncCommitteeBranchSchema,
+    finalized_header: ElectraLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    signature_slot: Uint64Schema,
+  })
+  .openapi({
+    required: [
+      'attested_header',
+      'next_sync_committee',
+      'next_sync_committee_branch',
+      'finalized_header',
+      'finality_branch',
+      'sync_aggregate',
+      'signature_slot',
+    ],
+  })
+  .openapi('DenebLightClientUpdate')
+
+const DenebLightClientFinalityUpdateSchema = z
+  .object({
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    finalized_header: ElectraLightClientBootstrapHeaderSchema,
+    finality_branch: DenebLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    signature_slot: Uint64Schema,
+  })
+  .openapi({
+    required: [
+      'attested_header',
+      'finalized_header',
+      'finality_branch',
+      'sync_aggregate',
+      'signature_slot',
+    ],
+  })
+  .openapi('DenebLightClientFinalityUpdate')
+
 const DenebLightClientOptimisticUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({ required: ['attested_header', 'sync_aggregate', 'signature_slot'] })
@@ -4445,13 +2968,79 @@ const VersionedHashSchema = z
   })
   .openapi('VersionedHash')
 
+const ElectraPendingDepositSchema = z
+  .object({
+    pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'BLS public key of validator.',
+    }),
+    withdrawal_credentials: RootSchema.openapi({ description: 'The withdrawal credentials.' }),
+    amount: Uint64Schema.openapi({ description: 'The value to be deposited (gwei).' }),
+    signature: SignatureSchema,
+    slot: Uint64Schema.openapi({
+      description: 'The slot at which the deposit request was processed.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`PendingDeposit`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingdeposit) object from the CL Electra spec.',
+    required: ['pubkey', 'withdrawal_credentials', 'amount', 'signature', 'slot'],
+  })
+  .openapi('ElectraPendingDeposit')
+
+const ElectraPendingDepositsSchema = z
+  .array(ElectraPendingDepositSchema)
+  .max(134217728)
+  .openapi({ description: 'List of pending deposits.' })
+  .openapi('ElectraPendingDeposits')
+
+const ElectraPendingPartialWithdrawalSchema = z
+  .object({
+    validator_index: Uint64Schema.openapi({
+      description: 'Index of validator in validator registry.',
+    }),
+    amount: Uint64Schema.openapi({ description: 'The value to be withdrawn (gwei).' }),
+    withdrawable_epoch: Uint64Schema.openapi({
+      description: 'The epoch when the amount is withdrawable.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`PendingPartialWithdrawal`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingpartialwithdrawal) object from the CL Electra spec.',
+    required: ['validator_index', 'amount', 'withdrawable_epoch'],
+  })
+  .openapi('ElectraPendingPartialWithdrawal')
+
+const ElectraPendingPartialWithdrawalsSchema = z
+  .array(ElectraPendingPartialWithdrawalSchema)
+  .max(134217728)
+  .openapi({ description: 'List of pending partial withdrawals.' })
+  .openapi('ElectraPendingPartialWithdrawals')
+
+const ElectraPendingConsolidationSchema = z
+  .object({
+    source_index: Uint64Schema.openapi({ description: 'Index of validator to consolidate from.' }),
+    target_index: Uint64Schema.openapi({ description: 'Index of validator to consolidate to.' }),
+  })
+  .openapi({
+    description:
+      'The [`PendingConsolidation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#pendingconsolidation) object from the CL Electra spec.',
+    required: ['source_index', 'target_index'],
+  })
+  .openapi('ElectraPendingConsolidation')
+
+const ElectraPendingConsolidationsSchema = z
+  .array(ElectraPendingConsolidationSchema)
+  .max(262144)
+  .openapi({ description: 'List of pending consolidations.' })
+  .openapi('ElectraPendingConsolidations')
+
 const ElectraBeaconStateSchema = z
   .object({
     genesis_time: Uint64Schema,
     genesis_validators_root: RootSchema,
     slot: Uint64Schema,
     fork: ForkSchema,
-    latest_block_header: z.lazy(() => GloasBeaconStateSchema),
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
     block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
     historical_roots: z
@@ -4460,14 +3049,14 @@ const ElectraBeaconStateSchema = z
         description:
           'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
       }),
-    eth1_data: z.lazy(() => GloasBeaconStateSchema),
+    eth1_data: GloasBeaconStateEth1DataSchema,
     eth1_data_votes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateEth1DataSchema)
       .max(2048)
       .openapi({ description: 'Variable length list, maximum 2048 items.' }),
     eth1_deposit_index: Uint64Schema,
     validators: z
-      .array(z.lazy(() => ValidatorResponseSchema))
+      .array(ValidatorResponseValidatorSchema)
       .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
     balances: z
       .array(Uint64Schema)
@@ -4476,18 +3065,18 @@ const ElectraBeaconStateSchema = z
           'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
       }),
     randao_mixes: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
       .openapi({ description: 'Fixed length of 65536 items' }),
     slashings: z
       .array(Uint64Schema)
       .openapi({
         description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
       }),
-    previous_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    current_epoch_participation: z.lazy(() => FuluBeaconStateSchema),
-    justification_bits: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({ description: 'Bit set for every recent justified epoch' }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
     previous_justified_checkpoint: CheckpointSchema,
     current_justified_checkpoint: CheckpointSchema,
     finalized_checkpoint: CheckpointSchema,
@@ -4497,13 +3086,13 @@ const ElectraBeaconStateSchema = z
         description:
           'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
       }),
-    current_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
-    latest_execution_payload_header: z.lazy(() => FuluBeaconStateSchema),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderSchema,
     next_withdrawal_index: Uint64Schema,
     next_withdrawal_validator_index: Uint64Schema,
     historical_summaries: z
-      .array(z.lazy(() => GloasBeaconStateSchema))
+      .array(GloasBeaconStateHistoricalSummariesItemsSchema)
       .openapi({ description: 'Variable length list, maximum 16777216 items' }),
     deposit_requests_start_index: Uint64Schema,
     deposit_balance_to_consume: Uint64Schema,
@@ -4560,10 +3149,10 @@ const ElectraBeaconStateSchema = z
   })
   .openapi('ElectraBeaconState')
 
-const ElectraBlockContentsSchema = z
+const ElectraBlockContentsSchema: z.ZodType<ElectraBlockContentsType> = z
   .object({
-    block: z.lazy(() => FuluBlockContentsSchema),
-    kzg_proofs: z.lazy(() => ElectraSignedBlockContentsSchema),
+    block: FuluBlockContentsBlockSchema,
+    kzg_proofs: ElectraSignedBlockContentsKzgProofsSchema,
     blobs: BlobsSchema,
   })
   .openapi({
@@ -4571,6 +3160,19 @@ const ElectraBlockContentsSchema = z
     required: ['block', 'kzg_proofs', 'blobs'],
   })
   .openapi('ElectraBlockContents')
+
+const ElectraSignedBlockContentsSchema: z.ZodType<ElectraSignedBlockContentsType> = z
+  .object({
+    signed_block: ElectraSignedBeaconBlockSchema,
+    kzg_proofs: ElectraSignedBlockContentsKzgProofsSchema,
+    blobs: BlobsSchema,
+  })
+  .openapi({
+    description:
+      'The required signed components of block production according to the Electra CL spec.',
+    required: ['signed_block', 'kzg_proofs', 'blobs'],
+  })
+  .openapi('ElectraSignedBlockContents')
 
 const ElectraSignedBlindedBeaconBlockSchema: z.ZodType<ElectraSignedBlindedBeaconBlockType> = z
   .object({ message: ElectraBlindedBeaconBlockSchema, signature: SignatureSchema })
@@ -4618,33 +3220,28 @@ const ElectraSignedAggregateAndProofSchema = z
   })
   .openapi('ElectraSignedAggregateAndProof')
 
-const ElectraLightClientFinalityUpdateSchema = z
+const ElectraLightClientBootstrapSchema = z
   .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finalized_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finality_branch: z.array(RootSchema).length(7),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-    signature_slot: Uint64Schema,
+    header: ElectraLightClientBootstrapHeaderSchema,
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    current_sync_committee_branch: z.array(RootSchema).length(6),
   })
-  .openapi({
-    required: [
-      'attested_header',
-      'finalized_header',
-      'finality_branch',
-      'sync_aggregate',
-      'signature_slot',
-    ],
-  })
-  .openapi('ElectraLightClientFinalityUpdate')
+  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
+  .openapi('ElectraLightClientBootstrap')
+
+const ElectraLightClientFinalityUpdateFinalityBranchSchema = z
+  .array(RootSchema)
+  .length(7)
+  .openapi('ElectraLightClientFinalityUpdateFinalityBranch')
 
 const ElectraLightClientUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
     next_sync_committee_branch: z.array(RootSchema).length(6),
-    finalized_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => ElectraLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    finalized_header: ElectraLightClientBootstrapHeaderSchema,
+    finality_branch: ElectraLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -4660,19 +3257,415 @@ const ElectraLightClientUpdateSchema = z
   })
   .openapi('ElectraLightClientUpdate')
 
+const ElectraLightClientFinalityUpdateSchema = z
+  .object({
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    finalized_header: ElectraLightClientBootstrapHeaderSchema,
+    finality_branch: ElectraLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    signature_slot: Uint64Schema,
+  })
+  .openapi({
+    required: [
+      'attested_header',
+      'finalized_header',
+      'finality_branch',
+      'sync_aggregate',
+      'signature_slot',
+    ],
+  })
+  .openapi('ElectraLightClientFinalityUpdate')
+
 const ElectraLightClientOptimisticUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => ElectraLightClientBootstrapSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: ElectraLightClientBootstrapHeaderSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({ required: ['attested_header', 'sync_aggregate', 'signature_slot'] })
   .openapi('ElectraLightClientOptimisticUpdate')
 
+const FuluBeaconStateSchema = z
+  .object({
+    genesis_time: Uint64Schema,
+    genesis_validators_root: RootSchema,
+    slot: Uint64Schema,
+    fork: ForkSchema,
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
+    block_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    state_roots: z.array(RootSchema).openapi({ description: 'Fixed length of 8192 items' }),
+    historical_roots: z
+      .array(RootSchema)
+      .openapi({
+        description:
+          'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.',
+      }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    eth1_data_votes: z
+      .array(GloasBeaconStateEth1DataSchema)
+      .max(2048)
+      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
+    eth1_deposit_index: Uint64Schema,
+    validators: z
+      .array(ValidatorResponseValidatorSchema)
+      .openapi({ description: 'Variable length list, maximum 1099511627776 items' }),
+    balances: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Validator balances in gwei. Variable length list, maximum 1099511627776 items',
+      }),
+    randao_mixes: z
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
+      .openapi({ description: 'Fixed length of 65536 items' }),
+    slashings: z
+      .array(Uint64Schema)
+      .openapi({
+        description: 'Per-epoch sums of slashed effective balances. Fixed length of 8192 items',
+      }),
+    previous_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    current_epoch_participation: FuluBeaconStateCurrentEpochParticipationSchema,
+    justification_bits: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Bit set for every recent justified epoch',
+    }),
+    previous_justified_checkpoint: CheckpointSchema,
+    current_justified_checkpoint: CheckpointSchema,
+    finalized_checkpoint: CheckpointSchema,
+    inactivity_scores: z
+      .array(Uint64Schema)
+      .openapi({
+        description:
+          'Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items',
+      }),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_execution_payload_header: FuluBeaconStateLatestExecutionPayloadHeaderSchema,
+    next_withdrawal_index: Uint64Schema,
+    next_withdrawal_validator_index: Uint64Schema,
+    historical_summaries: z
+      .array(GloasBeaconStateHistoricalSummariesItemsSchema)
+      .openapi({ description: 'Variable length list, maximum 16777216 items' }),
+    deposit_requests_start_index: Uint64Schema,
+    deposit_balance_to_consume: Uint64Schema,
+    exit_balance_to_consume: Uint64Schema,
+    earliest_exit_epoch: Uint64Schema,
+    consolidation_balance_to_consume: Uint64Schema,
+    earliest_consolidation_epoch: Uint64Schema,
+    pending_deposits: ElectraPendingDepositsSchema,
+    pending_partial_withdrawals: ElectraPendingPartialWithdrawalsSchema,
+    pending_consolidations: ElectraPendingConsolidationsSchema,
+    proposer_lookahead: z.array(Uint64Schema).length(64),
+  })
+  .openapi({
+    description:
+      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.6.0/specs/fulu/beacon-chain.md#beaconstate) object from the CL Fulu spec.',
+    required: [
+      'genesis_time',
+      'genesis_validators_root',
+      'slot',
+      'fork',
+      'latest_block_header',
+      'block_roots',
+      'state_roots',
+      'historical_roots',
+      'eth1_data',
+      'eth1_data_votes',
+      'eth1_deposit_index',
+      'validators',
+      'balances',
+      'randao_mixes',
+      'slashings',
+      'previous_epoch_participation',
+      'current_epoch_participation',
+      'justification_bits',
+      'previous_justified_checkpoint',
+      'current_justified_checkpoint',
+      'finalized_checkpoint',
+      'inactivity_scores',
+      'current_sync_committee',
+      'next_sync_committee',
+      'latest_execution_payload_header',
+      'next_withdrawal_index',
+      'next_withdrawal_validator_index',
+      'historical_summaries',
+      'deposit_requests_start_index',
+      'deposit_balance_to_consume',
+      'exit_balance_to_consume',
+      'earliest_exit_epoch',
+      'consolidation_balance_to_consume',
+      'earliest_consolidation_epoch',
+      'pending_deposits',
+      'pending_partial_withdrawals',
+      'pending_consolidations',
+      'proposer_lookahead',
+    ],
+  })
+  .openapi('FuluBeaconState')
+
+const GloasPendingDepositsSchema = z
+  .array(ElectraPendingDepositSchema)
+  .openapi({ description: 'Progressive list of pending deposits.' })
+  .openapi('GloasPendingDeposits')
+
+const GloasPendingPartialWithdrawalsSchema = z
+  .array(ElectraPendingPartialWithdrawalSchema)
+  .openapi({ description: 'Progressive list of pending partial withdrawals.' })
+  .openapi('GloasPendingPartialWithdrawals')
+
+const GloasPendingConsolidationsSchema = z
+  .array(ElectraPendingConsolidationSchema)
+  .openapi({ description: 'Progressive list of pending consolidations.' })
+  .openapi('GloasPendingConsolidations')
+
+const GloasBuilderPendingWithdrawalSchema = z
+  .object({
+    fee_recipient: ExecutionAddressSchema,
+    amount: Uint64Schema,
+    builder_index: Uint64Schema,
+  })
+  .openapi({
+    description:
+      'The [`BuilderPendingWithdrawal`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderpendingwithdrawal) object from the CL Gloas spec.',
+    required: ['fee_recipient', 'amount', 'builder_index'],
+  })
+  .openapi('GloasBuilderPendingWithdrawal')
+
+const GloasBuilderPendingPaymentSchema = z
+  .object({
+    weight: Uint64Schema,
+    withdrawal: GloasBuilderPendingWithdrawalSchema,
+    proposer_index: Uint64Schema,
+  })
+  .openapi({
+    description:
+      'The [`BuilderPendingPayment`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#builderpendingpayment) object from the CL Gloas spec.',
+    required: ['weight', 'withdrawal', 'proposer_index'],
+  })
+  .openapi('GloasBuilderPendingPayment')
+
+const GloasBuilderPendingPaymentsSchema = z
+  .array(GloasBuilderPendingPaymentSchema)
+  .length(64)
+  .openapi({ description: 'Fixed vector of pending builder payments covering two epochs.' })
+  .openapi('GloasBuilderPendingPayments')
+
+const GloasBuilderPendingWithdrawalsSchema = z
+  .array(GloasBuilderPendingWithdrawalSchema)
+  .openapi({ description: 'Progressive list of pending builder withdrawals.' })
+  .openapi('GloasBuilderPendingWithdrawals')
+
+const GloasPayloadTimelinessCommitteeSchema = z
+  .array(Uint64Schema)
+  .length(512)
+  .openapi({
+    description:
+      'The [`PayloadTimelinessCommittee`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#new-payloadtimelinesscommittee) vector from the CL Gloas spec. Validator indices are in committee order and may contain duplicates.',
+  })
+  .openapi('GloasPayloadTimelinessCommittee')
+
+const GloasBeaconStateSchema = z
+  .object({
+    genesis_time: Uint64Schema,
+    genesis_validators_root: RootSchema,
+    slot: Uint64Schema,
+    fork: ForkSchema,
+    latest_block_header: GloasBeaconStateLatestBlockHeaderSchema,
+    block_roots: z
+      .array(RootSchema)
+      .length(8192)
+      .openapi({ description: 'Fixed vector of 8192 roots.' }),
+    state_roots: z
+      .array(RootSchema)
+      .length(8192)
+      .openapi({ description: 'Fixed vector of 8192 roots.' }),
+    historical_roots: z
+      .array(RootSchema)
+      .max(16777216)
+      .openapi({
+        description:
+          'Variable length list, maximum 16777216 items. Frozen in Capella, replaced by `historical_summaries`.',
+      }),
+    eth1_data: GloasBeaconStateEth1DataSchema,
+    eth1_data_votes: z
+      .array(GloasBeaconStateEth1DataSchema)
+      .max(2048)
+      .openapi({ description: 'Variable length list, maximum 2048 items.' }),
+    eth1_deposit_index: Uint64Schema,
+    validators: z
+      .array(ValidatorResponseValidatorSchema)
+      .openapi({ description: 'Progressive list of validators.' }),
+    balances: z
+      .array(Uint64Schema)
+      .openapi({ description: 'Progressive list of validator balances in gwei.' }),
+    randao_mixes: z
+      .array(GloasBeaconStateRandaoMixesItemsSchema)
+      .length(65536)
+      .openapi({ description: 'Fixed vector of 65536 roots.' }),
+    slashings: z
+      .array(Uint64Schema)
+      .length(8192)
+      .openapi({ description: 'Fixed vector of 8192 per-epoch slashed effective balance totals.' }),
+    previous_epoch_participation: z
+      .array(GloasBeaconStateCurrentEpochParticipationItemsSchema)
+      .openapi({
+        description: 'Progressive list of validator participation flags for the previous epoch.',
+      }),
+    current_epoch_participation: z
+      .array(GloasBeaconStateCurrentEpochParticipationItemsSchema)
+      .openapi({
+        description: 'Progressive list of validator participation flags for the current epoch.',
+      }),
+    justification_bits: GloasBeaconStateJustificationBitsSchema,
+    previous_justified_checkpoint: CheckpointSchema,
+    current_justified_checkpoint: CheckpointSchema,
+    finalized_checkpoint: CheckpointSchema,
+    inactivity_scores: z
+      .array(Uint64Schema)
+      .openapi({ description: 'Progressive list of per-validator inactivity scores.' }),
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    latest_block_hash: GloasBeaconStateLatestBlockHashSchema,
+    next_withdrawal_index: Uint64Schema,
+    next_withdrawal_validator_index: Uint64Schema,
+    historical_summaries: z
+      .array(GloasBeaconStateHistoricalSummariesItemsSchema)
+      .max(16777216)
+      .openapi({ description: 'Variable length list, maximum 16777216 items.' }),
+    deposit_requests_start_index: Uint64Schema,
+    deposit_balance_to_consume: Uint64Schema,
+    exit_balance_to_consume: Uint64Schema,
+    earliest_exit_epoch: Uint64Schema,
+    consolidation_balance_to_consume: Uint64Schema,
+    earliest_consolidation_epoch: Uint64Schema,
+    pending_deposits: GloasPendingDepositsSchema,
+    pending_partial_withdrawals: GloasPendingPartialWithdrawalsSchema,
+    pending_consolidations: GloasPendingConsolidationsSchema,
+    proposer_lookahead: z
+      .array(Uint64Schema)
+      .length(64)
+      .openapi({ description: 'Fixed vector of proposer indices for the current and next epoch.' }),
+    builders: z.array(GloasBuilderSchema).openapi({ description: 'Progressive list of builders.' }),
+    next_withdrawal_builder_index: Uint64Schema,
+    execution_payload_availability: GloasBeaconStateJustificationBitsSchema.openapi({
+      description: 'Payload availability for the slots in SLOTS_PER_HISTORICAL_ROOT (8192).',
+      example:
+        '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+    }),
+    builder_pending_payments: GloasBuilderPendingPaymentsSchema,
+    builder_pending_withdrawals: GloasBuilderPendingWithdrawalsSchema,
+    latest_execution_payload_bid: GloasExecutionPayloadBidSchema,
+    payload_expected_withdrawals: z
+      .array(CapellaWithdrawalSchema)
+      .max(16)
+      .openapi({
+        description: 'Progressive list of withdrawals expected in the next execution payload.',
+      }),
+    ptc_window: z
+      .array(GloasPayloadTimelinessCommitteeSchema)
+      .length(96)
+      .openapi({ description: 'Fixed vector of 96 payload-timeliness committees.' }),
+  })
+  .openapi({
+    description:
+      'The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#beaconstate) object from the CL Gloas spec.',
+    required: [
+      'genesis_time',
+      'genesis_validators_root',
+      'slot',
+      'fork',
+      'latest_block_header',
+      'block_roots',
+      'state_roots',
+      'historical_roots',
+      'eth1_data',
+      'eth1_data_votes',
+      'eth1_deposit_index',
+      'validators',
+      'balances',
+      'randao_mixes',
+      'slashings',
+      'previous_epoch_participation',
+      'current_epoch_participation',
+      'justification_bits',
+      'previous_justified_checkpoint',
+      'current_justified_checkpoint',
+      'finalized_checkpoint',
+      'inactivity_scores',
+      'current_sync_committee',
+      'next_sync_committee',
+      'latest_block_hash',
+      'next_withdrawal_index',
+      'next_withdrawal_validator_index',
+      'historical_summaries',
+      'deposit_requests_start_index',
+      'deposit_balance_to_consume',
+      'exit_balance_to_consume',
+      'earliest_exit_epoch',
+      'consolidation_balance_to_consume',
+      'earliest_consolidation_epoch',
+      'pending_deposits',
+      'pending_partial_withdrawals',
+      'pending_consolidations',
+      'proposer_lookahead',
+      'builders',
+      'next_withdrawal_builder_index',
+      'execution_payload_availability',
+      'builder_pending_payments',
+      'builder_pending_withdrawals',
+      'latest_execution_payload_bid',
+      'payload_expected_withdrawals',
+      'ptc_window',
+    ],
+  })
+  .openapi('GloasBeaconState')
+
+const GloasLightClientBootstrapHeaderSchema = z
+  .object({
+    beacon: GloasBeaconStateLatestBlockHeaderSchema,
+    execution_block_hash: GloasBeaconStateLatestBlockHashSchema,
+    execution_branch: z
+      .array(RootSchema)
+      .length(11)
+      .openapi({
+        description:
+          'Merkle proof consisting of [`floorlog2(EXECUTION_BLOCK_HASH_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
+      }),
+  })
+  .openapi({
+    description:
+      'The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.',
+    required: ['beacon', 'execution_block_hash', 'execution_branch'],
+  })
+  .openapi('GloasLightClientBootstrapHeader')
+
+const GloasLightClientBootstrapSchema = z
+  .object({
+    header: GloasLightClientBootstrapHeaderSchema,
+    current_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
+    current_sync_committee_branch: z
+      .array(RootSchema)
+      .length(11)
+      .openapi({
+        description:
+          'Merkle proof consisting of [`floorlog2(CURRENT_SYNC_COMMITTEE_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
+      }),
+  })
+  .openapi({ required: ['header', 'current_sync_committee', 'current_sync_committee_branch'] })
+  .openapi('GloasLightClientBootstrap')
+
+const GloasLightClientFinalityUpdateFinalityBranchSchema = z
+  .array(RootSchema)
+  .length(9)
+  .openapi({
+    description:
+      'Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
+  })
+  .openapi('GloasLightClientFinalityUpdateFinalityBranch')
+
 const GloasLightClientUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => GloasLightClientBootstrapSchema),
-    next_sync_committee: z.lazy(() => GloasBeaconStateSchema),
+    attested_header: GloasLightClientBootstrapHeaderSchema,
+    next_sync_committee: GloasBeaconStateNextSyncCommitteeSchema,
     next_sync_committee_branch: z
       .array(RootSchema)
       .length(11)
@@ -4680,9 +3673,9 @@ const GloasLightClientUpdateSchema = z
         description:
           'Merkle proof consisting of [`floorlog2(NEXT_SYNC_COMMITTEE_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots',
       }),
-    finalized_header: z.lazy(() => GloasLightClientBootstrapSchema),
-    finality_branch: z.lazy(() => GloasLightClientFinalityUpdateSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    finalized_header: GloasLightClientBootstrapHeaderSchema,
+    finality_branch: GloasLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({
@@ -4698,10 +3691,29 @@ const GloasLightClientUpdateSchema = z
   })
   .openapi('GloasLightClientUpdate')
 
+const GloasLightClientFinalityUpdateSchema = z
+  .object({
+    attested_header: GloasLightClientBootstrapHeaderSchema,
+    finalized_header: GloasLightClientBootstrapHeaderSchema,
+    finality_branch: GloasLightClientFinalityUpdateFinalityBranchSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
+    signature_slot: Uint64Schema,
+  })
+  .openapi({
+    required: [
+      'attested_header',
+      'finalized_header',
+      'finality_branch',
+      'sync_aggregate',
+      'signature_slot',
+    ],
+  })
+  .openapi('GloasLightClientFinalityUpdate')
+
 const GloasLightClientOptimisticUpdateSchema = z
   .object({
-    attested_header: z.lazy(() => GloasLightClientBootstrapSchema),
-    sync_aggregate: z.lazy(() => GloasLightClientFinalityUpdateSchema),
+    attested_header: GloasLightClientBootstrapHeaderSchema,
+    sync_aggregate: GloasLightClientFinalityUpdateSyncAggregateSchema,
     signature_slot: Uint64Schema,
   })
   .openapi({ required: ['attested_header', 'sync_aggregate', 'signature_slot'] })
@@ -4720,7 +3732,7 @@ const GloasBlockContentsSchema: z.ZodType<GloasBlockContentsType> = z
   .object({
     block: GloasBeaconBlockSchema,
     execution_payload_envelope: GloasExecutionPayloadEnvelopeSchema,
-    kzg_proofs: z.lazy(() => GloasSignedExecutionPayloadEnvelopeContentsSchema),
+    kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema,
     blobs: BlobsSchema,
   })
   .openapi({
@@ -4729,6 +3741,33 @@ const GloasBlockContentsSchema: z.ZodType<GloasBlockContentsType> = z
     required: ['block', 'execution_payload_envelope', 'kzg_proofs', 'blobs'],
   })
   .openapi('GloasBlockContents')
+
+const GloasSignedExecutionPayloadEnvelopeSchema = z
+  .object({
+    message: GloasExecutionPayloadEnvelopeSchema,
+    signature: SignatureSchema.openapi({
+      description: 'BLS signature of the execution payload envelope',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`SignedExecutionPayloadEnvelope`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#signedexecutionpayloadenvelope) object from the CL Gloas spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('GloasSignedExecutionPayloadEnvelope')
+
+const GloasSignedExecutionPayloadEnvelopeContentsSchema = z
+  .object({
+    signed_execution_payload_envelope: GloasSignedExecutionPayloadEnvelopeSchema,
+    kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema,
+    blobs: BlobsSchema,
+  })
+  .openapi({
+    description:
+      'Signed execution payload envelope bundled with blobs and KZG proofs for stateless\npublishing. Used when the validator client publishes to a beacon node that does not\nhave the blobs cached (e.g. multi-BN setups, distributed validators, failover).\n',
+    required: ['signed_execution_payload_envelope', 'kzg_proofs', 'blobs'],
+  })
+  .openapi('GloasSignedExecutionPayloadEnvelopeContents')
 
 const GloasPayloadAttestationMessageSchema = z
   .object({
@@ -4807,12 +3846,26 @@ const GloasSignedProposerPreferencesSchema = z
   })
   .openapi('GloasSignedProposerPreferences')
 
-const FuluSignedBlockContentsSchema = z
+const FuluBlockContentsSchema: z.ZodType<FuluBlockContentsType> = z
+  .object({
+    block: FuluBlockContentsBlockSchema,
+    kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema.openapi({
+      description: 'Cell proofs of the blobs as defined in EIP-7594',
+    }),
+    blobs: BlobsSchema,
+  })
+  .openapi({
+    description: 'The required object for block production according to the Fulu CL spec.',
+    required: ['block', 'kzg_proofs', 'blobs'],
+  })
+  .openapi('FuluBlockContents')
+
+const FuluSignedBlockContentsSchema: z.ZodType<FuluSignedBlockContentsType> = z
   .object({
     signed_block: ElectraSignedBeaconBlockSchema,
-    kzg_proofs: z
-      .lazy(() => GloasSignedExecutionPayloadEnvelopeContentsSchema)
-      .openapi({ description: 'Cell proofs of the blobs as defined in EIP-7594' }),
+    kzg_proofs: GloasSignedExecutionPayloadEnvelopeContentsKzgProofsSchema.openapi({
+      description: 'Cell proofs of the blobs as defined in EIP-7594',
+    }),
     blobs: BlobsSchema,
   })
   .openapi({
@@ -4822,40 +3875,31 @@ const FuluSignedBlockContentsSchema = z
   })
   .openapi('FuluSignedBlockContents')
 
+const GloasDataColumnSidecarsItemsColumnItemsSchema = z
+  .hex()
+  .regex(/^0x[a-fA-F0-9]{4096}$/)
+  .openapi({
+    description:
+      'A data column is `FIELD_ELEMENTS_PER_CELL * size_of(BLSFieldElement) = 64 * 32 = 2048` bytes (`DATA`) representing a Cell as defined in Fulu',
+  })
+  .openapi('GloasDataColumnSidecarsItemsColumnItems')
+
 const FuluDataColumnSidecarsSchema = z
   .array(
     z
       .object({
         index: Uint64Schema,
-        column: z
-          .array(
-            z
-              .hex()
-              .regex(/^0x[a-fA-F0-9]{4096}$/)
-              .openapi({
-                description:
-                  'A data column is `FIELD_ELEMENTS_PER_CELL * size_of(BLSFieldElement) = 64 * 32 = 2048` bytes (`DATA`) representing a Cell as defined in Fulu',
-              }),
-          )
-          .min(0)
-          .max(4096),
+        column: z.array(GloasDataColumnSidecarsItemsColumnItemsSchema).min(0).max(4096),
         kzg_commitments: z
-          .array(
-            z
-              .hex()
-              .regex(/^0x[a-fA-F0-9]{96}$/)
-              .openapi({
-                description:
-                  'A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity',
-                example:
-                  '0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a',
-              }),
-          )
+          .array(FuluDataColumnSidecarsItemsKzgCommitmentsItemsSchema)
           .min(0)
           .max(4096),
-        kzg_proofs: z.array(ItemsSchema).min(0).max(4096),
+        kzg_proofs: z
+          .array(GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsSchema)
+          .min(0)
+          .max(4096),
         signed_block_header: Phase0SignedBeaconBlockHeaderSchema,
-        kzg_commitments_inclusion_proof: z.array(z.lazy(() => GloasBeaconStateSchema)).length(4),
+        kzg_commitments_inclusion_proof: z.array(GloasBeaconStateRandaoMixesItemsSchema).length(4),
       })
       .openapi({
         description:
@@ -4880,19 +3924,11 @@ const GloasDataColumnSidecarsSchema = z
       .object({
         index: Uint64Schema,
         column: z
-          .array(
-            z
-              .hex()
-              .regex(/^0x[a-fA-F0-9]{4096}$/)
-              .openapi({
-                description:
-                  'A data column is `FIELD_ELEMENTS_PER_CELL * size_of(BLSFieldElement) = 64 * 32 = 2048` bytes (`DATA`) representing a Cell as defined in Fulu',
-              }),
-          )
+          .array(GloasDataColumnSidecarsItemsColumnItemsSchema)
           .max(4096)
           .openapi({ description: 'Progressive list of cells.' }),
         kzg_proofs: z
-          .array(ItemsSchema)
+          .array(GloasSignedExecutionPayloadEnvelopeContentsKzgProofsItemsSchema)
           .max(4096)
           .openapi({ description: 'Progressive list of KZG proofs.' }),
         slot: Uint64Schema,
@@ -4907,6 +3943,36 @@ const GloasDataColumnSidecarsSchema = z
   .min(0)
   .max(128)
   .openapi('GloasDataColumnSidecars')
+
+const GloasBuilderRequestAuthSchema = z
+  .object({
+    data: z
+      .hex()
+      .regex(/^0x(?:[a-fA-F0-9]{2}){1,4096}$/)
+      .openapi({
+        description:
+          "Opaque authentication data unique to the builder, agreed upon out of band. The meaning of\nthe up to `MAX_BUILDER_AUTH_DATA_SIZE` (4096) bytes is left to the two parties; the builder checks the\nexact bytes when it verifies. When no value has been agreed out of band, implementations\nSHOULD default to the builder's hostname derived from its URL, see\n[default auth data](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#default-auth-data),\nso proposers with no prior relationship can construct an identical `data`\ndeterministically. A zero-length `data` is invalid.\n",
+        example: '0x1234567890abcdef',
+      }),
+    slot: Uint64Schema.openapi({
+      description: 'The proposal slot this request is authorized for.',
+    }),
+  })
+  .openapi({
+    description:
+      'The [`BuilderRequestAuth`](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#builderrequestauth) object from the Builder API Gloas spec.',
+    required: ['data', 'slot'],
+  })
+  .openapi('GloasBuilderRequestAuth')
+
+const GloasSignedBuilderRequestAuthSchema = z
+  .object({ message: GloasBuilderRequestAuthSchema, signature: SignatureSchema })
+  .openapi({
+    description:
+      'The [`SignedBuilderRequestAuth`](https://github.com/ethereum/builder-specs/blob/main/specs/gloas/validator.md#signedbuilderrequestauth) object from the Builder API Gloas spec.',
+    required: ['message', 'signature'],
+  })
+  .openapi('GloasSignedBuilderRequestAuth')
 
 const GloasBuilderEntrySchema = z
   .object({
@@ -4923,9 +3989,9 @@ const GloasBuilderEntrySchema = z
     }),
     builder_pubkeys: z
       .array(
-        z
-          .lazy(() => GloasBuilderPreferencesEntrySchema)
-          .openapi({ description: "A builder's BLS public key." }),
+        GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+          description: "A builder's BLS public key.",
+        }),
       )
       .max(64)
       .openapi({
@@ -4989,6 +4055,36 @@ const GloasBuilderConfigSchema = z
   })
   .openapi('GloasBuilderConfig')
 
+const GloasBuilderPreferencesEntrySchema = z
+  .object({
+    proposer_pubkey: GloasBuilderPreferencesEntryProposerPubkeyAllOf0Schema.openapi({
+      description: 'The BLS public key of the proposer these preferences apply to.',
+    }),
+    url: z
+      .url()
+      .max(2048)
+      .openapi({
+        description:
+          "The URL this entry's preferences are submitted to. Multiple entries MAY share a `url`; the beacon node makes one submission per entry.",
+        example: 'https://builder.example.com',
+      }),
+    auth: GloasSignedBuilderRequestAuthSchema.openapi({
+      description:
+        'Authenticates this submission to the builder. The beacon node MUST forward `message` and `signature` byte-for-byte unchanged.',
+    }),
+    max_execution_payment: Uint64Schema.openapi({
+      description:
+        'Maximum execution-layer payment, in Gwei, submitted to this builder so it can shape its bid.',
+      example: '1000000000',
+    }),
+  })
+  .openapi({
+    description:
+      "A per-builder preference the validator client asks the beacon node to submit ahead of the bid\nrequest, one entry per builder per proposer. A single submission batches these across the\nvalidator client's proposers, so each entry names the proposer it belongs to in\n`proposer_pubkey`. It is a dedicated type, distinct from the block-production `BuilderEntry`.\n\nThe entry pairs the beacon node's routing with the payload the builder receives, so like\n`BuilderEntry` it has no Builder API definition. Its SSZ container uses that type's constants\nand the `SignedBuilderRequestAuth` object from the Builder API Gloas spec:\n\n    class BuilderPreferencesEntry(Container):\n        proposer_pubkey: BLSPubkey  # the proposer these preferences belong to\n        url: ByteList[MAX_BUILDER_URL_SIZE]  # UTF-8 bytes of `url`, exactly as in JSON\n        auth: SignedBuilderRequestAuth\n        max_execution_payment: Gwei\n\nIn either encoding, a zero-length `url` is invalid.\n",
+    required: ['proposer_pubkey', 'url', 'auth', 'max_execution_payment'],
+  })
+  .openapi('GloasBuilderPreferencesEntry')
+
 const ExtraDataSchema = z
   .looseObject({})
   .openapi({
@@ -5010,11 +4106,9 @@ const NodeSchema = z
     finalized_epoch: Uint64Schema,
     weight: Uint64Schema,
     validity: z.enum(['valid', 'invalid', 'optimistic']),
-    execution_block_hash: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({
-        description: 'The `block_hash` from the `execution_payload` of the `BeaconBlock`',
-      }),
+    execution_block_hash: GloasBeaconStateLatestBlockHashSchema.openapi({
+      description: 'The `block_hash` from the `execution_payload` of the `BeaconBlock`',
+    }),
     extra_data: ExtraDataSchema.exactOptional(),
   })
   .openapi({
@@ -5066,12 +4160,10 @@ const NodeV2Schema = z
       .openapi({
         description: 'The execution validity of the chain ending at `execution_block_hash`.',
       }),
-    execution_block_hash: z
-      .lazy(() => GloasBeaconStateSchema)
-      .openapi({
-        description:
-          "For `full` nodes, the block's execution payload hash. For Gloas `pending` and `empty` nodes,\nthe bid's `parent_block_hash`.\n",
-      }),
+    execution_block_hash: GloasBeaconStateLatestBlockHashSchema.openapi({
+      description:
+        "For `full` nodes, the block's execution payload hash. For Gloas `pending` and `empty` nodes,\nthe bid's `parent_block_hash`.\n",
+    }),
     payload_attester_count: Uint64Schema.openapi({
       description: 'Number of PTC positions with a recorded vote.',
     }),
@@ -5104,6 +4196,11 @@ const NodeV2Schema = z
   })
   .openapi('NodeV2')
 
+const SyncCommitteeRewardsItemsRewardSchema = z
+  .string()
+  .openapi({ example: '2000', description: 'sync committee reward in gwei for the validator' })
+  .openapi('SyncCommitteeRewardsItemsReward')
+
 const SyncCommitteeRewardsSchema = z
   .array(
     z
@@ -5112,12 +4209,7 @@ const SyncCommitteeRewardsSchema = z
           example: '0',
           description: 'one entry for every validator participating in the sync committee',
         }),
-        reward: z
-          .string()
-          .openapi({
-            example: '2000',
-            description: 'sync committee reward in gwei for the validator',
-          }),
+        reward: SyncCommitteeRewardsItemsRewardSchema,
       })
       .openapi({
         description: 'Rewards info for a single sync committee member',
@@ -5177,34 +4269,26 @@ const AttestationsRewardsSchema = z
             example: '1000000000',
             description: "validator's effective balance in gwei",
           }),
-          head: z
-            .string()
-            .openapi({
-              example: '2500',
-              description: "Ideal attester's reward for head vote in gwei",
-            }),
-          target: z
-            .string()
-            .openapi({
-              example: '5000',
-              description: "Ideal attester's reward for target vote in gwei",
-            }),
-          source: z
-            .string()
-            .openapi({
-              example: '5000',
-              description: "Ideal attester's reward for source vote in gwei",
-            }),
+          head: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '2500',
+            description: "Ideal attester's reward for head vote in gwei",
+          }),
+          target: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '5000',
+            description: "Ideal attester's reward for target vote in gwei",
+          }),
+          source: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '5000',
+            description: "Ideal attester's reward for source vote in gwei",
+          }),
           inclusion_delay: Uint64Schema.exactOptional().openapi({
             example: '5000',
             description: "Ideal attester's inclusion_delay reward in gwei (phase0 only)",
           }),
-          inactivity: z
-            .string()
-            .openapi({
-              example: '5000',
-              description: "Ideal attester's inactivity penalty in gwei",
-            }),
+          inactivity: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '5000',
+            description: "Ideal attester's inactivity penalty in gwei",
+          }),
         })
         .openapi({
           description: 'Ideal rewards info for a single attestation',
@@ -5218,22 +4302,26 @@ const AttestationsRewardsSchema = z
             example: '0',
             description: 'one entry for every validator based on their attestations in the epoch',
           }),
-          head: z
-            .string()
-            .openapi({ example: '2000', description: "attester's reward for head vote in gwei" }),
-          target: z
-            .string()
-            .openapi({ example: '2000', description: "attester's reward for target vote in gwei" }),
-          source: z
-            .string()
-            .openapi({ example: '4000', description: "attester's reward for source vote in gwei" }),
+          head: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '2000',
+            description: "attester's reward for head vote in gwei",
+          }),
+          target: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '2000',
+            description: "attester's reward for target vote in gwei",
+          }),
+          source: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '4000',
+            description: "attester's reward for source vote in gwei",
+          }),
           inclusion_delay: Uint64Schema.exactOptional().openapi({
             example: '2000',
             description: "attester's inclusion_delay reward in gwei (phase0 only)",
           }),
-          inactivity: z
-            .string()
-            .openapi({ example: '2000', description: "attester's inactivity penalty in gwei" }),
+          inactivity: SyncCommitteeRewardsItemsRewardSchema.openapi({
+            example: '2000',
+            description: "attester's inactivity penalty in gwei",
+          }),
         })
         .openapi({
           description: 'Rewards info for a single attestation',

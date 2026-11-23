@@ -1,8 +1,401 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { gmailHandler } from './handlers'
+import {
+  deleteGmailV1UsersUserIdDraftsIdRoute,
+  deleteGmailV1UsersUserIdLabelsIdRoute,
+  deleteGmailV1UsersUserIdMessagesIdRoute,
+  deleteGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRoute,
+  deleteGmailV1UsersUserIdSettingsDelegatesDelegateEmailRoute,
+  deleteGmailV1UsersUserIdSettingsFiltersIdRoute,
+  deleteGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRoute,
+  deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+  deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRoute,
+  deleteGmailV1UsersUserIdThreadsIdRoute,
+  getGmailV1UsersUserIdDraftsIdRoute,
+  getGmailV1UsersUserIdDraftsRoute,
+  getGmailV1UsersUserIdHistoryRoute,
+  getGmailV1UsersUserIdLabelsIdRoute,
+  getGmailV1UsersUserIdLabelsRoute,
+  getGmailV1UsersUserIdMessagesIdRoute,
+  getGmailV1UsersUserIdMessagesMessageIdAttachmentsIdRoute,
+  getGmailV1UsersUserIdMessagesRoute,
+  getGmailV1UsersUserIdProfileRoute,
+  getGmailV1UsersUserIdSettingsAutoForwardingRoute,
+  getGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRoute,
+  getGmailV1UsersUserIdSettingsCseIdentitiesRoute,
+  getGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdRoute,
+  getGmailV1UsersUserIdSettingsCseKeypairsRoute,
+  getGmailV1UsersUserIdSettingsDelegatesDelegateEmailRoute,
+  getGmailV1UsersUserIdSettingsDelegatesRoute,
+  getGmailV1UsersUserIdSettingsFiltersIdRoute,
+  getGmailV1UsersUserIdSettingsFiltersRoute,
+  getGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRoute,
+  getGmailV1UsersUserIdSettingsForwardingAddressesRoute,
+  getGmailV1UsersUserIdSettingsImapRoute,
+  getGmailV1UsersUserIdSettingsLanguageRoute,
+  getGmailV1UsersUserIdSettingsPopRoute,
+  getGmailV1UsersUserIdSettingsSendAsRoute,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRoute,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRoute,
+  getGmailV1UsersUserIdSettingsVacationRoute,
+  getGmailV1UsersUserIdThreadsIdRoute,
+  getGmailV1UsersUserIdThreadsRoute,
+  patchGmailV1UsersUserIdLabelsIdRoute,
+  patchGmailV1UsersUserIdSettingsCseIdentitiesEmailAddressRoute,
+  patchGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+  postGmailV1UsersUserIdDraftsRoute,
+  postGmailV1UsersUserIdDraftsSendRoute,
+  postGmailV1UsersUserIdLabelsRoute,
+  postGmailV1UsersUserIdMessagesBatchDeleteRoute,
+  postGmailV1UsersUserIdMessagesBatchModifyRoute,
+  postGmailV1UsersUserIdMessagesIdModifyRoute,
+  postGmailV1UsersUserIdMessagesIdTrashRoute,
+  postGmailV1UsersUserIdMessagesIdUntrashRoute,
+  postGmailV1UsersUserIdMessagesImportRoute,
+  postGmailV1UsersUserIdMessagesRoute,
+  postGmailV1UsersUserIdMessagesSendRoute,
+  postGmailV1UsersUserIdSettingsCseIdentitiesRoute,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdDisableRoute,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdEnableRoute,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdObliterateRoute,
+  postGmailV1UsersUserIdSettingsCseKeypairsRoute,
+  postGmailV1UsersUserIdSettingsDelegatesRoute,
+  postGmailV1UsersUserIdSettingsFiltersRoute,
+  postGmailV1UsersUserIdSettingsForwardingAddressesRoute,
+  postGmailV1UsersUserIdSettingsSendAsRoute,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdSetDefaultRoute,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRoute,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailVerifyRoute,
+  postGmailV1UsersUserIdStopRoute,
+  postGmailV1UsersUserIdThreadsIdModifyRoute,
+  postGmailV1UsersUserIdThreadsIdTrashRoute,
+  postGmailV1UsersUserIdThreadsIdUntrashRoute,
+  postGmailV1UsersUserIdWatchRoute,
+  putGmailV1UsersUserIdDraftsIdRoute,
+  putGmailV1UsersUserIdLabelsIdRoute,
+  putGmailV1UsersUserIdSettingsAutoForwardingRoute,
+  putGmailV1UsersUserIdSettingsImapRoute,
+  putGmailV1UsersUserIdSettingsLanguageRoute,
+  putGmailV1UsersUserIdSettingsPopRoute,
+  putGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+  putGmailV1UsersUserIdSettingsVacationRoute,
+} from './routes'
+import {
+  deleteGmailV1UsersUserIdDraftsIdRouteHandler,
+  deleteGmailV1UsersUserIdLabelsIdRouteHandler,
+  deleteGmailV1UsersUserIdMessagesIdRouteHandler,
+  deleteGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRouteHandler,
+  deleteGmailV1UsersUserIdSettingsDelegatesDelegateEmailRouteHandler,
+  deleteGmailV1UsersUserIdSettingsFiltersIdRouteHandler,
+  deleteGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRouteHandler,
+  deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRouteHandler,
+  deleteGmailV1UsersUserIdThreadsIdRouteHandler,
+  getGmailV1UsersUserIdDraftsIdRouteHandler,
+  getGmailV1UsersUserIdDraftsRouteHandler,
+  getGmailV1UsersUserIdHistoryRouteHandler,
+  getGmailV1UsersUserIdLabelsIdRouteHandler,
+  getGmailV1UsersUserIdLabelsRouteHandler,
+  getGmailV1UsersUserIdMessagesIdRouteHandler,
+  getGmailV1UsersUserIdMessagesMessageIdAttachmentsIdRouteHandler,
+  getGmailV1UsersUserIdMessagesRouteHandler,
+  getGmailV1UsersUserIdProfileRouteHandler,
+  getGmailV1UsersUserIdSettingsAutoForwardingRouteHandler,
+  getGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRouteHandler,
+  getGmailV1UsersUserIdSettingsCseIdentitiesRouteHandler,
+  getGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdRouteHandler,
+  getGmailV1UsersUserIdSettingsCseKeypairsRouteHandler,
+  getGmailV1UsersUserIdSettingsDelegatesDelegateEmailRouteHandler,
+  getGmailV1UsersUserIdSettingsDelegatesRouteHandler,
+  getGmailV1UsersUserIdSettingsFiltersIdRouteHandler,
+  getGmailV1UsersUserIdSettingsFiltersRouteHandler,
+  getGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRouteHandler,
+  getGmailV1UsersUserIdSettingsForwardingAddressesRouteHandler,
+  getGmailV1UsersUserIdSettingsImapRouteHandler,
+  getGmailV1UsersUserIdSettingsLanguageRouteHandler,
+  getGmailV1UsersUserIdSettingsPopRouteHandler,
+  getGmailV1UsersUserIdSettingsSendAsRouteHandler,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRouteHandler,
+  getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRouteHandler,
+  getGmailV1UsersUserIdSettingsVacationRouteHandler,
+  getGmailV1UsersUserIdThreadsIdRouteHandler,
+  getGmailV1UsersUserIdThreadsRouteHandler,
+  patchGmailV1UsersUserIdLabelsIdRouteHandler,
+  patchGmailV1UsersUserIdSettingsCseIdentitiesEmailAddressRouteHandler,
+  patchGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  postGmailV1UsersUserIdDraftsRouteHandler,
+  postGmailV1UsersUserIdDraftsSendRouteHandler,
+  postGmailV1UsersUserIdLabelsRouteHandler,
+  postGmailV1UsersUserIdMessagesBatchDeleteRouteHandler,
+  postGmailV1UsersUserIdMessagesBatchModifyRouteHandler,
+  postGmailV1UsersUserIdMessagesIdModifyRouteHandler,
+  postGmailV1UsersUserIdMessagesIdTrashRouteHandler,
+  postGmailV1UsersUserIdMessagesIdUntrashRouteHandler,
+  postGmailV1UsersUserIdMessagesImportRouteHandler,
+  postGmailV1UsersUserIdMessagesRouteHandler,
+  postGmailV1UsersUserIdMessagesSendRouteHandler,
+  postGmailV1UsersUserIdSettingsCseIdentitiesRouteHandler,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdDisableRouteHandler,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdEnableRouteHandler,
+  postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdObliterateRouteHandler,
+  postGmailV1UsersUserIdSettingsCseKeypairsRouteHandler,
+  postGmailV1UsersUserIdSettingsDelegatesRouteHandler,
+  postGmailV1UsersUserIdSettingsFiltersRouteHandler,
+  postGmailV1UsersUserIdSettingsForwardingAddressesRouteHandler,
+  postGmailV1UsersUserIdSettingsSendAsRouteHandler,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdSetDefaultRouteHandler,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRouteHandler,
+  postGmailV1UsersUserIdSettingsSendAsSendAsEmailVerifyRouteHandler,
+  postGmailV1UsersUserIdStopRouteHandler,
+  postGmailV1UsersUserIdThreadsIdModifyRouteHandler,
+  postGmailV1UsersUserIdThreadsIdTrashRouteHandler,
+  postGmailV1UsersUserIdThreadsIdUntrashRouteHandler,
+  postGmailV1UsersUserIdWatchRouteHandler,
+  putGmailV1UsersUserIdDraftsIdRouteHandler,
+  putGmailV1UsersUserIdLabelsIdRouteHandler,
+  putGmailV1UsersUserIdSettingsAutoForwardingRouteHandler,
+  putGmailV1UsersUserIdSettingsImapRouteHandler,
+  putGmailV1UsersUserIdSettingsLanguageRouteHandler,
+  putGmailV1UsersUserIdSettingsPopRouteHandler,
+  putGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  putGmailV1UsersUserIdSettingsVacationRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', gmailHandler)
+export const api = app
+  .openapi(getGmailV1UsersUserIdDraftsRoute, getGmailV1UsersUserIdDraftsRouteHandler)
+  .openapi(postGmailV1UsersUserIdDraftsRoute, postGmailV1UsersUserIdDraftsRouteHandler)
+  .openapi(postGmailV1UsersUserIdDraftsSendRoute, postGmailV1UsersUserIdDraftsSendRouteHandler)
+  .openapi(deleteGmailV1UsersUserIdDraftsIdRoute, deleteGmailV1UsersUserIdDraftsIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdDraftsIdRoute, getGmailV1UsersUserIdDraftsIdRouteHandler)
+  .openapi(putGmailV1UsersUserIdDraftsIdRoute, putGmailV1UsersUserIdDraftsIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdHistoryRoute, getGmailV1UsersUserIdHistoryRouteHandler)
+  .openapi(getGmailV1UsersUserIdLabelsRoute, getGmailV1UsersUserIdLabelsRouteHandler)
+  .openapi(postGmailV1UsersUserIdLabelsRoute, postGmailV1UsersUserIdLabelsRouteHandler)
+  .openapi(deleteGmailV1UsersUserIdLabelsIdRoute, deleteGmailV1UsersUserIdLabelsIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdLabelsIdRoute, getGmailV1UsersUserIdLabelsIdRouteHandler)
+  .openapi(patchGmailV1UsersUserIdLabelsIdRoute, patchGmailV1UsersUserIdLabelsIdRouteHandler)
+  .openapi(putGmailV1UsersUserIdLabelsIdRoute, putGmailV1UsersUserIdLabelsIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdMessagesRoute, getGmailV1UsersUserIdMessagesRouteHandler)
+  .openapi(postGmailV1UsersUserIdMessagesRoute, postGmailV1UsersUserIdMessagesRouteHandler)
+  .openapi(
+    postGmailV1UsersUserIdMessagesBatchDeleteRoute,
+    postGmailV1UsersUserIdMessagesBatchDeleteRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdMessagesBatchModifyRoute,
+    postGmailV1UsersUserIdMessagesBatchModifyRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdMessagesImportRoute,
+    postGmailV1UsersUserIdMessagesImportRouteHandler,
+  )
+  .openapi(postGmailV1UsersUserIdMessagesSendRoute, postGmailV1UsersUserIdMessagesSendRouteHandler)
+  .openapi(deleteGmailV1UsersUserIdMessagesIdRoute, deleteGmailV1UsersUserIdMessagesIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdMessagesIdRoute, getGmailV1UsersUserIdMessagesIdRouteHandler)
+  .openapi(
+    postGmailV1UsersUserIdMessagesIdModifyRoute,
+    postGmailV1UsersUserIdMessagesIdModifyRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdMessagesIdTrashRoute,
+    postGmailV1UsersUserIdMessagesIdTrashRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdMessagesIdUntrashRoute,
+    postGmailV1UsersUserIdMessagesIdUntrashRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdMessagesMessageIdAttachmentsIdRoute,
+    getGmailV1UsersUserIdMessagesMessageIdAttachmentsIdRouteHandler,
+  )
+  .openapi(getGmailV1UsersUserIdProfileRoute, getGmailV1UsersUserIdProfileRouteHandler)
+  .openapi(
+    getGmailV1UsersUserIdSettingsAutoForwardingRoute,
+    getGmailV1UsersUserIdSettingsAutoForwardingRouteHandler,
+  )
+  .openapi(
+    putGmailV1UsersUserIdSettingsAutoForwardingRoute,
+    putGmailV1UsersUserIdSettingsAutoForwardingRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsCseIdentitiesRoute,
+    getGmailV1UsersUserIdSettingsCseIdentitiesRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsCseIdentitiesRoute,
+    postGmailV1UsersUserIdSettingsCseIdentitiesRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRoute,
+    deleteGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRoute,
+    getGmailV1UsersUserIdSettingsCseIdentitiesCseEmailAddressRouteHandler,
+  )
+  .openapi(
+    patchGmailV1UsersUserIdSettingsCseIdentitiesEmailAddressRoute,
+    patchGmailV1UsersUserIdSettingsCseIdentitiesEmailAddressRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsCseKeypairsRoute,
+    getGmailV1UsersUserIdSettingsCseKeypairsRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsCseKeypairsRoute,
+    postGmailV1UsersUserIdSettingsCseKeypairsRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdRoute,
+    getGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdDisableRoute,
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdDisableRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdEnableRoute,
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdEnableRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdObliterateRoute,
+    postGmailV1UsersUserIdSettingsCseKeypairsKeyPairIdObliterateRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsDelegatesRoute,
+    getGmailV1UsersUserIdSettingsDelegatesRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsDelegatesRoute,
+    postGmailV1UsersUserIdSettingsDelegatesRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsDelegatesDelegateEmailRoute,
+    deleteGmailV1UsersUserIdSettingsDelegatesDelegateEmailRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsDelegatesDelegateEmailRoute,
+    getGmailV1UsersUserIdSettingsDelegatesDelegateEmailRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsFiltersRoute,
+    getGmailV1UsersUserIdSettingsFiltersRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsFiltersRoute,
+    postGmailV1UsersUserIdSettingsFiltersRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsFiltersIdRoute,
+    deleteGmailV1UsersUserIdSettingsFiltersIdRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsFiltersIdRoute,
+    getGmailV1UsersUserIdSettingsFiltersIdRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsForwardingAddressesRoute,
+    getGmailV1UsersUserIdSettingsForwardingAddressesRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsForwardingAddressesRoute,
+    postGmailV1UsersUserIdSettingsForwardingAddressesRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRoute,
+    deleteGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRoute,
+    getGmailV1UsersUserIdSettingsForwardingAddressesForwardingEmailRouteHandler,
+  )
+  .openapi(getGmailV1UsersUserIdSettingsImapRoute, getGmailV1UsersUserIdSettingsImapRouteHandler)
+  .openapi(putGmailV1UsersUserIdSettingsImapRoute, putGmailV1UsersUserIdSettingsImapRouteHandler)
+  .openapi(
+    getGmailV1UsersUserIdSettingsLanguageRoute,
+    getGmailV1UsersUserIdSettingsLanguageRouteHandler,
+  )
+  .openapi(
+    putGmailV1UsersUserIdSettingsLanguageRoute,
+    putGmailV1UsersUserIdSettingsLanguageRouteHandler,
+  )
+  .openapi(getGmailV1UsersUserIdSettingsPopRoute, getGmailV1UsersUserIdSettingsPopRouteHandler)
+  .openapi(putGmailV1UsersUserIdSettingsPopRoute, putGmailV1UsersUserIdSettingsPopRouteHandler)
+  .openapi(
+    getGmailV1UsersUserIdSettingsSendAsRoute,
+    getGmailV1UsersUserIdSettingsSendAsRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsSendAsRoute,
+    postGmailV1UsersUserIdSettingsSendAsRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+    deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  )
+  .openapi(
+    patchGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+    patchGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  )
+  .openapi(
+    putGmailV1UsersUserIdSettingsSendAsSendAsEmailRoute,
+    putGmailV1UsersUserIdSettingsSendAsSendAsEmailRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRoute,
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRoute,
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoRouteHandler,
+  )
+  .openapi(
+    deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRoute,
+    deleteGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRoute,
+    getGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdSetDefaultRoute,
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailSmimeInfoIdSetDefaultRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailVerifyRoute,
+    postGmailV1UsersUserIdSettingsSendAsSendAsEmailVerifyRouteHandler,
+  )
+  .openapi(
+    getGmailV1UsersUserIdSettingsVacationRoute,
+    getGmailV1UsersUserIdSettingsVacationRouteHandler,
+  )
+  .openapi(
+    putGmailV1UsersUserIdSettingsVacationRoute,
+    putGmailV1UsersUserIdSettingsVacationRouteHandler,
+  )
+  .openapi(postGmailV1UsersUserIdStopRoute, postGmailV1UsersUserIdStopRouteHandler)
+  .openapi(getGmailV1UsersUserIdThreadsRoute, getGmailV1UsersUserIdThreadsRouteHandler)
+  .openapi(deleteGmailV1UsersUserIdThreadsIdRoute, deleteGmailV1UsersUserIdThreadsIdRouteHandler)
+  .openapi(getGmailV1UsersUserIdThreadsIdRoute, getGmailV1UsersUserIdThreadsIdRouteHandler)
+  .openapi(
+    postGmailV1UsersUserIdThreadsIdModifyRoute,
+    postGmailV1UsersUserIdThreadsIdModifyRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdThreadsIdTrashRoute,
+    postGmailV1UsersUserIdThreadsIdTrashRouteHandler,
+  )
+  .openapi(
+    postGmailV1UsersUserIdThreadsIdUntrashRoute,
+    postGmailV1UsersUserIdThreadsIdUntrashRouteHandler,
+  )
+  .openapi(postGmailV1UsersUserIdWatchRoute, postGmailV1UsersUserIdWatchRouteHandler)
 
 export default app

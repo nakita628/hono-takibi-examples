@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/xray/2016-04-12/openapi.yaml',
   output: './src/xray/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/xray/types.ts' },
   client: { output: './src/xray/client.ts', baseUrl: '/' },
   rpc: { output: './src/xray/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDebitAccountHolderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDebitAccountHolderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const debitAccountHolderHandler = app.openapi(postDebitAccountHolderRoute, (c) => {
+export const postDebitAccountHolderRouteHandler: RouteHandler<
+  typeof postDebitAccountHolderRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

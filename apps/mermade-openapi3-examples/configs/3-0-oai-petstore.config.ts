@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/OAI/petstore.yaml',
   output: './src/3-0-oai-petstore/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-oai-petstore/types.ts' },
   client: { output: './src/3-0-oai-petstore/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-oai-petstore/rpc.ts', parseResponse: true },

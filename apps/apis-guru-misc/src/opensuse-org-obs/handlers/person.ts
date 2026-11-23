@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePersonLoginTokenIdRoute,
   getPersonLoginGroupRoute,
   getPersonLoginRoute,
@@ -12,36 +12,52 @@ import {
   putPersonLoginRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPersonRouteHandler: RouteHandler<typeof getPersonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const personHandler = app
-  .openapi(getPersonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPersonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPersonRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPersonLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPersonLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPersonLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPersonLoginGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPersonLoginTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPersonLoginTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePersonLoginTokenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPersonRouteHandler: RouteHandler<typeof postPersonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPersonRegisterRouteHandler: RouteHandler<typeof postPersonRegisterRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPersonLoginRouteHandler: RouteHandler<typeof getPersonLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPersonLoginRouteHandler: RouteHandler<typeof postPersonLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPersonLoginRouteHandler: RouteHandler<typeof putPersonLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPersonLoginGroupRouteHandler: RouteHandler<
+  typeof getPersonLoginGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPersonLoginTokenRouteHandler: RouteHandler<
+  typeof getPersonLoginTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPersonLoginTokenRouteHandler: RouteHandler<
+  typeof postPersonLoginTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePersonLoginTokenIdRouteHandler: RouteHandler<
+  typeof deletePersonLoginTokenIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

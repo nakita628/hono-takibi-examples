@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersIndexRoute,
   getUsersUserIdAddonsIndexRoute,
   getUsersUserIdAddonsProviderAccountsAccountIdIndexRoute,
@@ -13,39 +13,66 @@ import {
   patchUsersUserIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersIndexRouteHandler: RouteHandler<typeof getUsersIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdAddonsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdAddonsProviderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdAddonsProviderAccountsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdAddonsProviderAccountsAccountIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdInstitutionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdNodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdPreprintsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUsersUserIdIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersUserIdIndexRouteHandler: RouteHandler<
+  typeof patchUsersUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdAddonsIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdAddonsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdAddonsProviderIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdAddonsProviderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdAddonsProviderAccountsIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdAddonsProviderAccountsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdAddonsProviderAccountsAccountIdIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdAddonsProviderAccountsAccountIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdInstitutionsIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdInstitutionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdNodesIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdNodesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdPreprintsIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdPreprintsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getUsersUserIdRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postShortenLinkRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postShortenLinkRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const shortenLinkHandler = app.openapi(postShortenLinkRoute, (c) => {
+export const postShortenLinkRouteHandler: RouteHandler<typeof postShortenLinkRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

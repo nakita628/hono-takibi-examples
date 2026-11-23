@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDagSourcesFileTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDagSourcesFileTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dagSourcesHandler = app.openapi(getDagSourcesFileTokenRoute, (c) => {
+export const getDagSourcesFileTokenRouteHandler: RouteHandler<
+  typeof getDagSourcesFileTokenRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

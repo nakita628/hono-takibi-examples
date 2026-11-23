@@ -55700,7 +55700,7 @@ export const deleteProjectProjectAiGatewayKeysKeyIdRoute = createRoute({
   operationId: 'AIGatewayKeyRevoke',
   request: { params: z.object({ project: ProjectParamsSchema, key_id: KeyIdParamsSchema }) },
   responses: {
-    204: { description: 'Revoke an AI Gateway key', content: {} },
+    204: { description: 'Revoke an AI Gateway key' },
     403: {
       description: 'AI Gateway is not enabled for this organization',
       content: {
@@ -58502,7 +58502,7 @@ export const deleteOrganizationOrganizationIdApplicationUsersUserIdAccessTokensT
         token_prefix: TokenPrefixParamsSchema,
       }),
     },
-    responses: { 204: { description: 'Delete an application token', content: {} } },
+    responses: { 204: { description: 'Delete an application token' } },
     security: [{ tokenAuth: [], oauth2: ['accounts:write', 'authentication:write'] }],
   })
 
@@ -58688,7 +58688,7 @@ export const deleteOrganizationOrganizationIdApplicationUsersUserIdRoute = creat
   request: {
     params: z.object({ organization_id: OrganizationIdParamsSchema, user_id: UserIdParamsSchema }),
   },
-  responses: { 204: { description: 'Delete an application user', content: {} } },
+  responses: { 204: { description: 'Delete an application user' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:write', 'authentication:write'] }],
 })
 
@@ -58909,7 +58909,7 @@ export const putOrganizationOrganizationIdAuthenticationMethodsAuthenticationMet
       },
     },
     responses: {
-      204: { description: "Link a domain to an organization's identity provider", content: {} },
+      204: { description: "Link a domain to an organization's identity provider" },
       400: {
         description: 'Invalid request parameters',
         content: {
@@ -59039,7 +59039,7 @@ export const deleteOrganizationOrganizationIdAuthenticationMethodsAuthentication
       }),
     },
     responses: {
-      204: { description: 'Unlink domain from authentication method', content: {} },
+      204: { description: 'Unlink domain from authentication method' },
       403: {
         description: 'Operation not allowed',
         content: {
@@ -60943,7 +60943,7 @@ export const deleteOrganizationOrganizationIdDomainsDomainIdRoute = createRoute(
       domain_id: DomainIdParamsSchema,
     }),
   },
-  responses: { 204: { description: 'Delete a domain', content: {} } },
+  responses: { 204: { description: 'Delete a domain' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:write'] }],
 })
 
@@ -61083,7 +61083,7 @@ export const deleteOrganizationOrganizationIdUserGroupsUserGroupIdRoute = create
     }),
   },
   responses: {
-    204: { description: 'Delete a group', content: {} },
+    204: { description: 'Delete a group' },
     409: {
       description: 'Request conflict',
       content: {
@@ -61239,7 +61239,7 @@ export const patchOrganizationOrganizationIdUserGroupsUserGroupIdMembersRoute = 
     },
   },
   responses: {
-    204: { description: 'Add or remove group members', content: {} },
+    204: { description: 'Add or remove group members' },
     409: {
       description: 'Request conflict',
       content: {
@@ -61796,10 +61796,7 @@ export const deleteOrganizationOrganizationIdKafkaConnectCustomPluginsPluginName
       }),
     },
     responses: {
-      204: {
-        description: 'Soft-delete a custom plugin and all its non-deleted file versions',
-        content: {},
-      },
+      204: { description: 'Soft-delete a custom plugin and all its non-deleted file versions' },
       404: {
         description: 'Resource not found',
         content: {
@@ -62279,7 +62276,6 @@ export const deleteOrganizationOrganizationIdKafkaConnectCustomPluginFilesPlugin
     responses: {
       204: {
         description: 'Soft-delete a custom plugin file and its solely-associated plugin classes',
-        content: {},
       },
       404: {
         description: 'Resource not found',
@@ -63027,7 +63023,7 @@ export const deleteOrganizationOrganizationIdBillingGroupBillingGroupIdRoute = c
     }),
   },
   responses: {
-    204: { description: 'Delete an organization billing group', content: {} },
+    204: { description: 'Delete an organization billing group' },
     404: {
       description: 'Resource not found',
       content: {
@@ -65023,7 +65019,7 @@ export const deleteOrganizationOrganizationIdRoute = createRoute({
     query: z.object({ recursive: OrganizationdeleteRecursiveParamsSchema }),
   },
   responses: {
-    204: { description: 'Delete an organization', content: {} },
+    204: { description: 'Delete an organization' },
     404: {
       description: 'Resource not found',
       content: {
@@ -66046,7 +66042,7 @@ export const putOrganizationOrganizationIdConfigApiClientIpAllowlistRoute = crea
     },
   },
   responses: {
-    204: { description: 'Set organization IP range allowlist', content: {} },
+    204: { description: 'Set organization IP range allowlist' },
     400: {
       description: 'Invalid request parameters',
       content: {
@@ -66392,7 +66388,7 @@ export const deleteOrganizationOrganizationIdProjectProjectIdRoute = createRoute
     }),
   },
   responses: {
-    204: { description: 'Delete project under the organization', content: {} },
+    204: { description: 'Delete project under the organization' },
     403: {
       description: 'Operation not allowed',
       content: {
@@ -67060,7 +67056,7 @@ export const postOrganizationOrganizationIdInvitationUserEmailRoute = createRout
       },
     },
   },
-  responses: { 204: { description: 'Accept a user invitation to the organization', content: {} } },
+  responses: { 204: { description: 'Accept a user invitation to the organization' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:read'] }],
 })
 
@@ -67076,7 +67072,7 @@ export const deleteOrganizationOrganizationIdInvitationUserEmailRoute = createRo
       user_email: UserEmailParamsSchema,
     }),
   },
-  responses: { 204: { description: 'Remove an invitation to the organization', content: {} } },
+  responses: { 204: { description: 'Remove an invitation to the organization' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:read'] }],
 })
 
@@ -67113,7 +67109,7 @@ export const postOrganizationOrganizationIdInvitationRoute = createRoute({
       },
     },
   },
-  responses: { 204: { description: 'Invite a user to the organization', content: {} } },
+  responses: { 204: { description: 'Invite a user to the organization' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:read'] }],
 })
 
@@ -68349,7 +68345,7 @@ export const putOrganizationOrganizationIdPermissionsResourceTypeResourceIdRoute
     },
   },
   responses: {
-    204: { description: 'Set permissions', content: {} },
+    204: { description: 'Set permissions' },
     400: {
       description: 'Invalid request parameters',
       content: {
@@ -68420,7 +68416,7 @@ export const patchOrganizationOrganizationIdPermissionsResourceTypeResourceIdRou
     },
   },
   responses: {
-    204: { description: 'Update permissions', content: {} },
+    204: { description: 'Update permissions' },
     400: {
       description: 'Invalid request parameters',
       content: {
@@ -70354,7 +70350,6 @@ export const postProjectProjectServiceServiceNameApplicationRedeployRoute = crea
   responses: {
     204: {
       description: 'Trigger a rebuild and deploy of the application from its configured branch',
-      content: {},
     },
     400: {
       description: 'Invalid request parameters',
@@ -81483,7 +81478,7 @@ export const deleteOrganizationOrganizationIdUpgradePipelineStepsStepIdRoute = c
     params: z.object({ organization_id: OrganizationIdParamsSchema, step_id: StepIdParamsSchema }),
   },
   responses: {
-    204: { description: 'Delete an upgrade step', content: {} },
+    204: { description: 'Delete an upgrade step' },
     404: {
       description: 'Upgrade step not found',
       content: {
@@ -81608,7 +81603,7 @@ export const postProjectProjectServiceServiceNameUpgradeValidationRoute = create
     },
   },
   responses: {
-    204: { description: 'Validate upgrade step', content: {} },
+    204: { description: 'Validate upgrade step' },
     404: {
       description: 'Project not found',
       content: {
@@ -81960,7 +81955,7 @@ export const deleteOrganizationOrganizationIdUserMemberUserIdRoute = createRoute
     }),
   },
   responses: {
-    204: { description: 'Remove a user from the organization', content: {} },
+    204: { description: 'Remove a user from the organization' },
     400: {
       description: 'Invalid request parameters',
       content: {
@@ -82112,9 +82107,7 @@ export const postOrganizationOrganizationIdUserMemberUserIdResetPasswordRoute = 
       member_user_id: MemberUserIdParamsSchema,
     }),
   },
-  responses: {
-    204: { description: 'Reset the password of a managed user in the organization', content: {} },
-  },
+  responses: { 204: { description: 'Reset the password of a managed user in the organization' } },
   security: [{ tokenAuth: [], oauth2: ['accounts:write'] }],
 })
 
@@ -82132,9 +82125,7 @@ export const deleteOrganizationOrganizationIdUserMemberUserIdAccessTokenTokenPre
         token_prefix: TokenPrefixParamsSchema,
       }),
     },
-    responses: {
-      204: { description: 'Revoke the token of a managed user in the organization', content: {} },
-    },
+    responses: { 204: { description: 'Revoke the token of a managed user in the organization' } },
     security: [{ tokenAuth: [], oauth2: ['user:write', 'authentication:write'] }],
   })
 
@@ -82223,7 +82214,7 @@ export const deleteUserUserIdRoute = createRoute({
   operationId: 'UserAccountDelete',
   request: { params: z.object({ user_id: UserIdParamsSchema }) },
   responses: {
-    204: { description: 'Delete user account', content: {} },
+    204: { description: 'Delete user account' },
     400: {
       description: 'Invalid request parameters',
       content: {

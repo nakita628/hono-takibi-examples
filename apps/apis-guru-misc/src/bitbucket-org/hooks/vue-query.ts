@@ -10035,13 +10035,13 @@ export function usePostRepositoriesWorkspaceRepoSlugIssuesExport<
 export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskIdZipQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
     >
   >,
 ) {
   return [
     'repositories',
-    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-:task_id.zip',
+    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-{task_id}.zip',
     toValue(args),
   ] as const
 }
@@ -10049,7 +10049,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
 export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskIdZipQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -10061,7 +10061,7 @@ export function getRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
         client.repositories[':workspace'][':repo_slug'].issues.export[
-          ':repo_name-issues-:task_id.zip'
+          ':repo_name-issues-{task_id}.zip'
         ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -10074,7 +10074,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+            (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
           >
         >
       >
@@ -10084,7 +10084,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+      (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
     >
   >,
   options?: {
@@ -10096,7 +10096,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
                   >
                 >
               >
@@ -10109,7 +10109,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
                   >
                 >
               >
@@ -10134,7 +10134,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+              (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
             >
           >
         >
@@ -10152,7 +10152,7 @@ export function useRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskId
       queryFn({ signal }) {
         return parseResponse(
           client.repositories[':workspace'][':repo_slug'].issues.export[
-            ':repo_name-issues-:task_id.zip'
+            ':repo_name-issues-{task_id}.zip'
           ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
       },

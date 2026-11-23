@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonAthenaStopQueryExecutionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonAthenaStopQueryExecutionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonAthenaStopQueryExecutionHandler = app.openapi(
-  postXAmzTargetAmazonAthenaStopQueryExecutionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonAthenaStopQueryExecutionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonAthenaStopQueryExecutionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

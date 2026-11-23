@@ -4,7 +4,7 @@ export default defineConfig({
   // Asana/openapi
   input: 'https://raw.githubusercontent.com/Asana/openapi/master/defs/asana_oas.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

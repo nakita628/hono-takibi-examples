@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getArchiveDeleteNetworkRoute,
   getArchiveDeleteRoute,
   getArchiveExportRoute,
   getArchiveListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getArchiveDeleteRouteHandler: RouteHandler<typeof getArchiveDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const archiveHandler = app
-  .openapi(getArchiveDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArchiveDeleteNetworkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArchiveExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getArchiveListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getArchiveDeleteNetworkRouteHandler: RouteHandler<
+  typeof getArchiveDeleteNetworkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getArchiveExportRouteHandler: RouteHandler<typeof getArchiveExportRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getArchiveListRouteHandler: RouteHandler<typeof getArchiveListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

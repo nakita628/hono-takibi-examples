@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSimCardGroupActionsIdRoute, getSimCardGroupActionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSimCardGroupActionsIdRoute, getSimCardGroupActionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimCardGroupActionsRouteHandler: RouteHandler<
+  typeof getSimCardGroupActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const simCardGroupActionsHandler = app
-  .openapi(getSimCardGroupActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardGroupActionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSimCardGroupActionsIdRouteHandler: RouteHandler<
+  typeof getSimCardGroupActionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

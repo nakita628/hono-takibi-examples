@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/email/2010-12-01/openapi.yaml',
   output: './src/email/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/email/types.ts' },
   client: { output: './src/email/client.ts', baseUrl: '/' },
   rpc: { output: './src/email/rpc.ts', parseResponse: true },

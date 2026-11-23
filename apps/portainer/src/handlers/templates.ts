@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTemplatesHelmCommandRoute,
   getTemplatesHelmRoute,
   getTemplatesRoute,
   postTemplatesIdFileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTemplatesRouteHandler: RouteHandler<typeof getTemplatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templatesHandler = app
-  .openapi(getTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplatesHelmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplatesHelmCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTemplatesIdFileRouteHandler: RouteHandler<
+  typeof postTemplatesIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplatesHelmRouteHandler: RouteHandler<typeof getTemplatesHelmRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplatesHelmCommandRouteHandler: RouteHandler<
+  typeof getTemplatesHelmCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

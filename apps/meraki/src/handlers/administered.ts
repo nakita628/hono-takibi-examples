@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAdministeredIdentitiesMeApiKeysRoute,
   getAdministeredIdentitiesMeRoute,
   getAdministeredLicensingSubscriptionEntitlementsRoute,
@@ -12,36 +12,62 @@ import {
   postAdministeredLicensingSubscriptionSubscriptionsSubscriptionIdBindRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdministeredIdentitiesMeRouteHandler: RouteHandler<
+  typeof getAdministeredIdentitiesMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const administeredHandler = app
-  .openapi(getAdministeredIdentitiesMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdministeredIdentitiesMeApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdministeredIdentitiesMeApiKeysGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdministeredIdentitiesMeApiKeysSuffixRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdministeredLicensingSubscriptionEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdministeredLicensingSubscriptionSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdministeredLicensingSubscriptionSubscriptionsClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdministeredLicensingSubscriptionSubscriptionsClaimKeyValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdministeredLicensingSubscriptionSubscriptionsComplianceStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdministeredLicensingSubscriptionSubscriptionsSubscriptionIdBindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdministeredIdentitiesMeApiKeysRouteHandler: RouteHandler<
+  typeof getAdministeredIdentitiesMeApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdministeredIdentitiesMeApiKeysGenerateRouteHandler: RouteHandler<
+  typeof postAdministeredIdentitiesMeApiKeysGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdministeredIdentitiesMeApiKeysSuffixRevokeRouteHandler: RouteHandler<
+  typeof postAdministeredIdentitiesMeApiKeysSuffixRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdministeredLicensingSubscriptionEntitlementsRouteHandler: RouteHandler<
+  typeof getAdministeredLicensingSubscriptionEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdministeredLicensingSubscriptionSubscriptionsRouteHandler: RouteHandler<
+  typeof getAdministeredLicensingSubscriptionSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdministeredLicensingSubscriptionSubscriptionsClaimRouteHandler: RouteHandler<
+  typeof postAdministeredLicensingSubscriptionSubscriptionsClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdministeredLicensingSubscriptionSubscriptionsClaimKeyValidateRouteHandler: RouteHandler<
+  typeof postAdministeredLicensingSubscriptionSubscriptionsClaimKeyValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdministeredLicensingSubscriptionSubscriptionsComplianceStatusesRouteHandler: RouteHandler<
+  typeof getAdministeredLicensingSubscriptionSubscriptionsComplianceStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdministeredLicensingSubscriptionSubscriptionsSubscriptionIdBindRouteHandler: RouteHandler<
+  typeof postAdministeredLicensingSubscriptionSubscriptionsSubscriptionIdBindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

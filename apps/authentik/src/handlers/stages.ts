@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStagesAccountLockdownStageUuidIndexRoute,
   deleteStagesAllStageUuidIndexRoute,
   deleteStagesAuthenticatorDuoStageUuidIndexRoute,
@@ -212,636 +212,1262 @@ import {
   putStagesUserWriteStageUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStagesAccountLockdownIndexRouteHandler: RouteHandler<
+  typeof getStagesAccountLockdownIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stagesHandler = app
-  .openapi(getStagesAccountLockdownIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAccountLockdownIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAccountLockdownStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAccountLockdownStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAccountLockdownStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAccountLockdownStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAccountLockdownStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAllStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAllStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAllStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAllTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAllUserSettingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorDuoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorDuoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorDuoStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorDuoStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorDuoStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorDuoStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorDuoStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEmailStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEndpointGdtcIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorEndpointGdtcIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEndpointGdtcStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorEndpointGdtcStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorEndpointGdtcStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorSmsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorSmsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorSmsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorSmsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorSmsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorSmsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorSmsStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorStaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorStaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorStaticStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorStaticStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorStaticStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorStaticStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorStaticStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorTotpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorTotpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorTotpStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorTotpStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorTotpStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorTotpStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorTotpStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorValidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorValidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorValidateStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorValidateStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorValidateStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorValidateStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorValidateStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorWebauthnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesAuthenticatorWebauthnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorWebauthnStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesAuthenticatorWebauthnStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesAuthenticatorWebauthnStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesAuthenticatorWebauthnStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorWebauthnStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorWebauthnDeviceTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesCaptchaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesCaptchaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesCaptchaStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesCaptchaStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesCaptchaStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesCaptchaStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesCaptchaStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesConsentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesConsentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesConsentStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesConsentStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesConsentStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesConsentStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesConsentStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDenyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesDenyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDenyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesDenyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesDenyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesDenyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDenyStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDummyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesDummyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDummyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesDummyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesDummyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesDummyStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesDummyStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesEmailStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEmailStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEmailTemplatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEndpointsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesEndpointsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEndpointsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesEndpointsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesEndpointsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesEndpointsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesEndpointsStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesIdentificationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesIdentificationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesIdentificationStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesIdentificationStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesIdentificationStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesIdentificationStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesIdentificationStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationInvitationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesInvitationInvitationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationInvitationsInviteUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesInvitationInvitationsInviteUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesInvitationInvitationsInviteUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesInvitationInvitationsInviteUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesInvitationInvitationsInviteUuidSendEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationInvitationsInviteUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationStagesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesInvitationStagesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesInvitationStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesInvitationStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesInvitationStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesInvitationStagesStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesMtlsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesMtlsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesMtlsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesMtlsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesMtlsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesMtlsStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesMtlsStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesPasswordIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPasswordStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesPasswordStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesPasswordStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesPasswordStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPasswordStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptPromptsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesPromptPromptsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptPromptsPromptUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesPromptPromptsPromptUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesPromptPromptsPromptUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesPromptPromptsPromptUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptPromptsPromptUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesPromptPromptsPreviewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptStagesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesPromptStagesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesPromptStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesPromptStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesPromptStagesStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesPromptStagesStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesRedirectIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesRedirectIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesRedirectStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesRedirectStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesRedirectStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesRedirectStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesRedirectStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesSourceIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesSourceIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesSourceStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesSourceStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesSourceStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesSourceStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesSourceStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserDeleteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesUserDeleteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserDeleteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesUserDeleteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesUserDeleteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesUserDeleteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserDeleteStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLoginIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesUserLoginIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLoginStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesUserLoginStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesUserLoginStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesUserLoginStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLoginStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLogoutIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesUserLogoutIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLogoutStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesUserLogoutStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesUserLogoutStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesUserLogoutStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserLogoutStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserWriteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStagesUserWriteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserWriteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStagesUserWriteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStagesUserWriteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStagesUserWriteStageUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStagesUserWriteStageUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStagesAccountLockdownIndexRouteHandler: RouteHandler<
+  typeof postStagesAccountLockdownIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAccountLockdownStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAccountLockdownStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAccountLockdownStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAccountLockdownStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAccountLockdownStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAccountLockdownStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAccountLockdownStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAccountLockdownStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAccountLockdownStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAccountLockdownStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAllIndexRouteHandler: RouteHandler<typeof getStagesAllIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAllStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAllStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAllStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAllStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAllStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAllStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAllTypesIndexRouteHandler: RouteHandler<
+  typeof getStagesAllTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAllUserSettingsIndexRouteHandler: RouteHandler<
+  typeof getStagesAllUserSettingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorDuoIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorDuoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorDuoIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorDuoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorDuoStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorDuoStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorDuoStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorDuoStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorDuoStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorDuoStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorDuoStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorDuoStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorDuoStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorDuoStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEmailIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorEmailIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEmailStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEmailStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEndpointGdtcIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEndpointGdtcIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorEndpointGdtcIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorEndpointGdtcIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEndpointGdtcStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorEndpointGdtcStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorEndpointGdtcStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorSmsIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorSmsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorSmsIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorSmsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorSmsStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorSmsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorSmsStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorSmsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorSmsStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorSmsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorSmsStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorSmsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorSmsStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorSmsStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorStaticIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorStaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorStaticIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorStaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorStaticStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorStaticStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorStaticStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorStaticStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorStaticStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorStaticStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorStaticStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorStaticStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorStaticStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorStaticStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorTotpIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorTotpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorTotpIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorTotpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorTotpStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorTotpStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorTotpStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorTotpStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorTotpStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorTotpStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorTotpStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorTotpStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorTotpStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorTotpStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorValidateIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorValidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorValidateIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorValidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorValidateStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorValidateStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorValidateStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorValidateStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorValidateStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorValidateStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorValidateStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorValidateStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorValidateStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorValidateStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorWebauthnIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorWebauthnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesAuthenticatorWebauthnIndexRouteHandler: RouteHandler<
+  typeof postStagesAuthenticatorWebauthnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorWebauthnStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorWebauthnStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesAuthenticatorWebauthnStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesAuthenticatorWebauthnStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesAuthenticatorWebauthnStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesAuthenticatorWebauthnStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesAuthenticatorWebauthnStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesAuthenticatorWebauthnStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorWebauthnStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorWebauthnStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorWebauthnDeviceTypesIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorWebauthnDeviceTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRouteHandler: RouteHandler<
+  typeof getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesCaptchaIndexRouteHandler: RouteHandler<
+  typeof getStagesCaptchaIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesCaptchaIndexRouteHandler: RouteHandler<
+  typeof postStagesCaptchaIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesCaptchaStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesCaptchaStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesCaptchaStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesCaptchaStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesCaptchaStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesCaptchaStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesCaptchaStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesCaptchaStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesCaptchaStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesCaptchaStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesConsentIndexRouteHandler: RouteHandler<
+  typeof getStagesConsentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesConsentIndexRouteHandler: RouteHandler<
+  typeof postStagesConsentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesConsentStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesConsentStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesConsentStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesConsentStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesConsentStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesConsentStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesConsentStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesConsentStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesConsentStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesConsentStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDenyIndexRouteHandler: RouteHandler<typeof getStagesDenyIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesDenyIndexRouteHandler: RouteHandler<
+  typeof postStagesDenyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDenyStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesDenyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesDenyStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesDenyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesDenyStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesDenyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesDenyStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesDenyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDenyStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesDenyStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDummyIndexRouteHandler: RouteHandler<
+  typeof getStagesDummyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesDummyIndexRouteHandler: RouteHandler<
+  typeof postStagesDummyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDummyStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesDummyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesDummyStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesDummyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesDummyStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesDummyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesDummyStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesDummyStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesDummyStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesDummyStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEmailIndexRouteHandler: RouteHandler<
+  typeof getStagesEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesEmailIndexRouteHandler: RouteHandler<
+  typeof postStagesEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesEmailStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesEmailStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEmailStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesEmailStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEmailTemplatesIndexRouteHandler: RouteHandler<
+  typeof getStagesEmailTemplatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEndpointsIndexRouteHandler: RouteHandler<
+  typeof getStagesEndpointsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesEndpointsIndexRouteHandler: RouteHandler<
+  typeof postStagesEndpointsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEndpointsStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesEndpointsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesEndpointsStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesEndpointsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesEndpointsStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesEndpointsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesEndpointsStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesEndpointsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesEndpointsStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesEndpointsStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesIdentificationIndexRouteHandler: RouteHandler<
+  typeof getStagesIdentificationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesIdentificationIndexRouteHandler: RouteHandler<
+  typeof postStagesIdentificationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesIdentificationStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesIdentificationStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesIdentificationStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesIdentificationStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesIdentificationStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesIdentificationStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesIdentificationStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesIdentificationStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesIdentificationStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesIdentificationStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationInvitationsIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationInvitationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesInvitationInvitationsIndexRouteHandler: RouteHandler<
+  typeof postStagesInvitationInvitationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationInvitationsInviteUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationInvitationsInviteUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesInvitationInvitationsInviteUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesInvitationInvitationsInviteUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesInvitationInvitationsInviteUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesInvitationInvitationsInviteUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesInvitationInvitationsInviteUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesInvitationInvitationsInviteUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesInvitationInvitationsInviteUuidSendEmailIndexRouteHandler: RouteHandler<
+  typeof postStagesInvitationInvitationsInviteUuidSendEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationInvitationsInviteUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationInvitationsInviteUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationStagesIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationStagesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesInvitationStagesIndexRouteHandler: RouteHandler<
+  typeof postStagesInvitationStagesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesInvitationStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesInvitationStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesInvitationStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesInvitationStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesInvitationStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesInvitationStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesInvitationStagesStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesInvitationStagesStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesMtlsIndexRouteHandler: RouteHandler<typeof getStagesMtlsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesMtlsIndexRouteHandler: RouteHandler<
+  typeof postStagesMtlsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesMtlsStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesMtlsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesMtlsStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesMtlsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesMtlsStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesMtlsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesMtlsStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesMtlsStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesMtlsStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesMtlsStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPasswordIndexRouteHandler: RouteHandler<
+  typeof getStagesPasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesPasswordIndexRouteHandler: RouteHandler<
+  typeof postStagesPasswordIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPasswordStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesPasswordStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesPasswordStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesPasswordStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesPasswordStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesPasswordStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesPasswordStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesPasswordStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPasswordStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesPasswordStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptPromptsIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptPromptsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesPromptPromptsIndexRouteHandler: RouteHandler<
+  typeof postStagesPromptPromptsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptPromptsPromptUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptPromptsPromptUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesPromptPromptsPromptUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesPromptPromptsPromptUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesPromptPromptsPromptUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesPromptPromptsPromptUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesPromptPromptsPromptUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesPromptPromptsPromptUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptPromptsPromptUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptPromptsPromptUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesPromptPromptsPreviewIndexRouteHandler: RouteHandler<
+  typeof postStagesPromptPromptsPreviewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptStagesIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptStagesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesPromptStagesIndexRouteHandler: RouteHandler<
+  typeof postStagesPromptStagesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesPromptStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesPromptStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesPromptStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesPromptStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesPromptStagesStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesPromptStagesStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesPromptStagesStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesPromptStagesStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesRedirectIndexRouteHandler: RouteHandler<
+  typeof getStagesRedirectIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesRedirectIndexRouteHandler: RouteHandler<
+  typeof postStagesRedirectIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesRedirectStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesRedirectStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesRedirectStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesRedirectStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesRedirectStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesRedirectStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesRedirectStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesRedirectStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesRedirectStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesRedirectStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesSourceIndexRouteHandler: RouteHandler<
+  typeof getStagesSourceIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesSourceIndexRouteHandler: RouteHandler<
+  typeof postStagesSourceIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesSourceStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesSourceStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesSourceStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesSourceStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesSourceStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesSourceStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesSourceStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesSourceStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesSourceStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesSourceStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserDeleteIndexRouteHandler: RouteHandler<
+  typeof getStagesUserDeleteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesUserDeleteIndexRouteHandler: RouteHandler<
+  typeof postStagesUserDeleteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserDeleteStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesUserDeleteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesUserDeleteStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesUserDeleteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesUserDeleteStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesUserDeleteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesUserDeleteStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesUserDeleteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserDeleteStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesUserDeleteStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLoginIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLoginIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesUserLoginIndexRouteHandler: RouteHandler<
+  typeof postStagesUserLoginIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLoginStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLoginStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesUserLoginStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesUserLoginStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesUserLoginStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesUserLoginStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesUserLoginStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesUserLoginStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLoginStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLoginStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLogoutIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLogoutIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesUserLogoutIndexRouteHandler: RouteHandler<
+  typeof postStagesUserLogoutIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLogoutStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLogoutStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesUserLogoutStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesUserLogoutStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesUserLogoutStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesUserLogoutStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesUserLogoutStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesUserLogoutStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserLogoutStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesUserLogoutStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserWriteIndexRouteHandler: RouteHandler<
+  typeof getStagesUserWriteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStagesUserWriteIndexRouteHandler: RouteHandler<
+  typeof postStagesUserWriteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserWriteStageUuidIndexRouteHandler: RouteHandler<
+  typeof getStagesUserWriteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStagesUserWriteStageUuidIndexRouteHandler: RouteHandler<
+  typeof putStagesUserWriteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStagesUserWriteStageUuidIndexRouteHandler: RouteHandler<
+  typeof patchStagesUserWriteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStagesUserWriteStageUuidIndexRouteHandler: RouteHandler<
+  typeof deleteStagesUserWriteStageUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStagesUserWriteStageUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getStagesUserWriteStageUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

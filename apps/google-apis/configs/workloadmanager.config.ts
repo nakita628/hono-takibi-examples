@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/workloadmanager/v1/openapi.yaml',
   output: './src/workloadmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/workloadmanager/types.ts' },
   client: { output: './src/workloadmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/workloadmanager/rpc.ts', parseResponse: true },

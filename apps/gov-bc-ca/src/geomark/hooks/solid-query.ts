@@ -123,29 +123,29 @@ export function createPostGeomarksNew<TError = DefaultError, TOnMutateResult = u
 }
 
 export function getGeomarksGeomarkIdFileFormatExtensionQueryKey(
-  args: InferRequestType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>,
+  args: InferRequestType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>,
 ) {
-  return ['geomarks', '/geomarks/:geomarkId.:fileFormatExtension', args] as const
+  return ['geomarks', '/geomarks/:geomarkId.{fileFormatExtension}', args] as const
 }
 
 export function getGeomarksGeomarkIdFileFormatExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>,
+  args: InferRequestType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>>
+          Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>>
         >
       >
     >,
@@ -156,7 +156,7 @@ export function getGeomarksGeomarkIdFileFormatExtensionQueryOptions<
     queryKey: getGeomarksGeomarkIdFileFormatExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.geomarks[':geomarkId.:fileFormatExtension'].$get(args, {
+        client.geomarks[':geomarkId.{fileFormatExtension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -169,13 +169,15 @@ export function createGeomarksGeomarkIdFileFormatExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>>
+        Awaited<ReturnType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>,
+  args: () => InferRequestType<
+    (typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']
+  >,
   options?: () => {
     query?: Omit<
       ReturnType<
@@ -184,7 +186,7 @@ export function createGeomarksGeomarkIdFileFormatExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>
+                  ReturnType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>
                 >
               >
             >
@@ -211,10 +213,10 @@ export function createGeomarksGeomarkIdFileFormatExtension<
 
 export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryKey(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
   >,
 ) {
-  return ['geomarks', '/geomarks/:geomarkId/boundingBox.:fileFormatExtension', args] as const
+  return ['geomarks', '/geomarks/:geomarkId/boundingBox.{fileFormatExtension}', args] as const
 }
 
 export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryOptions<
@@ -223,7 +225,7 @@ export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+            (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
           >
         >
       >
@@ -232,7 +234,7 @@ export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -242,7 +244,7 @@ export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+              (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
             >
           >
         >
@@ -255,7 +257,7 @@ export function getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryOptions<
     queryKey: getGeomarksGeomarkIdBoundingBoxFileFormatExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.geomarks[':geomarkId']['boundingBox.:fileFormatExtension'].$get(args, {
+        client.geomarks[':geomarkId']['boundingBox.{fileFormatExtension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -270,7 +272,7 @@ export function createGeomarksGeomarkIdBoundingBoxFileFormatExtension<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+            (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
           >
         >
       >
@@ -279,7 +281,7 @@ export function createGeomarksGeomarkIdBoundingBoxFileFormatExtension<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -290,7 +292,7 @@ export function createGeomarksGeomarkIdBoundingBoxFileFormatExtension<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+                    (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
                   >
                 >
               >
@@ -321,10 +323,10 @@ export function createGeomarksGeomarkIdBoundingBoxFileFormatExtension<
 
 export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryKey(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
   >,
 ) {
-  return ['geomarks', '/geomarks/:geomarkId/feature.:fileFormatExtension', args] as const
+  return ['geomarks', '/geomarks/:geomarkId/feature.{fileFormatExtension}', args] as const
 }
 
 export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryOptions<
@@ -332,7 +334,9 @@ export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']>
+          ReturnType<
+            (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
+          >
         >
       >
     >
@@ -340,7 +344,7 @@ export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -350,7 +354,7 @@ export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+              (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
             >
           >
         >
@@ -363,7 +367,7 @@ export function getGeomarksGeomarkIdFeatureFileFormatExtensionQueryOptions<
     queryKey: getGeomarksGeomarkIdFeatureFileFormatExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.geomarks[':geomarkId']['feature.:fileFormatExtension'].$get(args, {
+        client.geomarks[':geomarkId']['feature.{fileFormatExtension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -377,7 +381,9 @@ export function createGeomarksGeomarkIdFeatureFileFormatExtension<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']>
+          ReturnType<
+            (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
+          >
         >
       >
     >
@@ -385,7 +391,7 @@ export function createGeomarksGeomarkIdFeatureFileFormatExtension<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -396,7 +402,7 @@ export function createGeomarksGeomarkIdFeatureFileFormatExtension<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+                    (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
                   >
                 >
               >
@@ -427,10 +433,10 @@ export function createGeomarksGeomarkIdFeatureFileFormatExtension<
 
 export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryKey(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
   >,
 ) {
-  return ['geomarks', '/geomarks/:geomarkId/parts.:fileFormatExtension', args] as const
+  return ['geomarks', '/geomarks/:geomarkId/parts.{fileFormatExtension}', args] as const
 }
 
 export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryOptions<
@@ -438,7 +444,7 @@ export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']>
+          ReturnType<(typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']>
         >
       >
     >
@@ -446,7 +452,7 @@ export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -455,7 +461,9 @@ export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']>
+            ReturnType<
+              (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
+            >
           >
         >
       >
@@ -467,7 +475,7 @@ export function getGeomarksGeomarkIdPartsFileFormatExtensionQueryOptions<
     queryKey: getGeomarksGeomarkIdPartsFileFormatExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.geomarks[':geomarkId']['parts.:fileFormatExtension'].$get(args, {
+        client.geomarks[':geomarkId']['parts.{fileFormatExtension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -481,7 +489,7 @@ export function createGeomarksGeomarkIdPartsFileFormatExtension<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']>
+          ReturnType<(typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']>
         >
       >
     >
@@ -489,7 +497,7 @@ export function createGeomarksGeomarkIdPartsFileFormatExtension<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -500,7 +508,7 @@ export function createGeomarksGeomarkIdPartsFileFormatExtension<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']
+                    (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
                   >
                 >
               >
@@ -531,10 +539,10 @@ export function createGeomarksGeomarkIdPartsFileFormatExtension<
 
 export function getGeomarksGeomarkIdPointFileFormatExtensionQueryKey(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
   >,
 ) {
-  return ['geomarks', '/geomarks/:geomarkId/point.:fileFormatExtension', args] as const
+  return ['geomarks', '/geomarks/:geomarkId/point.{fileFormatExtension}', args] as const
 }
 
 export function getGeomarksGeomarkIdPointFileFormatExtensionQueryOptions<
@@ -542,7 +550,7 @@ export function getGeomarksGeomarkIdPointFileFormatExtensionQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']>
+          ReturnType<(typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']>
         >
       >
     >
@@ -550,7 +558,7 @@ export function getGeomarksGeomarkIdPointFileFormatExtensionQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -559,7 +567,9 @@ export function getGeomarksGeomarkIdPointFileFormatExtensionQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']>
+            ReturnType<
+              (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
+            >
           >
         >
       >
@@ -571,7 +581,7 @@ export function getGeomarksGeomarkIdPointFileFormatExtensionQueryOptions<
     queryKey: getGeomarksGeomarkIdPointFileFormatExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.geomarks[':geomarkId']['point.:fileFormatExtension'].$get(args, {
+        client.geomarks[':geomarkId']['point.{fileFormatExtension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -585,7 +595,7 @@ export function createGeomarksGeomarkIdPointFileFormatExtension<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']>
+          ReturnType<(typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']>
         >
       >
     >
@@ -593,7 +603,7 @@ export function createGeomarksGeomarkIdPointFileFormatExtension<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -604,7 +614,7 @@ export function createGeomarksGeomarkIdPointFileFormatExtension<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']
+                    (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
                   >
                 >
               >

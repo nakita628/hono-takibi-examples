@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWhatsappWebhooksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWhatsappWebhooksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const whatsappHandler = app.openapi(postWhatsappWebhooksRoute, (c) => {
+export const postWhatsappWebhooksRouteHandler: RouteHandler<
+  typeof postWhatsappWebhooksRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

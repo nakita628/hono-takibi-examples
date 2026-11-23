@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDeleteVpnGatewayRoute, postActionDeleteVpnGatewayRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDeleteVpnGatewayRoute, postActionDeleteVpnGatewayRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteVpnGatewayRouteHandler: RouteHandler<
+  typeof getActionDeleteVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteVpnGatewayHandler = app
-  .openapi(getActionDeleteVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteVpnGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteVpnGatewayRouteHandler: RouteHandler<
+  typeof postActionDeleteVpnGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/application-insights/2018-11-25/openapi.yaml',
   output: './src/application-insights/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/application-insights/types.ts' },
   client: { output: './src/application-insights/client.ts', baseUrl: '/' },
   rpc: { output: './src/application-insights/rpc.ts', parseResponse: true },

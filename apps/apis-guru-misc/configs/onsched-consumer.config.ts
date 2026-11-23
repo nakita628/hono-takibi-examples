@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/onsched.com/consumer/v1/openapi.yaml',
   output: './src/onsched-consumer/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/onsched-consumer/types.ts' },
   client: { output: './src/onsched-consumer/client.ts', baseUrl: '/' },
   rpc: { output: './src/onsched-consumer/rpc.ts', parseResponse: true },

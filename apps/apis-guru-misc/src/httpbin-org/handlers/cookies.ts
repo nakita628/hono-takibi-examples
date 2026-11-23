@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCookiesDeleteRoute,
   getCookiesRoute,
   getCookiesSetNameValueRoute,
   getCookiesSetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCookiesRouteHandler: RouteHandler<typeof getCookiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cookiesHandler = app
-  .openapi(getCookiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCookiesDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCookiesSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCookiesSetNameValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCookiesDeleteRouteHandler: RouteHandler<typeof getCookiesDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCookiesSetRouteHandler: RouteHandler<typeof getCookiesSetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCookiesSetNameValueRouteHandler: RouteHandler<
+  typeof getCookiesSetNameValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

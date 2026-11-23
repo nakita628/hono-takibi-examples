@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRoute,
   getStatsFrequencyWordSourceLangIndexRoute,
   getStatsFrequencyWordsSourceLangIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRouteHandler: RouteHandler<
+  typeof getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statsHandler = app
-  .openapi(getStatsFrequencyNgramsSourceLangCorpusNgramSizeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsFrequencyWordSourceLangIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsFrequencyWordsSourceLangIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatsFrequencyWordSourceLangIndexRouteHandler: RouteHandler<
+  typeof getStatsFrequencyWordSourceLangIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatsFrequencyWordsSourceLangIndexRouteHandler: RouteHandler<
+  typeof getStatsFrequencyWordsSourceLangIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

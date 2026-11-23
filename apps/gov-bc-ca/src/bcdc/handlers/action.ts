@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionOrganizationActivityListHtmlRoute,
   getActionOrganizationActivityListRoute,
   getActionOrganizationAutocompleteRoute,
@@ -24,72 +24,134 @@ import {
   getActionTagListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionOrganizationActivityListRouteHandler: RouteHandler<
+  typeof getActionOrganizationActivityListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionHandler = app
-  .openapi(getActionOrganizationActivityListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationActivityListHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationAutocompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationFollowerCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationFollowerListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationListForUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationRevisionListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionOrganizationShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageActivityListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageActivityListHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageAutocompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageRelationshipsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageRevisionListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionPackageShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionRelatedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionResourceSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionResourceShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionStatusShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getActionTagListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getActionOrganizationActivityListHtmlRouteHandler: RouteHandler<
+  typeof getActionOrganizationActivityListHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationAutocompleteRouteHandler: RouteHandler<
+  typeof getActionOrganizationAutocompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationFollowerCountRouteHandler: RouteHandler<
+  typeof getActionOrganizationFollowerCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationFollowerListRouteHandler: RouteHandler<
+  typeof getActionOrganizationFollowerListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationListRouteHandler: RouteHandler<
+  typeof getActionOrganizationListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationListForUserRouteHandler: RouteHandler<
+  typeof getActionOrganizationListForUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationRevisionListRouteHandler: RouteHandler<
+  typeof getActionOrganizationRevisionListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionOrganizationShowRouteHandler: RouteHandler<
+  typeof getActionOrganizationShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageActivityListRouteHandler: RouteHandler<
+  typeof getActionPackageActivityListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageActivityListHtmlRouteHandler: RouteHandler<
+  typeof getActionPackageActivityListHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageAutocompleteRouteHandler: RouteHandler<
+  typeof getActionPackageAutocompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageListRouteHandler: RouteHandler<
+  typeof getActionPackageListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageRelationshipsListRouteHandler: RouteHandler<
+  typeof getActionPackageRelationshipsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageRevisionListRouteHandler: RouteHandler<
+  typeof getActionPackageRevisionListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageSearchRouteHandler: RouteHandler<
+  typeof getActionPackageSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionPackageShowRouteHandler: RouteHandler<
+  typeof getActionPackageShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionRelatedListRouteHandler: RouteHandler<
+  typeof getActionRelatedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionResourceSearchRouteHandler: RouteHandler<
+  typeof getActionResourceSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionResourceShowRouteHandler: RouteHandler<
+  typeof getActionResourceShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionStatusShowRouteHandler: RouteHandler<
+  typeof getActionStatusShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getActionTagListRouteHandler: RouteHandler<typeof getActionTagListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

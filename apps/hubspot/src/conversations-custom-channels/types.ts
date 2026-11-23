@@ -785,12 +785,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { channelId: number } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { channelId: number } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { channelId: number } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { channelId: number } } & { json: PublicChannelIntegrationChannelPatch }

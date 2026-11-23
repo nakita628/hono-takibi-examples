@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCloudCostRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCloudCostRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cloudCostHandler = app.openapi(getCloudCostRoute, (c) => {
+export const getCloudCostRouteHandler: RouteHandler<typeof getCloudCostRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

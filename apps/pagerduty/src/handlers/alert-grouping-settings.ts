@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAlertGroupingSettingsIdRoute,
   getAlertGroupingSettingsIdRoute,
   getAlertGroupingSettingsRoute,
@@ -7,21 +7,32 @@ import {
   putAlertGroupingSettingsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlertGroupingSettingsRouteHandler: RouteHandler<
+  typeof getAlertGroupingSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alertGroupingSettingsHandler = app
-  .openapi(getAlertGroupingSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertGroupingSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertGroupingSettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlertGroupingSettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAlertGroupingSettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlertGroupingSettingsRouteHandler: RouteHandler<
+  typeof postAlertGroupingSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertGroupingSettingsIdRouteHandler: RouteHandler<
+  typeof getAlertGroupingSettingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlertGroupingSettingsIdRouteHandler: RouteHandler<
+  typeof deleteAlertGroupingSettingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAlertGroupingSettingsIdRouteHandler: RouteHandler<
+  typeof putAlertGroupingSettingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

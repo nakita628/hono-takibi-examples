@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCredentialsRevokeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCredentialsRevokeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const credentialsHandler = app.openapi(postCredentialsRevokeRoute, (c) => {
+export const postCredentialsRevokeRouteHandler: RouteHandler<
+  typeof postCredentialsRevokeRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

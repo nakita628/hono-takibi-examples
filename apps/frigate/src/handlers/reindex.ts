@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putReindexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putReindexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const reindexHandler = app.openapi(putReindexRoute, (c) => {
+export const putReindexRouteHandler: RouteHandler<typeof putReindexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

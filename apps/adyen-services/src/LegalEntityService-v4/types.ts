@@ -2302,7 +2302,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/legalEntities/:id/requestPeriodicReview': {
-      $post: { input: { param: { id: string } }; output: {}; outputFormat: string; status: 200 }
+      $post: { input: { param: { id: string } }; output: {}; outputFormat: string; status: 204 }
     }
   },
   '/'

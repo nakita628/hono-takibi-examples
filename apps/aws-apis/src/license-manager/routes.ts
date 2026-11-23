@@ -159,8 +159,8 @@ const LicenseConfigurationsSchema = z
   .openapi('LicenseConfigurations')
 
 type ListLicenseConfigurationsResponseType = {
-  LicenseConfigurations?: z.infer<typeof LicenseConfigurationsSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  LicenseConfigurations?: z.infer<typeof LicenseConfigurationsSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const ArnSchema = z

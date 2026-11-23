@@ -99,12 +99,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { environment: string; path: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { environment: string; path: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { environment: string; path: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/cms/source-code/2026-09/:environment/metadata/:path': {

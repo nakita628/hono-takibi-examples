@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute,
   postMeteredFeaturesMeteredFeatureIdDeleteRoute,
   postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute,
   postMeteredFeaturesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMeteredFeaturesMeteredFeatureIdReactivateCommandRouteHandler: RouteHandler<
+  typeof postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const meteredFeaturesHandler = app
-  .openapi(postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeteredFeaturesMeteredFeatureIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeteredFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMeteredFeaturesMeteredFeatureIdDeleteRouteHandler: RouteHandler<
+  typeof postMeteredFeaturesMeteredFeatureIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeteredFeaturesRouteHandler: RouteHandler<
+  typeof postMeteredFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeteredFeaturesMeteredFeatureIdArchiveCommandRouteHandler: RouteHandler<
+  typeof postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

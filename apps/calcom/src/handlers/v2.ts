@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2BookingsBookingUidAttendeesAttendeeIdRoute,
   deleteV2CalendarsCalendarEventsEventUidRoute,
   deleteV2CalendarsConnectionsConnectionIdEventsEventIdRoute,
@@ -123,369 +123,704 @@ import {
   putV2DestinationCalendarsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2ApiKeysRefreshRouteHandler: RouteHandler<
+  typeof postV2ApiKeysRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2ApiKeysRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBySeatSeatUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidTranscriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidRescheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidMarkAbsentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidReassignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidReassignUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidCalendarLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidReferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidConferencingSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2BookingsBookingUidLocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidAttendeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidAttendeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BookingsBookingUidAttendeesAttendeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2BookingsBookingUidAttendeesAttendeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BookingsBookingUidGuestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsConnectionsConnectionIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CalendarsConnectionsConnectionIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsConnectionsConnectionIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CalendarsConnectionsConnectionIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CalendarsConnectionsConnectionIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsConnectionsConnectionIdFreebusyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarEventsEventUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CalendarsCalendarEventsEventUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CalendarsCalendarEventsEventUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarEventEventUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CalendarsCalendarEventEventUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CalendarsCalendarEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarFreebusyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CalendarsIcsFeedSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsIcsFeedCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsBusyTimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CalendarsCalendarCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CalendarsCalendarCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CalendarsCalendarDisconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ConferencingAppConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ConferencingAppOauthAuthUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ConferencingAppOauthCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ConferencingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ConferencingAppDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ConferencingDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2ConferencingAppDisconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsClientIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2OauthClientsClientIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsClientIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2OauthClientsClientIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2OauthClientsClientIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2OauthClientsClientIdUsersUserIdForceRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2OauthClientIdRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2OauthClientsClientIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsClientIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2OauthClientsClientIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2OauthClientsClientIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsClientIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2OauthClientsClientIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2OauthClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2OauthClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2OauthClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2OauthClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2DestinationCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2EventTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2EventTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2EventTypesEventTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2EventTypesEventTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2EventTypesEventTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2EventTypesEventTypeIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2EventTypesEventTypeIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2EventTypesEventTypeIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2EventTypesEventTypeIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2EventTypesEventTypeIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2EventTypesEventTypeIdWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2EventTypesEventTypeIdPrivateLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2EventTypesEventTypeIdPrivateLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2EventTypesEventTypeIdPrivateLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2EventTypesEventTypeIdPrivateLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AuthOauth2ClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AuthOauth2TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SchedulesDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SchedulesScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2SchedulesScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2SchedulesScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SelectedCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2SelectedCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SlotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SlotsReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SlotsReservationsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2SlotsReservationsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2SlotsReservationsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2StripeConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2StripeSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2StripeCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VerifiedResourcesEmailsVerificationCodeRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VerifiedResourcesPhonesVerificationCodeRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VerifiedResourcesEmailsVerificationCodeVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VerifiedResourcesPhonesVerificationCodeVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VerifiedResourcesEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VerifiedResourcesPhonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VerifiedResourcesEmailsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2VerifiedResourcesPhonesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2BookingsRouteHandler: RouteHandler<typeof postV2BookingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsRouteHandler: RouteHandler<typeof getV2BookingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBySeatSeatUidRouteHandler: RouteHandler<
+  typeof getV2BookingsBySeatSeatUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidRecordingsRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidTranscriptsRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidTranscriptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidRescheduleRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidRescheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidCancelRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidMarkAbsentRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidMarkAbsentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidReassignRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidReassignUserIdRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidReassignUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidConfirmRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidDeclineRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidCalendarLinksRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidCalendarLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidReferencesRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidReferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidConferencingSessionsRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidConferencingSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2BookingsBookingUidLocationRouteHandler: RouteHandler<
+  typeof patchV2BookingsBookingUidLocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidAttendeesRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidAttendeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidAttendeesRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidAttendeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BookingsBookingUidAttendeesAttendeeIdRouteHandler: RouteHandler<
+  typeof getV2BookingsBookingUidAttendeesAttendeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2BookingsBookingUidAttendeesAttendeeIdRouteHandler: RouteHandler<
+  typeof deleteV2BookingsBookingUidAttendeesAttendeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BookingsBookingUidGuestsRouteHandler: RouteHandler<
+  typeof postV2BookingsBookingUidGuestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsConnectionsRouteHandler: RouteHandler<
+  typeof getV2CalendarsConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsConnectionsConnectionIdEventsRouteHandler: RouteHandler<
+  typeof getV2CalendarsConnectionsConnectionIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CalendarsConnectionsConnectionIdEventsRouteHandler: RouteHandler<
+  typeof postV2CalendarsConnectionsConnectionIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsConnectionsConnectionIdEventsEventIdRouteHandler: RouteHandler<
+  typeof getV2CalendarsConnectionsConnectionIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CalendarsConnectionsConnectionIdEventsEventIdRouteHandler: RouteHandler<
+  typeof patchV2CalendarsConnectionsConnectionIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CalendarsConnectionsConnectionIdEventsEventIdRouteHandler: RouteHandler<
+  typeof deleteV2CalendarsConnectionsConnectionIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsConnectionsConnectionIdFreebusyRouteHandler: RouteHandler<
+  typeof getV2CalendarsConnectionsConnectionIdFreebusyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarEventsEventUidRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarEventsEventUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CalendarsCalendarEventsEventUidRouteHandler: RouteHandler<
+  typeof patchV2CalendarsCalendarEventsEventUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CalendarsCalendarEventsEventUidRouteHandler: RouteHandler<
+  typeof deleteV2CalendarsCalendarEventsEventUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarEventEventUidRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarEventEventUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CalendarsCalendarEventEventUidRouteHandler: RouteHandler<
+  typeof patchV2CalendarsCalendarEventEventUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarEventsRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CalendarsCalendarEventsRouteHandler: RouteHandler<
+  typeof postV2CalendarsCalendarEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarFreebusyRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarFreebusyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CalendarsIcsFeedSaveRouteHandler: RouteHandler<
+  typeof postV2CalendarsIcsFeedSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsIcsFeedCheckRouteHandler: RouteHandler<
+  typeof getV2CalendarsIcsFeedCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsBusyTimesRouteHandler: RouteHandler<
+  typeof getV2CalendarsBusyTimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsRouteHandler: RouteHandler<typeof getV2CalendarsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarConnectRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarSaveRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CalendarsCalendarCredentialsRouteHandler: RouteHandler<
+  typeof postV2CalendarsCalendarCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CalendarsCalendarCheckRouteHandler: RouteHandler<
+  typeof getV2CalendarsCalendarCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CalendarsCalendarDisconnectRouteHandler: RouteHandler<
+  typeof postV2CalendarsCalendarDisconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ConferencingAppConnectRouteHandler: RouteHandler<
+  typeof postV2ConferencingAppConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ConferencingAppOauthAuthUrlRouteHandler: RouteHandler<
+  typeof getV2ConferencingAppOauthAuthUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ConferencingAppOauthCallbackRouteHandler: RouteHandler<
+  typeof getV2ConferencingAppOauthCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ConferencingRouteHandler: RouteHandler<typeof getV2ConferencingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ConferencingAppDefaultRouteHandler: RouteHandler<
+  typeof postV2ConferencingAppDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ConferencingDefaultRouteHandler: RouteHandler<
+  typeof getV2ConferencingDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2ConferencingAppDisconnectRouteHandler: RouteHandler<
+  typeof deleteV2ConferencingAppDisconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsClientIdUsersRouteHandler: RouteHandler<
+  typeof getV2OauthClientsClientIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2OauthClientsClientIdUsersRouteHandler: RouteHandler<
+  typeof postV2OauthClientsClientIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsClientIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getV2OauthClientsClientIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2OauthClientsClientIdUsersUserIdRouteHandler: RouteHandler<
+  typeof patchV2OauthClientsClientIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2OauthClientsClientIdUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteV2OauthClientsClientIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2OauthClientsClientIdUsersUserIdForceRefreshRouteHandler: RouteHandler<
+  typeof postV2OauthClientsClientIdUsersUserIdForceRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2OauthClientIdRefreshRouteHandler: RouteHandler<
+  typeof postV2OauthClientIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2OauthClientsClientIdWebhooksRouteHandler: RouteHandler<
+  typeof postV2OauthClientsClientIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsClientIdWebhooksRouteHandler: RouteHandler<
+  typeof getV2OauthClientsClientIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2OauthClientsClientIdWebhooksRouteHandler: RouteHandler<
+  typeof deleteV2OauthClientsClientIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2OauthClientsClientIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof patchV2OauthClientsClientIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsClientIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getV2OauthClientsClientIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2OauthClientsClientIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteV2OauthClientsClientIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2OauthClientsRouteHandler: RouteHandler<typeof postV2OauthClientsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsRouteHandler: RouteHandler<typeof getV2OauthClientsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2OauthClientsClientIdRouteHandler: RouteHandler<
+  typeof getV2OauthClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2OauthClientsClientIdRouteHandler: RouteHandler<
+  typeof patchV2OauthClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2OauthClientsClientIdRouteHandler: RouteHandler<
+  typeof deleteV2OauthClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2DestinationCalendarsRouteHandler: RouteHandler<
+  typeof putV2DestinationCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2EventTypesRouteHandler: RouteHandler<typeof postV2EventTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2EventTypesRouteHandler: RouteHandler<typeof getV2EventTypesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2EventTypesEventTypeIdRouteHandler: RouteHandler<
+  typeof getV2EventTypesEventTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2EventTypesEventTypeIdRouteHandler: RouteHandler<
+  typeof patchV2EventTypesEventTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2EventTypesEventTypeIdRouteHandler: RouteHandler<
+  typeof deleteV2EventTypesEventTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2EventTypesEventTypeIdWebhooksRouteHandler: RouteHandler<
+  typeof postV2EventTypesEventTypeIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2EventTypesEventTypeIdWebhooksRouteHandler: RouteHandler<
+  typeof getV2EventTypesEventTypeIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2EventTypesEventTypeIdWebhooksRouteHandler: RouteHandler<
+  typeof deleteV2EventTypesEventTypeIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2EventTypesEventTypeIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof patchV2EventTypesEventTypeIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2EventTypesEventTypeIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getV2EventTypesEventTypeIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2EventTypesEventTypeIdWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteV2EventTypesEventTypeIdWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2EventTypesEventTypeIdPrivateLinksRouteHandler: RouteHandler<
+  typeof postV2EventTypesEventTypeIdPrivateLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2EventTypesEventTypeIdPrivateLinksRouteHandler: RouteHandler<
+  typeof getV2EventTypesEventTypeIdPrivateLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2EventTypesEventTypeIdPrivateLinksLinkIdRouteHandler: RouteHandler<
+  typeof patchV2EventTypesEventTypeIdPrivateLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2EventTypesEventTypeIdPrivateLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteV2EventTypesEventTypeIdPrivateLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2MeRouteHandler: RouteHandler<typeof getV2MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2MeRouteHandler: RouteHandler<typeof patchV2MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AuthOauth2ClientsClientIdRouteHandler: RouteHandler<
+  typeof getV2AuthOauth2ClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AuthOauth2TokenRouteHandler: RouteHandler<
+  typeof postV2AuthOauth2TokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SchedulesRouteHandler: RouteHandler<typeof postV2SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SchedulesRouteHandler: RouteHandler<typeof getV2SchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SchedulesDefaultRouteHandler: RouteHandler<
+  typeof getV2SchedulesDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof getV2SchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2SchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof patchV2SchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2SchedulesScheduleIdRouteHandler: RouteHandler<
+  typeof deleteV2SchedulesScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SelectedCalendarsRouteHandler: RouteHandler<
+  typeof postV2SelectedCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2SelectedCalendarsRouteHandler: RouteHandler<
+  typeof deleteV2SelectedCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SlotsRouteHandler: RouteHandler<typeof getV2SlotsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SlotsReservationsRouteHandler: RouteHandler<
+  typeof postV2SlotsReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SlotsReservationsUidRouteHandler: RouteHandler<
+  typeof getV2SlotsReservationsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2SlotsReservationsUidRouteHandler: RouteHandler<
+  typeof patchV2SlotsReservationsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2SlotsReservationsUidRouteHandler: RouteHandler<
+  typeof deleteV2SlotsReservationsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2StripeConnectRouteHandler: RouteHandler<typeof getV2StripeConnectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2StripeSaveRouteHandler: RouteHandler<typeof getV2StripeSaveRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2StripeCheckRouteHandler: RouteHandler<typeof getV2StripeCheckRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VerifiedResourcesEmailsVerificationCodeRequestRouteHandler: RouteHandler<
+  typeof postV2VerifiedResourcesEmailsVerificationCodeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VerifiedResourcesPhonesVerificationCodeRequestRouteHandler: RouteHandler<
+  typeof postV2VerifiedResourcesPhonesVerificationCodeRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VerifiedResourcesEmailsVerificationCodeVerifyRouteHandler: RouteHandler<
+  typeof postV2VerifiedResourcesEmailsVerificationCodeVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VerifiedResourcesPhonesVerificationCodeVerifyRouteHandler: RouteHandler<
+  typeof postV2VerifiedResourcesPhonesVerificationCodeVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VerifiedResourcesEmailsRouteHandler: RouteHandler<
+  typeof getV2VerifiedResourcesEmailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VerifiedResourcesPhonesRouteHandler: RouteHandler<
+  typeof getV2VerifiedResourcesPhonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VerifiedResourcesEmailsIdRouteHandler: RouteHandler<
+  typeof getV2VerifiedResourcesEmailsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2VerifiedResourcesPhonesIdRouteHandler: RouteHandler<
+  typeof getV2VerifiedResourcesPhonesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WebhooksRouteHandler: RouteHandler<typeof postV2WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WebhooksRouteHandler: RouteHandler<typeof getV2WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof patchV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

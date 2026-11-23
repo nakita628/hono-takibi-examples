@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataIntegrationsSlugOrganizationRoute,
   deleteDataIntegrationsSlugRoute,
   getDataIntegrationsRoute,
@@ -18,54 +18,98 @@ import {
   putDataIntegrationsSlugRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDataIntegrationsRouteHandler: RouteHandler<
+  typeof postDataIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataIntegrationsHandler = app
-  .openapi(postDataIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsFinishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataIntegrationsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataIntegrationsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsSlugApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataIntegrationsSlugApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsSlugAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsSlugClientCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataIntegrationsSlugClientCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsSlugCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsSlugOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDataIntegrationsSlugOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataIntegrationsSlugOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDataIntegrationsSlugTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataIntegrationsRouteHandler: RouteHandler<
+  typeof getDataIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsFinishRouteHandler: RouteHandler<
+  typeof postDataIntegrationsFinishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataIntegrationsSlugRouteHandler: RouteHandler<
+  typeof getDataIntegrationsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataIntegrationsSlugRouteHandler: RouteHandler<
+  typeof putDataIntegrationsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataIntegrationsSlugRouteHandler: RouteHandler<
+  typeof deleteDataIntegrationsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsSlugApiKeyRouteHandler: RouteHandler<
+  typeof postDataIntegrationsSlugApiKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataIntegrationsSlugApiKeyRouteHandler: RouteHandler<
+  typeof putDataIntegrationsSlugApiKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsSlugAuthorizeRouteHandler: RouteHandler<
+  typeof postDataIntegrationsSlugAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsSlugClientCredentialsRouteHandler: RouteHandler<
+  typeof postDataIntegrationsSlugClientCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataIntegrationsSlugClientCredentialsRouteHandler: RouteHandler<
+  typeof putDataIntegrationsSlugClientCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsSlugCredentialsRouteHandler: RouteHandler<
+  typeof postDataIntegrationsSlugCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataIntegrationsSlugOrganizationRouteHandler: RouteHandler<
+  typeof getDataIntegrationsSlugOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDataIntegrationsSlugOrganizationRouteHandler: RouteHandler<
+  typeof putDataIntegrationsSlugOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataIntegrationsSlugOrganizationRouteHandler: RouteHandler<
+  typeof deleteDataIntegrationsSlugOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDataIntegrationsSlugTokenRouteHandler: RouteHandler<
+  typeof postDataIntegrationsSlugTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

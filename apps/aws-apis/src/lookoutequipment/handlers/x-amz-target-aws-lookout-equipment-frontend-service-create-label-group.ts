@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsLookoutEquipmentFrontendServiceCreateLabelGroupHandler = app.openapi(
-  postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSLookoutEquipmentFrontendServiceCreateLabelGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

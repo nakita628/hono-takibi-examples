@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchOneofAllofTopLevelDiscRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchOneofAllofTopLevelDiscRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const oneofAllofTopLevelDiscHandler = app.openapi(patchOneofAllofTopLevelDiscRoute, (c) => {
+export const patchOneofAllofTopLevelDiscRouteHandler: RouteHandler<
+  typeof patchOneofAllofTopLevelDiscRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

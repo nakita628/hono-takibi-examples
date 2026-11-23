@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFindingsFindingIdRevealAvailabilityRoute,
   getFindingsFindingIdRevealRoute,
   postFindingsDescribeRoute,
@@ -8,24 +8,36 @@ import {
   postFindingsStatisticsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFindingsSampleRouteHandler: RouteHandler<typeof postFindingsSampleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const findingsHandler = app
-  .openapi(postFindingsSampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFindingsStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFindingsDescribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFindingsFindingIdRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFindingsFindingIdRevealAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFindingsStatisticsRouteHandler: RouteHandler<
+  typeof postFindingsStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFindingsDescribeRouteHandler: RouteHandler<
+  typeof postFindingsDescribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFindingsFindingIdRevealRouteHandler: RouteHandler<
+  typeof getFindingsFindingIdRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFindingsFindingIdRevealAvailabilityRouteHandler: RouteHandler<
+  typeof getFindingsFindingIdRevealAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFindingsRouteHandler: RouteHandler<typeof postFindingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUpdateTableStorageOptimizerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUpdateTableStorageOptimizerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const updateTableStorageOptimizerHandler = app.openapi(
-  postUpdateTableStorageOptimizerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postUpdateTableStorageOptimizerRouteHandler: RouteHandler<
+  typeof postUpdateTableStorageOptimizerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

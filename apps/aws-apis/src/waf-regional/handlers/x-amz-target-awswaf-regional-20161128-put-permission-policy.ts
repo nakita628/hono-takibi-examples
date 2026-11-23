@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswafRegional20161128PutPermissionPolicyHandler = app.openapi(
-  postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAFRegional20161128PutPermissionPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

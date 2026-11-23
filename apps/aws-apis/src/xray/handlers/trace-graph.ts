@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTraceGraphRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTraceGraphRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const traceGraphHandler = app.openapi(postTraceGraphRoute, (c) => {
+export const postTraceGraphRouteHandler: RouteHandler<typeof postTraceGraphRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

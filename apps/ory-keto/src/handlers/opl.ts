@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOplSyntaxCheckRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOplSyntaxCheckRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const oplHandler = app.openapi(postOplSyntaxCheckRoute, (c) => {
+export const postOplSyntaxCheckRouteHandler: RouteHandler<typeof postOplSyntaxCheckRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

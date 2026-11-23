@@ -253,7 +253,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/async-function/:functionName.:namespace': {
+    '/async-function/:functionName.{namespace}': {
       $post:
         | {
             input: { param: { functionName: string; namespace: string } }
@@ -297,7 +297,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/function/:functionName.:namespace': {
+    '/function/:functionName.{namespace}': {
       $post:
         | {
             input: { param: { functionName: string; namespace: string } }

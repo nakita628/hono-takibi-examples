@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRemindersListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRemindersListRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const remindersListHandler = app.openapi(getRemindersListRoute, (c) => {
+export const getRemindersListRouteHandler: RouteHandler<typeof getRemindersListRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

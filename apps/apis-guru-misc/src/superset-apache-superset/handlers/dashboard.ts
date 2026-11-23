@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDashboardIndexRoute,
   deleteDashboardPkRoute,
   getDashboardExportIndexRoute,
@@ -16,48 +16,84 @@ import {
   putDashboardPkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDashboardIndexRouteHandler: RouteHandler<
+  typeof deleteDashboardIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dashboardHandler = app
-  .openapi(deleteDashboardIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardExportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardFavoriteStatusIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardImportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardRelatedColumnNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardIdOrSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardIdOrSlugChartsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardIdOrSlugDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDashboardPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardPkThumbnailDigestIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDashboardIndexRouteHandler: RouteHandler<typeof getDashboardIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardIndexRouteHandler: RouteHandler<typeof postDashboardIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardInfoRouteHandler: RouteHandler<typeof getDashboardInfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardExportIndexRouteHandler: RouteHandler<
+  typeof getDashboardExportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardFavoriteStatusIndexRouteHandler: RouteHandler<
+  typeof getDashboardFavoriteStatusIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardImportIndexRouteHandler: RouteHandler<
+  typeof postDashboardImportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardRelatedColumnNameRouteHandler: RouteHandler<
+  typeof getDashboardRelatedColumnNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardIdOrSlugRouteHandler: RouteHandler<
+  typeof getDashboardIdOrSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardIdOrSlugChartsRouteHandler: RouteHandler<
+  typeof getDashboardIdOrSlugChartsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardIdOrSlugDatasetsRouteHandler: RouteHandler<
+  typeof getDashboardIdOrSlugDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardPkRouteHandler: RouteHandler<typeof deleteDashboardPkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDashboardPkRouteHandler: RouteHandler<typeof putDashboardPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardPkThumbnailDigestIndexRouteHandler: RouteHandler<
+  typeof getDashboardPkThumbnailDigestIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

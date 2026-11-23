@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/gkebackup/v1/openapi.yaml',
   output: './src/gkebackup/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gkebackup/types.ts' },
   client: { output: './src/gkebackup/client.ts', baseUrl: '/' },
   rpc: { output: './src/gkebackup/rpc.ts', parseResponse: true },

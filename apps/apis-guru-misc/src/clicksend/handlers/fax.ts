@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRoute,
   getFaxHistoryExportFilenameFilenameRoute,
   getFaxReceiptsMessageIdRoute,
@@ -10,30 +10,42 @@ import {
   putFaxReceiptsReadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFaxHistoryExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getFaxHistoryExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const faxHandler = app
-  .openapi(getFaxHistoryExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFaxPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFaxReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFaxReceiptsReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxReceiptsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFaxSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRouteHandler: RouteHandler<
+  typeof getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFaxPriceRouteHandler: RouteHandler<typeof postFaxPriceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFaxReceiptsRouteHandler: RouteHandler<typeof getFaxReceiptsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFaxReceiptsRouteHandler: RouteHandler<typeof postFaxReceiptsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFaxReceiptsReadRouteHandler: RouteHandler<typeof putFaxReceiptsReadRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFaxReceiptsMessageIdRouteHandler: RouteHandler<
+  typeof getFaxReceiptsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFaxSendRouteHandler: RouteHandler<typeof postFaxSendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

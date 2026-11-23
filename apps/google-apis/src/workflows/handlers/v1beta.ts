@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaNameRoute,
   getV1betaNameLocationsRoute,
   getV1betaNameOperationsRoute,
@@ -9,27 +9,40 @@ import {
   postV1betaParentWorkflowsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1betaNameRouteHandler: RouteHandler<typeof deleteV1betaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(deleteV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaNameRouteHandler: RouteHandler<typeof patchV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaNameLocationsRouteHandler: RouteHandler<
+  typeof getV1betaNameLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaNameOperationsRouteHandler: RouteHandler<
+  typeof getV1betaNameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentWorkflowsRouteHandler: RouteHandler<
+  typeof getV1betaParentWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentWorkflowsRouteHandler: RouteHandler<
+  typeof postV1betaParentWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

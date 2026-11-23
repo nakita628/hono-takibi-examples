@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOauthGetConnectClientRoute,
   getOauthListConnectsRoute,
   getOauthListLoginsRoute,
@@ -10,30 +10,50 @@ import {
   postOauthTestClientCredentialsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOauthLoginCallbackClientNameRouteHandler: RouteHandler<
+  typeof postOauthLoginCallbackClientNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauthHandler = app
-  .openapi(postOauthLoginCallbackClientNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthConnectSlackCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthConnectSlackInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthConnectCallbackClientNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauthListLoginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauthListConnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauthGetConnectClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthTestClientCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauthConnectSlackCallbackRouteHandler: RouteHandler<
+  typeof postOauthConnectSlackCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthConnectSlackInstanceRouteHandler: RouteHandler<
+  typeof postOauthConnectSlackInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthConnectCallbackClientNameRouteHandler: RouteHandler<
+  typeof postOauthConnectCallbackClientNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauthListLoginsRouteHandler: RouteHandler<typeof getOauthListLoginsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauthListConnectsRouteHandler: RouteHandler<
+  typeof getOauthListConnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauthGetConnectClientRouteHandler: RouteHandler<
+  typeof getOauthGetConnectClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthTestClientCredentialsRouteHandler: RouteHandler<
+  typeof postOauthTestClientCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

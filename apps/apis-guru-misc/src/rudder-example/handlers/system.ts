@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSystemArchivesArchiveKindRoute,
   getSystemArchivesArchiveKindZipCommitIdRoute,
   getSystemHealthcheckRoute,
@@ -15,45 +15,76 @@ import {
   postSystemUpdatePoliciesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemArchivesArchiveKindRouteHandler: RouteHandler<
+  typeof getSystemArchivesArchiveKindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(getSystemArchivesArchiveKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemArchivesArchiveKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemArchivesArchiveKindRestoreArchiveRestoreKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemArchivesArchiveKindZipCommitIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemHealthcheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemMaintenancePurgeSoftwareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemRegeneratePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemReloadGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemReloadTechniquesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemUpdatePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSystemArchivesArchiveKindRouteHandler: RouteHandler<
+  typeof postSystemArchivesArchiveKindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemArchivesArchiveKindRestoreArchiveRestoreKindRouteHandler: RouteHandler<
+  typeof postSystemArchivesArchiveKindRestoreArchiveRestoreKindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemArchivesArchiveKindZipCommitIdRouteHandler: RouteHandler<
+  typeof getSystemArchivesArchiveKindZipCommitIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemHealthcheckRouteHandler: RouteHandler<
+  typeof getSystemHealthcheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemInfoRouteHandler: RouteHandler<typeof getSystemInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemMaintenancePurgeSoftwareRouteHandler: RouteHandler<
+  typeof postSystemMaintenancePurgeSoftwareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemRegeneratePoliciesRouteHandler: RouteHandler<
+  typeof postSystemRegeneratePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemReloadRouteHandler: RouteHandler<typeof postSystemReloadRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemReloadGroupsRouteHandler: RouteHandler<
+  typeof postSystemReloadGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemReloadTechniquesRouteHandler: RouteHandler<
+  typeof postSystemReloadTechniquesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemStatusRouteHandler: RouteHandler<typeof getSystemStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemUpdatePoliciesRouteHandler: RouteHandler<
+  typeof postSystemUpdatePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

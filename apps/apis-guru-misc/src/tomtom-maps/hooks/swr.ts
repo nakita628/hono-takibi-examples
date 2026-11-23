@@ -10,19 +10,21 @@ export function getMapKey() {
 }
 
 export function getGetMapVersionNumberCopyrightsFormatKey(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
 ) {
-  return ['map', '/map/:versionNumber/copyrights.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights.{format}', args] as const
 }
 
 export function useGetMapVersionNumberCopyrightsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
+            >
           >
         >
       >,
@@ -45,7 +47,9 @@ export function useGetMapVersionNumberCopyrightsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
+            >
           >
         >
       >,
@@ -53,20 +57,24 @@ export function useGetMapVersionNumberCopyrightsFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.map[':versionNumber']['copyrights.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.map[':versionNumber']['copyrights.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetMapVersionNumberCopyrightsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>,
+  args: InferRequestType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
+            >
           >
         >
       >,
@@ -89,7 +97,9 @@ export function useImmutableGetMapVersionNumberCopyrightsFormat<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.map)[':versionNumber']['copyrights.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.map)[':versionNumber']['copyrights.{format}']['$get']>
+            >
           >
         >
       >,
@@ -97,7 +107,9 @@ export function useImmutableGetMapVersionNumberCopyrightsFormat<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.map[':versionNumber']['copyrights.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.map[':versionNumber']['copyrights.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
@@ -105,15 +117,15 @@ export function useImmutableGetMapVersionNumberCopyrightsFormat<TError = unknown
 
 export function getGetMapVersionNumberCopyrightsCaptionFormatKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/copyrights/caption.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights/caption.{format}', args] as const
 }
 
 export function useGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -122,7 +134,7 @@ export function useGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
               >
             >
           >
@@ -149,7 +161,7 @@ export function useGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
               >
             >
           >
@@ -160,7 +172,7 @@ export function useGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].copyrights['caption.:format'].$get(args, clientOptions),
+          client.map[':versionNumber'].copyrights['caption.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -169,7 +181,7 @@ export function useGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
 
 export function useImmutableGetMapVersionNumberCopyrightsCaptionFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -178,7 +190,7 @@ export function useImmutableGetMapVersionNumberCopyrightsCaptionFormat<TError = 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
               >
             >
           >
@@ -205,7 +217,7 @@ export function useImmutableGetMapVersionNumberCopyrightsCaptionFormat<TError = 
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights']['caption.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights']['caption.{format}']['$get']
               >
             >
           >
@@ -216,7 +228,7 @@ export function useImmutableGetMapVersionNumberCopyrightsCaptionFormat<TError = 
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].copyrights['caption.:format'].$get(args, clientOptions),
+          client.map[':versionNumber'].copyrights['caption.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -225,19 +237,19 @@ export function useImmutableGetMapVersionNumberCopyrightsCaptionFormat<TError = 
 
 export function getGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormatKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
 ) {
   return [
     'map',
-    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.:format',
+    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.{format}',
     args,
   ] as const
 }
 
 export function useGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -246,7 +258,7 @@ export function useGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<T
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
               >
             >
           >
@@ -273,7 +285,7 @@ export function useGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<T
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
               >
             >
           >
@@ -285,7 +297,7 @@ export function useGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLatFormat<T
       async () =>
         parseResponse(
           client.map[':versionNumber'].copyrights[':minLon'][':minLat'][':maxLon'][
-            ':maxLat.:format'
+            ':maxLat.{format}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -297,7 +309,7 @@ export function useImmutableGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLa
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -306,7 +318,7 @@ export function useImmutableGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLa
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
               >
             >
           >
@@ -333,7 +345,7 @@ export function useImmutableGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLa
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':minLon'][':minLat'][':maxLon'][':maxLat.{format}']['$get']
               >
             >
           >
@@ -345,7 +357,7 @@ export function useImmutableGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLa
       async () =>
         parseResponse(
           client.map[':versionNumber'].copyrights[':minLon'][':minLat'][':maxLon'][
-            ':maxLat.:format'
+            ':maxLat.{format}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -355,15 +367,15 @@ export function useImmutableGetMapVersionNumberCopyrightsMinLonMinLatMaxLonMaxLa
 
 export function getGetMapVersionNumberCopyrightsZoomXYFormatKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/copyrights/:zoom/:X/:Y.:format', args] as const
+  return ['map', '/map/:versionNumber/copyrights/:zoom/:X/:Y.{format}', args] as const
 }
 
 export function useGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -372,7 +384,7 @@ export function useGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -399,7 +411,7 @@ export function useGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -410,7 +422,7 @@ export function useGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.:format'].$get(
+          client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.{format}'].$get(
             args,
             clientOptions,
           ),
@@ -422,7 +434,7 @@ export function useGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
 
 export function useImmutableGetMapVersionNumberCopyrightsZoomXYFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -431,7 +443,7 @@ export function useImmutableGetMapVersionNumberCopyrightsZoomXYFormat<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -458,7 +470,7 @@ export function useImmutableGetMapVersionNumberCopyrightsZoomXYFormat<TError = u
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['copyrights'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -469,7 +481,7 @@ export function useImmutableGetMapVersionNumberCopyrightsZoomXYFormat<TError = u
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.:format'].$get(
+          client.map[':versionNumber'].copyrights[':zoom'][':X'][':Y.{format}'].$get(
             args,
             clientOptions,
           ),
@@ -699,15 +711,15 @@ export function useImmutableGetMapVersionNumberTileLayerStyleZoomXYPbf<TError = 
 
 export function getGetMapVersionNumberTileLayerStyleZoomXYFormatKey(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
 ) {
-  return ['map', '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.:format', args] as const
+  return ['map', '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.{format}', args] as const
 }
 
 export function useGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -716,7 +728,7 @@ export function useGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -743,7 +755,7 @@ export function useGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknow
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -754,7 +766,7 @@ export function useGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.:format'].$get(
+          client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.{format}'].$get(
             args,
             clientOptions,
           ),
@@ -766,7 +778,7 @@ export function useGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknow
 
 export function useImmutableGetMapVersionNumberTileLayerStyleZoomXYFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+    (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -775,7 +787,7 @@ export function useImmutableGetMapVersionNumberTileLayerStyleZoomXYFormat<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -802,7 +814,7 @@ export function useImmutableGetMapVersionNumberTileLayerStyleZoomXYFormat<TError
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.:format']['$get']
+                (typeof client.map)[':versionNumber']['tile'][':layer'][':style'][':zoom'][':X'][':Y.{format}']['$get']
               >
             >
           >
@@ -813,7 +825,7 @@ export function useImmutableGetMapVersionNumberTileLayerStyleZoomXYFormat<TError
       swrKey,
       async () =>
         parseResponse(
-          client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.:format'].$get(
+          client.map[':versionNumber'].tile[':layer'][':style'][':zoom'][':X'][':Y.{format}'].$get(
             args,
             clientOptions,
           ),

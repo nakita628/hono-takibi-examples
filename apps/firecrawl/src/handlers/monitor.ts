@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMonitorMonitorIdRoute,
   getMonitorMonitorIdChecksCheckIdRoute,
   getMonitorMonitorIdChecksRoute,
@@ -10,30 +10,46 @@ import {
   postMonitorRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMonitorRouteHandler: RouteHandler<typeof postMonitorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const monitorHandler = app
-  .openapi(postMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMonitorMonitorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMonitorMonitorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMonitorMonitorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMonitorMonitorIdRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMonitorMonitorIdChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMonitorMonitorIdChecksCheckIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMonitorRouteHandler: RouteHandler<typeof getMonitorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMonitorMonitorIdRouteHandler: RouteHandler<
+  typeof getMonitorMonitorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMonitorMonitorIdRouteHandler: RouteHandler<
+  typeof patchMonitorMonitorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMonitorMonitorIdRouteHandler: RouteHandler<
+  typeof deleteMonitorMonitorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMonitorMonitorIdRunRouteHandler: RouteHandler<
+  typeof postMonitorMonitorIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMonitorMonitorIdChecksRouteHandler: RouteHandler<
+  typeof getMonitorMonitorIdChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMonitorMonitorIdChecksCheckIdRouteHandler: RouteHandler<
+  typeof getMonitorMonitorIdChecksCheckIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

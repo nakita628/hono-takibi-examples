@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsKendraFrontendServiceBatchGetDocumentStatusHandler = app.openapi(
-  postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSKendraFrontendServiceBatchGetDocumentStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

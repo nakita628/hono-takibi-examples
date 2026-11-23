@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/signl4.com/v1/openapi.yaml',
   output: './src/signl4/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/signl4/types.ts' },
   client: { output: './src/signl4/client.ts', baseUrl: '/' },
   rpc: { output: './src/signl4/rpc.ts', parseResponse: true },

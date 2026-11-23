@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ClustersClusterArnPolicyRoute,
   deleteV1ClustersClusterArnRoute,
   deleteV1ConfigurationsArnRoute,
@@ -44,132 +44,250 @@ import {
   putV1ConfigurationsArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1ClustersClusterArnScramSecretsRouteHandler: RouteHandler<
+  typeof postV1ClustersClusterArnScramSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1ClustersClusterArnScramSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ClustersClusterArnScramSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnScramSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1VpcConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ClustersClusterArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ClustersClusterArnPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ConfigurationsArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigurationsArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ConfigurationsArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1VpcConnectionArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VpcConnectionArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OperationsClusterOperationArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigurationsArnRevisionsRevisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnBootstrapBrokersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CompatibleKafkaVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ConfigurationsArnRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1KafkaVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterArnClientVpcConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1VpcConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnClientVpcConnectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnRebootBrokerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TagsResourceArnTagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnNodesCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnNodesTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnNodesStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnConnectivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnMonitoringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ClustersClusterArnSecurityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ClustersClusterArnStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchV1ClustersClusterArnScramSecretsRouteHandler: RouteHandler<
+  typeof patchV1ClustersClusterArnScramSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnScramSecretsRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnScramSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ClustersRouteHandler: RouteHandler<typeof postV1ClustersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersRouteHandler: RouteHandler<typeof getV1ClustersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ConfigurationsRouteHandler: RouteHandler<
+  typeof postV1ConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigurationsRouteHandler: RouteHandler<
+  typeof getV1ConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1VpcConnectionRouteHandler: RouteHandler<
+  typeof postV1VpcConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ClustersClusterArnRouteHandler: RouteHandler<
+  typeof deleteV1ClustersClusterArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ClustersClusterArnPolicyRouteHandler: RouteHandler<
+  typeof deleteV1ClustersClusterArnPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnPolicyRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnPolicyRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ConfigurationsArnRouteHandler: RouteHandler<
+  typeof deleteV1ConfigurationsArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigurationsArnRouteHandler: RouteHandler<
+  typeof getV1ConfigurationsArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ConfigurationsArnRouteHandler: RouteHandler<
+  typeof putV1ConfigurationsArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1VpcConnectionArnRouteHandler: RouteHandler<
+  typeof deleteV1VpcConnectionArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VpcConnectionArnRouteHandler: RouteHandler<
+  typeof getV1VpcConnectionArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OperationsClusterOperationArnRouteHandler: RouteHandler<
+  typeof getV1OperationsClusterOperationArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigurationsArnRevisionsRevisionRouteHandler: RouteHandler<
+  typeof getV1ConfigurationsArnRevisionsRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnBootstrapBrokersRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnBootstrapBrokersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CompatibleKafkaVersionsRouteHandler: RouteHandler<
+  typeof getV1CompatibleKafkaVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnOperationsRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ConfigurationsArnRevisionsRouteHandler: RouteHandler<
+  typeof getV1ConfigurationsArnRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1KafkaVersionsRouteHandler: RouteHandler<typeof getV1KafkaVersionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnNodesRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof getV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof postV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterArnClientVpcConnectionsRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterArnClientVpcConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1VpcConnectionsRouteHandler: RouteHandler<
+  typeof getV1VpcConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnClientVpcConnectionRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnClientVpcConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnRebootBrokerRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnRebootBrokerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TagsResourceArnTagKeysRouteHandler: RouteHandler<
+  typeof deleteV1TagsResourceArnTagKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnNodesCountRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnNodesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnNodesTypeRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnNodesTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnNodesStorageRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnNodesStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnConnectivityRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnConnectivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnConfigurationRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnVersionRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnMonitoringRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnMonitoringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ClustersClusterArnSecurityRouteHandler: RouteHandler<
+  typeof patchV1ClustersClusterArnSecurityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ClustersClusterArnStorageRouteHandler: RouteHandler<
+  typeof putV1ClustersClusterArnStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

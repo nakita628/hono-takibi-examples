@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetArrivalsByCRSCRSRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetArrivalsByCRSCRSRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getArrivalsByCrsHandler = app.openapi(getGetArrivalsByCRSCRSRoute, (c) => {
+export const getGetArrivalsByCRSCRSRouteHandler: RouteHandler<
+  typeof getGetArrivalsByCRSCRSRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

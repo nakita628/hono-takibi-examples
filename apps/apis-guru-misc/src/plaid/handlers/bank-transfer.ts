@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postBankTransferBalanceGetRoute,
   postBankTransferCancelRoute,
   postBankTransferCreateRoute,
@@ -12,36 +12,62 @@ import {
   postBankTransferSweepListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBankTransferBalanceGetRouteHandler: RouteHandler<
+  typeof postBankTransferBalanceGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bankTransferHandler = app
-  .openapi(postBankTransferBalanceGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferEventListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferEventSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferMigrateAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferSweepGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBankTransferSweepListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBankTransferCancelRouteHandler: RouteHandler<
+  typeof postBankTransferCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferCreateRouteHandler: RouteHandler<
+  typeof postBankTransferCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferEventListRouteHandler: RouteHandler<
+  typeof postBankTransferEventListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferEventSyncRouteHandler: RouteHandler<
+  typeof postBankTransferEventSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferGetRouteHandler: RouteHandler<
+  typeof postBankTransferGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferListRouteHandler: RouteHandler<
+  typeof postBankTransferListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferMigrateAccountRouteHandler: RouteHandler<
+  typeof postBankTransferMigrateAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferSweepGetRouteHandler: RouteHandler<
+  typeof postBankTransferSweepGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBankTransferSweepListRouteHandler: RouteHandler<
+  typeof postBankTransferSweepListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

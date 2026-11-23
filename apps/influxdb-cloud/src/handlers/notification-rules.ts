@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNotificationRulesRuleIDLabelsLabelIDRoute,
   deleteNotificationRulesRuleIDRoute,
   getNotificationRulesRoute,
@@ -12,36 +12,62 @@ import {
   putNotificationRulesRuleIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNotificationRulesRouteHandler: RouteHandler<
+  typeof getNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const notificationRulesHandler = app
-  .openapi(getNotificationRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationRulesRuleIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationRulesRuleIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNotificationRulesRuleIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationRulesRuleIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationRulesRuleIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationRulesRuleIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationRulesRuleIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationRulesRuleIDQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNotificationRulesRouteHandler: RouteHandler<
+  typeof postNotificationRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationRulesRuleIDRouteHandler: RouteHandler<
+  typeof getNotificationRulesRuleIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationRulesRuleIDRouteHandler: RouteHandler<
+  typeof putNotificationRulesRuleIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNotificationRulesRuleIDRouteHandler: RouteHandler<
+  typeof patchNotificationRulesRuleIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationRulesRuleIDRouteHandler: RouteHandler<
+  typeof deleteNotificationRulesRuleIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationRulesRuleIDLabelsRouteHandler: RouteHandler<
+  typeof getNotificationRulesRuleIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNotificationRulesRuleIDLabelsRouteHandler: RouteHandler<
+  typeof postNotificationRulesRuleIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationRulesRuleIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteNotificationRulesRuleIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationRulesRuleIDQueryRouteHandler: RouteHandler<
+  typeof getNotificationRulesRuleIDQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -208,12 +208,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { priceBookId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { priceBookId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { priceBookId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { priceBookId: bigint } } & { json: PriceBookUpdateRequest }
@@ -306,6 +313,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { priceBookId: bigint } } & { json: BatchInputSimplePublicObjectId }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { priceBookId: bigint } } & { json: BatchInputSimplePublicObjectId }
             output: BatchResponseSimplePublicObjectIdWithErrors
             outputFormat: 'json'
             status: 207
@@ -392,12 +405,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { priceBookId: bigint; priceBookItemId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { priceBookId: bigint; priceBookItemId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { priceBookId: bigint; priceBookItemId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { priceBookId: bigint; priceBookItemId: bigint } } & {

@@ -1,12 +1,18 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { __rootHandler, listsHandler, namesHandler, swatchHandler } from './handlers'
+import { getListsIndexRoute, getNamesIndexRoute, getRoute, getSwatchIndexRoute } from './routes'
+import {
+  getListsIndexRouteHandler,
+  getNamesIndexRouteHandler,
+  getRouteHandler,
+  getSwatchIndexRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', __rootHandler)
-  .route('/', listsHandler)
-  .route('/', namesHandler)
-  .route('/', swatchHandler)
+  .openapi(getRoute, getRouteHandler)
+  .openapi(getListsIndexRoute, getListsIndexRouteHandler)
+  .openapi(getNamesIndexRoute, getNamesIndexRouteHandler)
+  .openapi(getSwatchIndexRoute, getSwatchIndexRouteHandler)
 
 export default app

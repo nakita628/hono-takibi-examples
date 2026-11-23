@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDocumentIdAspectIdCivixIndexIdCivixDocumentIdRoute,
   getDocumentIdAspectIdCivixIndexIdCivixDocumentIdSearchSearchStringRoute,
   getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlRoute,
   getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlSearchSearchStringRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDocumentIdAspectIdCivixIndexIdCivixDocumentIdRouteHandler: RouteHandler<
+  typeof getDocumentIdAspectIdCivixIndexIdCivixDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const documentHandler = app
-  .openapi(getDocumentIdAspectIdCivixIndexIdCivixDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentIdAspectIdCivixIndexIdCivixDocumentIdSearchSearchStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlSearchSearchStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDocumentIdAspectIdCivixIndexIdCivixDocumentIdSearchSearchStringRouteHandler: RouteHandler<
+  typeof getDocumentIdAspectIdCivixIndexIdCivixDocumentIdSearchSearchStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlRouteHandler: RouteHandler<
+  typeof getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlSearchSearchStringRouteHandler: RouteHandler<
+  typeof getDocumentIdAspectIdCivixIndexIdCivixDocumentIdXmlSearchSearchStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

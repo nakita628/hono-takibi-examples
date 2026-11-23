@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/neutrinoapi.net/3.6.3/openapi.yaml',
   output: './src/neutrinoapi-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/neutrinoapi-net/types.ts' },
   client: { output: './src/neutrinoapi-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/neutrinoapi-net/rpc.ts', parseResponse: true },

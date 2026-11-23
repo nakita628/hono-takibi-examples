@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1betaNameRoute,
   getV1betaParentAudienceExportsRoute,
   postV1betaNameQueryRoute,
@@ -12,36 +12,60 @@ import {
   postV1betaPropertyRunReportRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNameQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentAudienceExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentAudienceExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyBatchRunPivotReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyBatchRunReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyCheckCompatibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyRunPivotReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyRunRealtimeReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaPropertyRunReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1betaNameQueryRouteHandler: RouteHandler<
+  typeof postV1betaNameQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentAudienceExportsRouteHandler: RouteHandler<
+  typeof getV1betaParentAudienceExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentAudienceExportsRouteHandler: RouteHandler<
+  typeof postV1betaParentAudienceExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyBatchRunPivotReportsRouteHandler: RouteHandler<
+  typeof postV1betaPropertyBatchRunPivotReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyBatchRunReportsRouteHandler: RouteHandler<
+  typeof postV1betaPropertyBatchRunReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyCheckCompatibilityRouteHandler: RouteHandler<
+  typeof postV1betaPropertyCheckCompatibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyRunPivotReportRouteHandler: RouteHandler<
+  typeof postV1betaPropertyRunPivotReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyRunRealtimeReportRouteHandler: RouteHandler<
+  typeof postV1betaPropertyRunRealtimeReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaPropertyRunReportRouteHandler: RouteHandler<
+  typeof postV1betaPropertyRunReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,163 +1,473 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwswaf20150824CreateByteMatchSetHandler,
-  xAmzTargetAwswaf20150824CreateGeoMatchSetHandler,
-  xAmzTargetAwswaf20150824CreateIpSetHandler,
-  xAmzTargetAwswaf20150824CreateRateBasedRuleHandler,
-  xAmzTargetAwswaf20150824CreateRegexMatchSetHandler,
-  xAmzTargetAwswaf20150824CreateRegexPatternSetHandler,
-  xAmzTargetAwswaf20150824CreateRuleGroupHandler,
-  xAmzTargetAwswaf20150824CreateRuleHandler,
-  xAmzTargetAwswaf20150824CreateSizeConstraintSetHandler,
-  xAmzTargetAwswaf20150824CreateSqlInjectionMatchSetHandler,
-  xAmzTargetAwswaf20150824CreateWebAclHandler,
-  xAmzTargetAwswaf20150824CreateWebAclMigrationStackHandler,
-  xAmzTargetAwswaf20150824CreateXssMatchSetHandler,
-  xAmzTargetAwswaf20150824DeleteByteMatchSetHandler,
-  xAmzTargetAwswaf20150824DeleteGeoMatchSetHandler,
-  xAmzTargetAwswaf20150824DeleteIpSetHandler,
-  xAmzTargetAwswaf20150824DeleteLoggingConfigurationHandler,
-  xAmzTargetAwswaf20150824DeletePermissionPolicyHandler,
-  xAmzTargetAwswaf20150824DeleteRateBasedRuleHandler,
-  xAmzTargetAwswaf20150824DeleteRegexMatchSetHandler,
-  xAmzTargetAwswaf20150824DeleteRegexPatternSetHandler,
-  xAmzTargetAwswaf20150824DeleteRuleGroupHandler,
-  xAmzTargetAwswaf20150824DeleteRuleHandler,
-  xAmzTargetAwswaf20150824DeleteSizeConstraintSetHandler,
-  xAmzTargetAwswaf20150824DeleteSqlInjectionMatchSetHandler,
-  xAmzTargetAwswaf20150824DeleteWebAclHandler,
-  xAmzTargetAwswaf20150824DeleteXssMatchSetHandler,
-  xAmzTargetAwswaf20150824GetByteMatchSetHandler,
-  xAmzTargetAwswaf20150824GetChangeTokenHandler,
-  xAmzTargetAwswaf20150824GetChangeTokenStatusHandler,
-  xAmzTargetAwswaf20150824GetGeoMatchSetHandler,
-  xAmzTargetAwswaf20150824GetIpSetHandler,
-  xAmzTargetAwswaf20150824GetLoggingConfigurationHandler,
-  xAmzTargetAwswaf20150824GetPermissionPolicyHandler,
-  xAmzTargetAwswaf20150824GetRateBasedRuleHandler,
-  xAmzTargetAwswaf20150824GetRateBasedRuleManagedKeysHandler,
-  xAmzTargetAwswaf20150824GetRegexMatchSetHandler,
-  xAmzTargetAwswaf20150824GetRegexPatternSetHandler,
-  xAmzTargetAwswaf20150824GetRuleGroupHandler,
-  xAmzTargetAwswaf20150824GetRuleHandler,
-  xAmzTargetAwswaf20150824GetSampledRequestsHandler,
-  xAmzTargetAwswaf20150824GetSizeConstraintSetHandler,
-  xAmzTargetAwswaf20150824GetSqlInjectionMatchSetHandler,
-  xAmzTargetAwswaf20150824GetWebAclHandler,
-  xAmzTargetAwswaf20150824GetXssMatchSetHandler,
-  xAmzTargetAwswaf20150824ListActivatedRulesInRuleGroupHandler,
-  xAmzTargetAwswaf20150824ListByteMatchSetsHandler,
-  xAmzTargetAwswaf20150824ListGeoMatchSetsHandler,
-  xAmzTargetAwswaf20150824ListIpSetsHandler,
-  xAmzTargetAwswaf20150824ListLoggingConfigurationsHandler,
-  xAmzTargetAwswaf20150824ListRateBasedRulesHandler,
-  xAmzTargetAwswaf20150824ListRegexMatchSetsHandler,
-  xAmzTargetAwswaf20150824ListRegexPatternSetsHandler,
-  xAmzTargetAwswaf20150824ListRuleGroupsHandler,
-  xAmzTargetAwswaf20150824ListRulesHandler,
-  xAmzTargetAwswaf20150824ListSizeConstraintSetsHandler,
-  xAmzTargetAwswaf20150824ListSqlInjectionMatchSetsHandler,
-  xAmzTargetAwswaf20150824ListSubscribedRuleGroupsHandler,
-  xAmzTargetAwswaf20150824ListTagsForResourceHandler,
-  xAmzTargetAwswaf20150824ListWebAcLsHandler,
-  xAmzTargetAwswaf20150824ListXssMatchSetsHandler,
-  xAmzTargetAwswaf20150824PutLoggingConfigurationHandler,
-  xAmzTargetAwswaf20150824PutPermissionPolicyHandler,
-  xAmzTargetAwswaf20150824TagResourceHandler,
-  xAmzTargetAwswaf20150824UntagResourceHandler,
-  xAmzTargetAwswaf20150824UpdateByteMatchSetHandler,
-  xAmzTargetAwswaf20150824UpdateGeoMatchSetHandler,
-  xAmzTargetAwswaf20150824UpdateIpSetHandler,
-  xAmzTargetAwswaf20150824UpdateRateBasedRuleHandler,
-  xAmzTargetAwswaf20150824UpdateRegexMatchSetHandler,
-  xAmzTargetAwswaf20150824UpdateRegexPatternSetHandler,
-  xAmzTargetAwswaf20150824UpdateRuleGroupHandler,
-  xAmzTargetAwswaf20150824UpdateRuleHandler,
-  xAmzTargetAwswaf20150824UpdateSizeConstraintSetHandler,
-  xAmzTargetAwswaf20150824UpdateSqlInjectionMatchSetHandler,
-  xAmzTargetAwswaf20150824UpdateWebAclHandler,
-  xAmzTargetAwswaf20150824UpdateXssMatchSetHandler,
+  postXAmzTargetAWSWAF20150824CreateByteMatchSetRoute,
+  postXAmzTargetAWSWAF20150824CreateGeoMatchSetRoute,
+  postXAmzTargetAWSWAF20150824CreateIPSetRoute,
+  postXAmzTargetAWSWAF20150824CreateRateBasedRuleRoute,
+  postXAmzTargetAWSWAF20150824CreateRegexMatchSetRoute,
+  postXAmzTargetAWSWAF20150824CreateRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20150824CreateRuleGroupRoute,
+  postXAmzTargetAWSWAF20150824CreateRuleRoute,
+  postXAmzTargetAWSWAF20150824CreateSizeConstraintSetRoute,
+  postXAmzTargetAWSWAF20150824CreateSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAF20150824CreateWebACLMigrationStackRoute,
+  postXAmzTargetAWSWAF20150824CreateWebACLRoute,
+  postXAmzTargetAWSWAF20150824CreateXssMatchSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteByteMatchSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteGeoMatchSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteIPSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20150824DeletePermissionPolicyRoute,
+  postXAmzTargetAWSWAF20150824DeleteRateBasedRuleRoute,
+  postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteRuleGroupRoute,
+  postXAmzTargetAWSWAF20150824DeleteRuleRoute,
+  postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAF20150824DeleteWebACLRoute,
+  postXAmzTargetAWSWAF20150824DeleteXssMatchSetRoute,
+  postXAmzTargetAWSWAF20150824GetByteMatchSetRoute,
+  postXAmzTargetAWSWAF20150824GetChangeTokenRoute,
+  postXAmzTargetAWSWAF20150824GetChangeTokenStatusRoute,
+  postXAmzTargetAWSWAF20150824GetGeoMatchSetRoute,
+  postXAmzTargetAWSWAF20150824GetIPSetRoute,
+  postXAmzTargetAWSWAF20150824GetLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20150824GetPermissionPolicyRoute,
+  postXAmzTargetAWSWAF20150824GetRateBasedRuleManagedKeysRoute,
+  postXAmzTargetAWSWAF20150824GetRateBasedRuleRoute,
+  postXAmzTargetAWSWAF20150824GetRegexMatchSetRoute,
+  postXAmzTargetAWSWAF20150824GetRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20150824GetRuleGroupRoute,
+  postXAmzTargetAWSWAF20150824GetRuleRoute,
+  postXAmzTargetAWSWAF20150824GetSampledRequestsRoute,
+  postXAmzTargetAWSWAF20150824GetSizeConstraintSetRoute,
+  postXAmzTargetAWSWAF20150824GetSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAF20150824GetWebACLRoute,
+  postXAmzTargetAWSWAF20150824GetXssMatchSetRoute,
+  postXAmzTargetAWSWAF20150824ListActivatedRulesInRuleGroupRoute,
+  postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute,
+  postXAmzTargetAWSWAF20150824ListGeoMatchSetsRoute,
+  postXAmzTargetAWSWAF20150824ListIPSetsRoute,
+  postXAmzTargetAWSWAF20150824ListLoggingConfigurationsRoute,
+  postXAmzTargetAWSWAF20150824ListRateBasedRulesRoute,
+  postXAmzTargetAWSWAF20150824ListRegexMatchSetsRoute,
+  postXAmzTargetAWSWAF20150824ListRegexPatternSetsRoute,
+  postXAmzTargetAWSWAF20150824ListRuleGroupsRoute,
+  postXAmzTargetAWSWAF20150824ListRulesRoute,
+  postXAmzTargetAWSWAF20150824ListSizeConstraintSetsRoute,
+  postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute,
+  postXAmzTargetAWSWAF20150824ListSubscribedRuleGroupsRoute,
+  postXAmzTargetAWSWAF20150824ListTagsForResourceRoute,
+  postXAmzTargetAWSWAF20150824ListWebACLsRoute,
+  postXAmzTargetAWSWAF20150824ListXssMatchSetsRoute,
+  postXAmzTargetAWSWAF20150824PutLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20150824PutPermissionPolicyRoute,
+  postXAmzTargetAWSWAF20150824TagResourceRoute,
+  postXAmzTargetAWSWAF20150824UntagResourceRoute,
+  postXAmzTargetAWSWAF20150824UpdateByteMatchSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateGeoMatchSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateIPSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateRateBasedRuleRoute,
+  postXAmzTargetAWSWAF20150824UpdateRegexMatchSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateRuleGroupRoute,
+  postXAmzTargetAWSWAF20150824UpdateRuleRoute,
+  postXAmzTargetAWSWAF20150824UpdateSizeConstraintSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateSqlInjectionMatchSetRoute,
+  postXAmzTargetAWSWAF20150824UpdateWebACLRoute,
+  postXAmzTargetAWSWAF20150824UpdateXssMatchSetRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSWAF20150824CreateByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateIPSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateWebACLMigrationStackRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateWebACLRouteHandler,
+  postXAmzTargetAWSWAF20150824CreateXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteIPSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20150824DeletePermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteWebACLRouteHandler,
+  postXAmzTargetAWSWAF20150824DeleteXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetChangeTokenRouteHandler,
+  postXAmzTargetAWSWAF20150824GetChangeTokenStatusRouteHandler,
+  postXAmzTargetAWSWAF20150824GetGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetIPSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20150824GetPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRateBasedRuleManagedKeysRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20150824GetRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824GetSampledRequestsRouteHandler,
+  postXAmzTargetAWSWAF20150824GetSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824GetWebACLRouteHandler,
+  postXAmzTargetAWSWAF20150824GetXssMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824ListActivatedRulesInRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20150824ListByteMatchSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListGeoMatchSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListIPSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListLoggingConfigurationsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListRateBasedRulesRouteHandler,
+  postXAmzTargetAWSWAF20150824ListRegexMatchSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListRegexPatternSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListRulesRouteHandler,
+  postXAmzTargetAWSWAF20150824ListSizeConstraintSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListSubscribedRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSWAF20150824ListWebACLsRouteHandler,
+  postXAmzTargetAWSWAF20150824ListXssMatchSetsRouteHandler,
+  postXAmzTargetAWSWAF20150824PutLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20150824PutPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20150824TagResourceRouteHandler,
+  postXAmzTargetAWSWAF20150824UntagResourceRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateByteMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateGeoMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateIPSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateRateBasedRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateRegexMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateRuleRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateSizeConstraintSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateSqlInjectionMatchSetRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateWebACLRouteHandler,
+  postXAmzTargetAWSWAF20150824UpdateXssMatchSetRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwswaf20150824CreateByteMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateIpSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateWebAclHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateWebAclMigrationStackHandler)
-  .route('/', xAmzTargetAwswaf20150824CreateXssMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteByteMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteIpSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20150824DeletePermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteWebAclHandler)
-  .route('/', xAmzTargetAwswaf20150824DeleteXssMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetByteMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetChangeTokenHandler)
-  .route('/', xAmzTargetAwswaf20150824GetChangeTokenStatusHandler)
-  .route('/', xAmzTargetAwswaf20150824GetGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetIpSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20150824GetPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRateBasedRuleManagedKeysHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824GetRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20150824GetSampledRequestsHandler)
-  .route('/', xAmzTargetAwswaf20150824GetSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824GetWebAclHandler)
-  .route('/', xAmzTargetAwswaf20150824GetXssMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824ListActivatedRulesInRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20150824ListByteMatchSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListGeoMatchSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListIpSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListLoggingConfigurationsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListRateBasedRulesHandler)
-  .route('/', xAmzTargetAwswaf20150824ListRegexMatchSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListRegexPatternSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListRuleGroupsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListRulesHandler)
-  .route('/', xAmzTargetAwswaf20150824ListSizeConstraintSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListSqlInjectionMatchSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListSubscribedRuleGroupsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwswaf20150824ListWebAcLsHandler)
-  .route('/', xAmzTargetAwswaf20150824ListXssMatchSetsHandler)
-  .route('/', xAmzTargetAwswaf20150824PutLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20150824PutPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20150824TagResourceHandler)
-  .route('/', xAmzTargetAwswaf20150824UntagResourceHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateByteMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateGeoMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateIpSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateRateBasedRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateRegexMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateRuleHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateSizeConstraintSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateSqlInjectionMatchSetHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateWebAclHandler)
-  .route('/', xAmzTargetAwswaf20150824UpdateXssMatchSetHandler)
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateByteMatchSetRoute,
+    postXAmzTargetAWSWAF20150824CreateByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateGeoMatchSetRoute,
+    postXAmzTargetAWSWAF20150824CreateGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateIPSetRoute,
+    postXAmzTargetAWSWAF20150824CreateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateRateBasedRuleRoute,
+    postXAmzTargetAWSWAF20150824CreateRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateRegexMatchSetRoute,
+    postXAmzTargetAWSWAF20150824CreateRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20150824CreateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateRuleRoute,
+    postXAmzTargetAWSWAF20150824CreateRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateRuleGroupRoute,
+    postXAmzTargetAWSWAF20150824CreateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateSizeConstraintSetRoute,
+    postXAmzTargetAWSWAF20150824CreateSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAF20150824CreateSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateWebACLRoute,
+    postXAmzTargetAWSWAF20150824CreateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateWebACLMigrationStackRoute,
+    postXAmzTargetAWSWAF20150824CreateWebACLMigrationStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824CreateXssMatchSetRoute,
+    postXAmzTargetAWSWAF20150824CreateXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteByteMatchSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteGeoMatchSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteIPSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20150824DeleteLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeletePermissionPolicyRoute,
+    postXAmzTargetAWSWAF20150824DeletePermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteRateBasedRuleRoute,
+    postXAmzTargetAWSWAF20150824DeleteRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteRuleRoute,
+    postXAmzTargetAWSWAF20150824DeleteRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteRuleGroupRoute,
+    postXAmzTargetAWSWAF20150824DeleteRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteWebACLRoute,
+    postXAmzTargetAWSWAF20150824DeleteWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824DeleteXssMatchSetRoute,
+    postXAmzTargetAWSWAF20150824DeleteXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetByteMatchSetRoute,
+    postXAmzTargetAWSWAF20150824GetByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetChangeTokenRoute,
+    postXAmzTargetAWSWAF20150824GetChangeTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetChangeTokenStatusRoute,
+    postXAmzTargetAWSWAF20150824GetChangeTokenStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetGeoMatchSetRoute,
+    postXAmzTargetAWSWAF20150824GetGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetIPSetRoute,
+    postXAmzTargetAWSWAF20150824GetIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20150824GetLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetPermissionPolicyRoute,
+    postXAmzTargetAWSWAF20150824GetPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRateBasedRuleRoute,
+    postXAmzTargetAWSWAF20150824GetRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRateBasedRuleManagedKeysRoute,
+    postXAmzTargetAWSWAF20150824GetRateBasedRuleManagedKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRegexMatchSetRoute,
+    postXAmzTargetAWSWAF20150824GetRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20150824GetRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRuleRoute,
+    postXAmzTargetAWSWAF20150824GetRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetRuleGroupRoute,
+    postXAmzTargetAWSWAF20150824GetRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetSampledRequestsRoute,
+    postXAmzTargetAWSWAF20150824GetSampledRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetSizeConstraintSetRoute,
+    postXAmzTargetAWSWAF20150824GetSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAF20150824GetSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetWebACLRoute,
+    postXAmzTargetAWSWAF20150824GetWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824GetXssMatchSetRoute,
+    postXAmzTargetAWSWAF20150824GetXssMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListActivatedRulesInRuleGroupRoute,
+    postXAmzTargetAWSWAF20150824ListActivatedRulesInRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListByteMatchSetsRoute,
+    postXAmzTargetAWSWAF20150824ListByteMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListGeoMatchSetsRoute,
+    postXAmzTargetAWSWAF20150824ListGeoMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListIPSetsRoute,
+    postXAmzTargetAWSWAF20150824ListIPSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListLoggingConfigurationsRoute,
+    postXAmzTargetAWSWAF20150824ListLoggingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListRateBasedRulesRoute,
+    postXAmzTargetAWSWAF20150824ListRateBasedRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListRegexMatchSetsRoute,
+    postXAmzTargetAWSWAF20150824ListRegexMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListRegexPatternSetsRoute,
+    postXAmzTargetAWSWAF20150824ListRegexPatternSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListRuleGroupsRoute,
+    postXAmzTargetAWSWAF20150824ListRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListRulesRoute,
+    postXAmzTargetAWSWAF20150824ListRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListSizeConstraintSetsRoute,
+    postXAmzTargetAWSWAF20150824ListSizeConstraintSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute,
+    postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListSubscribedRuleGroupsRoute,
+    postXAmzTargetAWSWAF20150824ListSubscribedRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListTagsForResourceRoute,
+    postXAmzTargetAWSWAF20150824ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListWebACLsRoute,
+    postXAmzTargetAWSWAF20150824ListWebACLsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824ListXssMatchSetsRoute,
+    postXAmzTargetAWSWAF20150824ListXssMatchSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824PutLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20150824PutLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824PutPermissionPolicyRoute,
+    postXAmzTargetAWSWAF20150824PutPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824TagResourceRoute,
+    postXAmzTargetAWSWAF20150824TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UntagResourceRoute,
+    postXAmzTargetAWSWAF20150824UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateByteMatchSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateByteMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateGeoMatchSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateGeoMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateIPSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateRateBasedRuleRoute,
+    postXAmzTargetAWSWAF20150824UpdateRateBasedRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateRegexMatchSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateRegexMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateRuleRoute,
+    postXAmzTargetAWSWAF20150824UpdateRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateRuleGroupRoute,
+    postXAmzTargetAWSWAF20150824UpdateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateSizeConstraintSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateSizeConstraintSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateSqlInjectionMatchSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateSqlInjectionMatchSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateWebACLRoute,
+    postXAmzTargetAWSWAF20150824UpdateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20150824UpdateXssMatchSetRoute,
+    postXAmzTargetAWSWAF20150824UpdateXssMatchSetRouteHandler,
+  )
 
 export default app

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMediaStore20170901DeleteContainerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMediaStore20170901DeleteContainerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMediaStore20170901DeleteContainerHandler = app.openapi(
-  postXAmzTargetMediaStore20170901DeleteContainerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMediaStore20170901DeleteContainerRouteHandler: RouteHandler<
+  typeof postXAmzTargetMediaStore20170901DeleteContainerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

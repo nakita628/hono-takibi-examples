@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFileRequestsFileRequestIdRoute,
   getFileRequestsFileRequestIdRoute,
   postFileRequestsFileRequestIdCopyRoute,
   putFileRequestsFileRequestIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteFileRequestsFileRequestIdRouteHandler: RouteHandler<
+  typeof deleteFileRequestsFileRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fileRequestsHandler = app
-  .openapi(deleteFileRequestsFileRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFileRequestsFileRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFileRequestsFileRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFileRequestsFileRequestIdCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFileRequestsFileRequestIdRouteHandler: RouteHandler<
+  typeof getFileRequestsFileRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFileRequestsFileRequestIdRouteHandler: RouteHandler<
+  typeof putFileRequestsFileRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFileRequestsFileRequestIdCopyRouteHandler: RouteHandler<
+  typeof postFileRequestsFileRequestIdCopyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

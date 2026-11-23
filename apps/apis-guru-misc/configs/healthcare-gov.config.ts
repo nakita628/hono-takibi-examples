@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/healthcare.gov/1.0.0/openapi.yaml',
   output: './src/healthcare-gov/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/healthcare-gov/types.ts' },
   client: { output: './src/healthcare-gov/client.ts', baseUrl: '/' },
   rpc: { output: './src/healthcare-gov/rpc.ts', parseResponse: true },

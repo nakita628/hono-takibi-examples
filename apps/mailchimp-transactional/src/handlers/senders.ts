@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSendersAddDomainRoute,
   postSendersCheckDomainRoute,
   postSendersDeleteDomainRoute,
@@ -10,30 +10,46 @@ import {
   postSendersVerifyDomainRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSendersListRouteHandler: RouteHandler<typeof postSendersListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sendersHandler = app
-  .openapi(postSendersListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersAddDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersCheckDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersVerifyDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSendersDeleteDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSendersDomainsRouteHandler: RouteHandler<typeof postSendersDomainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersAddDomainRouteHandler: RouteHandler<
+  typeof postSendersAddDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersCheckDomainRouteHandler: RouteHandler<
+  typeof postSendersCheckDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersVerifyDomainRouteHandler: RouteHandler<
+  typeof postSendersVerifyDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersInfoRouteHandler: RouteHandler<typeof postSendersInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersTimeSeriesRouteHandler: RouteHandler<
+  typeof postSendersTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSendersDeleteDomainRouteHandler: RouteHandler<
+  typeof postSendersDeleteDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

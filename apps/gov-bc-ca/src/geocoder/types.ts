@@ -1,7 +1,7 @@
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/addresses.:outputFormat': {
+    '/addresses.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -82,7 +82,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/intersections/near.:outputFormat': {
+    '/intersections/near.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -102,7 +102,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/intersections/nearest.:outputFormat': {
+    '/intersections/nearest.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -121,7 +121,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/intersections/within.:outputFormat': {
+    '/intersections/within.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -140,7 +140,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/intersections/:intersectionID.:outputFormat': {
+    '/intersections/:intersectionID.{outputFormat}': {
       $get: {
         input: {
           param: {
@@ -158,7 +158,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/occupants/addresses.:outputFormat': {
+    '/occupants/addresses.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -240,7 +240,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/occupants/near.:outputFormat': {
+    '/occupants/near.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -269,7 +269,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/occupants/nearest.:outputFormat': {
+    '/occupants/nearest.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -297,7 +297,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/occupants/within.:outputFormat': {
+    '/occupants/within.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -325,7 +325,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/occupants/:occupantID.:outputFormat': {
+    '/occupants/:occupantID.{outputFormat}': {
       $get: {
         input: {
           param: {
@@ -353,7 +353,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/parcels/pids/:siteID.:outputFormat': {
+    '/parcels/pids/:siteID.{outputFormat}': {
       $get: {
         input: {
           param: {
@@ -367,7 +367,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sites/near.:outputFormat': {
+    '/sites/near.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -397,7 +397,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sites/nearest.:outputFormat': {
+    '/sites/nearest.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -426,7 +426,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sites/within.:outputFormat': {
+    '/sites/within.{outputFormat}': {
       $get: {
         input: {
           param: { outputFormat: 'json' | 'geojson' | 'xhtml' | 'kml' | 'gml' | 'csv' | 'shpz' }
@@ -455,7 +455,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sites/:siteID.:outputFormat': {
+    '/sites/:siteID.{outputFormat}': {
       $get: {
         input: {
           param: {
@@ -483,7 +483,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sites/:siteID/subsites.:outputFormat': {
+    '/sites/:siteID/subsites.{outputFormat}': {
       $get: {
         input: {
           param: {

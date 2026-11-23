@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDynamicThingGroupsThingGroupNameRoute,
   patchDynamicThingGroupsThingGroupNameRoute,
   postDynamicThingGroupsThingGroupNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDynamicThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof postDynamicThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dynamicThingGroupsHandler = app
-  .openapi(postDynamicThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDynamicThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDynamicThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDynamicThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof deleteDynamicThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDynamicThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof patchDynamicThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

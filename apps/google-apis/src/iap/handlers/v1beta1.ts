@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postV1beta1ResourceGetIamPolicyRoute,
   postV1beta1ResourceSetIamPolicyRoute,
   postV1beta1ResourceTestIamPermissionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1beta1ResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1beta1ResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(postV1beta1ResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1beta1ResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1beta1ResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postV1beta1ResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

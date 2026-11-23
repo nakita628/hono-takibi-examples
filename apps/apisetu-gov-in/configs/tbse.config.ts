@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/tbse/3.0.0/openapi.yaml',
   output: './src/tbse/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tbse/types.ts' },
   client: { output: './src/tbse/client.ts', baseUrl: '/' },
   rpc: { output: './src/tbse/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/brex.io/2021.12/openapi.yaml',
   output: './src/brex-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/brex-io/types.ts' },
   client: { output: './src/brex-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/brex-io/rpc.ts', parseResponse: true },

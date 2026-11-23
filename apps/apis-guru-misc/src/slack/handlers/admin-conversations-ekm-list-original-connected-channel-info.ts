@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminConversationsEkmListOriginalConnectedChannelInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminConversationsEkmListOriginalConnectedChannelInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminConversationsEkmListOriginalConnectedChannelInfoHandler = app.openapi(
-  getAdminConversationsEkmListOriginalConnectedChannelInfoRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAdminConversationsEkmListOriginalConnectedChannelInfoRouteHandler: RouteHandler<
+  typeof getAdminConversationsEkmListOriginalConnectedChannelInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

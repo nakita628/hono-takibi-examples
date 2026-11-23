@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityProviderServiceGlobalSignOutHandler = app.openapi(
-  postXAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityProviderServiceGlobalSignOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

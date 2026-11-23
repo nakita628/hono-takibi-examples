@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLabelGroupsGroupIdLabelsLabelIdRoute,
   deleteLabelGroupsGroupIdRoute,
   getLabelGroupsGroupIdLabelsRoute,
@@ -11,33 +11,52 @@ import {
   postLabelGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLabelGroupsRouteHandler: RouteHandler<typeof postLabelGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const labelGroupsHandler = app
-  .openapi(postLabelGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLabelGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLabelGroupsGroupIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelGroupsGroupIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLabelGroupsGroupIdLabelsLabelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelGroupsGroupIdLabelsLabelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLabelGroupsRouteHandler: RouteHandler<typeof getLabelGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getLabelGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLabelGroupsGroupIdRouteHandler: RouteHandler<
+  typeof patchLabelGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLabelGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteLabelGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLabelGroupsGroupIdLabelsRouteHandler: RouteHandler<
+  typeof postLabelGroupsGroupIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelGroupsGroupIdLabelsRouteHandler: RouteHandler<
+  typeof getLabelGroupsGroupIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLabelGroupsGroupIdLabelsLabelIdRouteHandler: RouteHandler<
+  typeof patchLabelGroupsGroupIdLabelsLabelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLabelGroupsGroupIdLabelsLabelIdRouteHandler: RouteHandler<
+  typeof deleteLabelGroupsGroupIdLabelsLabelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

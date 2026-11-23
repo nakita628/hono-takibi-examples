@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRealTimeDecisionsRealTimeDecisionIdRoute,
   postRealTimeDecisionsRealTimeDecisionIdActionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRealTimeDecisionsRealTimeDecisionIdRouteHandler: RouteHandler<
+  typeof getRealTimeDecisionsRealTimeDecisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const realTimeDecisionsHandler = app
-  .openapi(getRealTimeDecisionsRealTimeDecisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealTimeDecisionsRealTimeDecisionIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRealTimeDecisionsRealTimeDecisionIdActionRouteHandler: RouteHandler<
+  typeof postRealTimeDecisionsRealTimeDecisionIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

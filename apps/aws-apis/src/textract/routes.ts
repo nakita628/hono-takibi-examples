@@ -196,8 +196,8 @@ const LineItemListSchema: z.ZodType<LineItemListType> = z
   .openapi('LineItemList')
 
 type LineItemGroupType = {
-  LineItemGroupIndex?: z.infer<typeof UIntegerSchema> & unknown
-  LineItems?: z.infer<typeof LineItemListSchema> & unknown
+  LineItemGroupIndex?: z.infer<typeof UIntegerSchema>
+  LineItems?: z.infer<typeof LineItemListSchema>
 }
 
 const LineItemGroupSchema: z.ZodType<LineItemGroupType> = z
@@ -409,10 +409,10 @@ const BlockSchema = z
 const BlockListSchema = z.array(BlockSchema).openapi('BlockList')
 
 type ExpenseDocumentType = {
-  ExpenseIndex?: z.infer<typeof UIntegerSchema> & unknown
-  SummaryFields?: z.infer<typeof ExpenseFieldListSchema> & unknown
-  LineItemGroups?: z.infer<typeof LineItemGroupListSchema> & unknown
-  Blocks?: z.infer<typeof BlockListSchema> & unknown
+  ExpenseIndex?: z.infer<typeof UIntegerSchema>
+  SummaryFields?: z.infer<typeof ExpenseFieldListSchema>
+  LineItemGroups?: z.infer<typeof LineItemGroupListSchema>
+  Blocks?: z.infer<typeof BlockListSchema>
 }
 
 const ExpenseDocumentSchema: z.ZodType<ExpenseDocumentType> = z
@@ -447,7 +447,7 @@ const ExpenseDocumentListSchema: z.ZodType<ExpenseDocumentListType> = z
 
 type AnalyzeExpenseResponseType = {
   DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
-  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema> & unknown
+  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema>
 }
 
 const ValueTypeSchema = z.literal('DATE').openapi('ValueType')
@@ -526,9 +526,9 @@ const IdentityDocumentSchema = z
 const IdentityDocumentListSchema = z.array(IdentityDocumentSchema).openapi('IdentityDocumentList')
 
 type AnalyzeIDResponseType = {
-  IdentityDocuments?: z.infer<typeof IdentityDocumentListSchema> & unknown
+  IdentityDocuments?: z.infer<typeof IdentityDocumentListSchema>
   DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
-  AnalyzeIDModelVersion?: z.infer<typeof StringSchema> & unknown
+  AnalyzeIDModelVersion?: z.infer<typeof StringSchema>
 }
 
 const JobStatusSchema = z
@@ -567,13 +567,13 @@ const WarningsSchema = z.array(WarningSchema).openapi('Warnings')
 const StatusMessageSchema = z.string().openapi('StatusMessage')
 
 type GetExpenseAnalysisResponseType = {
-  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema> & unknown
-  JobStatus?: z.infer<typeof JobStatusSchema> & unknown
-  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
-  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema> & unknown
-  Warnings?: z.infer<typeof WarningsSchema> & unknown
-  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
-  AnalyzeExpenseModelVersion?: z.infer<typeof StringSchema> & unknown
+  DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
+  JobStatus?: z.infer<typeof JobStatusSchema>
+  NextToken?: z.infer<typeof PaginationTokenSchema>
+  ExpenseDocuments?: z.infer<typeof ExpenseDocumentListSchema>
+  Warnings?: z.infer<typeof WarningsSchema>
+  StatusMessage?: z.infer<typeof StatusMessageSchema>
+  AnalyzeExpenseModelVersion?: z.infer<typeof StringSchema>
 }
 
 const PredictionSchema = z
@@ -666,8 +666,8 @@ const SignatureDetectionListSchema = z
   .openapi('SignatureDetectionList')
 
 type LendingDocumentType = {
-  LendingFields?: z.infer<typeof LendingFieldListSchema> & unknown
-  SignatureDetections?: z.infer<typeof SignatureDetectionListSchema> & unknown
+  LendingFields?: z.infer<typeof LendingFieldListSchema>
+  SignatureDetections?: z.infer<typeof SignatureDetectionListSchema>
 }
 
 const LendingDocumentSchema: z.ZodType<LendingDocumentType> = z
@@ -686,7 +686,7 @@ const LendingDocumentSchema: z.ZodType<LendingDocumentType> = z
   .openapi('LendingDocument')
 
 type ExtractionType = {
-  LendingDocument?: z.infer<typeof LendingDocumentSchema> & unknown
+  LendingDocument?: z.infer<typeof LendingDocumentSchema>
   ExpenseDocument?: z.infer<typeof ExpenseDocumentSchema>
   IdentityDocument?: z.infer<typeof IdentityDocumentSchema>
 }
@@ -713,9 +713,9 @@ const ExtractionListSchema: z.ZodType<ExtractionListType> = z
   .openapi('ExtractionList')
 
 type LendingResultType = {
-  Page?: z.infer<typeof UIntegerSchema> & unknown
-  PageClassification?: z.infer<typeof PageClassificationSchema> & unknown
-  Extractions?: z.infer<typeof ExtractionListSchema> & unknown
+  Page?: z.infer<typeof UIntegerSchema>
+  PageClassification?: z.infer<typeof PageClassificationSchema>
+  Extractions?: z.infer<typeof ExtractionListSchema>
 }
 
 const LendingResultSchema: z.ZodType<LendingResultType> = z
@@ -745,12 +745,12 @@ const LendingResultListSchema: z.ZodType<LendingResultListType> = z
 
 type GetLendingAnalysisResponseType = {
   DocumentMetadata?: z.infer<typeof DocumentMetadataSchema>
-  JobStatus?: z.infer<typeof JobStatusSchema> & unknown
-  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
-  Results?: z.infer<typeof LendingResultListSchema> & unknown
-  Warnings?: z.infer<typeof WarningsSchema> & unknown
-  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
-  AnalyzeLendingModelVersion?: z.infer<typeof StringSchema> & unknown
+  JobStatus?: z.infer<typeof JobStatusSchema>
+  NextToken?: z.infer<typeof PaginationTokenSchema>
+  Results?: z.infer<typeof LendingResultListSchema>
+  Warnings?: z.infer<typeof WarningsSchema>
+  StatusMessage?: z.infer<typeof StatusMessageSchema>
+  AnalyzeLendingModelVersion?: z.infer<typeof StringSchema>
 }
 
 const HumanLoopArnSchema = z.string().max(256).openapi('HumanLoopArn')

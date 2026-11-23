@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListLFTagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListLFTagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listLfTagsHandler = app.openapi(postListLFTagsRoute, (c) => {
+export const postListLFTagsRouteHandler: RouteHandler<typeof postListLFTagsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

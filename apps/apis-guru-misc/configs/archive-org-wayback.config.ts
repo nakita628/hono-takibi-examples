@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/archive.org/wayback/1.0.0/openapi.yaml',
   output: './src/archive-org-wayback/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/archive-org-wayback/types.ts' },
   client: { output: './src/archive-org-wayback/client.ts', baseUrl: '/' },
   rpc: { output: './src/archive-org-wayback/rpc.ts', parseResponse: true },

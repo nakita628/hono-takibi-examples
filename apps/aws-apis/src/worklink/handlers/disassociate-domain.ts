@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDisassociateDomainRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDisassociateDomainRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const disassociateDomainHandler = app.openapi(postDisassociateDomainRoute, (c) => {
+export const postDisassociateDomainRouteHandler: RouteHandler<
+  typeof postDisassociateDomainRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

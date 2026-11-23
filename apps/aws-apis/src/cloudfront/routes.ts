@@ -1087,25 +1087,25 @@ const RestrictionsSchema = z
 const HttpVersionSchema = z.enum(['http1.1', 'http2', 'http3', 'http2and3']).openapi('HttpVersion')
 
 type DistributionConfigType = {
-  CallerReference: z.infer<typeof StringSchema> & unknown
-  Aliases?: z.infer<typeof AliasesSchema> & unknown
-  DefaultRootObject?: z.infer<typeof StringSchema> & unknown
-  Origins: z.infer<typeof OriginsSchema> & unknown
-  OriginGroups?: z.infer<typeof OriginGroupsSchema> & unknown
-  DefaultCacheBehavior: z.infer<typeof DefaultCacheBehaviorSchema> & unknown
-  CacheBehaviors?: z.infer<typeof CacheBehaviorsSchema> & unknown
-  CustomErrorResponses?: z.infer<typeof CustomErrorResponsesSchema> & unknown
-  Comment: z.infer<typeof CommentTypeSchema> & unknown
-  Logging?: z.infer<typeof LoggingConfigSchema> & unknown
-  PriceClass?: z.infer<typeof PriceClassSchema> & unknown
-  Enabled: z.infer<typeof BooleanSchema> & unknown
-  ViewerCertificate?: z.infer<typeof ViewerCertificateSchema> & unknown
-  Restrictions?: z.infer<typeof RestrictionsSchema> & unknown
-  WebACLId?: z.infer<typeof StringSchema> & unknown
-  HttpVersion?: z.infer<typeof HttpVersionSchema> & unknown
-  IsIPV6Enabled?: z.infer<typeof BooleanSchema> & unknown
-  ContinuousDeploymentPolicyId?: z.infer<typeof StringSchema> & unknown
-  Staging?: z.infer<typeof BooleanSchema> & unknown
+  CallerReference: z.infer<typeof StringSchema>
+  Aliases?: z.infer<typeof AliasesSchema>
+  DefaultRootObject?: z.infer<typeof StringSchema>
+  Origins: z.infer<typeof OriginsSchema>
+  OriginGroups?: z.infer<typeof OriginGroupsSchema>
+  DefaultCacheBehavior: z.infer<typeof DefaultCacheBehaviorSchema>
+  CacheBehaviors?: z.infer<typeof CacheBehaviorsSchema>
+  CustomErrorResponses?: z.infer<typeof CustomErrorResponsesSchema>
+  Comment: z.infer<typeof CommentTypeSchema>
+  Logging?: z.infer<typeof LoggingConfigSchema>
+  PriceClass?: z.infer<typeof PriceClassSchema>
+  Enabled: z.infer<typeof BooleanSchema>
+  ViewerCertificate?: z.infer<typeof ViewerCertificateSchema>
+  Restrictions?: z.infer<typeof RestrictionsSchema>
+  WebACLId?: z.infer<typeof StringSchema>
+  HttpVersion?: z.infer<typeof HttpVersionSchema>
+  IsIPV6Enabled?: z.infer<typeof BooleanSchema>
+  ContinuousDeploymentPolicyId?: z.infer<typeof StringSchema>
+  Staging?: z.infer<typeof BooleanSchema>
 }
 
 const DistributionConfigSchema: z.ZodType<DistributionConfigType> = z
@@ -1216,16 +1216,16 @@ const AliasICPRecordalsSchema = z
   .openapi('AliasICPRecordals')
 
 type DistributionType = {
-  Id: z.infer<typeof StringSchema> & unknown
-  ARN: z.infer<typeof StringSchema> & unknown
-  Status: z.infer<typeof StringSchema> & unknown
-  LastModifiedTime: z.infer<typeof TimestampSchema> & unknown
-  InProgressInvalidationBatches: z.infer<typeof IntegerSchema> & unknown
-  DomainName: z.infer<typeof StringSchema> & unknown
-  ActiveTrustedSigners?: z.infer<typeof ActiveTrustedSignersSchema> & unknown
-  ActiveTrustedKeyGroups?: z.infer<typeof ActiveTrustedKeyGroupsSchema> & unknown
-  DistributionConfig: z.infer<typeof DistributionConfigSchema> & unknown
-  AliasICPRecordals?: z.infer<typeof AliasICPRecordalsSchema> & unknown
+  Id: z.infer<typeof StringSchema>
+  ARN: z.infer<typeof StringSchema>
+  Status: z.infer<typeof StringSchema>
+  LastModifiedTime: z.infer<typeof TimestampSchema>
+  InProgressInvalidationBatches: z.infer<typeof IntegerSchema>
+  DomainName: z.infer<typeof StringSchema>
+  ActiveTrustedSigners?: z.infer<typeof ActiveTrustedSignersSchema>
+  ActiveTrustedKeyGroups?: z.infer<typeof ActiveTrustedKeyGroupsSchema>
+  DistributionConfig: z.infer<typeof DistributionConfigSchema>
+  AliasICPRecordals?: z.infer<typeof AliasICPRecordalsSchema>
 }
 
 const DistributionSchema: z.ZodType<DistributionType> = z
@@ -1281,11 +1281,9 @@ const DistributionSchema: z.ZodType<DistributionType> = z
 
 type CopyDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> }
 
-type CreateDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> & unknown }
+type CreateDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> }
 
-type CreateDistributionWithTagsResultType = {
-  Distribution?: z.infer<typeof DistributionSchema> & unknown
-}
+type CreateDistributionWithTagsResultType = { Distribution?: z.infer<typeof DistributionSchema> }
 
 const FieldPatternListSchema = z
   .array(StringSchema.openapi({ xml: { name: 'FieldPattern' } }))
@@ -1395,17 +1393,17 @@ const FieldLevelEncryptionProfileSchema = z
   .openapi('FieldLevelEncryptionProfile')
 
 type CreateFieldLevelEncryptionProfileResultType = {
-  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema> & unknown
+  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema>
 }
 
-type GetDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> & unknown }
+type GetDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> }
 
 type GetDistributionConfigResultType = {
-  DistributionConfig?: z.infer<typeof DistributionConfigSchema> & unknown
+  DistributionConfig?: z.infer<typeof DistributionConfigSchema>
 }
 
 type GetFieldLevelEncryptionProfileResultType = {
-  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema> & unknown
+  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema>
 }
 
 const CachePolicyTypeSchema = z.enum(['managed', 'custom']).openapi('CachePolicyType')
@@ -1576,17 +1574,17 @@ const CachePolicySummarySchema = z
   .openapi({ required: ['Type', 'CachePolicy'], description: 'Contains a cache policy.' })
   .openapi('CachePolicySummary')
 
-type CachePolicySummaryListType = (z.infer<typeof CachePolicySummarySchema> & unknown)[]
+type CachePolicySummaryListType = z.infer<typeof CachePolicySummarySchema>[]
 
 const CachePolicySummaryListSchema: z.ZodType<CachePolicySummaryListType> = z
   .array(CachePolicySummarySchema.openapi({ xml: { name: 'CachePolicySummary' } }))
   .openapi('CachePolicySummaryList')
 
 type CachePolicyListType = {
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof CachePolicySummaryListSchema> & unknown
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof CachePolicySummaryListSchema>
 }
 
 const CachePolicyListSchema: z.ZodType<CachePolicyListType> = z
@@ -1608,9 +1606,7 @@ const CachePolicyListSchema: z.ZodType<CachePolicyListType> = z
   .openapi({ required: ['MaxItems', 'Quantity'], description: 'A list of cache policies.' })
   .openapi('CachePolicyList')
 
-type ListCachePoliciesResultType = {
-  CachePolicyList?: z.infer<typeof CachePolicyListSchema> & unknown
-}
+type ListCachePoliciesResultType = { CachePolicyList?: z.infer<typeof CachePolicyListSchema> }
 
 const StagingDistributionDnsNameListSchema = z
   .array(StringSchema.openapi({ xml: { name: 'DnsName' } }))
@@ -1760,10 +1756,10 @@ const ContinuousDeploymentPolicySummaryListSchema = z
   .openapi('ContinuousDeploymentPolicySummaryList')
 
 type ContinuousDeploymentPolicyListType = {
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof ContinuousDeploymentPolicySummaryListSchema> & unknown
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof ContinuousDeploymentPolicySummaryListSchema>
 }
 
 const ContinuousDeploymentPolicyListSchema: z.ZodType<ContinuousDeploymentPolicyListType> = z
@@ -1791,31 +1787,31 @@ const ContinuousDeploymentPolicyListSchema: z.ZodType<ContinuousDeploymentPolicy
   .openapi('ContinuousDeploymentPolicyList')
 
 type ListContinuousDeploymentPoliciesResultType = {
-  ContinuousDeploymentPolicyList?: z.infer<typeof ContinuousDeploymentPolicyListSchema> & unknown
+  ContinuousDeploymentPolicyList?: z.infer<typeof ContinuousDeploymentPolicyListSchema>
 }
 
 type DistributionSummaryType = {
-  Id: z.infer<typeof StringSchema> & unknown
-  ARN: z.infer<typeof StringSchema> & unknown
-  Status: z.infer<typeof StringSchema> & unknown
-  LastModifiedTime: z.infer<typeof TimestampSchema> & unknown
-  DomainName: z.infer<typeof StringSchema> & unknown
-  Aliases: z.infer<typeof AliasesSchema> & unknown
-  Origins: z.infer<typeof OriginsSchema> & unknown
-  OriginGroups?: z.infer<typeof OriginGroupsSchema> & unknown
-  DefaultCacheBehavior: z.infer<typeof DefaultCacheBehaviorSchema> & unknown
-  CacheBehaviors: z.infer<typeof CacheBehaviorsSchema> & unknown
-  CustomErrorResponses: z.infer<typeof CustomErrorResponsesSchema> & unknown
-  Comment: z.infer<typeof StringSchema> & unknown
-  PriceClass: z.infer<typeof PriceClassSchema> & unknown
-  Enabled: z.infer<typeof BooleanSchema> & unknown
-  ViewerCertificate: z.infer<typeof ViewerCertificateSchema> & unknown
-  Restrictions: z.infer<typeof RestrictionsSchema> & unknown
-  WebACLId: z.infer<typeof StringSchema> & unknown
-  HttpVersion: z.infer<typeof HttpVersionSchema> & unknown
-  IsIPV6Enabled: z.infer<typeof BooleanSchema> & unknown
-  AliasICPRecordals?: z.infer<typeof AliasICPRecordalsSchema> & unknown
-  Staging: z.infer<typeof BooleanSchema> & unknown
+  Id: z.infer<typeof StringSchema>
+  ARN: z.infer<typeof StringSchema>
+  Status: z.infer<typeof StringSchema>
+  LastModifiedTime: z.infer<typeof TimestampSchema>
+  DomainName: z.infer<typeof StringSchema>
+  Aliases: z.infer<typeof AliasesSchema>
+  Origins: z.infer<typeof OriginsSchema>
+  OriginGroups?: z.infer<typeof OriginGroupsSchema>
+  DefaultCacheBehavior: z.infer<typeof DefaultCacheBehaviorSchema>
+  CacheBehaviors: z.infer<typeof CacheBehaviorsSchema>
+  CustomErrorResponses: z.infer<typeof CustomErrorResponsesSchema>
+  Comment: z.infer<typeof StringSchema>
+  PriceClass: z.infer<typeof PriceClassSchema>
+  Enabled: z.infer<typeof BooleanSchema>
+  ViewerCertificate: z.infer<typeof ViewerCertificateSchema>
+  Restrictions: z.infer<typeof RestrictionsSchema>
+  WebACLId: z.infer<typeof StringSchema>
+  HttpVersion: z.infer<typeof HttpVersionSchema>
+  IsIPV6Enabled: z.infer<typeof BooleanSchema>
+  AliasICPRecordals?: z.infer<typeof AliasICPRecordalsSchema>
+  Staging: z.infer<typeof BooleanSchema>
 }
 
 const DistributionSummarySchema: z.ZodType<DistributionSummaryType> = z
@@ -1924,19 +1920,19 @@ const DistributionSummarySchema: z.ZodType<DistributionSummaryType> = z
   })
   .openapi('DistributionSummary')
 
-type DistributionSummaryListType = (z.infer<typeof DistributionSummarySchema> & unknown)[]
+type DistributionSummaryListType = z.infer<typeof DistributionSummarySchema>[]
 
 const DistributionSummaryListSchema: z.ZodType<DistributionSummaryListType> = z
   .array(DistributionSummarySchema.openapi({ xml: { name: 'DistributionSummary' } }))
   .openapi('DistributionSummaryList')
 
 type DistributionListType = {
-  Marker: z.infer<typeof StringSchema> & unknown
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  IsTruncated: z.infer<typeof BooleanSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof DistributionSummaryListSchema> & unknown
+  Marker: z.infer<typeof StringSchema>
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  IsTruncated: z.infer<typeof BooleanSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof DistributionSummaryListSchema>
 }
 
 const DistributionListSchema: z.ZodType<DistributionListType> = z
@@ -1970,16 +1966,14 @@ const DistributionListSchema: z.ZodType<DistributionListType> = z
   })
   .openapi('DistributionList')
 
-type ListDistributionsResultType = {
-  DistributionList?: z.infer<typeof DistributionListSchema> & unknown
-}
+type ListDistributionsResultType = { DistributionList?: z.infer<typeof DistributionListSchema> }
 
 type ListDistributionsByRealtimeLogConfigResultType = {
   DistributionList?: z.infer<typeof DistributionListSchema>
 }
 
 type ListDistributionsByWebACLIdResultType = {
-  DistributionList?: z.infer<typeof DistributionListSchema> & unknown
+  DistributionList?: z.infer<typeof DistributionListSchema>
 }
 
 const QueryArgProfileSchema = z
@@ -2136,7 +2130,7 @@ const FieldLevelEncryptionListSchema = z
   .openapi('FieldLevelEncryptionList')
 
 type ListFieldLevelEncryptionConfigsResultType = {
-  FieldLevelEncryptionList?: z.infer<typeof FieldLevelEncryptionListSchema> & unknown
+  FieldLevelEncryptionList?: z.infer<typeof FieldLevelEncryptionListSchema>
 }
 
 const FieldLevelEncryptionProfileSummarySchema = z
@@ -2172,10 +2166,10 @@ const FieldLevelEncryptionProfileSummaryListSchema = z
   .openapi('FieldLevelEncryptionProfileSummaryList')
 
 type FieldLevelEncryptionProfileListType = {
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof FieldLevelEncryptionProfileSummaryListSchema> & unknown
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof FieldLevelEncryptionProfileSummaryListSchema>
 }
 
 const FieldLevelEncryptionProfileListSchema: z.ZodType<FieldLevelEncryptionProfileListType> = z
@@ -2202,7 +2196,7 @@ const FieldLevelEncryptionProfileListSchema: z.ZodType<FieldLevelEncryptionProfi
   .openapi('FieldLevelEncryptionProfileList')
 
 type ListFieldLevelEncryptionProfilesResultType = {
-  FieldLevelEncryptionProfileList?: z.infer<typeof FieldLevelEncryptionProfileListSchema> & unknown
+  FieldLevelEncryptionProfileList?: z.infer<typeof FieldLevelEncryptionProfileListSchema>
 }
 
 const OriginRequestPolicyTypeSchema = z
@@ -2336,10 +2330,10 @@ const OriginRequestPolicySummaryListSchema = z
   .openapi('OriginRequestPolicySummaryList')
 
 type OriginRequestPolicyListType = {
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof OriginRequestPolicySummaryListSchema> & unknown
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof OriginRequestPolicySummaryListSchema>
 }
 
 const OriginRequestPolicyListSchema: z.ZodType<OriginRequestPolicyListType> = z
@@ -2365,7 +2359,7 @@ const OriginRequestPolicyListSchema: z.ZodType<OriginRequestPolicyListType> = z
   .openapi('OriginRequestPolicyList')
 
 type ListOriginRequestPoliciesResultType = {
-  OriginRequestPolicyList?: z.infer<typeof OriginRequestPolicyListSchema> & unknown
+  OriginRequestPolicyList?: z.infer<typeof OriginRequestPolicyListSchema>
 }
 
 const ResponseHeadersPolicyTypeSchema = z
@@ -2842,10 +2836,10 @@ const ResponseHeadersPolicySummaryListSchema = z
   .openapi('ResponseHeadersPolicySummaryList')
 
 type ResponseHeadersPolicyListType = {
-  NextMarker?: z.infer<typeof StringSchema> & unknown
-  MaxItems: z.infer<typeof IntegerSchema> & unknown
-  Quantity: z.infer<typeof IntegerSchema> & unknown
-  Items?: z.infer<typeof ResponseHeadersPolicySummaryListSchema> & unknown
+  NextMarker?: z.infer<typeof StringSchema>
+  MaxItems: z.infer<typeof IntegerSchema>
+  Quantity: z.infer<typeof IntegerSchema>
+  Items?: z.infer<typeof ResponseHeadersPolicySummaryListSchema>
 }
 
 const ResponseHeadersPolicyListSchema: z.ZodType<ResponseHeadersPolicyListType> = z
@@ -2871,21 +2865,21 @@ const ResponseHeadersPolicyListSchema: z.ZodType<ResponseHeadersPolicyListType> 
   .openapi('ResponseHeadersPolicyList')
 
 type ListResponseHeadersPoliciesResultType = {
-  ResponseHeadersPolicyList?: z.infer<typeof ResponseHeadersPolicyListSchema> & unknown
+  ResponseHeadersPolicyList?: z.infer<typeof ResponseHeadersPolicyListSchema>
 }
 
-type UpdateDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> & unknown }
+type UpdateDistributionResultType = { Distribution?: z.infer<typeof DistributionSchema> }
 
 type UpdateDistributionWithStagingConfigResultType = {
   Distribution?: z.infer<typeof DistributionSchema>
 }
 
 type UpdateFieldLevelEncryptionProfileResultType = {
-  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema> & unknown
+  FieldLevelEncryptionProfile?: z.infer<typeof FieldLevelEncryptionProfileSchema>
 }
 
 type CreateDistributionRequestType = {
-  DistributionConfig: z.infer<typeof DistributionConfigSchema> & unknown
+  DistributionConfig: z.infer<typeof DistributionConfigSchema>
 }
 
 const TagKeySchema = z
@@ -2938,8 +2932,8 @@ const TagsSchema = z
   .openapi('Tags')
 
 type DistributionConfigWithTagsType = {
-  DistributionConfig: z.infer<typeof DistributionConfigSchema> & unknown
-  Tags: z.infer<typeof TagsSchema> & unknown
+  DistributionConfig: z.infer<typeof DistributionConfigSchema>
+  Tags: z.infer<typeof TagsSchema>
 }
 
 const DistributionConfigWithTagsSchema: z.ZodType<DistributionConfigWithTagsType> = z
@@ -2959,11 +2953,11 @@ const DistributionConfigWithTagsSchema: z.ZodType<DistributionConfigWithTagsType
   .openapi('DistributionConfigWithTags')
 
 type CreateDistributionWithTagsRequestType = {
-  DistributionConfigWithTags: z.infer<typeof DistributionConfigWithTagsSchema> & unknown
+  DistributionConfigWithTags: z.infer<typeof DistributionConfigWithTagsSchema>
 }
 
 type UpdateDistributionRequestType = {
-  DistributionConfig: z.infer<typeof DistributionConfigSchema> & unknown
+  DistributionConfig: z.infer<typeof DistributionConfigSchema>
 }
 
 const InvalidArgumentSchema = z.any().openapi('InvalidArgument')

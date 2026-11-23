@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute,
   deleteDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute,
   deleteDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute,
@@ -34,141 +34,194 @@ import {
   putDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deploymentmanagerHandler = app
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentCancelPreviewRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsManifestRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesResourceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceGetIamPolicyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceSetIamPolicyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceTestIamPermissionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalOperationsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getDeploymentmanagerV2betaProjectsProjectGlobalTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRouteHandler: RouteHandler<
+  typeof deleteDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRouteHandler: RouteHandler<
+  typeof patchDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRouteHandler: RouteHandler<
+  typeof putDeploymentmanagerV2betaProjectsProjectGlobalCompositeTypesCompositeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof deleteDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof patchDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRouteHandler: RouteHandler<
+  typeof putDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentCancelPreviewRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentCancelPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsManifestRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentManifestsManifestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesResourceRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentResourcesResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentStopRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsDeploymentStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalDeploymentsResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalOperationsRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalOperationsOperationRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalOperationsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRouteHandler: RouteHandler<
+  typeof postDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRouteHandler: RouteHandler<
+  typeof deleteDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRouteHandler: RouteHandler<
+  typeof patchDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRouteHandler: RouteHandler<
+  typeof putDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesTypeRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalTypeProvidersTypeProviderTypesTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentmanagerV2betaProjectsProjectGlobalTypesRouteHandler: RouteHandler<
+  typeof getDeploymentmanagerV2betaProjectsProjectGlobalTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

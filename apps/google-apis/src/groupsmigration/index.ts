@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { groupsHandler } from './handlers'
+import { postGroupsV1GroupsGroupIdArchiveRoute } from './routes'
+import { postGroupsV1GroupsGroupIdArchiveRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', groupsHandler)
+export const api = app.openapi(
+  postGroupsV1GroupsGroupIdArchiveRoute,
+  postGroupsV1GroupsGroupIdArchiveRouteHandler,
+)
 
 export default app

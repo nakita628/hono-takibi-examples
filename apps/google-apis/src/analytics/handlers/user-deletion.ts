@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUserDeletionUserDeletionRequestsUpsertRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUserDeletionUserDeletionRequestsUpsertRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userDeletionHandler = app.openapi(
-  postUserDeletionUserDeletionRequestsUpsertRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postUserDeletionUserDeletionRequestsUpsertRouteHandler: RouteHandler<
+  typeof postUserDeletionUserDeletionRequestsUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3NameRoute,
   getV3NameFreeBookingLinksReportViewsQueryRoute,
   getV3NameParticipationReportViewsQueryRoute,
@@ -25,75 +25,134 @@ import {
   postV3ParentReconciliationReportsValidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV3AccountHotelsSetLiveOnGoogleRouteHandler: RouteHandler<
+  typeof postV3AccountHotelsSetLiveOnGoogleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(postV3AccountHotelsSetLiveOnGoogleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3NameFreeBookingLinksReportViewsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3NameParticipationReportViewsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3NamePropertyPerformanceReportViewsQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentAccountLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentAccountLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentHotelViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentHotelViewsSummarizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentIconsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentIconsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentListingsVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentPriceAccuracyViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentPriceAccuracyViewsSummarizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentPriceCoverageViewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentPriceCoverageViewsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentReconciliationReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentReconciliationReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentReconciliationReportsValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV3NameRouteHandler: RouteHandler<typeof deleteV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3NameRouteHandler: RouteHandler<typeof getV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV3NameRouteHandler: RouteHandler<typeof patchV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3NameFreeBookingLinksReportViewsQueryRouteHandler: RouteHandler<
+  typeof getV3NameFreeBookingLinksReportViewsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3NameParticipationReportViewsQueryRouteHandler: RouteHandler<
+  typeof getV3NameParticipationReportViewsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3NamePropertyPerformanceReportViewsQueryRouteHandler: RouteHandler<
+  typeof getV3NamePropertyPerformanceReportViewsQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentAccountLinksRouteHandler: RouteHandler<
+  typeof getV3ParentAccountLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentAccountLinksRouteHandler: RouteHandler<
+  typeof postV3ParentAccountLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentBrandsRouteHandler: RouteHandler<typeof getV3ParentBrandsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentBrandsRouteHandler: RouteHandler<typeof postV3ParentBrandsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentHotelViewsRouteHandler: RouteHandler<
+  typeof getV3ParentHotelViewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentHotelViewsSummarizeRouteHandler: RouteHandler<
+  typeof getV3ParentHotelViewsSummarizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentIconsRouteHandler: RouteHandler<typeof getV3ParentIconsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentIconsRouteHandler: RouteHandler<typeof postV3ParentIconsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentListingsVerifyRouteHandler: RouteHandler<
+  typeof postV3ParentListingsVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentPriceAccuracyViewsRouteHandler: RouteHandler<
+  typeof getV3ParentPriceAccuracyViewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentPriceAccuracyViewsSummarizeRouteHandler: RouteHandler<
+  typeof getV3ParentPriceAccuracyViewsSummarizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentPriceCoverageViewsRouteHandler: RouteHandler<
+  typeof getV3ParentPriceCoverageViewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentPriceCoverageViewsLatestRouteHandler: RouteHandler<
+  typeof getV3ParentPriceCoverageViewsLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentReconciliationReportsRouteHandler: RouteHandler<
+  typeof getV3ParentReconciliationReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentReconciliationReportsRouteHandler: RouteHandler<
+  typeof postV3ParentReconciliationReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentReconciliationReportsValidateRouteHandler: RouteHandler<
+  typeof postV3ParentReconciliationReportsValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

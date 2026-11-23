@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/webhook_listeners/openapi.json',
   output: './src/webhook-listeners/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/webhook-listeners/types.ts' },
   client: { output: './src/webhook-listeners/client.ts', baseUrl: '/' },
   rpc: { output: './src/webhook-listeners/rpc.ts', parseResponse: true },

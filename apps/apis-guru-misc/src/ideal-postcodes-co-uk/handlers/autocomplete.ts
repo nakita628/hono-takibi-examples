@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAutocompleteAddressesAddressGbrRoute,
   getAutocompleteAddressesAddressUsaRoute,
   getAutocompleteAddressesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAutocompleteAddressesRouteHandler: RouteHandler<
+  typeof getAutocompleteAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const autocompleteHandler = app
-  .openapi(getAutocompleteAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutocompleteAddressesAddressGbrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutocompleteAddressesAddressUsaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAutocompleteAddressesAddressGbrRouteHandler: RouteHandler<
+  typeof getAutocompleteAddressesAddressGbrRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutocompleteAddressesAddressUsaRouteHandler: RouteHandler<
+  typeof getAutocompleteAddressesAddressUsaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

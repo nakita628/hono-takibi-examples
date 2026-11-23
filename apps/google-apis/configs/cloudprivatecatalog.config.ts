@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudprivatecatalog/v1beta1/openapi.yaml',
   output: './src/cloudprivatecatalog/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudprivatecatalog/types.ts' },
   client: { output: './src/cloudprivatecatalog/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudprivatecatalog/rpc.ts', parseResponse: true },

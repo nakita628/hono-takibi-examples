@@ -1,21 +1,41 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  clientHandler,
-  domainHandler,
-  fleetHandler,
-  teamHandler,
-  tenantHandler,
-  userHandler,
+  getClientClientIdRoute,
+  getClientClientIdTokenKindRoute,
+  getDomainDomainnameRoute,
+  getFleetFleetnameRoute,
+  getTeamTeamnameRoute,
+  getTenantTenantnameRoute,
+  getUserUsernameRoute,
+  getUserUsernameTokenKindRoute,
+  postClientRoute,
+  postUserRoute,
+} from './routes'
+import {
+  getClientClientIdRouteHandler,
+  getClientClientIdTokenKindRouteHandler,
+  getDomainDomainnameRouteHandler,
+  getFleetFleetnameRouteHandler,
+  getTeamTeamnameRouteHandler,
+  getTenantTenantnameRouteHandler,
+  getUserUsernameRouteHandler,
+  getUserUsernameTokenKindRouteHandler,
+  postClientRouteHandler,
+  postUserRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', clientHandler)
-  .route('/', domainHandler)
-  .route('/', fleetHandler)
-  .route('/', teamHandler)
-  .route('/', tenantHandler)
-  .route('/', userHandler)
+  .openapi(postClientRoute, postClientRouteHandler)
+  .openapi(getClientClientIdRoute, getClientClientIdRouteHandler)
+  .openapi(getClientClientIdTokenKindRoute, getClientClientIdTokenKindRouteHandler)
+  .openapi(getDomainDomainnameRoute, getDomainDomainnameRouteHandler)
+  .openapi(getFleetFleetnameRoute, getFleetFleetnameRouteHandler)
+  .openapi(getTeamTeamnameRoute, getTeamTeamnameRouteHandler)
+  .openapi(getTenantTenantnameRoute, getTenantTenantnameRouteHandler)
+  .openapi(postUserRoute, postUserRouteHandler)
+  .openapi(getUserUsernameRoute, getUserUsernameRouteHandler)
+  .openapi(getUserUsernameTokenKindRoute, getUserUsernameTokenKindRouteHandler)
 
 export default app

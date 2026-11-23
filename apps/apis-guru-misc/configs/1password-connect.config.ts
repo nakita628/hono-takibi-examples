@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/1password.local/connect/1.5.7/openapi.yaml',
   output: './src/1password-connect/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/1password-connect/types.ts' },
   client: { output: './src/1password-connect/client.ts', baseUrl: '/' },
   rpc: { output: './src/1password-connect/rpc.ts', parseResponse: true },

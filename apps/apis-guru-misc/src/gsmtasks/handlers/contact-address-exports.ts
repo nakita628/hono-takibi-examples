@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getContactAddressExportsIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getContactAddressExportsIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const contactAddressExportsHandler = app.openapi(getContactAddressExportsIndexRoute, (c) => {
+export const getContactAddressExportsIndexRouteHandler: RouteHandler<
+  typeof getContactAddressExportsIndexRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRevealConfigurationRoute, putRevealConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRevealConfigurationRoute, putRevealConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRevealConfigurationRouteHandler: RouteHandler<
+  typeof getRevealConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const revealConfigurationHandler = app
-  .openapi(getRevealConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRevealConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRevealConfigurationRouteHandler: RouteHandler<
+  typeof putRevealConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

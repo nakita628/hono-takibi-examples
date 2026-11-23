@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/movie_reviews/2.0.0/openapi.yaml',
   output: './src/movie-reviews/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/movie-reviews/types.ts' },
   client: { output: './src/movie-reviews/client.ts', baseUrl: '/' },
   rpc: { output: './src/movie-reviews/rpc.ts', parseResponse: true },

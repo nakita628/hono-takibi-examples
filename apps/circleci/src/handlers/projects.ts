@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute,
   deleteProjectsProjectIdTriggersTriggerIdRoute,
   getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute,
@@ -13,39 +13,68 @@ import {
   postProjectsProjectIdRollbackRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsProjectIdPipelineDefinitionsRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdPipelineDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsProjectIdPipelineDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdPipelineDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdTriggersTriggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectIdTriggersTriggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdTriggersTriggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectsProjectIdPipelineDefinitionsRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdPipelineDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRouteHandler: RouteHandler<
+  typeof patchProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdPipelineDefinitionsPipelineDefinitionIdTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdTriggersTriggerIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdTriggersTriggerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectIdTriggersTriggerIdRouteHandler: RouteHandler<
+  typeof patchProjectsProjectIdTriggersTriggerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdTriggersTriggerIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdTriggersTriggerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdRollbackRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTimestream20181101ResumeBatchLoadTaskHandler = app.openapi(
-  postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTimestream20181101ResumeBatchLoadTaskRouteHandler: RouteHandler<
+  typeof postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

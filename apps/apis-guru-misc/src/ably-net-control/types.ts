@@ -872,6 +872,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { app_id: string; key_id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { app_id: string; key_id: string } }
             output: Error
             outputFormat: 'json'
             status: 401
@@ -949,6 +955,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/apps/:app_id/namespaces/:namespace_id': {
       $delete:
+        | {
+            input: { param: { app_id: string; namespace_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { app_id: string; namespace_id: string } }
             output: Error
@@ -1068,6 +1080,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { app_id: string; queue_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { app_id: string; queue_id: string } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -1157,6 +1175,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/apps/:app_id/rules/:rule_id': {
       $delete:
+        | {
+            input: { param: { app_id: string; rule_id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { app_id: string; rule_id: string } }
             output: Error
@@ -1259,6 +1283,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/apps/:id': {
       $delete:
+        | { input: { param: { id: string } }; output: {}; outputFormat: string; status: 204 }
         | { input: { param: { id: string } }; output: Error; outputFormat: 'json'; status: 401 }
         | { input: { param: { id: string } }; output: Error; outputFormat: 'json'; status: 404 }
         | { input: { param: { id: string } }; output: Error; outputFormat: 'json'; status: 422 }

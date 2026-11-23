@@ -110,8 +110,8 @@ const MetricResultsV2Schema: z.ZodType<MetricResultsV2Type> = z
   .openapi('MetricResultsV2')
 
 type GetMetricDataV2ResponseType = {
-  NextToken?: z.infer<typeof NextToken2500Schema> & unknown
-  MetricResults?: z.infer<typeof MetricResultsV2Schema> & unknown
+  NextToken?: z.infer<typeof NextToken2500Schema>
+  MetricResults?: z.infer<typeof MetricResultsV2Schema>
 }
 
 const QueueSearchCriteriaSchema: z.ZodType<QueueSearchCriteriaType> = z
@@ -147,9 +147,9 @@ const StringComparisonTypeSchema = z
   .openapi('StringComparisonType')
 
 type StringConditionType = {
-  FieldName?: z.infer<typeof StringSchema> & unknown
-  Value?: z.infer<typeof StringSchema> & unknown
-  ComparisonType?: z.infer<typeof StringComparisonTypeSchema> & unknown
+  FieldName?: z.infer<typeof StringSchema>
+  Value?: z.infer<typeof StringSchema>
+  ComparisonType?: z.infer<typeof StringComparisonTypeSchema>
 }
 
 type SearchableQueueTypeType = 'STANDARD'
@@ -235,8 +235,8 @@ const HierarchyGroupMatchTypeSchema = z
   .openapi('HierarchyGroupMatchType')
 
 type HierarchyGroupConditionType = {
-  Value?: z.infer<typeof StringSchema> & unknown
-  HierarchyGroupMatchType?: z.infer<typeof HierarchyGroupMatchTypeSchema> & unknown
+  Value?: z.infer<typeof StringSchema>
+  HierarchyGroupMatchType?: z.infer<typeof HierarchyGroupMatchTypeSchema>
 }
 
 const QueueSearchConditionListSchema: z.ZodType<QueueSearchConditionListType> = z
@@ -265,10 +265,10 @@ const SearchableQueueTypeSchema: z.ZodType<SearchableQueueTypeType> = z
   .openapi('SearchableQueueType')
 
 type QueueSearchCriteriaType = {
-  OrConditions?: z.infer<typeof QueueSearchConditionListSchema> & unknown
-  AndConditions?: z.infer<typeof QueueSearchConditionListSchema> & unknown
+  OrConditions?: z.infer<typeof QueueSearchConditionListSchema>
+  AndConditions?: z.infer<typeof QueueSearchConditionListSchema>
   StringCondition?: z.infer<typeof StringConditionSchema>
-  QueueTypeCondition?: z.infer<typeof SearchableQueueTypeSchema> & unknown
+  QueueTypeCondition?: z.infer<typeof SearchableQueueTypeSchema>
 }
 
 const RoutingProfileSearchConditionListSchema: z.ZodType<RoutingProfileSearchConditionListType> = z
@@ -276,8 +276,8 @@ const RoutingProfileSearchConditionListSchema: z.ZodType<RoutingProfileSearchCon
   .openapi('RoutingProfileSearchConditionList')
 
 type RoutingProfileSearchCriteriaType = {
-  OrConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & unknown
-  AndConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema> & unknown
+  OrConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema>
+  AndConditions?: z.infer<typeof RoutingProfileSearchConditionListSchema>
   StringCondition?: z.infer<typeof StringConditionSchema>
 }
 
@@ -287,8 +287,8 @@ const SecurityProfileSearchConditionListSchema: z.ZodType<SecurityProfileSearchC
     .openapi('SecurityProfileSearchConditionList')
 
 type SecurityProfileSearchCriteriaType = {
-  OrConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & unknown
-  AndConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema> & unknown
+  OrConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema>
+  AndConditions?: z.infer<typeof SecurityProfileSearchConditionListSchema>
   StringCondition?: z.infer<typeof StringConditionSchema>
 }
 
@@ -312,10 +312,10 @@ const HierarchyGroupConditionSchema: z.ZodType<HierarchyGroupConditionType> = z
   .openapi('HierarchyGroupCondition')
 
 type UserSearchCriteriaType = {
-  OrConditions?: z.infer<typeof UserSearchConditionListSchema> & unknown
-  AndConditions?: z.infer<typeof UserSearchConditionListSchema> & unknown
-  StringCondition?: z.infer<typeof StringConditionSchema> & unknown
-  HierarchyGroupCondition?: z.infer<typeof HierarchyGroupConditionSchema> & unknown
+  OrConditions?: z.infer<typeof UserSearchConditionListSchema>
+  AndConditions?: z.infer<typeof UserSearchConditionListSchema>
+  StringCondition?: z.infer<typeof StringConditionSchema>
+  HierarchyGroupCondition?: z.infer<typeof HierarchyGroupConditionSchema>
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')

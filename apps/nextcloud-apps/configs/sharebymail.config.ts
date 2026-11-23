@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/sharebymail/openapi.json',
   output: './src/sharebymail/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sharebymail/types.ts' },
   client: { output: './src/sharebymail/client.ts', baseUrl: '/' },
   rpc: { output: './src/sharebymail/rpc.ts', parseResponse: true },

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOptimalDirectionsOutputFormatRoute,
   postOptimalDirectionsOutputFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOptimalDirectionsOutputFormatRouteHandler: RouteHandler<
+  typeof getOptimalDirectionsOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const optimalDirectionsOutputFormatHandler = app
-  .openapi(getOptimalDirectionsOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOptimalDirectionsOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOptimalDirectionsOutputFormatRouteHandler: RouteHandler<
+  typeof postOptimalDirectionsOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

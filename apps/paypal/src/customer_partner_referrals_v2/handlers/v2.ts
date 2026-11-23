@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2CustomerPartnerReferralsPartnerReferralIdRoute,
   postV2CustomerPartnerReferralsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2CustomerPartnerReferralsRouteHandler: RouteHandler<
+  typeof postV2CustomerPartnerReferralsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2CustomerPartnerReferralsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomerPartnerReferralsPartnerReferralIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CustomerPartnerReferralsPartnerReferralIdRouteHandler: RouteHandler<
+  typeof getV2CustomerPartnerReferralsPartnerReferralIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

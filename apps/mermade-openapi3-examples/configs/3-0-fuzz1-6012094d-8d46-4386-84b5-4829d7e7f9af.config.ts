@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fuzz1/6012094d-8d46-4386-84b5-4829d7e7f9af.yaml',
   output: './src/3-0-fuzz1-6012094d-8d46-4386-84b5-4829d7e7f9af/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-fuzz1-6012094d-8d46-4386-84b5-4829d7e7f9af/types.ts' },
   client: { output: './src/3-0-fuzz1-6012094d-8d46-4386-84b5-4829d7e7f9af/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-fuzz1-6012094d-8d46-4386-84b5-4829d7e7f9af/rpc.ts', parseResponse: true },

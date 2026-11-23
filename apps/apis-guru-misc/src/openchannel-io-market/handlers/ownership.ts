@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOwnershipOwnershipIdRoute,
   getOwnershipRoute,
   patchOwnershipOwnershipIdRoute,
@@ -8,24 +8,36 @@ import {
   postOwnershipUninstallOwnershipIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOwnershipRouteHandler: RouteHandler<typeof getOwnershipRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ownershipHandler = app
-  .openapi(getOwnershipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOwnershipInstallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOwnershipUninstallOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwnershipOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOwnershipOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOwnershipOwnershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOwnershipInstallRouteHandler: RouteHandler<
+  typeof postOwnershipInstallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOwnershipUninstallOwnershipIdRouteHandler: RouteHandler<
+  typeof postOwnershipUninstallOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOwnershipOwnershipIdRouteHandler: RouteHandler<
+  typeof getOwnershipOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOwnershipOwnershipIdRouteHandler: RouteHandler<
+  typeof patchOwnershipOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOwnershipOwnershipIdRouteHandler: RouteHandler<
+  typeof postOwnershipOwnershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

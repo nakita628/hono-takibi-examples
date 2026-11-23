@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getChannelLastMessageRoute,
   getChannelMaxMessageSeqRoute,
   getChannelWhitelistRoute,
@@ -20,60 +20,106 @@ import {
   postChannelWhitelistSetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChannelRouteHandler: RouteHandler<typeof postChannelRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const channelHandler = app
-  .openapi(postChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelSubscriberAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelSubscriberRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelSubscriberRemoveAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelMessagesyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelMaxMessageSeqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelLastMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelBlacklistAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelBlacklistSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelBlacklistRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelBlacklistRemoveAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelWhitelistAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelWhitelistSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelWhitelistRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelWhitelistRemoveAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelWhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChannelInfoRouteHandler: RouteHandler<typeof postChannelInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelDeleteRouteHandler: RouteHandler<typeof postChannelDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelSubscriberAddRouteHandler: RouteHandler<
+  typeof postChannelSubscriberAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelSubscriberRemoveRouteHandler: RouteHandler<
+  typeof postChannelSubscriberRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelSubscriberRemoveAllRouteHandler: RouteHandler<
+  typeof postChannelSubscriberRemoveAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelMessagesyncRouteHandler: RouteHandler<
+  typeof postChannelMessagesyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelMaxMessageSeqRouteHandler: RouteHandler<
+  typeof getChannelMaxMessageSeqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelLastMessageRouteHandler: RouteHandler<
+  typeof getChannelLastMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelBlacklistAddRouteHandler: RouteHandler<
+  typeof postChannelBlacklistAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelBlacklistSetRouteHandler: RouteHandler<
+  typeof postChannelBlacklistSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelBlacklistRemoveRouteHandler: RouteHandler<
+  typeof postChannelBlacklistRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelBlacklistRemoveAllRouteHandler: RouteHandler<
+  typeof postChannelBlacklistRemoveAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelWhitelistAddRouteHandler: RouteHandler<
+  typeof postChannelWhitelistAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelWhitelistSetRouteHandler: RouteHandler<
+  typeof postChannelWhitelistSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelWhitelistRemoveRouteHandler: RouteHandler<
+  typeof postChannelWhitelistRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelWhitelistRemoveAllRouteHandler: RouteHandler<
+  typeof postChannelWhitelistRemoveAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelWhitelistRouteHandler: RouteHandler<
+  typeof getChannelWhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

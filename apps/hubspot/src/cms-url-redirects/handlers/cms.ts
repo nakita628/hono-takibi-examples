@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCmsUrlRedirects202609UrlMappingsIdRoute,
   deleteCmsUrlRedirects202609UrlRedirectIdRoute,
   getCmsUrlRedirects202609Route,
@@ -11,33 +11,56 @@ import {
   postCmsUrlRedirects202609UrlMappingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCmsUrlRedirects202609RouteHandler: RouteHandler<
+  typeof getCmsUrlRedirects202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cmsHandler = app
-  .openapi(getCmsUrlRedirects202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsUrlRedirects202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsUrlRedirects202609UrlMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsUrlRedirects202609UrlMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsUrlRedirects202609UrlMappingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsUrlRedirects202609UrlMappingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsUrlRedirects202609UrlRedirectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsUrlRedirects202609UrlRedirectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCmsUrlRedirects202609UrlRedirectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCmsUrlRedirects202609RouteHandler: RouteHandler<
+  typeof postCmsUrlRedirects202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsUrlRedirects202609UrlMappingsRouteHandler: RouteHandler<
+  typeof getCmsUrlRedirects202609UrlMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsUrlRedirects202609UrlMappingsRouteHandler: RouteHandler<
+  typeof postCmsUrlRedirects202609UrlMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsUrlRedirects202609UrlMappingsIdRouteHandler: RouteHandler<
+  typeof getCmsUrlRedirects202609UrlMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsUrlRedirects202609UrlMappingsIdRouteHandler: RouteHandler<
+  typeof deleteCmsUrlRedirects202609UrlMappingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsUrlRedirects202609UrlRedirectIdRouteHandler: RouteHandler<
+  typeof getCmsUrlRedirects202609UrlRedirectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsUrlRedirects202609UrlRedirectIdRouteHandler: RouteHandler<
+  typeof deleteCmsUrlRedirects202609UrlRedirectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCmsUrlRedirects202609UrlRedirectIdRouteHandler: RouteHandler<
+  typeof patchCmsUrlRedirects202609UrlRedirectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

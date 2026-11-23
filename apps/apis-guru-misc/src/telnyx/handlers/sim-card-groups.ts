@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSimCardGroupsIdRoute,
   getSimCardGroupsIdRoute,
   getSimCardGroupsRoute,
@@ -9,27 +9,44 @@ import {
   postSimCardGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimCardGroupsRouteHandler: RouteHandler<typeof getSimCardGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const simCardGroupsHandler = app
-  .openapi(getSimCardGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSimCardGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSimCardGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardGroupsIdActionsRemovePrivateWirelessGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardGroupsIdActionsSetPrivateWirelessGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSimCardGroupsRouteHandler: RouteHandler<typeof postSimCardGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSimCardGroupsIdRouteHandler: RouteHandler<
+  typeof deleteSimCardGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardGroupsIdRouteHandler: RouteHandler<typeof getSimCardGroupsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSimCardGroupsIdRouteHandler: RouteHandler<
+  typeof patchSimCardGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardGroupsIdActionsRemovePrivateWirelessGatewayRouteHandler: RouteHandler<
+  typeof postSimCardGroupsIdActionsRemovePrivateWirelessGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimCardGroupsIdActionsSetPrivateWirelessGatewayRouteHandler: RouteHandler<
+  typeof postSimCardGroupsIdActionsSetPrivateWirelessGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

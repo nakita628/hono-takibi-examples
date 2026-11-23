@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/bunq/doc/blob/1d5e1e0eba19a91a2b21bee25780f124c9743711/swagger.json
   input: 'https://raw.githubusercontent.com/bunq/doc/master/swagger.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

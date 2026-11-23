@@ -1203,7 +1203,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/agents/upgrades/:major.:minor.:patch/pgp-public-key': {
+    '/api/agents/upgrades/:major.{minor}.{patch}/pgp-public-key': {
       $get:
         | {
             input: { param: { major: number; minor: number; patch: number } } & {

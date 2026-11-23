@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218RegisterEcsClusterHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218RegisterEcsClusterRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

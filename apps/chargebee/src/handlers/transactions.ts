@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTransactionsRoute,
   getTransactionsTransactionIdRoute,
   postTransactionsCreateAuthorizationRoute,
@@ -10,30 +10,48 @@ import {
   postTransactionsTransactionIdVoidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTransactionsRouteHandler: RouteHandler<typeof getTransactionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transactionsHandler = app
-  .openapi(getTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsTransactionIdReconcileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsTransactionIdRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsTransactionIdRecordRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsTransactionIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsCreateAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsTransactionIdDeleteOfflineTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTransactionsTransactionIdReconcileRouteHandler: RouteHandler<
+  typeof postTransactionsTransactionIdReconcileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof getTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsTransactionIdRefundRouteHandler: RouteHandler<
+  typeof postTransactionsTransactionIdRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsTransactionIdRecordRefundRouteHandler: RouteHandler<
+  typeof postTransactionsTransactionIdRecordRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsTransactionIdVoidRouteHandler: RouteHandler<
+  typeof postTransactionsTransactionIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsCreateAuthorizationRouteHandler: RouteHandler<
+  typeof postTransactionsCreateAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsTransactionIdDeleteOfflineTransactionRouteHandler: RouteHandler<
+  typeof postTransactionsTransactionIdDeleteOfflineTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

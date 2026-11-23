@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBrowserBotRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBrowserBotRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const browserBotHandler = app.openapi(postBrowserBotRoute, (c) => {
+export const postBrowserBotRouteHandler: RouteHandler<typeof postBrowserBotRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

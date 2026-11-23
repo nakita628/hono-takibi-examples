@@ -1,8 +1,50 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler } from './handlers'
+import {
+  getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageRoute,
+  getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRoute,
+  getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRoute,
+  getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRoute,
+  getApiIconsetsV3TotalSinceSinceRoute,
+  getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRoute,
+  postApiTaskWebFontCollectionRoute,
+  postApiTaskWebFontIconsRoute,
+} from './routes'
+import {
+  getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageRouteHandler,
+  getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRouteHandler,
+  getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRouteHandler,
+  getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRouteHandler,
+  getApiIconsetsV3TotalSinceSinceRouteHandler,
+  getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRouteHandler,
+  postApiTaskWebFontCollectionRouteHandler,
+  postApiTaskWebFontIconsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler)
+export const api = app
+  .openapi(
+    getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageRoute,
+    getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageRouteHandler,
+  )
+  .openapi(
+    getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRoute,
+    getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRouteHandler,
+  )
+  .openapi(
+    getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRoute,
+    getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageRouteHandler,
+  )
+  .openapi(
+    getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRoute,
+    getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRouteHandler,
+  )
+  .openapi(getApiIconsetsV3TotalSinceSinceRoute, getApiIconsetsV3TotalSinceSinceRouteHandler)
+  .openapi(
+    getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRoute,
+    getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountRouteHandler,
+  )
+  .openapi(postApiTaskWebFontCollectionRoute, postApiTaskWebFontCollectionRouteHandler)
+  .openapi(postApiTaskWebFontIconsRoute, postApiTaskWebFontIconsRouteHandler)
 
 export default app

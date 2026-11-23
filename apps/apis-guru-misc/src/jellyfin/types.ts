@@ -3103,7 +3103,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/Audio/:itemId/hls1/:playlistId/:segmentId.:container': {
+    '/Audio/:itemId/hls1/:playlistId/:segmentId.{container}': {
       $get:
         | {
             input: {
@@ -3929,7 +3929,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/Audio/:itemId/stream.:container': {
+    '/Audio/:itemId/stream.{container}': {
       $get: {
         input: { param: { itemId: string; container: string } } & {
           query: {
@@ -10491,7 +10491,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/LiveTv/LiveStreamFiles/:streamId/stream.:container': {
+    '/LiveTv/LiveStreamFiles/:streamId/stream.{container}': {
       $get:
         | {
             input: { param: { streamId: string; container: string } }
@@ -19914,7 +19914,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/Videos/:itemId/hls/:playlistId/:segmentId.:segmentContainer': {
+    '/Videos/:itemId/hls/:playlistId/:segmentId.{segmentContainer}': {
       $get:
         | {
             input: {
@@ -19970,7 +19970,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/Videos/:itemId/hls1/:playlistId/:segmentId.:container': {
+    '/Videos/:itemId/hls1/:playlistId/:segmentId.{container}': {
       $get:
         | {
             input: {
@@ -20968,7 +20968,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/Videos/:itemId/:mediaSourceId/Subtitles/:index/Stream.:format': {
+    '/Videos/:itemId/:mediaSourceId/Subtitles/:index/Stream.{format}': {
       $get: {
         input: {
           param: { itemId: string; mediaSourceId: string; index: number; format: string }
@@ -21014,7 +21014,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/Videos/:itemId/:mediaSourceId/Subtitles/:index/:startPositionTicks/Stream.:format': {
+    '/Videos/:itemId/:mediaSourceId/Subtitles/:index/:startPositionTicks/Stream.{format}': {
       $get: {
         input: {
           param: {
@@ -21037,7 +21037,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/Videos/:itemId/:stream.:container': {
+    '/Videos/:itemId/:stream.{container}': {
       $get: {
         input: { param: { itemId: string; container: string; stream: string } } & {
           query: {

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSecureSendRevokeRoute,
   getSecureSendListRoute,
   getSecureSendPolicyRoute,
   postSecureSendCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSecureSendPolicyRouteHandler: RouteHandler<
+  typeof getSecureSendPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const secureSendHandler = app
-  .openapi(getSecureSendPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSecureSendCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecureSendListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSecureSendRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSecureSendCreateRouteHandler: RouteHandler<
+  typeof postSecureSendCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSecureSendListRouteHandler: RouteHandler<typeof getSecureSendListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSecureSendRevokeRouteHandler: RouteHandler<
+  typeof deleteSecureSendRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

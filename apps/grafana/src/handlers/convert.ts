@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConvertApiPromRulesNamespaceTitleGroupRoute,
   deleteConvertApiPromRulesNamespaceTitleRoute,
   deleteConvertPrometheusConfigV1RulesNamespaceTitleGroupRoute,
@@ -16,48 +16,86 @@ import {
   postConvertPrometheusConfigV1RulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConvertApiPromRulesRouteHandler: RouteHandler<
+  typeof getConvertApiPromRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const convertHandler = app
-  .openapi(getConvertApiPromRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConvertApiPromRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConvertApiPromRulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConvertApiPromRulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConvertApiPromRulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConvertApiPromRulesNamespaceTitleGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConvertApiPromRulesNamespaceTitleGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConvertPrometheusConfigV1RulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConvertPrometheusConfigV1RulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConvertPrometheusConfigV1RulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConvertPrometheusConfigV1RulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConvertPrometheusConfigV1RulesNamespaceTitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConvertPrometheusConfigV1RulesNamespaceTitleGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConvertPrometheusConfigV1RulesNamespaceTitleGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConvertApiPromRulesRouteHandler: RouteHandler<
+  typeof postConvertApiPromRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConvertApiPromRulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof deleteConvertApiPromRulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConvertApiPromRulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof getConvertApiPromRulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConvertApiPromRulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof postConvertApiPromRulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConvertApiPromRulesNamespaceTitleGroupRouteHandler: RouteHandler<
+  typeof deleteConvertApiPromRulesNamespaceTitleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConvertApiPromRulesNamespaceTitleGroupRouteHandler: RouteHandler<
+  typeof getConvertApiPromRulesNamespaceTitleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConvertPrometheusConfigV1RulesRouteHandler: RouteHandler<
+  typeof getConvertPrometheusConfigV1RulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConvertPrometheusConfigV1RulesRouteHandler: RouteHandler<
+  typeof postConvertPrometheusConfigV1RulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConvertPrometheusConfigV1RulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof deleteConvertPrometheusConfigV1RulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConvertPrometheusConfigV1RulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof getConvertPrometheusConfigV1RulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConvertPrometheusConfigV1RulesNamespaceTitleRouteHandler: RouteHandler<
+  typeof postConvertPrometheusConfigV1RulesNamespaceTitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConvertPrometheusConfigV1RulesNamespaceTitleGroupRouteHandler: RouteHandler<
+  typeof deleteConvertPrometheusConfigV1RulesNamespaceTitleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConvertPrometheusConfigV1RulesNamespaceTitleGroupRouteHandler: RouteHandler<
+  typeof getConvertPrometheusConfigV1RulesNamespaceTitleGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

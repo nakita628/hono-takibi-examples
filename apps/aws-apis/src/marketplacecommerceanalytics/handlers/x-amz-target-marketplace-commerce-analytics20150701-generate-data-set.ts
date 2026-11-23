@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetHandler = app.openapi(
-  postXAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetMarketplaceCommerceAnalytics20150701GenerateDataSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

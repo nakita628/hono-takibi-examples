@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLawFileFileTypeLawIdOrNumOrRevisionIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLawFileFileTypeLawIdOrNumOrRevisionIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const lawFileHandler = app.openapi(getLawFileFileTypeLawIdOrNumOrRevisionIdRoute, (c) => {
+export const getLawFileFileTypeLawIdOrNumOrRevisionIdRouteHandler: RouteHandler<
+  typeof getLawFileFileTypeLawIdOrNumOrRevisionIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

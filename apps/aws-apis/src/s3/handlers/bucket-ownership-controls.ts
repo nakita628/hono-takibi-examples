@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBucketOwnershipControlsRoute,
   getBucketOwnershipControlsRoute,
   putBucketOwnershipControlsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketOwnershipControlsRouteHandler: RouteHandler<
+  typeof deleteBucketOwnershipControlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketOwnershipControlsHandler = app
-  .openapi(deleteBucketOwnershipControlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketOwnershipControlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketOwnershipControlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketOwnershipControlsRouteHandler: RouteHandler<
+  typeof getBucketOwnershipControlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketOwnershipControlsRouteHandler: RouteHandler<
+  typeof putBucketOwnershipControlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

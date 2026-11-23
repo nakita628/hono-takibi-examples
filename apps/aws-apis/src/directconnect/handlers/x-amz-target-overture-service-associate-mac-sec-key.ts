@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceAssociateMacSecKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceAssociateMacSecKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceAssociateMacSecKeyHandler = app.openapi(
-  postXAmzTargetOvertureServiceAssociateMacSecKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceAssociateMacSecKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceAssociateMacSecKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

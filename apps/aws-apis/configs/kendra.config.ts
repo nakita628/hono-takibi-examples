@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/kendra/2019-02-03/openapi.yaml',
   output: './src/kendra/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kendra/types.ts' },
   client: { output: './src/kendra/client.ts', baseUrl: '/' },
   rpc: { output: './src/kendra/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vimeo.com/3.4/openapi.yaml',
   output: './src/vimeo/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vimeo/types.ts' },
   client: { output: './src/vimeo/client.ts', baseUrl: '/' },
   rpc: { output: './src/vimeo/rpc.ts', parseResponse: true },

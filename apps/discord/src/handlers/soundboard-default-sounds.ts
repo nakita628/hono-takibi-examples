@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSoundboardDefaultSoundsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSoundboardDefaultSoundsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const soundboardDefaultSoundsHandler = app.openapi(getSoundboardDefaultSoundsRoute, (c) => {
+export const getSoundboardDefaultSoundsRouteHandler: RouteHandler<
+  typeof getSoundboardDefaultSoundsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

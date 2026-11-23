@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSeasonRoute, getSeasonSearchRoute, postSeasonSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSeasonRoute, getSeasonSearchRoute, postSeasonSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSeasonRouteHandler: RouteHandler<typeof getSeasonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const seasonHandler = app
-  .openapi(getSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeasonSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeasonSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSeasonSearchRouteHandler: RouteHandler<typeof getSeasonSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeasonSearchRouteHandler: RouteHandler<typeof postSeasonSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

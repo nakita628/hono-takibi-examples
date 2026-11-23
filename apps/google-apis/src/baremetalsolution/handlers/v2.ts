@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2NameRoute,
   getV2LocationInstanceProvisioningSettingsFetchRoute,
   getV2LocationNetworksListNetworkUsageRoute,
@@ -32,96 +32,166 @@ import {
   postV2VolumeSnapshotRestoreVolumeSnapshotRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2InstanceDetachLunRouteHandler: RouteHandler<
+  typeof postV2InstanceDetachLunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2InstanceDetachLunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationInstanceProvisioningSettingsFetchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationNetworksListNetworkUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameDisableInteractiveSerialConsoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameEnableInteractiveSerialConsoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameEvictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2NameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentLunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentNfsSharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentNfsSharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentProvisioningConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentProvisioningConfigsSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentProvisioningQuotasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentSshKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2ParentSshKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParentVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VolumeSnapshotRestoreVolumeSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2VolumeResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2LocationInstanceProvisioningSettingsFetchRouteHandler: RouteHandler<
+  typeof getV2LocationInstanceProvisioningSettingsFetchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationNetworksListNetworkUsageRouteHandler: RouteHandler<
+  typeof getV2LocationNetworksListNetworkUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2NameRouteHandler: RouteHandler<typeof deleteV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameRouteHandler: RouteHandler<typeof getV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2NameRouteHandler: RouteHandler<typeof patchV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameLocationsRouteHandler: RouteHandler<typeof getV2NameLocationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameDisableInteractiveSerialConsoleRouteHandler: RouteHandler<
+  typeof postV2NameDisableInteractiveSerialConsoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameEnableInteractiveSerialConsoleRouteHandler: RouteHandler<
+  typeof postV2NameEnableInteractiveSerialConsoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameEvictRouteHandler: RouteHandler<typeof postV2NameEvictRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameRenameRouteHandler: RouteHandler<typeof postV2NameRenameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameResetRouteHandler: RouteHandler<typeof postV2NameResetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameStartRouteHandler: RouteHandler<typeof postV2NameStartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2NameStopRouteHandler: RouteHandler<typeof postV2NameStopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentInstancesRouteHandler: RouteHandler<
+  typeof getV2ParentInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentInstancesRouteHandler: RouteHandler<
+  typeof postV2ParentInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentLunsRouteHandler: RouteHandler<typeof getV2ParentLunsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentNetworksRouteHandler: RouteHandler<
+  typeof getV2ParentNetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentNfsSharesRouteHandler: RouteHandler<
+  typeof getV2ParentNfsSharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentNfsSharesRouteHandler: RouteHandler<
+  typeof postV2ParentNfsSharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentProvisioningConfigsRouteHandler: RouteHandler<
+  typeof postV2ParentProvisioningConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentProvisioningConfigsSubmitRouteHandler: RouteHandler<
+  typeof postV2ParentProvisioningConfigsSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentProvisioningQuotasRouteHandler: RouteHandler<
+  typeof getV2ParentProvisioningQuotasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentSnapshotsRouteHandler: RouteHandler<
+  typeof getV2ParentSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentSnapshotsRouteHandler: RouteHandler<
+  typeof postV2ParentSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentSshKeysRouteHandler: RouteHandler<typeof getV2ParentSshKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2ParentSshKeysRouteHandler: RouteHandler<
+  typeof postV2ParentSshKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParentVolumesRouteHandler: RouteHandler<typeof getV2ParentVolumesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VolumeSnapshotRestoreVolumeSnapshotRouteHandler: RouteHandler<
+  typeof postV2VolumeSnapshotRestoreVolumeSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2VolumeResizeRouteHandler: RouteHandler<typeof postV2VolumeResizeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

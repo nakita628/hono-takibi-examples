@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCreateAccountAliasRoute, postActionCreateAccountAliasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionCreateAccountAliasRoute, postActionCreateAccountAliasRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateAccountAliasRouteHandler: RouteHandler<
+  typeof getActionCreateAccountAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateAccountAliasHandler = app
-  .openapi(getActionCreateAccountAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateAccountAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateAccountAliasRouteHandler: RouteHandler<
+  typeof postActionCreateAccountAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

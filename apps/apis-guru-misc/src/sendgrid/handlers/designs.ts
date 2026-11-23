@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDesignsIdRoute,
   getDesignsIdRoute,
   getDesignsPreBuiltsIdRoute,
@@ -11,33 +11,44 @@ import {
   postDesignsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDesignsRouteHandler: RouteHandler<typeof getDesignsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const designsHandler = app
-  .openapi(getDesignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDesignsPreBuiltsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDesignsPreBuiltsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignsPreBuiltsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDesignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDesignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDesignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDesignsRouteHandler: RouteHandler<typeof postDesignsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDesignsPreBuiltsRouteHandler: RouteHandler<
+  typeof getDesignsPreBuiltsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDesignsPreBuiltsIdRouteHandler: RouteHandler<
+  typeof getDesignsPreBuiltsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDesignsPreBuiltsIdRouteHandler: RouteHandler<
+  typeof postDesignsPreBuiltsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDesignsIdRouteHandler: RouteHandler<typeof deleteDesignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDesignsIdRouteHandler: RouteHandler<typeof getDesignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDesignsIdRouteHandler: RouteHandler<typeof patchDesignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDesignsIdRouteHandler: RouteHandler<typeof postDesignsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

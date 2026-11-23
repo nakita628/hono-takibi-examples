@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConvertPowerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConvertPowerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const convertPowerHandler = app.openapi(postConvertPowerRoute, (c) => {
+export const postConvertPowerRouteHandler: RouteHandler<typeof postConvertPowerRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

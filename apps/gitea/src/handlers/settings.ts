@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSettingsApiRoute,
   getSettingsAttachmentRoute,
   getSettingsRepositoryRoute,
   getSettingsUiRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSettingsApiRouteHandler: RouteHandler<typeof getSettingsApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const settingsHandler = app
-  .openapi(getSettingsApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSettingsAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSettingsRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSettingsUiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSettingsAttachmentRouteHandler: RouteHandler<
+  typeof getSettingsAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSettingsRepositoryRouteHandler: RouteHandler<
+  typeof getSettingsRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSettingsUiRouteHandler: RouteHandler<typeof getSettingsUiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

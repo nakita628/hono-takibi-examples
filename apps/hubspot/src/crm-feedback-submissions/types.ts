@@ -282,12 +282,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/objects/2026-09/feedback_submissions/batch/archive': {
-      $post: {
-        input: { json: BatchInputSimplePublicObjectId }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchInputSimplePublicObjectId }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchInputSimplePublicObjectId }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/objects/2026-09/feedback_submissions/batch/create': {
@@ -385,12 +392,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/objects/2026-09/feedback_submissions/gdpr-delete': {
-      $post: {
-        input: { json: PublicGdprDeleteInput }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | { input: { json: PublicGdprDeleteInput }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { json: PublicGdprDeleteInput }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/objects/2026-09/feedback_submissions/merge': {
@@ -450,12 +459,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { feedbackSubmissionId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { feedbackSubmissionId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { feedbackSubmissionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { feedbackSubmissionId: string } } & {
@@ -553,14 +569,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: {
-          param: { objectId: string; objectType: string; toObjectId: string; toObjectType: string }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                objectId: string
+                objectType: string
+                toObjectId: string
+                toObjectType: string
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

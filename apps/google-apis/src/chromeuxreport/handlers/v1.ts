@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1RecordsQueryHistoryRecordRoute, postV1RecordsQueryRecordRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1RecordsQueryHistoryRecordRoute, postV1RecordsQueryRecordRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1RecordsQueryHistoryRecordRouteHandler: RouteHandler<
+  typeof postV1RecordsQueryHistoryRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1RecordsQueryHistoryRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1RecordsQueryRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1RecordsQueryRecordRouteHandler: RouteHandler<
+  typeof postV1RecordsQueryRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

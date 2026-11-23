@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDisassociateAddressRoute, postActionDisassociateAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDisassociateAddressRoute,
+  postActionDisassociateAddressRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDisassociateAddressRouteHandler: RouteHandler<
+  typeof getActionDisassociateAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDisassociateAddressHandler = app
-  .openapi(getActionDisassociateAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDisassociateAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDisassociateAddressRouteHandler: RouteHandler<
+  typeof postActionDisassociateAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSelfAddonsAddonIdRoute,
   deleteSelfAddonsAddonIdTagsTagRoute,
   deleteSelfApplicationsAppIdAddonsAddonIdRoute,
@@ -104,312 +104,586 @@ import {
   putSelfRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSelfRouteHandler: RouteHandler<typeof deleteSelfRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const selfHandler = app
-  .openapi(deleteSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfAddonsPreordersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfAddonsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfAddonsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsAddonIdApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsAddonIdEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfAddonsAddonIdPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsAddonIdSsoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfAddonsAddonIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfAddonsAddonIdTagsTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfAddonsAddonIdTagsTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfApplicationsAppIdAddonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdAddonsEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdAddonsAddonIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdBranchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdBuildflavorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdDependenciesEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdDependenciesDependencyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdDependenciesDependencyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdDependentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdDeploymentsDeploymentIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdEnvEnvNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdEnvEnvNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdExposedEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdExposedEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfApplicationsAppIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdTagsTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdTagsTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdVhostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdVhostsFavouriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfApplicationsAppIdVhostsFavouriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdVhostsFavouriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfApplicationsAppIdVhostsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfApplicationsAppIdVhostsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfChangePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfCliTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfConfirmationEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfConsumersKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfConsumersKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfConsumersKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfConsumersKeySecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfConsumptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfEmailsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfEmailsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfMfaKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfMfaKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfMfaKindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfMfaKindBackupcodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfMfaKindConfirmationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsBillingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfPaymentsBillingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfPaymentsBillingsBidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsBillingsBidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfPaymentsBillingsBidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsBillingsBidPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsFullpricePriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfPaymentsMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsMethodsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfPaymentsMethodsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfPaymentsMethodsMIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsMonthlyinvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSelfPaymentsMonthlyinvoiceMaxcreditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfPaymentsRecurringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsRecurringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfPaymentsTokensStripeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfTokensTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfValidateEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSelfRouteHandler: RouteHandler<typeof getSelfRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfRouteHandler: RouteHandler<typeof putSelfRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsRouteHandler: RouteHandler<typeof getSelfAddonsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfAddonsRouteHandler: RouteHandler<typeof postSelfAddonsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfAddonsPreordersRouteHandler: RouteHandler<
+  typeof postSelfAddonsPreordersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfAddonsAddonIdRouteHandler: RouteHandler<
+  typeof deleteSelfAddonsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsAddonIdRouteHandler: RouteHandler<
+  typeof getSelfAddonsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfAddonsAddonIdRouteHandler: RouteHandler<
+  typeof putSelfAddonsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsAddonIdApplicationsRouteHandler: RouteHandler<
+  typeof getSelfAddonsAddonIdApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsAddonIdEnvRouteHandler: RouteHandler<
+  typeof getSelfAddonsAddonIdEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfAddonsAddonIdPlanRouteHandler: RouteHandler<
+  typeof putSelfAddonsAddonIdPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsAddonIdSsoRouteHandler: RouteHandler<
+  typeof getSelfAddonsAddonIdSsoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfAddonsAddonIdTagsRouteHandler: RouteHandler<
+  typeof getSelfAddonsAddonIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfAddonsAddonIdTagsTagRouteHandler: RouteHandler<
+  typeof deleteSelfAddonsAddonIdTagsTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfAddonsAddonIdTagsTagRouteHandler: RouteHandler<
+  typeof putSelfAddonsAddonIdTagsTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfApplicationsRouteHandler: RouteHandler<
+  typeof postSelfApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdAddonsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfApplicationsAppIdAddonsRouteHandler: RouteHandler<
+  typeof postSelfApplicationsAppIdAddonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdAddonsEnvRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdAddonsEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdAddonsAddonIdRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdAddonsAddonIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdBranchRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdBranchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdBranchesRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdBuildflavorRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdBuildflavorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdDependenciesRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdDependenciesEnvRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdDependenciesEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdDependenciesDependencyIdRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdDependenciesDependencyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdDependenciesDependencyIdRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdDependenciesDependencyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdDependentsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdDependentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdDeploymentsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdDeploymentsDeploymentIdInstancesRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdDeploymentsDeploymentIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdEnvRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdEnvRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdEnvEnvNameRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdEnvEnvNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdEnvEnvNameRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdEnvEnvNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdExposedEnvRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdExposedEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdExposedEnvRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdExposedEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdInstancesRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdInstancesRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfApplicationsAppIdInstancesRouteHandler: RouteHandler<
+  typeof postSelfApplicationsAppIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdTagsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdTagsTagRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdTagsTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdTagsTagRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdTagsTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdVhostsRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdVhostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdVhostsFavouriteRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdVhostsFavouriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfApplicationsAppIdVhostsFavouriteRouteHandler: RouteHandler<
+  typeof getSelfApplicationsAppIdVhostsFavouriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdVhostsFavouriteRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdVhostsFavouriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfApplicationsAppIdVhostsDomainRouteHandler: RouteHandler<
+  typeof deleteSelfApplicationsAppIdVhostsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfApplicationsAppIdVhostsDomainRouteHandler: RouteHandler<
+  typeof putSelfApplicationsAppIdVhostsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfAvatarRouteHandler: RouteHandler<typeof putSelfAvatarRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfChangePasswordRouteHandler: RouteHandler<
+  typeof putSelfChangePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfCliTokensRouteHandler: RouteHandler<typeof getSelfCliTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfConfirmationEmailRouteHandler: RouteHandler<
+  typeof getSelfConfirmationEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfConsumersRouteHandler: RouteHandler<typeof getSelfConsumersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfConsumersRouteHandler: RouteHandler<typeof postSelfConsumersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfConsumersKeyRouteHandler: RouteHandler<
+  typeof deleteSelfConsumersKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfConsumersKeyRouteHandler: RouteHandler<
+  typeof getSelfConsumersKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfConsumersKeyRouteHandler: RouteHandler<
+  typeof putSelfConsumersKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfConsumersKeySecretRouteHandler: RouteHandler<
+  typeof getSelfConsumersKeySecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfConsumptionsRouteHandler: RouteHandler<
+  typeof getSelfConsumptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfCreditsRouteHandler: RouteHandler<typeof getSelfCreditsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfEmailsRouteHandler: RouteHandler<typeof getSelfEmailsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfEmailsEmailRouteHandler: RouteHandler<
+  typeof deleteSelfEmailsEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfEmailsEmailRouteHandler: RouteHandler<typeof putSelfEmailsEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfIdRouteHandler: RouteHandler<typeof getSelfIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfInstancesRouteHandler: RouteHandler<typeof getSelfInstancesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfKeysRouteHandler: RouteHandler<typeof getSelfKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfKeysKeyRouteHandler: RouteHandler<typeof deleteSelfKeysKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfKeysKeyRouteHandler: RouteHandler<typeof putSelfKeysKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfMfaKindRouteHandler: RouteHandler<typeof deleteSelfMfaKindRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfMfaKindRouteHandler: RouteHandler<typeof postSelfMfaKindRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfMfaKindRouteHandler: RouteHandler<typeof putSelfMfaKindRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfMfaKindBackupcodesRouteHandler: RouteHandler<
+  typeof getSelfMfaKindBackupcodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfMfaKindConfirmationRouteHandler: RouteHandler<
+  typeof postSelfMfaKindConfirmationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentInfoRouteHandler: RouteHandler<typeof getSelfPaymentInfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsBillingsRouteHandler: RouteHandler<
+  typeof getSelfPaymentsBillingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfPaymentsBillingsRouteHandler: RouteHandler<
+  typeof postSelfPaymentsBillingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfPaymentsBillingsBidRouteHandler: RouteHandler<
+  typeof deleteSelfPaymentsBillingsBidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsBillingsBidRouteHandler: RouteHandler<
+  typeof getSelfPaymentsBillingsBidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfPaymentsBillingsBidRouteHandler: RouteHandler<
+  typeof putSelfPaymentsBillingsBidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsBillingsBidPdfRouteHandler: RouteHandler<
+  typeof getSelfPaymentsBillingsBidPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsFullpricePriceRouteHandler: RouteHandler<
+  typeof getSelfPaymentsFullpricePriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsMethodsRouteHandler: RouteHandler<
+  typeof getSelfPaymentsMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfPaymentsMethodsRouteHandler: RouteHandler<
+  typeof postSelfPaymentsMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsMethodsDefaultRouteHandler: RouteHandler<
+  typeof getSelfPaymentsMethodsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfPaymentsMethodsDefaultRouteHandler: RouteHandler<
+  typeof putSelfPaymentsMethodsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfPaymentsMethodsMIdRouteHandler: RouteHandler<
+  typeof deleteSelfPaymentsMethodsMIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsMonthlyinvoiceRouteHandler: RouteHandler<
+  typeof getSelfPaymentsMonthlyinvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSelfPaymentsMonthlyinvoiceMaxcreditRouteHandler: RouteHandler<
+  typeof putSelfPaymentsMonthlyinvoiceMaxcreditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfPaymentsRecurringRouteHandler: RouteHandler<
+  typeof deleteSelfPaymentsRecurringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsRecurringRouteHandler: RouteHandler<
+  typeof getSelfPaymentsRecurringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfPaymentsTokensStripeRouteHandler: RouteHandler<
+  typeof getSelfPaymentsTokensStripeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfTokensRouteHandler: RouteHandler<typeof deleteSelfTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfTokensRouteHandler: RouteHandler<typeof getSelfTokensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSelfTokensTokenRouteHandler: RouteHandler<
+  typeof deleteSelfTokensTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfValidateEmailRouteHandler: RouteHandler<
+  typeof getSelfValidateEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

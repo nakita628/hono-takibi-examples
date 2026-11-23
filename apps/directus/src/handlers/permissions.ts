@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePermissionsIdRoute,
   deletePermissionsRoute,
   getPermissionsIdRoute,
@@ -10,30 +10,46 @@ import {
   postPermissionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPermissionsRouteHandler: RouteHandler<typeof getPermissionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const permissionsHandler = app
-  .openapi(getPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPermissionsMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPermissionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPermissionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePermissionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPermissionsRouteHandler: RouteHandler<typeof postPermissionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPermissionsRouteHandler: RouteHandler<typeof patchPermissionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePermissionsRouteHandler: RouteHandler<typeof deletePermissionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPermissionsMeRouteHandler: RouteHandler<typeof getPermissionsMeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPermissionsIdRouteHandler: RouteHandler<typeof getPermissionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPermissionsIdRouteHandler: RouteHandler<typeof patchPermissionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePermissionsIdRouteHandler: RouteHandler<
+  typeof deletePermissionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

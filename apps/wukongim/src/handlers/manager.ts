@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postManagerLoginRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postManagerLoginRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const managerHandler = app.openapi(postManagerLoginRoute, (c) => {
+export const postManagerLoginRouteHandler: RouteHandler<typeof postManagerLoginRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

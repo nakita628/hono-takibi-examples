@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSwitchoverReadReplicaRoute,
   postActionSwitchoverReadReplicaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSwitchoverReadReplicaRouteHandler: RouteHandler<
+  typeof getActionSwitchoverReadReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSwitchoverReadReplicaHandler = app
-  .openapi(getActionSwitchoverReadReplicaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSwitchoverReadReplicaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSwitchoverReadReplicaRouteHandler: RouteHandler<
+  typeof postActionSwitchoverReadReplicaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

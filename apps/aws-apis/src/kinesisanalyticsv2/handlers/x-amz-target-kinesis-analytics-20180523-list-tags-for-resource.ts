@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesisAnalytics20180523ListTagsForResourceHandler = app.openapi(
-  postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesisAnalytics20180523ListTagsForResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

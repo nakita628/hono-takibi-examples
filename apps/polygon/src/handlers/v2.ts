@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2AggsGroupedLocaleGlobalMarketCryptoDateRoute,
   getV2AggsGroupedLocaleGlobalMarketFxDateRoute,
   getV2AggsGroupedLocaleUsMarketStocksDateRoute,
@@ -31,93 +31,176 @@ import {
   getV2TicksStocksTradesTickerDateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2AggsGroupedLocaleGlobalMarketCryptoDateRouteHandler: RouteHandler<
+  typeof getV2AggsGroupedLocaleGlobalMarketCryptoDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2AggsGroupedLocaleGlobalMarketCryptoDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsGroupedLocaleGlobalMarketFxDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsGroupedLocaleUsMarketStocksDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerCryptoTickerPrevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerCryptoTickerRangeMultiplierTimespanFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerForexTickerPrevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerForexTickerRangeMultiplierTimespanFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerIndicesTickerPrevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerIndicesTickerRangeMultiplierTimespanFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerOptionsTickerPrevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerOptionsTickerRangeMultiplierTimespanFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerStocksTickerPrevRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AggsTickerStocksTickerRangeMultiplierTimespanFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LastNbboStocksTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LastTradeOptionsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LastTradeStocksTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ReferenceNewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsCryptoTickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerBookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsCryptoDirectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsForexTickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsForexTickersTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleGlobalMarketsForexDirectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleUsMarketsStocksTickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleUsMarketsStocksTickersStocksTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SnapshotLocaleUsMarketsStocksDirectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TicksStocksNbboTickerDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TicksStocksTradesTickerDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2AggsGroupedLocaleGlobalMarketFxDateRouteHandler: RouteHandler<
+  typeof getV2AggsGroupedLocaleGlobalMarketFxDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsGroupedLocaleUsMarketStocksDateRouteHandler: RouteHandler<
+  typeof getV2AggsGroupedLocaleUsMarketStocksDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerCryptoTickerPrevRouteHandler: RouteHandler<
+  typeof getV2AggsTickerCryptoTickerPrevRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerCryptoTickerRangeMultiplierTimespanFromToRouteHandler: RouteHandler<
+  typeof getV2AggsTickerCryptoTickerRangeMultiplierTimespanFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerForexTickerPrevRouteHandler: RouteHandler<
+  typeof getV2AggsTickerForexTickerPrevRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerForexTickerRangeMultiplierTimespanFromToRouteHandler: RouteHandler<
+  typeof getV2AggsTickerForexTickerRangeMultiplierTimespanFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerIndicesTickerPrevRouteHandler: RouteHandler<
+  typeof getV2AggsTickerIndicesTickerPrevRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerIndicesTickerRangeMultiplierTimespanFromToRouteHandler: RouteHandler<
+  typeof getV2AggsTickerIndicesTickerRangeMultiplierTimespanFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerOptionsTickerPrevRouteHandler: RouteHandler<
+  typeof getV2AggsTickerOptionsTickerPrevRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerOptionsTickerRangeMultiplierTimespanFromToRouteHandler: RouteHandler<
+  typeof getV2AggsTickerOptionsTickerRangeMultiplierTimespanFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerStocksTickerPrevRouteHandler: RouteHandler<
+  typeof getV2AggsTickerStocksTickerPrevRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AggsTickerStocksTickerRangeMultiplierTimespanFromToRouteHandler: RouteHandler<
+  typeof getV2AggsTickerStocksTickerRangeMultiplierTimespanFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LastNbboStocksTickerRouteHandler: RouteHandler<
+  typeof getV2LastNbboStocksTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LastTradeOptionsTickerRouteHandler: RouteHandler<
+  typeof getV2LastTradeOptionsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LastTradeStocksTickerRouteHandler: RouteHandler<
+  typeof getV2LastTradeStocksTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ReferenceNewsRouteHandler: RouteHandler<typeof getV2ReferenceNewsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsCryptoTickersRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsCryptoTickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerBookRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsCryptoTickersTickerBookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsCryptoDirectionRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsCryptoDirectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsForexTickersRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsForexTickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsForexTickersTickerRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsForexTickersTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleGlobalMarketsForexDirectionRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleGlobalMarketsForexDirectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleUsMarketsStocksTickersRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleUsMarketsStocksTickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleUsMarketsStocksTickersStocksTickerRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleUsMarketsStocksTickersStocksTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SnapshotLocaleUsMarketsStocksDirectionRouteHandler: RouteHandler<
+  typeof getV2SnapshotLocaleUsMarketsStocksDirectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TicksStocksNbboTickerDateRouteHandler: RouteHandler<
+  typeof getV2TicksStocksNbboTickerDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TicksStocksTradesTickerDateRouteHandler: RouteHandler<
+  typeof getV2TicksStocksTradesTickerDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

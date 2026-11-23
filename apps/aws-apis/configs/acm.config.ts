@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/acm/2015-12-08/openapi.yaml',
   output: './src/acm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/acm/types.ts' },
   client: { output: './src/acm/client.ts', baseUrl: '/' },
   rpc: { output: './src/acm/rpc.ts', parseResponse: true },

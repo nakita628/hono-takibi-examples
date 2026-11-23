@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postLookupCnamRoute,
   postLookupFormatRoute,
   postLookupHlrRoute,
@@ -7,21 +7,24 @@ import {
   postLookupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLookupRouteHandler: RouteHandler<typeof postLookupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lookupHandler = app
-  .openapi(postLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupCnamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupHlrRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLookupMnpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLookupCnamRouteHandler: RouteHandler<typeof postLookupCnamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupFormatRouteHandler: RouteHandler<typeof postLookupFormatRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupHlrRouteHandler: RouteHandler<typeof postLookupHlrRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLookupMnpRouteHandler: RouteHandler<typeof postLookupMnpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

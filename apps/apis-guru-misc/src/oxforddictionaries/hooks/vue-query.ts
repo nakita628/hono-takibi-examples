@@ -597,16 +597,20 @@ export function useEntriesSourceLangWordIdAntonyms<
 
 export function getEntriesSourceLangWordIdRegionsRegionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+    InferRequestType<
+      (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+    >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['entries', '/entries/:source_lang/:word_id/regions=:region', keyArgs] as const
+  return ['entries', '/entries/:source_lang/:word_id/regions={region}', keyArgs] as const
 }
 
 export function getEntriesSourceLangWordIdRegionsRegionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+    InferRequestType<
+      (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+    >
   >,
   options?: ClientRequestOptions,
 ) {
@@ -614,7 +618,7 @@ export function getEntriesSourceLangWordIdRegionsRegionQueryOptions(
     queryKey: computed(() => getEntriesSourceLangWordIdRegionsRegionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.entries[':source_lang'][':word_id']['regions=:region'].$get(toValue(args), {
+        client.entries[':source_lang'][':word_id']['regions={region}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -628,7 +632,9 @@ export function useEntriesSourceLangWordIdRegionsRegion<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+          ReturnType<
+            (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+          >
         >
       >
     >
@@ -636,7 +642,9 @@ export function useEntriesSourceLangWordIdRegionsRegion<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+    InferRequestType<
+      (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+    >
   >,
   options?: {
     query?: Omit<
@@ -647,7 +655,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
                   >
                 >
               >
@@ -660,7 +668,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
                   >
                 >
               >
@@ -683,7 +691,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+              (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
             >
           >
         >
@@ -698,7 +706,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
       queryKey: computed(() => getEntriesSourceLangWordIdRegionsRegionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.entries[':source_lang'][':word_id']['regions=:region'].$get(toValue(args), {
+          client.entries[':source_lang'][':word_id']['regions={region}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1054,14 +1062,14 @@ export function useEntriesSourceLangWordIdFilters<
 export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+      (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
   return [
     'entries',
-    '/entries/:source_translation_language/:word_id/translations=:target_translation_language',
+    '/entries/:source_translation_language/:word_id/translations={target_translation_language}',
     keyArgs,
   ] as const
 }
@@ -1069,7 +1077,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
 export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+      (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1081,7 +1089,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
         client.entries[':source_translation_language'][':word_id'][
-          'translations=:target_translation_language'
+          'translations={target_translation_language}'
         ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -1094,7 +1102,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+            (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
           >
         >
       >
@@ -1104,7 +1112,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+      (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
     >
   >,
   options?: {
@@ -1116,7 +1124,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
                   >
                 >
               >
@@ -1129,7 +1137,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
                   >
                 >
               >
@@ -1154,7 +1162,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+              (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
             >
           >
         >
@@ -1176,7 +1184,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
       queryFn({ signal }) {
         return parseResponse(
           client.entries[':source_translation_language'][':word_id'][
-            'translations=:target_translation_language'
+            'translations={target_translation_language}'
           ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
       },
@@ -2136,14 +2144,14 @@ export function useSearchSourceLang<
 export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+      (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
   return [
     'search',
-    '/search/:source_search_language/translations=:target_search_language',
+    '/search/:source_search_language/translations={target_search_language}',
     keyArgs,
   ] as const
 }
@@ -2151,7 +2159,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
 export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+      (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -2162,7 +2170,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':source_search_language']['translations=:target_search_language'].$get(
+        client.search[':source_search_language']['translations={target_search_language}'].$get(
           toValue(args),
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -2177,7 +2185,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+            (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
           >
         >
       >
@@ -2187,7 +2195,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+      (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
     >
   >,
   options?: {
@@ -2199,7 +2207,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
                   >
                 >
               >
@@ -2212,7 +2220,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
                   >
                 >
               >
@@ -2235,7 +2243,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+              (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
             >
           >
         >
@@ -2252,7 +2260,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':source_search_language']['translations=:target_search_language'].$get(
+          client.search[':source_search_language']['translations={target_search_language}'].$get(
             toValue(args),
             { ...clientOptions, init: { ...clientOptions?.init, signal } },
           ),

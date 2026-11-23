@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBudgetsBudgetIdTransactionsTransactionIdRoute,
   getBudgetsBudgetIdAccountsAccountIdRoute,
   getBudgetsBudgetIdAccountsAccountIdTransactionsRoute,
@@ -32,96 +32,180 @@ import {
   putBudgetsBudgetIdTransactionsTransactionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBudgetsRouteHandler: RouteHandler<typeof getBudgetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const budgetsHandler = app
-  .openapi(getBudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBudgetsBudgetIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdAccountsAccountIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdCategoriesCategoryIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdMonthsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdMonthsMonthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeeLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeeLocationsPayeeLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeesPayeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeesPayeeIdPayeeLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdPayeesPayeeIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdScheduledTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdScheduledTransactionsScheduledTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBudgetsBudgetIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBudgetsBudgetIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBudgetsBudgetIdTransactionsBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBudgetsBudgetIdTransactionsImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBudgetsBudgetIdTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBudgetsBudgetIdTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBudgetsBudgetIdTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBudgetsBudgetIdRouteHandler: RouteHandler<typeof getBudgetsBudgetIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdAccountsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBudgetsBudgetIdAccountsRouteHandler: RouteHandler<
+  typeof postBudgetsBudgetIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdAccountsAccountIdTransactionsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdAccountsAccountIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdCategoriesRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdCategoriesCategoryIdTransactionsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdCategoriesCategoryIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdMonthsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdMonthsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdMonthsMonthRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdMonthsMonthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof patchBudgetsBudgetIdMonthsMonthCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeeLocationsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeeLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeeLocationsPayeeLocationIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeeLocationsPayeeLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeesRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeesPayeeIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeesPayeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeesPayeeIdPayeeLocationsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeesPayeeIdPayeeLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdPayeesPayeeIdTransactionsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdPayeesPayeeIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdScheduledTransactionsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdScheduledTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdScheduledTransactionsScheduledTransactionIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdScheduledTransactionsScheduledTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdSettingsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdTransactionsRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBudgetsBudgetIdTransactionsRouteHandler: RouteHandler<
+  typeof patchBudgetsBudgetIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBudgetsBudgetIdTransactionsRouteHandler: RouteHandler<
+  typeof postBudgetsBudgetIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBudgetsBudgetIdTransactionsBulkRouteHandler: RouteHandler<
+  typeof postBudgetsBudgetIdTransactionsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBudgetsBudgetIdTransactionsImportRouteHandler: RouteHandler<
+  typeof postBudgetsBudgetIdTransactionsImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBudgetsBudgetIdTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof deleteBudgetsBudgetIdTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBudgetsBudgetIdTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof getBudgetsBudgetIdTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBudgetsBudgetIdTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof putBudgetsBudgetIdTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

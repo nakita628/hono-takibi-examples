@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCheckDNSAvailabilityRoute, postActionCheckDNSAvailabilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionCheckDNSAvailabilityRoute,
+  postActionCheckDNSAvailabilityRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCheckDNSAvailabilityRouteHandler: RouteHandler<
+  typeof getActionCheckDNSAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCheckDnsAvailabilityHandler = app
-  .openapi(getActionCheckDNSAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCheckDNSAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCheckDNSAvailabilityRouteHandler: RouteHandler<
+  typeof postActionCheckDNSAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

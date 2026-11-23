@@ -4,12 +4,8 @@ export default defineConfig({
   // Cloudflare API: https://github.com/cloudflare/api-schemas
   input: 'https://raw.githubusercontent.com/cloudflare/api-schemas/main/openapi.json',
   output: './src/routes.ts',
-  // template: { routeHandler: true }: with the default template, the largest handler file chains about 2,000
-  // .openapi() calls, and reading it back overflows the stack. With routeHandler, index.ts chains every route
-  // instead, so only a run on a fresh src/ (no handlers/, no index.ts) gets through (nakita628/hono-takibi#521).
   template: { routeHandler: true },
-  // No type output: nine response properties have enum: [[]], which the type output writes as `errors:;`
-  // and the run aborts (nakita628/hono-takibi#504).
+  type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },
   swr: { output: './src/hooks/swr.ts' },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeHandler = app.openapi(
-  postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRouteHandler: RouteHandler<
+  typeof postXAmzTargetSimpleWorkflowServiceUndeprecateWorkflowTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

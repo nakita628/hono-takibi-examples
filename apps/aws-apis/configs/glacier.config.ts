@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/glacier/2012-06-01/openapi.yaml',
   output: './src/glacier/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/glacier/types.ts' },
   client: { output: './src/glacier/client.ts', baseUrl: '/' },
   rpc: { output: './src/glacier/rpc.ts', parseResponse: true },

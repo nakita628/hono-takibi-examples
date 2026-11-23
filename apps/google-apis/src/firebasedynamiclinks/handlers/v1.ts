@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1DynamicLinkLinkStatsRoute,
   postV1InstallAttributionRoute,
   postV1ManagedShortLinksCreateRoute,
@@ -7,21 +7,32 @@ import {
   postV1ShortLinksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1InstallAttributionRouteHandler: RouteHandler<
+  typeof postV1InstallAttributionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1InstallAttributionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ManagedShortLinksCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ReopenAttributionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ShortLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1DynamicLinkLinkStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ManagedShortLinksCreateRouteHandler: RouteHandler<
+  typeof postV1ManagedShortLinksCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ReopenAttributionRouteHandler: RouteHandler<
+  typeof postV1ReopenAttributionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ShortLinksRouteHandler: RouteHandler<typeof postV1ShortLinksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1DynamicLinkLinkStatsRouteHandler: RouteHandler<
+  typeof getV1DynamicLinkLinkStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

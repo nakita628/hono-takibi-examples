@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAuthnK8sServiceIdAccountLoginAuthenticateRoute,
   postAuthnK8sServiceIdInjectClientCertRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthnK8sServiceIdInjectClientCertRouteHandler: RouteHandler<
+  typeof postAuthnK8sServiceIdInjectClientCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authnK8sHandler = app
-  .openapi(postAuthnK8sServiceIdInjectClientCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthnK8sServiceIdAccountLoginAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthnK8sServiceIdAccountLoginAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthnK8sServiceIdAccountLoginAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

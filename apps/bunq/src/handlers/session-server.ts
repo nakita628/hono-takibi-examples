@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSessionServerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSessionServerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sessionServerHandler = app.openapi(postSessionServerRoute, (c) => {
+export const postSessionServerRouteHandler: RouteHandler<typeof postSessionServerRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

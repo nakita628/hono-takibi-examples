@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersPhoneNumberIdRoute,
   deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRoute,
   deletePhoneBlockedListBlockedListIdRoute,
@@ -83,249 +83,478 @@ import {
   putPhoneCompanyNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPhoneAutoReceptionistsRouteHandler: RouteHandler<
+  typeof postPhoneAutoReceptionistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const phoneHandler = app
-  .openapi(postPhoneAutoReceptionistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneAutoReceptionistsAutoReceptionistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneBlockedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneBlockedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneBlockedListBlockedListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneBlockedListBlockedListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneBlockedListBlockedListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneByocNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCallLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCallQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneCallQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCallQueuesCallQueueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCallQueuesCallQueueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneCallQueuesCallQueueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPhoneCallQueuesCallQueueIdManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCallQueuesCallQueueIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneCallQueuesCallQueueIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCallQueuesCallQueueIdMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCallQueuesCallQueueIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneCallQueuesCallQueueIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCallQueuesCallQueueIdPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCallQueuesCallQueueIdRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCallingPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCommonAreaPhonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneCommonAreaPhonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneCommonAreaPhonesCommonAreaPhoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneCommonAreaPhonesCommonAreaPhoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneCommonAreaPhonesCommonAreaPhoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPhoneCompanyNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneMetricsCallLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneMetricsCallLogsCallIdQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneMetricsCallLogsCallIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneNumbersNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneReportsOperationlogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSettingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneSettingTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSettingTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneSettingTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSharedLineGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneSharedLineGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneSharedLineGroupsSharedLineGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSharedLineGroupsSharedLineGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneSharedLineGroupsSharedLineGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneSharedLineGroupsSharedLineGroupIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneSharedLineGroupsSharedLineGroupIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneSharedLineGroupsSharedLineGroupIdMembersMemberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSipTrunkTrunksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersUserIdCallLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneUsersUserIdCallLogsCallLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneUsersUserIdCallingPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneUsersUserIdCallingPlansTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneUsersUserIdPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneUsersUserIdPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersUserIdRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersUserIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneUsersUserIdSettingsSettingTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPhoneUsersUserIdSettingsSettingTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneUsersUserIdSettingsSettingTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneUsersUserIdVoiceMailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneVoiceMailsVoicemailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchPhoneAutoReceptionistsAutoReceptionistIdRouteHandler: RouteHandler<
+  typeof patchPhoneAutoReceptionistsAutoReceptionistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneAutoReceptionistsAutoReceptionistIdPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneBlockedListRouteHandler: RouteHandler<
+  typeof getPhoneBlockedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneBlockedListRouteHandler: RouteHandler<
+  typeof postPhoneBlockedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneBlockedListBlockedListIdRouteHandler: RouteHandler<
+  typeof deletePhoneBlockedListBlockedListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneBlockedListBlockedListIdRouteHandler: RouteHandler<
+  typeof getPhoneBlockedListBlockedListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneBlockedListBlockedListIdRouteHandler: RouteHandler<
+  typeof patchPhoneBlockedListBlockedListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneByocNumbersRouteHandler: RouteHandler<
+  typeof postPhoneByocNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCallLogsRouteHandler: RouteHandler<typeof getPhoneCallLogsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCallQueuesRouteHandler: RouteHandler<typeof getPhoneCallQueuesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneCallQueuesRouteHandler: RouteHandler<
+  typeof postPhoneCallQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCallQueuesCallQueueIdRouteHandler: RouteHandler<
+  typeof deletePhoneCallQueuesCallQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCallQueuesCallQueueIdRouteHandler: RouteHandler<
+  typeof getPhoneCallQueuesCallQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneCallQueuesCallQueueIdRouteHandler: RouteHandler<
+  typeof patchPhoneCallQueuesCallQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPhoneCallQueuesCallQueueIdManagerRouteHandler: RouteHandler<
+  typeof putPhoneCallQueuesCallQueueIdManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCallQueuesCallQueueIdMembersRouteHandler: RouteHandler<
+  typeof deletePhoneCallQueuesCallQueueIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneCallQueuesCallQueueIdMembersRouteHandler: RouteHandler<
+  typeof postPhoneCallQueuesCallQueueIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCallQueuesCallQueueIdMembersMemberIdRouteHandler: RouteHandler<
+  typeof deletePhoneCallQueuesCallQueueIdMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCallQueuesCallQueueIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof deletePhoneCallQueuesCallQueueIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneCallQueuesCallQueueIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneCallQueuesCallQueueIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCallQueuesCallQueueIdPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneCallQueuesCallQueueIdPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCallQueuesCallQueueIdRecordingsRouteHandler: RouteHandler<
+  typeof getPhoneCallQueuesCallQueueIdRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCallingPlansRouteHandler: RouteHandler<
+  typeof getPhoneCallingPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCommonAreaPhonesRouteHandler: RouteHandler<
+  typeof getPhoneCommonAreaPhonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneCommonAreaPhonesRouteHandler: RouteHandler<
+  typeof postPhoneCommonAreaPhonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneCommonAreaPhonesCommonAreaPhoneIdRouteHandler: RouteHandler<
+  typeof deletePhoneCommonAreaPhonesCommonAreaPhoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneCommonAreaPhonesCommonAreaPhoneIdRouteHandler: RouteHandler<
+  typeof getPhoneCommonAreaPhonesCommonAreaPhoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneCommonAreaPhonesCommonAreaPhoneIdRouteHandler: RouteHandler<
+  typeof patchPhoneCommonAreaPhonesCommonAreaPhoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPhoneCompanyNumberRouteHandler: RouteHandler<
+  typeof putPhoneCompanyNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneDevicesRouteHandler: RouteHandler<typeof getPhoneDevicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneDevicesRouteHandler: RouteHandler<typeof postPhoneDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof deletePhoneDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof getPhoneDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof patchPhoneDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneMetricsCallLogsRouteHandler: RouteHandler<
+  typeof getPhoneMetricsCallLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneMetricsCallLogsCallIdQosRouteHandler: RouteHandler<
+  typeof getPhoneMetricsCallLogsCallIdQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneMetricsCallLogsCallIdRouteHandler: RouteHandler<
+  typeof getPhoneMetricsCallLogsCallIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersRouteHandler: RouteHandler<typeof getPhoneNumbersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersNumberIdRouteHandler: RouteHandler<
+  typeof getPhoneNumbersNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneNumbersNumberIdRouteHandler: RouteHandler<
+  typeof patchPhoneNumbersNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneRecordingsRouteHandler: RouteHandler<typeof getPhoneRecordingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneReportsOperationlogsRouteHandler: RouteHandler<
+  typeof getPhoneReportsOperationlogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSettingTemplatesRouteHandler: RouteHandler<
+  typeof getPhoneSettingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneSettingTemplatesRouteHandler: RouteHandler<
+  typeof postPhoneSettingTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSettingTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getPhoneSettingTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneSettingTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof patchPhoneSettingTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSharedLineGroupsRouteHandler: RouteHandler<
+  typeof getPhoneSharedLineGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneSharedLineGroupsRouteHandler: RouteHandler<
+  typeof postPhoneSharedLineGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneSharedLineGroupsSharedLineGroupIdRouteHandler: RouteHandler<
+  typeof deletePhoneSharedLineGroupsSharedLineGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSharedLineGroupsSharedLineGroupIdRouteHandler: RouteHandler<
+  typeof getPhoneSharedLineGroupsSharedLineGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneSharedLineGroupsSharedLineGroupIdRouteHandler: RouteHandler<
+  typeof patchPhoneSharedLineGroupsSharedLineGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneSharedLineGroupsSharedLineGroupIdMembersRouteHandler: RouteHandler<
+  typeof deletePhoneSharedLineGroupsSharedLineGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneSharedLineGroupsSharedLineGroupIdMembersRouteHandler: RouteHandler<
+  typeof postPhoneSharedLineGroupsSharedLineGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneSharedLineGroupsSharedLineGroupIdMembersMemberIdRouteHandler: RouteHandler<
+  typeof deletePhoneSharedLineGroupsSharedLineGroupIdMembersMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneSharedLineGroupsSharedLineGroupIdPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSipTrunkTrunksRouteHandler: RouteHandler<
+  typeof getPhoneSipTrunkTrunksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSitesRouteHandler: RouteHandler<typeof getPhoneSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneSitesRouteHandler: RouteHandler<typeof postPhoneSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneSitesSiteIdRouteHandler: RouteHandler<
+  typeof deletePhoneSitesSiteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneSitesSiteIdRouteHandler: RouteHandler<
+  typeof getPhoneSitesSiteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneSitesSiteIdRouteHandler: RouteHandler<
+  typeof patchPhoneSitesSiteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersRouteHandler: RouteHandler<typeof getPhoneUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersUserIdRouteHandler: RouteHandler<
+  typeof getPhoneUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneUsersUserIdRouteHandler: RouteHandler<
+  typeof patchPhoneUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersUserIdCallLogsRouteHandler: RouteHandler<
+  typeof getPhoneUsersUserIdCallLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneUsersUserIdCallLogsCallLogIdRouteHandler: RouteHandler<
+  typeof deletePhoneUsersUserIdCallLogsCallLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneUsersUserIdCallingPlansRouteHandler: RouteHandler<
+  typeof postPhoneUsersUserIdCallingPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneUsersUserIdCallingPlansTypeRouteHandler: RouteHandler<
+  typeof deletePhoneUsersUserIdCallingPlansTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneUsersUserIdPhoneNumbersRouteHandler: RouteHandler<
+  typeof postPhoneUsersUserIdPhoneNumbersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneUsersUserIdPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneUsersUserIdPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersUserIdRecordingsRouteHandler: RouteHandler<
+  typeof getPhoneUsersUserIdRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersUserIdSettingsRouteHandler: RouteHandler<
+  typeof getPhoneUsersUserIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneUsersUserIdSettingsSettingTypeRouteHandler: RouteHandler<
+  typeof deletePhoneUsersUserIdSettingsSettingTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPhoneUsersUserIdSettingsSettingTypeRouteHandler: RouteHandler<
+  typeof patchPhoneUsersUserIdSettingsSettingTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneUsersUserIdSettingsSettingTypeRouteHandler: RouteHandler<
+  typeof postPhoneUsersUserIdSettingsSettingTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneUsersUserIdVoiceMailsRouteHandler: RouteHandler<
+  typeof getPhoneUsersUserIdVoiceMailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneVoiceMailsVoicemailIdRouteHandler: RouteHandler<
+  typeof deletePhoneVoiceMailsVoicemailIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getstateabbreviation/1.0.0/openapi.yaml',
   output: './src/getstateabbreviation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getstateabbreviation/types.ts' },
   client: { output: './src/getstateabbreviation/client.ts', baseUrl: '/' },
   rpc: { output: './src/getstateabbreviation/rpc.ts', parseResponse: true },

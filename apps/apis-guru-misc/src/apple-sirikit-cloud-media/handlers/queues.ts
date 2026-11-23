@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postQueuesPlayMediaRoute, postQueuesUpdateActivityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postQueuesPlayMediaRoute, postQueuesUpdateActivityRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQueuesPlayMediaRouteHandler: RouteHandler<
+  typeof postQueuesPlayMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queuesHandler = app
-  .openapi(postQueuesPlayMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesUpdateActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQueuesUpdateActivityRouteHandler: RouteHandler<
+  typeof postQueuesUpdateActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

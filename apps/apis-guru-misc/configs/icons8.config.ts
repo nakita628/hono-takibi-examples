@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/icons8.com/1.0.0/openapi.yaml',
   output: './src/icons8/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/icons8/types.ts' },
   client: { output: './src/icons8/client.ts', baseUrl: '/' },
   rpc: { output: './src/icons8/rpc.ts', parseResponse: true },

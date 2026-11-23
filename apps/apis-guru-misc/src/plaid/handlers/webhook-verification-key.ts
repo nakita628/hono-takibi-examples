@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWebhookVerificationKeyGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWebhookVerificationKeyGetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const webhookVerificationKeyHandler = app.openapi(
-  postWebhookVerificationKeyGetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postWebhookVerificationKeyGetRouteHandler: RouteHandler<
+  typeof postWebhookVerificationKeyGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

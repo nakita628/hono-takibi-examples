@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1NameLocationsRoute,
   getV1NameOperationsRoute,
@@ -20,60 +20,104 @@ import {
   postV1ParentTrustConfigsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentCertificateIssuanceConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentCertificateIssuanceConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentCertificateMapEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentCertificateMapEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentCertificateMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentCertificateMapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentDnsAuthorizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDnsAuthorizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentTrustConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentTrustConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameLocationsRouteHandler: RouteHandler<typeof getV1NameLocationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameOperationsRouteHandler: RouteHandler<
+  typeof getV1NameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameCancelRouteHandler: RouteHandler<typeof postV1NameCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentCertificateIssuanceConfigsRouteHandler: RouteHandler<
+  typeof getV1ParentCertificateIssuanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentCertificateIssuanceConfigsRouteHandler: RouteHandler<
+  typeof postV1ParentCertificateIssuanceConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentCertificateMapEntriesRouteHandler: RouteHandler<
+  typeof getV1ParentCertificateMapEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentCertificateMapEntriesRouteHandler: RouteHandler<
+  typeof postV1ParentCertificateMapEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentCertificateMapsRouteHandler: RouteHandler<
+  typeof getV1ParentCertificateMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentCertificateMapsRouteHandler: RouteHandler<
+  typeof postV1ParentCertificateMapsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentCertificatesRouteHandler: RouteHandler<
+  typeof getV1ParentCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentCertificatesRouteHandler: RouteHandler<
+  typeof postV1ParentCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentDnsAuthorizationsRouteHandler: RouteHandler<
+  typeof getV1ParentDnsAuthorizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDnsAuthorizationsRouteHandler: RouteHandler<
+  typeof postV1ParentDnsAuthorizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentTrustConfigsRouteHandler: RouteHandler<
+  typeof getV1ParentTrustConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentTrustConfigsRouteHandler: RouteHandler<
+  typeof postV1ParentTrustConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

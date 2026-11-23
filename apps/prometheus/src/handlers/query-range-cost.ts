@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getQueryRangeCostRoute, postQueryRangeCostRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getQueryRangeCostRoute, postQueryRangeCostRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueryRangeCostRouteHandler: RouteHandler<typeof getQueryRangeCostRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const queryRangeCostHandler = app
-  .openapi(getQueryRangeCostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryRangeCostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQueryRangeCostRouteHandler: RouteHandler<typeof postQueryRangeCostRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

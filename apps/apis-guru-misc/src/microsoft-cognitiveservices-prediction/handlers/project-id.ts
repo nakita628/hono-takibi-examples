@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postProjectIdClassifyIterationsPublishedNameImageNostoreRoute,
   postProjectIdClassifyIterationsPublishedNameImageRoute,
   postProjectIdClassifyIterationsPublishedNameUrlNostoreRoute,
@@ -10,30 +10,50 @@ import {
   postProjectIdDetectIterationsPublishedNameUrlRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postProjectIdClassifyIterationsPublishedNameImageRouteHandler: RouteHandler<
+  typeof postProjectIdClassifyIterationsPublishedNameImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectIdHandler = app
-  .openapi(postProjectIdClassifyIterationsPublishedNameImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdClassifyIterationsPublishedNameImageNostoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdClassifyIterationsPublishedNameUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdClassifyIterationsPublishedNameUrlNostoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdDetectIterationsPublishedNameImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdDetectIterationsPublishedNameImageNostoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdDetectIterationsPublishedNameUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectIdDetectIterationsPublishedNameUrlNostoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectIdClassifyIterationsPublishedNameImageNostoreRouteHandler: RouteHandler<
+  typeof postProjectIdClassifyIterationsPublishedNameImageNostoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdClassifyIterationsPublishedNameUrlRouteHandler: RouteHandler<
+  typeof postProjectIdClassifyIterationsPublishedNameUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdClassifyIterationsPublishedNameUrlNostoreRouteHandler: RouteHandler<
+  typeof postProjectIdClassifyIterationsPublishedNameUrlNostoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdDetectIterationsPublishedNameImageRouteHandler: RouteHandler<
+  typeof postProjectIdDetectIterationsPublishedNameImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdDetectIterationsPublishedNameImageNostoreRouteHandler: RouteHandler<
+  typeof postProjectIdDetectIterationsPublishedNameImageNostoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdDetectIterationsPublishedNameUrlRouteHandler: RouteHandler<
+  typeof postProjectIdDetectIterationsPublishedNameUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectIdDetectIterationsPublishedNameUrlNostoreRouteHandler: RouteHandler<
+  typeof postProjectIdDetectIterationsPublishedNameUrlNostoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

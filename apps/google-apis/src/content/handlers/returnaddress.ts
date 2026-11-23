@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postReturnaddressBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postReturnaddressBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const returnaddressHandler = app.openapi(postReturnaddressBatchRoute, (c) => {
+export const postReturnaddressBatchRouteHandler: RouteHandler<
+  typeof postReturnaddressBatchRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

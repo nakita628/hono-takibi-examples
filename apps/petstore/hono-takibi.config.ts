@@ -5,7 +5,7 @@ export default defineConfig({
   input: 'https://petstore3.swagger.io/api/v3/openapi.json',
   // Route definitions (createRoute + Zod schemas) in one file.
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

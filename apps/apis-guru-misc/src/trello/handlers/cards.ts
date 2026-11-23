@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCardsIdCardActionsIdActionCommentsRoute,
   deleteCardsIdCardAttachmentsIdAttachmentRoute,
   deleteCardsIdCardChecklistIdChecklistCheckItemIdCheckItemRoute,
@@ -57,171 +57,326 @@ import {
   putCardsIdCardSubscribedRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCardsRouteHandler: RouteHandler<typeof postCardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cardsHandler = app
-  .openapi(postCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardActionsCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardActionsIdActionCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardActionsIdActionCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardAttachmentsIdAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardAttachmentsIdAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardBoardFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardCheckItemStatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardChecklistIdChecklistCurrentCheckItemIdCheckItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardChecklistIdChecklistCheckItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardChecklistIdChecklistCheckItemIdCheckItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardChecklistIdChecklistCheckItemIdCheckItemConvertToCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemPosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardChecklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardChecklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardChecklistsIdChecklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardClosedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardDescRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardDueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardIdAttachmentCoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardIdBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardIdLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardIdLabelsIdLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardIdListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardIdMembersIdMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardLabelsColorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardListFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardMarkAssociatedNotificationsReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardMembersVotedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardMembersVotedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardMembersVotedIdMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardPosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCardsIdCardStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCardsIdCardStickersIdStickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardStickersIdStickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardStickersIdStickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCardsIdCardSubscribedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCardsIdCardFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCardsIdCardRouteHandler: RouteHandler<typeof deleteCardsIdCardRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardRouteHandler: RouteHandler<typeof getCardsIdCardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardRouteHandler: RouteHandler<typeof putCardsIdCardRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardActionsRouteHandler: RouteHandler<
+  typeof getCardsIdCardActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardActionsCommentsRouteHandler: RouteHandler<
+  typeof postCardsIdCardActionsCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardActionsIdActionCommentsRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardActionsIdActionCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardActionsIdActionCommentsRouteHandler: RouteHandler<
+  typeof putCardsIdCardActionsIdActionCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardAttachmentsRouteHandler: RouteHandler<
+  typeof getCardsIdCardAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardAttachmentsRouteHandler: RouteHandler<
+  typeof postCardsIdCardAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardAttachmentsIdAttachmentRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardAttachmentsIdAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardAttachmentsIdAttachmentRouteHandler: RouteHandler<
+  typeof getCardsIdCardAttachmentsIdAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardBoardRouteHandler: RouteHandler<
+  typeof getCardsIdCardBoardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardBoardFieldRouteHandler: RouteHandler<
+  typeof getCardsIdCardBoardFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardCheckItemStatesRouteHandler: RouteHandler<
+  typeof getCardsIdCardCheckItemStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardChecklistIdChecklistCurrentCheckItemIdCheckItemRouteHandler: RouteHandler<
+  typeof putCardsIdCardChecklistIdChecklistCurrentCheckItemIdCheckItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardChecklistIdChecklistCheckItemRouteHandler: RouteHandler<
+  typeof postCardsIdCardChecklistIdChecklistCheckItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardChecklistIdChecklistCheckItemIdCheckItemRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardChecklistIdChecklistCheckItemIdCheckItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardChecklistIdChecklistCheckItemIdCheckItemConvertToCardRouteHandler: RouteHandler<
+  typeof postCardsIdCardChecklistIdChecklistCheckItemIdCheckItemConvertToCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemNameRouteHandler: RouteHandler<
+  typeof putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemPosRouteHandler: RouteHandler<
+  typeof putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemPosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemStateRouteHandler: RouteHandler<
+  typeof putCardsIdCardChecklistIdChecklistCheckItemIdCheckItemStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardChecklistsRouteHandler: RouteHandler<
+  typeof getCardsIdCardChecklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardChecklistsRouteHandler: RouteHandler<
+  typeof postCardsIdCardChecklistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardChecklistsIdChecklistRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardChecklistsIdChecklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardClosedRouteHandler: RouteHandler<
+  typeof putCardsIdCardClosedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardDescRouteHandler: RouteHandler<typeof putCardsIdCardDescRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardDueRouteHandler: RouteHandler<typeof putCardsIdCardDueRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardIdAttachmentCoverRouteHandler: RouteHandler<
+  typeof putCardsIdCardIdAttachmentCoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardIdBoardRouteHandler: RouteHandler<
+  typeof putCardsIdCardIdBoardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardIdLabelsRouteHandler: RouteHandler<
+  typeof postCardsIdCardIdLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardIdLabelsIdLabelRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardIdLabelsIdLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardIdListRouteHandler: RouteHandler<
+  typeof putCardsIdCardIdListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardIdMembersRouteHandler: RouteHandler<
+  typeof postCardsIdCardIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardIdMembersRouteHandler: RouteHandler<
+  typeof putCardsIdCardIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardIdMembersIdMemberRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardIdMembersIdMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardLabelsRouteHandler: RouteHandler<
+  typeof postCardsIdCardLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardLabelsRouteHandler: RouteHandler<
+  typeof putCardsIdCardLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardLabelsColorRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardLabelsColorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardListRouteHandler: RouteHandler<typeof getCardsIdCardListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardListFieldRouteHandler: RouteHandler<
+  typeof getCardsIdCardListFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardMarkAssociatedNotificationsReadRouteHandler: RouteHandler<
+  typeof postCardsIdCardMarkAssociatedNotificationsReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardMembersRouteHandler: RouteHandler<
+  typeof getCardsIdCardMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardMembersVotedRouteHandler: RouteHandler<
+  typeof getCardsIdCardMembersVotedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardMembersVotedRouteHandler: RouteHandler<
+  typeof postCardsIdCardMembersVotedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardMembersVotedIdMemberRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardMembersVotedIdMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardNameRouteHandler: RouteHandler<typeof putCardsIdCardNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardPosRouteHandler: RouteHandler<typeof putCardsIdCardPosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardStickersRouteHandler: RouteHandler<
+  typeof getCardsIdCardStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCardsIdCardStickersRouteHandler: RouteHandler<
+  typeof postCardsIdCardStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCardsIdCardStickersIdStickerRouteHandler: RouteHandler<
+  typeof deleteCardsIdCardStickersIdStickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardStickersIdStickerRouteHandler: RouteHandler<
+  typeof getCardsIdCardStickersIdStickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardStickersIdStickerRouteHandler: RouteHandler<
+  typeof putCardsIdCardStickersIdStickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCardsIdCardSubscribedRouteHandler: RouteHandler<
+  typeof putCardsIdCardSubscribedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCardsIdCardFieldRouteHandler: RouteHandler<
+  typeof getCardsIdCardFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/fungenerators.com/random-facts/1.5/openapi.yaml',
   output: './src/fungenerators-random-facts/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fungenerators-random-facts/types.ts' },
   client: { output: './src/fungenerators-random-facts/client.ts', baseUrl: '/' },
   rpc: { output: './src/fungenerators-random-facts/rpc.ts', parseResponse: true },

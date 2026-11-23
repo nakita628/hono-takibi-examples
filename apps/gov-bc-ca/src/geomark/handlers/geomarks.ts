@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGeomarksGeomarkIdBoundingBoxFileFormatExtensionRoute,
   getGeomarksGeomarkIdFeatureFileFormatExtensionRoute,
   getGeomarksGeomarkIdFileFormatExtensionRoute,
@@ -9,27 +9,42 @@ import {
   postGeomarksNewRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGeomarksCopyRouteHandler: RouteHandler<typeof postGeomarksCopyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const geomarksHandler = app
-  .openapi(postGeomarksCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeomarksNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeomarksGeomarkIdFileFormatExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeomarksGeomarkIdBoundingBoxFileFormatExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeomarksGeomarkIdFeatureFileFormatExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeomarksGeomarkIdPartsFileFormatExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGeomarksGeomarkIdPointFileFormatExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGeomarksNewRouteHandler: RouteHandler<typeof postGeomarksNewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeomarksGeomarkIdFileFormatExtensionRouteHandler: RouteHandler<
+  typeof getGeomarksGeomarkIdFileFormatExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeomarksGeomarkIdBoundingBoxFileFormatExtensionRouteHandler: RouteHandler<
+  typeof getGeomarksGeomarkIdBoundingBoxFileFormatExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeomarksGeomarkIdFeatureFileFormatExtensionRouteHandler: RouteHandler<
+  typeof getGeomarksGeomarkIdFeatureFileFormatExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeomarksGeomarkIdPartsFileFormatExtensionRouteHandler: RouteHandler<
+  typeof getGeomarksGeomarkIdPartsFileFormatExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGeomarksGeomarkIdPointFileFormatExtensionRouteHandler: RouteHandler<
+  typeof getGeomarksGeomarkIdPointFileFormatExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

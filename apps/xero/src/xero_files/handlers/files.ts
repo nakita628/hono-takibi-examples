@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFilesFileIdAssociationsObjectIdRoute,
   deleteFilesFileIdRoute,
   getFilesFileIdAssociationsRoute,
@@ -12,36 +12,54 @@ import {
   putFilesFileIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFilesRouteHandler: RouteHandler<typeof getFilesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const filesHandler = app
-  .openapi(getFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFilesFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFilesFileIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFilesFileIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFilesFileIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFilesFileIdAssociationsObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFilesRouteHandler: RouteHandler<typeof postFilesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFilesFileIdRouteHandler: RouteHandler<typeof getFilesFileIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFilesFileIdRouteHandler: RouteHandler<typeof putFilesFileIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFilesFileIdRouteHandler: RouteHandler<typeof deleteFilesFileIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postFilesFolderIdRouteHandler: RouteHandler<typeof postFilesFolderIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFilesFileIdContentRouteHandler: RouteHandler<
+  typeof getFilesFileIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFilesFileIdAssociationsRouteHandler: RouteHandler<
+  typeof getFilesFileIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFilesFileIdAssociationsRouteHandler: RouteHandler<
+  typeof postFilesFileIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFilesFileIdAssociationsObjectIdRouteHandler: RouteHandler<
+  typeof deleteFilesFileIdAssociationsObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

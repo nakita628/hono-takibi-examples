@@ -2061,6 +2061,23 @@ type JournalStatusResponse = {
     download_url?: string | undefined
   }
 }
+type ReportJournalsJournalDebitItems = {
+  id: bigint | null
+  line_type: {}
+  account_item_id: bigint
+  amount: bigint
+  net_amount: bigint | null
+  vat: bigint | null
+  tax_code: number | null
+  partner_id: bigint | null
+  item_id: bigint | null
+  section_id: bigint | null
+  segment_tag_1_id: bigint | null
+  segment_tag_2_id: bigint | null
+  segment_tag_3_id: bigint | null
+  memo_tag_ids: bigint[]
+  description: string | null
+}
 type ReportJournalsJournal = {
   id: bigint
   deal_id: bigint | null
@@ -2076,24 +2093,8 @@ type ReportJournalsJournal = {
   created_at: string
   updated_at: string
   receipt_ids: bigint[]
-  debit: {
-    id: bigint | null
-    line_type: {}
-    account_item_id: bigint
-    amount: bigint
-    net_amount: bigint | null
-    vat: bigint | null
-    tax_code: number | null
-    partner_id: bigint | null
-    item_id: bigint | null
-    section_id: bigint | null
-    segment_tag_1_id: bigint | null
-    segment_tag_2_id: bigint | null
-    segment_tag_3_id: bigint | null
-    memo_tag_ids: bigint[]
-    description: string | null
-  }[]
-  credit: unknown[]
+  debit: ReportJournalsJournalDebitItems[]
+  credit: ReportJournalsJournalDebitItems[]
 }
 type TrialBsResponse = {
   trial_bs: {
@@ -5173,6 +5174,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -6489,6 +6496,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -7113,6 +7126,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -7320,6 +7339,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError | MessagesError
@@ -8211,6 +8236,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -8473,6 +8504,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint; payment_id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint; payment_id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -8824,6 +8861,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -9383,6 +9426,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -10068,6 +10117,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { id: bigint; type: 'bank_account' | 'credit_card' | 'wallet' } } & {
               query: { company_id: bigint }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint; type: 'bank_account' | 'credit_card' | 'wallet' } } & {
+              query: { company_id: bigint }
+            }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -10393,6 +10450,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -10587,6 +10650,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -15441,6 +15510,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -15818,6 +15893,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -16103,6 +16184,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -16444,6 +16531,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -16846,6 +16939,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -17191,6 +17290,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
             outputFormat: 'json'
             status: 400
@@ -17530,6 +17635,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError
@@ -18093,6 +18204,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $delete:
+        | {
+            input: { param: { segment_id: bigint; id: bigint } } & { query: { company_id: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { segment_id: bigint; id: bigint } } & { query: { company_id: bigint } }
             output: BadRequestError

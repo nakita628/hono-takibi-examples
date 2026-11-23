@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ote-godaddy.com/shoppers/1.0.0/openapi.yaml',
   output: './src/shoppers/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shoppers/types.ts' },
   client: { output: './src/shoppers/client.ts', baseUrl: '/' },
   rpc: { output: './src/shoppers/rpc.ts', parseResponse: true },

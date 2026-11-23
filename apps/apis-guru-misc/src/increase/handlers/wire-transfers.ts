@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWireTransfersRoute,
   getWireTransfersWireTransferIdRoute,
   postWireTransfersRoute,
@@ -7,21 +7,32 @@ import {
   postWireTransfersWireTransferIdCancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWireTransfersRouteHandler: RouteHandler<typeof getWireTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const wireTransfersHandler = app
-  .openapi(getWireTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWireTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWireTransfersWireTransferIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWireTransfersWireTransferIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWireTransfersWireTransferIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWireTransfersRouteHandler: RouteHandler<typeof postWireTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWireTransfersWireTransferIdRouteHandler: RouteHandler<
+  typeof getWireTransfersWireTransferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWireTransfersWireTransferIdApproveRouteHandler: RouteHandler<
+  typeof postWireTransfersWireTransferIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWireTransfersWireTransferIdCancelRouteHandler: RouteHandler<
+  typeof postWireTransfersWireTransferIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGroupsCreateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGroupsCreateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const groupsCreateHandler = app.openapi(postGroupsCreateRoute, (c) => {
+export const postGroupsCreateRouteHandler: RouteHandler<typeof postGroupsCreateRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -2099,6 +2099,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                container?: string | undefined
+                include?: string | undefined
+                providerAccountId?: string | undefined
+                requestId?: string | undefined
+                status?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                container?: string | undefined
+                include?: string | undefined
+                providerAccountId?: string | undefined
+                requestId?: string | undefined
+                status?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post:
         | {
             input: { json: CreateAccountRequest }
@@ -2112,6 +2142,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | { input: { json: CreateAccountRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: CreateAccountRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/accounts/evaluateAddress': {
@@ -2128,6 +2160,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | { input: { json: EvaluateAddressRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: EvaluateAddressRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/accounts/historicalBalances': {
@@ -2164,31 +2198,102 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                fromDate?: string | undefined
+                includeCF?: boolean | undefined
+                interval?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                fromDate?: string | undefined
+                includeCF?: boolean | undefined
+                interval?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/accounts/:accountId': {
-      $delete: {
-        input: { param: { accountId: bigint } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $get: {
-        input: { param: { accountId: bigint } } & { query: { include?: string | undefined } }
-        output: AccountResponse
-        outputFormat: 'text'
-        status: 200
-      }
-      $put: {
-        input: { param: { accountId: bigint } } & { json: UpdateAccountRequest }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | { input: { param: { accountId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { accountId: bigint } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | { input: { param: { accountId: bigint } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { accountId: bigint } }; output: {}; outputFormat: string; status: 404 }
+      $get:
+        | {
+            input: { param: { accountId: bigint } } & { query: { include?: string | undefined } }
+            output: AccountResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { param: { accountId: bigint } } & { query: { include?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { accountId: bigint } } & { query: { include?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { accountId: bigint } } & { json: UpdateAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { accountId: bigint } } & { json: UpdateAccountRequest }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { accountId: bigint } } & { json: UpdateAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { accountId: bigint } } & { json: UpdateAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/auth/apiKey': {
-      $get: { input: {}; output: ApiKeyResponse; outputFormat: 'text'; status: 200 }
+      $get:
+        | { input: {}; output: ApiKeyResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
       $post:
         | {
             input: { json: ApiKeyRequest }
@@ -2197,59 +2302,156 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 201
           }
         | { input: { json: ApiKeyRequest }; output: YodleeError; outputFormat: 'text'; status: 400 }
+        | { input: { json: ApiKeyRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ApiKeyRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/auth/apiKey/:key': {
-      $delete: {
-        input: { param: { key: string } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 201 }
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { key: string } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { key: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/auth/token': {
-      $delete: { input: {}; output: YodleeError; outputFormat: 'text'; status: 401 }
+      $delete:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: YodleeError; outputFormat: 'text'; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
       $post:
         | { input: {}; output: ClientCredentialTokenResponse; outputFormat: 'text'; status: 201 }
         | { input: {}; output: YodleeError; outputFormat: 'text'; status: 400 }
         | { input: {}; output: YodleeError; outputFormat: 'text'; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/cobrand/config/notifications/events': {
-      $get: {
-        input: {
-          query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
-        }
-        output: CobrandNotificationResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: CobrandNotificationResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/cobrand/config/notifications/events/:eventName': {
-      $delete: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $post: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
-          json: CreateCobrandNotificationEventRequest
-        }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $put: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
-          json: UpdateCobrandNotificationEventRequest
-        }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateCobrandNotificationEventRequest
+            }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateCobrandNotificationEventRequest
+            }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateCobrandNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/cobrand/login': {
@@ -2272,52 +2474,150 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 401
           }
+        | { input: { json: CobrandLoginRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
-    '/cobrand/logout': { $post: { input: {}; output: {}; outputFormat: string; status: 200 } }
+    '/cobrand/logout': {
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+    }
   } & {
     '/cobrand/publicKey': {
-      $get: { input: {}; output: CobrandPublicKeyResponse; outputFormat: 'text'; status: 200 }
+      $get:
+        | { input: {}; output: CobrandPublicKeyResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/configs/notifications/events': {
-      $get: {
-        input: {
-          query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
-        }
-        output: ConfigsNotificationResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: ConfigsNotificationResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: { eventName?: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/configs/notifications/events/:eventName': {
-      $delete: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $post: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
-          json: CreateConfigsNotificationEventRequest
-        }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $put: {
-        input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
-          json: UpdateConfigsNotificationEventRequest
-        }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $post:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateConfigsNotificationEventRequest
+            }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: CreateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateConfigsNotificationEventRequest
+            }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { eventName: 'REFRESH' | 'DATA_UPDATES' | 'AUTO_REFRESH_UPDATES' } } & {
+              json: UpdateConfigsNotificationEventRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/configs/publicKey': {
-      $get: { input: {}; output: ConfigsPublicKeyResponse; outputFormat: 'text'; status: 200 }
+      $get:
+        | { input: {}; output: ConfigsPublicKeyResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/dataExtracts/events': {
@@ -2334,6 +2634,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: { query: { eventName: string; fromDate: string; toDate: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { eventName: string; fromDate: string; toDate: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/dataExtracts/userData': {
@@ -2349,6 +2661,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: { query: { fromDate: string; loginName: string; toDate: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { fromDate: string; loginName: string; toDate: string } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2377,6 +2701,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: {
+              query: {
+                accountIds?: string | undefined
+                classificationType?: string | undefined
+                include?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountIds?: string | undefined
+                classificationType?: string | undefined
+                include?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2415,6 +2763,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: {
+              query: {
+                accountIds?: string | undefined
+                container?: string | undefined
+                fromDate?: string | undefined
+                include?: string | undefined
+                interval?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountIds?: string | undefined
+                container?: string | undefined
+                fromDate?: string | undefined
+                include?: string | undefined
+                interval?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2456,6 +2838,42 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                fromDate?: string | undefined
+                groupBy: string
+                include?: string | undefined
+                includeUserCategory?: boolean | undefined
+                interval?: string | undefined
+                toDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                fromDate?: string | undefined
+                groupBy: string
+                include?: string | undefined
+                includeUserCategory?: boolean | undefined
+                interval?: string | undefined
+                toDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/documents': {
@@ -2488,15 +2906,62 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                Keyword?: string | undefined
+                accountId?: string | undefined
+                docType?: string | undefined
+                fromDate?: string | undefined
+                toDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                Keyword?: string | undefined
+                accountId?: string | undefined
+                docType?: string | undefined
+                fromDate?: string | undefined
+                toDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/documents/:documentId': {
-      $delete: {
-        input: { param: { documentId: string } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | {
+            input: { param: { documentId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { documentId: string } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { documentId: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { documentId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $get:
         | {
             input: { param: { documentId: string } }
@@ -2509,6 +2974,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: { param: { documentId: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { documentId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2542,19 +3019,53 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                'assetClassification.classificationType'?: string | undefined
+                classificationValue?: string | undefined
+                include?: string | undefined
+                providerAccountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                'assetClassification.classificationType'?: string | undefined
+                classificationValue?: string | undefined
+                include?: string | undefined
+                providerAccountId?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/holdings/assetClassificationList': {
-      $get: {
-        input: {}
-        output: HoldingAssetClassificationListResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: {}
+            output: HoldingAssetClassificationListResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/holdings/holdingTypeList': {
-      $get: { input: {}; output: HoldingTypeListResponse; outputFormat: 'text'; status: 200 }
+      $get:
+        | { input: {}; output: HoldingTypeListResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/holdings/securities': {
@@ -2571,15 +3082,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: { query: { holdingId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { holdingId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providerAccounts': {
-      $get: {
-        input: { query: { include?: string | undefined; providerIds?: string | undefined } }
-        output: ProviderAccountResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { include?: string | undefined; providerIds?: string | undefined } }
+            output: ProviderAccountResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { query: { include?: string | undefined; providerIds?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { include?: string | undefined; providerIds?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $put:
         | {
             input: { query: { providerAccountIds: string } } & { json: ProviderAccountRequest }
@@ -2593,24 +3129,68 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: { query: { providerAccountIds: string } } & { json: ProviderAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { providerAccountIds: string } } & { json: ProviderAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providerAccounts/profile': {
-      $get: {
-        input: { query: { providerAccountId?: string | undefined } }
-        output: ProviderAccountUserProfileResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { providerAccountId?: string | undefined } }
+            output: ProviderAccountUserProfileResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | {
+            input: { query: { providerAccountId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { providerAccountId?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providerAccounts/:providerAccountId': {
-      $delete: {
-        input: { param: { providerAccountId: bigint } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | {
+            input: { param: { providerAccountId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { providerAccountId: bigint } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { providerAccountId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { providerAccountId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $get:
         | {
             input: { param: { providerAccountId: bigint } } & {
@@ -2628,17 +3208,58 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              query: { include?: string | undefined; requestId?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              query: { include?: string | undefined; requestId?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providerAccounts/:providerAccountId/preferences': {
-      $put: {
-        input: { param: { providerAccountId: bigint } } & {
-          json: ProviderAccountPreferencesRequest
-        }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $put:
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              json: ProviderAccountPreferencesRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              json: ProviderAccountPreferencesRequest
+            }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              json: ProviderAccountPreferencesRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { providerAccountId: bigint } } & {
+              json: ProviderAccountPreferencesRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providers': {
@@ -2679,6 +3300,42 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                capability?: string | undefined
+                dataset$filter?: string | undefined
+                fullAccountNumberFields?: string | undefined
+                institutionId?: bigint | undefined
+                name?: string | undefined
+                priority?: string | undefined
+                providerId?: string | undefined
+                skip?: number | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                capability?: string | undefined
+                dataset$filter?: string | undefined
+                fullAccountNumberFields?: string | undefined
+                institutionId?: bigint | undefined
+                name?: string | undefined
+                priority?: string | undefined
+                providerId?: string | undefined
+                skip?: number | undefined
+                top?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providers/count': {
@@ -2711,6 +3368,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                capability?: string | undefined
+                dataset$filter?: string | undefined
+                fullAccountNumberFields?: string | undefined
+                name?: string | undefined
+                priority?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                capability?: string | undefined
+                dataset$filter?: string | undefined
+                fullAccountNumberFields?: string | undefined
+                name?: string | undefined
+                priority?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/providers/:providerId': {
@@ -2726,6 +3411,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: { param: { providerId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { providerId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2758,6 +3455,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                container?: string | undefined
+                fromDate?: string | undefined
+                isLatest?: string | undefined
+                status?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                container?: string | undefined
+                fromDate?: string | undefined
+                isLatest?: string | undefined
+                status?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -2807,76 +3532,233 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                baseType?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                container?: string | undefined
+                detailCategoryId?: string | undefined
+                fromDate?: string | undefined
+                highLevelCategoryId?: string | undefined
+                keyword?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                baseType?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                container?: string | undefined
+                detailCategoryId?: string | undefined
+                fromDate?: string | undefined
+                highLevelCategoryId?: string | undefined
+                keyword?: string | undefined
+                skip?: number | undefined
+                toDate?: string | undefined
+                top?: number | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/transactions/categories': {
-      $get: { input: {}; output: TransactionCategoryResponse; outputFormat: 'text'; status: 200 }
-      $post: {
-        input: { json: TransactionCategoryRequest }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $put: {
-        input: { json: UpdateCategoryRequest }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $get:
+        | { input: {}; output: TransactionCategoryResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+      $post:
+        | {
+            input: { json: TransactionCategoryRequest }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { json: TransactionCategoryRequest }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { json: TransactionCategoryRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: TransactionCategoryRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | { input: { json: UpdateCategoryRequest }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { json: UpdateCategoryRequest }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | { input: { json: UpdateCategoryRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: UpdateCategoryRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/transactions/categories/rules': {
-      $get: {
-        input: {}
-        output: TransactionCategorizationRule[]
-        outputFormat: 'text'
-        status: 200
-      }
-      $post: {
-        input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $get:
+        | { input: {}; output: TransactionCategorizationRule[]; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+      $post:
+        | {
+            input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { action?: string | undefined; ruleParam?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/transactions/categories/rules/:ruleId': {
-      $delete: {
-        input: { param: { ruleId: bigint } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $post: {
-        input: { param: { ruleId: bigint } } & { query: { action: 'run' } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
-      $put: {
-        input: { param: { ruleId: bigint } } & { json: TransactionCategorizationRuleRequest }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | { input: { param: { ruleId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { ruleId: bigint } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | { input: { param: { ruleId: bigint } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { ruleId: bigint } }; output: {}; outputFormat: string; status: 404 }
+      $post:
+        | {
+            input: { param: { ruleId: bigint } } & { query: { action: 'run' } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { query: { action: 'run' } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { query: { action: 'run' } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { query: { action: 'run' } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+      $put:
+        | {
+            input: { param: { ruleId: bigint } } & { json: TransactionCategorizationRuleRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { json: TransactionCategorizationRuleRequest }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { json: TransactionCategorizationRuleRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { ruleId: bigint } } & { json: TransactionCategorizationRuleRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/transactions/categories/txnRules': {
-      $get: {
-        input: {}
-        output: TransactionCategorizationRuleResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: {}
+            output: TransactionCategorizationRuleResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/transactions/categories/:categoryId': {
-      $delete: {
-        input: { param: { categoryId: bigint } }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $delete:
+        | {
+            input: { param: { categoryId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { categoryId: bigint } }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { categoryId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { categoryId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/transactions/count': {
@@ -2921,37 +3803,112 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                baseType?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                container?: string | undefined
+                detailCategoryId?: string | undefined
+                fromDate?: string | undefined
+                highLevelCategoryId?: string | undefined
+                keyword?: string | undefined
+                toDate?: string | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                baseType?: string | undefined
+                categoryId?: string | undefined
+                categoryType?: string | undefined
+                container?: string | undefined
+                detailCategoryId?: string | undefined
+                fromDate?: string | undefined
+                highLevelCategoryId?: string | undefined
+                keyword?: string | undefined
+                toDate?: string | undefined
+                type?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/transactions/:transactionId': {
-      $put: {
-        input: { param: { transactionId: bigint } } & { json: TransactionRequest }
-        output: YodleeError
-        outputFormat: 'text'
-        status: 400
-      }
+      $put:
+        | {
+            input: { param: { transactionId: bigint } } & { json: TransactionRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { transactionId: bigint } } & { json: TransactionRequest }
+            output: YodleeError
+            outputFormat: 'text'
+            status: 400
+          }
+        | {
+            input: { param: { transactionId: bigint } } & { json: TransactionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { transactionId: bigint } } & { json: TransactionRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/user': {
-      $get: { input: {}; output: UserDetailResponse; outputFormat: 'text'; status: 200 }
-      $put: { input: { json: UpdateUserRequest }; output: {}; outputFormat: string; status: 200 }
+      $get:
+        | { input: {}; output: UserDetailResponse; outputFormat: 'text'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+      $put:
+        | { input: { json: UpdateUserRequest }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: UpdateUserRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: UpdateUserRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/user/accessTokens': {
-      $get: {
-        input: { query: { appIds: string } }
-        output: UserAccessTokensResponse
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { appIds: string } }
+            output: UserAccessTokensResponse
+            outputFormat: 'text'
+            status: 200
+          }
+        | { input: { query: { appIds: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { query: { appIds: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
-    '/user/logout': { $post: { input: {}; output: {}; outputFormat: string; status: 200 } }
+    '/user/logout': {
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+    }
   } & {
     '/user/register': {
       $post:
         | { input: { json: UserRequest }; output: UserResponse; outputFormat: 'text'; status: 200 }
         | { input: { json: UserRequest }; output: YodleeError; outputFormat: 'text'; status: 400 }
+        | { input: { json: UserRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: UserRequest }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/user/samlLogin': {
@@ -2968,9 +3925,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: { query: { issuer: string; samlResponse: string; source?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { issuer: string; samlResponse: string; source?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
-    '/user/unregister': { $delete: { input: {}; output: {}; outputFormat: string; status: 200 } }
+    '/user/unregister': {
+      $delete:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 404 }
+    }
   } & {
     '/verification': {
       $get:
@@ -2998,6 +3972,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                providerAccountId?: string | undefined
+                verificationType?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              query: {
+                accountId?: string | undefined
+                providerAccountId?: string | undefined
+                verificationType?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post:
         | {
             input: { json: VerificationRequest }
@@ -3011,6 +4009,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 400
           }
+        | { input: { json: VerificationRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: VerificationRequest }; output: {}; outputFormat: string; status: 404 }
       $put:
         | {
             input: { json: UpdateVerificationRequest }
@@ -3023,6 +4023,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: { json: UpdateVerificationRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: UpdateVerificationRequest }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -3039,6 +4051,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: YodleeError
             outputFormat: 'text'
             status: 400
+          }
+        | {
+            input: { param: { providerAccountId: string } } & { json: VerifyAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { providerAccountId: string } } & { json: VerifyAccountRequest }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   },

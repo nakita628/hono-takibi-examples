@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmObjectTags202609ObjectTypeIdTagIdRoute,
   getCrmObjectTags202609ObjectTypeIdRoute,
   getCrmObjectTags202609ObjectTypeIdTagIdRoute,
@@ -8,24 +8,38 @@ import {
   putCrmObjectTags202609ObjectTypeIdTagIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmObjectTags202609ObjectTypeIdRouteHandler: RouteHandler<
+  typeof getCrmObjectTags202609ObjectTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmObjectTags202609ObjectTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjectTags202609ObjectTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjectTags202609ObjectTypeIdTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmObjectTags202609ObjectTypeIdTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjectTags202609ObjectTypeIdTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmObjectTags202609ObjectTypeIdTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmObjectTags202609ObjectTypeIdRouteHandler: RouteHandler<
+  typeof postCrmObjectTags202609ObjectTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjectTags202609ObjectTypeIdTagIdRouteHandler: RouteHandler<
+  typeof getCrmObjectTags202609ObjectTypeIdTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjectTags202609ObjectTypeIdTagIdRouteHandler: RouteHandler<
+  typeof putCrmObjectTags202609ObjectTypeIdTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjectTags202609ObjectTypeIdTagIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjectTags202609ObjectTypeIdTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmObjectTags202609ObjectTypeIdTagIdRouteHandler: RouteHandler<
+  typeof patchCrmObjectTags202609ObjectTypeIdTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

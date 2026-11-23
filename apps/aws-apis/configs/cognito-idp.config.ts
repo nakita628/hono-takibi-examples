@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/cognito-idp/2016-04-18/openapi.yaml',
   output: './src/cognito-idp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cognito-idp/types.ts' },
   client: { output: './src/cognito-idp/client.ts', baseUrl: '/' },
   rpc: { output: './src/cognito-idp/rpc.ts', parseResponse: true },

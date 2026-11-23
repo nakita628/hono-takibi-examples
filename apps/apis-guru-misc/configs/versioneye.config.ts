@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/versioneye.com/v1/openapi.yaml',
   output: './src/versioneye/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/versioneye/types.ts' },
   client: { output: './src/versioneye/client.ts', baseUrl: '/' },
   rpc: { output: './src/versioneye/rpc.ts', parseResponse: true },

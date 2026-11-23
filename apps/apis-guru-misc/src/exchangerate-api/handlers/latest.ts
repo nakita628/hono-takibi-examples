@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLatestBaseCurrencyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLatestBaseCurrencyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const latestHandler = app.openapi(getLatestBaseCurrencyRoute, (c) => {
+export const getLatestBaseCurrencyRouteHandler: RouteHandler<
+  typeof getLatestBaseCurrencyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

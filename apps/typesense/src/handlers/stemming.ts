@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStemmingDictionariesDictionaryIdRoute,
   getStemmingDictionariesRoute,
   postStemmingDictionariesImportRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStemmingDictionariesRouteHandler: RouteHandler<
+  typeof getStemmingDictionariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stemmingHandler = app
-  .openapi(getStemmingDictionariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStemmingDictionariesDictionaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStemmingDictionariesImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStemmingDictionariesDictionaryIdRouteHandler: RouteHandler<
+  typeof getStemmingDictionariesDictionaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStemmingDictionariesImportRouteHandler: RouteHandler<
+  typeof postStemmingDictionariesImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

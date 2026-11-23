@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta1NameRoute,
   getV1beta1NameRoute,
   getV1beta1ParentConsumerQuotaMetricsRoute,
@@ -9,27 +9,42 @@ import {
   postV1beta1ParentProducerOverridesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1beta1NameRouteHandler: RouteHandler<typeof deleteV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(deleteV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentConsumerQuotaMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentConsumerQuotaMetricsImportProducerOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentProducerOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentProducerOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1beta1NameRouteHandler: RouteHandler<typeof getV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1beta1NameRouteHandler: RouteHandler<typeof patchV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentConsumerQuotaMetricsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentConsumerQuotaMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentConsumerQuotaMetricsImportProducerOverridesRouteHandler: RouteHandler<
+  typeof postV1beta1ParentConsumerQuotaMetricsImportProducerOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentProducerOverridesRouteHandler: RouteHandler<
+  typeof getV1beta1ParentProducerOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentProducerOverridesRouteHandler: RouteHandler<
+  typeof postV1beta1ParentProducerOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

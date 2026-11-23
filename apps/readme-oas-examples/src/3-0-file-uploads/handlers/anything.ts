@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAnythingImagePngRoute,
   postAnythingMultipartFormdataRoute,
   putAnythingMultipartFormdataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAnythingImagePngRouteHandler: RouteHandler<
+  typeof postAnythingImagePngRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(postAnythingImagePngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingMultipartFormdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingMultipartFormdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnythingMultipartFormdataRouteHandler: RouteHandler<
+  typeof postAnythingMultipartFormdataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingMultipartFormdataRouteHandler: RouteHandler<
+  typeof putAnythingMultipartFormdataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

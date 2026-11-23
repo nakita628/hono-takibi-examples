@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmExtensionsVideoconferencing202609SettingsAppIdRoute,
   getCrmExtensionsVideoconferencing202609SettingsAppIdRoute,
   putCrmExtensionsVideoconferencing202609SettingsAppIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmExtensionsVideoconferencing202609SettingsAppIdRouteHandler: RouteHandler<
+  typeof getCrmExtensionsVideoconferencing202609SettingsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmExtensionsVideoconferencing202609SettingsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmExtensionsVideoconferencing202609SettingsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmExtensionsVideoconferencing202609SettingsAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putCrmExtensionsVideoconferencing202609SettingsAppIdRouteHandler: RouteHandler<
+  typeof putCrmExtensionsVideoconferencing202609SettingsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmExtensionsVideoconferencing202609SettingsAppIdRouteHandler: RouteHandler<
+  typeof deleteCrmExtensionsVideoconferencing202609SettingsAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

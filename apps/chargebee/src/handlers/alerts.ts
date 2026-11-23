@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAlertsAlertIdAlertStatusesRoute,
   getAlertsAlertIdRoute,
   getAlertsRoute,
@@ -8,24 +8,34 @@ import {
   postAlertsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlertsAlertIdRouteHandler: RouteHandler<typeof getAlertsAlertIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const alertsHandler = app
-  .openapi(getAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsAlertIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlertsAlertIdAlertStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlertsAlertIdRouteHandler: RouteHandler<typeof postAlertsAlertIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsAlertIdDeleteRouteHandler: RouteHandler<
+  typeof postAlertsAlertIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsRouteHandler: RouteHandler<typeof getAlertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlertsRouteHandler: RouteHandler<typeof postAlertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlertsAlertIdAlertStatusesRouteHandler: RouteHandler<
+  typeof getAlertsAlertIdAlertStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

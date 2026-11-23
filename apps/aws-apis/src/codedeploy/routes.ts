@@ -689,8 +689,8 @@ const DeploymentGroupInfoListSchema = z
 const ErrorMessageSchema = z.string().openapi('ErrorMessage')
 
 type BatchGetDeploymentGroupsOutputType = {
-  deploymentGroupsInfo?: z.infer<typeof DeploymentGroupInfoListSchema> & unknown
-  errorMessage?: z.infer<typeof ErrorMessageSchema> & unknown
+  deploymentGroupsInfo?: z.infer<typeof DeploymentGroupInfoListSchema>
+  errorMessage?: z.infer<typeof ErrorMessageSchema>
 }
 
 const ErrorCodeSchema = z
@@ -979,9 +979,7 @@ const DeploymentInfoSchema = z
 
 const DeploymentsInfoListSchema = z.array(DeploymentInfoSchema).openapi('DeploymentsInfoList')
 
-type BatchGetDeploymentsOutputType = {
-  deploymentsInfo?: z.infer<typeof DeploymentsInfoListSchema> & unknown
-}
+type BatchGetDeploymentsOutputType = { deploymentsInfo?: z.infer<typeof DeploymentsInfoListSchema> }
 
 const TagSchema = z
   .object({

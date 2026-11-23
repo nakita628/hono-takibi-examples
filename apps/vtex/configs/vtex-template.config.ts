@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/VTEX_TEMPLATE/1.0.0/openapi.yaml',
   output: './src/vtex-template/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vtex-template/types.ts' },
   client: { output: './src/vtex-template/client.ts', baseUrl: '/' },
   rpc: { output: './src/vtex-template/rpc.ts', parseResponse: true },

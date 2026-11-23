@@ -1,87 +1,4286 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  agentWorkersHandler,
-  appsHandler,
-  appsUHandler,
-  authHandler,
-  concurrencyGroupsHandler,
-  configsHandler,
-  docsHandler,
-  eeLicenseHandler,
-  embeddingsHandler,
-  flowsHandler,
-  githubAppHandler,
-  groupsHandler,
-  healthHandler,
-  indexerHandler,
-  integrationsHandler,
-  jobsHandler,
-  mcpHandler,
-  minKeepAliveVersionHandler,
-  nativeTriggersHandler,
-  oauthHandler,
-  oidcHandler,
-  openapiYamlHandler,
-  samlHandler,
-  schedulesHandler,
-  scriptsHandler,
-  scriptsUHandler,
-  serviceLogsHandler,
-  settingsHandler,
-  settingsUHandler,
-  srchHandler,
-  teamsHandler,
-  tokensHandler,
-  uptodateHandler,
-  usersHandler,
-  versionHandler,
-  wellKnownHandler,
-  wHandler,
-  workersHandler,
-  workspacesHandler,
+  deleteConcurrencyGroupsPruneConcurrencyIdRoute,
+  deleteConfigsUpdateNameRoute,
+  deleteGithubAppGhesAssignWorkspaceIdInstallationIdRoute,
+  deleteGroupsDeleteNameRoute,
+  deleteIndexerDeleteIdxNameRoute,
+  deleteSettingsDatatableRolesIdRoute,
+  deleteSettingsExternalInstancePgDatabasesNameRoute,
+  deleteUsersDeleteEmailRoute,
+  deleteUsersTokensDeleteTokenPrefixRoute,
+  deleteWorkspacesDeleteWorkspaceRoute,
+  deleteWWorkspaceAiSharedArtifactsDeleteIdRoute,
+  deleteWWorkspaceAiSharedSessionsDeleteIdRoute,
+  deleteWWorkspaceAiSharedSessionsOpenedIdRoute,
+  deleteWWorkspaceAmqpTriggersDeletePathRoute,
+  deleteWWorkspaceAppsDeletePathRoute,
+  deleteWWorkspaceAppsUDeleteS3FileRoute,
+  deleteWWorkspaceAzureTriggersDeletePathRoute,
+  deleteWWorkspaceAzureTriggersSubscriptionsDeletePathRoute,
+  deleteWWorkspaceCaptureIdRoute,
+  deleteWWorkspaceEmailTriggersDeletePathRoute,
+  deleteWWorkspaceFlowConversationsDeleteConversationIdRoute,
+  deleteWWorkspaceFlowsDeletePathRoute,
+  deleteWWorkspaceFoldersDeleteNameRoute,
+  deleteWWorkspaceGcpTriggersDeletePathRoute,
+  deleteWWorkspaceGcpTriggersSubscriptionsDeletePathRoute,
+  deleteWWorkspaceGcpTriggersSubscriptionsDeleteRoute,
+  deleteWWorkspaceGithubAppInstallationInstallationIdRoute,
+  deleteWWorkspaceGroupsDeleteNameRoute,
+  deleteWWorkspaceHttpTriggersDeletePathRoute,
+  deleteWWorkspaceJobHelpersDeleteS3FileRoute,
+  deleteWWorkspaceKafkaTriggersDeletePathRoute,
+  deleteWWorkspaceMqttTriggersDeletePathRoute,
+  deleteWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsDeleteRoute,
+  deleteWWorkspaceNativeTriggersIntegrationsServiceNameDeleteRoute,
+  deleteWWorkspaceNativeTriggersServiceNameDeleteExternalIdRoute,
+  deleteWWorkspaceNatsTriggersDeletePathRoute,
+  deleteWWorkspacePostgresTriggersDeletePathRoute,
+  deleteWWorkspacePostgresTriggersPublicationDeletePublicationPathRoute,
+  deleteWWorkspacePostgresTriggersSlotDeletePathRoute,
+  deleteWWorkspaceResourcesDeleteBulkRoute,
+  deleteWWorkspaceResourcesDeletePathRoute,
+  deleteWWorkspaceResourcesHistoryPPathRoute,
+  deleteWWorkspaceResourcesTypeDeletePathRoute,
+  deleteWWorkspaceSchedulesDeletePathRoute,
+  deleteWWorkspaceScriptsDeleteBulkRoute,
+  deleteWWorkspaceSlackAgentsAgentChannelsPathRoute,
+  deleteWWorkspaceSqsTriggersDeletePathRoute,
+  deleteWWorkspaceTrashDeleteIdRoute,
+  deleteWWorkspaceUsersDeleteUsernameRoute,
+  deleteWWorkspaceVariablesDeleteBulkRoute,
+  deleteWWorkspaceVariablesDeletePathRoute,
+  deleteWWorkspaceVolumesDeleteNameRoute,
+  deleteWWorkspaceWebsocketTriggersDeletePathRoute,
+  deleteWWorkspaceWorkspacesDeleteDatatableMigrationDatatableNameTimestampRoute,
+  deleteWWorkspaceWorkspacesDeleteGitSyncRepositoryRoute,
+  deleteWWorkspaceWorkspacesProtectionRulesRuleNameRoute,
+  deleteWWorkspaceWorkspacesSlackOauthConfigRoute,
+  getAgentWorkersGetMinVersionRoute,
+  getAgentWorkersListBlacklistedTokensRoute,
+  getAppsHubGetIdRoute,
+  getAppsHubGetRawIdRoute,
+  getAppsHubListRoute,
+  getAppsUEmbedTokenByCustomPathCustomPathRoute,
+  getAppsUGuestEntryByCustomPathCustomPathRoute,
+  getAppsUPublicAppByCustomPathCustomPathRoute,
+  getAuthIsPasswordLoginDisabledRoute,
+  getAuthIsSmtpConfiguredRoute,
+  getAuthLoginLinkTokenRoute,
+  getConcurrencyGroupsIdKeyRoute,
+  getConcurrencyGroupsListRoute,
+  getConfigsAutoscalingDiagnosticsWorkerGroupRoute,
+  getConfigsGetNameRoute,
+  getConfigsListAllDedicatedWithDepsRoute,
+  getConfigsListAllWorkspaceDependenciesRoute,
+  getConfigsListAutoscalingEventsWorkerGroupRoute,
+  getConfigsListAvailablePythonVersionsRoute,
+  getConfigsListRoute,
+  getConfigsListWorkerGroupsRoute,
+  getConfigsNativeKubernetesAutoscalingHealthcheckRoute,
+  getDocsPageRoute,
+  getDocsSearchRoute,
+  getEeLicenseRoute,
+  getEmbeddingsQueryHubScriptsRoute,
+  getFlowsHubGetIdRoute,
+  getFlowsHubListRoute,
+  getGithubAppConnectedRepositoriesRoute,
+  getGithubAppGhesConfigRoute,
+  getGithubAppGhesDiscoverRoute,
+  getGroupsExportRoute,
+  getGroupsGetNameRoute,
+  getGroupsListRoute,
+  getGroupsListWithWorkspacesRoute,
+  getHealthDetailedRoute,
+  getHealthStatusRoute,
+  getIndexerStatusRoute,
+  getIndexerStorageRoute,
+  getIntegrationsHubAppMetaRoute,
+  getIntegrationsHubListRoute,
+  getJobsCompletedCountByTagRoute,
+  getJobsDbClockRoute,
+  getMcpOauthCallbackRoute,
+  getMcpOauthStartRoute,
+  getMcpWWorkspaceListToolsRoute,
+  getMinKeepAliveVersionRoute,
+  getOauthGetConnectClientRoute,
+  getOauthListConnectsRoute,
+  getOauthListLoginsRoute,
+  getOidcSigningStatusRoute,
+  getOpenapiYamlRoute,
+  getScriptsHubGetFullPathRoute,
+  getScriptsHubGetPathRoute,
+  getScriptsHubPickPathRoute,
+  getScriptsHubTopRoute,
+  getScriptsUTokenedRawWorkspaceTokenPathRoute,
+  getServiceLogsGetLogFilePathRoute,
+  getServiceLogsListFilesRoute,
+  getSettingsAuditLogsS3BackfillStatusRoute,
+  getSettingsAuditLogsS3StatusRoute,
+  getSettingsCriticalAlertsRoute,
+  getSettingsDatatableRolesRoute,
+  getSettingsExternalInstancePgDatabasesRoute,
+  getSettingsExternalInstancePgStatusRoute,
+  getSettingsGetStatsRoute,
+  getSettingsGithubAppStaleWebhooksRoute,
+  getSettingsGlobalKeyRoute,
+  getSettingsInstanceConfigRoute,
+  getSettingsInstanceHashRoute,
+  getSettingsInstanceUiRoute,
+  getSettingsLatestKeyRenewalAttemptRoute,
+  getSettingsListGlobalRoute,
+  getSettingsLocalRoute,
+  getSettingsLogCleanupStatusRoute,
+  getSettingsObjectStorageUsageRoute,
+  getSettingsOfflineLicenseStatusRoute,
+  getSettingsSmtpConfiguredRoute,
+  getSettingsURuffConfigRoute,
+  getSrchIndexSearchCountServiceLogsRoute,
+  getSrchIndexSearchServiceLogsRoute,
+  getSrchIndexStorageDiskRoute,
+  getSrchWWorkspaceIndexSearchJobRoute,
+  getTokensListScopesRoute,
+  getUptodateRoute,
+  getUsersAllRunnablesRoute,
+  getUsersCloudTrialOfferRoute,
+  getUsersEmailRoute,
+  getUsersExistsEmailRoute,
+  getUsersExportRoute,
+  getUsersExtJwtTokensRoute,
+  getUsersGuestsRoute,
+  getUsersListAsSuperAdminRoute,
+  getUsersListInvitesRoute,
+  getUsersOffboardPreviewEmailRoute,
+  getUsersOnboardingProfileRoute,
+  getUsersRefreshTokenRoute,
+  getUsersTokensListRoute,
+  getUsersTutorialProgressRoute,
+  getUsersUsageRoute,
+  getUsersUsernameInfoEmailRoute,
+  getUsersWhoamiRoute,
+  getVersionRoute,
+  getWellKnownJwksJsonRoute,
+  getWorkersCustomTagsRoute,
+  getWorkersDevWorkspaceIsolationRoute,
+  getWorkersExistsWorkersWithTagsRoute,
+  getWorkersGetDefaultTagsRoute,
+  getWorkersIsDefaultTagsPerWorkspaceRoute,
+  getWorkersListRoute,
+  getWorkersQueueCountsRoute,
+  getWorkersQueueMetricsRoute,
+  getWorkersQueueMetricsSeriesRoute,
+  getWorkersQueueRunningCountsRoute,
+  getWorkersQueueStatusRoute,
+  getWorkersRunnableStatsRoute,
+  getWorkersWorkspaceFairnessEventsRoute,
+  getWorkspacesAllowedDomainAutoInviteRoute,
+  getWorkspacesListAsSuperadminRoute,
+  getWorkspacesListRoute,
+  getWorkspacesUsersRoute,
+  getWWorkspaceAccessGetRoute,
+  getWWorkspaceAclsGetKindPathRoute,
+  getWWorkspaceAiEvalsCasesListPathRoute,
+  getWWorkspaceAiEvalsDatasetsGetPathRoute,
+  getWWorkspaceAiEvalsDatasetsListRoute,
+  getWWorkspaceAiEvalsExperimentsListAllRoute,
+  getWWorkspaceAiEvalsExperimentsResultsPathRoute,
+  getWWorkspaceAiEvalsRunPayloadRoute,
+  getWWorkspaceAiEvalsScorerDefaultsRoute,
+  getWWorkspaceAiEvalsScorersRecentRoute,
+  getWWorkspaceAiEvalsSubjectStateRoute,
+  getWWorkspaceAiSessionsListRoute,
+  getWWorkspaceAiSharedArtifactsGetIdRoute,
+  getWWorkspaceAiSharedArtifactsListRoute,
+  getWWorkspaceAiSharedArtifactsStatusRoute,
+  getWWorkspaceAiSharedSessionsListRoute,
+  getWWorkspaceAiSharedSessionsStatusRoute,
+  getWWorkspaceAiUsageRoute,
+  getWWorkspaceAiUSharedSessionsGetIdRoute,
+  getWWorkspaceAmqpTriggersExistsPathRoute,
+  getWWorkspaceAmqpTriggersGetPathRoute,
+  getWWorkspaceAmqpTriggersListRoute,
+  getWWorkspaceAppsCustomPathExistsCustomPathRoute,
+  getWWorkspaceAppsEmbedTokenPPathRoute,
+  getWWorkspaceAppsExistsPathRoute,
+  getWWorkspaceAppsGetDataVSecretWithExtensionRoute,
+  getWWorkspaceAppsGetLatestVersionPathRoute,
+  getWWorkspaceAppsGetLitePathRoute,
+  getWWorkspaceAppsGetPPathRoute,
+  getWWorkspaceAppsGetVIdRoute,
+  getWWorkspaceAppsHistoryPPathRoute,
+  getWWorkspaceAppsListPathsFromWorkspaceRunnableRunnableKindPathRoute,
+  getWWorkspaceAppsListRoute,
+  getWWorkspaceAppsListSearchRoute,
+  getWWorkspaceAppsSecretOfLatestVersionPathRoute,
+  getWWorkspaceAppsSecretOfPathRoute,
+  getWWorkspaceAppsUDownloadS3ParquetFileAsCsvPathRoute,
+  getWWorkspaceAppsUEmbedTokenSecretRoute,
+  getWWorkspaceAppsUGuestEntryPathRoute,
+  getWWorkspaceAppsULoadCsvPreviewPathRoute,
+  getWWorkspaceAppsULoadFileMetadataPathRoute,
+  getWWorkspaceAppsULoadFilePreviewPathRoute,
+  getWWorkspaceAppsULoadParquetPreviewPathRoute,
+  getWWorkspaceAppsULoadTableCountPathRoute,
+  getWWorkspaceAppsUPublicAppPathRoute,
+  getWWorkspaceAppsUPublicResourcePathRoute,
+  getWWorkspaceAssetsAssetSchemasRoute,
+  getWWorkspaceAssetsColumnLineageRoute,
+  getWWorkspaceAssetsGraphRoute,
+  getWWorkspaceAssetsListFavoritesRoute,
+  getWWorkspaceAssetsListRoute,
+  getWWorkspaceAssetsMacrosRoute,
+  getWWorkspaceAssetsPartitionsInRangeRoute,
+  getWWorkspaceAssetsPartitionsRoute,
+  getWWorkspaceAssetsPipelinesRoute,
+  getWWorkspaceAuditGetIdRoute,
+  getWWorkspaceAuditListRoute,
+  getWWorkspaceAzureTriggersExistsPathRoute,
+  getWWorkspaceAzureTriggersGetPathRoute,
+  getWWorkspaceAzureTriggersListRoute,
+  getWWorkspaceCaptureGetConfigsRunnableKindPathRoute,
+  getWWorkspaceCaptureIdRoute,
+  getWWorkspaceCaptureListRunnableKindPathRoute,
+  getWWorkspaceConcurrencyGroupsListJobsRoute,
+  getWWorkspaceDataMetricsListRoute,
+  getWWorkspaceDbtWarehouseExistsNameRoute,
+  getWWorkspaceDbtWarehouseNameRoute,
+  getWWorkspaceDeploymentRequestEligibleDeployersRoute,
+  getWWorkspaceDeploymentRequestOpenRoute,
+  getWWorkspaceDraftsGetKindPathRoute,
+  getWWorkspaceDraftsGetOwnKindPathRoute,
+  getWWorkspaceDraftsListRoute,
+  getWWorkspaceEmailTriggersExistsPathRoute,
+  getWWorkspaceEmailTriggersGetPathRoute,
+  getWWorkspaceEmailTriggersListRoute,
+  getWWorkspaceEmbeddingsQueryResourceTypesRoute,
+  getWWorkspaceFlowConversationsConversationIdMessagesRoute,
+  getWWorkspaceFlowConversationsListRoute,
+  getWWorkspaceFlowsDeploymentStatusPPathRoute,
+  getWWorkspaceFlowsExistsPathRoute,
+  getWWorkspaceFlowsGetLatestVersionPathRoute,
+  getWWorkspaceFlowsGetPathRoute,
+  getWWorkspaceFlowsGetTriggersCountPathRoute,
+  getWWorkspaceFlowsGetVVersionRoute,
+  getWWorkspaceFlowsHistoryPPathRoute,
+  getWWorkspaceFlowsListPathsFromWorkspaceRunnableRunnableKindPathRoute,
+  getWWorkspaceFlowsListPathsLinkingAgentPathRoute,
+  getWWorkspaceFlowsListPathsRoute,
+  getWWorkspaceFlowsListRoute,
+  getWWorkspaceFlowsListSearchRoute,
+  getWWorkspaceFlowsListTokensPathRoute,
+  getWWorkspaceFoldersExistsNameRoute,
+  getWWorkspaceFoldersGetNameRoute,
+  getWWorkspaceFoldersGetusageNameRoute,
+  getWWorkspaceFoldersHistoryGetNameRoute,
+  getWWorkspaceFoldersListnamesRoute,
+  getWWorkspaceFoldersListRoute,
+  getWWorkspaceGcpTriggersExistsPathRoute,
+  getWWorkspaceGcpTriggersGetPathRoute,
+  getWWorkspaceGcpTriggersListRoute,
+  getWWorkspaceGcpTriggersTopicsListPathRoute,
+  getWWorkspaceGcpTriggersTopicsListRoute,
+  getWWorkspaceGithubAppExportInstallationIdRoute,
+  getWWorkspaceGithubAppRepoArchivePathRoute,
+  getWWorkspaceGitSyncCredentialOriginRoute,
+  getWWorkspaceGroupsGetNameRoute,
+  getWWorkspaceGroupsHistoryGetNameRoute,
+  getWWorkspaceGroupsListnamesRoute,
+  getWWorkspaceGroupsListRoute,
+  getWWorkspaceHttpTriggersExistsPathRoute,
+  getWWorkspaceHttpTriggersGetPathRoute,
+  getWWorkspaceHttpTriggersListRoute,
+  getWWorkspaceHubProjectRoute,
+  getWWorkspaceHubProjectsRoute,
+  getWWorkspaceHubProjectsSlugExportRoute,
+  getWWorkspaceInputsHistoryRoute,
+  getWWorkspaceInputsJobOrInputIdArgsRoute,
+  getWWorkspaceInputsListRoute,
+  getWWorkspaceJobHelpersCheckS3FolderExistsRoute,
+  getWWorkspaceJobHelpersDownloadS3FileRoute,
+  getWWorkspaceJobHelpersDownloadS3ParquetFileAsCsvRoute,
+  getWWorkspaceJobHelpersListGitRepoFilesRoute,
+  getWWorkspaceJobHelpersListStoredFilesPagedRoute,
+  getWWorkspaceJobHelpersListStoredFilesRoute,
+  getWWorkspaceJobHelpersLoadCsvPreviewPathRoute,
+  getWWorkspaceJobHelpersLoadFileMetadataRoute,
+  getWWorkspaceJobHelpersLoadFilePreviewRoute,
+  getWWorkspaceJobHelpersLoadGitRepoFileMetadataRoute,
+  getWWorkspaceJobHelpersLoadGitRepoFilePreviewRoute,
+  getWWorkspaceJobHelpersLoadParquetPreviewPathRoute,
+  getWWorkspaceJobHelpersLoadTableCountPathRoute,
+  getWWorkspaceJobHelpersMoveS3FileRoute,
+  getWWorkspaceJobHelpersStorageUsageRoute,
+  getWWorkspaceJobHelpersTestConnectionRoute,
+  getWWorkspaceJobHelpersV2S3ProxyBucketRoute,
+  getWWorkspaceJobMetricsGetProgressIdRoute,
+  getWWorkspaceJobsAssetDispatchEdgesRoute,
+  getWWorkspaceJobsCompletedCountJobsRoute,
+  getWWorkspaceJobsCompletedCountRoute,
+  getWWorkspaceJobsCompletedExportRoute,
+  getWWorkspaceJobsCompletedListRoute,
+  getWWorkspaceJobsDbtColumnLineageIdRoute,
+  getWWorkspaceJobsDbtGraphIdRoute,
+  getWWorkspaceJobsDbtResumableIdRoute,
+  getWWorkspaceJobsDbtResumableScriptPPathRoute,
+  getWWorkspaceJobsFlowApprovalStepDetailJobIdStepIdRoute,
+  getWWorkspaceJobsFlowUserStatesIdKeyRoute,
+  getWWorkspaceJobsGetOtelTracesIdRoute,
+  getWWorkspaceJobsJobPublicViewTokenIdRoute,
+  getWWorkspaceJobsJobSignatureIdResumeIdRoute,
+  getWWorkspaceJobsJobViewTokenIdRoute,
+  getWWorkspaceJobsListFilteredUuidsRoute,
+  getWWorkspaceJobsListRoute,
+  getWWorkspaceJobsOldestRoute,
+  getWWorkspaceJobsQueueCountRoute,
+  getWWorkspaceJobsQueueExportRoute,
+  getWWorkspaceJobsQueueListFilteredUuidsRoute,
+  getWWorkspaceJobsQueueListRoute,
+  getWWorkspaceJobsQueuePositionScheduledForRoute,
+  getWWorkspaceJobsQueueScheduledForIdRoute,
+  getWWorkspaceJobsRecentRunsRoute,
+  getWWorkspaceJobsResultByIdFlowJobIdNodeIdRoute,
+  getWWorkspaceJobsResumeUrlsIdResumeIdRoute,
+  getWWorkspaceJobsRunAndStreamFPathRoute,
+  getWWorkspaceJobsRunAndStreamFvVersionRoute,
+  getWWorkspaceJobsRunAndStreamHHashRoute,
+  getWWorkspaceJobsRunAndStreamPPathRoute,
+  getWWorkspaceJobsRunAssetsIdRoute,
+  getWWorkspaceJobsRunProgressIdRoute,
+  getWWorkspaceJobsRunWaitResultFvVersionRoute,
+  getWWorkspaceJobsRunWaitResultPPathRoute,
+  getWWorkspaceJobsSlackApprovalIdRoute,
+  getWWorkspaceJobsTeamsApprovalIdRoute,
+  getWWorkspaceJobsUCancelIdResumeIdSignatureRoute,
+  getWWorkspaceJobsUCompletedGetIdRoute,
+  getWWorkspaceJobsUCompletedGetResultIdRoute,
+  getWWorkspaceJobsUCompletedGetResultMaybeIdRoute,
+  getWWorkspaceJobsUCompletedGetTimingIdRoute,
+  getWWorkspaceJobsUDispatchEventsIdRoute,
+  getWWorkspaceJobsUFlowApprovalInfoJobIdRoute,
+  getWWorkspaceJobsUGetArgsIdRoute,
+  getWWorkspaceJobsUGetCompletedLogsTailIdRoute,
+  getWWorkspaceJobsUGetFlowAllLogsIdRoute,
+  getWWorkspaceJobsUGetFlowAllLogsStructuredIdRoute,
+  getWWorkspaceJobsUGetFlowAllResultsIdRoute,
+  getWWorkspaceJobsUGetFlowDebugInfoIdRoute,
+  getWWorkspaceJobsUGetFlowIdResumeIdSignatureRoute,
+  getWWorkspaceJobsUGetIdRoute,
+  getWWorkspaceJobsUGetLogFilePathRoute,
+  getWWorkspaceJobsUGetLogsIdRoute,
+  getWWorkspaceJobsUGetRootJobIdIdRoute,
+  getWWorkspaceJobsUGetupdateIdRoute,
+  getWWorkspaceJobsUGetupdateSseIdRoute,
+  getWWorkspaceJobsUResumeIdResumeIdSignatureRoute,
+  getWWorkspaceJobsWacApprovalUrlsIdStepKeyRoute,
+  getWWorkspaceJobsWorkerIsDrainingIdRoute,
+  getWWorkspaceKafkaTriggersExistsPathRoute,
+  getWWorkspaceKafkaTriggersGetPathRoute,
+  getWWorkspaceKafkaTriggersListRoute,
+  getWWorkspaceMqttTriggersExistsPathRoute,
+  getWWorkspaceMqttTriggersGetPathRoute,
+  getWWorkspaceMqttTriggersListRoute,
+  getWWorkspaceNativeTriggersGithubReposRoute,
+  getWWorkspaceNativeTriggersGoogleCalendarsRoute,
+  getWWorkspaceNativeTriggersGoogleDriveFilesRoute,
+  getWWorkspaceNativeTriggersGoogleDriveSharedDrivesRoute,
+  getWWorkspaceNativeTriggersIntegrationsListRoute,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsRoute,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameExistsRoute,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameInstanceSharingAvailableRoute,
+  getWWorkspaceNativeTriggersNextcloudEventsRoute,
+  getWWorkspaceNativeTriggersServiceNameExistsExternalIdRoute,
+  getWWorkspaceNativeTriggersServiceNameGetExternalIdRoute,
+  getWWorkspaceNativeTriggersServiceNameListRoute,
+  getWWorkspaceNatsTriggersExistsPathRoute,
+  getWWorkspaceNatsTriggersGetPathRoute,
+  getWWorkspaceNatsTriggersListRoute,
+  getWWorkspaceNpmProxyConfigRoute,
+  getWWorkspaceNpmProxyFilePackageVersionFilepathRoute,
+  getWWorkspaceNpmProxyFiletreePackageVersionRoute,
+  getWWorkspaceNpmProxyMetadataPackageRoute,
+  getWWorkspaceNpmProxyResolvePackageRoute,
+  getWWorkspaceNpmProxyTarballPackageVersionRoute,
+  getWWorkspacePathAutocompleteListPathsRoute,
+  getWWorkspacePostgresTriggersExistsPathRoute,
+  getWWorkspacePostgresTriggersGetPathRoute,
+  getWWorkspacePostgresTriggersGetTemplateScriptIdRoute,
+  getWWorkspacePostgresTriggersIsValidPostgresConfigurationPathRoute,
+  getWWorkspacePostgresTriggersListRoute,
+  getWWorkspacePostgresTriggersPostgresVersionPathRoute,
+  getWWorkspacePostgresTriggersPublicationGetPublicationPathRoute,
+  getWWorkspacePostgresTriggersPublicationListPathRoute,
+  getWWorkspacePostgresTriggersSlotListPathRoute,
+  getWWorkspaceRawAppsListRoute,
+  getWWorkspaceRemoteDeployTargetRoute,
+  getWWorkspaceResourcesExistsPathRoute,
+  getWWorkspaceResourcesFileResourceTypeToFileExtMapRoute,
+  getWWorkspaceResourcesGetPathRoute,
+  getWWorkspaceResourcesGetValueInterpolatedPathRoute,
+  getWWorkspaceResourcesGetValuePathRoute,
+  getWWorkspaceResourcesGitCommitHashPathRoute,
+  getWWorkspaceResourcesHistoryPPathRoute,
+  getWWorkspaceResourcesHistoryVIdRoute,
+  getWWorkspaceResourcesListNamesNameRoute,
+  getWWorkspaceResourcesListRoute,
+  getWWorkspaceResourcesListSearchRoute,
+  getWWorkspaceResourcesMcpToolsPathRoute,
+  getWWorkspaceResourcesTypeExistsPathRoute,
+  getWWorkspaceResourcesTypeGetPathRoute,
+  getWWorkspaceResourcesTypeHubInfoRoute,
+  getWWorkspaceResourcesTypeListnamesRoute,
+  getWWorkspaceResourcesTypeListRoute,
+  getWWorkspaceResourcesTypeResourceCountsRoute,
+  getWWorkspaceRunnablesCountsRoute,
+  getWWorkspaceRunnablesListRoute,
+  getWWorkspaceSchedulesExistsPathRoute,
+  getWWorkspaceSchedulesGetPathRoute,
+  getWWorkspaceSchedulesListRoute,
+  getWWorkspaceSchedulesListWithJobsRoute,
+  getWWorkspaceScriptsCiTestResultsKindPathRoute,
+  getWWorkspaceScriptsDeploymentStatusHHashRoute,
+  getWWorkspaceScriptsExistsPPathRoute,
+  getWWorkspaceScriptsGetHHashRoute,
+  getWWorkspaceScriptsGetLatestVersionPathRoute,
+  getWWorkspaceScriptsGetPPathRoute,
+  getWWorkspaceScriptsGetTriggersCountPathRoute,
+  getWWorkspaceScriptsHistoryPPathRoute,
+  getWWorkspaceScriptsListDedicatedWithDepsRoute,
+  getWWorkspaceScriptsListPathsFromWorkspaceRunnablePathRoute,
+  getWWorkspaceScriptsListPathsRoute,
+  getWWorkspaceScriptsListRoute,
+  getWWorkspaceScriptsListSearchRoute,
+  getWWorkspaceScriptsListTokensPathRoute,
+  getWWorkspaceScriptsRawHPathRoute,
+  getWWorkspaceScriptsRawPPathRoute,
+  getWWorkspaceSharedUiGetRoute,
+  getWWorkspaceSharedUiListRoute,
+  getWWorkspaceSharedUiVersionRoute,
+  getWWorkspaceSlackAgentsAgentChannelsPathRoute,
+  getWWorkspaceSlackAgentsAvailableChannelsRoute,
+  getWWorkspaceSlackAgentsChannelsRoute,
+  getWWorkspaceSlackAgentsStatusRoute,
+  getWWorkspaceSqsTriggersExistsPathRoute,
+  getWWorkspaceSqsTriggersGetPathRoute,
+  getWWorkspaceSqsTriggersListRoute,
+  getWWorkspaceTrashGetIdRoute,
+  getWWorkspaceTrashListRoute,
+  getWWorkspaceTriggersHistoryListRoute,
+  getWWorkspaceUsersGetUsernameRoute,
+  getWWorkspaceUsersIsOwnerPathRoute,
+  getWWorkspaceUsersListAddableRoute,
+  getWWorkspaceUsersListRoute,
+  getWWorkspaceUsersListUsageRoute,
+  getWWorkspaceUsersListUsernamesRoute,
+  getWWorkspaceUsersOffboardPreviewUsernameRoute,
+  getWWorkspaceUsersUsernameToEmailUsernameRoute,
+  getWWorkspaceUsersWhoamiRoute,
+  getWWorkspaceUsersWhoisUsernameRoute,
+  getWWorkspaceVariablesExistsPathRoute,
+  getWWorkspaceVariablesExternalSecretPrefixesRoute,
+  getWWorkspaceVariablesGetPathRoute,
+  getWWorkspaceVariablesGetValuePathRoute,
+  getWWorkspaceVariablesListContextualRoute,
+  getWWorkspaceVariablesListRoute,
+  getWWorkspaceVolumesListRoute,
+  getWWorkspaceVolumesStorageRoute,
+  getWWorkspaceWebsocketTriggersExistsPathRoute,
+  getWWorkspaceWebsocketTriggersGetPathRoute,
+  getWWorkspaceWebsocketTriggersListRoute,
+  getWWorkspaceWorkersCustomTagsRoute,
+  getWWorkspaceWorkspaceDependenciesGetLatestLanguageRoute,
+  getWWorkspaceWorkspaceDependenciesListRoute,
+  getWWorkspaceWorkspacesAvailableTeamsChannelsRoute,
+  getWWorkspaceWorkspacesAvailableTeamsIdsRoute,
+  getWWorkspaceWorkspacesBillableSeatsRoute,
+  getWWorkspaceWorkspacesCloudQuotasRoute,
+  getWWorkspaceWorkspacesCompareTargetWorkspaceIdRoute,
+  getWWorkspaceWorkspacesCriticalAlertsRoute,
+  getWWorkspaceWorkspacesDatatableAclDatatableNameRoute,
+  getWWorkspaceWorkspacesDatatableMigrationsStatusDatatableNameRoute,
+  getWWorkspaceWorkspacesDatatablePermissionsDatatableNameRoute,
+  getWWorkspaceWorkspacesDatatableUsableRolesDatatableNameRoute,
+  getWWorkspaceWorkspacesDefaultAppRoute,
+  getWWorkspaceWorkspacesDefaultScriptsRoute,
+  getWWorkspaceWorkspacesEncryptionKeyRoute,
+  getWWorkspaceWorkspacesForkCreationStatusCreationIdRoute,
+  getWWorkspaceWorkspacesGetAsSuperadminRoute,
+  getWWorkspaceWorkspacesGetCopilotInfoRoute,
+  getWWorkspaceWorkspacesGetCopilotSettingsStateRoute,
+  getWWorkspaceWorkspacesGetDatatableTableSchemaRoute,
+  getWWorkspaceWorkspacesGetDependencyMapRoute,
+  getWWorkspaceWorkspacesGetDependentsImportedPathRoute,
+  getWWorkspaceWorkspacesGetDeployToRoute,
+  getWWorkspaceWorkspacesGetDevWorkspaceRoute,
+  getWWorkspaceWorkspacesGetImportsImporterPathRoute,
+  getWWorkspaceWorkspacesGetPublicSettingsRoute,
+  getWWorkspaceWorkspacesGetSecondaryStorageNamesRoute,
+  getWWorkspaceWorkspacesGetSettingsRoute,
+  getWWorkspaceWorkspacesGetWorkspaceNameRoute,
+  getWWorkspaceWorkspacesGitSyncDeployModeRoute,
+  getWWorkspaceWorkspacesGitSyncEnabledRoute,
+  getWWorkspaceWorkspacesGuestUsageRoute,
+  getWWorkspaceWorkspacesIsPremiumRoute,
+  getWWorkspaceWorkspacesListDatatableMigrationsRoute,
+  getWWorkspaceWorkspacesListDatatableSchemasRoute,
+  getWWorkspaceWorkspacesListDatatablesRoute,
+  getWWorkspaceWorkspacesListDatatableTablesRoute,
+  getWWorkspaceWorkspacesListDucklakesRoute,
+  getWWorkspaceWorkspacesListPendingInvitesRoute,
+  getWWorkspaceWorkspacesListWsSpecificRoute,
+  getWWorkspaceWorkspacesListWsSpecificVersionsRoute,
+  getWWorkspaceWorkspacesPremiumInfoRoute,
+  getWWorkspaceWorkspacesProtectionRulesRoute,
+  getWWorkspaceWorkspacesRolesRoute,
+  getWWorkspaceWorkspacesSettingsDocumentRoute,
+  getWWorkspaceWorkspacesSlackOauthConfigRoute,
+  getWWorkspaceWorkspacesTestDatatableConnectionDatatableNameRoute,
+  getWWorkspaceWorkspacesThresholdAlertRoute,
+  getWWorkspaceWorkspacesUsageRoute,
+  getWWorkspaceWorkspacesUsedTriggersRoute,
+  postAgentWorkersBlacklistTokenRoute,
+  postAgentWorkersCreateAgentTokenRoute,
+  postAgentWorkersRemoveBlacklistTokenRoute,
+  postAuthLoginRoute,
+  postAuthLogoutRoute,
+  postAuthRequestPasswordResetRoute,
+  postAuthResetPasswordRoute,
+  postConfigsAutoscalingRecordingWorkerGroupRoute,
+  postConfigsTestAutoscalingWorkerGroupRoute,
+  postConfigsUpdateNameRoute,
+  postGithubAppGhesAssignRoute,
+  postGroupsAdduserNameRoute,
+  postGroupsCreateRoute,
+  postGroupsOverwriteRoute,
+  postGroupsRemoveuserNameRoute,
+  postGroupsUpdateNameRoute,
+  postMcpOauthDiscoverRoute,
+  postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute,
+  postOauthConnectCallbackClientNameRoute,
+  postOauthConnectSlackCallbackRoute,
+  postOauthConnectSlackInstanceRoute,
+  postOauthLoginCallbackClientNameRoute,
+  postOauthTestClientCredentialsRoute,
+  postSamlTestMetadataRoute,
+  postSchedulesPreviewRoute,
+  postSettingsAuditLogsS3BackfillRoute,
+  postSettingsCriticalAlertsAcknowledgeAllRoute,
+  postSettingsCriticalAlertsIdAcknowledgeRoute,
+  postSettingsCustomerPortalRoute,
+  postSettingsDatatableRolesIdRoute,
+  postSettingsDatatableRolesRoute,
+  postSettingsDropCustomInstancePgDatabaseNameRoute,
+  postSettingsExternalInstancePgDatabasesNameRoute,
+  postSettingsExternalInstancePgSetupRoute,
+  postSettingsGlobalKeyRoute,
+  postSettingsListCustomInstancePgDatabasesRoute,
+  postSettingsMigrateSecretsFromAwsSmRoute,
+  postSettingsMigrateSecretsFromAzureKvRoute,
+  postSettingsMigrateSecretsFromHttpStoreRoute,
+  postSettingsMigrateSecretsToAwsSmRoute,
+  postSettingsMigrateSecretsToAzureKvRoute,
+  postSettingsMigrateSecretsToDatabaseRoute,
+  postSettingsMigrateSecretsToVaultRoute,
+  postSettingsObjectStorageUsageRoute,
+  postSettingsRefreshCustomInstanceUserPwdRoute,
+  postSettingsRenewLicenseKeyRoute,
+  postSettingsRestartWorkerGroupWorkerGroupRoute,
+  postSettingsRunLogCleanupRoute,
+  postSettingsSendStatsRoute,
+  postSettingsSetupCustomInstancePgDatabaseNameRoute,
+  postSettingsTestAwsSmBackendRoute,
+  postSettingsTestAzureKvBackendRoute,
+  postSettingsTestCriticalChannelsRoute,
+  postSettingsTestHttpStoreBackendRoute,
+  postSettingsTestLicenseKeyRoute,
+  postSettingsTestObjectStorageConfigRoute,
+  postSettingsTestSecretBackendRoute,
+  postSettingsTestSmtpRoute,
+  postTeamsActivitiesRoute,
+  postUsersAcceptInviteRoute,
+  postUsersChangeEmailEmailRoute,
+  postUsersCloudTrialOfferGoRoute,
+  postUsersCloudTrialOfferRoute,
+  postUsersCreateRoute,
+  postUsersDeclineInviteRoute,
+  postUsersLeaveInstanceRoute,
+  postUsersLoginLinksRoute,
+  postUsersOffboardEmailRoute,
+  postUsersOnboardingProfileRoute,
+  postUsersOnboardingRoute,
+  postUsersOverwriteRoute,
+  postUsersRenameEmailRoute,
+  postUsersSetLoginTypeUserRoute,
+  postUsersSetPasswordOfUserRoute,
+  postUsersSetpasswordRoute,
+  postUsersTokensCreateRoute,
+  postUsersTokensImpersonateRoute,
+  postUsersTokensUpdateLabelTokenPrefixRoute,
+  postUsersTokensUpdateScopesTokenPrefixRoute,
+  postUsersTutorialProgressRoute,
+  postUsersUpdateEmailRoute,
+  postWorkspacesCreateRoute,
+  postWorkspacesExistsRoute,
+  postWorkspacesExistsUsernameRoute,
+  postWorkspacesSessionWorkspaceRetentionRoute,
+  postWorkspacesSessionWorkspaceStatusRoute,
+  postWorkspacesUnarchiveWorkspaceRoute,
+  postWWorkspaceAclsAddKindPathRoute,
+  postWWorkspaceAclsRemoveKindPathRoute,
+  postWWorkspaceAiCompleteRoute,
+  postWWorkspaceAiEvalsDatasetsCreateRoute,
+  postWWorkspaceAiEvalsDatasetsDeletePathRoute,
+  postWWorkspaceAiEvalsDatasetsUpdatePathRoute,
+  postWWorkspaceAiEvalsExperimentsCollectRoute,
+  postWWorkspaceAiEvalsExperimentsRunRoute,
+  postWWorkspaceAiSessionsPullRoute,
+  postWWorkspaceAiSessionsPushRoute,
+  postWWorkspaceAiSessionToolsNameRoute,
+  postWWorkspaceAiSharedArtifactsShareRoute,
+  postWWorkspaceAiSharedSessionsSetPublicIdRoute,
+  postWWorkspaceAiSharedSessionsShareRoute,
+  postWWorkspaceAiUsageRoute,
+  postWWorkspaceAiWebFetchRoute,
+  postWWorkspaceAiWebSearchRoute,
+  postWWorkspaceAmqpTriggersCreateRoute,
+  postWWorkspaceAmqpTriggersSetmodePathRoute,
+  postWWorkspaceAmqpTriggersTestRoute,
+  postWWorkspaceAmqpTriggersUpdatePathRoute,
+  postWWorkspaceAppsCreateRawRoute,
+  postWWorkspaceAppsCreateRawSourceRoute,
+  postWWorkspaceAppsCreateRoute,
+  postWWorkspaceAppsHistoryUpdateAIdVVersionRoute,
+  postWWorkspaceAppsPreviewSdkTokenRoute,
+  postWWorkspaceAppsSignS3ObjectsRoute,
+  postWWorkspaceAppsUExecuteComponentPathRoute,
+  postWWorkspaceAppsUpdatePathRoute,
+  postWWorkspaceAppsUpdateRawPathRoute,
+  postWWorkspaceAppsUpdateRawSourcePathRoute,
+  postWWorkspaceAppsUUploadS3FilePathRoute,
+  postWWorkspaceAssetsListByUsagesRoute,
+  postWWorkspaceAzureTriggersBasicTopicsListPathRoute,
+  postWWorkspaceAzureTriggersCreateRoute,
+  postWWorkspaceAzureTriggersNamespacesListPathRoute,
+  postWWorkspaceAzureTriggersNamespacesSubscriptionsListPathRoute,
+  postWWorkspaceAzureTriggersNamespacesTopicsListPathRoute,
+  postWWorkspaceAzureTriggersSetmodePathRoute,
+  postWWorkspaceAzureTriggersTestRoute,
+  postWWorkspaceAzureTriggersUpdatePathRoute,
+  postWWorkspaceCaptureMoveRunnableKindPathRoute,
+  postWWorkspaceCapturePingConfigTriggerKindRunnableKindPathRoute,
+  postWWorkspaceCaptureSetConfigRoute,
+  postWWorkspaceDbtRunProgressRoute,
+  postWWorkspaceDeploymentRequestIdCancelRoute,
+  postWWorkspaceDeploymentRequestIdCloseMergedRoute,
+  postWWorkspaceDeploymentRequestIdCommentRoute,
+  postWWorkspaceDeploymentRequestRoute,
+  postWWorkspaceDraftsDeleteForUserKindPathRoute,
+  postWWorkspaceDraftsMigrateLegacyKindPathRoute,
+  postWWorkspaceDraftsMoveKindPathRoute,
+  postWWorkspaceDraftsTransferRoute,
+  postWWorkspaceDraftsUpdateKindPathRoute,
+  postWWorkspaceEmailTriggersCreateRoute,
+  postWWorkspaceEmailTriggersLocalPartExistsRoute,
+  postWWorkspaceEmailTriggersSetmodePathRoute,
+  postWWorkspaceEmailTriggersUpdatePathRoute,
+  postWWorkspaceFavoritesStarRoute,
+  postWWorkspaceFavoritesUnstarRoute,
+  postWWorkspaceFlowConversationsUpdateConversationIdRoute,
+  postWWorkspaceFlowsArchivePathRoute,
+  postWWorkspaceFlowsCreateRoute,
+  postWWorkspaceFlowsHistoryUpdateVVersionRoute,
+  postWWorkspaceFlowsToggleWorkspaceErrorHandlerPathRoute,
+  postWWorkspaceFlowsUpdatePathRoute,
+  postWWorkspaceFoldersAddownerNameRoute,
+  postWWorkspaceFoldersCreateRoute,
+  postWWorkspaceFoldersRemoveownerNameRoute,
+  postWWorkspaceFoldersUpdateNameRoute,
+  postWWorkspaceGcpTriggersCreateRoute,
+  postWWorkspaceGcpTriggersSetmodePathRoute,
+  postWWorkspaceGcpTriggersSubscriptionsListPathRoute,
+  postWWorkspaceGcpTriggersSubscriptionsListRoute,
+  postWWorkspaceGcpTriggersTestRoute,
+  postWWorkspaceGcpTriggersUpdatePathRoute,
+  postWWorkspaceGithubAppGhesInstallationCallbackRoute,
+  postWWorkspaceGithubAppImportRoute,
+  postWWorkspaceGithubAppInstallFromWorkspaceRoute,
+  postWWorkspaceGithubAppTokenRoute,
+  postWWorkspaceGitSyncCredentialRoute,
+  postWWorkspaceGitSyncGitlabProjectsRoute,
+  postWWorkspaceGroupsAdduserNameRoute,
+  postWWorkspaceGroupsCreateRoute,
+  postWWorkspaceGroupsRemoveuserNameRoute,
+  postWWorkspaceGroupsUpdateNameRoute,
+  postWWorkspaceHttpTriggersCreateManyRoute,
+  postWWorkspaceHttpTriggersCreateRoute,
+  postWWorkspaceHttpTriggersRouteExistsRoute,
+  postWWorkspaceHttpTriggersSetmodePathRoute,
+  postWWorkspaceHttpTriggersUpdatePathRoute,
+  postWWorkspaceHubAppsRoute,
+  postWWorkspaceHubFlowsFlowIdRecordingRoute,
+  postWWorkspaceHubFlowsRoute,
+  postWWorkspaceHubMigrationsRoute,
+  postWWorkspaceHubProjectsSlugDiscardUpdateRoute,
+  postWWorkspaceHubProjectsSlugLogoRoute,
+  postWWorkspaceHubProjectsSlugPipelineRecordingRoute,
+  postWWorkspaceHubProjectsSlugSubmitRoute,
+  postWWorkspaceHubProjectsSlugWithdrawRoute,
+  postWWorkspaceHubPublishDraftRoute,
+  postWWorkspaceHubRawAppsIdRecordingRoute,
+  postWWorkspaceHubRawAppsRoute,
+  postWWorkspaceHubResourcesRoute,
+  postWWorkspaceHubResourceTypesRoute,
+  postWWorkspaceHubScriptsAskIdRecordingRoute,
+  postWWorkspaceHubScriptsRoute,
+  postWWorkspaceHubTriggersRoute,
+  postWWorkspaceInputsCreateRoute,
+  postWWorkspaceInputsDeleteInputRoute,
+  postWWorkspaceInputsUpdateRoute,
+  postWWorkspaceJobHelpersDuckdbConnectionSettingsRoute,
+  postWWorkspaceJobHelpersPolarsConnectionSettingsRoute,
+  postWWorkspaceJobHelpersUploadGitRepoFileToInstanceStorageRoute,
+  postWWorkspaceJobHelpersUploadS3FileRoute,
+  postWWorkspaceJobHelpersV2DuckdbConnectionSettingsRoute,
+  postWWorkspaceJobHelpersV2PolarsConnectionSettingsRoute,
+  postWWorkspaceJobHelpersV2S3ResourceInfoRoute,
+  postWWorkspaceJobMetricsGetIdRoute,
+  postWWorkspaceJobMetricsSetProgressIdRoute,
+  postWWorkspaceJobsCompletedDeleteIdRoute,
+  postWWorkspaceJobsCompletedImportRoute,
+  postWWorkspaceJobsCompletedResolveRoute,
+  postWWorkspaceJobsCompletedUnresolveRoute,
+  postWWorkspaceJobsDeleteRoute,
+  postWWorkspaceJobsFlowResumeIdRoute,
+  postWWorkspaceJobsFlowUserStatesIdKeyRoute,
+  postWWorkspaceJobsListSelectedJobGroupsRoute,
+  postWWorkspaceJobsQueueCancelSelectionRoute,
+  postWWorkspaceJobsQueueImportRoute,
+  postWWorkspaceJobsQueueRunNowIdRoute,
+  postWWorkspaceJobsRecentRunsHideRoute,
+  postWWorkspaceJobsRecentRunsUnhideRoute,
+  postWWorkspaceJobsRestartFIdRoute,
+  postWWorkspaceJobsRunAgentPathRoute,
+  postWWorkspaceJobsRunAndStreamFPathRoute,
+  postWWorkspaceJobsRunAndStreamFvVersionRoute,
+  postWWorkspaceJobsRunAndStreamHHashRoute,
+  postWWorkspaceJobsRunAndStreamPPathRoute,
+  postWWorkspaceJobsRunBatchRerunJobsRoute,
+  postWWorkspaceJobsRunDependenciesAsyncRoute,
+  postWWorkspaceJobsRunDependenciesRoute,
+  postWWorkspaceJobsRunDynamicSelectRoute,
+  postWWorkspaceJobsRunFlowDependenciesAsyncRoute,
+  postWWorkspaceJobsRunFlowTestPathRoute,
+  postWWorkspaceJobsRunFPathRoute,
+  postWWorkspaceJobsRunFvVersionRoute,
+  postWWorkspaceJobsRunHHashRoute,
+  postWWorkspaceJobsRunInlineHHashRoute,
+  postWWorkspaceJobsRunInlinePPathRoute,
+  postWWorkspaceJobsRunInlinePreviewRoute,
+  postWWorkspaceJobsRunPPathRoute,
+  postWWorkspaceJobsRunPreviewFlowRoute,
+  postWWorkspaceJobsRunPreviewRoute,
+  postWWorkspaceJobsRunWaitResultFPathRoute,
+  postWWorkspaceJobsRunWaitResultFvVersionRoute,
+  postWWorkspaceJobsRunWaitResultPPathRoute,
+  postWWorkspaceJobsRunWaitResultPreviewFlowRoute,
+  postWWorkspaceJobsRunWaitResultPreviewRoute,
+  postWWorkspaceJobsUCancelIdResumeIdSignatureRoute,
+  postWWorkspaceJobsUFlowResumeSuspendedJobIdRoute,
+  postWWorkspaceJobsUQueueCancelIdRoute,
+  postWWorkspaceJobsUQueueCancelPersistentPathRoute,
+  postWWorkspaceJobsUQueueForceCancelIdRoute,
+  postWWorkspaceJobsUQueueGetStartedAtByIdsRoute,
+  postWWorkspaceJobsUResumeIdResumeIdSignatureRoute,
+  postWWorkspaceJobsWorkflowAsCodeJobIdEntrypointRoute,
+  postWWorkspaceKafkaTriggersCommitOffsetsPathRoute,
+  postWWorkspaceKafkaTriggersCreateRoute,
+  postWWorkspaceKafkaTriggersResetOffsetsPathRoute,
+  postWWorkspaceKafkaTriggersSetmodePathRoute,
+  postWWorkspaceKafkaTriggersTestRoute,
+  postWWorkspaceKafkaTriggersUpdatePathRoute,
+  postWWorkspaceMqttTriggersCreateRoute,
+  postWWorkspaceMqttTriggersSetmodePathRoute,
+  postWWorkspaceMqttTriggersTestRoute,
+  postWWorkspaceMqttTriggersUpdatePathRoute,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameCallbackRoute,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameCreateRoute,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameGenerateConnectUrlRoute,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameWorkspaceConnectionRoute,
+  postWWorkspaceNativeTriggersServiceNameCreateRoute,
+  postWWorkspaceNativeTriggersServiceNameSetenabledExternalIdRoute,
+  postWWorkspaceNativeTriggersServiceNameSyncRoute,
+  postWWorkspaceNativeTriggersServiceNameUpdateExternalIdRoute,
+  postWWorkspaceNatsTriggersCreateRoute,
+  postWWorkspaceNatsTriggersSetmodePathRoute,
+  postWWorkspaceNatsTriggersTestRoute,
+  postWWorkspaceNatsTriggersUpdatePathRoute,
+  postWWorkspaceOauthConnectClientCredentialsClientRoute,
+  postWWorkspaceOauthConnectSlackCallbackRoute,
+  postWWorkspaceOauthCreateAccountRoute,
+  postWWorkspaceOauthDisconnectIdRoute,
+  postWWorkspaceOauthDisconnectSlackRoute,
+  postWWorkspaceOauthDisconnectTeamsRoute,
+  postWWorkspaceOauthRefreshTokenIdRoute,
+  postWWorkspaceOidcTokenAudienceRoute,
+  postWWorkspaceOpenapiDownloadRoute,
+  postWWorkspaceOpenapiGenerateRoute,
+  postWWorkspacePostgresTriggersCreateRoute,
+  postWWorkspacePostgresTriggersCreateTemplateScriptRoute,
+  postWWorkspacePostgresTriggersPublicationCreatePublicationPathRoute,
+  postWWorkspacePostgresTriggersPublicationUpdatePublicationPathRoute,
+  postWWorkspacePostgresTriggersSetmodePathRoute,
+  postWWorkspacePostgresTriggersSlotCreatePathRoute,
+  postWWorkspacePostgresTriggersTestRoute,
+  postWWorkspacePostgresTriggersUpdatePathRoute,
+  postWWorkspaceRemoteDeployConnectRoute,
+  postWWorkspaceRemoteDeployDisconnectRoute,
+  postWWorkspaceRemoteDeployTargetRoute,
+  postWWorkspaceResourcesCreateRoute,
+  postWWorkspaceResourcesHistoryRestoreVIdRoute,
+  postWWorkspaceResourcesMcpCallToolPathRoute,
+  postWWorkspaceResourcesTypeCreateRoute,
+  postWWorkspaceResourcesTypeHubPickNameRoute,
+  postWWorkspaceResourcesTypeUpdatePathRoute,
+  postWWorkspaceResourcesUpdatePathRoute,
+  postWWorkspaceResourcesUpdateValuePathRoute,
+  postWWorkspaceSchedulesCreateRoute,
+  postWWorkspaceSchedulesSetdefaulthandlerRoute,
+  postWWorkspaceSchedulesSetenabledPathRoute,
+  postWWorkspaceSchedulesUpdatePathRoute,
+  postWWorkspaceScriptsArchiveHHashRoute,
+  postWWorkspaceScriptsArchivePPathRoute,
+  postWWorkspaceScriptsCheckSchemaContractsRoute,
+  postWWorkspaceScriptsCiTestResultsBatchRoute,
+  postWWorkspaceScriptsCreateRoute,
+  postWWorkspaceScriptsDeleteHHashRoute,
+  postWWorkspaceScriptsDeletePPathRoute,
+  postWWorkspaceScriptsHistoryUpdateHHashPPathRoute,
+  postWWorkspaceScriptsRawTempDiffRoute,
+  postWWorkspaceScriptsRawTempStoreRoute,
+  postWWorkspaceScriptsToggleWorkspaceErrorHandlerPPathRoute,
+  postWWorkspaceScriptsTriggerCiTestsBatchRoute,
+  postWWorkspaceScriptsUpdatePathRoute,
+  postWWorkspaceSlackAgentsAgentChannelsPathRoute,
+  postWWorkspaceSqsTriggersCreateRoute,
+  postWWorkspaceSqsTriggersSetmodePathRoute,
+  postWWorkspaceSqsTriggersTestRoute,
+  postWWorkspaceSqsTriggersUpdatePathRoute,
+  postWWorkspaceTrashEmptyRoute,
+  postWWorkspaceTrashRestoreIdRoute,
+  postWWorkspaceTriggerTriggerKindCancelSuspendedTriggerJobsTriggerPathRoute,
+  postWWorkspaceTriggerTriggerKindResumeSuspendedTriggerJobsTriggerPathRoute,
+  postWWorkspaceUsersConvertToGroupUsernameRoute,
+  postWWorkspaceUsersExitImpersonationRoute,
+  postWWorkspaceUsersImpersonateServiceAccountRoute,
+  postWWorkspaceUsersOffboardUsernameRoute,
+  postWWorkspaceUsersUpdateUsernameRoute,
+  postWWorkspaceVariablesCreateRoute,
+  postWWorkspaceVariablesEncryptRoute,
+  postWWorkspaceVariablesUpdatePathRoute,
+  postWWorkspaceVolumesCreateRoute,
+  postWWorkspaceWebsocketTriggersCreateRoute,
+  postWWorkspaceWebsocketTriggersSetmodePathRoute,
+  postWWorkspaceWebsocketTriggersTestRoute,
+  postWWorkspaceWebsocketTriggersUpdatePathRoute,
+  postWWorkspaceWorkspaceDependenciesArchiveLanguageRoute,
+  postWWorkspaceWorkspaceDependenciesCreateRoute,
+  postWWorkspaceWorkspaceDependenciesDeleteLanguageRoute,
+  postWWorkspaceWorkspacesAddUserRoute,
+  postWWorkspaceWorkspacesArchiveRoute,
+  postWWorkspaceWorkspacesAttachDevWorkspaceRoute,
+  postWWorkspaceWorkspacesChangeWorkspaceColorRoute,
+  postWWorkspaceWorkspacesChangeWorkspaceIdRoute,
+  postWWorkspaceWorkspacesChangeWorkspaceNameRoute,
+  postWWorkspaceWorkspacesConnectSlackRoute,
+  postWWorkspaceWorkspacesConnectTeamsRoute,
+  postWWorkspaceWorkspacesCreateDatatableMigrationDatatableNameRoute,
+  postWWorkspaceWorkspacesCreateForkRoute,
+  postWWorkspaceWorkspacesCreatePgDatabaseRoute,
+  postWWorkspaceWorkspacesCreateServiceAccountRoute,
+  postWWorkspaceWorkspacesCreateWorkspaceForkBranchRoute,
+  postWWorkspaceWorkspacesCriticalAlertsAcknowledgeAllRoute,
+  postWWorkspaceWorkspacesCriticalAlertsIdAcknowledgeRoute,
+  postWWorkspaceWorkspacesCriticalAlertsMuteRoute,
+  postWWorkspaceWorkspacesDatatableAclDatatableNameApplyRoute,
+  postWWorkspaceWorkspacesDatatableAclDatatableNamePlanRoute,
+  postWWorkspaceWorkspacesDatatablePermissionsDatatableNameRoute,
+  postWWorkspaceWorkspacesDefaultScriptsRoute,
+  postWWorkspaceWorkspacesDeleteInviteRoute,
+  postWWorkspaceWorkspacesDetachDevWorkspaceRoute,
+  postWWorkspaceWorkspacesDisableDatatableMigrationsDatatableNameRoute,
+  postWWorkspaceWorkspacesDropForkedDatatableDatabasesRoute,
+  postWWorkspaceWorkspacesDropForkedDucklakeNamespacesRoute,
+  postWWorkspaceWorkspacesEditAddAdminsAndDevelopersToForksRoute,
+  postWWorkspaceWorkspacesEditAutoInviteRoute,
+  postWWorkspaceWorkspacesEditCopilotConfigRoute,
+  postWWorkspaceWorkspacesEditDatatableConfigRoute,
+  postWWorkspaceWorkspacesEditDbtWarehousesRoute,
+  postWWorkspaceWorkspacesEditDefaultAppRoute,
+  postWWorkspaceWorkspacesEditDeployUiConfigRoute,
+  postWWorkspaceWorkspacesEditDucklakeConfigRoute,
+  postWWorkspaceWorkspacesEditErrorHandlerRoute,
+  postWWorkspaceWorkspacesEditGitSyncConfigRoute,
+  postWWorkspaceWorkspacesEditGitSyncRepositoryRoute,
+  postWWorkspaceWorkspacesEditGuestJwtKeyRoute,
+  postWWorkspaceWorkspacesEditInstanceGroupsRoute,
+  postWWorkspaceWorkspacesEditLargeFileStorageConfigRoute,
+  postWWorkspaceWorkspacesEditSlackCommandRoute,
+  postWWorkspaceWorkspacesEditSuccessHandlerRoute,
+  postWWorkspaceWorkspacesEditTeamsCommandRoute,
+  postWWorkspaceWorkspacesEditVariableExpirationHandlerRoute,
+  postWWorkspaceWorkspacesEditWebhookRoute,
+  postWWorkspaceWorkspacesEnableDatatableMigrationsDatatableNameRoute,
+  postWWorkspaceWorkspacesEncryptionKeyRoute,
+  postWWorkspaceWorkspacesExportPgSchemaRoute,
+  postWWorkspaceWorkspacesGenerateInitialDatatableMigrationDatatableNameRoute,
+  postWWorkspaceWorkspacesGetDatatableFullSchemaRoute,
+  postWWorkspaceWorkspacesGetDependentsAmountsRoute,
+  postWWorkspaceWorkspacesImportPgDatabaseRoute,
+  postWWorkspaceWorkspacesInviteUserRoute,
+  postWWorkspaceWorkspacesLeaveRoute,
+  postWWorkspaceWorkspacesLogFeatureUsageRoute,
+  postWWorkspaceWorkspacesOperatorSettingsRoute,
+  postWWorkspaceWorkspacesProtectionRulesRoute,
+  postWWorkspaceWorkspacesProtectionRulesRuleNameRoute,
+  postWWorkspaceWorkspacesPruneVersionsRoute,
+  postWWorkspaceWorkspacesPublicAppRateLimitRoute,
+  postWWorkspaceWorkspacesRebuildDependencyMapRoute,
+  postWWorkspaceWorkspacesResetDiffTallyForkWorkspaceIdRoute,
+  postWWorkspaceWorkspacesRoleOverridesRoute,
+  postWWorkspaceWorkspacesRollbackDatatableMigrationsDatatableNameRoute,
+  postWWorkspaceWorkspacesRunDatatableMigrationsDatatableNameRoute,
+  postWWorkspaceWorkspacesRunSlackMessageTestJobRoute,
+  postWWorkspaceWorkspacesRunTeamsMessageTestJobRoute,
+  postWWorkspaceWorkspacesSeedFullDiffTargetWorkspaceIdRoute,
+  postWWorkspaceWorkspacesSetEnvironmentVariableRoute,
+  postWWorkspaceWorkspacesSettingsDocumentRoute,
+  postWWorkspaceWorkspacesSetWsSpecificRoute,
+  postWWorkspaceWorkspacesSlackOauthConfigRoute,
+  postWWorkspaceWorkspacesSlackSigningSecretRoute,
+  postWWorkspaceWorkspacesThresholdAlertRoute,
+  postWWorkspaceWorkspacesUpsertDatatableMigrationDatatableNameRoute,
+  putSettingsInstanceConfigRoute,
+  putWWorkspaceSharedUiRoute,
+} from './routes'
+import {
+  deleteConcurrencyGroupsPruneConcurrencyIdRouteHandler,
+  deleteConfigsUpdateNameRouteHandler,
+  deleteGithubAppGhesAssignWorkspaceIdInstallationIdRouteHandler,
+  deleteGroupsDeleteNameRouteHandler,
+  deleteIndexerDeleteIdxNameRouteHandler,
+  deleteSettingsDatatableRolesIdRouteHandler,
+  deleteSettingsExternalInstancePgDatabasesNameRouteHandler,
+  deleteUsersDeleteEmailRouteHandler,
+  deleteUsersTokensDeleteTokenPrefixRouteHandler,
+  deleteWorkspacesDeleteWorkspaceRouteHandler,
+  deleteWWorkspaceAiSharedArtifactsDeleteIdRouteHandler,
+  deleteWWorkspaceAiSharedSessionsDeleteIdRouteHandler,
+  deleteWWorkspaceAiSharedSessionsOpenedIdRouteHandler,
+  deleteWWorkspaceAmqpTriggersDeletePathRouteHandler,
+  deleteWWorkspaceAppsDeletePathRouteHandler,
+  deleteWWorkspaceAppsUDeleteS3FileRouteHandler,
+  deleteWWorkspaceAzureTriggersDeletePathRouteHandler,
+  deleteWWorkspaceAzureTriggersSubscriptionsDeletePathRouteHandler,
+  deleteWWorkspaceCaptureIdRouteHandler,
+  deleteWWorkspaceEmailTriggersDeletePathRouteHandler,
+  deleteWWorkspaceFlowConversationsDeleteConversationIdRouteHandler,
+  deleteWWorkspaceFlowsDeletePathRouteHandler,
+  deleteWWorkspaceFoldersDeleteNameRouteHandler,
+  deleteWWorkspaceGcpTriggersDeletePathRouteHandler,
+  deleteWWorkspaceGcpTriggersSubscriptionsDeletePathRouteHandler,
+  deleteWWorkspaceGcpTriggersSubscriptionsDeleteRouteHandler,
+  deleteWWorkspaceGithubAppInstallationInstallationIdRouteHandler,
+  deleteWWorkspaceGroupsDeleteNameRouteHandler,
+  deleteWWorkspaceHttpTriggersDeletePathRouteHandler,
+  deleteWWorkspaceJobHelpersDeleteS3FileRouteHandler,
+  deleteWWorkspaceKafkaTriggersDeletePathRouteHandler,
+  deleteWWorkspaceMqttTriggersDeletePathRouteHandler,
+  deleteWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsDeleteRouteHandler,
+  deleteWWorkspaceNativeTriggersIntegrationsServiceNameDeleteRouteHandler,
+  deleteWWorkspaceNativeTriggersServiceNameDeleteExternalIdRouteHandler,
+  deleteWWorkspaceNatsTriggersDeletePathRouteHandler,
+  deleteWWorkspacePostgresTriggersDeletePathRouteHandler,
+  deleteWWorkspacePostgresTriggersPublicationDeletePublicationPathRouteHandler,
+  deleteWWorkspacePostgresTriggersSlotDeletePathRouteHandler,
+  deleteWWorkspaceResourcesDeleteBulkRouteHandler,
+  deleteWWorkspaceResourcesDeletePathRouteHandler,
+  deleteWWorkspaceResourcesHistoryPPathRouteHandler,
+  deleteWWorkspaceResourcesTypeDeletePathRouteHandler,
+  deleteWWorkspaceSchedulesDeletePathRouteHandler,
+  deleteWWorkspaceScriptsDeleteBulkRouteHandler,
+  deleteWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  deleteWWorkspaceSqsTriggersDeletePathRouteHandler,
+  deleteWWorkspaceTrashDeleteIdRouteHandler,
+  deleteWWorkspaceUsersDeleteUsernameRouteHandler,
+  deleteWWorkspaceVariablesDeleteBulkRouteHandler,
+  deleteWWorkspaceVariablesDeletePathRouteHandler,
+  deleteWWorkspaceVolumesDeleteNameRouteHandler,
+  deleteWWorkspaceWebsocketTriggersDeletePathRouteHandler,
+  deleteWWorkspaceWorkspacesDeleteDatatableMigrationDatatableNameTimestampRouteHandler,
+  deleteWWorkspaceWorkspacesDeleteGitSyncRepositoryRouteHandler,
+  deleteWWorkspaceWorkspacesProtectionRulesRuleNameRouteHandler,
+  deleteWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  getAgentWorkersGetMinVersionRouteHandler,
+  getAgentWorkersListBlacklistedTokensRouteHandler,
+  getAppsHubGetIdRouteHandler,
+  getAppsHubGetRawIdRouteHandler,
+  getAppsHubListRouteHandler,
+  getAppsUEmbedTokenByCustomPathCustomPathRouteHandler,
+  getAppsUGuestEntryByCustomPathCustomPathRouteHandler,
+  getAppsUPublicAppByCustomPathCustomPathRouteHandler,
+  getAuthIsPasswordLoginDisabledRouteHandler,
+  getAuthIsSmtpConfiguredRouteHandler,
+  getAuthLoginLinkTokenRouteHandler,
+  getConcurrencyGroupsIdKeyRouteHandler,
+  getConcurrencyGroupsListRouteHandler,
+  getConfigsAutoscalingDiagnosticsWorkerGroupRouteHandler,
+  getConfigsGetNameRouteHandler,
+  getConfigsListAllDedicatedWithDepsRouteHandler,
+  getConfigsListAllWorkspaceDependenciesRouteHandler,
+  getConfigsListAutoscalingEventsWorkerGroupRouteHandler,
+  getConfigsListAvailablePythonVersionsRouteHandler,
+  getConfigsListRouteHandler,
+  getConfigsListWorkerGroupsRouteHandler,
+  getConfigsNativeKubernetesAutoscalingHealthcheckRouteHandler,
+  getDocsPageRouteHandler,
+  getDocsSearchRouteHandler,
+  getEeLicenseRouteHandler,
+  getEmbeddingsQueryHubScriptsRouteHandler,
+  getFlowsHubGetIdRouteHandler,
+  getFlowsHubListRouteHandler,
+  getGithubAppConnectedRepositoriesRouteHandler,
+  getGithubAppGhesConfigRouteHandler,
+  getGithubAppGhesDiscoverRouteHandler,
+  getGroupsExportRouteHandler,
+  getGroupsGetNameRouteHandler,
+  getGroupsListRouteHandler,
+  getGroupsListWithWorkspacesRouteHandler,
+  getHealthDetailedRouteHandler,
+  getHealthStatusRouteHandler,
+  getIndexerStatusRouteHandler,
+  getIndexerStorageRouteHandler,
+  getIntegrationsHubAppMetaRouteHandler,
+  getIntegrationsHubListRouteHandler,
+  getJobsCompletedCountByTagRouteHandler,
+  getJobsDbClockRouteHandler,
+  getMcpOauthCallbackRouteHandler,
+  getMcpOauthStartRouteHandler,
+  getMcpWWorkspaceListToolsRouteHandler,
+  getMinKeepAliveVersionRouteHandler,
+  getOauthGetConnectClientRouteHandler,
+  getOauthListConnectsRouteHandler,
+  getOauthListLoginsRouteHandler,
+  getOidcSigningStatusRouteHandler,
+  getOpenapiYamlRouteHandler,
+  getScriptsHubGetFullPathRouteHandler,
+  getScriptsHubGetPathRouteHandler,
+  getScriptsHubPickPathRouteHandler,
+  getScriptsHubTopRouteHandler,
+  getScriptsUTokenedRawWorkspaceTokenPathRouteHandler,
+  getServiceLogsGetLogFilePathRouteHandler,
+  getServiceLogsListFilesRouteHandler,
+  getSettingsAuditLogsS3BackfillStatusRouteHandler,
+  getSettingsAuditLogsS3StatusRouteHandler,
+  getSettingsCriticalAlertsRouteHandler,
+  getSettingsDatatableRolesRouteHandler,
+  getSettingsExternalInstancePgDatabasesRouteHandler,
+  getSettingsExternalInstancePgStatusRouteHandler,
+  getSettingsGetStatsRouteHandler,
+  getSettingsGithubAppStaleWebhooksRouteHandler,
+  getSettingsGlobalKeyRouteHandler,
+  getSettingsInstanceConfigRouteHandler,
+  getSettingsInstanceHashRouteHandler,
+  getSettingsInstanceUiRouteHandler,
+  getSettingsLatestKeyRenewalAttemptRouteHandler,
+  getSettingsListGlobalRouteHandler,
+  getSettingsLocalRouteHandler,
+  getSettingsLogCleanupStatusRouteHandler,
+  getSettingsObjectStorageUsageRouteHandler,
+  getSettingsOfflineLicenseStatusRouteHandler,
+  getSettingsSmtpConfiguredRouteHandler,
+  getSettingsURuffConfigRouteHandler,
+  getSrchIndexSearchCountServiceLogsRouteHandler,
+  getSrchIndexSearchServiceLogsRouteHandler,
+  getSrchIndexStorageDiskRouteHandler,
+  getSrchWWorkspaceIndexSearchJobRouteHandler,
+  getTokensListScopesRouteHandler,
+  getUptodateRouteHandler,
+  getUsersAllRunnablesRouteHandler,
+  getUsersCloudTrialOfferRouteHandler,
+  getUsersEmailRouteHandler,
+  getUsersExistsEmailRouteHandler,
+  getUsersExportRouteHandler,
+  getUsersExtJwtTokensRouteHandler,
+  getUsersGuestsRouteHandler,
+  getUsersListAsSuperAdminRouteHandler,
+  getUsersListInvitesRouteHandler,
+  getUsersOffboardPreviewEmailRouteHandler,
+  getUsersOnboardingProfileRouteHandler,
+  getUsersRefreshTokenRouteHandler,
+  getUsersTokensListRouteHandler,
+  getUsersTutorialProgressRouteHandler,
+  getUsersUsageRouteHandler,
+  getUsersUsernameInfoEmailRouteHandler,
+  getUsersWhoamiRouteHandler,
+  getVersionRouteHandler,
+  getWellKnownJwksJsonRouteHandler,
+  getWorkersCustomTagsRouteHandler,
+  getWorkersDevWorkspaceIsolationRouteHandler,
+  getWorkersExistsWorkersWithTagsRouteHandler,
+  getWorkersGetDefaultTagsRouteHandler,
+  getWorkersIsDefaultTagsPerWorkspaceRouteHandler,
+  getWorkersListRouteHandler,
+  getWorkersQueueCountsRouteHandler,
+  getWorkersQueueMetricsRouteHandler,
+  getWorkersQueueMetricsSeriesRouteHandler,
+  getWorkersQueueRunningCountsRouteHandler,
+  getWorkersQueueStatusRouteHandler,
+  getWorkersRunnableStatsRouteHandler,
+  getWorkersWorkspaceFairnessEventsRouteHandler,
+  getWorkspacesAllowedDomainAutoInviteRouteHandler,
+  getWorkspacesListAsSuperadminRouteHandler,
+  getWorkspacesListRouteHandler,
+  getWorkspacesUsersRouteHandler,
+  getWWorkspaceAccessGetRouteHandler,
+  getWWorkspaceAclsGetKindPathRouteHandler,
+  getWWorkspaceAiEvalsCasesListPathRouteHandler,
+  getWWorkspaceAiEvalsDatasetsGetPathRouteHandler,
+  getWWorkspaceAiEvalsDatasetsListRouteHandler,
+  getWWorkspaceAiEvalsExperimentsListAllRouteHandler,
+  getWWorkspaceAiEvalsExperimentsResultsPathRouteHandler,
+  getWWorkspaceAiEvalsRunPayloadRouteHandler,
+  getWWorkspaceAiEvalsScorerDefaultsRouteHandler,
+  getWWorkspaceAiEvalsScorersRecentRouteHandler,
+  getWWorkspaceAiEvalsSubjectStateRouteHandler,
+  getWWorkspaceAiSessionsListRouteHandler,
+  getWWorkspaceAiSharedArtifactsGetIdRouteHandler,
+  getWWorkspaceAiSharedArtifactsListRouteHandler,
+  getWWorkspaceAiSharedArtifactsStatusRouteHandler,
+  getWWorkspaceAiSharedSessionsListRouteHandler,
+  getWWorkspaceAiSharedSessionsStatusRouteHandler,
+  getWWorkspaceAiUsageRouteHandler,
+  getWWorkspaceAiUSharedSessionsGetIdRouteHandler,
+  getWWorkspaceAmqpTriggersExistsPathRouteHandler,
+  getWWorkspaceAmqpTriggersGetPathRouteHandler,
+  getWWorkspaceAmqpTriggersListRouteHandler,
+  getWWorkspaceAppsCustomPathExistsCustomPathRouteHandler,
+  getWWorkspaceAppsEmbedTokenPPathRouteHandler,
+  getWWorkspaceAppsExistsPathRouteHandler,
+  getWWorkspaceAppsGetDataVSecretWithExtensionRouteHandler,
+  getWWorkspaceAppsGetLatestVersionPathRouteHandler,
+  getWWorkspaceAppsGetLitePathRouteHandler,
+  getWWorkspaceAppsGetPPathRouteHandler,
+  getWWorkspaceAppsGetVIdRouteHandler,
+  getWWorkspaceAppsHistoryPPathRouteHandler,
+  getWWorkspaceAppsListPathsFromWorkspaceRunnableRunnableKindPathRouteHandler,
+  getWWorkspaceAppsListRouteHandler,
+  getWWorkspaceAppsListSearchRouteHandler,
+  getWWorkspaceAppsSecretOfLatestVersionPathRouteHandler,
+  getWWorkspaceAppsSecretOfPathRouteHandler,
+  getWWorkspaceAppsUDownloadS3ParquetFileAsCsvPathRouteHandler,
+  getWWorkspaceAppsUEmbedTokenSecretRouteHandler,
+  getWWorkspaceAppsUGuestEntryPathRouteHandler,
+  getWWorkspaceAppsULoadCsvPreviewPathRouteHandler,
+  getWWorkspaceAppsULoadFileMetadataPathRouteHandler,
+  getWWorkspaceAppsULoadFilePreviewPathRouteHandler,
+  getWWorkspaceAppsULoadParquetPreviewPathRouteHandler,
+  getWWorkspaceAppsULoadTableCountPathRouteHandler,
+  getWWorkspaceAppsUPublicAppPathRouteHandler,
+  getWWorkspaceAppsUPublicResourcePathRouteHandler,
+  getWWorkspaceAssetsAssetSchemasRouteHandler,
+  getWWorkspaceAssetsColumnLineageRouteHandler,
+  getWWorkspaceAssetsGraphRouteHandler,
+  getWWorkspaceAssetsListFavoritesRouteHandler,
+  getWWorkspaceAssetsListRouteHandler,
+  getWWorkspaceAssetsMacrosRouteHandler,
+  getWWorkspaceAssetsPartitionsInRangeRouteHandler,
+  getWWorkspaceAssetsPartitionsRouteHandler,
+  getWWorkspaceAssetsPipelinesRouteHandler,
+  getWWorkspaceAuditGetIdRouteHandler,
+  getWWorkspaceAuditListRouteHandler,
+  getWWorkspaceAzureTriggersExistsPathRouteHandler,
+  getWWorkspaceAzureTriggersGetPathRouteHandler,
+  getWWorkspaceAzureTriggersListRouteHandler,
+  getWWorkspaceCaptureGetConfigsRunnableKindPathRouteHandler,
+  getWWorkspaceCaptureIdRouteHandler,
+  getWWorkspaceCaptureListRunnableKindPathRouteHandler,
+  getWWorkspaceConcurrencyGroupsListJobsRouteHandler,
+  getWWorkspaceDataMetricsListRouteHandler,
+  getWWorkspaceDbtWarehouseExistsNameRouteHandler,
+  getWWorkspaceDbtWarehouseNameRouteHandler,
+  getWWorkspaceDeploymentRequestEligibleDeployersRouteHandler,
+  getWWorkspaceDeploymentRequestOpenRouteHandler,
+  getWWorkspaceDraftsGetKindPathRouteHandler,
+  getWWorkspaceDraftsGetOwnKindPathRouteHandler,
+  getWWorkspaceDraftsListRouteHandler,
+  getWWorkspaceEmailTriggersExistsPathRouteHandler,
+  getWWorkspaceEmailTriggersGetPathRouteHandler,
+  getWWorkspaceEmailTriggersListRouteHandler,
+  getWWorkspaceEmbeddingsQueryResourceTypesRouteHandler,
+  getWWorkspaceFlowConversationsConversationIdMessagesRouteHandler,
+  getWWorkspaceFlowConversationsListRouteHandler,
+  getWWorkspaceFlowsDeploymentStatusPPathRouteHandler,
+  getWWorkspaceFlowsExistsPathRouteHandler,
+  getWWorkspaceFlowsGetLatestVersionPathRouteHandler,
+  getWWorkspaceFlowsGetPathRouteHandler,
+  getWWorkspaceFlowsGetTriggersCountPathRouteHandler,
+  getWWorkspaceFlowsGetVVersionRouteHandler,
+  getWWorkspaceFlowsHistoryPPathRouteHandler,
+  getWWorkspaceFlowsListPathsFromWorkspaceRunnableRunnableKindPathRouteHandler,
+  getWWorkspaceFlowsListPathsLinkingAgentPathRouteHandler,
+  getWWorkspaceFlowsListPathsRouteHandler,
+  getWWorkspaceFlowsListRouteHandler,
+  getWWorkspaceFlowsListSearchRouteHandler,
+  getWWorkspaceFlowsListTokensPathRouteHandler,
+  getWWorkspaceFoldersExistsNameRouteHandler,
+  getWWorkspaceFoldersGetNameRouteHandler,
+  getWWorkspaceFoldersGetusageNameRouteHandler,
+  getWWorkspaceFoldersHistoryGetNameRouteHandler,
+  getWWorkspaceFoldersListnamesRouteHandler,
+  getWWorkspaceFoldersListRouteHandler,
+  getWWorkspaceGcpTriggersExistsPathRouteHandler,
+  getWWorkspaceGcpTriggersGetPathRouteHandler,
+  getWWorkspaceGcpTriggersListRouteHandler,
+  getWWorkspaceGcpTriggersTopicsListPathRouteHandler,
+  getWWorkspaceGcpTriggersTopicsListRouteHandler,
+  getWWorkspaceGithubAppExportInstallationIdRouteHandler,
+  getWWorkspaceGithubAppRepoArchivePathRouteHandler,
+  getWWorkspaceGitSyncCredentialOriginRouteHandler,
+  getWWorkspaceGroupsGetNameRouteHandler,
+  getWWorkspaceGroupsHistoryGetNameRouteHandler,
+  getWWorkspaceGroupsListnamesRouteHandler,
+  getWWorkspaceGroupsListRouteHandler,
+  getWWorkspaceHttpTriggersExistsPathRouteHandler,
+  getWWorkspaceHttpTriggersGetPathRouteHandler,
+  getWWorkspaceHttpTriggersListRouteHandler,
+  getWWorkspaceHubProjectRouteHandler,
+  getWWorkspaceHubProjectsRouteHandler,
+  getWWorkspaceHubProjectsSlugExportRouteHandler,
+  getWWorkspaceInputsHistoryRouteHandler,
+  getWWorkspaceInputsJobOrInputIdArgsRouteHandler,
+  getWWorkspaceInputsListRouteHandler,
+  getWWorkspaceJobHelpersCheckS3FolderExistsRouteHandler,
+  getWWorkspaceJobHelpersDownloadS3FileRouteHandler,
+  getWWorkspaceJobHelpersDownloadS3ParquetFileAsCsvRouteHandler,
+  getWWorkspaceJobHelpersListGitRepoFilesRouteHandler,
+  getWWorkspaceJobHelpersListStoredFilesPagedRouteHandler,
+  getWWorkspaceJobHelpersListStoredFilesRouteHandler,
+  getWWorkspaceJobHelpersLoadCsvPreviewPathRouteHandler,
+  getWWorkspaceJobHelpersLoadFileMetadataRouteHandler,
+  getWWorkspaceJobHelpersLoadFilePreviewRouteHandler,
+  getWWorkspaceJobHelpersLoadGitRepoFileMetadataRouteHandler,
+  getWWorkspaceJobHelpersLoadGitRepoFilePreviewRouteHandler,
+  getWWorkspaceJobHelpersLoadParquetPreviewPathRouteHandler,
+  getWWorkspaceJobHelpersLoadTableCountPathRouteHandler,
+  getWWorkspaceJobHelpersMoveS3FileRouteHandler,
+  getWWorkspaceJobHelpersStorageUsageRouteHandler,
+  getWWorkspaceJobHelpersTestConnectionRouteHandler,
+  getWWorkspaceJobHelpersV2S3ProxyBucketRouteHandler,
+  getWWorkspaceJobMetricsGetProgressIdRouteHandler,
+  getWWorkspaceJobsAssetDispatchEdgesRouteHandler,
+  getWWorkspaceJobsCompletedCountJobsRouteHandler,
+  getWWorkspaceJobsCompletedCountRouteHandler,
+  getWWorkspaceJobsCompletedExportRouteHandler,
+  getWWorkspaceJobsCompletedListRouteHandler,
+  getWWorkspaceJobsDbtColumnLineageIdRouteHandler,
+  getWWorkspaceJobsDbtGraphIdRouteHandler,
+  getWWorkspaceJobsDbtResumableIdRouteHandler,
+  getWWorkspaceJobsDbtResumableScriptPPathRouteHandler,
+  getWWorkspaceJobsFlowApprovalStepDetailJobIdStepIdRouteHandler,
+  getWWorkspaceJobsFlowUserStatesIdKeyRouteHandler,
+  getWWorkspaceJobsGetOtelTracesIdRouteHandler,
+  getWWorkspaceJobsJobPublicViewTokenIdRouteHandler,
+  getWWorkspaceJobsJobSignatureIdResumeIdRouteHandler,
+  getWWorkspaceJobsJobViewTokenIdRouteHandler,
+  getWWorkspaceJobsListFilteredUuidsRouteHandler,
+  getWWorkspaceJobsListRouteHandler,
+  getWWorkspaceJobsOldestRouteHandler,
+  getWWorkspaceJobsQueueCountRouteHandler,
+  getWWorkspaceJobsQueueExportRouteHandler,
+  getWWorkspaceJobsQueueListFilteredUuidsRouteHandler,
+  getWWorkspaceJobsQueueListRouteHandler,
+  getWWorkspaceJobsQueuePositionScheduledForRouteHandler,
+  getWWorkspaceJobsQueueScheduledForIdRouteHandler,
+  getWWorkspaceJobsRecentRunsRouteHandler,
+  getWWorkspaceJobsResultByIdFlowJobIdNodeIdRouteHandler,
+  getWWorkspaceJobsResumeUrlsIdResumeIdRouteHandler,
+  getWWorkspaceJobsRunAndStreamFPathRouteHandler,
+  getWWorkspaceJobsRunAndStreamFvVersionRouteHandler,
+  getWWorkspaceJobsRunAndStreamHHashRouteHandler,
+  getWWorkspaceJobsRunAndStreamPPathRouteHandler,
+  getWWorkspaceJobsRunAssetsIdRouteHandler,
+  getWWorkspaceJobsRunProgressIdRouteHandler,
+  getWWorkspaceJobsRunWaitResultFvVersionRouteHandler,
+  getWWorkspaceJobsRunWaitResultPPathRouteHandler,
+  getWWorkspaceJobsSlackApprovalIdRouteHandler,
+  getWWorkspaceJobsTeamsApprovalIdRouteHandler,
+  getWWorkspaceJobsUCancelIdResumeIdSignatureRouteHandler,
+  getWWorkspaceJobsUCompletedGetIdRouteHandler,
+  getWWorkspaceJobsUCompletedGetResultIdRouteHandler,
+  getWWorkspaceJobsUCompletedGetResultMaybeIdRouteHandler,
+  getWWorkspaceJobsUCompletedGetTimingIdRouteHandler,
+  getWWorkspaceJobsUDispatchEventsIdRouteHandler,
+  getWWorkspaceJobsUFlowApprovalInfoJobIdRouteHandler,
+  getWWorkspaceJobsUGetArgsIdRouteHandler,
+  getWWorkspaceJobsUGetCompletedLogsTailIdRouteHandler,
+  getWWorkspaceJobsUGetFlowAllLogsIdRouteHandler,
+  getWWorkspaceJobsUGetFlowAllLogsStructuredIdRouteHandler,
+  getWWorkspaceJobsUGetFlowAllResultsIdRouteHandler,
+  getWWorkspaceJobsUGetFlowDebugInfoIdRouteHandler,
+  getWWorkspaceJobsUGetFlowIdResumeIdSignatureRouteHandler,
+  getWWorkspaceJobsUGetIdRouteHandler,
+  getWWorkspaceJobsUGetLogFilePathRouteHandler,
+  getWWorkspaceJobsUGetLogsIdRouteHandler,
+  getWWorkspaceJobsUGetRootJobIdIdRouteHandler,
+  getWWorkspaceJobsUGetupdateIdRouteHandler,
+  getWWorkspaceJobsUGetupdateSseIdRouteHandler,
+  getWWorkspaceJobsUResumeIdResumeIdSignatureRouteHandler,
+  getWWorkspaceJobsWacApprovalUrlsIdStepKeyRouteHandler,
+  getWWorkspaceJobsWorkerIsDrainingIdRouteHandler,
+  getWWorkspaceKafkaTriggersExistsPathRouteHandler,
+  getWWorkspaceKafkaTriggersGetPathRouteHandler,
+  getWWorkspaceKafkaTriggersListRouteHandler,
+  getWWorkspaceMqttTriggersExistsPathRouteHandler,
+  getWWorkspaceMqttTriggersGetPathRouteHandler,
+  getWWorkspaceMqttTriggersListRouteHandler,
+  getWWorkspaceNativeTriggersGithubReposRouteHandler,
+  getWWorkspaceNativeTriggersGoogleCalendarsRouteHandler,
+  getWWorkspaceNativeTriggersGoogleDriveFilesRouteHandler,
+  getWWorkspaceNativeTriggersGoogleDriveSharedDrivesRouteHandler,
+  getWWorkspaceNativeTriggersIntegrationsListRouteHandler,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsRouteHandler,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameExistsRouteHandler,
+  getWWorkspaceNativeTriggersIntegrationsServiceNameInstanceSharingAvailableRouteHandler,
+  getWWorkspaceNativeTriggersNextcloudEventsRouteHandler,
+  getWWorkspaceNativeTriggersServiceNameExistsExternalIdRouteHandler,
+  getWWorkspaceNativeTriggersServiceNameGetExternalIdRouteHandler,
+  getWWorkspaceNativeTriggersServiceNameListRouteHandler,
+  getWWorkspaceNatsTriggersExistsPathRouteHandler,
+  getWWorkspaceNatsTriggersGetPathRouteHandler,
+  getWWorkspaceNatsTriggersListRouteHandler,
+  getWWorkspaceNpmProxyConfigRouteHandler,
+  getWWorkspaceNpmProxyFilePackageVersionFilepathRouteHandler,
+  getWWorkspaceNpmProxyFiletreePackageVersionRouteHandler,
+  getWWorkspaceNpmProxyMetadataPackageRouteHandler,
+  getWWorkspaceNpmProxyResolvePackageRouteHandler,
+  getWWorkspaceNpmProxyTarballPackageVersionRouteHandler,
+  getWWorkspacePathAutocompleteListPathsRouteHandler,
+  getWWorkspacePostgresTriggersExistsPathRouteHandler,
+  getWWorkspacePostgresTriggersGetPathRouteHandler,
+  getWWorkspacePostgresTriggersGetTemplateScriptIdRouteHandler,
+  getWWorkspacePostgresTriggersIsValidPostgresConfigurationPathRouteHandler,
+  getWWorkspacePostgresTriggersListRouteHandler,
+  getWWorkspacePostgresTriggersPostgresVersionPathRouteHandler,
+  getWWorkspacePostgresTriggersPublicationGetPublicationPathRouteHandler,
+  getWWorkspacePostgresTriggersPublicationListPathRouteHandler,
+  getWWorkspacePostgresTriggersSlotListPathRouteHandler,
+  getWWorkspaceRawAppsListRouteHandler,
+  getWWorkspaceRemoteDeployTargetRouteHandler,
+  getWWorkspaceResourcesExistsPathRouteHandler,
+  getWWorkspaceResourcesFileResourceTypeToFileExtMapRouteHandler,
+  getWWorkspaceResourcesGetPathRouteHandler,
+  getWWorkspaceResourcesGetValueInterpolatedPathRouteHandler,
+  getWWorkspaceResourcesGetValuePathRouteHandler,
+  getWWorkspaceResourcesGitCommitHashPathRouteHandler,
+  getWWorkspaceResourcesHistoryPPathRouteHandler,
+  getWWorkspaceResourcesHistoryVIdRouteHandler,
+  getWWorkspaceResourcesListNamesNameRouteHandler,
+  getWWorkspaceResourcesListRouteHandler,
+  getWWorkspaceResourcesListSearchRouteHandler,
+  getWWorkspaceResourcesMcpToolsPathRouteHandler,
+  getWWorkspaceResourcesTypeExistsPathRouteHandler,
+  getWWorkspaceResourcesTypeGetPathRouteHandler,
+  getWWorkspaceResourcesTypeHubInfoRouteHandler,
+  getWWorkspaceResourcesTypeListnamesRouteHandler,
+  getWWorkspaceResourcesTypeListRouteHandler,
+  getWWorkspaceResourcesTypeResourceCountsRouteHandler,
+  getWWorkspaceRunnablesCountsRouteHandler,
+  getWWorkspaceRunnablesListRouteHandler,
+  getWWorkspaceSchedulesExistsPathRouteHandler,
+  getWWorkspaceSchedulesGetPathRouteHandler,
+  getWWorkspaceSchedulesListRouteHandler,
+  getWWorkspaceSchedulesListWithJobsRouteHandler,
+  getWWorkspaceScriptsCiTestResultsKindPathRouteHandler,
+  getWWorkspaceScriptsDeploymentStatusHHashRouteHandler,
+  getWWorkspaceScriptsExistsPPathRouteHandler,
+  getWWorkspaceScriptsGetHHashRouteHandler,
+  getWWorkspaceScriptsGetLatestVersionPathRouteHandler,
+  getWWorkspaceScriptsGetPPathRouteHandler,
+  getWWorkspaceScriptsGetTriggersCountPathRouteHandler,
+  getWWorkspaceScriptsHistoryPPathRouteHandler,
+  getWWorkspaceScriptsListDedicatedWithDepsRouteHandler,
+  getWWorkspaceScriptsListPathsFromWorkspaceRunnablePathRouteHandler,
+  getWWorkspaceScriptsListPathsRouteHandler,
+  getWWorkspaceScriptsListRouteHandler,
+  getWWorkspaceScriptsListSearchRouteHandler,
+  getWWorkspaceScriptsListTokensPathRouteHandler,
+  getWWorkspaceScriptsRawHPathRouteHandler,
+  getWWorkspaceScriptsRawPPathRouteHandler,
+  getWWorkspaceSharedUiGetRouteHandler,
+  getWWorkspaceSharedUiListRouteHandler,
+  getWWorkspaceSharedUiVersionRouteHandler,
+  getWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  getWWorkspaceSlackAgentsAvailableChannelsRouteHandler,
+  getWWorkspaceSlackAgentsChannelsRouteHandler,
+  getWWorkspaceSlackAgentsStatusRouteHandler,
+  getWWorkspaceSqsTriggersExistsPathRouteHandler,
+  getWWorkspaceSqsTriggersGetPathRouteHandler,
+  getWWorkspaceSqsTriggersListRouteHandler,
+  getWWorkspaceTrashGetIdRouteHandler,
+  getWWorkspaceTrashListRouteHandler,
+  getWWorkspaceTriggersHistoryListRouteHandler,
+  getWWorkspaceUsersGetUsernameRouteHandler,
+  getWWorkspaceUsersIsOwnerPathRouteHandler,
+  getWWorkspaceUsersListAddableRouteHandler,
+  getWWorkspaceUsersListRouteHandler,
+  getWWorkspaceUsersListUsageRouteHandler,
+  getWWorkspaceUsersListUsernamesRouteHandler,
+  getWWorkspaceUsersOffboardPreviewUsernameRouteHandler,
+  getWWorkspaceUsersUsernameToEmailUsernameRouteHandler,
+  getWWorkspaceUsersWhoamiRouteHandler,
+  getWWorkspaceUsersWhoisUsernameRouteHandler,
+  getWWorkspaceVariablesExistsPathRouteHandler,
+  getWWorkspaceVariablesExternalSecretPrefixesRouteHandler,
+  getWWorkspaceVariablesGetPathRouteHandler,
+  getWWorkspaceVariablesGetValuePathRouteHandler,
+  getWWorkspaceVariablesListContextualRouteHandler,
+  getWWorkspaceVariablesListRouteHandler,
+  getWWorkspaceVolumesListRouteHandler,
+  getWWorkspaceVolumesStorageRouteHandler,
+  getWWorkspaceWebsocketTriggersExistsPathRouteHandler,
+  getWWorkspaceWebsocketTriggersGetPathRouteHandler,
+  getWWorkspaceWebsocketTriggersListRouteHandler,
+  getWWorkspaceWorkersCustomTagsRouteHandler,
+  getWWorkspaceWorkspaceDependenciesGetLatestLanguageRouteHandler,
+  getWWorkspaceWorkspaceDependenciesListRouteHandler,
+  getWWorkspaceWorkspacesAvailableTeamsChannelsRouteHandler,
+  getWWorkspaceWorkspacesAvailableTeamsIdsRouteHandler,
+  getWWorkspaceWorkspacesBillableSeatsRouteHandler,
+  getWWorkspaceWorkspacesCloudQuotasRouteHandler,
+  getWWorkspaceWorkspacesCompareTargetWorkspaceIdRouteHandler,
+  getWWorkspaceWorkspacesCriticalAlertsRouteHandler,
+  getWWorkspaceWorkspacesDatatableAclDatatableNameRouteHandler,
+  getWWorkspaceWorkspacesDatatableMigrationsStatusDatatableNameRouteHandler,
+  getWWorkspaceWorkspacesDatatablePermissionsDatatableNameRouteHandler,
+  getWWorkspaceWorkspacesDatatableUsableRolesDatatableNameRouteHandler,
+  getWWorkspaceWorkspacesDefaultAppRouteHandler,
+  getWWorkspaceWorkspacesDefaultScriptsRouteHandler,
+  getWWorkspaceWorkspacesEncryptionKeyRouteHandler,
+  getWWorkspaceWorkspacesForkCreationStatusCreationIdRouteHandler,
+  getWWorkspaceWorkspacesGetAsSuperadminRouteHandler,
+  getWWorkspaceWorkspacesGetCopilotInfoRouteHandler,
+  getWWorkspaceWorkspacesGetCopilotSettingsStateRouteHandler,
+  getWWorkspaceWorkspacesGetDatatableTableSchemaRouteHandler,
+  getWWorkspaceWorkspacesGetDependencyMapRouteHandler,
+  getWWorkspaceWorkspacesGetDependentsImportedPathRouteHandler,
+  getWWorkspaceWorkspacesGetDeployToRouteHandler,
+  getWWorkspaceWorkspacesGetDevWorkspaceRouteHandler,
+  getWWorkspaceWorkspacesGetImportsImporterPathRouteHandler,
+  getWWorkspaceWorkspacesGetPublicSettingsRouteHandler,
+  getWWorkspaceWorkspacesGetSecondaryStorageNamesRouteHandler,
+  getWWorkspaceWorkspacesGetSettingsRouteHandler,
+  getWWorkspaceWorkspacesGetWorkspaceNameRouteHandler,
+  getWWorkspaceWorkspacesGitSyncDeployModeRouteHandler,
+  getWWorkspaceWorkspacesGitSyncEnabledRouteHandler,
+  getWWorkspaceWorkspacesGuestUsageRouteHandler,
+  getWWorkspaceWorkspacesIsPremiumRouteHandler,
+  getWWorkspaceWorkspacesListDatatableMigrationsRouteHandler,
+  getWWorkspaceWorkspacesListDatatableSchemasRouteHandler,
+  getWWorkspaceWorkspacesListDatatablesRouteHandler,
+  getWWorkspaceWorkspacesListDatatableTablesRouteHandler,
+  getWWorkspaceWorkspacesListDucklakesRouteHandler,
+  getWWorkspaceWorkspacesListPendingInvitesRouteHandler,
+  getWWorkspaceWorkspacesListWsSpecificRouteHandler,
+  getWWorkspaceWorkspacesListWsSpecificVersionsRouteHandler,
+  getWWorkspaceWorkspacesPremiumInfoRouteHandler,
+  getWWorkspaceWorkspacesProtectionRulesRouteHandler,
+  getWWorkspaceWorkspacesRolesRouteHandler,
+  getWWorkspaceWorkspacesSettingsDocumentRouteHandler,
+  getWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  getWWorkspaceWorkspacesTestDatatableConnectionDatatableNameRouteHandler,
+  getWWorkspaceWorkspacesThresholdAlertRouteHandler,
+  getWWorkspaceWorkspacesUsageRouteHandler,
+  getWWorkspaceWorkspacesUsedTriggersRouteHandler,
+  postAgentWorkersBlacklistTokenRouteHandler,
+  postAgentWorkersCreateAgentTokenRouteHandler,
+  postAgentWorkersRemoveBlacklistTokenRouteHandler,
+  postAuthLoginRouteHandler,
+  postAuthLogoutRouteHandler,
+  postAuthRequestPasswordResetRouteHandler,
+  postAuthResetPasswordRouteHandler,
+  postConfigsAutoscalingRecordingWorkerGroupRouteHandler,
+  postConfigsTestAutoscalingWorkerGroupRouteHandler,
+  postConfigsUpdateNameRouteHandler,
+  postGithubAppGhesAssignRouteHandler,
+  postGroupsAdduserNameRouteHandler,
+  postGroupsCreateRouteHandler,
+  postGroupsOverwriteRouteHandler,
+  postGroupsRemoveuserNameRouteHandler,
+  postGroupsUpdateNameRouteHandler,
+  postMcpOauthDiscoverRouteHandler,
+  postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRouteHandler,
+  postOauthConnectCallbackClientNameRouteHandler,
+  postOauthConnectSlackCallbackRouteHandler,
+  postOauthConnectSlackInstanceRouteHandler,
+  postOauthLoginCallbackClientNameRouteHandler,
+  postOauthTestClientCredentialsRouteHandler,
+  postSamlTestMetadataRouteHandler,
+  postSchedulesPreviewRouteHandler,
+  postSettingsAuditLogsS3BackfillRouteHandler,
+  postSettingsCriticalAlertsAcknowledgeAllRouteHandler,
+  postSettingsCriticalAlertsIdAcknowledgeRouteHandler,
+  postSettingsCustomerPortalRouteHandler,
+  postSettingsDatatableRolesIdRouteHandler,
+  postSettingsDatatableRolesRouteHandler,
+  postSettingsDropCustomInstancePgDatabaseNameRouteHandler,
+  postSettingsExternalInstancePgDatabasesNameRouteHandler,
+  postSettingsExternalInstancePgSetupRouteHandler,
+  postSettingsGlobalKeyRouteHandler,
+  postSettingsListCustomInstancePgDatabasesRouteHandler,
+  postSettingsMigrateSecretsFromAwsSmRouteHandler,
+  postSettingsMigrateSecretsFromAzureKvRouteHandler,
+  postSettingsMigrateSecretsFromHttpStoreRouteHandler,
+  postSettingsMigrateSecretsToAwsSmRouteHandler,
+  postSettingsMigrateSecretsToAzureKvRouteHandler,
+  postSettingsMigrateSecretsToDatabaseRouteHandler,
+  postSettingsMigrateSecretsToVaultRouteHandler,
+  postSettingsObjectStorageUsageRouteHandler,
+  postSettingsRefreshCustomInstanceUserPwdRouteHandler,
+  postSettingsRenewLicenseKeyRouteHandler,
+  postSettingsRestartWorkerGroupWorkerGroupRouteHandler,
+  postSettingsRunLogCleanupRouteHandler,
+  postSettingsSendStatsRouteHandler,
+  postSettingsSetupCustomInstancePgDatabaseNameRouteHandler,
+  postSettingsTestAwsSmBackendRouteHandler,
+  postSettingsTestAzureKvBackendRouteHandler,
+  postSettingsTestCriticalChannelsRouteHandler,
+  postSettingsTestHttpStoreBackendRouteHandler,
+  postSettingsTestLicenseKeyRouteHandler,
+  postSettingsTestObjectStorageConfigRouteHandler,
+  postSettingsTestSecretBackendRouteHandler,
+  postSettingsTestSmtpRouteHandler,
+  postTeamsActivitiesRouteHandler,
+  postUsersAcceptInviteRouteHandler,
+  postUsersChangeEmailEmailRouteHandler,
+  postUsersCloudTrialOfferGoRouteHandler,
+  postUsersCloudTrialOfferRouteHandler,
+  postUsersCreateRouteHandler,
+  postUsersDeclineInviteRouteHandler,
+  postUsersLeaveInstanceRouteHandler,
+  postUsersLoginLinksRouteHandler,
+  postUsersOffboardEmailRouteHandler,
+  postUsersOnboardingProfileRouteHandler,
+  postUsersOnboardingRouteHandler,
+  postUsersOverwriteRouteHandler,
+  postUsersRenameEmailRouteHandler,
+  postUsersSetLoginTypeUserRouteHandler,
+  postUsersSetPasswordOfUserRouteHandler,
+  postUsersSetpasswordRouteHandler,
+  postUsersTokensCreateRouteHandler,
+  postUsersTokensImpersonateRouteHandler,
+  postUsersTokensUpdateLabelTokenPrefixRouteHandler,
+  postUsersTokensUpdateScopesTokenPrefixRouteHandler,
+  postUsersTutorialProgressRouteHandler,
+  postUsersUpdateEmailRouteHandler,
+  postWorkspacesCreateRouteHandler,
+  postWorkspacesExistsRouteHandler,
+  postWorkspacesExistsUsernameRouteHandler,
+  postWorkspacesSessionWorkspaceRetentionRouteHandler,
+  postWorkspacesSessionWorkspaceStatusRouteHandler,
+  postWorkspacesUnarchiveWorkspaceRouteHandler,
+  postWWorkspaceAclsAddKindPathRouteHandler,
+  postWWorkspaceAclsRemoveKindPathRouteHandler,
+  postWWorkspaceAiCompleteRouteHandler,
+  postWWorkspaceAiEvalsDatasetsCreateRouteHandler,
+  postWWorkspaceAiEvalsDatasetsDeletePathRouteHandler,
+  postWWorkspaceAiEvalsDatasetsUpdatePathRouteHandler,
+  postWWorkspaceAiEvalsExperimentsCollectRouteHandler,
+  postWWorkspaceAiEvalsExperimentsRunRouteHandler,
+  postWWorkspaceAiSessionsPullRouteHandler,
+  postWWorkspaceAiSessionsPushRouteHandler,
+  postWWorkspaceAiSessionToolsNameRouteHandler,
+  postWWorkspaceAiSharedArtifactsShareRouteHandler,
+  postWWorkspaceAiSharedSessionsSetPublicIdRouteHandler,
+  postWWorkspaceAiSharedSessionsShareRouteHandler,
+  postWWorkspaceAiUsageRouteHandler,
+  postWWorkspaceAiWebFetchRouteHandler,
+  postWWorkspaceAiWebSearchRouteHandler,
+  postWWorkspaceAmqpTriggersCreateRouteHandler,
+  postWWorkspaceAmqpTriggersSetmodePathRouteHandler,
+  postWWorkspaceAmqpTriggersTestRouteHandler,
+  postWWorkspaceAmqpTriggersUpdatePathRouteHandler,
+  postWWorkspaceAppsCreateRawRouteHandler,
+  postWWorkspaceAppsCreateRawSourceRouteHandler,
+  postWWorkspaceAppsCreateRouteHandler,
+  postWWorkspaceAppsHistoryUpdateAIdVVersionRouteHandler,
+  postWWorkspaceAppsPreviewSdkTokenRouteHandler,
+  postWWorkspaceAppsSignS3ObjectsRouteHandler,
+  postWWorkspaceAppsUExecuteComponentPathRouteHandler,
+  postWWorkspaceAppsUpdatePathRouteHandler,
+  postWWorkspaceAppsUpdateRawPathRouteHandler,
+  postWWorkspaceAppsUpdateRawSourcePathRouteHandler,
+  postWWorkspaceAppsUUploadS3FilePathRouteHandler,
+  postWWorkspaceAssetsListByUsagesRouteHandler,
+  postWWorkspaceAzureTriggersBasicTopicsListPathRouteHandler,
+  postWWorkspaceAzureTriggersCreateRouteHandler,
+  postWWorkspaceAzureTriggersNamespacesListPathRouteHandler,
+  postWWorkspaceAzureTriggersNamespacesSubscriptionsListPathRouteHandler,
+  postWWorkspaceAzureTriggersNamespacesTopicsListPathRouteHandler,
+  postWWorkspaceAzureTriggersSetmodePathRouteHandler,
+  postWWorkspaceAzureTriggersTestRouteHandler,
+  postWWorkspaceAzureTriggersUpdatePathRouteHandler,
+  postWWorkspaceCaptureMoveRunnableKindPathRouteHandler,
+  postWWorkspaceCapturePingConfigTriggerKindRunnableKindPathRouteHandler,
+  postWWorkspaceCaptureSetConfigRouteHandler,
+  postWWorkspaceDbtRunProgressRouteHandler,
+  postWWorkspaceDeploymentRequestIdCancelRouteHandler,
+  postWWorkspaceDeploymentRequestIdCloseMergedRouteHandler,
+  postWWorkspaceDeploymentRequestIdCommentRouteHandler,
+  postWWorkspaceDeploymentRequestRouteHandler,
+  postWWorkspaceDraftsDeleteForUserKindPathRouteHandler,
+  postWWorkspaceDraftsMigrateLegacyKindPathRouteHandler,
+  postWWorkspaceDraftsMoveKindPathRouteHandler,
+  postWWorkspaceDraftsTransferRouteHandler,
+  postWWorkspaceDraftsUpdateKindPathRouteHandler,
+  postWWorkspaceEmailTriggersCreateRouteHandler,
+  postWWorkspaceEmailTriggersLocalPartExistsRouteHandler,
+  postWWorkspaceEmailTriggersSetmodePathRouteHandler,
+  postWWorkspaceEmailTriggersUpdatePathRouteHandler,
+  postWWorkspaceFavoritesStarRouteHandler,
+  postWWorkspaceFavoritesUnstarRouteHandler,
+  postWWorkspaceFlowConversationsUpdateConversationIdRouteHandler,
+  postWWorkspaceFlowsArchivePathRouteHandler,
+  postWWorkspaceFlowsCreateRouteHandler,
+  postWWorkspaceFlowsHistoryUpdateVVersionRouteHandler,
+  postWWorkspaceFlowsToggleWorkspaceErrorHandlerPathRouteHandler,
+  postWWorkspaceFlowsUpdatePathRouteHandler,
+  postWWorkspaceFoldersAddownerNameRouteHandler,
+  postWWorkspaceFoldersCreateRouteHandler,
+  postWWorkspaceFoldersRemoveownerNameRouteHandler,
+  postWWorkspaceFoldersUpdateNameRouteHandler,
+  postWWorkspaceGcpTriggersCreateRouteHandler,
+  postWWorkspaceGcpTriggersSetmodePathRouteHandler,
+  postWWorkspaceGcpTriggersSubscriptionsListPathRouteHandler,
+  postWWorkspaceGcpTriggersSubscriptionsListRouteHandler,
+  postWWorkspaceGcpTriggersTestRouteHandler,
+  postWWorkspaceGcpTriggersUpdatePathRouteHandler,
+  postWWorkspaceGithubAppGhesInstallationCallbackRouteHandler,
+  postWWorkspaceGithubAppImportRouteHandler,
+  postWWorkspaceGithubAppInstallFromWorkspaceRouteHandler,
+  postWWorkspaceGithubAppTokenRouteHandler,
+  postWWorkspaceGitSyncCredentialRouteHandler,
+  postWWorkspaceGitSyncGitlabProjectsRouteHandler,
+  postWWorkspaceGroupsAdduserNameRouteHandler,
+  postWWorkspaceGroupsCreateRouteHandler,
+  postWWorkspaceGroupsRemoveuserNameRouteHandler,
+  postWWorkspaceGroupsUpdateNameRouteHandler,
+  postWWorkspaceHttpTriggersCreateManyRouteHandler,
+  postWWorkspaceHttpTriggersCreateRouteHandler,
+  postWWorkspaceHttpTriggersRouteExistsRouteHandler,
+  postWWorkspaceHttpTriggersSetmodePathRouteHandler,
+  postWWorkspaceHttpTriggersUpdatePathRouteHandler,
+  postWWorkspaceHubAppsRouteHandler,
+  postWWorkspaceHubFlowsFlowIdRecordingRouteHandler,
+  postWWorkspaceHubFlowsRouteHandler,
+  postWWorkspaceHubMigrationsRouteHandler,
+  postWWorkspaceHubProjectsSlugDiscardUpdateRouteHandler,
+  postWWorkspaceHubProjectsSlugLogoRouteHandler,
+  postWWorkspaceHubProjectsSlugPipelineRecordingRouteHandler,
+  postWWorkspaceHubProjectsSlugSubmitRouteHandler,
+  postWWorkspaceHubProjectsSlugWithdrawRouteHandler,
+  postWWorkspaceHubPublishDraftRouteHandler,
+  postWWorkspaceHubRawAppsIdRecordingRouteHandler,
+  postWWorkspaceHubRawAppsRouteHandler,
+  postWWorkspaceHubResourcesRouteHandler,
+  postWWorkspaceHubResourceTypesRouteHandler,
+  postWWorkspaceHubScriptsAskIdRecordingRouteHandler,
+  postWWorkspaceHubScriptsRouteHandler,
+  postWWorkspaceHubTriggersRouteHandler,
+  postWWorkspaceInputsCreateRouteHandler,
+  postWWorkspaceInputsDeleteInputRouteHandler,
+  postWWorkspaceInputsUpdateRouteHandler,
+  postWWorkspaceJobHelpersDuckdbConnectionSettingsRouteHandler,
+  postWWorkspaceJobHelpersPolarsConnectionSettingsRouteHandler,
+  postWWorkspaceJobHelpersUploadGitRepoFileToInstanceStorageRouteHandler,
+  postWWorkspaceJobHelpersUploadS3FileRouteHandler,
+  postWWorkspaceJobHelpersV2DuckdbConnectionSettingsRouteHandler,
+  postWWorkspaceJobHelpersV2PolarsConnectionSettingsRouteHandler,
+  postWWorkspaceJobHelpersV2S3ResourceInfoRouteHandler,
+  postWWorkspaceJobMetricsGetIdRouteHandler,
+  postWWorkspaceJobMetricsSetProgressIdRouteHandler,
+  postWWorkspaceJobsCompletedDeleteIdRouteHandler,
+  postWWorkspaceJobsCompletedImportRouteHandler,
+  postWWorkspaceJobsCompletedResolveRouteHandler,
+  postWWorkspaceJobsCompletedUnresolveRouteHandler,
+  postWWorkspaceJobsDeleteRouteHandler,
+  postWWorkspaceJobsFlowResumeIdRouteHandler,
+  postWWorkspaceJobsFlowUserStatesIdKeyRouteHandler,
+  postWWorkspaceJobsListSelectedJobGroupsRouteHandler,
+  postWWorkspaceJobsQueueCancelSelectionRouteHandler,
+  postWWorkspaceJobsQueueImportRouteHandler,
+  postWWorkspaceJobsQueueRunNowIdRouteHandler,
+  postWWorkspaceJobsRecentRunsHideRouteHandler,
+  postWWorkspaceJobsRecentRunsUnhideRouteHandler,
+  postWWorkspaceJobsRestartFIdRouteHandler,
+  postWWorkspaceJobsRunAgentPathRouteHandler,
+  postWWorkspaceJobsRunAndStreamFPathRouteHandler,
+  postWWorkspaceJobsRunAndStreamFvVersionRouteHandler,
+  postWWorkspaceJobsRunAndStreamHHashRouteHandler,
+  postWWorkspaceJobsRunAndStreamPPathRouteHandler,
+  postWWorkspaceJobsRunBatchRerunJobsRouteHandler,
+  postWWorkspaceJobsRunDependenciesAsyncRouteHandler,
+  postWWorkspaceJobsRunDependenciesRouteHandler,
+  postWWorkspaceJobsRunDynamicSelectRouteHandler,
+  postWWorkspaceJobsRunFlowDependenciesAsyncRouteHandler,
+  postWWorkspaceJobsRunFlowTestPathRouteHandler,
+  postWWorkspaceJobsRunFPathRouteHandler,
+  postWWorkspaceJobsRunFvVersionRouteHandler,
+  postWWorkspaceJobsRunHHashRouteHandler,
+  postWWorkspaceJobsRunInlineHHashRouteHandler,
+  postWWorkspaceJobsRunInlinePPathRouteHandler,
+  postWWorkspaceJobsRunInlinePreviewRouteHandler,
+  postWWorkspaceJobsRunPPathRouteHandler,
+  postWWorkspaceJobsRunPreviewFlowRouteHandler,
+  postWWorkspaceJobsRunPreviewRouteHandler,
+  postWWorkspaceJobsRunWaitResultFPathRouteHandler,
+  postWWorkspaceJobsRunWaitResultFvVersionRouteHandler,
+  postWWorkspaceJobsRunWaitResultPPathRouteHandler,
+  postWWorkspaceJobsRunWaitResultPreviewFlowRouteHandler,
+  postWWorkspaceJobsRunWaitResultPreviewRouteHandler,
+  postWWorkspaceJobsUCancelIdResumeIdSignatureRouteHandler,
+  postWWorkspaceJobsUFlowResumeSuspendedJobIdRouteHandler,
+  postWWorkspaceJobsUQueueCancelIdRouteHandler,
+  postWWorkspaceJobsUQueueCancelPersistentPathRouteHandler,
+  postWWorkspaceJobsUQueueForceCancelIdRouteHandler,
+  postWWorkspaceJobsUQueueGetStartedAtByIdsRouteHandler,
+  postWWorkspaceJobsUResumeIdResumeIdSignatureRouteHandler,
+  postWWorkspaceJobsWorkflowAsCodeJobIdEntrypointRouteHandler,
+  postWWorkspaceKafkaTriggersCommitOffsetsPathRouteHandler,
+  postWWorkspaceKafkaTriggersCreateRouteHandler,
+  postWWorkspaceKafkaTriggersResetOffsetsPathRouteHandler,
+  postWWorkspaceKafkaTriggersSetmodePathRouteHandler,
+  postWWorkspaceKafkaTriggersTestRouteHandler,
+  postWWorkspaceKafkaTriggersUpdatePathRouteHandler,
+  postWWorkspaceMqttTriggersCreateRouteHandler,
+  postWWorkspaceMqttTriggersSetmodePathRouteHandler,
+  postWWorkspaceMqttTriggersTestRouteHandler,
+  postWWorkspaceMqttTriggersUpdatePathRouteHandler,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameCallbackRouteHandler,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameCreateRouteHandler,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameGenerateConnectUrlRouteHandler,
+  postWWorkspaceNativeTriggersIntegrationsServiceNameWorkspaceConnectionRouteHandler,
+  postWWorkspaceNativeTriggersServiceNameCreateRouteHandler,
+  postWWorkspaceNativeTriggersServiceNameSetenabledExternalIdRouteHandler,
+  postWWorkspaceNativeTriggersServiceNameSyncRouteHandler,
+  postWWorkspaceNativeTriggersServiceNameUpdateExternalIdRouteHandler,
+  postWWorkspaceNatsTriggersCreateRouteHandler,
+  postWWorkspaceNatsTriggersSetmodePathRouteHandler,
+  postWWorkspaceNatsTriggersTestRouteHandler,
+  postWWorkspaceNatsTriggersUpdatePathRouteHandler,
+  postWWorkspaceOauthConnectClientCredentialsClientRouteHandler,
+  postWWorkspaceOauthConnectSlackCallbackRouteHandler,
+  postWWorkspaceOauthCreateAccountRouteHandler,
+  postWWorkspaceOauthDisconnectIdRouteHandler,
+  postWWorkspaceOauthDisconnectSlackRouteHandler,
+  postWWorkspaceOauthDisconnectTeamsRouteHandler,
+  postWWorkspaceOauthRefreshTokenIdRouteHandler,
+  postWWorkspaceOidcTokenAudienceRouteHandler,
+  postWWorkspaceOpenapiDownloadRouteHandler,
+  postWWorkspaceOpenapiGenerateRouteHandler,
+  postWWorkspacePostgresTriggersCreateRouteHandler,
+  postWWorkspacePostgresTriggersCreateTemplateScriptRouteHandler,
+  postWWorkspacePostgresTriggersPublicationCreatePublicationPathRouteHandler,
+  postWWorkspacePostgresTriggersPublicationUpdatePublicationPathRouteHandler,
+  postWWorkspacePostgresTriggersSetmodePathRouteHandler,
+  postWWorkspacePostgresTriggersSlotCreatePathRouteHandler,
+  postWWorkspacePostgresTriggersTestRouteHandler,
+  postWWorkspacePostgresTriggersUpdatePathRouteHandler,
+  postWWorkspaceRemoteDeployConnectRouteHandler,
+  postWWorkspaceRemoteDeployDisconnectRouteHandler,
+  postWWorkspaceRemoteDeployTargetRouteHandler,
+  postWWorkspaceResourcesCreateRouteHandler,
+  postWWorkspaceResourcesHistoryRestoreVIdRouteHandler,
+  postWWorkspaceResourcesMcpCallToolPathRouteHandler,
+  postWWorkspaceResourcesTypeCreateRouteHandler,
+  postWWorkspaceResourcesTypeHubPickNameRouteHandler,
+  postWWorkspaceResourcesTypeUpdatePathRouteHandler,
+  postWWorkspaceResourcesUpdatePathRouteHandler,
+  postWWorkspaceResourcesUpdateValuePathRouteHandler,
+  postWWorkspaceSchedulesCreateRouteHandler,
+  postWWorkspaceSchedulesSetdefaulthandlerRouteHandler,
+  postWWorkspaceSchedulesSetenabledPathRouteHandler,
+  postWWorkspaceSchedulesUpdatePathRouteHandler,
+  postWWorkspaceScriptsArchiveHHashRouteHandler,
+  postWWorkspaceScriptsArchivePPathRouteHandler,
+  postWWorkspaceScriptsCheckSchemaContractsRouteHandler,
+  postWWorkspaceScriptsCiTestResultsBatchRouteHandler,
+  postWWorkspaceScriptsCreateRouteHandler,
+  postWWorkspaceScriptsDeleteHHashRouteHandler,
+  postWWorkspaceScriptsDeletePPathRouteHandler,
+  postWWorkspaceScriptsHistoryUpdateHHashPPathRouteHandler,
+  postWWorkspaceScriptsRawTempDiffRouteHandler,
+  postWWorkspaceScriptsRawTempStoreRouteHandler,
+  postWWorkspaceScriptsToggleWorkspaceErrorHandlerPPathRouteHandler,
+  postWWorkspaceScriptsTriggerCiTestsBatchRouteHandler,
+  postWWorkspaceScriptsUpdatePathRouteHandler,
+  postWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  postWWorkspaceSqsTriggersCreateRouteHandler,
+  postWWorkspaceSqsTriggersSetmodePathRouteHandler,
+  postWWorkspaceSqsTriggersTestRouteHandler,
+  postWWorkspaceSqsTriggersUpdatePathRouteHandler,
+  postWWorkspaceTrashEmptyRouteHandler,
+  postWWorkspaceTrashRestoreIdRouteHandler,
+  postWWorkspaceTriggerTriggerKindCancelSuspendedTriggerJobsTriggerPathRouteHandler,
+  postWWorkspaceTriggerTriggerKindResumeSuspendedTriggerJobsTriggerPathRouteHandler,
+  postWWorkspaceUsersConvertToGroupUsernameRouteHandler,
+  postWWorkspaceUsersExitImpersonationRouteHandler,
+  postWWorkspaceUsersImpersonateServiceAccountRouteHandler,
+  postWWorkspaceUsersOffboardUsernameRouteHandler,
+  postWWorkspaceUsersUpdateUsernameRouteHandler,
+  postWWorkspaceVariablesCreateRouteHandler,
+  postWWorkspaceVariablesEncryptRouteHandler,
+  postWWorkspaceVariablesUpdatePathRouteHandler,
+  postWWorkspaceVolumesCreateRouteHandler,
+  postWWorkspaceWebsocketTriggersCreateRouteHandler,
+  postWWorkspaceWebsocketTriggersSetmodePathRouteHandler,
+  postWWorkspaceWebsocketTriggersTestRouteHandler,
+  postWWorkspaceWebsocketTriggersUpdatePathRouteHandler,
+  postWWorkspaceWorkspaceDependenciesArchiveLanguageRouteHandler,
+  postWWorkspaceWorkspaceDependenciesCreateRouteHandler,
+  postWWorkspaceWorkspaceDependenciesDeleteLanguageRouteHandler,
+  postWWorkspaceWorkspacesAddUserRouteHandler,
+  postWWorkspaceWorkspacesArchiveRouteHandler,
+  postWWorkspaceWorkspacesAttachDevWorkspaceRouteHandler,
+  postWWorkspaceWorkspacesChangeWorkspaceColorRouteHandler,
+  postWWorkspaceWorkspacesChangeWorkspaceIdRouteHandler,
+  postWWorkspaceWorkspacesChangeWorkspaceNameRouteHandler,
+  postWWorkspaceWorkspacesConnectSlackRouteHandler,
+  postWWorkspaceWorkspacesConnectTeamsRouteHandler,
+  postWWorkspaceWorkspacesCreateDatatableMigrationDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesCreateForkRouteHandler,
+  postWWorkspaceWorkspacesCreatePgDatabaseRouteHandler,
+  postWWorkspaceWorkspacesCreateServiceAccountRouteHandler,
+  postWWorkspaceWorkspacesCreateWorkspaceForkBranchRouteHandler,
+  postWWorkspaceWorkspacesCriticalAlertsAcknowledgeAllRouteHandler,
+  postWWorkspaceWorkspacesCriticalAlertsIdAcknowledgeRouteHandler,
+  postWWorkspaceWorkspacesCriticalAlertsMuteRouteHandler,
+  postWWorkspaceWorkspacesDatatableAclDatatableNameApplyRouteHandler,
+  postWWorkspaceWorkspacesDatatableAclDatatableNamePlanRouteHandler,
+  postWWorkspaceWorkspacesDatatablePermissionsDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesDefaultScriptsRouteHandler,
+  postWWorkspaceWorkspacesDeleteInviteRouteHandler,
+  postWWorkspaceWorkspacesDetachDevWorkspaceRouteHandler,
+  postWWorkspaceWorkspacesDisableDatatableMigrationsDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesDropForkedDatatableDatabasesRouteHandler,
+  postWWorkspaceWorkspacesDropForkedDucklakeNamespacesRouteHandler,
+  postWWorkspaceWorkspacesEditAddAdminsAndDevelopersToForksRouteHandler,
+  postWWorkspaceWorkspacesEditAutoInviteRouteHandler,
+  postWWorkspaceWorkspacesEditCopilotConfigRouteHandler,
+  postWWorkspaceWorkspacesEditDatatableConfigRouteHandler,
+  postWWorkspaceWorkspacesEditDbtWarehousesRouteHandler,
+  postWWorkspaceWorkspacesEditDefaultAppRouteHandler,
+  postWWorkspaceWorkspacesEditDeployUiConfigRouteHandler,
+  postWWorkspaceWorkspacesEditDucklakeConfigRouteHandler,
+  postWWorkspaceWorkspacesEditErrorHandlerRouteHandler,
+  postWWorkspaceWorkspacesEditGitSyncConfigRouteHandler,
+  postWWorkspaceWorkspacesEditGitSyncRepositoryRouteHandler,
+  postWWorkspaceWorkspacesEditGuestJwtKeyRouteHandler,
+  postWWorkspaceWorkspacesEditInstanceGroupsRouteHandler,
+  postWWorkspaceWorkspacesEditLargeFileStorageConfigRouteHandler,
+  postWWorkspaceWorkspacesEditSlackCommandRouteHandler,
+  postWWorkspaceWorkspacesEditSuccessHandlerRouteHandler,
+  postWWorkspaceWorkspacesEditTeamsCommandRouteHandler,
+  postWWorkspaceWorkspacesEditVariableExpirationHandlerRouteHandler,
+  postWWorkspaceWorkspacesEditWebhookRouteHandler,
+  postWWorkspaceWorkspacesEnableDatatableMigrationsDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesEncryptionKeyRouteHandler,
+  postWWorkspaceWorkspacesExportPgSchemaRouteHandler,
+  postWWorkspaceWorkspacesGenerateInitialDatatableMigrationDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesGetDatatableFullSchemaRouteHandler,
+  postWWorkspaceWorkspacesGetDependentsAmountsRouteHandler,
+  postWWorkspaceWorkspacesImportPgDatabaseRouteHandler,
+  postWWorkspaceWorkspacesInviteUserRouteHandler,
+  postWWorkspaceWorkspacesLeaveRouteHandler,
+  postWWorkspaceWorkspacesLogFeatureUsageRouteHandler,
+  postWWorkspaceWorkspacesOperatorSettingsRouteHandler,
+  postWWorkspaceWorkspacesProtectionRulesRouteHandler,
+  postWWorkspaceWorkspacesProtectionRulesRuleNameRouteHandler,
+  postWWorkspaceWorkspacesPruneVersionsRouteHandler,
+  postWWorkspaceWorkspacesPublicAppRateLimitRouteHandler,
+  postWWorkspaceWorkspacesRebuildDependencyMapRouteHandler,
+  postWWorkspaceWorkspacesResetDiffTallyForkWorkspaceIdRouteHandler,
+  postWWorkspaceWorkspacesRoleOverridesRouteHandler,
+  postWWorkspaceWorkspacesRollbackDatatableMigrationsDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesRunDatatableMigrationsDatatableNameRouteHandler,
+  postWWorkspaceWorkspacesRunSlackMessageTestJobRouteHandler,
+  postWWorkspaceWorkspacesRunTeamsMessageTestJobRouteHandler,
+  postWWorkspaceWorkspacesSeedFullDiffTargetWorkspaceIdRouteHandler,
+  postWWorkspaceWorkspacesSetEnvironmentVariableRouteHandler,
+  postWWorkspaceWorkspacesSettingsDocumentRouteHandler,
+  postWWorkspaceWorkspacesSetWsSpecificRouteHandler,
+  postWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  postWWorkspaceWorkspacesSlackSigningSecretRouteHandler,
+  postWWorkspaceWorkspacesThresholdAlertRouteHandler,
+  postWWorkspaceWorkspacesUpsertDatatableMigrationDatatableNameRouteHandler,
+  putSettingsInstanceConfigRouteHandler,
+  putWWorkspaceSharedUiRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', versionHandler)
-  .route('/', healthHandler)
-  .route('/', uptodateHandler)
-  .route('/', eeLicenseHandler)
-  .route('/', docsHandler)
-  .route('/', openapiYamlHandler)
-  .route('/', wHandler)
-  .route('/', authHandler)
-  .route('/', usersHandler)
-  .route('/', githubAppHandler)
-  .route('/', workspacesHandler)
-  .route('/', settingsHandler)
-  .route('/', settingsUHandler)
-  .route('/', samlHandler)
-  .route('/', minKeepAliveVersionHandler)
-  .route('/', wellKnownHandler)
-  .route('/', tokensHandler)
-  .route('/', oidcHandler)
-  .route('/', oauthHandler)
-  .route('/', teamsHandler)
-  .route('/', integrationsHandler)
-  .route('/', flowsHandler)
-  .route('/', appsHandler)
-  .route('/', appsUHandler)
-  .route('/', scriptsHandler)
-  .route('/', embeddingsHandler)
-  .route('/', workersHandler)
-  .route('/', scriptsUHandler)
-  .route('/', jobsHandler)
-  .route('/', schedulesHandler)
-  .route('/', nativeTriggersHandler)
-  .route('/', groupsHandler)
-  .route('/', configsHandler)
-  .route('/', agentWorkersHandler)
-  .route('/', serviceLogsHandler)
-  .route('/', concurrencyGroupsHandler)
-  .route('/', srchHandler)
-  .route('/', indexerHandler)
-  .route('/', mcpHandler)
+  .openapi(getVersionRoute, getVersionRouteHandler)
+  .openapi(getHealthStatusRoute, getHealthStatusRouteHandler)
+  .openapi(getHealthDetailedRoute, getHealthDetailedRouteHandler)
+  .openapi(getUptodateRoute, getUptodateRouteHandler)
+  .openapi(getEeLicenseRoute, getEeLicenseRouteHandler)
+  .openapi(getDocsSearchRoute, getDocsSearchRouteHandler)
+  .openapi(getDocsPageRoute, getDocsPageRouteHandler)
+  .openapi(getOpenapiYamlRoute, getOpenapiYamlRouteHandler)
+  .openapi(getWWorkspaceAuditGetIdRoute, getWWorkspaceAuditGetIdRouteHandler)
+  .openapi(getWWorkspaceAuditListRoute, getWWorkspaceAuditListRouteHandler)
+  .openapi(getWWorkspaceTrashListRoute, getWWorkspaceTrashListRouteHandler)
+  .openapi(getWWorkspaceTrashGetIdRoute, getWWorkspaceTrashGetIdRouteHandler)
+  .openapi(postWWorkspaceTrashRestoreIdRoute, postWWorkspaceTrashRestoreIdRouteHandler)
+  .openapi(deleteWWorkspaceTrashDeleteIdRoute, deleteWWorkspaceTrashDeleteIdRouteHandler)
+  .openapi(postWWorkspaceTrashEmptyRoute, postWWorkspaceTrashEmptyRouteHandler)
+  .openapi(postAuthLoginRoute, postAuthLoginRouteHandler)
+  .openapi(postAuthLogoutRoute, postAuthLogoutRouteHandler)
+  .openapi(getAuthIsSmtpConfiguredRoute, getAuthIsSmtpConfiguredRouteHandler)
+  .openapi(getAuthIsPasswordLoginDisabledRoute, getAuthIsPasswordLoginDisabledRouteHandler)
+  .openapi(postAuthRequestPasswordResetRoute, postAuthRequestPasswordResetRouteHandler)
+  .openapi(getAuthLoginLinkTokenRoute, getAuthLoginLinkTokenRouteHandler)
+  .openapi(postAuthResetPasswordRoute, postAuthResetPasswordRouteHandler)
+  .openapi(getWWorkspaceUsersGetUsernameRoute, getWWorkspaceUsersGetUsernameRouteHandler)
+  .openapi(postWWorkspaceUsersUpdateUsernameRoute, postWWorkspaceUsersUpdateUsernameRouteHandler)
+  .openapi(getWWorkspaceUsersIsOwnerPathRoute, getWWorkspaceUsersIsOwnerPathRouteHandler)
+  .openapi(postUsersSetpasswordRoute, postUsersSetpasswordRouteHandler)
+  .openapi(postUsersSetPasswordOfUserRoute, postUsersSetPasswordOfUserRouteHandler)
+  .openapi(postUsersSetLoginTypeUserRoute, postUsersSetLoginTypeUserRouteHandler)
+  .openapi(postUsersCreateRoute, postUsersCreateRouteHandler)
+  .openapi(postUsersUpdateEmailRoute, postUsersUpdateEmailRouteHandler)
+  .openapi(getUsersUsernameInfoEmailRoute, getUsersUsernameInfoEmailRouteHandler)
+  .openapi(postUsersRenameEmailRoute, postUsersRenameEmailRouteHandler)
+  .openapi(postUsersChangeEmailEmailRoute, postUsersChangeEmailEmailRouteHandler)
+  .openapi(deleteUsersDeleteEmailRoute, deleteUsersDeleteEmailRouteHandler)
+  .openapi(postUsersOverwriteRoute, postUsersOverwriteRouteHandler)
+  .openapi(getUsersExportRoute, getUsersExportRouteHandler)
+  .openapi(getUsersExtJwtTokensRoute, getUsersExtJwtTokensRouteHandler)
+  .openapi(getUsersGuestsRoute, getUsersGuestsRouteHandler)
+  .openapi(postUsersOnboardingRoute, postUsersOnboardingRouteHandler)
+  .openapi(
+    deleteWWorkspaceUsersDeleteUsernameRoute,
+    deleteWWorkspaceUsersDeleteUsernameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceUsersOffboardPreviewUsernameRoute,
+    getWWorkspaceUsersOffboardPreviewUsernameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceUsersOffboardUsernameRoute,
+    postWWorkspaceUsersOffboardUsernameRouteHandler,
+  )
+  .openapi(getUsersOffboardPreviewEmailRoute, getUsersOffboardPreviewEmailRouteHandler)
+  .openapi(postUsersOffboardEmailRoute, postUsersOffboardEmailRouteHandler)
+  .openapi(
+    postWWorkspaceUsersConvertToGroupUsernameRoute,
+    postWWorkspaceUsersConvertToGroupUsernameRouteHandler,
+  )
+  .openapi(getGithubAppConnectedRepositoriesRoute, getGithubAppConnectedRepositoriesRouteHandler)
+  .openapi(getWorkspacesListRoute, getWorkspacesListRouteHandler)
+  .openapi(
+    getWorkspacesAllowedDomainAutoInviteRoute,
+    getWorkspacesAllowedDomainAutoInviteRouteHandler,
+  )
+  .openapi(getWorkspacesUsersRoute, getWorkspacesUsersRouteHandler)
+  .openapi(
+    postWorkspacesSessionWorkspaceStatusRoute,
+    postWorkspacesSessionWorkspaceStatusRouteHandler,
+  )
+  .openapi(
+    postWorkspacesSessionWorkspaceRetentionRoute,
+    postWorkspacesSessionWorkspaceRetentionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetAsSuperadminRoute,
+    getWWorkspaceWorkspacesGetAsSuperadminRouteHandler,
+  )
+  .openapi(getWorkspacesListAsSuperadminRoute, getWorkspacesListAsSuperadminRouteHandler)
+  .openapi(postWorkspacesCreateRoute, postWorkspacesCreateRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesCreateWorkspaceForkBranchRoute,
+    postWWorkspaceWorkspacesCreateWorkspaceForkBranchRouteHandler,
+  )
+  .openapi(postWWorkspaceWorkspacesCreateForkRoute, postWWorkspaceWorkspacesCreateForkRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesForkCreationStatusCreationIdRoute,
+    getWWorkspaceWorkspacesForkCreationStatusCreationIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesAttachDevWorkspaceRoute,
+    postWWorkspaceWorkspacesAttachDevWorkspaceRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDetachDevWorkspaceRoute,
+    postWWorkspaceWorkspacesDetachDevWorkspaceRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetDevWorkspaceRoute,
+    getWWorkspaceWorkspacesGetDevWorkspaceRouteHandler,
+  )
+  .openapi(postWorkspacesExistsRoute, postWorkspacesExistsRouteHandler)
+  .openapi(postWorkspacesExistsUsernameRoute, postWorkspacesExistsUsernameRouteHandler)
+  .openapi(
+    postSettingsRefreshCustomInstanceUserPwdRoute,
+    postSettingsRefreshCustomInstanceUserPwdRouteHandler,
+  )
+  .openapi(
+    getSettingsExternalInstancePgStatusRoute,
+    getSettingsExternalInstancePgStatusRouteHandler,
+  )
+  .openapi(
+    postSettingsExternalInstancePgSetupRoute,
+    postSettingsExternalInstancePgSetupRouteHandler,
+  )
+  .openapi(
+    getSettingsExternalInstancePgDatabasesRoute,
+    getSettingsExternalInstancePgDatabasesRouteHandler,
+  )
+  .openapi(
+    postSettingsExternalInstancePgDatabasesNameRoute,
+    postSettingsExternalInstancePgDatabasesNameRouteHandler,
+  )
+  .openapi(
+    deleteSettingsExternalInstancePgDatabasesNameRoute,
+    deleteSettingsExternalInstancePgDatabasesNameRouteHandler,
+  )
+  .openapi(
+    postSettingsListCustomInstancePgDatabasesRoute,
+    postSettingsListCustomInstancePgDatabasesRouteHandler,
+  )
+  .openapi(getSettingsDatatableRolesRoute, getSettingsDatatableRolesRouteHandler)
+  .openapi(postSettingsDatatableRolesRoute, postSettingsDatatableRolesRouteHandler)
+  .openapi(postSettingsDatatableRolesIdRoute, postSettingsDatatableRolesIdRouteHandler)
+  .openapi(deleteSettingsDatatableRolesIdRoute, deleteSettingsDatatableRolesIdRouteHandler)
+  .openapi(
+    postSettingsSetupCustomInstancePgDatabaseNameRoute,
+    postSettingsSetupCustomInstancePgDatabaseNameRouteHandler,
+  )
+  .openapi(
+    postSettingsDropCustomInstancePgDatabaseNameRoute,
+    postSettingsDropCustomInstancePgDatabaseNameRouteHandler,
+  )
+  .openapi(getSettingsGlobalKeyRoute, getSettingsGlobalKeyRouteHandler)
+  .openapi(postSettingsGlobalKeyRoute, postSettingsGlobalKeyRouteHandler)
+  .openapi(getSettingsInstanceUiRoute, getSettingsInstanceUiRouteHandler)
+  .openapi(getSettingsURuffConfigRoute, getSettingsURuffConfigRouteHandler)
+  .openapi(getSettingsLocalRoute, getSettingsLocalRouteHandler)
+  .openapi(getSettingsSmtpConfiguredRoute, getSettingsSmtpConfiguredRouteHandler)
+  .openapi(postSettingsTestSmtpRoute, postSettingsTestSmtpRouteHandler)
+  .openapi(postSettingsTestCriticalChannelsRoute, postSettingsTestCriticalChannelsRouteHandler)
+  .openapi(getSettingsCriticalAlertsRoute, getSettingsCriticalAlertsRouteHandler)
+  .openapi(
+    postSettingsCriticalAlertsIdAcknowledgeRoute,
+    postSettingsCriticalAlertsIdAcknowledgeRouteHandler,
+  )
+  .openapi(
+    postSettingsCriticalAlertsAcknowledgeAllRoute,
+    postSettingsCriticalAlertsAcknowledgeAllRouteHandler,
+  )
+  .openapi(postSettingsTestLicenseKeyRoute, postSettingsTestLicenseKeyRouteHandler)
+  .openapi(
+    postSettingsTestObjectStorageConfigRoute,
+    postSettingsTestObjectStorageConfigRouteHandler,
+  )
+  .openapi(getSettingsObjectStorageUsageRoute, getSettingsObjectStorageUsageRouteHandler)
+  .openapi(postSettingsObjectStorageUsageRoute, postSettingsObjectStorageUsageRouteHandler)
+  .openapi(postSettingsRunLogCleanupRoute, postSettingsRunLogCleanupRouteHandler)
+  .openapi(getSettingsLogCleanupStatusRoute, getSettingsLogCleanupStatusRouteHandler)
+  .openapi(getSettingsAuditLogsS3StatusRoute, getSettingsAuditLogsS3StatusRouteHandler)
+  .openapi(postSettingsAuditLogsS3BackfillRoute, postSettingsAuditLogsS3BackfillRouteHandler)
+  .openapi(
+    getSettingsAuditLogsS3BackfillStatusRoute,
+    getSettingsAuditLogsS3BackfillStatusRouteHandler,
+  )
+  .openapi(postSettingsSendStatsRoute, postSettingsSendStatsRouteHandler)
+  .openapi(
+    postSettingsRestartWorkerGroupWorkerGroupRoute,
+    postSettingsRestartWorkerGroupWorkerGroupRouteHandler,
+  )
+  .openapi(getSettingsGetStatsRoute, getSettingsGetStatsRouteHandler)
+  .openapi(getSettingsLatestKeyRenewalAttemptRoute, getSettingsLatestKeyRenewalAttemptRouteHandler)
+  .openapi(postSettingsRenewLicenseKeyRoute, postSettingsRenewLicenseKeyRouteHandler)
+  .openapi(getSettingsOfflineLicenseStatusRoute, getSettingsOfflineLicenseStatusRouteHandler)
+  .openapi(getSettingsInstanceHashRoute, getSettingsInstanceHashRouteHandler)
+  .openapi(postSettingsCustomerPortalRoute, postSettingsCustomerPortalRouteHandler)
+  .openapi(postSamlTestMetadataRoute, postSamlTestMetadataRouteHandler)
+  .openapi(getSettingsListGlobalRoute, getSettingsListGlobalRouteHandler)
+  .openapi(getSettingsGithubAppStaleWebhooksRoute, getSettingsGithubAppStaleWebhooksRouteHandler)
+  .openapi(getSettingsInstanceConfigRoute, getSettingsInstanceConfigRouteHandler)
+  .openapi(putSettingsInstanceConfigRoute, putSettingsInstanceConfigRouteHandler)
+  .openapi(getMinKeepAliveVersionRoute, getMinKeepAliveVersionRouteHandler)
+  .openapi(getWellKnownJwksJsonRoute, getWellKnownJwksJsonRouteHandler)
+  .openapi(postSettingsTestSecretBackendRoute, postSettingsTestSecretBackendRouteHandler)
+  .openapi(postSettingsMigrateSecretsToVaultRoute, postSettingsMigrateSecretsToVaultRouteHandler)
+  .openapi(
+    postSettingsMigrateSecretsToDatabaseRoute,
+    postSettingsMigrateSecretsToDatabaseRouteHandler,
+  )
+  .openapi(postSettingsTestAzureKvBackendRoute, postSettingsTestAzureKvBackendRouteHandler)
+  .openapi(
+    postSettingsMigrateSecretsToAzureKvRoute,
+    postSettingsMigrateSecretsToAzureKvRouteHandler,
+  )
+  .openapi(
+    postSettingsMigrateSecretsFromAzureKvRoute,
+    postSettingsMigrateSecretsFromAzureKvRouteHandler,
+  )
+  .openapi(postSettingsTestAwsSmBackendRoute, postSettingsTestAwsSmBackendRouteHandler)
+  .openapi(postSettingsMigrateSecretsToAwsSmRoute, postSettingsMigrateSecretsToAwsSmRouteHandler)
+  .openapi(
+    postSettingsMigrateSecretsFromAwsSmRoute,
+    postSettingsMigrateSecretsFromAwsSmRouteHandler,
+  )
+  .openapi(postSettingsTestHttpStoreBackendRoute, postSettingsTestHttpStoreBackendRouteHandler)
+  .openapi(
+    postSettingsMigrateSecretsFromHttpStoreRoute,
+    postSettingsMigrateSecretsFromHttpStoreRouteHandler,
+  )
+  .openapi(getUsersEmailRoute, getUsersEmailRouteHandler)
+  .openapi(getUsersRefreshTokenRoute, getUsersRefreshTokenRouteHandler)
+  .openapi(getUsersTutorialProgressRoute, getUsersTutorialProgressRouteHandler)
+  .openapi(postUsersTutorialProgressRoute, postUsersTutorialProgressRouteHandler)
+  .openapi(postUsersLeaveInstanceRoute, postUsersLeaveInstanceRouteHandler)
+  .openapi(getUsersUsageRoute, getUsersUsageRouteHandler)
+  .openapi(getUsersAllRunnablesRoute, getUsersAllRunnablesRouteHandler)
+  .openapi(getUsersWhoamiRoute, getUsersWhoamiRouteHandler)
+  .openapi(getUsersListInvitesRoute, getUsersListInvitesRouteHandler)
+  .openapi(getWWorkspaceUsersWhoamiRoute, getWWorkspaceUsersWhoamiRouteHandler)
+  .openapi(postWWorkspaceGithubAppTokenRoute, postWWorkspaceGithubAppTokenRouteHandler)
+  .openapi(
+    getWWorkspaceGithubAppRepoArchivePathRoute,
+    getWWorkspaceGithubAppRepoArchivePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceGithubAppInstallFromWorkspaceRoute,
+    postWWorkspaceGithubAppInstallFromWorkspaceRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceGithubAppInstallationInstallationIdRoute,
+    deleteWWorkspaceGithubAppInstallationInstallationIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceGithubAppExportInstallationIdRoute,
+    getWWorkspaceGithubAppExportInstallationIdRouteHandler,
+  )
+  .openapi(postWWorkspaceGithubAppImportRoute, postWWorkspaceGithubAppImportRouteHandler)
+  .openapi(
+    postWWorkspaceGitSyncGitlabProjectsRoute,
+    postWWorkspaceGitSyncGitlabProjectsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceGitSyncCredentialOriginRoute,
+    getWWorkspaceGitSyncCredentialOriginRouteHandler,
+  )
+  .openapi(postWWorkspaceGitSyncCredentialRoute, postWWorkspaceGitSyncCredentialRouteHandler)
+  .openapi(
+    postWWorkspaceGithubAppGhesInstallationCallbackRoute,
+    postWWorkspaceGithubAppGhesInstallationCallbackRouteHandler,
+  )
+  .openapi(getGithubAppGhesConfigRoute, getGithubAppGhesConfigRouteHandler)
+  .openapi(getGithubAppGhesDiscoverRoute, getGithubAppGhesDiscoverRouteHandler)
+  .openapi(postGithubAppGhesAssignRoute, postGithubAppGhesAssignRouteHandler)
+  .openapi(
+    deleteGithubAppGhesAssignWorkspaceIdInstallationIdRoute,
+    deleteGithubAppGhesAssignWorkspaceIdInstallationIdRouteHandler,
+  )
+  .openapi(postUsersAcceptInviteRoute, postUsersAcceptInviteRouteHandler)
+  .openapi(postUsersDeclineInviteRoute, postUsersDeclineInviteRouteHandler)
+  .openapi(postWWorkspaceWorkspacesInviteUserRoute, postWWorkspaceWorkspacesInviteUserRouteHandler)
+  .openapi(postWWorkspaceWorkspacesAddUserRoute, postWWorkspaceWorkspacesAddUserRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesCreateServiceAccountRoute,
+    postWWorkspaceWorkspacesCreateServiceAccountRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceUsersImpersonateServiceAccountRoute,
+    postWWorkspaceUsersImpersonateServiceAccountRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceUsersExitImpersonationRoute,
+    postWWorkspaceUsersExitImpersonationRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDeleteInviteRoute,
+    postWWorkspaceWorkspacesDeleteInviteRouteHandler,
+  )
+  .openapi(postWWorkspaceWorkspacesArchiveRoute, postWWorkspaceWorkspacesArchiveRouteHandler)
+  .openapi(postWorkspacesUnarchiveWorkspaceRoute, postWorkspacesUnarchiveWorkspaceRouteHandler)
+  .openapi(deleteWorkspacesDeleteWorkspaceRoute, deleteWorkspacesDeleteWorkspaceRouteHandler)
+  .openapi(postWWorkspaceWorkspacesLeaveRoute, postWWorkspaceWorkspacesLeaveRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesGetWorkspaceNameRoute,
+    getWWorkspaceWorkspacesGetWorkspaceNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesChangeWorkspaceNameRoute,
+    postWWorkspaceWorkspacesChangeWorkspaceNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesChangeWorkspaceIdRoute,
+    postWWorkspaceWorkspacesChangeWorkspaceIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesChangeWorkspaceColorRoute,
+    postWWorkspaceWorkspacesChangeWorkspaceColorRouteHandler,
+  )
+  .openapi(getWWorkspaceUsersWhoisUsernameRoute, getWWorkspaceUsersWhoisUsernameRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesOperatorSettingsRoute,
+    postWWorkspaceWorkspacesOperatorSettingsRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesRolesRoute, getWWorkspaceWorkspacesRolesRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesRoleOverridesRoute,
+    postWWorkspaceWorkspacesRoleOverridesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesCompareTargetWorkspaceIdRoute,
+    getWWorkspaceWorkspacesCompareTargetWorkspaceIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSeedFullDiffTargetWorkspaceIdRoute,
+    postWWorkspaceWorkspacesSeedFullDiffTargetWorkspaceIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesResetDiffTallyForkWorkspaceIdRoute,
+    postWWorkspaceWorkspacesResetDiffTallyForkWorkspaceIdRouteHandler,
+  )
+  .openapi(getUsersExistsEmailRoute, getUsersExistsEmailRouteHandler)
+  .openapi(getUsersListAsSuperAdminRoute, getUsersListAsSuperAdminRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesListPendingInvitesRoute,
+    getWWorkspaceWorkspacesListPendingInvitesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetPublicSettingsRoute,
+    getWWorkspaceWorkspacesGetPublicSettingsRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesGetSettingsRoute, getWWorkspaceWorkspacesGetSettingsRouteHandler)
+  .openapi(getWWorkspaceWorkspacesGetDeployToRoute, getWWorkspaceWorkspacesGetDeployToRouteHandler)
+  .openapi(getWWorkspaceRemoteDeployTargetRoute, getWWorkspaceRemoteDeployTargetRouteHandler)
+  .openapi(postWWorkspaceRemoteDeployTargetRoute, postWWorkspaceRemoteDeployTargetRouteHandler)
+  .openapi(postWWorkspaceRemoteDeployConnectRoute, postWWorkspaceRemoteDeployConnectRouteHandler)
+  .openapi(
+    postWWorkspaceRemoteDeployDisconnectRoute,
+    postWWorkspaceRemoteDeployDisconnectRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesIsPremiumRoute, getWWorkspaceWorkspacesIsPremiumRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesBillableSeatsRoute,
+    getWWorkspaceWorkspacesBillableSeatsRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesPremiumInfoRoute, getWWorkspaceWorkspacesPremiumInfoRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesThresholdAlertRoute,
+    getWWorkspaceWorkspacesThresholdAlertRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesThresholdAlertRoute,
+    postWWorkspaceWorkspacesThresholdAlertRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesRebuildDependencyMapRoute,
+    postWWorkspaceWorkspacesRebuildDependencyMapRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetDependentsImportedPathRoute,
+    getWWorkspaceWorkspacesGetDependentsImportedPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetImportsImporterPathRoute,
+    getWWorkspaceWorkspacesGetImportsImporterPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesGetDependentsAmountsRoute,
+    postWWorkspaceWorkspacesGetDependentsAmountsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetDependencyMapRoute,
+    getWWorkspaceWorkspacesGetDependencyMapRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditSlackCommandRoute,
+    postWWorkspaceWorkspacesEditSlackCommandRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesSlackOauthConfigRoute,
+    getWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSlackOauthConfigRoute,
+    postWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceWorkspacesSlackOauthConfigRoute,
+    deleteWWorkspaceWorkspacesSlackOauthConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSlackSigningSecretRoute,
+    postWWorkspaceWorkspacesSlackSigningSecretRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditTeamsCommandRoute,
+    postWWorkspaceWorkspacesEditTeamsCommandRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesAvailableTeamsIdsRoute,
+    getWWorkspaceWorkspacesAvailableTeamsIdsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesAvailableTeamsChannelsRoute,
+    getWWorkspaceWorkspacesAvailableTeamsChannelsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesConnectTeamsRoute,
+    postWWorkspaceWorkspacesConnectTeamsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesConnectSlackRoute,
+    postWWorkspaceWorkspacesConnectSlackRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesRunSlackMessageTestJobRoute,
+    postWWorkspaceWorkspacesRunSlackMessageTestJobRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesRunTeamsMessageTestJobRoute,
+    postWWorkspaceWorkspacesRunTeamsMessageTestJobRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditAutoInviteRoute,
+    postWWorkspaceWorkspacesEditAutoInviteRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditInstanceGroupsRoute,
+    postWWorkspaceWorkspacesEditInstanceGroupsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditWebhookRoute,
+    postWWorkspaceWorkspacesEditWebhookRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditCopilotConfigRoute,
+    postWWorkspaceWorkspacesEditCopilotConfigRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesSettingsDocumentRoute,
+    getWWorkspaceWorkspacesSettingsDocumentRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSettingsDocumentRoute,
+    postWWorkspaceWorkspacesSettingsDocumentRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetCopilotSettingsStateRoute,
+    getWWorkspaceWorkspacesGetCopilotSettingsStateRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetCopilotInfoRoute,
+    getWWorkspaceWorkspacesGetCopilotInfoRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditErrorHandlerRoute,
+    postWWorkspaceWorkspacesEditErrorHandlerRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditVariableExpirationHandlerRoute,
+    postWWorkspaceWorkspacesEditVariableExpirationHandlerRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditSuccessHandlerRoute,
+    postWWorkspaceWorkspacesEditSuccessHandlerRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditLargeFileStorageConfigRoute,
+    postWWorkspaceWorkspacesEditLargeFileStorageConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditDbtWarehousesRoute,
+    postWWorkspaceWorkspacesEditDbtWarehousesRouteHandler,
+  )
+  .openapi(postWWorkspaceDbtRunProgressRoute, postWWorkspaceDbtRunProgressRouteHandler)
+  .openapi(getWWorkspaceDbtWarehouseNameRoute, getWWorkspaceDbtWarehouseNameRouteHandler)
+  .openapi(
+    getWWorkspaceDbtWarehouseExistsNameRoute,
+    getWWorkspaceDbtWarehouseExistsNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListDucklakesRoute,
+    getWWorkspaceWorkspacesListDucklakesRouteHandler,
+  )
+  .openapi(getWWorkspaceDataMetricsListRoute, getWWorkspaceDataMetricsListRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesListDatatablesRoute,
+    getWWorkspaceWorkspacesListDatatablesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesDatatablePermissionsDatatableNameRoute,
+    getWWorkspaceWorkspacesDatatablePermissionsDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDatatablePermissionsDatatableNameRoute,
+    postWWorkspaceWorkspacesDatatablePermissionsDatatableNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesDatatableAclDatatableNameRoute,
+    getWWorkspaceWorkspacesDatatableAclDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDatatableAclDatatableNamePlanRoute,
+    postWWorkspaceWorkspacesDatatableAclDatatableNamePlanRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDatatableAclDatatableNameApplyRoute,
+    postWWorkspaceWorkspacesDatatableAclDatatableNameApplyRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesDatatableUsableRolesDatatableNameRoute,
+    getWWorkspaceWorkspacesDatatableUsableRolesDatatableNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListDatatableSchemasRoute,
+    getWWorkspaceWorkspacesListDatatableSchemasRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesTestDatatableConnectionDatatableNameRoute,
+    getWWorkspaceWorkspacesTestDatatableConnectionDatatableNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListDatatableTablesRoute,
+    getWWorkspaceWorkspacesListDatatableTablesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetDatatableTableSchemaRoute,
+    getWWorkspaceWorkspacesGetDatatableTableSchemaRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditDucklakeConfigRoute,
+    postWWorkspaceWorkspacesEditDucklakeConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditDatatableConfigRoute,
+    postWWorkspaceWorkspacesEditDatatableConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesRunDatatableMigrationsDatatableNameRoute,
+    postWWorkspaceWorkspacesRunDatatableMigrationsDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesRollbackDatatableMigrationsDatatableNameRoute,
+    postWWorkspaceWorkspacesRollbackDatatableMigrationsDatatableNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListDatatableMigrationsRoute,
+    getWWorkspaceWorkspacesListDatatableMigrationsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesDatatableMigrationsStatusDatatableNameRoute,
+    getWWorkspaceWorkspacesDatatableMigrationsStatusDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEnableDatatableMigrationsDatatableNameRoute,
+    postWWorkspaceWorkspacesEnableDatatableMigrationsDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDisableDatatableMigrationsDatatableNameRoute,
+    postWWorkspaceWorkspacesDisableDatatableMigrationsDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesCreateDatatableMigrationDatatableNameRoute,
+    postWWorkspaceWorkspacesCreateDatatableMigrationDatatableNameRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceWorkspacesDeleteDatatableMigrationDatatableNameTimestampRoute,
+    deleteWWorkspaceWorkspacesDeleteDatatableMigrationDatatableNameTimestampRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesUpsertDatatableMigrationDatatableNameRoute,
+    postWWorkspaceWorkspacesUpsertDatatableMigrationDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesGenerateInitialDatatableMigrationDatatableNameRoute,
+    postWWorkspaceWorkspacesGenerateInitialDatatableMigrationDatatableNameRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesCreatePgDatabaseRoute,
+    postWWorkspaceWorkspacesCreatePgDatabaseRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDropForkedDatatableDatabasesRoute,
+    postWWorkspaceWorkspacesDropForkedDatatableDatabasesRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesDropForkedDucklakeNamespacesRoute,
+    postWWorkspaceWorkspacesDropForkedDucklakeNamespacesRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesImportPgDatabaseRoute,
+    postWWorkspaceWorkspacesImportPgDatabaseRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesExportPgSchemaRoute,
+    postWWorkspaceWorkspacesExportPgSchemaRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesGetDatatableFullSchemaRoute,
+    postWWorkspaceWorkspacesGetDatatableFullSchemaRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGitSyncEnabledRoute,
+    getWWorkspaceWorkspacesGitSyncEnabledRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGitSyncDeployModeRoute,
+    getWWorkspaceWorkspacesGitSyncDeployModeRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditGitSyncConfigRoute,
+    postWWorkspaceWorkspacesEditGitSyncConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditGitSyncRepositoryRoute,
+    postWWorkspaceWorkspacesEditGitSyncRepositoryRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceWorkspacesDeleteGitSyncRepositoryRoute,
+    deleteWWorkspaceWorkspacesDeleteGitSyncRepositoryRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditDeployUiConfigRoute,
+    postWWorkspaceWorkspacesEditDeployUiConfigRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditDefaultAppRoute,
+    postWWorkspaceWorkspacesEditDefaultAppRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditAddAdminsAndDevelopersToForksRoute,
+    postWWorkspaceWorkspacesEditAddAdminsAndDevelopersToForksRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEditGuestJwtKeyRoute,
+    postWWorkspaceWorkspacesEditGuestJwtKeyRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesGuestUsageRoute, getWWorkspaceWorkspacesGuestUsageRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesDefaultScriptsRoute,
+    postWWorkspaceWorkspacesDefaultScriptsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesDefaultScriptsRoute,
+    getWWorkspaceWorkspacesDefaultScriptsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSetEnvironmentVariableRoute,
+    postWWorkspaceWorkspacesSetEnvironmentVariableRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesEncryptionKeyRoute,
+    getWWorkspaceWorkspacesEncryptionKeyRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesEncryptionKeyRoute,
+    postWWorkspaceWorkspacesEncryptionKeyRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesDefaultAppRoute, getWWorkspaceWorkspacesDefaultAppRouteHandler)
+  .openapi(getWWorkspaceWorkspacesUsageRoute, getWWorkspaceWorkspacesUsageRouteHandler)
+  .openapi(
+    getWWorkspaceWorkspacesUsedTriggersRoute,
+    getWWorkspaceWorkspacesUsedTriggersRouteHandler,
+  )
+  .openapi(getWWorkspaceUsersListRoute, getWWorkspaceUsersListRouteHandler)
+  .openapi(getWWorkspaceUsersListAddableRoute, getWWorkspaceUsersListAddableRouteHandler)
+  .openapi(getWWorkspaceUsersListUsageRoute, getWWorkspaceUsersListUsageRouteHandler)
+  .openapi(getWWorkspaceUsersListUsernamesRoute, getWWorkspaceUsersListUsernamesRouteHandler)
+  .openapi(
+    getWWorkspaceUsersUsernameToEmailUsernameRoute,
+    getWWorkspaceUsersUsernameToEmailUsernameRouteHandler,
+  )
+  .openapi(getTokensListScopesRoute, getTokensListScopesRouteHandler)
+  .openapi(postUsersTokensCreateRoute, postUsersTokensCreateRouteHandler)
+  .openapi(postUsersTokensImpersonateRoute, postUsersTokensImpersonateRouteHandler)
+  .openapi(postUsersLoginLinksRoute, postUsersLoginLinksRouteHandler)
+  .openapi(postUsersCloudTrialOfferRoute, postUsersCloudTrialOfferRouteHandler)
+  .openapi(getUsersCloudTrialOfferRoute, getUsersCloudTrialOfferRouteHandler)
+  .openapi(postUsersCloudTrialOfferGoRoute, postUsersCloudTrialOfferGoRouteHandler)
+  .openapi(postUsersOnboardingProfileRoute, postUsersOnboardingProfileRouteHandler)
+  .openapi(getUsersOnboardingProfileRoute, getUsersOnboardingProfileRouteHandler)
+  .openapi(deleteUsersTokensDeleteTokenPrefixRoute, deleteUsersTokensDeleteTokenPrefixRouteHandler)
+  .openapi(
+    postUsersTokensUpdateScopesTokenPrefixRoute,
+    postUsersTokensUpdateScopesTokenPrefixRouteHandler,
+  )
+  .openapi(
+    postUsersTokensUpdateLabelTokenPrefixRoute,
+    postUsersTokensUpdateLabelTokenPrefixRouteHandler,
+  )
+  .openapi(getUsersTokensListRoute, getUsersTokensListRouteHandler)
+  .openapi(getOidcSigningStatusRoute, getOidcSigningStatusRouteHandler)
+  .openapi(postWWorkspaceOidcTokenAudienceRoute, postWWorkspaceOidcTokenAudienceRouteHandler)
+  .openapi(postWWorkspaceVariablesCreateRoute, postWWorkspaceVariablesCreateRouteHandler)
+  .openapi(postWWorkspaceVariablesEncryptRoute, postWWorkspaceVariablesEncryptRouteHandler)
+  .openapi(
+    getWWorkspaceVariablesExternalSecretPrefixesRoute,
+    getWWorkspaceVariablesExternalSecretPrefixesRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceVariablesDeletePathRoute,
+    deleteWWorkspaceVariablesDeletePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceVariablesDeleteBulkRoute,
+    deleteWWorkspaceVariablesDeleteBulkRouteHandler,
+  )
+  .openapi(postWWorkspaceVariablesUpdatePathRoute, postWWorkspaceVariablesUpdatePathRouteHandler)
+  .openapi(getWWorkspaceVariablesGetPathRoute, getWWorkspaceVariablesGetPathRouteHandler)
+  .openapi(getWWorkspaceVariablesGetValuePathRoute, getWWorkspaceVariablesGetValuePathRouteHandler)
+  .openapi(getWWorkspaceVariablesExistsPathRoute, getWWorkspaceVariablesExistsPathRouteHandler)
+  .openapi(getWWorkspaceVariablesListRoute, getWWorkspaceVariablesListRouteHandler)
+  .openapi(
+    getWWorkspaceVariablesListContextualRoute,
+    getWWorkspaceVariablesListContextualRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesGetSecondaryStorageNamesRoute,
+    getWWorkspaceWorkspacesGetSecondaryStorageNamesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesCriticalAlertsRoute,
+    getWWorkspaceWorkspacesCriticalAlertsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesCriticalAlertsIdAcknowledgeRoute,
+    postWWorkspaceWorkspacesCriticalAlertsIdAcknowledgeRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesCriticalAlertsAcknowledgeAllRoute,
+    postWWorkspaceWorkspacesCriticalAlertsAcknowledgeAllRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesCriticalAlertsMuteRoute,
+    postWWorkspaceWorkspacesCriticalAlertsMuteRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesProtectionRulesRoute,
+    getWWorkspaceWorkspacesProtectionRulesRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesProtectionRulesRoute,
+    postWWorkspaceWorkspacesProtectionRulesRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesProtectionRulesRuleNameRoute,
+    postWWorkspaceWorkspacesProtectionRulesRuleNameRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceWorkspacesProtectionRulesRuleNameRoute,
+    deleteWWorkspaceWorkspacesProtectionRulesRuleNameRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceDeploymentRequestEligibleDeployersRoute,
+    getWWorkspaceDeploymentRequestEligibleDeployersRouteHandler,
+  )
+  .openapi(getWWorkspaceDeploymentRequestOpenRoute, getWWorkspaceDeploymentRequestOpenRouteHandler)
+  .openapi(postWWorkspaceDeploymentRequestRoute, postWWorkspaceDeploymentRequestRouteHandler)
+  .openapi(
+    postWWorkspaceDeploymentRequestIdCancelRoute,
+    postWWorkspaceDeploymentRequestIdCancelRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceDeploymentRequestIdCloseMergedRoute,
+    postWWorkspaceDeploymentRequestIdCloseMergedRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceDeploymentRequestIdCommentRoute,
+    postWWorkspaceDeploymentRequestIdCommentRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesLogFeatureUsageRoute,
+    postWWorkspaceWorkspacesLogFeatureUsageRouteHandler,
+  )
+  .openapi(getWWorkspaceWorkspacesCloudQuotasRoute, getWWorkspaceWorkspacesCloudQuotasRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspacesPruneVersionsRoute,
+    postWWorkspaceWorkspacesPruneVersionsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListWsSpecificRoute,
+    getWWorkspaceWorkspacesListWsSpecificRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspacesListWsSpecificVersionsRoute,
+    getWWorkspaceWorkspacesListWsSpecificVersionsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesSetWsSpecificRoute,
+    postWWorkspaceWorkspacesSetWsSpecificRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspacesPublicAppRateLimitRoute,
+    postWWorkspaceWorkspacesPublicAppRateLimitRouteHandler,
+  )
+  .openapi(postOauthLoginCallbackClientNameRoute, postOauthLoginCallbackClientNameRouteHandler)
+  .openapi(
+    postWWorkspaceOauthConnectSlackCallbackRoute,
+    postWWorkspaceOauthConnectSlackCallbackRouteHandler,
+  )
+  .openapi(postOauthConnectSlackCallbackRoute, postOauthConnectSlackCallbackRouteHandler)
+  .openapi(postOauthConnectSlackInstanceRoute, postOauthConnectSlackInstanceRouteHandler)
+  .openapi(postOauthConnectCallbackClientNameRoute, postOauthConnectCallbackClientNameRouteHandler)
+  .openapi(postWWorkspaceOauthCreateAccountRoute, postWWorkspaceOauthCreateAccountRouteHandler)
+  .openapi(
+    postWWorkspaceOauthConnectClientCredentialsClientRoute,
+    postWWorkspaceOauthConnectClientCredentialsClientRouteHandler,
+  )
+  .openapi(postWWorkspaceOauthRefreshTokenIdRoute, postWWorkspaceOauthRefreshTokenIdRouteHandler)
+  .openapi(postWWorkspaceOauthDisconnectIdRoute, postWWorkspaceOauthDisconnectIdRouteHandler)
+  .openapi(postWWorkspaceOauthDisconnectSlackRoute, postWWorkspaceOauthDisconnectSlackRouteHandler)
+  .openapi(postWWorkspaceOauthDisconnectTeamsRoute, postWWorkspaceOauthDisconnectTeamsRouteHandler)
+  .openapi(getOauthListLoginsRoute, getOauthListLoginsRouteHandler)
+  .openapi(getOauthListConnectsRoute, getOauthListConnectsRouteHandler)
+  .openapi(getOauthGetConnectClientRoute, getOauthGetConnectClientRouteHandler)
+  .openapi(postOauthTestClientCredentialsRoute, postOauthTestClientCredentialsRouteHandler)
+  .openapi(postTeamsActivitiesRoute, postTeamsActivitiesRouteHandler)
+  .openapi(postWWorkspaceResourcesCreateRoute, postWWorkspaceResourcesCreateRouteHandler)
+  .openapi(
+    deleteWWorkspaceResourcesDeletePathRoute,
+    deleteWWorkspaceResourcesDeletePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceResourcesDeleteBulkRoute,
+    deleteWWorkspaceResourcesDeleteBulkRouteHandler,
+  )
+  .openapi(postWWorkspaceResourcesUpdatePathRoute, postWWorkspaceResourcesUpdatePathRouteHandler)
+  .openapi(
+    postWWorkspaceResourcesUpdateValuePathRoute,
+    postWWorkspaceResourcesUpdateValuePathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesHistoryPPathRoute, getWWorkspaceResourcesHistoryPPathRouteHandler)
+  .openapi(
+    deleteWWorkspaceResourcesHistoryPPathRoute,
+    deleteWWorkspaceResourcesHistoryPPathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesHistoryVIdRoute, getWWorkspaceResourcesHistoryVIdRouteHandler)
+  .openapi(
+    postWWorkspaceResourcesHistoryRestoreVIdRoute,
+    postWWorkspaceResourcesHistoryRestoreVIdRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesGetPathRoute, getWWorkspaceResourcesGetPathRouteHandler)
+  .openapi(
+    getWWorkspaceResourcesGetValueInterpolatedPathRoute,
+    getWWorkspaceResourcesGetValueInterpolatedPathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesGetValuePathRoute, getWWorkspaceResourcesGetValuePathRouteHandler)
+  .openapi(
+    getWWorkspaceResourcesGitCommitHashPathRoute,
+    getWWorkspaceResourcesGitCommitHashPathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesExistsPathRoute, getWWorkspaceResourcesExistsPathRouteHandler)
+  .openapi(getWWorkspaceResourcesListRoute, getWWorkspaceResourcesListRouteHandler)
+  .openapi(getWWorkspaceResourcesListSearchRoute, getWWorkspaceResourcesListSearchRouteHandler)
+  .openapi(getWWorkspaceResourcesMcpToolsPathRoute, getWWorkspaceResourcesMcpToolsPathRouteHandler)
+  .openapi(
+    postWWorkspaceResourcesMcpCallToolPathRoute,
+    postWWorkspaceResourcesMcpCallToolPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceResourcesListNamesNameRoute,
+    getWWorkspaceResourcesListNamesNameRouteHandler,
+  )
+  .openapi(postWWorkspaceResourcesTypeCreateRoute, postWWorkspaceResourcesTypeCreateRouteHandler)
+  .openapi(
+    getWWorkspaceResourcesFileResourceTypeToFileExtMapRoute,
+    getWWorkspaceResourcesFileResourceTypeToFileExtMapRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceResourcesTypeDeletePathRoute,
+    deleteWWorkspaceResourcesTypeDeletePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceResourcesTypeUpdatePathRoute,
+    postWWorkspaceResourcesTypeUpdatePathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesTypeGetPathRoute, getWWorkspaceResourcesTypeGetPathRouteHandler)
+  .openapi(
+    getWWorkspaceResourcesTypeExistsPathRoute,
+    getWWorkspaceResourcesTypeExistsPathRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesTypeListRoute, getWWorkspaceResourcesTypeListRouteHandler)
+  .openapi(
+    getWWorkspaceResourcesTypeListnamesRoute,
+    getWWorkspaceResourcesTypeListnamesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceResourcesTypeResourceCountsRoute,
+    getWWorkspaceResourcesTypeResourceCountsRouteHandler,
+  )
+  .openapi(getWWorkspaceResourcesTypeHubInfoRoute, getWWorkspaceResourcesTypeHubInfoRouteHandler)
+  .openapi(
+    postWWorkspaceResourcesTypeHubPickNameRoute,
+    postWWorkspaceResourcesTypeHubPickNameRouteHandler,
+  )
+  .openapi(getWWorkspaceNpmProxyConfigRoute, getWWorkspaceNpmProxyConfigRouteHandler)
+  .openapi(
+    getWWorkspaceNpmProxyMetadataPackageRoute,
+    getWWorkspaceNpmProxyMetadataPackageRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNpmProxyResolvePackageRoute,
+    getWWorkspaceNpmProxyResolvePackageRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNpmProxyFiletreePackageVersionRoute,
+    getWWorkspaceNpmProxyFiletreePackageVersionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNpmProxyFilePackageVersionFilepathRoute,
+    getWWorkspaceNpmProxyFilePackageVersionFilepathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNpmProxyTarballPackageVersionRoute,
+    getWWorkspaceNpmProxyTarballPackageVersionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceEmbeddingsQueryResourceTypesRoute,
+    getWWorkspaceEmbeddingsQueryResourceTypesRouteHandler,
+  )
+  .openapi(getIntegrationsHubListRoute, getIntegrationsHubListRouteHandler)
+  .openapi(getIntegrationsHubAppMetaRoute, getIntegrationsHubAppMetaRouteHandler)
+  .openapi(getFlowsHubListRoute, getFlowsHubListRouteHandler)
+  .openapi(getFlowsHubGetIdRoute, getFlowsHubGetIdRouteHandler)
+  .openapi(getAppsHubListRoute, getAppsHubListRouteHandler)
+  .openapi(getAppsHubGetIdRoute, getAppsHubGetIdRouteHandler)
+  .openapi(getAppsHubGetRawIdRoute, getAppsHubGetRawIdRouteHandler)
+  .openapi(
+    getAppsUGuestEntryByCustomPathCustomPathRoute,
+    getAppsUGuestEntryByCustomPathCustomPathRouteHandler,
+  )
+  .openapi(
+    getAppsUPublicAppByCustomPathCustomPathRoute,
+    getAppsUPublicAppByCustomPathCustomPathRouteHandler,
+  )
+  .openapi(
+    getAppsUEmbedTokenByCustomPathCustomPathRoute,
+    getAppsUEmbedTokenByCustomPathCustomPathRouteHandler,
+  )
+  .openapi(getScriptsHubGetPathRoute, getScriptsHubGetPathRouteHandler)
+  .openapi(getScriptsHubGetFullPathRoute, getScriptsHubGetFullPathRouteHandler)
+  .openapi(getScriptsHubPickPathRoute, getScriptsHubPickPathRouteHandler)
+  .openapi(getScriptsHubTopRoute, getScriptsHubTopRouteHandler)
+  .openapi(getEmbeddingsQueryHubScriptsRoute, getEmbeddingsQueryHubScriptsRouteHandler)
+  .openapi(getWWorkspaceScriptsListSearchRoute, getWWorkspaceScriptsListSearchRouteHandler)
+  .openapi(getWWorkspaceScriptsListRoute, getWWorkspaceScriptsListRouteHandler)
+  .openapi(getWWorkspaceScriptsListPathsRoute, getWWorkspaceScriptsListPathsRouteHandler)
+  .openapi(getWWorkspaceDraftsListRoute, getWWorkspaceDraftsListRouteHandler)
+  .openapi(getWWorkspaceDraftsGetKindPathRoute, getWWorkspaceDraftsGetKindPathRouteHandler)
+  .openapi(getWWorkspaceDraftsGetOwnKindPathRoute, getWWorkspaceDraftsGetOwnKindPathRouteHandler)
+  .openapi(postWWorkspaceDraftsUpdateKindPathRoute, postWWorkspaceDraftsUpdateKindPathRouteHandler)
+  .openapi(
+    postWWorkspaceDraftsDeleteForUserKindPathRoute,
+    postWWorkspaceDraftsDeleteForUserKindPathRouteHandler,
+  )
+  .openapi(postWWorkspaceDraftsMoveKindPathRoute, postWWorkspaceDraftsMoveKindPathRouteHandler)
+  .openapi(postWWorkspaceDraftsTransferRoute, postWWorkspaceDraftsTransferRouteHandler)
+  .openapi(
+    postWWorkspaceDraftsMigrateLegacyKindPathRoute,
+    postWWorkspaceDraftsMigrateLegacyKindPathRouteHandler,
+  )
+  .openapi(postWWorkspaceScriptsCreateRoute, postWWorkspaceScriptsCreateRouteHandler)
+  .openapi(postWWorkspaceScriptsUpdatePathRoute, postWWorkspaceScriptsUpdatePathRouteHandler)
+  .openapi(
+    postWWorkspaceScriptsToggleWorkspaceErrorHandlerPPathRoute,
+    postWWorkspaceScriptsToggleWorkspaceErrorHandlerPPathRouteHandler,
+  )
+  .openapi(getWorkersCustomTagsRoute, getWorkersCustomTagsRouteHandler)
+  .openapi(getWWorkspaceWorkersCustomTagsRoute, getWWorkspaceWorkersCustomTagsRouteHandler)
+  .openapi(getWorkersGetDefaultTagsRoute, getWorkersGetDefaultTagsRouteHandler)
+  .openapi(
+    getWorkersIsDefaultTagsPerWorkspaceRoute,
+    getWorkersIsDefaultTagsPerWorkspaceRouteHandler,
+  )
+  .openapi(getWorkersDevWorkspaceIsolationRoute, getWorkersDevWorkspaceIsolationRouteHandler)
+  .openapi(
+    postWWorkspaceWorkspaceDependenciesCreateRoute,
+    postWWorkspaceWorkspaceDependenciesCreateRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspaceDependenciesArchiveLanguageRoute,
+    postWWorkspaceWorkspaceDependenciesArchiveLanguageRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWorkspaceDependenciesDeleteLanguageRoute,
+    postWWorkspaceWorkspaceDependenciesDeleteLanguageRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspaceDependenciesListRoute,
+    getWWorkspaceWorkspaceDependenciesListRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWorkspaceDependenciesGetLatestLanguageRoute,
+    getWWorkspaceWorkspaceDependenciesGetLatestLanguageRouteHandler,
+  )
+  .openapi(postWWorkspaceScriptsArchivePPathRoute, postWWorkspaceScriptsArchivePPathRouteHandler)
+  .openapi(postWWorkspaceScriptsArchiveHHashRoute, postWWorkspaceScriptsArchiveHHashRouteHandler)
+  .openapi(postWWorkspaceScriptsDeleteHHashRoute, postWWorkspaceScriptsDeleteHHashRouteHandler)
+  .openapi(postWWorkspaceScriptsDeletePPathRoute, postWWorkspaceScriptsDeletePPathRouteHandler)
+  .openapi(deleteWWorkspaceScriptsDeleteBulkRoute, deleteWWorkspaceScriptsDeleteBulkRouteHandler)
+  .openapi(getWWorkspaceScriptsGetPPathRoute, getWWorkspaceScriptsGetPPathRouteHandler)
+  .openapi(
+    getWWorkspaceScriptsGetTriggersCountPathRoute,
+    getWWorkspaceScriptsGetTriggersCountPathRouteHandler,
+  )
+  .openapi(getWWorkspaceScriptsListTokensPathRoute, getWWorkspaceScriptsListTokensPathRouteHandler)
+  .openapi(getWWorkspaceScriptsHistoryPPathRoute, getWWorkspaceScriptsHistoryPPathRouteHandler)
+  .openapi(
+    getWWorkspaceScriptsListPathsFromWorkspaceRunnablePathRoute,
+    getWWorkspaceScriptsListPathsFromWorkspaceRunnablePathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceScriptsGetLatestVersionPathRoute,
+    getWWorkspaceScriptsGetLatestVersionPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceScriptsHistoryUpdateHHashPPathRoute,
+    postWWorkspaceScriptsHistoryUpdateHHashPPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceScriptsListDedicatedWithDepsRoute,
+    getWWorkspaceScriptsListDedicatedWithDepsRouteHandler,
+  )
+  .openapi(getWWorkspaceScriptsRawPPathRoute, getWWorkspaceScriptsRawPPathRouteHandler)
+  .openapi(
+    getScriptsUTokenedRawWorkspaceTokenPathRoute,
+    getScriptsUTokenedRawWorkspaceTokenPathRouteHandler,
+  )
+  .openapi(getWWorkspaceScriptsExistsPPathRoute, getWWorkspaceScriptsExistsPPathRouteHandler)
+  .openapi(getWWorkspaceScriptsGetHHashRoute, getWWorkspaceScriptsGetHHashRouteHandler)
+  .openapi(getWWorkspaceScriptsRawHPathRoute, getWWorkspaceScriptsRawHPathRouteHandler)
+  .openapi(
+    getWWorkspaceScriptsDeploymentStatusHHashRoute,
+    getWWorkspaceScriptsDeploymentStatusHHashRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceScriptsCiTestResultsKindPathRoute,
+    getWWorkspaceScriptsCiTestResultsKindPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceScriptsCiTestResultsBatchRoute,
+    postWWorkspaceScriptsCiTestResultsBatchRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceScriptsTriggerCiTestsBatchRoute,
+    postWWorkspaceScriptsTriggerCiTestsBatchRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceScriptsCheckSchemaContractsRoute,
+    postWWorkspaceScriptsCheckSchemaContractsRouteHandler,
+  )
+  .openapi(postWWorkspaceScriptsRawTempStoreRoute, postWWorkspaceScriptsRawTempStoreRouteHandler)
+  .openapi(postWWorkspaceScriptsRawTempDiffRoute, postWWorkspaceScriptsRawTempDiffRouteHandler)
+  .openapi(
+    postWWorkspaceJobsListSelectedJobGroupsRoute,
+    postWWorkspaceJobsListSelectedJobGroupsRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRunPPathRoute, postWWorkspaceJobsRunPPathRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunWaitResultPPathRoute,
+    postWWorkspaceJobsRunWaitResultPPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsRunWaitResultPPathRoute,
+    getWWorkspaceJobsRunWaitResultPPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsRunWaitResultFPathRoute,
+    postWWorkspaceJobsRunWaitResultFPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsRunWaitResultFvVersionRoute,
+    postWWorkspaceJobsRunWaitResultFvVersionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsRunWaitResultFvVersionRoute,
+    getWWorkspaceJobsRunWaitResultFvVersionRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsRunAndStreamFPathRoute,
+    postWWorkspaceJobsRunAndStreamFPathRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsRunAndStreamFPathRoute, getWWorkspaceJobsRunAndStreamFPathRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunAndStreamFvVersionRoute,
+    postWWorkspaceJobsRunAndStreamFvVersionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsRunAndStreamFvVersionRoute,
+    getWWorkspaceJobsRunAndStreamFvVersionRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsRunAndStreamPPathRoute,
+    postWWorkspaceJobsRunAndStreamPPathRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsRunAndStreamPPathRoute, getWWorkspaceJobsRunAndStreamPPathRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunAndStreamHHashRoute,
+    postWWorkspaceJobsRunAndStreamHHashRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsRunAndStreamHHashRoute, getWWorkspaceJobsRunAndStreamHHashRouteHandler)
+  .openapi(
+    getWWorkspaceJobsResultByIdFlowJobIdNodeIdRoute,
+    getWWorkspaceJobsResultByIdFlowJobIdNodeIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsFlowApprovalStepDetailJobIdStepIdRoute,
+    getWWorkspaceJobsFlowApprovalStepDetailJobIdStepIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsJobViewTokenIdRoute, getWWorkspaceJobsJobViewTokenIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsJobPublicViewTokenIdRoute,
+    getWWorkspaceJobsJobPublicViewTokenIdRouteHandler,
+  )
+  .openapi(getWWorkspaceFlowsListPathsRoute, getWWorkspaceFlowsListPathsRouteHandler)
+  .openapi(getWWorkspaceFlowsListSearchRoute, getWWorkspaceFlowsListSearchRouteHandler)
+  .openapi(getWWorkspaceRunnablesListRoute, getWWorkspaceRunnablesListRouteHandler)
+  .openapi(getWWorkspaceRunnablesCountsRoute, getWWorkspaceRunnablesCountsRouteHandler)
+  .openapi(getWWorkspaceFlowsListRoute, getWWorkspaceFlowsListRouteHandler)
+  .openapi(getWWorkspaceFlowsHistoryPPathRoute, getWWorkspaceFlowsHistoryPPathRouteHandler)
+  .openapi(
+    getWWorkspaceFlowsGetLatestVersionPathRoute,
+    getWWorkspaceFlowsGetLatestVersionPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceFlowsListPathsFromWorkspaceRunnableRunnableKindPathRoute,
+    getWWorkspaceFlowsListPathsFromWorkspaceRunnableRunnableKindPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceFlowsListPathsLinkingAgentPathRoute,
+    getWWorkspaceFlowsListPathsLinkingAgentPathRouteHandler,
+  )
+  .openapi(getWWorkspaceFlowsGetVVersionRoute, getWWorkspaceFlowsGetVVersionRouteHandler)
+  .openapi(
+    postWWorkspaceFlowsHistoryUpdateVVersionRoute,
+    postWWorkspaceFlowsHistoryUpdateVVersionRouteHandler,
+  )
+  .openapi(getWWorkspaceFlowsGetPathRoute, getWWorkspaceFlowsGetPathRouteHandler)
+  .openapi(
+    getWWorkspaceFlowsDeploymentStatusPPathRoute,
+    getWWorkspaceFlowsDeploymentStatusPPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceFlowsGetTriggersCountPathRoute,
+    getWWorkspaceFlowsGetTriggersCountPathRouteHandler,
+  )
+  .openapi(getWWorkspaceFlowsListTokensPathRoute, getWWorkspaceFlowsListTokensPathRouteHandler)
+  .openapi(
+    postWWorkspaceFlowsToggleWorkspaceErrorHandlerPathRoute,
+    postWWorkspaceFlowsToggleWorkspaceErrorHandlerPathRouteHandler,
+  )
+  .openapi(getWWorkspaceFlowsExistsPathRoute, getWWorkspaceFlowsExistsPathRouteHandler)
+  .openapi(postWWorkspaceFlowsCreateRoute, postWWorkspaceFlowsCreateRouteHandler)
+  .openapi(postWWorkspaceFlowsUpdatePathRoute, postWWorkspaceFlowsUpdatePathRouteHandler)
+  .openapi(postWWorkspaceFlowsArchivePathRoute, postWWorkspaceFlowsArchivePathRouteHandler)
+  .openapi(deleteWWorkspaceFlowsDeletePathRoute, deleteWWorkspaceFlowsDeletePathRouteHandler)
+  .openapi(getWWorkspaceFlowConversationsListRoute, getWWorkspaceFlowConversationsListRouteHandler)
+  .openapi(getWWorkspaceSlackAgentsChannelsRoute, getWWorkspaceSlackAgentsChannelsRouteHandler)
+  .openapi(
+    getWWorkspaceSlackAgentsAvailableChannelsRoute,
+    getWWorkspaceSlackAgentsAvailableChannelsRouteHandler,
+  )
+  .openapi(getWWorkspaceSlackAgentsStatusRoute, getWWorkspaceSlackAgentsStatusRouteHandler)
+  .openapi(
+    getWWorkspaceSlackAgentsAgentChannelsPathRoute,
+    getWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceSlackAgentsAgentChannelsPathRoute,
+    postWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceSlackAgentsAgentChannelsPathRoute,
+    deleteWWorkspaceSlackAgentsAgentChannelsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceFlowConversationsUpdateConversationIdRoute,
+    postWWorkspaceFlowConversationsUpdateConversationIdRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceFlowConversationsDeleteConversationIdRoute,
+    deleteWWorkspaceFlowConversationsDeleteConversationIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceFlowConversationsConversationIdMessagesRoute,
+    getWWorkspaceFlowConversationsConversationIdMessagesRouteHandler,
+  )
+  .openapi(postWWorkspaceAiCompleteRoute, postWWorkspaceAiCompleteRouteHandler)
+  .openapi(postWWorkspaceAiWebSearchRoute, postWWorkspaceAiWebSearchRouteHandler)
+  .openapi(postWWorkspaceAiWebFetchRoute, postWWorkspaceAiWebFetchRouteHandler)
+  .openapi(getWWorkspaceAiEvalsDatasetsListRoute, getWWorkspaceAiEvalsDatasetsListRouteHandler)
+  .openapi(
+    postWWorkspaceAiEvalsDatasetsCreateRoute,
+    postWWorkspaceAiEvalsDatasetsCreateRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiEvalsDatasetsGetPathRoute,
+    getWWorkspaceAiEvalsDatasetsGetPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAiEvalsDatasetsUpdatePathRoute,
+    postWWorkspaceAiEvalsDatasetsUpdatePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAiEvalsDatasetsDeletePathRoute,
+    postWWorkspaceAiEvalsDatasetsDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceAiEvalsCasesListPathRoute, getWWorkspaceAiEvalsCasesListPathRouteHandler)
+  .openapi(getWWorkspaceAiEvalsSubjectStateRoute, getWWorkspaceAiEvalsSubjectStateRouteHandler)
+  .openapi(getWWorkspaceAiEvalsRunPayloadRoute, getWWorkspaceAiEvalsRunPayloadRouteHandler)
+  .openapi(getWWorkspaceAiEvalsScorerDefaultsRoute, getWWorkspaceAiEvalsScorerDefaultsRouteHandler)
+  .openapi(getWWorkspaceAiEvalsScorersRecentRoute, getWWorkspaceAiEvalsScorersRecentRouteHandler)
+  .openapi(
+    postWWorkspaceAiEvalsExperimentsRunRoute,
+    postWWorkspaceAiEvalsExperimentsRunRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAiEvalsExperimentsCollectRoute,
+    postWWorkspaceAiEvalsExperimentsCollectRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiEvalsExperimentsListAllRoute,
+    getWWorkspaceAiEvalsExperimentsListAllRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiEvalsExperimentsResultsPathRoute,
+    getWWorkspaceAiEvalsExperimentsResultsPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePathAutocompleteListPathsRoute,
+    getWWorkspacePathAutocompleteListPathsRouteHandler,
+  )
+  .openapi(getWWorkspaceRawAppsListRoute, getWWorkspaceRawAppsListRouteHandler)
+  .openapi(getWWorkspaceSharedUiGetRoute, getWWorkspaceSharedUiGetRouteHandler)
+  .openapi(getWWorkspaceSharedUiListRoute, getWWorkspaceSharedUiListRouteHandler)
+  .openapi(getWWorkspaceSharedUiVersionRoute, getWWorkspaceSharedUiVersionRouteHandler)
+  .openapi(putWWorkspaceSharedUiRoute, putWWorkspaceSharedUiRouteHandler)
+  .openapi(postWWorkspaceAiUsageRoute, postWWorkspaceAiUsageRouteHandler)
+  .openapi(getWWorkspaceAiUsageRoute, getWWorkspaceAiUsageRouteHandler)
+  .openapi(postWWorkspaceAiSessionToolsNameRoute, postWWorkspaceAiSessionToolsNameRouteHandler)
+  .openapi(getWWorkspaceAiSessionsListRoute, getWWorkspaceAiSessionsListRouteHandler)
+  .openapi(postWWorkspaceAiSessionsPullRoute, postWWorkspaceAiSessionsPullRouteHandler)
+  .openapi(postWWorkspaceAiSessionsPushRoute, postWWorkspaceAiSessionsPushRouteHandler)
+  .openapi(
+    postWWorkspaceAiSharedArtifactsShareRoute,
+    postWWorkspaceAiSharedArtifactsShareRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiSharedArtifactsStatusRoute,
+    getWWorkspaceAiSharedArtifactsStatusRouteHandler,
+  )
+  .openapi(getWWorkspaceAiSharedArtifactsListRoute, getWWorkspaceAiSharedArtifactsListRouteHandler)
+  .openapi(
+    getWWorkspaceAiSharedArtifactsGetIdRoute,
+    getWWorkspaceAiSharedArtifactsGetIdRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAiSharedArtifactsDeleteIdRoute,
+    deleteWWorkspaceAiSharedArtifactsDeleteIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAiSharedSessionsShareRoute,
+    postWWorkspaceAiSharedSessionsShareRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiSharedSessionsStatusRoute,
+    getWWorkspaceAiSharedSessionsStatusRouteHandler,
+  )
+  .openapi(getWWorkspaceAiSharedSessionsListRoute, getWWorkspaceAiSharedSessionsListRouteHandler)
+  .openapi(
+    postWWorkspaceAiSharedSessionsSetPublicIdRoute,
+    postWWorkspaceAiSharedSessionsSetPublicIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAiUSharedSessionsGetIdRoute,
+    getWWorkspaceAiUSharedSessionsGetIdRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAiSharedSessionsOpenedIdRoute,
+    deleteWWorkspaceAiSharedSessionsOpenedIdRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAiSharedSessionsDeleteIdRoute,
+    deleteWWorkspaceAiSharedSessionsDeleteIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsGetDataVSecretWithExtensionRoute,
+    getWWorkspaceAppsGetDataVSecretWithExtensionRouteHandler,
+  )
+  .openapi(getWWorkspaceAppsListSearchRoute, getWWorkspaceAppsListSearchRouteHandler)
+  .openapi(getWWorkspaceAppsListRoute, getWWorkspaceAppsListRouteHandler)
+  .openapi(postWWorkspaceAppsCreateRoute, postWWorkspaceAppsCreateRouteHandler)
+  .openapi(postWWorkspaceAppsCreateRawRoute, postWWorkspaceAppsCreateRawRouteHandler)
+  .openapi(getWWorkspaceAppsExistsPathRoute, getWWorkspaceAppsExistsPathRouteHandler)
+  .openapi(getWWorkspaceAppsGetPPathRoute, getWWorkspaceAppsGetPPathRouteHandler)
+  .openapi(postWWorkspaceAppsPreviewSdkTokenRoute, postWWorkspaceAppsPreviewSdkTokenRouteHandler)
+  .openapi(getWWorkspaceAppsEmbedTokenPPathRoute, getWWorkspaceAppsEmbedTokenPPathRouteHandler)
+  .openapi(getWWorkspaceAppsGetLitePathRoute, getWWorkspaceAppsGetLitePathRouteHandler)
+  .openapi(getWWorkspaceAppsHistoryPPathRoute, getWWorkspaceAppsHistoryPPathRouteHandler)
+  .openapi(
+    getWWorkspaceAppsGetLatestVersionPathRoute,
+    getWWorkspaceAppsGetLatestVersionPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsListPathsFromWorkspaceRunnableRunnableKindPathRoute,
+    getWWorkspaceAppsListPathsFromWorkspaceRunnableRunnableKindPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAppsHistoryUpdateAIdVVersionRoute,
+    postWWorkspaceAppsHistoryUpdateAIdVVersionRouteHandler,
+  )
+  .openapi(getWWorkspaceAppsUGuestEntryPathRoute, getWWorkspaceAppsUGuestEntryPathRouteHandler)
+  .openapi(getWWorkspaceAppsUPublicAppPathRoute, getWWorkspaceAppsUPublicAppPathRouteHandler)
+  .openapi(getWWorkspaceAppsUEmbedTokenSecretRoute, getWWorkspaceAppsUEmbedTokenSecretRouteHandler)
+  .openapi(
+    getWWorkspaceAppsUPublicResourcePathRoute,
+    getWWorkspaceAppsUPublicResourcePathRouteHandler,
+  )
+  .openapi(getWWorkspaceAppsSecretOfPathRoute, getWWorkspaceAppsSecretOfPathRouteHandler)
+  .openapi(
+    getWWorkspaceAppsSecretOfLatestVersionPathRoute,
+    getWWorkspaceAppsSecretOfLatestVersionPathRouteHandler,
+  )
+  .openapi(getWWorkspaceAppsGetVIdRoute, getWWorkspaceAppsGetVIdRouteHandler)
+  .openapi(deleteWWorkspaceAppsDeletePathRoute, deleteWWorkspaceAppsDeletePathRouteHandler)
+  .openapi(postWWorkspaceAppsUpdatePathRoute, postWWorkspaceAppsUpdatePathRouteHandler)
+  .openapi(postWWorkspaceAppsCreateRawSourceRoute, postWWorkspaceAppsCreateRawSourceRouteHandler)
+  .openapi(
+    postWWorkspaceAppsUpdateRawSourcePathRoute,
+    postWWorkspaceAppsUpdateRawSourcePathRouteHandler,
+  )
+  .openapi(postWWorkspaceAppsUpdateRawPathRoute, postWWorkspaceAppsUpdateRawPathRouteHandler)
+  .openapi(
+    getWWorkspaceAppsCustomPathExistsCustomPathRoute,
+    getWWorkspaceAppsCustomPathExistsCustomPathRouteHandler,
+  )
+  .openapi(postWWorkspaceAppsSignS3ObjectsRoute, postWWorkspaceAppsSignS3ObjectsRouteHandler)
+  .openapi(
+    postWWorkspaceAppsUExecuteComponentPathRoute,
+    postWWorkspaceAppsUExecuteComponentPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAppsUUploadS3FilePathRoute,
+    postWWorkspaceAppsUUploadS3FilePathRouteHandler,
+  )
+  .openapi(deleteWWorkspaceAppsUDeleteS3FileRoute, deleteWWorkspaceAppsUDeleteS3FileRouteHandler)
+  .openapi(
+    getWWorkspaceAppsULoadFileMetadataPathRoute,
+    getWWorkspaceAppsULoadFileMetadataPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsULoadFilePreviewPathRoute,
+    getWWorkspaceAppsULoadFilePreviewPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsULoadParquetPreviewPathRoute,
+    getWWorkspaceAppsULoadParquetPreviewPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsULoadCsvPreviewPathRoute,
+    getWWorkspaceAppsULoadCsvPreviewPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsULoadTableCountPathRoute,
+    getWWorkspaceAppsULoadTableCountPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceAppsUDownloadS3ParquetFileAsCsvPathRoute,
+    getWWorkspaceAppsUDownloadS3ParquetFileAsCsvPathRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRunFPathRoute, postWWorkspaceJobsRunFPathRouteHandler)
+  .openapi(postWWorkspaceJobsRunFvVersionRoute, postWWorkspaceJobsRunFvVersionRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunBatchRerunJobsRoute,
+    postWWorkspaceJobsRunBatchRerunJobsRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRestartFIdRoute, postWWorkspaceJobsRestartFIdRouteHandler)
+  .openapi(postWWorkspaceJobsRunHHashRoute, postWWorkspaceJobsRunHHashRouteHandler)
+  .openapi(postWWorkspaceJobsRunPreviewRoute, postWWorkspaceJobsRunPreviewRouteHandler)
+  .openapi(postWWorkspaceJobsRunInlinePreviewRoute, postWWorkspaceJobsRunInlinePreviewRouteHandler)
+  .openapi(postWWorkspaceJobsRunInlinePPathRoute, postWWorkspaceJobsRunInlinePPathRouteHandler)
+  .openapi(postWWorkspaceJobsRunInlineHHashRoute, postWWorkspaceJobsRunInlineHHashRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunWaitResultPreviewRoute,
+    postWWorkspaceJobsRunWaitResultPreviewRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsWorkflowAsCodeJobIdEntrypointRoute,
+    postWWorkspaceJobsWorkflowAsCodeJobIdEntrypointRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRunDependenciesRoute, postWWorkspaceJobsRunDependenciesRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunDependenciesAsyncRoute,
+    postWWorkspaceJobsRunDependenciesAsyncRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsRunFlowDependenciesAsyncRoute,
+    postWWorkspaceJobsRunFlowDependenciesAsyncRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRunFlowTestPathRoute, postWWorkspaceJobsRunFlowTestPathRouteHandler)
+  .openapi(postWWorkspaceJobsRunPreviewFlowRoute, postWWorkspaceJobsRunPreviewFlowRouteHandler)
+  .openapi(postWWorkspaceJobsRunAgentPathRoute, postWWorkspaceJobsRunAgentPathRouteHandler)
+  .openapi(
+    postWWorkspaceJobsRunWaitResultPreviewFlowRoute,
+    postWWorkspaceJobsRunWaitResultPreviewFlowRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsRunDynamicSelectRoute, postWWorkspaceJobsRunDynamicSelectRouteHandler)
+  .openapi(getWWorkspaceJobsQueueListRoute, getWWorkspaceJobsQueueListRouteHandler)
+  .openapi(getWWorkspaceJobsQueueCountRoute, getWWorkspaceJobsQueueCountRouteHandler)
+  .openapi(getWWorkspaceJobsOldestRoute, getWWorkspaceJobsOldestRouteHandler)
+  .openapi(getWWorkspaceJobsCompletedCountRoute, getWWorkspaceJobsCompletedCountRouteHandler)
+  .openapi(
+    getWWorkspaceJobsCompletedCountJobsRoute,
+    getWWorkspaceJobsCompletedCountJobsRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsListFilteredUuidsRoute, getWWorkspaceJobsListFilteredUuidsRouteHandler)
+  .openapi(
+    getWWorkspaceJobsQueueListFilteredUuidsRoute,
+    getWWorkspaceJobsQueueListFilteredUuidsRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsQueueRunNowIdRoute, postWWorkspaceJobsQueueRunNowIdRouteHandler)
+  .openapi(
+    postWWorkspaceJobsQueueCancelSelectionRoute,
+    postWWorkspaceJobsQueueCancelSelectionRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsGetOtelTracesIdRoute, getWWorkspaceJobsGetOtelTracesIdRouteHandler)
+  .openapi(
+    postWWorkspaceTriggerTriggerKindResumeSuspendedTriggerJobsTriggerPathRoute,
+    postWWorkspaceTriggerTriggerKindResumeSuspendedTriggerJobsTriggerPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceTriggerTriggerKindCancelSuspendedTriggerJobsTriggerPathRoute,
+    postWWorkspaceTriggerTriggerKindCancelSuspendedTriggerJobsTriggerPathRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsCompletedListRoute, getWWorkspaceJobsCompletedListRouteHandler)
+  .openapi(getWWorkspaceJobsCompletedExportRoute, getWWorkspaceJobsCompletedExportRouteHandler)
+  .openapi(postWWorkspaceJobsCompletedImportRoute, postWWorkspaceJobsCompletedImportRouteHandler)
+  .openapi(getWWorkspaceJobsQueueExportRoute, getWWorkspaceJobsQueueExportRouteHandler)
+  .openapi(postWWorkspaceJobsQueueImportRoute, postWWorkspaceJobsQueueImportRouteHandler)
+  .openapi(postWWorkspaceJobsDeleteRoute, postWWorkspaceJobsDeleteRouteHandler)
+  .openapi(getWWorkspaceJobsRecentRunsRoute, getWWorkspaceJobsRecentRunsRouteHandler)
+  .openapi(postWWorkspaceJobsRecentRunsHideRoute, postWWorkspaceJobsRecentRunsHideRouteHandler)
+  .openapi(postWWorkspaceJobsRecentRunsUnhideRoute, postWWorkspaceJobsRecentRunsUnhideRouteHandler)
+  .openapi(getWWorkspaceJobsListRoute, getWWorkspaceJobsListRouteHandler)
+  .openapi(getJobsDbClockRoute, getJobsDbClockRouteHandler)
+  .openapi(getJobsCompletedCountByTagRoute, getJobsCompletedCountByTagRouteHandler)
+  .openapi(getWWorkspaceJobsUGetIdRoute, getWWorkspaceJobsUGetIdRouteHandler)
+  .openapi(getWWorkspaceJobsUGetRootJobIdIdRoute, getWWorkspaceJobsUGetRootJobIdIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsWorkerIsDrainingIdRoute,
+    getWWorkspaceJobsWorkerIsDrainingIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsUGetLogsIdRoute, getWWorkspaceJobsUGetLogsIdRouteHandler)
+  .openapi(getWWorkspaceJobsUGetFlowAllLogsIdRoute, getWWorkspaceJobsUGetFlowAllLogsIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsUGetFlowAllLogsStructuredIdRoute,
+    getWWorkspaceJobsUGetFlowAllLogsStructuredIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUGetFlowAllResultsIdRoute,
+    getWWorkspaceJobsUGetFlowAllResultsIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUGetCompletedLogsTailIdRoute,
+    getWWorkspaceJobsUGetCompletedLogsTailIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsUGetArgsIdRoute, getWWorkspaceJobsUGetArgsIdRouteHandler)
+  .openapi(
+    postWWorkspaceJobsUQueueGetStartedAtByIdsRoute,
+    postWWorkspaceJobsUQueueGetStartedAtByIdsRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsUGetupdateIdRoute, getWWorkspaceJobsUGetupdateIdRouteHandler)
+  .openapi(getWWorkspaceJobsUGetupdateSseIdRoute, getWWorkspaceJobsUGetupdateSseIdRouteHandler)
+  .openapi(getWWorkspaceJobsUGetLogFilePathRoute, getWWorkspaceJobsUGetLogFilePathRouteHandler)
+  .openapi(
+    getWWorkspaceJobsUGetFlowDebugInfoIdRoute,
+    getWWorkspaceJobsUGetFlowDebugInfoIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsUCompletedGetIdRoute, getWWorkspaceJobsUCompletedGetIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsUCompletedGetResultIdRoute,
+    getWWorkspaceJobsUCompletedGetResultIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUCompletedGetResultMaybeIdRoute,
+    getWWorkspaceJobsUCompletedGetResultMaybeIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUCompletedGetTimingIdRoute,
+    getWWorkspaceJobsUCompletedGetTimingIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsUDispatchEventsIdRoute, getWWorkspaceJobsUDispatchEventsIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsAssetDispatchEdgesRoute,
+    getWWorkspaceJobsAssetDispatchEdgesRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsCompletedDeleteIdRoute,
+    postWWorkspaceJobsCompletedDeleteIdRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsCompletedResolveRoute, postWWorkspaceJobsCompletedResolveRouteHandler)
+  .openapi(
+    postWWorkspaceJobsCompletedUnresolveRoute,
+    postWWorkspaceJobsCompletedUnresolveRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsUQueueCancelIdRoute, postWWorkspaceJobsUQueueCancelIdRouteHandler)
+  .openapi(
+    postWWorkspaceJobsUQueueCancelPersistentPathRoute,
+    postWWorkspaceJobsUQueueCancelPersistentPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsUQueueForceCancelIdRoute,
+    postWWorkspaceJobsUQueueForceCancelIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsQueuePositionScheduledForRoute,
+    getWWorkspaceJobsQueuePositionScheduledForRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsQueueScheduledForIdRoute,
+    getWWorkspaceJobsQueueScheduledForIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsJobSignatureIdResumeIdRoute,
+    getWWorkspaceJobsJobSignatureIdResumeIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsResumeUrlsIdResumeIdRoute,
+    getWWorkspaceJobsResumeUrlsIdResumeIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsWacApprovalUrlsIdStepKeyRoute,
+    getWWorkspaceJobsWacApprovalUrlsIdStepKeyRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsSlackApprovalIdRoute, getWWorkspaceJobsSlackApprovalIdRouteHandler)
+  .openapi(getWWorkspaceJobsTeamsApprovalIdRoute, getWWorkspaceJobsTeamsApprovalIdRouteHandler)
+  .openapi(
+    postWWorkspaceJobsUFlowResumeSuspendedJobIdRoute,
+    postWWorkspaceJobsUFlowResumeSuspendedJobIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUFlowApprovalInfoJobIdRoute,
+    getWWorkspaceJobsUFlowApprovalInfoJobIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUResumeIdResumeIdSignatureRoute,
+    getWWorkspaceJobsUResumeIdResumeIdSignatureRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsUResumeIdResumeIdSignatureRoute,
+    postWWorkspaceJobsUResumeIdResumeIdSignatureRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsFlowUserStatesIdKeyRoute,
+    postWWorkspaceJobsFlowUserStatesIdKeyRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsFlowUserStatesIdKeyRoute,
+    getWWorkspaceJobsFlowUserStatesIdKeyRouteHandler,
+  )
+  .openapi(postWWorkspaceJobsFlowResumeIdRoute, postWWorkspaceJobsFlowResumeIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsUCancelIdResumeIdSignatureRoute,
+    getWWorkspaceJobsUCancelIdResumeIdSignatureRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobsUCancelIdResumeIdSignatureRoute,
+    postWWorkspaceJobsUCancelIdResumeIdSignatureRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobsUGetFlowIdResumeIdSignatureRoute,
+    getWWorkspaceJobsUGetFlowIdResumeIdSignatureRouteHandler,
+  )
+  .openapi(postSchedulesPreviewRoute, postSchedulesPreviewRouteHandler)
+  .openapi(postWWorkspaceSchedulesCreateRoute, postWWorkspaceSchedulesCreateRouteHandler)
+  .openapi(postWWorkspaceSchedulesUpdatePathRoute, postWWorkspaceSchedulesUpdatePathRouteHandler)
+  .openapi(
+    postWWorkspaceSchedulesSetenabledPathRoute,
+    postWWorkspaceSchedulesSetenabledPathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceSchedulesDeletePathRoute,
+    deleteWWorkspaceSchedulesDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceSchedulesGetPathRoute, getWWorkspaceSchedulesGetPathRouteHandler)
+  .openapi(getWWorkspaceSchedulesExistsPathRoute, getWWorkspaceSchedulesExistsPathRouteHandler)
+  .openapi(getWWorkspaceSchedulesListRoute, getWWorkspaceSchedulesListRouteHandler)
+  .openapi(getWWorkspaceSchedulesListWithJobsRoute, getWWorkspaceSchedulesListWithJobsRouteHandler)
+  .openapi(
+    postWWorkspaceSchedulesSetdefaulthandlerRoute,
+    postWWorkspaceSchedulesSetdefaulthandlerRouteHandler,
+  )
+  .openapi(postWWorkspaceOpenapiGenerateRoute, postWWorkspaceOpenapiGenerateRouteHandler)
+  .openapi(postWWorkspaceOpenapiDownloadRoute, postWWorkspaceOpenapiDownloadRouteHandler)
+  .openapi(
+    postWWorkspaceHttpTriggersCreateManyRoute,
+    postWWorkspaceHttpTriggersCreateManyRouteHandler,
+  )
+  .openapi(postWWorkspaceHttpTriggersCreateRoute, postWWorkspaceHttpTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceHttpTriggersUpdatePathRoute,
+    postWWorkspaceHttpTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceHttpTriggersDeletePathRoute,
+    deleteWWorkspaceHttpTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceHttpTriggersGetPathRoute, getWWorkspaceHttpTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceHttpTriggersListRoute, getWWorkspaceHttpTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceHttpTriggersExistsPathRoute,
+    getWWorkspaceHttpTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHttpTriggersRouteExistsRoute,
+    postWWorkspaceHttpTriggersRouteExistsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHttpTriggersSetmodePathRoute,
+    postWWorkspaceHttpTriggersSetmodePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWebsocketTriggersCreateRoute,
+    postWWorkspaceWebsocketTriggersCreateRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWebsocketTriggersUpdatePathRoute,
+    postWWorkspaceWebsocketTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceWebsocketTriggersDeletePathRoute,
+    deleteWWorkspaceWebsocketTriggersDeletePathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceWebsocketTriggersGetPathRoute,
+    getWWorkspaceWebsocketTriggersGetPathRouteHandler,
+  )
+  .openapi(getWWorkspaceWebsocketTriggersListRoute, getWWorkspaceWebsocketTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceWebsocketTriggersExistsPathRoute,
+    getWWorkspaceWebsocketTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWebsocketTriggersSetmodePathRoute,
+    postWWorkspaceWebsocketTriggersSetmodePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceWebsocketTriggersTestRoute,
+    postWWorkspaceWebsocketTriggersTestRouteHandler,
+  )
+  .openapi(postWWorkspaceKafkaTriggersCreateRoute, postWWorkspaceKafkaTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceKafkaTriggersUpdatePathRoute,
+    postWWorkspaceKafkaTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceKafkaTriggersDeletePathRoute,
+    deleteWWorkspaceKafkaTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceKafkaTriggersGetPathRoute, getWWorkspaceKafkaTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceKafkaTriggersListRoute, getWWorkspaceKafkaTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceKafkaTriggersExistsPathRoute,
+    getWWorkspaceKafkaTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceKafkaTriggersSetmodePathRoute,
+    postWWorkspaceKafkaTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceKafkaTriggersTestRoute, postWWorkspaceKafkaTriggersTestRouteHandler)
+  .openapi(
+    postWWorkspaceKafkaTriggersResetOffsetsPathRoute,
+    postWWorkspaceKafkaTriggersResetOffsetsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceKafkaTriggersCommitOffsetsPathRoute,
+    postWWorkspaceKafkaTriggersCommitOffsetsPathRouteHandler,
+  )
+  .openapi(postWWorkspaceNatsTriggersCreateRoute, postWWorkspaceNatsTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceNatsTriggersUpdatePathRoute,
+    postWWorkspaceNatsTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceNatsTriggersDeletePathRoute,
+    deleteWWorkspaceNatsTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceNatsTriggersGetPathRoute, getWWorkspaceNatsTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceNatsTriggersListRoute, getWWorkspaceNatsTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceNatsTriggersExistsPathRoute,
+    getWWorkspaceNatsTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNatsTriggersSetmodePathRoute,
+    postWWorkspaceNatsTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceNatsTriggersTestRoute, postWWorkspaceNatsTriggersTestRouteHandler)
+  .openapi(postWWorkspaceSqsTriggersCreateRoute, postWWorkspaceSqsTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceSqsTriggersUpdatePathRoute,
+    postWWorkspaceSqsTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceSqsTriggersDeletePathRoute,
+    deleteWWorkspaceSqsTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceSqsTriggersGetPathRoute, getWWorkspaceSqsTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceSqsTriggersListRoute, getWWorkspaceSqsTriggersListRouteHandler)
+  .openapi(getWWorkspaceSqsTriggersExistsPathRoute, getWWorkspaceSqsTriggersExistsPathRouteHandler)
+  .openapi(
+    postWWorkspaceSqsTriggersSetmodePathRoute,
+    postWWorkspaceSqsTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceSqsTriggersTestRoute, postWWorkspaceSqsTriggersTestRouteHandler)
+  .openapi(
+    getWWorkspaceNativeTriggersIntegrationsListRoute,
+    getWWorkspaceNativeTriggersIntegrationsListRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersIntegrationsServiceNameExistsRoute,
+    getWWorkspaceNativeTriggersIntegrationsServiceNameExistsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersIntegrationsServiceNameCreateRoute,
+    postWWorkspaceNativeTriggersIntegrationsServiceNameCreateRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersIntegrationsServiceNameGenerateConnectUrlRoute,
+    postWWorkspaceNativeTriggersIntegrationsServiceNameGenerateConnectUrlRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersIntegrationsServiceNameInstanceSharingAvailableRoute,
+    getWWorkspaceNativeTriggersIntegrationsServiceNameInstanceSharingAvailableRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsRoute,
+    getWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsDeleteRoute,
+    deleteWWorkspaceNativeTriggersIntegrationsServiceNameConnectionsDeleteRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersIntegrationsServiceNameWorkspaceConnectionRoute,
+    postWWorkspaceNativeTriggersIntegrationsServiceNameWorkspaceConnectionRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceNativeTriggersIntegrationsServiceNameDeleteRoute,
+    deleteWWorkspaceNativeTriggersIntegrationsServiceNameDeleteRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersIntegrationsServiceNameCallbackRoute,
+    postWWorkspaceNativeTriggersIntegrationsServiceNameCallbackRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersServiceNameCreateRoute,
+    postWWorkspaceNativeTriggersServiceNameCreateRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersServiceNameUpdateExternalIdRoute,
+    postWWorkspaceNativeTriggersServiceNameUpdateExternalIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersServiceNameGetExternalIdRoute,
+    getWWorkspaceNativeTriggersServiceNameGetExternalIdRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceNativeTriggersServiceNameDeleteExternalIdRoute,
+    deleteWWorkspaceNativeTriggersServiceNameDeleteExternalIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersServiceNameSetenabledExternalIdRoute,
+    postWWorkspaceNativeTriggersServiceNameSetenabledExternalIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersServiceNameListRoute,
+    getWWorkspaceNativeTriggersServiceNameListRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersServiceNameExistsExternalIdRoute,
+    getWWorkspaceNativeTriggersServiceNameExistsExternalIdRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceNativeTriggersServiceNameSyncRoute,
+    postWWorkspaceNativeTriggersServiceNameSyncRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersNextcloudEventsRoute,
+    getWWorkspaceNativeTriggersNextcloudEventsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersGoogleCalendarsRoute,
+    getWWorkspaceNativeTriggersGoogleCalendarsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersGoogleDriveFilesRoute,
+    getWWorkspaceNativeTriggersGoogleDriveFilesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersGoogleDriveSharedDrivesRoute,
+    getWWorkspaceNativeTriggersGoogleDriveSharedDrivesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceNativeTriggersGithubReposRoute,
+    getWWorkspaceNativeTriggersGithubReposRouteHandler,
+  )
+  .openapi(
+    postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRoute,
+    postNativeTriggersServiceNameWWorkspaceIdWebhookInternalIdRouteHandler,
+  )
+  .openapi(postWWorkspaceMqttTriggersCreateRoute, postWWorkspaceMqttTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceMqttTriggersUpdatePathRoute,
+    postWWorkspaceMqttTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceMqttTriggersDeletePathRoute,
+    deleteWWorkspaceMqttTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceMqttTriggersGetPathRoute, getWWorkspaceMqttTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceMqttTriggersListRoute, getWWorkspaceMqttTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceMqttTriggersExistsPathRoute,
+    getWWorkspaceMqttTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceMqttTriggersSetmodePathRoute,
+    postWWorkspaceMqttTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceMqttTriggersTestRoute, postWWorkspaceMqttTriggersTestRouteHandler)
+  .openapi(postWWorkspaceAmqpTriggersCreateRoute, postWWorkspaceAmqpTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceAmqpTriggersUpdatePathRoute,
+    postWWorkspaceAmqpTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAmqpTriggersDeletePathRoute,
+    deleteWWorkspaceAmqpTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceAmqpTriggersGetPathRoute, getWWorkspaceAmqpTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceAmqpTriggersListRoute, getWWorkspaceAmqpTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceAmqpTriggersExistsPathRoute,
+    getWWorkspaceAmqpTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAmqpTriggersSetmodePathRoute,
+    postWWorkspaceAmqpTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceAmqpTriggersTestRoute, postWWorkspaceAmqpTriggersTestRouteHandler)
+  .openapi(postWWorkspaceGcpTriggersCreateRoute, postWWorkspaceGcpTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceGcpTriggersUpdatePathRoute,
+    postWWorkspaceGcpTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceGcpTriggersDeletePathRoute,
+    deleteWWorkspaceGcpTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceGcpTriggersGetPathRoute, getWWorkspaceGcpTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceGcpTriggersListRoute, getWWorkspaceGcpTriggersListRouteHandler)
+  .openapi(getWWorkspaceGcpTriggersExistsPathRoute, getWWorkspaceGcpTriggersExistsPathRouteHandler)
+  .openapi(
+    postWWorkspaceGcpTriggersSetmodePathRoute,
+    postWWorkspaceGcpTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceGcpTriggersTestRoute, postWWorkspaceGcpTriggersTestRouteHandler)
+  .openapi(
+    deleteWWorkspaceGcpTriggersSubscriptionsDeletePathRoute,
+    deleteWWorkspaceGcpTriggersSubscriptionsDeletePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceGcpTriggersSubscriptionsDeleteRoute,
+    deleteWWorkspaceGcpTriggersSubscriptionsDeleteRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceGcpTriggersTopicsListPathRoute,
+    getWWorkspaceGcpTriggersTopicsListPathRouteHandler,
+  )
+  .openapi(getWWorkspaceGcpTriggersTopicsListRoute, getWWorkspaceGcpTriggersTopicsListRouteHandler)
+  .openapi(
+    postWWorkspaceGcpTriggersSubscriptionsListPathRoute,
+    postWWorkspaceGcpTriggersSubscriptionsListPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceGcpTriggersSubscriptionsListRoute,
+    postWWorkspaceGcpTriggersSubscriptionsListRouteHandler,
+  )
+  .openapi(postWWorkspaceAzureTriggersCreateRoute, postWWorkspaceAzureTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceAzureTriggersUpdatePathRoute,
+    postWWorkspaceAzureTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAzureTriggersDeletePathRoute,
+    deleteWWorkspaceAzureTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceAzureTriggersGetPathRoute, getWWorkspaceAzureTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceAzureTriggersListRoute, getWWorkspaceAzureTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceAzureTriggersExistsPathRoute,
+    getWWorkspaceAzureTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAzureTriggersSetmodePathRoute,
+    postWWorkspaceAzureTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspaceAzureTriggersTestRoute, postWWorkspaceAzureTriggersTestRouteHandler)
+  .openapi(
+    postWWorkspaceAzureTriggersNamespacesTopicsListPathRoute,
+    postWWorkspaceAzureTriggersNamespacesTopicsListPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAzureTriggersNamespacesSubscriptionsListPathRoute,
+    postWWorkspaceAzureTriggersNamespacesSubscriptionsListPathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceAzureTriggersSubscriptionsDeletePathRoute,
+    deleteWWorkspaceAzureTriggersSubscriptionsDeletePathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAzureTriggersNamespacesListPathRoute,
+    postWWorkspaceAzureTriggersNamespacesListPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceAzureTriggersBasicTopicsListPathRoute,
+    postWWorkspaceAzureTriggersBasicTopicsListPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersPostgresVersionPathRoute,
+    getWWorkspacePostgresTriggersPostgresVersionPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersIsValidPostgresConfigurationPathRoute,
+    getWWorkspacePostgresTriggersIsValidPostgresConfigurationPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersCreateTemplateScriptRoute,
+    postWWorkspacePostgresTriggersCreateTemplateScriptRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersGetTemplateScriptIdRoute,
+    getWWorkspacePostgresTriggersGetTemplateScriptIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersSlotListPathRoute,
+    getWWorkspacePostgresTriggersSlotListPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersSlotCreatePathRoute,
+    postWWorkspacePostgresTriggersSlotCreatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspacePostgresTriggersSlotDeletePathRoute,
+    deleteWWorkspacePostgresTriggersSlotDeletePathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersPublicationListPathRoute,
+    getWWorkspacePostgresTriggersPublicationListPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersPublicationGetPublicationPathRoute,
+    getWWorkspacePostgresTriggersPublicationGetPublicationPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersPublicationCreatePublicationPathRoute,
+    postWWorkspacePostgresTriggersPublicationCreatePublicationPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersPublicationUpdatePublicationPathRoute,
+    postWWorkspacePostgresTriggersPublicationUpdatePublicationPathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspacePostgresTriggersPublicationDeletePublicationPathRoute,
+    deleteWWorkspacePostgresTriggersPublicationDeletePublicationPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersCreateRoute,
+    postWWorkspacePostgresTriggersCreateRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersUpdatePathRoute,
+    postWWorkspacePostgresTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspacePostgresTriggersDeletePathRoute,
+    deleteWWorkspacePostgresTriggersDeletePathRouteHandler,
+  )
+  .openapi(
+    getWWorkspacePostgresTriggersGetPathRoute,
+    getWWorkspacePostgresTriggersGetPathRouteHandler,
+  )
+  .openapi(getWWorkspacePostgresTriggersListRoute, getWWorkspacePostgresTriggersListRouteHandler)
+  .openapi(
+    getWWorkspacePostgresTriggersExistsPathRoute,
+    getWWorkspacePostgresTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspacePostgresTriggersSetmodePathRoute,
+    postWWorkspacePostgresTriggersSetmodePathRouteHandler,
+  )
+  .openapi(postWWorkspacePostgresTriggersTestRoute, postWWorkspacePostgresTriggersTestRouteHandler)
+  .openapi(postWWorkspaceEmailTriggersCreateRoute, postWWorkspaceEmailTriggersCreateRouteHandler)
+  .openapi(
+    postWWorkspaceEmailTriggersUpdatePathRoute,
+    postWWorkspaceEmailTriggersUpdatePathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceEmailTriggersDeletePathRoute,
+    deleteWWorkspaceEmailTriggersDeletePathRouteHandler,
+  )
+  .openapi(getWWorkspaceEmailTriggersGetPathRoute, getWWorkspaceEmailTriggersGetPathRouteHandler)
+  .openapi(getWWorkspaceEmailTriggersListRoute, getWWorkspaceEmailTriggersListRouteHandler)
+  .openapi(
+    getWWorkspaceEmailTriggersExistsPathRoute,
+    getWWorkspaceEmailTriggersExistsPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceEmailTriggersLocalPartExistsRoute,
+    postWWorkspaceEmailTriggersLocalPartExistsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceEmailTriggersSetmodePathRoute,
+    postWWorkspaceEmailTriggersSetmodePathRouteHandler,
+  )
+  .openapi(getGroupsListRoute, getGroupsListRouteHandler)
+  .openapi(getGroupsListWithWorkspacesRoute, getGroupsListWithWorkspacesRouteHandler)
+  .openapi(getGroupsGetNameRoute, getGroupsGetNameRouteHandler)
+  .openapi(postGroupsCreateRoute, postGroupsCreateRouteHandler)
+  .openapi(postGroupsUpdateNameRoute, postGroupsUpdateNameRouteHandler)
+  .openapi(deleteGroupsDeleteNameRoute, deleteGroupsDeleteNameRouteHandler)
+  .openapi(postGroupsAdduserNameRoute, postGroupsAdduserNameRouteHandler)
+  .openapi(postGroupsRemoveuserNameRoute, postGroupsRemoveuserNameRouteHandler)
+  .openapi(getGroupsExportRoute, getGroupsExportRouteHandler)
+  .openapi(postGroupsOverwriteRoute, postGroupsOverwriteRouteHandler)
+  .openapi(getWWorkspaceGroupsListRoute, getWWorkspaceGroupsListRouteHandler)
+  .openapi(getWWorkspaceGroupsListnamesRoute, getWWorkspaceGroupsListnamesRouteHandler)
+  .openapi(postWWorkspaceGroupsCreateRoute, postWWorkspaceGroupsCreateRouteHandler)
+  .openapi(postWWorkspaceGroupsUpdateNameRoute, postWWorkspaceGroupsUpdateNameRouteHandler)
+  .openapi(deleteWWorkspaceGroupsDeleteNameRoute, deleteWWorkspaceGroupsDeleteNameRouteHandler)
+  .openapi(getWWorkspaceGroupsGetNameRoute, getWWorkspaceGroupsGetNameRouteHandler)
+  .openapi(postWWorkspaceGroupsAdduserNameRoute, postWWorkspaceGroupsAdduserNameRouteHandler)
+  .openapi(postWWorkspaceGroupsRemoveuserNameRoute, postWWorkspaceGroupsRemoveuserNameRouteHandler)
+  .openapi(getWWorkspaceGroupsHistoryGetNameRoute, getWWorkspaceGroupsHistoryGetNameRouteHandler)
+  .openapi(getWWorkspaceTriggersHistoryListRoute, getWWorkspaceTriggersHistoryListRouteHandler)
+  .openapi(getWWorkspaceFoldersListRoute, getWWorkspaceFoldersListRouteHandler)
+  .openapi(getWWorkspaceFoldersListnamesRoute, getWWorkspaceFoldersListnamesRouteHandler)
+  .openapi(postWWorkspaceFoldersCreateRoute, postWWorkspaceFoldersCreateRouteHandler)
+  .openapi(postWWorkspaceFoldersUpdateNameRoute, postWWorkspaceFoldersUpdateNameRouteHandler)
+  .openapi(deleteWWorkspaceFoldersDeleteNameRoute, deleteWWorkspaceFoldersDeleteNameRouteHandler)
+  .openapi(getWWorkspaceFoldersGetNameRoute, getWWorkspaceFoldersGetNameRouteHandler)
+  .openapi(getWWorkspaceFoldersExistsNameRoute, getWWorkspaceFoldersExistsNameRouteHandler)
+  .openapi(getWWorkspaceFoldersGetusageNameRoute, getWWorkspaceFoldersGetusageNameRouteHandler)
+  .openapi(postWWorkspaceFoldersAddownerNameRoute, postWWorkspaceFoldersAddownerNameRouteHandler)
+  .openapi(
+    postWWorkspaceFoldersRemoveownerNameRoute,
+    postWWorkspaceFoldersRemoveownerNameRouteHandler,
+  )
+  .openapi(getWWorkspaceFoldersHistoryGetNameRoute, getWWorkspaceFoldersHistoryGetNameRouteHandler)
+  .openapi(getWorkersListRoute, getWorkersListRouteHandler)
+  .openapi(getWorkersExistsWorkersWithTagsRoute, getWorkersExistsWorkersWithTagsRouteHandler)
+  .openapi(getWorkersQueueMetricsRoute, getWorkersQueueMetricsRouteHandler)
+  .openapi(getWorkersRunnableStatsRoute, getWorkersRunnableStatsRouteHandler)
+  .openapi(getWorkersQueueMetricsSeriesRoute, getWorkersQueueMetricsSeriesRouteHandler)
+  .openapi(getWorkersQueueStatusRoute, getWorkersQueueStatusRouteHandler)
+  .openapi(getWorkersQueueCountsRoute, getWorkersQueueCountsRouteHandler)
+  .openapi(getWorkersQueueRunningCountsRoute, getWorkersQueueRunningCountsRouteHandler)
+  .openapi(getWorkersWorkspaceFairnessEventsRoute, getWorkersWorkspaceFairnessEventsRouteHandler)
+  .openapi(getConfigsListWorkerGroupsRoute, getConfigsListWorkerGroupsRouteHandler)
+  .openapi(getConfigsGetNameRoute, getConfigsGetNameRouteHandler)
+  .openapi(postConfigsUpdateNameRoute, postConfigsUpdateNameRouteHandler)
+  .openapi(deleteConfigsUpdateNameRoute, deleteConfigsUpdateNameRouteHandler)
+  .openapi(getConfigsListRoute, getConfigsListRouteHandler)
+  .openapi(
+    getConfigsListAutoscalingEventsWorkerGroupRoute,
+    getConfigsListAutoscalingEventsWorkerGroupRouteHandler,
+  )
+  .openapi(
+    getConfigsAutoscalingDiagnosticsWorkerGroupRoute,
+    getConfigsAutoscalingDiagnosticsWorkerGroupRouteHandler,
+  )
+  .openapi(
+    postConfigsAutoscalingRecordingWorkerGroupRoute,
+    postConfigsAutoscalingRecordingWorkerGroupRouteHandler,
+  )
+  .openapi(
+    postConfigsTestAutoscalingWorkerGroupRoute,
+    postConfigsTestAutoscalingWorkerGroupRouteHandler,
+  )
+  .openapi(
+    getConfigsNativeKubernetesAutoscalingHealthcheckRoute,
+    getConfigsNativeKubernetesAutoscalingHealthcheckRouteHandler,
+  )
+  .openapi(
+    getConfigsListAvailablePythonVersionsRoute,
+    getConfigsListAvailablePythonVersionsRouteHandler,
+  )
+  .openapi(
+    getConfigsListAllWorkspaceDependenciesRoute,
+    getConfigsListAllWorkspaceDependenciesRouteHandler,
+  )
+  .openapi(getConfigsListAllDedicatedWithDepsRoute, getConfigsListAllDedicatedWithDepsRouteHandler)
+  .openapi(postAgentWorkersCreateAgentTokenRoute, postAgentWorkersCreateAgentTokenRouteHandler)
+  .openapi(postAgentWorkersBlacklistTokenRoute, postAgentWorkersBlacklistTokenRouteHandler)
+  .openapi(
+    postAgentWorkersRemoveBlacklistTokenRoute,
+    postAgentWorkersRemoveBlacklistTokenRouteHandler,
+  )
+  .openapi(
+    getAgentWorkersListBlacklistedTokensRoute,
+    getAgentWorkersListBlacklistedTokensRouteHandler,
+  )
+  .openapi(getAgentWorkersGetMinVersionRoute, getAgentWorkersGetMinVersionRouteHandler)
+  .openapi(getWWorkspaceAccessGetRoute, getWWorkspaceAccessGetRouteHandler)
+  .openapi(getWWorkspaceAclsGetKindPathRoute, getWWorkspaceAclsGetKindPathRouteHandler)
+  .openapi(postWWorkspaceAclsAddKindPathRoute, postWWorkspaceAclsAddKindPathRouteHandler)
+  .openapi(postWWorkspaceAclsRemoveKindPathRoute, postWWorkspaceAclsRemoveKindPathRouteHandler)
+  .openapi(postWWorkspaceCaptureSetConfigRoute, postWWorkspaceCaptureSetConfigRouteHandler)
+  .openapi(
+    postWWorkspaceCapturePingConfigTriggerKindRunnableKindPathRoute,
+    postWWorkspaceCapturePingConfigTriggerKindRunnableKindPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceCaptureGetConfigsRunnableKindPathRoute,
+    getWWorkspaceCaptureGetConfigsRunnableKindPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceCaptureListRunnableKindPathRoute,
+    getWWorkspaceCaptureListRunnableKindPathRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceCaptureMoveRunnableKindPathRoute,
+    postWWorkspaceCaptureMoveRunnableKindPathRouteHandler,
+  )
+  .openapi(getWWorkspaceCaptureIdRoute, getWWorkspaceCaptureIdRouteHandler)
+  .openapi(deleteWWorkspaceCaptureIdRoute, deleteWWorkspaceCaptureIdRouteHandler)
+  .openapi(postWWorkspaceFavoritesStarRoute, postWWorkspaceFavoritesStarRouteHandler)
+  .openapi(postWWorkspaceFavoritesUnstarRoute, postWWorkspaceFavoritesUnstarRouteHandler)
+  .openapi(getWWorkspaceInputsHistoryRoute, getWWorkspaceInputsHistoryRouteHandler)
+  .openapi(
+    getWWorkspaceInputsJobOrInputIdArgsRoute,
+    getWWorkspaceInputsJobOrInputIdArgsRouteHandler,
+  )
+  .openapi(getWWorkspaceInputsListRoute, getWWorkspaceInputsListRouteHandler)
+  .openapi(postWWorkspaceInputsCreateRoute, postWWorkspaceInputsCreateRouteHandler)
+  .openapi(postWWorkspaceInputsUpdateRoute, postWWorkspaceInputsUpdateRouteHandler)
+  .openapi(postWWorkspaceInputsDeleteInputRoute, postWWorkspaceInputsDeleteInputRouteHandler)
+  .openapi(
+    postWWorkspaceJobHelpersDuckdbConnectionSettingsRoute,
+    postWWorkspaceJobHelpersDuckdbConnectionSettingsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobHelpersV2DuckdbConnectionSettingsRoute,
+    postWWorkspaceJobHelpersV2DuckdbConnectionSettingsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobHelpersPolarsConnectionSettingsRoute,
+    postWWorkspaceJobHelpersPolarsConnectionSettingsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobHelpersV2PolarsConnectionSettingsRoute,
+    postWWorkspaceJobHelpersV2PolarsConnectionSettingsRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobHelpersV2S3ResourceInfoRoute,
+    postWWorkspaceJobHelpersV2S3ResourceInfoRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersV2S3ProxyBucketRoute,
+    getWWorkspaceJobHelpersV2S3ProxyBucketRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersTestConnectionRoute,
+    getWWorkspaceJobHelpersTestConnectionRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersStorageUsageRoute,
+    getWWorkspaceJobHelpersStorageUsageRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersListStoredFilesRoute,
+    getWWorkspaceJobHelpersListStoredFilesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersListStoredFilesPagedRoute,
+    getWWorkspaceJobHelpersListStoredFilesPagedRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadFileMetadataRoute,
+    getWWorkspaceJobHelpersLoadFileMetadataRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadFilePreviewRoute,
+    getWWorkspaceJobHelpersLoadFilePreviewRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersListGitRepoFilesRoute,
+    getWWorkspaceJobHelpersListGitRepoFilesRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadGitRepoFilePreviewRoute,
+    getWWorkspaceJobHelpersLoadGitRepoFilePreviewRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadGitRepoFileMetadataRoute,
+    getWWorkspaceJobHelpersLoadGitRepoFileMetadataRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersCheckS3FolderExistsRoute,
+    getWWorkspaceJobHelpersCheckS3FolderExistsRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadParquetPreviewPathRoute,
+    getWWorkspaceJobHelpersLoadParquetPreviewPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadTableCountPathRoute,
+    getWWorkspaceJobHelpersLoadTableCountPathRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersLoadCsvPreviewPathRoute,
+    getWWorkspaceJobHelpersLoadCsvPreviewPathRouteHandler,
+  )
+  .openapi(
+    deleteWWorkspaceJobHelpersDeleteS3FileRoute,
+    deleteWWorkspaceJobHelpersDeleteS3FileRouteHandler,
+  )
+  .openapi(getWWorkspaceJobHelpersMoveS3FileRoute, getWWorkspaceJobHelpersMoveS3FileRouteHandler)
+  .openapi(
+    postWWorkspaceJobHelpersUploadS3FileRoute,
+    postWWorkspaceJobHelpersUploadS3FileRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceJobHelpersUploadGitRepoFileToInstanceStorageRoute,
+    postWWorkspaceJobHelpersUploadGitRepoFileToInstanceStorageRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersDownloadS3FileRoute,
+    getWWorkspaceJobHelpersDownloadS3FileRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobHelpersDownloadS3ParquetFileAsCsvRoute,
+    getWWorkspaceJobHelpersDownloadS3ParquetFileAsCsvRouteHandler,
+  )
+  .openapi(postWWorkspaceJobMetricsGetIdRoute, postWWorkspaceJobMetricsGetIdRouteHandler)
+  .openapi(
+    postWWorkspaceJobMetricsSetProgressIdRoute,
+    postWWorkspaceJobMetricsSetProgressIdRouteHandler,
+  )
+  .openapi(
+    getWWorkspaceJobMetricsGetProgressIdRoute,
+    getWWorkspaceJobMetricsGetProgressIdRouteHandler,
+  )
+  .openapi(getServiceLogsListFilesRoute, getServiceLogsListFilesRouteHandler)
+  .openapi(getServiceLogsGetLogFilePathRoute, getServiceLogsGetLogFilePathRouteHandler)
+  .openapi(getConcurrencyGroupsListRoute, getConcurrencyGroupsListRouteHandler)
+  .openapi(
+    deleteConcurrencyGroupsPruneConcurrencyIdRoute,
+    deleteConcurrencyGroupsPruneConcurrencyIdRouteHandler,
+  )
+  .openapi(getConcurrencyGroupsIdKeyRoute, getConcurrencyGroupsIdKeyRouteHandler)
+  .openapi(
+    getWWorkspaceConcurrencyGroupsListJobsRoute,
+    getWWorkspaceConcurrencyGroupsListJobsRouteHandler,
+  )
+  .openapi(getSrchWWorkspaceIndexSearchJobRoute, getSrchWWorkspaceIndexSearchJobRouteHandler)
+  .openapi(getSrchIndexSearchServiceLogsRoute, getSrchIndexSearchServiceLogsRouteHandler)
+  .openapi(getSrchIndexSearchCountServiceLogsRoute, getSrchIndexSearchCountServiceLogsRouteHandler)
+  .openapi(getSrchIndexStorageDiskRoute, getSrchIndexStorageDiskRouteHandler)
+  .openapi(deleteIndexerDeleteIdxNameRoute, deleteIndexerDeleteIdxNameRouteHandler)
+  .openapi(getIndexerStorageRoute, getIndexerStorageRouteHandler)
+  .openapi(getIndexerStatusRoute, getIndexerStatusRouteHandler)
+  .openapi(getWWorkspaceAssetsListRoute, getWWorkspaceAssetsListRouteHandler)
+  .openapi(postWWorkspaceAssetsListByUsagesRoute, postWWorkspaceAssetsListByUsagesRouteHandler)
+  .openapi(getWWorkspaceAssetsListFavoritesRoute, getWWorkspaceAssetsListFavoritesRouteHandler)
+  .openapi(getWWorkspaceAssetsGraphRoute, getWWorkspaceAssetsGraphRouteHandler)
+  .openapi(getWWorkspaceAssetsColumnLineageRoute, getWWorkspaceAssetsColumnLineageRouteHandler)
+  .openapi(getWWorkspaceAssetsMacrosRoute, getWWorkspaceAssetsMacrosRouteHandler)
+  .openapi(getWWorkspaceAssetsPipelinesRoute, getWWorkspaceAssetsPipelinesRouteHandler)
+  .openapi(getWWorkspaceAssetsPartitionsRoute, getWWorkspaceAssetsPartitionsRouteHandler)
+  .openapi(getWWorkspaceJobsDbtResumableIdRoute, getWWorkspaceJobsDbtResumableIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsDbtResumableScriptPPathRoute,
+    getWWorkspaceJobsDbtResumableScriptPPathRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsDbtGraphIdRoute, getWWorkspaceJobsDbtGraphIdRouteHandler)
+  .openapi(
+    getWWorkspaceJobsDbtColumnLineageIdRoute,
+    getWWorkspaceJobsDbtColumnLineageIdRouteHandler,
+  )
+  .openapi(getWWorkspaceJobsRunProgressIdRoute, getWWorkspaceJobsRunProgressIdRouteHandler)
+  .openapi(getWWorkspaceJobsRunAssetsIdRoute, getWWorkspaceJobsRunAssetsIdRouteHandler)
+  .openapi(
+    getWWorkspaceAssetsPartitionsInRangeRoute,
+    getWWorkspaceAssetsPartitionsInRangeRouteHandler,
+  )
+  .openapi(getWWorkspaceAssetsAssetSchemasRoute, getWWorkspaceAssetsAssetSchemasRouteHandler)
+  .openapi(getWWorkspaceVolumesListRoute, getWWorkspaceVolumesListRouteHandler)
+  .openapi(getWWorkspaceVolumesStorageRoute, getWWorkspaceVolumesStorageRouteHandler)
+  .openapi(postWWorkspaceVolumesCreateRoute, postWWorkspaceVolumesCreateRouteHandler)
+  .openapi(deleteWWorkspaceVolumesDeleteNameRoute, deleteWWorkspaceVolumesDeleteNameRouteHandler)
+  .openapi(getMcpWWorkspaceListToolsRoute, getMcpWWorkspaceListToolsRouteHandler)
+  .openapi(postMcpOauthDiscoverRoute, postMcpOauthDiscoverRouteHandler)
+  .openapi(getMcpOauthStartRoute, getMcpOauthStartRouteHandler)
+  .openapi(getMcpOauthCallbackRoute, getMcpOauthCallbackRouteHandler)
+  .openapi(postWWorkspaceHubPublishDraftRoute, postWWorkspaceHubPublishDraftRouteHandler)
+  .openapi(postWWorkspaceHubScriptsRoute, postWWorkspaceHubScriptsRouteHandler)
+  .openapi(postWWorkspaceHubFlowsRoute, postWWorkspaceHubFlowsRouteHandler)
+  .openapi(postWWorkspaceHubAppsRoute, postWWorkspaceHubAppsRouteHandler)
+  .openapi(postWWorkspaceHubRawAppsRoute, postWWorkspaceHubRawAppsRouteHandler)
+  .openapi(
+    postWWorkspaceHubRawAppsIdRecordingRoute,
+    postWWorkspaceHubRawAppsIdRecordingRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHubScriptsAskIdRecordingRoute,
+    postWWorkspaceHubScriptsAskIdRecordingRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHubFlowsFlowIdRecordingRoute,
+    postWWorkspaceHubFlowsFlowIdRecordingRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHubProjectsSlugPipelineRecordingRoute,
+    postWWorkspaceHubProjectsSlugPipelineRecordingRouteHandler,
+  )
+  .openapi(postWWorkspaceHubResourceTypesRoute, postWWorkspaceHubResourceTypesRouteHandler)
+  .openapi(postWWorkspaceHubResourcesRoute, postWWorkspaceHubResourcesRouteHandler)
+  .openapi(postWWorkspaceHubTriggersRoute, postWWorkspaceHubTriggersRouteHandler)
+  .openapi(postWWorkspaceHubMigrationsRoute, postWWorkspaceHubMigrationsRouteHandler)
+  .openapi(getWWorkspaceHubProjectsSlugExportRoute, getWWorkspaceHubProjectsSlugExportRouteHandler)
+  .openapi(postWWorkspaceHubProjectsSlugLogoRoute, postWWorkspaceHubProjectsSlugLogoRouteHandler)
+  .openapi(
+    postWWorkspaceHubProjectsSlugSubmitRoute,
+    postWWorkspaceHubProjectsSlugSubmitRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHubProjectsSlugWithdrawRoute,
+    postWWorkspaceHubProjectsSlugWithdrawRouteHandler,
+  )
+  .openapi(
+    postWWorkspaceHubProjectsSlugDiscardUpdateRoute,
+    postWWorkspaceHubProjectsSlugDiscardUpdateRouteHandler,
+  )
+  .openapi(getWWorkspaceHubProjectsRoute, getWWorkspaceHubProjectsRouteHandler)
+  .openapi(getWWorkspaceHubProjectRoute, getWWorkspaceHubProjectRouteHandler)
 
 export default app

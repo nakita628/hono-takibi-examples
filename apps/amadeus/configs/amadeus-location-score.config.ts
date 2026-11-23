@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amadeus.com/amadeus-location-score/1.0.2/openapi.yaml',
   output: './src/amadeus-location-score/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/amadeus-location-score/types.ts' },
   client: { output: './src/amadeus-location-score/client.ts', baseUrl: '/' },
   rpc: { output: './src/amadeus-location-score/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLightsail20161128GetDiskRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLightsail20161128GetDiskRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLightsail20161128GetDiskHandler = app.openapi(
-  postXAmzTargetLightsail20161128GetDiskRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLightsail20161128GetDiskRouteHandler: RouteHandler<
+  typeof postXAmzTargetLightsail20161128GetDiskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

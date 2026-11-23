@@ -136,7 +136,6 @@ export const getSearchRoute = createRoute({
     403: {
       description:
         'The x-dcs-apikey header was either not set at all, or contained an invalid (no longer valid?) API key. Please see https://codesearch.debian.net/apikeys/ for obtaining a key.',
-      content: {},
     },
   },
   security: [{ api_key: [] }],
@@ -188,7 +187,6 @@ export const getSearchperpackageRoute = createRoute({
     403: {
       description:
         'The x-dcs-apikey header was either not set at all, or contained an invalid (no longer valid?) API key. Please see https://codesearch.debian.net/apikeys/ for obtaining a key.',
-      content: {},
     },
   },
   security: [{ api_key: [] }],

@@ -1862,15 +1862,15 @@ export function usePostFilesFileIdCopy<TError = DefaultError, TOnMutateResult = 
 
 export function getFilesFileIdThumbnailExtensionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>
+    InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
   >,
 ) {
-  return ['files', '/files/:file_id/thumbnail.:extension', toValue(args)] as const
+  return ['files', '/files/:file_id/thumbnail.{extension}', toValue(args)] as const
 }
 
 export function getFilesFileIdThumbnailExtensionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>
+    InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1878,7 +1878,7 @@ export function getFilesFileIdThumbnailExtensionQueryOptions(
     queryKey: computed(() => getFilesFileIdThumbnailExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.files[':file_id']['thumbnail.:extension'].$get(toValue(args), {
+        client.files[':file_id']['thumbnail.{extension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1891,14 +1891,14 @@ export function useFilesFileIdThumbnailExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>
+    InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1908,7 +1908,7 @@ export function useFilesFileIdThumbnailExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>
+                  ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
                 >
               >
             >
@@ -1919,7 +1919,7 @@ export function useFilesFileIdThumbnailExtension<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>
+                  ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>
                 >
               >
             >
@@ -1939,7 +1939,7 @@ export function useFilesFileIdThumbnailExtension<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+          Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
         >
       >
     >,
@@ -1952,7 +1952,7 @@ export function useFilesFileIdThumbnailExtension<
       queryKey: computed(() => getFilesFileIdThumbnailExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.files[':file_id']['thumbnail.:extension'].$get(toValue(args), {
+          client.files[':file_id']['thumbnail.{extension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

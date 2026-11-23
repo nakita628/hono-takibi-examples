@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLbheartbeatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLbheartbeatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const lbheartbeatHandler = app.openapi(getLbheartbeatRoute, (c) => {
+export const getLbheartbeatRouteHandler: RouteHandler<typeof getLbheartbeatRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

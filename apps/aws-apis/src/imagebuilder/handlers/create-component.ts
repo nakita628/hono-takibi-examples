@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putCreateComponentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putCreateComponentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createComponentHandler = app.openapi(putCreateComponentRoute, (c) => {
+export const putCreateComponentRouteHandler: RouteHandler<typeof putCreateComponentRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

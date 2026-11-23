@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute,
   deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
   deleteCrmObjects202609ObjectTypeObjectIdRoute,
@@ -34,120 +34,194 @@ import {
   putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmAssociations202609DefinitionsConfigurationsAllRouteHandler: RouteHandler<
+  typeof getCrmAssociations202609DefinitionsConfigurationsAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmAssociations202609DefinitionsConfigurationsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postCrmAssociations202609UsageHighUsageReportUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchAssociateDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchLabelsArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getCrmObjects202609ObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeBatchUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeGdprDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ObjectTypeSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjects202609ObjectTypeObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609ObjectTypeObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmObjects202609ObjectTypeObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchPurgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609DefinitionsConfigurationsFromObjectTypeToObjectTypeBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609UsageHighUsageReportUserIdRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609UsageHighUsageReportUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeBatchArchiveRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeBatchAssociateDefaultRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeBatchAssociateDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeBatchCreateRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeBatchLabelsArchiveRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeBatchLabelsArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeBatchReadRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler: RouteHandler<
+  typeof getCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler: RouteHandler<
+  typeof putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRouteHandler: RouteHandler<
+  typeof postCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRouteHandler: RouteHandler<
+  typeof deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociationTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609ObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeBatchArchiveRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeBatchCreateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeBatchReadRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeBatchUpdateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeBatchUpsertRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeBatchUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeGdprDeleteRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeGdprDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeMergeRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ObjectTypeSearchRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ObjectTypeSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609ObjectTypeObjectIdRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ObjectTypeObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609ObjectTypeObjectIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609ObjectTypeObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmObjects202609ObjectTypeObjectIdRouteHandler: RouteHandler<
+  typeof patchCrmObjects202609ObjectTypeObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

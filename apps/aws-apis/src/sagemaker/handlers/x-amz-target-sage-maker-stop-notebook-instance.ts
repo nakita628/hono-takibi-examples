@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerStopNotebookInstanceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerStopNotebookInstanceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerStopNotebookInstanceHandler = app.openapi(
-  postXAmzTargetSageMakerStopNotebookInstanceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerStopNotebookInstanceRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerStopNotebookInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

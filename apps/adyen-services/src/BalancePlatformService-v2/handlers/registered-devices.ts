@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRegisteredDevicesIdRoute,
   getRegisteredDevicesRoute,
   patchRegisteredDevicesDeviceIdAssociationsRoute,
@@ -8,24 +8,38 @@ import {
   postRegisteredDevicesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRegisteredDevicesRouteHandler: RouteHandler<
+  typeof getRegisteredDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const registeredDevicesHandler = app
-  .openapi(getRegisteredDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegisteredDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegisteredDevicesDeviceIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRegisteredDevicesDeviceIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRegisteredDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRegisteredDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRegisteredDevicesRouteHandler: RouteHandler<
+  typeof postRegisteredDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegisteredDevicesDeviceIdAssociationsRouteHandler: RouteHandler<
+  typeof postRegisteredDevicesDeviceIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRegisteredDevicesDeviceIdAssociationsRouteHandler: RouteHandler<
+  typeof patchRegisteredDevicesDeviceIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRegisteredDevicesIdRouteHandler: RouteHandler<
+  typeof deleteRegisteredDevicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRegisteredDevicesIdRouteHandler: RouteHandler<
+  typeof patchRegisteredDevicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

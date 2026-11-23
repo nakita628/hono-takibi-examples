@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAuthenticatorServiceIdAccountStatusRoute,
   patchAuthenticatorAccountRoute,
   patchAuthenticatorServiceIdAccountRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const patchAuthenticatorAccountRouteHandler: RouteHandler<
+  typeof patchAuthenticatorAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authenticatorHandler = app
-  .openapi(patchAuthenticatorAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorServiceIdAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorServiceIdAccountStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchAuthenticatorServiceIdAccountRouteHandler: RouteHandler<
+  typeof patchAuthenticatorServiceIdAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorServiceIdAccountStatusRouteHandler: RouteHandler<
+  typeof getAuthenticatorServiceIdAccountStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

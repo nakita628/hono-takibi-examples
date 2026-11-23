@@ -302,8 +302,8 @@ const FailedItemDetailsSchema = z
 const FailedItemsSchema = z.record(z.string(), FailedItemDetailsSchema).openapi('FailedItems')
 
 type DescribeFindingsResponseType = {
-  findings: z.infer<typeof FindingListSchema> & unknown
-  failedItems: z.infer<typeof FailedItemsSchema> & unknown
+  findings: z.infer<typeof FindingListSchema>
+  failedItems: z.infer<typeof FailedItemsSchema>
 }
 
 const AddAttributesToFindingsResponseSchema = z

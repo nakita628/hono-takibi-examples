@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPasswordForgottenKeyRoute,
   getPasswordForgottenRoute,
   postPasswordForgottenKeyRoute,
   postPasswordForgottenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPasswordForgottenRouteHandler: RouteHandler<
+  typeof getPasswordForgottenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const passwordForgottenHandler = app
-  .openapi(getPasswordForgottenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPasswordForgottenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPasswordForgottenKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPasswordForgottenKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPasswordForgottenRouteHandler: RouteHandler<
+  typeof postPasswordForgottenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPasswordForgottenKeyRouteHandler: RouteHandler<
+  typeof getPasswordForgottenKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPasswordForgottenKeyRouteHandler: RouteHandler<
+  typeof postPasswordForgottenKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

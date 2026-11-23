@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/codecommit/2015-04-13/openapi.yaml',
   output: './src/codecommit/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codecommit/types.ts' },
   client: { output: './src/codecommit/client.ts', baseUrl: '/' },
   rpc: { output: './src/codecommit/rpc.ts', parseResponse: true },

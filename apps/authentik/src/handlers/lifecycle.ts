@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLifecycleRulesIdIndexRoute,
   deleteLifecycleUserExpirationRulesIdIndexRoute,
   deleteLifecycleUserOffboardingIdIndexRoute,
@@ -25,75 +25,140 @@ import {
   putLifecycleUserExpirationRulesIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLifecycleIterationsIndexRouteHandler: RouteHandler<
+  typeof postLifecycleIterationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lifecycleHandler = app
-  .openapi(postLifecycleIterationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleIterationsLatestContentTypeObjectIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleIterationsOpenIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLifecycleReviewsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLifecycleRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLifecycleRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLifecycleRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLifecycleRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserExpirationRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLifecycleUserExpirationRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserExpirationRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLifecycleUserExpirationRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLifecycleUserExpirationRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLifecycleUserExpirationRulesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserExpirationRulesIdPreviewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLifecycleUserExpirationRulesIdPreviewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserExpirationRulesIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserOffboardingIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLifecycleUserOffboardingIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLifecycleUserOffboardingIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLifecycleUserOffboardingIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLifecycleIterationsLatestContentTypeObjectIdIndexRouteHandler: RouteHandler<
+  typeof getLifecycleIterationsLatestContentTypeObjectIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleIterationsOpenIndexRouteHandler: RouteHandler<
+  typeof getLifecycleIterationsOpenIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLifecycleReviewsIndexRouteHandler: RouteHandler<
+  typeof postLifecycleReviewsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleRulesIndexRouteHandler: RouteHandler<
+  typeof getLifecycleRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLifecycleRulesIndexRouteHandler: RouteHandler<
+  typeof postLifecycleRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleRulesIdIndexRouteHandler: RouteHandler<
+  typeof getLifecycleRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLifecycleRulesIdIndexRouteHandler: RouteHandler<
+  typeof putLifecycleRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLifecycleRulesIdIndexRouteHandler: RouteHandler<
+  typeof patchLifecycleRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLifecycleRulesIdIndexRouteHandler: RouteHandler<
+  typeof deleteLifecycleRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserExpirationRulesIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserExpirationRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLifecycleUserExpirationRulesIndexRouteHandler: RouteHandler<
+  typeof postLifecycleUserExpirationRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserExpirationRulesIdIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserExpirationRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLifecycleUserExpirationRulesIdIndexRouteHandler: RouteHandler<
+  typeof putLifecycleUserExpirationRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLifecycleUserExpirationRulesIdIndexRouteHandler: RouteHandler<
+  typeof patchLifecycleUserExpirationRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLifecycleUserExpirationRulesIdIndexRouteHandler: RouteHandler<
+  typeof deleteLifecycleUserExpirationRulesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserExpirationRulesIdPreviewIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserExpirationRulesIdPreviewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLifecycleUserExpirationRulesIdPreviewIndexRouteHandler: RouteHandler<
+  typeof postLifecycleUserExpirationRulesIdPreviewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserExpirationRulesIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserExpirationRulesIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserOffboardingIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserOffboardingIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLifecycleUserOffboardingIndexRouteHandler: RouteHandler<
+  typeof postLifecycleUserOffboardingIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLifecycleUserOffboardingIdIndexRouteHandler: RouteHandler<
+  typeof getLifecycleUserOffboardingIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLifecycleUserOffboardingIdIndexRouteHandler: RouteHandler<
+  typeof deleteLifecycleUserOffboardingIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

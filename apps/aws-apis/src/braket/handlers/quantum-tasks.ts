@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postQuantumTasksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postQuantumTasksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const quantumTasksHandler = app.openapi(postQuantumTasksRoute, (c) => {
+export const postQuantumTasksRouteHandler: RouteHandler<typeof postQuantumTasksRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

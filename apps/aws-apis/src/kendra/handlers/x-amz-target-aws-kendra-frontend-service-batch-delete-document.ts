@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsKendraFrontendServiceBatchDeleteDocumentHandler = app.openapi(
-  postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSKendraFrontendServiceBatchDeleteDocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAiAgentDefaultRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAiAgentDefaultRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const aiAgentDefaultHandler = app.openapi(getAiAgentDefaultRoute, (c) => {
+export const getAiAgentDefaultRouteHandler: RouteHandler<typeof getAiAgentDefaultRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

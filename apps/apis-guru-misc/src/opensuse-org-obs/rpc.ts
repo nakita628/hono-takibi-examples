@@ -643,10 +643,10 @@ export async function getWorkerStatus(options?: ClientRequestOptions) {
 }
 
 export async function getWorkerArchitectureNameWorkerId(
-  args: InferRequestType<(typeof client.worker)[':architecture_name::worker_id']['$get']>,
+  args: InferRequestType<(typeof client.worker)[':architecture_name:{worker_id}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.worker[':architecture_name::worker_id'].$get(args, options))
+  return await parseResponse(client.worker[':architecture_name:{worker_id}'].$get(args, options))
 }
 
 export async function postWorkerCmdCheckconstraints(

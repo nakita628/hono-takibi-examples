@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeclineThirdPartyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeclineThirdPartyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const declineThirdPartyHandler = app.openapi(postDeclineThirdPartyRoute, (c) => {
+export const postDeclineThirdPartyRouteHandler: RouteHandler<
+  typeof postDeclineThirdPartyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

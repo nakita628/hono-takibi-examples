@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bikewise.org/v2/openapi.yaml',
   output: './src/bikewise-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bikewise-org/types.ts' },
   client: { output: './src/bikewise-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/bikewise-org/rpc.ts', parseResponse: true },

@@ -4100,20 +4100,20 @@ export function useImmutableGetFilesIdDownload<TError = unknown>(
 }
 
 export function getGetFilesIdDownloadExtensionKey(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['files', '/files/:id/download:extension', keyArgs] as const
+  return ['files', '/files/:id/download{extension}', keyArgs] as const
 }
 
 export function useGetFilesIdDownloadExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
           >
         >
       >,
@@ -4136,7 +4136,7 @@ export function useGetFilesIdDownloadExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
           >
         >
       >,
@@ -4144,20 +4144,20 @@ export function useGetFilesIdDownloadExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.files[':id']['download:extension'].$get(args, clientOptions)),
+        parseResponse(client.files[':id']['download{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFilesIdDownloadExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
           >
         >
       >,
@@ -4180,7 +4180,7 @@ export function useImmutableGetFilesIdDownloadExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
           >
         >
       >,
@@ -4188,7 +4188,7 @@ export function useImmutableGetFilesIdDownloadExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.files[':id']['download:extension'].$get(args, clientOptions)),
+        parseResponse(client.files[':id']['download{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

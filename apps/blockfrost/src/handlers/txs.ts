@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTxsHashCborRoute,
   getTxsHashDelegationsRoute,
   getTxsHashMetadataCborRoute,
@@ -15,45 +15,72 @@ import {
   getTxsHashWithdrawalsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTxsHashRouteHandler: RouteHandler<typeof getTxsHashRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const txsHandler = app
-  .openapi(getTxsHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashUtxosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashStakesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashDelegationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashWithdrawalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashMirsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashPoolUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashPoolRetiresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashMetadataCborRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashRedeemersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashRequiredSignersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTxsHashCborRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTxsHashUtxosRouteHandler: RouteHandler<typeof getTxsHashUtxosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashStakesRouteHandler: RouteHandler<typeof getTxsHashStakesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashDelegationsRouteHandler: RouteHandler<
+  typeof getTxsHashDelegationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashWithdrawalsRouteHandler: RouteHandler<
+  typeof getTxsHashWithdrawalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashMirsRouteHandler: RouteHandler<typeof getTxsHashMirsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashPoolUpdatesRouteHandler: RouteHandler<
+  typeof getTxsHashPoolUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashPoolRetiresRouteHandler: RouteHandler<
+  typeof getTxsHashPoolRetiresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashMetadataRouteHandler: RouteHandler<typeof getTxsHashMetadataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashMetadataCborRouteHandler: RouteHandler<
+  typeof getTxsHashMetadataCborRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashRedeemersRouteHandler: RouteHandler<
+  typeof getTxsHashRedeemersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashRequiredSignersRouteHandler: RouteHandler<
+  typeof getTxsHashRequiredSignersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTxsHashCborRouteHandler: RouteHandler<typeof getTxsHashCborRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

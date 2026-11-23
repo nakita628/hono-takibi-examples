@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/cdcgov.local/prime-data-hub/0.2.0-oas3/openapi.yaml',
   output: './src/cdcgov-prime-data-hub/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cdcgov-prime-data-hub/types.ts' },
   client: { output: './src/cdcgov-prime-data-hub/client.ts', baseUrl: '/' },
   rpc: { output: './src/cdcgov-prime-data-hub/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/schema-validation-top-level.yaml',
   output: './src/3-1-schema-validation-top-level/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-1-schema-validation-top-level/types.ts' },
   client: { output: './src/3-1-schema-validation-top-level/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-1-schema-validation-top-level/rpc.ts', parseResponse: true },

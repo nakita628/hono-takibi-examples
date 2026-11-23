@@ -391,7 +391,7 @@ export const getArchiveDeleteRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -418,7 +418,7 @@ export const getArchiveDeleteNetworkRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -456,7 +456,7 @@ export const getArchiveExportRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -552,7 +552,7 @@ export const getArchiveListRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -599,7 +599,7 @@ export const postAreaRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -627,7 +627,7 @@ export const postClutterAddRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -665,7 +665,7 @@ export const getInterferenceRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -703,7 +703,7 @@ export const getMeshRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -818,7 +818,7 @@ export const getNetworkRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -865,7 +865,7 @@ export const postPathRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })
 
@@ -913,6 +913,6 @@ export const postPointsRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'Request OK', content: {} } },
+  responses: { 200: { description: 'Request OK' } },
   security: [{ ApiKeyAuth: [] }],
 })

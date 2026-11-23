@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postLateOrderCompensationQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postLateOrderCompensationQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const lateOrderCompensationQueryHandler = app.openapi(
-  postLateOrderCompensationQueryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postLateOrderCompensationQueryRouteHandler: RouteHandler<
+  typeof postLateOrderCompensationQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

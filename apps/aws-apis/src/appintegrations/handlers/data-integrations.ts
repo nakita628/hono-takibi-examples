@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataIntegrationsIdentifierRoute,
   getDataIntegrationsIdentifierAssociationsRoute,
   getDataIntegrationsIdentifierRoute,
@@ -8,24 +8,38 @@ import {
   postDataIntegrationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDataIntegrationsRouteHandler: RouteHandler<
+  typeof postDataIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataIntegrationsHandler = app
-  .openapi(postDataIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataIntegrationsIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDataIntegrationsIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataIntegrationsIdentifierAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataIntegrationsRouteHandler: RouteHandler<
+  typeof getDataIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDataIntegrationsIdentifierRouteHandler: RouteHandler<
+  typeof deleteDataIntegrationsIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataIntegrationsIdentifierRouteHandler: RouteHandler<
+  typeof getDataIntegrationsIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataIntegrationsIdentifierRouteHandler: RouteHandler<
+  typeof patchDataIntegrationsIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataIntegrationsIdentifierAssociationsRouteHandler: RouteHandler<
+  typeof getDataIntegrationsIdentifierAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

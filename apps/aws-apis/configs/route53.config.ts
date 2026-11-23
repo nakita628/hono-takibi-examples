@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/route53/2013-04-01/openapi.yaml',
   output: './src/route53/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/route53/types.ts' },
   client: { output: './src/route53/client.ts', baseUrl: '/' },

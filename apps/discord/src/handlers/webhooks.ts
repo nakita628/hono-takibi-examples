@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhooksWebhookIdRoute,
   deleteWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute,
   deleteWebhooksWebhookIdWebhookTokenMessagesOriginalRoute,
@@ -17,51 +17,92 @@ import {
   postWebhooksWebhookIdWebhookTokenSlackRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksHandler = app
-  .openapi(getWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdWebhookTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksWebhookIdWebhookTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksWebhookIdWebhookTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebhooksWebhookIdWebhookTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksWebhookIdWebhookTokenGithubRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdWebhookTokenMessagesOriginalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksWebhookIdWebhookTokenMessagesOriginalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebhooksWebhookIdWebhookTokenMessagesOriginalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksWebhookIdWebhookTokenSlackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof patchWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdWebhookTokenRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdWebhookTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksWebhookIdWebhookTokenRouteHandler: RouteHandler<
+  typeof postWebhooksWebhookIdWebhookTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksWebhookIdWebhookTokenRouteHandler: RouteHandler<
+  typeof deleteWebhooksWebhookIdWebhookTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebhooksWebhookIdWebhookTokenRouteHandler: RouteHandler<
+  typeof patchWebhooksWebhookIdWebhookTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksWebhookIdWebhookTokenGithubRouteHandler: RouteHandler<
+  typeof postWebhooksWebhookIdWebhookTokenGithubRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdWebhookTokenMessagesOriginalRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdWebhookTokenMessagesOriginalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksWebhookIdWebhookTokenMessagesOriginalRouteHandler: RouteHandler<
+  typeof deleteWebhooksWebhookIdWebhookTokenMessagesOriginalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebhooksWebhookIdWebhookTokenMessagesOriginalRouteHandler: RouteHandler<
+  typeof patchWebhooksWebhookIdWebhookTokenMessagesOriginalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdWebhookTokenMessagesMessageIdRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksWebhookIdWebhookTokenMessagesMessageIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebhooksWebhookIdWebhookTokenMessagesMessageIdRouteHandler: RouteHandler<
+  typeof patchWebhooksWebhookIdWebhookTokenMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksWebhookIdWebhookTokenSlackRouteHandler: RouteHandler<
+  typeof postWebhooksWebhookIdWebhookTokenSlackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

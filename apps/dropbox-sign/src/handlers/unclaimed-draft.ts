@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postUnclaimedDraftCreateEmbeddedRoute,
   postUnclaimedDraftCreateEmbeddedWithTemplateRoute,
   postUnclaimedDraftCreateRoute,
   postUnclaimedDraftEditAndResendSignatureRequestIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postUnclaimedDraftCreateRouteHandler: RouteHandler<
+  typeof postUnclaimedDraftCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const unclaimedDraftHandler = app
-  .openapi(postUnclaimedDraftCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUnclaimedDraftCreateEmbeddedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUnclaimedDraftCreateEmbeddedWithTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUnclaimedDraftEditAndResendSignatureRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUnclaimedDraftCreateEmbeddedRouteHandler: RouteHandler<
+  typeof postUnclaimedDraftCreateEmbeddedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUnclaimedDraftCreateEmbeddedWithTemplateRouteHandler: RouteHandler<
+  typeof postUnclaimedDraftCreateEmbeddedWithTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUnclaimedDraftEditAndResendSignatureRequestIdRouteHandler: RouteHandler<
+  typeof postUnclaimedDraftEditAndResendSignatureRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

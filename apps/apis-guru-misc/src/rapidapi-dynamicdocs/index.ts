@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { templatesHandler } from './handlers'
+import { postTemplatesTemplateTokenCompileRoute } from './routes'
+import { postTemplatesTemplateTokenCompileRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', templatesHandler)
+export const api = app.openapi(
+  postTemplatesTemplateTokenCompileRoute,
+  postTemplatesTemplateTokenCompileRouteHandler,
+)
 
 export default app

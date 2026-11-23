@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteTimelineEventRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteTimelineEventRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteTimelineEventHandler = app.openapi(postDeleteTimelineEventRoute, (c) => {
+export const postDeleteTimelineEventRouteHandler: RouteHandler<
+  typeof postDeleteTimelineEventRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

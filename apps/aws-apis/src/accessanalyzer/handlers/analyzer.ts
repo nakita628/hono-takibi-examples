@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAnalyzerAnalyzerNameArchiveRuleRuleNameRoute,
   deleteAnalyzerAnalyzerNameRoute,
   getAnalyzerAnalyzerNameArchiveRuleRoute,
@@ -11,33 +11,52 @@ import {
   putAnalyzerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putAnalyzerRouteHandler: RouteHandler<typeof putAnalyzerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analyzerHandler = app
-  .openapi(putAnalyzerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyzerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnalyzerAnalyzerNameArchiveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyzerAnalyzerNameArchiveRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnalyzerAnalyzerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyzerAnalyzerNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnalyzerAnalyzerNameArchiveRuleRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyzerAnalyzerNameArchiveRuleRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnalyzerAnalyzerNameArchiveRuleRuleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnalyzerRouteHandler: RouteHandler<typeof getAnalyzerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnalyzerAnalyzerNameArchiveRuleRouteHandler: RouteHandler<
+  typeof putAnalyzerAnalyzerNameArchiveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyzerAnalyzerNameArchiveRuleRouteHandler: RouteHandler<
+  typeof getAnalyzerAnalyzerNameArchiveRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnalyzerAnalyzerNameRouteHandler: RouteHandler<
+  typeof deleteAnalyzerAnalyzerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyzerAnalyzerNameRouteHandler: RouteHandler<
+  typeof getAnalyzerAnalyzerNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnalyzerAnalyzerNameArchiveRuleRuleNameRouteHandler: RouteHandler<
+  typeof deleteAnalyzerAnalyzerNameArchiveRuleRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyzerAnalyzerNameArchiveRuleRuleNameRouteHandler: RouteHandler<
+  typeof getAnalyzerAnalyzerNameArchiveRuleRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnalyzerAnalyzerNameArchiveRuleRuleNameRouteHandler: RouteHandler<
+  typeof putAnalyzerAnalyzerNameArchiveRuleRuleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

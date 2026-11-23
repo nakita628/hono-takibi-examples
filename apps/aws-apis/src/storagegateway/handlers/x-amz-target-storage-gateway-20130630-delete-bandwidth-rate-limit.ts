@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630DeleteBandwidthRateLimitRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630DeleteBandwidthRateLimitRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630DeleteBandwidthRateLimitHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630DeleteBandwidthRateLimitRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630DeleteBandwidthRateLimitRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630DeleteBandwidthRateLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

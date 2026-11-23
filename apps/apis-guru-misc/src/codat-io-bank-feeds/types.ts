@@ -12,45 +12,41 @@ type BankFeedAccount = {
   status?: (string | null) | undefined
 }
 type BankFeedAccounts = BankFeedAccount[]
+type BankTransactionsBankTransactionType =
+  | 'Unknown'
+  | 'Credit'
+  | 'Debit'
+  | 'Int'
+  | 'Div'
+  | 'Fee'
+  | 'SerChg'
+  | 'Dep'
+  | 'Atm'
+  | 'Pos'
+  | 'Xfer'
+  | 'Check'
+  | 'Payment'
+  | 'Cash'
+  | 'DirectDep'
+  | 'DirectDebit'
+  | 'RepeatPmt'
+  | 'Other'
+type BankTransactionsBankTransactionLine = {
+  amount?: number | undefined
+  balance?: number | undefined
+  clearedOnDate?: DateTime | undefined
+  counterparty?: (string | null) | undefined
+  description?: (string | null) | undefined
+  id?: string | undefined
+  reconciled?: boolean | undefined
+  reference?: (string | null) | undefined
+  transactionType?: BankTransactionsBankTransactionType | undefined
+  modifiedDate?: DateTime | undefined
+  sourceModifiedDate?: DateTime | undefined
+}
 type BankTransactions = {
   accountId?: (string | null) | undefined
-  transactions?:
-    | (
-        | {
-            amount?: number | undefined
-            balance?: number | undefined
-            clearedOnDate?: DateTime | undefined
-            counterparty?: (string | null) | undefined
-            description?: (string | null) | undefined
-            id?: string | undefined
-            reconciled?: boolean | undefined
-            reference?: (string | null) | undefined
-            transactionType?:
-              | 'Unknown'
-              | 'Credit'
-              | 'Debit'
-              | 'Int'
-              | 'Div'
-              | 'Fee'
-              | 'SerChg'
-              | 'Dep'
-              | 'Atm'
-              | 'Pos'
-              | 'Xfer'
-              | 'Check'
-              | 'Payment'
-              | 'Cash'
-              | 'DirectDep'
-              | 'DirectDebit'
-              | 'RepeatPmt'
-              | 'Other'
-              | undefined
-            modifiedDate?: DateTime | undefined
-            sourceModifiedDate?: DateTime | undefined
-          }[]
-        | null
-      )
-    | undefined
+  transactions?: (BankTransactionsBankTransactionLine[] | null) | undefined
 }
 type HRef = { href?: string | undefined }
 type Links = { current: HRef; next?: HRef | undefined; previous?: HRef | undefined; self: HRef }
@@ -61,93 +57,48 @@ type BankTransactionsResponse = {
   pageSize: number
   totalResults: number
 }
-type PushOptionProperty = {
+type PushOptionPushOptionType =
+  | 'Array'
+  | 'Object'
+  | 'String'
+  | 'Number'
+  | 'Boolean'
+  | 'DateTime'
+  | 'File'
+  | 'MultiPart'
+type PushOptionPushOptionChoice = {
+  description?: string | undefined
+  displayName?: string | undefined
+  required?: boolean | undefined
+  type?: PushOptionPushOptionType | undefined
+  value?: string | undefined
+}
+type PushOptionPushFieldValidation = {
+  details: string
+  field?: string | undefined
+  ref?: (string | null) | undefined
+}
+type PushOptionPushValidationInfo = {
+  information?: (PushOptionPushFieldValidation[] | null) | undefined
+  warnings?: (PushOptionPushFieldValidation[] | null) | undefined
+}
+type PushOptionPushOptionProperty = {
   description: string
   displayName: string
-  options?:
-    | (
-        | {
-            description?: string | undefined
-            displayName?: string | undefined
-            required?: boolean | undefined
-            type?:
-              | 'Array'
-              | 'Object'
-              | 'String'
-              | 'Number'
-              | 'Boolean'
-              | 'DateTime'
-              | 'File'
-              | 'MultiPart'
-              | undefined
-            value?: string | undefined
-          }[]
-        | null
-      )
-    | undefined
-  properties?: ({ [x: string]: PushOptionProperty } | null) | undefined
+  options?: (PushOptionPushOptionChoice[] | null) | undefined
+  properties?: ({ [x: string]: PushOptionPushOptionProperty } | null) | undefined
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?:
-    | {
-        information?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  type: PushOptionPushOptionType
+  validation?: PushOptionPushValidationInfo | undefined
 }
 type PushOption = {
   description?: string | undefined
   displayName: string
-  options?:
-    | (
-        | {
-            description?: string | undefined
-            displayName?: string | undefined
-            required?: boolean | undefined
-            type?:
-              | 'Array'
-              | 'Object'
-              | 'String'
-              | 'Number'
-              | 'Boolean'
-              | 'DateTime'
-              | 'File'
-              | 'MultiPart'
-              | undefined
-            value?: string | undefined
-          }[]
-        | null
-      )
-    | undefined
-  properties?: ({ [x: string]: PushOptionProperty } | null) | undefined
+  options?: (PushOptionPushOptionChoice[] | null) | undefined
+  properties?: ({ [x: string]: PushOptionPushOptionProperty } | null) | undefined
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?:
-    | ({
-        information?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | { details: string; field?: string | undefined; ref?: (string | null) | undefined }[]
-              | null
-            )
-          | undefined
-      } | null)
-    | undefined
+  type: PushOptionPushOptionType
+  validation?: PushOptionPushValidationInfo | undefined
 }
 type DataType =
   | 'accountTransactions'
@@ -192,18 +143,31 @@ type DataType =
   | 'commerce-products'
   | 'commerce-taxComponents'
   | 'commerce-transactions'
+type PushOperationPushOperationRef = { dataType?: DataType | undefined; id?: string | undefined }
+type PushOperationPushChangeType =
+  | 'Unknown'
+  | 'Created'
+  | 'Modified'
+  | 'Deleted'
+  | 'AttachmentUploaded'
+type PushOperationPushOperationChange = {
+  attachmentId?: (string | null) | undefined
+  recordRef?: PushOperationPushOperationRef | undefined
+  type?: PushOperationPushChangeType | undefined
+}
+type PushOperationPushOperationStatus = 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+type PushOperationValidationItem = {
+  itemId?: (string | null) | undefined
+  message?: (string | null) | undefined
+  validatorName?: (string | null) | undefined
+}
+type PushOperationValidation = {
+  errors?: (PushOperationValidationItem[] | null) | undefined
+  warnings?: (PushOperationValidationItem[] | null) | undefined
+}
 type CreateBankTransactionsResponse = {
   data?: BankTransactions | undefined
-  changes?:
-    | (
-        | {
-            attachmentId?: (string | null) | undefined
-            recordRef?: { dataType?: DataType | undefined; id?: string | undefined } | undefined
-            type?: 'Unknown' | 'Created' | 'Modified' | 'Deleted' | 'AttachmentUploaded' | undefined
-          }[]
-        | null
-      )
-    | undefined
+  changes?: (PushOperationPushOperationChange[] | null) | undefined
   companyId: string
   completedOnUtc?: DateTime | undefined
   dataConnectionKey: string
@@ -211,34 +175,11 @@ type CreateBankTransactionsResponse = {
   errorMessage?: (string | null) | undefined
   pushOperationKey: string
   requestedOnUtc: DateTime
-  status: 'Pending' | 'Failed' | 'Success' | 'TimedOut'
+  status: PushOperationPushOperationStatus
   statusCode: number
   timeoutInMinutes?: (number | null) | undefined
   timeoutInSeconds?: (number | null) | undefined
-  validation?:
-    | {
-        errors?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-        warnings?:
-          | (
-              | {
-                  itemId?: (string | null) | undefined
-                  message?: (string | null) | undefined
-                  validatorName?: (string | null) | undefined
-                }[]
-              | null
-            )
-          | undefined
-      }
-    | undefined
+  validation?: PushOperationValidation | undefined
 }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,

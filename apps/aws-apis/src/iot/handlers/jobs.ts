@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteJobsJobIdRoute,
   getJobsJobIdJobDocumentRoute,
   getJobsJobIdRoute,
@@ -11,33 +11,46 @@ import {
   putJobsJobIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postJobsJobIdTargetsRouteHandler: RouteHandler<
+  typeof postJobsJobIdTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const jobsHandler = app
-  .openapi(postJobsJobIdTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putJobsJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobsJobIdJobDocumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobsJobIdThingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putJobsJobIdCancelRouteHandler: RouteHandler<typeof putJobsJobIdCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putJobsJobIdRouteHandler: RouteHandler<typeof putJobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteJobsJobIdRouteHandler: RouteHandler<typeof deleteJobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobsJobIdRouteHandler: RouteHandler<typeof getJobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchJobsJobIdRouteHandler: RouteHandler<typeof patchJobsJobIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobsJobIdJobDocumentRouteHandler: RouteHandler<
+  typeof getJobsJobIdJobDocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobsJobIdThingsRouteHandler: RouteHandler<typeof getJobsJobIdThingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getJobsRouteHandler: RouteHandler<typeof getJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

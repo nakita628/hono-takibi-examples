@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDocgenBatchesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDocgenBatchesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const docgenBatchesHandler = app.openapi(postDocgenBatchesRoute, (c) => {
+export const postDocgenBatchesRouteHandler: RouteHandler<typeof postDocgenBatchesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

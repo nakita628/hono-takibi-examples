@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Checkout-API/1.0/openapi.yaml',
   output: './src/checkout-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/checkout-api/types.ts' },
   client: { output: './src/checkout-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/checkout-api/rpc.ts', parseResponse: true },

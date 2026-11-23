@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/nrel.gov/transportation-incentives-laws/0.1.0/openapi.yaml',
   output: './src/nrel-gov-transportation-incentives-laws/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nrel-gov-transportation-incentives-laws/types.ts' },
   client: { output: './src/nrel-gov-transportation-incentives-laws/client.ts', baseUrl: '/' },
   rpc: { output: './src/nrel-gov-transportation-incentives-laws/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sportsdata.io/nascar-v2/1.0/openapi.yaml',
   output: './src/nascar-v2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nascar-v2/types.ts' },
   client: { output: './src/nascar-v2/client.ts', baseUrl: '/' },
   rpc: { output: './src/nascar-v2/rpc.ts', parseResponse: true },

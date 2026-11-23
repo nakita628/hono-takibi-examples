@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLedgerAccountBalancesRoute,
   postLedgerAccountBalancesUpdateOverdraftLimitRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLedgerAccountBalancesUpdateOverdraftLimitRouteHandler: RouteHandler<
+  typeof postLedgerAccountBalancesUpdateOverdraftLimitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ledgerAccountBalancesHandler = app
-  .openapi(postLedgerAccountBalancesUpdateOverdraftLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLedgerAccountBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLedgerAccountBalancesRouteHandler: RouteHandler<
+  typeof getLedgerAccountBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

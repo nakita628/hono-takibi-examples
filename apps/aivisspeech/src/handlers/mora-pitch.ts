@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMoraPitchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMoraPitchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const moraPitchHandler = app.openapi(postMoraPitchRoute, (c) => {
+export const postMoraPitchRouteHandler: RouteHandler<typeof postMoraPitchRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1AccountsRoute,
   getV1NameRoute,
@@ -13,39 +13,58 @@ import {
   postV1ParentAdminsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1AccountsRouteHandler: RouteHandler<typeof getV1AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1AccountsRouteHandler: RouteHandler<typeof postV1AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameAcceptRouteHandler: RouteHandler<typeof postV1NameAcceptRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameDeclineRouteHandler: RouteHandler<typeof postV1NameDeclineRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameTransferRouteHandler: RouteHandler<typeof postV1NameTransferRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAdminsRouteHandler: RouteHandler<typeof getV1ParentAdminsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentAdminsRouteHandler: RouteHandler<typeof postV1ParentAdminsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentInvitationsRouteHandler: RouteHandler<
+  typeof getV1ParentInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

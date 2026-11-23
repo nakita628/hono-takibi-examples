@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasIntegrationIdRoute,
   getDbaasIntegrationIdRoute,
   postDbaasIntegrationRoute,
   putDbaasIntegrationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDbaasIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteDbaasIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasIntegrationHandler = app
-  .openapi(deleteDbaasIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasIntegrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDbaasIntegrationIdRouteHandler: RouteHandler<
+  typeof putDbaasIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasIntegrationIdRouteHandler: RouteHandler<
+  typeof getDbaasIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasIntegrationRouteHandler: RouteHandler<
+  typeof postDbaasIntegrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

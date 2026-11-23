@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMacrosMacroIdRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMacrosMacroIdRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const macrosHandler = app.openapi(postMacrosMacroIdRunRoute, (c) => {
+export const postMacrosMacroIdRunRouteHandler: RouteHandler<
+  typeof postMacrosMacroIdRunRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

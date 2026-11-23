@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIlmPolicyPolicyRoute,
   getIlmPolicyPolicyRoute,
   getIlmPolicyRoute,
@@ -11,33 +11,48 @@ import {
   putIlmPolicyPolicyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIlmPolicyPolicyRouteHandler: RouteHandler<typeof getIlmPolicyPolicyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const ilmHandler = app
-  .openapi(getIlmPolicyPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIlmPolicyPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIlmPolicyPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIlmPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIlmStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIlmMigrateToDataTiersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIlmMoveIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIlmStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIlmStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putIlmPolicyPolicyRouteHandler: RouteHandler<typeof putIlmPolicyPolicyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIlmPolicyPolicyRouteHandler: RouteHandler<
+  typeof deleteIlmPolicyPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIlmPolicyRouteHandler: RouteHandler<typeof getIlmPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIlmStatusRouteHandler: RouteHandler<typeof getIlmStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIlmMigrateToDataTiersRouteHandler: RouteHandler<
+  typeof postIlmMigrateToDataTiersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIlmMoveIndexRouteHandler: RouteHandler<typeof postIlmMoveIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIlmStartRouteHandler: RouteHandler<typeof postIlmStartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIlmStopRouteHandler: RouteHandler<typeof postIlmStopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

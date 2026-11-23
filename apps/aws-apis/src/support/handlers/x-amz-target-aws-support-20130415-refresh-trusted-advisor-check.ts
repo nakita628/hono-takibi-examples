@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSupport20130415RefreshTrustedAdvisorCheckRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSupport20130415RefreshTrustedAdvisorCheckRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSupport20130415RefreshTrustedAdvisorCheckHandler = app.openapi(
-  postXAmzTargetAWSSupport20130415RefreshTrustedAdvisorCheckRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSSupport20130415RefreshTrustedAdvisorCheckRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSupport20130415RefreshTrustedAdvisorCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

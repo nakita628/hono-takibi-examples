@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLinearreginterceptRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLinearreginterceptRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const linearreginterceptHandler = app.openapi(getLinearreginterceptRoute, (c) => {
+export const getLinearreginterceptRouteHandler: RouteHandler<
+  typeof getLinearreginterceptRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

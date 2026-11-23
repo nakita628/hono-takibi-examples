@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTechniquesTechniqueIdTechniqueVersionRoute,
   getTechniquesCategoriesRoute,
   getTechniquesRoute,
@@ -15,45 +15,76 @@ import {
   putTechniquesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTechniquesRouteHandler: RouteHandler<typeof getTechniquesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const techniquesHandler = app
-  .openapi(getTechniquesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTechniquesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTechniquesReloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdDirectivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTechniquesTechniqueIdTechniqueVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdTechniqueVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTechniquesTechniqueIdTechniqueVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdTechniqueVersionDirectivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdTechniqueVersionResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTechniquesTechniqueIdTechniqueVersionRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putTechniquesRouteHandler: RouteHandler<typeof putTechniquesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesCategoriesRouteHandler: RouteHandler<
+  typeof getTechniquesCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTechniquesReloadRouteHandler: RouteHandler<
+  typeof postTechniquesReloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesVersionsRouteHandler: RouteHandler<
+  typeof getTechniquesVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdDirectivesRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdDirectivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTechniquesTechniqueIdTechniqueVersionRouteHandler: RouteHandler<
+  typeof deleteTechniquesTechniqueIdTechniqueVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdTechniqueVersionRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdTechniqueVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTechniquesTechniqueIdTechniqueVersionRouteHandler: RouteHandler<
+  typeof postTechniquesTechniqueIdTechniqueVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdTechniqueVersionDirectivesRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdTechniqueVersionDirectivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdTechniqueVersionResourcesRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdTechniqueVersionResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTechniquesTechniqueIdTechniqueVersionRevisionsRouteHandler: RouteHandler<
+  typeof getTechniquesTechniqueIdTechniqueVersionRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

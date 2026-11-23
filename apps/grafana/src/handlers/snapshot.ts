@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSnapshotSharedOptionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSnapshotSharedOptionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const snapshotHandler = app.openapi(getSnapshotSharedOptionsRoute, (c) => {
+export const getSnapshotSharedOptionsRouteHandler: RouteHandler<
+  typeof getSnapshotSharedOptionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

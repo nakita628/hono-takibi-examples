@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCrmCheckCarVinRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCrmCheckCarVinRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const crmCheckHandler = app.openapi(getCrmCheckCarVinRoute, (c) => {
+export const getCrmCheckCarVinRouteHandler: RouteHandler<typeof getCrmCheckCarVinRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

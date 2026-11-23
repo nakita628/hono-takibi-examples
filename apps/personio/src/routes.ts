@@ -3659,7 +3659,7 @@ export const getCompanyEmployeesAttributesRoute = createRoute({
       'X-Personio-App-ID': XPersonioAppIDParamsSchema,
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
   security: [{ BearerAuth: [] }],
 })
 

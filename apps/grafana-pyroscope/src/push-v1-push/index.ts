@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { pushV1PusherServiceHandler } from './handlers'
+import { postPushV1PusherServicePushRoute } from './routes'
+import { postPushV1PusherServicePushRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', pushV1PusherServiceHandler)
+export const api = app.openapi(
+  postPushV1PusherServicePushRoute,
+  postPushV1PusherServicePushRouteHandler,
+)
 
 export default app

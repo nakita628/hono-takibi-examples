@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLocalizationCountriesRoute,
   getLocalizationCulturesRoute,
   getLocalizationOptionsRoute,
   getLocalizationParentalRatingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLocalizationCountriesRouteHandler: RouteHandler<
+  typeof getLocalizationCountriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const localizationHandler = app
-  .openapi(getLocalizationCountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocalizationCulturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocalizationOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocalizationParentalRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLocalizationCulturesRouteHandler: RouteHandler<
+  typeof getLocalizationCulturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLocalizationOptionsRouteHandler: RouteHandler<
+  typeof getLocalizationOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLocalizationParentalRatingsRouteHandler: RouteHandler<
+  typeof getLocalizationParentalRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

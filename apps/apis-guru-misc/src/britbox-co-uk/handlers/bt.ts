@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBtPlansRoute,
   getBtPlanTokenRoute,
   getBtTokenValidateRoute,
   postBtTokenAssignRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBtPlanTokenRouteHandler: RouteHandler<typeof getBtPlanTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const btHandler = app
-  .openapi(getBtPlanTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBtPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBtTokenAssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBtTokenValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBtPlansRouteHandler: RouteHandler<typeof getBtPlansRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBtTokenAssignRouteHandler: RouteHandler<typeof postBtTokenAssignRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBtTokenValidateRouteHandler: RouteHandler<typeof getBtTokenValidateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

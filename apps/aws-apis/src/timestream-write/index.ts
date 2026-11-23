@@ -1,47 +1,125 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetTimestream20181101CreateBatchLoadTaskHandler,
-  xAmzTargetTimestream20181101CreateDatabaseHandler,
-  xAmzTargetTimestream20181101CreateTableHandler,
-  xAmzTargetTimestream20181101DeleteDatabaseHandler,
-  xAmzTargetTimestream20181101DeleteTableHandler,
-  xAmzTargetTimestream20181101DescribeBatchLoadTaskHandler,
-  xAmzTargetTimestream20181101DescribeDatabaseHandler,
-  xAmzTargetTimestream20181101DescribeEndpointsHandler,
-  xAmzTargetTimestream20181101DescribeTableHandler,
-  xAmzTargetTimestream20181101ListBatchLoadTasksHandler,
-  xAmzTargetTimestream20181101ListDatabasesHandler,
-  xAmzTargetTimestream20181101ListTablesHandler,
-  xAmzTargetTimestream20181101ListTagsForResourceHandler,
-  xAmzTargetTimestream20181101ResumeBatchLoadTaskHandler,
-  xAmzTargetTimestream20181101TagResourceHandler,
-  xAmzTargetTimestream20181101UntagResourceHandler,
-  xAmzTargetTimestream20181101UpdateDatabaseHandler,
-  xAmzTargetTimestream20181101UpdateTableHandler,
-  xAmzTargetTimestream20181101WriteRecordsHandler,
+  postXAmzTargetTimestream20181101CreateBatchLoadTaskRoute,
+  postXAmzTargetTimestream20181101CreateDatabaseRoute,
+  postXAmzTargetTimestream20181101CreateTableRoute,
+  postXAmzTargetTimestream20181101DeleteDatabaseRoute,
+  postXAmzTargetTimestream20181101DeleteTableRoute,
+  postXAmzTargetTimestream20181101DescribeBatchLoadTaskRoute,
+  postXAmzTargetTimestream20181101DescribeDatabaseRoute,
+  postXAmzTargetTimestream20181101DescribeEndpointsRoute,
+  postXAmzTargetTimestream20181101DescribeTableRoute,
+  postXAmzTargetTimestream20181101ListBatchLoadTasksRoute,
+  postXAmzTargetTimestream20181101ListDatabasesRoute,
+  postXAmzTargetTimestream20181101ListTablesRoute,
+  postXAmzTargetTimestream20181101ListTagsForResourceRoute,
+  postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute,
+  postXAmzTargetTimestream20181101TagResourceRoute,
+  postXAmzTargetTimestream20181101UntagResourceRoute,
+  postXAmzTargetTimestream20181101UpdateDatabaseRoute,
+  postXAmzTargetTimestream20181101UpdateTableRoute,
+  postXAmzTargetTimestream20181101WriteRecordsRoute,
+} from './routes'
+import {
+  postXAmzTargetTimestream20181101CreateBatchLoadTaskRouteHandler,
+  postXAmzTargetTimestream20181101CreateDatabaseRouteHandler,
+  postXAmzTargetTimestream20181101CreateTableRouteHandler,
+  postXAmzTargetTimestream20181101DeleteDatabaseRouteHandler,
+  postXAmzTargetTimestream20181101DeleteTableRouteHandler,
+  postXAmzTargetTimestream20181101DescribeBatchLoadTaskRouteHandler,
+  postXAmzTargetTimestream20181101DescribeDatabaseRouteHandler,
+  postXAmzTargetTimestream20181101DescribeEndpointsRouteHandler,
+  postXAmzTargetTimestream20181101DescribeTableRouteHandler,
+  postXAmzTargetTimestream20181101ListBatchLoadTasksRouteHandler,
+  postXAmzTargetTimestream20181101ListDatabasesRouteHandler,
+  postXAmzTargetTimestream20181101ListTablesRouteHandler,
+  postXAmzTargetTimestream20181101ListTagsForResourceRouteHandler,
+  postXAmzTargetTimestream20181101ResumeBatchLoadTaskRouteHandler,
+  postXAmzTargetTimestream20181101TagResourceRouteHandler,
+  postXAmzTargetTimestream20181101UntagResourceRouteHandler,
+  postXAmzTargetTimestream20181101UpdateDatabaseRouteHandler,
+  postXAmzTargetTimestream20181101UpdateTableRouteHandler,
+  postXAmzTargetTimestream20181101WriteRecordsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetTimestream20181101CreateBatchLoadTaskHandler)
-  .route('/', xAmzTargetTimestream20181101CreateDatabaseHandler)
-  .route('/', xAmzTargetTimestream20181101CreateTableHandler)
-  .route('/', xAmzTargetTimestream20181101DeleteDatabaseHandler)
-  .route('/', xAmzTargetTimestream20181101DeleteTableHandler)
-  .route('/', xAmzTargetTimestream20181101DescribeBatchLoadTaskHandler)
-  .route('/', xAmzTargetTimestream20181101DescribeDatabaseHandler)
-  .route('/', xAmzTargetTimestream20181101DescribeEndpointsHandler)
-  .route('/', xAmzTargetTimestream20181101DescribeTableHandler)
-  .route('/', xAmzTargetTimestream20181101ListBatchLoadTasksHandler)
-  .route('/', xAmzTargetTimestream20181101ListDatabasesHandler)
-  .route('/', xAmzTargetTimestream20181101ListTablesHandler)
-  .route('/', xAmzTargetTimestream20181101ListTagsForResourceHandler)
-  .route('/', xAmzTargetTimestream20181101ResumeBatchLoadTaskHandler)
-  .route('/', xAmzTargetTimestream20181101TagResourceHandler)
-  .route('/', xAmzTargetTimestream20181101UntagResourceHandler)
-  .route('/', xAmzTargetTimestream20181101UpdateDatabaseHandler)
-  .route('/', xAmzTargetTimestream20181101UpdateTableHandler)
-  .route('/', xAmzTargetTimestream20181101WriteRecordsHandler)
+  .openapi(
+    postXAmzTargetTimestream20181101CreateBatchLoadTaskRoute,
+    postXAmzTargetTimestream20181101CreateBatchLoadTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101CreateDatabaseRoute,
+    postXAmzTargetTimestream20181101CreateDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101CreateTableRoute,
+    postXAmzTargetTimestream20181101CreateTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DeleteDatabaseRoute,
+    postXAmzTargetTimestream20181101DeleteDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DeleteTableRoute,
+    postXAmzTargetTimestream20181101DeleteTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DescribeBatchLoadTaskRoute,
+    postXAmzTargetTimestream20181101DescribeBatchLoadTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DescribeDatabaseRoute,
+    postXAmzTargetTimestream20181101DescribeDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DescribeEndpointsRoute,
+    postXAmzTargetTimestream20181101DescribeEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101DescribeTableRoute,
+    postXAmzTargetTimestream20181101DescribeTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101ListBatchLoadTasksRoute,
+    postXAmzTargetTimestream20181101ListBatchLoadTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101ListDatabasesRoute,
+    postXAmzTargetTimestream20181101ListDatabasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101ListTablesRoute,
+    postXAmzTargetTimestream20181101ListTablesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101ListTagsForResourceRoute,
+    postXAmzTargetTimestream20181101ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101ResumeBatchLoadTaskRoute,
+    postXAmzTargetTimestream20181101ResumeBatchLoadTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101TagResourceRoute,
+    postXAmzTargetTimestream20181101TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101UntagResourceRoute,
+    postXAmzTargetTimestream20181101UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101UpdateDatabaseRoute,
+    postXAmzTargetTimestream20181101UpdateDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101UpdateTableRoute,
+    postXAmzTargetTimestream20181101UpdateTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTimestream20181101WriteRecordsRoute,
+    postXAmzTargetTimestream20181101WriteRecordsRouteHandler,
+  )
 
 export default app

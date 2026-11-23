@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amentum.space/atmosphere/1.1.1/openapi.yaml',
   output: './src/amentum-space-atmosphere/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/amentum-space-atmosphere/types.ts' },
   client: { output: './src/amentum-space-atmosphere/client.ts', baseUrl: '/' },
   rpc: { output: './src/amentum-space-atmosphere/rpc.ts', parseResponse: true },

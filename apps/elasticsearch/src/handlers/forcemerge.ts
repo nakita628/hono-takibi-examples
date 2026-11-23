@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postForcemergeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postForcemergeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const forcemergeHandler = app.openapi(postForcemergeRoute, (c) => {
+export const postForcemergeRouteHandler: RouteHandler<typeof postForcemergeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

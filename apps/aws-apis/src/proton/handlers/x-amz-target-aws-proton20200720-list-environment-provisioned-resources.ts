@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesHandler = app.openapi(
-  postXAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAwsProton20200720ListEnvironmentProvisionedResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

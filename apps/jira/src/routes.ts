@@ -36248,13 +36248,10 @@ export const putRestApi3FieldFieldIdRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -36489,11 +36486,8 @@ export const getRestApi3FieldFieldIdContextRoute = createRoute({
       },
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field was not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field was not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -36552,7 +36546,6 @@ export const postRestApi3FieldFieldIdContextRoute = createRoute({
     409: {
       description:
         'Returned if the issue type is a sub-task, but sub-tasks are disabled in Jira settings.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -36682,11 +36675,8 @@ export const getRestApi3FieldFieldIdContextDefaultValueRoute = createRoute({
         "Returned if one or more of the field's contexts have different default values per issue type, which this endpoint cannot represent. Use `GET /rest/api/3/field/{fieldId}/context/defaultvalues` instead.",
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field is not found.' },
   },
   deprecated: true,
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -36735,16 +36725,12 @@ export const putRestApi3FieldFieldIdContextDefaultValueRoute = createRoute({
       description: 'Returned if operation is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the custom field, a context, an option, or a cascading option is not found.',
-      content: {},
     },
   },
   deprecated: true,
@@ -36892,9 +36878,8 @@ export const getRestApi3FieldFieldIdContextDefaultValuesRoute = createRoute({
     403: {
       description:
         'Returned if the user does not have the required permissions, or the feature is not enabled for the tenant.',
-      content: {},
     },
-    404: { description: 'Returned if the custom field is not found.', content: {} },
+    404: { description: 'Returned if the custom field is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37051,10 +37036,7 @@ export const getRestApi3FieldFieldIdContextIssuetypemappingRoute = createRoute({
       },
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37153,16 +37135,10 @@ export const postRestApi3FieldFieldIdContextMappingRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the custom field, project, or issue type is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field, project, or issue type is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37288,11 +37264,8 @@ export const getRestApi3FieldFieldIdContextProjectmappingRoute = createRoute({
       },
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37354,13 +37327,10 @@ export const putRestApi3FieldFieldIdContextContextIdRoute = createRoute({
       description: 'Returned if the context is updated.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field or the context is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field or the context is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37410,13 +37380,10 @@ export const deleteRestApi3FieldFieldIdContextContextIdRoute = createRoute({
       description: 'Returned if the context is deleted.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the custom field or the context is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field or the context is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37475,21 +37442,16 @@ export const putRestApi3FieldFieldIdContextContextIdIssuetypeRoute = createRoute
       description: 'Returned if operation is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the custom field, context, or one or more issue types are not found.',
-      content: {},
     },
     409: {
       description:
         'Returned if the issue type is a sub-task, but sub-tasks are disabled in Jira settings.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -37549,16 +37511,12 @@ export const postRestApi3FieldFieldIdContextContextIdIssuetypeRemoveRoute = crea
       description: 'Returned if operation is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the custom field, context, or one or more issue types are not found.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -37703,16 +37661,12 @@ export const getRestApi3FieldFieldIdContextContextIdOptionRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         "Returned if the custom field is not found or the context doesn't match the custom field.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -37784,16 +37738,10 @@ export const putRestApi3FieldFieldIdContextContextIdOptionRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the field, context, or one or more options is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    404: { description: 'Returned if the field, context, or one or more options is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -37864,16 +37812,12 @@ export const postRestApi3FieldFieldIdContextContextIdOptionRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         "Returned if the custom field is not found or the context doesn't match the custom field.",
-      content: {},
     },
     422: {
       description:
@@ -37938,16 +37882,12 @@ export const putRestApi3FieldFieldIdContextContextIdOptionMoveRoute = createRout
       description: 'Returned if options are reordered.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         'Returned if the field, the context, or one or more of the options is not found..',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -38012,16 +37952,10 @@ export const deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdRoute = cre
   },
   responses: {
     204: { description: 'Returned if the option is deleted.' },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the field, the context, or the option is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    404: { description: 'Returned if the field, the context, or the option is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -38128,10 +38062,7 @@ export const deleteRestApi3FieldFieldIdContextContextIdOptionOptionIdIssueRoute 
       },
     },
     400: { description: 'Returned if the request is not valid.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         'Returned if the field is not found or does not support options, or the options to be replaced are not found.',
@@ -38194,16 +38125,10 @@ export const putRestApi3FieldFieldIdContextContextIdProjectRoute = createRoute({
       description: 'Returned if operation is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the custom field, context, or project is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the custom field, context, or project is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -38262,15 +38187,11 @@ export const postRestApi3FieldFieldIdContextContextIdProjectRemoveRoute = create
       description: 'Returned if the custom field context is removed from the projects.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description: 'Returned if the custom field, context, or one or more projects are not found.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -39153,10 +39074,7 @@ export const deleteRestApi3FieldFieldKeyOptionOptionIdIssueRoute = createRoute({
       },
     },
     400: { description: 'Returned if the request is not valid.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         'Returned if the field is not found or does not support options, or the options to be replaced are not found.',
@@ -39903,12 +39821,9 @@ export const postRestApi3FieldconfigurationschemeRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permissions.' },
   },
   deprecated: true,
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -40172,13 +40087,10 @@ export const putRestApi3FieldconfigurationschemeProjectRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the project is not a classic project.', content: {} },
+    400: { description: 'Returned if the project is not a classic project.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the project is missing.', content: {} },
+    403: { description: 'Returned if the user does not have the necessary permissions.' },
+    404: { description: 'Returned if the project is missing.' },
   },
   deprecated: true,
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -40231,13 +40143,10 @@ export const putRestApi3FieldconfigurationschemeIdRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the field configuration scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the necessary permissions.' },
+    404: { description: 'Returned if the field configuration scheme is not found.' },
   },
   deprecated: true,
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -42114,14 +42023,8 @@ export const getRestApi3GroupBulkRoute = createRoute({
     },
     400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    500: {
-      description: "Returned if the group with the given access level can't be retrieved.",
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    500: { description: "Returned if the group with the given access level can't be retrieved." },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-user'] }],
 })
@@ -43018,22 +42921,18 @@ export const putRestApi3IssueArchiveRoute = createRoute({
     400: {
       description:
         "Returned if none of the issues in the request can be archived. Possible reasons:\n\n *  the issues weren't found\n *  the issues are subtasks\n *  the issues belong to unlicensed projects\n *  the issues belong to archived projects",
-      content: {},
     },
     401: {
       description:
         'Returned if no issues were archived because the provided authentication credentials are either missing or invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if no issues were archived because the user lacks the required Jira admin or site admin permissions.',
-      content: {},
     },
     412: {
       description:
         'Returned if one or more issues were successfully archived, but the operation was incomplete because the number of issue IDs or keys provided exceeds 1000.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['write:jira-work'] }, {}],
@@ -43073,22 +42972,16 @@ export const postRestApi3IssueArchiveRoute = createRoute({
     400: {
       description:
         'Returned if no issues were archived due to a bad request, for example an invalid JQL query.',
-      content: {},
     },
     401: {
       description:
         'Returned if no issues were archived because the provided authentication credentials are either missing or invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if no issues were archived because the user lacks the required Jira admin or site admin permissions.',
-      content: {},
     },
-    412: {
-      description: 'Returned if a request to archive issue(s) is already running.',
-      content: {},
-    },
+    412: { description: 'Returned if a request to archive issue(s) is already running.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['write:jira-work'] }, {}],
 })
@@ -43498,7 +43391,7 @@ export const getRestApi3IssueCreatemetaProjectIdOrKeyIssuetypesRoute = createRou
         },
       },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-work'] }, {}],
@@ -43594,7 +43487,7 @@ export const getRestApi3IssueCreatemetaProjectIdOrKeyIssuetypesIssueTypeIdRoute 
         },
       },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-work'] }, {}],
@@ -44027,22 +43920,18 @@ export const putRestApi3IssueUnarchiveRoute = createRoute({
     400: {
       description:
         "Returned if none of the issues in the request are eligible to be unarchived. Possible reasons:\n\n *  the issues weren't found\n *  the issues are subtasks\n *  the issues belong to archived projects",
-      content: {},
     },
     401: {
       description:
         'Returned if no issues were unarchived because the provided authentication credentials are either missing or invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if no issues were unarchived because the user lacks the required Jira admin or site admin permissions.',
-      content: {},
     },
     412: {
       description:
         'Returned if one or more issues were successfully unarchived, but the operation was incomplete because the number of issue IDs or keys provided exceeds 1000.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['write:jira-work'] }, {}],
@@ -45687,7 +45576,7 @@ export const postRestApi3IssueIssueIdOrKeyRemotelinkRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have permission to link issues.' },
     404: {
@@ -45886,7 +45775,6 @@ export const putRestApi3IssueIssueIdOrKeyRemotelinkLinkIdRoute = createRoute({
     400: {
       description:
         'Returned if:\n\n *  the link ID is invalid.\n *  the remote issue link does not belong to the issue.\n *  the request body is invalid.',
-      content: {},
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have permission to link issues.' },
@@ -47834,22 +47722,16 @@ export const putRestApi3IssuesArchiveExportRoute = createRoute({
     400: {
       description:
         'Returned when:\n\n *  The request is invalid, or the filters provided are incorrect\n *  You requested too many issues for export. The limit is one million issues per request',
-      content: {},
     },
     401: {
       description:
         'Returned if no issues were unarchived because the provided authentication credentials are either missing or invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if no issues were unarchived because the user lacks the required Jira admin or site admin permissions.',
-      content: {},
     },
-    412: {
-      description: 'Returned if a request to export archived issues is already running.',
-      content: {},
-    },
+    412: { description: 'Returned if a request to export archived issues is already running.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['read:jira-work'] }],
 })
@@ -48291,10 +48173,7 @@ export const getRestApi3IssuesecurityschemesLevelMemberRoute = createRoute({
     },
     400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: "Returned if the user doesn't have the necessary permission.",
-      content: {},
-    },
+    403: { description: "Returned if the user doesn't have the necessary permission." },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -48575,12 +48454,9 @@ export const getRestApi3IssuesecurityschemesSearchRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: "Returned if the user doesn't have the necessary permission.",
-      content: {},
-    },
+    403: { description: "Returned if the user doesn't have the necessary permission." },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50186,13 +50062,10 @@ export const postRestApi3IssuetypeschemeRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    409: { description: 'Returned if the scheme name is used by another scheme.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    409: { description: 'Returned if the scheme name is used by another scheme.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50448,16 +50321,10 @@ export const putRestApi3IssuetypeschemeProjectRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the issue type scheme or the project is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type scheme or the project is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50509,13 +50376,10 @@ export const putRestApi3IssuetypeschemeIssueTypeSchemeIdRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the issue type scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50557,14 +50421,10 @@ export const deleteRestApi3IssuetypeschemeIssueTypeSchemeIdRoute = createRoute({
     400: {
       description:
         'Returned if the request is to delete the default issue type scheme or if the scheme is associated with a project',
-      content: {},
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the issue type scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50612,16 +50472,10 @@ export const putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeRoute = createR
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the issue type or the issue type scheme is not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type or the issue type scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50669,13 +50523,10 @@ export const putRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeMoveRoute = cre
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the issue type scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -50731,16 +50582,12 @@ export const deleteRestApi3IssuetypeschemeIssueTypeSchemeIdIssuetypeIssueTypeIdR
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the issue type scheme is missing or the issue type is not found in the issue type scheme.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -50940,17 +50787,13 @@ export const postRestApi3IssuetypescreenschemeRoute = createRoute({
         'application/json': { schema: IssueTypeScreenSchemeIdSchema, example: '{"id":"10001"}' },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the issue type or screen scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type or screen scheme is not found.' },
     409: {
       description:
         'Returned if the issue type is a sub-task, but sub-tasks are disabled in Jira settings.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -51210,17 +51053,10 @@ export const putRestApi3IssuetypescreenschemeProjectRoute = createRoute({
     400: {
       description:
         'Returned if:\n\n *  project is not found.\n *  issue type screen scheme is not found.\n *  the project is not a classic project.',
-      content: {},
     },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the issue type screen scheme or the project are missing.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type screen scheme or the project are missing.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -51263,13 +51099,10 @@ export const putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute = crea
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the issue type screen scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the issue type screen scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -51302,10 +51135,10 @@ export const deleteRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdRoute = c
       description: 'Returned if the issue type screen scheme is deleted.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have the required permissions.' },
-    404: { description: 'Returned if the issue type screen scheme is not found.', content: {} },
+    404: { description: 'Returned if the issue type screen scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -51353,18 +51186,16 @@ export const putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRoute
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the issue type screen scheme, issue type, or screen scheme is not found.',
-      content: {},
     },
     409: {
       description:
         'Returned if the issue type is a sub-task, but sub-tasks are disabled in Jira settings.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -51408,16 +51239,12 @@ export const putRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingDefau
         description: 'Returned if the request is successful.',
         content: { 'application/json': { schema: z.any() } },
       },
-      400: { description: 'Returned if the request is not valid.', content: {} },
+      400: { description: 'Returned if the request is not valid.' },
       401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-      403: {
-        description: 'Returned if the user does not have the required permissions.',
-        content: {},
-      },
+      403: { description: 'Returned if the user does not have the required permissions.' },
       404: {
         description:
           "Returned if the issue type screen scheme or the screen scheme is not found, or the screen scheme isn't used in classic projects.",
-        content: {},
       },
     },
     security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -51462,16 +51289,12 @@ export const postRestApi3IssuetypescreenschemeIssueTypeScreenSchemeIdMappingRemo
           'Returned if the screen scheme mappings are removed from the issue type screen scheme.',
         content: { 'application/json': { schema: z.any() } },
       },
-      400: { description: 'Returned if the request is not valid.', content: {} },
+      400: { description: 'Returned if the request is not valid.' },
       401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-      403: {
-        description: 'Returned if the user does not have the required permissions.',
-        content: {},
-      },
+      403: { description: 'Returned if the user does not have the required permissions.' },
       404: {
         description:
           'Returned if the issue type screen scheme or one or more issue type mappings are not found.',
-        content: {},
       },
     },
     security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -52850,7 +52673,7 @@ export const getRestApi3NotificationschemeRoute = createRoute({
         },
       },
     },
-    400: { description: "Returned if the request isn't valid.", content: {} },
+    400: { description: "Returned if the request isn't valid." },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -62372,12 +62195,9 @@ export const postRestApi3ScreensRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-project'] }],
 })
@@ -62558,7 +62378,7 @@ export const getRestApi3ScreensTabsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Returned if the request is successful.', content: {} },
+    200: { description: 'Returned if the request is successful.' },
     400: { description: 'Returned if the screen ID or the tab ID is empty.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have the necessary permission.' },
@@ -62619,13 +62439,10 @@ export const putRestApi3ScreensScreenIdRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    404: { description: 'Returned if the screen is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    404: { description: 'Returned if the screen is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-project'] }],
 })
@@ -62661,13 +62478,10 @@ export const deleteRestApi3ScreensScreenIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Returned if the request is successful.' },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    404: { description: 'Returned if the screen is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    404: { description: 'Returned if the screen is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-project'] }],
 })
@@ -63508,16 +63322,12 @@ export const postRestApi3ScreenschemeRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: ScreenSchemeIdSchema, example: '{"id":10001}' } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if a screen used as one of the screen types in the screen scheme is not found.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -63564,16 +63374,12 @@ export const putRestApi3ScreenschemeScreenSchemeIdRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
     404: {
       description:
         'Returned if the screen scheme or a screen used as one of the screen types is not found.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -63604,16 +63410,10 @@ export const deleteRestApi3ScreenschemeScreenSchemeIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Returned if the screen scheme is deleted.' },
-    400: {
-      description: 'Returned if the screen scheme is used in an issue type screen scheme.',
-      content: {},
-    },
+    400: { description: 'Returned if the screen scheme is used in an issue type screen scheme.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
-    404: { description: 'Returned if the screen scheme is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
+    404: { description: 'Returned if the screen scheme is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-project'] }],
 })
@@ -64438,7 +64238,7 @@ export const putRestApi3StatusesRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -64484,7 +64284,7 @@ export const postRestApi3StatusesRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -64526,7 +64326,7 @@ export const deleteRestApi3StatusesRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -64800,7 +64600,7 @@ export const getRestApi3StatusesStatusIdProjectProjectIdIssueTypeUsagesRoute = c
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -64879,7 +64679,7 @@ export const getRestApi3StatusesStatusIdProjectUsagesRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -64958,7 +64758,7 @@ export const getRestApi3StatusesStatusIdWorkflowUsagesRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -69786,13 +69586,10 @@ export const deleteRestApi3WorkflowEntityIdRoute = createRoute({
   },
   responses: {
     204: { description: 'Returned if the workflow is deleted.' },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if the workflow is not found.', content: {} },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the workflow is not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -69883,7 +69680,7 @@ export const getRestApi3WorkflowWorkflowIdProjectProjectIdIssueTypeUsagesRoute =
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -69962,7 +69759,7 @@ export const getRestApi3WorkflowWorkflowIdProjectUsagesRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -70041,7 +69838,7 @@ export const getRestApi3WorkflowWorkflowIdWorkflowSchemesRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -71190,12 +70987,9 @@ export const getRestApi3WorkflowschemeProjectRoute = createRoute({
         },
       },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the necessary permission.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the necessary permission.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -71224,16 +71018,10 @@ export const putRestApi3WorkflowschemeProjectRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: z.any() } },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
-    403: {
-      description: 'Returned if the user does not have the required permissions.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if the workflow scheme or the project are not found.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the required permissions.' },
+    404: { description: 'Returned if the workflow scheme or the project are not found.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -71288,7 +71076,7 @@ export const postRestApi3WorkflowschemeProjectSwitchRoute = createRoute({
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
     },
-    409: { description: 'Returned if a conflicting task is already running.', content: {} },
+    409: { description: 'Returned if a conflicting task is already running.' },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
 })
@@ -72428,13 +72216,12 @@ export const postRestApi3WorkflowschemeIdDraftPublishRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: TaskProgressBeanObjectSchema } },
     },
-    400: { description: 'Returned if the request is invalid.', content: {} },
+    400: { description: 'Returned if the request is invalid.' },
     401: { description: 'Returned if the authentication credentials are incorrect or missing.' },
     403: { description: 'Returned if the user does not have the necessary permission.' },
     404: {
       description:
         'Returned if any of these are true:\n\n *  The workflow scheme is not found.\n *  The workflow scheme does not have a draft.\n *  A new status in the draft workflow scheme is not found.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: ['manage:jira-configuration'] }],
@@ -73141,7 +72928,7 @@ export const getRestApi3WorkflowschemeWorkflowSchemeIdProjectUsagesRoute = creat
         },
       },
     },
-    400: { description: 'Returned if the request is not valid.', content: {} },
+    400: { description: 'Returned if the request is not valid.' },
     401: {
       description:
         "Returned if the authentication credentials are incorrect or missing, or the caller doesn't have permissions to perform the operation.",
@@ -74207,7 +73994,6 @@ export const getRestForge1AppPropertiesRoute = createRoute({
     403: {
       description:
         "Returned if the request isn't made directly by an app or if it's an impersonated request.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: [] }],
@@ -74264,7 +74050,6 @@ export const getRestForge1AppPropertiesPropertyKeyRoute = createRoute({
     403: {
       description:
         "Returned if the request isn't made directly by an app or if it's an impersonated request.",
-      content: {},
     },
     404: {
       description: "Returned if the property isn't found or doesn't belong to the app.",
@@ -74339,7 +74124,6 @@ export const putRestForge1AppPropertiesPropertyKeyRoute = createRoute({
     403: {
       description:
         "Returned if the request isn't made directly by an app or if it's an impersonated request.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { OAuth2: [] }],
@@ -74386,7 +74170,6 @@ export const deleteRestForge1AppPropertiesPropertyKeyRoute = createRoute({
     403: {
       description:
         "Returned if the request isn't made directly by an app or if it's an impersonated request.",
-      content: {},
     },
     404: {
       description: "Returned if the property isn't found or doesn't belong to the app.",

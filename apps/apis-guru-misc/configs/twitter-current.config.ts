@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/twitter.com/current/2.61/openapi.yaml',
   output: './src/twitter-current/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/twitter-current/types.ts' },
   client: { output: './src/twitter-current/client.ts', baseUrl: '/' },

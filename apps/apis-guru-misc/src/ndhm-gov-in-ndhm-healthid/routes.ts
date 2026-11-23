@@ -948,10 +948,10 @@ export const postV1AccountAadhaarGenerateOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -998,10 +998,10 @@ export const postV1AccountAadhaarVerifyOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1042,9 +1042,9 @@ export const getV1AccountBenefitsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1091,10 +1091,10 @@ export const postV1AccountChangePasswdByAadhaarRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1141,10 +1141,10 @@ export const postV1AccountChangePasswdByMobileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1186,9 +1186,9 @@ export const getV1AccountChangePasswdGenerateAadhaarOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1230,9 +1230,9 @@ export const getV1AccountChangePasswdGenerateMobileOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1279,10 +1279,10 @@ export const postV1AccountChangePasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1323,9 +1323,9 @@ export const getV1AccountGetCardRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1366,9 +1366,9 @@ export const getV1AccountGetPngCardRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1409,9 +1409,9 @@ export const getV1AccountGetSvgCardRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1452,9 +1452,9 @@ export const getV1AccountProfileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1500,10 +1500,10 @@ export const postV1AccountProfileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1544,9 +1544,9 @@ export const deleteV1AccountProfileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    204: { description: 'No Content', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
+    204: { description: 'No Content' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1590,9 +1590,9 @@ export const getV1AccountQrCodeRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: z.string() }, 'image/png': { schema: z.string() } },
     },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1626,10 +1626,10 @@ export const postV1AccountTokenRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1663,10 +1663,10 @@ export const postV1AuthAuthPasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1700,10 +1700,10 @@ export const postV1AuthAuthWithMobileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1737,10 +1737,10 @@ export const postV1AuthAuthWithMobileTokenRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1769,9 +1769,9 @@ export const getV1AuthCertRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1805,10 +1805,10 @@ export const postV1AuthConfirmWithAadhaarBioRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1842,10 +1842,10 @@ export const postV1AuthConfirmWithAadhaarOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1879,10 +1879,10 @@ export const postV1AuthConfirmWithDemographicsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1916,10 +1916,10 @@ export const postV1AuthConfirmWithMobileOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1953,10 +1953,10 @@ export const postV1AuthConfirmWithPasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: JwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -1990,10 +1990,10 @@ export const postV1AuthInitRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2027,10 +2027,10 @@ export const postV1AuthResendAuthOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2068,10 +2068,10 @@ export const postV1ForgotHealthIdAadhaarRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: RetrieveHealthIdPayloadResponseSchema } },
     },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2106,10 +2106,10 @@ export const postV1ForgotHealthIdAadhaarGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2147,10 +2147,10 @@ export const postV1ForgotHealthIdMobileRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: RetrieveHealthIdPayloadResponseSchema } },
     },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2185,10 +2185,10 @@ export const postV1ForgotHealthIdMobileGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2230,9 +2230,9 @@ export const getV1HaLgdDistrictsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(DistrictDTOSchema) } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2261,9 +2261,9 @@ export const getV1HaLgdStatesRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(StatesDTOSchema) } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2304,9 +2304,9 @@ export const getV1HaTagsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2340,10 +2340,10 @@ export const postV1HaTagsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(TagRequestSchema) } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2377,9 +2377,9 @@ export const deleteV1HaTagsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(TagRequestSchema) } } },
-    204: { description: 'No Content', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
+    204: { description: 'No Content' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2414,10 +2414,10 @@ export const postV1HealthFacilityAuthenticateRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2452,10 +2452,10 @@ export const postV1HealthFacilityChangePasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2489,10 +2489,10 @@ export const postV1HealthFacilityCreateHealthIdWithPreVerifiedRoute = createRout
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: CreateAccountJwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2527,10 +2527,10 @@ export const postV1HealthFacilityGeneratePasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2577,10 +2577,10 @@ export const postV1HealthFacilityGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2633,9 +2633,9 @@ export const getV1HealthFacilityGetSvgCardRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2670,10 +2670,10 @@ export const postV1HealthFacilityResetPasswordRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.string() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2708,10 +2708,10 @@ export const postV1HidBenefitAadhaarGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2746,10 +2746,10 @@ export const postV1HidBenefitAadhaarVerifyAadharOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: HidBenefitRequestPayloadSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2784,10 +2784,10 @@ export const postV1HidBenefitAadhaarVerifyBioRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: HidBenefitRequestPayloadSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2822,10 +2822,10 @@ export const postV1HidBenefitCreateHealthIdDemoAuthRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: HidBenefitRequestPayloadSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2863,10 +2863,10 @@ export const postV1HidBenefitDelinkRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: HidBenefitLinkedResponsePayloadSchema } },
     },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2904,10 +2904,10 @@ export const postV1HidBenefitLinkRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: HidBenefitLinkedResponsePayloadSchema } },
     },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2942,10 +2942,10 @@ export const postV1HidBenefitMobileCreateHealthIdRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -2980,10 +2980,10 @@ export const postV1HidBenefitMobileGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3018,10 +3018,10 @@ export const postV1HidBenefitNotifyBenefitRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: HidBenefitRequestPayloadSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3056,10 +3056,10 @@ export const postV1HidBenefitSearchAadhaarRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(z.looseObject({})) } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3097,10 +3097,10 @@ export const postV1HidBenefitSearchHealthIdNumberRoute = createRoute({
       description: 'OK',
       content: { '*/*': { schema: z.array(HidBenefitSearchResponsePayloadSchema) } },
     },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3134,10 +3134,10 @@ export const postV1HidBenefitUpdateMobileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3171,10 +3171,10 @@ export const postV1HidBenefitUpdateProfileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: UserDTOSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3209,10 +3209,10 @@ export const postV1HidBenefitUpdateStatusRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3247,10 +3247,10 @@ export const postV1RegistrationAadhaarCreateHealthIdWithAadhaarOtpRoute = create
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: CreateAccountJwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3285,10 +3285,10 @@ export const postV1RegistrationAadhaarCreateHealthIdWithPreVerifiedRoute = creat
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: CreateAccountJwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3323,10 +3323,10 @@ export const postV1RegistrationAadhaarGenerateMobileOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3361,10 +3361,10 @@ export const postV1RegistrationAadhaarGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3399,10 +3399,10 @@ export const postV1RegistrationAadhaarResendAadhaarOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: CreateAccountJwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3437,10 +3437,10 @@ export const postV1RegistrationAadhaarSearchAadharRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.array(z.looseObject({})) } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3475,10 +3475,10 @@ export const postV1RegistrationAadhaarVerifyBioRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3513,10 +3513,10 @@ export const postV1RegistrationAadhaarVerifyMobileOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3551,10 +3551,10 @@ export const postV1RegistrationAadhaarVerifyOTPRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3588,10 +3588,10 @@ export const postV1RegistrationMobileCreateHealthIdRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: CreateAccountJwtResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3626,10 +3626,10 @@ export const postV1RegistrationMobileGenerateOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: TxnResponseSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3664,10 +3664,10 @@ export const postV1RegistrationMobileResendOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.boolean() } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3702,10 +3702,10 @@ export const postV1RegistrationMobileVerifyOtpRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: MobileVerificationTokenSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3739,10 +3739,10 @@ export const postV1SearchExistsByHealthIdRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: z.looseObject({}) } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3776,10 +3776,10 @@ export const postV1SearchSearchByHealthIdRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: SearchResponseSingleSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })
@@ -3813,10 +3813,10 @@ export const postV1SearchSearchByMobileRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { '*/*': { schema: SearchResponseSingleSchema } } },
-    201: { description: 'Created', content: {} },
-    401: { description: 'Unauthorized', content: {} },
-    403: { description: 'Forbidden', content: {} },
-    404: { description: 'Not Found', content: {} },
+    201: { description: 'Created' },
+    401: { description: 'Unauthorized' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not Found' },
   },
   security: [{ Authorization: [] }, { 'X-HIP-ID': [] }],
 })

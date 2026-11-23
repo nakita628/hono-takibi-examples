@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/highwaysengland.co.uk/v1/openapi.yaml',
   output: './src/highwaysengland-co-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/highwaysengland-co-uk/types.ts' },
   client: { output: './src/highwaysengland-co-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/highwaysengland-co-uk/rpc.ts', parseResponse: true },

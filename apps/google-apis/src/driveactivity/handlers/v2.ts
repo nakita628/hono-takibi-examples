@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV2ActivityQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV2ActivityQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v2Handler = app.openapi(postV2ActivityQueryRoute, (c) => {
+export const postV2ActivityQueryRouteHandler: RouteHandler<
+  typeof postV2ActivityQueryRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

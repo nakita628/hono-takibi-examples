@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSecdefRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSecdefRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const secdefHandler = app.openapi(getSecdefRoute, (c) => {
+export const getSecdefRouteHandler: RouteHandler<typeof getSecdefRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

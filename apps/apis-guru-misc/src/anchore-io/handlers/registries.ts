@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRegistriesRegistryRoute,
   getRegistriesRegistryRoute,
   getRegistriesRoute,
@@ -7,21 +7,28 @@ import {
   putRegistriesRegistryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRegistriesRouteHandler: RouteHandler<typeof getRegistriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const registriesHandler = app
-  .openapi(getRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRegistriesRegistryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistriesRegistryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRegistriesRegistryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRegistriesRouteHandler: RouteHandler<typeof postRegistriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRegistriesRegistryRouteHandler: RouteHandler<
+  typeof deleteRegistriesRegistryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistriesRegistryRouteHandler: RouteHandler<
+  typeof getRegistriesRegistryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRegistriesRegistryRouteHandler: RouteHandler<
+  typeof putRegistriesRegistryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

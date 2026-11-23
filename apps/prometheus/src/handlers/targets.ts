@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTargetsMetadataRoute, getTargetsRelabelStepsRoute, getTargetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getTargetsMetadataRoute,
+  getTargetsRelabelStepsRoute,
+  getTargetsRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getTargetsRouteHandler: RouteHandler<typeof getTargetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const targetsHandler = app
-  .openapi(getTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsRelabelStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTargetsMetadataRouteHandler: RouteHandler<typeof getTargetsMetadataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsRelabelStepsRouteHandler: RouteHandler<
+  typeof getTargetsRelabelStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

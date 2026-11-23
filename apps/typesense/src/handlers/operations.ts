@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOperationsSchemaChangesRoute,
   postOperationsCacheClearRoute,
   postOperationsDbCompactRoute,
@@ -7,21 +7,32 @@ import {
   postOperationsVoteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOperationsSchemaChangesRouteHandler: RouteHandler<
+  typeof getOperationsSchemaChangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const operationsHandler = app
-  .openapi(getOperationsSchemaChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOperationsSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOperationsVoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOperationsCacheClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOperationsDbCompactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOperationsSnapshotRouteHandler: RouteHandler<
+  typeof postOperationsSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOperationsVoteRouteHandler: RouteHandler<typeof postOperationsVoteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOperationsCacheClearRouteHandler: RouteHandler<
+  typeof postOperationsCacheClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOperationsDbCompactRouteHandler: RouteHandler<
+  typeof postOperationsDbCompactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1CustomersRoute,
   getV1NameRoute,
@@ -25,75 +25,130 @@ import {
   postV1PartnersPartnerIdDevicesUpdateMetadataAsyncRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1CustomersRouteHandler: RouteHandler<typeof getV1CustomersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1CustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersMetadataOwnerIdDevicesDeviceIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PartnersPartnerIdCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesClaimAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesFindByIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesFindByOwnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesUnclaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesUnclaimAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PartnersPartnerIdDevicesUpdateMetadataAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDevicesApplyConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDevicesRemoveConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDevicesUnclaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentDpcsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentVendorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1PartnersMetadataOwnerIdDevicesDeviceIdMetadataRouteHandler: RouteHandler<
+  typeof postV1PartnersMetadataOwnerIdDevicesDeviceIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PartnersPartnerIdCustomersRouteHandler: RouteHandler<
+  typeof getV1PartnersPartnerIdCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesClaimRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesClaimAsyncRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesClaimAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesFindByIdentifierRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesFindByIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesFindByOwnerRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesFindByOwnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesUnclaimRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesUnclaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesUnclaimAsyncRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesUnclaimAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PartnersPartnerIdDevicesUpdateMetadataAsyncRouteHandler: RouteHandler<
+  typeof postV1PartnersPartnerIdDevicesUpdateMetadataAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentConfigurationsRouteHandler: RouteHandler<
+  typeof getV1ParentConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentConfigurationsRouteHandler: RouteHandler<
+  typeof postV1ParentConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentCustomersRouteHandler: RouteHandler<
+  typeof getV1ParentCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentCustomersRouteHandler: RouteHandler<
+  typeof postV1ParentCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentDevicesRouteHandler: RouteHandler<typeof getV1ParentDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDevicesApplyConfigurationRouteHandler: RouteHandler<
+  typeof postV1ParentDevicesApplyConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDevicesRemoveConfigurationRouteHandler: RouteHandler<
+  typeof postV1ParentDevicesRemoveConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDevicesUnclaimRouteHandler: RouteHandler<
+  typeof postV1ParentDevicesUnclaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentDpcsRouteHandler: RouteHandler<typeof getV1ParentDpcsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentVendorsRouteHandler: RouteHandler<typeof getV1ParentVendorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

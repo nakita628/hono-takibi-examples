@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueUpdateDevEndpointRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueUpdateDevEndpointRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueUpdateDevEndpointHandler = app.openapi(
-  postXAmzTargetAWSGlueUpdateDevEndpointRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueUpdateDevEndpointRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueUpdateDevEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/deutschebahn.com/reisezentren/v1/openapi.yaml',
   output: './src/reisezentren/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/reisezentren/types.ts' },
   client: { output: './src/reisezentren/client.ts', baseUrl: '/' },
   rpc: { output: './src/reisezentren/rpc.ts', parseResponse: true },

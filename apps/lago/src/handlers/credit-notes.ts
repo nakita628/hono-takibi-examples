@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCreditNotesLagoIdMetadataKeyRoute,
   deleteCreditNotesLagoIdMetadataRoute,
   getCreditNotesLagoIdRoute,
@@ -14,42 +14,70 @@ import {
   putCreditNotesLagoIdVoidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCreditNotesRouteHandler: RouteHandler<typeof postCreditNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const creditNotesHandler = app
-  .openapi(postCreditNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCreditNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCreditNotesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCreditNotesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesLagoIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesLagoIdDownloadXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesEstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCreditNotesLagoIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCreditNotesLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCreditNotesLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCreditNotesLagoIdMetadataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCreditNotesRouteHandler: RouteHandler<typeof getCreditNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCreditNotesLagoIdRouteHandler: RouteHandler<
+  typeof putCreditNotesLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCreditNotesLagoIdRouteHandler: RouteHandler<
+  typeof getCreditNotesLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesLagoIdDownloadRouteHandler: RouteHandler<
+  typeof postCreditNotesLagoIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesLagoIdDownloadXmlRouteHandler: RouteHandler<
+  typeof postCreditNotesLagoIdDownloadXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesEstimateRouteHandler: RouteHandler<
+  typeof postCreditNotesEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCreditNotesLagoIdVoidRouteHandler: RouteHandler<
+  typeof putCreditNotesLagoIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesLagoIdMetadataRouteHandler: RouteHandler<
+  typeof postCreditNotesLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCreditNotesLagoIdMetadataRouteHandler: RouteHandler<
+  typeof patchCreditNotesLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCreditNotesLagoIdMetadataRouteHandler: RouteHandler<
+  typeof deleteCreditNotesLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCreditNotesLagoIdMetadataKeyRouteHandler: RouteHandler<
+  typeof deleteCreditNotesLagoIdMetadataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

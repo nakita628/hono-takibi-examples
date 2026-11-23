@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSellerRegisterPvtSellerLeadsSellerLeadIdRoute,
   deleteSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute,
   getSellerRegisterPvtSellerLeadsRoute,
@@ -20,60 +20,110 @@ import {
   putSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSellerRegisterPvtSellerLeadsRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellerLeadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sellerRegisterHandler = app
-  .openapi(getSellerRegisterPvtSellerLeadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSellerRegisterPvtSellerLeadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSellerRegisterPvtSellerLeadsSellerLeadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellerLeadsSellerLeadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellerLeadsSellerLeadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellerLeadsSellerLeadIdSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellerLeadsSellerLeadIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSellerRegisterPvtSellersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellersSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSellerRegisterPvtSellersSellerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellersSellerIdCommissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellersSellerIdCommissionsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSellerRegisterPvtSellerLeadsRouteHandler: RouteHandler<
+  typeof postSellerRegisterPvtSellerLeadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSellerRegisterPvtSellerLeadsSellerLeadIdRouteHandler: RouteHandler<
+  typeof deleteSellerRegisterPvtSellerLeadsSellerLeadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellerLeadsSellerLeadIdRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellerLeadsSellerLeadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellerLeadsSellerLeadIdRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellerLeadsSellerLeadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellerLeadsSellerLeadIdSellerRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellerLeadsSellerLeadIdSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellerLeadsSellerLeadIdStatusRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellerLeadsSellerLeadIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellersRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSellerRegisterPvtSellersRouteHandler: RouteHandler<
+  typeof postSellerRegisterPvtSellersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellersSellerIdRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellersSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSellerRegisterPvtSellersSellerIdRouteHandler: RouteHandler<
+  typeof patchSellerRegisterPvtSellersSellerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellersSellerIdCommissionsRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellersSellerIdCommissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellersSellerIdCommissionsCategoriesRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellersSellerIdCommissionsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRouteHandler: RouteHandler<
+  typeof deleteSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellersSellerIdCommissionsCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSellerRegisterPvtSellersSellerIdSalesChannelMappingRouteHandler: RouteHandler<
+  typeof getSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSellerRegisterPvtSellersSellerIdSalesChannelMappingRouteHandler: RouteHandler<
+  typeof putSellerRegisterPvtSellersSellerIdSalesChannelMappingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

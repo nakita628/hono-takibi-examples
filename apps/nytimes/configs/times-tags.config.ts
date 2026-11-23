@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nytimes.com/times_tags/1.0.0/openapi.yaml',
   output: './src/times-tags/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/times-tags/types.ts' },
   client: { output: './src/times-tags/client.ts', baseUrl: '/' },
   rpc: { output: './src/times-tags/rpc.ts', parseResponse: true },

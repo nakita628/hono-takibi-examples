@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceAssociateConnectionWithLagHandler = app.openapi(
-  postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceAssociateConnectionWithLagRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceAssociateConnectionWithLagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuthenticatorsAdminDuoIdIndexRoute,
   deleteAuthenticatorsAdminEmailIdIndexRoute,
   deleteAuthenticatorsAdminEndpointUuidIndexRoute,
@@ -87,261 +87,512 @@ import {
   putAuthenticatorsWebauthnIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAuthenticatorsAdminAllIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminAllIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authenticatorsHandler = app
-  .openapi(getAuthenticatorsAdminAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminDuoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminDuoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminEndpointIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminEndpointIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminEndpointUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminEndpointUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminEndpointUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminEndpointUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminSmsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminSmsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminStaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminStaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminTotpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminTotpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminWebauthnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsAdminWebauthnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAdminWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsAdminWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsAdminWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsAdminWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsDuoIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsDuoIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsDuoIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEmailIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsEmailIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEmailIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEndpointIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEndpointUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsEndpointUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsPasswordIdLockIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthenticatorsPasswordIdUnlockIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsSmsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsSmsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsSmsIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsStaticIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsStaticIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsStaticIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsTotpIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsTotpIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsTotpIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsWebauthnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthenticatorsWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAuthenticatorsWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthenticatorsWebauthnIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthenticatorsWebauthnIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAuthenticatorsAdminDuoIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminDuoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminDuoIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminDuoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminDuoIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminDuoIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminDuoIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminDuoIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminEmailIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminEmailIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminEmailIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminEmailIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminEmailIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminEmailIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminEndpointIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminEndpointIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminEndpointIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminEndpointIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminEndpointUuidIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminEndpointUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminEndpointUuidIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminEndpointUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminEndpointUuidIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminEndpointUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminEndpointUuidIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminEndpointUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminSmsIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminSmsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminSmsIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminSmsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminSmsIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminSmsIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminSmsIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminSmsIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminStaticIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminStaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminStaticIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminStaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminStaticIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminStaticIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminStaticIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminStaticIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminTotpIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminTotpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminTotpIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminTotpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminTotpIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminTotpIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminTotpIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminTotpIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminWebauthnIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminWebauthnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsAdminWebauthnIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsAdminWebauthnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAdminWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAdminWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsAdminWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsAdminWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsAdminWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsAdminWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsAdminWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsAdminWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsAllIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsAllIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsDuoIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsDuoIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsDuoIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsDuoIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsDuoIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsDuoIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsDuoIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsDuoIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsDuoIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEmailIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEmailIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEmailIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsEmailIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsEmailIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsEmailIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsEmailIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEmailIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEmailIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEndpointIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEndpointIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEndpointUuidIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEndpointUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsEndpointUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsEndpointUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsPasswordIdLockIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsPasswordIdLockIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthenticatorsPasswordIdUnlockIndexRouteHandler: RouteHandler<
+  typeof postAuthenticatorsPasswordIdUnlockIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsSmsIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsSmsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsSmsIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsSmsIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsSmsIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsSmsIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsSmsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsSmsIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsSmsIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsStaticIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsStaticIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsStaticIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsStaticIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsStaticIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsStaticIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsStaticIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsStaticIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsStaticIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsTotpIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsTotpIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsTotpIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsTotpIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsTotpIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsTotpIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsTotpIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsTotpIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsTotpIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsWebauthnIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsWebauthnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthenticatorsWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof putAuthenticatorsWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAuthenticatorsWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof patchAuthenticatorsWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthenticatorsWebauthnIdIndexRouteHandler: RouteHandler<
+  typeof deleteAuthenticatorsWebauthnIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthenticatorsWebauthnIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getAuthenticatorsWebauthnIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

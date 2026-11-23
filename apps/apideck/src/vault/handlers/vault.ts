@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVaultConnectionsUnifiedApiServiceIdRoute,
   deleteVaultConsumersConsumerIdRoute,
   getVaultAuthorizeServiceIdApplicationIdRoute,
@@ -22,66 +22,120 @@ import {
   postVaultSessionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVaultAuthorizeServiceIdApplicationIdRouteHandler: RouteHandler<
+  typeof getVaultAuthorizeServiceIdApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vaultHandler = app
-  .openapi(getVaultAuthorizeServiceIdApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVaultConnectionsUnifiedApiServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConnectionsUnifiedApiServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVaultConnectionsUnifiedApiServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultConnectionsUnifiedApiServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultConnectionsUnifiedApiServiceIdImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultConnectionsUnifiedApiServiceIdTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConnectionsUnifiedApiServiceIdResourceConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVaultConnectionsUnifiedApiServiceIdResourceConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVaultConsumersConsumerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConsumersConsumerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVaultConsumersConsumerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultConsumersConsumerIdStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVaultRevokeServiceIdApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVaultSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVaultCallbackRouteHandler: RouteHandler<typeof getVaultCallbackRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConnectionsRouteHandler: RouteHandler<
+  typeof getVaultConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVaultConnectionsUnifiedApiServiceIdRouteHandler: RouteHandler<
+  typeof deleteVaultConnectionsUnifiedApiServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConnectionsUnifiedApiServiceIdRouteHandler: RouteHandler<
+  typeof getVaultConnectionsUnifiedApiServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVaultConnectionsUnifiedApiServiceIdRouteHandler: RouteHandler<
+  typeof patchVaultConnectionsUnifiedApiServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultConnectionsUnifiedApiServiceIdRouteHandler: RouteHandler<
+  typeof postVaultConnectionsUnifiedApiServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultConnectionsUnifiedApiServiceIdImportRouteHandler: RouteHandler<
+  typeof postVaultConnectionsUnifiedApiServiceIdImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultConnectionsUnifiedApiServiceIdTokenRouteHandler: RouteHandler<
+  typeof postVaultConnectionsUnifiedApiServiceIdTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConnectionsUnifiedApiServiceIdResourceConfigRouteHandler: RouteHandler<
+  typeof getVaultConnectionsUnifiedApiServiceIdResourceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVaultConnectionsUnifiedApiServiceIdResourceConfigRouteHandler: RouteHandler<
+  typeof patchVaultConnectionsUnifiedApiServiceIdResourceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConsumersRouteHandler: RouteHandler<typeof getVaultConsumersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultConsumersRouteHandler: RouteHandler<typeof postVaultConsumersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVaultConsumersConsumerIdRouteHandler: RouteHandler<
+  typeof deleteVaultConsumersConsumerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConsumersConsumerIdRouteHandler: RouteHandler<
+  typeof getVaultConsumersConsumerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVaultConsumersConsumerIdRouteHandler: RouteHandler<
+  typeof patchVaultConsumersConsumerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultConsumersConsumerIdStatsRouteHandler: RouteHandler<
+  typeof getVaultConsumersConsumerIdStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultLogsRouteHandler: RouteHandler<typeof getVaultLogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVaultRevokeServiceIdApplicationIdRouteHandler: RouteHandler<
+  typeof getVaultRevokeServiceIdApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVaultSessionsRouteHandler: RouteHandler<typeof postVaultSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

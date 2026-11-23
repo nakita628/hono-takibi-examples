@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getIchimokuRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getIchimokuRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ichimokuHandler = app.openapi(getIchimokuRoute, (c) => {
+export const getIchimokuRouteHandler: RouteHandler<typeof getIchimokuRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

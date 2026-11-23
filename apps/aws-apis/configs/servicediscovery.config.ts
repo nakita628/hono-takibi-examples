@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/servicediscovery/2017-03-14/openapi.yaml',
   output: './src/servicediscovery/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/servicediscovery/types.ts' },
   client: { output: './src/servicediscovery/client.ts', baseUrl: '/' },
   rpc: { output: './src/servicediscovery/rpc.ts', parseResponse: true },

@@ -4,9 +4,6 @@ export default defineConfig({
   // Datadog API v2 (DataDog/datadog-api-client-typescript)
   input: 'https://raw.githubusercontent.com/DataDog/datadog-api-client-typescript/master/.generator/schemas/v2/openapi.yaml',
   output: './src/routes.ts',
-  // template: { routeHandler: true }: with the default template, the largest handler file chains about 2,000
-  // .openapi() calls, and reading it back overflows the stack. With routeHandler, index.ts chains every route
-  // instead, so only a run on a fresh src/ (no handlers/, no index.ts) gets through (nakita628/hono-takibi#521).
   template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },

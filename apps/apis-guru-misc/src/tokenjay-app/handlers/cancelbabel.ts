@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCancelbabelBoxIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCancelbabelBoxIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cancelbabelHandler = app.openapi(getCancelbabelBoxIdRoute, (c) => {
+export const getCancelbabelBoxIdRouteHandler: RouteHandler<
+  typeof getCancelbabelBoxIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

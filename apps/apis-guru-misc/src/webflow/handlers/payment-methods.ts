@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePaymentMethodsPaymentMethodIdRoute,
   getPaymentMethodsPaymentMethodIdRoute,
   getPaymentMethodsRoute,
@@ -9,27 +9,44 @@ import {
   postPaymentMethodsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentMethodsRouteHandler: RouteHandler<typeof getPaymentMethodsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentMethodsHandler = app
-  .openapi(getPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePaymentMethodsPaymentMethodIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentMethodsPaymentMethodIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsPaymentMethodsPaymentMethodIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPaymentMethodsPaymentMethodIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsPaymentMethodsRouteHandler: RouteHandler<
+  typeof optionsPaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentMethodsRouteHandler: RouteHandler<typeof postPaymentMethodsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePaymentMethodsPaymentMethodIdRouteHandler: RouteHandler<
+  typeof deletePaymentMethodsPaymentMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentMethodsPaymentMethodIdRouteHandler: RouteHandler<
+  typeof getPaymentMethodsPaymentMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsPaymentMethodsPaymentMethodIdRouteHandler: RouteHandler<
+  typeof optionsPaymentMethodsPaymentMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPaymentMethodsPaymentMethodIdRouteHandler: RouteHandler<
+  typeof patchPaymentMethodsPaymentMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

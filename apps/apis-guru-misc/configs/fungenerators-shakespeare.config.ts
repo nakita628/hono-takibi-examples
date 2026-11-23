@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/fungenerators.com/shakespeare/1.5/openapi.yaml',
   output: './src/fungenerators-shakespeare/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/fungenerators-shakespeare/types.ts' },
   client: { output: './src/fungenerators-shakespeare/client.ts', baseUrl: '/' },
   rpc: { output: './src/fungenerators-shakespeare/rpc.ts', parseResponse: true },

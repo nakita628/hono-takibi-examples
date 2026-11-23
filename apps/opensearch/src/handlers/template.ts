@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTemplateNameRoute,
   getTemplateNameRoute,
   getTemplateRoute,
@@ -8,24 +8,32 @@ import {
   putTemplateNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTemplateRouteHandler: RouteHandler<typeof getTemplateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templateHandler = app
-  .openapi(getTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteTemplateNameRouteHandler: RouteHandler<typeof deleteTemplateNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateNameRouteHandler: RouteHandler<typeof getTemplateNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headTemplateNameRouteHandler: RouteHandler<typeof headTemplateNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplateNameRouteHandler: RouteHandler<typeof postTemplateNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putTemplateNameRouteHandler: RouteHandler<typeof putTemplateNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePhoneNumbersPhoneNumberIdRoute,
   getPhoneNumbersPhoneNumberIdRoute,
   getPhoneNumbersRoute,
@@ -7,21 +7,30 @@ import {
   postPhoneNumbersPhoneNumberIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const phoneNumbersHandler = app
-  .openapi(deletePhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumbersPhoneNumberIdOperationRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof getPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersPhoneNumberIdRouteHandler: RouteHandler<
+  typeof postPhoneNumbersPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumbersRouteHandler: RouteHandler<typeof getPhoneNumbersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumbersPhoneNumberIdOperationRestoreRouteHandler: RouteHandler<
+  typeof postPhoneNumbersPhoneNumberIdOperationRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

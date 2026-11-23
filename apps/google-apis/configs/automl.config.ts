@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/automl/v1beta1/openapi.yaml',
   output: './src/automl/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/automl/types.ts' },
   client: { output: './src/automl/client.ts', baseUrl: '/' },
   rpc: { output: './src/automl/rpc.ts', parseResponse: true },

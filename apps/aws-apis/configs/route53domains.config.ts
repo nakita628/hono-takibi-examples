@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/route53domains/2014-05-15/openapi.yaml',
   output: './src/route53domains/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/route53domains/types.ts' },
   client: { output: './src/route53domains/client.ts', baseUrl: '/' },
   rpc: { output: './src/route53domains/rpc.ts', parseResponse: true },

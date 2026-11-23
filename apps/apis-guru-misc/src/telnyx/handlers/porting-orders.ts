@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePortingOrdersIdRoute,
   getPortingOrdersExceptionTypesRoute,
   getPortingOrdersIdActivationJobsActivationJobIdRoute,
@@ -16,48 +16,86 @@ import {
   postPortingOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPortingOrdersRouteHandler: RouteHandler<typeof getPortingOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const portingOrdersHandler = app
-  .openapi(getPortingOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortingOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersExceptionTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePortingOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPortingOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortingOrdersIdActionsActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortingOrdersIdActionsCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortingOrdersIdActionsConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersIdActivationJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersIdActivationJobsActivationJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPortingOrdersIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPortingOrdersIdLoaTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPortingOrdersRouteHandler: RouteHandler<typeof postPortingOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersExceptionTypesRouteHandler: RouteHandler<
+  typeof getPortingOrdersExceptionTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePortingOrdersIdRouteHandler: RouteHandler<
+  typeof deletePortingOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersIdRouteHandler: RouteHandler<typeof getPortingOrdersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPortingOrdersIdRouteHandler: RouteHandler<
+  typeof patchPortingOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortingOrdersIdActionsActivateRouteHandler: RouteHandler<
+  typeof postPortingOrdersIdActionsActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortingOrdersIdActionsCancelRouteHandler: RouteHandler<
+  typeof postPortingOrdersIdActionsCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortingOrdersIdActionsConfirmRouteHandler: RouteHandler<
+  typeof postPortingOrdersIdActionsConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersIdActivationJobsRouteHandler: RouteHandler<
+  typeof getPortingOrdersIdActivationJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersIdActivationJobsActivationJobIdRouteHandler: RouteHandler<
+  typeof getPortingOrdersIdActivationJobsActivationJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersIdCommentsRouteHandler: RouteHandler<
+  typeof getPortingOrdersIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPortingOrdersIdCommentsRouteHandler: RouteHandler<
+  typeof postPortingOrdersIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPortingOrdersIdLoaTemplateRouteHandler: RouteHandler<
+  typeof getPortingOrdersIdLoaTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

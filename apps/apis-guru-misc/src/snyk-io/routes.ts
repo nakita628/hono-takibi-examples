@@ -4143,7 +4143,6 @@ export const postGroupGroupIdAuditRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         Link: z
           .string()
@@ -4338,7 +4337,7 @@ export const getGroupGroupIdOrgsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getGroupGroupIdRolesRoute = createRoute({
@@ -4363,7 +4362,7 @@ export const getGroupGroupIdRolesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getGroupGroupIdSettingsRoute = createRoute({
@@ -4769,7 +4768,7 @@ export const postMonitorDepGraphRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOrgRoute = createRoute({
@@ -4812,7 +4811,7 @@ export const postOrgRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Created', content: {}, headers: z.object({}) },
+    201: { description: 'Created', headers: z.object({}) },
     400: {
       description:
         'A group of errors that happened in the process of creating a new organization and were unexpected',
@@ -5224,7 +5223,6 @@ export const postOrgOrgIdAuditRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         Link: z
           .string()
@@ -5612,7 +5610,7 @@ export const getOrgOrgIdEntitlementEntitlementKeyRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getOrgOrgIdEntitlementsRoute = createRoute({
@@ -5638,7 +5636,7 @@ export const getOrgOrgIdEntitlementsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getOrgOrgIdIntegrationsRoute = createRoute({
@@ -6001,7 +5999,7 @@ export const postOrgOrgIdIntegrationsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putOrgOrgIdIntegrationsIntegrationIdRoute = createRoute({
@@ -6591,7 +6589,7 @@ export const putOrgOrgIdIntegrationsIntegrationIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteOrgOrgIdIntegrationsIntegrationIdAuthenticationRoute = createRoute({
@@ -6670,7 +6668,7 @@ export const postOrgOrgIdIntegrationsIntegrationIdAuthenticationProvisionTokenRo
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOrgOrgIdIntegrationsIntegrationIdAuthenticationSwitchTokenRoute = createRoute({
@@ -6768,7 +6766,7 @@ export const postOrgOrgIdIntegrationsIntegrationIdCloneRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postOrgOrgIdIntegrationsIntegrationIdImportRoute = createRoute({
@@ -11446,7 +11444,7 @@ export const putOrgOrgIdProjectProjectIdMoveRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getOrgOrgIdProjectProjectIdSettingsRoute = createRoute({
@@ -12941,7 +12939,7 @@ export const getOrgsRoute = createRoute({
   tags: ['Organizations'],
   summary: 'List all the organizations a user belongs to',
   operationId: 'List all the organizations a user belongs to',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postReportingCountsIssuesRoute = createRoute({
@@ -14730,7 +14728,7 @@ export const postTestComposerRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestDepGraphRoute = createRoute({
@@ -14833,7 +14831,7 @@ export const postTestDepGraphRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestGolangdepRoute = createRoute({
@@ -14913,7 +14911,7 @@ export const postTestGolangdepRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestGovendorRoute = createRoute({
@@ -14963,7 +14961,7 @@ export const postTestGovendorRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestGradleRoute = createRoute({
@@ -15014,7 +15012,7 @@ export const postTestGradleRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestGradleGroupNameVersionRoute = createRoute({
@@ -15095,7 +15093,7 @@ export const getTestGradleGroupNameVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestMavenRoute = createRoute({
@@ -15195,7 +15193,7 @@ export const postTestMavenRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestMavenGroupIdArtifactIdVersionRoute = createRoute({
@@ -15276,7 +15274,7 @@ export const getTestMavenGroupIdArtifactIdVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestNpmRoute = createRoute({
@@ -15343,7 +15341,7 @@ export const postTestNpmRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestNpmPackageNameVersionRoute = createRoute({
@@ -15398,7 +15396,7 @@ export const getTestNpmPackageNameVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestPipRoute = createRoute({
@@ -15450,7 +15448,7 @@ export const postTestPipRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestPipPackageNameVersionRoute = createRoute({
@@ -15503,7 +15501,7 @@ export const getTestPipPackageNameVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestRubygemsRoute = createRoute({
@@ -15557,7 +15555,7 @@ export const postTestRubygemsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestRubygemsGemNameVersionRoute = createRoute({
@@ -15611,7 +15609,7 @@ export const getTestRubygemsGemNameVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestSbtRoute = createRoute({
@@ -15667,7 +15665,7 @@ export const postTestSbtRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTestSbtGroupIdArtifactIdVersionRoute = createRoute({
@@ -15747,7 +15745,7 @@ export const getTestSbtGroupIdArtifactIdVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postTestYarnRoute = createRoute({
@@ -15814,7 +15812,7 @@ export const postTestYarnRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getUserMeRoute = createRoute({
@@ -15847,7 +15845,7 @@ export const getUserMeRoute = createRoute({
       },
       headers: z.object({}),
     },
-    401: { description: '`API_KEY` is invalid.', content: {}, headers: z.object({}) },
+    401: { description: '`API_KEY` is invalid.', headers: z.object({}) },
   },
 })
 
@@ -16358,16 +16356,11 @@ export const getUserUserIdRoute = createRoute({
       },
       headers: z.object({}),
     },
-    400: {
-      description: 'The provided `id` is not in a valid format.',
-      content: {},
-      headers: z.object({}),
-    },
-    401: { description: '`API_KEY` is invalid.', content: {}, headers: z.object({}) },
+    400: { description: 'The provided `id` is not in a valid format.', headers: z.object({}) },
+    401: { description: '`API_KEY` is invalid.', headers: z.object({}) },
     404: {
       description:
         'The requested user could not be found or caller does not have sufficient permissions.',
-      content: {},
       headers: z.object({}),
     },
   },

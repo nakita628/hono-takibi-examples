@@ -4,7 +4,7 @@ export default defineConfig({
   // Discord API specification: https://github.com/discord/discord-api-spec
   input: 'https://raw.githubusercontent.com/discord/discord-api-spec/main/specs/openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

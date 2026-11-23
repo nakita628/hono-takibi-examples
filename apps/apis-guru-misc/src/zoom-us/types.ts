@@ -2361,6 +2361,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { accountId: string } } & {
+              json: {
+                billing_auto_renew?: boolean | undefined
+                meeting_connector_list?: string[] | undefined
+                pay_mode?: 'master' | 'sub' | undefined
+                room_connector_list?: string[] | undefined
+                share_mc?: boolean | undefined
+                share_rc?: boolean | undefined
+              }
+            } & {
+              form: {
+                billing_auto_renew?: boolean | undefined
+                meeting_connector_list?: string[] | undefined
+                pay_mode?: 'master' | 'sub' | undefined
+                room_connector_list?: string[] | undefined
+                share_mc?: boolean | undefined
+                share_rc?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 400
           }
         | {
@@ -36912,12 +36936,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/users/:userId/schedulers': {
-      $delete: {
-        input: { param: { userId: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $delete:
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 404 }
       $get:
         | {
             input: { param: { userId: string } }
@@ -39143,6 +39164,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 200
+          }
+        | {
+            input: { param: { userId: string } } & {
+              json: { action: 'activate' | 'deactivate' }
+            } & { form: { action: 'activate' | 'deactivate' } }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { userId: string } } & {

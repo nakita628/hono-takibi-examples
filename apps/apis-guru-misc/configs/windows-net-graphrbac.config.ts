@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/windows.net/graphrbac/1.6/openapi.yaml',
   output: './src/windows-net-graphrbac/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/windows-net-graphrbac/types.ts' },
   client: { output: './src/windows-net-graphrbac/client.ts', baseUrl: '/' },
   rpc: { output: './src/windows-net-graphrbac/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getKeycloakConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getKeycloakConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const keycloakHandler = app.openapi(getKeycloakConfigRoute, (c) => {
+export const getKeycloakConfigRouteHandler: RouteHandler<typeof getKeycloakConfigRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

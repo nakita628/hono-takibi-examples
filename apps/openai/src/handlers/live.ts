@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLiveSessionsSessionIdContentRoute,
   postLiveSessionsRoute,
   postLiveSessionsSessionIdAcceptRoute,
@@ -9,27 +9,44 @@ import {
   postLiveSessionsSessionIdRejectRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLiveSessionsRouteHandler: RouteHandler<typeof postLiveSessionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const liveHandler = app
-  .openapi(postLiveSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveSessionsSessionIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveSessionsSessionIdForkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveSessionsSessionIdHangupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveSessionsSessionIdReferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLiveSessionsSessionIdRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLiveSessionsSessionIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLiveSessionsSessionIdAcceptRouteHandler: RouteHandler<
+  typeof postLiveSessionsSessionIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLiveSessionsSessionIdForkRouteHandler: RouteHandler<
+  typeof postLiveSessionsSessionIdForkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLiveSessionsSessionIdHangupRouteHandler: RouteHandler<
+  typeof postLiveSessionsSessionIdHangupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLiveSessionsSessionIdReferRouteHandler: RouteHandler<
+  typeof postLiveSessionsSessionIdReferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLiveSessionsSessionIdRejectRouteHandler: RouteHandler<
+  typeof postLiveSessionsSessionIdRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLiveSessionsSessionIdContentRouteHandler: RouteHandler<
+  typeof getLiveSessionsSessionIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

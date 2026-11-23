@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDescribeNotificationRuleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDescribeNotificationRuleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const describeNotificationRuleHandler = app.openapi(
-  postDescribeNotificationRuleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDescribeNotificationRuleRouteHandler: RouteHandler<
+  typeof postDescribeNotificationRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

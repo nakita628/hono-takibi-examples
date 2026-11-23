@@ -179,9 +179,8 @@ const NetworkInsightsAccessScopeContentSchema = z
   .openapi('NetworkInsightsAccessScopeContent')
 
 type CreateNetworkInsightsAccessScopeResultType = {
-  NetworkInsightsAccessScope?: z.infer<typeof NetworkInsightsAccessScopeSchema> & unknown
-  NetworkInsightsAccessScopeContent?: z.infer<typeof NetworkInsightsAccessScopeContentSchema> &
-    unknown
+  NetworkInsightsAccessScope?: z.infer<typeof NetworkInsightsAccessScopeSchema>
+  NetworkInsightsAccessScopeContent?: z.infer<typeof NetworkInsightsAccessScopeContentSchema>
 }
 
 const FleetActivityStatusSchema = z
@@ -1749,15 +1748,15 @@ const FleetDataSchema = z
   .openapi({ description: 'Describes an EC2 Fleet.', required: [] })
   .openapi('FleetData')
 
-type FleetSetType = (z.infer<typeof FleetDataSchema> & unknown)[]
+type FleetSetType = z.infer<typeof FleetDataSchema>[]
 
 const FleetSetSchema: z.ZodType<FleetSetType> = z
   .array(FleetDataSchema.openapi({ xml: { name: 'item' } }))
   .openapi('FleetSet')
 
 type DescribeFleetsResultType = {
-  NextToken?: z.infer<typeof StringSchema> & unknown
-  Fleets?: z.infer<typeof FleetSetSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema>
+  Fleets?: z.infer<typeof FleetSetSchema>
 }
 
 const GroupIdentifierSchema = z
@@ -2714,11 +2713,11 @@ const InstanceListSchema = z
   .openapi('InstanceList')
 
 type ReservationType = {
-  Groups?: z.infer<typeof GroupIdentifierListSchema> & unknown
-  Instances?: z.infer<typeof InstanceListSchema> & unknown
-  OwnerId?: z.infer<typeof StringSchema> & unknown
-  RequesterId?: z.infer<typeof StringSchema> & unknown
-  ReservationId?: z.infer<typeof StringSchema> & unknown
+  Groups?: z.infer<typeof GroupIdentifierListSchema>
+  Instances?: z.infer<typeof InstanceListSchema>
+  OwnerId?: z.infer<typeof StringSchema>
+  RequesterId?: z.infer<typeof StringSchema>
+  ReservationId?: z.infer<typeof StringSchema>
 }
 
 const ReservationSchema: z.ZodType<ReservationType> = z
@@ -2753,15 +2752,15 @@ const ReservationSchema: z.ZodType<ReservationType> = z
   })
   .openapi('Reservation')
 
-type ReservationListType = (z.infer<typeof ReservationSchema> & unknown)[]
+type ReservationListType = z.infer<typeof ReservationSchema>[]
 
 const ReservationListSchema: z.ZodType<ReservationListType> = z
   .array(ReservationSchema.openapi({ xml: { name: 'item' } }))
   .openapi('ReservationList')
 
 type DescribeInstancesResultType = {
-  Reservations?: z.infer<typeof ReservationListSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Reservations?: z.infer<typeof ReservationListSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const LongSchema = z.int().openapi('Long')
@@ -3636,8 +3635,8 @@ const LaunchTemplateVersionSetSchema = z
   .openapi('LaunchTemplateVersionSet')
 
 type DescribeLaunchTemplateVersionsResultType = {
-  LaunchTemplateVersions?: z.infer<typeof LaunchTemplateVersionSetSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  LaunchTemplateVersions?: z.infer<typeof LaunchTemplateVersionSetSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const NetworkInsightsAnalysisIdSchema = z.string().openapi('NetworkInsightsAnalysisId')
@@ -4356,26 +4355,26 @@ const ExplanationListSchema = z
   .openapi('ExplanationList')
 
 type PathComponentType = {
-  SequenceNumber?: z.infer<typeof IntegerSchema> & unknown
-  AclRule?: z.infer<typeof AnalysisAclRuleSchema> & unknown
-  AttachedTo?: z.infer<typeof AnalysisComponentSchema> & unknown
-  Component?: z.infer<typeof AnalysisComponentSchema> & unknown
-  DestinationVpc?: z.infer<typeof AnalysisComponentSchema> & unknown
-  OutboundHeader?: z.infer<typeof AnalysisPacketHeaderSchema> & unknown
-  InboundHeader?: z.infer<typeof AnalysisPacketHeaderSchema> & unknown
-  RouteTableRoute?: z.infer<typeof AnalysisRouteTableRouteSchema> & unknown
-  SecurityGroupRule?: z.infer<typeof AnalysisSecurityGroupRuleSchema> & unknown
-  SourceVpc?: z.infer<typeof AnalysisComponentSchema> & unknown
-  Subnet?: z.infer<typeof AnalysisComponentSchema> & unknown
-  Vpc?: z.infer<typeof AnalysisComponentSchema> & unknown
-  AdditionalDetails?: z.infer<typeof AdditionalDetailListSchema> & unknown
-  TransitGateway?: z.infer<typeof AnalysisComponentSchema> & unknown
-  TransitGatewayRouteTableRoute?: z.infer<typeof TransitGatewayRouteTableRouteSchema> & unknown
-  Explanations?: z.infer<typeof ExplanationListSchema> & unknown
-  ElasticLoadBalancerListener?: z.infer<typeof AnalysisComponentSchema> & unknown
-  FirewallStatelessRule?: z.infer<typeof FirewallStatelessRuleSchema> & unknown
-  FirewallStatefulRule?: z.infer<typeof FirewallStatefulRuleSchema> & unknown
-  ServiceName?: z.infer<typeof StringSchema> & unknown
+  SequenceNumber?: z.infer<typeof IntegerSchema>
+  AclRule?: z.infer<typeof AnalysisAclRuleSchema>
+  AttachedTo?: z.infer<typeof AnalysisComponentSchema>
+  Component?: z.infer<typeof AnalysisComponentSchema>
+  DestinationVpc?: z.infer<typeof AnalysisComponentSchema>
+  OutboundHeader?: z.infer<typeof AnalysisPacketHeaderSchema>
+  InboundHeader?: z.infer<typeof AnalysisPacketHeaderSchema>
+  RouteTableRoute?: z.infer<typeof AnalysisRouteTableRouteSchema>
+  SecurityGroupRule?: z.infer<typeof AnalysisSecurityGroupRuleSchema>
+  SourceVpc?: z.infer<typeof AnalysisComponentSchema>
+  Subnet?: z.infer<typeof AnalysisComponentSchema>
+  Vpc?: z.infer<typeof AnalysisComponentSchema>
+  AdditionalDetails?: z.infer<typeof AdditionalDetailListSchema>
+  TransitGateway?: z.infer<typeof AnalysisComponentSchema>
+  TransitGatewayRouteTableRoute?: z.infer<typeof TransitGatewayRouteTableRouteSchema>
+  Explanations?: z.infer<typeof ExplanationListSchema>
+  ElasticLoadBalancerListener?: z.infer<typeof AnalysisComponentSchema>
+  FirewallStatelessRule?: z.infer<typeof FirewallStatelessRuleSchema>
+  FirewallStatefulRule?: z.infer<typeof FirewallStatefulRuleSchema>
+  ServiceName?: z.infer<typeof StringSchema>
 }
 
 const PathComponentSchema: z.ZodType<PathComponentType> = z
@@ -4464,7 +4463,7 @@ const PathComponentSchema: z.ZodType<PathComponentType> = z
   .openapi({ description: 'Describes a path component.', required: [] })
   .openapi('PathComponent')
 
-type PathComponentListType = (z.infer<typeof PathComponentSchema> & unknown)[]
+type PathComponentListType = z.infer<typeof PathComponentSchema>[]
 
 const PathComponentListSchema: z.ZodType<PathComponentListType> = z
   .array(PathComponentSchema.openapi({ xml: { name: 'item' } }))
@@ -4492,22 +4491,22 @@ const AlternatePathHintListSchema = z
   .openapi('AlternatePathHintList')
 
 type NetworkInsightsAnalysisType = {
-  NetworkInsightsAnalysisId?: z.infer<typeof NetworkInsightsAnalysisIdSchema> & unknown
-  NetworkInsightsAnalysisArn?: z.infer<typeof ResourceArnSchema> & unknown
-  NetworkInsightsPathId?: z.infer<typeof NetworkInsightsPathIdSchema> & unknown
-  AdditionalAccounts?: z.infer<typeof ValueStringListSchema> & unknown
-  FilterInArns?: z.infer<typeof ArnListSchema> & unknown
-  StartDate?: z.infer<typeof MillisecondDateTimeSchema> & unknown
-  Status?: z.infer<typeof AnalysisStatusSchema> & unknown
-  StatusMessage?: z.infer<typeof StringSchema> & unknown
-  WarningMessage?: z.infer<typeof StringSchema> & unknown
-  NetworkPathFound?: z.infer<typeof BooleanSchema> & unknown
-  ForwardPathComponents?: z.infer<typeof PathComponentListSchema> & unknown
-  ReturnPathComponents?: z.infer<typeof PathComponentListSchema> & unknown
-  Explanations?: z.infer<typeof ExplanationListSchema> & unknown
-  AlternatePathHints?: z.infer<typeof AlternatePathHintListSchema> & unknown
-  SuggestedAccounts?: z.infer<typeof ValueStringListSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  NetworkInsightsAnalysisId?: z.infer<typeof NetworkInsightsAnalysisIdSchema>
+  NetworkInsightsAnalysisArn?: z.infer<typeof ResourceArnSchema>
+  NetworkInsightsPathId?: z.infer<typeof NetworkInsightsPathIdSchema>
+  AdditionalAccounts?: z.infer<typeof ValueStringListSchema>
+  FilterInArns?: z.infer<typeof ArnListSchema>
+  StartDate?: z.infer<typeof MillisecondDateTimeSchema>
+  Status?: z.infer<typeof AnalysisStatusSchema>
+  StatusMessage?: z.infer<typeof StringSchema>
+  WarningMessage?: z.infer<typeof StringSchema>
+  NetworkPathFound?: z.infer<typeof BooleanSchema>
+  ForwardPathComponents?: z.infer<typeof PathComponentListSchema>
+  ReturnPathComponents?: z.infer<typeof PathComponentListSchema>
+  Explanations?: z.infer<typeof ExplanationListSchema>
+  AlternatePathHints?: z.infer<typeof AlternatePathHintListSchema>
+  SuggestedAccounts?: z.infer<typeof ValueStringListSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const NetworkInsightsAnalysisSchema: z.ZodType<NetworkInsightsAnalysisType> = z
@@ -4581,15 +4580,15 @@ const NetworkInsightsAnalysisSchema: z.ZodType<NetworkInsightsAnalysisType> = z
   .openapi({ description: 'Describes a network insights analysis.', required: [] })
   .openapi('NetworkInsightsAnalysis')
 
-type NetworkInsightsAnalysisListType = (z.infer<typeof NetworkInsightsAnalysisSchema> & unknown)[]
+type NetworkInsightsAnalysisListType = z.infer<typeof NetworkInsightsAnalysisSchema>[]
 
 const NetworkInsightsAnalysisListSchema: z.ZodType<NetworkInsightsAnalysisListType> = z
   .array(NetworkInsightsAnalysisSchema.openapi({ xml: { name: 'item' } }))
   .openapi('NetworkInsightsAnalysisList')
 
 type DescribeNetworkInsightsAnalysesResultType = {
-  NetworkInsightsAnalyses?: z.infer<typeof NetworkInsightsAnalysisListSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  NetworkInsightsAnalyses?: z.infer<typeof NetworkInsightsAnalysisListSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const ActivityStatusSchema = z
@@ -5342,12 +5341,12 @@ const BatchStateSchema = z
   .openapi('BatchState')
 
 type SpotFleetRequestConfigType = {
-  ActivityStatus?: z.infer<typeof ActivityStatusSchema> & unknown
-  CreateTime?: z.infer<typeof MillisecondDateTimeSchema> & unknown
-  SpotFleetRequestConfig?: z.infer<typeof SpotFleetRequestConfigDataSchema> & unknown
-  SpotFleetRequestId?: z.infer<typeof StringSchema> & unknown
-  SpotFleetRequestState?: z.infer<typeof BatchStateSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
+  ActivityStatus?: z.infer<typeof ActivityStatusSchema>
+  CreateTime?: z.infer<typeof MillisecondDateTimeSchema>
+  SpotFleetRequestConfig?: z.infer<typeof SpotFleetRequestConfigDataSchema>
+  SpotFleetRequestId?: z.infer<typeof StringSchema>
+  SpotFleetRequestState?: z.infer<typeof BatchStateSchema>
+  Tags?: z.infer<typeof TagListSchema>
 }
 
 const SpotFleetRequestConfigSchema: z.ZodType<SpotFleetRequestConfigType> = z
@@ -5381,15 +5380,15 @@ const SpotFleetRequestConfigSchema: z.ZodType<SpotFleetRequestConfigType> = z
   .openapi({ description: 'Describes a Spot Fleet request.', required: [] })
   .openapi('SpotFleetRequestConfig')
 
-type SpotFleetRequestConfigSetType = (z.infer<typeof SpotFleetRequestConfigSchema> & unknown)[]
+type SpotFleetRequestConfigSetType = z.infer<typeof SpotFleetRequestConfigSchema>[]
 
 const SpotFleetRequestConfigSetSchema: z.ZodType<SpotFleetRequestConfigSetType> = z
   .array(SpotFleetRequestConfigSchema.openapi({ xml: { name: 'item' } }))
   .openapi('SpotFleetRequestConfigSet')
 
 type DescribeSpotFleetRequestsResponseType = {
-  NextToken?: z.infer<typeof StringSchema> & unknown
-  SpotFleetRequestConfigs?: z.infer<typeof SpotFleetRequestConfigSetSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema>
+  SpotFleetRequestConfigs?: z.infer<typeof SpotFleetRequestConfigSetSchema>
 }
 
 const SpotInstanceStateFaultSchema = z
@@ -5609,8 +5608,8 @@ const SpotInstanceRequestListSchema = z
   .openapi('SpotInstanceRequestList')
 
 type DescribeSpotInstanceRequestsResultType = {
-  SpotInstanceRequests?: z.infer<typeof SpotInstanceRequestListSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  SpotInstanceRequests?: z.infer<typeof SpotInstanceRequestListSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const VpnStateSchema = z.enum(['pending', 'available', 'deleting', 'deleted']).openapi('VpnState')
@@ -6047,22 +6046,17 @@ const VpnConnectionListSchema = z
   .array(VpnConnectionSchema.openapi({ xml: { name: 'item' } }))
   .openapi('VpnConnectionList')
 
-type DescribeVpnConnectionsResultType = {
-  VpnConnections?: z.infer<typeof VpnConnectionListSchema> & unknown
-}
+type DescribeVpnConnectionsResultType = { VpnConnections?: z.infer<typeof VpnConnectionListSchema> }
 
 const NetworkInsightsAccessScopeAnalysisIdSchema = z
   .string()
   .openapi('NetworkInsightsAccessScopeAnalysisId')
 
 type AccessScopeAnalysisFindingType = {
-  NetworkInsightsAccessScopeAnalysisId?: z.infer<
-    typeof NetworkInsightsAccessScopeAnalysisIdSchema
-  > &
-    unknown
-  NetworkInsightsAccessScopeId?: z.infer<typeof NetworkInsightsAccessScopeIdSchema> & unknown
-  FindingId?: z.infer<typeof StringSchema> & unknown
-  FindingComponents?: z.infer<typeof PathComponentListSchema> & unknown
+  NetworkInsightsAccessScopeAnalysisId?: z.infer<typeof NetworkInsightsAccessScopeAnalysisIdSchema>
+  NetworkInsightsAccessScopeId?: z.infer<typeof NetworkInsightsAccessScopeIdSchema>
+  FindingId?: z.infer<typeof StringSchema>
+  FindingComponents?: z.infer<typeof PathComponentListSchema>
 }
 
 const AccessScopeAnalysisFindingSchema: z.ZodType<AccessScopeAnalysisFindingType> = z
@@ -6088,39 +6082,34 @@ const AccessScopeAnalysisFindingSchema: z.ZodType<AccessScopeAnalysisFindingType
   .openapi({ description: 'Describes a finding for a Network Access Scope.', required: [] })
   .openapi('AccessScopeAnalysisFinding')
 
-type AccessScopeAnalysisFindingListType = (z.infer<typeof AccessScopeAnalysisFindingSchema> &
-  unknown)[]
+type AccessScopeAnalysisFindingListType = z.infer<typeof AccessScopeAnalysisFindingSchema>[]
 
 const AccessScopeAnalysisFindingListSchema: z.ZodType<AccessScopeAnalysisFindingListType> = z
   .array(AccessScopeAnalysisFindingSchema.openapi({ xml: { name: 'item' } }))
   .openapi('AccessScopeAnalysisFindingList')
 
 type GetNetworkInsightsAccessScopeAnalysisFindingsResultType = {
-  NetworkInsightsAccessScopeAnalysisId?: z.infer<
-    typeof NetworkInsightsAccessScopeAnalysisIdSchema
-  > &
-    unknown
-  AnalysisStatus?: z.infer<typeof AnalysisStatusSchema> & unknown
-  AnalysisFindings?: z.infer<typeof AccessScopeAnalysisFindingListSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  NetworkInsightsAccessScopeAnalysisId?: z.infer<typeof NetworkInsightsAccessScopeAnalysisIdSchema>
+  AnalysisStatus?: z.infer<typeof AnalysisStatusSchema>
+  AnalysisFindings?: z.infer<typeof AccessScopeAnalysisFindingListSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type GetNetworkInsightsAccessScopeContentResultType = {
-  NetworkInsightsAccessScopeContent?: z.infer<typeof NetworkInsightsAccessScopeContentSchema> &
-    unknown
+  NetworkInsightsAccessScopeContent?: z.infer<typeof NetworkInsightsAccessScopeContentSchema>
 }
 
 type RequestSpotInstancesResultType = {
-  SpotInstanceRequests?: z.infer<typeof SpotInstanceRequestListSchema> & unknown
+  SpotInstanceRequests?: z.infer<typeof SpotInstanceRequestListSchema>
 }
 
 type StartNetworkInsightsAnalysisResultType = {
-  NetworkInsightsAnalysis?: z.infer<typeof NetworkInsightsAnalysisSchema> & unknown
+  NetworkInsightsAnalysis?: z.infer<typeof NetworkInsightsAnalysisSchema>
 }
 
 type RequestSpotFleetRequestType = {
-  DryRun?: z.infer<typeof BooleanSchema> & unknown
-  SpotFleetRequestConfig: z.infer<typeof SpotFleetRequestConfigDataSchema> & unknown
+  DryRun?: z.infer<typeof BooleanSchema>
+  SpotFleetRequestConfig: z.infer<typeof SpotFleetRequestConfigDataSchema>
 }
 
 const AddressTransferStatusSchema = z

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV1CountriesCountryKeyRoute, getV1CountriesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV1CountriesCountryKeyRoute, getV1CountriesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1CountriesRouteHandler: RouteHandler<typeof getV1CountriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1CountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CountriesCountryKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1CountriesCountryKeyRouteHandler: RouteHandler<
+  typeof getV1CountriesCountryKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

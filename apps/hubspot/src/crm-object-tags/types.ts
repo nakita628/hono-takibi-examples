@@ -1046,12 +1046,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectTypeId: string; tagId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectTypeId: string; tagId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectTypeId: string; tagId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectTypeId: string; tagId: bigint } } & {

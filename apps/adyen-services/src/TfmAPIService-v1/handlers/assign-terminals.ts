@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAssignTerminalsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAssignTerminalsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const assignTerminalsHandler = app.openapi(postAssignTerminalsRoute, (c) => {
+export const postAssignTerminalsRouteHandler: RouteHandler<
+  typeof postAssignTerminalsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

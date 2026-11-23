@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/futuregenerali/3.0.0/openapi.yaml',
   output: './src/futuregenerali/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/futuregenerali/types.ts' },
   client: { output: './src/futuregenerali/client.ts', baseUrl: '/' },
   rpc: { output: './src/futuregenerali/rpc.ts', parseResponse: true },

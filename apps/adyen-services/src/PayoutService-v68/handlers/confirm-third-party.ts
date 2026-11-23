@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConfirmThirdPartyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConfirmThirdPartyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const confirmThirdPartyHandler = app.openapi(postConfirmThirdPartyRoute, (c) => {
+export const postConfirmThirdPartyRouteHandler: RouteHandler<
+  typeof postConfirmThirdPartyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

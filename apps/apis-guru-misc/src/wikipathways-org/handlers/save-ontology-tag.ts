@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSaveOntologyTagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSaveOntologyTagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const saveOntologyTagHandler = app.openapi(getSaveOntologyTagRoute, (c) => {
+export const getSaveOntologyTagRouteHandler: RouteHandler<typeof getSaveOntologyTagRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

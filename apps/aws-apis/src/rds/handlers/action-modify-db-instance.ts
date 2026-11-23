@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionModifyDBInstanceRoute, postActionModifyDBInstanceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionModifyDBInstanceRoute, postActionModifyDBInstanceRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyDBInstanceRouteHandler: RouteHandler<
+  typeof getActionModifyDBInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyDbInstanceHandler = app
-  .openapi(getActionModifyDBInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyDBInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyDBInstanceRouteHandler: RouteHandler<
+  typeof postActionModifyDBInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

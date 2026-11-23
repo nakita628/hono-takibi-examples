@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMeetingsMeetingIdPollsPollIdRoute,
   deleteMeetingsMeetingIdRecordingsRecordingIdRoute,
   deleteMeetingsMeetingIdRecordingsRoute,
@@ -34,102 +34,194 @@ import {
   putMeetingsMeetingIdStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteMeetingsMeetingIdRouteHandler: RouteHandler<
+  typeof deleteMeetingsMeetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const meetingsHandler = app
-  .openapi(deleteMeetingsMeetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeetingsMeetingIdBatchPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdInvitationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdLivestreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdLivestreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdLivestreamStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeetingsMeetingIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeetingsMeetingIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeetingsMeetingIdRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRecordingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRecordingsRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeetingsMeetingIdRecordingsRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRecordingsRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdRecordingsRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdRecordingsRegistrantsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRecordingsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdRecordingsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdRecordingsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeetingsMeetingIdRecordingsRecordingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdRecordingsRecordingIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeetingsMeetingIdRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeetingsMeetingIdRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeetingsMeetingIdRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdRegistrantsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeetingsMeetingIdRegistrantsRegistrantIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMeetingsMeetingIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMeetingsMeetingIdRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeetingsMeetingIdBatchPollsRouteHandler: RouteHandler<
+  typeof postMeetingsMeetingIdBatchPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdInvitationRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdInvitationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdLivestreamRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdLivestreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdLivestreamRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdLivestreamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdLivestreamStatusRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdLivestreamStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdPollsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeetingsMeetingIdPollsRouteHandler: RouteHandler<
+  typeof postMeetingsMeetingIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeetingsMeetingIdPollsPollIdRouteHandler: RouteHandler<
+  typeof deleteMeetingsMeetingIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdPollsPollIdRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdPollsPollIdRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeetingsMeetingIdRecordingsRouteHandler: RouteHandler<
+  typeof deleteMeetingsMeetingIdRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRecordingsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRecordingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRecordingsRegistrantsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRecordingsRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeetingsMeetingIdRecordingsRegistrantsRouteHandler: RouteHandler<
+  typeof postMeetingsMeetingIdRecordingsRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRecordingsRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRecordingsRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdRecordingsRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdRecordingsRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdRecordingsRegistrantsStatusRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdRecordingsRegistrantsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRecordingsSettingsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRecordingsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdRecordingsSettingsRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdRecordingsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdRecordingsStatusRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdRecordingsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeetingsMeetingIdRecordingsRecordingIdRouteHandler: RouteHandler<
+  typeof deleteMeetingsMeetingIdRecordingsRecordingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdRecordingsRecordingIdStatusRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdRecordingsRecordingIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRegistrantsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeetingsMeetingIdRegistrantsRouteHandler: RouteHandler<
+  typeof postMeetingsMeetingIdRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeetingsMeetingIdRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof getMeetingsMeetingIdRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeetingsMeetingIdRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof patchMeetingsMeetingIdRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdRegistrantsStatusRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdRegistrantsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeetingsMeetingIdRegistrantsRegistrantIdRouteHandler: RouteHandler<
+  typeof deleteMeetingsMeetingIdRegistrantsRegistrantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMeetingsMeetingIdStatusRouteHandler: RouteHandler<
+  typeof putMeetingsMeetingIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,61 +1,167 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobHandler,
-  xAmzTargetComprehendMedical20181030DescribeIcd10CmInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030DescribePhiDetectionJobHandler,
-  xAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030DescribeSnomedctInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030DetectEntitiesHandler,
-  xAmzTargetComprehendMedical20181030DetectEntitiesV2Handler,
-  xAmzTargetComprehendMedical20181030DetectPhiHandler,
-  xAmzTargetComprehendMedical20181030InferIcd10CmHandler,
-  xAmzTargetComprehendMedical20181030InferRxNormHandler,
-  xAmzTargetComprehendMedical20181030InferSnomedctHandler,
-  xAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsHandler,
-  xAmzTargetComprehendMedical20181030ListIcd10CmInferenceJobsHandler,
-  xAmzTargetComprehendMedical20181030ListPhiDetectionJobsHandler,
-  xAmzTargetComprehendMedical20181030ListRxNormInferenceJobsHandler,
-  xAmzTargetComprehendMedical20181030ListSnomedctInferenceJobsHandler,
-  xAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobHandler,
-  xAmzTargetComprehendMedical20181030StartIcd10CmInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030StartPhiDetectionJobHandler,
-  xAmzTargetComprehendMedical20181030StartRxNormInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030StartSnomedctInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobHandler,
-  xAmzTargetComprehendMedical20181030StopIcd10CmInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030StopPhiDetectionJobHandler,
-  xAmzTargetComprehendMedical20181030StopRxNormInferenceJobHandler,
-  xAmzTargetComprehendMedical20181030StopSnomedctInferenceJobHandler,
+  postXAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobRoute,
+  postXAmzTargetComprehendMedical20181030DescribeICD10CMInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030DescribePHIDetectionJobRoute,
+  postXAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030DescribeSNOMEDCTInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030DetectEntitiesRoute,
+  postXAmzTargetComprehendMedical20181030DetectEntitiesV2Route,
+  postXAmzTargetComprehendMedical20181030DetectPHIRoute,
+  postXAmzTargetComprehendMedical20181030InferICD10CMRoute,
+  postXAmzTargetComprehendMedical20181030InferRxNormRoute,
+  postXAmzTargetComprehendMedical20181030InferSNOMEDCTRoute,
+  postXAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsRoute,
+  postXAmzTargetComprehendMedical20181030ListICD10CMInferenceJobsRoute,
+  postXAmzTargetComprehendMedical20181030ListPHIDetectionJobsRoute,
+  postXAmzTargetComprehendMedical20181030ListRxNormInferenceJobsRoute,
+  postXAmzTargetComprehendMedical20181030ListSNOMEDCTInferenceJobsRoute,
+  postXAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobRoute,
+  postXAmzTargetComprehendMedical20181030StartICD10CMInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030StartPHIDetectionJobRoute,
+  postXAmzTargetComprehendMedical20181030StartRxNormInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030StartSNOMEDCTInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobRoute,
+  postXAmzTargetComprehendMedical20181030StopICD10CMInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030StopPHIDetectionJobRoute,
+  postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute,
+  postXAmzTargetComprehendMedical20181030StopSNOMEDCTInferenceJobRoute,
+} from './routes'
+import {
+  postXAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobRouteHandler,
+  postXAmzTargetComprehendMedical20181030DescribeICD10CMInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030DescribePHIDetectionJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030DescribeSNOMEDCTInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030DetectEntitiesRouteHandler,
+  postXAmzTargetComprehendMedical20181030DetectEntitiesV2RouteHandler,
+  postXAmzTargetComprehendMedical20181030DetectPHIRouteHandler,
+  postXAmzTargetComprehendMedical20181030InferICD10CMRouteHandler,
+  postXAmzTargetComprehendMedical20181030InferRxNormRouteHandler,
+  postXAmzTargetComprehendMedical20181030InferSNOMEDCTRouteHandler,
+  postXAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsRouteHandler,
+  postXAmzTargetComprehendMedical20181030ListICD10CMInferenceJobsRouteHandler,
+  postXAmzTargetComprehendMedical20181030ListPHIDetectionJobsRouteHandler,
+  postXAmzTargetComprehendMedical20181030ListRxNormInferenceJobsRouteHandler,
+  postXAmzTargetComprehendMedical20181030ListSNOMEDCTInferenceJobsRouteHandler,
+  postXAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StartICD10CMInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StartPHIDetectionJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StartRxNormInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StartSNOMEDCTInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StopICD10CMInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StopPHIDetectionJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRouteHandler,
+  postXAmzTargetComprehendMedical20181030StopSNOMEDCTInferenceJobRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DescribeIcd10CmInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DescribePhiDetectionJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DescribeSnomedctInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DetectEntitiesHandler)
-  .route('/', xAmzTargetComprehendMedical20181030DetectEntitiesV2Handler)
-  .route('/', xAmzTargetComprehendMedical20181030DetectPhiHandler)
-  .route('/', xAmzTargetComprehendMedical20181030InferIcd10CmHandler)
-  .route('/', xAmzTargetComprehendMedical20181030InferRxNormHandler)
-  .route('/', xAmzTargetComprehendMedical20181030InferSnomedctHandler)
-  .route('/', xAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsHandler)
-  .route('/', xAmzTargetComprehendMedical20181030ListIcd10CmInferenceJobsHandler)
-  .route('/', xAmzTargetComprehendMedical20181030ListPhiDetectionJobsHandler)
-  .route('/', xAmzTargetComprehendMedical20181030ListRxNormInferenceJobsHandler)
-  .route('/', xAmzTargetComprehendMedical20181030ListSnomedctInferenceJobsHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StartIcd10CmInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StartPhiDetectionJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StartRxNormInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StartSnomedctInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StopIcd10CmInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StopPhiDetectionJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StopRxNormInferenceJobHandler)
-  .route('/', xAmzTargetComprehendMedical20181030StopSnomedctInferenceJobHandler)
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobRoute,
+    postXAmzTargetComprehendMedical20181030DescribeEntitiesDetectionV2JobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DescribeICD10CMInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030DescribeICD10CMInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DescribePHIDetectionJobRoute,
+    postXAmzTargetComprehendMedical20181030DescribePHIDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030DescribeRxNormInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DescribeSNOMEDCTInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030DescribeSNOMEDCTInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DetectEntitiesRoute,
+    postXAmzTargetComprehendMedical20181030DetectEntitiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DetectEntitiesV2Route,
+    postXAmzTargetComprehendMedical20181030DetectEntitiesV2RouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030DetectPHIRoute,
+    postXAmzTargetComprehendMedical20181030DetectPHIRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030InferICD10CMRoute,
+    postXAmzTargetComprehendMedical20181030InferICD10CMRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030InferRxNormRoute,
+    postXAmzTargetComprehendMedical20181030InferRxNormRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030InferSNOMEDCTRoute,
+    postXAmzTargetComprehendMedical20181030InferSNOMEDCTRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsRoute,
+    postXAmzTargetComprehendMedical20181030ListEntitiesDetectionV2JobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030ListICD10CMInferenceJobsRoute,
+    postXAmzTargetComprehendMedical20181030ListICD10CMInferenceJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030ListPHIDetectionJobsRoute,
+    postXAmzTargetComprehendMedical20181030ListPHIDetectionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030ListRxNormInferenceJobsRoute,
+    postXAmzTargetComprehendMedical20181030ListRxNormInferenceJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030ListSNOMEDCTInferenceJobsRoute,
+    postXAmzTargetComprehendMedical20181030ListSNOMEDCTInferenceJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobRoute,
+    postXAmzTargetComprehendMedical20181030StartEntitiesDetectionV2JobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StartICD10CMInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StartICD10CMInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StartPHIDetectionJobRoute,
+    postXAmzTargetComprehendMedical20181030StartPHIDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StartRxNormInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StartRxNormInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StartSNOMEDCTInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StartSNOMEDCTInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobRoute,
+    postXAmzTargetComprehendMedical20181030StopEntitiesDetectionV2JobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StopICD10CMInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StopICD10CMInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StopPHIDetectionJobRoute,
+    postXAmzTargetComprehendMedical20181030StopPHIDetectionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StopRxNormInferenceJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComprehendMedical20181030StopSNOMEDCTInferenceJobRoute,
+    postXAmzTargetComprehendMedical20181030StopSNOMEDCTInferenceJobRouteHandler,
+  )
 
 export default app

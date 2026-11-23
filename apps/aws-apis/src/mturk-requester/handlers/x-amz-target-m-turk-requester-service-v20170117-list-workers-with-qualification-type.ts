@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeHandler =
-  app.openapi(
-    postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRouteHandler: RouteHandler<
+  typeof postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

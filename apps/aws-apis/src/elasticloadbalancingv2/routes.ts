@@ -441,7 +441,7 @@ const ListenerSchema = z
 
 const ListenersSchema = z.array(ListenerSchema).openapi('Listeners')
 
-type CreateListenerOutputType = { Listeners?: z.infer<typeof ListenersSchema> & unknown }
+type CreateListenerOutputType = { Listeners?: z.infer<typeof ListenersSchema> }
 
 const RuleArnSchema = z.string().openapi('RuleArn')
 
@@ -618,25 +618,25 @@ const RuleSchema = z
 
 const RulesSchema = z.array(RuleSchema).openapi('Rules')
 
-type CreateRuleOutputType = { Rules?: z.infer<typeof RulesSchema> & unknown }
+type CreateRuleOutputType = { Rules?: z.infer<typeof RulesSchema> }
 
 const MarkerSchema = z.string().openapi('Marker')
 
 type DescribeListenersOutputType = {
-  Listeners?: z.infer<typeof ListenersSchema> & unknown
-  NextMarker?: z.infer<typeof MarkerSchema> & unknown
+  Listeners?: z.infer<typeof ListenersSchema>
+  NextMarker?: z.infer<typeof MarkerSchema>
 }
 
 type DescribeRulesOutputType = {
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  NextMarker?: z.infer<typeof MarkerSchema> & unknown
+  Rules?: z.infer<typeof RulesSchema>
+  NextMarker?: z.infer<typeof MarkerSchema>
 }
 
-type ModifyListenerOutputType = { Listeners?: z.infer<typeof ListenersSchema> & unknown }
+type ModifyListenerOutputType = { Listeners?: z.infer<typeof ListenersSchema> }
 
-type ModifyRuleOutputType = { Rules?: z.infer<typeof RulesSchema> & unknown }
+type ModifyRuleOutputType = { Rules?: z.infer<typeof RulesSchema> }
 
-type SetRulePrioritiesOutputType = { Rules?: z.infer<typeof RulesSchema> & unknown }
+type SetRulePrioritiesOutputType = { Rules?: z.infer<typeof RulesSchema> }
 
 const AddListenerCertificatesOutputSchema = z
   .object({

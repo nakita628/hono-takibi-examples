@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/javatpoint.com/v1/openapi.yaml',
   output: './src/javatpoint/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/javatpoint/types.ts' },
   client: { output: './src/javatpoint/client.ts', baseUrl: '/' },
   rpc: { output: './src/javatpoint/rpc.ts', parseResponse: true },

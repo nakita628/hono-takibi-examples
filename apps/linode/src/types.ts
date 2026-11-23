@@ -2153,16 +2153,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: { cancel_url: string; redirect_url: string; usd: string }
             }
             output: {
-              warnings?: { details?: string | undefined; title?: string | undefined }[] | undefined
-            }
-            outputFormat: 'json'
-            status: 299
-          }
-        | {
-            input: { param: { apiVersion: 'v4' | 'v4beta' } } & {
-              json: { cancel_url: string; redirect_url: string; usd: string }
-            }
-            output: {
               errors?: { field?: string | undefined; reason?: string | undefined }[] | undefined
             }
             outputFormat: 'json'
@@ -2189,16 +2179,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             outputFormat: 'json'
             status: 202
-          }
-        | {
-            input: { param: { apiVersion: 'v4' | 'v4beta' } } & {
-              json: { payer_id: string; payment_id: string }
-            }
-            output: {
-              warnings?: { details?: string | undefined; title?: string | undefined }[] | undefined
-            }
-            outputFormat: 'json'
-            status: 299
           }
         | {
             input: { param: { apiVersion: 'v4' | 'v4beta' } } & {
@@ -2864,6 +2844,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { apiVersion: 'v4' | 'v4beta'; username: string } }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { apiVersion: 'v4' | 'v4beta'; username: string } }
@@ -21263,6 +21249,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { apiVersion: 'v4' | 'v4beta' } }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { apiVersion: 'v4' | 'v4beta' } }

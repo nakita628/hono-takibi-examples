@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/cyclical.yaml',
   output: './src/3-0-cyclical/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-cyclical/types.ts' },
   client: { output: './src/3-0-cyclical/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-cyclical/rpc.ts', parseResponse: true },

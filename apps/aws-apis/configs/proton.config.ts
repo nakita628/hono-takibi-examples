@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/proton/2020-07-20/openapi.yaml',
   output: './src/proton/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/proton/types.ts' },
   client: { output: './src/proton/client.ts', baseUrl: '/' },
   rpc: { output: './src/proton/rpc.ts', parseResponse: true },

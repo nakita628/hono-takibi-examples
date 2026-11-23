@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmergencyCallingAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmergencyCallingAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const emergencyCallingHandler = app.openapi(postEmergencyCallingAddressRoute, (c) => {
+export const postEmergencyCallingAddressRouteHandler: RouteHandler<
+  typeof postEmergencyCallingAddressRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

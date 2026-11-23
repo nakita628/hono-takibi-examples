@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudchannel/v1/openapi.yaml',
   output: './src/cloudchannel/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudchannel/types.ts' },
   client: { output: './src/cloudchannel/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudchannel/rpc.ts', parseResponse: true },

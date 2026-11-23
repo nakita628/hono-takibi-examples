@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/freee/freee-api-schema/master/hr/open-api-3/api-schema.json',
   output: './src/hr/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/hr/types.ts' },
   client: { output: './src/hr/client.ts', baseUrl: '/' },
   rpc: { output: './src/hr/rpc.ts', parseResponse: true },

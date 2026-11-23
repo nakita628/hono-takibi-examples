@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCancelImageLaunchPermissionRoute,
   postActionCancelImageLaunchPermissionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCancelImageLaunchPermissionRouteHandler: RouteHandler<
+  typeof getActionCancelImageLaunchPermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCancelImageLaunchPermissionHandler = app
-  .openapi(getActionCancelImageLaunchPermissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCancelImageLaunchPermissionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCancelImageLaunchPermissionRouteHandler: RouteHandler<
+  typeof postActionCancelImageLaunchPermissionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

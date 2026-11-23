@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute,
   deleteV21AccountsAccountIdBrandsBrandIdRoute,
   deleteV21AccountsAccountIdBrandsRoute,
@@ -394,1281 +394,2350 @@ import {
   putV21DiagnosticsSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV21RouteHandler: RouteHandler<typeof getV21Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v21Handler = app
-  .openapi(getV21Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsProvisioningRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingInvoicesInvoiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingInvoicesPastDueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdBillingPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBillingPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingPlanCreditCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBillingPlanDowngradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBillingPlanDowngradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBillingPlanPurchasedEnvelopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdBrandsBrandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsBrandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBrandsBrandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsBrandIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsBrandIdResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBulkSendBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdEnvelopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdBulkActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBulkSendListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdBulkSendListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdBulkSendListsBulkSendListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdBulkSendListsBulkSendListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdBulkSendListsBulkSendListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdBulkSendListsBulkSendListIdSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdBulkSendListsBulkSendListIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdCaptiveRecipientsRecipientPartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdChunkedUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdChunkedUploadsChunkedUploadIdChunkedUploadPartSeqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdConnectEnvelopesPublishHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdConnectEnvelopesRetryQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdConnectEnvelopesEnvelopeIdRetryQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectFailuresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdConnectFailuresFailureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdConnectLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdConnectLogsLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectLogsLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdConnectOauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectOauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdConnectOauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdConnectOauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdConnectConnectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectConnectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectConnectIdAllUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConnectConnectIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConsumerDisclosureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdConsumerDisclosureLangCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdConsumerDisclosureLangCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdCustomFieldsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdCustomFieldsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesTransferRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesTransferRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesTransferRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdAuditEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdCommentsTranscriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdHtmlDefinitionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberTabsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdResponsiveHtmlPreviewRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesTemplateIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdFormDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdHtmlDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsDocumentVisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureLangCodeRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdIdentityProofTokenRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdViewsIdentityManualReviewRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdResponsiveHtmlPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSharedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdFavoriteTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdFavoriteTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdFavoriteTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdGroupsGroupIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdGroupsGroupIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdGroupsGroupIdBrandsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdGroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdGroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdGroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdIdentityVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPaymentGatewayAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPermissionProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdPermissionProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdPowerformsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPowerformsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdPowerformsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPowerformsSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdPowerformsPowerFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPowerformsPowerFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdPowerformsPowerFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdPowerformsPowerFormIdFormDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdRecipientNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSealsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSearchFoldersSearchFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsBccEmailArchivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdSettingsBccEmailArchivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSettingsEnoteConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsEnoteConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsEnoteConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsNotificationDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsNotificationDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsPasswordRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsPasswordRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSettingsTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSettingsTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSharedAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSharedAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSignatureProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSigningGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSigningGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdSigningGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSigningGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSigningGroupsSigningGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSigningGroupsSigningGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdSupportedLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTabDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTabDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTabDefinitionsCustomTabIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTabDefinitionsCustomTabIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTabDefinitionsCustomTabIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdHtmlDefinitionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberTabsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdResponsiveHtmlPreviewRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdHtmlDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdRecipientsDocumentVisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdBulkRecipientsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdResponsiveHtmlPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdViewsEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdViewsRecipientPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteV21AccountsAccountIdTemplatesTemplateIdTemplatePartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdTemplatesTemplateIdTemplatePartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUnsupportedFileTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdCloudStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdCloudStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdUsersUserIdCloudStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdCustomSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdCustomSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdCustomSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdProfileImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdProfileImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdProfileImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdUsersUserIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdSignaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdViewsConsoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdWatermarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdWatermarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdWatermarkPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdWorkspacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdWorkspacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdWorkspacesWorkspaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdWorkspacesWorkspaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdWorkspacesWorkspaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdPagesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV21BillingPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21BillingPlansBillingPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21CurrentUserNotaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21CurrentUserNotaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21CurrentUserNotaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21CurrentUserNotaryJournalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21CurrentUserNotaryJurisdictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV21CurrentUserNotaryJurisdictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21CurrentUserPasswordRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV21DiagnosticsRequestLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21DiagnosticsRequestLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21DiagnosticsRequestLogsRequestLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV21DiagnosticsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV21DiagnosticsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV21AccountsRouteHandler: RouteHandler<typeof postV21AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsProvisioningRouteHandler: RouteHandler<
+  typeof getV21AccountsProvisioningRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingChargesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingInvoicesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingInvoicesInvoiceIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingInvoicesInvoiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingInvoicesPastDueRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingInvoicesPastDueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingPaymentsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdBillingPaymentsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdBillingPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingPlanRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBillingPlanRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBillingPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingPlanCreditCardRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingPlanCreditCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBillingPlanDowngradeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBillingPlanDowngradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBillingPlanDowngradeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBillingPlanDowngradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBillingPlanPurchasedEnvelopesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBillingPlanPurchasedEnvelopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdBrandsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdBrandsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdBrandsBrandIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdBrandsBrandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsBrandIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsBrandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBrandsBrandIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBrandsBrandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsBrandIdFileRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsBrandIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBrandsBrandIdLogosLogoTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsBrandIdResourcesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsBrandIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBrandsBrandIdResourcesResourceContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBulkSendBatchRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBulkSendBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdEnvelopesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBulkSendBatchBulkSendBatchIdEnvelopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdBulkActionRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBulkSendBatchBulkSendBatchIdBulkActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBulkSendListsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBulkSendListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdBulkSendListsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdBulkSendListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdBulkSendListsBulkSendListIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdBulkSendListsBulkSendListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdBulkSendListsBulkSendListIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdBulkSendListsBulkSendListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdBulkSendListsBulkSendListIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdBulkSendListsBulkSendListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdBulkSendListsBulkSendListIdSendRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdBulkSendListsBulkSendListIdSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdBulkSendListsBulkSendListIdTestRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdBulkSendListsBulkSendListIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdCaptiveRecipientsRecipientPartRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdCaptiveRecipientsRecipientPartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdChunkedUploadsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdChunkedUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdChunkedUploadsChunkedUploadIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdChunkedUploadsChunkedUploadIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdChunkedUploadsChunkedUploadIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdChunkedUploadsChunkedUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdChunkedUploadsChunkedUploadIdChunkedUploadPartSeqRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdChunkedUploadsChunkedUploadIdChunkedUploadPartSeqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdConnectRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdConnectRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdConnectEnvelopesPublishHistoricalRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdConnectEnvelopesPublishHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdConnectEnvelopesRetryQueueRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdConnectEnvelopesRetryQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdConnectEnvelopesEnvelopeIdRetryQueueRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdConnectEnvelopesEnvelopeIdRetryQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectFailuresRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectFailuresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdConnectFailuresFailureIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdConnectFailuresFailureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdConnectLogsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdConnectLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectLogsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdConnectLogsLogIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdConnectLogsLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectLogsLogIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectLogsLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdConnectOauthRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdConnectOauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectOauthRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectOauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdConnectOauthRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdConnectOauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdConnectOauthRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdConnectOauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdConnectConnectIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdConnectConnectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectConnectIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectConnectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectConnectIdAllUsersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectConnectIdAllUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConnectConnectIdUsersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConnectConnectIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConsumerDisclosureRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConsumerDisclosureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdConsumerDisclosureLangCodeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdConsumerDisclosureLangCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdConsumerDisclosureLangCodeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdConsumerDisclosureLangCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdContactsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdContactsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdContactsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdContactsContactIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdContactsContactIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdCustomFieldsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdCustomFieldsCustomFieldIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdCustomFieldsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdCustomFieldsCustomFieldIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdCustomFieldsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesStatusRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesTransferRulesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesTransferRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesTransferRulesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesTransferRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesTransferRulesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesTransferRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesTransferRulesEnvelopeTransferRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdAttachmentsAttachmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdAuditEventsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdAuditEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdCommentsTranscriptRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdCommentsTranscriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdHtmlDefinitionsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdHtmlDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberPageImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdPagesPageNumberTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdResponsiveHtmlPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdResponsiveHtmlPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdDocumentsDocumentIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdEmailSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdFormDataRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdFormDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdHtmlDefinitionsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdHtmlDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdLockRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdLockRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdLockRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdLockRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsDocumentVisibilityRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureLangCodeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdConsumerDisclosureLangCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdIdentityProofTokenRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdIdentityProofTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdInitialsImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdSignatureImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdViewsIdentityManualReviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdRecipientsRecipientIdViewsIdentityManualReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdResponsiveHtmlPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdResponsiveHtmlPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdTabsBlobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsCorrectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsEditRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsRecipientPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSenderRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSenderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSharedRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdViewsSharedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdEnvelopesEnvelopeIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdFavoriteTemplatesRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdFavoriteTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdFavoriteTemplatesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdFavoriteTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdFavoriteTemplatesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdFavoriteTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdFoldersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdGroupsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdGroupsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdGroupsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdGroupsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdGroupsGroupIdBrandsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdGroupsGroupIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdGroupsGroupIdBrandsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdGroupsGroupIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdGroupsGroupIdBrandsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdGroupsGroupIdBrandsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdGroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdGroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdGroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdGroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdGroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdGroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdIdentityVerificationRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdIdentityVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPaymentGatewayAccountsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPaymentGatewayAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPermissionProfilesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPermissionProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdPermissionProfilesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdPermissionProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdPermissionProfilesPermissionProfileIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPermissionProfilesPermissionProfileIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdPermissionProfilesPermissionProfileIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdPermissionProfilesPermissionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdPowerformsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdPowerformsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPowerformsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPowerformsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdPowerformsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdPowerformsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPowerformsSendersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPowerformsSendersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdPowerformsPowerFormIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdPowerformsPowerFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPowerformsPowerFormIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPowerformsPowerFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdPowerformsPowerFormIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdPowerformsPowerFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdPowerformsPowerFormIdFormDataRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdPowerformsPowerFormIdFormDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdRecipientNamesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdRecipientNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSealsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSealsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSearchFoldersSearchFolderIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSearchFoldersSearchFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsBccEmailArchivesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsBccEmailArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdSettingsBccEmailArchivesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdSettingsBccEmailArchivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsBccEmailArchivesBccEmailArchiveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSettingsEnoteConfigurationRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSettingsEnoteConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsEnoteConfigurationRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsEnoteConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsEnoteConfigurationRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsEnoteConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsEnvelopePurgeConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsNotificationDefaultsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsNotificationDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsNotificationDefaultsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsNotificationDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsPasswordRulesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsPasswordRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsPasswordRulesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsPasswordRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSettingsTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSettingsTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSettingsTabsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSettingsTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSharedAccessRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSharedAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSharedAccessRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSharedAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSignatureProvidersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSignatureProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSignaturesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdSignaturesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSignaturesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSigningGroupsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSigningGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSigningGroupsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSigningGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdSigningGroupsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdSigningGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSigningGroupsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSigningGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSigningGroupsSigningGroupIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSigningGroupsSigningGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSigningGroupsSigningGroupIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSigningGroupsSigningGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdSigningGroupsSigningGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdSupportedLanguagesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdSupportedLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTabDefinitionsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTabDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTabDefinitionsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTabDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTabDefinitionsCustomTabIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTabDefinitionsCustomTabIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTabDefinitionsCustomTabIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTabDefinitionsCustomTabIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTabDefinitionsCustomTabIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTabDefinitionsCustomTabIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdDocumentsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdHtmlDefinitionsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdHtmlDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberPageImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdPagesPageNumberTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdResponsiveHtmlPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdResponsiveHtmlPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdDocumentsDocumentIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdHtmlDefinitionsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdHtmlDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdLockRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdLockRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdLockRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdLockRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdNotificationRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdNotificationRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdRecipientsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdRecipientsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdRecipientsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdRecipientsDocumentVisibilityRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdRecipientsDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdBulkRecipientsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdBulkRecipientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdDocumentVisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdRecipientsRecipientIdTabsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdResponsiveHtmlPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdResponsiveHtmlPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdViewsEditRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdViewsEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdViewsRecipientPreviewRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdViewsRecipientPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdWorkflowRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdWorkflowRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdWorkflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdWorkflowScheduledSendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdWorkflowStepsWorkflowStepIdDelayedRoutingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdTemplatesTemplateIdTemplatePartRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdTemplatesTemplateIdTemplatePartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdTemplatesTemplateIdTemplatePartRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdTemplatesTemplateIdTemplatePartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUnsupportedFileTypesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUnsupportedFileTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdCloudStorageRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdCloudStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdCloudStorageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdCloudStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdUsersUserIdCloudStorageRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdUsersUserIdCloudStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdCloudStorageServiceIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdCustomSettingsRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdCustomSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdCustomSettingsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdCustomSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdCustomSettingsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdCustomSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdProfileRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdProfileRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdProfileImageRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdProfileImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdProfileImageRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdProfileImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdProfileImageRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdProfileImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdSettingsRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdSettingsRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdSignaturesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdUsersUserIdSignaturesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdUsersUserIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdSignaturesRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdSignaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdUsersUserIdSignaturesSignatureIdImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdViewsConsoleRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdViewsConsoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWatermarkRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWatermarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdWatermarkRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdWatermarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdWatermarkPreviewRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdWatermarkPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWorkspacesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWorkspacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdWorkspacesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdWorkspacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdWorkspacesWorkspaceIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdWorkspacesWorkspaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWorkspacesWorkspaceIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWorkspacesWorkspaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdWorkspacesWorkspaceIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdWorkspacesWorkspaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof deleteV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesRouteHandler: RouteHandler<
+  typeof postV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRouteHandler: RouteHandler<
+  typeof putV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdPagesRouteHandler: RouteHandler<
+  typeof getV21AccountsAccountIdWorkspacesWorkspaceIdFoldersFolderIdFilesFileIdPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21BillingPlansRouteHandler: RouteHandler<typeof getV21BillingPlansRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21BillingPlansBillingPlanIdRouteHandler: RouteHandler<
+  typeof getV21BillingPlansBillingPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21CurrentUserNotaryRouteHandler: RouteHandler<
+  typeof getV21CurrentUserNotaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21CurrentUserNotaryRouteHandler: RouteHandler<
+  typeof postV21CurrentUserNotaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21CurrentUserNotaryRouteHandler: RouteHandler<
+  typeof putV21CurrentUserNotaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21CurrentUserNotaryJournalsRouteHandler: RouteHandler<
+  typeof getV21CurrentUserNotaryJournalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21CurrentUserNotaryJurisdictionsRouteHandler: RouteHandler<
+  typeof getV21CurrentUserNotaryJurisdictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV21CurrentUserNotaryJurisdictionsRouteHandler: RouteHandler<
+  typeof postV21CurrentUserNotaryJurisdictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21CurrentUserNotaryJurisdictionsJurisdictionIdRouteHandler: RouteHandler<
+  typeof deleteV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21CurrentUserNotaryJurisdictionsJurisdictionIdRouteHandler: RouteHandler<
+  typeof getV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21CurrentUserNotaryJurisdictionsJurisdictionIdRouteHandler: RouteHandler<
+  typeof putV21CurrentUserNotaryJurisdictionsJurisdictionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21CurrentUserPasswordRulesRouteHandler: RouteHandler<
+  typeof getV21CurrentUserPasswordRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV21DiagnosticsRequestLogsRouteHandler: RouteHandler<
+  typeof deleteV21DiagnosticsRequestLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21DiagnosticsRequestLogsRouteHandler: RouteHandler<
+  typeof getV21DiagnosticsRequestLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21DiagnosticsRequestLogsRequestLogIdRouteHandler: RouteHandler<
+  typeof getV21DiagnosticsRequestLogsRequestLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV21DiagnosticsSettingsRouteHandler: RouteHandler<
+  typeof getV21DiagnosticsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV21DiagnosticsSettingsRouteHandler: RouteHandler<
+  typeof putV21DiagnosticsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

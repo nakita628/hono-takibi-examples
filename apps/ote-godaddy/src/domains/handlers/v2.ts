@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2CustomersCustomerIdDomainsDomainActionsTypeRoute,
   deleteV2CustomersCustomerIdDomainsForwardsFqdnRoute,
   getV2CustomersCustomerIdDomainsDomainActionsRoute,
@@ -19,57 +19,104 @@ import {
   putV2CustomersCustomerIdDomainsNotificationsOptInRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV2CustomersCustomerIdDomainsForwardsFqdnRouteHandler: RouteHandler<
+  typeof deleteV2CustomersCustomerIdDomainsForwardsFqdnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(deleteV2CustomersCustomerIdDomainsForwardsFqdnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsForwardsFqdnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomersCustomerIdDomainsForwardsFqdnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CustomersCustomerIdDomainsForwardsFqdnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsNotificationsOptInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2CustomersCustomerIdDomainsNotificationsOptInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsNotificationsSchemasTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomersCustomerIdDomainsNotificationsNotificationIdAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsDomainActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2CustomersCustomerIdDomainsDomainActionsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomersCustomerIdDomainsDomainActionsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomersCustomerIdDomainsDomainRedeemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomersCustomerIdDomainsDomainTransferOutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DomainsMaintenancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DomainsMaintenancesMaintenanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CustomersCustomerIdDomainsForwardsFqdnRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsForwardsFqdnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomersCustomerIdDomainsForwardsFqdnRouteHandler: RouteHandler<
+  typeof postV2CustomersCustomerIdDomainsForwardsFqdnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CustomersCustomerIdDomainsForwardsFqdnRouteHandler: RouteHandler<
+  typeof putV2CustomersCustomerIdDomainsForwardsFqdnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsNotificationsRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsNotificationsOptInRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsNotificationsOptInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2CustomersCustomerIdDomainsNotificationsOptInRouteHandler: RouteHandler<
+  typeof putV2CustomersCustomerIdDomainsNotificationsOptInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsNotificationsSchemasTypeRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsNotificationsSchemasTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomersCustomerIdDomainsNotificationsNotificationIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postV2CustomersCustomerIdDomainsNotificationsNotificationIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsDomainRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsDomainActionsRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsDomainActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2CustomersCustomerIdDomainsDomainActionsTypeRouteHandler: RouteHandler<
+  typeof deleteV2CustomersCustomerIdDomainsDomainActionsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomersCustomerIdDomainsDomainActionsTypeRouteHandler: RouteHandler<
+  typeof getV2CustomersCustomerIdDomainsDomainActionsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomersCustomerIdDomainsDomainRedeemRouteHandler: RouteHandler<
+  typeof postV2CustomersCustomerIdDomainsDomainRedeemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomersCustomerIdDomainsDomainTransferOutRouteHandler: RouteHandler<
+  typeof postV2CustomersCustomerIdDomainsDomainTransferOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DomainsMaintenancesRouteHandler: RouteHandler<
+  typeof getV2DomainsMaintenancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DomainsMaintenancesMaintenanceIdRouteHandler: RouteHandler<
+  typeof getV2DomainsMaintenancesMaintenanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

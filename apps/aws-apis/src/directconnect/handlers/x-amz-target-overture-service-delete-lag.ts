@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceDeleteLagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceDeleteLagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceDeleteLagHandler = app.openapi(
-  postXAmzTargetOvertureServiceDeleteLagRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceDeleteLagRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceDeleteLagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

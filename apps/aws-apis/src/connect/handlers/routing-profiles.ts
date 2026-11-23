@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRoutingProfilesInstanceIdRoutingProfileIdQueuesRoute,
   getRoutingProfilesInstanceIdRoutingProfileIdRoute,
   postRoutingProfilesInstanceIdRoutingProfileIdAssociateQueuesRoute,
@@ -11,33 +11,56 @@ import {
   putRoutingProfilesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRoutingProfilesInstanceIdRoutingProfileIdAssociateQueuesRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdAssociateQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const routingProfilesHandler = app
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdAssociateQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRoutingProfilesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoutingProfilesInstanceIdRoutingProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdDisassociateQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoutingProfilesInstanceIdRoutingProfileIdQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdConcurrencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdDefaultOutboundQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingProfilesInstanceIdRoutingProfileIdNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRoutingProfilesInstanceIdRouteHandler: RouteHandler<
+  typeof putRoutingProfilesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoutingProfilesInstanceIdRoutingProfileIdRouteHandler: RouteHandler<
+  typeof getRoutingProfilesInstanceIdRoutingProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingProfilesInstanceIdRoutingProfileIdDisassociateQueuesRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdDisassociateQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoutingProfilesInstanceIdRoutingProfileIdQueuesRouteHandler: RouteHandler<
+  typeof getRoutingProfilesInstanceIdRoutingProfileIdQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingProfilesInstanceIdRoutingProfileIdQueuesRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdQueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingProfilesInstanceIdRoutingProfileIdConcurrencyRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdConcurrencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingProfilesInstanceIdRoutingProfileIdDefaultOutboundQueueRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdDefaultOutboundQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingProfilesInstanceIdRoutingProfileIdNameRouteHandler: RouteHandler<
+  typeof postRoutingProfilesInstanceIdRoutingProfileIdNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

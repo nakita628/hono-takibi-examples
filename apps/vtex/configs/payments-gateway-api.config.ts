@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Payments-Gateway-API/1.0/openapi.yaml',
   output: './src/payments-gateway-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/payments-gateway-api/types.ts' },
   client: { output: './src/payments-gateway-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/payments-gateway-api/rpc.ts', parseResponse: true },

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDeletePartnerRoute, postActionDeletePartnerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDeletePartnerRoute, postActionDeletePartnerRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeletePartnerRouteHandler: RouteHandler<
+  typeof getActionDeletePartnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeletePartnerHandler = app
-  .openapi(getActionDeletePartnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeletePartnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeletePartnerRouteHandler: RouteHandler<
+  typeof postActionDeletePartnerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

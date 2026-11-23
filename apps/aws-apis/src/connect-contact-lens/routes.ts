@@ -190,8 +190,8 @@ const NextTokenSchema = z
   .openapi('NextToken')
 
 type ListRealtimeContactAnalysisSegmentsResponseType = {
-  Segments: z.infer<typeof RealtimeContactAnalysisSegmentsSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Segments: z.infer<typeof RealtimeContactAnalysisSegmentsSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 const ListRealtimeContactAnalysisSegmentsResponseSchema: z.ZodType<ListRealtimeContactAnalysisSegmentsResponseType> =

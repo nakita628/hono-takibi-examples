@@ -583,7 +583,7 @@ const ApplicationDetailSchema = z
   .openapi('ApplicationDetail')
 
 type DescribeApplicationResponseType = {
-  ApplicationDetail: z.infer<typeof ApplicationDetailSchema> & unknown
+  ApplicationDetail: z.infer<typeof ApplicationDetailSchema>
 }
 
 const InputLambdaProcessorUpdateSchema = z
@@ -897,9 +897,9 @@ const ApplicationUpdateSchema = z
   .openapi('ApplicationUpdate')
 
 type UpdateApplicationRequestType = {
-  ApplicationName: z.infer<typeof ApplicationNameSchema> & unknown
-  CurrentApplicationVersionId: z.infer<typeof ApplicationVersionIdSchema> & unknown
-  ApplicationUpdate: z.infer<typeof ApplicationUpdateSchema> & unknown
+  ApplicationName: z.infer<typeof ApplicationNameSchema>
+  CurrentApplicationVersionId: z.infer<typeof ApplicationVersionIdSchema>
+  ApplicationUpdate: z.infer<typeof ApplicationUpdateSchema>
 }
 
 const InputLambdaProcessorSchema = z
@@ -966,12 +966,12 @@ const KinesisFirehoseInputSchema = z
   .openapi('KinesisFirehoseInput')
 
 type InputType = {
-  NamePrefix: z.infer<typeof InAppStreamNameSchema> & unknown
-  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema> & unknown
-  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema> & unknown
-  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema> & unknown
-  InputParallelism?: z.infer<typeof InputParallelismSchema> & unknown
-  InputSchema: z.infer<typeof SourceSchemaSchema> & unknown
+  NamePrefix: z.infer<typeof InAppStreamNameSchema>
+  InputProcessingConfiguration?: z.infer<typeof InputProcessingConfigurationSchema>
+  KinesisStreamsInput?: z.infer<typeof KinesisStreamsInputSchema>
+  KinesisFirehoseInput?: z.infer<typeof KinesisFirehoseInputSchema>
+  InputParallelism?: z.infer<typeof InputParallelismSchema>
+  InputSchema: z.infer<typeof SourceSchemaSchema>
 }
 
 const AddApplicationCloudWatchLoggingOptionResponseSchema = z

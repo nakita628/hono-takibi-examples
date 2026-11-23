@@ -1,145 +1,419 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonAthenaBatchGetNamedQueryHandler,
-  xAmzTargetAmazonAthenaBatchGetPreparedStatementHandler,
-  xAmzTargetAmazonAthenaBatchGetQueryExecutionHandler,
-  xAmzTargetAmazonAthenaCancelCapacityReservationHandler,
-  xAmzTargetAmazonAthenaCreateCapacityReservationHandler,
-  xAmzTargetAmazonAthenaCreateDataCatalogHandler,
-  xAmzTargetAmazonAthenaCreateNamedQueryHandler,
-  xAmzTargetAmazonAthenaCreateNotebookHandler,
-  xAmzTargetAmazonAthenaCreatePreparedStatementHandler,
-  xAmzTargetAmazonAthenaCreatePresignedNotebookUrlHandler,
-  xAmzTargetAmazonAthenaCreateWorkGroupHandler,
-  xAmzTargetAmazonAthenaDeleteCapacityReservationHandler,
-  xAmzTargetAmazonAthenaDeleteDataCatalogHandler,
-  xAmzTargetAmazonAthenaDeleteNamedQueryHandler,
-  xAmzTargetAmazonAthenaDeleteNotebookHandler,
-  xAmzTargetAmazonAthenaDeletePreparedStatementHandler,
-  xAmzTargetAmazonAthenaDeleteWorkGroupHandler,
-  xAmzTargetAmazonAthenaExportNotebookHandler,
-  xAmzTargetAmazonAthenaGetCalculationExecutionCodeHandler,
-  xAmzTargetAmazonAthenaGetCalculationExecutionHandler,
-  xAmzTargetAmazonAthenaGetCalculationExecutionStatusHandler,
-  xAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationHandler,
-  xAmzTargetAmazonAthenaGetCapacityReservationHandler,
-  xAmzTargetAmazonAthenaGetDatabaseHandler,
-  xAmzTargetAmazonAthenaGetDataCatalogHandler,
-  xAmzTargetAmazonAthenaGetNamedQueryHandler,
-  xAmzTargetAmazonAthenaGetNotebookMetadataHandler,
-  xAmzTargetAmazonAthenaGetPreparedStatementHandler,
-  xAmzTargetAmazonAthenaGetQueryExecutionHandler,
-  xAmzTargetAmazonAthenaGetQueryResultsHandler,
-  xAmzTargetAmazonAthenaGetQueryRuntimeStatisticsHandler,
-  xAmzTargetAmazonAthenaGetSessionHandler,
-  xAmzTargetAmazonAthenaGetSessionStatusHandler,
-  xAmzTargetAmazonAthenaGetTableMetadataHandler,
-  xAmzTargetAmazonAthenaGetWorkGroupHandler,
-  xAmzTargetAmazonAthenaImportNotebookHandler,
-  xAmzTargetAmazonAthenaListApplicationDpuSizesHandler,
-  xAmzTargetAmazonAthenaListCalculationExecutionsHandler,
-  xAmzTargetAmazonAthenaListCapacityReservationsHandler,
-  xAmzTargetAmazonAthenaListDatabasesHandler,
-  xAmzTargetAmazonAthenaListDataCatalogsHandler,
-  xAmzTargetAmazonAthenaListEngineVersionsHandler,
-  xAmzTargetAmazonAthenaListExecutorsHandler,
-  xAmzTargetAmazonAthenaListNamedQueriesHandler,
-  xAmzTargetAmazonAthenaListNotebookMetadataHandler,
-  xAmzTargetAmazonAthenaListNotebookSessionsHandler,
-  xAmzTargetAmazonAthenaListPreparedStatementsHandler,
-  xAmzTargetAmazonAthenaListQueryExecutionsHandler,
-  xAmzTargetAmazonAthenaListSessionsHandler,
-  xAmzTargetAmazonAthenaListTableMetadataHandler,
-  xAmzTargetAmazonAthenaListTagsForResourceHandler,
-  xAmzTargetAmazonAthenaListWorkGroupsHandler,
-  xAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationHandler,
-  xAmzTargetAmazonAthenaStartCalculationExecutionHandler,
-  xAmzTargetAmazonAthenaStartQueryExecutionHandler,
-  xAmzTargetAmazonAthenaStartSessionHandler,
-  xAmzTargetAmazonAthenaStopCalculationExecutionHandler,
-  xAmzTargetAmazonAthenaStopQueryExecutionHandler,
-  xAmzTargetAmazonAthenaTagResourceHandler,
-  xAmzTargetAmazonAthenaTerminateSessionHandler,
-  xAmzTargetAmazonAthenaUntagResourceHandler,
-  xAmzTargetAmazonAthenaUpdateCapacityReservationHandler,
-  xAmzTargetAmazonAthenaUpdateDataCatalogHandler,
-  xAmzTargetAmazonAthenaUpdateNamedQueryHandler,
-  xAmzTargetAmazonAthenaUpdateNotebookHandler,
-  xAmzTargetAmazonAthenaUpdateNotebookMetadataHandler,
-  xAmzTargetAmazonAthenaUpdatePreparedStatementHandler,
-  xAmzTargetAmazonAthenaUpdateWorkGroupHandler,
+  postXAmzTargetAmazonAthenaBatchGetNamedQueryRoute,
+  postXAmzTargetAmazonAthenaBatchGetPreparedStatementRoute,
+  postXAmzTargetAmazonAthenaBatchGetQueryExecutionRoute,
+  postXAmzTargetAmazonAthenaCancelCapacityReservationRoute,
+  postXAmzTargetAmazonAthenaCreateCapacityReservationRoute,
+  postXAmzTargetAmazonAthenaCreateDataCatalogRoute,
+  postXAmzTargetAmazonAthenaCreateNamedQueryRoute,
+  postXAmzTargetAmazonAthenaCreateNotebookRoute,
+  postXAmzTargetAmazonAthenaCreatePreparedStatementRoute,
+  postXAmzTargetAmazonAthenaCreatePresignedNotebookUrlRoute,
+  postXAmzTargetAmazonAthenaCreateWorkGroupRoute,
+  postXAmzTargetAmazonAthenaDeleteCapacityReservationRoute,
+  postXAmzTargetAmazonAthenaDeleteDataCatalogRoute,
+  postXAmzTargetAmazonAthenaDeleteNamedQueryRoute,
+  postXAmzTargetAmazonAthenaDeleteNotebookRoute,
+  postXAmzTargetAmazonAthenaDeletePreparedStatementRoute,
+  postXAmzTargetAmazonAthenaDeleteWorkGroupRoute,
+  postXAmzTargetAmazonAthenaExportNotebookRoute,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionCodeRoute,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionRoute,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionStatusRoute,
+  postXAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationRoute,
+  postXAmzTargetAmazonAthenaGetCapacityReservationRoute,
+  postXAmzTargetAmazonAthenaGetDatabaseRoute,
+  postXAmzTargetAmazonAthenaGetDataCatalogRoute,
+  postXAmzTargetAmazonAthenaGetNamedQueryRoute,
+  postXAmzTargetAmazonAthenaGetNotebookMetadataRoute,
+  postXAmzTargetAmazonAthenaGetPreparedStatementRoute,
+  postXAmzTargetAmazonAthenaGetQueryExecutionRoute,
+  postXAmzTargetAmazonAthenaGetQueryResultsRoute,
+  postXAmzTargetAmazonAthenaGetQueryRuntimeStatisticsRoute,
+  postXAmzTargetAmazonAthenaGetSessionRoute,
+  postXAmzTargetAmazonAthenaGetSessionStatusRoute,
+  postXAmzTargetAmazonAthenaGetTableMetadataRoute,
+  postXAmzTargetAmazonAthenaGetWorkGroupRoute,
+  postXAmzTargetAmazonAthenaImportNotebookRoute,
+  postXAmzTargetAmazonAthenaListApplicationDPUSizesRoute,
+  postXAmzTargetAmazonAthenaListCalculationExecutionsRoute,
+  postXAmzTargetAmazonAthenaListCapacityReservationsRoute,
+  postXAmzTargetAmazonAthenaListDatabasesRoute,
+  postXAmzTargetAmazonAthenaListDataCatalogsRoute,
+  postXAmzTargetAmazonAthenaListEngineVersionsRoute,
+  postXAmzTargetAmazonAthenaListExecutorsRoute,
+  postXAmzTargetAmazonAthenaListNamedQueriesRoute,
+  postXAmzTargetAmazonAthenaListNotebookMetadataRoute,
+  postXAmzTargetAmazonAthenaListNotebookSessionsRoute,
+  postXAmzTargetAmazonAthenaListPreparedStatementsRoute,
+  postXAmzTargetAmazonAthenaListQueryExecutionsRoute,
+  postXAmzTargetAmazonAthenaListSessionsRoute,
+  postXAmzTargetAmazonAthenaListTableMetadataRoute,
+  postXAmzTargetAmazonAthenaListTagsForResourceRoute,
+  postXAmzTargetAmazonAthenaListWorkGroupsRoute,
+  postXAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationRoute,
+  postXAmzTargetAmazonAthenaStartCalculationExecutionRoute,
+  postXAmzTargetAmazonAthenaStartQueryExecutionRoute,
+  postXAmzTargetAmazonAthenaStartSessionRoute,
+  postXAmzTargetAmazonAthenaStopCalculationExecutionRoute,
+  postXAmzTargetAmazonAthenaStopQueryExecutionRoute,
+  postXAmzTargetAmazonAthenaTagResourceRoute,
+  postXAmzTargetAmazonAthenaTerminateSessionRoute,
+  postXAmzTargetAmazonAthenaUntagResourceRoute,
+  postXAmzTargetAmazonAthenaUpdateCapacityReservationRoute,
+  postXAmzTargetAmazonAthenaUpdateDataCatalogRoute,
+  postXAmzTargetAmazonAthenaUpdateNamedQueryRoute,
+  postXAmzTargetAmazonAthenaUpdateNotebookMetadataRoute,
+  postXAmzTargetAmazonAthenaUpdateNotebookRoute,
+  postXAmzTargetAmazonAthenaUpdatePreparedStatementRoute,
+  postXAmzTargetAmazonAthenaUpdateWorkGroupRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonAthenaBatchGetNamedQueryRouteHandler,
+  postXAmzTargetAmazonAthenaBatchGetPreparedStatementRouteHandler,
+  postXAmzTargetAmazonAthenaBatchGetQueryExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaCancelCapacityReservationRouteHandler,
+  postXAmzTargetAmazonAthenaCreateCapacityReservationRouteHandler,
+  postXAmzTargetAmazonAthenaCreateDataCatalogRouteHandler,
+  postXAmzTargetAmazonAthenaCreateNamedQueryRouteHandler,
+  postXAmzTargetAmazonAthenaCreateNotebookRouteHandler,
+  postXAmzTargetAmazonAthenaCreatePreparedStatementRouteHandler,
+  postXAmzTargetAmazonAthenaCreatePresignedNotebookUrlRouteHandler,
+  postXAmzTargetAmazonAthenaCreateWorkGroupRouteHandler,
+  postXAmzTargetAmazonAthenaDeleteCapacityReservationRouteHandler,
+  postXAmzTargetAmazonAthenaDeleteDataCatalogRouteHandler,
+  postXAmzTargetAmazonAthenaDeleteNamedQueryRouteHandler,
+  postXAmzTargetAmazonAthenaDeleteNotebookRouteHandler,
+  postXAmzTargetAmazonAthenaDeletePreparedStatementRouteHandler,
+  postXAmzTargetAmazonAthenaDeleteWorkGroupRouteHandler,
+  postXAmzTargetAmazonAthenaExportNotebookRouteHandler,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionCodeRouteHandler,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaGetCalculationExecutionStatusRouteHandler,
+  postXAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationRouteHandler,
+  postXAmzTargetAmazonAthenaGetCapacityReservationRouteHandler,
+  postXAmzTargetAmazonAthenaGetDatabaseRouteHandler,
+  postXAmzTargetAmazonAthenaGetDataCatalogRouteHandler,
+  postXAmzTargetAmazonAthenaGetNamedQueryRouteHandler,
+  postXAmzTargetAmazonAthenaGetNotebookMetadataRouteHandler,
+  postXAmzTargetAmazonAthenaGetPreparedStatementRouteHandler,
+  postXAmzTargetAmazonAthenaGetQueryExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaGetQueryResultsRouteHandler,
+  postXAmzTargetAmazonAthenaGetQueryRuntimeStatisticsRouteHandler,
+  postXAmzTargetAmazonAthenaGetSessionRouteHandler,
+  postXAmzTargetAmazonAthenaGetSessionStatusRouteHandler,
+  postXAmzTargetAmazonAthenaGetTableMetadataRouteHandler,
+  postXAmzTargetAmazonAthenaGetWorkGroupRouteHandler,
+  postXAmzTargetAmazonAthenaImportNotebookRouteHandler,
+  postXAmzTargetAmazonAthenaListApplicationDPUSizesRouteHandler,
+  postXAmzTargetAmazonAthenaListCalculationExecutionsRouteHandler,
+  postXAmzTargetAmazonAthenaListCapacityReservationsRouteHandler,
+  postXAmzTargetAmazonAthenaListDatabasesRouteHandler,
+  postXAmzTargetAmazonAthenaListDataCatalogsRouteHandler,
+  postXAmzTargetAmazonAthenaListEngineVersionsRouteHandler,
+  postXAmzTargetAmazonAthenaListExecutorsRouteHandler,
+  postXAmzTargetAmazonAthenaListNamedQueriesRouteHandler,
+  postXAmzTargetAmazonAthenaListNotebookMetadataRouteHandler,
+  postXAmzTargetAmazonAthenaListNotebookSessionsRouteHandler,
+  postXAmzTargetAmazonAthenaListPreparedStatementsRouteHandler,
+  postXAmzTargetAmazonAthenaListQueryExecutionsRouteHandler,
+  postXAmzTargetAmazonAthenaListSessionsRouteHandler,
+  postXAmzTargetAmazonAthenaListTableMetadataRouteHandler,
+  postXAmzTargetAmazonAthenaListTagsForResourceRouteHandler,
+  postXAmzTargetAmazonAthenaListWorkGroupsRouteHandler,
+  postXAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationRouteHandler,
+  postXAmzTargetAmazonAthenaStartCalculationExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaStartQueryExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaStartSessionRouteHandler,
+  postXAmzTargetAmazonAthenaStopCalculationExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaStopQueryExecutionRouteHandler,
+  postXAmzTargetAmazonAthenaTagResourceRouteHandler,
+  postXAmzTargetAmazonAthenaTerminateSessionRouteHandler,
+  postXAmzTargetAmazonAthenaUntagResourceRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateCapacityReservationRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateDataCatalogRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateNamedQueryRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateNotebookMetadataRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateNotebookRouteHandler,
+  postXAmzTargetAmazonAthenaUpdatePreparedStatementRouteHandler,
+  postXAmzTargetAmazonAthenaUpdateWorkGroupRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonAthenaBatchGetNamedQueryHandler)
-  .route('/', xAmzTargetAmazonAthenaBatchGetPreparedStatementHandler)
-  .route('/', xAmzTargetAmazonAthenaBatchGetQueryExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaCancelCapacityReservationHandler)
-  .route('/', xAmzTargetAmazonAthenaCreateCapacityReservationHandler)
-  .route('/', xAmzTargetAmazonAthenaCreateDataCatalogHandler)
-  .route('/', xAmzTargetAmazonAthenaCreateNamedQueryHandler)
-  .route('/', xAmzTargetAmazonAthenaCreateNotebookHandler)
-  .route('/', xAmzTargetAmazonAthenaCreatePreparedStatementHandler)
-  .route('/', xAmzTargetAmazonAthenaCreatePresignedNotebookUrlHandler)
-  .route('/', xAmzTargetAmazonAthenaCreateWorkGroupHandler)
-  .route('/', xAmzTargetAmazonAthenaDeleteCapacityReservationHandler)
-  .route('/', xAmzTargetAmazonAthenaDeleteDataCatalogHandler)
-  .route('/', xAmzTargetAmazonAthenaDeleteNamedQueryHandler)
-  .route('/', xAmzTargetAmazonAthenaDeleteNotebookHandler)
-  .route('/', xAmzTargetAmazonAthenaDeletePreparedStatementHandler)
-  .route('/', xAmzTargetAmazonAthenaDeleteWorkGroupHandler)
-  .route('/', xAmzTargetAmazonAthenaExportNotebookHandler)
-  .route('/', xAmzTargetAmazonAthenaGetCalculationExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaGetCalculationExecutionCodeHandler)
-  .route('/', xAmzTargetAmazonAthenaGetCalculationExecutionStatusHandler)
-  .route('/', xAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationHandler)
-  .route('/', xAmzTargetAmazonAthenaGetCapacityReservationHandler)
-  .route('/', xAmzTargetAmazonAthenaGetDataCatalogHandler)
-  .route('/', xAmzTargetAmazonAthenaGetDatabaseHandler)
-  .route('/', xAmzTargetAmazonAthenaGetNamedQueryHandler)
-  .route('/', xAmzTargetAmazonAthenaGetNotebookMetadataHandler)
-  .route('/', xAmzTargetAmazonAthenaGetPreparedStatementHandler)
-  .route('/', xAmzTargetAmazonAthenaGetQueryExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaGetQueryResultsHandler)
-  .route('/', xAmzTargetAmazonAthenaGetQueryRuntimeStatisticsHandler)
-  .route('/', xAmzTargetAmazonAthenaGetSessionHandler)
-  .route('/', xAmzTargetAmazonAthenaGetSessionStatusHandler)
-  .route('/', xAmzTargetAmazonAthenaGetTableMetadataHandler)
-  .route('/', xAmzTargetAmazonAthenaGetWorkGroupHandler)
-  .route('/', xAmzTargetAmazonAthenaImportNotebookHandler)
-  .route('/', xAmzTargetAmazonAthenaListApplicationDpuSizesHandler)
-  .route('/', xAmzTargetAmazonAthenaListCalculationExecutionsHandler)
-  .route('/', xAmzTargetAmazonAthenaListCapacityReservationsHandler)
-  .route('/', xAmzTargetAmazonAthenaListDataCatalogsHandler)
-  .route('/', xAmzTargetAmazonAthenaListDatabasesHandler)
-  .route('/', xAmzTargetAmazonAthenaListEngineVersionsHandler)
-  .route('/', xAmzTargetAmazonAthenaListExecutorsHandler)
-  .route('/', xAmzTargetAmazonAthenaListNamedQueriesHandler)
-  .route('/', xAmzTargetAmazonAthenaListNotebookMetadataHandler)
-  .route('/', xAmzTargetAmazonAthenaListNotebookSessionsHandler)
-  .route('/', xAmzTargetAmazonAthenaListPreparedStatementsHandler)
-  .route('/', xAmzTargetAmazonAthenaListQueryExecutionsHandler)
-  .route('/', xAmzTargetAmazonAthenaListSessionsHandler)
-  .route('/', xAmzTargetAmazonAthenaListTableMetadataHandler)
-  .route('/', xAmzTargetAmazonAthenaListTagsForResourceHandler)
-  .route('/', xAmzTargetAmazonAthenaListWorkGroupsHandler)
-  .route('/', xAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationHandler)
-  .route('/', xAmzTargetAmazonAthenaStartCalculationExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaStartQueryExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaStartSessionHandler)
-  .route('/', xAmzTargetAmazonAthenaStopCalculationExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaStopQueryExecutionHandler)
-  .route('/', xAmzTargetAmazonAthenaTagResourceHandler)
-  .route('/', xAmzTargetAmazonAthenaTerminateSessionHandler)
-  .route('/', xAmzTargetAmazonAthenaUntagResourceHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateCapacityReservationHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateDataCatalogHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateNamedQueryHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateNotebookHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateNotebookMetadataHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdatePreparedStatementHandler)
-  .route('/', xAmzTargetAmazonAthenaUpdateWorkGroupHandler)
+  .openapi(
+    postXAmzTargetAmazonAthenaBatchGetNamedQueryRoute,
+    postXAmzTargetAmazonAthenaBatchGetNamedQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaBatchGetPreparedStatementRoute,
+    postXAmzTargetAmazonAthenaBatchGetPreparedStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaBatchGetQueryExecutionRoute,
+    postXAmzTargetAmazonAthenaBatchGetQueryExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCancelCapacityReservationRoute,
+    postXAmzTargetAmazonAthenaCancelCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreateCapacityReservationRoute,
+    postXAmzTargetAmazonAthenaCreateCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreateDataCatalogRoute,
+    postXAmzTargetAmazonAthenaCreateDataCatalogRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreateNamedQueryRoute,
+    postXAmzTargetAmazonAthenaCreateNamedQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreateNotebookRoute,
+    postXAmzTargetAmazonAthenaCreateNotebookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreatePreparedStatementRoute,
+    postXAmzTargetAmazonAthenaCreatePreparedStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreatePresignedNotebookUrlRoute,
+    postXAmzTargetAmazonAthenaCreatePresignedNotebookUrlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaCreateWorkGroupRoute,
+    postXAmzTargetAmazonAthenaCreateWorkGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeleteCapacityReservationRoute,
+    postXAmzTargetAmazonAthenaDeleteCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeleteDataCatalogRoute,
+    postXAmzTargetAmazonAthenaDeleteDataCatalogRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeleteNamedQueryRoute,
+    postXAmzTargetAmazonAthenaDeleteNamedQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeleteNotebookRoute,
+    postXAmzTargetAmazonAthenaDeleteNotebookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeletePreparedStatementRoute,
+    postXAmzTargetAmazonAthenaDeletePreparedStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaDeleteWorkGroupRoute,
+    postXAmzTargetAmazonAthenaDeleteWorkGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaExportNotebookRoute,
+    postXAmzTargetAmazonAthenaExportNotebookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetCalculationExecutionRoute,
+    postXAmzTargetAmazonAthenaGetCalculationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetCalculationExecutionCodeRoute,
+    postXAmzTargetAmazonAthenaGetCalculationExecutionCodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetCalculationExecutionStatusRoute,
+    postXAmzTargetAmazonAthenaGetCalculationExecutionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationRoute,
+    postXAmzTargetAmazonAthenaGetCapacityAssignmentConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetCapacityReservationRoute,
+    postXAmzTargetAmazonAthenaGetCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetDataCatalogRoute,
+    postXAmzTargetAmazonAthenaGetDataCatalogRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetDatabaseRoute,
+    postXAmzTargetAmazonAthenaGetDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetNamedQueryRoute,
+    postXAmzTargetAmazonAthenaGetNamedQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetNotebookMetadataRoute,
+    postXAmzTargetAmazonAthenaGetNotebookMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetPreparedStatementRoute,
+    postXAmzTargetAmazonAthenaGetPreparedStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetQueryExecutionRoute,
+    postXAmzTargetAmazonAthenaGetQueryExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetQueryResultsRoute,
+    postXAmzTargetAmazonAthenaGetQueryResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetQueryRuntimeStatisticsRoute,
+    postXAmzTargetAmazonAthenaGetQueryRuntimeStatisticsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetSessionRoute,
+    postXAmzTargetAmazonAthenaGetSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetSessionStatusRoute,
+    postXAmzTargetAmazonAthenaGetSessionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetTableMetadataRoute,
+    postXAmzTargetAmazonAthenaGetTableMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaGetWorkGroupRoute,
+    postXAmzTargetAmazonAthenaGetWorkGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaImportNotebookRoute,
+    postXAmzTargetAmazonAthenaImportNotebookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListApplicationDPUSizesRoute,
+    postXAmzTargetAmazonAthenaListApplicationDPUSizesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListCalculationExecutionsRoute,
+    postXAmzTargetAmazonAthenaListCalculationExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListCapacityReservationsRoute,
+    postXAmzTargetAmazonAthenaListCapacityReservationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListDataCatalogsRoute,
+    postXAmzTargetAmazonAthenaListDataCatalogsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListDatabasesRoute,
+    postXAmzTargetAmazonAthenaListDatabasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListEngineVersionsRoute,
+    postXAmzTargetAmazonAthenaListEngineVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListExecutorsRoute,
+    postXAmzTargetAmazonAthenaListExecutorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListNamedQueriesRoute,
+    postXAmzTargetAmazonAthenaListNamedQueriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListNotebookMetadataRoute,
+    postXAmzTargetAmazonAthenaListNotebookMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListNotebookSessionsRoute,
+    postXAmzTargetAmazonAthenaListNotebookSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListPreparedStatementsRoute,
+    postXAmzTargetAmazonAthenaListPreparedStatementsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListQueryExecutionsRoute,
+    postXAmzTargetAmazonAthenaListQueryExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListSessionsRoute,
+    postXAmzTargetAmazonAthenaListSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListTableMetadataRoute,
+    postXAmzTargetAmazonAthenaListTableMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListTagsForResourceRoute,
+    postXAmzTargetAmazonAthenaListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaListWorkGroupsRoute,
+    postXAmzTargetAmazonAthenaListWorkGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationRoute,
+    postXAmzTargetAmazonAthenaPutCapacityAssignmentConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaStartCalculationExecutionRoute,
+    postXAmzTargetAmazonAthenaStartCalculationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaStartQueryExecutionRoute,
+    postXAmzTargetAmazonAthenaStartQueryExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaStartSessionRoute,
+    postXAmzTargetAmazonAthenaStartSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaStopCalculationExecutionRoute,
+    postXAmzTargetAmazonAthenaStopCalculationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaStopQueryExecutionRoute,
+    postXAmzTargetAmazonAthenaStopQueryExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaTagResourceRoute,
+    postXAmzTargetAmazonAthenaTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaTerminateSessionRoute,
+    postXAmzTargetAmazonAthenaTerminateSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUntagResourceRoute,
+    postXAmzTargetAmazonAthenaUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateCapacityReservationRoute,
+    postXAmzTargetAmazonAthenaUpdateCapacityReservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateDataCatalogRoute,
+    postXAmzTargetAmazonAthenaUpdateDataCatalogRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateNamedQueryRoute,
+    postXAmzTargetAmazonAthenaUpdateNamedQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateNotebookRoute,
+    postXAmzTargetAmazonAthenaUpdateNotebookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateNotebookMetadataRoute,
+    postXAmzTargetAmazonAthenaUpdateNotebookMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdatePreparedStatementRoute,
+    postXAmzTargetAmazonAthenaUpdatePreparedStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonAthenaUpdateWorkGroupRoute,
+    postXAmzTargetAmazonAthenaUpdateWorkGroupRouteHandler,
+  )
 
 export default app

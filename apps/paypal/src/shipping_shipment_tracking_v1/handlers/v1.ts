@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1ShippingTrackersIdRoute,
   getV1ShippingTrackersRoute,
   postV1ShippingTrackersBatchRoute,
@@ -7,21 +7,32 @@ import {
   putV1ShippingTrackersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1ShippingTrackersBatchRouteHandler: RouteHandler<
+  typeof postV1ShippingTrackersBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1ShippingTrackersBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ShippingTrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ShippingTrackersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ShippingTrackersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ShippingTrackersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ShippingTrackersRouteHandler: RouteHandler<
+  typeof postV1ShippingTrackersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ShippingTrackersRouteHandler: RouteHandler<
+  typeof getV1ShippingTrackersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ShippingTrackersIdRouteHandler: RouteHandler<
+  typeof putV1ShippingTrackersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ShippingTrackersIdRouteHandler: RouteHandler<
+  typeof getV1ShippingTrackersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

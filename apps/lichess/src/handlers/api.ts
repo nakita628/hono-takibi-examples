@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiBulkPairingIdRoute,
   deleteApiExternalEngineIdRoute,
   deleteApiStudyStudyIdChapterIdRoute,
@@ -168,504 +168,958 @@ import {
   putApiExternalEngineIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiUsersStatusRouteHandler: RouteHandler<typeof getApiUsersStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiUsersStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPlayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPlayerTopNbPerfTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameRatingHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernamePerfPerfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleDailyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleNextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleBatchAngleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPuzzleBatchAngleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleReplayDaysThemeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPuzzleDashboardDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStormDashboardUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRacerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRacerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAccountEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAccountPreferencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiGameGameIdChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameCurrentGameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiGamesUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiGamesExportIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStreamGamesByUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStreamGamesStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStreamGamesStreamIdAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAccountPlayingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamGameIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiGamesExportImportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiGamesExportBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTvChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTvFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTvChannelFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTvChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTournamentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTournamentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentIdJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentIdWithdrawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentIdTerminateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTournamentTeamBattleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTournamentIdGamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTournamentIdResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTournamentIdTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameTournamentCreatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameTournamentPlayedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissNewTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSwissIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissIdEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissIdScheduleNextRoundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissIdJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissIdWithdrawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSwissIdTerminateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSwissIdGamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSwissIdResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamTeamIdSwissRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStudyStudyIdChapterIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStudyStudyIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headApiStudyStudyIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStudyStudyIdImportPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStudyStudyIdChapterIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStudyStudyIdChapterIdMovesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStudyByUsernameExportPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStudyByUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiStudyStudyIdChapterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastByUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastBroadcastTournamentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastBroadcastTournamentSlugBroadcastRoundSlugBroadcastRoundIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBroadcastRoundBroadcastRoundIdResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBroadcastRoundBroadcastRoundIdPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamBroadcastRoundBroadcastRoundIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamBroadcastTourBroadcastTourIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamBroadcastGroupBroadcastGroupIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastRoundBroadcastRoundIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastBroadcastTournamentIdPgnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBroadcastMyRoundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFidePlayerPlayerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFidePlayerPlayerIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiFidePlayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSimulRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamOfUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamTeamIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamTeamIdArenaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTeamTeamIdRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTeamTeamIdRequestUserIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTeamTeamIdRequestUserIdDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTeamTeamIdKickUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamerLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCrosstableUser1User2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPlayerAutocompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUserUsernameNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUserUsernameNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRelFollowingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRelFollowUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRelUnfollowUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRelBlockUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRelUnblockUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStreamEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardSeekRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBoardGameStreamGameIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdMoveMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBoardGameGameIdChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdAbortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdResignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdDrawAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdTakebackAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdClaimVictoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdClaimDrawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBoardGameGameIdBerserkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBotOnlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotAccountUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBotGameStreamGameIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdMoveMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBotGameGameIdChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdAbortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdResignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdDrawAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdTakebackAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdClaimVictoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBotGameGameIdClaimDrawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiChallengeChallengeIdShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeChallengeIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeChallengeIdDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeChallengeIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeAiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeOpenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiChallengeGameIdStartClocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBulkPairingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBulkPairingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiBulkPairingIdStartClocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBulkPairingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiBulkPairingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBulkPairingIdGamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRoundGameIdAddTimeSecondsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTokenAdminChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCloudEvalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiExternalEngineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiExternalEngineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiExternalEngineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiExternalEngineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiExternalEngineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiExternalEngineIdAnalyseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiExternalEngineWorkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiExternalEngineWorkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTokenTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiPlayerRouteHandler: RouteHandler<typeof getApiPlayerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPlayerTopNbPerfTypeRouteHandler: RouteHandler<
+  typeof getApiPlayerTopNbPerfTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameRouteHandler: RouteHandler<typeof getApiUserUsernameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameRatingHistoryRouteHandler: RouteHandler<
+  typeof getApiUserUsernameRatingHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernamePerfPerfRouteHandler: RouteHandler<
+  typeof getApiUserUsernamePerfPerfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameActivityRouteHandler: RouteHandler<
+  typeof getApiUserUsernameActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleDailyRouteHandler: RouteHandler<typeof getApiPuzzleDailyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleIdRouteHandler: RouteHandler<typeof getApiPuzzleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleNextRouteHandler: RouteHandler<typeof getApiPuzzleNextRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleBatchAngleRouteHandler: RouteHandler<
+  typeof getApiPuzzleBatchAngleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPuzzleBatchAngleRouteHandler: RouteHandler<
+  typeof postApiPuzzleBatchAngleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleActivityRouteHandler: RouteHandler<
+  typeof getApiPuzzleActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleReplayDaysThemeRouteHandler: RouteHandler<
+  typeof getApiPuzzleReplayDaysThemeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPuzzleDashboardDaysRouteHandler: RouteHandler<
+  typeof getApiPuzzleDashboardDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStormDashboardUsernameRouteHandler: RouteHandler<
+  typeof getApiStormDashboardUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRacerRouteHandler: RouteHandler<typeof postApiRacerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRacerIdRouteHandler: RouteHandler<typeof getApiRacerIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersRouteHandler: RouteHandler<typeof postApiUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAccountRouteHandler: RouteHandler<typeof getApiAccountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAccountEmailRouteHandler: RouteHandler<typeof getApiAccountEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAccountPreferencesRouteHandler: RouteHandler<
+  typeof getApiAccountPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAccountKidRouteHandler: RouteHandler<typeof getApiAccountKidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAccountKidRouteHandler: RouteHandler<typeof postApiAccountKidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiGameGameIdChatRouteHandler: RouteHandler<
+  typeof getApiGameGameIdChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameCurrentGameRouteHandler: RouteHandler<
+  typeof getApiUserUsernameCurrentGameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiGamesUserUsernameRouteHandler: RouteHandler<
+  typeof getApiGamesUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiGamesExportIdsRouteHandler: RouteHandler<
+  typeof postApiGamesExportIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStreamGamesByUsersRouteHandler: RouteHandler<
+  typeof postApiStreamGamesByUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStreamGamesStreamIdRouteHandler: RouteHandler<
+  typeof postApiStreamGamesStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStreamGamesStreamIdAddRouteHandler: RouteHandler<
+  typeof postApiStreamGamesStreamIdAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAccountPlayingRouteHandler: RouteHandler<
+  typeof getApiAccountPlayingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamGameIdRouteHandler: RouteHandler<typeof getApiStreamGameIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiImportRouteHandler: RouteHandler<typeof postApiImportRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiGamesExportImportsRouteHandler: RouteHandler<
+  typeof getApiGamesExportImportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiGamesExportBookmarksRouteHandler: RouteHandler<
+  typeof getApiGamesExportBookmarksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiVersionRouteHandler: RouteHandler<typeof getApiVersionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTvChannelsRouteHandler: RouteHandler<typeof getApiTvChannelsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTvFeedRouteHandler: RouteHandler<typeof getApiTvFeedRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTvChannelFeedRouteHandler: RouteHandler<
+  typeof getApiTvChannelFeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTvChannelRouteHandler: RouteHandler<typeof getApiTvChannelRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTournamentRouteHandler: RouteHandler<typeof getApiTournamentRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentRouteHandler: RouteHandler<typeof postApiTournamentRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTournamentIdRouteHandler: RouteHandler<typeof getApiTournamentIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentIdRouteHandler: RouteHandler<
+  typeof postApiTournamentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentIdJoinRouteHandler: RouteHandler<
+  typeof postApiTournamentIdJoinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentIdWithdrawRouteHandler: RouteHandler<
+  typeof postApiTournamentIdWithdrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentIdTerminateRouteHandler: RouteHandler<
+  typeof postApiTournamentIdTerminateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTournamentTeamBattleIdRouteHandler: RouteHandler<
+  typeof postApiTournamentTeamBattleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTournamentIdGamesRouteHandler: RouteHandler<
+  typeof getApiTournamentIdGamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTournamentIdResultsRouteHandler: RouteHandler<
+  typeof getApiTournamentIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTournamentIdTeamsRouteHandler: RouteHandler<
+  typeof getApiTournamentIdTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameTournamentCreatedRouteHandler: RouteHandler<
+  typeof getApiUserUsernameTournamentCreatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameTournamentPlayedRouteHandler: RouteHandler<
+  typeof getApiUserUsernameTournamentPlayedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissNewTeamIdRouteHandler: RouteHandler<
+  typeof postApiSwissNewTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSwissIdRouteHandler: RouteHandler<typeof getApiSwissIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissIdEditRouteHandler: RouteHandler<typeof postApiSwissIdEditRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissIdScheduleNextRoundRouteHandler: RouteHandler<
+  typeof postApiSwissIdScheduleNextRoundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissIdJoinRouteHandler: RouteHandler<typeof postApiSwissIdJoinRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissIdWithdrawRouteHandler: RouteHandler<
+  typeof postApiSwissIdWithdrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSwissIdTerminateRouteHandler: RouteHandler<
+  typeof postApiSwissIdTerminateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSwissIdGamesRouteHandler: RouteHandler<typeof getApiSwissIdGamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSwissIdResultsRouteHandler: RouteHandler<
+  typeof getApiSwissIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamTeamIdSwissRouteHandler: RouteHandler<
+  typeof getApiTeamTeamIdSwissRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStudyStudyIdChapterIdPgnRouteHandler: RouteHandler<
+  typeof getApiStudyStudyIdChapterIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStudyStudyIdPgnRouteHandler: RouteHandler<
+  typeof getApiStudyStudyIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headApiStudyStudyIdPgnRouteHandler: RouteHandler<
+  typeof headApiStudyStudyIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStudyRouteHandler: RouteHandler<typeof postApiStudyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStudyStudyIdImportPgnRouteHandler: RouteHandler<
+  typeof postApiStudyStudyIdImportPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStudyStudyIdChapterIdTagsRouteHandler: RouteHandler<
+  typeof postApiStudyStudyIdChapterIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStudyStudyIdChapterIdMovesRouteHandler: RouteHandler<
+  typeof postApiStudyStudyIdChapterIdMovesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStudyByUsernameExportPgnRouteHandler: RouteHandler<
+  typeof getApiStudyByUsernameExportPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStudyByUsernameRouteHandler: RouteHandler<
+  typeof getApiStudyByUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiStudyStudyIdChapterIdRouteHandler: RouteHandler<
+  typeof deleteApiStudyStudyIdChapterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastRouteHandler: RouteHandler<typeof getApiBroadcastRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastTopRouteHandler: RouteHandler<typeof getApiBroadcastTopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastByUsernameRouteHandler: RouteHandler<
+  typeof getApiBroadcastByUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastSearchRouteHandler: RouteHandler<
+  typeof getApiBroadcastSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastBroadcastTournamentIdRouteHandler: RouteHandler<
+  typeof getApiBroadcastBroadcastTournamentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastBroadcastTournamentSlugBroadcastRoundSlugBroadcastRoundIdRouteHandler: RouteHandler<
+  typeof getApiBroadcastBroadcastTournamentSlugBroadcastRoundSlugBroadcastRoundIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBroadcastRoundBroadcastRoundIdResetRouteHandler: RouteHandler<
+  typeof postApiBroadcastRoundBroadcastRoundIdResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBroadcastRoundBroadcastRoundIdPushRouteHandler: RouteHandler<
+  typeof postApiBroadcastRoundBroadcastRoundIdPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamBroadcastRoundBroadcastRoundIdPgnRouteHandler: RouteHandler<
+  typeof getApiStreamBroadcastRoundBroadcastRoundIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamBroadcastTourBroadcastTourIdPgnRouteHandler: RouteHandler<
+  typeof getApiStreamBroadcastTourBroadcastTourIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamBroadcastGroupBroadcastGroupIdPgnRouteHandler: RouteHandler<
+  typeof getApiStreamBroadcastGroupBroadcastGroupIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastRoundBroadcastRoundIdPgnRouteHandler: RouteHandler<
+  typeof getApiBroadcastRoundBroadcastRoundIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastBroadcastTournamentIdPgnRouteHandler: RouteHandler<
+  typeof getApiBroadcastBroadcastTournamentIdPgnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBroadcastMyRoundsRouteHandler: RouteHandler<
+  typeof getApiBroadcastMyRoundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFidePlayerPlayerIdRouteHandler: RouteHandler<
+  typeof getApiFidePlayerPlayerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFidePlayerPlayerIdRatingsRouteHandler: RouteHandler<
+  typeof getApiFidePlayerPlayerIdRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiFidePlayerRouteHandler: RouteHandler<typeof getApiFidePlayerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSimulRouteHandler: RouteHandler<typeof getApiSimulRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamTeamIdRouteHandler: RouteHandler<typeof getApiTeamTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamAllRouteHandler: RouteHandler<typeof getApiTeamAllRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamOfUsernameRouteHandler: RouteHandler<
+  typeof getApiTeamOfUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamSearchRouteHandler: RouteHandler<typeof getApiTeamSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamTeamIdUsersRouteHandler: RouteHandler<
+  typeof getApiTeamTeamIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamTeamIdArenaRouteHandler: RouteHandler<
+  typeof getApiTeamTeamIdArenaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTeamTeamIdRequestsRouteHandler: RouteHandler<
+  typeof getApiTeamTeamIdRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTeamTeamIdRequestUserIdAcceptRouteHandler: RouteHandler<
+  typeof postApiTeamTeamIdRequestUserIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTeamTeamIdRequestUserIdDeclineRouteHandler: RouteHandler<
+  typeof postApiTeamTeamIdRequestUserIdDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTeamTeamIdKickUserIdRouteHandler: RouteHandler<
+  typeof postApiTeamTeamIdKickUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamerLiveRouteHandler: RouteHandler<typeof getApiStreamerLiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCrosstableUser1User2RouteHandler: RouteHandler<
+  typeof getApiCrosstableUser1User2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPlayerAutocompleteRouteHandler: RouteHandler<
+  typeof getApiPlayerAutocompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUserUsernameNoteRouteHandler: RouteHandler<
+  typeof postApiUserUsernameNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUserUsernameNoteRouteHandler: RouteHandler<
+  typeof getApiUserUsernameNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRelFollowingRouteHandler: RouteHandler<typeof getApiRelFollowingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRelFollowUsernameRouteHandler: RouteHandler<
+  typeof postApiRelFollowUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRelUnfollowUsernameRouteHandler: RouteHandler<
+  typeof postApiRelUnfollowUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRelBlockUsernameRouteHandler: RouteHandler<
+  typeof postApiRelBlockUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRelUnblockUsernameRouteHandler: RouteHandler<
+  typeof postApiRelUnblockUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStreamEventRouteHandler: RouteHandler<typeof getApiStreamEventRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardSeekRouteHandler: RouteHandler<typeof postApiBoardSeekRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBoardGameStreamGameIdRouteHandler: RouteHandler<
+  typeof getApiBoardGameStreamGameIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdMoveMoveRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdMoveMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdChatRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBoardGameGameIdChatRouteHandler: RouteHandler<
+  typeof getApiBoardGameGameIdChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdAbortRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdAbortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdResignRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdResignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdDrawAcceptRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdDrawAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdTakebackAcceptRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdTakebackAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdClaimVictoryRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdClaimVictoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdClaimDrawRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdClaimDrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBoardGameGameIdBerserkRouteHandler: RouteHandler<
+  typeof postApiBoardGameGameIdBerserkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBotOnlineRouteHandler: RouteHandler<typeof getApiBotOnlineRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotAccountUpgradeRouteHandler: RouteHandler<
+  typeof postApiBotAccountUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBotGameStreamGameIdRouteHandler: RouteHandler<
+  typeof getApiBotGameStreamGameIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdMoveMoveRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdMoveMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdChatRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBotGameGameIdChatRouteHandler: RouteHandler<
+  typeof getApiBotGameGameIdChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdAbortRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdAbortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdResignRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdResignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdDrawAcceptRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdDrawAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdTakebackAcceptRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdTakebackAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdClaimVictoryRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdClaimVictoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBotGameGameIdClaimDrawRouteHandler: RouteHandler<
+  typeof postApiBotGameGameIdClaimDrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiChallengeRouteHandler: RouteHandler<typeof getApiChallengeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeUsernameRouteHandler: RouteHandler<
+  typeof postApiChallengeUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiChallengeChallengeIdShowRouteHandler: RouteHandler<
+  typeof getApiChallengeChallengeIdShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeChallengeIdAcceptRouteHandler: RouteHandler<
+  typeof postApiChallengeChallengeIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeChallengeIdDeclineRouteHandler: RouteHandler<
+  typeof postApiChallengeChallengeIdDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeChallengeIdCancelRouteHandler: RouteHandler<
+  typeof postApiChallengeChallengeIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeAiRouteHandler: RouteHandler<typeof postApiChallengeAiRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeOpenRouteHandler: RouteHandler<
+  typeof postApiChallengeOpenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiChallengeGameIdStartClocksRouteHandler: RouteHandler<
+  typeof postApiChallengeGameIdStartClocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBulkPairingRouteHandler: RouteHandler<typeof getApiBulkPairingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBulkPairingRouteHandler: RouteHandler<typeof postApiBulkPairingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiBulkPairingIdStartClocksRouteHandler: RouteHandler<
+  typeof postApiBulkPairingIdStartClocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBulkPairingIdRouteHandler: RouteHandler<
+  typeof getApiBulkPairingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiBulkPairingIdRouteHandler: RouteHandler<
+  typeof deleteApiBulkPairingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBulkPairingIdGamesRouteHandler: RouteHandler<
+  typeof getApiBulkPairingIdGamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRoundGameIdAddTimeSecondsRouteHandler: RouteHandler<
+  typeof postApiRoundGameIdAddTimeSecondsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTokenAdminChallengeRouteHandler: RouteHandler<
+  typeof postApiTokenAdminChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCloudEvalRouteHandler: RouteHandler<typeof getApiCloudEvalRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiExternalEngineRouteHandler: RouteHandler<
+  typeof getApiExternalEngineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiExternalEngineRouteHandler: RouteHandler<
+  typeof postApiExternalEngineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiExternalEngineIdRouteHandler: RouteHandler<
+  typeof getApiExternalEngineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiExternalEngineIdRouteHandler: RouteHandler<
+  typeof putApiExternalEngineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiExternalEngineIdRouteHandler: RouteHandler<
+  typeof deleteApiExternalEngineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiExternalEngineIdAnalyseRouteHandler: RouteHandler<
+  typeof postApiExternalEngineIdAnalyseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiExternalEngineWorkRouteHandler: RouteHandler<
+  typeof postApiExternalEngineWorkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiExternalEngineWorkIdRouteHandler: RouteHandler<
+  typeof postApiExternalEngineWorkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTokenRouteHandler: RouteHandler<typeof postApiTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiTokenRouteHandler: RouteHandler<typeof deleteApiTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTokenTestRouteHandler: RouteHandler<typeof postApiTokenTestRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

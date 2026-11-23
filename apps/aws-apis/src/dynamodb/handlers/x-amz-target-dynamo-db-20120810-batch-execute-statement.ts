@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810BatchExecuteStatementHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810BatchExecuteStatementRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810BatchExecuteStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

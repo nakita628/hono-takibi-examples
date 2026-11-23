@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wso2apistore.com/transform/1.0.0/openapi.yaml',
   output: './src/wso2apistore-transform/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wso2apistore-transform/types.ts' },
   client: { output: './src/wso2apistore-transform/client.ts', baseUrl: '/' },
   rpc: { output: './src/wso2apistore-transform/rpc.ts', parseResponse: true },

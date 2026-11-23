@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchAirtravelCoordinatesConfirmCarbonOffsetRoute,
   patchAirtravelCoordinatesConfirmPaymentRoute,
   patchAirtravelCoordinatesConfirmPlantingRoute,
@@ -7,21 +7,32 @@ import {
   postAirtravelCoordinatesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAirtravelCoordinatesRouteHandler: RouteHandler<
+  typeof postAirtravelCoordinatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const airtravelCoordinatesHandler = app
-  .openapi(postAirtravelCoordinatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAirtravelCoordinatesConfirmCarbonOffsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAirtravelCoordinatesConfirmPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAirtravelCoordinatesConfirmPlantingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAirtravelCoordinatesConfirmTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchAirtravelCoordinatesConfirmCarbonOffsetRouteHandler: RouteHandler<
+  typeof patchAirtravelCoordinatesConfirmCarbonOffsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAirtravelCoordinatesConfirmPaymentRouteHandler: RouteHandler<
+  typeof patchAirtravelCoordinatesConfirmPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAirtravelCoordinatesConfirmPlantingRouteHandler: RouteHandler<
+  typeof patchAirtravelCoordinatesConfirmPlantingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAirtravelCoordinatesConfirmTransactionRouteHandler: RouteHandler<
+  typeof patchAirtravelCoordinatesConfirmTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

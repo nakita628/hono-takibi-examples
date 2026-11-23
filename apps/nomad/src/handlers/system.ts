@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putSystemGcRoute, putSystemReconcileSummariesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putSystemGcRoute, putSystemReconcileSummariesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const putSystemGcRouteHandler: RouteHandler<typeof putSystemGcRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(putSystemGcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemReconcileSummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSystemReconcileSummariesRouteHandler: RouteHandler<
+  typeof putSystemReconcileSummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

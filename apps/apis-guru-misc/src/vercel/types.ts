@@ -9889,14 +9889,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
-            status: 449
-          }
-        | {
-            input: { query: { teamId?: string | undefined } } & {
-              json: { cns?: string[] | undefined }
-            }
-            output: {}
-            outputFormat: string
             status: 500
           }
       $put:

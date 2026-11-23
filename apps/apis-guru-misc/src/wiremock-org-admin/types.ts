@@ -1069,12 +1069,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $get: {
-        input: { param: { requestId: string } }
-        output: {}
-        outputFormat: string
-        status: 404
-      }
+      $get:
+        | { input: { param: { requestId: string } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { requestId: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/__admin/reset': { $post: { input: {}; output: {}; outputFormat: string; status: 200 } }

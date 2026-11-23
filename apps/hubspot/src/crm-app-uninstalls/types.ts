@@ -18,7 +18,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/appinstalls/2026-09/external-install': {
-      $delete: { input: {}; output: Error; outputFormat: 'text'; status: 200 }
+      $delete:
+        | { input: {}; output: {}; outputFormat: string; status: 204 }
+        | { input: {}; output: Error; outputFormat: 'text'; status: 200 }
     }
   },
   '/'

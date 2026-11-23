@@ -34505,6 +34505,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { cluster_id: string } } & {
               query: { expiry_seconds?: number | undefined; type?: 'token' | 'sso' | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { cluster_id: string } } & {
+              query: { expiry_seconds?: number | undefined; type?: 'token' | 'sso' | undefined }
+            }
             output: Error
             outputFormat: 'json'
             status: 401

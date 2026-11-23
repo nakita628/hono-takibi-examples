@@ -1,285 +1,830 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonSsmAddTagsToResourceHandler,
-  xAmzTargetAmazonSsmAssociateOpsItemRelatedItemHandler,
-  xAmzTargetAmazonSsmCancelCommandHandler,
-  xAmzTargetAmazonSsmCancelMaintenanceWindowExecutionHandler,
-  xAmzTargetAmazonSsmCreateActivationHandler,
-  xAmzTargetAmazonSsmCreateAssociationBatchHandler,
-  xAmzTargetAmazonSsmCreateAssociationHandler,
-  xAmzTargetAmazonSsmCreateDocumentHandler,
-  xAmzTargetAmazonSsmCreateMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmCreateOpsItemHandler,
-  xAmzTargetAmazonSsmCreateOpsMetadataHandler,
-  xAmzTargetAmazonSsmCreatePatchBaselineHandler,
-  xAmzTargetAmazonSsmCreateResourceDataSyncHandler,
-  xAmzTargetAmazonSsmDeleteActivationHandler,
-  xAmzTargetAmazonSsmDeleteAssociationHandler,
-  xAmzTargetAmazonSsmDeleteDocumentHandler,
-  xAmzTargetAmazonSsmDeleteInventoryHandler,
-  xAmzTargetAmazonSsmDeleteMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmDeleteOpsMetadataHandler,
-  xAmzTargetAmazonSsmDeleteParameterHandler,
-  xAmzTargetAmazonSsmDeleteParametersHandler,
-  xAmzTargetAmazonSsmDeletePatchBaselineHandler,
-  xAmzTargetAmazonSsmDeleteResourceDataSyncHandler,
-  xAmzTargetAmazonSsmDeleteResourcePolicyHandler,
-  xAmzTargetAmazonSsmDeregisterManagedInstanceHandler,
-  xAmzTargetAmazonSsmDeregisterPatchBaselineForPatchGroupHandler,
-  xAmzTargetAmazonSsmDeregisterTargetFromMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmDeregisterTaskFromMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmDescribeActivationsHandler,
-  xAmzTargetAmazonSsmDescribeAssociationExecutionsHandler,
-  xAmzTargetAmazonSsmDescribeAssociationExecutionTargetsHandler,
-  xAmzTargetAmazonSsmDescribeAssociationHandler,
-  xAmzTargetAmazonSsmDescribeAutomationExecutionsHandler,
-  xAmzTargetAmazonSsmDescribeAutomationStepExecutionsHandler,
-  xAmzTargetAmazonSsmDescribeAvailablePatchesHandler,
-  xAmzTargetAmazonSsmDescribeDocumentHandler,
-  xAmzTargetAmazonSsmDescribeDocumentPermissionHandler,
-  xAmzTargetAmazonSsmDescribeEffectiveInstanceAssociationsHandler,
-  xAmzTargetAmazonSsmDescribeEffectivePatchesForPatchBaselineHandler,
-  xAmzTargetAmazonSsmDescribeInstanceAssociationsStatusHandler,
-  xAmzTargetAmazonSsmDescribeInstanceInformationHandler,
-  xAmzTargetAmazonSsmDescribeInstancePatchesHandler,
-  xAmzTargetAmazonSsmDescribeInstancePatchStatesForPatchGroupHandler,
-  xAmzTargetAmazonSsmDescribeInstancePatchStatesHandler,
-  xAmzTargetAmazonSsmDescribeInventoryDeletionsHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionsHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionTaskInvocationsHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionTasksHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowScheduleHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowsForTargetHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowsHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowTargetsHandler,
-  xAmzTargetAmazonSsmDescribeMaintenanceWindowTasksHandler,
-  xAmzTargetAmazonSsmDescribeOpsItemsHandler,
-  xAmzTargetAmazonSsmDescribeParametersHandler,
-  xAmzTargetAmazonSsmDescribePatchBaselinesHandler,
-  xAmzTargetAmazonSsmDescribePatchGroupsHandler,
-  xAmzTargetAmazonSsmDescribePatchGroupStateHandler,
-  xAmzTargetAmazonSsmDescribePatchPropertiesHandler,
-  xAmzTargetAmazonSsmDescribeSessionsHandler,
-  xAmzTargetAmazonSsmDisassociateOpsItemRelatedItemHandler,
-  xAmzTargetAmazonSsmGetAutomationExecutionHandler,
-  xAmzTargetAmazonSsmGetCalendarStateHandler,
-  xAmzTargetAmazonSsmGetCommandInvocationHandler,
-  xAmzTargetAmazonSsmGetConnectionStatusHandler,
-  xAmzTargetAmazonSsmGetDefaultPatchBaselineHandler,
-  xAmzTargetAmazonSsmGetDeployablePatchSnapshotForInstanceHandler,
-  xAmzTargetAmazonSsmGetDocumentHandler,
-  xAmzTargetAmazonSsmGetInventoryHandler,
-  xAmzTargetAmazonSsmGetInventorySchemaHandler,
-  xAmzTargetAmazonSsmGetMaintenanceWindowExecutionHandler,
-  xAmzTargetAmazonSsmGetMaintenanceWindowExecutionTaskHandler,
-  xAmzTargetAmazonSsmGetMaintenanceWindowExecutionTaskInvocationHandler,
-  xAmzTargetAmazonSsmGetMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmGetMaintenanceWindowTaskHandler,
-  xAmzTargetAmazonSsmGetOpsItemHandler,
-  xAmzTargetAmazonSsmGetOpsMetadataHandler,
-  xAmzTargetAmazonSsmGetOpsSummaryHandler,
-  xAmzTargetAmazonSsmGetParameterHandler,
-  xAmzTargetAmazonSsmGetParameterHistoryHandler,
-  xAmzTargetAmazonSsmGetParametersByPathHandler,
-  xAmzTargetAmazonSsmGetParametersHandler,
-  xAmzTargetAmazonSsmGetPatchBaselineForPatchGroupHandler,
-  xAmzTargetAmazonSsmGetPatchBaselineHandler,
-  xAmzTargetAmazonSsmGetResourcePoliciesHandler,
-  xAmzTargetAmazonSsmGetServiceSettingHandler,
-  xAmzTargetAmazonSsmLabelParameterVersionHandler,
-  xAmzTargetAmazonSsmListAssociationsHandler,
-  xAmzTargetAmazonSsmListAssociationVersionsHandler,
-  xAmzTargetAmazonSsmListCommandInvocationsHandler,
-  xAmzTargetAmazonSsmListCommandsHandler,
-  xAmzTargetAmazonSsmListComplianceItemsHandler,
-  xAmzTargetAmazonSsmListComplianceSummariesHandler,
-  xAmzTargetAmazonSsmListDocumentMetadataHistoryHandler,
-  xAmzTargetAmazonSsmListDocumentsHandler,
-  xAmzTargetAmazonSsmListDocumentVersionsHandler,
-  xAmzTargetAmazonSsmListInventoryEntriesHandler,
-  xAmzTargetAmazonSsmListOpsItemEventsHandler,
-  xAmzTargetAmazonSsmListOpsItemRelatedItemsHandler,
-  xAmzTargetAmazonSsmListOpsMetadataHandler,
-  xAmzTargetAmazonSsmListResourceComplianceSummariesHandler,
-  xAmzTargetAmazonSsmListResourceDataSyncHandler,
-  xAmzTargetAmazonSsmListTagsForResourceHandler,
-  xAmzTargetAmazonSsmModifyDocumentPermissionHandler,
-  xAmzTargetAmazonSsmPutComplianceItemsHandler,
-  xAmzTargetAmazonSsmPutInventoryHandler,
-  xAmzTargetAmazonSsmPutParameterHandler,
-  xAmzTargetAmazonSsmPutResourcePolicyHandler,
-  xAmzTargetAmazonSsmRegisterDefaultPatchBaselineHandler,
-  xAmzTargetAmazonSsmRegisterPatchBaselineForPatchGroupHandler,
-  xAmzTargetAmazonSsmRegisterTargetWithMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmRegisterTaskWithMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmRemoveTagsFromResourceHandler,
-  xAmzTargetAmazonSsmResetServiceSettingHandler,
-  xAmzTargetAmazonSsmResumeSessionHandler,
-  xAmzTargetAmazonSsmSendAutomationSignalHandler,
-  xAmzTargetAmazonSsmSendCommandHandler,
-  xAmzTargetAmazonSsmStartAssociationsOnceHandler,
-  xAmzTargetAmazonSsmStartAutomationExecutionHandler,
-  xAmzTargetAmazonSsmStartChangeRequestExecutionHandler,
-  xAmzTargetAmazonSsmStartSessionHandler,
-  xAmzTargetAmazonSsmStopAutomationExecutionHandler,
-  xAmzTargetAmazonSsmTerminateSessionHandler,
-  xAmzTargetAmazonSsmUnlabelParameterVersionHandler,
-  xAmzTargetAmazonSsmUpdateAssociationHandler,
-  xAmzTargetAmazonSsmUpdateAssociationStatusHandler,
-  xAmzTargetAmazonSsmUpdateDocumentDefaultVersionHandler,
-  xAmzTargetAmazonSsmUpdateDocumentHandler,
-  xAmzTargetAmazonSsmUpdateDocumentMetadataHandler,
-  xAmzTargetAmazonSsmUpdateMaintenanceWindowHandler,
-  xAmzTargetAmazonSsmUpdateMaintenanceWindowTargetHandler,
-  xAmzTargetAmazonSsmUpdateMaintenanceWindowTaskHandler,
-  xAmzTargetAmazonSsmUpdateManagedInstanceRoleHandler,
-  xAmzTargetAmazonSsmUpdateOpsItemHandler,
-  xAmzTargetAmazonSsmUpdateOpsMetadataHandler,
-  xAmzTargetAmazonSsmUpdatePatchBaselineHandler,
-  xAmzTargetAmazonSsmUpdateResourceDataSyncHandler,
-  xAmzTargetAmazonSsmUpdateServiceSettingHandler,
+  postXAmzTargetAmazonSSMAddTagsToResourceRoute,
+  postXAmzTargetAmazonSSMAssociateOpsItemRelatedItemRoute,
+  postXAmzTargetAmazonSSMCancelCommandRoute,
+  postXAmzTargetAmazonSSMCancelMaintenanceWindowExecutionRoute,
+  postXAmzTargetAmazonSSMCreateActivationRoute,
+  postXAmzTargetAmazonSSMCreateAssociationBatchRoute,
+  postXAmzTargetAmazonSSMCreateAssociationRoute,
+  postXAmzTargetAmazonSSMCreateDocumentRoute,
+  postXAmzTargetAmazonSSMCreateMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMCreateOpsItemRoute,
+  postXAmzTargetAmazonSSMCreateOpsMetadataRoute,
+  postXAmzTargetAmazonSSMCreatePatchBaselineRoute,
+  postXAmzTargetAmazonSSMCreateResourceDataSyncRoute,
+  postXAmzTargetAmazonSSMDeleteActivationRoute,
+  postXAmzTargetAmazonSSMDeleteAssociationRoute,
+  postXAmzTargetAmazonSSMDeleteDocumentRoute,
+  postXAmzTargetAmazonSSMDeleteInventoryRoute,
+  postXAmzTargetAmazonSSMDeleteMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMDeleteOpsMetadataRoute,
+  postXAmzTargetAmazonSSMDeleteParameterRoute,
+  postXAmzTargetAmazonSSMDeleteParametersRoute,
+  postXAmzTargetAmazonSSMDeletePatchBaselineRoute,
+  postXAmzTargetAmazonSSMDeleteResourceDataSyncRoute,
+  postXAmzTargetAmazonSSMDeleteResourcePolicyRoute,
+  postXAmzTargetAmazonSSMDeregisterManagedInstanceRoute,
+  postXAmzTargetAmazonSSMDeregisterPatchBaselineForPatchGroupRoute,
+  postXAmzTargetAmazonSSMDeregisterTargetFromMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMDeregisterTaskFromMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMDescribeActivationsRoute,
+  postXAmzTargetAmazonSSMDescribeAssociationExecutionsRoute,
+  postXAmzTargetAmazonSSMDescribeAssociationExecutionTargetsRoute,
+  postXAmzTargetAmazonSSMDescribeAssociationRoute,
+  postXAmzTargetAmazonSSMDescribeAutomationExecutionsRoute,
+  postXAmzTargetAmazonSSMDescribeAutomationStepExecutionsRoute,
+  postXAmzTargetAmazonSSMDescribeAvailablePatchesRoute,
+  postXAmzTargetAmazonSSMDescribeDocumentPermissionRoute,
+  postXAmzTargetAmazonSSMDescribeDocumentRoute,
+  postXAmzTargetAmazonSSMDescribeEffectiveInstanceAssociationsRoute,
+  postXAmzTargetAmazonSSMDescribeEffectivePatchesForPatchBaselineRoute,
+  postXAmzTargetAmazonSSMDescribeInstanceAssociationsStatusRoute,
+  postXAmzTargetAmazonSSMDescribeInstanceInformationRoute,
+  postXAmzTargetAmazonSSMDescribeInstancePatchesRoute,
+  postXAmzTargetAmazonSSMDescribeInstancePatchStatesForPatchGroupRoute,
+  postXAmzTargetAmazonSSMDescribeInstancePatchStatesRoute,
+  postXAmzTargetAmazonSSMDescribeInventoryDeletionsRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionsRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTaskInvocationsRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTasksRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowScheduleRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowsForTargetRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowsRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowTargetsRoute,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowTasksRoute,
+  postXAmzTargetAmazonSSMDescribeOpsItemsRoute,
+  postXAmzTargetAmazonSSMDescribeParametersRoute,
+  postXAmzTargetAmazonSSMDescribePatchBaselinesRoute,
+  postXAmzTargetAmazonSSMDescribePatchGroupsRoute,
+  postXAmzTargetAmazonSSMDescribePatchGroupStateRoute,
+  postXAmzTargetAmazonSSMDescribePatchPropertiesRoute,
+  postXAmzTargetAmazonSSMDescribeSessionsRoute,
+  postXAmzTargetAmazonSSMDisassociateOpsItemRelatedItemRoute,
+  postXAmzTargetAmazonSSMGetAutomationExecutionRoute,
+  postXAmzTargetAmazonSSMGetCalendarStateRoute,
+  postXAmzTargetAmazonSSMGetCommandInvocationRoute,
+  postXAmzTargetAmazonSSMGetConnectionStatusRoute,
+  postXAmzTargetAmazonSSMGetDefaultPatchBaselineRoute,
+  postXAmzTargetAmazonSSMGetDeployablePatchSnapshotForInstanceRoute,
+  postXAmzTargetAmazonSSMGetDocumentRoute,
+  postXAmzTargetAmazonSSMGetInventoryRoute,
+  postXAmzTargetAmazonSSMGetInventorySchemaRoute,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionRoute,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskInvocationRoute,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskRoute,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowTaskRoute,
+  postXAmzTargetAmazonSSMGetOpsItemRoute,
+  postXAmzTargetAmazonSSMGetOpsMetadataRoute,
+  postXAmzTargetAmazonSSMGetOpsSummaryRoute,
+  postXAmzTargetAmazonSSMGetParameterHistoryRoute,
+  postXAmzTargetAmazonSSMGetParameterRoute,
+  postXAmzTargetAmazonSSMGetParametersByPathRoute,
+  postXAmzTargetAmazonSSMGetParametersRoute,
+  postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute,
+  postXAmzTargetAmazonSSMGetPatchBaselineRoute,
+  postXAmzTargetAmazonSSMGetResourcePoliciesRoute,
+  postXAmzTargetAmazonSSMGetServiceSettingRoute,
+  postXAmzTargetAmazonSSMLabelParameterVersionRoute,
+  postXAmzTargetAmazonSSMListAssociationsRoute,
+  postXAmzTargetAmazonSSMListAssociationVersionsRoute,
+  postXAmzTargetAmazonSSMListCommandInvocationsRoute,
+  postXAmzTargetAmazonSSMListCommandsRoute,
+  postXAmzTargetAmazonSSMListComplianceItemsRoute,
+  postXAmzTargetAmazonSSMListComplianceSummariesRoute,
+  postXAmzTargetAmazonSSMListDocumentMetadataHistoryRoute,
+  postXAmzTargetAmazonSSMListDocumentsRoute,
+  postXAmzTargetAmazonSSMListDocumentVersionsRoute,
+  postXAmzTargetAmazonSSMListInventoryEntriesRoute,
+  postXAmzTargetAmazonSSMListOpsItemEventsRoute,
+  postXAmzTargetAmazonSSMListOpsItemRelatedItemsRoute,
+  postXAmzTargetAmazonSSMListOpsMetadataRoute,
+  postXAmzTargetAmazonSSMListResourceComplianceSummariesRoute,
+  postXAmzTargetAmazonSSMListResourceDataSyncRoute,
+  postXAmzTargetAmazonSSMListTagsForResourceRoute,
+  postXAmzTargetAmazonSSMModifyDocumentPermissionRoute,
+  postXAmzTargetAmazonSSMPutComplianceItemsRoute,
+  postXAmzTargetAmazonSSMPutInventoryRoute,
+  postXAmzTargetAmazonSSMPutParameterRoute,
+  postXAmzTargetAmazonSSMPutResourcePolicyRoute,
+  postXAmzTargetAmazonSSMRegisterDefaultPatchBaselineRoute,
+  postXAmzTargetAmazonSSMRegisterPatchBaselineForPatchGroupRoute,
+  postXAmzTargetAmazonSSMRegisterTargetWithMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMRemoveTagsFromResourceRoute,
+  postXAmzTargetAmazonSSMResetServiceSettingRoute,
+  postXAmzTargetAmazonSSMResumeSessionRoute,
+  postXAmzTargetAmazonSSMSendAutomationSignalRoute,
+  postXAmzTargetAmazonSSMSendCommandRoute,
+  postXAmzTargetAmazonSSMStartAssociationsOnceRoute,
+  postXAmzTargetAmazonSSMStartAutomationExecutionRoute,
+  postXAmzTargetAmazonSSMStartChangeRequestExecutionRoute,
+  postXAmzTargetAmazonSSMStartSessionRoute,
+  postXAmzTargetAmazonSSMStopAutomationExecutionRoute,
+  postXAmzTargetAmazonSSMTerminateSessionRoute,
+  postXAmzTargetAmazonSSMUnlabelParameterVersionRoute,
+  postXAmzTargetAmazonSSMUpdateAssociationRoute,
+  postXAmzTargetAmazonSSMUpdateAssociationStatusRoute,
+  postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute,
+  postXAmzTargetAmazonSSMUpdateDocumentMetadataRoute,
+  postXAmzTargetAmazonSSMUpdateDocumentRoute,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowRoute,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowTargetRoute,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowTaskRoute,
+  postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute,
+  postXAmzTargetAmazonSSMUpdateOpsItemRoute,
+  postXAmzTargetAmazonSSMUpdateOpsMetadataRoute,
+  postXAmzTargetAmazonSSMUpdatePatchBaselineRoute,
+  postXAmzTargetAmazonSSMUpdateResourceDataSyncRoute,
+  postXAmzTargetAmazonSSMUpdateServiceSettingRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonSSMAddTagsToResourceRouteHandler,
+  postXAmzTargetAmazonSSMAssociateOpsItemRelatedItemRouteHandler,
+  postXAmzTargetAmazonSSMCancelCommandRouteHandler,
+  postXAmzTargetAmazonSSMCancelMaintenanceWindowExecutionRouteHandler,
+  postXAmzTargetAmazonSSMCreateActivationRouteHandler,
+  postXAmzTargetAmazonSSMCreateAssociationBatchRouteHandler,
+  postXAmzTargetAmazonSSMCreateAssociationRouteHandler,
+  postXAmzTargetAmazonSSMCreateDocumentRouteHandler,
+  postXAmzTargetAmazonSSMCreateMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMCreateOpsItemRouteHandler,
+  postXAmzTargetAmazonSSMCreateOpsMetadataRouteHandler,
+  postXAmzTargetAmazonSSMCreatePatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMCreateResourceDataSyncRouteHandler,
+  postXAmzTargetAmazonSSMDeleteActivationRouteHandler,
+  postXAmzTargetAmazonSSMDeleteAssociationRouteHandler,
+  postXAmzTargetAmazonSSMDeleteDocumentRouteHandler,
+  postXAmzTargetAmazonSSMDeleteInventoryRouteHandler,
+  postXAmzTargetAmazonSSMDeleteMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMDeleteOpsMetadataRouteHandler,
+  postXAmzTargetAmazonSSMDeleteParameterRouteHandler,
+  postXAmzTargetAmazonSSMDeleteParametersRouteHandler,
+  postXAmzTargetAmazonSSMDeletePatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMDeleteResourceDataSyncRouteHandler,
+  postXAmzTargetAmazonSSMDeleteResourcePolicyRouteHandler,
+  postXAmzTargetAmazonSSMDeregisterManagedInstanceRouteHandler,
+  postXAmzTargetAmazonSSMDeregisterPatchBaselineForPatchGroupRouteHandler,
+  postXAmzTargetAmazonSSMDeregisterTargetFromMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMDeregisterTaskFromMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMDescribeActivationsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAssociationExecutionsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAssociationExecutionTargetsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAssociationRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAutomationExecutionsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAutomationStepExecutionsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeAvailablePatchesRouteHandler,
+  postXAmzTargetAmazonSSMDescribeDocumentPermissionRouteHandler,
+  postXAmzTargetAmazonSSMDescribeDocumentRouteHandler,
+  postXAmzTargetAmazonSSMDescribeEffectiveInstanceAssociationsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeEffectivePatchesForPatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInstanceAssociationsStatusRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInstanceInformationRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInstancePatchesRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInstancePatchStatesForPatchGroupRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInstancePatchStatesRouteHandler,
+  postXAmzTargetAmazonSSMDescribeInventoryDeletionsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTaskInvocationsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTasksRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowScheduleRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowsForTargetRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowTargetsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeMaintenanceWindowTasksRouteHandler,
+  postXAmzTargetAmazonSSMDescribeOpsItemsRouteHandler,
+  postXAmzTargetAmazonSSMDescribeParametersRouteHandler,
+  postXAmzTargetAmazonSSMDescribePatchBaselinesRouteHandler,
+  postXAmzTargetAmazonSSMDescribePatchGroupsRouteHandler,
+  postXAmzTargetAmazonSSMDescribePatchGroupStateRouteHandler,
+  postXAmzTargetAmazonSSMDescribePatchPropertiesRouteHandler,
+  postXAmzTargetAmazonSSMDescribeSessionsRouteHandler,
+  postXAmzTargetAmazonSSMDisassociateOpsItemRelatedItemRouteHandler,
+  postXAmzTargetAmazonSSMGetAutomationExecutionRouteHandler,
+  postXAmzTargetAmazonSSMGetCalendarStateRouteHandler,
+  postXAmzTargetAmazonSSMGetCommandInvocationRouteHandler,
+  postXAmzTargetAmazonSSMGetConnectionStatusRouteHandler,
+  postXAmzTargetAmazonSSMGetDefaultPatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMGetDeployablePatchSnapshotForInstanceRouteHandler,
+  postXAmzTargetAmazonSSMGetDocumentRouteHandler,
+  postXAmzTargetAmazonSSMGetInventoryRouteHandler,
+  postXAmzTargetAmazonSSMGetInventorySchemaRouteHandler,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionRouteHandler,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskInvocationRouteHandler,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskRouteHandler,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMGetMaintenanceWindowTaskRouteHandler,
+  postXAmzTargetAmazonSSMGetOpsItemRouteHandler,
+  postXAmzTargetAmazonSSMGetOpsMetadataRouteHandler,
+  postXAmzTargetAmazonSSMGetOpsSummaryRouteHandler,
+  postXAmzTargetAmazonSSMGetParameterHistoryRouteHandler,
+  postXAmzTargetAmazonSSMGetParameterRouteHandler,
+  postXAmzTargetAmazonSSMGetParametersByPathRouteHandler,
+  postXAmzTargetAmazonSSMGetParametersRouteHandler,
+  postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRouteHandler,
+  postXAmzTargetAmazonSSMGetPatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMGetResourcePoliciesRouteHandler,
+  postXAmzTargetAmazonSSMGetServiceSettingRouteHandler,
+  postXAmzTargetAmazonSSMLabelParameterVersionRouteHandler,
+  postXAmzTargetAmazonSSMListAssociationsRouteHandler,
+  postXAmzTargetAmazonSSMListAssociationVersionsRouteHandler,
+  postXAmzTargetAmazonSSMListCommandInvocationsRouteHandler,
+  postXAmzTargetAmazonSSMListCommandsRouteHandler,
+  postXAmzTargetAmazonSSMListComplianceItemsRouteHandler,
+  postXAmzTargetAmazonSSMListComplianceSummariesRouteHandler,
+  postXAmzTargetAmazonSSMListDocumentMetadataHistoryRouteHandler,
+  postXAmzTargetAmazonSSMListDocumentsRouteHandler,
+  postXAmzTargetAmazonSSMListDocumentVersionsRouteHandler,
+  postXAmzTargetAmazonSSMListInventoryEntriesRouteHandler,
+  postXAmzTargetAmazonSSMListOpsItemEventsRouteHandler,
+  postXAmzTargetAmazonSSMListOpsItemRelatedItemsRouteHandler,
+  postXAmzTargetAmazonSSMListOpsMetadataRouteHandler,
+  postXAmzTargetAmazonSSMListResourceComplianceSummariesRouteHandler,
+  postXAmzTargetAmazonSSMListResourceDataSyncRouteHandler,
+  postXAmzTargetAmazonSSMListTagsForResourceRouteHandler,
+  postXAmzTargetAmazonSSMModifyDocumentPermissionRouteHandler,
+  postXAmzTargetAmazonSSMPutComplianceItemsRouteHandler,
+  postXAmzTargetAmazonSSMPutInventoryRouteHandler,
+  postXAmzTargetAmazonSSMPutParameterRouteHandler,
+  postXAmzTargetAmazonSSMPutResourcePolicyRouteHandler,
+  postXAmzTargetAmazonSSMRegisterDefaultPatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMRegisterPatchBaselineForPatchGroupRouteHandler,
+  postXAmzTargetAmazonSSMRegisterTargetWithMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMRemoveTagsFromResourceRouteHandler,
+  postXAmzTargetAmazonSSMResetServiceSettingRouteHandler,
+  postXAmzTargetAmazonSSMResumeSessionRouteHandler,
+  postXAmzTargetAmazonSSMSendAutomationSignalRouteHandler,
+  postXAmzTargetAmazonSSMSendCommandRouteHandler,
+  postXAmzTargetAmazonSSMStartAssociationsOnceRouteHandler,
+  postXAmzTargetAmazonSSMStartAutomationExecutionRouteHandler,
+  postXAmzTargetAmazonSSMStartChangeRequestExecutionRouteHandler,
+  postXAmzTargetAmazonSSMStartSessionRouteHandler,
+  postXAmzTargetAmazonSSMStopAutomationExecutionRouteHandler,
+  postXAmzTargetAmazonSSMTerminateSessionRouteHandler,
+  postXAmzTargetAmazonSSMUnlabelParameterVersionRouteHandler,
+  postXAmzTargetAmazonSSMUpdateAssociationRouteHandler,
+  postXAmzTargetAmazonSSMUpdateAssociationStatusRouteHandler,
+  postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRouteHandler,
+  postXAmzTargetAmazonSSMUpdateDocumentMetadataRouteHandler,
+  postXAmzTargetAmazonSSMUpdateDocumentRouteHandler,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowRouteHandler,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowTargetRouteHandler,
+  postXAmzTargetAmazonSSMUpdateMaintenanceWindowTaskRouteHandler,
+  postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRouteHandler,
+  postXAmzTargetAmazonSSMUpdateOpsItemRouteHandler,
+  postXAmzTargetAmazonSSMUpdateOpsMetadataRouteHandler,
+  postXAmzTargetAmazonSSMUpdatePatchBaselineRouteHandler,
+  postXAmzTargetAmazonSSMUpdateResourceDataSyncRouteHandler,
+  postXAmzTargetAmazonSSMUpdateServiceSettingRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonSsmAddTagsToResourceHandler)
-  .route('/', xAmzTargetAmazonSsmAssociateOpsItemRelatedItemHandler)
-  .route('/', xAmzTargetAmazonSsmCancelCommandHandler)
-  .route('/', xAmzTargetAmazonSsmCancelMaintenanceWindowExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmCreateActivationHandler)
-  .route('/', xAmzTargetAmazonSsmCreateAssociationHandler)
-  .route('/', xAmzTargetAmazonSsmCreateAssociationBatchHandler)
-  .route('/', xAmzTargetAmazonSsmCreateDocumentHandler)
-  .route('/', xAmzTargetAmazonSsmCreateMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmCreateOpsItemHandler)
-  .route('/', xAmzTargetAmazonSsmCreateOpsMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmCreatePatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmCreateResourceDataSyncHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteActivationHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteAssociationHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteDocumentHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteInventoryHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteOpsMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteParameterHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteParametersHandler)
-  .route('/', xAmzTargetAmazonSsmDeletePatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteResourceDataSyncHandler)
-  .route('/', xAmzTargetAmazonSsmDeleteResourcePolicyHandler)
-  .route('/', xAmzTargetAmazonSsmDeregisterManagedInstanceHandler)
-  .route('/', xAmzTargetAmazonSsmDeregisterPatchBaselineForPatchGroupHandler)
-  .route('/', xAmzTargetAmazonSsmDeregisterTargetFromMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmDeregisterTaskFromMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeActivationsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAssociationHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAssociationExecutionTargetsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAssociationExecutionsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAutomationExecutionsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAutomationStepExecutionsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeAvailablePatchesHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeDocumentHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeDocumentPermissionHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeEffectiveInstanceAssociationsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeEffectivePatchesForPatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInstanceAssociationsStatusHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInstanceInformationHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInstancePatchStatesHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInstancePatchStatesForPatchGroupHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInstancePatchesHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeInventoryDeletionsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionTaskInvocationsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionTasksHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowExecutionsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowScheduleHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowTargetsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowTasksHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeMaintenanceWindowsForTargetHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeOpsItemsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeParametersHandler)
-  .route('/', xAmzTargetAmazonSsmDescribePatchBaselinesHandler)
-  .route('/', xAmzTargetAmazonSsmDescribePatchGroupStateHandler)
-  .route('/', xAmzTargetAmazonSsmDescribePatchGroupsHandler)
-  .route('/', xAmzTargetAmazonSsmDescribePatchPropertiesHandler)
-  .route('/', xAmzTargetAmazonSsmDescribeSessionsHandler)
-  .route('/', xAmzTargetAmazonSsmDisassociateOpsItemRelatedItemHandler)
-  .route('/', xAmzTargetAmazonSsmGetAutomationExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmGetCalendarStateHandler)
-  .route('/', xAmzTargetAmazonSsmGetCommandInvocationHandler)
-  .route('/', xAmzTargetAmazonSsmGetConnectionStatusHandler)
-  .route('/', xAmzTargetAmazonSsmGetDefaultPatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmGetDeployablePatchSnapshotForInstanceHandler)
-  .route('/', xAmzTargetAmazonSsmGetDocumentHandler)
-  .route('/', xAmzTargetAmazonSsmGetInventoryHandler)
-  .route('/', xAmzTargetAmazonSsmGetInventorySchemaHandler)
-  .route('/', xAmzTargetAmazonSsmGetMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmGetMaintenanceWindowExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmGetMaintenanceWindowExecutionTaskHandler)
-  .route('/', xAmzTargetAmazonSsmGetMaintenanceWindowExecutionTaskInvocationHandler)
-  .route('/', xAmzTargetAmazonSsmGetMaintenanceWindowTaskHandler)
-  .route('/', xAmzTargetAmazonSsmGetOpsItemHandler)
-  .route('/', xAmzTargetAmazonSsmGetOpsMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmGetOpsSummaryHandler)
-  .route('/', xAmzTargetAmazonSsmGetParameterHandler)
-  .route('/', xAmzTargetAmazonSsmGetParameterHistoryHandler)
-  .route('/', xAmzTargetAmazonSsmGetParametersHandler)
-  .route('/', xAmzTargetAmazonSsmGetParametersByPathHandler)
-  .route('/', xAmzTargetAmazonSsmGetPatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmGetPatchBaselineForPatchGroupHandler)
-  .route('/', xAmzTargetAmazonSsmGetResourcePoliciesHandler)
-  .route('/', xAmzTargetAmazonSsmGetServiceSettingHandler)
-  .route('/', xAmzTargetAmazonSsmLabelParameterVersionHandler)
-  .route('/', xAmzTargetAmazonSsmListAssociationVersionsHandler)
-  .route('/', xAmzTargetAmazonSsmListAssociationsHandler)
-  .route('/', xAmzTargetAmazonSsmListCommandInvocationsHandler)
-  .route('/', xAmzTargetAmazonSsmListCommandsHandler)
-  .route('/', xAmzTargetAmazonSsmListComplianceItemsHandler)
-  .route('/', xAmzTargetAmazonSsmListComplianceSummariesHandler)
-  .route('/', xAmzTargetAmazonSsmListDocumentMetadataHistoryHandler)
-  .route('/', xAmzTargetAmazonSsmListDocumentVersionsHandler)
-  .route('/', xAmzTargetAmazonSsmListDocumentsHandler)
-  .route('/', xAmzTargetAmazonSsmListInventoryEntriesHandler)
-  .route('/', xAmzTargetAmazonSsmListOpsItemEventsHandler)
-  .route('/', xAmzTargetAmazonSsmListOpsItemRelatedItemsHandler)
-  .route('/', xAmzTargetAmazonSsmListOpsMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmListResourceComplianceSummariesHandler)
-  .route('/', xAmzTargetAmazonSsmListResourceDataSyncHandler)
-  .route('/', xAmzTargetAmazonSsmListTagsForResourceHandler)
-  .route('/', xAmzTargetAmazonSsmModifyDocumentPermissionHandler)
-  .route('/', xAmzTargetAmazonSsmPutComplianceItemsHandler)
-  .route('/', xAmzTargetAmazonSsmPutInventoryHandler)
-  .route('/', xAmzTargetAmazonSsmPutParameterHandler)
-  .route('/', xAmzTargetAmazonSsmPutResourcePolicyHandler)
-  .route('/', xAmzTargetAmazonSsmRegisterDefaultPatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmRegisterPatchBaselineForPatchGroupHandler)
-  .route('/', xAmzTargetAmazonSsmRegisterTargetWithMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmRegisterTaskWithMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmRemoveTagsFromResourceHandler)
-  .route('/', xAmzTargetAmazonSsmResetServiceSettingHandler)
-  .route('/', xAmzTargetAmazonSsmResumeSessionHandler)
-  .route('/', xAmzTargetAmazonSsmSendAutomationSignalHandler)
-  .route('/', xAmzTargetAmazonSsmSendCommandHandler)
-  .route('/', xAmzTargetAmazonSsmStartAssociationsOnceHandler)
-  .route('/', xAmzTargetAmazonSsmStartAutomationExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmStartChangeRequestExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmStartSessionHandler)
-  .route('/', xAmzTargetAmazonSsmStopAutomationExecutionHandler)
-  .route('/', xAmzTargetAmazonSsmTerminateSessionHandler)
-  .route('/', xAmzTargetAmazonSsmUnlabelParameterVersionHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateAssociationHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateAssociationStatusHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateDocumentHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateDocumentDefaultVersionHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateDocumentMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateMaintenanceWindowHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateMaintenanceWindowTargetHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateMaintenanceWindowTaskHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateManagedInstanceRoleHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateOpsItemHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateOpsMetadataHandler)
-  .route('/', xAmzTargetAmazonSsmUpdatePatchBaselineHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateResourceDataSyncHandler)
-  .route('/', xAmzTargetAmazonSsmUpdateServiceSettingHandler)
+  .openapi(
+    postXAmzTargetAmazonSSMAddTagsToResourceRoute,
+    postXAmzTargetAmazonSSMAddTagsToResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMAssociateOpsItemRelatedItemRoute,
+    postXAmzTargetAmazonSSMAssociateOpsItemRelatedItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCancelCommandRoute,
+    postXAmzTargetAmazonSSMCancelCommandRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCancelMaintenanceWindowExecutionRoute,
+    postXAmzTargetAmazonSSMCancelMaintenanceWindowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateActivationRoute,
+    postXAmzTargetAmazonSSMCreateActivationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateAssociationRoute,
+    postXAmzTargetAmazonSSMCreateAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateAssociationBatchRoute,
+    postXAmzTargetAmazonSSMCreateAssociationBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateDocumentRoute,
+    postXAmzTargetAmazonSSMCreateDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMCreateMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateOpsItemRoute,
+    postXAmzTargetAmazonSSMCreateOpsItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateOpsMetadataRoute,
+    postXAmzTargetAmazonSSMCreateOpsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreatePatchBaselineRoute,
+    postXAmzTargetAmazonSSMCreatePatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMCreateResourceDataSyncRoute,
+    postXAmzTargetAmazonSSMCreateResourceDataSyncRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteActivationRoute,
+    postXAmzTargetAmazonSSMDeleteActivationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteAssociationRoute,
+    postXAmzTargetAmazonSSMDeleteAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteDocumentRoute,
+    postXAmzTargetAmazonSSMDeleteDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteInventoryRoute,
+    postXAmzTargetAmazonSSMDeleteInventoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMDeleteMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteOpsMetadataRoute,
+    postXAmzTargetAmazonSSMDeleteOpsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteParameterRoute,
+    postXAmzTargetAmazonSSMDeleteParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteParametersRoute,
+    postXAmzTargetAmazonSSMDeleteParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeletePatchBaselineRoute,
+    postXAmzTargetAmazonSSMDeletePatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteResourceDataSyncRoute,
+    postXAmzTargetAmazonSSMDeleteResourceDataSyncRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeleteResourcePolicyRoute,
+    postXAmzTargetAmazonSSMDeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeregisterManagedInstanceRoute,
+    postXAmzTargetAmazonSSMDeregisterManagedInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeregisterPatchBaselineForPatchGroupRoute,
+    postXAmzTargetAmazonSSMDeregisterPatchBaselineForPatchGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeregisterTargetFromMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMDeregisterTargetFromMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDeregisterTaskFromMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMDeregisterTaskFromMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeActivationsRoute,
+    postXAmzTargetAmazonSSMDescribeActivationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAssociationRoute,
+    postXAmzTargetAmazonSSMDescribeAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAssociationExecutionTargetsRoute,
+    postXAmzTargetAmazonSSMDescribeAssociationExecutionTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAssociationExecutionsRoute,
+    postXAmzTargetAmazonSSMDescribeAssociationExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAutomationExecutionsRoute,
+    postXAmzTargetAmazonSSMDescribeAutomationExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAutomationStepExecutionsRoute,
+    postXAmzTargetAmazonSSMDescribeAutomationStepExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeAvailablePatchesRoute,
+    postXAmzTargetAmazonSSMDescribeAvailablePatchesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeDocumentRoute,
+    postXAmzTargetAmazonSSMDescribeDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeDocumentPermissionRoute,
+    postXAmzTargetAmazonSSMDescribeDocumentPermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeEffectiveInstanceAssociationsRoute,
+    postXAmzTargetAmazonSSMDescribeEffectiveInstanceAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeEffectivePatchesForPatchBaselineRoute,
+    postXAmzTargetAmazonSSMDescribeEffectivePatchesForPatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInstanceAssociationsStatusRoute,
+    postXAmzTargetAmazonSSMDescribeInstanceAssociationsStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInstanceInformationRoute,
+    postXAmzTargetAmazonSSMDescribeInstanceInformationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInstancePatchStatesRoute,
+    postXAmzTargetAmazonSSMDescribeInstancePatchStatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInstancePatchStatesForPatchGroupRoute,
+    postXAmzTargetAmazonSSMDescribeInstancePatchStatesForPatchGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInstancePatchesRoute,
+    postXAmzTargetAmazonSSMDescribeInstancePatchesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeInventoryDeletionsRoute,
+    postXAmzTargetAmazonSSMDescribeInventoryDeletionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTaskInvocationsRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTaskInvocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTasksRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionsRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowScheduleRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowTargetsRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowTasksRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowsRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowsForTargetRoute,
+    postXAmzTargetAmazonSSMDescribeMaintenanceWindowsForTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeOpsItemsRoute,
+    postXAmzTargetAmazonSSMDescribeOpsItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeParametersRoute,
+    postXAmzTargetAmazonSSMDescribeParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribePatchBaselinesRoute,
+    postXAmzTargetAmazonSSMDescribePatchBaselinesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribePatchGroupStateRoute,
+    postXAmzTargetAmazonSSMDescribePatchGroupStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribePatchGroupsRoute,
+    postXAmzTargetAmazonSSMDescribePatchGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribePatchPropertiesRoute,
+    postXAmzTargetAmazonSSMDescribePatchPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDescribeSessionsRoute,
+    postXAmzTargetAmazonSSMDescribeSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMDisassociateOpsItemRelatedItemRoute,
+    postXAmzTargetAmazonSSMDisassociateOpsItemRelatedItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetAutomationExecutionRoute,
+    postXAmzTargetAmazonSSMGetAutomationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetCalendarStateRoute,
+    postXAmzTargetAmazonSSMGetCalendarStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetCommandInvocationRoute,
+    postXAmzTargetAmazonSSMGetCommandInvocationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetConnectionStatusRoute,
+    postXAmzTargetAmazonSSMGetConnectionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetDefaultPatchBaselineRoute,
+    postXAmzTargetAmazonSSMGetDefaultPatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetDeployablePatchSnapshotForInstanceRoute,
+    postXAmzTargetAmazonSSMGetDeployablePatchSnapshotForInstanceRouteHandler,
+  )
+  .openapi(postXAmzTargetAmazonSSMGetDocumentRoute, postXAmzTargetAmazonSSMGetDocumentRouteHandler)
+  .openapi(
+    postXAmzTargetAmazonSSMGetInventoryRoute,
+    postXAmzTargetAmazonSSMGetInventoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetInventorySchemaRoute,
+    postXAmzTargetAmazonSSMGetInventorySchemaRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMGetMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionRoute,
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskRoute,
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskInvocationRoute,
+    postXAmzTargetAmazonSSMGetMaintenanceWindowExecutionTaskInvocationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetMaintenanceWindowTaskRoute,
+    postXAmzTargetAmazonSSMGetMaintenanceWindowTaskRouteHandler,
+  )
+  .openapi(postXAmzTargetAmazonSSMGetOpsItemRoute, postXAmzTargetAmazonSSMGetOpsItemRouteHandler)
+  .openapi(
+    postXAmzTargetAmazonSSMGetOpsMetadataRoute,
+    postXAmzTargetAmazonSSMGetOpsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetOpsSummaryRoute,
+    postXAmzTargetAmazonSSMGetOpsSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetParameterRoute,
+    postXAmzTargetAmazonSSMGetParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetParameterHistoryRoute,
+    postXAmzTargetAmazonSSMGetParameterHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetParametersRoute,
+    postXAmzTargetAmazonSSMGetParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetParametersByPathRoute,
+    postXAmzTargetAmazonSSMGetParametersByPathRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetPatchBaselineRoute,
+    postXAmzTargetAmazonSSMGetPatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRoute,
+    postXAmzTargetAmazonSSMGetPatchBaselineForPatchGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetResourcePoliciesRoute,
+    postXAmzTargetAmazonSSMGetResourcePoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMGetServiceSettingRoute,
+    postXAmzTargetAmazonSSMGetServiceSettingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMLabelParameterVersionRoute,
+    postXAmzTargetAmazonSSMLabelParameterVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListAssociationVersionsRoute,
+    postXAmzTargetAmazonSSMListAssociationVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListAssociationsRoute,
+    postXAmzTargetAmazonSSMListAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListCommandInvocationsRoute,
+    postXAmzTargetAmazonSSMListCommandInvocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListCommandsRoute,
+    postXAmzTargetAmazonSSMListCommandsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListComplianceItemsRoute,
+    postXAmzTargetAmazonSSMListComplianceItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListComplianceSummariesRoute,
+    postXAmzTargetAmazonSSMListComplianceSummariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListDocumentMetadataHistoryRoute,
+    postXAmzTargetAmazonSSMListDocumentMetadataHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListDocumentVersionsRoute,
+    postXAmzTargetAmazonSSMListDocumentVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListDocumentsRoute,
+    postXAmzTargetAmazonSSMListDocumentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListInventoryEntriesRoute,
+    postXAmzTargetAmazonSSMListInventoryEntriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListOpsItemEventsRoute,
+    postXAmzTargetAmazonSSMListOpsItemEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListOpsItemRelatedItemsRoute,
+    postXAmzTargetAmazonSSMListOpsItemRelatedItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListOpsMetadataRoute,
+    postXAmzTargetAmazonSSMListOpsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListResourceComplianceSummariesRoute,
+    postXAmzTargetAmazonSSMListResourceComplianceSummariesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListResourceDataSyncRoute,
+    postXAmzTargetAmazonSSMListResourceDataSyncRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMListTagsForResourceRoute,
+    postXAmzTargetAmazonSSMListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMModifyDocumentPermissionRoute,
+    postXAmzTargetAmazonSSMModifyDocumentPermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMPutComplianceItemsRoute,
+    postXAmzTargetAmazonSSMPutComplianceItemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMPutInventoryRoute,
+    postXAmzTargetAmazonSSMPutInventoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMPutParameterRoute,
+    postXAmzTargetAmazonSSMPutParameterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMPutResourcePolicyRoute,
+    postXAmzTargetAmazonSSMPutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMRegisterDefaultPatchBaselineRoute,
+    postXAmzTargetAmazonSSMRegisterDefaultPatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMRegisterPatchBaselineForPatchGroupRoute,
+    postXAmzTargetAmazonSSMRegisterPatchBaselineForPatchGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMRegisterTargetWithMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMRegisterTargetWithMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMRemoveTagsFromResourceRoute,
+    postXAmzTargetAmazonSSMRemoveTagsFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMResetServiceSettingRoute,
+    postXAmzTargetAmazonSSMResetServiceSettingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMResumeSessionRoute,
+    postXAmzTargetAmazonSSMResumeSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMSendAutomationSignalRoute,
+    postXAmzTargetAmazonSSMSendAutomationSignalRouteHandler,
+  )
+  .openapi(postXAmzTargetAmazonSSMSendCommandRoute, postXAmzTargetAmazonSSMSendCommandRouteHandler)
+  .openapi(
+    postXAmzTargetAmazonSSMStartAssociationsOnceRoute,
+    postXAmzTargetAmazonSSMStartAssociationsOnceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMStartAutomationExecutionRoute,
+    postXAmzTargetAmazonSSMStartAutomationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMStartChangeRequestExecutionRoute,
+    postXAmzTargetAmazonSSMStartChangeRequestExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMStartSessionRoute,
+    postXAmzTargetAmazonSSMStartSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMStopAutomationExecutionRoute,
+    postXAmzTargetAmazonSSMStopAutomationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMTerminateSessionRoute,
+    postXAmzTargetAmazonSSMTerminateSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUnlabelParameterVersionRoute,
+    postXAmzTargetAmazonSSMUnlabelParameterVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateAssociationRoute,
+    postXAmzTargetAmazonSSMUpdateAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateAssociationStatusRoute,
+    postXAmzTargetAmazonSSMUpdateAssociationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateDocumentRoute,
+    postXAmzTargetAmazonSSMUpdateDocumentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute,
+    postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateDocumentMetadataRoute,
+    postXAmzTargetAmazonSSMUpdateDocumentMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowRoute,
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowTargetRoute,
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowTaskRoute,
+    postXAmzTargetAmazonSSMUpdateMaintenanceWindowTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRoute,
+    postXAmzTargetAmazonSSMUpdateManagedInstanceRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateOpsItemRoute,
+    postXAmzTargetAmazonSSMUpdateOpsItemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateOpsMetadataRoute,
+    postXAmzTargetAmazonSSMUpdateOpsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdatePatchBaselineRoute,
+    postXAmzTargetAmazonSSMUpdatePatchBaselineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateResourceDataSyncRoute,
+    postXAmzTargetAmazonSSMUpdateResourceDataSyncRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonSSMUpdateServiceSettingRoute,
+    postXAmzTargetAmazonSSMUpdateServiceSettingRouteHandler,
+  )
 
 export default app

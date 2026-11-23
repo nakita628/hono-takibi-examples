@@ -1,59 +1,1241 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  agentsHandler,
-  apiKeysHandler,
-  auditLogsHandler,
-  authHandler,
-  authkitHandler,
-  authorizationHandler,
-  clientHandler,
-  connectHandler,
-  connectionsHandler,
-  dataIntegrationsHandler,
-  directoriesHandler,
-  directoryGroupsHandler,
-  directoryUsersHandler,
-  eventsHandler,
-  featureFlagsHandler,
-  organizationDomainsHandler,
-  organizationsHandler,
-  platformHandler,
-  portalHandler,
-  radarHandler,
-  ssoHandler,
-  userManagementHandler,
-  vaultHandler,
-  webhookEndpointsHandler,
-  widgetsHandler,
+  deleteAgentsBlueprintsAgentBlueprintIdRoute,
+  deleteAgentsInstancesAgentInstanceIdRoute,
+  deleteApiKeysIdRoute,
+  deleteAuthFactorsIdRoute,
+  deleteAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRoute,
+  deleteAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+  deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoleAssignmentIdRoute,
+  deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+  deleteAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+  deleteAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsPermissionSlugRoute,
+  deleteAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+  deleteAuthorizationPermissionsSlugRoute,
+  deleteAuthorizationResourcesResourceIdRoute,
+  deleteConnectApplicationsIdRoute,
+  deleteConnectClientSecretsIdRoute,
+  deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute,
+  deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute,
+  deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute,
+  deleteConnectionsIdRoute,
+  deleteDataIntegrationsSlugOrganizationRoute,
+  deleteDataIntegrationsSlugRoute,
+  deleteDirectoriesIdRoute,
+  deleteFeatureFlagsSlugTargetsResourceIdRoute,
+  deleteOrganizationDomainsIdRoute,
+  deleteOrganizationsIdRoute,
+  deleteOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+  deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRoute,
+  deleteOrganizationsOrganizationIdGroupsGroupIdRoute,
+  deleteOrganizationsOrganizationIdItContactsContactIdRoute,
+  deleteRadarListsTypeActionRoute,
+  deleteUserManagementAuthkitOauthResourcesIdRoute,
+  deleteUserManagementOrganizationMembershipsIdRoute,
+  deleteUserManagementRedirectUrisIdRoute,
+  deleteUserManagementUsersIdRoute,
+  deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute,
+  deleteUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  deleteUserManagementWaitlistEntriesIdRoute,
+  deleteVaultV1KvIdRoute,
+  deleteWebhookEndpointsIdRoute,
+  getAgentsBlueprintsAgentBlueprintIdRoute,
+  getAgentsBlueprintsRoute,
+  getAgentsInstancesAgentInstanceIdRoute,
+  getAgentsInstancesRoute,
+  getAgentsRegistrationsIdRoute,
+  getAgentsSessionsAgentInstanceSessionIdRoute,
+  getAgentsSessionsRoute,
+  getAuditLogsActionsActionNameSchemasRoute,
+  getAuditLogsActionsRoute,
+  getAuditLogsExportsAuditLogExportIdRoute,
+  getAuthFactorsIdRoute,
+  getAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRoute,
+  getAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceIdPermissionsRoute,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceTypeSlugExternalIdPermissionsRoute,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesRoute,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdOrganizationMembershipsRoute,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoleAssignmentsRoute,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+  getAuthorizationOrganizationsOrganizationIdRolesRoute,
+  getAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+  getAuthorizationPermissionsRoute,
+  getAuthorizationPermissionsSlugRoute,
+  getAuthorizationResourcesResourceIdOrganizationMembershipsRoute,
+  getAuthorizationResourcesResourceIdRoleAssignmentsRoute,
+  getAuthorizationResourcesResourceIdRoute,
+  getAuthorizationResourcesRoute,
+  getAuthorizationRolesRoute,
+  getAuthorizationRolesSlugRoute,
+  getConnectApplicationsIdClientSecretsRoute,
+  getConnectApplicationsIdRoute,
+  getConnectApplicationsRoute,
+  getConnectionsConnectionIdSamlIdpSigningCertsRoute,
+  getConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+  getConnectionsConnectionIdSamlSpSigningCertRoute,
+  getConnectionsIdRoute,
+  getConnectionsRoute,
+  getDataIntegrationsRoute,
+  getDataIntegrationsSlugOrganizationRoute,
+  getDataIntegrationsSlugRoute,
+  getDirectoriesDirectoryIdGroupsGroupIdRoute,
+  getDirectoriesDirectoryIdGroupsRoute,
+  getDirectoriesDirectoryIdUsersRoute,
+  getDirectoriesDirectoryIdUsersUserIdRoute,
+  getDirectoriesIdRoute,
+  getDirectoriesRoute,
+  getDirectoryGroupsIdRoute,
+  getDirectoryGroupsRoute,
+  getDirectoryUsersIdRoute,
+  getDirectoryUsersRoute,
+  getEventsRoute,
+  getFeatureFlagsRoute,
+  getFeatureFlagsSlugRoute,
+  getOrganizationDomainsIdRoute,
+  getOrganizationsExternalIdExternalIdRoute,
+  getOrganizationsIdAuditLogConfigurationRoute,
+  getOrganizationsIdAuditLogsRetentionRoute,
+  getOrganizationsIdRoute,
+  getOrganizationsOrganizationIdApiKeysRoute,
+  getOrganizationsOrganizationIdAuthorizedApplicationsRoute,
+  getOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+  getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute,
+  getOrganizationsOrganizationIdDataProvidersRoute,
+  getOrganizationsOrganizationIdFeatureFlagsRoute,
+  getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  getOrganizationsOrganizationIdGroupsGroupIdRoute,
+  getOrganizationsOrganizationIdGroupsRoute,
+  getOrganizationsOrganizationIdItContactsRoute,
+  getOrganizationsRoute,
+  getPlatformTeamsTeamIdRoute,
+  getSsoAuthorizeRoute,
+  getSsoJwksClientIdRoute,
+  getSsoLogoutRoute,
+  getSsoProfileRoute,
+  getUserManagementAuthkitOauthResourcesRoute,
+  getUserManagementAuthorizeRoute,
+  getUserManagementCorsOriginsRoute,
+  getUserManagementEmailVerificationIdRoute,
+  getUserManagementInvitationsByTokenTokenRoute,
+  getUserManagementInvitationsIdRoute,
+  getUserManagementInvitationsRoute,
+  getUserManagementJwtTemplateRoute,
+  getUserManagementMagicAuthIdRoute,
+  getUserManagementOrganizationMembershipsIdRoute,
+  getUserManagementOrganizationMembershipsOmIdGroupsRoute,
+  getUserManagementOrganizationMembershipsRoute,
+  getUserManagementPasswordResetIdRoute,
+  getUserManagementRadarChallengesIdRoute,
+  getUserManagementRedirectUrisRoute,
+  getUserManagementSessionsLogoutRoute,
+  getUserManagementUsersExternalIdExternalIdRoute,
+  getUserManagementUsersIdIdentitiesRoute,
+  getUserManagementUsersIdRoute,
+  getUserManagementUsersIdSessionsRoute,
+  getUserManagementUsersRoute,
+  getUserManagementUsersUserIdApiKeysRoute,
+  getUserManagementUsersUserIdAuthorizedApplicationsRoute,
+  getUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  getUserManagementUsersUserIdDataProvidersRoute,
+  getUserManagementUsersUserIdFeatureFlagsRoute,
+  getUserManagementUsersUserlandUserIdAuthFactorsRoute,
+  getUserManagementWaitlistsIdEntriesRoute,
+  getUserManagementWaitlistsIdRoute,
+  getUserManagementWaitlistsRoute,
+  getVaultV1KvIdMetadataRoute,
+  getVaultV1KvIdRoute,
+  getVaultV1KvIdVersionsRoute,
+  getVaultV1KvNameNameRoute,
+  getVaultV1KvRoute,
+  getWebhookEndpointsRoute,
+  patchAgentsBlueprintsAgentBlueprintIdRoute,
+  patchAgentsClaimsAttemptsRoute,
+  patchAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+  patchAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+  patchAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+  patchAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+  patchAuthorizationPermissionsSlugRoute,
+  patchAuthorizationResourcesResourceIdRoute,
+  patchAuthorizationRolesSlugRoute,
+  patchConnectionsIdRoute,
+  patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  patchOrganizationsOrganizationIdGroupsGroupIdRoute,
+  patchWebhookEndpointsIdRoute,
+  postAgentsBlueprintsAgentBlueprintIdTokensRoute,
+  postAgentsBlueprintsAgentBlueprintIdTokensValidateRoute,
+  postAgentsBlueprintsRoute,
+  postAgentsCredentialsValidateRoute,
+  postAgentsRegistrationsIdRevokeRoute,
+  postAgentsSessionsAgentInstanceSessionIdRevokeRoute,
+  postApiKeysIdExpireRoute,
+  postApiKeysValidationsRoute,
+  postAuditLogsActionsActionNameSchemasRoute,
+  postAuditLogsEventsRoute,
+  postAuditLogsExportsRoute,
+  postAuthChallengesIdVerifyRoute,
+  postAuthFactorsEnrollRoute,
+  postAuthFactorsIdChallengeRoute,
+  postAuthkitOauth2CompleteRoute,
+  postAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+  postAuthorizationOrganizationMembershipsOrganizationMembershipIdCheckRoute,
+  postAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+  postAuthorizationOrganizationsOrganizationIdRolesRoute,
+  postAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRoute,
+  postAuthorizationPermissionsRoute,
+  postAuthorizationResourcesRoute,
+  postAuthorizationRolesRoute,
+  postAuthorizationRolesSlugPermissionsRoute,
+  postClientTokenRoute,
+  postConnectApplicationsIdClientSecretsRoute,
+  postConnectApplicationsRoute,
+  postConnectionsConnectionIdSamlIdpSigningCertsRoute,
+  postConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+  postConnectionsConnectionIdSamlSpSigningCertRoute,
+  postConnectionsRoute,
+  postDataIntegrationsFinishRoute,
+  postDataIntegrationsRoute,
+  postDataIntegrationsSlugApiKeyRoute,
+  postDataIntegrationsSlugAuthorizeRoute,
+  postDataIntegrationsSlugClientCredentialsRoute,
+  postDataIntegrationsSlugCredentialsRoute,
+  postDataIntegrationsSlugTokenRoute,
+  postDirectoriesIdSyncRoute,
+  postFeatureFlagsSlugTargetsResourceIdRoute,
+  postOrganizationDomainsIdVerifyRoute,
+  postOrganizationDomainsRoute,
+  postOrganizationsOrganizationIdApiKeysRoute,
+  postOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+  postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+  postOrganizationsOrganizationIdGroupsRoute,
+  postOrganizationsOrganizationIdItContactsContactIdInviteRoute,
+  postOrganizationsOrganizationIdItContactsContactIdRevokeRoute,
+  postOrganizationsOrganizationIdItContactsRoute,
+  postOrganizationsRoute,
+  postPlatformTeamsRoute,
+  postPortalGenerateLinkRoute,
+  postPortalRevokeLinkRoute,
+  postRadarAttemptsRoute,
+  postRadarListsTypeActionRoute,
+  postSsoLogoutAuthorizeRoute,
+  postSsoTokenRoute,
+  postUserManagementAuthenticateRoute,
+  postUserManagementAuthkitOauthResourcesRoute,
+  postUserManagementAuthorizeDeviceRoute,
+  postUserManagementCorsOriginsRoute,
+  postUserManagementInvitationsIdAcceptRoute,
+  postUserManagementInvitationsIdResendRoute,
+  postUserManagementInvitationsIdRevokeRoute,
+  postUserManagementInvitationsRoute,
+  postUserManagementMagicAuthRoute,
+  postUserManagementOrganizationMembershipsRoute,
+  postUserManagementPasswordResetConfirmRoute,
+  postUserManagementPasswordResetRoute,
+  postUserManagementRadarChallengesRoute,
+  postUserManagementRedirectUrisRoute,
+  postUserManagementSessionsRevokeRoute,
+  postUserManagementUsersIdEmailChangeConfirmRoute,
+  postUserManagementUsersIdEmailChangeSendRoute,
+  postUserManagementUsersIdEmailVerificationConfirmRoute,
+  postUserManagementUsersIdEmailVerificationSendRoute,
+  postUserManagementUsersRoute,
+  postUserManagementUsersUserIdApiKeysRoute,
+  postUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  postUserManagementUsersUserlandUserIdAuthFactorsRoute,
+  postUserManagementWaitlistEntriesIdApproveRoute,
+  postUserManagementWaitlistEntriesIdDenyRoute,
+  postUserManagementWaitlistsIdEntriesRoute,
+  postVaultV1KeysDataKeyRoute,
+  postVaultV1KeysDecryptRoute,
+  postVaultV1KeysRekeyRoute,
+  postVaultV1KvRoute,
+  postWebhookEndpointsRoute,
+  postWidgetsTokenRoute,
+  putAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+  putAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRoute,
+  putAuthorizationRolesSlugPermissionsRoute,
+  putConnectApplicationsIdRoute,
+  putDataIntegrationsSlugApiKeyRoute,
+  putDataIntegrationsSlugClientCredentialsRoute,
+  putDataIntegrationsSlugOrganizationRoute,
+  putDataIntegrationsSlugRoute,
+  putFeatureFlagsSlugDisableRoute,
+  putFeatureFlagsSlugEnableRoute,
+  putOrganizationsIdAuditLogsRetentionRoute,
+  putOrganizationsIdRoute,
+  putOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+  putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRoute,
+  putRadarAttemptsIdRoute,
+  putUserManagementJwtTemplateRoute,
+  putUserManagementOrganizationMembershipsIdDeactivateRoute,
+  putUserManagementOrganizationMembershipsIdReactivateRoute,
+  putUserManagementOrganizationMembershipsIdRoute,
+  putUserManagementUsersIdRoute,
+  putUserManagementUsersUserIdConnectedAccountsSlugRoute,
+  putVaultV1KvIdRoute,
+} from './routes'
+import {
+  deleteAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  deleteAgentsInstancesAgentInstanceIdRouteHandler,
+  deleteApiKeysIdRouteHandler,
+  deleteAuthFactorsIdRouteHandler,
+  deleteAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  deleteAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  deleteAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  deleteAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsPermissionSlugRouteHandler,
+  deleteAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  deleteAuthorizationPermissionsSlugRouteHandler,
+  deleteAuthorizationResourcesResourceIdRouteHandler,
+  deleteConnectApplicationsIdRouteHandler,
+  deleteConnectClientSecretsIdRouteHandler,
+  deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRouteHandler,
+  deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRouteHandler,
+  deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRouteHandler,
+  deleteConnectionsIdRouteHandler,
+  deleteDataIntegrationsSlugOrganizationRouteHandler,
+  deleteDataIntegrationsSlugRouteHandler,
+  deleteDirectoriesIdRouteHandler,
+  deleteFeatureFlagsSlugTargetsResourceIdRouteHandler,
+  deleteOrganizationDomainsIdRouteHandler,
+  deleteOrganizationsIdRouteHandler,
+  deleteOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRouteHandler,
+  deleteOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  deleteOrganizationsOrganizationIdItContactsContactIdRouteHandler,
+  deleteRadarListsTypeActionRouteHandler,
+  deleteUserManagementAuthkitOauthResourcesIdRouteHandler,
+  deleteUserManagementOrganizationMembershipsIdRouteHandler,
+  deleteUserManagementRedirectUrisIdRouteHandler,
+  deleteUserManagementUsersIdRouteHandler,
+  deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRouteHandler,
+  deleteUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  deleteUserManagementWaitlistEntriesIdRouteHandler,
+  deleteVaultV1KvIdRouteHandler,
+  deleteWebhookEndpointsIdRouteHandler,
+  getAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  getAgentsBlueprintsRouteHandler,
+  getAgentsInstancesAgentInstanceIdRouteHandler,
+  getAgentsInstancesRouteHandler,
+  getAgentsRegistrationsIdRouteHandler,
+  getAgentsSessionsAgentInstanceSessionIdRouteHandler,
+  getAgentsSessionsRouteHandler,
+  getAuditLogsActionsActionNameSchemasRouteHandler,
+  getAuditLogsActionsRouteHandler,
+  getAuditLogsExportsAuditLogExportIdRouteHandler,
+  getAuthFactorsIdRouteHandler,
+  getAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  getAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceIdPermissionsRouteHandler,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceTypeSlugExternalIdPermissionsRouteHandler,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesRouteHandler,
+  getAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdOrganizationMembershipsRouteHandler,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoleAssignmentsRouteHandler,
+  getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  getAuthorizationOrganizationsOrganizationIdRolesRouteHandler,
+  getAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  getAuthorizationPermissionsRouteHandler,
+  getAuthorizationPermissionsSlugRouteHandler,
+  getAuthorizationResourcesResourceIdOrganizationMembershipsRouteHandler,
+  getAuthorizationResourcesResourceIdRoleAssignmentsRouteHandler,
+  getAuthorizationResourcesResourceIdRouteHandler,
+  getAuthorizationResourcesRouteHandler,
+  getAuthorizationRolesRouteHandler,
+  getAuthorizationRolesSlugRouteHandler,
+  getConnectApplicationsIdClientSecretsRouteHandler,
+  getConnectApplicationsIdRouteHandler,
+  getConnectApplicationsRouteHandler,
+  getConnectionsConnectionIdSamlIdpSigningCertsRouteHandler,
+  getConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler,
+  getConnectionsConnectionIdSamlSpSigningCertRouteHandler,
+  getConnectionsIdRouteHandler,
+  getConnectionsRouteHandler,
+  getDataIntegrationsRouteHandler,
+  getDataIntegrationsSlugOrganizationRouteHandler,
+  getDataIntegrationsSlugRouteHandler,
+  getDirectoriesDirectoryIdGroupsGroupIdRouteHandler,
+  getDirectoriesDirectoryIdGroupsRouteHandler,
+  getDirectoriesDirectoryIdUsersRouteHandler,
+  getDirectoriesDirectoryIdUsersUserIdRouteHandler,
+  getDirectoriesIdRouteHandler,
+  getDirectoriesRouteHandler,
+  getDirectoryGroupsIdRouteHandler,
+  getDirectoryGroupsRouteHandler,
+  getDirectoryUsersIdRouteHandler,
+  getDirectoryUsersRouteHandler,
+  getEventsRouteHandler,
+  getFeatureFlagsRouteHandler,
+  getFeatureFlagsSlugRouteHandler,
+  getOrganizationDomainsIdRouteHandler,
+  getOrganizationsExternalIdExternalIdRouteHandler,
+  getOrganizationsIdAuditLogConfigurationRouteHandler,
+  getOrganizationsIdAuditLogsRetentionRouteHandler,
+  getOrganizationsIdRouteHandler,
+  getOrganizationsOrganizationIdApiKeysRouteHandler,
+  getOrganizationsOrganizationIdAuthorizedApplicationsRouteHandler,
+  getOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  getOrganizationsOrganizationIdDataIntegrationConfigurationsRouteHandler,
+  getOrganizationsOrganizationIdDataProvidersRouteHandler,
+  getOrganizationsOrganizationIdFeatureFlagsRouteHandler,
+  getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  getOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  getOrganizationsOrganizationIdGroupsRouteHandler,
+  getOrganizationsOrganizationIdItContactsRouteHandler,
+  getOrganizationsRouteHandler,
+  getPlatformTeamsTeamIdRouteHandler,
+  getSsoAuthorizeRouteHandler,
+  getSsoJwksClientIdRouteHandler,
+  getSsoLogoutRouteHandler,
+  getSsoProfileRouteHandler,
+  getUserManagementAuthkitOauthResourcesRouteHandler,
+  getUserManagementAuthorizeRouteHandler,
+  getUserManagementCorsOriginsRouteHandler,
+  getUserManagementEmailVerificationIdRouteHandler,
+  getUserManagementInvitationsByTokenTokenRouteHandler,
+  getUserManagementInvitationsIdRouteHandler,
+  getUserManagementInvitationsRouteHandler,
+  getUserManagementJwtTemplateRouteHandler,
+  getUserManagementMagicAuthIdRouteHandler,
+  getUserManagementOrganizationMembershipsIdRouteHandler,
+  getUserManagementOrganizationMembershipsOmIdGroupsRouteHandler,
+  getUserManagementOrganizationMembershipsRouteHandler,
+  getUserManagementPasswordResetIdRouteHandler,
+  getUserManagementRadarChallengesIdRouteHandler,
+  getUserManagementRedirectUrisRouteHandler,
+  getUserManagementSessionsLogoutRouteHandler,
+  getUserManagementUsersExternalIdExternalIdRouteHandler,
+  getUserManagementUsersIdIdentitiesRouteHandler,
+  getUserManagementUsersIdRouteHandler,
+  getUserManagementUsersIdSessionsRouteHandler,
+  getUserManagementUsersRouteHandler,
+  getUserManagementUsersUserIdApiKeysRouteHandler,
+  getUserManagementUsersUserIdAuthorizedApplicationsRouteHandler,
+  getUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  getUserManagementUsersUserIdDataProvidersRouteHandler,
+  getUserManagementUsersUserIdFeatureFlagsRouteHandler,
+  getUserManagementUsersUserlandUserIdAuthFactorsRouteHandler,
+  getUserManagementWaitlistsIdEntriesRouteHandler,
+  getUserManagementWaitlistsIdRouteHandler,
+  getUserManagementWaitlistsRouteHandler,
+  getVaultV1KvIdMetadataRouteHandler,
+  getVaultV1KvIdRouteHandler,
+  getVaultV1KvIdVersionsRouteHandler,
+  getVaultV1KvNameNameRouteHandler,
+  getVaultV1KvRouteHandler,
+  getWebhookEndpointsRouteHandler,
+  patchAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  patchAgentsClaimsAttemptsRouteHandler,
+  patchAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  patchAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  patchAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  patchAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  patchAuthorizationPermissionsSlugRouteHandler,
+  patchAuthorizationResourcesResourceIdRouteHandler,
+  patchAuthorizationRolesSlugRouteHandler,
+  patchConnectionsIdRouteHandler,
+  patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  patchOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  patchWebhookEndpointsIdRouteHandler,
+  postAgentsBlueprintsAgentBlueprintIdTokensRouteHandler,
+  postAgentsBlueprintsAgentBlueprintIdTokensValidateRouteHandler,
+  postAgentsBlueprintsRouteHandler,
+  postAgentsCredentialsValidateRouteHandler,
+  postAgentsRegistrationsIdRevokeRouteHandler,
+  postAgentsSessionsAgentInstanceSessionIdRevokeRouteHandler,
+  postApiKeysIdExpireRouteHandler,
+  postApiKeysValidationsRouteHandler,
+  postAuditLogsActionsActionNameSchemasRouteHandler,
+  postAuditLogsEventsRouteHandler,
+  postAuditLogsExportsRouteHandler,
+  postAuthChallengesIdVerifyRouteHandler,
+  postAuthFactorsEnrollRouteHandler,
+  postAuthFactorsIdChallengeRouteHandler,
+  postAuthkitOauth2CompleteRouteHandler,
+  postAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  postAuthorizationOrganizationMembershipsOrganizationMembershipIdCheckRouteHandler,
+  postAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  postAuthorizationOrganizationsOrganizationIdRolesRouteHandler,
+  postAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRouteHandler,
+  postAuthorizationPermissionsRouteHandler,
+  postAuthorizationResourcesRouteHandler,
+  postAuthorizationRolesRouteHandler,
+  postAuthorizationRolesSlugPermissionsRouteHandler,
+  postClientTokenRouteHandler,
+  postConnectApplicationsIdClientSecretsRouteHandler,
+  postConnectApplicationsRouteHandler,
+  postConnectionsConnectionIdSamlIdpSigningCertsRouteHandler,
+  postConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler,
+  postConnectionsConnectionIdSamlSpSigningCertRouteHandler,
+  postConnectionsRouteHandler,
+  postDataIntegrationsFinishRouteHandler,
+  postDataIntegrationsRouteHandler,
+  postDataIntegrationsSlugApiKeyRouteHandler,
+  postDataIntegrationsSlugAuthorizeRouteHandler,
+  postDataIntegrationsSlugClientCredentialsRouteHandler,
+  postDataIntegrationsSlugCredentialsRouteHandler,
+  postDataIntegrationsSlugTokenRouteHandler,
+  postDirectoriesIdSyncRouteHandler,
+  postFeatureFlagsSlugTargetsResourceIdRouteHandler,
+  postOrganizationDomainsIdVerifyRouteHandler,
+  postOrganizationDomainsRouteHandler,
+  postOrganizationsOrganizationIdApiKeysRouteHandler,
+  postOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  postOrganizationsOrganizationIdGroupsRouteHandler,
+  postOrganizationsOrganizationIdItContactsContactIdInviteRouteHandler,
+  postOrganizationsOrganizationIdItContactsContactIdRevokeRouteHandler,
+  postOrganizationsOrganizationIdItContactsRouteHandler,
+  postOrganizationsRouteHandler,
+  postPlatformTeamsRouteHandler,
+  postPortalGenerateLinkRouteHandler,
+  postPortalRevokeLinkRouteHandler,
+  postRadarAttemptsRouteHandler,
+  postRadarListsTypeActionRouteHandler,
+  postSsoLogoutAuthorizeRouteHandler,
+  postSsoTokenRouteHandler,
+  postUserManagementAuthenticateRouteHandler,
+  postUserManagementAuthkitOauthResourcesRouteHandler,
+  postUserManagementAuthorizeDeviceRouteHandler,
+  postUserManagementCorsOriginsRouteHandler,
+  postUserManagementInvitationsIdAcceptRouteHandler,
+  postUserManagementInvitationsIdResendRouteHandler,
+  postUserManagementInvitationsIdRevokeRouteHandler,
+  postUserManagementInvitationsRouteHandler,
+  postUserManagementMagicAuthRouteHandler,
+  postUserManagementOrganizationMembershipsRouteHandler,
+  postUserManagementPasswordResetConfirmRouteHandler,
+  postUserManagementPasswordResetRouteHandler,
+  postUserManagementRadarChallengesRouteHandler,
+  postUserManagementRedirectUrisRouteHandler,
+  postUserManagementSessionsRevokeRouteHandler,
+  postUserManagementUsersIdEmailChangeConfirmRouteHandler,
+  postUserManagementUsersIdEmailChangeSendRouteHandler,
+  postUserManagementUsersIdEmailVerificationConfirmRouteHandler,
+  postUserManagementUsersIdEmailVerificationSendRouteHandler,
+  postUserManagementUsersRouteHandler,
+  postUserManagementUsersUserIdApiKeysRouteHandler,
+  postUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  postUserManagementUsersUserlandUserIdAuthFactorsRouteHandler,
+  postUserManagementWaitlistEntriesIdApproveRouteHandler,
+  postUserManagementWaitlistEntriesIdDenyRouteHandler,
+  postUserManagementWaitlistsIdEntriesRouteHandler,
+  postVaultV1KeysDataKeyRouteHandler,
+  postVaultV1KeysDecryptRouteHandler,
+  postVaultV1KeysRekeyRouteHandler,
+  postVaultV1KvRouteHandler,
+  postWebhookEndpointsRouteHandler,
+  postWidgetsTokenRouteHandler,
+  putAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  putAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRouteHandler,
+  putAuthorizationRolesSlugPermissionsRouteHandler,
+  putConnectApplicationsIdRouteHandler,
+  putDataIntegrationsSlugApiKeyRouteHandler,
+  putDataIntegrationsSlugClientCredentialsRouteHandler,
+  putDataIntegrationsSlugOrganizationRouteHandler,
+  putDataIntegrationsSlugRouteHandler,
+  putFeatureFlagsSlugDisableRouteHandler,
+  putFeatureFlagsSlugEnableRouteHandler,
+  putOrganizationsIdAuditLogsRetentionRouteHandler,
+  putOrganizationsIdRouteHandler,
+  putOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRouteHandler,
+  putRadarAttemptsIdRouteHandler,
+  putUserManagementJwtTemplateRouteHandler,
+  putUserManagementOrganizationMembershipsIdDeactivateRouteHandler,
+  putUserManagementOrganizationMembershipsIdReactivateRouteHandler,
+  putUserManagementOrganizationMembershipsIdRouteHandler,
+  putUserManagementUsersIdRouteHandler,
+  putUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  putVaultV1KvIdRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', agentsHandler)
-  .route('/', apiKeysHandler)
-  .route('/', auditLogsHandler)
-  .route('/', authHandler)
-  .route('/', authkitHandler)
-  .route('/', authorizationHandler)
-  .route('/', clientHandler)
-  .route('/', connectHandler)
-  .route('/', connectionsHandler)
-  .route('/', dataIntegrationsHandler)
-  .route('/', directoriesHandler)
-  .route('/', directoryGroupsHandler)
-  .route('/', directoryUsersHandler)
-  .route('/', eventsHandler)
-  .route('/', featureFlagsHandler)
-  .route('/', organizationDomainsHandler)
-  .route('/', organizationsHandler)
-  .route('/', platformHandler)
-  .route('/', portalHandler)
-  .route('/', radarHandler)
-  .route('/', ssoHandler)
-  .route('/', userManagementHandler)
-  .route('/', vaultHandler)
-  .route('/', webhookEndpointsHandler)
-  .route('/', widgetsHandler)
+  .openapi(postAgentsBlueprintsRoute, postAgentsBlueprintsRouteHandler)
+  .openapi(getAgentsBlueprintsRoute, getAgentsBlueprintsRouteHandler)
+  .openapi(
+    getAgentsBlueprintsAgentBlueprintIdRoute,
+    getAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  )
+  .openapi(
+    patchAgentsBlueprintsAgentBlueprintIdRoute,
+    patchAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  )
+  .openapi(
+    deleteAgentsBlueprintsAgentBlueprintIdRoute,
+    deleteAgentsBlueprintsAgentBlueprintIdRouteHandler,
+  )
+  .openapi(
+    postAgentsBlueprintsAgentBlueprintIdTokensRoute,
+    postAgentsBlueprintsAgentBlueprintIdTokensRouteHandler,
+  )
+  .openapi(
+    postAgentsBlueprintsAgentBlueprintIdTokensValidateRoute,
+    postAgentsBlueprintsAgentBlueprintIdTokensValidateRouteHandler,
+  )
+  .openapi(patchAgentsClaimsAttemptsRoute, patchAgentsClaimsAttemptsRouteHandler)
+  .openapi(postAgentsCredentialsValidateRoute, postAgentsCredentialsValidateRouteHandler)
+  .openapi(getAgentsInstancesRoute, getAgentsInstancesRouteHandler)
+  .openapi(getAgentsInstancesAgentInstanceIdRoute, getAgentsInstancesAgentInstanceIdRouteHandler)
+  .openapi(
+    deleteAgentsInstancesAgentInstanceIdRoute,
+    deleteAgentsInstancesAgentInstanceIdRouteHandler,
+  )
+  .openapi(getAgentsRegistrationsIdRoute, getAgentsRegistrationsIdRouteHandler)
+  .openapi(postAgentsRegistrationsIdRevokeRoute, postAgentsRegistrationsIdRevokeRouteHandler)
+  .openapi(getAgentsSessionsRoute, getAgentsSessionsRouteHandler)
+  .openapi(
+    getAgentsSessionsAgentInstanceSessionIdRoute,
+    getAgentsSessionsAgentInstanceSessionIdRouteHandler,
+  )
+  .openapi(
+    postAgentsSessionsAgentInstanceSessionIdRevokeRoute,
+    postAgentsSessionsAgentInstanceSessionIdRevokeRouteHandler,
+  )
+  .openapi(postApiKeysValidationsRoute, postApiKeysValidationsRouteHandler)
+  .openapi(deleteApiKeysIdRoute, deleteApiKeysIdRouteHandler)
+  .openapi(postApiKeysIdExpireRoute, postApiKeysIdExpireRouteHandler)
+  .openapi(getAuditLogsActionsRoute, getAuditLogsActionsRouteHandler)
+  .openapi(
+    postAuditLogsActionsActionNameSchemasRoute,
+    postAuditLogsActionsActionNameSchemasRouteHandler,
+  )
+  .openapi(
+    getAuditLogsActionsActionNameSchemasRoute,
+    getAuditLogsActionsActionNameSchemasRouteHandler,
+  )
+  .openapi(postAuditLogsEventsRoute, postAuditLogsEventsRouteHandler)
+  .openapi(postAuditLogsExportsRoute, postAuditLogsExportsRouteHandler)
+  .openapi(
+    getAuditLogsExportsAuditLogExportIdRoute,
+    getAuditLogsExportsAuditLogExportIdRouteHandler,
+  )
+  .openapi(postAuthChallengesIdVerifyRoute, postAuthChallengesIdVerifyRouteHandler)
+  .openapi(postAuthFactorsEnrollRoute, postAuthFactorsEnrollRouteHandler)
+  .openapi(getAuthFactorsIdRoute, getAuthFactorsIdRouteHandler)
+  .openapi(deleteAuthFactorsIdRoute, deleteAuthFactorsIdRouteHandler)
+  .openapi(postAuthFactorsIdChallengeRoute, postAuthFactorsIdChallengeRouteHandler)
+  .openapi(postAuthkitOauth2CompleteRoute, postAuthkitOauth2CompleteRouteHandler)
+  .openapi(
+    getAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+    getAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    postAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+    postAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    patchAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+    patchAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    putAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+    putAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationGroupsGroupIdRoleAssignmentsRoute,
+    deleteAuthorizationGroupsGroupIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    getAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRoute,
+    getAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRoute,
+    deleteAuthorizationGroupsGroupIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  )
+  .openapi(
+    postAuthorizationOrganizationMembershipsOrganizationMembershipIdCheckRoute,
+    postAuthorizationOrganizationMembershipsOrganizationMembershipIdCheckRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesRoute,
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceIdPermissionsRoute,
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceIdPermissionsRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceTypeSlugExternalIdPermissionsRoute,
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdResourcesResourceTypeSlugExternalIdPermissionsRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+    getAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    postAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+    postAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    patchAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+    patchAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoute,
+    deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoleAssignmentIdRoute,
+    deleteAuthorizationOrganizationMembershipsOrganizationMembershipIdRoleAssignmentsRoleAssignmentIdRouteHandler,
+  )
+  .openapi(
+    postAuthorizationOrganizationsOrganizationIdRolesRoute,
+    postAuthorizationOrganizationsOrganizationIdRolesRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationsOrganizationIdRolesRoute,
+    getAuthorizationOrganizationsOrganizationIdRolesRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+    getAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  )
+  .openapi(
+    patchAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+    patchAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationOrganizationsOrganizationIdRolesSlugRoute,
+    deleteAuthorizationOrganizationsOrganizationIdRolesSlugRouteHandler,
+  )
+  .openapi(
+    putAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRoute,
+    putAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRouteHandler,
+  )
+  .openapi(
+    postAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRoute,
+    postAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsPermissionSlugRoute,
+    deleteAuthorizationOrganizationsOrganizationIdRolesSlugPermissionsPermissionSlugRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  )
+  .openapi(
+    patchAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+    patchAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoute,
+    deleteAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdOrganizationMembershipsRoute,
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoleAssignmentsRoute,
+    getAuthorizationOrganizationsOrganizationIdResourcesResourceTypeSlugExternalIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(getAuthorizationPermissionsRoute, getAuthorizationPermissionsRouteHandler)
+  .openapi(postAuthorizationPermissionsRoute, postAuthorizationPermissionsRouteHandler)
+  .openapi(getAuthorizationPermissionsSlugRoute, getAuthorizationPermissionsSlugRouteHandler)
+  .openapi(patchAuthorizationPermissionsSlugRoute, patchAuthorizationPermissionsSlugRouteHandler)
+  .openapi(deleteAuthorizationPermissionsSlugRoute, deleteAuthorizationPermissionsSlugRouteHandler)
+  .openapi(getAuthorizationResourcesRoute, getAuthorizationResourcesRouteHandler)
+  .openapi(postAuthorizationResourcesRoute, postAuthorizationResourcesRouteHandler)
+  .openapi(
+    getAuthorizationResourcesResourceIdRoute,
+    getAuthorizationResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    patchAuthorizationResourcesResourceIdRoute,
+    patchAuthorizationResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    deleteAuthorizationResourcesResourceIdRoute,
+    deleteAuthorizationResourcesResourceIdRouteHandler,
+  )
+  .openapi(
+    getAuthorizationResourcesResourceIdOrganizationMembershipsRoute,
+    getAuthorizationResourcesResourceIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getAuthorizationResourcesResourceIdRoleAssignmentsRoute,
+    getAuthorizationResourcesResourceIdRoleAssignmentsRouteHandler,
+  )
+  .openapi(postAuthorizationRolesRoute, postAuthorizationRolesRouteHandler)
+  .openapi(getAuthorizationRolesRoute, getAuthorizationRolesRouteHandler)
+  .openapi(getAuthorizationRolesSlugRoute, getAuthorizationRolesSlugRouteHandler)
+  .openapi(patchAuthorizationRolesSlugRoute, patchAuthorizationRolesSlugRouteHandler)
+  .openapi(
+    putAuthorizationRolesSlugPermissionsRoute,
+    putAuthorizationRolesSlugPermissionsRouteHandler,
+  )
+  .openapi(
+    postAuthorizationRolesSlugPermissionsRoute,
+    postAuthorizationRolesSlugPermissionsRouteHandler,
+  )
+  .openapi(postClientTokenRoute, postClientTokenRouteHandler)
+  .openapi(getConnectApplicationsRoute, getConnectApplicationsRouteHandler)
+  .openapi(postConnectApplicationsRoute, postConnectApplicationsRouteHandler)
+  .openapi(getConnectApplicationsIdRoute, getConnectApplicationsIdRouteHandler)
+  .openapi(putConnectApplicationsIdRoute, putConnectApplicationsIdRouteHandler)
+  .openapi(deleteConnectApplicationsIdRoute, deleteConnectApplicationsIdRouteHandler)
+  .openapi(
+    getConnectApplicationsIdClientSecretsRoute,
+    getConnectApplicationsIdClientSecretsRouteHandler,
+  )
+  .openapi(
+    postConnectApplicationsIdClientSecretsRoute,
+    postConnectApplicationsIdClientSecretsRouteHandler,
+  )
+  .openapi(deleteConnectClientSecretsIdRoute, deleteConnectClientSecretsIdRouteHandler)
+  .openapi(postConnectionsRoute, postConnectionsRouteHandler)
+  .openapi(getConnectionsRoute, getConnectionsRouteHandler)
+  .openapi(
+    getConnectionsConnectionIdSamlIdpSigningCertsRoute,
+    getConnectionsConnectionIdSamlIdpSigningCertsRouteHandler,
+  )
+  .openapi(
+    postConnectionsConnectionIdSamlIdpSigningCertsRoute,
+    postConnectionsConnectionIdSamlIdpSigningCertsRouteHandler,
+  )
+  .openapi(
+    deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute,
+    deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRouteHandler,
+  )
+  .openapi(
+    getConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+    getConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler,
+  )
+  .openapi(
+    postConnectionsConnectionIdSamlSpEncryptionCertsRoute,
+    postConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler,
+  )
+  .openapi(
+    deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute,
+    deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRouteHandler,
+  )
+  .openapi(
+    getConnectionsConnectionIdSamlSpSigningCertRoute,
+    getConnectionsConnectionIdSamlSpSigningCertRouteHandler,
+  )
+  .openapi(
+    postConnectionsConnectionIdSamlSpSigningCertRoute,
+    postConnectionsConnectionIdSamlSpSigningCertRouteHandler,
+  )
+  .openapi(
+    deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute,
+    deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRouteHandler,
+  )
+  .openapi(patchConnectionsIdRoute, patchConnectionsIdRouteHandler)
+  .openapi(getConnectionsIdRoute, getConnectionsIdRouteHandler)
+  .openapi(deleteConnectionsIdRoute, deleteConnectionsIdRouteHandler)
+  .openapi(postDataIntegrationsRoute, postDataIntegrationsRouteHandler)
+  .openapi(getDataIntegrationsRoute, getDataIntegrationsRouteHandler)
+  .openapi(postDataIntegrationsFinishRoute, postDataIntegrationsFinishRouteHandler)
+  .openapi(getDataIntegrationsSlugRoute, getDataIntegrationsSlugRouteHandler)
+  .openapi(putDataIntegrationsSlugRoute, putDataIntegrationsSlugRouteHandler)
+  .openapi(deleteDataIntegrationsSlugRoute, deleteDataIntegrationsSlugRouteHandler)
+  .openapi(postDataIntegrationsSlugApiKeyRoute, postDataIntegrationsSlugApiKeyRouteHandler)
+  .openapi(putDataIntegrationsSlugApiKeyRoute, putDataIntegrationsSlugApiKeyRouteHandler)
+  .openapi(postDataIntegrationsSlugAuthorizeRoute, postDataIntegrationsSlugAuthorizeRouteHandler)
+  .openapi(
+    postDataIntegrationsSlugClientCredentialsRoute,
+    postDataIntegrationsSlugClientCredentialsRouteHandler,
+  )
+  .openapi(
+    putDataIntegrationsSlugClientCredentialsRoute,
+    putDataIntegrationsSlugClientCredentialsRouteHandler,
+  )
+  .openapi(
+    postDataIntegrationsSlugCredentialsRoute,
+    postDataIntegrationsSlugCredentialsRouteHandler,
+  )
+  .openapi(
+    getDataIntegrationsSlugOrganizationRoute,
+    getDataIntegrationsSlugOrganizationRouteHandler,
+  )
+  .openapi(
+    putDataIntegrationsSlugOrganizationRoute,
+    putDataIntegrationsSlugOrganizationRouteHandler,
+  )
+  .openapi(
+    deleteDataIntegrationsSlugOrganizationRoute,
+    deleteDataIntegrationsSlugOrganizationRouteHandler,
+  )
+  .openapi(postDataIntegrationsSlugTokenRoute, postDataIntegrationsSlugTokenRouteHandler)
+  .openapi(getDirectoriesRoute, getDirectoriesRouteHandler)
+  .openapi(getDirectoriesDirectoryIdGroupsRoute, getDirectoriesDirectoryIdGroupsRouteHandler)
+  .openapi(
+    getDirectoriesDirectoryIdGroupsGroupIdRoute,
+    getDirectoriesDirectoryIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(getDirectoriesDirectoryIdUsersRoute, getDirectoriesDirectoryIdUsersRouteHandler)
+  .openapi(
+    getDirectoriesDirectoryIdUsersUserIdRoute,
+    getDirectoriesDirectoryIdUsersUserIdRouteHandler,
+  )
+  .openapi(getDirectoriesIdRoute, getDirectoriesIdRouteHandler)
+  .openapi(deleteDirectoriesIdRoute, deleteDirectoriesIdRouteHandler)
+  .openapi(postDirectoriesIdSyncRoute, postDirectoriesIdSyncRouteHandler)
+  .openapi(getDirectoryGroupsRoute, getDirectoryGroupsRouteHandler)
+  .openapi(getDirectoryGroupsIdRoute, getDirectoryGroupsIdRouteHandler)
+  .openapi(getDirectoryUsersRoute, getDirectoryUsersRouteHandler)
+  .openapi(getDirectoryUsersIdRoute, getDirectoryUsersIdRouteHandler)
+  .openapi(getEventsRoute, getEventsRouteHandler)
+  .openapi(getFeatureFlagsRoute, getFeatureFlagsRouteHandler)
+  .openapi(getFeatureFlagsSlugRoute, getFeatureFlagsSlugRouteHandler)
+  .openapi(putFeatureFlagsSlugDisableRoute, putFeatureFlagsSlugDisableRouteHandler)
+  .openapi(putFeatureFlagsSlugEnableRoute, putFeatureFlagsSlugEnableRouteHandler)
+  .openapi(
+    postFeatureFlagsSlugTargetsResourceIdRoute,
+    postFeatureFlagsSlugTargetsResourceIdRouteHandler,
+  )
+  .openapi(
+    deleteFeatureFlagsSlugTargetsResourceIdRoute,
+    deleteFeatureFlagsSlugTargetsResourceIdRouteHandler,
+  )
+  .openapi(postOrganizationDomainsRoute, postOrganizationDomainsRouteHandler)
+  .openapi(getOrganizationDomainsIdRoute, getOrganizationDomainsIdRouteHandler)
+  .openapi(deleteOrganizationDomainsIdRoute, deleteOrganizationDomainsIdRouteHandler)
+  .openapi(postOrganizationDomainsIdVerifyRoute, postOrganizationDomainsIdVerifyRouteHandler)
+  .openapi(getOrganizationsRoute, getOrganizationsRouteHandler)
+  .openapi(postOrganizationsRoute, postOrganizationsRouteHandler)
+  .openapi(
+    getOrganizationsExternalIdExternalIdRoute,
+    getOrganizationsExternalIdExternalIdRouteHandler,
+  )
+  .openapi(getOrganizationsIdRoute, getOrganizationsIdRouteHandler)
+  .openapi(putOrganizationsIdRoute, putOrganizationsIdRouteHandler)
+  .openapi(deleteOrganizationsIdRoute, deleteOrganizationsIdRouteHandler)
+  .openapi(
+    getOrganizationsIdAuditLogConfigurationRoute,
+    getOrganizationsIdAuditLogConfigurationRouteHandler,
+  )
+  .openapi(
+    getOrganizationsIdAuditLogsRetentionRoute,
+    getOrganizationsIdAuditLogsRetentionRouteHandler,
+  )
+  .openapi(
+    putOrganizationsIdAuditLogsRetentionRoute,
+    putOrganizationsIdAuditLogsRetentionRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdApiKeysRoute,
+    getOrganizationsOrganizationIdApiKeysRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdApiKeysRoute,
+    postOrganizationsOrganizationIdApiKeysRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdDataIntegrationConfigurationsRoute,
+    getOrganizationsOrganizationIdDataIntegrationConfigurationsRouteHandler,
+  )
+  .openapi(
+    putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRoute,
+    putOrganizationsOrganizationIdDataIntegrationConfigurationsSlugRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdFeatureFlagsRoute,
+    getOrganizationsOrganizationIdFeatureFlagsRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdGroupsRoute,
+    postOrganizationsOrganizationIdGroupsRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdGroupsRoute,
+    getOrganizationsOrganizationIdGroupsRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdGroupsGroupIdRoute,
+    getOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    patchOrganizationsOrganizationIdGroupsGroupIdRoute,
+    patchOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdGroupsGroupIdRoute,
+    deleteOrganizationsOrganizationIdGroupsGroupIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+    postOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+    getOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRoute,
+    patchOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRoute,
+    deleteOrganizationsOrganizationIdGroupsGroupIdOrganizationMembershipsOmIdRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdAuthorizedApplicationsRoute,
+    getOrganizationsOrganizationIdAuthorizedApplicationsRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+    getOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+    deleteOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+    postOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    putOrganizationsOrganizationIdConnectedAccountsSlugRoute,
+    putOrganizationsOrganizationIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdDataProvidersRoute,
+    getOrganizationsOrganizationIdDataProvidersRouteHandler,
+  )
+  .openapi(
+    getOrganizationsOrganizationIdItContactsRoute,
+    getOrganizationsOrganizationIdItContactsRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdItContactsRoute,
+    postOrganizationsOrganizationIdItContactsRouteHandler,
+  )
+  .openapi(
+    deleteOrganizationsOrganizationIdItContactsContactIdRoute,
+    deleteOrganizationsOrganizationIdItContactsContactIdRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdItContactsContactIdInviteRoute,
+    postOrganizationsOrganizationIdItContactsContactIdInviteRouteHandler,
+  )
+  .openapi(
+    postOrganizationsOrganizationIdItContactsContactIdRevokeRoute,
+    postOrganizationsOrganizationIdItContactsContactIdRevokeRouteHandler,
+  )
+  .openapi(postPlatformTeamsRoute, postPlatformTeamsRouteHandler)
+  .openapi(getPlatformTeamsTeamIdRoute, getPlatformTeamsTeamIdRouteHandler)
+  .openapi(postPortalGenerateLinkRoute, postPortalGenerateLinkRouteHandler)
+  .openapi(postPortalRevokeLinkRoute, postPortalRevokeLinkRouteHandler)
+  .openapi(postRadarAttemptsRoute, postRadarAttemptsRouteHandler)
+  .openapi(putRadarAttemptsIdRoute, putRadarAttemptsIdRouteHandler)
+  .openapi(postRadarListsTypeActionRoute, postRadarListsTypeActionRouteHandler)
+  .openapi(deleteRadarListsTypeActionRoute, deleteRadarListsTypeActionRouteHandler)
+  .openapi(getSsoAuthorizeRoute, getSsoAuthorizeRouteHandler)
+  .openapi(getSsoJwksClientIdRoute, getSsoJwksClientIdRouteHandler)
+  .openapi(getSsoLogoutRoute, getSsoLogoutRouteHandler)
+  .openapi(postSsoLogoutAuthorizeRoute, postSsoLogoutAuthorizeRouteHandler)
+  .openapi(getSsoProfileRoute, getSsoProfileRouteHandler)
+  .openapi(postSsoTokenRoute, postSsoTokenRouteHandler)
+  .openapi(postUserManagementAuthenticateRoute, postUserManagementAuthenticateRouteHandler)
+  .openapi(
+    postUserManagementAuthkitOauthResourcesRoute,
+    postUserManagementAuthkitOauthResourcesRouteHandler,
+  )
+  .openapi(
+    getUserManagementAuthkitOauthResourcesRoute,
+    getUserManagementAuthkitOauthResourcesRouteHandler,
+  )
+  .openapi(
+    deleteUserManagementAuthkitOauthResourcesIdRoute,
+    deleteUserManagementAuthkitOauthResourcesIdRouteHandler,
+  )
+  .openapi(getUserManagementAuthorizeRoute, getUserManagementAuthorizeRouteHandler)
+  .openapi(postUserManagementAuthorizeDeviceRoute, postUserManagementAuthorizeDeviceRouteHandler)
+  .openapi(postUserManagementCorsOriginsRoute, postUserManagementCorsOriginsRouteHandler)
+  .openapi(getUserManagementCorsOriginsRoute, getUserManagementCorsOriginsRouteHandler)
+  .openapi(
+    getUserManagementEmailVerificationIdRoute,
+    getUserManagementEmailVerificationIdRouteHandler,
+  )
+  .openapi(getUserManagementInvitationsRoute, getUserManagementInvitationsRouteHandler)
+  .openapi(postUserManagementInvitationsRoute, postUserManagementInvitationsRouteHandler)
+  .openapi(
+    getUserManagementInvitationsByTokenTokenRoute,
+    getUserManagementInvitationsByTokenTokenRouteHandler,
+  )
+  .openapi(getUserManagementInvitationsIdRoute, getUserManagementInvitationsIdRouteHandler)
+  .openapi(
+    postUserManagementInvitationsIdAcceptRoute,
+    postUserManagementInvitationsIdAcceptRouteHandler,
+  )
+  .openapi(
+    postUserManagementInvitationsIdResendRoute,
+    postUserManagementInvitationsIdResendRouteHandler,
+  )
+  .openapi(
+    postUserManagementInvitationsIdRevokeRoute,
+    postUserManagementInvitationsIdRevokeRouteHandler,
+  )
+  .openapi(getUserManagementJwtTemplateRoute, getUserManagementJwtTemplateRouteHandler)
+  .openapi(putUserManagementJwtTemplateRoute, putUserManagementJwtTemplateRouteHandler)
+  .openapi(postUserManagementMagicAuthRoute, postUserManagementMagicAuthRouteHandler)
+  .openapi(getUserManagementMagicAuthIdRoute, getUserManagementMagicAuthIdRouteHandler)
+  .openapi(
+    getUserManagementOrganizationMembershipsRoute,
+    getUserManagementOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    postUserManagementOrganizationMembershipsRoute,
+    postUserManagementOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getUserManagementOrganizationMembershipsIdRoute,
+    getUserManagementOrganizationMembershipsIdRouteHandler,
+  )
+  .openapi(
+    deleteUserManagementOrganizationMembershipsIdRoute,
+    deleteUserManagementOrganizationMembershipsIdRouteHandler,
+  )
+  .openapi(
+    putUserManagementOrganizationMembershipsIdRoute,
+    putUserManagementOrganizationMembershipsIdRouteHandler,
+  )
+  .openapi(
+    putUserManagementOrganizationMembershipsIdDeactivateRoute,
+    putUserManagementOrganizationMembershipsIdDeactivateRouteHandler,
+  )
+  .openapi(
+    putUserManagementOrganizationMembershipsIdReactivateRoute,
+    putUserManagementOrganizationMembershipsIdReactivateRouteHandler,
+  )
+  .openapi(
+    getUserManagementOrganizationMembershipsOmIdGroupsRoute,
+    getUserManagementOrganizationMembershipsOmIdGroupsRouteHandler,
+  )
+  .openapi(postUserManagementPasswordResetRoute, postUserManagementPasswordResetRouteHandler)
+  .openapi(
+    postUserManagementPasswordResetConfirmRoute,
+    postUserManagementPasswordResetConfirmRouteHandler,
+  )
+  .openapi(getUserManagementPasswordResetIdRoute, getUserManagementPasswordResetIdRouteHandler)
+  .openapi(postUserManagementRadarChallengesRoute, postUserManagementRadarChallengesRouteHandler)
+  .openapi(getUserManagementRadarChallengesIdRoute, getUserManagementRadarChallengesIdRouteHandler)
+  .openapi(postUserManagementRedirectUrisRoute, postUserManagementRedirectUrisRouteHandler)
+  .openapi(getUserManagementRedirectUrisRoute, getUserManagementRedirectUrisRouteHandler)
+  .openapi(deleteUserManagementRedirectUrisIdRoute, deleteUserManagementRedirectUrisIdRouteHandler)
+  .openapi(getUserManagementSessionsLogoutRoute, getUserManagementSessionsLogoutRouteHandler)
+  .openapi(postUserManagementSessionsRevokeRoute, postUserManagementSessionsRevokeRouteHandler)
+  .openapi(getUserManagementUsersRoute, getUserManagementUsersRouteHandler)
+  .openapi(postUserManagementUsersRoute, postUserManagementUsersRouteHandler)
+  .openapi(
+    getUserManagementUsersExternalIdExternalIdRoute,
+    getUserManagementUsersExternalIdExternalIdRouteHandler,
+  )
+  .openapi(putUserManagementUsersIdRoute, putUserManagementUsersIdRouteHandler)
+  .openapi(getUserManagementUsersIdRoute, getUserManagementUsersIdRouteHandler)
+  .openapi(deleteUserManagementUsersIdRoute, deleteUserManagementUsersIdRouteHandler)
+  .openapi(
+    postUserManagementUsersIdEmailChangeConfirmRoute,
+    postUserManagementUsersIdEmailChangeConfirmRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersIdEmailChangeSendRoute,
+    postUserManagementUsersIdEmailChangeSendRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersIdEmailVerificationConfirmRoute,
+    postUserManagementUsersIdEmailVerificationConfirmRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersIdEmailVerificationSendRoute,
+    postUserManagementUsersIdEmailVerificationSendRouteHandler,
+  )
+  .openapi(getUserManagementUsersIdIdentitiesRoute, getUserManagementUsersIdIdentitiesRouteHandler)
+  .openapi(getUserManagementUsersIdSessionsRoute, getUserManagementUsersIdSessionsRouteHandler)
+  .openapi(
+    getUserManagementUsersUserIdApiKeysRoute,
+    getUserManagementUsersUserIdApiKeysRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersUserIdApiKeysRoute,
+    postUserManagementUsersUserIdApiKeysRouteHandler,
+  )
+  .openapi(
+    getUserManagementUsersUserIdFeatureFlagsRoute,
+    getUserManagementUsersUserIdFeatureFlagsRouteHandler,
+  )
+  .openapi(
+    getUserManagementUsersUserIdAuthorizedApplicationsRoute,
+    getUserManagementUsersUserIdAuthorizedApplicationsRouteHandler,
+  )
+  .openapi(
+    deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute,
+    deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRouteHandler,
+  )
+  .openapi(
+    getUserManagementUsersUserIdConnectedAccountsSlugRoute,
+    getUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    deleteUserManagementUsersUserIdConnectedAccountsSlugRoute,
+    deleteUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersUserIdConnectedAccountsSlugRoute,
+    postUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    putUserManagementUsersUserIdConnectedAccountsSlugRoute,
+    putUserManagementUsersUserIdConnectedAccountsSlugRouteHandler,
+  )
+  .openapi(
+    getUserManagementUsersUserIdDataProvidersRoute,
+    getUserManagementUsersUserIdDataProvidersRouteHandler,
+  )
+  .openapi(
+    postUserManagementUsersUserlandUserIdAuthFactorsRoute,
+    postUserManagementUsersUserlandUserIdAuthFactorsRouteHandler,
+  )
+  .openapi(
+    getUserManagementUsersUserlandUserIdAuthFactorsRoute,
+    getUserManagementUsersUserlandUserIdAuthFactorsRouteHandler,
+  )
+  .openapi(
+    deleteUserManagementWaitlistEntriesIdRoute,
+    deleteUserManagementWaitlistEntriesIdRouteHandler,
+  )
+  .openapi(
+    postUserManagementWaitlistEntriesIdApproveRoute,
+    postUserManagementWaitlistEntriesIdApproveRouteHandler,
+  )
+  .openapi(
+    postUserManagementWaitlistEntriesIdDenyRoute,
+    postUserManagementWaitlistEntriesIdDenyRouteHandler,
+  )
+  .openapi(getUserManagementWaitlistsRoute, getUserManagementWaitlistsRouteHandler)
+  .openapi(getUserManagementWaitlistsIdRoute, getUserManagementWaitlistsIdRouteHandler)
+  .openapi(
+    getUserManagementWaitlistsIdEntriesRoute,
+    getUserManagementWaitlistsIdEntriesRouteHandler,
+  )
+  .openapi(
+    postUserManagementWaitlistsIdEntriesRoute,
+    postUserManagementWaitlistsIdEntriesRouteHandler,
+  )
+  .openapi(postVaultV1KeysDataKeyRoute, postVaultV1KeysDataKeyRouteHandler)
+  .openapi(postVaultV1KeysDecryptRoute, postVaultV1KeysDecryptRouteHandler)
+  .openapi(postVaultV1KeysRekeyRoute, postVaultV1KeysRekeyRouteHandler)
+  .openapi(getVaultV1KvRoute, getVaultV1KvRouteHandler)
+  .openapi(postVaultV1KvRoute, postVaultV1KvRouteHandler)
+  .openapi(getVaultV1KvNameNameRoute, getVaultV1KvNameNameRouteHandler)
+  .openapi(deleteVaultV1KvIdRoute, deleteVaultV1KvIdRouteHandler)
+  .openapi(getVaultV1KvIdRoute, getVaultV1KvIdRouteHandler)
+  .openapi(putVaultV1KvIdRoute, putVaultV1KvIdRouteHandler)
+  .openapi(getVaultV1KvIdMetadataRoute, getVaultV1KvIdMetadataRouteHandler)
+  .openapi(getVaultV1KvIdVersionsRoute, getVaultV1KvIdVersionsRouteHandler)
+  .openapi(getWebhookEndpointsRoute, getWebhookEndpointsRouteHandler)
+  .openapi(postWebhookEndpointsRoute, postWebhookEndpointsRouteHandler)
+  .openapi(patchWebhookEndpointsIdRoute, patchWebhookEndpointsIdRouteHandler)
+  .openapi(deleteWebhookEndpointsIdRoute, deleteWebhookEndpointsIdRouteHandler)
+  .openapi(postWidgetsTokenRoute, postWidgetsTokenRouteHandler)
 
 export default app

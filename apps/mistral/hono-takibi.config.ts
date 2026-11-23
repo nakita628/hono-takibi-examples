@@ -4,7 +4,7 @@ export default defineConfig({
   // Mistral AI API (docs.mistral.ai)
   input: 'https://docs.mistral.ai/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

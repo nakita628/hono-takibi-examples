@@ -1,163 +1,473 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetDeviceFarm20150623CreateDevicePoolHandler,
-  xAmzTargetDeviceFarm20150623CreateInstanceProfileHandler,
-  xAmzTargetDeviceFarm20150623CreateNetworkProfileHandler,
-  xAmzTargetDeviceFarm20150623CreateProjectHandler,
-  xAmzTargetDeviceFarm20150623CreateRemoteAccessSessionHandler,
-  xAmzTargetDeviceFarm20150623CreateTestGridProjectHandler,
-  xAmzTargetDeviceFarm20150623CreateTestGridUrlHandler,
-  xAmzTargetDeviceFarm20150623CreateUploadHandler,
-  xAmzTargetDeviceFarm20150623CreateVpceConfigurationHandler,
-  xAmzTargetDeviceFarm20150623DeleteDevicePoolHandler,
-  xAmzTargetDeviceFarm20150623DeleteInstanceProfileHandler,
-  xAmzTargetDeviceFarm20150623DeleteNetworkProfileHandler,
-  xAmzTargetDeviceFarm20150623DeleteProjectHandler,
-  xAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionHandler,
-  xAmzTargetDeviceFarm20150623DeleteRunHandler,
-  xAmzTargetDeviceFarm20150623DeleteTestGridProjectHandler,
-  xAmzTargetDeviceFarm20150623DeleteUploadHandler,
-  xAmzTargetDeviceFarm20150623DeleteVpceConfigurationHandler,
-  xAmzTargetDeviceFarm20150623GetAccountSettingsHandler,
-  xAmzTargetDeviceFarm20150623GetDeviceHandler,
-  xAmzTargetDeviceFarm20150623GetDeviceInstanceHandler,
-  xAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityHandler,
-  xAmzTargetDeviceFarm20150623GetDevicePoolHandler,
-  xAmzTargetDeviceFarm20150623GetInstanceProfileHandler,
-  xAmzTargetDeviceFarm20150623GetJobHandler,
-  xAmzTargetDeviceFarm20150623GetNetworkProfileHandler,
-  xAmzTargetDeviceFarm20150623GetOfferingStatusHandler,
-  xAmzTargetDeviceFarm20150623GetProjectHandler,
-  xAmzTargetDeviceFarm20150623GetRemoteAccessSessionHandler,
-  xAmzTargetDeviceFarm20150623GetRunHandler,
-  xAmzTargetDeviceFarm20150623GetSuiteHandler,
-  xAmzTargetDeviceFarm20150623GetTestGridProjectHandler,
-  xAmzTargetDeviceFarm20150623GetTestGridSessionHandler,
-  xAmzTargetDeviceFarm20150623GetTestHandler,
-  xAmzTargetDeviceFarm20150623GetUploadHandler,
-  xAmzTargetDeviceFarm20150623GetVpceConfigurationHandler,
-  xAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionHandler,
-  xAmzTargetDeviceFarm20150623ListArtifactsHandler,
-  xAmzTargetDeviceFarm20150623ListDeviceInstancesHandler,
-  xAmzTargetDeviceFarm20150623ListDevicePoolsHandler,
-  xAmzTargetDeviceFarm20150623ListDevicesHandler,
-  xAmzTargetDeviceFarm20150623ListInstanceProfilesHandler,
-  xAmzTargetDeviceFarm20150623ListJobsHandler,
-  xAmzTargetDeviceFarm20150623ListNetworkProfilesHandler,
-  xAmzTargetDeviceFarm20150623ListOfferingPromotionsHandler,
-  xAmzTargetDeviceFarm20150623ListOfferingsHandler,
-  xAmzTargetDeviceFarm20150623ListOfferingTransactionsHandler,
-  xAmzTargetDeviceFarm20150623ListProjectsHandler,
-  xAmzTargetDeviceFarm20150623ListRemoteAccessSessionsHandler,
-  xAmzTargetDeviceFarm20150623ListRunsHandler,
-  xAmzTargetDeviceFarm20150623ListSamplesHandler,
-  xAmzTargetDeviceFarm20150623ListSuitesHandler,
-  xAmzTargetDeviceFarm20150623ListTagsForResourceHandler,
-  xAmzTargetDeviceFarm20150623ListTestGridProjectsHandler,
-  xAmzTargetDeviceFarm20150623ListTestGridSessionActionsHandler,
-  xAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsHandler,
-  xAmzTargetDeviceFarm20150623ListTestGridSessionsHandler,
-  xAmzTargetDeviceFarm20150623ListTestsHandler,
-  xAmzTargetDeviceFarm20150623ListUniqueProblemsHandler,
-  xAmzTargetDeviceFarm20150623ListUploadsHandler,
-  xAmzTargetDeviceFarm20150623ListVpceConfigurationsHandler,
-  xAmzTargetDeviceFarm20150623PurchaseOfferingHandler,
-  xAmzTargetDeviceFarm20150623RenewOfferingHandler,
-  xAmzTargetDeviceFarm20150623ScheduleRunHandler,
-  xAmzTargetDeviceFarm20150623StopJobHandler,
-  xAmzTargetDeviceFarm20150623StopRemoteAccessSessionHandler,
-  xAmzTargetDeviceFarm20150623StopRunHandler,
-  xAmzTargetDeviceFarm20150623TagResourceHandler,
-  xAmzTargetDeviceFarm20150623UntagResourceHandler,
-  xAmzTargetDeviceFarm20150623UpdateDeviceInstanceHandler,
-  xAmzTargetDeviceFarm20150623UpdateDevicePoolHandler,
-  xAmzTargetDeviceFarm20150623UpdateInstanceProfileHandler,
-  xAmzTargetDeviceFarm20150623UpdateNetworkProfileHandler,
-  xAmzTargetDeviceFarm20150623UpdateProjectHandler,
-  xAmzTargetDeviceFarm20150623UpdateTestGridProjectHandler,
-  xAmzTargetDeviceFarm20150623UpdateUploadHandler,
-  xAmzTargetDeviceFarm20150623UpdateVpceConfigurationHandler,
+  postXAmzTargetDeviceFarm20150623CreateDevicePoolRoute,
+  postXAmzTargetDeviceFarm20150623CreateInstanceProfileRoute,
+  postXAmzTargetDeviceFarm20150623CreateNetworkProfileRoute,
+  postXAmzTargetDeviceFarm20150623CreateProjectRoute,
+  postXAmzTargetDeviceFarm20150623CreateRemoteAccessSessionRoute,
+  postXAmzTargetDeviceFarm20150623CreateTestGridProjectRoute,
+  postXAmzTargetDeviceFarm20150623CreateTestGridUrlRoute,
+  postXAmzTargetDeviceFarm20150623CreateUploadRoute,
+  postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute,
+  postXAmzTargetDeviceFarm20150623DeleteDevicePoolRoute,
+  postXAmzTargetDeviceFarm20150623DeleteInstanceProfileRoute,
+  postXAmzTargetDeviceFarm20150623DeleteNetworkProfileRoute,
+  postXAmzTargetDeviceFarm20150623DeleteProjectRoute,
+  postXAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionRoute,
+  postXAmzTargetDeviceFarm20150623DeleteRunRoute,
+  postXAmzTargetDeviceFarm20150623DeleteTestGridProjectRoute,
+  postXAmzTargetDeviceFarm20150623DeleteUploadRoute,
+  postXAmzTargetDeviceFarm20150623DeleteVPCEConfigurationRoute,
+  postXAmzTargetDeviceFarm20150623GetAccountSettingsRoute,
+  postXAmzTargetDeviceFarm20150623GetDeviceInstanceRoute,
+  postXAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityRoute,
+  postXAmzTargetDeviceFarm20150623GetDevicePoolRoute,
+  postXAmzTargetDeviceFarm20150623GetDeviceRoute,
+  postXAmzTargetDeviceFarm20150623GetInstanceProfileRoute,
+  postXAmzTargetDeviceFarm20150623GetJobRoute,
+  postXAmzTargetDeviceFarm20150623GetNetworkProfileRoute,
+  postXAmzTargetDeviceFarm20150623GetOfferingStatusRoute,
+  postXAmzTargetDeviceFarm20150623GetProjectRoute,
+  postXAmzTargetDeviceFarm20150623GetRemoteAccessSessionRoute,
+  postXAmzTargetDeviceFarm20150623GetRunRoute,
+  postXAmzTargetDeviceFarm20150623GetSuiteRoute,
+  postXAmzTargetDeviceFarm20150623GetTestGridProjectRoute,
+  postXAmzTargetDeviceFarm20150623GetTestGridSessionRoute,
+  postXAmzTargetDeviceFarm20150623GetTestRoute,
+  postXAmzTargetDeviceFarm20150623GetUploadRoute,
+  postXAmzTargetDeviceFarm20150623GetVPCEConfigurationRoute,
+  postXAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionRoute,
+  postXAmzTargetDeviceFarm20150623ListArtifactsRoute,
+  postXAmzTargetDeviceFarm20150623ListDeviceInstancesRoute,
+  postXAmzTargetDeviceFarm20150623ListDevicePoolsRoute,
+  postXAmzTargetDeviceFarm20150623ListDevicesRoute,
+  postXAmzTargetDeviceFarm20150623ListInstanceProfilesRoute,
+  postXAmzTargetDeviceFarm20150623ListJobsRoute,
+  postXAmzTargetDeviceFarm20150623ListNetworkProfilesRoute,
+  postXAmzTargetDeviceFarm20150623ListOfferingPromotionsRoute,
+  postXAmzTargetDeviceFarm20150623ListOfferingsRoute,
+  postXAmzTargetDeviceFarm20150623ListOfferingTransactionsRoute,
+  postXAmzTargetDeviceFarm20150623ListProjectsRoute,
+  postXAmzTargetDeviceFarm20150623ListRemoteAccessSessionsRoute,
+  postXAmzTargetDeviceFarm20150623ListRunsRoute,
+  postXAmzTargetDeviceFarm20150623ListSamplesRoute,
+  postXAmzTargetDeviceFarm20150623ListSuitesRoute,
+  postXAmzTargetDeviceFarm20150623ListTagsForResourceRoute,
+  postXAmzTargetDeviceFarm20150623ListTestGridProjectsRoute,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionActionsRoute,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsRoute,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionsRoute,
+  postXAmzTargetDeviceFarm20150623ListTestsRoute,
+  postXAmzTargetDeviceFarm20150623ListUniqueProblemsRoute,
+  postXAmzTargetDeviceFarm20150623ListUploadsRoute,
+  postXAmzTargetDeviceFarm20150623ListVPCEConfigurationsRoute,
+  postXAmzTargetDeviceFarm20150623PurchaseOfferingRoute,
+  postXAmzTargetDeviceFarm20150623RenewOfferingRoute,
+  postXAmzTargetDeviceFarm20150623ScheduleRunRoute,
+  postXAmzTargetDeviceFarm20150623StopJobRoute,
+  postXAmzTargetDeviceFarm20150623StopRemoteAccessSessionRoute,
+  postXAmzTargetDeviceFarm20150623StopRunRoute,
+  postXAmzTargetDeviceFarm20150623TagResourceRoute,
+  postXAmzTargetDeviceFarm20150623UntagResourceRoute,
+  postXAmzTargetDeviceFarm20150623UpdateDeviceInstanceRoute,
+  postXAmzTargetDeviceFarm20150623UpdateDevicePoolRoute,
+  postXAmzTargetDeviceFarm20150623UpdateInstanceProfileRoute,
+  postXAmzTargetDeviceFarm20150623UpdateNetworkProfileRoute,
+  postXAmzTargetDeviceFarm20150623UpdateProjectRoute,
+  postXAmzTargetDeviceFarm20150623UpdateTestGridProjectRoute,
+  postXAmzTargetDeviceFarm20150623UpdateUploadRoute,
+  postXAmzTargetDeviceFarm20150623UpdateVPCEConfigurationRoute,
+} from './routes'
+import {
+  postXAmzTargetDeviceFarm20150623CreateDevicePoolRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateInstanceProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateNetworkProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateRemoteAccessSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateTestGridProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateTestGridUrlRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateUploadRouteHandler,
+  postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteDevicePoolRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteInstanceProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteNetworkProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteRunRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteTestGridProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteUploadRouteHandler,
+  postXAmzTargetDeviceFarm20150623DeleteVPCEConfigurationRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetAccountSettingsRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetDeviceInstanceRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetDevicePoolRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetDeviceRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetInstanceProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetJobRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetNetworkProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetOfferingStatusRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetRemoteAccessSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetRunRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetSuiteRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetTestGridProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetTestGridSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetTestRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetUploadRouteHandler,
+  postXAmzTargetDeviceFarm20150623GetVPCEConfigurationRouteHandler,
+  postXAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListArtifactsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListDeviceInstancesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListDevicePoolsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListDevicesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListInstanceProfilesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListJobsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListNetworkProfilesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListOfferingPromotionsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListOfferingsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListOfferingTransactionsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListProjectsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListRemoteAccessSessionsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListRunsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListSamplesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListSuitesRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTagsForResourceRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTestGridProjectsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionActionsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTestGridSessionsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListTestsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListUniqueProblemsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListUploadsRouteHandler,
+  postXAmzTargetDeviceFarm20150623ListVPCEConfigurationsRouteHandler,
+  postXAmzTargetDeviceFarm20150623PurchaseOfferingRouteHandler,
+  postXAmzTargetDeviceFarm20150623RenewOfferingRouteHandler,
+  postXAmzTargetDeviceFarm20150623ScheduleRunRouteHandler,
+  postXAmzTargetDeviceFarm20150623StopJobRouteHandler,
+  postXAmzTargetDeviceFarm20150623StopRemoteAccessSessionRouteHandler,
+  postXAmzTargetDeviceFarm20150623StopRunRouteHandler,
+  postXAmzTargetDeviceFarm20150623TagResourceRouteHandler,
+  postXAmzTargetDeviceFarm20150623UntagResourceRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateDeviceInstanceRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateDevicePoolRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateInstanceProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateNetworkProfileRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateTestGridProjectRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateUploadRouteHandler,
+  postXAmzTargetDeviceFarm20150623UpdateVPCEConfigurationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetDeviceFarm20150623CreateDevicePoolHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateInstanceProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateNetworkProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateRemoteAccessSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateTestGridProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateTestGridUrlHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateUploadHandler)
-  .route('/', xAmzTargetDeviceFarm20150623CreateVpceConfigurationHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteDevicePoolHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteInstanceProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteNetworkProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteRunHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteTestGridProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteUploadHandler)
-  .route('/', xAmzTargetDeviceFarm20150623DeleteVpceConfigurationHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetAccountSettingsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetDeviceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetDeviceInstanceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetDevicePoolHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetInstanceProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetJobHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetNetworkProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetOfferingStatusHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetRemoteAccessSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetRunHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetSuiteHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetTestHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetTestGridProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetTestGridSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetUploadHandler)
-  .route('/', xAmzTargetDeviceFarm20150623GetVpceConfigurationHandler)
-  .route('/', xAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListArtifactsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListDeviceInstancesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListDevicePoolsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListDevicesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListInstanceProfilesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListJobsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListNetworkProfilesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListOfferingPromotionsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListOfferingTransactionsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListOfferingsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListProjectsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListRemoteAccessSessionsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListRunsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListSamplesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListSuitesHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTagsForResourceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTestGridProjectsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTestGridSessionActionsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTestGridSessionsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListTestsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListUniqueProblemsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListUploadsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ListVpceConfigurationsHandler)
-  .route('/', xAmzTargetDeviceFarm20150623PurchaseOfferingHandler)
-  .route('/', xAmzTargetDeviceFarm20150623RenewOfferingHandler)
-  .route('/', xAmzTargetDeviceFarm20150623ScheduleRunHandler)
-  .route('/', xAmzTargetDeviceFarm20150623StopJobHandler)
-  .route('/', xAmzTargetDeviceFarm20150623StopRemoteAccessSessionHandler)
-  .route('/', xAmzTargetDeviceFarm20150623StopRunHandler)
-  .route('/', xAmzTargetDeviceFarm20150623TagResourceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UntagResourceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateDeviceInstanceHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateDevicePoolHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateInstanceProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateNetworkProfileHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateTestGridProjectHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateUploadHandler)
-  .route('/', xAmzTargetDeviceFarm20150623UpdateVpceConfigurationHandler)
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateDevicePoolRoute,
+    postXAmzTargetDeviceFarm20150623CreateDevicePoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateInstanceProfileRoute,
+    postXAmzTargetDeviceFarm20150623CreateInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateNetworkProfileRoute,
+    postXAmzTargetDeviceFarm20150623CreateNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateProjectRoute,
+    postXAmzTargetDeviceFarm20150623CreateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateRemoteAccessSessionRoute,
+    postXAmzTargetDeviceFarm20150623CreateRemoteAccessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateTestGridProjectRoute,
+    postXAmzTargetDeviceFarm20150623CreateTestGridProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateTestGridUrlRoute,
+    postXAmzTargetDeviceFarm20150623CreateTestGridUrlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateUploadRoute,
+    postXAmzTargetDeviceFarm20150623CreateUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute,
+    postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteDevicePoolRoute,
+    postXAmzTargetDeviceFarm20150623DeleteDevicePoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteInstanceProfileRoute,
+    postXAmzTargetDeviceFarm20150623DeleteInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteNetworkProfileRoute,
+    postXAmzTargetDeviceFarm20150623DeleteNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteProjectRoute,
+    postXAmzTargetDeviceFarm20150623DeleteProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionRoute,
+    postXAmzTargetDeviceFarm20150623DeleteRemoteAccessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteRunRoute,
+    postXAmzTargetDeviceFarm20150623DeleteRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteTestGridProjectRoute,
+    postXAmzTargetDeviceFarm20150623DeleteTestGridProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteUploadRoute,
+    postXAmzTargetDeviceFarm20150623DeleteUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623DeleteVPCEConfigurationRoute,
+    postXAmzTargetDeviceFarm20150623DeleteVPCEConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetAccountSettingsRoute,
+    postXAmzTargetDeviceFarm20150623GetAccountSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetDeviceRoute,
+    postXAmzTargetDeviceFarm20150623GetDeviceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetDeviceInstanceRoute,
+    postXAmzTargetDeviceFarm20150623GetDeviceInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetDevicePoolRoute,
+    postXAmzTargetDeviceFarm20150623GetDevicePoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityRoute,
+    postXAmzTargetDeviceFarm20150623GetDevicePoolCompatibilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetInstanceProfileRoute,
+    postXAmzTargetDeviceFarm20150623GetInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetJobRoute,
+    postXAmzTargetDeviceFarm20150623GetJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetNetworkProfileRoute,
+    postXAmzTargetDeviceFarm20150623GetNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetOfferingStatusRoute,
+    postXAmzTargetDeviceFarm20150623GetOfferingStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetProjectRoute,
+    postXAmzTargetDeviceFarm20150623GetProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetRemoteAccessSessionRoute,
+    postXAmzTargetDeviceFarm20150623GetRemoteAccessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetRunRoute,
+    postXAmzTargetDeviceFarm20150623GetRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetSuiteRoute,
+    postXAmzTargetDeviceFarm20150623GetSuiteRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetTestRoute,
+    postXAmzTargetDeviceFarm20150623GetTestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetTestGridProjectRoute,
+    postXAmzTargetDeviceFarm20150623GetTestGridProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetTestGridSessionRoute,
+    postXAmzTargetDeviceFarm20150623GetTestGridSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetUploadRoute,
+    postXAmzTargetDeviceFarm20150623GetUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623GetVPCEConfigurationRoute,
+    postXAmzTargetDeviceFarm20150623GetVPCEConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionRoute,
+    postXAmzTargetDeviceFarm20150623InstallToRemoteAccessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListArtifactsRoute,
+    postXAmzTargetDeviceFarm20150623ListArtifactsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListDeviceInstancesRoute,
+    postXAmzTargetDeviceFarm20150623ListDeviceInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListDevicePoolsRoute,
+    postXAmzTargetDeviceFarm20150623ListDevicePoolsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListDevicesRoute,
+    postXAmzTargetDeviceFarm20150623ListDevicesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListInstanceProfilesRoute,
+    postXAmzTargetDeviceFarm20150623ListInstanceProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListJobsRoute,
+    postXAmzTargetDeviceFarm20150623ListJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListNetworkProfilesRoute,
+    postXAmzTargetDeviceFarm20150623ListNetworkProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListOfferingPromotionsRoute,
+    postXAmzTargetDeviceFarm20150623ListOfferingPromotionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListOfferingTransactionsRoute,
+    postXAmzTargetDeviceFarm20150623ListOfferingTransactionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListOfferingsRoute,
+    postXAmzTargetDeviceFarm20150623ListOfferingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListProjectsRoute,
+    postXAmzTargetDeviceFarm20150623ListProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListRemoteAccessSessionsRoute,
+    postXAmzTargetDeviceFarm20150623ListRemoteAccessSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListRunsRoute,
+    postXAmzTargetDeviceFarm20150623ListRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListSamplesRoute,
+    postXAmzTargetDeviceFarm20150623ListSamplesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListSuitesRoute,
+    postXAmzTargetDeviceFarm20150623ListSuitesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTagsForResourceRoute,
+    postXAmzTargetDeviceFarm20150623ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTestGridProjectsRoute,
+    postXAmzTargetDeviceFarm20150623ListTestGridProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionActionsRoute,
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsRoute,
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionArtifactsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionsRoute,
+    postXAmzTargetDeviceFarm20150623ListTestGridSessionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListTestsRoute,
+    postXAmzTargetDeviceFarm20150623ListTestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListUniqueProblemsRoute,
+    postXAmzTargetDeviceFarm20150623ListUniqueProblemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListUploadsRoute,
+    postXAmzTargetDeviceFarm20150623ListUploadsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ListVPCEConfigurationsRoute,
+    postXAmzTargetDeviceFarm20150623ListVPCEConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623PurchaseOfferingRoute,
+    postXAmzTargetDeviceFarm20150623PurchaseOfferingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623RenewOfferingRoute,
+    postXAmzTargetDeviceFarm20150623RenewOfferingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623ScheduleRunRoute,
+    postXAmzTargetDeviceFarm20150623ScheduleRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623StopJobRoute,
+    postXAmzTargetDeviceFarm20150623StopJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623StopRemoteAccessSessionRoute,
+    postXAmzTargetDeviceFarm20150623StopRemoteAccessSessionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623StopRunRoute,
+    postXAmzTargetDeviceFarm20150623StopRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623TagResourceRoute,
+    postXAmzTargetDeviceFarm20150623TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UntagResourceRoute,
+    postXAmzTargetDeviceFarm20150623UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateDeviceInstanceRoute,
+    postXAmzTargetDeviceFarm20150623UpdateDeviceInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateDevicePoolRoute,
+    postXAmzTargetDeviceFarm20150623UpdateDevicePoolRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateInstanceProfileRoute,
+    postXAmzTargetDeviceFarm20150623UpdateInstanceProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateNetworkProfileRoute,
+    postXAmzTargetDeviceFarm20150623UpdateNetworkProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateProjectRoute,
+    postXAmzTargetDeviceFarm20150623UpdateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateTestGridProjectRoute,
+    postXAmzTargetDeviceFarm20150623UpdateTestGridProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateUploadRoute,
+    postXAmzTargetDeviceFarm20150623UpdateUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDeviceFarm20150623UpdateVPCEConfigurationRoute,
+    postXAmzTargetDeviceFarm20150623UpdateVPCEConfigurationRouteHandler,
+  )
 
 export default app

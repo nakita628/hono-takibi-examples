@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceVerifyMacRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceVerifyMacRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceVerifyMacHandler = app.openapi(
-  postXAmzTargetTrentServiceVerifyMacRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceVerifyMacRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceVerifyMacRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

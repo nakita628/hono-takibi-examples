@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postS3BucketsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postS3BucketsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const s3BucketsHandler = app.openapi(postS3BucketsRoute, (c) => {
+export const postS3BucketsRouteHandler: RouteHandler<typeof postS3BucketsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/codat.io/banking/2.1.0/openapi.yaml',
   output: './src/codat-io-banking/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codat-io-banking/types.ts' },
   client: { output: './src/codat-io-banking/client.ts', baseUrl: '/' },
   rpc: { output: './src/codat-io-banking/rpc.ts', parseResponse: true },

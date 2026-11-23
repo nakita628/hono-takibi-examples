@@ -2503,84 +2503,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 ignore_tags?: string[] | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { header: { 'X-DeepL-Reporting-Tag'?: string | undefined } } & {
-              json:
-                | {
-                    text: string[]
-                    source_lang?: SourceLanguage | undefined
-                    target_lang: TargetLanguage
-                    context?: Context | undefined
-                    show_billed_characters?: ShowBilledCharacters | undefined
-                    split_sentences?: SplitSentencesOption | undefined
-                    preserve_formatting?: PreserveFormattingOption | undefined
-                    formality?: Formality | undefined
-                    model_type?: ModelType | undefined
-                    glossary_id?: string | undefined
-                    glossary_ids?: string[] | undefined
-                    style_id?: string | undefined
-                    translation_memory_id?: TranslationMemoryId | undefined
-                    translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                    custom_instructions?: string[] | undefined
-                    style_profile_id?: string | undefined
-                    tag_handling?: TagHandlingOption | undefined
-                    tag_handling_version?: TagHandlingVersionOption | undefined
-                    outline_detection?: OutlineDetectionOption | undefined
-                    enable_beta_languages?: boolean | undefined
-                    non_splitting_tags?: string[] | undefined
-                    splitting_tags?: string[] | undefined
-                    ignore_tags?: string[] | undefined
-                  }
-                | {
-                    text: string[]
-                    source_lang?: SourceLanguage | undefined
-                    target_lang: TargetLanguage
-                    context?: Context | undefined
-                    show_billed_characters?: ShowBilledCharacters | undefined
-                    split_sentences?: SplitSentencesOption | undefined
-                    preserve_formatting?: PreserveFormattingOptionStr | undefined
-                    formality?: Formality | undefined
-                    model_type?: ModelType | undefined
-                    glossary_id?: string | undefined
-                    glossary_ids?: string[] | undefined
-                    translation_memory_id?: TranslationMemoryId | undefined
-                    translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                    style_profile_id?: string | undefined
-                    tag_handling?: TagHandlingOption | undefined
-                    outline_detection?: OutlineDetectionOptionStr | undefined
-                    enable_beta_languages?: boolean | undefined
-                    non_splitting_tags?: string[] | undefined
-                    splitting_tags?: string[] | undefined
-                    ignore_tags?: string[] | undefined
-                  }
-            } & {
-              form: {
-                text: string[]
-                source_lang?: SourceLanguage | undefined
-                target_lang: TargetLanguage
-                context?: Context | undefined
-                show_billed_characters?: ShowBilledCharacters | undefined
-                split_sentences?: SplitSentencesOption | undefined
-                preserve_formatting?: PreserveFormattingOptionStr | undefined
-                formality?: Formality | undefined
-                model_type?: ModelType | undefined
-                glossary_id?: string | undefined
-                glossary_ids?: string[] | undefined
-                translation_memory_id?: TranslationMemoryId | undefined
-                translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                style_profile_id?: string | undefined
-                tag_handling?: TagHandlingOption | undefined
-                outline_detection?: OutlineDetectionOptionStr | undefined
-                enable_beta_languages?: boolean | undefined
-                non_splitting_tags?: string[] | undefined
-                splitting_tags?: string[] | undefined
-                ignore_tags?: string[] | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -2662,84 +2584,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 504
-          }
-        | {
-            input: { header: { 'X-DeepL-Reporting-Tag'?: string | undefined } } & {
-              json:
-                | {
-                    text: string[]
-                    source_lang?: SourceLanguage | undefined
-                    target_lang: TargetLanguage
-                    context?: Context | undefined
-                    show_billed_characters?: ShowBilledCharacters | undefined
-                    split_sentences?: SplitSentencesOption | undefined
-                    preserve_formatting?: PreserveFormattingOption | undefined
-                    formality?: Formality | undefined
-                    model_type?: ModelType | undefined
-                    glossary_id?: string | undefined
-                    glossary_ids?: string[] | undefined
-                    style_id?: string | undefined
-                    translation_memory_id?: TranslationMemoryId | undefined
-                    translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                    custom_instructions?: string[] | undefined
-                    style_profile_id?: string | undefined
-                    tag_handling?: TagHandlingOption | undefined
-                    tag_handling_version?: TagHandlingVersionOption | undefined
-                    outline_detection?: OutlineDetectionOption | undefined
-                    enable_beta_languages?: boolean | undefined
-                    non_splitting_tags?: string[] | undefined
-                    splitting_tags?: string[] | undefined
-                    ignore_tags?: string[] | undefined
-                  }
-                | {
-                    text: string[]
-                    source_lang?: SourceLanguage | undefined
-                    target_lang: TargetLanguage
-                    context?: Context | undefined
-                    show_billed_characters?: ShowBilledCharacters | undefined
-                    split_sentences?: SplitSentencesOption | undefined
-                    preserve_formatting?: PreserveFormattingOptionStr | undefined
-                    formality?: Formality | undefined
-                    model_type?: ModelType | undefined
-                    glossary_id?: string | undefined
-                    glossary_ids?: string[] | undefined
-                    translation_memory_id?: TranslationMemoryId | undefined
-                    translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                    style_profile_id?: string | undefined
-                    tag_handling?: TagHandlingOption | undefined
-                    outline_detection?: OutlineDetectionOptionStr | undefined
-                    enable_beta_languages?: boolean | undefined
-                    non_splitting_tags?: string[] | undefined
-                    splitting_tags?: string[] | undefined
-                    ignore_tags?: string[] | undefined
-                  }
-            } & {
-              form: {
-                text: string[]
-                source_lang?: SourceLanguage | undefined
-                target_lang: TargetLanguage
-                context?: Context | undefined
-                show_billed_characters?: ShowBilledCharacters | undefined
-                split_sentences?: SplitSentencesOption | undefined
-                preserve_formatting?: PreserveFormattingOptionStr | undefined
-                formality?: Formality | undefined
-                model_type?: ModelType | undefined
-                glossary_id?: string | undefined
-                glossary_ids?: string[] | undefined
-                translation_memory_id?: TranslationMemoryId | undefined
-                translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                style_profile_id?: string | undefined
-                tag_handling?: TagHandlingOption | undefined
-                outline_detection?: OutlineDetectionOptionStr | undefined
-                enable_beta_languages?: boolean | undefined
-                non_splitting_tags?: string[] | undefined
-                splitting_tags?: string[] | undefined
-                ignore_tags?: string[] | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -2927,32 +2771,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 enable_beta_languages?: boolean | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: {
-              form: {
-                source_lang?: SourceLanguage | undefined
-                target_lang: TargetLanguage
-                file: File
-                filename?: string | undefined
-                output_format?: string | undefined
-                input_conversion_options?: string | undefined
-                formality?: Formality | undefined
-                glossary_id?: string | undefined
-                glossary_ids?: string[] | undefined
-                style_id?: string | undefined
-                translation_memory_id?: TranslationMemoryId | undefined
-                translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                custom_instructions?: string | undefined
-                style_profile_id?: string | undefined
-                enable_watermark?: boolean | undefined
-                enable_quality_evaluation?: boolean | undefined
-                enable_beta_languages?: boolean | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -2982,32 +2800,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 504
-          }
-        | {
-            input: {
-              form: {
-                source_lang?: SourceLanguage | undefined
-                target_lang: TargetLanguage
-                file: File
-                filename?: string | undefined
-                output_format?: string | undefined
-                input_conversion_options?: string | undefined
-                formality?: Formality | undefined
-                glossary_id?: string | undefined
-                glossary_ids?: string[] | undefined
-                style_id?: string | undefined
-                translation_memory_id?: TranslationMemoryId | undefined
-                translation_memory_threshold?: TranslationMemoryThreshold | undefined
-                custom_instructions?: string | undefined
-                style_profile_id?: string | undefined
-                enable_watermark?: boolean | undefined
-                enable_quality_evaluation?: boolean | undefined
-                enable_beta_languages?: boolean | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -3071,14 +2863,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { document_id: string } } & { json: DocumentKey } & {
               form: DocumentKey
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { document_id: string } } & { json: DocumentKey } & {
-              form: DocumentKey
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3090,14 +2874,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 504
-          }
-        | {
-            input: { param: { document_id: string } } & { json: DocumentKey } & {
-              form: DocumentKey
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -3155,14 +2931,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { document_id: string } } & { json: DocumentKey } & {
               form: DocumentKey
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { document_id: string } } & { json: DocumentKey } & {
-              form: DocumentKey
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3182,14 +2950,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 504
-          }
-        | {
-            input: { param: { document_id: string } } & { json: DocumentKey } & {
-              form: DocumentKey
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -3215,7 +2975,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 413 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 415 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 429 }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 456 }
         | {
             input: {}
             output: ErrorResponse | InfrastructureErrorResponse
@@ -3228,7 +2987,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 503
           }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 529 }
     }
   } & {
     '/v3/glossaries': {
@@ -3301,14 +3059,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: CreateMultilingualGlossaryParameters } & {
               form: CreateMultilingualGlossaryParameters
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { json: CreateMultilingualGlossaryParameters } & {
-              form: CreateMultilingualGlossaryParameters
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3320,14 +3070,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { json: CreateMultilingualGlossaryParameters } & {
-              form: CreateMultilingualGlossaryParameters
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $get:
         | {
@@ -3348,7 +3090,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 413 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 415 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 429 }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 456 }
         | {
             input: {}
             output: ErrorResponse | InfrastructureErrorResponse
@@ -3361,7 +3102,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 503
           }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 529 }
     }
   } & {
     '/v3/glossaries/:glossary_id': {
@@ -3416,12 +3156,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3431,12 +3165,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $patch:
         | {
@@ -3507,14 +3235,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { glossary_id: string } } & {
               json: PatchMultilingualGlossaryParameters
             } & { form: PatchMultilingualGlossaryParameters }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              json: PatchMultilingualGlossaryParameters
-            } & { form: PatchMultilingualGlossaryParameters }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3526,14 +3246,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              json: PatchMultilingualGlossaryParameters
-            } & { form: PatchMultilingualGlossaryParameters }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $delete:
         | {
@@ -3586,12 +3298,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3601,12 +3307,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -3707,17 +3407,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 target_lang: MultilingualGlossaryTargetLanguage
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              query: {
-                source_lang: GlossarySourceLanguage
-                target_lang: MultilingualGlossaryTargetLanguage
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3732,17 +3421,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              query: {
-                source_lang: GlossarySourceLanguage
-                target_lang: MultilingualGlossaryTargetLanguage
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -3843,17 +3521,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 target_lang: MultilingualGlossaryTargetLanguage
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              query: {
-                source_lang: GlossarySourceLanguage
-                target_lang: MultilingualGlossaryTargetLanguage
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3868,17 +3535,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } } & {
-              query: {
-                source_lang: GlossarySourceLanguage
-                target_lang: MultilingualGlossaryTargetLanguage
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $put:
         | {
@@ -3931,12 +3587,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } } & { json: MultilingualGlossaryEntries }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } } & { json: MultilingualGlossaryEntries }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -3946,12 +3596,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } } & { json: MultilingualGlossaryEntries }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -4007,12 +3651,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { json: CreateGlossaryParameters } & { form: CreateGlossaryParameters }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { json: CreateGlossaryParameters } & { form: CreateGlossaryParameters }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4022,12 +3660,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { json: CreateGlossaryParameters } & { form: CreateGlossaryParameters }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $get:
         | {
@@ -4048,7 +3680,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 413 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 415 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 429 }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 456 }
         | {
             input: {}
             output: ErrorResponse | InfrastructureErrorResponse
@@ -4061,7 +3692,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 503
           }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 529 }
     }
   } & {
     '/v2/glossaries/:glossary_id': {
@@ -4116,12 +3746,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4131,12 +3755,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
       $delete:
         | {
@@ -4189,12 +3807,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4205,16 +3817,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 503
           }
-        | {
-            input: { param: { glossary_id: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
-          }
     }
   } & {
     '/v2/glossaries/:glossary_id/entries': {
       $get:
+        | {
+            input: { param: { glossary_id: string } } & { header: { Accept?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { glossary_id: string } } & { header: { Accept?: string | undefined } }
             output: { message?: string | undefined; detail?: string | undefined }
@@ -4259,12 +3871,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { glossary_id: string } } & { header: { Accept?: string | undefined } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { param: { glossary_id: string } } & { header: { Accept?: string | undefined } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4274,12 +3880,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { glossary_id: string } } & { header: { Accept?: string | undefined } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -4429,26 +4029,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 tone?: WritingTone | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: {
-              json: {
-                text: string[]
-                target_lang?: TargetLanguageWrite | undefined
-                writing_style?: WritingStyle | undefined
-                tone?: WritingTone | undefined
-              }
-            } & {
-              form: {
-                text: string[]
-                target_lang?: TargetLanguageWrite | undefined
-                writing_style?: WritingStyle | undefined
-                tone?: WritingTone | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4537,14 +4117,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: { text: string[]; target_lang?: TargetLanguageWrite | undefined } } & {
               form: { text: string[]; target_lang?: TargetLanguageWrite | undefined }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { json: { text: string[]; target_lang?: TargetLanguageWrite | undefined } } & {
-              form: { text: string[]; target_lang?: TargetLanguageWrite | undefined }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4567,7 +4139,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 404 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 413 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 429 }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 456 }
         | {
             input: {}
             output: ErrorResponse | InfrastructureErrorResponse
@@ -4580,7 +4151,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 504
           }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 529 }
     }
   } & {
     '/v2/languages': {
@@ -4623,12 +4193,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { type?: 'source' | 'target' | undefined } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { query: { type?: 'source' | 'target' | undefined } }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -4638,12 +4202,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 504
-          }
-        | {
-            input: { query: { type?: 'source' | 'target' | undefined } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 529
           }
     }
   } & {
@@ -4690,12 +4248,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { json: CreateSpokenTermsParameters } & { form: CreateSpokenTermsParameters }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
           }
       $get:
         | {
@@ -5321,21 +4873,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 parameters?: { display_name?: string | undefined } | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: {
-              json: {
-                source_file: {
-                  file_name: string
-                  content_type?: string | undefined
-                  content_length: bigint
-                }
-                parameters?: { display_name?: string | undefined } | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -5826,22 +5363,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 glossary_priority_order_enabled?: boolean | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: {
-              json: {
-                name: string
-                description?: string | undefined
-                industry?: string | undefined
-                glossary_ids?: string[] | undefined
-                style_rule_ids?: string[] | undefined
-                translation_memory_ids?: string[] | undefined
-                glossary_priority_order_enabled?: boolean | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -6267,21 +5788,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: {
-              json: {
-                name: StyleRuleName
-                language: StyleRuleLanguage
-                configured_rules?: ConfiguredRules | undefined
-                custom_instructions?:
-                  | { label: string; prompt: string; source_language?: string | undefined }[]
-                  | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -6389,12 +5895,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { style_id: string } } & { json: { name?: StyleRuleName | undefined } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
           }
         | {
             input: { param: { style_id: string } } & { json: { name?: StyleRuleName | undefined } }
@@ -6555,14 +6055,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { style_id: string } } & {
-              json: { label: string; prompt: string; source_language?: string | undefined }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
           }
         | {
             input: { param: { style_id: string } } & {
@@ -6872,27 +6364,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 formality?: VoiceFormality | undefined
               }
             }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
-          }
-        | {
-            input: { header: { 'X-DeepL-Reporting-Tag'?: string | undefined } } & {
-              json: {
-                message_format?: VoiceMessageFormat | undefined
-                source_media_content_type: VoiceSourceMediaContentType
-                source_language?: VoiceSourceLanguage | undefined
-                source_language_mode?: VoiceSourceLanguageMode | undefined
-                target_languages?: VoiceTargetLanguages | undefined
-                target_media_languages?: VoiceTargetMediaLanguages | undefined
-                target_media_content_type?: VoiceTargetMediaContentType | undefined
-                target_media_voice?: VoiceTargetMediaVoice | undefined
-                spoken_terms_id?: SpokenTermsId | undefined
-                glossary_id?: string | undefined
-                glossary_ids?: string[] | undefined
-                formality?: VoiceFormality | undefined
-              }
-            }
             output: ErrorResponse | InfrastructureErrorResponse
             outputFormat: 'json'
             status: 500
@@ -6948,12 +6419,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { query: { token: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 456
           }
         | {
             input: { query: { token: string } }

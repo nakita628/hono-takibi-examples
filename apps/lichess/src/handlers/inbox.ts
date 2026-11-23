@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postInboxUsernameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postInboxUsernameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const inboxHandler = app.openapi(postInboxUsernameRoute, (c) => {
+export const postInboxUsernameRouteHandler: RouteHandler<typeof postInboxUsernameRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

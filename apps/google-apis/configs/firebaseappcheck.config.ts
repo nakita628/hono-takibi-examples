@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/firebaseappcheck/v1/openapi.yaml',
   output: './src/firebaseappcheck/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firebaseappcheck/types.ts' },
   client: { output: './src/firebaseappcheck/client.ts', baseUrl: '/' },
   rpc: { output: './src/firebaseappcheck/rpc.ts', parseResponse: true },

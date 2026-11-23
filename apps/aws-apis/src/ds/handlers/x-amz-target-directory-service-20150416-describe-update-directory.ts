@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDirectoryService20150416DescribeUpdateDirectoryHandler = app.openapi(
-  postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRouteHandler: RouteHandler<
+  typeof postXAmzTargetDirectoryService20150416DescribeUpdateDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCategoriesKeywordsIdKeywordRoute,
   getCategoriesRoute,
   postCategoriesKeywordsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCategoriesRouteHandler: RouteHandler<typeof getCategoriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const categoriesHandler = app
-  .openapi(getCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCategoriesKeywordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCategoriesKeywordsIdKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCategoriesKeywordsRouteHandler: RouteHandler<
+  typeof postCategoriesKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCategoriesKeywordsIdKeywordRouteHandler: RouteHandler<
+  typeof deleteCategoriesKeywordsIdKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

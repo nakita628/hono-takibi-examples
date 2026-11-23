@@ -1,6 +1,4 @@
 type XmlStringMaxLen19 = string
-type ResourceContentionFault = { [x: string]: unknown }
-type ServiceLinkedRoleFailure = { [x: string]: unknown }
 type AttachInstancesQuery = { InstanceIds?: {} | undefined; AutoScalingGroupName: {} }
 type XmlStringMaxLen511 = string
 type AttachLoadBalancerTargetGroupsResultType = { [x: string]: unknown }
@@ -26,14 +24,11 @@ type ScheduledUpdateGroupActionRequest = {
 type BatchPutScheduledUpdateGroupActionAnswer = {
   FailedScheduledUpdateGroupActions?: {} | undefined
 }
-type AlreadyExistsFault = { [x: string]: unknown }
-type LimitExceededFault = { [x: string]: unknown }
 type BatchPutScheduledUpdateGroupActionType = {
   AutoScalingGroupName: {}
   ScheduledUpdateGroupActions: {}
 }
 type CancelInstanceRefreshAnswer = { InstanceRefreshId?: {} | undefined }
-type ActiveInstanceRefreshNotFoundFault = { [x: string]: unknown }
 type CancelInstanceRefreshType = { AutoScalingGroupName: {} }
 type CompleteLifecycleActionAnswer = { [x: string]: unknown }
 type CompleteLifecycleActionType = {
@@ -164,9 +159,7 @@ type CreateLaunchConfigurationType = {
       }
     | undefined
 }
-type ResourceInUseFault = { [x: string]: unknown }
 type CreateOrUpdateTagsType = { Tags: {} }
-type ScalingActivityInProgressFault = { [x: string]: unknown }
 type DeleteAutoScalingGroupType = { AutoScalingGroupName: {}; ForceDelete?: {} | undefined }
 type LaunchConfigurationNameType = { LaunchConfigurationName: {} }
 type DeleteLifecycleHookAnswer = { [x: string]: unknown }
@@ -186,7 +179,6 @@ type DescribeAccountLimitsAnswer = {
 type DescribeAdjustmentTypesAnswer = { AdjustmentTypes?: {} | undefined }
 type Filter = { Name?: {} | undefined; Values?: {} | undefined }
 type AutoScalingGroupsType = { AutoScalingGroups: {}; NextToken?: {} | undefined }
-type InvalidNextToken = { [x: string]: unknown }
 type AutoScalingGroupNamesType = {
   AutoScalingGroupNames?: {} | undefined
   NextToken?: {} | undefined
@@ -454,7 +446,6 @@ type RecordLifecycleActionHeartbeatType = {
 }
 type ScalingProcessQuery = { AutoScalingGroupName: {}; ScalingProcesses?: {} | undefined }
 type RollbackInstanceRefreshAnswer = { InstanceRefreshId?: {} | undefined }
-type IrreversibleInstanceRefreshFault = { [x: string]: unknown }
 type RollbackInstanceRefreshType = { AutoScalingGroupName: {} }
 type SetDesiredCapacityType = {
   AutoScalingGroupName: {}
@@ -473,7 +464,6 @@ type SetInstanceProtectionQuery = {
   ProtectedFromScaleIn: {}
 }
 type StartInstanceRefreshAnswer = { InstanceRefreshId?: {} | undefined }
-type InstanceRefreshInProgressFault = { [x: string]: unknown }
 type StartInstanceRefreshType = {
   AutoScalingGroupName: {}
   Strategy?: {} | undefined
@@ -608,8957 +598,3019 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#Action=AttachInstances': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                Action: 'AttachInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds?: XmlStringMaxLen19[] | undefined
+            AutoScalingGroupName: string
+            Action: 'AttachInstances'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                Action: 'AttachInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                Action: 'AttachInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'AttachInstances'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'AttachInstances'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachInstancesQuery }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'AttachInstances'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachInstancesQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'AttachInstances'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachInstancesQuery }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: AttachInstancesQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=AttachLoadBalancerTargetGroups': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TargetGroupARNs: XmlStringMaxLen511[]
-                Action: 'AttachLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AttachLoadBalancerTargetGroupsResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TargetGroupARNs: XmlStringMaxLen511[]
+            Action: 'AttachLoadBalancerTargetGroups'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TargetGroupARNs: XmlStringMaxLen511[]
-                Action: 'AttachLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TargetGroupARNs: XmlStringMaxLen511[]
-                Action: 'AttachLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
+        }
+        output: AttachLoadBalancerTargetGroupsResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'AttachLoadBalancerTargetGroups'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'AttachLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancerTargetGroupsType }
-            output: AttachLoadBalancerTargetGroupsResultType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'AttachLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancerTargetGroupsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'AttachLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancerTargetGroupsType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: AttachLoadBalancerTargetGroupsType }
+        output: AttachLoadBalancerTargetGroupsResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=AttachLoadBalancers': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LoadBalancerNames: XmlStringMaxLen255[]
-                Action: 'AttachLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AttachLoadBalancersResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            LoadBalancerNames: XmlStringMaxLen255[]
+            Action: 'AttachLoadBalancers'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LoadBalancerNames: XmlStringMaxLen255[]
-                Action: 'AttachLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LoadBalancerNames: XmlStringMaxLen255[]
-                Action: 'AttachLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
+        }
+        output: AttachLoadBalancersResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'AttachLoadBalancers'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'AttachLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancersType }
-            output: AttachLoadBalancersResultType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'AttachLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancersType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'AttachLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachLoadBalancersType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: AttachLoadBalancersType }
+        output: AttachLoadBalancersResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=AttachTrafficSources': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSources: TrafficSourceIdentifier[]
-                Action: 'AttachTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AttachTrafficSourcesResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TrafficSources: TrafficSourceIdentifier[]
+            Action: 'AttachTrafficSources'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSources: TrafficSourceIdentifier[]
-                Action: 'AttachTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSources: TrafficSourceIdentifier[]
-                Action: 'AttachTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
+        }
+        output: AttachTrafficSourcesResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'AttachTrafficSources'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'AttachTrafficSources'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachTrafficSourcesType }
-            output: AttachTrafficSourcesResultType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'AttachTrafficSources'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachTrafficSourcesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'AttachTrafficSources'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AttachTrafficSourcesType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: AttachTrafficSourcesType }
+        output: AttachTrafficSourcesResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=BatchDeleteScheduledAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionNames: XmlStringMaxLen255[]
-                Action: 'BatchDeleteScheduledAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BatchDeleteScheduledActionAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScheduledActionNames: XmlStringMaxLen255[]
+            Action: 'BatchDeleteScheduledAction'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionNames: XmlStringMaxLen255[]
-                Action: 'BatchDeleteScheduledAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'BatchDeleteScheduledAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteScheduledActionType }
-            output: BatchDeleteScheduledActionAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: BatchDeleteScheduledActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'BatchDeleteScheduledAction'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'BatchDeleteScheduledAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchDeleteScheduledActionType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: BatchDeleteScheduledActionType }
+        output: BatchDeleteScheduledActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=BatchPutScheduledUpdateGroupAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledUpdateGroupActions: ScheduledUpdateGroupActionRequest[]
-                Action: 'BatchPutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BatchPutScheduledUpdateGroupActionAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScheduledUpdateGroupActions: ScheduledUpdateGroupActionRequest[]
+            Action: 'BatchPutScheduledUpdateGroupAction'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledUpdateGroupActions: ScheduledUpdateGroupActionRequest[]
-                Action: 'BatchPutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledUpdateGroupActions: ScheduledUpdateGroupActionRequest[]
-                Action: 'BatchPutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: BatchPutScheduledUpdateGroupActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'BatchPutScheduledUpdateGroupAction'; Version: '2011-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledUpdateGroupActions: ScheduledUpdateGroupActionRequest[]
-                Action: 'BatchPutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'BatchPutScheduledUpdateGroupAction'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchPutScheduledUpdateGroupActionType }
-            output: BatchPutScheduledUpdateGroupActionAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'BatchPutScheduledUpdateGroupAction'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchPutScheduledUpdateGroupActionType }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'BatchPutScheduledUpdateGroupAction'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchPutScheduledUpdateGroupActionType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'BatchPutScheduledUpdateGroupAction'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: BatchPutScheduledUpdateGroupActionType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: BatchPutScheduledUpdateGroupActionType }
+        output: BatchPutScheduledUpdateGroupActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CancelInstanceRefresh': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'CancelInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CancelInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            Action: 'CancelInstanceRefresh'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'CancelInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'CancelInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CancelInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CancelInstanceRefresh'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'CancelInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ActiveInstanceRefreshNotFoundFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CancelInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelInstanceRefreshType }
-            output: CancelInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CancelInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelInstanceRefreshType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CancelInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelInstanceRefreshType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CancelInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CancelInstanceRefreshType }
-            output: ActiveInstanceRefreshNotFoundFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CancelInstanceRefreshType }
+        output: CancelInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CompleteLifecycleAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleActionToken?: string | undefined
-                LifecycleActionResult: string
-                InstanceId?: string | undefined
-                Action: 'CompleteLifecycleAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CompleteLifecycleActionAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LifecycleHookName: string
+            AutoScalingGroupName: string
+            LifecycleActionToken?: string | undefined
+            LifecycleActionResult: string
+            InstanceId?: string | undefined
+            Action: 'CompleteLifecycleAction'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleActionToken?: string | undefined
-                LifecycleActionResult: string
-                InstanceId?: string | undefined
-                Action: 'CompleteLifecycleAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'CompleteLifecycleAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CompleteLifecycleActionType }
-            output: CompleteLifecycleActionAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: CompleteLifecycleActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CompleteLifecycleAction'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'CompleteLifecycleAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CompleteLifecycleActionType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: CompleteLifecycleActionType }
+        output: CompleteLifecycleActionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateAutoScalingGroup': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                InstanceId?: string | undefined
-                MinSize: number
-                MaxSize: number
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                LoadBalancerNames?: XmlStringMaxLen255[] | undefined
-                TargetGroupARNs?: XmlStringMaxLen511[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                CapacityRebalance?: boolean | undefined
-                LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
-                Tags?: Tag[] | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                TrafficSources?: TrafficSourceIdentifier[] | undefined
-                Action: 'CreateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            LaunchConfigurationName?: string | undefined
+            LaunchTemplate?:
+              | {
+                  LaunchTemplateId?: {} | undefined
+                  LaunchTemplateName?: {} | undefined
+                  Version?: {} | undefined
+                }
+              | undefined
+            MixedInstancesPolicy?:
+              | {
+                  LaunchTemplate?:
+                    | {
+                        LaunchTemplateSpecification?:
+                          | {
+                              LaunchTemplateId?: {} | undefined
+                              LaunchTemplateName?: {} | undefined
+                              Version?: {} | undefined
+                            }
+                          | undefined
+                        Overrides?: {} | undefined
+                      }
+                    | undefined
+                  InstancesDistribution?:
+                    | {
+                        OnDemandAllocationStrategy?: {} | undefined
+                        OnDemandBaseCapacity?: {} | undefined
+                        OnDemandPercentageAboveBaseCapacity?: {} | undefined
+                        SpotAllocationStrategy?: {} | undefined
+                        SpotInstancePools?: {} | undefined
+                        SpotMaxPrice?: {} | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            InstanceId?: string | undefined
+            MinSize: number
+            MaxSize: number
+            DesiredCapacity?: number | undefined
+            DefaultCooldown?: number | undefined
+            AvailabilityZones?: XmlStringMaxLen255[] | undefined
+            LoadBalancerNames?: XmlStringMaxLen255[] | undefined
+            TargetGroupARNs?: XmlStringMaxLen511[] | undefined
+            HealthCheckType?: string | undefined
+            HealthCheckGracePeriod?: number | undefined
+            PlacementGroup?: string | undefined
+            VPCZoneIdentifier?: string | undefined
+            TerminationPolicies?: XmlStringMaxLen1600[] | undefined
+            NewInstancesProtectedFromScaleIn?: boolean | undefined
+            CapacityRebalance?: boolean | undefined
+            LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
+            Tags?: Tag[] | undefined
+            ServiceLinkedRoleARN?: string | undefined
+            MaxInstanceLifetime?: number | undefined
+            Context?: string | undefined
+            DesiredCapacityType?: string | undefined
+            DefaultInstanceWarmup?: number | undefined
+            TrafficSources?: TrafficSourceIdentifier[] | undefined
+            Action: 'CreateAutoScalingGroup'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                InstanceId?: string | undefined
-                MinSize: number
-                MaxSize: number
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                LoadBalancerNames?: XmlStringMaxLen255[] | undefined
-                TargetGroupARNs?: XmlStringMaxLen511[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                CapacityRebalance?: boolean | undefined
-                LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
-                Tags?: Tag[] | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                TrafficSources?: TrafficSourceIdentifier[] | undefined
-                Action: 'CreateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                InstanceId?: string | undefined
-                MinSize: number
-                MaxSize: number
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                LoadBalancerNames?: XmlStringMaxLen255[] | undefined
-                TargetGroupARNs?: XmlStringMaxLen511[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                CapacityRebalance?: boolean | undefined
-                LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
-                Tags?: Tag[] | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                TrafficSources?: TrafficSourceIdentifier[] | undefined
-                Action: 'CreateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                InstanceId?: string | undefined
-                MinSize: number
-                MaxSize: number
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                LoadBalancerNames?: XmlStringMaxLen255[] | undefined
-                TargetGroupARNs?: XmlStringMaxLen511[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                CapacityRebalance?: boolean | undefined
-                LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
-                Tags?: Tag[] | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                TrafficSources?: TrafficSourceIdentifier[] | undefined
-                Action: 'CreateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                InstanceId?: string | undefined
-                MinSize: number
-                MaxSize: number
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                LoadBalancerNames?: XmlStringMaxLen255[] | undefined
-                TargetGroupARNs?: XmlStringMaxLen511[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                CapacityRebalance?: boolean | undefined
-                LifecycleHookSpecificationList?: LifecycleHookSpecification[] | undefined
-                Tags?: Tag[] | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                TrafficSources?: TrafficSourceIdentifier[] | undefined
-                Action: 'CreateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAutoScalingGroupType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAutoScalingGroupType }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAutoScalingGroupType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAutoScalingGroupType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'CreateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateAutoScalingGroupType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: CreateAutoScalingGroupType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateLaunchConfiguration': {
-      $get:
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                ImageId?: string | undefined
-                KeyName?: string | undefined
-                SecurityGroups?: XmlString[] | undefined
-                ClassicLinkVPCId?: string | undefined
-                ClassicLinkVPCSecurityGroups?: XmlStringMaxLen255[] | undefined
-                UserData?: string | undefined
-                InstanceId?: string | undefined
-                InstanceType?: string | undefined
-                KernelId?: string | undefined
-                RamdiskId?: string | undefined
-                BlockDeviceMappings?: BlockDeviceMapping[] | undefined
-                InstanceMonitoring?: { Enabled?: {} | undefined } | undefined
-                SpotPrice?: string | undefined
-                IamInstanceProfile?: string | undefined
-                EbsOptimized?: boolean | undefined
-                AssociatePublicIpAddress?: boolean | undefined
-                PlacementTenancy?: string | undefined
-                MetadataOptions?:
-                  | {
-                      HttpTokens?: {} | undefined
-                      HttpPutResponseHopLimit?: {} | undefined
-                      HttpEndpoint?: {} | undefined
-                    }
-                  | undefined
-                Action: 'CreateLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LaunchConfigurationName: string
+            ImageId?: string | undefined
+            KeyName?: string | undefined
+            SecurityGroups?: XmlString[] | undefined
+            ClassicLinkVPCId?: string | undefined
+            ClassicLinkVPCSecurityGroups?: XmlStringMaxLen255[] | undefined
+            UserData?: string | undefined
+            InstanceId?: string | undefined
+            InstanceType?: string | undefined
+            KernelId?: string | undefined
+            RamdiskId?: string | undefined
+            BlockDeviceMappings?: BlockDeviceMapping[] | undefined
+            InstanceMonitoring?: { Enabled?: {} | undefined } | undefined
+            SpotPrice?: string | undefined
+            IamInstanceProfile?: string | undefined
+            EbsOptimized?: boolean | undefined
+            AssociatePublicIpAddress?: boolean | undefined
+            PlacementTenancy?: string | undefined
+            MetadataOptions?:
+              | {
+                  HttpTokens?: {} | undefined
+                  HttpPutResponseHopLimit?: {} | undefined
+                  HttpEndpoint?: {} | undefined
+                }
+              | undefined
+            Action: 'CreateLaunchConfiguration'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                ImageId?: string | undefined
-                KeyName?: string | undefined
-                SecurityGroups?: XmlString[] | undefined
-                ClassicLinkVPCId?: string | undefined
-                ClassicLinkVPCSecurityGroups?: XmlStringMaxLen255[] | undefined
-                UserData?: string | undefined
-                InstanceId?: string | undefined
-                InstanceType?: string | undefined
-                KernelId?: string | undefined
-                RamdiskId?: string | undefined
-                BlockDeviceMappings?: BlockDeviceMapping[] | undefined
-                InstanceMonitoring?: { Enabled?: {} | undefined } | undefined
-                SpotPrice?: string | undefined
-                IamInstanceProfile?: string | undefined
-                EbsOptimized?: boolean | undefined
-                AssociatePublicIpAddress?: boolean | undefined
-                PlacementTenancy?: string | undefined
-                MetadataOptions?:
-                  | {
-                      HttpTokens?: {} | undefined
-                      HttpPutResponseHopLimit?: {} | undefined
-                      HttpEndpoint?: {} | undefined
-                    }
-                  | undefined
-                Action: 'CreateLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                ImageId?: string | undefined
-                KeyName?: string | undefined
-                SecurityGroups?: XmlString[] | undefined
-                ClassicLinkVPCId?: string | undefined
-                ClassicLinkVPCSecurityGroups?: XmlStringMaxLen255[] | undefined
-                UserData?: string | undefined
-                InstanceId?: string | undefined
-                InstanceType?: string | undefined
-                KernelId?: string | undefined
-                RamdiskId?: string | undefined
-                BlockDeviceMappings?: BlockDeviceMapping[] | undefined
-                InstanceMonitoring?: { Enabled?: {} | undefined } | undefined
-                SpotPrice?: string | undefined
-                IamInstanceProfile?: string | undefined
-                EbsOptimized?: boolean | undefined
-                AssociatePublicIpAddress?: boolean | undefined
-                PlacementTenancy?: string | undefined
-                MetadataOptions?:
-                  | {
-                      HttpTokens?: {} | undefined
-                      HttpPutResponseHopLimit?: {} | undefined
-                      HttpEndpoint?: {} | undefined
-                    }
-                  | undefined
-                Action: 'CreateLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateLaunchConfiguration'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                ImageId?: string | undefined
-                KeyName?: string | undefined
-                SecurityGroups?: XmlString[] | undefined
-                ClassicLinkVPCId?: string | undefined
-                ClassicLinkVPCSecurityGroups?: XmlStringMaxLen255[] | undefined
-                UserData?: string | undefined
-                InstanceId?: string | undefined
-                InstanceType?: string | undefined
-                KernelId?: string | undefined
-                RamdiskId?: string | undefined
-                BlockDeviceMappings?: BlockDeviceMapping[] | undefined
-                InstanceMonitoring?: { Enabled?: {} | undefined } | undefined
-                SpotPrice?: string | undefined
-                IamInstanceProfile?: string | undefined
-                EbsOptimized?: boolean | undefined
-                AssociatePublicIpAddress?: boolean | undefined
-                PlacementTenancy?: string | undefined
-                MetadataOptions?:
-                  | {
-                      HttpTokens?: {} | undefined
-                      HttpPutResponseHopLimit?: {} | undefined
-                      HttpEndpoint?: {} | undefined
-                    }
-                  | undefined
-                Action: 'CreateLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLaunchConfigurationType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLaunchConfigurationType }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLaunchConfigurationType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateLaunchConfigurationType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreateLaunchConfigurationType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateOrUpdateTags': {
-      $get:
-        | {
-            input: {
-              query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: { query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { Tags: Tag[]; Action: 'CreateOrUpdateTags'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOrUpdateTagsType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOrUpdateTagsType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOrUpdateTagsType }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOrUpdateTagsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'CreateOrUpdateTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateOrUpdateTagsType }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: CreateOrUpdateTagsType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteAutoScalingGroup': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ForceDelete?: boolean | undefined
+            Action: 'DeleteAutoScalingGroup'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteAutoScalingGroup'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAutoScalingGroupType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAutoScalingGroupType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAutoScalingGroupType }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteAutoScalingGroupType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DeleteAutoScalingGroupType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteLaunchConfiguration': {
-      $get:
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                Action: 'DeleteLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LaunchConfigurationName: string
+            Action: 'DeleteLaunchConfiguration'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                Action: 'DeleteLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationName: string
-                Action: 'DeleteLaunchConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteLaunchConfiguration'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNameType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNameType }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteLaunchConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNameType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: LaunchConfigurationNameType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteLifecycleHook': {
-      $get:
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                Action: 'DeleteLifecycleHook'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteLifecycleHookAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LifecycleHookName: string
+            AutoScalingGroupName: string
+            Action: 'DeleteLifecycleHook'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                Action: 'DeleteLifecycleHook'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteLifecycleHook'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteLifecycleHookType }
-            output: DeleteLifecycleHookAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DeleteLifecycleHookAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteLifecycleHook'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteLifecycleHook'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteLifecycleHookType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteLifecycleHookType }
+        output: DeleteLifecycleHookAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteNotificationConfiguration': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                Action: 'DeleteNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TopicARN: string
+            Action: 'DeleteNotificationConfiguration'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                Action: 'DeleteNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DeleteNotificationConfiguration'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteNotificationConfigurationType }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteNotificationConfiguration'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DeleteNotificationConfiguration'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteNotificationConfigurationType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteNotificationConfigurationType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeletePolicy': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                Action: 'DeletePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName?: string | undefined
+            PolicyName: string
+            Action: 'DeletePolicy'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                Action: 'DeletePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                Action: 'DeletePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeletePolicy'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeletePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePolicyType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeletePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePolicyType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeletePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeletePolicyType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DeletePolicyType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteScheduledAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Action: 'DeleteScheduledAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScheduledActionName: string
+            Action: 'DeleteScheduledAction'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Action: 'DeleteScheduledAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteScheduledAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteScheduledActionType }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteScheduledAction'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteScheduledAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteScheduledActionType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteScheduledActionType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteTags': {
-      $get:
-        | {
-            input: { query: { Tags: Tag[]; Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: { query: { Tags: Tag[]; Action: 'DeleteTags'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Tags: Tag[]; Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteTags'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Tags: Tag[]; Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 481
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTagsType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTagsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteTags'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteTagsType }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DeleteTagsType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteWarmPool': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ForceDelete?: boolean | undefined
+            Action: 'DeleteWarmPool'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ForceDelete?: boolean | undefined
-                Action: 'DeleteWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWarmPoolType }
-            output: DeleteWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWarmPoolType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWarmPoolType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWarmPoolType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'DeleteWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteWarmPoolType }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: DeleteWarmPoolType }
+        output: DeleteWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAccountLimits': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAccountLimitsAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeAccountLimitsAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAccountLimitsAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeAccountLimits'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeAccountLimitsAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAdjustmentTypes': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAdjustmentTypesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeAdjustmentTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAdjustmentTypesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeAdjustmentTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeAdjustmentTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAutoScalingGroups': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Filters?: Filter[] | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AutoScalingGroupsType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Filters?: Filter[] | undefined
+            Action: 'DescribeAutoScalingGroups'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Filters?: Filter[] | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Filters?: Filter[] | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: AutoScalingGroupsType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeAutoScalingGroups'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AutoScalingGroupNamesType }
-            output: AutoScalingGroupsType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AutoScalingGroupNamesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: AutoScalingGroupNamesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: AutoScalingGroupNamesType }
+        output: AutoScalingGroupsType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAutoScalingInstances': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AutoScalingInstancesType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds?: XmlStringMaxLen19[] | undefined
+            MaxRecords?: number | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeAutoScalingInstances'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: AutoScalingInstancesType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeAutoScalingInstances'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutoScalingInstancesType }
-            output: AutoScalingInstancesType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutoScalingInstancesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeAutoScalingInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeAutoScalingInstancesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeAutoScalingInstancesType }
+        output: AutoScalingInstancesType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeAutoScalingNotificationTypes': {
-      $get:
-        | {
-            input: {
-              query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAutoScalingNotificationTypesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeAutoScalingNotificationTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeAutoScalingNotificationTypesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'DescribeAutoScalingNotificationTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeAutoScalingNotificationTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeInstanceRefreshes': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                InstanceRefreshIds?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeInstanceRefreshes'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeInstanceRefreshesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            InstanceRefreshIds?: XmlStringMaxLen255[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeInstanceRefreshes'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                InstanceRefreshIds?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeInstanceRefreshes'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                InstanceRefreshIds?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeInstanceRefreshes'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeInstanceRefreshesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeInstanceRefreshes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeInstanceRefreshes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceRefreshesType }
-            output: DescribeInstanceRefreshesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeInstanceRefreshes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceRefreshesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeInstanceRefreshes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeInstanceRefreshesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeInstanceRefreshesType }
+        output: DescribeInstanceRefreshesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeLaunchConfigurations': {
-      $get:
-        | {
-            input: {
-              query: {
-                LaunchConfigurationNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LaunchConfigurationsType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LaunchConfigurationNames?: XmlStringMaxLen255[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeLaunchConfigurations'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                LaunchConfigurationNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: LaunchConfigurationsType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeLaunchConfigurations'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNamesType }
-            output: LaunchConfigurationsType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNamesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeLaunchConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: LaunchConfigurationNamesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: LaunchConfigurationNamesType }
+        output: LaunchConfigurationsType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeLifecycleHookTypes': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeLifecycleHookTypesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeLifecycleHookTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeLifecycleHookTypesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeLifecycleHookTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeLifecycleHookTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeLifecycleHooks': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LifecycleHookNames?: AsciiStringMaxLen255[] | undefined
-                Action: 'DescribeLifecycleHooks'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeLifecycleHooksAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            LifecycleHookNames?: AsciiStringMaxLen255[] | undefined
+            Action: 'DescribeLifecycleHooks'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LifecycleHookNames?: AsciiStringMaxLen255[] | undefined
-                Action: 'DescribeLifecycleHooks'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeLifecycleHooks'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLifecycleHooksType }
-            output: DescribeLifecycleHooksAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DescribeLifecycleHooksAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeLifecycleHooks'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeLifecycleHooks'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLifecycleHooksType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeLifecycleHooksType }
+        output: DescribeLifecycleHooksAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeLoadBalancerTargetGroups': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeLoadBalancerTargetGroupsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeLoadBalancerTargetGroups'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeLoadBalancerTargetGroupsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeLoadBalancerTargetGroups'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DescribeLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancerTargetGroupsRequest }
-            output: DescribeLoadBalancerTargetGroupsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'DescribeLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancerTargetGroupsRequest }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'DescribeLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancerTargetGroupsRequest }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeLoadBalancerTargetGroupsRequest }
+        output: DescribeLoadBalancerTargetGroupsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeLoadBalancers': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeLoadBalancersResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeLoadBalancers'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeLoadBalancersResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeLoadBalancers'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancersRequest }
-            output: DescribeLoadBalancersResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancersRequest }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeLoadBalancersRequest }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeLoadBalancersRequest }
+        output: DescribeLoadBalancersResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeMetricCollectionTypes': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeMetricCollectionTypesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeMetricCollectionTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeMetricCollectionTypesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeMetricCollectionTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeMetricCollectionTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeNotificationConfigurations': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeNotificationConfigurationsAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeNotificationConfigurations'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupNames?: XmlStringMaxLen255[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeNotificationConfigurationsAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeNotificationConfigurations'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeNotificationConfigurationsType }
-            output: DescribeNotificationConfigurationsAnswer
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeNotificationConfigurationsType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeNotificationConfigurations'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeNotificationConfigurationsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeNotificationConfigurationsType }
+        output: DescribeNotificationConfigurationsAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribePolicies': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyNames?: ResourceName[] | undefined
-                PolicyTypes?: XmlStringMaxLen64[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PoliciesType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName?: string | undefined
+            PolicyNames?: ResourceName[] | undefined
+            PolicyTypes?: XmlStringMaxLen64[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribePolicies'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyNames?: ResourceName[] | undefined
-                PolicyTypes?: XmlStringMaxLen64[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyNames?: ResourceName[] | undefined
-                PolicyTypes?: XmlStringMaxLen64[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: PoliciesType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribePolicies'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyNames?: ResourceName[] | undefined
-                PolicyTypes?: XmlStringMaxLen64[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePoliciesType }
-            output: PoliciesType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePoliciesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePoliciesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribePolicies'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribePoliciesType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribePoliciesType }
+        output: PoliciesType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeScalingActivities': {
-      $get:
-        | {
-            input: {
-              query: {
-                ActivityIds?: XmlString[] | undefined
-                AutoScalingGroupName?: string | undefined
-                IncludeDeletedGroups?: boolean | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ActivitiesType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ActivityIds?: XmlString[] | undefined
+            AutoScalingGroupName?: string | undefined
+            IncludeDeletedGroups?: boolean | undefined
+            MaxRecords?: number | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeScalingActivities'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                ActivityIds?: XmlString[] | undefined
-                AutoScalingGroupName?: string | undefined
-                IncludeDeletedGroups?: boolean | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ActivityIds?: XmlString[] | undefined
-                AutoScalingGroupName?: string | undefined
-                IncludeDeletedGroups?: boolean | undefined
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ActivitiesType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeScalingActivities'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingActivitiesType }
-            output: ActivitiesType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingActivitiesType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScalingActivities'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScalingActivitiesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeScalingActivitiesType }
+        output: ActivitiesType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeScalingProcessTypes': {
-      $get:
-        | {
-            input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ProcessesType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: ProcessesType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ProcessesType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeScalingProcessTypes'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: ProcessesType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeScheduledActions': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                ScheduledActionNames?: XmlStringMaxLen255[] | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScheduledActionsType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName?: string | undefined
+            ScheduledActionNames?: XmlStringMaxLen255[] | undefined
+            StartTime?: string | undefined
+            EndTime?: string | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeScheduledActions'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                ScheduledActionNames?: XmlStringMaxLen255[] | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                ScheduledActionNames?: XmlStringMaxLen255[] | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ScheduledActionsType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeScheduledActions'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScheduledActionsType }
-            output: ScheduledActionsType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScheduledActionsType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeScheduledActions'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeScheduledActionsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeScheduledActionsType }
+        output: ScheduledActionsType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeTags': {
-      $get:
-        | {
-            input: {
-              query: {
-                Filters?: Filter[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TagsType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Filters?: Filter[] | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeTags'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                Filters?: Filter[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Filters?: Filter[] | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: TagsType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeTags'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTagsType }
-            output: TagsType
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTagsType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTags'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTagsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeTagsType }
+        output: TagsType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeTerminationPolicyTypes': {
-      $get:
-        | {
-            input: {
-              query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeTerminationPolicyTypesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeTerminationPolicyTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeTerminationPolicyTypesAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'DescribeTerminationPolicyTypes'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: DescribeTerminationPolicyTypesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeTrafficSources': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSourceType?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeTrafficSourcesResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TrafficSourceType?: string | undefined
+            NextToken?: string | undefined
+            MaxRecords?: number | undefined
+            Action: 'DescribeTrafficSources'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSourceType?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSourceType?: string | undefined
-                NextToken?: string | undefined
-                MaxRecords?: number | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeTrafficSourcesResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeTrafficSources'
+            Version: '2011-01-01'
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTrafficSourcesRequest }
-            output: DescribeTrafficSourcesResponse
-            outputFormat: 'text'
-            status: 200
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTrafficSourcesRequest }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeTrafficSourcesRequest }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeTrafficSourcesRequest }
+        output: DescribeTrafficSourcesResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeWarmPool': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            MaxRecords?: number | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeWarmPool'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: {
+            MaxRecords?: string | undefined
+            NextToken?: string | undefined
+            Action: 'DescribeWarmPool'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxRecords?: number | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWarmPoolType }
-            output: DescribeWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWarmPoolType }
-            output: InvalidNextToken
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWarmPoolType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                MaxRecords?: string | undefined
-                NextToken?: string | undefined
-                Action: 'DescribeWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWarmPoolType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: DescribeWarmPoolType }
+        output: DescribeWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DetachInstances': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'DetachInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DetachInstancesAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds?: XmlStringMaxLen19[] | undefined
+            AutoScalingGroupName: string
+            ShouldDecrementDesiredCapacity: boolean
+            Action: 'DetachInstances'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'DetachInstances'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DetachInstances'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachInstancesQuery }
-            output: DetachInstancesAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DetachInstancesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DetachInstances'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DetachInstances'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachInstancesQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DetachInstancesQuery }
+        output: DetachInstancesAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DetachLoadBalancerTargetGroups': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TargetGroupARNs: XmlStringMaxLen511[]
-                Action: 'DetachLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DetachLoadBalancerTargetGroupsResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TargetGroupARNs: XmlStringMaxLen511[]
+            Action: 'DetachLoadBalancerTargetGroups'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TargetGroupARNs: XmlStringMaxLen511[]
-                Action: 'DetachLoadBalancerTargetGroups'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DetachLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachLoadBalancerTargetGroupsType }
-            output: DetachLoadBalancerTargetGroupsResultType
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DetachLoadBalancerTargetGroupsResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DetachLoadBalancerTargetGroups'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'DetachLoadBalancerTargetGroups'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachLoadBalancerTargetGroupsType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DetachLoadBalancerTargetGroupsType }
+        output: DetachLoadBalancerTargetGroupsResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DetachLoadBalancers': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LoadBalancerNames: XmlStringMaxLen255[]
-                Action: 'DetachLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DetachLoadBalancersResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            LoadBalancerNames: XmlStringMaxLen255[]
+            Action: 'DetachLoadBalancers'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LoadBalancerNames: XmlStringMaxLen255[]
-                Action: 'DetachLoadBalancers'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DetachLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachLoadBalancersType }
-            output: DetachLoadBalancersResultType
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DetachLoadBalancersResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DetachLoadBalancers'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DetachLoadBalancers'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachLoadBalancersType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DetachLoadBalancersType }
+        output: DetachLoadBalancersResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DetachTrafficSources': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSources: TrafficSourceIdentifier[]
-                Action: 'DetachTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DetachTrafficSourcesResultType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TrafficSources: TrafficSourceIdentifier[]
+            Action: 'DetachTrafficSources'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TrafficSources: TrafficSourceIdentifier[]
-                Action: 'DetachTrafficSources'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DetachTrafficSources'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachTrafficSourcesType }
-            output: DetachTrafficSourcesResultType
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DetachTrafficSourcesResultType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DetachTrafficSources'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DetachTrafficSources'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DetachTrafficSourcesType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DetachTrafficSourcesType }
+        output: DetachTrafficSourcesResultType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DisableMetricsCollection': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Metrics?: XmlStringMaxLen255[] | undefined
-                Action: 'DisableMetricsCollection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            Metrics?: XmlStringMaxLen255[] | undefined
+            Action: 'DisableMetricsCollection'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Metrics?: XmlStringMaxLen255[] | undefined
-                Action: 'DisableMetricsCollection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DisableMetricsCollection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisableMetricsCollectionQuery }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DisableMetricsCollection'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DisableMetricsCollection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DisableMetricsCollectionQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DisableMetricsCollectionQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=EnableMetricsCollection': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Metrics?: XmlStringMaxLen255[] | undefined
-                Granularity: string
-                Action: 'EnableMetricsCollection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            Metrics?: XmlStringMaxLen255[] | undefined
+            Granularity: string
+            Action: 'EnableMetricsCollection'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Metrics?: XmlStringMaxLen255[] | undefined
-                Granularity: string
-                Action: 'EnableMetricsCollection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'EnableMetricsCollection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: EnableMetricsCollectionQuery }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'EnableMetricsCollection'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'EnableMetricsCollection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: EnableMetricsCollectionQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: EnableMetricsCollectionQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=EnterStandby': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'EnterStandby'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EnterStandbyAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds?: XmlStringMaxLen19[] | undefined
+            AutoScalingGroupName: string
+            ShouldDecrementDesiredCapacity: boolean
+            Action: 'EnterStandby'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'EnterStandby'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'EnterStandby'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: EnterStandbyQuery }
-            output: EnterStandbyAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: EnterStandbyAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'EnterStandby'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'EnterStandby'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: EnterStandbyQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: EnterStandbyQuery }
+        output: EnterStandbyAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ExecutePolicy': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                HonorCooldown?: boolean | undefined
-                MetricValue?: number | undefined
-                BreachThreshold?: number | undefined
-                Action: 'ExecutePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName?: string | undefined
+            PolicyName: string
+            HonorCooldown?: boolean | undefined
+            MetricValue?: number | undefined
+            BreachThreshold?: number | undefined
+            Action: 'ExecutePolicy'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                HonorCooldown?: boolean | undefined
-                MetricValue?: number | undefined
-                BreachThreshold?: number | undefined
-                Action: 'ExecutePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName?: string | undefined
-                PolicyName: string
-                HonorCooldown?: boolean | undefined
-                MetricValue?: number | undefined
-                BreachThreshold?: number | undefined
-                Action: 'ExecutePolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ExecutePolicy'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ExecutePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ExecutePolicyType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ExecutePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ExecutePolicyType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ExecutePolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ExecutePolicyType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ExecutePolicyType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=ExitStandby': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                Action: 'ExitStandby'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ExitStandbyAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds?: XmlStringMaxLen19[] | undefined
+            AutoScalingGroupName: string
+            Action: 'ExitStandby'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds?: XmlStringMaxLen19[] | undefined
-                AutoScalingGroupName: string
-                Action: 'ExitStandby'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ExitStandby'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ExitStandbyQuery }
-            output: ExitStandbyAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: ExitStandbyAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ExitStandby'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'ExitStandby'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ExitStandbyQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: ExitStandbyQuery }
+        output: ExitStandbyAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=GetPredictiveScalingForecast': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                StartTime: string
-                EndTime: string
-                Action: 'GetPredictiveScalingForecast'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetPredictiveScalingForecastAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            PolicyName: string
+            StartTime: string
+            EndTime: string
+            Action: 'GetPredictiveScalingForecast'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                StartTime: string
-                EndTime: string
-                Action: 'GetPredictiveScalingForecast'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'GetPredictiveScalingForecast'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPredictiveScalingForecastType }
-            output: GetPredictiveScalingForecastAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: GetPredictiveScalingForecastAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'GetPredictiveScalingForecast'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'GetPredictiveScalingForecast'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetPredictiveScalingForecastType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: GetPredictiveScalingForecastType }
+        output: GetPredictiveScalingForecastAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=PutLifecycleHook': {
-      $get:
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleTransition?: string | undefined
-                RoleARN?: string | undefined
-                NotificationTargetARN?: string | undefined
-                NotificationMetadata?: string | undefined
-                HeartbeatTimeout?: number | undefined
-                DefaultResult?: string | undefined
-                Action: 'PutLifecycleHook'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PutLifecycleHookAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LifecycleHookName: string
+            AutoScalingGroupName: string
+            LifecycleTransition?: string | undefined
+            RoleARN?: string | undefined
+            NotificationTargetARN?: string | undefined
+            NotificationMetadata?: string | undefined
+            HeartbeatTimeout?: number | undefined
+            DefaultResult?: string | undefined
+            Action: 'PutLifecycleHook'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleTransition?: string | undefined
-                RoleARN?: string | undefined
-                NotificationTargetARN?: string | undefined
-                NotificationMetadata?: string | undefined
-                HeartbeatTimeout?: number | undefined
-                DefaultResult?: string | undefined
-                Action: 'PutLifecycleHook'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleTransition?: string | undefined
-                RoleARN?: string | undefined
-                NotificationTargetARN?: string | undefined
-                NotificationMetadata?: string | undefined
-                HeartbeatTimeout?: number | undefined
-                DefaultResult?: string | undefined
-                Action: 'PutLifecycleHook'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: PutLifecycleHookAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutLifecycleHook'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'PutLifecycleHook'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutLifecycleHookType }
-            output: PutLifecycleHookAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'PutLifecycleHook'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutLifecycleHookType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'PutLifecycleHook'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutLifecycleHookType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: PutLifecycleHookType }
+        output: PutLifecycleHookAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=PutNotificationConfiguration': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                NotificationTypes: XmlStringMaxLen255[]
-                Action: 'PutNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            TopicARN: string
+            NotificationTypes: XmlStringMaxLen255[]
+            Action: 'PutNotificationConfiguration'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                NotificationTypes: XmlStringMaxLen255[]
-                Action: 'PutNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                NotificationTypes: XmlStringMaxLen255[]
-                Action: 'PutNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutNotificationConfiguration'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                TopicARN: string
-                NotificationTypes: XmlStringMaxLen255[]
-                Action: 'PutNotificationConfiguration'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'PutNotificationConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutNotificationConfigurationType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'PutNotificationConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutNotificationConfigurationType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'PutNotificationConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutNotificationConfigurationType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'PutNotificationConfiguration'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutNotificationConfigurationType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: PutNotificationConfigurationType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=PutScalingPolicy': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                PolicyType?: string | undefined
-                AdjustmentType?: string | undefined
-                MinAdjustmentStep?: number | undefined
-                MinAdjustmentMagnitude?: number | undefined
-                ScalingAdjustment?: number | undefined
-                Cooldown?: number | undefined
-                MetricAggregationType?: string | undefined
-                StepAdjustments?: StepAdjustment[] | undefined
-                EstimatedInstanceWarmup?: number | undefined
-                TargetTrackingConfiguration?:
-                  | {
-                      PredefinedMetricSpecification?:
-                        | { PredefinedMetricType: {}; ResourceLabel?: {} | undefined }
-                        | undefined
-                      CustomizedMetricSpecification?:
-                        | {
-                            MetricName?: {} | undefined
-                            Namespace?: {} | undefined
-                            Dimensions?: {} | undefined
-                            Statistic?: {} | undefined
-                            Unit?: {} | undefined
-                            Metrics?: {} | undefined
-                          }
-                        | undefined
-                      TargetValue: {}
-                      DisableScaleIn?: {} | undefined
-                    }
-                  | undefined
-                Enabled?: boolean | undefined
-                PredictiveScalingConfiguration?:
-                  | {
-                      MetricSpecifications: {}
-                      Mode?: {} | undefined
-                      SchedulingBufferTime?: {} | undefined
-                      MaxCapacityBreachBehavior?: {} | undefined
-                      MaxCapacityBuffer?: {} | undefined
-                    }
-                  | undefined
-                Action: 'PutScalingPolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PolicyARNType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            PolicyName: string
+            PolicyType?: string | undefined
+            AdjustmentType?: string | undefined
+            MinAdjustmentStep?: number | undefined
+            MinAdjustmentMagnitude?: number | undefined
+            ScalingAdjustment?: number | undefined
+            Cooldown?: number | undefined
+            MetricAggregationType?: string | undefined
+            StepAdjustments?: StepAdjustment[] | undefined
+            EstimatedInstanceWarmup?: number | undefined
+            TargetTrackingConfiguration?:
+              | {
+                  PredefinedMetricSpecification?:
+                    | { PredefinedMetricType: {}; ResourceLabel?: {} | undefined }
+                    | undefined
+                  CustomizedMetricSpecification?:
+                    | {
+                        MetricName?: {} | undefined
+                        Namespace?: {} | undefined
+                        Dimensions?: {} | undefined
+                        Statistic?: {} | undefined
+                        Unit?: {} | undefined
+                        Metrics?: {} | undefined
+                      }
+                    | undefined
+                  TargetValue: {}
+                  DisableScaleIn?: {} | undefined
+                }
+              | undefined
+            Enabled?: boolean | undefined
+            PredictiveScalingConfiguration?:
+              | {
+                  MetricSpecifications: {}
+                  Mode?: {} | undefined
+                  SchedulingBufferTime?: {} | undefined
+                  MaxCapacityBreachBehavior?: {} | undefined
+                  MaxCapacityBuffer?: {} | undefined
+                }
+              | undefined
+            Action: 'PutScalingPolicy'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                PolicyType?: string | undefined
-                AdjustmentType?: string | undefined
-                MinAdjustmentStep?: number | undefined
-                MinAdjustmentMagnitude?: number | undefined
-                ScalingAdjustment?: number | undefined
-                Cooldown?: number | undefined
-                MetricAggregationType?: string | undefined
-                StepAdjustments?: StepAdjustment[] | undefined
-                EstimatedInstanceWarmup?: number | undefined
-                TargetTrackingConfiguration?:
-                  | {
-                      PredefinedMetricSpecification?:
-                        | { PredefinedMetricType: {}; ResourceLabel?: {} | undefined }
-                        | undefined
-                      CustomizedMetricSpecification?:
-                        | {
-                            MetricName?: {} | undefined
-                            Namespace?: {} | undefined
-                            Dimensions?: {} | undefined
-                            Statistic?: {} | undefined
-                            Unit?: {} | undefined
-                            Metrics?: {} | undefined
-                          }
-                        | undefined
-                      TargetValue: {}
-                      DisableScaleIn?: {} | undefined
-                    }
-                  | undefined
-                Enabled?: boolean | undefined
-                PredictiveScalingConfiguration?:
-                  | {
-                      MetricSpecifications: {}
-                      Mode?: {} | undefined
-                      SchedulingBufferTime?: {} | undefined
-                      MaxCapacityBreachBehavior?: {} | undefined
-                      MaxCapacityBuffer?: {} | undefined
-                    }
-                  | undefined
-                Action: 'PutScalingPolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                PolicyType?: string | undefined
-                AdjustmentType?: string | undefined
-                MinAdjustmentStep?: number | undefined
-                MinAdjustmentMagnitude?: number | undefined
-                ScalingAdjustment?: number | undefined
-                Cooldown?: number | undefined
-                MetricAggregationType?: string | undefined
-                StepAdjustments?: StepAdjustment[] | undefined
-                EstimatedInstanceWarmup?: number | undefined
-                TargetTrackingConfiguration?:
-                  | {
-                      PredefinedMetricSpecification?:
-                        | { PredefinedMetricType: {}; ResourceLabel?: {} | undefined }
-                        | undefined
-                      CustomizedMetricSpecification?:
-                        | {
-                            MetricName?: {} | undefined
-                            Namespace?: {} | undefined
-                            Dimensions?: {} | undefined
-                            Statistic?: {} | undefined
-                            Unit?: {} | undefined
-                            Metrics?: {} | undefined
-                          }
-                        | undefined
-                      TargetValue: {}
-                      DisableScaleIn?: {} | undefined
-                    }
-                  | undefined
-                Enabled?: boolean | undefined
-                PredictiveScalingConfiguration?:
-                  | {
-                      MetricSpecifications: {}
-                      Mode?: {} | undefined
-                      SchedulingBufferTime?: {} | undefined
-                      MaxCapacityBreachBehavior?: {} | undefined
-                      MaxCapacityBuffer?: {} | undefined
-                    }
-                  | undefined
-                Action: 'PutScalingPolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: PolicyARNType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutScalingPolicy'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                PolicyName: string
-                PolicyType?: string | undefined
-                AdjustmentType?: string | undefined
-                MinAdjustmentStep?: number | undefined
-                MinAdjustmentMagnitude?: number | undefined
-                ScalingAdjustment?: number | undefined
-                Cooldown?: number | undefined
-                MetricAggregationType?: string | undefined
-                StepAdjustments?: StepAdjustment[] | undefined
-                EstimatedInstanceWarmup?: number | undefined
-                TargetTrackingConfiguration?:
-                  | {
-                      PredefinedMetricSpecification?:
-                        | { PredefinedMetricType: {}; ResourceLabel?: {} | undefined }
-                        | undefined
-                      CustomizedMetricSpecification?:
-                        | {
-                            MetricName?: {} | undefined
-                            Namespace?: {} | undefined
-                            Dimensions?: {} | undefined
-                            Statistic?: {} | undefined
-                            Unit?: {} | undefined
-                            Metrics?: {} | undefined
-                          }
-                        | undefined
-                      TargetValue: {}
-                      DisableScaleIn?: {} | undefined
-                    }
-                  | undefined
-                Enabled?: boolean | undefined
-                PredictiveScalingConfiguration?:
-                  | {
-                      MetricSpecifications: {}
-                      Mode?: {} | undefined
-                      SchedulingBufferTime?: {} | undefined
-                      MaxCapacityBreachBehavior?: {} | undefined
-                      MaxCapacityBuffer?: {} | undefined
-                    }
-                  | undefined
-                Action: 'PutScalingPolicy'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'PutScalingPolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScalingPolicyType }
-            output: PolicyARNType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'PutScalingPolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScalingPolicyType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'PutScalingPolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScalingPolicyType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'PutScalingPolicy'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScalingPolicyType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: PutScalingPolicyType }
+        output: PolicyARNType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=PutScheduledUpdateGroupAction': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Time?: string | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                Recurrence?: string | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                TimeZone?: string | undefined
-                Action: 'PutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScheduledActionName: string
+            Time?: string | undefined
+            StartTime?: string | undefined
+            EndTime?: string | undefined
+            Recurrence?: string | undefined
+            MinSize?: number | undefined
+            MaxSize?: number | undefined
+            DesiredCapacity?: number | undefined
+            TimeZone?: string | undefined
+            Action: 'PutScheduledUpdateGroupAction'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Time?: string | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                Recurrence?: string | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                TimeZone?: string | undefined
-                Action: 'PutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Time?: string | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                Recurrence?: string | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                TimeZone?: string | undefined
-                Action: 'PutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutScheduledUpdateGroupAction'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScheduledActionName: string
-                Time?: string | undefined
-                StartTime?: string | undefined
-                EndTime?: string | undefined
-                Recurrence?: string | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                TimeZone?: string | undefined
-                Action: 'PutScheduledUpdateGroupAction'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'PutScheduledUpdateGroupAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScheduledUpdateGroupActionType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'PutScheduledUpdateGroupAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScheduledUpdateGroupActionType }
-            output: AlreadyExistsFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'PutScheduledUpdateGroupAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScheduledUpdateGroupActionType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'PutScheduledUpdateGroupAction'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutScheduledUpdateGroupActionType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: PutScheduledUpdateGroupActionType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=PutWarmPool': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxGroupPreparedCapacity?: number | undefined
-                MinSize?: number | undefined
-                PoolState?: 'Stopped' | 'Running' | 'Hibernated' | undefined
-                InstanceReusePolicy?: { ReuseOnScaleIn?: {} | undefined } | undefined
-                Action: 'PutWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PutWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            MaxGroupPreparedCapacity?: number | undefined
+            MinSize?: number | undefined
+            PoolState?: 'Stopped' | 'Running' | 'Hibernated' | undefined
+            InstanceReusePolicy?: { ReuseOnScaleIn?: {} | undefined } | undefined
+            Action: 'PutWarmPool'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxGroupPreparedCapacity?: number | undefined
-                MinSize?: number | undefined
-                PoolState?: 'Stopped' | 'Running' | 'Hibernated' | undefined
-                InstanceReusePolicy?: { ReuseOnScaleIn?: {} | undefined } | undefined
-                Action: 'PutWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                MaxGroupPreparedCapacity?: number | undefined
-                MinSize?: number | undefined
-                PoolState?: 'Stopped' | 'Running' | 'Hibernated' | undefined
-                InstanceReusePolicy?: { ReuseOnScaleIn?: {} | undefined } | undefined
-                Action: 'PutWarmPool'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: PutWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutWarmPool'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'PutWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWarmPoolType }
-            output: PutWarmPoolAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'PutWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWarmPoolType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'PutWarmPool'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutWarmPoolType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: PutWarmPoolType }
+        output: PutWarmPoolAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=RecordLifecycleActionHeartbeat': {
-      $get:
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleActionToken?: string | undefined
-                InstanceId?: string | undefined
-                Action: 'RecordLifecycleActionHeartbeat'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RecordLifecycleActionHeartbeatAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            LifecycleHookName: string
+            AutoScalingGroupName: string
+            LifecycleActionToken?: string | undefined
+            InstanceId?: string | undefined
+            Action: 'RecordLifecycleActionHeartbeat'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                LifecycleHookName: string
-                AutoScalingGroupName: string
-                LifecycleActionToken?: string | undefined
-                InstanceId?: string | undefined
-                Action: 'RecordLifecycleActionHeartbeat'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'RecordLifecycleActionHeartbeat'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RecordLifecycleActionHeartbeatType }
-            output: RecordLifecycleActionHeartbeatAnswer
-            outputFormat: 'text'
-            status: 200
+        }
+        output: RecordLifecycleActionHeartbeatAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'RecordLifecycleActionHeartbeat'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'RecordLifecycleActionHeartbeat'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RecordLifecycleActionHeartbeatType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: RecordLifecycleActionHeartbeatType }
+        output: RecordLifecycleActionHeartbeatAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ResumeProcesses': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'ResumeProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScalingProcesses?: XmlStringMaxLen255[] | undefined
+            Action: 'ResumeProcesses'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'ResumeProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'ResumeProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ResumeProcesses'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ResumeProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ResumeProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ResumeProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ScalingProcessQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=RollbackInstanceRefresh': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'RollbackInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RollbackInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            Action: 'RollbackInstanceRefresh'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'RollbackInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'RollbackInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: RollbackInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'RollbackInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ActiveInstanceRefreshNotFoundFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Action: 'RollbackInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: IrreversibleInstanceRefreshFault
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RollbackInstanceRefreshType }
-            output: RollbackInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RollbackInstanceRefreshType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RollbackInstanceRefreshType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RollbackInstanceRefreshType }
-            output: ActiveInstanceRefreshNotFoundFault
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'RollbackInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RollbackInstanceRefreshType }
-            output: IrreversibleInstanceRefreshFault
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: RollbackInstanceRefreshType }
+        output: RollbackInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SetDesiredCapacity': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                DesiredCapacity: number
-                HonorCooldown?: boolean | undefined
-                Action: 'SetDesiredCapacity'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            DesiredCapacity: number
+            HonorCooldown?: boolean | undefined
+            Action: 'SetDesiredCapacity'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                DesiredCapacity: number
-                HonorCooldown?: boolean | undefined
-                Action: 'SetDesiredCapacity'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                DesiredCapacity: number
-                HonorCooldown?: boolean | undefined
-                Action: 'SetDesiredCapacity'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SetDesiredCapacity'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SetDesiredCapacity'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetDesiredCapacityType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SetDesiredCapacity'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetDesiredCapacityType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SetDesiredCapacity'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetDesiredCapacityType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: SetDesiredCapacityType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=SetInstanceHealth': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceId: string
-                HealthStatus: string
-                ShouldRespectGracePeriod?: boolean | undefined
-                Action: 'SetInstanceHealth'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceId: string
+            HealthStatus: string
+            ShouldRespectGracePeriod?: boolean | undefined
+            Action: 'SetInstanceHealth'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceId: string
-                HealthStatus: string
-                ShouldRespectGracePeriod?: boolean | undefined
-                Action: 'SetInstanceHealth'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SetInstanceHealth'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetInstanceHealthQuery }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SetInstanceHealth'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'SetInstanceHealth'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetInstanceHealthQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: SetInstanceHealthQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=SetInstanceProtection': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceIds: XmlStringMaxLen19[]
-                AutoScalingGroupName: string
-                ProtectedFromScaleIn: boolean
-                Action: 'SetInstanceProtection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SetInstanceProtectionAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceIds: XmlStringMaxLen19[]
+            AutoScalingGroupName: string
+            ProtectedFromScaleIn: boolean
+            Action: 'SetInstanceProtection'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceIds: XmlStringMaxLen19[]
-                AutoScalingGroupName: string
-                ProtectedFromScaleIn: boolean
-                Action: 'SetInstanceProtection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                InstanceIds: XmlStringMaxLen19[]
-                AutoScalingGroupName: string
-                ProtectedFromScaleIn: boolean
-                Action: 'SetInstanceProtection'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SetInstanceProtectionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SetInstanceProtection'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SetInstanceProtection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetInstanceProtectionQuery }
-            output: SetInstanceProtectionAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SetInstanceProtection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetInstanceProtectionQuery }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SetInstanceProtection'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetInstanceProtectionQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: SetInstanceProtectionQuery }
+        output: SetInstanceProtectionAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=StartInstanceRefresh': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Strategy?: 'Rolling' | undefined
-                DesiredConfiguration?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateId?: {} | undefined
-                            LaunchTemplateName?: {} | undefined
-                            Version?: {} | undefined
-                          }
-                        | undefined
-                      MixedInstancesPolicy?:
-                        | {
-                            LaunchTemplate?:
-                              | {
-                                  LaunchTemplateSpecification?:
-                                    | {
-                                        LaunchTemplateId?: {} | undefined
-                                        LaunchTemplateName?: {} | undefined
-                                        Version?: {} | undefined
-                                      }
-                                    | undefined
-                                  Overrides?: {} | undefined
-                                }
-                              | undefined
-                            InstancesDistribution?:
-                              | {
-                                  OnDemandAllocationStrategy?: {} | undefined
-                                  OnDemandBaseCapacity?: {} | undefined
-                                  OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                                  SpotAllocationStrategy?: {} | undefined
-                                  SpotInstancePools?: {} | undefined
-                                  SpotMaxPrice?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Preferences?:
-                  | {
-                      MinHealthyPercentage?: {} | undefined
-                      InstanceWarmup?: {} | undefined
-                      CheckpointPercentages?: {} | undefined
-                      CheckpointDelay?: {} | undefined
-                      SkipMatching?: {} | undefined
-                      AutoRollback?: {} | undefined
-                      ScaleInProtectedInstances?: {} | undefined
-                      StandbyInstances?: {} | undefined
-                      AlarmSpecification?: { Alarms?: {} | undefined } | undefined
-                    }
-                  | undefined
-                Action: 'StartInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: StartInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            Strategy?: 'Rolling' | undefined
+            DesiredConfiguration?:
+              | {
+                  LaunchTemplate?:
+                    | {
+                        LaunchTemplateId?: {} | undefined
+                        LaunchTemplateName?: {} | undefined
+                        Version?: {} | undefined
+                      }
+                    | undefined
+                  MixedInstancesPolicy?:
+                    | {
+                        LaunchTemplate?:
+                          | {
+                              LaunchTemplateSpecification?:
+                                | {
+                                    LaunchTemplateId?: {} | undefined
+                                    LaunchTemplateName?: {} | undefined
+                                    Version?: {} | undefined
+                                  }
+                                | undefined
+                              Overrides?: {} | undefined
+                            }
+                          | undefined
+                        InstancesDistribution?:
+                          | {
+                              OnDemandAllocationStrategy?: {} | undefined
+                              OnDemandBaseCapacity?: {} | undefined
+                              OnDemandPercentageAboveBaseCapacity?: {} | undefined
+                              SpotAllocationStrategy?: {} | undefined
+                              SpotInstancePools?: {} | undefined
+                              SpotMaxPrice?: {} | undefined
+                            }
+                          | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            Preferences?:
+              | {
+                  MinHealthyPercentage?: {} | undefined
+                  InstanceWarmup?: {} | undefined
+                  CheckpointPercentages?: {} | undefined
+                  CheckpointDelay?: {} | undefined
+                  SkipMatching?: {} | undefined
+                  AutoRollback?: {} | undefined
+                  ScaleInProtectedInstances?: {} | undefined
+                  StandbyInstances?: {} | undefined
+                  AlarmSpecification?: { Alarms?: {} | undefined } | undefined
+                }
+              | undefined
+            Action: 'StartInstanceRefresh'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Strategy?: 'Rolling' | undefined
-                DesiredConfiguration?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateId?: {} | undefined
-                            LaunchTemplateName?: {} | undefined
-                            Version?: {} | undefined
-                          }
-                        | undefined
-                      MixedInstancesPolicy?:
-                        | {
-                            LaunchTemplate?:
-                              | {
-                                  LaunchTemplateSpecification?:
-                                    | {
-                                        LaunchTemplateId?: {} | undefined
-                                        LaunchTemplateName?: {} | undefined
-                                        Version?: {} | undefined
-                                      }
-                                    | undefined
-                                  Overrides?: {} | undefined
-                                }
-                              | undefined
-                            InstancesDistribution?:
-                              | {
-                                  OnDemandAllocationStrategy?: {} | undefined
-                                  OnDemandBaseCapacity?: {} | undefined
-                                  OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                                  SpotAllocationStrategy?: {} | undefined
-                                  SpotInstancePools?: {} | undefined
-                                  SpotMaxPrice?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Preferences?:
-                  | {
-                      MinHealthyPercentage?: {} | undefined
-                      InstanceWarmup?: {} | undefined
-                      CheckpointPercentages?: {} | undefined
-                      CheckpointDelay?: {} | undefined
-                      SkipMatching?: {} | undefined
-                      AutoRollback?: {} | undefined
-                      ScaleInProtectedInstances?: {} | undefined
-                      StandbyInstances?: {} | undefined
-                      AlarmSpecification?: { Alarms?: {} | undefined } | undefined
-                    }
-                  | undefined
-                Action: 'StartInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Strategy?: 'Rolling' | undefined
-                DesiredConfiguration?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateId?: {} | undefined
-                            LaunchTemplateName?: {} | undefined
-                            Version?: {} | undefined
-                          }
-                        | undefined
-                      MixedInstancesPolicy?:
-                        | {
-                            LaunchTemplate?:
-                              | {
-                                  LaunchTemplateSpecification?:
-                                    | {
-                                        LaunchTemplateId?: {} | undefined
-                                        LaunchTemplateName?: {} | undefined
-                                        Version?: {} | undefined
-                                      }
-                                    | undefined
-                                  Overrides?: {} | undefined
-                                }
-                              | undefined
-                            InstancesDistribution?:
-                              | {
-                                  OnDemandAllocationStrategy?: {} | undefined
-                                  OnDemandBaseCapacity?: {} | undefined
-                                  OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                                  SpotAllocationStrategy?: {} | undefined
-                                  SpotInstancePools?: {} | undefined
-                                  SpotMaxPrice?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Preferences?:
-                  | {
-                      MinHealthyPercentage?: {} | undefined
-                      InstanceWarmup?: {} | undefined
-                      CheckpointPercentages?: {} | undefined
-                      CheckpointDelay?: {} | undefined
-                      SkipMatching?: {} | undefined
-                      AutoRollback?: {} | undefined
-                      ScaleInProtectedInstances?: {} | undefined
-                      StandbyInstances?: {} | undefined
-                      AlarmSpecification?: { Alarms?: {} | undefined } | undefined
-                    }
-                  | undefined
-                Action: 'StartInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: StartInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'StartInstanceRefresh'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                Strategy?: 'Rolling' | undefined
-                DesiredConfiguration?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateId?: {} | undefined
-                            LaunchTemplateName?: {} | undefined
-                            Version?: {} | undefined
-                          }
-                        | undefined
-                      MixedInstancesPolicy?:
-                        | {
-                            LaunchTemplate?:
-                              | {
-                                  LaunchTemplateSpecification?:
-                                    | {
-                                        LaunchTemplateId?: {} | undefined
-                                        LaunchTemplateName?: {} | undefined
-                                        Version?: {} | undefined
-                                      }
-                                    | undefined
-                                  Overrides?: {} | undefined
-                                }
-                              | undefined
-                            InstancesDistribution?:
-                              | {
-                                  OnDemandAllocationStrategy?: {} | undefined
-                                  OnDemandBaseCapacity?: {} | undefined
-                                  OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                                  SpotAllocationStrategy?: {} | undefined
-                                  SpotInstancePools?: {} | undefined
-                                  SpotMaxPrice?: {} | undefined
-                                }
-                              | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                Preferences?:
-                  | {
-                      MinHealthyPercentage?: {} | undefined
-                      InstanceWarmup?: {} | undefined
-                      CheckpointPercentages?: {} | undefined
-                      CheckpointDelay?: {} | undefined
-                      SkipMatching?: {} | undefined
-                      AutoRollback?: {} | undefined
-                      ScaleInProtectedInstances?: {} | undefined
-                      StandbyInstances?: {} | undefined
-                      AlarmSpecification?: { Alarms?: {} | undefined } | undefined
-                    }
-                  | undefined
-                Action: 'StartInstanceRefresh'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InstanceRefreshInProgressFault
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'StartInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartInstanceRefreshType }
-            output: StartInstanceRefreshAnswer
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'StartInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartInstanceRefreshType }
-            output: LimitExceededFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'StartInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartInstanceRefreshType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'StartInstanceRefresh'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartInstanceRefreshType }
-            output: InstanceRefreshInProgressFault
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: StartInstanceRefreshType }
+        output: StartInstanceRefreshAnswer
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SuspendProcesses': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'SuspendProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            ScalingProcesses?: XmlStringMaxLen255[] | undefined
+            Action: 'SuspendProcesses'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'SuspendProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                ScalingProcesses?: XmlStringMaxLen255[] | undefined
-                Action: 'SuspendProcesses'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SuspendProcesses'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SuspendProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SuspendProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: ResourceInUseFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SuspendProcesses'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ScalingProcessQuery }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ScalingProcessQuery }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=TerminateInstanceInAutoScalingGroup': {
-      $get:
-        | {
-            input: {
-              query: {
-                InstanceId: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'TerminateInstanceInAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ActivityType
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            InstanceId: string
+            ShouldDecrementDesiredCapacity: boolean
+            Action: 'TerminateInstanceInAutoScalingGroup'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                InstanceId: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'TerminateInstanceInAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                InstanceId: string
-                ShouldDecrementDesiredCapacity: boolean
-                Action: 'TerminateInstanceInAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ActivityType
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'TerminateInstanceInAutoScalingGroup'; Version: '2011-01-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'TerminateInstanceInAutoScalingGroup'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateInstanceInAutoScalingGroupType }
-            output: ActivityType
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'TerminateInstanceInAutoScalingGroup'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateInstanceInAutoScalingGroupType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'TerminateInstanceInAutoScalingGroup'; Version: '2011-01-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateInstanceInAutoScalingGroupType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: TerminateInstanceInAutoScalingGroupType }
+        output: ActivityType
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateAutoScalingGroup': {
-      $get:
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                CapacityRebalance?: boolean | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                Action: 'UpdateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            AutoScalingGroupName: string
+            LaunchConfigurationName?: string | undefined
+            LaunchTemplate?:
+              | {
+                  LaunchTemplateId?: {} | undefined
+                  LaunchTemplateName?: {} | undefined
+                  Version?: {} | undefined
+                }
+              | undefined
+            MixedInstancesPolicy?:
+              | {
+                  LaunchTemplate?:
+                    | {
+                        LaunchTemplateSpecification?:
+                          | {
+                              LaunchTemplateId?: {} | undefined
+                              LaunchTemplateName?: {} | undefined
+                              Version?: {} | undefined
+                            }
+                          | undefined
+                        Overrides?: {} | undefined
+                      }
+                    | undefined
+                  InstancesDistribution?:
+                    | {
+                        OnDemandAllocationStrategy?: {} | undefined
+                        OnDemandBaseCapacity?: {} | undefined
+                        OnDemandPercentageAboveBaseCapacity?: {} | undefined
+                        SpotAllocationStrategy?: {} | undefined
+                        SpotInstancePools?: {} | undefined
+                        SpotMaxPrice?: {} | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            MinSize?: number | undefined
+            MaxSize?: number | undefined
+            DesiredCapacity?: number | undefined
+            DefaultCooldown?: number | undefined
+            AvailabilityZones?: XmlStringMaxLen255[] | undefined
+            HealthCheckType?: string | undefined
+            HealthCheckGracePeriod?: number | undefined
+            PlacementGroup?: string | undefined
+            VPCZoneIdentifier?: string | undefined
+            TerminationPolicies?: XmlStringMaxLen1600[] | undefined
+            NewInstancesProtectedFromScaleIn?: boolean | undefined
+            ServiceLinkedRoleARN?: string | undefined
+            MaxInstanceLifetime?: number | undefined
+            CapacityRebalance?: boolean | undefined
+            Context?: string | undefined
+            DesiredCapacityType?: string | undefined
+            DefaultInstanceWarmup?: number | undefined
+            Action: 'UpdateAutoScalingGroup'
+            Version: '2011-01-01'
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                CapacityRebalance?: boolean | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                Action: 'UpdateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                CapacityRebalance?: boolean | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                Action: 'UpdateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateAutoScalingGroup'; Version: '2011-01-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                AutoScalingGroupName: string
-                LaunchConfigurationName?: string | undefined
-                LaunchTemplate?:
-                  | {
-                      LaunchTemplateId?: {} | undefined
-                      LaunchTemplateName?: {} | undefined
-                      Version?: {} | undefined
-                    }
-                  | undefined
-                MixedInstancesPolicy?:
-                  | {
-                      LaunchTemplate?:
-                        | {
-                            LaunchTemplateSpecification?:
-                              | {
-                                  LaunchTemplateId?: {} | undefined
-                                  LaunchTemplateName?: {} | undefined
-                                  Version?: {} | undefined
-                                }
-                              | undefined
-                            Overrides?: {} | undefined
-                          }
-                        | undefined
-                      InstancesDistribution?:
-                        | {
-                            OnDemandAllocationStrategy?: {} | undefined
-                            OnDemandBaseCapacity?: {} | undefined
-                            OnDemandPercentageAboveBaseCapacity?: {} | undefined
-                            SpotAllocationStrategy?: {} | undefined
-                            SpotInstancePools?: {} | undefined
-                            SpotMaxPrice?: {} | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                MinSize?: number | undefined
-                MaxSize?: number | undefined
-                DesiredCapacity?: number | undefined
-                DefaultCooldown?: number | undefined
-                AvailabilityZones?: XmlStringMaxLen255[] | undefined
-                HealthCheckType?: string | undefined
-                HealthCheckGracePeriod?: number | undefined
-                PlacementGroup?: string | undefined
-                VPCZoneIdentifier?: string | undefined
-                TerminationPolicies?: XmlStringMaxLen1600[] | undefined
-                NewInstancesProtectedFromScaleIn?: boolean | undefined
-                ServiceLinkedRoleARN?: string | undefined
-                MaxInstanceLifetime?: number | undefined
-                CapacityRebalance?: boolean | undefined
-                Context?: string | undefined
-                DesiredCapacityType?: string | undefined
-                DefaultInstanceWarmup?: number | undefined
-                Action: 'UpdateAutoScalingGroup'
-                Version: '2011-01-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAutoScalingGroupType }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAutoScalingGroupType }
-            output: ScalingActivityInProgressFault
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAutoScalingGroupType }
-            output: ResourceContentionFault
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateAutoScalingGroup'; Version: '2011-01-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateAutoScalingGroupType }
-            output: ServiceLinkedRoleFailure
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: UpdateAutoScalingGroupType }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   },
   '/'

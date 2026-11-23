@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSamplingTargetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSamplingTargetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const samplingTargetsHandler = app.openapi(postSamplingTargetsRoute, (c) => {
+export const postSamplingTargetsRouteHandler: RouteHandler<
+  typeof postSamplingTargetsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

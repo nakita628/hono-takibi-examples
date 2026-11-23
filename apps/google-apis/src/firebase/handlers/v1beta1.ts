@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta1NameRoute,
   getV1beta1AvailableProjectsRoute,
   getV1beta1NameRoute,
@@ -23,69 +23,126 @@ import {
   postV1beta1ProjectAddFirebaseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1beta1AvailableProjectsRouteHandler: RouteHandler<
+  typeof getV1beta1AvailableProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta1Handler = app
-  .openapi(getV1beta1AvailableProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1NameUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAndroidAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentAndroidAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentAvailableLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentDefaultLocationFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentIosAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentIosAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentShaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentWebAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentWebAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentAddGoogleAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ParentRemoveAnalyticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta1ParentSearchAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta1ProjectAddFirebaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1beta1ProjectsRouteHandler: RouteHandler<typeof getV1beta1ProjectsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1beta1NameRouteHandler: RouteHandler<typeof deleteV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1NameRouteHandler: RouteHandler<typeof getV1beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1beta1NameRouteHandler: RouteHandler<typeof patchV1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameRemoveRouteHandler: RouteHandler<
+  typeof postV1beta1NameRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1NameUndeleteRouteHandler: RouteHandler<
+  typeof postV1beta1NameUndeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAndroidAppsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAndroidAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentAndroidAppsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentAndroidAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentAvailableLocationsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentAvailableLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentDefaultLocationFinalizeRouteHandler: RouteHandler<
+  typeof postV1beta1ParentDefaultLocationFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentIosAppsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentIosAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentIosAppsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentIosAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentShaRouteHandler: RouteHandler<
+  typeof getV1beta1ParentShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentShaRouteHandler: RouteHandler<
+  typeof postV1beta1ParentShaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentWebAppsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentWebAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentWebAppsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentWebAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentAddGoogleAnalyticsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentAddGoogleAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ParentRemoveAnalyticsRouteHandler: RouteHandler<
+  typeof postV1beta1ParentRemoveAnalyticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta1ParentSearchAppsRouteHandler: RouteHandler<
+  typeof getV1beta1ParentSearchAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta1ProjectAddFirebaseRouteHandler: RouteHandler<
+  typeof postV1beta1ProjectAddFirebaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

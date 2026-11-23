@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAlarmModelsAlarmModelNameRoute,
   getAlarmModelsAlarmModelNameRoute,
   getAlarmModelsAlarmModelNameVersionsRoute,
@@ -8,24 +8,34 @@ import {
   postAlarmModelsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAlarmModelsRouteHandler: RouteHandler<typeof postAlarmModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alarmModelsHandler = app
-  .openapi(postAlarmModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlarmModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlarmModelsAlarmModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlarmModelsAlarmModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlarmModelsAlarmModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlarmModelsAlarmModelNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAlarmModelsRouteHandler: RouteHandler<typeof getAlarmModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAlarmModelsAlarmModelNameRouteHandler: RouteHandler<
+  typeof deleteAlarmModelsAlarmModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlarmModelsAlarmModelNameRouteHandler: RouteHandler<
+  typeof getAlarmModelsAlarmModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlarmModelsAlarmModelNameRouteHandler: RouteHandler<
+  typeof postAlarmModelsAlarmModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlarmModelsAlarmModelNameVersionsRouteHandler: RouteHandler<
+  typeof getAlarmModelsAlarmModelNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

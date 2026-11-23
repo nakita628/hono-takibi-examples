@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRedirectUrlsIdRoute,
   getRedirectUrlsIdRoute,
   getRedirectUrlsRoute,
   postRedirectUrlsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRedirectUrlsRouteHandler: RouteHandler<typeof getRedirectUrlsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const redirectUrlsHandler = app
-  .openapi(getRedirectUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRedirectUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRedirectUrlsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRedirectUrlsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRedirectUrlsRouteHandler: RouteHandler<typeof postRedirectUrlsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRedirectUrlsIdRouteHandler: RouteHandler<typeof getRedirectUrlsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRedirectUrlsIdRouteHandler: RouteHandler<
+  typeof deleteRedirectUrlsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

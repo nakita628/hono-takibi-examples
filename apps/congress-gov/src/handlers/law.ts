@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLawCongressLawTypeLawNumberRoute,
   getLawCongressLawTypeRoute,
   getLawCongressRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLawCongressRouteHandler: RouteHandler<typeof getLawCongressRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lawHandler = app
-  .openapi(getLawCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLawCongressLawTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLawCongressLawTypeLawNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLawCongressLawTypeRouteHandler: RouteHandler<
+  typeof getLawCongressLawTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLawCongressLawTypeLawNumberRouteHandler: RouteHandler<
+  typeof getLawCongressLawTypeLawNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

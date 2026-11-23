@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/dialogflow/v3beta1/openapi.yaml',
   output: './src/dialogflow/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dialogflow/types.ts' },
   client: { output: './src/dialogflow/client.ts', baseUrl: '/' },
   rpc: { output: './src/dialogflow/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCobrandConfigNotificationsEventsEventNameRoute,
   getCobrandConfigNotificationsEventsRoute,
   getCobrandPublicKeyRoute,
@@ -9,27 +9,44 @@ import {
   putCobrandConfigNotificationsEventsEventNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCobrandConfigNotificationsEventsRouteHandler: RouteHandler<
+  typeof getCobrandConfigNotificationsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cobrandHandler = app
-  .openapi(getCobrandConfigNotificationsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCobrandConfigNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCobrandConfigNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCobrandConfigNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCobrandLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCobrandLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCobrandPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCobrandConfigNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof deleteCobrandConfigNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCobrandConfigNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof postCobrandConfigNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCobrandConfigNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof putCobrandConfigNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCobrandLoginRouteHandler: RouteHandler<typeof postCobrandLoginRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCobrandLogoutRouteHandler: RouteHandler<typeof postCobrandLogoutRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCobrandPublicKeyRouteHandler: RouteHandler<
+  typeof getCobrandPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

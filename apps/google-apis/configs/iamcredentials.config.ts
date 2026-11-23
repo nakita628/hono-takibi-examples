@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/iamcredentials/v1/openapi.yaml',
   output: './src/iamcredentials/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iamcredentials/types.ts' },
   client: { output: './src/iamcredentials/client.ts', baseUrl: '/' },
   rpc: { output: './src/iamcredentials/rpc.ts', parseResponse: true },

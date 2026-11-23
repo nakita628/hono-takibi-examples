@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/storegateway/v1/storegateway.openapi.yaml',
   output: './src/storegateway-v1-storegateway/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/storegateway-v1-storegateway/types.ts' },
   client: { output: './src/storegateway-v1-storegateway/client.ts', baseUrl: '/' },
   rpc: { output: './src/storegateway-v1-storegateway/rpc.ts', parseResponse: true },

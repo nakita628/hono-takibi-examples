@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSimulationsRoute,
   getSimulationsSimulationIdRoute,
   getSimulationsSimulationIdRunsRoute,
@@ -12,39 +12,58 @@ import {
   postSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdReplayRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimulationsRouteHandler: RouteHandler<typeof getSimulationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const simulationsHandler = app
-  .openapi(getSimulationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimulationsSimulationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSimulationsSimulationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimulationsSimulationIdRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsSimulationIdRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimulationsSimulationIdRunsSimulationRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimulationsSimulationIdRunsSimulationRunIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdReplayRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postSimulationsRouteHandler: RouteHandler<typeof postSimulationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimulationsSimulationIdRouteHandler: RouteHandler<
+  typeof getSimulationsSimulationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSimulationsSimulationIdRouteHandler: RouteHandler<
+  typeof patchSimulationsSimulationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimulationsSimulationIdRunsRouteHandler: RouteHandler<
+  typeof getSimulationsSimulationIdRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsSimulationIdRunsRouteHandler: RouteHandler<
+  typeof postSimulationsSimulationIdRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimulationsSimulationIdRunsSimulationRunIdRouteHandler: RouteHandler<
+  typeof getSimulationsSimulationIdRunsSimulationRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimulationsSimulationIdRunsSimulationRunIdEventsRouteHandler: RouteHandler<
+  typeof getSimulationsSimulationIdRunsSimulationRunIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdRouteHandler: RouteHandler<
+  typeof getSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdReplayRouteHandler: RouteHandler<
+  typeof postSimulationsSimulationIdRunsSimulationRunIdEventsSimulationEventIdReplayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

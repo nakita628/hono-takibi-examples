@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDebugPprofAllocsRoute,
   getDebugPprofAllRoute,
   getDebugPprofBlockRoute,
@@ -12,36 +12,62 @@ import {
   getDebugPprofTraceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDebugPprofAllRouteHandler: RouteHandler<typeof getDebugPprofAllRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const debugHandler = app
-  .openapi(getDebugPprofAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofAllocsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofCmdlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofGoroutineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofHeapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofMutexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofThreadcreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugPprofTraceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDebugPprofAllocsRouteHandler: RouteHandler<
+  typeof getDebugPprofAllocsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofBlockRouteHandler: RouteHandler<typeof getDebugPprofBlockRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofCmdlineRouteHandler: RouteHandler<
+  typeof getDebugPprofCmdlineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofGoroutineRouteHandler: RouteHandler<
+  typeof getDebugPprofGoroutineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofHeapRouteHandler: RouteHandler<typeof getDebugPprofHeapRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofMutexRouteHandler: RouteHandler<typeof getDebugPprofMutexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofProfileRouteHandler: RouteHandler<
+  typeof getDebugPprofProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofThreadcreateRouteHandler: RouteHandler<
+  typeof getDebugPprofThreadcreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugPprofTraceRouteHandler: RouteHandler<typeof getDebugPprofTraceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

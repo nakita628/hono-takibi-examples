@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePostcardsPscIdRoute,
   getPostcardsPscIdRoute,
   getPostcardsRoute,
   postPostcardsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPostcardsPscIdRouteHandler: RouteHandler<typeof getPostcardsPscIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const postcardsHandler = app
-  .openapi(getPostcardsPscIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePostcardsPscIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostcardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostcardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deletePostcardsPscIdRouteHandler: RouteHandler<
+  typeof deletePostcardsPscIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostcardsRouteHandler: RouteHandler<typeof getPostcardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostcardsRouteHandler: RouteHandler<typeof postPostcardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

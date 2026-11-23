@@ -892,8 +892,8 @@ const AutoScalingGroupsSchema: z.ZodType<AutoScalingGroupsType> = z
   .openapi('AutoScalingGroups')
 
 type AutoScalingGroupsTypeType = {
-  AutoScalingGroups: z.infer<typeof AutoScalingGroupsSchema> & unknown
-  NextToken?: z.infer<typeof XmlStringSchema> & unknown
+  AutoScalingGroups: z.infer<typeof AutoScalingGroupsSchema>
+  NextToken?: z.infer<typeof XmlStringSchema>
 }
 
 const InstanceRefreshStatusSchema = z
@@ -1092,18 +1092,18 @@ const RollbackDetailsSchema = z
   .openapi('RollbackDetails')
 
 type InstanceRefreshType = {
-  InstanceRefreshId?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  AutoScalingGroupName?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  Status?: z.infer<typeof InstanceRefreshStatusSchema> & unknown
-  StatusReason?: z.infer<typeof XmlStringMaxLen1023Schema> & unknown
-  StartTime?: z.infer<typeof TimestampTypeSchema> & unknown
-  EndTime?: z.infer<typeof TimestampTypeSchema> & unknown
-  PercentageComplete?: z.infer<typeof IntPercentSchema> & unknown
-  InstancesToUpdate?: z.infer<typeof InstancesToUpdateSchema> & unknown
-  ProgressDetails?: z.infer<typeof InstanceRefreshProgressDetailsSchema> & unknown
-  Preferences?: z.infer<typeof RefreshPreferencesSchema> & unknown
-  DesiredConfiguration?: z.infer<typeof DesiredConfigurationSchema> & unknown
-  RollbackDetails?: z.infer<typeof RollbackDetailsSchema> & unknown
+  InstanceRefreshId?: z.infer<typeof XmlStringMaxLen255Schema>
+  AutoScalingGroupName?: z.infer<typeof XmlStringMaxLen255Schema>
+  Status?: z.infer<typeof InstanceRefreshStatusSchema>
+  StatusReason?: z.infer<typeof XmlStringMaxLen1023Schema>
+  StartTime?: z.infer<typeof TimestampTypeSchema>
+  EndTime?: z.infer<typeof TimestampTypeSchema>
+  PercentageComplete?: z.infer<typeof IntPercentSchema>
+  InstancesToUpdate?: z.infer<typeof InstancesToUpdateSchema>
+  ProgressDetails?: z.infer<typeof InstanceRefreshProgressDetailsSchema>
+  Preferences?: z.infer<typeof RefreshPreferencesSchema>
+  DesiredConfiguration?: z.infer<typeof DesiredConfigurationSchema>
+  RollbackDetails?: z.infer<typeof RollbackDetailsSchema>
 }
 
 const InstanceRefreshSchema: z.ZodType<InstanceRefreshType> = z
@@ -1161,8 +1161,8 @@ const InstanceRefreshesSchema: z.ZodType<InstanceRefreshesType> = z
   .openapi('InstanceRefreshes')
 
 type DescribeInstanceRefreshesAnswerType = {
-  InstanceRefreshes?: z.infer<typeof InstanceRefreshesSchema> & unknown
-  NextToken?: z.infer<typeof XmlStringSchema> & unknown
+  InstanceRefreshes?: z.infer<typeof InstanceRefreshesSchema>
+  NextToken?: z.infer<typeof XmlStringSchema>
 }
 
 const XmlStringMaxLen64Schema = z
@@ -1395,10 +1395,10 @@ const CustomizedMetricSpecificationSchema = z
 const DisableScaleInSchema = z.boolean().openapi('DisableScaleIn')
 
 type TargetTrackingConfigurationType = {
-  PredefinedMetricSpecification?: z.infer<typeof PredefinedMetricSpecificationSchema> & unknown
-  CustomizedMetricSpecification?: z.infer<typeof CustomizedMetricSpecificationSchema> & unknown
-  TargetValue: z.infer<typeof MetricScaleSchema> & unknown
-  DisableScaleIn?: z.infer<typeof DisableScaleInSchema> & unknown
+  PredefinedMetricSpecification?: z.infer<typeof PredefinedMetricSpecificationSchema>
+  CustomizedMetricSpecification?: z.infer<typeof CustomizedMetricSpecificationSchema>
+  TargetValue: z.infer<typeof MetricScaleSchema>
+  DisableScaleIn?: z.infer<typeof DisableScaleInSchema>
 }
 
 const TargetTrackingConfigurationSchema: z.ZodType<TargetTrackingConfigurationType> = z
@@ -1596,25 +1596,19 @@ const PredictiveScalingCustomizedCapacityMetricSchema = z
   .openapi('PredictiveScalingCustomizedCapacityMetric')
 
 type PredictiveScalingMetricSpecificationType = {
-  TargetValue: z.infer<typeof MetricScaleSchema> & unknown
-  PredefinedMetricPairSpecification?: z.infer<typeof PredictiveScalingPredefinedMetricPairSchema> &
-    unknown
+  TargetValue: z.infer<typeof MetricScaleSchema>
+  PredefinedMetricPairSpecification?: z.infer<typeof PredictiveScalingPredefinedMetricPairSchema>
   PredefinedScalingMetricSpecification?: z.infer<
     typeof PredictiveScalingPredefinedScalingMetricSchema
-  > &
-    unknown
-  PredefinedLoadMetricSpecification?: z.infer<typeof PredictiveScalingPredefinedLoadMetricSchema> &
-    unknown
+  >
+  PredefinedLoadMetricSpecification?: z.infer<typeof PredictiveScalingPredefinedLoadMetricSchema>
   CustomizedScalingMetricSpecification?: z.infer<
     typeof PredictiveScalingCustomizedScalingMetricSchema
-  > &
-    unknown
-  CustomizedLoadMetricSpecification?: z.infer<typeof PredictiveScalingCustomizedLoadMetricSchema> &
-    unknown
+  >
+  CustomizedLoadMetricSpecification?: z.infer<typeof PredictiveScalingCustomizedLoadMetricSchema>
   CustomizedCapacityMetricSpecification?: z.infer<
     typeof PredictiveScalingCustomizedCapacityMetricSchema
-  > &
-    unknown
+  >
 }
 
 const PredictiveScalingMetricSpecificationSchema: z.ZodType<PredictiveScalingMetricSpecificationType> =
@@ -1686,12 +1680,11 @@ const PredictiveScalingMaxCapacityBufferSchema = z
   .openapi('PredictiveScalingMaxCapacityBuffer')
 
 type PredictiveScalingConfigurationType = {
-  MetricSpecifications: z.infer<typeof PredictiveScalingMetricSpecificationsSchema> & unknown
-  Mode?: z.infer<typeof PredictiveScalingModeSchema> & unknown
-  SchedulingBufferTime?: z.infer<typeof PredictiveScalingSchedulingBufferTimeSchema> & unknown
-  MaxCapacityBreachBehavior?: z.infer<typeof PredictiveScalingMaxCapacityBreachBehaviorSchema> &
-    unknown
-  MaxCapacityBuffer?: z.infer<typeof PredictiveScalingMaxCapacityBufferSchema> & unknown
+  MetricSpecifications: z.infer<typeof PredictiveScalingMetricSpecificationsSchema>
+  Mode?: z.infer<typeof PredictiveScalingModeSchema>
+  SchedulingBufferTime?: z.infer<typeof PredictiveScalingSchedulingBufferTimeSchema>
+  MaxCapacityBreachBehavior?: z.infer<typeof PredictiveScalingMaxCapacityBreachBehaviorSchema>
+  MaxCapacityBuffer?: z.infer<typeof PredictiveScalingMaxCapacityBufferSchema>
 }
 
 const PredictiveScalingConfigurationSchema: z.ZodType<PredictiveScalingConfigurationType> = z
@@ -1726,22 +1719,22 @@ const PredictiveScalingConfigurationSchema: z.ZodType<PredictiveScalingConfigura
   .openapi('PredictiveScalingConfiguration')
 
 type ScalingPolicyType = {
-  AutoScalingGroupName?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  PolicyName?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  PolicyARN?: z.infer<typeof ResourceNameSchema> & unknown
-  PolicyType?: z.infer<typeof XmlStringMaxLen64Schema> & unknown
-  AdjustmentType?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  MinAdjustmentStep?: z.infer<typeof MinAdjustmentStepSchema> & unknown
-  MinAdjustmentMagnitude?: z.infer<typeof MinAdjustmentMagnitudeSchema> & unknown
-  ScalingAdjustment?: z.infer<typeof PolicyIncrementSchema> & unknown
-  Cooldown?: z.infer<typeof CooldownSchema> & unknown
-  StepAdjustments?: z.infer<typeof StepAdjustmentsSchema> & unknown
-  MetricAggregationType?: z.infer<typeof XmlStringMaxLen32Schema> & unknown
-  EstimatedInstanceWarmup?: z.infer<typeof EstimatedInstanceWarmupSchema> & unknown
-  Alarms?: z.infer<typeof AlarmsSchema> & unknown
-  TargetTrackingConfiguration?: z.infer<typeof TargetTrackingConfigurationSchema> & unknown
-  Enabled?: z.infer<typeof ScalingPolicyEnabledSchema> & unknown
-  PredictiveScalingConfiguration?: z.infer<typeof PredictiveScalingConfigurationSchema> & unknown
+  AutoScalingGroupName?: z.infer<typeof XmlStringMaxLen255Schema>
+  PolicyName?: z.infer<typeof XmlStringMaxLen255Schema>
+  PolicyARN?: z.infer<typeof ResourceNameSchema>
+  PolicyType?: z.infer<typeof XmlStringMaxLen64Schema>
+  AdjustmentType?: z.infer<typeof XmlStringMaxLen255Schema>
+  MinAdjustmentStep?: z.infer<typeof MinAdjustmentStepSchema>
+  MinAdjustmentMagnitude?: z.infer<typeof MinAdjustmentMagnitudeSchema>
+  ScalingAdjustment?: z.infer<typeof PolicyIncrementSchema>
+  Cooldown?: z.infer<typeof CooldownSchema>
+  StepAdjustments?: z.infer<typeof StepAdjustmentsSchema>
+  MetricAggregationType?: z.infer<typeof XmlStringMaxLen32Schema>
+  EstimatedInstanceWarmup?: z.infer<typeof EstimatedInstanceWarmupSchema>
+  Alarms?: z.infer<typeof AlarmsSchema>
+  TargetTrackingConfiguration?: z.infer<typeof TargetTrackingConfigurationSchema>
+  Enabled?: z.infer<typeof ScalingPolicyEnabledSchema>
+  PredictiveScalingConfiguration?: z.infer<typeof PredictiveScalingConfigurationSchema>
 }
 
 const ScalingPolicySchema: z.ZodType<ScalingPolicyType> = z
@@ -1814,8 +1807,8 @@ const ScalingPoliciesSchema: z.ZodType<ScalingPoliciesType> = z
   .openapi('ScalingPolicies')
 
 type PoliciesTypeType = {
-  ScalingPolicies?: z.infer<typeof ScalingPoliciesSchema> & unknown
-  NextToken?: z.infer<typeof XmlStringSchema> & unknown
+  ScalingPolicies?: z.infer<typeof ScalingPoliciesSchema>
+  NextToken?: z.infer<typeof XmlStringSchema>
 }
 
 const PredictiveScalingForecastTimestampsSchema = z
@@ -1827,9 +1820,9 @@ const PredictiveScalingForecastValuesSchema = z
   .openapi('PredictiveScalingForecastValues')
 
 type LoadForecastType = {
-  Timestamps: z.infer<typeof PredictiveScalingForecastTimestampsSchema> & unknown
-  Values: z.infer<typeof PredictiveScalingForecastValuesSchema> & unknown
-  MetricSpecification: z.infer<typeof PredictiveScalingMetricSpecificationSchema> & unknown
+  Timestamps: z.infer<typeof PredictiveScalingForecastTimestampsSchema>
+  Values: z.infer<typeof PredictiveScalingForecastValuesSchema>
+  MetricSpecification: z.infer<typeof PredictiveScalingMetricSpecificationSchema>
 }
 
 const LoadForecastSchema: z.ZodType<LoadForecastType> = z
@@ -1874,35 +1867,35 @@ const CapacityForecastSchema = z
   .openapi('CapacityForecast')
 
 type GetPredictiveScalingForecastAnswerType = {
-  LoadForecast: z.infer<typeof LoadForecastsSchema> & unknown
-  CapacityForecast: z.infer<typeof CapacityForecastSchema> & unknown
-  UpdateTime: z.infer<typeof TimestampTypeSchema> & unknown
+  LoadForecast: z.infer<typeof LoadForecastsSchema>
+  CapacityForecast: z.infer<typeof CapacityForecastSchema>
+  UpdateTime: z.infer<typeof TimestampTypeSchema>
 }
 
 type PutScalingPolicyTypeType = {
-  AutoScalingGroupName: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  PolicyName: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  PolicyType?: z.infer<typeof XmlStringMaxLen64Schema> & unknown
-  AdjustmentType?: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  MinAdjustmentStep?: z.infer<typeof MinAdjustmentStepSchema> & unknown
-  MinAdjustmentMagnitude?: z.infer<typeof MinAdjustmentMagnitudeSchema> & unknown
-  ScalingAdjustment?: z.infer<typeof PolicyIncrementSchema> & unknown
-  Cooldown?: z.infer<typeof CooldownSchema> & unknown
-  MetricAggregationType?: z.infer<typeof XmlStringMaxLen32Schema> & unknown
-  StepAdjustments?: z.infer<typeof StepAdjustmentsSchema> & unknown
-  EstimatedInstanceWarmup?: z.infer<typeof EstimatedInstanceWarmupSchema> & unknown
-  TargetTrackingConfiguration?: z.infer<typeof TargetTrackingConfigurationSchema> & unknown
-  Enabled?: z.infer<typeof ScalingPolicyEnabledSchema> & unknown
-  PredictiveScalingConfiguration?: z.infer<typeof PredictiveScalingConfigurationSchema> & unknown
+  AutoScalingGroupName: z.infer<typeof XmlStringMaxLen255Schema>
+  PolicyName: z.infer<typeof XmlStringMaxLen255Schema>
+  PolicyType?: z.infer<typeof XmlStringMaxLen64Schema>
+  AdjustmentType?: z.infer<typeof XmlStringMaxLen255Schema>
+  MinAdjustmentStep?: z.infer<typeof MinAdjustmentStepSchema>
+  MinAdjustmentMagnitude?: z.infer<typeof MinAdjustmentMagnitudeSchema>
+  ScalingAdjustment?: z.infer<typeof PolicyIncrementSchema>
+  Cooldown?: z.infer<typeof CooldownSchema>
+  MetricAggregationType?: z.infer<typeof XmlStringMaxLen32Schema>
+  StepAdjustments?: z.infer<typeof StepAdjustmentsSchema>
+  EstimatedInstanceWarmup?: z.infer<typeof EstimatedInstanceWarmupSchema>
+  TargetTrackingConfiguration?: z.infer<typeof TargetTrackingConfigurationSchema>
+  Enabled?: z.infer<typeof ScalingPolicyEnabledSchema>
+  PredictiveScalingConfiguration?: z.infer<typeof PredictiveScalingConfigurationSchema>
 }
 
 const RefreshStrategySchema = z.literal('Rolling').openapi('RefreshStrategy')
 
 type StartInstanceRefreshTypeType = {
-  AutoScalingGroupName: z.infer<typeof XmlStringMaxLen255Schema> & unknown
-  Strategy?: z.infer<typeof RefreshStrategySchema> & unknown
-  DesiredConfiguration?: z.infer<typeof DesiredConfigurationSchema> & unknown
-  Preferences?: z.infer<typeof RefreshPreferencesSchema> & unknown
+  AutoScalingGroupName: z.infer<typeof XmlStringMaxLen255Schema>
+  Strategy?: z.infer<typeof RefreshStrategySchema>
+  DesiredConfiguration?: z.infer<typeof DesiredConfigurationSchema>
+  Preferences?: z.infer<typeof RefreshPreferencesSchema>
 }
 
 const ResourceContentionFaultSchema = z.any().openapi('ResourceContentionFault')

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/maxlifeinsurance/3.0.0/openapi.yaml',
   output: './src/maxlifeinsurance/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/maxlifeinsurance/types.ts' },
   client: { output: './src/maxlifeinsurance/client.ts', baseUrl: '/' },
   rpc: { output: './src/maxlifeinsurance/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getcompanymatch/1.0.0/openapi.yaml',
   output: './src/getcompanymatch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getcompanymatch/types.ts' },
   client: { output: './src/getcompanymatch/client.ts', baseUrl: '/' },
   rpc: { output: './src/getcompanymatch/rpc.ts', parseResponse: true },

@@ -1,17 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  areasHandler,
-  eventsHandler,
-  jurisdictiongeographyHandler,
-  jurisdictionHandler,
+  getAreasRoute,
+  getEventsRoute,
+  getJurisdictiongeographyRoute,
+  getJurisdictionRoute,
+} from './routes'
+import {
+  getAreasRouteHandler,
+  getEventsRouteHandler,
+  getJurisdictiongeographyRouteHandler,
+  getJurisdictionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', areasHandler)
-  .route('/', eventsHandler)
-  .route('/', jurisdictionHandler)
-  .route('/', jurisdictiongeographyHandler)
+  .openapi(getAreasRoute, getAreasRouteHandler)
+  .openapi(getEventsRoute, getEventsRouteHandler)
+  .openapi(getJurisdictionRoute, getJurisdictionRouteHandler)
+  .openapi(getJurisdictiongeographyRoute, getJurisdictiongeographyRouteHandler)
 
 export default app

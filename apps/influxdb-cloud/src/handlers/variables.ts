@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVariablesVariableIDLabelsLabelIDRoute,
   deleteVariablesVariableIDRoute,
   getVariablesRoute,
@@ -11,33 +11,52 @@ import {
   putVariablesVariableIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVariablesVariableIDLabelsRouteHandler: RouteHandler<
+  typeof getVariablesVariableIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const variablesHandler = app
-  .openapi(getVariablesVariableIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVariablesVariableIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVariablesVariableIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVariablesVariableIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVariablesVariableIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVariablesVariableIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVariablesVariableIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVariablesVariableIDLabelsRouteHandler: RouteHandler<
+  typeof postVariablesVariableIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVariablesVariableIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteVariablesVariableIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariablesRouteHandler: RouteHandler<typeof getVariablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVariablesRouteHandler: RouteHandler<typeof postVariablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVariablesVariableIDRouteHandler: RouteHandler<
+  typeof getVariablesVariableIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVariablesVariableIDRouteHandler: RouteHandler<
+  typeof deleteVariablesVariableIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVariablesVariableIDRouteHandler: RouteHandler<
+  typeof patchVariablesVariableIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVariablesVariableIDRouteHandler: RouteHandler<
+  typeof putVariablesVariableIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

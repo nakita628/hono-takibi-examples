@@ -1,121 +1,317 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsEventsActivateEventSourceHandler,
-  xAmzTargetAwsEventsCancelReplayHandler,
-  xAmzTargetAwsEventsCreateApiDestinationHandler,
-  xAmzTargetAwsEventsCreateArchiveHandler,
-  xAmzTargetAwsEventsCreateConnectionHandler,
-  xAmzTargetAwsEventsCreateEndpointHandler,
-  xAmzTargetAwsEventsCreateEventBusHandler,
-  xAmzTargetAwsEventsCreatePartnerEventSourceHandler,
-  xAmzTargetAwsEventsDeactivateEventSourceHandler,
-  xAmzTargetAwsEventsDeauthorizeConnectionHandler,
-  xAmzTargetAwsEventsDeleteApiDestinationHandler,
-  xAmzTargetAwsEventsDeleteArchiveHandler,
-  xAmzTargetAwsEventsDeleteConnectionHandler,
-  xAmzTargetAwsEventsDeleteEndpointHandler,
-  xAmzTargetAwsEventsDeleteEventBusHandler,
-  xAmzTargetAwsEventsDeletePartnerEventSourceHandler,
-  xAmzTargetAwsEventsDeleteRuleHandler,
-  xAmzTargetAwsEventsDescribeApiDestinationHandler,
-  xAmzTargetAwsEventsDescribeArchiveHandler,
-  xAmzTargetAwsEventsDescribeConnectionHandler,
-  xAmzTargetAwsEventsDescribeEndpointHandler,
-  xAmzTargetAwsEventsDescribeEventBusHandler,
-  xAmzTargetAwsEventsDescribeEventSourceHandler,
-  xAmzTargetAwsEventsDescribePartnerEventSourceHandler,
-  xAmzTargetAwsEventsDescribeReplayHandler,
-  xAmzTargetAwsEventsDescribeRuleHandler,
-  xAmzTargetAwsEventsDisableRuleHandler,
-  xAmzTargetAwsEventsEnableRuleHandler,
-  xAmzTargetAwsEventsListApiDestinationsHandler,
-  xAmzTargetAwsEventsListArchivesHandler,
-  xAmzTargetAwsEventsListConnectionsHandler,
-  xAmzTargetAwsEventsListEndpointsHandler,
-  xAmzTargetAwsEventsListEventBusesHandler,
-  xAmzTargetAwsEventsListEventSourcesHandler,
-  xAmzTargetAwsEventsListPartnerEventSourceAccountsHandler,
-  xAmzTargetAwsEventsListPartnerEventSourcesHandler,
-  xAmzTargetAwsEventsListReplaysHandler,
-  xAmzTargetAwsEventsListRuleNamesByTargetHandler,
-  xAmzTargetAwsEventsListRulesHandler,
-  xAmzTargetAwsEventsListTagsForResourceHandler,
-  xAmzTargetAwsEventsListTargetsByRuleHandler,
-  xAmzTargetAwsEventsPutEventsHandler,
-  xAmzTargetAwsEventsPutPartnerEventsHandler,
-  xAmzTargetAwsEventsPutPermissionHandler,
-  xAmzTargetAwsEventsPutRuleHandler,
-  xAmzTargetAwsEventsPutTargetsHandler,
-  xAmzTargetAwsEventsRemovePermissionHandler,
-  xAmzTargetAwsEventsRemoveTargetsHandler,
-  xAmzTargetAwsEventsStartReplayHandler,
-  xAmzTargetAwsEventsTagResourceHandler,
-  xAmzTargetAwsEventsTestEventPatternHandler,
-  xAmzTargetAwsEventsUntagResourceHandler,
-  xAmzTargetAwsEventsUpdateApiDestinationHandler,
-  xAmzTargetAwsEventsUpdateArchiveHandler,
-  xAmzTargetAwsEventsUpdateConnectionHandler,
-  xAmzTargetAwsEventsUpdateEndpointHandler,
+  postXAmzTargetAWSEventsActivateEventSourceRoute,
+  postXAmzTargetAWSEventsCancelReplayRoute,
+  postXAmzTargetAWSEventsCreateApiDestinationRoute,
+  postXAmzTargetAWSEventsCreateArchiveRoute,
+  postXAmzTargetAWSEventsCreateConnectionRoute,
+  postXAmzTargetAWSEventsCreateEndpointRoute,
+  postXAmzTargetAWSEventsCreateEventBusRoute,
+  postXAmzTargetAWSEventsCreatePartnerEventSourceRoute,
+  postXAmzTargetAWSEventsDeactivateEventSourceRoute,
+  postXAmzTargetAWSEventsDeauthorizeConnectionRoute,
+  postXAmzTargetAWSEventsDeleteApiDestinationRoute,
+  postXAmzTargetAWSEventsDeleteArchiveRoute,
+  postXAmzTargetAWSEventsDeleteConnectionRoute,
+  postXAmzTargetAWSEventsDeleteEndpointRoute,
+  postXAmzTargetAWSEventsDeleteEventBusRoute,
+  postXAmzTargetAWSEventsDeletePartnerEventSourceRoute,
+  postXAmzTargetAWSEventsDeleteRuleRoute,
+  postXAmzTargetAWSEventsDescribeApiDestinationRoute,
+  postXAmzTargetAWSEventsDescribeArchiveRoute,
+  postXAmzTargetAWSEventsDescribeConnectionRoute,
+  postXAmzTargetAWSEventsDescribeEndpointRoute,
+  postXAmzTargetAWSEventsDescribeEventBusRoute,
+  postXAmzTargetAWSEventsDescribeEventSourceRoute,
+  postXAmzTargetAWSEventsDescribePartnerEventSourceRoute,
+  postXAmzTargetAWSEventsDescribeReplayRoute,
+  postXAmzTargetAWSEventsDescribeRuleRoute,
+  postXAmzTargetAWSEventsDisableRuleRoute,
+  postXAmzTargetAWSEventsEnableRuleRoute,
+  postXAmzTargetAWSEventsListApiDestinationsRoute,
+  postXAmzTargetAWSEventsListArchivesRoute,
+  postXAmzTargetAWSEventsListConnectionsRoute,
+  postXAmzTargetAWSEventsListEndpointsRoute,
+  postXAmzTargetAWSEventsListEventBusesRoute,
+  postXAmzTargetAWSEventsListEventSourcesRoute,
+  postXAmzTargetAWSEventsListPartnerEventSourceAccountsRoute,
+  postXAmzTargetAWSEventsListPartnerEventSourcesRoute,
+  postXAmzTargetAWSEventsListReplaysRoute,
+  postXAmzTargetAWSEventsListRuleNamesByTargetRoute,
+  postXAmzTargetAWSEventsListRulesRoute,
+  postXAmzTargetAWSEventsListTagsForResourceRoute,
+  postXAmzTargetAWSEventsListTargetsByRuleRoute,
+  postXAmzTargetAWSEventsPutEventsRoute,
+  postXAmzTargetAWSEventsPutPartnerEventsRoute,
+  postXAmzTargetAWSEventsPutPermissionRoute,
+  postXAmzTargetAWSEventsPutRuleRoute,
+  postXAmzTargetAWSEventsPutTargetsRoute,
+  postXAmzTargetAWSEventsRemovePermissionRoute,
+  postXAmzTargetAWSEventsRemoveTargetsRoute,
+  postXAmzTargetAWSEventsStartReplayRoute,
+  postXAmzTargetAWSEventsTagResourceRoute,
+  postXAmzTargetAWSEventsTestEventPatternRoute,
+  postXAmzTargetAWSEventsUntagResourceRoute,
+  postXAmzTargetAWSEventsUpdateApiDestinationRoute,
+  postXAmzTargetAWSEventsUpdateArchiveRoute,
+  postXAmzTargetAWSEventsUpdateConnectionRoute,
+  postXAmzTargetAWSEventsUpdateEndpointRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSEventsActivateEventSourceRouteHandler,
+  postXAmzTargetAWSEventsCancelReplayRouteHandler,
+  postXAmzTargetAWSEventsCreateApiDestinationRouteHandler,
+  postXAmzTargetAWSEventsCreateArchiveRouteHandler,
+  postXAmzTargetAWSEventsCreateConnectionRouteHandler,
+  postXAmzTargetAWSEventsCreateEndpointRouteHandler,
+  postXAmzTargetAWSEventsCreateEventBusRouteHandler,
+  postXAmzTargetAWSEventsCreatePartnerEventSourceRouteHandler,
+  postXAmzTargetAWSEventsDeactivateEventSourceRouteHandler,
+  postXAmzTargetAWSEventsDeauthorizeConnectionRouteHandler,
+  postXAmzTargetAWSEventsDeleteApiDestinationRouteHandler,
+  postXAmzTargetAWSEventsDeleteArchiveRouteHandler,
+  postXAmzTargetAWSEventsDeleteConnectionRouteHandler,
+  postXAmzTargetAWSEventsDeleteEndpointRouteHandler,
+  postXAmzTargetAWSEventsDeleteEventBusRouteHandler,
+  postXAmzTargetAWSEventsDeletePartnerEventSourceRouteHandler,
+  postXAmzTargetAWSEventsDeleteRuleRouteHandler,
+  postXAmzTargetAWSEventsDescribeApiDestinationRouteHandler,
+  postXAmzTargetAWSEventsDescribeArchiveRouteHandler,
+  postXAmzTargetAWSEventsDescribeConnectionRouteHandler,
+  postXAmzTargetAWSEventsDescribeEndpointRouteHandler,
+  postXAmzTargetAWSEventsDescribeEventBusRouteHandler,
+  postXAmzTargetAWSEventsDescribeEventSourceRouteHandler,
+  postXAmzTargetAWSEventsDescribePartnerEventSourceRouteHandler,
+  postXAmzTargetAWSEventsDescribeReplayRouteHandler,
+  postXAmzTargetAWSEventsDescribeRuleRouteHandler,
+  postXAmzTargetAWSEventsDisableRuleRouteHandler,
+  postXAmzTargetAWSEventsEnableRuleRouteHandler,
+  postXAmzTargetAWSEventsListApiDestinationsRouteHandler,
+  postXAmzTargetAWSEventsListArchivesRouteHandler,
+  postXAmzTargetAWSEventsListConnectionsRouteHandler,
+  postXAmzTargetAWSEventsListEndpointsRouteHandler,
+  postXAmzTargetAWSEventsListEventBusesRouteHandler,
+  postXAmzTargetAWSEventsListEventSourcesRouteHandler,
+  postXAmzTargetAWSEventsListPartnerEventSourceAccountsRouteHandler,
+  postXAmzTargetAWSEventsListPartnerEventSourcesRouteHandler,
+  postXAmzTargetAWSEventsListReplaysRouteHandler,
+  postXAmzTargetAWSEventsListRuleNamesByTargetRouteHandler,
+  postXAmzTargetAWSEventsListRulesRouteHandler,
+  postXAmzTargetAWSEventsListTagsForResourceRouteHandler,
+  postXAmzTargetAWSEventsListTargetsByRuleRouteHandler,
+  postXAmzTargetAWSEventsPutEventsRouteHandler,
+  postXAmzTargetAWSEventsPutPartnerEventsRouteHandler,
+  postXAmzTargetAWSEventsPutPermissionRouteHandler,
+  postXAmzTargetAWSEventsPutRuleRouteHandler,
+  postXAmzTargetAWSEventsPutTargetsRouteHandler,
+  postXAmzTargetAWSEventsRemovePermissionRouteHandler,
+  postXAmzTargetAWSEventsRemoveTargetsRouteHandler,
+  postXAmzTargetAWSEventsStartReplayRouteHandler,
+  postXAmzTargetAWSEventsTagResourceRouteHandler,
+  postXAmzTargetAWSEventsTestEventPatternRouteHandler,
+  postXAmzTargetAWSEventsUntagResourceRouteHandler,
+  postXAmzTargetAWSEventsUpdateApiDestinationRouteHandler,
+  postXAmzTargetAWSEventsUpdateArchiveRouteHandler,
+  postXAmzTargetAWSEventsUpdateConnectionRouteHandler,
+  postXAmzTargetAWSEventsUpdateEndpointRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsEventsActivateEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsCancelReplayHandler)
-  .route('/', xAmzTargetAwsEventsCreateApiDestinationHandler)
-  .route('/', xAmzTargetAwsEventsCreateArchiveHandler)
-  .route('/', xAmzTargetAwsEventsCreateConnectionHandler)
-  .route('/', xAmzTargetAwsEventsCreateEndpointHandler)
-  .route('/', xAmzTargetAwsEventsCreateEventBusHandler)
-  .route('/', xAmzTargetAwsEventsCreatePartnerEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsDeactivateEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsDeauthorizeConnectionHandler)
-  .route('/', xAmzTargetAwsEventsDeleteApiDestinationHandler)
-  .route('/', xAmzTargetAwsEventsDeleteArchiveHandler)
-  .route('/', xAmzTargetAwsEventsDeleteConnectionHandler)
-  .route('/', xAmzTargetAwsEventsDeleteEndpointHandler)
-  .route('/', xAmzTargetAwsEventsDeleteEventBusHandler)
-  .route('/', xAmzTargetAwsEventsDeletePartnerEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsDeleteRuleHandler)
-  .route('/', xAmzTargetAwsEventsDescribeApiDestinationHandler)
-  .route('/', xAmzTargetAwsEventsDescribeArchiveHandler)
-  .route('/', xAmzTargetAwsEventsDescribeConnectionHandler)
-  .route('/', xAmzTargetAwsEventsDescribeEndpointHandler)
-  .route('/', xAmzTargetAwsEventsDescribeEventBusHandler)
-  .route('/', xAmzTargetAwsEventsDescribeEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsDescribePartnerEventSourceHandler)
-  .route('/', xAmzTargetAwsEventsDescribeReplayHandler)
-  .route('/', xAmzTargetAwsEventsDescribeRuleHandler)
-  .route('/', xAmzTargetAwsEventsDisableRuleHandler)
-  .route('/', xAmzTargetAwsEventsEnableRuleHandler)
-  .route('/', xAmzTargetAwsEventsListApiDestinationsHandler)
-  .route('/', xAmzTargetAwsEventsListArchivesHandler)
-  .route('/', xAmzTargetAwsEventsListConnectionsHandler)
-  .route('/', xAmzTargetAwsEventsListEndpointsHandler)
-  .route('/', xAmzTargetAwsEventsListEventBusesHandler)
-  .route('/', xAmzTargetAwsEventsListEventSourcesHandler)
-  .route('/', xAmzTargetAwsEventsListPartnerEventSourceAccountsHandler)
-  .route('/', xAmzTargetAwsEventsListPartnerEventSourcesHandler)
-  .route('/', xAmzTargetAwsEventsListReplaysHandler)
-  .route('/', xAmzTargetAwsEventsListRuleNamesByTargetHandler)
-  .route('/', xAmzTargetAwsEventsListRulesHandler)
-  .route('/', xAmzTargetAwsEventsListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsEventsListTargetsByRuleHandler)
-  .route('/', xAmzTargetAwsEventsPutEventsHandler)
-  .route('/', xAmzTargetAwsEventsPutPartnerEventsHandler)
-  .route('/', xAmzTargetAwsEventsPutPermissionHandler)
-  .route('/', xAmzTargetAwsEventsPutRuleHandler)
-  .route('/', xAmzTargetAwsEventsPutTargetsHandler)
-  .route('/', xAmzTargetAwsEventsRemovePermissionHandler)
-  .route('/', xAmzTargetAwsEventsRemoveTargetsHandler)
-  .route('/', xAmzTargetAwsEventsStartReplayHandler)
-  .route('/', xAmzTargetAwsEventsTagResourceHandler)
-  .route('/', xAmzTargetAwsEventsTestEventPatternHandler)
-  .route('/', xAmzTargetAwsEventsUntagResourceHandler)
-  .route('/', xAmzTargetAwsEventsUpdateApiDestinationHandler)
-  .route('/', xAmzTargetAwsEventsUpdateArchiveHandler)
-  .route('/', xAmzTargetAwsEventsUpdateConnectionHandler)
-  .route('/', xAmzTargetAwsEventsUpdateEndpointHandler)
+  .openapi(
+    postXAmzTargetAWSEventsActivateEventSourceRoute,
+    postXAmzTargetAWSEventsActivateEventSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCancelReplayRoute,
+    postXAmzTargetAWSEventsCancelReplayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreateApiDestinationRoute,
+    postXAmzTargetAWSEventsCreateApiDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreateArchiveRoute,
+    postXAmzTargetAWSEventsCreateArchiveRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreateConnectionRoute,
+    postXAmzTargetAWSEventsCreateConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreateEndpointRoute,
+    postXAmzTargetAWSEventsCreateEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreateEventBusRoute,
+    postXAmzTargetAWSEventsCreateEventBusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsCreatePartnerEventSourceRoute,
+    postXAmzTargetAWSEventsCreatePartnerEventSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeactivateEventSourceRoute,
+    postXAmzTargetAWSEventsDeactivateEventSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeauthorizeConnectionRoute,
+    postXAmzTargetAWSEventsDeauthorizeConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeleteApiDestinationRoute,
+    postXAmzTargetAWSEventsDeleteApiDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeleteArchiveRoute,
+    postXAmzTargetAWSEventsDeleteArchiveRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeleteConnectionRoute,
+    postXAmzTargetAWSEventsDeleteConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeleteEndpointRoute,
+    postXAmzTargetAWSEventsDeleteEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeleteEventBusRoute,
+    postXAmzTargetAWSEventsDeleteEventBusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDeletePartnerEventSourceRoute,
+    postXAmzTargetAWSEventsDeletePartnerEventSourceRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsDeleteRuleRoute, postXAmzTargetAWSEventsDeleteRuleRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsDescribeApiDestinationRoute,
+    postXAmzTargetAWSEventsDescribeApiDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeArchiveRoute,
+    postXAmzTargetAWSEventsDescribeArchiveRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeConnectionRoute,
+    postXAmzTargetAWSEventsDescribeConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeEndpointRoute,
+    postXAmzTargetAWSEventsDescribeEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeEventBusRoute,
+    postXAmzTargetAWSEventsDescribeEventBusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeEventSourceRoute,
+    postXAmzTargetAWSEventsDescribeEventSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribePartnerEventSourceRoute,
+    postXAmzTargetAWSEventsDescribePartnerEventSourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeReplayRoute,
+    postXAmzTargetAWSEventsDescribeReplayRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsDescribeRuleRoute,
+    postXAmzTargetAWSEventsDescribeRuleRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsDisableRuleRoute, postXAmzTargetAWSEventsDisableRuleRouteHandler)
+  .openapi(postXAmzTargetAWSEventsEnableRuleRoute, postXAmzTargetAWSEventsEnableRuleRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsListApiDestinationsRoute,
+    postXAmzTargetAWSEventsListApiDestinationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListArchivesRoute,
+    postXAmzTargetAWSEventsListArchivesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListConnectionsRoute,
+    postXAmzTargetAWSEventsListConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListEndpointsRoute,
+    postXAmzTargetAWSEventsListEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListEventBusesRoute,
+    postXAmzTargetAWSEventsListEventBusesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListEventSourcesRoute,
+    postXAmzTargetAWSEventsListEventSourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListPartnerEventSourceAccountsRoute,
+    postXAmzTargetAWSEventsListPartnerEventSourceAccountsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListPartnerEventSourcesRoute,
+    postXAmzTargetAWSEventsListPartnerEventSourcesRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsListReplaysRoute, postXAmzTargetAWSEventsListReplaysRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsListRuleNamesByTargetRoute,
+    postXAmzTargetAWSEventsListRuleNamesByTargetRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsListRulesRoute, postXAmzTargetAWSEventsListRulesRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsListTagsForResourceRoute,
+    postXAmzTargetAWSEventsListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsListTargetsByRuleRoute,
+    postXAmzTargetAWSEventsListTargetsByRuleRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsPutEventsRoute, postXAmzTargetAWSEventsPutEventsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsPutPartnerEventsRoute,
+    postXAmzTargetAWSEventsPutPartnerEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsPutPermissionRoute,
+    postXAmzTargetAWSEventsPutPermissionRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsPutRuleRoute, postXAmzTargetAWSEventsPutRuleRouteHandler)
+  .openapi(postXAmzTargetAWSEventsPutTargetsRoute, postXAmzTargetAWSEventsPutTargetsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsRemovePermissionRoute,
+    postXAmzTargetAWSEventsRemovePermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsRemoveTargetsRoute,
+    postXAmzTargetAWSEventsRemoveTargetsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSEventsStartReplayRoute, postXAmzTargetAWSEventsStartReplayRouteHandler)
+  .openapi(postXAmzTargetAWSEventsTagResourceRoute, postXAmzTargetAWSEventsTagResourceRouteHandler)
+  .openapi(
+    postXAmzTargetAWSEventsTestEventPatternRoute,
+    postXAmzTargetAWSEventsTestEventPatternRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsUntagResourceRoute,
+    postXAmzTargetAWSEventsUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsUpdateApiDestinationRoute,
+    postXAmzTargetAWSEventsUpdateApiDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsUpdateArchiveRoute,
+    postXAmzTargetAWSEventsUpdateArchiveRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsUpdateConnectionRoute,
+    postXAmzTargetAWSEventsUpdateConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSEventsUpdateEndpointRoute,
+    postXAmzTargetAWSEventsUpdateEndpointRouteHandler,
+  )
 
 export default app

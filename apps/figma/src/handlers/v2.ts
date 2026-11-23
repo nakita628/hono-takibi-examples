@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2WebhooksWebhookIdRoute,
   getV2FoldersFolderIdFilesRoute,
   getV2FoldersFolderIdFoldersRoute,
@@ -13,39 +13,64 @@ import {
   putV2WebhooksWebhookIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2TeamsTeamIdFoldersRouteHandler: RouteHandler<
+  typeof getV2TeamsTeamIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2TeamsTeamIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FoldersFolderIdFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FoldersFolderIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FoldersFolderIdMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2WebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TeamsTeamIdWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2WebhooksWebhookIdRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2FoldersFolderIdFoldersRouteHandler: RouteHandler<
+  typeof getV2FoldersFolderIdFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FoldersFolderIdFilesRouteHandler: RouteHandler<
+  typeof getV2FoldersFolderIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FoldersFolderIdMetaRouteHandler: RouteHandler<
+  typeof getV2FoldersFolderIdMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WebhooksRouteHandler: RouteHandler<typeof getV2WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2WebhooksRouteHandler: RouteHandler<typeof postV2WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof putV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2WebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteV2WebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TeamsTeamIdWebhooksRouteHandler: RouteHandler<
+  typeof getV2TeamsTeamIdWebhooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2WebhooksWebhookIdRequestsRouteHandler: RouteHandler<
+  typeof getV2WebhooksWebhookIdRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAnomaliesIdRoute, postAnomaliesInsightInsightIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAnomaliesIdRoute, postAnomaliesInsightInsightIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnomaliesIdRouteHandler: RouteHandler<typeof getAnomaliesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anomaliesHandler = app
-  .openapi(getAnomaliesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnomaliesInsightInsightIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnomaliesInsightInsightIdRouteHandler: RouteHandler<
+  typeof postAnomaliesInsightInsightIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

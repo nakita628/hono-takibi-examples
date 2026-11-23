@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGroupGroupIdMembersRoute,
   getGroupGroupIdOrgsRoute,
   getGroupGroupIdRolesRoute,
@@ -11,33 +11,56 @@ import {
   putGroupGroupIdSettingsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postGroupGroupIdAuditRouteHandler: RouteHandler<
+  typeof postGroupGroupIdAuditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const groupHandler = app
-  .openapi(postGroupGroupIdAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupGroupIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupGroupIdOrgOrgIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupGroupIdOrgsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupGroupIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupGroupIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGroupGroupIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupGroupIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupGroupIdTagsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGroupGroupIdMembersRouteHandler: RouteHandler<
+  typeof getGroupGroupIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupGroupIdOrgOrgIdMembersRouteHandler: RouteHandler<
+  typeof postGroupGroupIdOrgOrgIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupGroupIdOrgsRouteHandler: RouteHandler<
+  typeof getGroupGroupIdOrgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupGroupIdRolesRouteHandler: RouteHandler<
+  typeof getGroupGroupIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupGroupIdSettingsRouteHandler: RouteHandler<
+  typeof getGroupGroupIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGroupGroupIdSettingsRouteHandler: RouteHandler<
+  typeof putGroupGroupIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupGroupIdTagsRouteHandler: RouteHandler<
+  typeof getGroupGroupIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupGroupIdTagsDeleteRouteHandler: RouteHandler<
+  typeof postGroupGroupIdTagsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

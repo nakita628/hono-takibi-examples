@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSimbaApiServiceV20180301DisassociateFileSystemAliasesHandler =
-  app.openapi(postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSimbaAPIServiceV20180301DisassociateFileSystemAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChannelPointsCustomRewardsRoute,
   getChannelPointsCustomRewardsRedemptionsRoute,
   getChannelPointsCustomRewardsRoute,
@@ -8,24 +8,38 @@ import {
   postChannelPointsCustomRewardsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChannelPointsCustomRewardsRouteHandler: RouteHandler<
+  typeof postChannelPointsCustomRewardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const channelPointsHandler = app
-  .openapi(postChannelPointsCustomRewardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelPointsCustomRewardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelPointsCustomRewardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChannelPointsCustomRewardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelPointsCustomRewardsRedemptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChannelPointsCustomRewardsRedemptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteChannelPointsCustomRewardsRouteHandler: RouteHandler<
+  typeof deleteChannelPointsCustomRewardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelPointsCustomRewardsRouteHandler: RouteHandler<
+  typeof getChannelPointsCustomRewardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChannelPointsCustomRewardsRouteHandler: RouteHandler<
+  typeof patchChannelPointsCustomRewardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelPointsCustomRewardsRedemptionsRouteHandler: RouteHandler<
+  typeof getChannelPointsCustomRewardsRedemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChannelPointsCustomRewardsRedemptionsRouteHandler: RouteHandler<
+  typeof patchChannelPointsCustomRewardsRedemptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

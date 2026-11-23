@@ -15,13 +15,13 @@ export function getApiKey() {
 
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesQueryKey(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames',
     keyArgs,
   ] as const
 }
@@ -32,7 +32,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
           >
         >
       >
@@ -41,7 +41,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -51,7 +51,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+              (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
             >
           >
         >
@@ -67,7 +67,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+        client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
           'time-frames'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
@@ -81,7 +81,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
           >
         >
       >
@@ -90,7 +90,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -101,7 +101,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
                   >
                 >
               >
@@ -134,13 +134,13 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
 
 export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTimeQueryKey(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'api',
-    '/api/logistics-capacity/resources/carrier@:capacityType@:shippingPolicyId/time-frames/:windowDayF:windowStartTimeT:windowEndTime',
+    '/api/logistics-capacity/resources/carrier@{capacityType}@{shippingPolicyId}/time-frames/:windowDayF{windowStartTime}T{windowEndTime}',
     keyArgs,
   ] as const
 }
@@ -151,7 +151,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
           >
         >
       >
@@ -160,7 +160,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -170,7 +170,7 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+              (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
             >
           >
         >
@@ -188,9 +188,9 @@ export function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolic
       ),
     queryFn({ signal }) {
       return parseResponse(
-        client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+        client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
           'time-frames'
-        ][':windowDayF:windowStartTimeT:windowEndTime'].$get(args, {
+        ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -205,7 +205,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+            (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
           >
         >
       >
@@ -214,7 +214,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -225,7 +225,7 @@ export function createApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPo
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+                    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
                   >
                 >
               >

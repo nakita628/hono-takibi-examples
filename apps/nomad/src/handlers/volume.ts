@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVolumeCsiVolumeIdActionRoute,
   deleteVolumeCsiVolumeIdRoute,
   getVolumeCsiVolumeIdRoute,
@@ -7,21 +7,32 @@ import {
   postVolumeCsiVolumeIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteVolumeCsiVolumeIdRouteHandler: RouteHandler<
+  typeof deleteVolumeCsiVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const volumeHandler = app
-  .openapi(deleteVolumeCsiVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumeCsiVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumeCsiVolumeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVolumeCsiVolumeIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumeCsiVolumeIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVolumeCsiVolumeIdRouteHandler: RouteHandler<
+  typeof getVolumeCsiVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumeCsiVolumeIdRouteHandler: RouteHandler<
+  typeof postVolumeCsiVolumeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVolumeCsiVolumeIdActionRouteHandler: RouteHandler<
+  typeof deleteVolumeCsiVolumeIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumeCsiVolumeIdActionRouteHandler: RouteHandler<
+  typeof postVolumeCsiVolumeIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

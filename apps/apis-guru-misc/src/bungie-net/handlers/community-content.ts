@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCommunityContentGetSortMediaFilterPageIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCommunityContentGetSortMediaFilterPageIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const communityContentHandler = app.openapi(
-  getCommunityContentGetSortMediaFilterPageIndexRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getCommunityContentGetSortMediaFilterPageIndexRouteHandler: RouteHandler<
+  typeof getCommunityContentGetSortMediaFilterPageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

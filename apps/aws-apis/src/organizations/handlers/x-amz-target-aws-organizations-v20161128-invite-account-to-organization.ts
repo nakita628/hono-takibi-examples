@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsOrganizationsV20161128InviteAccountToOrganizationHandler = app.openapi(
-  postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSOrganizationsV20161128InviteAccountToOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

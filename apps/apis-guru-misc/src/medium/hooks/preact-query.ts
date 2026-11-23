@@ -1910,29 +1910,29 @@ export function useSuspenseRelatedTagsTag<
 }
 
 export function getSearchArticlesQueryQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
 ) {
-  return ['search', '/search/articles?query=:query', args] as const
+  return ['search', '/search/articles?query={query}', args] as const
 }
 
 export function getSearchArticlesQueryQueryQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
         >
       >
     >,
@@ -1943,7 +1943,7 @@ export function getSearchArticlesQueryQueryQueryOptions<
     queryKey: getSearchArticlesQueryQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['articles?query=:query'].$get(args, {
+        client.search['articles?query={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1956,20 +1956,20 @@ export function useSearchArticlesQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
             >
           >
         >,
@@ -1997,20 +1997,20 @@ export function useSuspenseSearchArticlesQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['articles?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['articles?query={query}']['$get']>>
             >
           >
         >,
@@ -2035,29 +2035,29 @@ export function useSuspenseSearchArticlesQueryQuery<
 }
 
 export function getSearchListsQueryQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
 ) {
-  return ['search', '/search/lists?query=:query', args] as const
+  return ['search', '/search/lists?query={query}', args] as const
 }
 
 export function getSearchListsQueryQueryQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
         >
       >
     >,
@@ -2068,7 +2068,7 @@ export function getSearchListsQueryQueryQueryOptions<
     queryKey: getSearchListsQueryQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['lists?query=:query'].$get(args, {
+        client.search['lists?query={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2081,20 +2081,20 @@ export function useSearchListsQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
             >
           >
         >,
@@ -2122,20 +2122,20 @@ export function useSuspenseSearchListsQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['lists?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['lists?query={query}']['$get']>>
             >
           >
         >,
@@ -2160,29 +2160,29 @@ export function useSuspenseSearchListsQueryQuery<
 }
 
 export function getSearchPublicationsQueryQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
 ) {
-  return ['search', '/search/publications?query=:query', args] as const
+  return ['search', '/search/publications?query={query}', args] as const
 }
 
 export function getSearchPublicationsQueryQueryQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
         >
       >
     >,
@@ -2193,7 +2193,7 @@ export function getSearchPublicationsQueryQueryQueryOptions<
     queryKey: getSearchPublicationsQueryQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['publications?query=:query'].$get(args, {
+        client.search['publications?query={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2206,20 +2206,20 @@ export function useSearchPublicationsQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
             >
           >
         >,
@@ -2247,20 +2247,20 @@ export function useSuspenseSearchPublicationsQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['publications?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['publications?query={query}']['$get']>>
             >
           >
         >,
@@ -2285,27 +2285,29 @@ export function useSuspenseSearchPublicationsQueryQuery<
 }
 
 export function getSearchTagsQueryQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
 ) {
-  return ['search', '/search/tags?query=:query', args] as const
+  return ['search', '/search/tags?query={query}', args] as const
 }
 
 export function getSearchTagsQueryQueryQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
         >
       >
     >,
@@ -2316,7 +2318,7 @@ export function getSearchTagsQueryQueryQueryOptions<
     queryKey: getSearchTagsQueryQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['tags?query=:query'].$get(args, {
+        client.search['tags?query={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2328,19 +2330,21 @@ export function getSearchTagsQueryQueryQueryOptions<
 export function useSearchTagsQueryQuery<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
             >
           >
         >,
@@ -2364,19 +2368,21 @@ export function useSearchTagsQueryQuery<
 export function useSuspenseSearchTagsQueryQuery<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>>
+      typeof parseResponse<
+        Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
+      >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['tags?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['tags?query={query}']['$get']>>
             >
           >
         >,
@@ -2398,29 +2404,29 @@ export function useSuspenseSearchTagsQueryQuery<
 }
 
 export function getSearchUsersQueryQueryQueryKey(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
 ) {
-  return ['search', '/search/users?query=:query', args] as const
+  return ['search', '/search/users?query={query}', args] as const
 }
 
 export function getSearchUsersQueryQueryQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+          Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
         >
       >
     >,
@@ -2431,7 +2437,7 @@ export function getSearchUsersQueryQueryQueryOptions<
     queryKey: getSearchUsersQueryQueryQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search['users?query=:query'].$get(args, {
+        client.search['users?query={query}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2444,20 +2450,20 @@ export function useSearchUsersQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
             >
           >
         >,
@@ -2485,20 +2491,20 @@ export function useSuspenseSearchUsersQueryQuery<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+        Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.search)['users?query=:query']['$get']>>
+              Awaited<ReturnType<(typeof client.search)['users?query={query}']['$get']>>
             >
           >
         >,

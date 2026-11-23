@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAutomationsAutomationIdRoute,
   getAutomationsAutomationIdRoute,
   getAutomationsAutomationIdRunsRoute,
@@ -12,36 +12,58 @@ import {
   postAutomationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAutomationsRouteHandler: RouteHandler<typeof postAutomationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const automationsHandler = app
-  .openapi(postAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationsAutomationIdDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationsAutomationIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationsAutomationIdRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationsAutomationIdRunsRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationsAutomationIdRunsRunIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAutomationsRouteHandler: RouteHandler<typeof getAutomationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof getAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof patchAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof deleteAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAutomationsAutomationIdDuplicateRouteHandler: RouteHandler<
+  typeof postAutomationsAutomationIdDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAutomationsAutomationIdStopRouteHandler: RouteHandler<
+  typeof postAutomationsAutomationIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationsAutomationIdRunsRouteHandler: RouteHandler<
+  typeof getAutomationsAutomationIdRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationsAutomationIdRunsRunIdRouteHandler: RouteHandler<
+  typeof getAutomationsAutomationIdRunsRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAutomationsAutomationIdRunsRunIdCancelRouteHandler: RouteHandler<
+  typeof postAutomationsAutomationIdRunsRunIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

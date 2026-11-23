@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postRejectsAddRoute,
   postRejectsAddSmsRoute,
   postRejectsDeleteRoute,
@@ -8,24 +8,34 @@ import {
   postRejectsListSmsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRejectsAddRouteHandler: RouteHandler<typeof postRejectsAddRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rejectsHandler = app
-  .openapi(postRejectsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRejectsAddSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRejectsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRejectsListSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRejectsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRejectsDeleteSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRejectsAddSmsRouteHandler: RouteHandler<typeof postRejectsAddSmsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRejectsListRouteHandler: RouteHandler<typeof postRejectsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRejectsListSmsRouteHandler: RouteHandler<typeof postRejectsListSmsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRejectsDeleteRouteHandler: RouteHandler<typeof postRejectsDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRejectsDeleteSmsRouteHandler: RouteHandler<
+  typeof postRejectsDeleteSmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

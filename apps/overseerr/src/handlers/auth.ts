@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAuthMeRoute,
   postAuthLocalRoute,
   postAuthLogoutRoute,
@@ -8,24 +8,30 @@ import {
   postAuthResetPasswordRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAuthMeRouteHandler: RouteHandler<typeof getAuthMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authHandler = app
-  .openapi(getAuthMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthPlexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthLocalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthResetPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthResetPasswordGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthPlexRouteHandler: RouteHandler<typeof postAuthPlexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthLocalRouteHandler: RouteHandler<typeof postAuthLocalRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthLogoutRouteHandler: RouteHandler<typeof postAuthLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthResetPasswordRouteHandler: RouteHandler<
+  typeof postAuthResetPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthResetPasswordGuidRouteHandler: RouteHandler<
+  typeof postAuthResetPasswordGuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

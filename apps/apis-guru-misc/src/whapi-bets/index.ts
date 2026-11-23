@@ -1,19 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  betHandler,
-  betIdHandler,
-  betslipsHandler,
-  freebetsHandler,
-  historyHandler,
+  getFreebetsRoute,
+  getHistoryRoute,
+  postBetComplexRoute,
+  postBetSingleRoute,
+  postBetslipsRoute,
+  putBetIdCashinRoute,
+} from './routes'
+import {
+  getFreebetsRouteHandler,
+  getHistoryRouteHandler,
+  postBetComplexRouteHandler,
+  postBetSingleRouteHandler,
+  postBetslipsRouteHandler,
+  putBetIdCashinRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', betHandler)
-  .route('/', betslipsHandler)
-  .route('/', freebetsHandler)
-  .route('/', historyHandler)
-  .route('/', betIdHandler)
+  .openapi(postBetComplexRoute, postBetComplexRouteHandler)
+  .openapi(postBetSingleRoute, postBetSingleRouteHandler)
+  .openapi(postBetslipsRoute, postBetslipsRouteHandler)
+  .openapi(getFreebetsRoute, getFreebetsRouteHandler)
+  .openapi(getHistoryRoute, getHistoryRouteHandler)
+  .openapi(putBetIdCashinRoute, putBetIdCashinRouteHandler)
 
 export default app

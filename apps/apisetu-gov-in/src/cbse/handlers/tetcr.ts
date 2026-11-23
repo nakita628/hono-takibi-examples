@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTetcrCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTetcrCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const tetcrHandler = app.openapi(postTetcrCertificateRoute, (c) => {
+export const postTetcrCertificateRouteHandler: RouteHandler<
+  typeof postTetcrCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

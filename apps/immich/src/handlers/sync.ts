@@ -1,23 +1,23 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSyncAckRoute,
   getSyncAckRoute,
   postSyncAckRoute,
   postSyncStreamRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSyncAckRouteHandler: RouteHandler<typeof deleteSyncAckRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const syncHandler = app
-  .openapi(deleteSyncAckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncAckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncAckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSyncStreamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSyncAckRouteHandler: RouteHandler<typeof getSyncAckRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncAckRouteHandler: RouteHandler<typeof postSyncAckRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSyncStreamRouteHandler: RouteHandler<typeof postSyncStreamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

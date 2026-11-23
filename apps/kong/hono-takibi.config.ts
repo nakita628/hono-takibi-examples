@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/Kong/developer.konghq.com/main/api-specs/gateway/admin-oss/3.9/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

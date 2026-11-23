@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/shop-pro.jp/1.0.0/openapi.yaml',
   output: './src/shop-pro-jp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/shop-pro-jp/types.ts' },
   client: { output: './src/shop-pro-jp/client.ts', baseUrl: '/' },
   rpc: { output: './src/shop-pro-jp/rpc.ts', parseResponse: true },

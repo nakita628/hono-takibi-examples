@@ -55,5 +55,5 @@ export const getUsersUseridPhotoRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'A photo image', content: {} } },
+  responses: { 200: { description: 'A photo image' } },
 })

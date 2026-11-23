@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTemplateFilesAsDataUriTemplateIdRoute,
   getTemplateFilesAsFileUrlTemplateIdRoute,
   getTemplateFilesTemplateIdRoute,
@@ -13,39 +13,66 @@ import {
   postTemplateUpdateFilesTemplateIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTemplateAddUserTemplateIdRouteHandler: RouteHandler<
+  typeof postTemplateAddUserTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templateHandler = app
-  .openapi(postTemplateAddUserTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateCreateEmbeddedDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateDeleteTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateFilesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateFilesAsDataUriTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateFilesAsFileUrlTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplateListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateRemoveUserTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplateUpdateFilesTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTemplateCreateRouteHandler: RouteHandler<typeof postTemplateCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplateCreateEmbeddedDraftRouteHandler: RouteHandler<
+  typeof postTemplateCreateEmbeddedDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplateDeleteTemplateIdRouteHandler: RouteHandler<
+  typeof postTemplateDeleteTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateFilesTemplateIdRouteHandler: RouteHandler<
+  typeof getTemplateFilesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateFilesAsDataUriTemplateIdRouteHandler: RouteHandler<
+  typeof getTemplateFilesAsDataUriTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateFilesAsFileUrlTemplateIdRouteHandler: RouteHandler<
+  typeof getTemplateFilesAsFileUrlTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateTemplateIdRouteHandler: RouteHandler<
+  typeof getTemplateTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplateListRouteHandler: RouteHandler<typeof getTemplateListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplateRemoveUserTemplateIdRouteHandler: RouteHandler<
+  typeof postTemplateRemoveUserTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplateUpdateFilesTemplateIdRouteHandler: RouteHandler<
+  typeof postTemplateUpdateFilesTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

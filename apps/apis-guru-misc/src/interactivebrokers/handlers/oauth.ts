@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postOauthAccessTokenRoute,
   postOauthLiveSessionTokenRoute,
   postOauthRequestTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOauthAccessTokenRouteHandler: RouteHandler<
+  typeof postOauthAccessTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauthHandler = app
-  .openapi(postOauthAccessTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthLiveSessionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthRequestTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauthLiveSessionTokenRouteHandler: RouteHandler<
+  typeof postOauthLiveSessionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthRequestTokenRouteHandler: RouteHandler<
+  typeof postOauthRequestTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

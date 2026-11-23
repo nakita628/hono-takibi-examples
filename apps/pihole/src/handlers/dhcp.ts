@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDhcpLeasesIpRoute, getDhcpLeasesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDhcpLeasesIpRoute, getDhcpLeasesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDhcpLeasesRouteHandler: RouteHandler<typeof getDhcpLeasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dhcpHandler = app
-  .openapi(getDhcpLeasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDhcpLeasesIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDhcpLeasesIpRouteHandler: RouteHandler<typeof deleteDhcpLeasesIpRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

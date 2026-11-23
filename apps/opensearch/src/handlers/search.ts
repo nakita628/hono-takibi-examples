@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSearchPipelineIdRoute,
   deleteSearchPointInTimeAllRoute,
   deleteSearchPointInTimeRoute,
@@ -19,57 +19,98 @@ import {
   putSearchPipelineIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchRouteHandler: RouteHandler<typeof getSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchPipelineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSearchPipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchPipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSearchPipelineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSearchPointInTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSearchPointInTimeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchPointInTimeAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSearchScrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchScrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchScrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSearchScrollScrollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchScrollScrollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchScrollScrollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSearchRouteHandler: RouteHandler<typeof postSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchPipelineRouteHandler: RouteHandler<typeof getSearchPipelineRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSearchPipelineIdRouteHandler: RouteHandler<
+  typeof deleteSearchPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchPipelineIdRouteHandler: RouteHandler<
+  typeof getSearchPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSearchPipelineIdRouteHandler: RouteHandler<
+  typeof putSearchPipelineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSearchPointInTimeRouteHandler: RouteHandler<
+  typeof deleteSearchPointInTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSearchPointInTimeAllRouteHandler: RouteHandler<
+  typeof deleteSearchPointInTimeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchPointInTimeAllRouteHandler: RouteHandler<
+  typeof getSearchPointInTimeAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSearchScrollRouteHandler: RouteHandler<typeof deleteSearchScrollRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchScrollRouteHandler: RouteHandler<typeof getSearchScrollRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchScrollRouteHandler: RouteHandler<typeof postSearchScrollRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSearchScrollScrollIdRouteHandler: RouteHandler<
+  typeof deleteSearchScrollScrollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchScrollScrollIdRouteHandler: RouteHandler<
+  typeof getSearchScrollScrollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchScrollScrollIdRouteHandler: RouteHandler<
+  typeof postSearchScrollScrollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchTemplateRouteHandler: RouteHandler<typeof getSearchTemplateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchTemplateRouteHandler: RouteHandler<typeof postSearchTemplateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

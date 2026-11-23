@@ -1,17 +1,35 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetDynamoDbStreams20120810DescribeStreamHandler,
-  xAmzTargetDynamoDbStreams20120810GetRecordsHandler,
-  xAmzTargetDynamoDbStreams20120810GetShardIteratorHandler,
-  xAmzTargetDynamoDbStreams20120810ListStreamsHandler,
+  postXAmzTargetDynamoDBStreams20120810DescribeStreamRoute,
+  postXAmzTargetDynamoDBStreams20120810GetRecordsRoute,
+  postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute,
+  postXAmzTargetDynamoDBStreams20120810ListStreamsRoute,
+} from './routes'
+import {
+  postXAmzTargetDynamoDBStreams20120810DescribeStreamRouteHandler,
+  postXAmzTargetDynamoDBStreams20120810GetRecordsRouteHandler,
+  postXAmzTargetDynamoDBStreams20120810GetShardIteratorRouteHandler,
+  postXAmzTargetDynamoDBStreams20120810ListStreamsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetDynamoDbStreams20120810DescribeStreamHandler)
-  .route('/', xAmzTargetDynamoDbStreams20120810GetRecordsHandler)
-  .route('/', xAmzTargetDynamoDbStreams20120810GetShardIteratorHandler)
-  .route('/', xAmzTargetDynamoDbStreams20120810ListStreamsHandler)
+  .openapi(
+    postXAmzTargetDynamoDBStreams20120810DescribeStreamRoute,
+    postXAmzTargetDynamoDBStreams20120810DescribeStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDBStreams20120810GetRecordsRoute,
+    postXAmzTargetDynamoDBStreams20120810GetRecordsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute,
+    postXAmzTargetDynamoDBStreams20120810GetShardIteratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetDynamoDBStreams20120810ListStreamsRoute,
+    postXAmzTargetDynamoDBStreams20120810ListStreamsRouteHandler,
+  )
 
 export default app

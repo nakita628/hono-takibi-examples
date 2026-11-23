@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute,
   deleteApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute,
   deleteApiStorageProfileSystemProfilesProfileIdRoute,
@@ -29,93 +29,164 @@ import {
   putApiStorageProfileSystemProfilesSchemaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiStorageProfileSystemProfilesRouteHandler: RouteHandler<
+  typeof postApiStorageProfileSystemProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiStorageProfileSystemProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiStorageProfileSystemProfilesSchemaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiStorageProfileSystemProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiStorageProfileSystemProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStorageProfileSystemProfilesProfileIdAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdAddressesUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdUnmaskRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdPurchaseInfoUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiStorageProfileSystemProspectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiStorageProfileSystemProspectsProspectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProspectsProspectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiStorageProfileSystemProspectsProspectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStorageProfileSystemProspectsProspectIdUnmaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putApiStorageProfileSystemProfilesSchemaRouteHandler: RouteHandler<
+  typeof putApiStorageProfileSystemProfilesSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiStorageProfileSystemProfilesProfileIdRouteHandler: RouteHandler<
+  typeof deleteApiStorageProfileSystemProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiStorageProfileSystemProfilesProfileIdRouteHandler: RouteHandler<
+  typeof patchApiStorageProfileSystemProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStorageProfileSystemProfilesProfileIdAddressesRouteHandler: RouteHandler<
+  typeof postApiStorageProfileSystemProfilesProfileIdAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRouteHandler: RouteHandler<
+  typeof deleteApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRouteHandler: RouteHandler<
+  typeof patchApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdAddressesAddressIdVersionsAddressVersionIdUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiStorageProfileSystemProfilesProfileIdPurchaseInfoRouteHandler: RouteHandler<
+  typeof deleteApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdPurchaseInfoRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiStorageProfileSystemProfilesProfileIdPurchaseInfoRouteHandler: RouteHandler<
+  typeof patchApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStorageProfileSystemProfilesProfileIdPurchaseInfoRouteHandler: RouteHandler<
+  typeof postApiStorageProfileSystemProfilesProfileIdPurchaseInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdPurchaseInfoUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdPurchaseInfoUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProfilesProfileIdVersionsProfileVersionIdUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiStorageProfileSystemProspectsRouteHandler: RouteHandler<
+  typeof postApiStorageProfileSystemProspectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiStorageProfileSystemProspectsProspectIdRouteHandler: RouteHandler<
+  typeof deleteApiStorageProfileSystemProspectsProspectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProspectsProspectIdRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProspectsProspectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiStorageProfileSystemProspectsProspectIdRouteHandler: RouteHandler<
+  typeof patchApiStorageProfileSystemProspectsProspectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStorageProfileSystemProspectsProspectIdUnmaskRouteHandler: RouteHandler<
+  typeof getApiStorageProfileSystemProspectsProspectIdUnmaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

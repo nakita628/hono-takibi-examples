@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/playablelocations/v3/openapi.yaml',
   output: './src/playablelocations/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/playablelocations/types.ts' },
   client: { output: './src/playablelocations/client.ts', baseUrl: '/' },
   rpc: { output: './src/playablelocations/rpc.ts', parseResponse: true },

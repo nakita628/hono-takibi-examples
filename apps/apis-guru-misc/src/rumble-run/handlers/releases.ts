@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReleasesAgentVersionRoute,
   getReleasesPlatformVersionRoute,
   getReleasesScannerVersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReleasesAgentVersionRouteHandler: RouteHandler<
+  typeof getReleasesAgentVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const releasesHandler = app
-  .openapi(getReleasesAgentVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReleasesPlatformVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReleasesScannerVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReleasesPlatformVersionRouteHandler: RouteHandler<
+  typeof getReleasesPlatformVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReleasesScannerVersionRouteHandler: RouteHandler<
+  typeof getReleasesScannerVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

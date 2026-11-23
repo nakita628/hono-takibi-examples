@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/artifactregistry/v1beta2/openapi.yaml',
   output: './src/artifactregistry/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/artifactregistry/types.ts' },
   client: { output: './src/artifactregistry/client.ts', baseUrl: '/' },
   rpc: { output: './src/artifactregistry/rpc.ts', parseResponse: true },

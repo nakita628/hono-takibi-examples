@@ -16648,12 +16648,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/media-bridge/2026-09/:appId/properties/:objectType/batch/archive': {
-      $post: {
-        input: { param: { appId: number; objectType: string } } & { json: BatchInputPropertyName }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { appId: number; objectType: string } } & {
+              json: BatchInputPropertyName
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; objectType: string } } & {
+              json: BatchInputPropertyName
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/media-bridge/2026-09/:appId/properties/:objectType/batch/create': {
@@ -16755,12 +16766,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number; groupName: string; objectType: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: number; groupName: string; objectType: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; groupName: string; objectType: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { appId: number; groupName: string; objectType: string } } & {
@@ -16798,12 +16816,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number; objectType: string; propertyName: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: number; objectType: string; propertyName: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; objectType: string; propertyName: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { appId: number; objectType: string; propertyName: string } } & {
@@ -16893,12 +16918,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/media-bridge/2026-09/:appId/schemas/:objectType/associations/:associationId': {
-      $delete: {
-        input: { param: { appId: number; associationId: string; objectType: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: number; associationId: string; objectType: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; associationId: string; objectType: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/media-bridge/2026-09/:appId/settings': {
@@ -17010,14 +17042,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number } } & {
-          query: { domainPortalId?: number | undefined; id?: bigint | undefined }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: number } } & {
+              query: { domainPortalId?: number | undefined; id?: bigint | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number } } & {
+              query: { domainPortalId?: number | undefined; id?: bigint | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/media-bridge/2026-09/:appId/settings/oembed-domains/:oEmbedDomainId': {

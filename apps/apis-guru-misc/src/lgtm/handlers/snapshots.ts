@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSnapshotsUploadsSessionIdRoute,
   getSnapshotsProjectIdLanguageRoute,
   postSnapshotsProjectIdLanguageRoute,
@@ -7,21 +7,32 @@ import {
   putSnapshotsUploadsSessionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSnapshotsUploadsSessionIdRouteHandler: RouteHandler<
+  typeof deleteSnapshotsUploadsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snapshotsHandler = app
-  .openapi(deleteSnapshotsUploadsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotsUploadsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnapshotsUploadsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsProjectIdLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotsProjectIdLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSnapshotsUploadsSessionIdRouteHandler: RouteHandler<
+  typeof postSnapshotsUploadsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnapshotsUploadsSessionIdRouteHandler: RouteHandler<
+  typeof putSnapshotsUploadsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsProjectIdLanguageRouteHandler: RouteHandler<
+  typeof getSnapshotsProjectIdLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotsProjectIdLanguageRouteHandler: RouteHandler<
+  typeof postSnapshotsProjectIdLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

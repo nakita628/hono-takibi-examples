@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/firmalyzer.com/iotvas/1.0/openapi.yaml',
   output: './src/firmalyzer-iotvas/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firmalyzer-iotvas/types.ts' },
   client: { output: './src/firmalyzer-iotvas/client.ts', baseUrl: '/' },
   rpc: { output: './src/firmalyzer-iotvas/rpc.ts', parseResponse: true },

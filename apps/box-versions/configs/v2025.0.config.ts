@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/box/box-openapi/main/openapi/openapi-v2025.0.json',
   output: './src/v2025.0/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/v2025.0/types.ts' },
   client: { output: './src/v2025.0/client.ts', baseUrl: '/' },
   rpc: { output: './src/v2025.0/rpc.ts', parseResponse: true },

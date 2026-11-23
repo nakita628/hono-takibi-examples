@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/pinpoint-email/2018-07-26/openapi.yaml',
   output: './src/pinpoint-email/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pinpoint-email/types.ts' },
   client: { output: './src/pinpoint-email/client.ts', baseUrl: '/' },
   rpc: { output: './src/pinpoint-email/rpc.ts', parseResponse: true },

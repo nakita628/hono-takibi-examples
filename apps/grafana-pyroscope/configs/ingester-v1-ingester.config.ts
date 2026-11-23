@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/ingester/v1/ingester.openapi.yaml',
   output: './src/ingester-v1-ingester/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ingester-v1-ingester/types.ts' },
   client: { output: './src/ingester-v1-ingester/client.ts', baseUrl: '/' },
   rpc: { output: './src/ingester-v1-ingester/rpc.ts', parseResponse: true },

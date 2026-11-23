@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/freetv-app.com/v1/openapi.yaml',
   output: './src/freetv-app/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/freetv-app/types.ts' },
   client: { output: './src/freetv-app/client.ts', baseUrl: '/' },
   rpc: { output: './src/freetv-app/rpc.ts', parseResponse: true },

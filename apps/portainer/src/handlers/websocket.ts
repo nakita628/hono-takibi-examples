@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWebsocketAttachRoute,
   getWebsocketExecRoute,
   getWebsocketKubernetesShellRoute,
   getWebsocketPodRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebsocketAttachRouteHandler: RouteHandler<typeof getWebsocketAttachRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const websocketHandler = app
-  .openapi(getWebsocketAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebsocketExecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebsocketKubernetesShellRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebsocketPodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebsocketExecRouteHandler: RouteHandler<typeof getWebsocketExecRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebsocketKubernetesShellRouteHandler: RouteHandler<
+  typeof getWebsocketKubernetesShellRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebsocketPodRouteHandler: RouteHandler<typeof getWebsocketPodRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

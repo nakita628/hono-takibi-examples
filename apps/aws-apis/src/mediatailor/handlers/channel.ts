@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChannelChannelNamePolicyRoute,
   deleteChannelChannelNameProgramProgramNameRoute,
   deleteChannelChannelNameRoute,
@@ -16,48 +16,86 @@ import {
   putChannelChannelNameStopRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postChannelChannelNameRouteHandler: RouteHandler<
+  typeof postChannelChannelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const channelHandler = app
-  .openapi(postChannelChannelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelChannelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelChannelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelChannelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelChannelNameProgramProgramNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelChannelNameProgramProgramNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelChannelNameProgramProgramNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelChannelNameProgramProgramNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelChannelNamePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelChannelNamePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelChannelNamePolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelChannelNameScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelChannelNameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelChannelNameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteChannelChannelNameRouteHandler: RouteHandler<
+  typeof deleteChannelChannelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelChannelNameRouteHandler: RouteHandler<
+  typeof getChannelChannelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelChannelNameRouteHandler: RouteHandler<
+  typeof putChannelChannelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelChannelNameProgramProgramNameRouteHandler: RouteHandler<
+  typeof postChannelChannelNameProgramProgramNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelChannelNameProgramProgramNameRouteHandler: RouteHandler<
+  typeof deleteChannelChannelNameProgramProgramNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelChannelNameProgramProgramNameRouteHandler: RouteHandler<
+  typeof getChannelChannelNameProgramProgramNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelChannelNameProgramProgramNameRouteHandler: RouteHandler<
+  typeof putChannelChannelNameProgramProgramNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelChannelNamePolicyRouteHandler: RouteHandler<
+  typeof deleteChannelChannelNamePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelChannelNamePolicyRouteHandler: RouteHandler<
+  typeof getChannelChannelNamePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelChannelNamePolicyRouteHandler: RouteHandler<
+  typeof putChannelChannelNamePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelChannelNameScheduleRouteHandler: RouteHandler<
+  typeof getChannelChannelNameScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelChannelNameStartRouteHandler: RouteHandler<
+  typeof putChannelChannelNameStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelChannelNameStopRouteHandler: RouteHandler<
+  typeof putChannelChannelNameStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/mizorampolice/3.0.0/openapi.yaml',
   output: './src/mizorampolice/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mizorampolice/types.ts' },
   client: { output: './src/mizorampolice/client.ts', baseUrl: '/' },
   rpc: { output: './src/mizorampolice/rpc.ts', parseResponse: true },

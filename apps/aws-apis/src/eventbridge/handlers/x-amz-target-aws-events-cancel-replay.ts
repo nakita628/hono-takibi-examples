@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSEventsCancelReplayRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSEventsCancelReplayRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsEventsCancelReplayHandler = app.openapi(
-  postXAmzTargetAWSEventsCancelReplayRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSEventsCancelReplayRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSEventsCancelReplayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGsiBestHourRoute,
   getGsiDispatchRoute,
   getGsiMarketdataRoute,
   getGsiPredictionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGsiBestHourRouteHandler: RouteHandler<typeof getGsiBestHourRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gsiHandler = app
-  .openapi(getGsiBestHourRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGsiDispatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGsiMarketdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGsiPredictionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGsiDispatchRouteHandler: RouteHandler<typeof getGsiDispatchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGsiMarketdataRouteHandler: RouteHandler<typeof getGsiMarketdataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGsiPredictionRouteHandler: RouteHandler<typeof getGsiPredictionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

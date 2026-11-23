@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComprehend20171127ListEventsDetectionJobsHandler = app.openapi(
-  postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComprehend20171127ListEventsDetectionJobsRouteHandler: RouteHandler<
+  typeof postXAmzTargetComprehend20171127ListEventsDetectionJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

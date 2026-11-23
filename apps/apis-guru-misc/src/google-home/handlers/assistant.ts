@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAssistantAlarmsRoute,
   postAssistantA11yModeRoute,
   postAssistantAlarmsDeleteRoute,
@@ -9,27 +9,44 @@ import {
   postAssistantSetNightModeParamsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAssistantA11yModeRouteHandler: RouteHandler<
+  typeof postAssistantA11yModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assistantHandler = app
-  .openapi(postAssistantA11yModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssistantAlarmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssistantAlarmsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssistantAlarmsVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssistantCheckReadyStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssistantNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssistantSetNightModeParamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAssistantAlarmsRouteHandler: RouteHandler<typeof getAssistantAlarmsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssistantAlarmsDeleteRouteHandler: RouteHandler<
+  typeof postAssistantAlarmsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssistantAlarmsVolumeRouteHandler: RouteHandler<
+  typeof postAssistantAlarmsVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssistantCheckReadyStatusRouteHandler: RouteHandler<
+  typeof postAssistantCheckReadyStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssistantNotificationsRouteHandler: RouteHandler<
+  typeof postAssistantNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssistantSetNightModeParamsRouteHandler: RouteHandler<
+  typeof postAssistantSetNightModeParamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getExchangeReasonsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getExchangeReasonsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const exchangeReasonsHandler = app.openapi(getExchangeReasonsRoute, (c) => {
+export const getExchangeReasonsRouteHandler: RouteHandler<typeof getExchangeReasonsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

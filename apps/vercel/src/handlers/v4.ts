@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV4AliasesIdOrAliasRoute, getV4AliasesRoute, postV4SandboxesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV4AliasesIdOrAliasRoute, getV4AliasesRoute, postV4SandboxesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV4SandboxesRouteHandler: RouteHandler<typeof postV4SandboxesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v4Handler = app
-  .openapi(postV4SandboxesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4AliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4AliasesIdOrAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV4AliasesRouteHandler: RouteHandler<typeof getV4AliasesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4AliasesIdOrAliasRouteHandler: RouteHandler<
+  typeof getV4AliasesIdOrAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

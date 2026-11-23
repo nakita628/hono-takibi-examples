@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionStartVpcEndpointServicePrivateDnsVerificationRoute,
   postActionStartVpcEndpointServicePrivateDnsVerificationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler: RouteHandler<
+  typeof getActionStartVpcEndpointServicePrivateDnsVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionStartVpcEndpointServicePrivateDnsVerificationHandler = app
-  .openapi(getActionStartVpcEndpointServicePrivateDnsVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionStartVpcEndpointServicePrivateDnsVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionStartVpcEndpointServicePrivateDnsVerificationRouteHandler: RouteHandler<
+  typeof postActionStartVpcEndpointServicePrivateDnsVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

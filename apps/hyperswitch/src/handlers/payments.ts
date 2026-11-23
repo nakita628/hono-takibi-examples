@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPaymentsListRoute,
   getPaymentsPaymentIdCancelPostCaptureRoute,
   getPaymentsPaymentIdClientRoute,
@@ -21,63 +21,112 @@ import {
   postPaymentsSessionTokensRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPaymentsRouteHandler: RouteHandler<typeof postPaymentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentsHandler = app
-  .openapi(postPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsSessionTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdCancelPostCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsPaymentIdCancelPostCaptureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdExtendAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdIncrementalAuthorizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentId3dsAuthenticationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdCompleteAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdPostSessionTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdUpdateMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdEligibilityCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsPaymentIdEligibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsPaymentIdClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdConfirmRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdCaptureRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsSessionTokensRouteHandler: RouteHandler<
+  typeof postPaymentsSessionTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdCancelRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdCancelPostCaptureRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdCancelPostCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsPaymentIdCancelPostCaptureRouteHandler: RouteHandler<
+  typeof getPaymentsPaymentIdCancelPostCaptureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdExtendAuthorizationRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdExtendAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsListRouteHandler: RouteHandler<typeof getPaymentsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdIncrementalAuthorizationRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdIncrementalAuthorizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentId3dsAuthenticationRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentId3dsAuthenticationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdCompleteAuthorizeRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdCompleteAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdPostSessionTokensRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdPostSessionTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdUpdateMetadataRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdUpdateMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdEligibilityCheckRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdEligibilityCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsPaymentIdEligibilityRouteHandler: RouteHandler<
+  typeof postPaymentsPaymentIdEligibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsPaymentIdClientRouteHandler: RouteHandler<
+  typeof getPaymentsPaymentIdClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsHawksNestServiceFacadePutKmsEncryptionKeyHandler = app.openapi(
-  postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

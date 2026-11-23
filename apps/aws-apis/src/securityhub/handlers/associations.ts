@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchAssociationsRoute, postAssociationsBatchGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchAssociationsRoute, postAssociationsBatchGetRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAssociationsBatchGetRouteHandler: RouteHandler<
+  typeof postAssociationsBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const associationsHandler = app
-  .openapi(postAssociationsBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchAssociationsRouteHandler: RouteHandler<typeof patchAssociationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

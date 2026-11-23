@@ -837,12 +837,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/corporate/group/unlink/:groupId/subAccounts': {
-      $put: {
-        input: { param: { groupId: string } } & { json: { subAccountIds: bigint[] } }
-        output: ErrorModel
-        outputFormat: 'json'
-        status: 400
-      }
+      $put:
+        | {
+            input: { param: { groupId: string } } & { json: { subAccountIds: bigint[] } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string } } & { json: { subAccountIds: bigint[] } }
+            output: ErrorModel
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/corporate/group/:id': {
@@ -889,14 +896,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-      $put: {
-        input: { param: { id: string } } & {
-          json: { groupName?: string | undefined; subAccountIds?: bigint[] | undefined }
-        }
-        output: ErrorModel
-        outputFormat: 'json'
-        status: 400
-      }
+      $put:
+        | {
+            input: { param: { id: string } } & {
+              json: { groupName?: string | undefined; subAccountIds?: bigint[] | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: string } } & {
+              json: { groupName?: string | undefined; subAccountIds?: bigint[] | undefined }
+            }
+            output: ErrorModel
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/corporate/groups': {
@@ -1205,12 +1221,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/corporate/subAccount/ip/dissociate': {
-      $put: {
-        input: { json: { ids: bigint[]; ip: string } }
-        output: ErrorModel
-        outputFormat: 'json'
-        status: 400
-      }
+      $put:
+        | {
+            input: { json: { ids: bigint[]; ip: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: { ids: bigint[]; ip: string } }
+            output: ErrorModel
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/corporate/subAccount/key': {
@@ -1434,6 +1457,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 whatsapp?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: bigint } } & {
+              json: {
+                analytics?: boolean | undefined
+                automation?: boolean | undefined
+                conversations?: boolean | undefined
+                crm?: boolean | undefined
+                'email-campaigns'?: boolean | undefined
+                'facebook-ads'?: boolean | undefined
+                inbox?: boolean | undefined
+                'landing-pages'?: boolean | undefined
+                meetings?: boolean | undefined
+                'sms-campaigns'?: boolean | undefined
+                'transactional-emails'?: boolean | undefined
+                'transactional-sms'?: boolean | undefined
+                'web-push'?: boolean | undefined
+                whatsapp?: boolean | undefined
+              }
+            }
             output: {
               code:
                 | 'invalid_parameter'
@@ -1504,6 +1550,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/corporate/subAccount/:id/plan': {
       $put:
+        | {
+            input: { param: { id: bigint } } & {
+              json: {
+                credits?:
+                  | {
+                      email?: bigint | undefined
+                      externalFeeds?: number | undefined
+                      sms?: number | undefined
+                      whatsapp?: number | undefined
+                      wpSubscribers?: bigint | undefined
+                    }
+                  | undefined
+                features?:
+                  | {
+                      inbox?: bigint | undefined
+                      landingPage?: bigint | undefined
+                      salesUsers?: bigint | undefined
+                      users?: bigint | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { id: bigint } } & {
               json: {
@@ -1599,6 +1671,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/corporate/subAccounts/plan': {
       $put:
+        | {
+            input: {
+              json: {
+                credits?:
+                  | {
+                      email?: bigint | undefined
+                      externalFeeds?: number | undefined
+                      sms?: number | undefined
+                      whatsapp?: number | undefined
+                      wpSubscribers?: bigint | undefined
+                    }
+                  | undefined
+                features?:
+                  | {
+                      landingPage?: bigint | undefined
+                      salesUsers?: bigint | undefined
+                      users?: bigint | undefined
+                    }
+                  | undefined
+                subAccountIds?: bigint[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
         | {
             input: {
               json: {
@@ -1899,41 +1997,77 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-      $put: {
-        input: { param: { email: string } } & {
-          json: {
-            all_features_access: true | false
-            privileges: {
-              feature?:
-                | 'user_management'
-                | 'api'
-                | 'my_plan'
-                | 'apps_management'
-                | 'analytics'
-                | 'sub_organization_groups'
-                | 'create_sub_organizations'
-                | 'manage_sub_organizations'
-                | 'security'
-                | undefined
-              permissions?:
-                | (
-                    | 'all'
-                    | 'none'
-                    | 'create'
-                    | 'edit_delete'
-                    | 'create_alerts'
-                    | 'download_data'
-                    | 'my_looks'
-                    | 'explore_create'
-                  )[]
-                | undefined
-            }[]
+      $put:
+        | {
+            input: { param: { email: string } } & {
+              json: {
+                all_features_access: true | false
+                privileges: {
+                  feature?:
+                    | 'user_management'
+                    | 'api'
+                    | 'my_plan'
+                    | 'apps_management'
+                    | 'analytics'
+                    | 'sub_organization_groups'
+                    | 'create_sub_organizations'
+                    | 'manage_sub_organizations'
+                    | 'security'
+                    | undefined
+                  permissions?:
+                    | (
+                        | 'all'
+                        | 'none'
+                        | 'create'
+                        | 'edit_delete'
+                        | 'create_alerts'
+                        | 'download_data'
+                        | 'my_looks'
+                        | 'explore_create'
+                      )[]
+                    | undefined
+                }[]
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: ErrorModel
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: { param: { email: string } } & {
+              json: {
+                all_features_access: true | false
+                privileges: {
+                  feature?:
+                    | 'user_management'
+                    | 'api'
+                    | 'my_plan'
+                    | 'apps_management'
+                    | 'analytics'
+                    | 'sub_organization_groups'
+                    | 'create_sub_organizations'
+                    | 'manage_sub_organizations'
+                    | 'security'
+                    | undefined
+                  permissions?:
+                    | (
+                        | 'all'
+                        | 'none'
+                        | 'create'
+                        | 'edit_delete'
+                        | 'create_alerts'
+                        | 'download_data'
+                        | 'my_looks'
+                        | 'explore_create'
+                      )[]
+                    | undefined
+                }[]
+              }
+            }
+            output: ErrorModel
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/organization/activities': {
@@ -2823,6 +2957,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { domainName: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { domainName: string } }
             output: {
               code:
                 | 'invalid_parameter'
@@ -3176,6 +3316,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/senders/:senderId': {
       $delete:
+        | { input: { param: { senderId: bigint } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { senderId: bigint } }
             output: {
@@ -3228,6 +3369,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { senderId: bigint } } & {
+              json: {
+                email?: string | undefined
+                ips?: { domain: string; ip: string; weight?: bigint | undefined }[] | undefined
+                name?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { senderId: bigint } } & {
               json: {
@@ -3356,6 +3509,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/senders/:senderId/validate': {
       $put:
+        | {
+            input: { param: { senderId: bigint } } & { json: { otp: number } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { senderId: bigint } } & { json: { otp: number } }
             output: {
@@ -3723,6 +3882,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/webhooks/:webhookId': {
       $delete:
+        | { input: { param: { webhookId: bigint } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { webhookId: bigint } }
             output: {
@@ -3911,6 +4071,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { webhookId: bigint } } & {
+              json: {
+                auth?: { token?: string | undefined; type?: string | undefined } | undefined
+                batched?: boolean | undefined
+                description?: string | undefined
+                domain?: string | undefined
+                events?:
+                  | (
+                      | 'sent'
+                      | 'hardBounce'
+                      | 'softBounce'
+                      | 'blocked'
+                      | 'spam'
+                      | 'delivered'
+                      | 'request'
+                      | 'click'
+                      | 'invalid'
+                      | 'deferred'
+                      | 'opened'
+                      | 'uniqueOpened'
+                      | 'unsubscribed'
+                      | 'listAddition'
+                      | 'contactUpdated'
+                      | 'contactDeleted'
+                      | 'inboundEmailProcessed'
+                      | 'reply'
+                    )[]
+                  | undefined
+                headers?: { key?: string | undefined; value?: string | undefined }[] | undefined
+                url?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { webhookId: bigint } } & {
               json: {
@@ -4250,6 +4447,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/feeds/:uuid': {
       $delete:
+        | { input: { param: { uuid: string } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { uuid: string } }
             output: {
@@ -4451,6 +4649,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { uuid: string } } & {
+              json: {
+                name?: string | undefined
+                url?: string | undefined
+                authType?: 'basic' | 'token' | 'noAuth' | undefined
+                username?: string | undefined
+                password?: string | undefined
+                token?: string | undefined
+                headers?: { name: string; value: string }[] | undefined
+                maxRetries?: number | undefined
+                cache?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { uuid: string } } & {
               json: {
@@ -5041,6 +5257,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 getId?: boolean | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              json: {
+                attributes?: { [x: string]: number | string | boolean | string[] } | undefined
+                email?: string | undefined
+                emailBlacklisted?: boolean | undefined
+                ext_id?: string | undefined
+                listIds?: bigint[] | undefined
+                smsBlacklisted?: boolean | undefined
+                smtpBlacklistSender?: string[] | undefined
+                updateEnabled?: boolean | undefined
+                forceMerge?: boolean | undefined
+                getId?: boolean | undefined
+              }
+            }
             output: ContactErrorModel
             outputFormat: 'json'
             status: 400
@@ -5147,6 +5382,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 attributeName: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                attributeCategory: 'normal' | 'transactional' | 'category' | 'calculated' | 'global'
+                attributeName: string
+              }
+            }
             output: {
               code:
                 | 'invalid_parameter'
@@ -5240,74 +5486,120 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 404
           }
-      $post: {
-        input: {
-          param: {
-            attributeCategory: 'normal' | 'transactional' | 'category' | 'calculated' | 'global'
-            attributeName: string
+      $post:
+        | {
+            input: {
+              param: {
+                attributeCategory: 'normal' | 'transactional' | 'category' | 'calculated' | 'global'
+                attributeName: string
+              }
+            } & {
+              json: {
+                enumeration?: { label: string; value: number }[] | undefined
+                isRecurring?: boolean | undefined
+                multiCategoryOptions?: string[] | undefined
+                type?:
+                  | 'text'
+                  | 'date'
+                  | 'float'
+                  | 'boolean'
+                  | 'id'
+                  | 'category'
+                  | 'multiple-choice'
+                  | 'user'
+                  | undefined
+                value?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 201
           }
-        } & {
-          json: {
-            enumeration?: { label: string; value: number }[] | undefined
-            isRecurring?: boolean | undefined
-            multiCategoryOptions?: string[] | undefined
-            type?:
-              | 'text'
-              | 'date'
-              | 'float'
-              | 'boolean'
-              | 'id'
-              | 'category'
-              | 'multiple-choice'
-              | 'user'
-              | undefined
-            value?: string | undefined
+        | {
+            input: {
+              param: {
+                attributeCategory: 'normal' | 'transactional' | 'category' | 'calculated' | 'global'
+                attributeName: string
+              }
+            } & {
+              json: {
+                enumeration?: { label: string; value: number }[] | undefined
+                isRecurring?: boolean | undefined
+                multiCategoryOptions?: string[] | undefined
+                type?:
+                  | 'text'
+                  | 'date'
+                  | 'float'
+                  | 'boolean'
+                  | 'id'
+                  | 'category'
+                  | 'multiple-choice'
+                  | 'user'
+                  | undefined
+                value?: string | undefined
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
       $put:
+        | {
+            input: {
+              param: {
+                attributeCategory: 'category' | 'calculated' | 'global' | 'normal'
+                attributeName: string
+              }
+            } & {
+              json: {
+                enumeration?: { label: string; value: number }[] | undefined
+                multiCategoryOptions?: string[] | undefined
+                value?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: {
@@ -5541,126 +5833,183 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/contacts/batch': {
-      $post: {
-        input: {
-          json: {
-            contacts?:
-              | {
-                  attributes?: { [x: string]: { [x: string]: unknown } } | undefined
-                  email?: string | undefined
-                  emailBlacklisted?: boolean | undefined
-                  ext_id?: string | undefined
-                  id?: bigint | undefined
-                  listIds?: bigint[] | undefined
-                  sms?: string | undefined
-                  smsBlacklisted?: boolean | undefined
-                  smtpBlacklistSender?: string[] | undefined
-                  unlinkListIds?: bigint[] | undefined
-                }[]
-              | undefined
+      $post:
+        | {
+            input: {
+              json: {
+                contacts?:
+                  | {
+                      attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+                      email?: string | undefined
+                      emailBlacklisted?: boolean | undefined
+                      ext_id?: string | undefined
+                      id?: bigint | undefined
+                      listIds?: bigint[] | undefined
+                      sms?: string | undefined
+                      smsBlacklisted?: boolean | undefined
+                      smtpBlacklistSender?: string[] | undefined
+                      unlinkListIds?: bigint[] | undefined
+                    }[]
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: {
+              json: {
+                contacts?:
+                  | {
+                      attributes?: { [x: string]: { [x: string]: unknown } } | undefined
+                      email?: string | undefined
+                      emailBlacklisted?: boolean | undefined
+                      ext_id?: string | undefined
+                      id?: bigint | undefined
+                      listIds?: bigint[] | undefined
+                      sms?: string | undefined
+                      smsBlacklisted?: boolean | undefined
+                      smtpBlacklistSender?: string[] | undefined
+                      unlinkListIds?: bigint[] | undefined
+                    }[]
+                  | undefined
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/contacts/doubleOptinConfirmation': {
-      $post: {
-        input: {
-          json: {
-            attributes?: { [x: string]: number | string | boolean | string[] } | undefined
-            contactPixelTrackingConsent?: boolean | undefined
-            email: string
-            excludeListIds?: bigint[] | undefined
-            includeListIds: bigint[]
-            redirectionUrl: string
-            templateId: bigint
+      $post:
+        | {
+            input: {
+              json: {
+                attributes?: { [x: string]: number | string | boolean | string[] } | undefined
+                contactPixelTrackingConsent?: boolean | undefined
+                email: string
+                excludeListIds?: bigint[] | undefined
+                includeListIds: bigint[]
+                redirectionUrl: string
+                templateId: bigint
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 201
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: {
+              json: {
+                attributes?: { [x: string]: number | string | boolean | string[] } | undefined
+                contactPixelTrackingConsent?: boolean | undefined
+                email: string
+                excludeListIds?: bigint[] | undefined
+                includeListIds: bigint[]
+                redirectionUrl: string
+                templateId: bigint
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              json: {
+                attributes?: { [x: string]: number | string | boolean | string[] } | undefined
+                contactPixelTrackingConsent?: boolean | undefined
+                email: string
+                excludeListIds?: bigint[] | undefined
+                includeListIds: bigint[]
+                redirectionUrl: string
+                templateId: bigint
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/contacts/export': {
@@ -5958,6 +6307,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/contacts/folders/:folderId': {
       $delete:
+        | { input: { param: { folderId: bigint } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { folderId: bigint } }
             output: {
@@ -6068,6 +6418,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { folderId: bigint } } & { json: CreateUpdateFolder }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { folderId: bigint } } & { json: CreateUpdateFolder }
             output: {
@@ -6443,6 +6799,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/contacts/lists/:listId': {
       $delete:
+        | { input: { param: { listId: bigint } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { listId: bigint } }
             output: {
@@ -6569,6 +6926,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { listId: bigint } } & {
+              json: { folderId?: bigint | undefined; name?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { listId: bigint } } & {
               json: { folderId?: bigint | undefined; name?: string | undefined }
@@ -7132,6 +7497,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { identifier: string | number } } & {
+              query: {
+                identifierType?:
+                  | 'email_id'
+                  | 'contact_id'
+                  | 'ext_id'
+                  | 'phone_id'
+                  | 'whatsapp_id'
+                  | 'landline_number_id'
+                  | undefined
+              }
+            }
             output: {
               code:
                 | 'invalid_parameter'
@@ -7346,6 +7728,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { identifier: string | number } } & {
+              query: {
+                identifierType?:
+                  | 'email_id'
+                  | 'contact_id'
+                  | 'ext_id'
+                  | 'phone_id'
+                  | 'whatsapp_id'
+                  | 'landline_number_id'
+                  | undefined
+              }
+            } & {
+              json: {
+                attributes?: { [x: string]: number | string | boolean | string[] } | undefined
+                emailBlacklisted?: boolean | undefined
+                ext_id?: string | undefined
+                listIds?: bigint[] | undefined
+                smsBlacklisted?: boolean | undefined
+                smtpBlacklistSender?: string[] | undefined
+                unlinkListIds?: bigint[] | undefined
+                forceMerge?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { identifier: string | number } } & {
               query: {
@@ -8258,6 +8668,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 url?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              json: {
+                deletedAt?: string | undefined
+                id: string
+                isDeleted?: boolean | undefined
+                name?: string | undefined
+                updateEnabled?: boolean | undefined
+                url?: string | undefined
+              }
+            }
             output: {
               code:
                 | 'invalid_parameter'
@@ -8950,6 +9375,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { json: { collectionId: string; coupons: string[] } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: { collectionId: string; coupons: string[] } }
             output: {
               code:
                 | 'invalid_parameter'
@@ -9591,108 +10022,126 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/orders': {
-      $get: {
-        input: {
-          query: {
-            limit?: bigint | undefined
-            offset?: bigint | undefined
-            sort?: 'asc' | 'desc' | undefined
-            secondarySortByModifiedAt?: boolean | undefined
-            modifiedSince?: string | undefined
-            createdSince?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                limit?: bigint | undefined
+                offset?: bigint | undefined
+                sort?: 'asc' | 'desc' | undefined
+                secondarySortByModifiedAt?: boolean | undefined
+                modifiedSince?: string | undefined
+                createdSince?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: {
+              query: {
+                limit?: bigint | undefined
+                offset?: bigint | undefined
+                sort?: 'asc' | 'desc' | undefined
+                secondarySortByModifiedAt?: boolean | undefined
+                modifiedSince?: string | undefined
+                createdSince?: string | undefined
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/orders/status': {
-      $post: {
-        input: { json: Order }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | { input: { json: Order }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { json: Order }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/orders/status/batch': {
@@ -10754,6 +11203,44 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: {
+              json: {
+                contact_properties?: { [x: string]: string | number | boolean } | undefined
+                event_date?: string | undefined
+                event_name: string
+                event_properties?:
+                  | {
+                      [x: string]:
+                        | string
+                        | number
+                        | boolean
+                        | { [x: string]: unknown }
+                        | { [x: string]: unknown }[]
+                    }
+                  | undefined
+                identifiers: {
+                  contact_id?: bigint | undefined
+                  email_id?: string | undefined
+                  ext_id?: string | undefined
+                  landline_number_id?: string | undefined
+                  phone_id?: string | undefined
+                  whatsapp_id?: string | undefined
+                }
+                object?:
+                  | {
+                      identifiers?:
+                        | { ext_id?: string | undefined; id?: string | undefined }
+                        | undefined
+                      type?: string | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               json: {
@@ -16939,6 +17426,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { campaignId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } }
             output: {
               code:
                 | 'invalid_parameter'
@@ -17282,6 +17775,70 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { campaignId: bigint } } & {
+              json: {
+                abTesting?: boolean | undefined
+                attachmentUrl?: string | undefined
+                emailExpirationDate?:
+                  | {
+                      duration?: bigint | undefined
+                      unit?: 'days' | 'weeks' | 'months' | undefined
+                    }
+                  | undefined
+                footer?: string | undefined
+                header?: string | undefined
+                htmlContent?: string | undefined
+                htmlUrl?: string | undefined
+                increaseRate?: bigint | undefined
+                initialQuota?: bigint | undefined
+                inlineImageActivation?: boolean | undefined
+                ipWarmupEnable?: boolean | undefined
+                mirrorActive?: boolean | undefined
+                name?: string | undefined
+                params?: { [x: string]: { [x: string]: unknown } } | undefined
+                previewText?: string | undefined
+                recipients?:
+                  | {
+                      exclusionListIds?: bigint[] | undefined
+                      exclusionSegmentIds?: bigint[] | undefined
+                      listIds?: bigint[] | undefined
+                      segmentIds?: bigint[] | undefined
+                    }
+                  | undefined
+                recurring?: boolean | undefined
+                replyTo?: string | undefined
+                scheduledAt?: string | undefined
+                sendAtBestTime?: boolean | undefined
+                sender?:
+                  | {
+                      email?: string | undefined
+                      id?: bigint | undefined
+                      name?: string | undefined
+                    }
+                  | undefined
+                splitRule?: bigint | undefined
+                subject?: string | undefined
+                subjectA?: string | undefined
+                subjectB?: string | undefined
+                tag?: string | undefined
+                toField?: string | undefined
+                unsubscriptionPageId?: string | undefined
+                updateFormId?: string | undefined
+                utmCampaign?: string | undefined
+                utmContent?: string | undefined
+                utmId?: string | undefined
+                utmMedium?: string | undefined
+                utmSource?: string | undefined
+                utmTerm?: string | undefined
+                winnerCriteria?: 'open' | 'click' | undefined
+                winnerDelay?: bigint | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & {
               json: {
@@ -17778,6 +18335,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { campaignId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } }
             output: ErrorModel
             outputFormat: 'json'
             status: 400
@@ -17837,6 +18400,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/emailCampaigns/:campaignId/sendReport': {
       $post:
+        | {
+            input: { param: { campaignId: bigint } } & { json: SendReport }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & { json: SendReport }
             output: {
@@ -17933,6 +18502,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { campaignId: bigint } } & { json: SendTestEmail }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } } & { json: SendTestEmail }
             output: PostSendFailed
             outputFormat: 'json'
             status: 400
@@ -18014,6 +18589,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/emailCampaigns/:campaignId/status': {
       $put:
+        | {
+            input: { param: { campaignId: bigint } } & { json: UpdateCampaignStatus }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & { json: UpdateCampaignStatus }
             output: {
@@ -18307,6 +18888,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { campaignId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } }
             output: {
               code:
                 | 'invalid_parameter'
@@ -18521,6 +19108,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | {
+            input: { param: { campaignId: bigint } } & {
+              json: {
+                content?: string | undefined
+                name?: string | undefined
+                organisationPrefix?: string | undefined
+                recipients?:
+                  | { exclusionListIds?: bigint[] | undefined; listIds: bigint[] }
+                  | undefined
+                scheduledAt?: string | undefined
+                sender?: string | undefined
+                unicodeEnabled?: boolean | undefined
+                unsubscribeInstruction?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & {
               json: {
@@ -18776,6 +19382,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { campaignId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } }
             output: ErrorModel
             outputFormat: 'json'
             status: 400
@@ -18835,6 +19447,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smsCampaigns/:campaignId/sendReport': {
       $post:
+        | {
+            input: { param: { campaignId: bigint } } & { json: SendReport }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & { json: SendReport }
             output: {
@@ -18933,6 +19551,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { campaignId: bigint } } & {
               json: { phoneNumber?: string | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { campaignId: bigint } } & {
+              json: { phoneNumber?: string | undefined }
+            }
             output: {
               code: string
               message: string
@@ -18993,6 +19619,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smsCampaigns/:campaignId/status': {
       $put:
+        | {
+            input: { param: { campaignId: bigint } } & { json: UpdateCampaignStatus }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } } & { json: UpdateCampaignStatus }
             output: {
@@ -19481,55 +20113,68 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/whatsappCampaigns/template/approval/:templateId': {
-      $post: {
-        input: { param: { templateId: bigint } }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { templateId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { templateId: bigint } }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/whatsappCampaigns/:campaignId': {
       $delete:
+        | {
+            input: { param: { campaignId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { campaignId: bigint } }
             output: {
@@ -19753,64 +20398,84 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 404
           }
-      $put: {
-        input: { param: { campaignId: bigint } } & {
-          json: {
-            campaignName?: string | undefined
-            campaignStatus?: 'scheduled' | 'suspended' | undefined
-            recipients?:
-              | {
-                  excludedListIds?: bigint[] | undefined
-                  listIds?: bigint[] | undefined
-                  segments?: bigint[] | undefined
-                }
-              | undefined
-            rescheduleFor?: string | undefined
+      $put:
+        | {
+            input: { param: { campaignId: bigint } } & {
+              json: {
+                campaignName?: string | undefined
+                campaignStatus?: 'scheduled' | 'suspended' | undefined
+                recipients?:
+                  | {
+                      excludedListIds?: bigint[] | undefined
+                      listIds?: bigint[] | undefined
+                      segments?: bigint[] | undefined
+                    }
+                  | undefined
+                rescheduleFor?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: { param: { campaignId: bigint } } & {
+              json: {
+                campaignName?: string | undefined
+                campaignStatus?: 'scheduled' | 'suspended' | undefined
+                recipients?:
+                  | {
+                      excludedListIds?: bigint[] | undefined
+                      listIds?: bigint[] | undefined
+                      segments?: bigint[] | undefined
+                    }
+                  | undefined
+                rescheduleFor?: string | undefined
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/companies': {
@@ -22253,6 +22918,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smtp/blockedContacts/:email': {
       $delete:
+        | { input: { param: { email: string } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { email: string } }
             output: {
@@ -22393,55 +23059,58 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-      $post: {
-        input: { json: { domain: string } }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | { input: { json: { domain: string } }; output: {}; outputFormat: string; status: 201 }
+        | {
+            input: { json: { domain: string } }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/smtp/blockedDomains/:domain': {
       $delete:
+        | { input: { param: { domain: string } }; output: {}; outputFormat: string; status: 204 }
         | {
             input: { param: { domain: string } }
             output: {
@@ -22496,57 +23165,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/smtp/deleteHardbounces': {
-      $post: {
-        input: {
-          json: {
-            contactEmail?: string | undefined
-            endDate?: string | undefined
-            startDate?: string | undefined
+      $post:
+        | {
+            input: {
+              json: {
+                contactEmail?: string | undefined
+                endDate?: string | undefined
+                startDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {
-          code:
-            | 'invalid_parameter'
-            | 'missing_parameter'
-            | 'out_of_range'
-            | 'campaign_processing'
-            | 'campaign_sent'
-            | 'document_not_found'
-            | 'not_enough_credits'
-            | 'permission_denied'
-            | 'duplicate_parameter'
-            | 'duplicate_request'
-            | 'method_not_allowed'
-            | 'unauthorized'
-            | 'account_under_validation'
-            | 'not_acceptable'
-            | 'bad_request'
-            | 'unprocessable_entity'
-            | 'Domain does not exist'
-            | 'Contact email not found'
-            | 'Attribute not found'
-            | 'Category id not found'
-            | 'Invalid parameters passed'
-            | 'Record(s) for identifier not found'
-            | 'Returned when query params are invalid'
-            | 'Returned when invalid data posted'
-            | 'Feed not found'
-            | 'Campaign ID not found'
-            | 'api-key not found'
-            | 'DMARC policy requires domain authentication'
-            | 'DNS records not properly configured'
-            | 'Invalid OTP code provided'
-            | 'OTP code has expired'
-            | 'Domain already exists in your account'
-            | 'The sum of all IP weights must equal 100'
-            | 'Authentication failed'
-            | 'Insufficient credits'
-            | 'Request already processed'
-          message: string
-        }
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: {
+              json: {
+                contactEmail?: string | undefined
+                endDate?: string | undefined
+                startDate?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              json: {
+                contactEmail?: string | undefined
+                endDate?: string | undefined
+                startDate?: string | undefined
+              }
+            }
+            output: {
+              code:
+                | 'invalid_parameter'
+                | 'missing_parameter'
+                | 'out_of_range'
+                | 'campaign_processing'
+                | 'campaign_sent'
+                | 'document_not_found'
+                | 'not_enough_credits'
+                | 'permission_denied'
+                | 'duplicate_parameter'
+                | 'duplicate_request'
+                | 'method_not_allowed'
+                | 'unauthorized'
+                | 'account_under_validation'
+                | 'not_acceptable'
+                | 'bad_request'
+                | 'unprocessable_entity'
+                | 'Domain does not exist'
+                | 'Contact email not found'
+                | 'Attribute not found'
+                | 'Category id not found'
+                | 'Invalid parameters passed'
+                | 'Record(s) for identifier not found'
+                | 'Returned when query params are invalid'
+                | 'Returned when invalid data posted'
+                | 'Feed not found'
+                | 'Campaign ID not found'
+                | 'api-key not found'
+                | 'DMARC policy requires domain authentication'
+                | 'DNS records not properly configured'
+                | 'Invalid OTP code provided'
+                | 'OTP code has expired'
+                | 'Domain already exists in your account'
+                | 'The sum of all IP weights must equal 100'
+                | 'Authentication failed'
+                | 'Insufficient credits'
+                | 'Request already processed'
+              message: string
+            }
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/smtp/email': {
@@ -22862,6 +23556,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smtp/email/:identifier': {
       $delete:
+        | {
+            input: { param: { identifier: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { identifier: string } }
             output: {
@@ -23297,6 +23997,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smtp/log/:identifier': {
       $delete:
+        | {
+            input: { param: { identifier: string } } & {
+              query: { from_date?: string | undefined; to_date?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { identifier: string } } & {
               query: { from_date?: string | undefined; to_date?: string | undefined }
@@ -23899,6 +24607,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { templateId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { templateId: bigint } }
             output: {
               code:
                 | 'invalid_parameter'
@@ -24028,6 +24742,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 toField?: string | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { templateId: bigint | string } } & {
+              json: {
+                attachmentUrl?: string | undefined
+                htmlContent?: string | undefined
+                htmlUrl?: string | undefined
+                isActive?: boolean | undefined
+                replyTo?: string | undefined
+                sender?:
+                  | {
+                      email?: string | undefined
+                      id?: bigint | undefined
+                      name?: string | undefined
+                    }
+                  | undefined
+                subject?: string | undefined
+                tag?: string | undefined
+                templateName?: string | undefined
+                toField?: string | undefined
+              }
+            }
             output: {
               code:
                 | 'invalid_parameter'
@@ -24100,6 +24839,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/smtp/templates/:templateId/sendTest': {
       $post:
+        | {
+            input: { param: { templateId: bigint } } & { json: SendTestEmail }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { templateId: bigint } } & { json: SendTestEmail }
             output: PostSendFailed

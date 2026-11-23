@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAuthkitOauth2CompleteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAuthkitOauth2CompleteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const authkitHandler = app.openapi(postAuthkitOauth2CompleteRoute, (c) => {
+export const postAuthkitOauth2CompleteRouteHandler: RouteHandler<
+  typeof postAuthkitOauth2CompleteRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

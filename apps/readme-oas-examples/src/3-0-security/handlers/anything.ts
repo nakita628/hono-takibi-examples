@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAnythingOauth2Route,
   getAnythingApiKeyRoute,
   getAnythingOauth2Route,
@@ -16,48 +16,86 @@ import {
   putAnythingOauth2Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnythingApiKeyRouteHandler: RouteHandler<typeof getAnythingApiKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(getAnythingApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingBasicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingOauth2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingOauth2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAnythingOauth2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAnythingOauth2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAnythingOauth2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingOpenIdConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingNoAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingOptionalAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnythingApiKeyRouteHandler: RouteHandler<typeof postAnythingApiKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingApiKeyRouteHandler: RouteHandler<typeof putAnythingApiKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingBasicRouteHandler: RouteHandler<typeof postAnythingBasicRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingBearerRouteHandler: RouteHandler<typeof postAnythingBearerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingBearerRouteHandler: RouteHandler<typeof putAnythingBearerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingOauth2RouteHandler: RouteHandler<typeof postAnythingOauth2Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingOauth2RouteHandler: RouteHandler<typeof getAnythingOauth2Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAnythingOauth2RouteHandler: RouteHandler<typeof putAnythingOauth2Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAnythingOauth2RouteHandler: RouteHandler<
+  typeof patchAnythingOauth2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAnythingOauth2RouteHandler: RouteHandler<
+  typeof deleteAnythingOauth2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingOpenIdConnectRouteHandler: RouteHandler<
+  typeof postAnythingOpenIdConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingNoAuthRouteHandler: RouteHandler<typeof postAnythingNoAuthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingOptionalAuthRouteHandler: RouteHandler<
+  typeof getAnythingOptionalAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

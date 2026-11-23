@@ -1,21 +1,41 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  configHandler,
-  discordHandler,
-  slackHandler,
-  snsHandler,
-  topicHandler,
-  twilioHandler,
+  getConfigRoute,
+  getDiscordRoute,
+  getSlackRoute,
+  getSnsRoute,
+  getTopicTopicNameRoute,
+  getTwilioRoute,
+  postDiscordRoute,
+  postSlackRoute,
+  postSnsRoute,
+  postTwilioRoute,
+} from './routes'
+import {
+  getConfigRouteHandler,
+  getDiscordRouteHandler,
+  getSlackRouteHandler,
+  getSnsRouteHandler,
+  getTopicTopicNameRouteHandler,
+  getTwilioRouteHandler,
+  postDiscordRouteHandler,
+  postSlackRouteHandler,
+  postSnsRouteHandler,
+  postTwilioRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', configHandler)
-  .route('/', discordHandler)
-  .route('/', slackHandler)
-  .route('/', snsHandler)
-  .route('/', topicHandler)
-  .route('/', twilioHandler)
+  .openapi(getConfigRoute, getConfigRouteHandler)
+  .openapi(getDiscordRoute, getDiscordRouteHandler)
+  .openapi(postDiscordRoute, postDiscordRouteHandler)
+  .openapi(getSlackRoute, getSlackRouteHandler)
+  .openapi(postSlackRoute, postSlackRouteHandler)
+  .openapi(getSnsRoute, getSnsRouteHandler)
+  .openapi(postSnsRoute, postSnsRouteHandler)
+  .openapi(getTopicTopicNameRoute, getTopicTopicNameRouteHandler)
+  .openapi(getTwilioRoute, getTwilioRouteHandler)
+  .openapi(postTwilioRoute, postTwilioRouteHandler)
 
 export default app

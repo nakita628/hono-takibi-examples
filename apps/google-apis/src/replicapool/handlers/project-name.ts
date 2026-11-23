@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRoute,
   getProjectNameZonesZonePoolsPoolNameReplicasRoute,
   getProjectNameZonesZonePoolsPoolNameRoute,
@@ -12,36 +12,62 @@ import {
   postProjectNameZonesZonePoolsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectNameZonesZonePoolsRouteHandler: RouteHandler<
+  typeof getProjectNameZonesZonePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectNameHandler = app
-  .openapi(getProjectNameZonesZonePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectNameZonesZonePoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsPoolNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectNameZonesZonePoolsPoolNameReplicasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsPoolNameResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectNameZonesZonePoolsPoolNameUpdateTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectNameZonesZonePoolsRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectNameZonesZonePoolsPoolNameRouteHandler: RouteHandler<
+  typeof getProjectNameZonesZonePoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectNameZonesZonePoolsPoolNameRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsPoolNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectNameZonesZonePoolsPoolNameReplicasRouteHandler: RouteHandler<
+  typeof getProjectNameZonesZonePoolsPoolNameReplicasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRouteHandler: RouteHandler<
+  typeof getProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRestartRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsPoolNameReplicasReplicaNameRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectNameZonesZonePoolsPoolNameResizeRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsPoolNameResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectNameZonesZonePoolsPoolNameUpdateTemplateRouteHandler: RouteHandler<
+  typeof postProjectNameZonesZonePoolsPoolNameUpdateTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

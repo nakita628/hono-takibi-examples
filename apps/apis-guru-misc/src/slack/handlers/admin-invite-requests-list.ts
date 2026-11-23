@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminInviteRequestsListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminInviteRequestsListRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminInviteRequestsListHandler = app.openapi(getAdminInviteRequestsListRoute, (c) => {
+export const getAdminInviteRequestsListRouteHandler: RouteHandler<
+  typeof getAdminInviteRequestsListRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

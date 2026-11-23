@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218RegisterVolumeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218RegisterVolumeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218RegisterVolumeHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218RegisterVolumeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218RegisterVolumeRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218RegisterVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

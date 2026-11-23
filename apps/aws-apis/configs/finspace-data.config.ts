@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/finspace-data/2020-07-13/openapi.yaml',
   output: './src/finspace-data/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/finspace-data/types.ts' },
   client: { output: './src/finspace-data/client.ts', baseUrl: '/' },
   rpc: { output: './src/finspace-data/rpc.ts', parseResponse: true },

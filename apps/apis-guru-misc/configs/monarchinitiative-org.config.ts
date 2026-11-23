@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/monarchinitiative.org/1.1.14/openapi.yaml',
   output: './src/monarchinitiative-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/monarchinitiative-org/types.ts' },
   client: { output: './src/monarchinitiative-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/monarchinitiative-org/rpc.ts', parseResponse: true },

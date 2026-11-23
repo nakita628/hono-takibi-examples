@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute,
   deleteBalancePlatformsIdTransferLimitsTransferLimitIdRoute,
   getBalancePlatformsBalancePlatformIdPayoutSchedulesIdRoute,
@@ -16,48 +16,86 @@ import {
   postBalancePlatformsIdTransferLimitsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBalancePlatformsIdRouteHandler: RouteHandler<
+  typeof getBalancePlatformsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const balancePlatformsHandler = app
-  .openapi(getBalancePlatformsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsIdAccountHoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsIdTransactionRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsBalancePlatformIdPayoutSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsBalancePlatformIdPayoutSchedulesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsIdTransferLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBalancePlatformsIdTransferLimitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBalancePlatformsIdTransferLimitsTransferLimitIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBalancePlatformsIdTransferLimitsTransferLimitIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBalancePlatformsIdAccountHoldersRouteHandler: RouteHandler<
+  typeof getBalancePlatformsIdAccountHoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsIdTransactionRulesRouteHandler: RouteHandler<
+  typeof getBalancePlatformsIdTransactionRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsBalancePlatformIdPayoutSchedulesRouteHandler: RouteHandler<
+  typeof getBalancePlatformsBalancePlatformIdPayoutSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsBalancePlatformIdPayoutSchedulesIdRouteHandler: RouteHandler<
+  typeof getBalancePlatformsBalancePlatformIdPayoutSchedulesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRouteHandler: RouteHandler<
+  typeof getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRouteHandler: RouteHandler<
+  typeof postBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRouteHandler: RouteHandler<
+  typeof getBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRouteHandler: RouteHandler<
+  typeof deleteBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRouteHandler: RouteHandler<
+  typeof patchBalancePlatformsBalancePlatformIdWebhooksWebhookIdSettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsIdTransferLimitsRouteHandler: RouteHandler<
+  typeof getBalancePlatformsIdTransferLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBalancePlatformsIdTransferLimitsRouteHandler: RouteHandler<
+  typeof postBalancePlatformsIdTransferLimitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBalancePlatformsIdTransferLimitsTransferLimitIdRouteHandler: RouteHandler<
+  typeof getBalancePlatformsIdTransferLimitsTransferLimitIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBalancePlatformsIdTransferLimitsTransferLimitIdRouteHandler: RouteHandler<
+  typeof deleteBalancePlatformsIdTransferLimitsTransferLimitIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

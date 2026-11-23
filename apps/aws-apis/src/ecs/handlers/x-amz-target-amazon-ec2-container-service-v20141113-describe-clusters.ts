@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerServiceV20141113DescribeClustersHandler = app.openapi(
-  postXAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerServiceV20141113DescribeClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

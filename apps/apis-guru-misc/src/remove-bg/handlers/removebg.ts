@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRemovebgRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRemovebgRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const removebgHandler = app.openapi(postRemovebgRoute, (c) => {
+export const postRemovebgRouteHandler: RouteHandler<typeof postRemovebgRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

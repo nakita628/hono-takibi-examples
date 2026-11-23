@@ -117,8 +117,8 @@ export const getClassifierBusinessBatchIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Not found.', content: {} },
-    500: { description: 'Internal server error.', content: {} },
+    404: { description: 'Not found.' },
+    500: { description: 'Internal server error.' },
   },
 })
 
@@ -330,7 +330,7 @@ export const getClassifierConsumerBatchIdRoute = createRoute({
         },
       },
     },
-    404: { description: 'Not found', content: {} },
-    500: { description: 'Internal server error', content: {} },
+    404: { description: 'Not found' },
+    500: { description: 'Internal server error' },
   },
 })

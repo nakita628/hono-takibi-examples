@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonPersonalizeDeleteMetricAttributionHandler = app.openapi(
-  postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonPersonalizeDeleteMetricAttributionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

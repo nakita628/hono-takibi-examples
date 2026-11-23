@@ -1,54 +1,83 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceHandler,
-  xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceRoute,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostRoute,
+} from './routes'
+import {
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceRouteHandler,
+  postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateConnectionRouteHandler,
   )
-  .route('/', xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostHandler)
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201CreateHostRouteHandler,
   )
-  .route('/', xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostHandler)
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteConnectionRouteHandler,
   )
-  .route('/', xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostHandler)
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201DeleteHostRouteHandler,
   )
-  .route('/', xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsHandler)
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetConnectionRouteHandler,
   )
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201GetHostRouteHandler,
   )
-  .route(
-    '/',
-    xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceHandler,
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListConnectionsRouteHandler,
   )
-  .route('/', xAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostHandler)
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListHostsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostRoute,
+    postXAmzTargetComAmazonawsCodestarConnectionsCodeStarConnections20191201UpdateHostRouteHandler,
+  )
 
 export default app

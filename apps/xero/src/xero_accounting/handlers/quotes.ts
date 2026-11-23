@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuotesQuoteIDAttachmentsAttachmentIDRoute,
   getQuotesQuoteIDAttachmentsFileNameRoute,
   getQuotesQuoteIDAttachmentsRoute,
@@ -15,45 +15,74 @@ import {
   putQuotesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuotesRouteHandler: RouteHandler<typeof getQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quotesHandler = app
-  .openapi(getQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDAttachmentsAttachmentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putQuotesRouteHandler: RouteHandler<typeof putQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesRouteHandler: RouteHandler<typeof postQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDRouteHandler: RouteHandler<typeof getQuotesQuoteIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIDRouteHandler: RouteHandler<typeof postQuotesQuoteIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDHistoryRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIDHistoryRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDPdfRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIDPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDAttachmentsRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIDAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDAttachmentsAttachmentIDRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIDAttachmentsAttachmentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

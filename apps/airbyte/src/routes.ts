@@ -12220,7 +12220,6 @@ const ExceptionResponseResponse = {
 const InitiateOauthResponseResponse = {
   description:
     "Response from the initiate OAuth call should be an object with a single property which will be the `redirect_url`. If a user is redirected to this URL, they'll be prompted by the identity provider to authenticate.",
-  content: {},
 }
 
 const AirbyteVersionHeaderParamsSchema = z
@@ -21132,7 +21131,7 @@ export const getPublicRoute = createRoute({
   tags: ['public_root', 'public'],
   summary: 'Root path, currently returns a redirect to the documentation',
   operationId: 'getDocumentation',
-  responses: { 200: { description: 'Redirects to documentation', content: {} } },
+  responses: { 200: { description: 'Redirects to documentation' } },
   security: [],
 })
 

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/beyondcorp/v1/openapi.yaml',
   output: './src/beyondcorp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/beyondcorp/types.ts' },
   client: { output: './src/beyondcorp/client.ts', baseUrl: '/' },
   rpc: { output: './src/beyondcorp/rpc.ts', parseResponse: true },

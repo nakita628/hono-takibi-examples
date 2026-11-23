@@ -5294,6 +5294,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { broadcaster_id: string; moderator_id: string } } & {
+              json: BanUserBody
+            }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -5326,6 +5334,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 204
+          }
+        | {
+            input: { query: { broadcaster_id: string; moderator_id: string; user_id: string } }
+            output: {}
+            outputFormat: string
+            status: 400
           }
         | {
             input: { query: { broadcaster_id: string; moderator_id: string; user_id: string } }
@@ -6407,12 +6421,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/schedule/icalendar': {
-      $get: {
-        input: { query: { broadcaster_id: string } }
-        output: {}
-        outputFormat: string
-        status: 400
-      }
+      $get:
+        | {
+            input: { query: { broadcaster_id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { broadcaster_id: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/schedule/settings': {

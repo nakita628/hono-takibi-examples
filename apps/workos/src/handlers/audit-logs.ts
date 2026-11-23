@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAuditLogsActionsActionNameSchemasRoute,
   getAuditLogsActionsRoute,
   getAuditLogsExportsAuditLogExportIdRoute,
@@ -8,24 +8,38 @@ import {
   postAuditLogsExportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAuditLogsActionsRouteHandler: RouteHandler<
+  typeof getAuditLogsActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const auditLogsHandler = app
-  .openapi(getAuditLogsActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditLogsActionsActionNameSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditLogsActionsActionNameSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditLogsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditLogsExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditLogsExportsAuditLogExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuditLogsActionsActionNameSchemasRouteHandler: RouteHandler<
+  typeof postAuditLogsActionsActionNameSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditLogsActionsActionNameSchemasRouteHandler: RouteHandler<
+  typeof getAuditLogsActionsActionNameSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditLogsEventsRouteHandler: RouteHandler<
+  typeof postAuditLogsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditLogsExportsRouteHandler: RouteHandler<
+  typeof postAuditLogsExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditLogsExportsAuditLogExportIdRouteHandler: RouteHandler<
+  typeof getAuditLogsExportsAuditLogExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

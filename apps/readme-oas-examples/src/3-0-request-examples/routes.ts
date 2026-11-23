@@ -109,7 +109,7 @@ export const getParameterExamplesParam1Param2Route = createRoute({
         },
       },
     },
-    400: { description: 'Validation failed', content: {} },
+    400: { description: 'Validation failed' },
     default: {
       description: 'OK',
       content: {
@@ -325,7 +325,7 @@ export const patchParameterExamplesParam1Param2Route = createRoute({
         },
       },
     },
-    400: { description: 'Validation failed', content: {} },
+    400: { description: 'Validation failed' },
     default: {
       description: 'OK',
       content: {
@@ -417,7 +417,7 @@ export const postRequestBodyRoute = createRoute({
         },
       },
     },
-    400: { description: 'Validation failed', content: {} },
+    400: { description: 'Validation failed' },
     default: {
       description: 'OK',
       content: {
@@ -594,10 +594,7 @@ export const postRequestBodyMultiMediaTypesRoute = createRoute({
   description:
     'This operation has a `requestBody` containing multiple media types with each containing a separately maintained example within `examples` at the Media Type Object level.\n\n📚 OpenAPI specification references:\n\n* [3.0.3 Media Type Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md#mediaTypeObject)\n\n* [3.1.0 Media Type Object](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.1.0.md#mediaTypeObject)',
   request: { body: { content: {}, required: true } },
-  responses: {
-    200: { description: 'OK', content: {} },
-    400: { description: 'Validation failed', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 400: { description: 'Validation failed' } },
 })
 
 export const postRequestBodyFormDataExampleRoute = createRoute({

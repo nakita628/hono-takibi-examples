@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDebugReplayStatusRoute,
   postDebugReplayStartFromExportRoute,
   postDebugReplayStartRoute,
   postDebugReplayStopRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDebugReplayStartRouteHandler: RouteHandler<
+  typeof postDebugReplayStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const debugReplayHandler = app
-  .openapi(postDebugReplayStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDebugReplayStartFromExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugReplayStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDebugReplayStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDebugReplayStartFromExportRouteHandler: RouteHandler<
+  typeof postDebugReplayStartFromExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugReplayStatusRouteHandler: RouteHandler<
+  typeof getDebugReplayStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDebugReplayStopRouteHandler: RouteHandler<
+  typeof postDebugReplayStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDebugNodeLogLevelRoute,
   putDebugClusterControlPlanesNodesLogLevelLogLevelRoute,
   putDebugClusterLogLevelLogLevelRoute,
   putDebugNodeLogLevelLogLevelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putDebugClusterControlPlanesNodesLogLevelLogLevelRouteHandler: RouteHandler<
+  typeof putDebugClusterControlPlanesNodesLogLevelLogLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const debugHandler = app
-  .openapi(putDebugClusterControlPlanesNodesLogLevelLogLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDebugClusterLogLevelLogLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDebugNodeLogLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDebugNodeLogLevelLogLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDebugClusterLogLevelLogLevelRouteHandler: RouteHandler<
+  typeof putDebugClusterLogLevelLogLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDebugNodeLogLevelRouteHandler: RouteHandler<
+  typeof getDebugNodeLogLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDebugNodeLogLevelLogLevelRouteHandler: RouteHandler<
+  typeof putDebugNodeLogLevelLogLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

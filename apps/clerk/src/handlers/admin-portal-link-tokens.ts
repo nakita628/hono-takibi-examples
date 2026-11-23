@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRoute,
   postAdminPortalLinkTokensRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAdminPortalLinkTokensRouteHandler: RouteHandler<
+  typeof postAdminPortalLinkTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminPortalLinkTokensHandler = app
-  .openapi(postAdminPortalLinkTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRouteHandler: RouteHandler<
+  typeof postAdminPortalLinkTokensAdminPortalLinkTokenIDRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionEnableReachabilityAnalyzerOrganizationSharingRoute,
   postActionEnableReachabilityAnalyzerOrganizationSharingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler: RouteHandler<
+  typeof getActionEnableReachabilityAnalyzerOrganizationSharingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionEnableReachabilityAnalyzerOrganizationSharingHandler = app
-  .openapi(getActionEnableReachabilityAnalyzerOrganizationSharingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionEnableReachabilityAnalyzerOrganizationSharingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionEnableReachabilityAnalyzerOrganizationSharingRouteHandler: RouteHandler<
+  typeof postActionEnableReachabilityAnalyzerOrganizationSharingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

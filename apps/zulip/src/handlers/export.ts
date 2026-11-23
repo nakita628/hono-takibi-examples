@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteExportRealmExportIdRoute,
   getExportRealmConsentsRoute,
   getExportRealmRoute,
   postExportRealmRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteExportRealmExportIdRouteHandler: RouteHandler<
+  typeof deleteExportRealmExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const exportHandler = app
-  .openapi(deleteExportRealmExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExportRealmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportRealmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExportRealmConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getExportRealmRouteHandler: RouteHandler<typeof getExportRealmRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportRealmRouteHandler: RouteHandler<typeof postExportRealmRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExportRealmConsentsRouteHandler: RouteHandler<
+  typeof getExportRealmConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

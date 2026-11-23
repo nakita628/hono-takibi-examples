@@ -35,22 +35,13 @@ const LinksSchema = z
   })
   .openapi('Links')
 
-const ApplicationBaseSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The ID allocated to your application by Nexmo.',
-        example: 'aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
-      }),
-    name: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'The name of your application', example: 'My Application' }),
+const ApplicationBaseIdSchema = z
+  .string()
+  .openapi({
+    description: 'The ID allocated to your application by Nexmo.',
+    example: 'aaaaaaaa-bbbb-cccc-dddd-0123456789ab',
   })
-  .openapi({ required: [] })
-  .openapi('ApplicationBase')
+  .openapi('ApplicationBaseId')
 
 const KeysSchema = z
   .object({
@@ -101,6 +92,11 @@ const MessagesSchema = z
   })
   .openapi('Messages')
 
+const ApplicationBaseNameSchema = z
+  .string()
+  .openapi({ description: 'The name of your application', example: 'My Application' })
+  .openapi('ApplicationBaseName')
+
 const VoiceSchema = z
   .object({
     webhooks: z
@@ -136,14 +132,22 @@ const VoiceSchema = z
 const ApplicationSchema = z
   .object({
     _links: LinksSchema.exactOptional(),
-    id: z.lazy(() => ApplicationBaseSchema).exactOptional(),
+    id: ApplicationBaseIdSchema.exactOptional(),
     keys: KeysSchema.exactOptional(),
     messages: MessagesSchema,
-    name: z.lazy(() => ApplicationBaseSchema),
+    name: ApplicationBaseNameSchema,
     voice: VoiceSchema,
   })
   .openapi({ required: ['name', 'voice', 'messages'] })
   .openapi('Application')
+
+const ApplicationBaseSchema = z
+  .object({
+    id: ApplicationBaseIdSchema.exactOptional(),
+    name: ApplicationBaseNameSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApplicationBase')
 
 const KeysWithPrivateKeySchema = KeysSchema.and(
   z
@@ -164,50 +168,58 @@ const ApplicationCreatedSchema = ApplicationSchema.and(
   z.object({ keys: KeysWithPrivateKeySchema.exactOptional() }).openapi({ required: [] }),
 ).openapi('ApplicationCreated')
 
-const ApplicationsBaseSchema = z
+const ApplicationsBaseEmbeddedSchema = z
   .object({
-    _embedded: z
-      .object({
-        applications: z
-          .array(ApplicationSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The collection of your applications. Each object contains information about an an individual application. The public_key is not included in the application information.',
-          }),
-      })
-      .exactOptional()
-      .openapi({ required: [] }),
-    count: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The number of items associated with your account.', example: 1 }),
-    page_index: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'The offset from the first page.', example: 1 }),
-    page_size: z
-      .int()
+    applications: z
+      .array(ApplicationSchema)
       .exactOptional()
       .openapi({
         description:
-          'The number of items returned on each call to this endpoint. The default is 10 records.',
-        example: 10,
+          'The collection of your applications. Each object contains information about an an individual application. The public_key is not included in the application information.',
       }),
   })
   .openapi({ required: [] })
-  .openapi('ApplicationsBase')
+  .openapi('ApplicationsBaseEmbedded')
+
+const ApplicationsBaseCountSchema = z
+  .int()
+  .openapi({ description: 'The number of items associated with your account.', example: 1 })
+  .openapi('ApplicationsBaseCount')
+
+const ApplicationsBasePageIndexSchema = z
+  .int()
+  .openapi({ description: 'The offset from the first page.', example: 1 })
+  .openapi('ApplicationsBasePageIndex')
+
+const ApplicationsBasePageSizeSchema = z
+  .int()
+  .openapi({
+    description:
+      'The number of items returned on each call to this endpoint. The default is 10 records.',
+    example: 10,
+  })
+  .openapi('ApplicationsBasePageSize')
 
 const ApplicationsSchema = z
   .object({
-    _embedded: z.lazy(() => ApplicationsBaseSchema),
+    _embedded: ApplicationsBaseEmbeddedSchema,
     _links: LinksSchema,
-    count: z.lazy(() => ApplicationsBaseSchema),
-    page_index: z.lazy(() => ApplicationsBaseSchema),
-    page_size: z.lazy(() => ApplicationsBaseSchema),
+    count: ApplicationsBaseCountSchema,
+    page_index: ApplicationsBasePageIndexSchema,
+    page_size: ApplicationsBasePageSizeSchema,
   })
   .openapi({ required: ['count', 'page_size', 'page_index', '_embedded', '_links'] })
   .openapi('Applications')
+
+const ApplicationsBaseSchema = z
+  .object({
+    _embedded: ApplicationsBaseEmbeddedSchema.exactOptional(),
+    count: ApplicationsBaseCountSchema.exactOptional(),
+    page_index: ApplicationsBasePageIndexSchema.exactOptional(),
+    page_size: ApplicationsBasePageSizeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ApplicationsBase')
 
 const ApiKeyQueryStringParamsSchema = z
   .string()

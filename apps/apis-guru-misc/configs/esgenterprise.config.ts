@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/esgenterprise.com/1.0.0/openapi.yaml',
   output: './src/esgenterprise/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/esgenterprise/types.ts' },
   client: { output: './src/esgenterprise/client.ts', baseUrl: '/' },
   rpc: { output: './src/esgenterprise/rpc.ts', parseResponse: true },

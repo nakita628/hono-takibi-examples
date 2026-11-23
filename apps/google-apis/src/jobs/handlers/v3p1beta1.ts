@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3p1beta1NameRoute,
   getV3p1beta1NameCompleteRoute,
   getV3p1beta1NameRoute,
@@ -14,42 +14,74 @@ import {
   postV3p1beta1ParentJobsSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV3p1beta1NameRouteHandler: RouteHandler<
+  typeof deleteV3p1beta1NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3p1beta1Handler = app
-  .openapi(deleteV3p1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3p1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV3p1beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3p1beta1NameCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentClientEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3p1beta1ParentCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3p1beta1ParentJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentJobsBatchDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentJobsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3p1beta1ParentJobsSearchForAlertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3p1beta1NameRouteHandler: RouteHandler<typeof getV3p1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV3p1beta1NameRouteHandler: RouteHandler<typeof patchV3p1beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3p1beta1NameCompleteRouteHandler: RouteHandler<
+  typeof getV3p1beta1NameCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentClientEventsRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentClientEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3p1beta1ParentCompaniesRouteHandler: RouteHandler<
+  typeof getV3p1beta1ParentCompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentCompaniesRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentCompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3p1beta1ParentJobsRouteHandler: RouteHandler<
+  typeof getV3p1beta1ParentJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentJobsRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentJobsBatchDeleteRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentJobsBatchDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentJobsSearchRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentJobsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3p1beta1ParentJobsSearchForAlertRouteHandler: RouteHandler<
+  typeof postV3p1beta1ParentJobsSearchForAlertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

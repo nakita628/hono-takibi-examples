@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetLastBlockNumberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetLastBlockNumberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getLastBlockNumberHandler = app.openapi(postGetLastBlockNumberRoute, (c) => {
+export const postGetLastBlockNumberRouteHandler: RouteHandler<
+  typeof postGetLastBlockNumberRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

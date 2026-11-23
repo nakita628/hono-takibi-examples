@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDataDivisionsDivisionIdRoute,
   getDataDivisionsGroupedbypartyRoute,
   getDataDivisionsMembervotingRoute,
@@ -7,21 +7,32 @@ import {
   getDataDivisionsSearchTotalResultsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataDivisionsGroupedbypartyRouteHandler: RouteHandler<
+  typeof getDataDivisionsGroupedbypartyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataHandler = app
-  .openapi(getDataDivisionsGroupedbypartyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataDivisionsMembervotingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataDivisionsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataDivisionsSearchTotalResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataDivisionsDivisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataDivisionsMembervotingRouteHandler: RouteHandler<
+  typeof getDataDivisionsMembervotingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataDivisionsSearchRouteHandler: RouteHandler<
+  typeof getDataDivisionsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataDivisionsSearchTotalResultsRouteHandler: RouteHandler<
+  typeof getDataDivisionsSearchTotalResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataDivisionsDivisionIdRouteHandler: RouteHandler<
+  typeof getDataDivisionsDivisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

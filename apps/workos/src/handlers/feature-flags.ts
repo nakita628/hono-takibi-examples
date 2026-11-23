@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFeatureFlagsSlugTargetsResourceIdRoute,
   getFeatureFlagsRoute,
   getFeatureFlagsSlugRoute,
@@ -8,24 +8,36 @@ import {
   putFeatureFlagsSlugEnableRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeatureFlagsRouteHandler: RouteHandler<typeof getFeatureFlagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const featureFlagsHandler = app
-  .openapi(getFeatureFlagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeatureFlagsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFeatureFlagsSlugDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFeatureFlagsSlugEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeatureFlagsSlugTargetsResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFeatureFlagsSlugTargetsResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFeatureFlagsSlugRouteHandler: RouteHandler<
+  typeof getFeatureFlagsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFeatureFlagsSlugDisableRouteHandler: RouteHandler<
+  typeof putFeatureFlagsSlugDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFeatureFlagsSlugEnableRouteHandler: RouteHandler<
+  typeof putFeatureFlagsSlugEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeatureFlagsSlugTargetsResourceIdRouteHandler: RouteHandler<
+  typeof postFeatureFlagsSlugTargetsResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFeatureFlagsSlugTargetsResourceIdRouteHandler: RouteHandler<
+  typeof deleteFeatureFlagsSlugTargetsResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

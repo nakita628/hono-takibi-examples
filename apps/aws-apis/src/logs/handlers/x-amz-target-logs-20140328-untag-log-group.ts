@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLogs20140328UntagLogGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLogs20140328UntagLogGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLogs20140328UntagLogGroupHandler = app.openapi(
-  postXAmzTargetLogs20140328UntagLogGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLogs20140328UntagLogGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetLogs20140328UntagLogGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

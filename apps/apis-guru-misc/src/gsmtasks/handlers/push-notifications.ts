@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePushNotificationsIdIndexRoute,
   getPushNotificationsIdIndexRoute,
   getPushNotificationsIndexRoute,
@@ -9,27 +9,44 @@ import {
   putPushNotificationsIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPushNotificationsIndexRouteHandler: RouteHandler<
+  typeof getPushNotificationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pushNotificationsHandler = app
-  .openapi(getPushNotificationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPushNotificationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePushNotificationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPushNotificationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPushNotificationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPushNotificationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPushNotificationsIdResendIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPushNotificationsIndexRouteHandler: RouteHandler<
+  typeof postPushNotificationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePushNotificationsIdIndexRouteHandler: RouteHandler<
+  typeof deletePushNotificationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPushNotificationsIdIndexRouteHandler: RouteHandler<
+  typeof getPushNotificationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPushNotificationsIdIndexRouteHandler: RouteHandler<
+  typeof patchPushNotificationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPushNotificationsIdIndexRouteHandler: RouteHandler<
+  typeof putPushNotificationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPushNotificationsIdResendIndexRouteHandler: RouteHandler<
+  typeof postPushNotificationsIdResendIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

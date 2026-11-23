@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTwipcCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTwipcCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const twipcHandler = app.openapi(postTwipcCertificateRoute, (c) => {
+export const postTwipcCertificateRouteHandler: RouteHandler<
+  typeof postTwipcCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

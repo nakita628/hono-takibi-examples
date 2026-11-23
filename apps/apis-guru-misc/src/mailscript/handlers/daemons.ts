@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDaemonsDaemonTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDaemonsDaemonTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const daemonsHandler = app.openapi(getDaemonsDaemonTokenRoute, (c) => {
+export const getDaemonsDaemonTokenRouteHandler: RouteHandler<
+  typeof getDaemonsDaemonTokenRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

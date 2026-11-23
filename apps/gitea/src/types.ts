@@ -5690,7 +5690,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/repos/:owner/:repo/git/commits/:sha.:diffType': {
+    '/repos/:owner/:repo/git/commits/:sha.{diffType}': {
       $get:
         | {
             input: {
@@ -8123,7 +8123,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/repos/:owner/:repo/pulls/:index.:diffType': {
+    '/repos/:owner/:repo/pulls/:index.{diffType}': {
       $get:
         | {
             input: {

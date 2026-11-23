@@ -29,6 +29,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { RefNo: string; TokenNo: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'

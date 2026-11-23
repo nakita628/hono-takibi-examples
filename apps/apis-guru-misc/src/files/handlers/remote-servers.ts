@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRemoteServersIdRoute,
   getRemoteServersIdConfigurationFileRoute,
   getRemoteServersIdRoute,
@@ -9,27 +9,44 @@ import {
   postRemoteServersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRemoteServersRouteHandler: RouteHandler<typeof getRemoteServersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const remoteServersHandler = app
-  .openapi(getRemoteServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRemoteServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRemoteServersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRemoteServersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRemoteServersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRemoteServersIdConfigurationFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRemoteServersIdConfigurationFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRemoteServersRouteHandler: RouteHandler<typeof postRemoteServersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRemoteServersIdRouteHandler: RouteHandler<
+  typeof deleteRemoteServersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRemoteServersIdRouteHandler: RouteHandler<typeof getRemoteServersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRemoteServersIdRouteHandler: RouteHandler<
+  typeof patchRemoteServersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRemoteServersIdConfigurationFileRouteHandler: RouteHandler<
+  typeof getRemoteServersIdConfigurationFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRemoteServersIdConfigurationFileRouteHandler: RouteHandler<
+  typeof postRemoteServersIdConfigurationFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

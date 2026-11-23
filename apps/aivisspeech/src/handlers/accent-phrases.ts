@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAccentPhrasesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAccentPhrasesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const accentPhrasesHandler = app.openapi(postAccentPhrasesRoute, (c) => {
+export const postAccentPhrasesRouteHandler: RouteHandler<typeof postAccentPhrasesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

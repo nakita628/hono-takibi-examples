@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Add every client-side output to hono-takibi configs, next to the routes output:
-// template, type, client, rpc (with parseResponse) and the hooks of all seven query libraries.
+// template (one RouteHandler per operation), type, client, rpc (with parseResponse) and the hooks of all
+// seven query libraries.
 //
 //   node scripts/add-client-outputs.mjs <config.ts>...
 //
@@ -25,7 +26,7 @@ for (const file of process.argv.slice(2)) {
   }
   const dir = match[1]
   const block = [
-    `  template: {},`,
+    `  template: { routeHandler: true },`,
     `  type: { output: '${dir}/types.ts' },`,
     `  client: { output: '${dir}/client.ts', baseUrl: '/' },`,
     `  rpc: { output: '${dir}/rpc.ts', parseResponse: true },`,

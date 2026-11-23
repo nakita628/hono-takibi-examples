@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhooksWebhookIdRoute,
   getWebhooksRoute,
   getWebhooksWebhookIdEventsEventIdAttemptsRoute,
@@ -12,36 +12,58 @@ import {
   postWebhooksWebhookIdSigningSecretRotateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWebhooksRouteHandler: RouteHandler<typeof postWebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksHandler = app
-  .openapi(postWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhooksWebhookIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksWebhookIdSigningSecretRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksWebhookIdEventsEventIdReplayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhooksWebhookIdEventsEventIdAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebhooksRouteHandler: RouteHandler<typeof getWebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof patchWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhooksWebhookIdRouteHandler: RouteHandler<
+  typeof deleteWebhooksWebhookIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksWebhookIdSigningSecretRotateRouteHandler: RouteHandler<
+  typeof postWebhooksWebhookIdSigningSecretRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdEventsRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdEventsEventIdRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhooksWebhookIdEventsEventIdReplayRouteHandler: RouteHandler<
+  typeof postWebhooksWebhookIdEventsEventIdReplayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhooksWebhookIdEventsEventIdAttemptsRouteHandler: RouteHandler<
+  typeof getWebhooksWebhookIdEventsEventIdAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

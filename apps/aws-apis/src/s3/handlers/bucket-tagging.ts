@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBucketTaggingRoute, getBucketTaggingRoute, putBucketTaggingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteBucketTaggingRoute,
+  getBucketTaggingRoute,
+  putBucketTaggingRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketTaggingRouteHandler: RouteHandler<
+  typeof deleteBucketTaggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketTaggingHandler = app
-  .openapi(deleteBucketTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketTaggingRouteHandler: RouteHandler<typeof getBucketTaggingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketTaggingRouteHandler: RouteHandler<typeof putBucketTaggingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

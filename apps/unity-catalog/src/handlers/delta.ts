@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDeltaPreviewCommitsRoute, postDeltaPreviewCommitsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDeltaPreviewCommitsRoute, postDeltaPreviewCommitsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeltaPreviewCommitsRouteHandler: RouteHandler<
+  typeof getDeltaPreviewCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deltaHandler = app
-  .openapi(getDeltaPreviewCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeltaPreviewCommitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeltaPreviewCommitsRouteHandler: RouteHandler<
+  typeof postDeltaPreviewCommitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

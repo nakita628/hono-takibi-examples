@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInstitutionsIndexRoute,
   getInstitutionsInstitutionIdIndexRoute,
   getInstitutionsInstitutionIdNodesIndexRoute,
@@ -7,21 +7,32 @@ import {
   getInstitutionsInstitutionIdUsersIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInstitutionsIndexRouteHandler: RouteHandler<
+  typeof getInstitutionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const institutionsHandler = app
-  .openapi(getInstitutionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstitutionsInstitutionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstitutionsInstitutionIdNodesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstitutionsInstitutionIdRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstitutionsInstitutionIdUsersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInstitutionsInstitutionIdIndexRouteHandler: RouteHandler<
+  typeof getInstitutionsInstitutionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstitutionsInstitutionIdNodesIndexRouteHandler: RouteHandler<
+  typeof getInstitutionsInstitutionIdNodesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstitutionsInstitutionIdRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getInstitutionsInstitutionIdRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstitutionsInstitutionIdUsersIndexRouteHandler: RouteHandler<
+  typeof getInstitutionsInstitutionIdUsersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

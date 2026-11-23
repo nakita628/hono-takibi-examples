@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWorkspacesWorkspaceHooksUidRoute,
   deleteWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute,
   deleteWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute,
@@ -38,117 +38,216 @@ import {
   putWorkspacesWorkspaceProjectsProjectKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkspacesRouteHandler: RouteHandler<typeof getWorkspacesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workspacesHandler = app
-  .openapi(getWorkspacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkspacesWorkspaceHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspaceHooksUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceMembersMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspacePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspacePermissionsRepositoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspacePermissionsRepositoriesRepoSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getWorkspacesWorkspacePipelinesConfigIdentityOidcWellKnownOpenidConfigurationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getWorkspacesWorkspacePipelinesConfigIdentityOidcKeysJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspacePipelinesConfigVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspacePipelinesConfigVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkspacesWorkspaceProjectsProjectKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspaceProjectsProjectKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyBranchingModelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyDeployKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkspacesWorkspaceProjectsProjectKeyDeployKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkspacesWorkspaceSearchCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkspacesWorkspaceRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceHooksRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceHooksRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkspacesWorkspaceHooksUidRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspaceHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceHooksUidRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspaceHooksUidRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspaceHooksUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceMembersRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceMembersMemberRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceMembersMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePermissionsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePermissionsRepositoriesRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePermissionsRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePermissionsRepositoriesRepoSlugRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePermissionsRepositoriesRepoSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePipelinesConfigIdentityOidcWellKnownOpenidConfigurationRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePipelinesConfigIdentityOidcWellKnownOpenidConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePipelinesConfigIdentityOidcKeysJsonRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePipelinesConfigIdentityOidcKeysJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePipelinesConfigVariablesRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePipelinesConfigVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspacePipelinesConfigVariablesRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspacePipelinesConfigVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspacePipelinesConfigVariablesVariableUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceProjectsRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkspacesWorkspaceProjectsProjectKeyRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspaceProjectsProjectKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspaceProjectsProjectKeyRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspaceProjectsProjectKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyBranchingModelRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyBranchingModelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspaceProjectsProjectKeyBranchingModelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRouteHandler: RouteHandler<
+  typeof putWorkspacesWorkspaceProjectsProjectKeyDefaultReviewersSelectedUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyDeployKeysRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyDeployKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkspacesWorkspaceProjectsProjectKeyDeployKeysRouteHandler: RouteHandler<
+  typeof postWorkspacesWorkspaceProjectsProjectKeyDeployKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRouteHandler: RouteHandler<
+  typeof deleteWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceProjectsProjectKeyDeployKeysKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkspacesWorkspaceSearchCodeRouteHandler: RouteHandler<
+  typeof getWorkspacesWorkspaceSearchCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

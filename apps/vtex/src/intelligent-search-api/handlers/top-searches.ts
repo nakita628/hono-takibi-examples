@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTopSearchesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTopSearchesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const topSearchesHandler = app.openapi(getTopSearchesRoute, (c) => {
+export const getTopSearchesRouteHandler: RouteHandler<typeof getTopSearchesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

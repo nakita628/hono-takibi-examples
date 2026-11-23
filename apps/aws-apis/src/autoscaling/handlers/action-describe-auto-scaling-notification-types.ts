@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeAutoScalingNotificationTypesRoute,
   postActionDescribeAutoScalingNotificationTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeAutoScalingNotificationTypesRouteHandler: RouteHandler<
+  typeof getActionDescribeAutoScalingNotificationTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeAutoScalingNotificationTypesHandler = app
-  .openapi(getActionDescribeAutoScalingNotificationTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeAutoScalingNotificationTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeAutoScalingNotificationTypesRouteHandler: RouteHandler<
+  typeof postActionDescribeAutoScalingNotificationTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

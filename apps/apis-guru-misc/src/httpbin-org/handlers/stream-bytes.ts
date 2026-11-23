@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStreamBytesNRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStreamBytesNRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const streamBytesHandler = app.openapi(getStreamBytesNRoute, (c) => {
+export const getStreamBytesNRouteHandler: RouteHandler<typeof getStreamBytesNRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

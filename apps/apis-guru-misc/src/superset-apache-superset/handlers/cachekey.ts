@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCachekeyInvalidateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCachekeyInvalidateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cachekeyHandler = app.openapi(postCachekeyInvalidateRoute, (c) => {
+export const postCachekeyInvalidateRouteHandler: RouteHandler<
+  typeof postCachekeyInvalidateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

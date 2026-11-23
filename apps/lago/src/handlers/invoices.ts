@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInvoicesLagoIdRoute,
   getInvoicesLagoIdRoute,
   getInvoicesRoute,
@@ -17,51 +17,88 @@ import {
   putInvoicesLagoIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInvoicesRouteHandler: RouteHandler<typeof postInvoicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const invoicesHandler = app
-  .openapi(postInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInvoicesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInvoicesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInvoicesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdDownloadXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInvoicesLagoIdFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdLoseDisputeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInvoicesLagoIdRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdPaymentUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdRetryPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoicesLagoIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInvoicesRouteHandler: RouteHandler<typeof getInvoicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInvoicesLagoIdRouteHandler: RouteHandler<typeof putInvoicesLagoIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInvoicesLagoIdRouteHandler: RouteHandler<typeof getInvoicesLagoIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInvoicesLagoIdRouteHandler: RouteHandler<
+  typeof deleteInvoicesLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdDownloadRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdDownloadXmlRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdDownloadXmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInvoicesLagoIdFinalizeRouteHandler: RouteHandler<
+  typeof putInvoicesLagoIdFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdLoseDisputeRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdLoseDisputeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInvoicesLagoIdRefreshRouteHandler: RouteHandler<
+  typeof putInvoicesLagoIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdRetryRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdPaymentUrlRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdPaymentUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesPreviewRouteHandler: RouteHandler<
+  typeof postInvoicesPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdRetryPaymentRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdRetryPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInvoicesLagoIdVoidRouteHandler: RouteHandler<
+  typeof postInvoicesLagoIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

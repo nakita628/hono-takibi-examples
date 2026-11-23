@@ -737,7 +737,7 @@ export const postCrmExtensionsCalling202609RecordingsReadyRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.contacts.highly_sensitive.write.v2'] },
     { oauth2: ['crm.objects.contacts.write'] },
@@ -870,7 +870,7 @@ export const deleteCrmExtensionsCalling202609AppIdSettingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -1051,7 +1051,7 @@ export const deleteCrmExtensionsCalling202609AppIdSettingsChannelConnectionRoute
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 

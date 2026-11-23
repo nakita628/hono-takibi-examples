@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetstateabbreviationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetstateabbreviationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getstateabbreviationHandler = app.openapi(getGetstateabbreviationRoute, (c) => {
+export const getGetstateabbreviationRouteHandler: RouteHandler<
+  typeof getGetstateabbreviationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

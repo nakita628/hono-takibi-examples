@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/amplifybackend/2020-08-11/openapi.yaml',
   output: './src/amplifybackend/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/amplifybackend/types.ts' },
   client: { output: './src/amplifybackend/client.ts', baseUrl: '/' },
   rpc: { output: './src/amplifybackend/rpc.ts', parseResponse: true },

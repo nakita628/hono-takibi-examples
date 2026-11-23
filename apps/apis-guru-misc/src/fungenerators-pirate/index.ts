@@ -1,8 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { pirateHandler } from './handlers'
+import {
+  getPirateGenerateInsultRoute,
+  getPirateGenerateLoremIpsumRoute,
+  getPirateGenerateNameRoute,
+  getPirateTranslateRoute,
+} from './routes'
+import {
+  getPirateGenerateInsultRouteHandler,
+  getPirateGenerateLoremIpsumRouteHandler,
+  getPirateGenerateNameRouteHandler,
+  getPirateTranslateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', pirateHandler)
+export const api = app
+  .openapi(getPirateGenerateInsultRoute, getPirateGenerateInsultRouteHandler)
+  .openapi(getPirateGenerateLoremIpsumRoute, getPirateGenerateLoremIpsumRouteHandler)
+  .openapi(getPirateGenerateNameRoute, getPirateGenerateNameRouteHandler)
+  .openapi(getPirateTranslateRoute, getPirateTranslateRouteHandler)
 
 export default app

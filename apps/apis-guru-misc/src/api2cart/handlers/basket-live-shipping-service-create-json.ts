@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBasketLiveShippingServiceCreateJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBasketLiveShippingServiceCreateJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const basketLiveShippingServiceCreateJsonHandler = app.openapi(
-  postBasketLiveShippingServiceCreateJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postBasketLiveShippingServiceCreateJsonRouteHandler: RouteHandler<
+  typeof postBasketLiveShippingServiceCreateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

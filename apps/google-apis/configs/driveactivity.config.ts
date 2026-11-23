@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/driveactivity/v2/openapi.yaml',
   output: './src/driveactivity/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/driveactivity/types.ts' },
   client: { output: './src/driveactivity/client.ts', baseUrl: '/' },
   rpc: { output: './src/driveactivity/rpc.ts', parseResponse: true },

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHtTrendlineRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHtTrendlineRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const htTrendlineHandler = app.openapi(getHtTrendlineRoute, (c) => {
+export const getHtTrendlineRouteHandler: RouteHandler<typeof getHtTrendlineRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

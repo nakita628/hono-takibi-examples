@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteWaveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteWaveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteWaveHandler = app.openapi(postDeleteWaveRoute, (c) => {
+export const postDeleteWaveRouteHandler: RouteHandler<typeof postDeleteWaveRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

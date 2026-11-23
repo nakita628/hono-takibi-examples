@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute,
   deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute,
   getApisPolicyV1IndexRoute,
@@ -17,51 +17,92 @@ import {
   putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisPolicyV1IndexRouteHandler: RouteHandler<
+  typeof getApisPolicyV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisPolicyV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1PoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisPolicyV1WatchPoddisruptionbudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof postApisPolicyV1NamespacesNamespacePoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRouteHandler: RouteHandler<
+  typeof deleteApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRouteHandler: RouteHandler<
+  typeof getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRouteHandler: RouteHandler<
+  typeof patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRouteHandler: RouteHandler<
+  typeof putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRouteHandler: RouteHandler<
+  typeof getApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRouteHandler: RouteHandler<
+  typeof patchApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRouteHandler: RouteHandler<
+  typeof putApisPolicyV1NamespacesNamespacePoddisruptionbudgetsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1PoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof getApisPolicyV1PoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsNameRouteHandler: RouteHandler<
+  typeof getApisPolicyV1WatchNamespacesNamespacePoddisruptionbudgetsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisPolicyV1WatchPoddisruptionbudgetsRouteHandler: RouteHandler<
+  typeof getApisPolicyV1WatchPoddisruptionbudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

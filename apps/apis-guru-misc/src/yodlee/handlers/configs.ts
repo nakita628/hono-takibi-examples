@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConfigsNotificationsEventsEventNameRoute,
   getConfigsNotificationsEventsRoute,
   getConfigsPublicKeyRoute,
@@ -7,21 +7,32 @@ import {
   putConfigsNotificationsEventsEventNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConfigsNotificationsEventsRouteHandler: RouteHandler<
+  typeof getConfigsNotificationsEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const configsHandler = app
-  .openapi(getConfigsNotificationsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConfigsNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConfigsNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConfigsNotificationsEventsEventNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConfigsPublicKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteConfigsNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof deleteConfigsNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConfigsNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof postConfigsNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConfigsNotificationsEventsEventNameRouteHandler: RouteHandler<
+  typeof putConfigsNotificationsEventsEventNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConfigsPublicKeyRouteHandler: RouteHandler<
+  typeof getConfigsPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

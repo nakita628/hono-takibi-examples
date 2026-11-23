@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteElasticIpIdFieldRoute,
   deleteElasticIpIdRoute,
   getElasticIpIdRoute,
@@ -10,30 +10,42 @@ import {
   putElasticIpIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postElasticIpRouteHandler: RouteHandler<typeof postElasticIpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const elasticIpHandler = app
-  .openapi(postElasticIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElasticIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteElasticIpIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putElasticIpIdDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putElasticIpIdAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteElasticIpIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getElasticIpRouteHandler: RouteHandler<typeof getElasticIpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteElasticIpIdFieldRouteHandler: RouteHandler<
+  typeof deleteElasticIpIdFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putElasticIpIdDetachRouteHandler: RouteHandler<
+  typeof putElasticIpIdDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putElasticIpIdAttachRouteHandler: RouteHandler<
+  typeof putElasticIpIdAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putElasticIpIdRouteHandler: RouteHandler<typeof putElasticIpIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getElasticIpIdRouteHandler: RouteHandler<typeof getElasticIpIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteElasticIpIdRouteHandler: RouteHandler<typeof deleteElasticIpIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

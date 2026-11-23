@@ -432,14 +432,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { sequenceId: string } } & {
-          query: { overrideActiveEnrollment?: boolean | undefined }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { sequenceId: string } } & {
+              query: { overrideActiveEnrollment?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { sequenceId: string } } & {
+              query: { overrideActiveEnrollment?: boolean | undefined }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/automation/sequences/2026-09/serviceaccounts/sequences/:sequenceId/performance': {

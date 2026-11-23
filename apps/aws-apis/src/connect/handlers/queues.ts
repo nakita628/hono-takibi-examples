@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQueuesInstanceIdQueueIdQuickConnectsRoute,
   getQueuesInstanceIdQueueIdRoute,
   postQueuesInstanceIdQueueIdAssociateQuickConnectsRoute,
@@ -12,36 +12,62 @@ import {
   putQueuesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQueuesInstanceIdQueueIdAssociateQuickConnectsRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdAssociateQuickConnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queuesHandler = app
-  .openapi(postQueuesInstanceIdQueueIdAssociateQuickConnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueuesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesInstanceIdQueueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdDisassociateQuickConnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesInstanceIdQueueIdQuickConnectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdHoursOfOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdMaxContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdOutboundCallerConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueuesInstanceIdQueueIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putQueuesInstanceIdRouteHandler: RouteHandler<
+  typeof putQueuesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueuesInstanceIdQueueIdRouteHandler: RouteHandler<
+  typeof getQueuesInstanceIdQueueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdDisassociateQuickConnectsRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdDisassociateQuickConnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueuesInstanceIdQueueIdQuickConnectsRouteHandler: RouteHandler<
+  typeof getQueuesInstanceIdQueueIdQuickConnectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdHoursOfOperationRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdHoursOfOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdMaxContactsRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdMaxContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdNameRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdOutboundCallerConfigRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdOutboundCallerConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueuesInstanceIdQueueIdStatusRouteHandler: RouteHandler<
+  typeof postQueuesInstanceIdQueueIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

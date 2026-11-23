@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeBuild20161006BatchGetReportsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeBuild20161006BatchGetReportsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeBuild20161006BatchGetReportsHandler = app.openapi(
-  postXAmzTargetCodeBuild20161006BatchGetReportsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeBuild20161006BatchGetReportsRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeBuild20161006BatchGetReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

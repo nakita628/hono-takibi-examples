@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDataRetentionSettingsLevelIdRoute,
   getDataRetentionSettingsLevelIdRoute,
   getDataRetentionSettingsRoute,
   patchDataRetentionSettingsLevelIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataRetentionSettingsRouteHandler: RouteHandler<
+  typeof getDataRetentionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataRetentionSettingsHandler = app
-  .openapi(getDataRetentionSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDataRetentionSettingsLevelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataRetentionSettingsLevelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDataRetentionSettingsLevelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDataRetentionSettingsLevelIdRouteHandler: RouteHandler<
+  typeof deleteDataRetentionSettingsLevelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataRetentionSettingsLevelIdRouteHandler: RouteHandler<
+  typeof getDataRetentionSettingsLevelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDataRetentionSettingsLevelIdRouteHandler: RouteHandler<
+  typeof patchDataRetentionSettingsLevelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

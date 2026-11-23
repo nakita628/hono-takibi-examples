@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMaintenanceWindowsIdRoute,
   getMaintenanceWindowsIdRoute,
   getMaintenanceWindowsRoute,
@@ -7,21 +7,32 @@ import {
   putMaintenanceWindowsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMaintenanceWindowsRouteHandler: RouteHandler<
+  typeof getMaintenanceWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const maintenanceWindowsHandler = app
-  .openapi(getMaintenanceWindowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMaintenanceWindowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMaintenanceWindowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMaintenanceWindowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMaintenanceWindowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMaintenanceWindowsRouteHandler: RouteHandler<
+  typeof postMaintenanceWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMaintenanceWindowsIdRouteHandler: RouteHandler<
+  typeof getMaintenanceWindowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMaintenanceWindowsIdRouteHandler: RouteHandler<
+  typeof deleteMaintenanceWindowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMaintenanceWindowsIdRouteHandler: RouteHandler<
+  typeof putMaintenanceWindowsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

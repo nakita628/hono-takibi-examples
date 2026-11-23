@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMakeProofreaderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMakeProofreaderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const makeProofreaderHandler = app.openapi(postMakeProofreaderRoute, (c) => {
+export const postMakeProofreaderRouteHandler: RouteHandler<
+  typeof postMakeProofreaderRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

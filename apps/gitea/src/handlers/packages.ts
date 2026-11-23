@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePackagesOwnerTypeNameRoute,
   deletePackagesOwnerTypeNameVersionRoute,
   getPackagesOwnerRoute,
@@ -11,33 +11,56 @@ import {
   postPackagesOwnerTypeNameDashUnlinkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPackagesOwnerRouteHandler: RouteHandler<typeof getPackagesOwnerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const packagesHandler = app
-  .openapi(getPackagesOwnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePackagesOwnerTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPackagesOwnerTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPackagesOwnerTypeNameDashLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPackagesOwnerTypeNameDashLinkRepoNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPackagesOwnerTypeNameDashUnlinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePackagesOwnerTypeNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPackagesOwnerTypeNameVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPackagesOwnerTypeNameVersionFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deletePackagesOwnerTypeNameRouteHandler: RouteHandler<
+  typeof deletePackagesOwnerTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPackagesOwnerTypeNameRouteHandler: RouteHandler<
+  typeof getPackagesOwnerTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPackagesOwnerTypeNameDashLatestRouteHandler: RouteHandler<
+  typeof getPackagesOwnerTypeNameDashLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPackagesOwnerTypeNameDashLinkRepoNameRouteHandler: RouteHandler<
+  typeof postPackagesOwnerTypeNameDashLinkRepoNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPackagesOwnerTypeNameDashUnlinkRouteHandler: RouteHandler<
+  typeof postPackagesOwnerTypeNameDashUnlinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePackagesOwnerTypeNameVersionRouteHandler: RouteHandler<
+  typeof deletePackagesOwnerTypeNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPackagesOwnerTypeNameVersionRouteHandler: RouteHandler<
+  typeof getPackagesOwnerTypeNameVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPackagesOwnerTypeNameVersionFilesRouteHandler: RouteHandler<
+  typeof getPackagesOwnerTypeNameVersionFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityProviderServiceDeleteIdentityProviderHandler = app.openapi(
-  postXAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityProviderServiceDeleteIdentityProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

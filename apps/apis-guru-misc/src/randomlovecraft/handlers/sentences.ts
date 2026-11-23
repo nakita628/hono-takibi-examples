@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSentencesIdRoute, getSentencesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSentencesIdRoute, getSentencesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSentencesRouteHandler: RouteHandler<typeof getSentencesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sentencesHandler = app
-  .openapi(getSentencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSentencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSentencesIdRouteHandler: RouteHandler<typeof getSentencesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

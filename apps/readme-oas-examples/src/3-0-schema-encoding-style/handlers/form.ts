@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putFormPrimitiveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putFormPrimitiveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const formHandler = app.openapi(putFormPrimitiveRoute, (c) => {
+export const putFormPrimitiveRouteHandler: RouteHandler<typeof putFormPrimitiveRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apple.com/app-store-connect/1.4.1/openapi.yaml',
   output: './src/apple-app-store-connect/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apple-app-store-connect/types.ts' },
   client: { output: './src/apple-app-store-connect/client.ts', baseUrl: '/' },
   rpc: { output: './src/apple-app-store-connect/rpc.ts', parseResponse: true },

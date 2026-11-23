@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceDescribeClientPropertiesHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceDescribeClientPropertiesRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceDescribeClientPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

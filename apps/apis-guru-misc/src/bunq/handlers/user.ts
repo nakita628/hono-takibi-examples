@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRoute,
   deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRoute,
   deleteUserUserIDCertificatePinnedItemIdRoute,
@@ -395,1695 +395,2356 @@ import {
   putUserUserIDWhitelistSddRecurringItemIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserRouteHandler: RouteHandler<typeof getUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHandler = app
-  .openapi(getUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDAttachmentAttachmentIDContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDAttachmentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDBillingContractSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDBunqmeFundraiserProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDBunqmeFundraiserProfileItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardBatchReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardCreditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardDebitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardCardIDExportStatementCardCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardCsvItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardCardIDExportStatementCardPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardPdfItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardExportStatementCardIDContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDExportStatementCardItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDGeneratedCvc2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardCardIDGeneratedCvc2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardCardIDGeneratedCvc2ItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDCardCardIDGeneratedCvc2ItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCardCardIDReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCardItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDCardItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCertificatePinnedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCertificatePinnedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDCertificatePinnedItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCertificatePinnedItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDChallengeRequestItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDChallengeRequestItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDChatConversationChatConversationIDAttachmentAttachmentIDContentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDCompanyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCompanyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCompanyItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDCompanyItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDConfirmationOfFundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCredentialPasswordIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCredentialPasswordIpItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCurrencyCloudBeneficiaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDCurrencyCloudBeneficiaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCurrencyCloudBeneficiaryRequirementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDCurrencyCloudBeneficiaryItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDEventItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDExportAnnualOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDExportAnnualOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDExportAnnualOverviewExportAnnualOverviewIDContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDExportAnnualOverviewItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDExportAnnualOverviewItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDFeatureAnnouncementItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInsightPreferenceDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInsightsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInvoiceInvoiceIDPdfContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDInvoiceItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDLegalNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDLimitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountBankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountBankItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountBankItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountExternalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountExternalItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountJointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountJointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountJointItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountJointItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountSavingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountSavingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountSavingsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountSavingsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDAttachmentAttachmentIDContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabResultResponseItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyCloudPaymentQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementCustomerStatementIDContentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementStatementIDContentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibExportRibIDContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDPaymentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDDefinitionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDScheduleItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDNotificationFilterEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDNotificationFilterEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDNotificationFilterPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDNotificationFilterPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDNotificationFilterUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDNotificationFilterUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDOauthClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDOauthClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDOauthClientItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDOauthClientItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDOauthClientOauthClientIDCallbackUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDOauthClientOauthClientIDCallbackUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDPaymentAutoAllocateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDPaymentServiceProviderDraftPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDPaymentServiceProviderDraftPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRegistryRegistryIDRegistrySettlementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDRegistryRegistryIDRegistrySettlementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRegistryRegistryIDRegistrySettlementItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardRecipientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardRecipientItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardSenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardSenderItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDRewardItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDShareInviteMonetaryAccountResponseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDShareInviteMonetaryAccountResponseItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDShareInviteMonetaryAccountResponseItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTokenQrRequestIdealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTokenQrRequestSofortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDTransferwiseCurrencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTransferwiseQuoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTransferwiseQuoteTemporaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDTransferwiseQuoteTemporaryItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDTransferwiseQuoteItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRequirementRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferItemIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getUserUserIDTransferwiseUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDTransferwiseUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDTreeProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddOneOffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDWhitelistSddOneOffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDWhitelistSddOneOffItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddRecurringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserUserIDWhitelistSddRecurringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserUserIDWhitelistSddRecurringItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIDWhitelistSddItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserItemIdRouteHandler: RouteHandler<typeof getUserItemIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDAttachmentAttachmentIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDAttachmentAttachmentIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDBillingContractSubscriptionRouteHandler: RouteHandler<
+  typeof getUserUserIDBillingContractSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDBunqmeFundraiserProfileRouteHandler: RouteHandler<
+  typeof getUserUserIDBunqmeFundraiserProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDBunqmeFundraiserProfileItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDBunqmeFundraiserProfileItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardRouteHandler: RouteHandler<typeof getUserUserIDCardRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardBatchRouteHandler: RouteHandler<
+  typeof postUserUserIDCardBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardBatchReplaceRouteHandler: RouteHandler<
+  typeof postUserUserIDCardBatchReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardCreditRouteHandler: RouteHandler<
+  typeof postUserUserIDCardCreditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardDebitRouteHandler: RouteHandler<
+  typeof postUserUserIDCardDebitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardNameRouteHandler: RouteHandler<
+  typeof getUserUserIDCardNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardCsvRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardCardIDExportStatementCardCsvRouteHandler: RouteHandler<
+  typeof postUserUserIDCardCardIDExportStatementCardCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDCardCardIDExportStatementCardCsvItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardCsvItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardCsvItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardPdfRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardCardIDExportStatementCardPdfRouteHandler: RouteHandler<
+  typeof postUserUserIDCardCardIDExportStatementCardPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDCardCardIDExportStatementCardPdfItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardPdfItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardPdfItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardExportStatementCardIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardExportStatementCardIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDExportStatementCardItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDExportStatementCardItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDGeneratedCvc2RouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDGeneratedCvc2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardCardIDGeneratedCvc2RouteHandler: RouteHandler<
+  typeof postUserUserIDCardCardIDGeneratedCvc2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardCardIDGeneratedCvc2ItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCardCardIDGeneratedCvc2ItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDCardCardIDGeneratedCvc2ItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDCardCardIDGeneratedCvc2ItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCardCardIDReplaceRouteHandler: RouteHandler<
+  typeof postUserUserIDCardCardIDReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCardItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCardItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDCardItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDCardItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCertificatePinnedRouteHandler: RouteHandler<
+  typeof getUserUserIDCertificatePinnedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCertificatePinnedRouteHandler: RouteHandler<
+  typeof postUserUserIDCertificatePinnedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDCertificatePinnedItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDCertificatePinnedItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCertificatePinnedItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCertificatePinnedItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDChallengeRequestItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDChallengeRequestItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDChallengeRequestItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDChallengeRequestItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDChatConversationChatConversationIDAttachmentAttachmentIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDChatConversationChatConversationIDAttachmentAttachmentIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCompanyRouteHandler: RouteHandler<
+  typeof getUserUserIDCompanyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCompanyRouteHandler: RouteHandler<
+  typeof postUserUserIDCompanyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCompanyItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCompanyItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDCompanyItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDCompanyItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDConfirmationOfFundsRouteHandler: RouteHandler<
+  typeof postUserUserIDConfirmationOfFundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCredentialPasswordIpRouteHandler: RouteHandler<
+  typeof getUserUserIDCredentialPasswordIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRouteHandler: RouteHandler<
+  typeof getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRouteHandler: RouteHandler<
+  typeof postUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDCredentialPasswordIpCredentialPasswordIpIDIpItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCredentialPasswordIpItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCredentialPasswordIpItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCurrencyCloudBeneficiaryRouteHandler: RouteHandler<
+  typeof getUserUserIDCurrencyCloudBeneficiaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDCurrencyCloudBeneficiaryRouteHandler: RouteHandler<
+  typeof postUserUserIDCurrencyCloudBeneficiaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCurrencyCloudBeneficiaryRequirementRouteHandler: RouteHandler<
+  typeof getUserUserIDCurrencyCloudBeneficiaryRequirementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDCurrencyCloudBeneficiaryItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDCurrencyCloudBeneficiaryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDEventRouteHandler: RouteHandler<typeof getUserUserIDEventRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDEventItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDEventItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDExportAnnualOverviewRouteHandler: RouteHandler<
+  typeof getUserUserIDExportAnnualOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDExportAnnualOverviewRouteHandler: RouteHandler<
+  typeof postUserUserIDExportAnnualOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDExportAnnualOverviewExportAnnualOverviewIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDExportAnnualOverviewExportAnnualOverviewIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDExportAnnualOverviewItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDExportAnnualOverviewItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDExportAnnualOverviewItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDExportAnnualOverviewItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDFeatureAnnouncementItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDFeatureAnnouncementItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInsightPreferenceDateRouteHandler: RouteHandler<
+  typeof getUserUserIDInsightPreferenceDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInsightsRouteHandler: RouteHandler<
+  typeof getUserUserIDInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInsightsSearchRouteHandler: RouteHandler<
+  typeof getUserUserIDInsightsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInvoiceRouteHandler: RouteHandler<
+  typeof getUserUserIDInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInvoiceInvoiceIDPdfContentRouteHandler: RouteHandler<
+  typeof getUserUserIDInvoiceInvoiceIDPdfContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDInvoiceItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDInvoiceItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDLegalNameRouteHandler: RouteHandler<
+  typeof getUserUserIDLegalNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDLimitRouteHandler: RouteHandler<typeof getUserUserIDLimitRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountBankRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountBankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountBankRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountBankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountBankItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountBankItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountBankItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountBankItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountExternalRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountExternalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountExternalItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountExternalItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountJointRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountJointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountJointRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountJointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountJointItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountJointItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountJointItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountJointItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountSavingsRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountSavingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountSavingsRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountSavingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountSavingsItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountSavingsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountSavingsItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountSavingsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDAttachmentAttachmentIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDAttachmentAttachmentIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultBunqmeFundraiserResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeFundraiserResultItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabResultResponseItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabResultResponseItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDBunqmeTabItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyCloudPaymentQuoteRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyCloudPaymentQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionQuoteItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCurrencyConversionItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementCustomerStatementIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementCustomerStatementIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDCustomerStatementItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentDraftPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDDraftPaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementStatementIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDEventEventIDStatementStatementIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDExportRibRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDExportRibRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDExportRibRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDExportRibExportRibIDContentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDExportRibExportRibIDContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDExportRibItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionIdealMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDIdealMerchantTransactionItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDInvoiceItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDPaymentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDMastercardActionMastercardActionIDPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDNotificationFilterUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocateItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDDefinitionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentAutoAllocatePaymentAutoAllocateIDInstanceItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentBatchPaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDPaymentPaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryBatchRequestInquiryBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestInquiryRequestInquiryIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDRequestResponseRequestResponseIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentBatchSchedulePaymentBatchIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSchedulePaymentSchedulePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDScheduleScheduleIDScheduleInstanceScheduleInstanceIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDShareInviteMonetaryAccountInquiryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSofortMerchantTransactionSofortMerchantTransactionIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDSwitchServicePaymentSwitchServicePaymentIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDTranslinkTransactionItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistSddItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteAttachmentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRouteHandler: RouteHandler<
+  typeof postUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDMonetaryAccountMonetaryAccountIDWhitelistWhitelistIDWhitelistResultWhitelistResultIDNoteTextItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDNotificationFilterEmailRouteHandler: RouteHandler<
+  typeof getUserUserIDNotificationFilterEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDNotificationFilterEmailRouteHandler: RouteHandler<
+  typeof postUserUserIDNotificationFilterEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDNotificationFilterPushRouteHandler: RouteHandler<
+  typeof getUserUserIDNotificationFilterPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDNotificationFilterPushRouteHandler: RouteHandler<
+  typeof postUserUserIDNotificationFilterPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDNotificationFilterUrlRouteHandler: RouteHandler<
+  typeof getUserUserIDNotificationFilterUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDNotificationFilterUrlRouteHandler: RouteHandler<
+  typeof postUserUserIDNotificationFilterUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDOauthClientRouteHandler: RouteHandler<
+  typeof getUserUserIDOauthClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDOauthClientRouteHandler: RouteHandler<
+  typeof postUserUserIDOauthClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDOauthClientItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDOauthClientItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDOauthClientItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDOauthClientItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDOauthClientOauthClientIDCallbackUrlRouteHandler: RouteHandler<
+  typeof getUserUserIDOauthClientOauthClientIDCallbackUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDOauthClientOauthClientIDCallbackUrlRouteHandler: RouteHandler<
+  typeof postUserUserIDOauthClientOauthClientIDCallbackUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDOauthClientOauthClientIDCallbackUrlItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDPaymentAutoAllocateRouteHandler: RouteHandler<
+  typeof getUserUserIDPaymentAutoAllocateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDPaymentServiceProviderDraftPaymentRouteHandler: RouteHandler<
+  typeof getUserUserIDPaymentServiceProviderDraftPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDPaymentServiceProviderDraftPaymentRouteHandler: RouteHandler<
+  typeof postUserUserIDPaymentServiceProviderDraftPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDPaymentServiceProviderDraftPaymentItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDPaymentServiceProviderDraftPaymentItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDPaymentServiceProviderDraftPaymentItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRegistryRegistryIDRegistrySettlementRouteHandler: RouteHandler<
+  typeof getUserUserIDRegistryRegistryIDRegistrySettlementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDRegistryRegistryIDRegistrySettlementRouteHandler: RouteHandler<
+  typeof postUserUserIDRegistryRegistryIDRegistrySettlementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRegistryRegistryIDRegistrySettlementItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDRegistryRegistryIDRegistrySettlementItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardRecipientRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardRecipientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardRecipientItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardRecipientItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardSenderRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardSenderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardSenderItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardSenderItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDRewardItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDRewardItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDScheduleRouteHandler: RouteHandler<
+  typeof getUserUserIDScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDShareInviteMonetaryAccountResponseRouteHandler: RouteHandler<
+  typeof getUserUserIDShareInviteMonetaryAccountResponseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDShareInviteMonetaryAccountResponseItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDShareInviteMonetaryAccountResponseItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDShareInviteMonetaryAccountResponseItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDShareInviteMonetaryAccountResponseItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTokenQrRequestIdealRouteHandler: RouteHandler<
+  typeof postUserUserIDTokenQrRequestIdealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTokenQrRequestSofortRouteHandler: RouteHandler<
+  typeof postUserUserIDTokenQrRequestSofortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseCurrencyRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseCurrencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteTemporaryRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteTemporaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTemporaryItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTemporaryItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientRequirementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseRecipientItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRequirementRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferRequirementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseQuoteTransferwiseQuoteIDTransferwiseTransferItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTransferwiseUserRouteHandler: RouteHandler<
+  typeof getUserUserIDTransferwiseUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDTransferwiseUserRouteHandler: RouteHandler<
+  typeof postUserUserIDTransferwiseUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDTreeProgressRouteHandler: RouteHandler<
+  typeof getUserUserIDTreeProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddOneOffRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddOneOffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDWhitelistSddOneOffRouteHandler: RouteHandler<
+  typeof postUserUserIDWhitelistSddOneOffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDWhitelistSddOneOffItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDWhitelistSddOneOffItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddOneOffItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddOneOffItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDWhitelistSddOneOffItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDWhitelistSddOneOffItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddRecurringRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddRecurringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserUserIDWhitelistSddRecurringRouteHandler: RouteHandler<
+  typeof postUserUserIDWhitelistSddRecurringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserUserIDWhitelistSddRecurringItemIdRouteHandler: RouteHandler<
+  typeof deleteUserUserIDWhitelistSddRecurringItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddRecurringItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddRecurringItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserUserIDWhitelistSddRecurringItemIdRouteHandler: RouteHandler<
+  typeof putUserUserIDWhitelistSddRecurringItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIDWhitelistSddItemIdRouteHandler: RouteHandler<
+  typeof getUserUserIDWhitelistSddItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

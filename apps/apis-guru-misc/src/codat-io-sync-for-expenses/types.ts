@@ -46,27 +46,28 @@ type CodatErrorMessage = {
       }
     | undefined
 }
+type DataConnectionCreated = string
+type DataConnectionDataConnectionError = {
+  errorMessage?: string | undefined
+  erroredOnUtc?: DataConnectionCreated | undefined
+  statusCode?: string | undefined
+  statusText?: string | undefined
+}
+type DataConnectionDataConnectionStatus = 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
 type DataConnection = {
   additionalProperties?: unknown | undefined
   connectionInfo?: { [x: string]: string } | undefined
-  created: string
-  dataConnectionErrors?:
-    | {
-        errorMessage?: string | undefined
-        erroredOnUtc?: unknown | undefined
-        statusCode?: string | undefined
-        statusText?: string | undefined
-      }[]
-    | undefined
+  created: DataConnectionCreated
+  dataConnectionErrors?: DataConnectionDataConnectionError[] | undefined
   id: string
   integrationId: string
   integrationKey: string
-  lastSync?: unknown | undefined
+  lastSync?: DataConnectionCreated | undefined
   linkUrl: string
   platformName: string
   sourceId: string
   sourceType: 'Accounting' | 'Banking' | 'Commerce' | 'Other' | 'Unknown'
-  status: 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
+  status: DataConnectionDataConnectionStatus
 }
 type RecordRef = { id?: string | undefined }
 type ExpenseTransactionLine = {
@@ -80,7 +81,7 @@ type ExpenseTransaction = {
   currency: string
   currencyRate?: (number | null) | undefined
   id: string
-  issueDate: unknown
+  issueDate: DataConnectionCreated
   lines?: ExpenseTransactionLine[] | undefined
   merchantName?: string | undefined
   notes?: string | undefined
@@ -142,7 +143,7 @@ type TaxRateMappingInfo = {
 type TrackingCategoryMappingInfo = {
   hasChildren?: boolean | undefined
   id?: (string | null) | undefined
-  modifiedDate?: unknown | undefined
+  modifiedDate?: DataConnectionCreated | undefined
   name?: (string | null) | undefined
   parentId?: (string | null) | undefined
 }
@@ -162,7 +163,7 @@ type CompanySyncStatus = {
   syncId?: (string | null) | undefined
   syncStatus?: (string | null) | undefined
   syncStatusCode?: number | undefined
-  syncUtc?: unknown | undefined
+  syncUtc?: DataConnectionCreated | undefined
 }
 type IntegrationType = 'expenses' | 'bankfeeds'
 type TransactionStatus = 'Unknown' | 'Pending' | 'ValidationError' | 'Completed' | 'PushError'

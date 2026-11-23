@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute,
   deleteEnvironmentsEnvironmentUuidRoute,
   getEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute,
@@ -12,36 +12,60 @@ import {
   postEnvironmentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEnvironmentsRouteHandler: RouteHandler<typeof getEnvironmentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const environmentsHandler = app
-  .openapi(getEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentsEnvironmentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnvironmentsEnvironmentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnvironmentsEnvironmentUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentsEnvironmentUuidApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnvironmentsEnvironmentUuidApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEnvironmentsRouteHandler: RouteHandler<typeof postEnvironmentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnvironmentsEnvironmentUuidRouteHandler: RouteHandler<
+  typeof getEnvironmentsEnvironmentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnvironmentsEnvironmentUuidRouteHandler: RouteHandler<
+  typeof patchEnvironmentsEnvironmentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnvironmentsEnvironmentUuidRouteHandler: RouteHandler<
+  typeof deleteEnvironmentsEnvironmentUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnvironmentsEnvironmentUuidApiKeysRouteHandler: RouteHandler<
+  typeof getEnvironmentsEnvironmentUuidApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnvironmentsEnvironmentUuidApiKeysRouteHandler: RouteHandler<
+  typeof postEnvironmentsEnvironmentUuidApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnvironmentsEnvironmentUuidApiKeysKeyUuidRouteHandler: RouteHandler<
+  typeof getEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnvironmentsEnvironmentUuidApiKeysKeyUuidRouteHandler: RouteHandler<
+  typeof patchEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnvironmentsEnvironmentUuidApiKeysKeyUuidRouteHandler: RouteHandler<
+  typeof deleteEnvironmentsEnvironmentUuidApiKeysKeyUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

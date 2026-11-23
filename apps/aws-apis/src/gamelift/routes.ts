@@ -230,9 +230,7 @@ const MatchmakingTicketListSchema = z
   .array(MatchmakingTicketSchema)
   .openapi('MatchmakingTicketList')
 
-type DescribeMatchmakingOutputType = {
-  TicketList?: z.infer<typeof MatchmakingTicketListSchema> & unknown
-}
+type DescribeMatchmakingOutputType = { TicketList?: z.infer<typeof MatchmakingTicketListSchema> }
 
 const AcceptMatchOutputSchema = z.looseObject({}).openapi('AcceptMatchOutput')
 

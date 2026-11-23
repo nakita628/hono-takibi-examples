@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/chromeuxreport/v1/openapi.yaml',
   output: './src/chromeuxreport/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chromeuxreport/types.ts' },
   client: { output: './src/chromeuxreport/client.ts', baseUrl: '/' },
   rpc: { output: './src/chromeuxreport/rpc.ts', parseResponse: true },

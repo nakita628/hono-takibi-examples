@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetIdentityDkimAttributesRoute,
   postActionGetIdentityDkimAttributesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetIdentityDkimAttributesRouteHandler: RouteHandler<
+  typeof getActionGetIdentityDkimAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetIdentityDkimAttributesHandler = app
-  .openapi(getActionGetIdentityDkimAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetIdentityDkimAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetIdentityDkimAttributesRouteHandler: RouteHandler<
+  typeof postActionGetIdentityDkimAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

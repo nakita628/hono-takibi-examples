@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmAddUserDeviceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmAddUserDeviceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmAddUserDeviceHandler = app.openapi(putVmAddUserDeviceRoute, (c) => {
+export const putVmAddUserDeviceRouteHandler: RouteHandler<typeof putVmAddUserDeviceRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

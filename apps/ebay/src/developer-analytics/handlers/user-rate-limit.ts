@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUserRateLimitIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUserRateLimitIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userRateLimitHandler = app.openapi(getUserRateLimitIndexRoute, (c) => {
+export const getUserRateLimitIndexRouteHandler: RouteHandler<
+  typeof getUserRateLimitIndexRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

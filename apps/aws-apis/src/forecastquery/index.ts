@@ -1,13 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonForecastRuntimeQueryForecastHandler,
-  xAmzTargetAmazonForecastRuntimeQueryWhatIfForecastHandler,
+  postXAmzTargetAmazonForecastRuntimeQueryForecastRoute,
+  postXAmzTargetAmazonForecastRuntimeQueryWhatIfForecastRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonForecastRuntimeQueryForecastRouteHandler,
+  postXAmzTargetAmazonForecastRuntimeQueryWhatIfForecastRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonForecastRuntimeQueryForecastHandler)
-  .route('/', xAmzTargetAmazonForecastRuntimeQueryWhatIfForecastHandler)
+  .openapi(
+    postXAmzTargetAmazonForecastRuntimeQueryForecastRoute,
+    postXAmzTargetAmazonForecastRuntimeQueryForecastRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonForecastRuntimeQueryWhatIfForecastRoute,
+    postXAmzTargetAmazonForecastRuntimeQueryWhatIfForecastRouteHandler,
+  )
 
 export default app

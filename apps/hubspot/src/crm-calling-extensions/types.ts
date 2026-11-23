@@ -140,12 +140,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/extensions/calling/2026-09/recordings/ready': {
-      $post: {
-        input: { json: MarkRecordingAsReadyRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: MarkRecordingAsReadyRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: MarkRecordingAsReadyRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/extensions/calling/2026-09/:appId/settings': {
@@ -170,12 +177,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { appId: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
       $patch:
         | {
             input: { param: { appId: number } } & { json: SettingsPatchRequest }
@@ -213,12 +217,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { appId: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { appId: number } }; output: Error; outputFormat: 'text'; status: 200 }
       $patch:
         | {
             input: { param: { appId: number } } & { json: ChannelConnectionSettingsPatchRequest }

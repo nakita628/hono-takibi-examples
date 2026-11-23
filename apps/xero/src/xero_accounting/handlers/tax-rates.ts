@@ -1,23 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTaxRatesRoute,
   getTaxRatesTaxTypeRoute,
   postTaxRatesRoute,
   putTaxRatesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaxRatesRouteHandler: RouteHandler<typeof getTaxRatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const taxRatesHandler = app
-  .openapi(getTaxRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTaxRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaxRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaxRatesTaxTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putTaxRatesRouteHandler: RouteHandler<typeof putTaxRatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTaxRatesRouteHandler: RouteHandler<typeof postTaxRatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaxRatesTaxTypeRouteHandler: RouteHandler<typeof getTaxRatesTaxTypeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

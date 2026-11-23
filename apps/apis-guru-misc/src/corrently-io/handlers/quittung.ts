@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuittungZugferdRoute,
   postQuittungCommitRoute,
   postQuittungCreateRoute,
@@ -9,27 +9,42 @@ import {
   postQuittungTsesignatureRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQuittungCommitRouteHandler: RouteHandler<typeof postQuittungCommitRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const quittungHandler = app
-  .openapi(postQuittungCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuittungCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuittungPrepareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuittungTseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuittungTsedataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuittungTsesignatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuittungZugferdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQuittungCreateRouteHandler: RouteHandler<typeof postQuittungCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuittungPrepareRouteHandler: RouteHandler<
+  typeof postQuittungPrepareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuittungTseRouteHandler: RouteHandler<typeof postQuittungTseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuittungTsedataRouteHandler: RouteHandler<
+  typeof postQuittungTsedataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuittungTsesignatureRouteHandler: RouteHandler<
+  typeof postQuittungTsesignatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuittungZugferdRouteHandler: RouteHandler<typeof getQuittungZugferdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRacConnectionTokensConnectionTokenUuidIndexRoute,
   getRacConnectionTokensConnectionTokenUuidIndexRoute,
   getRacConnectionTokensConnectionTokenUuidUsedByIndexRoute,
@@ -9,27 +9,44 @@ import {
   putRacConnectionTokensConnectionTokenUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRacConnectionTokensIndexRouteHandler: RouteHandler<
+  typeof getRacConnectionTokensIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const racHandler = app
-  .openapi(getRacConnectionTokensIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRacConnectionTokensConnectionTokenUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRacConnectionTokensConnectionTokenUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRacConnectionTokensConnectionTokenUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRacConnectionTokensConnectionTokenUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRacConnectionTokensConnectionTokenUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRacDevicesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRacConnectionTokensConnectionTokenUuidIndexRouteHandler: RouteHandler<
+  typeof getRacConnectionTokensConnectionTokenUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRacConnectionTokensConnectionTokenUuidIndexRouteHandler: RouteHandler<
+  typeof putRacConnectionTokensConnectionTokenUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRacConnectionTokensConnectionTokenUuidIndexRouteHandler: RouteHandler<
+  typeof patchRacConnectionTokensConnectionTokenUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRacConnectionTokensConnectionTokenUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRacConnectionTokensConnectionTokenUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRacConnectionTokensConnectionTokenUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRacConnectionTokensConnectionTokenUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRacDevicesIndexRouteHandler: RouteHandler<typeof getRacDevicesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

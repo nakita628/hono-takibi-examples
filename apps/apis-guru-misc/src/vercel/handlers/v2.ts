@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2AliasesAliasIdRoute,
   deleteV2DomainsDomainRecordsRecordIdRoute,
   deleteV2SecretsIdOrNameRoute,
@@ -19,57 +19,98 @@ import {
   postV2SecretsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV2AliasesAliasIdRouteHandler: RouteHandler<
+  typeof deleteV2AliasesAliasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(deleteV2AliasesAliasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DeploymentsIdOrUrlEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DeploymentsIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2DeploymentsIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2DomainsDomainRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2DomainsDomainRecordsRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2IntegrationsLogDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2IntegrationsLogDrainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2SecretsIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2SecretsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SecretsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2TeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TeamsTeamIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2DeploymentsIdOrUrlEventsRouteHandler: RouteHandler<
+  typeof getV2DeploymentsIdOrUrlEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DeploymentsIdAliasesRouteHandler: RouteHandler<
+  typeof getV2DeploymentsIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2DeploymentsIdAliasesRouteHandler: RouteHandler<
+  typeof postV2DeploymentsIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2DomainsDomainRecordsRouteHandler: RouteHandler<
+  typeof postV2DomainsDomainRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2DomainsDomainRecordsRecordIdRouteHandler: RouteHandler<
+  typeof deleteV2DomainsDomainRecordsRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FilesRouteHandler: RouteHandler<typeof postV2FilesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2IntegrationsLogDrainsRouteHandler: RouteHandler<
+  typeof getV2IntegrationsLogDrainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2IntegrationsLogDrainsRouteHandler: RouteHandler<
+  typeof postV2IntegrationsLogDrainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2SecretsIdOrNameRouteHandler: RouteHandler<
+  typeof deleteV2SecretsIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2SecretsNameRouteHandler: RouteHandler<typeof patchV2SecretsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SecretsNameRouteHandler: RouteHandler<typeof postV2SecretsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TeamsRouteHandler: RouteHandler<typeof getV2TeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TeamsTeamIdRouteHandler: RouteHandler<typeof getV2TeamsTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2TeamsTeamIdRouteHandler: RouteHandler<typeof patchV2TeamsTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TeamsTeamIdMembersRouteHandler: RouteHandler<
+  typeof getV2TeamsTeamIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UserRouteHandler: RouteHandler<typeof getV2UserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

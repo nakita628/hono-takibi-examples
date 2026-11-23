@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDisksDiskIdRoute,
   getDisksDiskIdRoute,
   getDisksDiskIdSnapshotsRoute,
@@ -9,27 +9,38 @@ import {
   postDisksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDisksRouteHandler: RouteHandler<typeof getDisksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const disksHandler = app
-  .openapi(getDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDisksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDisksDiskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDisksDiskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDisksDiskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDisksDiskIdSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDisksDiskIdSnapshotsRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDisksRouteHandler: RouteHandler<typeof postDisksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDisksDiskIdRouteHandler: RouteHandler<typeof getDisksDiskIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDisksDiskIdRouteHandler: RouteHandler<typeof patchDisksDiskIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDisksDiskIdRouteHandler: RouteHandler<typeof deleteDisksDiskIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDisksDiskIdSnapshotsRouteHandler: RouteHandler<
+  typeof getDisksDiskIdSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDisksDiskIdSnapshotsRestoreRouteHandler: RouteHandler<
+  typeof postDisksDiskIdSnapshotsRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

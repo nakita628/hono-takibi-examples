@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWebtokenNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWebtokenNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const webtokenHandler = app.openapi(postWebtokenNameRoute, (c) => {
+export const postWebtokenNameRouteHandler: RouteHandler<typeof postWebtokenNameRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

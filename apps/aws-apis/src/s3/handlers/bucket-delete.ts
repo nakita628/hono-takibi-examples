@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBucketDeleteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBucketDeleteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bucketDeleteHandler = app.openapi(postBucketDeleteRoute, (c) => {
+export const postBucketDeleteRouteHandler: RouteHandler<typeof postBucketDeleteRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

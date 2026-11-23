@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getglobaltime/1.0.0/openapi.yaml',
   output: './src/getglobaltime/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getglobaltime/types.ts' },
   client: { output: './src/getglobaltime/client.ts', baseUrl: '/' },
   rpc: { output: './src/getglobaltime/rpc.ts', parseResponse: true },

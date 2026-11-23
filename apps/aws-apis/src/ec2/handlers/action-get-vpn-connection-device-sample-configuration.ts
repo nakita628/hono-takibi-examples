@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetVpnConnectionDeviceSampleConfigurationRoute,
   postActionGetVpnConnectionDeviceSampleConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetVpnConnectionDeviceSampleConfigurationRouteHandler: RouteHandler<
+  typeof getActionGetVpnConnectionDeviceSampleConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetVpnConnectionDeviceSampleConfigurationHandler = app
-  .openapi(getActionGetVpnConnectionDeviceSampleConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetVpnConnectionDeviceSampleConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetVpnConnectionDeviceSampleConfigurationRouteHandler: RouteHandler<
+  typeof postActionGetVpnConnectionDeviceSampleConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

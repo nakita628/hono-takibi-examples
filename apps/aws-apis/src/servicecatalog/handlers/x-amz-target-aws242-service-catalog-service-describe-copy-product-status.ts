@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAws242ServiceCatalogServiceDescribeCopyProductStatusHandler = app.openapi(
-  postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWS242ServiceCatalogServiceDescribeCopyProductStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

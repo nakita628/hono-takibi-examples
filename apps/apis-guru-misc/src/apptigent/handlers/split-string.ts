@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSplitStringRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSplitStringRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const splitStringHandler = app.openapi(postSplitStringRoute, (c) => {
+export const postSplitStringRouteHandler: RouteHandler<typeof postSplitStringRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

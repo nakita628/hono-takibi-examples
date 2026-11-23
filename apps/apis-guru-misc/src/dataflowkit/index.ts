@@ -1,12 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { convertHandler, fetchHandler, parseHandler, serpHandler } from './handlers'
+import {
+  postConvertUrlPdfRoute,
+  postConvertUrlScreenshotRoute,
+  postFetchRoute,
+  postParseRoute,
+  postSerpRoute,
+} from './routes'
+import {
+  postConvertUrlPdfRouteHandler,
+  postConvertUrlScreenshotRouteHandler,
+  postFetchRouteHandler,
+  postParseRouteHandler,
+  postSerpRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', convertHandler)
-  .route('/', fetchHandler)
-  .route('/', parseHandler)
-  .route('/', serpHandler)
+  .openapi(postConvertUrlPdfRoute, postConvertUrlPdfRouteHandler)
+  .openapi(postConvertUrlScreenshotRoute, postConvertUrlScreenshotRouteHandler)
+  .openapi(postFetchRoute, postFetchRouteHandler)
+  .openapi(postParseRoute, postParseRouteHandler)
+  .openapi(postSerpRoute, postSerpRouteHandler)
 
 export default app

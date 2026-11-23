@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getweatherzip/1.0.0/openapi.yaml',
   output: './src/getweatherzip/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getweatherzip/types.ts' },
   client: { output: './src/getweatherzip/client.ts', baseUrl: '/' },
   rpc: { output: './src/getweatherzip/rpc.ts', parseResponse: true },

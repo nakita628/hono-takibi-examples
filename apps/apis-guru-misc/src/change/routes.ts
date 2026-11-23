@@ -112,7 +112,7 @@ export const getApiV1DonationsCarbonCalculateRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful', content: {} } },
+  responses: { 200: { description: 'successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -150,7 +150,7 @@ export const getApiV1DonationsCarbonStatsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful', content: {} } },
+  responses: { 200: { description: 'successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -220,8 +220,8 @@ export const postApiV1DonationsCreateRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Donation successful', content: {} },
-    400: { description: 'Param `nonprofit_id` invalid', content: {} },
+    200: { description: 'Donation successful' },
+    400: { description: 'Param `nonprofit_id` invalid' },
   },
   security: [{ basic_auth: [] }],
 })
@@ -269,7 +269,7 @@ export const getApiV1DonationsCryptoCalculateRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful', content: {} } },
+  responses: { 200: { description: 'successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -305,7 +305,7 @@ export const getApiV1DonationsIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful', content: {} } },
+  responses: { 200: { description: 'successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -332,7 +332,7 @@ export const getApiV1DonationsShowRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'successful', content: {} } },
+  responses: { 200: { description: 'successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -383,7 +383,7 @@ export const getApiV1NonprofitsListRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'List successful', content: {} } },
+  responses: { 200: { description: 'List successful' } },
   security: [{ basic_auth: [] }],
 })
 
@@ -413,6 +413,6 @@ export const getApiV1NonprofitsShowRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Show successful', content: {} } },
+  responses: { 200: { description: 'Show successful' } },
   security: [{ basic_auth: [] }],
 })

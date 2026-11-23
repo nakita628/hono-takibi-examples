@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCryptoCertificatekeypairsKpUuidIndexRoute,
   getCryptoCertificatekeypairsIndexRoute,
   getCryptoCertificatekeypairsKpUuidIndexRoute,
@@ -12,36 +12,62 @@ import {
   putCryptoCertificatekeypairsKpUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCryptoCertificatekeypairsIndexRouteHandler: RouteHandler<
+  typeof getCryptoCertificatekeypairsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cryptoHandler = app
-  .openapi(getCryptoCertificatekeypairsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCryptoCertificatekeypairsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCryptoCertificatekeypairsKpUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCryptoCertificatekeypairsKpUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCryptoCertificatekeypairsKpUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCryptoCertificatekeypairsKpUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCryptoCertificatekeypairsKpUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCryptoCertificatekeypairsKpUuidViewCertificateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCryptoCertificatekeypairsGenerateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCryptoCertificatekeypairsIndexRouteHandler: RouteHandler<
+  typeof postCryptoCertificatekeypairsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCryptoCertificatekeypairsKpUuidIndexRouteHandler: RouteHandler<
+  typeof getCryptoCertificatekeypairsKpUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCryptoCertificatekeypairsKpUuidIndexRouteHandler: RouteHandler<
+  typeof putCryptoCertificatekeypairsKpUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCryptoCertificatekeypairsKpUuidIndexRouteHandler: RouteHandler<
+  typeof patchCryptoCertificatekeypairsKpUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCryptoCertificatekeypairsKpUuidIndexRouteHandler: RouteHandler<
+  typeof deleteCryptoCertificatekeypairsKpUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCryptoCertificatekeypairsKpUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getCryptoCertificatekeypairsKpUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCryptoCertificatekeypairsKpUuidViewCertificateIndexRouteHandler: RouteHandler<
+  typeof getCryptoCertificatekeypairsKpUuidViewCertificateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRouteHandler: RouteHandler<
+  typeof getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCryptoCertificatekeypairsGenerateIndexRouteHandler: RouteHandler<
+  typeof postCryptoCertificatekeypairsGenerateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

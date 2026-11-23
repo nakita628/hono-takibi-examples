@@ -185,10 +185,10 @@ const ServerGroupLaunchConfigurationsSchema = z
   .openapi('ServerGroupLaunchConfigurations')
 
 type GetAppLaunchConfigurationResponseType = {
-  appId?: z.infer<typeof AppIdSchema> & unknown
-  roleName?: z.infer<typeof RoleNameSchema> & unknown
-  autoLaunch?: z.infer<typeof AutoLaunchSchema> & unknown
-  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema> & unknown
+  appId?: z.infer<typeof AppIdSchema>
+  roleName?: z.infer<typeof RoleNameSchema>
+  autoLaunch?: z.infer<typeof AutoLaunchSchema>
+  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema>
 }
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')
@@ -268,10 +268,7 @@ const ServerGroupReplicationConfigurationsSchema = z
   .openapi('ServerGroupReplicationConfigurations')
 
 type GetAppReplicationConfigurationResponseType = {
-  serverGroupReplicationConfigurations?: z.infer<
-    typeof ServerGroupReplicationConfigurationsSchema
-  > &
-    unknown
+  serverGroupReplicationConfigurations?: z.infer<typeof ServerGroupReplicationConfigurationsSchema>
 }
 
 const ValidationIdSchema = z
@@ -405,24 +402,20 @@ const ServerGroupValidationConfigurationsSchema = z
   .openapi('ServerGroupValidationConfigurations')
 
 type GetAppValidationConfigurationResponseType = {
-  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema> & unknown
-  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema> &
-    unknown
+  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema>
+  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema>
 }
 
 type PutAppLaunchConfigurationRequestType = {
-  appId?: z.infer<typeof AppIdSchema> & unknown
-  roleName?: z.infer<typeof RoleNameSchema> & unknown
-  autoLaunch?: z.infer<typeof AutoLaunchSchema> & unknown
-  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema> & unknown
+  appId?: z.infer<typeof AppIdSchema>
+  roleName?: z.infer<typeof RoleNameSchema>
+  autoLaunch?: z.infer<typeof AutoLaunchSchema>
+  serverGroupLaunchConfigurations?: z.infer<typeof ServerGroupLaunchConfigurationsSchema>
 }
 
 type PutAppReplicationConfigurationRequestType = {
-  appId?: z.infer<typeof AppIdSchema> & unknown
-  serverGroupReplicationConfigurations?: z.infer<
-    typeof ServerGroupReplicationConfigurationsSchema
-  > &
-    unknown
+  appId?: z.infer<typeof AppIdSchema>
+  serverGroupReplicationConfigurations?: z.infer<typeof ServerGroupReplicationConfigurationsSchema>
 }
 
 const AppIdWithValidationSchema = z
@@ -431,10 +424,9 @@ const AppIdWithValidationSchema = z
   .openapi('AppIdWithValidation')
 
 type PutAppValidationConfigurationRequestType = {
-  appId: z.infer<typeof AppIdWithValidationSchema> & unknown
-  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema> & unknown
-  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema> &
-    unknown
+  appId: z.infer<typeof AppIdWithValidationSchema>
+  appValidationConfigurations?: z.infer<typeof AppValidationConfigurationsSchema>
+  serverGroupValidationConfigurations?: z.infer<typeof ServerGroupValidationConfigurationsSchema>
 }
 
 const ImportedAppIdSchema = z.string().openapi('ImportedAppId')

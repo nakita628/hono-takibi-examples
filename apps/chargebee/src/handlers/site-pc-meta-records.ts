@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSitePcMetaRecordsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSitePcMetaRecordsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sitePcMetaRecordsHandler = app.openapi(getSitePcMetaRecordsRoute, (c) => {
+export const getSitePcMetaRecordsRouteHandler: RouteHandler<
+  typeof getSitePcMetaRecordsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

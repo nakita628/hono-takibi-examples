@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodePipeline20150709PutActionRevisionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodePipeline20150709PutActionRevisionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodePipeline20150709PutActionRevisionHandler = app.openapi(
-  postXAmzTargetCodePipeline20150709PutActionRevisionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodePipeline20150709PutActionRevisionRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodePipeline20150709PutActionRevisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

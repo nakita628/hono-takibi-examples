@@ -48,25 +48,7 @@ Invoice (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[WebhookEvent](#schemawebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -145,25 +127,7 @@ Subscription (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[WebhookEvent](#schemawebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -242,25 +206,7 @@ Contact (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[WebhookEvent](#schemawebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -343,25 +289,7 @@ Credit Note (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[CreditNoteWebhookEvent](#schemacreditnotewebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -476,25 +404,7 @@ Prepayment (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[PrepaymentWebhookEvent](#schemaprepaymentwebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -607,25 +517,7 @@ Overpayment (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[OverpaymentWebhookEvent](#schemaoverpaymentwebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -738,25 +630,7 @@ Payment (Create, Update)
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|[PaymentWebhookEvent](#schemapaymentwebhookevent)|false|none|
-|» events|body|[object]|true|A list of events that have occurred|
-|» » resourceUrl|body|string(uri)|true|The URL to retrieve the resource that has changed|
-|» » resourceId|body|string(uuid)|true|The ID of the resource that has changed (e.g. ContactID)|
-|» » eventDateUtc|body|string(date-time)|true|The date and time that event occurred (UTC time)|
-|» » eventType|body|string|true|The type of event of that occurred (e.g. UPDATE)|
-|» » » *oneOf*|body|string|false|When a new resource is created|
-|» » » *oneOf*|body|string|false|When an existing resource is updated (including when they are archived)|
-|» » eventCategory|body|string|true|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
-|» » » *oneOf*|body|string|false|For organisation contact-related events|
-|» » » *oneOf*|body|string|false|For organisation invoice-related events|
-|» » » *oneOf*|body|string|false|For application subscription-related events|
-|» » » *oneOf*|body|string|false|For organisation credit note-related events|
-|» » » *oneOf*|body|string|false|For organisation prepayment-related events|
-|» » » *oneOf*|body|string|false|For organisation overpayment-related events|
-|» » » *oneOf*|body|string|false|For organisation payment-related events|
-|» » tenantId|body|string(uuid)|true|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
-|» » tenantType|body|string|true|The type of tenant|
-|» » » *oneOf*|body|string|false|Represents a Xero organisation (for non-Subscription events)|
-|» » » *oneOf*|body|string|false|Represents a Xero application (for Subscription events)|
+|» events|body|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|A list of events that have occurred|
 |» lastEventSequence|body|integer|true|The sequence number of the last event in the list|
 |» firstEventSequence|body|integer|true|The sequence number of the first event in the list|
 |» entropy|body|string|true|A random string used for security or validation purposes|
@@ -867,7 +741,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[object]|true|none|A list of events that have occurred|
+|events|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|none|A list of events that have occurred|
 |lastEventSequence|integer|true|none|The sequence number of the last event in the list|
 |firstEventSequence|integer|true|none|The sequence number of the first event in the list|
 |entropy|string|true|none|A random string used for security or validation purposes|
@@ -906,7 +780,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[object]|true|none|A list of events that have occurred|
+|events|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|none|A list of events that have occurred|
 |lastEventSequence|integer|true|none|The sequence number of the last event in the list|
 |firstEventSequence|integer|true|none|The sequence number of the first event in the list|
 |entropy|string|true|none|A random string used for security or validation purposes|
@@ -947,7 +821,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[object]|true|none|A list of events that have occurred|
+|events|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|none|A list of events that have occurred|
 |lastEventSequence|integer|true|none|The sequence number of the last event in the list|
 |firstEventSequence|integer|true|none|The sequence number of the first event in the list|
 |entropy|string|true|none|A random string used for security or validation purposes|
@@ -988,7 +862,7 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[object]|true|none|A list of events that have occurred|
+|events|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|none|A list of events that have occurred|
 |lastEventSequence|integer|true|none|The sequence number of the last event in the list|
 |firstEventSequence|integer|true|none|The sequence number of the first event in the list|
 |entropy|string|true|none|A random string used for security or validation purposes|
@@ -1029,8 +903,39 @@ This operation does not require authentication
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|events|[object]|true|none|A list of events that have occurred|
+|events|[[WebhookEventEventsItems](#schemawebhookeventeventsitems)]|true|none|A list of events that have occurred|
 |lastEventSequence|integer|true|none|The sequence number of the last event in the list|
 |firstEventSequence|integer|true|none|The sequence number of the first event in the list|
 |entropy|string|true|none|A random string used for security or validation purposes|
 |events|[object]|true|none|none|
+
+<h2 id="tocS_WebhookEventEventsItems">WebhookEventEventsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemawebhookeventeventsitems"></a>
+<a id="schema_WebhookEventEventsItems"></a>
+<a id="tocSwebhookeventeventsitems"></a>
+<a id="tocswebhookeventeventsitems"></a>
+
+```json
+{
+  "resourceUrl": "http://example.com",
+  "resourceId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "eventDateUtc": "1970-01-01T00:00:00Z",
+  "eventType": "CREATE",
+  "eventCategory": "CONTACT",
+  "tenantId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "tenantType": "ORGANISATION"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|resourceUrl|string(uri)|true|none|The URL to retrieve the resource that has changed|
+|resourceId|string(uuid)|true|none|The ID of the resource that has changed (e.g. ContactID)|
+|eventDateUtc|string(date-time)|true|none|The date and time that event occurred (UTC time)|
+|eventType|string|true|none|The type of event of that occurred (e.g. UPDATE)|
+|eventCategory|string|true|none|The category of event that occurred (e.g. CONTACT). You will only retrieve events from categories that your webhook is subscribed to|
+|tenantId|string(uuid)|true|none|The ID of the tenant that the event happened in relation to (OrganisationID or ApplicationID)|
+|tenantType|string|true|none|The type of tenant|

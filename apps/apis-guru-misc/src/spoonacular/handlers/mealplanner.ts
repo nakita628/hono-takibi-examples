@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMealplannerUsernameDayDateRoute,
   deleteMealplannerUsernameItemsIdRoute,
   deleteMealplannerUsernameShoppingListItemsIdRoute,
@@ -15,45 +15,80 @@ import {
   postMealplannerUsernameTemplatesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMealplannerGenerateRouteHandler: RouteHandler<
+  typeof getMealplannerGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mealplannerHandler = app
-  .openapi(getMealplannerGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMealplannerUsernameDayDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMealplannerUsernameItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMealplannerUsernameItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMealplannerUsernameShoppingListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMealplannerUsernameShoppingListItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMealplannerUsernameShoppingListItemsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMealplannerUsernameShoppingListStartDateEndDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMealplannerUsernameTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMealplannerUsernameTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMealplannerUsernameTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMealplannerUsernameTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMealplannerUsernameWeekStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMealplannerUsernameDayDateRouteHandler: RouteHandler<
+  typeof deleteMealplannerUsernameDayDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMealplannerUsernameItemsRouteHandler: RouteHandler<
+  typeof postMealplannerUsernameItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMealplannerUsernameItemsIdRouteHandler: RouteHandler<
+  typeof deleteMealplannerUsernameItemsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMealplannerUsernameShoppingListRouteHandler: RouteHandler<
+  typeof getMealplannerUsernameShoppingListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMealplannerUsernameShoppingListItemsRouteHandler: RouteHandler<
+  typeof postMealplannerUsernameShoppingListItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMealplannerUsernameShoppingListItemsIdRouteHandler: RouteHandler<
+  typeof deleteMealplannerUsernameShoppingListItemsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMealplannerUsernameShoppingListStartDateEndDateRouteHandler: RouteHandler<
+  typeof postMealplannerUsernameShoppingListStartDateEndDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMealplannerUsernameTemplatesRouteHandler: RouteHandler<
+  typeof getMealplannerUsernameTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMealplannerUsernameTemplatesRouteHandler: RouteHandler<
+  typeof postMealplannerUsernameTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMealplannerUsernameTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteMealplannerUsernameTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMealplannerUsernameTemplatesIdRouteHandler: RouteHandler<
+  typeof getMealplannerUsernameTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMealplannerUsernameWeekStartDateRouteHandler: RouteHandler<
+  typeof getMealplannerUsernameWeekStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

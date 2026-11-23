@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { queryHandler } from './handlers'
+import { getQueryRoute } from './routes'
+import { getQueryRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', queryHandler)
+export const api = app.openapi(getQueryRoute, getQueryRouteHandler)
 
 export default app

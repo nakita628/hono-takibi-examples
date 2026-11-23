@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/convertcurrency/1.0.0/openapi.yaml',
   output: './src/convertcurrency/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/convertcurrency/types.ts' },
   client: { output: './src/convertcurrency/client.ts', baseUrl: '/' },
   rpc: { output: './src/convertcurrency/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNodeNodeIdAllocationsRoute,
   getNodeNodeIdRoute,
   postNodeNodeIdDrainRoute,
@@ -7,21 +7,30 @@ import {
   postNodeNodeIdPurgeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNodeNodeIdRouteHandler: RouteHandler<typeof getNodeNodeIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const nodeHandler = app
-  .openapi(getNodeNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNodeNodeIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodeNodeIdDrainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodeNodeIdEligibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNodeNodeIdPurgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNodeNodeIdAllocationsRouteHandler: RouteHandler<
+  typeof getNodeNodeIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodeNodeIdDrainRouteHandler: RouteHandler<
+  typeof postNodeNodeIdDrainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodeNodeIdEligibilityRouteHandler: RouteHandler<
+  typeof postNodeNodeIdEligibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNodeNodeIdPurgeRouteHandler: RouteHandler<
+  typeof postNodeNodeIdPurgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

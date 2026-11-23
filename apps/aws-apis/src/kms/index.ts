@@ -1,109 +1,296 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetTrentServiceCancelKeyDeletionHandler,
-  xAmzTargetTrentServiceConnectCustomKeyStoreHandler,
-  xAmzTargetTrentServiceCreateAliasHandler,
-  xAmzTargetTrentServiceCreateCustomKeyStoreHandler,
-  xAmzTargetTrentServiceCreateGrantHandler,
-  xAmzTargetTrentServiceCreateKeyHandler,
-  xAmzTargetTrentServiceDecryptHandler,
-  xAmzTargetTrentServiceDeleteAliasHandler,
-  xAmzTargetTrentServiceDeleteCustomKeyStoreHandler,
-  xAmzTargetTrentServiceDeleteImportedKeyMaterialHandler,
-  xAmzTargetTrentServiceDescribeCustomKeyStoresHandler,
-  xAmzTargetTrentServiceDescribeKeyHandler,
-  xAmzTargetTrentServiceDisableKeyHandler,
-  xAmzTargetTrentServiceDisableKeyRotationHandler,
-  xAmzTargetTrentServiceDisconnectCustomKeyStoreHandler,
-  xAmzTargetTrentServiceEnableKeyHandler,
-  xAmzTargetTrentServiceEnableKeyRotationHandler,
-  xAmzTargetTrentServiceEncryptHandler,
-  xAmzTargetTrentServiceGenerateDataKeyHandler,
-  xAmzTargetTrentServiceGenerateDataKeyPairHandler,
-  xAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextHandler,
-  xAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextHandler,
-  xAmzTargetTrentServiceGenerateMacHandler,
-  xAmzTargetTrentServiceGenerateRandomHandler,
-  xAmzTargetTrentServiceGetKeyPolicyHandler,
-  xAmzTargetTrentServiceGetKeyRotationStatusHandler,
-  xAmzTargetTrentServiceGetParametersForImportHandler,
-  xAmzTargetTrentServiceGetPublicKeyHandler,
-  xAmzTargetTrentServiceImportKeyMaterialHandler,
-  xAmzTargetTrentServiceListAliasesHandler,
-  xAmzTargetTrentServiceListGrantsHandler,
-  xAmzTargetTrentServiceListKeyPoliciesHandler,
-  xAmzTargetTrentServiceListKeysHandler,
-  xAmzTargetTrentServiceListResourceTagsHandler,
-  xAmzTargetTrentServiceListRetirableGrantsHandler,
-  xAmzTargetTrentServicePutKeyPolicyHandler,
-  xAmzTargetTrentServiceReEncryptHandler,
-  xAmzTargetTrentServiceReplicateKeyHandler,
-  xAmzTargetTrentServiceRetireGrantHandler,
-  xAmzTargetTrentServiceRevokeGrantHandler,
-  xAmzTargetTrentServiceScheduleKeyDeletionHandler,
-  xAmzTargetTrentServiceSignHandler,
-  xAmzTargetTrentServiceTagResourceHandler,
-  xAmzTargetTrentServiceUntagResourceHandler,
-  xAmzTargetTrentServiceUpdateAliasHandler,
-  xAmzTargetTrentServiceUpdateCustomKeyStoreHandler,
-  xAmzTargetTrentServiceUpdateKeyDescriptionHandler,
-  xAmzTargetTrentServiceUpdatePrimaryRegionHandler,
-  xAmzTargetTrentServiceVerifyHandler,
-  xAmzTargetTrentServiceVerifyMacHandler,
+  postXAmzTargetTrentServiceCancelKeyDeletionRoute,
+  postXAmzTargetTrentServiceConnectCustomKeyStoreRoute,
+  postXAmzTargetTrentServiceCreateAliasRoute,
+  postXAmzTargetTrentServiceCreateCustomKeyStoreRoute,
+  postXAmzTargetTrentServiceCreateGrantRoute,
+  postXAmzTargetTrentServiceCreateKeyRoute,
+  postXAmzTargetTrentServiceDecryptRoute,
+  postXAmzTargetTrentServiceDeleteAliasRoute,
+  postXAmzTargetTrentServiceDeleteCustomKeyStoreRoute,
+  postXAmzTargetTrentServiceDeleteImportedKeyMaterialRoute,
+  postXAmzTargetTrentServiceDescribeCustomKeyStoresRoute,
+  postXAmzTargetTrentServiceDescribeKeyRoute,
+  postXAmzTargetTrentServiceDisableKeyRotationRoute,
+  postXAmzTargetTrentServiceDisableKeyRoute,
+  postXAmzTargetTrentServiceDisconnectCustomKeyStoreRoute,
+  postXAmzTargetTrentServiceEnableKeyRotationRoute,
+  postXAmzTargetTrentServiceEnableKeyRoute,
+  postXAmzTargetTrentServiceEncryptRoute,
+  postXAmzTargetTrentServiceGenerateDataKeyPairRoute,
+  postXAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextRoute,
+  postXAmzTargetTrentServiceGenerateDataKeyRoute,
+  postXAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextRoute,
+  postXAmzTargetTrentServiceGenerateMacRoute,
+  postXAmzTargetTrentServiceGenerateRandomRoute,
+  postXAmzTargetTrentServiceGetKeyPolicyRoute,
+  postXAmzTargetTrentServiceGetKeyRotationStatusRoute,
+  postXAmzTargetTrentServiceGetParametersForImportRoute,
+  postXAmzTargetTrentServiceGetPublicKeyRoute,
+  postXAmzTargetTrentServiceImportKeyMaterialRoute,
+  postXAmzTargetTrentServiceListAliasesRoute,
+  postXAmzTargetTrentServiceListGrantsRoute,
+  postXAmzTargetTrentServiceListKeyPoliciesRoute,
+  postXAmzTargetTrentServiceListKeysRoute,
+  postXAmzTargetTrentServiceListResourceTagsRoute,
+  postXAmzTargetTrentServiceListRetirableGrantsRoute,
+  postXAmzTargetTrentServicePutKeyPolicyRoute,
+  postXAmzTargetTrentServiceReEncryptRoute,
+  postXAmzTargetTrentServiceReplicateKeyRoute,
+  postXAmzTargetTrentServiceRetireGrantRoute,
+  postXAmzTargetTrentServiceRevokeGrantRoute,
+  postXAmzTargetTrentServiceScheduleKeyDeletionRoute,
+  postXAmzTargetTrentServiceSignRoute,
+  postXAmzTargetTrentServiceTagResourceRoute,
+  postXAmzTargetTrentServiceUntagResourceRoute,
+  postXAmzTargetTrentServiceUpdateAliasRoute,
+  postXAmzTargetTrentServiceUpdateCustomKeyStoreRoute,
+  postXAmzTargetTrentServiceUpdateKeyDescriptionRoute,
+  postXAmzTargetTrentServiceUpdatePrimaryRegionRoute,
+  postXAmzTargetTrentServiceVerifyMacRoute,
+  postXAmzTargetTrentServiceVerifyRoute,
+} from './routes'
+import {
+  postXAmzTargetTrentServiceCancelKeyDeletionRouteHandler,
+  postXAmzTargetTrentServiceConnectCustomKeyStoreRouteHandler,
+  postXAmzTargetTrentServiceCreateAliasRouteHandler,
+  postXAmzTargetTrentServiceCreateCustomKeyStoreRouteHandler,
+  postXAmzTargetTrentServiceCreateGrantRouteHandler,
+  postXAmzTargetTrentServiceCreateKeyRouteHandler,
+  postXAmzTargetTrentServiceDecryptRouteHandler,
+  postXAmzTargetTrentServiceDeleteAliasRouteHandler,
+  postXAmzTargetTrentServiceDeleteCustomKeyStoreRouteHandler,
+  postXAmzTargetTrentServiceDeleteImportedKeyMaterialRouteHandler,
+  postXAmzTargetTrentServiceDescribeCustomKeyStoresRouteHandler,
+  postXAmzTargetTrentServiceDescribeKeyRouteHandler,
+  postXAmzTargetTrentServiceDisableKeyRotationRouteHandler,
+  postXAmzTargetTrentServiceDisableKeyRouteHandler,
+  postXAmzTargetTrentServiceDisconnectCustomKeyStoreRouteHandler,
+  postXAmzTargetTrentServiceEnableKeyRotationRouteHandler,
+  postXAmzTargetTrentServiceEnableKeyRouteHandler,
+  postXAmzTargetTrentServiceEncryptRouteHandler,
+  postXAmzTargetTrentServiceGenerateDataKeyPairRouteHandler,
+  postXAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextRouteHandler,
+  postXAmzTargetTrentServiceGenerateDataKeyRouteHandler,
+  postXAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextRouteHandler,
+  postXAmzTargetTrentServiceGenerateMacRouteHandler,
+  postXAmzTargetTrentServiceGenerateRandomRouteHandler,
+  postXAmzTargetTrentServiceGetKeyPolicyRouteHandler,
+  postXAmzTargetTrentServiceGetKeyRotationStatusRouteHandler,
+  postXAmzTargetTrentServiceGetParametersForImportRouteHandler,
+  postXAmzTargetTrentServiceGetPublicKeyRouteHandler,
+  postXAmzTargetTrentServiceImportKeyMaterialRouteHandler,
+  postXAmzTargetTrentServiceListAliasesRouteHandler,
+  postXAmzTargetTrentServiceListGrantsRouteHandler,
+  postXAmzTargetTrentServiceListKeyPoliciesRouteHandler,
+  postXAmzTargetTrentServiceListKeysRouteHandler,
+  postXAmzTargetTrentServiceListResourceTagsRouteHandler,
+  postXAmzTargetTrentServiceListRetirableGrantsRouteHandler,
+  postXAmzTargetTrentServicePutKeyPolicyRouteHandler,
+  postXAmzTargetTrentServiceReEncryptRouteHandler,
+  postXAmzTargetTrentServiceReplicateKeyRouteHandler,
+  postXAmzTargetTrentServiceRetireGrantRouteHandler,
+  postXAmzTargetTrentServiceRevokeGrantRouteHandler,
+  postXAmzTargetTrentServiceScheduleKeyDeletionRouteHandler,
+  postXAmzTargetTrentServiceSignRouteHandler,
+  postXAmzTargetTrentServiceTagResourceRouteHandler,
+  postXAmzTargetTrentServiceUntagResourceRouteHandler,
+  postXAmzTargetTrentServiceUpdateAliasRouteHandler,
+  postXAmzTargetTrentServiceUpdateCustomKeyStoreRouteHandler,
+  postXAmzTargetTrentServiceUpdateKeyDescriptionRouteHandler,
+  postXAmzTargetTrentServiceUpdatePrimaryRegionRouteHandler,
+  postXAmzTargetTrentServiceVerifyMacRouteHandler,
+  postXAmzTargetTrentServiceVerifyRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetTrentServiceCancelKeyDeletionHandler)
-  .route('/', xAmzTargetTrentServiceConnectCustomKeyStoreHandler)
-  .route('/', xAmzTargetTrentServiceCreateAliasHandler)
-  .route('/', xAmzTargetTrentServiceCreateCustomKeyStoreHandler)
-  .route('/', xAmzTargetTrentServiceCreateGrantHandler)
-  .route('/', xAmzTargetTrentServiceCreateKeyHandler)
-  .route('/', xAmzTargetTrentServiceDecryptHandler)
-  .route('/', xAmzTargetTrentServiceDeleteAliasHandler)
-  .route('/', xAmzTargetTrentServiceDeleteCustomKeyStoreHandler)
-  .route('/', xAmzTargetTrentServiceDeleteImportedKeyMaterialHandler)
-  .route('/', xAmzTargetTrentServiceDescribeCustomKeyStoresHandler)
-  .route('/', xAmzTargetTrentServiceDescribeKeyHandler)
-  .route('/', xAmzTargetTrentServiceDisableKeyHandler)
-  .route('/', xAmzTargetTrentServiceDisableKeyRotationHandler)
-  .route('/', xAmzTargetTrentServiceDisconnectCustomKeyStoreHandler)
-  .route('/', xAmzTargetTrentServiceEnableKeyHandler)
-  .route('/', xAmzTargetTrentServiceEnableKeyRotationHandler)
-  .route('/', xAmzTargetTrentServiceEncryptHandler)
-  .route('/', xAmzTargetTrentServiceGenerateDataKeyHandler)
-  .route('/', xAmzTargetTrentServiceGenerateDataKeyPairHandler)
-  .route('/', xAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextHandler)
-  .route('/', xAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextHandler)
-  .route('/', xAmzTargetTrentServiceGenerateMacHandler)
-  .route('/', xAmzTargetTrentServiceGenerateRandomHandler)
-  .route('/', xAmzTargetTrentServiceGetKeyPolicyHandler)
-  .route('/', xAmzTargetTrentServiceGetKeyRotationStatusHandler)
-  .route('/', xAmzTargetTrentServiceGetParametersForImportHandler)
-  .route('/', xAmzTargetTrentServiceGetPublicKeyHandler)
-  .route('/', xAmzTargetTrentServiceImportKeyMaterialHandler)
-  .route('/', xAmzTargetTrentServiceListAliasesHandler)
-  .route('/', xAmzTargetTrentServiceListGrantsHandler)
-  .route('/', xAmzTargetTrentServiceListKeyPoliciesHandler)
-  .route('/', xAmzTargetTrentServiceListKeysHandler)
-  .route('/', xAmzTargetTrentServiceListResourceTagsHandler)
-  .route('/', xAmzTargetTrentServiceListRetirableGrantsHandler)
-  .route('/', xAmzTargetTrentServicePutKeyPolicyHandler)
-  .route('/', xAmzTargetTrentServiceReEncryptHandler)
-  .route('/', xAmzTargetTrentServiceReplicateKeyHandler)
-  .route('/', xAmzTargetTrentServiceRetireGrantHandler)
-  .route('/', xAmzTargetTrentServiceRevokeGrantHandler)
-  .route('/', xAmzTargetTrentServiceScheduleKeyDeletionHandler)
-  .route('/', xAmzTargetTrentServiceSignHandler)
-  .route('/', xAmzTargetTrentServiceTagResourceHandler)
-  .route('/', xAmzTargetTrentServiceUntagResourceHandler)
-  .route('/', xAmzTargetTrentServiceUpdateAliasHandler)
-  .route('/', xAmzTargetTrentServiceUpdateCustomKeyStoreHandler)
-  .route('/', xAmzTargetTrentServiceUpdateKeyDescriptionHandler)
-  .route('/', xAmzTargetTrentServiceUpdatePrimaryRegionHandler)
-  .route('/', xAmzTargetTrentServiceVerifyHandler)
-  .route('/', xAmzTargetTrentServiceVerifyMacHandler)
+  .openapi(
+    postXAmzTargetTrentServiceCancelKeyDeletionRoute,
+    postXAmzTargetTrentServiceCancelKeyDeletionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceConnectCustomKeyStoreRoute,
+    postXAmzTargetTrentServiceConnectCustomKeyStoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceCreateAliasRoute,
+    postXAmzTargetTrentServiceCreateAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceCreateCustomKeyStoreRoute,
+    postXAmzTargetTrentServiceCreateCustomKeyStoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceCreateGrantRoute,
+    postXAmzTargetTrentServiceCreateGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceCreateKeyRoute,
+    postXAmzTargetTrentServiceCreateKeyRouteHandler,
+  )
+  .openapi(postXAmzTargetTrentServiceDecryptRoute, postXAmzTargetTrentServiceDecryptRouteHandler)
+  .openapi(
+    postXAmzTargetTrentServiceDeleteAliasRoute,
+    postXAmzTargetTrentServiceDeleteAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDeleteCustomKeyStoreRoute,
+    postXAmzTargetTrentServiceDeleteCustomKeyStoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDeleteImportedKeyMaterialRoute,
+    postXAmzTargetTrentServiceDeleteImportedKeyMaterialRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDescribeCustomKeyStoresRoute,
+    postXAmzTargetTrentServiceDescribeCustomKeyStoresRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDescribeKeyRoute,
+    postXAmzTargetTrentServiceDescribeKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDisableKeyRoute,
+    postXAmzTargetTrentServiceDisableKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDisableKeyRotationRoute,
+    postXAmzTargetTrentServiceDisableKeyRotationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceDisconnectCustomKeyStoreRoute,
+    postXAmzTargetTrentServiceDisconnectCustomKeyStoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceEnableKeyRoute,
+    postXAmzTargetTrentServiceEnableKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceEnableKeyRotationRoute,
+    postXAmzTargetTrentServiceEnableKeyRotationRouteHandler,
+  )
+  .openapi(postXAmzTargetTrentServiceEncryptRoute, postXAmzTargetTrentServiceEncryptRouteHandler)
+  .openapi(
+    postXAmzTargetTrentServiceGenerateDataKeyRoute,
+    postXAmzTargetTrentServiceGenerateDataKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGenerateDataKeyPairRoute,
+    postXAmzTargetTrentServiceGenerateDataKeyPairRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextRoute,
+    postXAmzTargetTrentServiceGenerateDataKeyPairWithoutPlaintextRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextRoute,
+    postXAmzTargetTrentServiceGenerateDataKeyWithoutPlaintextRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGenerateMacRoute,
+    postXAmzTargetTrentServiceGenerateMacRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGenerateRandomRoute,
+    postXAmzTargetTrentServiceGenerateRandomRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGetKeyPolicyRoute,
+    postXAmzTargetTrentServiceGetKeyPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGetKeyRotationStatusRoute,
+    postXAmzTargetTrentServiceGetKeyRotationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGetParametersForImportRoute,
+    postXAmzTargetTrentServiceGetParametersForImportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceGetPublicKeyRoute,
+    postXAmzTargetTrentServiceGetPublicKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceImportKeyMaterialRoute,
+    postXAmzTargetTrentServiceImportKeyMaterialRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceListAliasesRoute,
+    postXAmzTargetTrentServiceListAliasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceListGrantsRoute,
+    postXAmzTargetTrentServiceListGrantsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceListKeyPoliciesRoute,
+    postXAmzTargetTrentServiceListKeyPoliciesRouteHandler,
+  )
+  .openapi(postXAmzTargetTrentServiceListKeysRoute, postXAmzTargetTrentServiceListKeysRouteHandler)
+  .openapi(
+    postXAmzTargetTrentServiceListResourceTagsRoute,
+    postXAmzTargetTrentServiceListResourceTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceListRetirableGrantsRoute,
+    postXAmzTargetTrentServiceListRetirableGrantsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServicePutKeyPolicyRoute,
+    postXAmzTargetTrentServicePutKeyPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceReEncryptRoute,
+    postXAmzTargetTrentServiceReEncryptRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceReplicateKeyRoute,
+    postXAmzTargetTrentServiceReplicateKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceRetireGrantRoute,
+    postXAmzTargetTrentServiceRetireGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceRevokeGrantRoute,
+    postXAmzTargetTrentServiceRevokeGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceScheduleKeyDeletionRoute,
+    postXAmzTargetTrentServiceScheduleKeyDeletionRouteHandler,
+  )
+  .openapi(postXAmzTargetTrentServiceSignRoute, postXAmzTargetTrentServiceSignRouteHandler)
+  .openapi(
+    postXAmzTargetTrentServiceTagResourceRoute,
+    postXAmzTargetTrentServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceUntagResourceRoute,
+    postXAmzTargetTrentServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceUpdateAliasRoute,
+    postXAmzTargetTrentServiceUpdateAliasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceUpdateCustomKeyStoreRoute,
+    postXAmzTargetTrentServiceUpdateCustomKeyStoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceUpdateKeyDescriptionRoute,
+    postXAmzTargetTrentServiceUpdateKeyDescriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTrentServiceUpdatePrimaryRegionRoute,
+    postXAmzTargetTrentServiceUpdatePrimaryRegionRouteHandler,
+  )
+  .openapi(postXAmzTargetTrentServiceVerifyRoute, postXAmzTargetTrentServiceVerifyRouteHandler)
+  .openapi(
+    postXAmzTargetTrentServiceVerifyMacRoute,
+    postXAmzTargetTrentServiceVerifyMacRouteHandler,
+  )
 
 export default app

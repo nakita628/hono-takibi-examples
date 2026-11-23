@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/ehimapurtihp/3.0.0/openapi.yaml',
   output: './src/ehimapurtihp/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ehimapurtihp/types.ts' },
   client: { output: './src/ehimapurtihp/client.ts', baseUrl: '/' },
   rpc: { output: './src/ehimapurtihp/rpc.ts', parseResponse: true },

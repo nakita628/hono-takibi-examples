@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWhatsappCampaignsCampaignIdRoute,
   getWhatsappCampaignsCampaignIdRoute,
   getWhatsappCampaignsConfigRoute,
@@ -11,33 +11,56 @@ import {
   putWhatsappCampaignsCampaignIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWhatsappCampaignsRouteHandler: RouteHandler<
+  typeof getWhatsappCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const whatsappCampaignsHandler = app
-  .openapi(getWhatsappCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWhatsappCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWhatsappCampaignsConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWhatsappCampaignsTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWhatsappCampaignsTemplateListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWhatsappCampaignsTemplateApprovalTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWhatsappCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWhatsappCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWhatsappCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWhatsappCampaignsRouteHandler: RouteHandler<
+  typeof postWhatsappCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWhatsappCampaignsConfigRouteHandler: RouteHandler<
+  typeof getWhatsappCampaignsConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWhatsappCampaignsTemplateRouteHandler: RouteHandler<
+  typeof postWhatsappCampaignsTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWhatsappCampaignsTemplateListRouteHandler: RouteHandler<
+  typeof getWhatsappCampaignsTemplateListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWhatsappCampaignsTemplateApprovalTemplateIdRouteHandler: RouteHandler<
+  typeof postWhatsappCampaignsTemplateApprovalTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWhatsappCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof deleteWhatsappCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWhatsappCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof getWhatsappCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWhatsappCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof putWhatsappCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

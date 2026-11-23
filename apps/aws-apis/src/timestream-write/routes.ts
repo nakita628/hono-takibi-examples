@@ -283,7 +283,7 @@ const BatchLoadTaskDescriptionSchema = z
   .openapi('BatchLoadTaskDescription')
 
 type DescribeBatchLoadTaskResponseType = {
-  BatchLoadTaskDescription: z.infer<typeof BatchLoadTaskDescriptionSchema> & unknown
+  BatchLoadTaskDescription: z.infer<typeof BatchLoadTaskDescriptionSchema>
 }
 
 const CreateBatchLoadTaskResponseSchema = z

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCircuitsCircuitsIdIndexRoute,
   deleteCircuitsCircuitTerminationsIdIndexRoute,
   deleteCircuitsCircuitTypesIdIndexRoute,
@@ -27,81 +27,152 @@ import {
   putCircuitsProvidersIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCircuitsCircuitTerminationsIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitTerminationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const circuitsHandler = app
-  .openapi(getCircuitsCircuitTerminationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCircuitsCircuitTerminationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCircuitsCircuitTerminationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsCircuitTerminationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCircuitsCircuitTerminationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCircuitsCircuitTerminationsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsCircuitTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCircuitsCircuitTypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCircuitsCircuitTypesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsCircuitTypesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCircuitsCircuitTypesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCircuitsCircuitTypesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsCircuitsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCircuitsCircuitsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCircuitsCircuitsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsCircuitsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCircuitsCircuitsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCircuitsCircuitsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsProvidersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCircuitsProvidersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCircuitsProvidersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsProvidersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCircuitsProvidersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCircuitsProvidersIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCircuitsProvidersIdGraphsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCircuitsCircuitTerminationsIndexRouteHandler: RouteHandler<
+  typeof postCircuitsCircuitTerminationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCircuitsCircuitTerminationsIdIndexRouteHandler: RouteHandler<
+  typeof deleteCircuitsCircuitTerminationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsCircuitTerminationsIdIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitTerminationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCircuitsCircuitTerminationsIdIndexRouteHandler: RouteHandler<
+  typeof patchCircuitsCircuitTerminationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCircuitsCircuitTerminationsIdIndexRouteHandler: RouteHandler<
+  typeof putCircuitsCircuitTerminationsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsCircuitTypesIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCircuitsCircuitTypesIndexRouteHandler: RouteHandler<
+  typeof postCircuitsCircuitTypesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCircuitsCircuitTypesIdIndexRouteHandler: RouteHandler<
+  typeof deleteCircuitsCircuitTypesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsCircuitTypesIdIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitTypesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCircuitsCircuitTypesIdIndexRouteHandler: RouteHandler<
+  typeof patchCircuitsCircuitTypesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCircuitsCircuitTypesIdIndexRouteHandler: RouteHandler<
+  typeof putCircuitsCircuitTypesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsCircuitsIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCircuitsCircuitsIndexRouteHandler: RouteHandler<
+  typeof postCircuitsCircuitsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCircuitsCircuitsIdIndexRouteHandler: RouteHandler<
+  typeof deleteCircuitsCircuitsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsCircuitsIdIndexRouteHandler: RouteHandler<
+  typeof getCircuitsCircuitsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCircuitsCircuitsIdIndexRouteHandler: RouteHandler<
+  typeof patchCircuitsCircuitsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCircuitsCircuitsIdIndexRouteHandler: RouteHandler<
+  typeof putCircuitsCircuitsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsProvidersIndexRouteHandler: RouteHandler<
+  typeof getCircuitsProvidersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCircuitsProvidersIndexRouteHandler: RouteHandler<
+  typeof postCircuitsProvidersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCircuitsProvidersIdIndexRouteHandler: RouteHandler<
+  typeof deleteCircuitsProvidersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsProvidersIdIndexRouteHandler: RouteHandler<
+  typeof getCircuitsProvidersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCircuitsProvidersIdIndexRouteHandler: RouteHandler<
+  typeof patchCircuitsProvidersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCircuitsProvidersIdIndexRouteHandler: RouteHandler<
+  typeof putCircuitsProvidersIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCircuitsProvidersIdGraphsIndexRouteHandler: RouteHandler<
+  typeof getCircuitsProvidersIdGraphsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

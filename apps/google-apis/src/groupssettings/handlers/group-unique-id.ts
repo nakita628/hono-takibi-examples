@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGroupUniqueIdRoute, patchGroupUniqueIdRoute, putGroupUniqueIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getGroupUniqueIdRoute,
+  patchGroupUniqueIdRoute,
+  putGroupUniqueIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getGroupUniqueIdRouteHandler: RouteHandler<typeof getGroupUniqueIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const groupUniqueIdHandler = app
-  .openapi(getGroupUniqueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchGroupUniqueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGroupUniqueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchGroupUniqueIdRouteHandler: RouteHandler<typeof patchGroupUniqueIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putGroupUniqueIdRouteHandler: RouteHandler<typeof putGroupUniqueIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

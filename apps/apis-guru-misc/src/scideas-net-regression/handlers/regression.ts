@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRegressionApiRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRegressionApiRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const regressionHandler = app.openapi(postRegressionApiRoute, (c) => {
+export const postRegressionApiRouteHandler: RouteHandler<typeof postRegressionApiRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

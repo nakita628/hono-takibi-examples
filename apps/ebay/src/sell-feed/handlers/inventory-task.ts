@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInventoryTaskRoute,
   getInventoryTaskTaskIdRoute,
   postInventoryTaskRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInventoryTaskRouteHandler: RouteHandler<typeof getInventoryTaskRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const inventoryTaskHandler = app
-  .openapi(getInventoryTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInventoryTaskTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInventoryTaskRouteHandler: RouteHandler<typeof postInventoryTaskRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getInventoryTaskTaskIdRouteHandler: RouteHandler<
+  typeof getInventoryTaskTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

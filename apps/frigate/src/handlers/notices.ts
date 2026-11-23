@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNoticesHiddenRoute,
   deleteNoticesNoticeIdHiddenRoute,
   getNoticesMutedChecksRoute,
@@ -9,27 +9,40 @@ import {
   postNoticesNoticeIdMuteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNoticesRouteHandler: RouteHandler<typeof getNoticesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const noticesHandler = app
-  .openapi(getNoticesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNoticesStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNoticesMutedChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNoticesHiddenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNoticesNoticeIdAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNoticesNoticeIdMuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNoticesNoticeIdHiddenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNoticesStatsRouteHandler: RouteHandler<typeof getNoticesStatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNoticesMutedChecksRouteHandler: RouteHandler<
+  typeof getNoticesMutedChecksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNoticesHiddenRouteHandler: RouteHandler<
+  typeof deleteNoticesHiddenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNoticesNoticeIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postNoticesNoticeIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNoticesNoticeIdMuteRouteHandler: RouteHandler<
+  typeof postNoticesNoticeIdMuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNoticesNoticeIdHiddenRouteHandler: RouteHandler<
+  typeof deleteNoticesNoticeIdHiddenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

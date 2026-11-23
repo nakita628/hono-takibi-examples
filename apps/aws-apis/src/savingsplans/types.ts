@@ -1,9 +1,5 @@
 type TagValue = string
 type CreateSavingsPlanResponse = { savingsPlanId?: {} | undefined }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
-type ServiceQuotaExceededException = { [x: string]: unknown }
 type DeleteQueuedSavingsPlanResponse = { [x: string]: unknown }
 type SavingsPlanRateFilter = { name?: {} | undefined; values?: {} | undefined }
 type DescribeSavingsPlanRatesResponse = {
@@ -58,779 +54,228 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/CreateSavingsPlan': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingId: string
-                commitment: string
-                upfrontPaymentAmount?: string | undefined
-                purchaseTime?: string | undefined
-                clientToken?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateSavingsPlanResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingId: string
-                commitment: string
-                upfrontPaymentAmount?: string | undefined
-                purchaseTime?: string | undefined
-                clientToken?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            savingsPlanOfferingId: string
+            commitment: string
+            upfrontPaymentAmount?: string | undefined
+            purchaseTime?: string | undefined
+            clientToken?: string | undefined
+            tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingId: string
-                commitment: string
-                upfrontPaymentAmount?: string | undefined
-                purchaseTime?: string | undefined
-                clientToken?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingId: string
-                commitment: string
-                upfrontPaymentAmount?: string | undefined
-                purchaseTime?: string | undefined
-                clientToken?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingId: string
-                commitment: string
-                upfrontPaymentAmount?: string | undefined
-                purchaseTime?: string | undefined
-                clientToken?: string | undefined
-                tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: CreateSavingsPlanResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DeleteQueuedSavingsPlan': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { savingsPlanId: string } }
-            output: DeleteQueuedSavingsPlanResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { savingsPlanId: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { savingsPlanId: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { savingsPlanId: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { savingsPlanId: string } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { savingsPlanId: string } }
+        output: DeleteQueuedSavingsPlanResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeSavingsPlanRates': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanId: string
-                filters?: SavingsPlanRateFilter[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: DescribeSavingsPlanRatesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanId: string
-                filters?: SavingsPlanRateFilter[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            savingsPlanId: string
+            filters?: SavingsPlanRateFilter[] | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanId: string
-                filters?: SavingsPlanRateFilter[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeSavingsPlanRatesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeSavingsPlans': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanArns?: SavingsPlanArn[] | undefined
-                savingsPlanIds?: SavingsPlanId[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                states?: SavingsPlanState[] | undefined
-                filters?: SavingsPlanFilter[] | undefined
-              }
-            }
-            output: DescribeSavingsPlansResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanArns?: SavingsPlanArn[] | undefined
-                savingsPlanIds?: SavingsPlanId[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                states?: SavingsPlanState[] | undefined
-                filters?: SavingsPlanFilter[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            savingsPlanArns?: SavingsPlanArn[] | undefined
+            savingsPlanIds?: SavingsPlanId[] | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            states?: SavingsPlanState[] | undefined
+            filters?: SavingsPlanFilter[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanArns?: SavingsPlanArn[] | undefined
-                savingsPlanIds?: SavingsPlanId[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                states?: SavingsPlanState[] | undefined
-                filters?: SavingsPlanFilter[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeSavingsPlansResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeSavingsPlansOfferingRates': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingIds?: UUID[] | undefined
-                savingsPlanPaymentOptions?: SavingsPlanPaymentOption[] | undefined
-                savingsPlanTypes?: SavingsPlanType[] | undefined
-                products?: SavingsPlanProductType[] | undefined
-                serviceCodes?: SavingsPlanRateServiceCode[] | undefined
-                usageTypes?: SavingsPlanRateUsageType[] | undefined
-                operations?: SavingsPlanRateOperation[] | undefined
-                filters?: SavingsPlanOfferingRateFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: DescribeSavingsPlansOfferingRatesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingIds?: UUID[] | undefined
-                savingsPlanPaymentOptions?: SavingsPlanPaymentOption[] | undefined
-                savingsPlanTypes?: SavingsPlanType[] | undefined
-                products?: SavingsPlanProductType[] | undefined
-                serviceCodes?: SavingsPlanRateServiceCode[] | undefined
-                usageTypes?: SavingsPlanRateUsageType[] | undefined
-                operations?: SavingsPlanRateOperation[] | undefined
-                filters?: SavingsPlanOfferingRateFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            savingsPlanOfferingIds?: UUID[] | undefined
+            savingsPlanPaymentOptions?: SavingsPlanPaymentOption[] | undefined
+            savingsPlanTypes?: SavingsPlanType[] | undefined
+            products?: SavingsPlanProductType[] | undefined
+            serviceCodes?: SavingsPlanRateServiceCode[] | undefined
+            usageTypes?: SavingsPlanRateUsageType[] | undefined
+            operations?: SavingsPlanRateOperation[] | undefined
+            filters?: SavingsPlanOfferingRateFilterElement[] | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                savingsPlanOfferingIds?: UUID[] | undefined
-                savingsPlanPaymentOptions?: SavingsPlanPaymentOption[] | undefined
-                savingsPlanTypes?: SavingsPlanType[] | undefined
-                products?: SavingsPlanProductType[] | undefined
-                serviceCodes?: SavingsPlanRateServiceCode[] | undefined
-                usageTypes?: SavingsPlanRateUsageType[] | undefined
-                operations?: SavingsPlanRateOperation[] | undefined
-                filters?: SavingsPlanOfferingRateFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeSavingsPlansOfferingRatesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeSavingsPlansOfferings': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                offeringIds?: UUID[] | undefined
-                paymentOptions?: SavingsPlanPaymentOption[] | undefined
-                productType?: 'EC2' | 'Fargate' | 'Lambda' | 'SageMaker' | undefined
-                planTypes?: SavingsPlanType[] | undefined
-                durations?: SavingsPlansDuration[] | undefined
-                currencies?: CurrencyCode[] | undefined
-                descriptions?: SavingsPlanDescription[] | undefined
-                serviceCodes?: SavingsPlanServiceCode[] | undefined
-                usageTypes?: SavingsPlanUsageType[] | undefined
-                operations?: SavingsPlanOperation[] | undefined
-                filters?: SavingsPlanOfferingFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: DescribeSavingsPlansOfferingsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                offeringIds?: UUID[] | undefined
-                paymentOptions?: SavingsPlanPaymentOption[] | undefined
-                productType?: 'EC2' | 'Fargate' | 'Lambda' | 'SageMaker' | undefined
-                planTypes?: SavingsPlanType[] | undefined
-                durations?: SavingsPlansDuration[] | undefined
-                currencies?: CurrencyCode[] | undefined
-                descriptions?: SavingsPlanDescription[] | undefined
-                serviceCodes?: SavingsPlanServiceCode[] | undefined
-                usageTypes?: SavingsPlanUsageType[] | undefined
-                operations?: SavingsPlanOperation[] | undefined
-                filters?: SavingsPlanOfferingFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            offeringIds?: UUID[] | undefined
+            paymentOptions?: SavingsPlanPaymentOption[] | undefined
+            productType?: 'EC2' | 'Fargate' | 'Lambda' | 'SageMaker' | undefined
+            planTypes?: SavingsPlanType[] | undefined
+            durations?: SavingsPlansDuration[] | undefined
+            currencies?: CurrencyCode[] | undefined
+            descriptions?: SavingsPlanDescription[] | undefined
+            serviceCodes?: SavingsPlanServiceCode[] | undefined
+            usageTypes?: SavingsPlanUsageType[] | undefined
+            operations?: SavingsPlanOperation[] | undefined
+            filters?: SavingsPlanOfferingFilterElement[] | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                offeringIds?: UUID[] | undefined
-                paymentOptions?: SavingsPlanPaymentOption[] | undefined
-                productType?: 'EC2' | 'Fargate' | 'Lambda' | 'SageMaker' | undefined
-                planTypes?: SavingsPlanType[] | undefined
-                durations?: SavingsPlansDuration[] | undefined
-                currencies?: CurrencyCode[] | undefined
-                descriptions?: SavingsPlanDescription[] | undefined
-                serviceCodes?: SavingsPlanServiceCode[] | undefined
-                usageTypes?: SavingsPlanUsageType[] | undefined
-                operations?: SavingsPlanOperation[] | undefined
-                filters?: SavingsPlanOfferingFilterElement[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeSavingsPlansOfferingsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListTagsForResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string } }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { resourceArn: string } }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/TagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { resourceArn: string; tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/UntagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tagKeys: TagKey[] } }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tagKeys: TagKey[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tagKeys: TagKey[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { resourceArn: string; tagKeys: TagKey[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { resourceArn: string; tagKeys: TagKey[] } }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

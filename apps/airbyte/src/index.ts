@@ -1,8 +1,1949 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { publicHandler, v1Handler } from './handlers'
+import {
+  deletePublicV1ApplicationsApplicationIdRoute,
+  deletePublicV1ConnectionsConnectionIdRoute,
+  deletePublicV1DataplanesDataplaneIdRoute,
+  deletePublicV1DestinationsDestinationIdRoute,
+  deletePublicV1GroupsGroupIdMembersUserIdRoute,
+  deletePublicV1GroupsGroupIdPermissionsPermissionIdRoute,
+  deletePublicV1GroupsGroupIdRoute,
+  deletePublicV1JobsJobIdRoute,
+  deletePublicV1OrganizationsOrganizationIdOauthCredentialsActorTypeNameRoute,
+  deletePublicV1PermissionsPermissionIdRoute,
+  deletePublicV1RegionsRegionIdRoute,
+  deletePublicV1SourcesSourceIdRoute,
+  deletePublicV1TagsTagIdRoute,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+  deletePublicV1WorkspacesWorkspaceIdOauthCredentialsActorTypeNameRoute,
+  deletePublicV1WorkspacesWorkspaceIdRoute,
+  deleteV1ConnectionsConnectionIdEnablementRoute,
+  deleteV1DestinationsDestinationIdEnablementRoute,
+  deleteV1SourcesSourceIdEnablementRoute,
+  getPublicRoute,
+  getPublicV1ApplicationsApplicationIdRoute,
+  getPublicV1ApplicationsRoute,
+  getPublicV1ConnectionsConnectionIdRoute,
+  getPublicV1ConnectionsRoute,
+  getPublicV1ConnectorDefinitionsRoute,
+  getPublicV1DataplanesDataplaneIdRoute,
+  getPublicV1DataplanesRoute,
+  getPublicV1DestinationsDestinationIdRoute,
+  getPublicV1DestinationsRoute,
+  getPublicV1EmbeddedOrganizationsRoute,
+  getPublicV1GroupsGroupIdMembersRoute,
+  getPublicV1GroupsGroupIdPermissionsRoute,
+  getPublicV1GroupsGroupIdRoute,
+  getPublicV1GroupsRoute,
+  getPublicV1HealthRoute,
+  getPublicV1JobsJobIdRoute,
+  getPublicV1JobsRoute,
+  getPublicV1OauthCallbackRoute,
+  getPublicV1OrganizationsRoute,
+  getPublicV1PermissionsPermissionIdRoute,
+  getPublicV1PermissionsRoute,
+  getPublicV1RegionsRegionIdRoute,
+  getPublicV1RegionsRoute,
+  getPublicV1SourcesRoute,
+  getPublicV1SourcesSourceIdRoute,
+  getPublicV1StreamsRoute,
+  getPublicV1TagsRoute,
+  getPublicV1TagsTagIdRoute,
+  getPublicV1UsersRoute,
+  getPublicV1WorkspacesRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRoute,
+  getPublicV1WorkspacesWorkspaceIdRoute,
+  getV1ConnectionsConnectionIdEnablementRoute,
+  getV1DestinationsDestinationIdEnablementRoute,
+  getV1DestinationsDestinationIdSearchStatusRoute,
+  getV1HealthRoute,
+  getV1InstanceConfigurationRoute,
+  getV1OpenapiRoute,
+  getV1OrganizationPaymentConfigOrganizationIdRoute,
+  getV1OrganizationsOrganizationIdToolCallsUsageRoute,
+  getV1SourcesSourceIdEnablementRoute,
+  getV1SourcesSourceIdSearchStatusRoute,
+  getV1UserInvitationsByCodeInviteCodeRoute,
+  getV1WebBackendConfigRoute,
+  getV1WorkspacesWorkspaceIdSkillsDocsRoute,
+  patchPublicV1ConnectionsConnectionIdRoute,
+  patchPublicV1DataplanesDataplaneIdRoute,
+  patchPublicV1DestinationsDestinationIdRoute,
+  patchPublicV1GroupsGroupIdRoute,
+  patchPublicV1PermissionsPermissionIdRoute,
+  patchPublicV1RegionsRegionIdRoute,
+  patchPublicV1SourcesSourceIdRoute,
+  patchPublicV1TagsTagIdRoute,
+  patchPublicV1WorkspacesWorkspaceIdRoute,
+  postPublicV1ApplicationsRoute,
+  postPublicV1ApplicationsTokenRoute,
+  postPublicV1ConnectionsRoute,
+  postPublicV1DataplanesRoute,
+  postPublicV1DestinationsRoute,
+  postPublicV1EmbeddedScopedTokenRoute,
+  postPublicV1EmbeddedWidgetTokenRoute,
+  postPublicV1GroupsGroupIdMembersRoute,
+  postPublicV1GroupsGroupIdPermissionsRoute,
+  postPublicV1GroupsRoute,
+  postPublicV1JobsRoute,
+  postPublicV1PermissionsRoute,
+  postPublicV1RegionsRoute,
+  postPublicV1SourcesInitiateOAuthRoute,
+  postPublicV1SourcesRoute,
+  postPublicV1TagsRoute,
+  postPublicV1WorkspacesRoute,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRoute,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRoute,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRoute,
+  postV1ActorDefinitionsCreateRoute,
+  postV1ActorDefinitionsFinishRoute,
+  postV1ActorDefinitionsResultRoute,
+  postV1ActorDefinitionsUpdateRoute,
+  postV1ActorDefinitionVersionsGetDefaultRoute,
+  postV1ActorDefinitionVersionsGetForDestinationRoute,
+  postV1ActorDefinitionVersionsGetForSourceRoute,
+  postV1ActorDefinitionVersionsResolveRoute,
+  postV1AirbyteReleasesCreateRoute,
+  postV1ApplicationsCreateRoute,
+  postV1ApplicationsDeleteRoute,
+  postV1ApplicationsListRoute,
+  postV1ApplicationsTokenRoute,
+  postV1AttemptCreateNewAttemptNumberRoute,
+  postV1AttemptFailRoute,
+  postV1AttemptGetCombinedStatsRoute,
+  postV1AttemptGetForJobRoute,
+  postV1AttemptSaveStatsRoute,
+  postV1AttemptSaveStreamMetadataRoute,
+  postV1AttemptSaveSyncConfigRoute,
+  postV1AuditLogsListRoute,
+  postV1BillingBackfillUsageRoute,
+  postV1BillingCancelSubscriptionRoute,
+  postV1BillingCustomerPortalRoute,
+  postV1BillingDisableDelinquentWorkspacesRoute,
+  postV1BillingHandleWebhookRoute,
+  postV1BillingListInvoicesRoute,
+  postV1BillingNotificationSettingsGetRoute,
+  postV1BillingNotificationSettingsUpdateRoute,
+  postV1BillingPaymentInformationRoute,
+  postV1BillingSubscriptionInfoRoute,
+  postV1BillingTrialStatusRoute,
+  postV1BillingUnscheduleCancelSubscriptionRoute,
+  postV1BillingUnschedulePlanChangeRoute,
+  postV1CatalogsDiffRoute,
+  postV1CommandsCancelRoute,
+  postV1CommandsGetRoute,
+  postV1CommandsOutputCheckRoute,
+  postV1CommandsOutputConnectRoute,
+  postV1CommandsOutputDiscoverRoute,
+  postV1CommandsOutputReplicateRoute,
+  postV1CommandsOutputSpecRoute,
+  postV1CommandsRunCheckRoute,
+  postV1CommandsRunConnectRoute,
+  postV1CommandsRunDiscoverRoute,
+  postV1CommandsRunReplicateRoute,
+  postV1CommandsRunSpecRoute,
+  postV1CommandsStatusRoute,
+  postV1ConnectionsApplySchemaChangesRoute,
+  postV1ConnectionsAutoDisableRoute,
+  postV1ConnectionsClearRoute,
+  postV1ConnectionsClearStreamRoute,
+  postV1ConnectionsConnectionIdBackfillRoute,
+  postV1ConnectionsConnectionIdEnablementRoute,
+  postV1ConnectionsCreateRoute,
+  postV1ConnectionsDeleteRoute,
+  postV1ConnectionsEventsBackfillRoute,
+  postV1ConnectionsEventsGetRoute,
+  postV1ConnectionsEventsListForJobRoute,
+  postV1ConnectionsEventsListMinimalRoute,
+  postV1ConnectionsEventsListRoute,
+  postV1ConnectionsGetContextRoute,
+  postV1ConnectionsGetForJobRoute,
+  postV1ConnectionsGetRoute,
+  postV1ConnectionsHistoryDataRoute,
+  postV1ConnectionsHistoryUptimeRoute,
+  postV1ConnectionsLastJobPerStreamRoute,
+  postV1ConnectionsListAllRoute,
+  postV1ConnectionsListByActorDefinitionRoute,
+  postV1ConnectionsListPaginatedRoute,
+  postV1ConnectionsListRoute,
+  postV1ConnectionsPostprocessDiscoveredCatalogRoute,
+  postV1ConnectionsRefreshRoute,
+  postV1ConnectionsResetRoute,
+  postV1ConnectionsResetStreamRoute,
+  postV1ConnectionsResolveEnablementForSyncRoute,
+  postV1ConnectionsSearchRoute,
+  postV1ConnectionsStatusRoute,
+  postV1ConnectionsStreamHistoryRoute,
+  postV1ConnectionsSyncProgressRoute,
+  postV1ConnectionsSyncRoute,
+  postV1ConnectionsUpdateRoute,
+  postV1ConnectionsUpdateWithReasonRoute,
+  postV1ConnectorBuilderAssistProcessRoute,
+  postV1ConnectorBuilderAssistWarmRoute,
+  postV1ConnectorBuilderProjectsCapabilitiesRoute,
+  postV1ConnectorBuilderProjectsCompleteOauthRoute,
+  postV1ConnectorBuilderProjectsContributeCheckRoute,
+  postV1ConnectorBuilderProjectsContributeGenerateRoute,
+  postV1ConnectorBuilderProjectsCreateRoute,
+  postV1ConnectorBuilderProjectsDeleteRoute,
+  postV1ConnectorBuilderProjectsForkRoute,
+  postV1ConnectorBuilderProjectsFullResolveRoute,
+  postV1ConnectorBuilderProjectsGetBaseImageRoute,
+  postV1ConnectorBuilderProjectsGetForDefinitionIdRoute,
+  postV1ConnectorBuilderProjectsGetOauthConsentUrlRoute,
+  postV1ConnectorBuilderProjectsGetWithManifestRoute,
+  postV1ConnectorBuilderProjectsListRoute,
+  postV1ConnectorBuilderProjectsPublishRoute,
+  postV1ConnectorBuilderProjectsReadStreamRoute,
+  postV1ConnectorBuilderProjectsResolveRoute,
+  postV1ConnectorBuilderProjectsUpdateRoute,
+  postV1ConnectorBuilderProjectsUpdateTestingValuesRoute,
+  postV1ConnectorDocumentationGetRoute,
+  postV1ConnectorRolloutFinalizeRoute,
+  postV1ConnectorRolloutGetActorSyncInfoRoute,
+  postV1ConnectorRolloutGetRoute,
+  postV1ConnectorRolloutListAllRoute,
+  postV1ConnectorRolloutListByActorDefinitionIdRoute,
+  postV1ConnectorRolloutListRoute,
+  postV1ConnectorRolloutManualFinalizeRoute,
+  postV1ConnectorRolloutManualPauseRoute,
+  postV1ConnectorRolloutManualRolloutRoute,
+  postV1ConnectorRolloutManualStartRoute,
+  postV1ConnectorRolloutRolloutRoute,
+  postV1ConnectorRolloutStartRoute,
+  postV1ConnectorRolloutUpdateStateRoute,
+  postV1DataplaneGroupCreateRoute,
+  postV1DataplaneGroupDeleteRoute,
+  postV1DataplaneGroupListRoute,
+  postV1DataplaneGroupUpdateRoute,
+  postV1DataplanesCreateRoute,
+  postV1DataplanesDeleteRoute,
+  postV1DataplanesHealthRoute,
+  postV1DataplanesHeartbeatRoute,
+  postV1DataplanesInitializeRoute,
+  postV1DataplanesListRoute,
+  postV1DataplanesSecretStoragesListRoute,
+  postV1DataplanesTokenRoute,
+  postV1DataplanesUpdateRoute,
+  postV1DataWorkerAllocationAddCapacityRoute,
+  postV1DataWorkerAllocationGetRoute,
+  postV1DataWorkerAllocationListRoute,
+  postV1DataWorkerAllocationReallocateRoute,
+  postV1DataWorkerAllocationRemoveCapacityRoute,
+  postV1DeclarativeSourceDefinitionsCreateManifestRoute,
+  postV1DeclarativeSourceDefinitionsListManifestsRoute,
+  postV1DeclarativeSourceDefinitionsUpdateActiveManifestRoute,
+  postV1DeploymentMetadataRoute,
+  postV1DestinationDefinitionsCreateCustomRoute,
+  postV1DestinationDefinitionsDeleteRoute,
+  postV1DestinationDefinitionsGetForScopeRoute,
+  postV1DestinationDefinitionsGetForWorkspaceRoute,
+  postV1DestinationDefinitionsGetRoute,
+  postV1DestinationDefinitionsGrantDefinitionRoute,
+  postV1DestinationDefinitionsListEnterpriseStubsForWorkspaceRoute,
+  postV1DestinationDefinitionsListForWorkspaceRoute,
+  postV1DestinationDefinitionsListLatestRoute,
+  postV1DestinationDefinitionsListPrivateRoute,
+  postV1DestinationDefinitionsListRoute,
+  postV1DestinationDefinitionSpecificationsGetForDestinationRoute,
+  postV1DestinationDefinitionSpecificationsGetRoute,
+  postV1DestinationDefinitionsRevokeDefinitionRoute,
+  postV1DestinationDefinitionsUpdateRoute,
+  postV1DestinationOauthsCompleteOauthRoute,
+  postV1DestinationOauthsGetConsentUrlRoute,
+  postV1DestinationOauthsOauthParamsCreateRoute,
+  postV1DestinationsCheckConnectionForUpdateRoute,
+  postV1DestinationsCheckConnectionRoute,
+  postV1DestinationsCreateRoute,
+  postV1DestinationsDeleteRoute,
+  postV1DestinationsDestinationIdEnablementRoute,
+  postV1DestinationsDestinationIdExecuteRoute,
+  postV1DestinationsDestinationIdSearchRoute,
+  postV1DestinationsDiscoverSchemaRoute,
+  postV1DestinationsGetCatalogForConnectionRoute,
+  postV1DestinationsGetRoute,
+  postV1DestinationsListPaginatedRoute,
+  postV1DestinationsListRoute,
+  postV1DestinationsPartialUpdateRoute,
+  postV1DestinationsSearchRoute,
+  postV1DestinationsUpdateRoute,
+  postV1DestinationsUpgradeVersionRoute,
+  postV1DestinationsWriteDiscoverCatalogResultRoute,
+  postV1DiagnosticToolGenerateReportRoute,
+  postV1DomainVerificationsCheckRoute,
+  postV1DomainVerificationsCreateRoute,
+  postV1DomainVerificationsDeleteRoute,
+  postV1DomainVerificationsListPendingRoute,
+  postV1DomainVerificationsListRoute,
+  postV1DomainVerificationsResetRoute,
+  postV1EntitlementsGetEntitlementsRoute,
+  postV1EntitlementsIsEntitledRoute,
+  postV1EntitlementsListPlansRoute,
+  postV1EntitlementsUpdatePlanRoute,
+  postV1GroupPermissionsCreateRoute,
+  postV1GroupPermissionsDeleteRoute,
+  postV1GroupPermissionsListRoute,
+  postV1GroupsAddMemberRoute,
+  postV1GroupsCreateRoute,
+  postV1GroupsDeleteRoute,
+  postV1GroupsGetRoute,
+  postV1GroupsListMembersRoute,
+  postV1GroupsListRoute,
+  postV1GroupsRemoveMemberRoute,
+  postV1GroupsUpdateRoute,
+  postV1InstanceConfigurationSetupRoute,
+  postV1JobsCancelQueuedJobRoute,
+  postV1JobsCancelRoute,
+  postV1JobsCheckDataWorkerCapacityRoute,
+  postV1JobsCreateRoute,
+  postV1JobsDeleteStreamResetRecordsRoute,
+  postV1JobsDidPreviousJobSucceedRoute,
+  postV1JobsEvaluateOutlierRoute,
+  postV1JobsExplainRoute,
+  postV1JobsFailNonTerminalRoute,
+  postV1JobsFinalizeRoute,
+  postV1JobsGetDebugInfoRoute,
+  postV1JobsGetInputRoute,
+  postV1JobsGetLastReplicationJobRoute,
+  postV1JobsGetLastReplicationJobWithCancelRoute,
+  postV1JobsGetLightRoute,
+  postV1JobsGetRoute,
+  postV1JobsGetWebhookConfigRoute,
+  postV1JobsGetWithoutLogsRoute,
+  postV1JobsJobFailureRoute,
+  postV1JobsJobSuccessWithAttemptNumberRoute,
+  postV1JobsListForWorkspacesRoute,
+  postV1JobsListRoute,
+  postV1JobsPersistCancellationRoute,
+  postV1JobsReportJobStartRoute,
+  postV1JobsRetryStatesCreateOrUpdateRoute,
+  postV1JobsRetryStatesGetRoute,
+  postV1JobsSetJobQueuedRoute,
+  postV1NotificationsTryRoute,
+  postV1NotificationsTryWebhookRoute,
+  postV1OperationsCheckRoute,
+  postV1OperationsCreateRoute,
+  postV1OperationsDeleteRoute,
+  postV1OperationsGetRoute,
+  postV1OperationsListRoute,
+  postV1OperationsUpdateRoute,
+  postV1OrganizationPaymentConfigOrganizationIdEndGracePeriodRoute,
+  postV1OrganizationPaymentConfigRoute,
+  postV1OrganizationsAgenticStatusRoute,
+  postV1OrganizationsCreateRoute,
+  postV1OrganizationsDeleteRoute,
+  postV1OrganizationsGetDataWorkerUsageRoute,
+  postV1OrganizationsGetOrganizationInfoRoute,
+  postV1OrganizationsGetRoute,
+  postV1OrganizationsGetSemanticSearchEnablementRoute,
+  postV1OrganizationsGetUsageRoute,
+  postV1OrganizationsListByUserIdRoute,
+  postV1OrganizationsListSummariesRoute,
+  postV1OrganizationsOnboardingSendMobileHandoffEmailRoute,
+  postV1OrganizationsOnboardingUpdateRoute,
+  postV1OrganizationsUpdateRoute,
+  postV1OrganizationsUpdateSemanticSearchEnablementRoute,
+  postV1PermissionsCheckMultipleWorkspacesRoute,
+  postV1PermissionsCheckRoute,
+  postV1PermissionsCreateRoute,
+  postV1PermissionsDeleteRoute,
+  postV1PermissionsDeleteUserFromWorkspaceRoute,
+  postV1PermissionsGetRoute,
+  postV1PermissionsListByUserRoute,
+  postV1PermissionsUpdateRoute,
+  postV1PrivateLinkCreateRoute,
+  postV1PrivateLinkDeleteRoute,
+  postV1PrivateLinkGetRoute,
+  postV1PrivateLinkListByStatusRoute,
+  postV1PrivateLinkListRoute,
+  postV1PrivateLinkUpdateRoute,
+  postV1SchedulerDestinationsCheckConnectionRoute,
+  postV1SchedulerSourcesCheckConnectionRoute,
+  postV1SchedulerSourcesDiscoverSchemaRoute,
+  postV1ScimConfigDisableRoute,
+  postV1ScimConfigEnableRoute,
+  postV1ScimConfigGetRoute,
+  postV1ScimConfigRotateTokenRoute,
+  postV1ScopedConfigurationCreateRoute,
+  postV1ScopedConfigurationDeleteRoute,
+  postV1ScopedConfigurationGetContextRoute,
+  postV1ScopedConfigurationGetRoute,
+  postV1ScopedConfigurationListRoute,
+  postV1ScopedConfigurationUpdateRoute,
+  postV1SecretsPersistenceConfigCreateOrUpdateRoute,
+  postV1SecretsPersistenceConfigGetRoute,
+  postV1SecretStorageCreateRoute,
+  postV1SecretStorageDeleteRoute,
+  postV1SecretStorageGetRoute,
+  postV1SecretStorageListRoute,
+  postV1SecretStorageMigrateRoute,
+  postV1ServiceAccountsTokenRoute,
+  postV1SignalRoute,
+  postV1SourceDefinitionsCreateCustomRoute,
+  postV1SourceDefinitionsDeleteRoute,
+  postV1SourceDefinitionsGetForScopeRoute,
+  postV1SourceDefinitionsGetForWorkspaceRoute,
+  postV1SourceDefinitionsGetRoute,
+  postV1SourceDefinitionsGrantDefinitionRoute,
+  postV1SourceDefinitionsListEnterpriseSourceStubsRoute,
+  postV1SourceDefinitionsListEnterpriseStubsForWorkspaceRoute,
+  postV1SourceDefinitionsListForWorkspaceRoute,
+  postV1SourceDefinitionsListLatestRoute,
+  postV1SourceDefinitionsListPrivateRoute,
+  postV1SourceDefinitionsListRoute,
+  postV1SourceDefinitionSpecificationsGetForSourceRoute,
+  postV1SourceDefinitionSpecificationsGetRoute,
+  postV1SourceDefinitionsRevokeDefinitionRoute,
+  postV1SourceDefinitionsUpdateRoute,
+  postV1SourceOauthsCompleteOauthRoute,
+  postV1SourceOauthsGetConsentUrlRoute,
+  postV1SourceOauthsGetEmbeddedConsentUrlRoute,
+  postV1SourceOauthsGetScopesRoute,
+  postV1SourceOauthsOauthParamsCreateRoute,
+  postV1SourceOauthsRevokeRoute,
+  postV1SourcesApplySchemaChangesRoute,
+  postV1SourcesCheckConnectionForUpdateRoute,
+  postV1SourcesCheckConnectionRoute,
+  postV1SourcesCreateRoute,
+  postV1SourcesDeleteRoute,
+  postV1SourcesDiscoverSchemaRoute,
+  postV1SourcesGetRoute,
+  postV1SourcesGetWithMetadataRoute,
+  postV1SourcesListPaginatedRoute,
+  postV1SourcesListRoute,
+  postV1SourcesMostRecentSourceActorCatalogRoute,
+  postV1SourcesPartialUpdateRoute,
+  postV1SourcesSearchRoute,
+  postV1SourcesSourceIdEnablementRoute,
+  postV1SourcesSourceIdExecuteRoute,
+  postV1SourcesSourceIdSearchRoute,
+  postV1SourcesUpdateRoute,
+  postV1SourcesUpgradeVersionRoute,
+  postV1SourcesWriteDiscoverCatalogResultRoute,
+  postV1SsoConfigActivateRoute,
+  postV1SsoConfigCreateRoute,
+  postV1SsoConfigDeleteRoute,
+  postV1SsoConfigGetRoute,
+  postV1SsoConfigUpdateCredentialsRoute,
+  postV1SsoConfigValidateTokenRoute,
+  postV1StateCreateOrUpdateRoute,
+  postV1StateCreateOrUpdateSafeRoute,
+  postV1StateGetRoute,
+  postV1StreamStatusesCreateRoute,
+  postV1StreamStatusesLatestPerRunStateRoute,
+  postV1StreamStatusesListRoute,
+  postV1StreamStatusesUpdateRoute,
+  postV1TagsCreateRoute,
+  postV1TagsDeleteRoute,
+  postV1TagsListRoute,
+  postV1TagsUpdateRoute,
+  postV1UserInvitationsAcceptRoute,
+  postV1UserInvitationsCancelRoute,
+  postV1UserInvitationsCreateRoute,
+  postV1UserInvitationsDeclineRoute,
+  postV1UserInvitationsListPendingRoute,
+  postV1UsersDeleteRoute,
+  postV1UsersGetByAuthIdRoute,
+  postV1UsersGetByEmailRoute,
+  postV1UsersGetOrCreateByAuthIdRoute,
+  postV1UsersGetRoute,
+  postV1UsersListAccessInfoByWorkspaceIdRoute,
+  postV1UsersListByOrganizationIdRoute,
+  postV1UsersListInstanceAdminRoute,
+  postV1UsersUpdateRoute,
+  postV1WebBackendCheckUpdatesRoute,
+  postV1WebBackendConnectionsCreateRoute,
+  postV1WebBackendConnectionsGetRoute,
+  postV1WebBackendConnectionsListRoute,
+  postV1WebBackendConnectionsStatusCountsRoute,
+  postV1WebBackendConnectionsUpdateRoute,
+  postV1WebBackendDescribeCronExpressionRoute,
+  postV1WebBackendMappersValidateRoute,
+  postV1WebBackendStateGetTypeRoute,
+  postV1WebBackendWorkspaceStateRoute,
+  postV1WorkloadOutputWriteRoute,
+  postV1WorkspacesCreateIfNotExistRoute,
+  postV1WorkspacesCreateRoute,
+  postV1WorkspacesDeleteRoute,
+  postV1WorkspacesGetAvailableDbtJobsRoute,
+  postV1WorkspacesGetByConnectionIdRoute,
+  postV1WorkspacesGetByConnectionIdWithTombstoneRoute,
+  postV1WorkspacesGetBySlugRoute,
+  postV1WorkspacesGetDataWorkerAvailabilityRoute,
+  postV1WorkspacesGetOrganizationInfoRoute,
+  postV1WorkspacesGetRoute,
+  postV1WorkspacesGetUsageRoute,
+  postV1WorkspacesListByOrganizationIdRoute,
+  postV1WorkspacesListByUserIdRoute,
+  postV1WorkspacesListPaginatedRoute,
+  postV1WorkspacesTagFeedbackStatusAsDoneRoute,
+  postV1WorkspacesUpdateNameRoute,
+  postV1WorkspacesUpdateOrganizationRoute,
+  postV1WorkspacesUpdateRoute,
+  putPublicV1DestinationsDestinationIdRoute,
+  putPublicV1OrganizationsOrganizationIdOauthCredentialsRoute,
+  putPublicV1SourcesSourceIdRoute,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+  putPublicV1WorkspacesWorkspaceIdOauthCredentialsRoute,
+  putV1ConnectionsConnectionIdEnablementRoute,
+  putV1DestinationsDestinationIdEnablementRoute,
+  putV1SourcesSourceIdEnablementRoute,
+} from './routes'
+import {
+  deletePublicV1ApplicationsApplicationIdRouteHandler,
+  deletePublicV1ConnectionsConnectionIdRouteHandler,
+  deletePublicV1DataplanesDataplaneIdRouteHandler,
+  deletePublicV1DestinationsDestinationIdRouteHandler,
+  deletePublicV1GroupsGroupIdMembersUserIdRouteHandler,
+  deletePublicV1GroupsGroupIdPermissionsPermissionIdRouteHandler,
+  deletePublicV1GroupsGroupIdRouteHandler,
+  deletePublicV1JobsJobIdRouteHandler,
+  deletePublicV1OrganizationsOrganizationIdOauthCredentialsActorTypeNameRouteHandler,
+  deletePublicV1PermissionsPermissionIdRouteHandler,
+  deletePublicV1RegionsRegionIdRouteHandler,
+  deletePublicV1SourcesSourceIdRouteHandler,
+  deletePublicV1TagsTagIdRouteHandler,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  deletePublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  deletePublicV1WorkspacesWorkspaceIdOauthCredentialsActorTypeNameRouteHandler,
+  deletePublicV1WorkspacesWorkspaceIdRouteHandler,
+  deleteV1ConnectionsConnectionIdEnablementRouteHandler,
+  deleteV1DestinationsDestinationIdEnablementRouteHandler,
+  deleteV1SourcesSourceIdEnablementRouteHandler,
+  getPublicRouteHandler,
+  getPublicV1ApplicationsApplicationIdRouteHandler,
+  getPublicV1ApplicationsRouteHandler,
+  getPublicV1ConnectionsConnectionIdRouteHandler,
+  getPublicV1ConnectionsRouteHandler,
+  getPublicV1ConnectorDefinitionsRouteHandler,
+  getPublicV1DataplanesDataplaneIdRouteHandler,
+  getPublicV1DataplanesRouteHandler,
+  getPublicV1DestinationsDestinationIdRouteHandler,
+  getPublicV1DestinationsRouteHandler,
+  getPublicV1EmbeddedOrganizationsRouteHandler,
+  getPublicV1GroupsGroupIdMembersRouteHandler,
+  getPublicV1GroupsGroupIdPermissionsRouteHandler,
+  getPublicV1GroupsGroupIdRouteHandler,
+  getPublicV1GroupsRouteHandler,
+  getPublicV1HealthRouteHandler,
+  getPublicV1JobsJobIdRouteHandler,
+  getPublicV1JobsRouteHandler,
+  getPublicV1OauthCallbackRouteHandler,
+  getPublicV1OrganizationsRouteHandler,
+  getPublicV1PermissionsPermissionIdRouteHandler,
+  getPublicV1PermissionsRouteHandler,
+  getPublicV1RegionsRegionIdRouteHandler,
+  getPublicV1RegionsRouteHandler,
+  getPublicV1SourcesRouteHandler,
+  getPublicV1SourcesSourceIdRouteHandler,
+  getPublicV1StreamsRouteHandler,
+  getPublicV1TagsRouteHandler,
+  getPublicV1TagsTagIdRouteHandler,
+  getPublicV1UsersRouteHandler,
+  getPublicV1WorkspacesRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRouteHandler,
+  getPublicV1WorkspacesWorkspaceIdRouteHandler,
+  getV1ConnectionsConnectionIdEnablementRouteHandler,
+  getV1DestinationsDestinationIdEnablementRouteHandler,
+  getV1DestinationsDestinationIdSearchStatusRouteHandler,
+  getV1HealthRouteHandler,
+  getV1InstanceConfigurationRouteHandler,
+  getV1OpenapiRouteHandler,
+  getV1OrganizationPaymentConfigOrganizationIdRouteHandler,
+  getV1OrganizationsOrganizationIdToolCallsUsageRouteHandler,
+  getV1SourcesSourceIdEnablementRouteHandler,
+  getV1SourcesSourceIdSearchStatusRouteHandler,
+  getV1UserInvitationsByCodeInviteCodeRouteHandler,
+  getV1WebBackendConfigRouteHandler,
+  getV1WorkspacesWorkspaceIdSkillsDocsRouteHandler,
+  patchPublicV1ConnectionsConnectionIdRouteHandler,
+  patchPublicV1DataplanesDataplaneIdRouteHandler,
+  patchPublicV1DestinationsDestinationIdRouteHandler,
+  patchPublicV1GroupsGroupIdRouteHandler,
+  patchPublicV1PermissionsPermissionIdRouteHandler,
+  patchPublicV1RegionsRegionIdRouteHandler,
+  patchPublicV1SourcesSourceIdRouteHandler,
+  patchPublicV1TagsTagIdRouteHandler,
+  patchPublicV1WorkspacesWorkspaceIdRouteHandler,
+  postPublicV1ApplicationsRouteHandler,
+  postPublicV1ApplicationsTokenRouteHandler,
+  postPublicV1ConnectionsRouteHandler,
+  postPublicV1DataplanesRouteHandler,
+  postPublicV1DestinationsRouteHandler,
+  postPublicV1EmbeddedScopedTokenRouteHandler,
+  postPublicV1EmbeddedWidgetTokenRouteHandler,
+  postPublicV1GroupsGroupIdMembersRouteHandler,
+  postPublicV1GroupsGroupIdPermissionsRouteHandler,
+  postPublicV1GroupsRouteHandler,
+  postPublicV1JobsRouteHandler,
+  postPublicV1PermissionsRouteHandler,
+  postPublicV1RegionsRouteHandler,
+  postPublicV1SourcesInitiateOAuthRouteHandler,
+  postPublicV1SourcesRouteHandler,
+  postPublicV1TagsRouteHandler,
+  postPublicV1WorkspacesRouteHandler,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRouteHandler,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRouteHandler,
+  postPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRouteHandler,
+  postV1ActorDefinitionsCreateRouteHandler,
+  postV1ActorDefinitionsFinishRouteHandler,
+  postV1ActorDefinitionsResultRouteHandler,
+  postV1ActorDefinitionsUpdateRouteHandler,
+  postV1ActorDefinitionVersionsGetDefaultRouteHandler,
+  postV1ActorDefinitionVersionsGetForDestinationRouteHandler,
+  postV1ActorDefinitionVersionsGetForSourceRouteHandler,
+  postV1ActorDefinitionVersionsResolveRouteHandler,
+  postV1AirbyteReleasesCreateRouteHandler,
+  postV1ApplicationsCreateRouteHandler,
+  postV1ApplicationsDeleteRouteHandler,
+  postV1ApplicationsListRouteHandler,
+  postV1ApplicationsTokenRouteHandler,
+  postV1AttemptCreateNewAttemptNumberRouteHandler,
+  postV1AttemptFailRouteHandler,
+  postV1AttemptGetCombinedStatsRouteHandler,
+  postV1AttemptGetForJobRouteHandler,
+  postV1AttemptSaveStatsRouteHandler,
+  postV1AttemptSaveStreamMetadataRouteHandler,
+  postV1AttemptSaveSyncConfigRouteHandler,
+  postV1AuditLogsListRouteHandler,
+  postV1BillingBackfillUsageRouteHandler,
+  postV1BillingCancelSubscriptionRouteHandler,
+  postV1BillingCustomerPortalRouteHandler,
+  postV1BillingDisableDelinquentWorkspacesRouteHandler,
+  postV1BillingHandleWebhookRouteHandler,
+  postV1BillingListInvoicesRouteHandler,
+  postV1BillingNotificationSettingsGetRouteHandler,
+  postV1BillingNotificationSettingsUpdateRouteHandler,
+  postV1BillingPaymentInformationRouteHandler,
+  postV1BillingSubscriptionInfoRouteHandler,
+  postV1BillingTrialStatusRouteHandler,
+  postV1BillingUnscheduleCancelSubscriptionRouteHandler,
+  postV1BillingUnschedulePlanChangeRouteHandler,
+  postV1CatalogsDiffRouteHandler,
+  postV1CommandsCancelRouteHandler,
+  postV1CommandsGetRouteHandler,
+  postV1CommandsOutputCheckRouteHandler,
+  postV1CommandsOutputConnectRouteHandler,
+  postV1CommandsOutputDiscoverRouteHandler,
+  postV1CommandsOutputReplicateRouteHandler,
+  postV1CommandsOutputSpecRouteHandler,
+  postV1CommandsRunCheckRouteHandler,
+  postV1CommandsRunConnectRouteHandler,
+  postV1CommandsRunDiscoverRouteHandler,
+  postV1CommandsRunReplicateRouteHandler,
+  postV1CommandsRunSpecRouteHandler,
+  postV1CommandsStatusRouteHandler,
+  postV1ConnectionsApplySchemaChangesRouteHandler,
+  postV1ConnectionsAutoDisableRouteHandler,
+  postV1ConnectionsClearRouteHandler,
+  postV1ConnectionsClearStreamRouteHandler,
+  postV1ConnectionsConnectionIdBackfillRouteHandler,
+  postV1ConnectionsConnectionIdEnablementRouteHandler,
+  postV1ConnectionsCreateRouteHandler,
+  postV1ConnectionsDeleteRouteHandler,
+  postV1ConnectionsEventsBackfillRouteHandler,
+  postV1ConnectionsEventsGetRouteHandler,
+  postV1ConnectionsEventsListForJobRouteHandler,
+  postV1ConnectionsEventsListMinimalRouteHandler,
+  postV1ConnectionsEventsListRouteHandler,
+  postV1ConnectionsGetContextRouteHandler,
+  postV1ConnectionsGetForJobRouteHandler,
+  postV1ConnectionsGetRouteHandler,
+  postV1ConnectionsHistoryDataRouteHandler,
+  postV1ConnectionsHistoryUptimeRouteHandler,
+  postV1ConnectionsLastJobPerStreamRouteHandler,
+  postV1ConnectionsListAllRouteHandler,
+  postV1ConnectionsListByActorDefinitionRouteHandler,
+  postV1ConnectionsListPaginatedRouteHandler,
+  postV1ConnectionsListRouteHandler,
+  postV1ConnectionsPostprocessDiscoveredCatalogRouteHandler,
+  postV1ConnectionsRefreshRouteHandler,
+  postV1ConnectionsResetRouteHandler,
+  postV1ConnectionsResetStreamRouteHandler,
+  postV1ConnectionsResolveEnablementForSyncRouteHandler,
+  postV1ConnectionsSearchRouteHandler,
+  postV1ConnectionsStatusRouteHandler,
+  postV1ConnectionsStreamHistoryRouteHandler,
+  postV1ConnectionsSyncProgressRouteHandler,
+  postV1ConnectionsSyncRouteHandler,
+  postV1ConnectionsUpdateRouteHandler,
+  postV1ConnectionsUpdateWithReasonRouteHandler,
+  postV1ConnectorBuilderAssistProcessRouteHandler,
+  postV1ConnectorBuilderAssistWarmRouteHandler,
+  postV1ConnectorBuilderProjectsCapabilitiesRouteHandler,
+  postV1ConnectorBuilderProjectsCompleteOauthRouteHandler,
+  postV1ConnectorBuilderProjectsContributeCheckRouteHandler,
+  postV1ConnectorBuilderProjectsContributeGenerateRouteHandler,
+  postV1ConnectorBuilderProjectsCreateRouteHandler,
+  postV1ConnectorBuilderProjectsDeleteRouteHandler,
+  postV1ConnectorBuilderProjectsForkRouteHandler,
+  postV1ConnectorBuilderProjectsFullResolveRouteHandler,
+  postV1ConnectorBuilderProjectsGetBaseImageRouteHandler,
+  postV1ConnectorBuilderProjectsGetForDefinitionIdRouteHandler,
+  postV1ConnectorBuilderProjectsGetOauthConsentUrlRouteHandler,
+  postV1ConnectorBuilderProjectsGetWithManifestRouteHandler,
+  postV1ConnectorBuilderProjectsListRouteHandler,
+  postV1ConnectorBuilderProjectsPublishRouteHandler,
+  postV1ConnectorBuilderProjectsReadStreamRouteHandler,
+  postV1ConnectorBuilderProjectsResolveRouteHandler,
+  postV1ConnectorBuilderProjectsUpdateRouteHandler,
+  postV1ConnectorBuilderProjectsUpdateTestingValuesRouteHandler,
+  postV1ConnectorDocumentationGetRouteHandler,
+  postV1ConnectorRolloutFinalizeRouteHandler,
+  postV1ConnectorRolloutGetActorSyncInfoRouteHandler,
+  postV1ConnectorRolloutGetRouteHandler,
+  postV1ConnectorRolloutListAllRouteHandler,
+  postV1ConnectorRolloutListByActorDefinitionIdRouteHandler,
+  postV1ConnectorRolloutListRouteHandler,
+  postV1ConnectorRolloutManualFinalizeRouteHandler,
+  postV1ConnectorRolloutManualPauseRouteHandler,
+  postV1ConnectorRolloutManualRolloutRouteHandler,
+  postV1ConnectorRolloutManualStartRouteHandler,
+  postV1ConnectorRolloutRolloutRouteHandler,
+  postV1ConnectorRolloutStartRouteHandler,
+  postV1ConnectorRolloutUpdateStateRouteHandler,
+  postV1DataplaneGroupCreateRouteHandler,
+  postV1DataplaneGroupDeleteRouteHandler,
+  postV1DataplaneGroupListRouteHandler,
+  postV1DataplaneGroupUpdateRouteHandler,
+  postV1DataplanesCreateRouteHandler,
+  postV1DataplanesDeleteRouteHandler,
+  postV1DataplanesHealthRouteHandler,
+  postV1DataplanesHeartbeatRouteHandler,
+  postV1DataplanesInitializeRouteHandler,
+  postV1DataplanesListRouteHandler,
+  postV1DataplanesSecretStoragesListRouteHandler,
+  postV1DataplanesTokenRouteHandler,
+  postV1DataplanesUpdateRouteHandler,
+  postV1DataWorkerAllocationAddCapacityRouteHandler,
+  postV1DataWorkerAllocationGetRouteHandler,
+  postV1DataWorkerAllocationListRouteHandler,
+  postV1DataWorkerAllocationReallocateRouteHandler,
+  postV1DataWorkerAllocationRemoveCapacityRouteHandler,
+  postV1DeclarativeSourceDefinitionsCreateManifestRouteHandler,
+  postV1DeclarativeSourceDefinitionsListManifestsRouteHandler,
+  postV1DeclarativeSourceDefinitionsUpdateActiveManifestRouteHandler,
+  postV1DeploymentMetadataRouteHandler,
+  postV1DestinationDefinitionsCreateCustomRouteHandler,
+  postV1DestinationDefinitionsDeleteRouteHandler,
+  postV1DestinationDefinitionsGetForScopeRouteHandler,
+  postV1DestinationDefinitionsGetForWorkspaceRouteHandler,
+  postV1DestinationDefinitionsGetRouteHandler,
+  postV1DestinationDefinitionsGrantDefinitionRouteHandler,
+  postV1DestinationDefinitionsListEnterpriseStubsForWorkspaceRouteHandler,
+  postV1DestinationDefinitionsListForWorkspaceRouteHandler,
+  postV1DestinationDefinitionsListLatestRouteHandler,
+  postV1DestinationDefinitionsListPrivateRouteHandler,
+  postV1DestinationDefinitionsListRouteHandler,
+  postV1DestinationDefinitionSpecificationsGetForDestinationRouteHandler,
+  postV1DestinationDefinitionSpecificationsGetRouteHandler,
+  postV1DestinationDefinitionsRevokeDefinitionRouteHandler,
+  postV1DestinationDefinitionsUpdateRouteHandler,
+  postV1DestinationOauthsCompleteOauthRouteHandler,
+  postV1DestinationOauthsGetConsentUrlRouteHandler,
+  postV1DestinationOauthsOauthParamsCreateRouteHandler,
+  postV1DestinationsCheckConnectionForUpdateRouteHandler,
+  postV1DestinationsCheckConnectionRouteHandler,
+  postV1DestinationsCreateRouteHandler,
+  postV1DestinationsDeleteRouteHandler,
+  postV1DestinationsDestinationIdEnablementRouteHandler,
+  postV1DestinationsDestinationIdExecuteRouteHandler,
+  postV1DestinationsDestinationIdSearchRouteHandler,
+  postV1DestinationsDiscoverSchemaRouteHandler,
+  postV1DestinationsGetCatalogForConnectionRouteHandler,
+  postV1DestinationsGetRouteHandler,
+  postV1DestinationsListPaginatedRouteHandler,
+  postV1DestinationsListRouteHandler,
+  postV1DestinationsPartialUpdateRouteHandler,
+  postV1DestinationsSearchRouteHandler,
+  postV1DestinationsUpdateRouteHandler,
+  postV1DestinationsUpgradeVersionRouteHandler,
+  postV1DestinationsWriteDiscoverCatalogResultRouteHandler,
+  postV1DiagnosticToolGenerateReportRouteHandler,
+  postV1DomainVerificationsCheckRouteHandler,
+  postV1DomainVerificationsCreateRouteHandler,
+  postV1DomainVerificationsDeleteRouteHandler,
+  postV1DomainVerificationsListPendingRouteHandler,
+  postV1DomainVerificationsListRouteHandler,
+  postV1DomainVerificationsResetRouteHandler,
+  postV1EntitlementsGetEntitlementsRouteHandler,
+  postV1EntitlementsIsEntitledRouteHandler,
+  postV1EntitlementsListPlansRouteHandler,
+  postV1EntitlementsUpdatePlanRouteHandler,
+  postV1GroupPermissionsCreateRouteHandler,
+  postV1GroupPermissionsDeleteRouteHandler,
+  postV1GroupPermissionsListRouteHandler,
+  postV1GroupsAddMemberRouteHandler,
+  postV1GroupsCreateRouteHandler,
+  postV1GroupsDeleteRouteHandler,
+  postV1GroupsGetRouteHandler,
+  postV1GroupsListMembersRouteHandler,
+  postV1GroupsListRouteHandler,
+  postV1GroupsRemoveMemberRouteHandler,
+  postV1GroupsUpdateRouteHandler,
+  postV1InstanceConfigurationSetupRouteHandler,
+  postV1JobsCancelQueuedJobRouteHandler,
+  postV1JobsCancelRouteHandler,
+  postV1JobsCheckDataWorkerCapacityRouteHandler,
+  postV1JobsCreateRouteHandler,
+  postV1JobsDeleteStreamResetRecordsRouteHandler,
+  postV1JobsDidPreviousJobSucceedRouteHandler,
+  postV1JobsEvaluateOutlierRouteHandler,
+  postV1JobsExplainRouteHandler,
+  postV1JobsFailNonTerminalRouteHandler,
+  postV1JobsFinalizeRouteHandler,
+  postV1JobsGetDebugInfoRouteHandler,
+  postV1JobsGetInputRouteHandler,
+  postV1JobsGetLastReplicationJobRouteHandler,
+  postV1JobsGetLastReplicationJobWithCancelRouteHandler,
+  postV1JobsGetLightRouteHandler,
+  postV1JobsGetRouteHandler,
+  postV1JobsGetWebhookConfigRouteHandler,
+  postV1JobsGetWithoutLogsRouteHandler,
+  postV1JobsJobFailureRouteHandler,
+  postV1JobsJobSuccessWithAttemptNumberRouteHandler,
+  postV1JobsListForWorkspacesRouteHandler,
+  postV1JobsListRouteHandler,
+  postV1JobsPersistCancellationRouteHandler,
+  postV1JobsReportJobStartRouteHandler,
+  postV1JobsRetryStatesCreateOrUpdateRouteHandler,
+  postV1JobsRetryStatesGetRouteHandler,
+  postV1JobsSetJobQueuedRouteHandler,
+  postV1NotificationsTryRouteHandler,
+  postV1NotificationsTryWebhookRouteHandler,
+  postV1OperationsCheckRouteHandler,
+  postV1OperationsCreateRouteHandler,
+  postV1OperationsDeleteRouteHandler,
+  postV1OperationsGetRouteHandler,
+  postV1OperationsListRouteHandler,
+  postV1OperationsUpdateRouteHandler,
+  postV1OrganizationPaymentConfigOrganizationIdEndGracePeriodRouteHandler,
+  postV1OrganizationPaymentConfigRouteHandler,
+  postV1OrganizationsAgenticStatusRouteHandler,
+  postV1OrganizationsCreateRouteHandler,
+  postV1OrganizationsDeleteRouteHandler,
+  postV1OrganizationsGetDataWorkerUsageRouteHandler,
+  postV1OrganizationsGetOrganizationInfoRouteHandler,
+  postV1OrganizationsGetRouteHandler,
+  postV1OrganizationsGetSemanticSearchEnablementRouteHandler,
+  postV1OrganizationsGetUsageRouteHandler,
+  postV1OrganizationsListByUserIdRouteHandler,
+  postV1OrganizationsListSummariesRouteHandler,
+  postV1OrganizationsOnboardingSendMobileHandoffEmailRouteHandler,
+  postV1OrganizationsOnboardingUpdateRouteHandler,
+  postV1OrganizationsUpdateRouteHandler,
+  postV1OrganizationsUpdateSemanticSearchEnablementRouteHandler,
+  postV1PermissionsCheckMultipleWorkspacesRouteHandler,
+  postV1PermissionsCheckRouteHandler,
+  postV1PermissionsCreateRouteHandler,
+  postV1PermissionsDeleteRouteHandler,
+  postV1PermissionsDeleteUserFromWorkspaceRouteHandler,
+  postV1PermissionsGetRouteHandler,
+  postV1PermissionsListByUserRouteHandler,
+  postV1PermissionsUpdateRouteHandler,
+  postV1PrivateLinkCreateRouteHandler,
+  postV1PrivateLinkDeleteRouteHandler,
+  postV1PrivateLinkGetRouteHandler,
+  postV1PrivateLinkListByStatusRouteHandler,
+  postV1PrivateLinkListRouteHandler,
+  postV1PrivateLinkUpdateRouteHandler,
+  postV1SchedulerDestinationsCheckConnectionRouteHandler,
+  postV1SchedulerSourcesCheckConnectionRouteHandler,
+  postV1SchedulerSourcesDiscoverSchemaRouteHandler,
+  postV1ScimConfigDisableRouteHandler,
+  postV1ScimConfigEnableRouteHandler,
+  postV1ScimConfigGetRouteHandler,
+  postV1ScimConfigRotateTokenRouteHandler,
+  postV1ScopedConfigurationCreateRouteHandler,
+  postV1ScopedConfigurationDeleteRouteHandler,
+  postV1ScopedConfigurationGetContextRouteHandler,
+  postV1ScopedConfigurationGetRouteHandler,
+  postV1ScopedConfigurationListRouteHandler,
+  postV1ScopedConfigurationUpdateRouteHandler,
+  postV1SecretsPersistenceConfigCreateOrUpdateRouteHandler,
+  postV1SecretsPersistenceConfigGetRouteHandler,
+  postV1SecretStorageCreateRouteHandler,
+  postV1SecretStorageDeleteRouteHandler,
+  postV1SecretStorageGetRouteHandler,
+  postV1SecretStorageListRouteHandler,
+  postV1SecretStorageMigrateRouteHandler,
+  postV1ServiceAccountsTokenRouteHandler,
+  postV1SignalRouteHandler,
+  postV1SourceDefinitionsCreateCustomRouteHandler,
+  postV1SourceDefinitionsDeleteRouteHandler,
+  postV1SourceDefinitionsGetForScopeRouteHandler,
+  postV1SourceDefinitionsGetForWorkspaceRouteHandler,
+  postV1SourceDefinitionsGetRouteHandler,
+  postV1SourceDefinitionsGrantDefinitionRouteHandler,
+  postV1SourceDefinitionsListEnterpriseSourceStubsRouteHandler,
+  postV1SourceDefinitionsListEnterpriseStubsForWorkspaceRouteHandler,
+  postV1SourceDefinitionsListForWorkspaceRouteHandler,
+  postV1SourceDefinitionsListLatestRouteHandler,
+  postV1SourceDefinitionsListPrivateRouteHandler,
+  postV1SourceDefinitionsListRouteHandler,
+  postV1SourceDefinitionSpecificationsGetForSourceRouteHandler,
+  postV1SourceDefinitionSpecificationsGetRouteHandler,
+  postV1SourceDefinitionsRevokeDefinitionRouteHandler,
+  postV1SourceDefinitionsUpdateRouteHandler,
+  postV1SourceOauthsCompleteOauthRouteHandler,
+  postV1SourceOauthsGetConsentUrlRouteHandler,
+  postV1SourceOauthsGetEmbeddedConsentUrlRouteHandler,
+  postV1SourceOauthsGetScopesRouteHandler,
+  postV1SourceOauthsOauthParamsCreateRouteHandler,
+  postV1SourceOauthsRevokeRouteHandler,
+  postV1SourcesApplySchemaChangesRouteHandler,
+  postV1SourcesCheckConnectionForUpdateRouteHandler,
+  postV1SourcesCheckConnectionRouteHandler,
+  postV1SourcesCreateRouteHandler,
+  postV1SourcesDeleteRouteHandler,
+  postV1SourcesDiscoverSchemaRouteHandler,
+  postV1SourcesGetRouteHandler,
+  postV1SourcesGetWithMetadataRouteHandler,
+  postV1SourcesListPaginatedRouteHandler,
+  postV1SourcesListRouteHandler,
+  postV1SourcesMostRecentSourceActorCatalogRouteHandler,
+  postV1SourcesPartialUpdateRouteHandler,
+  postV1SourcesSearchRouteHandler,
+  postV1SourcesSourceIdEnablementRouteHandler,
+  postV1SourcesSourceIdExecuteRouteHandler,
+  postV1SourcesSourceIdSearchRouteHandler,
+  postV1SourcesUpdateRouteHandler,
+  postV1SourcesUpgradeVersionRouteHandler,
+  postV1SourcesWriteDiscoverCatalogResultRouteHandler,
+  postV1SsoConfigActivateRouteHandler,
+  postV1SsoConfigCreateRouteHandler,
+  postV1SsoConfigDeleteRouteHandler,
+  postV1SsoConfigGetRouteHandler,
+  postV1SsoConfigUpdateCredentialsRouteHandler,
+  postV1SsoConfigValidateTokenRouteHandler,
+  postV1StateCreateOrUpdateRouteHandler,
+  postV1StateCreateOrUpdateSafeRouteHandler,
+  postV1StateGetRouteHandler,
+  postV1StreamStatusesCreateRouteHandler,
+  postV1StreamStatusesLatestPerRunStateRouteHandler,
+  postV1StreamStatusesListRouteHandler,
+  postV1StreamStatusesUpdateRouteHandler,
+  postV1TagsCreateRouteHandler,
+  postV1TagsDeleteRouteHandler,
+  postV1TagsListRouteHandler,
+  postV1TagsUpdateRouteHandler,
+  postV1UserInvitationsAcceptRouteHandler,
+  postV1UserInvitationsCancelRouteHandler,
+  postV1UserInvitationsCreateRouteHandler,
+  postV1UserInvitationsDeclineRouteHandler,
+  postV1UserInvitationsListPendingRouteHandler,
+  postV1UsersDeleteRouteHandler,
+  postV1UsersGetByAuthIdRouteHandler,
+  postV1UsersGetByEmailRouteHandler,
+  postV1UsersGetOrCreateByAuthIdRouteHandler,
+  postV1UsersGetRouteHandler,
+  postV1UsersListAccessInfoByWorkspaceIdRouteHandler,
+  postV1UsersListByOrganizationIdRouteHandler,
+  postV1UsersListInstanceAdminRouteHandler,
+  postV1UsersUpdateRouteHandler,
+  postV1WebBackendCheckUpdatesRouteHandler,
+  postV1WebBackendConnectionsCreateRouteHandler,
+  postV1WebBackendConnectionsGetRouteHandler,
+  postV1WebBackendConnectionsListRouteHandler,
+  postV1WebBackendConnectionsStatusCountsRouteHandler,
+  postV1WebBackendConnectionsUpdateRouteHandler,
+  postV1WebBackendDescribeCronExpressionRouteHandler,
+  postV1WebBackendMappersValidateRouteHandler,
+  postV1WebBackendStateGetTypeRouteHandler,
+  postV1WebBackendWorkspaceStateRouteHandler,
+  postV1WorkloadOutputWriteRouteHandler,
+  postV1WorkspacesCreateIfNotExistRouteHandler,
+  postV1WorkspacesCreateRouteHandler,
+  postV1WorkspacesDeleteRouteHandler,
+  postV1WorkspacesGetAvailableDbtJobsRouteHandler,
+  postV1WorkspacesGetByConnectionIdRouteHandler,
+  postV1WorkspacesGetByConnectionIdWithTombstoneRouteHandler,
+  postV1WorkspacesGetBySlugRouteHandler,
+  postV1WorkspacesGetDataWorkerAvailabilityRouteHandler,
+  postV1WorkspacesGetOrganizationInfoRouteHandler,
+  postV1WorkspacesGetRouteHandler,
+  postV1WorkspacesGetUsageRouteHandler,
+  postV1WorkspacesListByOrganizationIdRouteHandler,
+  postV1WorkspacesListByUserIdRouteHandler,
+  postV1WorkspacesListPaginatedRouteHandler,
+  postV1WorkspacesTagFeedbackStatusAsDoneRouteHandler,
+  postV1WorkspacesUpdateNameRouteHandler,
+  postV1WorkspacesUpdateOrganizationRouteHandler,
+  postV1WorkspacesUpdateRouteHandler,
+  putPublicV1DestinationsDestinationIdRouteHandler,
+  putPublicV1OrganizationsOrganizationIdOauthCredentialsRouteHandler,
+  putPublicV1SourcesSourceIdRouteHandler,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  putPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  putPublicV1WorkspacesWorkspaceIdOauthCredentialsRouteHandler,
+  putV1ConnectionsConnectionIdEnablementRouteHandler,
+  putV1DestinationsDestinationIdEnablementRouteHandler,
+  putV1SourcesSourceIdEnablementRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler).route('/', publicHandler)
+export const api = app
+  .openapi(postV1SourcesSourceIdSearchRoute, postV1SourcesSourceIdSearchRouteHandler)
+  .openapi(
+    postV1DestinationsDestinationIdSearchRoute,
+    postV1DestinationsDestinationIdSearchRouteHandler,
+  )
+  .openapi(getV1SourcesSourceIdSearchStatusRoute, getV1SourcesSourceIdSearchStatusRouteHandler)
+  .openapi(
+    getV1DestinationsDestinationIdSearchStatusRoute,
+    getV1DestinationsDestinationIdSearchStatusRouteHandler,
+  )
+  .openapi(postV1SourcesSourceIdEnablementRoute, postV1SourcesSourceIdEnablementRouteHandler)
+  .openapi(getV1SourcesSourceIdEnablementRoute, getV1SourcesSourceIdEnablementRouteHandler)
+  .openapi(putV1SourcesSourceIdEnablementRoute, putV1SourcesSourceIdEnablementRouteHandler)
+  .openapi(deleteV1SourcesSourceIdEnablementRoute, deleteV1SourcesSourceIdEnablementRouteHandler)
+  .openapi(
+    postV1DestinationsDestinationIdEnablementRoute,
+    postV1DestinationsDestinationIdEnablementRouteHandler,
+  )
+  .openapi(
+    getV1DestinationsDestinationIdEnablementRoute,
+    getV1DestinationsDestinationIdEnablementRouteHandler,
+  )
+  .openapi(
+    putV1DestinationsDestinationIdEnablementRoute,
+    putV1DestinationsDestinationIdEnablementRouteHandler,
+  )
+  .openapi(
+    deleteV1DestinationsDestinationIdEnablementRoute,
+    deleteV1DestinationsDestinationIdEnablementRouteHandler,
+  )
+  .openapi(
+    postV1ConnectionsConnectionIdEnablementRoute,
+    postV1ConnectionsConnectionIdEnablementRouteHandler,
+  )
+  .openapi(
+    getV1ConnectionsConnectionIdEnablementRoute,
+    getV1ConnectionsConnectionIdEnablementRouteHandler,
+  )
+  .openapi(
+    putV1ConnectionsConnectionIdEnablementRoute,
+    putV1ConnectionsConnectionIdEnablementRouteHandler,
+  )
+  .openapi(
+    deleteV1ConnectionsConnectionIdEnablementRoute,
+    deleteV1ConnectionsConnectionIdEnablementRouteHandler,
+  )
+  .openapi(
+    postV1ConnectionsResolveEnablementForSyncRoute,
+    postV1ConnectionsResolveEnablementForSyncRouteHandler,
+  )
+  .openapi(
+    postV1ConnectionsConnectionIdBackfillRoute,
+    postV1ConnectionsConnectionIdBackfillRouteHandler,
+  )
+  .openapi(postV1WorkspacesCreateRoute, postV1WorkspacesCreateRouteHandler)
+  .openapi(postV1WorkspacesCreateIfNotExistRoute, postV1WorkspacesCreateIfNotExistRouteHandler)
+  .openapi(postV1WorkspacesDeleteRoute, postV1WorkspacesDeleteRouteHandler)
+  .openapi(postV1WorkspacesListPaginatedRoute, postV1WorkspacesListPaginatedRouteHandler)
+  .openapi(
+    postV1WorkspacesListByOrganizationIdRoute,
+    postV1WorkspacesListByOrganizationIdRouteHandler,
+  )
+  .openapi(postV1WorkspacesListByUserIdRoute, postV1WorkspacesListByUserIdRouteHandler)
+  .openapi(
+    postV1WorkspacesGetAvailableDbtJobsRoute,
+    postV1WorkspacesGetAvailableDbtJobsRouteHandler,
+  )
+  .openapi(postV1WorkspacesGetRoute, postV1WorkspacesGetRouteHandler)
+  .openapi(postV1WorkspacesGetBySlugRoute, postV1WorkspacesGetBySlugRouteHandler)
+  .openapi(postV1WorkspacesGetByConnectionIdRoute, postV1WorkspacesGetByConnectionIdRouteHandler)
+  .openapi(
+    postV1WorkspacesGetByConnectionIdWithTombstoneRoute,
+    postV1WorkspacesGetByConnectionIdWithTombstoneRouteHandler,
+  )
+  .openapi(
+    postV1WorkspacesGetOrganizationInfoRoute,
+    postV1WorkspacesGetOrganizationInfoRouteHandler,
+  )
+  .openapi(postV1WorkspacesUpdateRoute, postV1WorkspacesUpdateRouteHandler)
+  .openapi(postV1WorkspacesUpdateNameRoute, postV1WorkspacesUpdateNameRouteHandler)
+  .openapi(postV1WorkspacesUpdateOrganizationRoute, postV1WorkspacesUpdateOrganizationRouteHandler)
+  .openapi(postV1WorkspacesGetUsageRoute, postV1WorkspacesGetUsageRouteHandler)
+  .openapi(
+    postV1WorkspacesGetDataWorkerAvailabilityRoute,
+    postV1WorkspacesGetDataWorkerAvailabilityRouteHandler,
+  )
+  .openapi(
+    postV1WorkspacesTagFeedbackStatusAsDoneRoute,
+    postV1WorkspacesTagFeedbackStatusAsDoneRouteHandler,
+  )
+  .openapi(postV1NotificationsTryRoute, postV1NotificationsTryRouteHandler)
+  .openapi(postV1NotificationsTryWebhookRoute, postV1NotificationsTryWebhookRouteHandler)
+  .openapi(postV1SourceDefinitionsUpdateRoute, postV1SourceDefinitionsUpdateRouteHandler)
+  .openapi(postV1SourceDefinitionsListRoute, postV1SourceDefinitionsListRouteHandler)
+  .openapi(postV1SourceDefinitionsListLatestRoute, postV1SourceDefinitionsListLatestRouteHandler)
+  .openapi(postV1SourceDefinitionsGetRoute, postV1SourceDefinitionsGetRouteHandler)
+  .openapi(postV1SourceDefinitionsDeleteRoute, postV1SourceDefinitionsDeleteRouteHandler)
+  .openapi(postV1SourceDefinitionsListPrivateRoute, postV1SourceDefinitionsListPrivateRouteHandler)
+  .openapi(
+    postV1SourceDefinitionsListForWorkspaceRoute,
+    postV1SourceDefinitionsListForWorkspaceRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionsListEnterpriseSourceStubsRoute,
+    postV1SourceDefinitionsListEnterpriseSourceStubsRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionsListEnterpriseStubsForWorkspaceRoute,
+    postV1SourceDefinitionsListEnterpriseStubsForWorkspaceRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionsCreateCustomRoute,
+    postV1SourceDefinitionsCreateCustomRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionsGetForWorkspaceRoute,
+    postV1SourceDefinitionsGetForWorkspaceRouteHandler,
+  )
+  .openapi(postV1SourceDefinitionsGetForScopeRoute, postV1SourceDefinitionsGetForScopeRouteHandler)
+  .openapi(
+    postV1SourceDefinitionsGrantDefinitionRoute,
+    postV1SourceDefinitionsGrantDefinitionRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionsRevokeDefinitionRoute,
+    postV1SourceDefinitionsRevokeDefinitionRouteHandler,
+  )
+  .openapi(
+    postV1ActorDefinitionVersionsGetForSourceRoute,
+    postV1ActorDefinitionVersionsGetForSourceRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionSpecificationsGetRoute,
+    postV1SourceDefinitionSpecificationsGetRouteHandler,
+  )
+  .openapi(
+    postV1SourceDefinitionSpecificationsGetForSourceRoute,
+    postV1SourceDefinitionSpecificationsGetForSourceRouteHandler,
+  )
+  .openapi(
+    postV1ActorDefinitionVersionsResolveRoute,
+    postV1ActorDefinitionVersionsResolveRouteHandler,
+  )
+  .openapi(
+    postV1ActorDefinitionVersionsGetDefaultRoute,
+    postV1ActorDefinitionVersionsGetDefaultRouteHandler,
+  )
+  .openapi(postV1ActorDefinitionsCreateRoute, postV1ActorDefinitionsCreateRouteHandler)
+  .openapi(postV1ActorDefinitionsUpdateRoute, postV1ActorDefinitionsUpdateRouteHandler)
+  .openapi(postV1ActorDefinitionsFinishRoute, postV1ActorDefinitionsFinishRouteHandler)
+  .openapi(postV1ActorDefinitionsResultRoute, postV1ActorDefinitionsResultRouteHandler)
+  .openapi(
+    postV1DeclarativeSourceDefinitionsCreateManifestRoute,
+    postV1DeclarativeSourceDefinitionsCreateManifestRouteHandler,
+  )
+  .openapi(
+    postV1DeclarativeSourceDefinitionsUpdateActiveManifestRoute,
+    postV1DeclarativeSourceDefinitionsUpdateActiveManifestRouteHandler,
+  )
+  .openapi(
+    postV1DeclarativeSourceDefinitionsListManifestsRoute,
+    postV1DeclarativeSourceDefinitionsListManifestsRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsCreateRoute,
+    postV1ConnectorBuilderProjectsCreateRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsPublishRoute,
+    postV1ConnectorBuilderProjectsPublishRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsGetBaseImageRoute,
+    postV1ConnectorBuilderProjectsGetBaseImageRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsUpdateRoute,
+    postV1ConnectorBuilderProjectsUpdateRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsDeleteRoute,
+    postV1ConnectorBuilderProjectsDeleteRouteHandler,
+  )
+  .openapi(postV1ConnectorBuilderProjectsListRoute, postV1ConnectorBuilderProjectsListRouteHandler)
+  .openapi(
+    postV1ConnectorBuilderProjectsGetWithManifestRoute,
+    postV1ConnectorBuilderProjectsGetWithManifestRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsGetForDefinitionIdRoute,
+    postV1ConnectorBuilderProjectsGetForDefinitionIdRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsUpdateTestingValuesRoute,
+    postV1ConnectorBuilderProjectsUpdateTestingValuesRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsReadStreamRoute,
+    postV1ConnectorBuilderProjectsReadStreamRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsFullResolveRoute,
+    postV1ConnectorBuilderProjectsFullResolveRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsResolveRoute,
+    postV1ConnectorBuilderProjectsResolveRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsCapabilitiesRoute,
+    postV1ConnectorBuilderProjectsCapabilitiesRouteHandler,
+  )
+  .openapi(postV1ConnectorBuilderProjectsForkRoute, postV1ConnectorBuilderProjectsForkRouteHandler)
+  .openapi(
+    postV1ConnectorBuilderProjectsContributeCheckRoute,
+    postV1ConnectorBuilderProjectsContributeCheckRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsContributeGenerateRoute,
+    postV1ConnectorBuilderProjectsContributeGenerateRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderAssistProcessRoute,
+    postV1ConnectorBuilderAssistProcessRouteHandler,
+  )
+  .openapi(postV1ConnectorBuilderAssistWarmRoute, postV1ConnectorBuilderAssistWarmRouteHandler)
+  .openapi(postV1ConnectorDocumentationGetRoute, postV1ConnectorDocumentationGetRouteHandler)
+  .openapi(postV1SourcesCreateRoute, postV1SourcesCreateRouteHandler)
+  .openapi(postV1SourcesUpdateRoute, postV1SourcesUpdateRouteHandler)
+  .openapi(postV1SourcesPartialUpdateRoute, postV1SourcesPartialUpdateRouteHandler)
+  .openapi(postV1SourcesUpgradeVersionRoute, postV1SourcesUpgradeVersionRouteHandler)
+  .openapi(postV1SourcesListRoute, postV1SourcesListRouteHandler)
+  .openapi(postV1SourcesListPaginatedRoute, postV1SourcesListPaginatedRouteHandler)
+  .openapi(postV1SourcesGetRoute, postV1SourcesGetRouteHandler)
+  .openapi(postV1SourcesGetWithMetadataRoute, postV1SourcesGetWithMetadataRouteHandler)
+  .openapi(
+    postV1SourcesMostRecentSourceActorCatalogRoute,
+    postV1SourcesMostRecentSourceActorCatalogRouteHandler,
+  )
+  .openapi(postV1SourcesSearchRoute, postV1SourcesSearchRouteHandler)
+  .openapi(postV1SourcesDeleteRoute, postV1SourcesDeleteRouteHandler)
+  .openapi(
+    getV1WorkspacesWorkspaceIdSkillsDocsRoute,
+    getV1WorkspacesWorkspaceIdSkillsDocsRouteHandler,
+  )
+  .openapi(
+    postV1DestinationsDestinationIdExecuteRoute,
+    postV1DestinationsDestinationIdExecuteRouteHandler,
+  )
+  .openapi(postV1SourcesSourceIdExecuteRoute, postV1SourcesSourceIdExecuteRouteHandler)
+  .openapi(postV1SourcesCheckConnectionRoute, postV1SourcesCheckConnectionRouteHandler)
+  .openapi(
+    postV1SourcesCheckConnectionForUpdateRoute,
+    postV1SourcesCheckConnectionForUpdateRouteHandler,
+  )
+  .openapi(postV1SourcesDiscoverSchemaRoute, postV1SourcesDiscoverSchemaRouteHandler)
+  .openapi(postV1SourcesApplySchemaChangesRoute, postV1SourcesApplySchemaChangesRouteHandler)
+  .openapi(
+    postV1SourcesWriteDiscoverCatalogResultRoute,
+    postV1SourcesWriteDiscoverCatalogResultRouteHandler,
+  )
+  .openapi(
+    postV1DestinationsWriteDiscoverCatalogResultRoute,
+    postV1DestinationsWriteDiscoverCatalogResultRouteHandler,
+  )
+  .openapi(postV1DestinationDefinitionsUpdateRoute, postV1DestinationDefinitionsUpdateRouteHandler)
+  .openapi(postV1DestinationDefinitionsListRoute, postV1DestinationDefinitionsListRouteHandler)
+  .openapi(
+    postV1DestinationDefinitionsListLatestRoute,
+    postV1DestinationDefinitionsListLatestRouteHandler,
+  )
+  .openapi(postV1DestinationDefinitionsGetRoute, postV1DestinationDefinitionsGetRouteHandler)
+  .openapi(postV1DestinationDefinitionsDeleteRoute, postV1DestinationDefinitionsDeleteRouteHandler)
+  .openapi(
+    postV1DestinationDefinitionsListPrivateRoute,
+    postV1DestinationDefinitionsListPrivateRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsListForWorkspaceRoute,
+    postV1DestinationDefinitionsListForWorkspaceRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsListEnterpriseStubsForWorkspaceRoute,
+    postV1DestinationDefinitionsListEnterpriseStubsForWorkspaceRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsCreateCustomRoute,
+    postV1DestinationDefinitionsCreateCustomRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsGetForWorkspaceRoute,
+    postV1DestinationDefinitionsGetForWorkspaceRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsGetForScopeRoute,
+    postV1DestinationDefinitionsGetForScopeRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsGrantDefinitionRoute,
+    postV1DestinationDefinitionsGrantDefinitionRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionsRevokeDefinitionRoute,
+    postV1DestinationDefinitionsRevokeDefinitionRouteHandler,
+  )
+  .openapi(
+    postV1ActorDefinitionVersionsGetForDestinationRoute,
+    postV1ActorDefinitionVersionsGetForDestinationRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionSpecificationsGetRoute,
+    postV1DestinationDefinitionSpecificationsGetRouteHandler,
+  )
+  .openapi(
+    postV1DestinationDefinitionSpecificationsGetForDestinationRoute,
+    postV1DestinationDefinitionSpecificationsGetForDestinationRouteHandler,
+  )
+  .openapi(postV1DestinationsCreateRoute, postV1DestinationsCreateRouteHandler)
+  .openapi(postV1DestinationsUpdateRoute, postV1DestinationsUpdateRouteHandler)
+  .openapi(postV1DestinationsPartialUpdateRoute, postV1DestinationsPartialUpdateRouteHandler)
+  .openapi(postV1DestinationsUpgradeVersionRoute, postV1DestinationsUpgradeVersionRouteHandler)
+  .openapi(postV1DestinationsListRoute, postV1DestinationsListRouteHandler)
+  .openapi(postV1DestinationsListPaginatedRoute, postV1DestinationsListPaginatedRouteHandler)
+  .openapi(postV1DestinationsGetRoute, postV1DestinationsGetRouteHandler)
+  .openapi(postV1DestinationsDiscoverSchemaRoute, postV1DestinationsDiscoverSchemaRouteHandler)
+  .openapi(
+    postV1DestinationsGetCatalogForConnectionRoute,
+    postV1DestinationsGetCatalogForConnectionRouteHandler,
+  )
+  .openapi(postV1DestinationsSearchRoute, postV1DestinationsSearchRouteHandler)
+  .openapi(postV1DestinationsCheckConnectionRoute, postV1DestinationsCheckConnectionRouteHandler)
+  .openapi(
+    postV1DestinationsCheckConnectionForUpdateRoute,
+    postV1DestinationsCheckConnectionForUpdateRouteHandler,
+  )
+  .openapi(postV1DestinationsDeleteRoute, postV1DestinationsDeleteRouteHandler)
+  .openapi(postV1ConnectionsCreateRoute, postV1ConnectionsCreateRouteHandler)
+  .openapi(postV1ConnectionsUpdateRoute, postV1ConnectionsUpdateRouteHandler)
+  .openapi(postV1ConnectionsUpdateWithReasonRoute, postV1ConnectionsUpdateWithReasonRouteHandler)
+  .openapi(postV1ConnectionsListRoute, postV1ConnectionsListRouteHandler)
+  .openapi(postV1ConnectionsListPaginatedRoute, postV1ConnectionsListPaginatedRouteHandler)
+  .openapi(postV1ConnectionsListAllRoute, postV1ConnectionsListAllRouteHandler)
+  .openapi(postV1ConnectionsStatusRoute, postV1ConnectionsStatusRouteHandler)
+  .openapi(postV1ConnectionsSyncProgressRoute, postV1ConnectionsSyncProgressRouteHandler)
+  .openapi(postV1ConnectionsHistoryUptimeRoute, postV1ConnectionsHistoryUptimeRouteHandler)
+  .openapi(postV1ConnectionsHistoryDataRoute, postV1ConnectionsHistoryDataRouteHandler)
+  .openapi(postV1ConnectionsStreamHistoryRoute, postV1ConnectionsStreamHistoryRouteHandler)
+  .openapi(postV1ConnectionsEventsGetRoute, postV1ConnectionsEventsGetRouteHandler)
+  .openapi(postV1ConnectionsEventsListRoute, postV1ConnectionsEventsListRouteHandler)
+  .openapi(postV1ConnectionsEventsListMinimalRoute, postV1ConnectionsEventsListMinimalRouteHandler)
+  .openapi(postV1ConnectionsEventsBackfillRoute, postV1ConnectionsEventsBackfillRouteHandler)
+  .openapi(postV1ConnectionsEventsListForJobRoute, postV1ConnectionsEventsListForJobRouteHandler)
+  .openapi(postV1ConnectionsLastJobPerStreamRoute, postV1ConnectionsLastJobPerStreamRouteHandler)
+  .openapi(postV1ConnectionsGetRoute, postV1ConnectionsGetRouteHandler)
+  .openapi(postV1ConnectionsGetForJobRoute, postV1ConnectionsGetForJobRouteHandler)
+  .openapi(
+    postV1ConnectionsListByActorDefinitionRoute,
+    postV1ConnectionsListByActorDefinitionRouteHandler,
+  )
+  .openapi(
+    postV1ConnectionsApplySchemaChangesRoute,
+    postV1ConnectionsApplySchemaChangesRouteHandler,
+  )
+  .openapi(
+    postV1ConnectionsPostprocessDiscoveredCatalogRoute,
+    postV1ConnectionsPostprocessDiscoveredCatalogRouteHandler,
+  )
+  .openapi(postV1ConnectionsGetContextRoute, postV1ConnectionsGetContextRouteHandler)
+  .openapi(postV1StateGetRoute, postV1StateGetRouteHandler)
+  .openapi(postV1StateCreateOrUpdateRoute, postV1StateCreateOrUpdateRouteHandler)
+  .openapi(postV1StateCreateOrUpdateSafeRoute, postV1StateCreateOrUpdateSafeRouteHandler)
+  .openapi(postV1ConnectionsSearchRoute, postV1ConnectionsSearchRouteHandler)
+  .openapi(postV1ConnectionsDeleteRoute, postV1ConnectionsDeleteRouteHandler)
+  .openapi(postV1ConnectionsSyncRoute, postV1ConnectionsSyncRouteHandler)
+  .openapi(postV1ConnectionsResetRoute, postV1ConnectionsResetRouteHandler)
+  .openapi(postV1ConnectionsClearRoute, postV1ConnectionsClearRouteHandler)
+  .openapi(postV1ConnectionsAutoDisableRoute, postV1ConnectionsAutoDisableRouteHandler)
+  .openapi(postV1ConnectionsClearStreamRoute, postV1ConnectionsClearStreamRouteHandler)
+  .openapi(postV1ConnectionsResetStreamRoute, postV1ConnectionsResetStreamRouteHandler)
+  .openapi(postV1ConnectionsRefreshRoute, postV1ConnectionsRefreshRouteHandler)
+  .openapi(postV1OperationsCheckRoute, postV1OperationsCheckRouteHandler)
+  .openapi(postV1OperationsCreateRoute, postV1OperationsCreateRouteHandler)
+  .openapi(postV1OperationsUpdateRoute, postV1OperationsUpdateRouteHandler)
+  .openapi(postV1OperationsListRoute, postV1OperationsListRouteHandler)
+  .openapi(postV1OperationsGetRoute, postV1OperationsGetRouteHandler)
+  .openapi(postV1OperationsDeleteRoute, postV1OperationsDeleteRouteHandler)
+  .openapi(
+    postV1SchedulerSourcesCheckConnectionRoute,
+    postV1SchedulerSourcesCheckConnectionRouteHandler,
+  )
+  .openapi(
+    postV1SchedulerSourcesDiscoverSchemaRoute,
+    postV1SchedulerSourcesDiscoverSchemaRouteHandler,
+  )
+  .openapi(
+    postV1SchedulerDestinationsCheckConnectionRoute,
+    postV1SchedulerDestinationsCheckConnectionRouteHandler,
+  )
+  .openapi(
+    postV1SourceOauthsOauthParamsCreateRoute,
+    postV1SourceOauthsOauthParamsCreateRouteHandler,
+  )
+  .openapi(postV1SourceOauthsGetConsentUrlRoute, postV1SourceOauthsGetConsentUrlRouteHandler)
+  .openapi(
+    postV1SourceOauthsGetEmbeddedConsentUrlRoute,
+    postV1SourceOauthsGetEmbeddedConsentUrlRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorBuilderProjectsGetOauthConsentUrlRoute,
+    postV1ConnectorBuilderProjectsGetOauthConsentUrlRouteHandler,
+  )
+  .openapi(postV1SourceOauthsCompleteOauthRoute, postV1SourceOauthsCompleteOauthRouteHandler)
+  .openapi(
+    postV1ConnectorBuilderProjectsCompleteOauthRoute,
+    postV1ConnectorBuilderProjectsCompleteOauthRouteHandler,
+  )
+  .openapi(postV1SourceOauthsRevokeRoute, postV1SourceOauthsRevokeRouteHandler)
+  .openapi(postV1SourceOauthsGetScopesRoute, postV1SourceOauthsGetScopesRouteHandler)
+  .openapi(
+    postV1DestinationOauthsGetConsentUrlRoute,
+    postV1DestinationOauthsGetConsentUrlRouteHandler,
+  )
+  .openapi(
+    postV1DestinationOauthsCompleteOauthRoute,
+    postV1DestinationOauthsCompleteOauthRouteHandler,
+  )
+  .openapi(
+    postV1DestinationOauthsOauthParamsCreateRoute,
+    postV1DestinationOauthsOauthParamsCreateRouteHandler,
+  )
+  .openapi(postV1WebBackendCheckUpdatesRoute, postV1WebBackendCheckUpdatesRouteHandler)
+  .openapi(postV1WebBackendMappersValidateRoute, postV1WebBackendMappersValidateRouteHandler)
+  .openapi(postV1WebBackendConnectionsListRoute, postV1WebBackendConnectionsListRouteHandler)
+  .openapi(
+    postV1WebBackendConnectionsStatusCountsRoute,
+    postV1WebBackendConnectionsStatusCountsRouteHandler,
+  )
+  .openapi(postV1WebBackendConnectionsGetRoute, postV1WebBackendConnectionsGetRouteHandler)
+  .openapi(postV1WebBackendConnectionsCreateRoute, postV1WebBackendConnectionsCreateRouteHandler)
+  .openapi(postV1WebBackendConnectionsUpdateRoute, postV1WebBackendConnectionsUpdateRouteHandler)
+  .openapi(
+    postV1WebBackendDescribeCronExpressionRoute,
+    postV1WebBackendDescribeCronExpressionRouteHandler,
+  )
+  .openapi(postV1WebBackendStateGetTypeRoute, postV1WebBackendStateGetTypeRouteHandler)
+  .openapi(postV1WebBackendWorkspaceStateRoute, postV1WebBackendWorkspaceStateRouteHandler)
+  .openapi(getV1WebBackendConfigRoute, getV1WebBackendConfigRouteHandler)
+  .openapi(postV1JobsCreateRoute, postV1JobsCreateRouteHandler)
+  .openapi(
+    postV1JobsJobSuccessWithAttemptNumberRoute,
+    postV1JobsJobSuccessWithAttemptNumberRouteHandler,
+  )
+  .openapi(postV1JobsListRoute, postV1JobsListRouteHandler)
+  .openapi(postV1JobsListForWorkspacesRoute, postV1JobsListForWorkspacesRouteHandler)
+  .openapi(postV1JobsGetRoute, postV1JobsGetRouteHandler)
+  .openapi(postV1JobsGetLastReplicationJobRoute, postV1JobsGetLastReplicationJobRouteHandler)
+  .openapi(
+    postV1JobsGetLastReplicationJobWithCancelRoute,
+    postV1JobsGetLastReplicationJobWithCancelRouteHandler,
+  )
+  .openapi(postV1JobsGetWithoutLogsRoute, postV1JobsGetWithoutLogsRouteHandler)
+  .openapi(postV1JobsGetLightRoute, postV1JobsGetLightRouteHandler)
+  .openapi(postV1JobsCancelRoute, postV1JobsCancelRouteHandler)
+  .openapi(postV1JobsGetDebugInfoRoute, postV1JobsGetDebugInfoRouteHandler)
+  .openapi(postV1JobsGetInputRoute, postV1JobsGetInputRouteHandler)
+  .openapi(postV1JobsFailNonTerminalRoute, postV1JobsFailNonTerminalRouteHandler)
+  .openapi(postV1JobsReportJobStartRoute, postV1JobsReportJobStartRouteHandler)
+  .openapi(postV1JobsSetJobQueuedRoute, postV1JobsSetJobQueuedRouteHandler)
+  .openapi(postV1JobsCancelQueuedJobRoute, postV1JobsCancelQueuedJobRouteHandler)
+  .openapi(postV1JobsCheckDataWorkerCapacityRoute, postV1JobsCheckDataWorkerCapacityRouteHandler)
+  .openapi(postV1JobsGetWebhookConfigRoute, postV1JobsGetWebhookConfigRouteHandler)
+  .openapi(postV1JobsJobFailureRoute, postV1JobsJobFailureRouteHandler)
+  .openapi(postV1JobsDeleteStreamResetRecordsRoute, postV1JobsDeleteStreamResetRecordsRouteHandler)
+  .openapi(postV1JobsExplainRoute, postV1JobsExplainRouteHandler)
+  .openapi(postV1JobsEvaluateOutlierRoute, postV1JobsEvaluateOutlierRouteHandler)
+  .openapi(postV1JobsFinalizeRoute, postV1JobsFinalizeRouteHandler)
+  .openapi(postV1UsersGetRoute, postV1UsersGetRouteHandler)
+  .openapi(postV1UsersGetByAuthIdRoute, postV1UsersGetByAuthIdRouteHandler)
+  .openapi(postV1UsersGetByEmailRoute, postV1UsersGetByEmailRouteHandler)
+  .openapi(postV1UsersGetOrCreateByAuthIdRoute, postV1UsersGetOrCreateByAuthIdRouteHandler)
+  .openapi(postV1UsersUpdateRoute, postV1UsersUpdateRouteHandler)
+  .openapi(postV1UsersDeleteRoute, postV1UsersDeleteRouteHandler)
+  .openapi(
+    postV1UsersListAccessInfoByWorkspaceIdRoute,
+    postV1UsersListAccessInfoByWorkspaceIdRouteHandler,
+  )
+  .openapi(postV1UsersListByOrganizationIdRoute, postV1UsersListByOrganizationIdRouteHandler)
+  .openapi(postV1UsersListInstanceAdminRoute, postV1UsersListInstanceAdminRouteHandler)
+  .openapi(postV1PermissionsCreateRoute, postV1PermissionsCreateRouteHandler)
+  .openapi(postV1PermissionsGetRoute, postV1PermissionsGetRouteHandler)
+  .openapi(postV1PermissionsCheckRoute, postV1PermissionsCheckRouteHandler)
+  .openapi(
+    postV1PermissionsCheckMultipleWorkspacesRoute,
+    postV1PermissionsCheckMultipleWorkspacesRouteHandler,
+  )
+  .openapi(postV1PermissionsUpdateRoute, postV1PermissionsUpdateRouteHandler)
+  .openapi(postV1SecretsPersistenceConfigGetRoute, postV1SecretsPersistenceConfigGetRouteHandler)
+  .openapi(
+    postV1SecretsPersistenceConfigCreateOrUpdateRoute,
+    postV1SecretsPersistenceConfigCreateOrUpdateRouteHandler,
+  )
+  .openapi(postV1SecretStorageCreateRoute, postV1SecretStorageCreateRouteHandler)
+  .openapi(postV1SecretStorageListRoute, postV1SecretStorageListRouteHandler)
+  .openapi(postV1SecretStorageDeleteRoute, postV1SecretStorageDeleteRouteHandler)
+  .openapi(postV1SecretStorageGetRoute, postV1SecretStorageGetRouteHandler)
+  .openapi(postV1SecretStorageMigrateRoute, postV1SecretStorageMigrateRouteHandler)
+  .openapi(postV1PermissionsDeleteRoute, postV1PermissionsDeleteRouteHandler)
+  .openapi(
+    postV1PermissionsDeleteUserFromWorkspaceRoute,
+    postV1PermissionsDeleteUserFromWorkspaceRouteHandler,
+  )
+  .openapi(postV1PermissionsListByUserRoute, postV1PermissionsListByUserRouteHandler)
+  .openapi(getV1HealthRoute, getV1HealthRouteHandler)
+  .openapi(getV1OpenapiRoute, getV1OpenapiRouteHandler)
+  .openapi(
+    postV1AttemptCreateNewAttemptNumberRoute,
+    postV1AttemptCreateNewAttemptNumberRouteHandler,
+  )
+  .openapi(postV1AttemptSaveStreamMetadataRoute, postV1AttemptSaveStreamMetadataRouteHandler)
+  .openapi(postV1AttemptSaveStatsRoute, postV1AttemptSaveStatsRouteHandler)
+  .openapi(postV1AttemptSaveSyncConfigRoute, postV1AttemptSaveSyncConfigRouteHandler)
+  .openapi(postV1AttemptFailRoute, postV1AttemptFailRouteHandler)
+  .openapi(postV1AttemptGetCombinedStatsRoute, postV1AttemptGetCombinedStatsRouteHandler)
+  .openapi(postV1AttemptGetForJobRoute, postV1AttemptGetForJobRouteHandler)
+  .openapi(postV1StreamStatusesListRoute, postV1StreamStatusesListRouteHandler)
+  .openapi(
+    postV1StreamStatusesLatestPerRunStateRoute,
+    postV1StreamStatusesLatestPerRunStateRouteHandler,
+  )
+  .openapi(postV1StreamStatusesCreateRoute, postV1StreamStatusesCreateRouteHandler)
+  .openapi(postV1StreamStatusesUpdateRoute, postV1StreamStatusesUpdateRouteHandler)
+  .openapi(getV1InstanceConfigurationRoute, getV1InstanceConfigurationRouteHandler)
+  .openapi(postV1InstanceConfigurationSetupRoute, postV1InstanceConfigurationSetupRouteHandler)
+  .openapi(
+    postV1JobsRetryStatesCreateOrUpdateRoute,
+    postV1JobsRetryStatesCreateOrUpdateRouteHandler,
+  )
+  .openapi(postV1JobsRetryStatesGetRoute, postV1JobsRetryStatesGetRouteHandler)
+  .openapi(postV1JobsDidPreviousJobSucceedRoute, postV1JobsDidPreviousJobSucceedRouteHandler)
+  .openapi(postV1JobsPersistCancellationRoute, postV1JobsPersistCancellationRouteHandler)
+  .openapi(postV1BillingCustomerPortalRoute, postV1BillingCustomerPortalRouteHandler)
+  .openapi(postV1BillingBackfillUsageRoute, postV1BillingBackfillUsageRouteHandler)
+  .openapi(postV1BillingHandleWebhookRoute, postV1BillingHandleWebhookRouteHandler)
+  .openapi(postV1BillingListInvoicesRoute, postV1BillingListInvoicesRouteHandler)
+  .openapi(postV1BillingPaymentInformationRoute, postV1BillingPaymentInformationRouteHandler)
+  .openapi(postV1BillingSubscriptionInfoRoute, postV1BillingSubscriptionInfoRouteHandler)
+  .openapi(postV1BillingTrialStatusRoute, postV1BillingTrialStatusRouteHandler)
+  .openapi(postV1BillingCancelSubscriptionRoute, postV1BillingCancelSubscriptionRouteHandler)
+  .openapi(
+    postV1BillingUnscheduleCancelSubscriptionRoute,
+    postV1BillingUnscheduleCancelSubscriptionRouteHandler,
+  )
+  .openapi(postV1BillingUnschedulePlanChangeRoute, postV1BillingUnschedulePlanChangeRouteHandler)
+  .openapi(
+    postV1BillingDisableDelinquentWorkspacesRoute,
+    postV1BillingDisableDelinquentWorkspacesRouteHandler,
+  )
+  .openapi(
+    postV1BillingNotificationSettingsGetRoute,
+    postV1BillingNotificationSettingsGetRouteHandler,
+  )
+  .openapi(
+    postV1BillingNotificationSettingsUpdateRoute,
+    postV1BillingNotificationSettingsUpdateRouteHandler,
+  )
+  .openapi(
+    getV1OrganizationPaymentConfigOrganizationIdRoute,
+    getV1OrganizationPaymentConfigOrganizationIdRouteHandler,
+  )
+  .openapi(postV1OrganizationPaymentConfigRoute, postV1OrganizationPaymentConfigRouteHandler)
+  .openapi(
+    postV1OrganizationPaymentConfigOrganizationIdEndGracePeriodRoute,
+    postV1OrganizationPaymentConfigOrganizationIdEndGracePeriodRouteHandler,
+  )
+  .openapi(postV1OrganizationsGetRoute, postV1OrganizationsGetRouteHandler)
+  .openapi(
+    postV1OrganizationsGetSemanticSearchEnablementRoute,
+    postV1OrganizationsGetSemanticSearchEnablementRouteHandler,
+  )
+  .openapi(
+    postV1OrganizationsUpdateSemanticSearchEnablementRoute,
+    postV1OrganizationsUpdateSemanticSearchEnablementRouteHandler,
+  )
+  .openapi(
+    postV1OrganizationsOnboardingUpdateRoute,
+    postV1OrganizationsOnboardingUpdateRouteHandler,
+  )
+  .openapi(
+    postV1OrganizationsOnboardingSendMobileHandoffEmailRoute,
+    postV1OrganizationsOnboardingSendMobileHandoffEmailRouteHandler,
+  )
+  .openapi(postV1OrganizationsCreateRoute, postV1OrganizationsCreateRouteHandler)
+  .openapi(postV1OrganizationsUpdateRoute, postV1OrganizationsUpdateRouteHandler)
+  .openapi(postV1OrganizationsAgenticStatusRoute, postV1OrganizationsAgenticStatusRouteHandler)
+  .openapi(postV1OrganizationsDeleteRoute, postV1OrganizationsDeleteRouteHandler)
+  .openapi(postV1OrganizationsListByUserIdRoute, postV1OrganizationsListByUserIdRouteHandler)
+  .openapi(postV1OrganizationsGetUsageRoute, postV1OrganizationsGetUsageRouteHandler)
+  .openapi(
+    postV1OrganizationsGetDataWorkerUsageRoute,
+    postV1OrganizationsGetDataWorkerUsageRouteHandler,
+  )
+  .openapi(postV1OrganizationsListSummariesRoute, postV1OrganizationsListSummariesRouteHandler)
+  .openapi(
+    postV1OrganizationsGetOrganizationInfoRoute,
+    postV1OrganizationsGetOrganizationInfoRouteHandler,
+  )
+  .openapi(postV1GroupsListRoute, postV1GroupsListRouteHandler)
+  .openapi(postV1GroupsGetRoute, postV1GroupsGetRouteHandler)
+  .openapi(postV1GroupsCreateRoute, postV1GroupsCreateRouteHandler)
+  .openapi(postV1GroupsUpdateRoute, postV1GroupsUpdateRouteHandler)
+  .openapi(postV1GroupsDeleteRoute, postV1GroupsDeleteRouteHandler)
+  .openapi(postV1GroupsListMembersRoute, postV1GroupsListMembersRouteHandler)
+  .openapi(postV1GroupsAddMemberRoute, postV1GroupsAddMemberRouteHandler)
+  .openapi(postV1GroupsRemoveMemberRoute, postV1GroupsRemoveMemberRouteHandler)
+  .openapi(postV1GroupPermissionsListRoute, postV1GroupPermissionsListRouteHandler)
+  .openapi(postV1GroupPermissionsCreateRoute, postV1GroupPermissionsCreateRouteHandler)
+  .openapi(postV1GroupPermissionsDeleteRoute, postV1GroupPermissionsDeleteRouteHandler)
+  .openapi(
+    postV1DomainVerificationsListPendingRoute,
+    postV1DomainVerificationsListPendingRouteHandler,
+  )
+  .openapi(postV1DomainVerificationsCheckRoute, postV1DomainVerificationsCheckRouteHandler)
+  .openapi(postV1DeploymentMetadataRoute, postV1DeploymentMetadataRouteHandler)
+  .openapi(postV1ApplicationsListRoute, postV1ApplicationsListRouteHandler)
+  .openapi(postV1ApplicationsDeleteRoute, postV1ApplicationsDeleteRouteHandler)
+  .openapi(postV1ApplicationsCreateRoute, postV1ApplicationsCreateRouteHandler)
+  .openapi(postV1ApplicationsTokenRoute, postV1ApplicationsTokenRouteHandler)
+  .openapi(postV1ScopedConfigurationListRoute, postV1ScopedConfigurationListRouteHandler)
+  .openapi(
+    postV1ScopedConfigurationGetContextRoute,
+    postV1ScopedConfigurationGetContextRouteHandler,
+  )
+  .openapi(postV1ScopedConfigurationCreateRoute, postV1ScopedConfigurationCreateRouteHandler)
+  .openapi(postV1ScopedConfigurationGetRoute, postV1ScopedConfigurationGetRouteHandler)
+  .openapi(postV1ScopedConfigurationUpdateRoute, postV1ScopedConfigurationUpdateRouteHandler)
+  .openapi(postV1ScopedConfigurationDeleteRoute, postV1ScopedConfigurationDeleteRouteHandler)
+  .openapi(postV1ConnectorRolloutListRoute, postV1ConnectorRolloutListRouteHandler)
+  .openapi(
+    postV1ConnectorRolloutListByActorDefinitionIdRoute,
+    postV1ConnectorRolloutListByActorDefinitionIdRouteHandler,
+  )
+  .openapi(postV1ConnectorRolloutListAllRoute, postV1ConnectorRolloutListAllRouteHandler)
+  .openapi(postV1ConnectorRolloutGetRoute, postV1ConnectorRolloutGetRouteHandler)
+  .openapi(
+    postV1ConnectorRolloutGetActorSyncInfoRoute,
+    postV1ConnectorRolloutGetActorSyncInfoRouteHandler,
+  )
+  .openapi(postV1ConnectorRolloutStartRoute, postV1ConnectorRolloutStartRouteHandler)
+  .openapi(postV1ConnectorRolloutRolloutRoute, postV1ConnectorRolloutRolloutRouteHandler)
+  .openapi(postV1ConnectorRolloutUpdateStateRoute, postV1ConnectorRolloutUpdateStateRouteHandler)
+  .openapi(postV1ConnectorRolloutFinalizeRoute, postV1ConnectorRolloutFinalizeRouteHandler)
+  .openapi(postV1ConnectorRolloutManualStartRoute, postV1ConnectorRolloutManualStartRouteHandler)
+  .openapi(
+    postV1ConnectorRolloutManualRolloutRoute,
+    postV1ConnectorRolloutManualRolloutRouteHandler,
+  )
+  .openapi(
+    postV1ConnectorRolloutManualFinalizeRoute,
+    postV1ConnectorRolloutManualFinalizeRouteHandler,
+  )
+  .openapi(postV1ConnectorRolloutManualPauseRoute, postV1ConnectorRolloutManualPauseRouteHandler)
+  .openapi(postV1EntitlementsIsEntitledRoute, postV1EntitlementsIsEntitledRouteHandler)
+  .openapi(postV1EntitlementsGetEntitlementsRoute, postV1EntitlementsGetEntitlementsRouteHandler)
+  .openapi(postV1EntitlementsListPlansRoute, postV1EntitlementsListPlansRouteHandler)
+  .openapi(postV1EntitlementsUpdatePlanRoute, postV1EntitlementsUpdatePlanRouteHandler)
+  .openapi(postV1UserInvitationsCreateRoute, postV1UserInvitationsCreateRouteHandler)
+  .openapi(
+    getV1UserInvitationsByCodeInviteCodeRoute,
+    getV1UserInvitationsByCodeInviteCodeRouteHandler,
+  )
+  .openapi(postV1UserInvitationsListPendingRoute, postV1UserInvitationsListPendingRouteHandler)
+  .openapi(postV1UserInvitationsAcceptRoute, postV1UserInvitationsAcceptRouteHandler)
+  .openapi(postV1UserInvitationsDeclineRoute, postV1UserInvitationsDeclineRouteHandler)
+  .openapi(postV1UserInvitationsCancelRoute, postV1UserInvitationsCancelRouteHandler)
+  .openapi(postV1TagsListRoute, postV1TagsListRouteHandler)
+  .openapi(postV1TagsUpdateRoute, postV1TagsUpdateRouteHandler)
+  .openapi(postV1TagsDeleteRoute, postV1TagsDeleteRouteHandler)
+  .openapi(postV1TagsCreateRoute, postV1TagsCreateRouteHandler)
+  .openapi(postV1DiagnosticToolGenerateReportRoute, postV1DiagnosticToolGenerateReportRouteHandler)
+  .openapi(postV1SignalRoute, postV1SignalRouteHandler)
+  .openapi(postV1CatalogsDiffRoute, postV1CatalogsDiffRouteHandler)
+  .openapi(postV1CommandsRunCheckRoute, postV1CommandsRunCheckRouteHandler)
+  .openapi(postV1CommandsRunDiscoverRoute, postV1CommandsRunDiscoverRouteHandler)
+  .openapi(postV1CommandsRunConnectRoute, postV1CommandsRunConnectRouteHandler)
+  .openapi(postV1CommandsRunReplicateRoute, postV1CommandsRunReplicateRouteHandler)
+  .openapi(postV1CommandsRunSpecRoute, postV1CommandsRunSpecRouteHandler)
+  .openapi(postV1CommandsOutputCheckRoute, postV1CommandsOutputCheckRouteHandler)
+  .openapi(postV1CommandsOutputConnectRoute, postV1CommandsOutputConnectRouteHandler)
+  .openapi(postV1CommandsOutputDiscoverRoute, postV1CommandsOutputDiscoverRouteHandler)
+  .openapi(postV1CommandsOutputReplicateRoute, postV1CommandsOutputReplicateRouteHandler)
+  .openapi(postV1CommandsOutputSpecRoute, postV1CommandsOutputSpecRouteHandler)
+  .openapi(postV1CommandsStatusRoute, postV1CommandsStatusRouteHandler)
+  .openapi(postV1CommandsGetRoute, postV1CommandsGetRouteHandler)
+  .openapi(postV1CommandsCancelRoute, postV1CommandsCancelRouteHandler)
+  .openapi(postV1WorkloadOutputWriteRoute, postV1WorkloadOutputWriteRouteHandler)
+  .openapi(postV1DataplaneGroupCreateRoute, postV1DataplaneGroupCreateRouteHandler)
+  .openapi(postV1DataplaneGroupUpdateRoute, postV1DataplaneGroupUpdateRouteHandler)
+  .openapi(postV1DataplaneGroupDeleteRoute, postV1DataplaneGroupDeleteRouteHandler)
+  .openapi(postV1DataplaneGroupListRoute, postV1DataplaneGroupListRouteHandler)
+  .openapi(postV1DataWorkerAllocationListRoute, postV1DataWorkerAllocationListRouteHandler)
+  .openapi(postV1DataWorkerAllocationGetRoute, postV1DataWorkerAllocationGetRouteHandler)
+  .openapi(
+    postV1DataWorkerAllocationReallocateRoute,
+    postV1DataWorkerAllocationReallocateRouteHandler,
+  )
+  .openapi(
+    postV1DataWorkerAllocationAddCapacityRoute,
+    postV1DataWorkerAllocationAddCapacityRouteHandler,
+  )
+  .openapi(
+    postV1DataWorkerAllocationRemoveCapacityRoute,
+    postV1DataWorkerAllocationRemoveCapacityRouteHandler,
+  )
+  .openapi(postV1DataplanesCreateRoute, postV1DataplanesCreateRouteHandler)
+  .openapi(postV1DataplanesUpdateRoute, postV1DataplanesUpdateRouteHandler)
+  .openapi(postV1DataplanesDeleteRoute, postV1DataplanesDeleteRouteHandler)
+  .openapi(postV1DataplanesListRoute, postV1DataplanesListRouteHandler)
+  .openapi(postV1DataplanesTokenRoute, postV1DataplanesTokenRouteHandler)
+  .openapi(postV1DataplanesHeartbeatRoute, postV1DataplanesHeartbeatRouteHandler)
+  .openapi(postV1DataplanesSecretStoragesListRoute, postV1DataplanesSecretStoragesListRouteHandler)
+  .openapi(postV1DataplanesHealthRoute, postV1DataplanesHealthRouteHandler)
+  .openapi(postV1DataplanesInitializeRoute, postV1DataplanesInitializeRouteHandler)
+  .openapi(postV1SsoConfigGetRoute, postV1SsoConfigGetRouteHandler)
+  .openapi(postV1SsoConfigCreateRoute, postV1SsoConfigCreateRouteHandler)
+  .openapi(postV1SsoConfigDeleteRoute, postV1SsoConfigDeleteRouteHandler)
+  .openapi(postV1SsoConfigUpdateCredentialsRoute, postV1SsoConfigUpdateCredentialsRouteHandler)
+  .openapi(postV1SsoConfigActivateRoute, postV1SsoConfigActivateRouteHandler)
+  .openapi(postV1SsoConfigValidateTokenRoute, postV1SsoConfigValidateTokenRouteHandler)
+  .openapi(postV1ScimConfigGetRoute, postV1ScimConfigGetRouteHandler)
+  .openapi(postV1ScimConfigEnableRoute, postV1ScimConfigEnableRouteHandler)
+  .openapi(postV1ScimConfigRotateTokenRoute, postV1ScimConfigRotateTokenRouteHandler)
+  .openapi(postV1ScimConfigDisableRoute, postV1ScimConfigDisableRouteHandler)
+  .openapi(postV1AuditLogsListRoute, postV1AuditLogsListRouteHandler)
+  .openapi(getPublicRoute, getPublicRouteHandler)
+  .openapi(getPublicV1HealthRoute, getPublicV1HealthRouteHandler)
+  .openapi(getPublicV1ApplicationsRoute, getPublicV1ApplicationsRouteHandler)
+  .openapi(postPublicV1ApplicationsRoute, postPublicV1ApplicationsRouteHandler)
+  .openapi(
+    getPublicV1ApplicationsApplicationIdRoute,
+    getPublicV1ApplicationsApplicationIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1ApplicationsApplicationIdRoute,
+    deletePublicV1ApplicationsApplicationIdRouteHandler,
+  )
+  .openapi(postPublicV1ApplicationsTokenRoute, postPublicV1ApplicationsTokenRouteHandler)
+  .openapi(getPublicV1JobsRoute, getPublicV1JobsRouteHandler)
+  .openapi(postPublicV1JobsRoute, postPublicV1JobsRouteHandler)
+  .openapi(getPublicV1JobsJobIdRoute, getPublicV1JobsJobIdRouteHandler)
+  .openapi(deletePublicV1JobsJobIdRoute, deletePublicV1JobsJobIdRouteHandler)
+  .openapi(getPublicV1RegionsRoute, getPublicV1RegionsRouteHandler)
+  .openapi(postPublicV1RegionsRoute, postPublicV1RegionsRouteHandler)
+  .openapi(getPublicV1RegionsRegionIdRoute, getPublicV1RegionsRegionIdRouteHandler)
+  .openapi(patchPublicV1RegionsRegionIdRoute, patchPublicV1RegionsRegionIdRouteHandler)
+  .openapi(deletePublicV1RegionsRegionIdRoute, deletePublicV1RegionsRegionIdRouteHandler)
+  .openapi(getPublicV1DataplanesRoute, getPublicV1DataplanesRouteHandler)
+  .openapi(postPublicV1DataplanesRoute, postPublicV1DataplanesRouteHandler)
+  .openapi(getPublicV1DataplanesDataplaneIdRoute, getPublicV1DataplanesDataplaneIdRouteHandler)
+  .openapi(patchPublicV1DataplanesDataplaneIdRoute, patchPublicV1DataplanesDataplaneIdRouteHandler)
+  .openapi(
+    deletePublicV1DataplanesDataplaneIdRoute,
+    deletePublicV1DataplanesDataplaneIdRouteHandler,
+  )
+  .openapi(getPublicV1ConnectorDefinitionsRoute, getPublicV1ConnectorDefinitionsRouteHandler)
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRouteHandler,
+  )
+  .openapi(
+    postPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRoute,
+    postPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesRouteHandler,
+  )
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    putPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+    putPublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRoute,
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsDeclarativeSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRouteHandler,
+  )
+  .openapi(
+    postPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRoute,
+    postPublicV1WorkspacesWorkspaceIdDefinitionsSourcesRouteHandler,
+  )
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    putPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+    putPublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRoute,
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsSourcesDefinitionIdRouteHandler,
+  )
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRouteHandler,
+  )
+  .openapi(
+    postPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRoute,
+    postPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsRouteHandler,
+  )
+  .openapi(
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+    getPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  )
+  .openapi(
+    putPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+    putPublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRoute,
+    deletePublicV1WorkspacesWorkspaceIdDefinitionsDestinationsDefinitionIdRouteHandler,
+  )
+  .openapi(getPublicV1SourcesRoute, getPublicV1SourcesRouteHandler)
+  .openapi(postPublicV1SourcesRoute, postPublicV1SourcesRouteHandler)
+  .openapi(getPublicV1SourcesSourceIdRoute, getPublicV1SourcesSourceIdRouteHandler)
+  .openapi(patchPublicV1SourcesSourceIdRoute, patchPublicV1SourcesSourceIdRouteHandler)
+  .openapi(putPublicV1SourcesSourceIdRoute, putPublicV1SourcesSourceIdRouteHandler)
+  .openapi(deletePublicV1SourcesSourceIdRoute, deletePublicV1SourcesSourceIdRouteHandler)
+  .openapi(getPublicV1DestinationsRoute, getPublicV1DestinationsRouteHandler)
+  .openapi(postPublicV1DestinationsRoute, postPublicV1DestinationsRouteHandler)
+  .openapi(
+    getPublicV1DestinationsDestinationIdRoute,
+    getPublicV1DestinationsDestinationIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1DestinationsDestinationIdRoute,
+    deletePublicV1DestinationsDestinationIdRouteHandler,
+  )
+  .openapi(
+    patchPublicV1DestinationsDestinationIdRoute,
+    patchPublicV1DestinationsDestinationIdRouteHandler,
+  )
+  .openapi(
+    putPublicV1DestinationsDestinationIdRoute,
+    putPublicV1DestinationsDestinationIdRouteHandler,
+  )
+  .openapi(getPublicV1OauthCallbackRoute, getPublicV1OauthCallbackRouteHandler)
+  .openapi(postPublicV1SourcesInitiateOAuthRoute, postPublicV1SourcesInitiateOAuthRouteHandler)
+  .openapi(postPublicV1ConnectionsRoute, postPublicV1ConnectionsRouteHandler)
+  .openapi(getPublicV1ConnectionsRoute, getPublicV1ConnectionsRouteHandler)
+  .openapi(getPublicV1ConnectionsConnectionIdRoute, getPublicV1ConnectionsConnectionIdRouteHandler)
+  .openapi(
+    patchPublicV1ConnectionsConnectionIdRoute,
+    patchPublicV1ConnectionsConnectionIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1ConnectionsConnectionIdRoute,
+    deletePublicV1ConnectionsConnectionIdRouteHandler,
+  )
+  .openapi(getPublicV1StreamsRoute, getPublicV1StreamsRouteHandler)
+  .openapi(getPublicV1WorkspacesRoute, getPublicV1WorkspacesRouteHandler)
+  .openapi(postPublicV1WorkspacesRoute, postPublicV1WorkspacesRouteHandler)
+  .openapi(getPublicV1WorkspacesWorkspaceIdRoute, getPublicV1WorkspacesWorkspaceIdRouteHandler)
+  .openapi(patchPublicV1WorkspacesWorkspaceIdRoute, patchPublicV1WorkspacesWorkspaceIdRouteHandler)
+  .openapi(
+    deletePublicV1WorkspacesWorkspaceIdRoute,
+    deletePublicV1WorkspacesWorkspaceIdRouteHandler,
+  )
+  .openapi(
+    putPublicV1WorkspacesWorkspaceIdOauthCredentialsRoute,
+    putPublicV1WorkspacesWorkspaceIdOauthCredentialsRouteHandler,
+  )
+  .openapi(
+    deletePublicV1WorkspacesWorkspaceIdOauthCredentialsActorTypeNameRoute,
+    deletePublicV1WorkspacesWorkspaceIdOauthCredentialsActorTypeNameRouteHandler,
+  )
+  .openapi(getPublicV1PermissionsPermissionIdRoute, getPublicV1PermissionsPermissionIdRouteHandler)
+  .openapi(
+    patchPublicV1PermissionsPermissionIdRoute,
+    patchPublicV1PermissionsPermissionIdRouteHandler,
+  )
+  .openapi(
+    deletePublicV1PermissionsPermissionIdRoute,
+    deletePublicV1PermissionsPermissionIdRouteHandler,
+  )
+  .openapi(getPublicV1PermissionsRoute, getPublicV1PermissionsRouteHandler)
+  .openapi(postPublicV1PermissionsRoute, postPublicV1PermissionsRouteHandler)
+  .openapi(getPublicV1OrganizationsRoute, getPublicV1OrganizationsRouteHandler)
+  .openapi(
+    putPublicV1OrganizationsOrganizationIdOauthCredentialsRoute,
+    putPublicV1OrganizationsOrganizationIdOauthCredentialsRouteHandler,
+  )
+  .openapi(
+    deletePublicV1OrganizationsOrganizationIdOauthCredentialsActorTypeNameRoute,
+    deletePublicV1OrganizationsOrganizationIdOauthCredentialsActorTypeNameRouteHandler,
+  )
+  .openapi(getPublicV1UsersRoute, getPublicV1UsersRouteHandler)
+  .openapi(getPublicV1GroupsRoute, getPublicV1GroupsRouteHandler)
+  .openapi(postPublicV1GroupsRoute, postPublicV1GroupsRouteHandler)
+  .openapi(getPublicV1GroupsGroupIdRoute, getPublicV1GroupsGroupIdRouteHandler)
+  .openapi(patchPublicV1GroupsGroupIdRoute, patchPublicV1GroupsGroupIdRouteHandler)
+  .openapi(deletePublicV1GroupsGroupIdRoute, deletePublicV1GroupsGroupIdRouteHandler)
+  .openapi(getPublicV1GroupsGroupIdMembersRoute, getPublicV1GroupsGroupIdMembersRouteHandler)
+  .openapi(postPublicV1GroupsGroupIdMembersRoute, postPublicV1GroupsGroupIdMembersRouteHandler)
+  .openapi(
+    deletePublicV1GroupsGroupIdMembersUserIdRoute,
+    deletePublicV1GroupsGroupIdMembersUserIdRouteHandler,
+  )
+  .openapi(
+    getPublicV1GroupsGroupIdPermissionsRoute,
+    getPublicV1GroupsGroupIdPermissionsRouteHandler,
+  )
+  .openapi(
+    postPublicV1GroupsGroupIdPermissionsRoute,
+    postPublicV1GroupsGroupIdPermissionsRouteHandler,
+  )
+  .openapi(
+    deletePublicV1GroupsGroupIdPermissionsPermissionIdRoute,
+    deletePublicV1GroupsGroupIdPermissionsPermissionIdRouteHandler,
+  )
+  .openapi(getPublicV1TagsRoute, getPublicV1TagsRouteHandler)
+  .openapi(postPublicV1TagsRoute, postPublicV1TagsRouteHandler)
+  .openapi(getPublicV1TagsTagIdRoute, getPublicV1TagsTagIdRouteHandler)
+  .openapi(deletePublicV1TagsTagIdRoute, deletePublicV1TagsTagIdRouteHandler)
+  .openapi(patchPublicV1TagsTagIdRoute, patchPublicV1TagsTagIdRouteHandler)
+  .openapi(postPublicV1EmbeddedWidgetTokenRoute, postPublicV1EmbeddedWidgetTokenRouteHandler)
+  .openapi(postPublicV1EmbeddedScopedTokenRoute, postPublicV1EmbeddedScopedTokenRouteHandler)
+  .openapi(getPublicV1EmbeddedOrganizationsRoute, getPublicV1EmbeddedOrganizationsRouteHandler)
+  .openapi(postV1ServiceAccountsTokenRoute, postV1ServiceAccountsTokenRouteHandler)
+  .openapi(postV1DomainVerificationsCreateRoute, postV1DomainVerificationsCreateRouteHandler)
+  .openapi(postV1DomainVerificationsListRoute, postV1DomainVerificationsListRouteHandler)
+  .openapi(postV1DomainVerificationsDeleteRoute, postV1DomainVerificationsDeleteRouteHandler)
+  .openapi(postV1DomainVerificationsResetRoute, postV1DomainVerificationsResetRouteHandler)
+  .openapi(postV1AirbyteReleasesCreateRoute, postV1AirbyteReleasesCreateRouteHandler)
+  .openapi(postV1PrivateLinkCreateRoute, postV1PrivateLinkCreateRouteHandler)
+  .openapi(postV1PrivateLinkListRoute, postV1PrivateLinkListRouteHandler)
+  .openapi(postV1PrivateLinkDeleteRoute, postV1PrivateLinkDeleteRouteHandler)
+  .openapi(postV1PrivateLinkGetRoute, postV1PrivateLinkGetRouteHandler)
+  .openapi(postV1PrivateLinkUpdateRoute, postV1PrivateLinkUpdateRouteHandler)
+  .openapi(postV1PrivateLinkListByStatusRoute, postV1PrivateLinkListByStatusRouteHandler)
+  .openapi(
+    getV1OrganizationsOrganizationIdToolCallsUsageRoute,
+    getV1OrganizationsOrganizationIdToolCallsUsageRouteHandler,
+  )
 
 export default app

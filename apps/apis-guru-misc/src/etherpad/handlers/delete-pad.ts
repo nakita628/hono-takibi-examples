@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDeletePadRoute, postDeletePadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDeletePadRoute, postDeletePadRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeletePadRouteHandler: RouteHandler<typeof getDeletePadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deletePadHandler = app
-  .openapi(getDeletePadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeletePadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeletePadRouteHandler: RouteHandler<typeof postDeletePadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,299 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { v1beta1Handler } from './handlers'
+import {
+  deleteV1beta1NameRoute,
+  deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
+  deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+  getV1beta1NameCheckAutopilotCompatibilityRoute,
+  getV1beta1NameRoute,
+  getV1beta1NameServerConfigRoute,
+  getV1beta1ParentAggregatedUsableSubnetworksRoute,
+  getV1beta1ParentClustersRoute,
+  getV1beta1ParentJwksRoute,
+  getV1beta1ParentLocationsRoute,
+  getV1beta1ParentNodePoolsRoute,
+  getV1beta1ParentOperationsRoute,
+  getV1beta1ParentWellKnownOpenidConfigurationRoute,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+  getV1beta1ProjectsProjectIdZonesZoneClustersRoute,
+  getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRoute,
+  getV1beta1ProjectsProjectIdZonesZoneOperationsRoute,
+  getV1beta1ProjectsProjectIdZonesZoneServerconfigRoute,
+  postV1beta1NameCancelRoute,
+  postV1beta1NameCompleteIpRotationRoute,
+  postV1beta1NameCompleteUpgradeRoute,
+  postV1beta1NameRollbackRoute,
+  postV1beta1NameSetAddonsRoute,
+  postV1beta1NameSetAutoscalingRoute,
+  postV1beta1NameSetLegacyAbacRoute,
+  postV1beta1NameSetLocationsRoute,
+  postV1beta1NameSetLoggingRoute,
+  postV1beta1NameSetMaintenancePolicyRoute,
+  postV1beta1NameSetManagementRoute,
+  postV1beta1NameSetMasterAuthRoute,
+  postV1beta1NameSetMonitoringRoute,
+  postV1beta1NameSetNetworkPolicyRoute,
+  postV1beta1NameSetResourceLabelsRoute,
+  postV1beta1NameSetSizeRoute,
+  postV1beta1NameStartIpRotationRoute,
+  postV1beta1NameUpdateMasterRoute,
+  postV1beta1ParentClustersRoute,
+  postV1beta1ParentNodePoolsRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRoute,
+  postV1beta1ProjectsProjectIdZonesZoneClustersRoute,
+  postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRoute,
+  putV1beta1NameRoute,
+  putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+} from './routes'
+import {
+  deleteV1beta1NameRouteHandler,
+  deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+  getV1beta1NameCheckAutopilotCompatibilityRouteHandler,
+  getV1beta1NameRouteHandler,
+  getV1beta1NameServerConfigRouteHandler,
+  getV1beta1ParentAggregatedUsableSubnetworksRouteHandler,
+  getV1beta1ParentClustersRouteHandler,
+  getV1beta1ParentJwksRouteHandler,
+  getV1beta1ParentLocationsRouteHandler,
+  getV1beta1ParentNodePoolsRouteHandler,
+  getV1beta1ParentOperationsRouteHandler,
+  getV1beta1ParentWellKnownOpenidConfigurationRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneOperationsRouteHandler,
+  getV1beta1ProjectsProjectIdZonesZoneServerconfigRouteHandler,
+  postV1beta1NameCancelRouteHandler,
+  postV1beta1NameCompleteIpRotationRouteHandler,
+  postV1beta1NameCompleteUpgradeRouteHandler,
+  postV1beta1NameRollbackRouteHandler,
+  postV1beta1NameSetAddonsRouteHandler,
+  postV1beta1NameSetAutoscalingRouteHandler,
+  postV1beta1NameSetLegacyAbacRouteHandler,
+  postV1beta1NameSetLocationsRouteHandler,
+  postV1beta1NameSetLoggingRouteHandler,
+  postV1beta1NameSetMaintenancePolicyRouteHandler,
+  postV1beta1NameSetManagementRouteHandler,
+  postV1beta1NameSetMasterAuthRouteHandler,
+  postV1beta1NameSetMonitoringRouteHandler,
+  postV1beta1NameSetNetworkPolicyRouteHandler,
+  postV1beta1NameSetResourceLabelsRouteHandler,
+  postV1beta1NameSetSizeRouteHandler,
+  postV1beta1NameStartIpRotationRouteHandler,
+  postV1beta1NameUpdateMasterRouteHandler,
+  postV1beta1ParentClustersRouteHandler,
+  postV1beta1ParentNodePoolsRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler,
+  postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRouteHandler,
+  putV1beta1NameRouteHandler,
+  putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1beta1Handler)
+export const api = app
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneClustersRoute,
+    getV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersRouteHandler,
+  )
+  .openapi(
+    deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+    deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+  )
+  .openapi(
+    putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRoute,
+    putV1beta1ProjectsProjectIdZonesZoneClustersClusterIdRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdAddonsRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLegacyAbacRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLocationsRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdLoggingRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMasterRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdMonitoringRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute,
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsRouteHandler,
+  )
+  .openapi(
+    deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
+    deleteV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRoute,
+    getV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdAutoscalingRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetManagementRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdSetSizeRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdUpdateRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdNodePoolsNodePoolIdRollbackRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdResourceLabelsRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdCompleteIpRotationRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMaintenancePolicyRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetMasterAuthRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdSetNetworkPolicyRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRoute,
+    postV1beta1ProjectsProjectIdZonesZoneClustersClusterIdStartIpRotationRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneOperationsRoute,
+    getV1beta1ProjectsProjectIdZonesZoneOperationsRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRoute,
+    getV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdRouteHandler,
+  )
+  .openapi(
+    postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRoute,
+    postV1beta1ProjectsProjectIdZonesZoneOperationsOperationIdCancelRouteHandler,
+  )
+  .openapi(
+    getV1beta1ProjectsProjectIdZonesZoneServerconfigRoute,
+    getV1beta1ProjectsProjectIdZonesZoneServerconfigRouteHandler,
+  )
+  .openapi(deleteV1beta1NameRoute, deleteV1beta1NameRouteHandler)
+  .openapi(getV1beta1NameRoute, getV1beta1NameRouteHandler)
+  .openapi(putV1beta1NameRoute, putV1beta1NameRouteHandler)
+  .openapi(getV1beta1NameServerConfigRoute, getV1beta1NameServerConfigRouteHandler)
+  .openapi(postV1beta1NameCancelRoute, postV1beta1NameCancelRouteHandler)
+  .openapi(
+    getV1beta1NameCheckAutopilotCompatibilityRoute,
+    getV1beta1NameCheckAutopilotCompatibilityRouteHandler,
+  )
+  .openapi(postV1beta1NameCompleteIpRotationRoute, postV1beta1NameCompleteIpRotationRouteHandler)
+  .openapi(postV1beta1NameCompleteUpgradeRoute, postV1beta1NameCompleteUpgradeRouteHandler)
+  .openapi(postV1beta1NameRollbackRoute, postV1beta1NameRollbackRouteHandler)
+  .openapi(postV1beta1NameSetAddonsRoute, postV1beta1NameSetAddonsRouteHandler)
+  .openapi(postV1beta1NameSetAutoscalingRoute, postV1beta1NameSetAutoscalingRouteHandler)
+  .openapi(postV1beta1NameSetLegacyAbacRoute, postV1beta1NameSetLegacyAbacRouteHandler)
+  .openapi(postV1beta1NameSetLocationsRoute, postV1beta1NameSetLocationsRouteHandler)
+  .openapi(postV1beta1NameSetLoggingRoute, postV1beta1NameSetLoggingRouteHandler)
+  .openapi(
+    postV1beta1NameSetMaintenancePolicyRoute,
+    postV1beta1NameSetMaintenancePolicyRouteHandler,
+  )
+  .openapi(postV1beta1NameSetManagementRoute, postV1beta1NameSetManagementRouteHandler)
+  .openapi(postV1beta1NameSetMasterAuthRoute, postV1beta1NameSetMasterAuthRouteHandler)
+  .openapi(postV1beta1NameSetMonitoringRoute, postV1beta1NameSetMonitoringRouteHandler)
+  .openapi(postV1beta1NameSetNetworkPolicyRoute, postV1beta1NameSetNetworkPolicyRouteHandler)
+  .openapi(postV1beta1NameSetResourceLabelsRoute, postV1beta1NameSetResourceLabelsRouteHandler)
+  .openapi(postV1beta1NameSetSizeRoute, postV1beta1NameSetSizeRouteHandler)
+  .openapi(postV1beta1NameStartIpRotationRoute, postV1beta1NameStartIpRotationRouteHandler)
+  .openapi(postV1beta1NameUpdateMasterRoute, postV1beta1NameUpdateMasterRouteHandler)
+  .openapi(
+    getV1beta1ParentWellKnownOpenidConfigurationRoute,
+    getV1beta1ParentWellKnownOpenidConfigurationRouteHandler,
+  )
+  .openapi(
+    getV1beta1ParentAggregatedUsableSubnetworksRoute,
+    getV1beta1ParentAggregatedUsableSubnetworksRouteHandler,
+  )
+  .openapi(getV1beta1ParentClustersRoute, getV1beta1ParentClustersRouteHandler)
+  .openapi(postV1beta1ParentClustersRoute, postV1beta1ParentClustersRouteHandler)
+  .openapi(getV1beta1ParentJwksRoute, getV1beta1ParentJwksRouteHandler)
+  .openapi(getV1beta1ParentLocationsRoute, getV1beta1ParentLocationsRouteHandler)
+  .openapi(getV1beta1ParentNodePoolsRoute, getV1beta1ParentNodePoolsRouteHandler)
+  .openapi(postV1beta1ParentNodePoolsRoute, postV1beta1ParentNodePoolsRouteHandler)
+  .openapi(getV1beta1ParentOperationsRoute, getV1beta1ParentOperationsRouteHandler)
 
 export default app

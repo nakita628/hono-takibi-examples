@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceListAvailableManagementCidrRangesHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceListAvailableManagementCidrRangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

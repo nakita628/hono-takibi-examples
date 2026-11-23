@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFilesRemoteShareRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFilesRemoteShareRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const filesRemoteShareHandler = app.openapi(getFilesRemoteShareRoute, (c) => {
+export const getFilesRemoteShareRouteHandler: RouteHandler<
+  typeof getFilesRemoteShareRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

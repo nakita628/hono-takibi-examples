@@ -566,7 +566,7 @@ export const deleteMetaNetworkOrigins202609IpRangesWebhookSubscriptionsAppIdSubs
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['origins.ip_ranges.webhook.write'] }],
   })
 
@@ -616,6 +616,6 @@ export const postMetaNetworkOrigins202609IpRangesWebhookSubscriptionsAppIdSubscr
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['origins.ip_ranges.webhook.write'] }],
   })

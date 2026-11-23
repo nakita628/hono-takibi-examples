@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2BotListRoute,
   postV2BotChannelDetachRoute,
   postV2BotChatChatIdControlAcquireRoute,
   postV2BotChatChatIdControlReleaseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2BotChannelDetachRouteHandler: RouteHandler<
+  typeof postV2BotChannelDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2BotChannelDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotChatChatIdControlAcquireRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2BotChatChatIdControlReleaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2BotListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2BotChatChatIdControlAcquireRouteHandler: RouteHandler<
+  typeof postV2BotChatChatIdControlAcquireRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2BotChatChatIdControlReleaseRouteHandler: RouteHandler<
+  typeof postV2BotChatChatIdControlReleaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2BotListRouteHandler: RouteHandler<typeof getV2BotListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

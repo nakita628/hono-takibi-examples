@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDateTimeInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDateTimeInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dateTimeInfoHandler = app.openapi(postDateTimeInfoRoute, (c) => {
+export const postDateTimeInfoRouteHandler: RouteHandler<typeof postDateTimeInfoRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

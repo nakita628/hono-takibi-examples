@@ -19924,7 +19924,7 @@ export const postV1PrivateOtelV1TracesRoute = createRoute({
   request: {
     body: { content: { 'application/x-protobuf': { schema: JsonNodeSchema } }, required: true },
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getV1PrivateOptimizationsRoute = createRoute({
@@ -25306,12 +25306,12 @@ export const getIsAlivePingRoute = createRoute({
   method: 'get',
   path: '/is-alive/ping',
   operationId: 'isAlive',
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getIsAliveVerRoute = createRoute({
   method: 'get',
   path: '/is-alive/ver',
   operationId: 'version',
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })

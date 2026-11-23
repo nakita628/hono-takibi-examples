@@ -560,7 +560,7 @@ export const getSourceIdsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'TileJSON 3.0.0 metadata for the requested source(s)', content: {} },
+    200: { description: 'TileJSON 3.0.0 metadata for the requested source(s)' },
     404: { description: 'No matching source' },
   },
 })
@@ -735,7 +735,7 @@ export const getFontFontstackStartEndRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Glyph PBF range', content: {} },
+    200: { description: 'Glyph PBF range' },
     400: { description: 'Invalid glyph range' },
     404: { description: 'No matching font' },
   },
@@ -777,7 +777,6 @@ export const getOgcApiRoute = createRoute({
     200: {
       description:
         'OpenAPI 3.1 definition of the OGC API paths this server answers, or an HTML page showing it',
-      content: {},
     },
   },
 })
@@ -977,7 +976,7 @@ export const getOgcCollectionsCollectionIdMapRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Map of the collection', content: {} },
+    200: { description: 'Map of the collection' },
     400: { description: 'Invalid map parameters' },
     404: { description: "No such collection, or it can't be drawn as a map" },
     406: { description: 'No supported map format in Accept header' },
@@ -1310,7 +1309,7 @@ export const getOgcMapRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Map of the dataset', content: {} },
+    200: { description: 'Map of the dataset' },
     400: { description: "Invalid map parameters, or a collection that can't be drawn" },
   },
 })
@@ -1434,7 +1433,7 @@ export const getOgcMapTilesTileMatrixSetIdTileMatrixTileRowTileColRoute = create
     }),
   },
   responses: {
-    200: { description: 'Map tile of all collections drawn together', content: {} },
+    200: { description: 'Map tile of all collections drawn together' },
     404: { description: 'No such tileset or tile' },
     406: { description: 'No supported image format in Accept header' },
   },
@@ -1470,7 +1469,7 @@ export const getOgcStylesStyleIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'MapLibre Style Spec JSON document', content: {} },
+    200: { description: 'MapLibre Style Spec JSON document' },
     400: { description: 'Style file is malformed' },
     404: { description: 'No matching style' },
   },
@@ -1627,7 +1626,7 @@ export const getOgcStylesStyleIdMapRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Map of the style', content: {} },
+    200: { description: 'Map of the style' },
     400: { description: 'Invalid map parameters' },
     404: { description: 'No such style' },
     406: { description: 'No supported map format in Accept header' },
@@ -1785,7 +1784,7 @@ export const getOgcStylesStyleIdMapTilesTileMatrixSetIdTileMatrixTileRowTileColR
     }),
   },
   responses: {
-    200: { description: 'Map tile of the style', content: {} },
+    200: { description: 'Map tile of the style' },
     404: { description: 'No such style, tileset or tile' },
     406: { description: 'No supported image format in Accept header' },
   },
@@ -1850,7 +1849,7 @@ export const getSdfSpriteSourceIdsJsonRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'SDF sprite index JSON', content: {} },
+    200: { description: 'SDF sprite index JSON' },
     404: { description: 'No matching sprite source' },
   },
 })
@@ -1870,7 +1869,7 @@ export const getSdfSpriteSourceIdsPngRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Combined signed-distance-field sprite image', content: {} },
+    200: { description: 'Combined signed-distance-field sprite image' },
     404: { description: 'No matching sprite source' },
   },
 })
@@ -1890,7 +1889,7 @@ export const getSpriteSourceIdsJsonRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Sprite index JSON', content: {} },
+    200: { description: 'Sprite index JSON' },
     404: { description: 'No matching sprite source' },
   },
 })
@@ -1910,7 +1909,7 @@ export const getSpriteSourceIdsPngRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Combined sprite image', content: {} },
+    200: { description: 'Combined sprite image' },
     404: { description: 'No matching sprite source' },
   },
 })
@@ -1930,7 +1929,7 @@ export const getStyleStyleIdRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'MapLibre Style Spec JSON document', content: {} },
+    200: { description: 'MapLibre Style Spec JSON document' },
     400: { description: 'Style file is malformed' },
     404: { description: 'No matching style' },
   },
@@ -2085,7 +2084,7 @@ export const getStyleStyleIdStaticCameraSizeFormatRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Rendered static map image', content: {} },
+    200: { description: 'Rendered static map image' },
     400: { description: 'Invalid params or size, or a pixel ratio not listed in `pixel_ratios`' },
     403: { description: 'Rendering is disabled' },
     404: { description: 'No matching style' },
@@ -2156,7 +2155,7 @@ export const postStyleStyleIdStaticCameraSizeFormatRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Rendered static map image', content: {} },
+    200: { description: 'Rendered static map image' },
     400: { description: 'Invalid params, size, or overlay body' },
     403: { description: 'Rendering is disabled' },
     404: { description: 'No matching style' },

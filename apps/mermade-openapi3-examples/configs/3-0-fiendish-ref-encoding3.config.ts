@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/fiendish/ref-encoding3.yaml',
   output: './src/3-0-fiendish-ref-encoding3/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-fiendish-ref-encoding3/types.ts' },
   client: { output: './src/3-0-fiendish-ref-encoding3/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-fiendish-ref-encoding3/rpc.ts', parseResponse: true },

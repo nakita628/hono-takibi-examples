@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFlipImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFlipImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const flipImageHandler = app.openapi(postFlipImageRoute, (c) => {
+export const postFlipImageRouteHandler: RouteHandler<typeof postFlipImageRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

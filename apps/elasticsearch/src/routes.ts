@@ -55483,7 +55483,7 @@ const IndicesDeleteAlias_200Response = {
   content: { 'application/json': { schema: IndicesTypesAliasesResponseBodySchema } },
 }
 
-const IndicesExistsAlias_200Response = { description: '', content: {} }
+const IndicesExistsAlias_200Response = { description: '' }
 
 const IndicesFlush_200Response = {
   description: '',
@@ -81982,7 +81982,7 @@ export const headComponentTemplateNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const postClusterVotingConfigExclusionsRoute = createRoute({
@@ -82054,7 +82054,7 @@ export const postClusterVotingConfigExclusionsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const deleteClusterVotingConfigExclusionsRoute = createRoute({
@@ -82104,7 +82104,7 @@ export const deleteClusterVotingConfigExclusionsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getComponentTemplateRoute = createRoute({
@@ -85420,7 +85420,7 @@ export const headIndexDocIdRoute = createRoute({
       }).exactOptional(),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const postIndexDeleteByQueryRoute = createRoute({
@@ -88525,7 +88525,7 @@ export const headIndexSourceIdRoute = createRoute({
       }).exactOptional(),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getIndexExplainIdRoute = createRoute({
@@ -91382,7 +91382,7 @@ export const headIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getDataStreamNameRoute = createRoute({
@@ -92590,7 +92590,7 @@ export const headIndexTemplateNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getTemplateNameRoute = createRoute({
@@ -92814,7 +92814,7 @@ export const headTemplateNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const postIndexDiskUsageRoute = createRoute({
@@ -100165,7 +100165,7 @@ export const headRoute = createRoute({
   summary: 'Ping the cluster',
   description: 'Get information about whether the cluster is running.',
   operationId: 'ping',
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getIngestGeoipDatabaseIdRoute = createRoute({
@@ -101864,7 +101864,7 @@ export const putLogstashPipelineIdRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const deleteLogstashPipelineIdRoute = createRoute({
@@ -101896,7 +101896,7 @@ export const deleteLogstashPipelineIdRoute = createRoute({
       }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getLogstashPipelineRoute = createRoute({
@@ -115639,7 +115639,7 @@ export const postSecuritySamlCompleteLogoutRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const postSecuritySamlInvalidateRoute = createRoute({

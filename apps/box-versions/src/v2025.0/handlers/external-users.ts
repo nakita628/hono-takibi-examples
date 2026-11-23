@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postExternalUsersSubmitDeleteJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postExternalUsersSubmitDeleteJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const externalUsersHandler = app.openapi(postExternalUsersSubmitDeleteJobRoute, (c) => {
+export const postExternalUsersSubmitDeleteJobRouteHandler: RouteHandler<
+  typeof postExternalUsersSubmitDeleteJobRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

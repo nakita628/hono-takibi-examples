@@ -608,11 +608,11 @@ export function createApiFleetFileId<
 
 export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryKey(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['api', '/api/agents/upgrades/:major.:minor.:patch/pgp-public-key', keyArgs] as const
+  return ['api', '/api/agents/upgrades/:major.{minor}.{patch}/pgp-public-key', keyArgs] as const
 }
 
 export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions<
@@ -621,7 +621,7 @@ export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+            (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
           >
         >
       >
@@ -630,7 +630,7 @@ export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -640,7 +640,7 @@ export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+              (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
             >
           >
         >
@@ -653,7 +653,7 @@ export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions<
     queryKey: getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(args, {
+        client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -668,7 +668,7 @@ export function createApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+            (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
           >
         >
       >
@@ -677,7 +677,7 @@ export function createApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -688,7 +688,7 @@ export function createApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
                   >
                 >
               >

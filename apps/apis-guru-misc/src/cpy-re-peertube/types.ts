@@ -35,7 +35,14 @@ type Account = {
   userId?: {} | undefined
 }
 type AbuseStateConstant = { id?: AbuseStateSet | undefined; label?: string | undefined }
-type VideoInfo = { id?: Id | undefined; name?: unknown | undefined; uuid?: unknown | undefined }
+type VideoId = {}
+type VideoName = string
+type VideoUuid = {}
+type VideoInfo = {
+  id?: VideoId | undefined
+  name?: VideoName | undefined
+  uuid?: VideoUuid | undefined
+}
 type Abuse = {
   createdAt?: string | undefined
   id?: Id | undefined
@@ -99,6 +106,7 @@ type VideoChannelSummary = {
 type VideoLanguageSet = string
 type VideoLicenceSet = number
 type VideoPrivacySet = 1 | 2 | 3 | 4
+type VideoShortUUID = {}
 type Video = {
   account?: AccountSummary | undefined
   blacklisted?: (boolean | null) | undefined
@@ -110,27 +118,27 @@ type Video = {
   dislikes?: number | undefined
   duration?: number | undefined
   embedPath?: string | undefined
-  id?: {} | undefined
+  id?: VideoId | undefined
   isLive?: boolean | undefined
   isLocal?: boolean | undefined
   language?: { id?: VideoLanguageSet | undefined; label?: string | undefined } | undefined
   licence?: { id?: VideoLicenceSet | undefined; label?: string | undefined } | undefined
   likes?: number | undefined
-  name?: string | undefined
+  name?: VideoName | undefined
   nsfw?: boolean | undefined
   originallyPublishedAt?: string | undefined
   previewPath?: string | undefined
   privacy?: { id?: VideoPrivacySet | undefined; label?: string | undefined } | undefined
   publishedAt?: string | undefined
   scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
-  shortUUID?: {} | undefined
+  shortUUID?: VideoShortUUID | undefined
   state?:
     | { id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined; label?: string | undefined }
     | undefined
   thumbnailPath?: string | undefined
   updatedAt?: string | undefined
   userHistory?: ({ currentTime?: number | undefined } | null) | undefined
-  uuid?: {} | undefined
+  uuid?: VideoUuid | undefined
   views?: number | undefined
   waitTranscoding?: (boolean | null) | undefined
 }
@@ -194,6 +202,7 @@ type VideoPlaylistPrivacyConstant = {
   id?: VideoPlaylistPrivacySet | undefined
   label?: string | undefined
 }
+type VideoPlaylistShortUUID = {}
 type VideoPlaylistTypeConstant = {
   id?: VideoPlaylistTypeSet | undefined
   label?: string | undefined
@@ -206,7 +215,7 @@ type VideoPlaylist = {
   isLocal?: boolean | undefined
   ownerAccount?: AccountSummary | undefined
   privacy?: VideoPlaylistPrivacyConstant | undefined
-  shortUUID?: {} | undefined
+  shortUUID?: VideoPlaylistShortUUID | undefined
   thumbnailPath?: string | undefined
   type?: VideoPlaylistTypeConstant | undefined
   updatedAt?: string | undefined
@@ -509,6 +518,8 @@ type ServerStats = {
       }[]
     | undefined
 }
+type UserEmail = string
+type UserId = {}
 type NSFWPolicy = 'display' | 'blur' | 'do_not_list'
 type UserRole = 0 | 1 | 2
 type Username = string
@@ -520,9 +531,9 @@ type User = {
   blocked?: boolean | undefined
   blockedReason?: string | undefined
   createdAt?: string | undefined
-  email?: string | undefined
+  email?: UserEmail | undefined
   emailVerified?: boolean | undefined
-  id?: {} | undefined
+  id?: UserId | undefined
   lastLoginDate?: string | undefined
   noAccountSetupWarningModal?: boolean | undefined
   noInstanceConfigWarningModal?: boolean | undefined
@@ -580,6 +591,7 @@ type ActorInfo = {
   id?: Id | undefined
   name?: string | undefined
 }
+type VideoImportMagnetUri = string
 type Notification = {
   account?:
     | {
@@ -620,9 +632,9 @@ type Notification = {
   updatedAt?: string | undefined
   video?:
     | {
-        id?: Id | undefined
-        name?: unknown | undefined
-        uuid?: unknown | undefined
+        id?: VideoId | undefined
+        name?: VideoName | undefined
+        uuid?: VideoUuid | undefined
         channel?: ActorInfo | undefined
       }
     | undefined
@@ -630,7 +642,7 @@ type Notification = {
     | ({
         id?: Id | undefined
         video?:
-          | { id?: Id | undefined; name?: unknown | undefined; uuid?: unknown | undefined }
+          | { id?: VideoId | undefined; name?: VideoName | undefined; uuid?: VideoUuid | undefined }
           | undefined
       } | null)
     | undefined
@@ -638,14 +650,14 @@ type Notification = {
     | ({
         id?: Id | undefined
         video?:
-          | { id?: Id | undefined; name?: unknown | undefined; uuid?: unknown | undefined }
+          | { id?: VideoId | undefined; name?: VideoName | undefined; uuid?: VideoUuid | undefined }
           | undefined
       } | null)
     | undefined
   videoImport?:
     | ({
         id?: Id | undefined
-        magnetUri?: unknown | undefined
+        magnetUri?: VideoImportMagnetUri | undefined
         targetUri?: (string | null) | undefined
         torrentName?: (string | null) | undefined
         video?: VideoInfo | undefined
@@ -653,15 +665,17 @@ type Notification = {
     | undefined
 }
 type NotificationListResponse = { data?: Notification[] | undefined; total?: number | undefined }
+type VideoImportTargetUrl = string
+type VideoImportTorrentfile = File
 type VideoImport = {
   createdAt?: string | undefined
   error?: string | undefined
   id?: {} | undefined
-  magnetUri?: string | undefined
+  magnetUri?: VideoImportMagnetUri | undefined
   state?: { id?: 1 | 2 | 3 | undefined; label?: string | undefined } | undefined
-  targetUrl?: string | undefined
+  targetUrl?: VideoImportTargetUrl | undefined
   torrentName?: string | undefined
-  torrentfile?: File | undefined
+  torrentfile?: VideoImportTorrentfile | undefined
   updatedAt?: string | undefined
   video?:
     | {
@@ -675,27 +689,27 @@ type VideoImport = {
         dislikes?: number | undefined
         duration?: number | undefined
         embedPath?: string | undefined
-        id?: {} | undefined
+        id?: VideoId | undefined
         isLive?: boolean | undefined
         isLocal?: boolean | undefined
         language?: { id?: VideoLanguageSet | undefined; label?: string | undefined } | undefined
         licence?: { id?: VideoLicenceSet | undefined; label?: string | undefined } | undefined
         likes?: number | undefined
-        name?: string | undefined
+        name?: VideoName | undefined
         nsfw?: boolean | undefined
         originallyPublishedAt?: string | undefined
         previewPath?: string | undefined
         privacy?: { id?: VideoPrivacySet | undefined; label?: string | undefined } | undefined
         publishedAt?: string | undefined
         scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
-        shortUUID?: {} | undefined
+        shortUUID?: VideoShortUUID | undefined
         state?:
           | { id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined; label?: string | undefined }
           | undefined
         thumbnailPath?: string | undefined
         updatedAt?: string | undefined
         userHistory?: ({ currentTime?: number | undefined } | null) | undefined
-        uuid?: {} | undefined
+        uuid?: VideoUuid | undefined
         views?: number | undefined
         waitTranscoding?: (boolean | null) | undefined
       }
@@ -758,9 +772,9 @@ type UserWithStats = {
   blocked?: boolean | undefined
   blockedReason?: string | undefined
   createdAt?: string | undefined
-  email?: string | undefined
+  email?: UserEmail | undefined
   emailVerified?: boolean | undefined
-  id?: {} | undefined
+  id?: UserId | undefined
   lastLoginDate?: string | undefined
   noAccountSetupWarningModal?: boolean | undefined
   noInstanceConfigWarningModal?: boolean | undefined
@@ -836,7 +850,7 @@ type VideoBlacklist = {
   nsfw?: boolean | undefined
   updatedAt?: string | undefined
   uuid?: UUIDv4 | undefined
-  videoId?: Id | undefined
+  videoId?: VideoId | undefined
   views?: number | undefined
 }
 type VideoScheduledUpdate = { privacy?: VideoPrivacySet | undefined; updateAt: string }
@@ -861,7 +875,11 @@ type VideoCreateImport = {
 }
 type VideoUploadResponse = {
   video?:
-    | { id?: Id | undefined; shortUUID?: ShortUUID | undefined; uuid?: unknown | undefined }
+    | {
+        id?: VideoId | undefined
+        shortUUID?: VideoShortUUID | undefined
+        uuid?: VideoUuid | undefined
+      }
     | undefined
 }
 type LiveVideoLatencyMode = 1 | 2 | 3
@@ -959,27 +977,27 @@ type VideoDetails = {
   dislikes?: number | undefined
   duration?: number | undefined
   embedPath?: string | undefined
-  id?: {} | undefined
+  id?: VideoId | undefined
   isLive?: boolean | undefined
   isLocal?: boolean | undefined
   language?: { id?: VideoLanguageSet | undefined; label?: string | undefined } | undefined
   licence?: { id?: VideoLicenceSet | undefined; label?: string | undefined } | undefined
   likes?: number | undefined
-  name?: string | undefined
+  name?: VideoName | undefined
   nsfw?: boolean | undefined
   originallyPublishedAt?: string | undefined
   previewPath?: string | undefined
   privacy?: { id?: VideoPrivacySet | undefined; label?: string | undefined } | undefined
   publishedAt?: string | undefined
   scheduledUpdate?: { privacy?: VideoPrivacySet | undefined; updateAt: string } | undefined
-  shortUUID?: {} | undefined
+  shortUUID?: VideoShortUUID | undefined
   state?:
     | { id?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | undefined; label?: string | undefined }
     | undefined
   thumbnailPath?: string | undefined
   updatedAt?: string | undefined
   userHistory?: ({ currentTime?: number | undefined } | null) | undefined
-  uuid?: {} | undefined
+  uuid?: VideoUuid | undefined
   views?: number | undefined
   waitTranscoding?: (boolean | null) | undefined
   commentsEnabled?: boolean | undefined
@@ -997,6 +1015,7 @@ type VideoCaption = {
   captionPath?: string | undefined
   language?: VideoConstantStringLanguage | undefined
 }
+type VideoCommentText = string
 type VideoComment = {
   account?: Account | undefined
   createdAt?: string | undefined
@@ -1004,13 +1023,13 @@ type VideoComment = {
   id?: Id | undefined
   inReplyToCommentId?: {} | undefined
   isDeleted?: boolean | undefined
-  text?: string | undefined
+  text?: VideoCommentText | undefined
   threadId?: Id | undefined
   totalReplies?: number | undefined
   totalRepliesFromVideoAuthor?: number | undefined
   updatedAt?: string | undefined
   url?: string | undefined
-  videoId?: Id | undefined
+  videoId?: VideoId | undefined
 }
 type CommentThreadResponse = { data?: VideoComment[] | undefined; total?: number | undefined }
 type CommentThreadPostResponse = { comment?: VideoComment | undefined }
@@ -1944,10 +1963,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         status: 200
       }
       $post:
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 204 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 400 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 404 }
-        | { input: { json: { videoId: Id } }; output: {}; outputFormat: string; status: 409 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { json: { videoId: VideoId } }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/api/v1/server/redundancy/videos/:redundancyId': {
@@ -2077,7 +2096,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/v1/users/me/history/videos/:videoId': {
-      $delete: { input: { param: { videoId: Id } }; output: {}; outputFormat: string; status: 204 }
+      $delete: {
+        input: { param: { videoId: VideoId } }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/api/v1/users/me/notification-settings': {
@@ -2208,7 +2232,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/v1/users/me/video-playlists/videos-exist': {
       $get: {
-        input: { query: { videoIds: Id[] } }
+        input: { query: { videoIds: VideoId[] } }
         output: {
           videoId?:
             | {
@@ -2268,7 +2292,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/v1/users/me/videos/:videoId/rating': {
       $get: {
-        input: { param: { videoId: Id } }
+        input: { param: { videoId: VideoId } }
         output: GetMeVideoRating
         outputFormat: 'json'
         status: 200
@@ -2760,7 +2784,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {
           videoPlaylist?:
-            | { id?: Id | undefined; shortUUID?: ShortUUID | undefined; uuid?: UUIDv4 | undefined }
+            | {
+                id?: Id | undefined
+                shortUUID?: VideoPlaylistShortUUID | undefined
+                uuid?: UUIDv4 | undefined
+              }
             | undefined
         }
         outputFormat: 'json'
@@ -2815,7 +2843,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           json: {
             startTimestamp?: number | undefined
             stopTimestamp?: number | undefined
-            videoId: unknown | Id
+            videoId: VideoUuid | VideoId
           }
         }
         output: { videoPlaylistElement?: { id?: number | undefined } | undefined }
@@ -3690,7 +3718,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/feeds/subscriptions.:format': {
+    '/feeds/subscriptions.{format}': {
       $get:
         | {
             input: {
@@ -3814,7 +3842,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/feeds/video-comments.:format': {
+    '/feeds/video-comments.{format}': {
       $get:
         | {
             input: {
@@ -3946,7 +3974,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/feeds/videos.:format': {
+    '/feeds/videos.{format}': {
       $get:
         | {
             input: {

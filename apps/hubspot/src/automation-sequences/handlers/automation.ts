@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute,
   getAutomationSequences202609EnrollmentsContactContactIdRoute,
   getAutomationSequences202609Route,
@@ -13,39 +13,68 @@ import {
   putAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAutomationSequences202609RouteHandler: RouteHandler<
+  typeof getAutomationSequences202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const automationHandler = app
-  .openapi(getAutomationSequences202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationSequences202609EnrollmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationSequences202609EnrollmentsContactContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationSequences202609ServiceaccountsEnrollmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationSequences202609ServiceaccountsSequencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAutomationSequences202609ServiceaccountsSequencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationSequences202609ServiceaccountsSequencesSequenceIdPerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAutomationSequences202609SequenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAutomationSequences202609EnrollmentsRouteHandler: RouteHandler<
+  typeof postAutomationSequences202609EnrollmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationSequences202609EnrollmentsContactContactIdRouteHandler: RouteHandler<
+  typeof getAutomationSequences202609EnrollmentsContactContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAutomationSequences202609ServiceaccountsEnrollmentsRouteHandler: RouteHandler<
+  typeof postAutomationSequences202609ServiceaccountsEnrollmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationSequences202609ServiceaccountsSequencesRouteHandler: RouteHandler<
+  typeof getAutomationSequences202609ServiceaccountsSequencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAutomationSequences202609ServiceaccountsSequencesRouteHandler: RouteHandler<
+  typeof postAutomationSequences202609ServiceaccountsSequencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationSequences202609ServiceaccountsSequencesSequenceIdRouteHandler: RouteHandler<
+  typeof getAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAutomationSequences202609ServiceaccountsSequencesSequenceIdRouteHandler: RouteHandler<
+  typeof putAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAutomationSequences202609ServiceaccountsSequencesSequenceIdRouteHandler: RouteHandler<
+  typeof deleteAutomationSequences202609ServiceaccountsSequencesSequenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationSequences202609ServiceaccountsSequencesSequenceIdPerformanceRouteHandler: RouteHandler<
+  typeof getAutomationSequences202609ServiceaccountsSequencesSequenceIdPerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAutomationSequences202609SequenceIdRouteHandler: RouteHandler<
+  typeof getAutomationSequences202609SequenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

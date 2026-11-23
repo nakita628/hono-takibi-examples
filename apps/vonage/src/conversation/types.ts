@@ -9,29 +9,34 @@ type DisplayName = string
 type ImageUrl = string
 type ConversationProperties = { ttl?: number | undefined }
 type LinksConversation = { self?: { href?: HrefConversation | undefined } | undefined }
+type ChannelFromOneOf0 = { type: string; user: string }
+type ChannelFromOneOf1Number = string
+type ChannelFromOneOf2 = { type: string; uri?: string | undefined }
+type ChannelFromOneOf3 = {
+  'content-type': 'audio/l16;rate=8000' | 'audio/l16;rate=16000'
+  headers?: { customer_id?: string | undefined } | undefined
+  type: string
+  uri?: string | undefined
+}
+type ChannelFromOneOf4 = { extension: string; type: string }
 type LegId = string
 type ChannelType = 'app' | 'phone' | 'sip' | 'websocket' | 'vbc'
 type Channel = {
   from?:
-    | { type: string; user: string }
-    | { number: string; type: string }
-    | { type: string; uri?: string | undefined }
-    | {
-        'content-type': 'audio/l16;rate=8000' | 'audio/l16;rate=16000'
-        headers?: { customer_id?: string | undefined } | undefined
-        type: string
-        uri?: string | undefined
-      }
-    | { extension: string; type: string }
+    | ChannelFromOneOf0
+    | { number: ChannelFromOneOf1Number; type: string }
+    | ChannelFromOneOf2
+    | ChannelFromOneOf3
+    | ChannelFromOneOf4
     | undefined
   leg_id?: LegId | undefined
   leg_ids?: { leg_id?: LegId | undefined }[] | undefined
   to?:
-    | unknown
-    | { dtmfAnswer?: string | undefined; number: unknown; type: string }
-    | unknown
-    | unknown
-    | unknown
+    | ChannelFromOneOf0
+    | { dtmfAnswer?: string | undefined; number: ChannelFromOneOf1Number; type: string }
+    | ChannelFromOneOf2
+    | ChannelFromOneOf3
+    | ChannelFromOneOf4
     | undefined
   type?: ChannelType | undefined
 }

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchNestedOneOfObjectWithNestedOneOfRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchNestedOneOfObjectWithNestedOneOfRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const nestedOneOfObjectWithNestedOneOfHandler = app.openapi(
-  patchNestedOneOfObjectWithNestedOneOfRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const patchNestedOneOfObjectWithNestedOneOfRouteHandler: RouteHandler<
+  typeof patchNestedOneOfObjectWithNestedOneOfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

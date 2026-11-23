@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { pmjayHandler } from './handlers'
+import { postPmjayCertificateRoute } from './routes'
+import { postPmjayCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', pmjayHandler)
+export const api = app.openapi(postPmjayCertificateRoute, postPmjayCertificateRouteHandler)
 
 export default app

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComprehend20171127StartDominantLanguageDetectionJobHandler = app.openapi(
-  postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetComprehend20171127StartDominantLanguageDetectionJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

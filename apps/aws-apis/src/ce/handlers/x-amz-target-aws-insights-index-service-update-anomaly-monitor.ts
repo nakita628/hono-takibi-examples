@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsInsightsIndexServiceUpdateAnomalyMonitorHandler = app.openapi(
-  postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

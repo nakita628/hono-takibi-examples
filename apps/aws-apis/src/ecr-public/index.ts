@@ -1,55 +1,149 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityHandler,
-  xAmzTargetSpencerFrontendServiceBatchDeleteImageHandler,
-  xAmzTargetSpencerFrontendServiceCompleteLayerUploadHandler,
-  xAmzTargetSpencerFrontendServiceCreateRepositoryHandler,
-  xAmzTargetSpencerFrontendServiceDeleteRepositoryHandler,
-  xAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyHandler,
-  xAmzTargetSpencerFrontendServiceDescribeImagesHandler,
-  xAmzTargetSpencerFrontendServiceDescribeImageTagsHandler,
-  xAmzTargetSpencerFrontendServiceDescribeRegistriesHandler,
-  xAmzTargetSpencerFrontendServiceDescribeRepositoriesHandler,
-  xAmzTargetSpencerFrontendServiceGetAuthorizationTokenHandler,
-  xAmzTargetSpencerFrontendServiceGetRegistryCatalogDataHandler,
-  xAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataHandler,
-  xAmzTargetSpencerFrontendServiceGetRepositoryPolicyHandler,
-  xAmzTargetSpencerFrontendServiceInitiateLayerUploadHandler,
-  xAmzTargetSpencerFrontendServiceListTagsForResourceHandler,
-  xAmzTargetSpencerFrontendServicePutImageHandler,
-  xAmzTargetSpencerFrontendServicePutRegistryCatalogDataHandler,
-  xAmzTargetSpencerFrontendServicePutRepositoryCatalogDataHandler,
-  xAmzTargetSpencerFrontendServiceSetRepositoryPolicyHandler,
-  xAmzTargetSpencerFrontendServiceTagResourceHandler,
-  xAmzTargetSpencerFrontendServiceUntagResourceHandler,
-  xAmzTargetSpencerFrontendServiceUploadLayerPartHandler,
+  postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute,
+  postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute,
+  postXAmzTargetSpencerFrontendServiceCompleteLayerUploadRoute,
+  postXAmzTargetSpencerFrontendServiceCreateRepositoryRoute,
+  postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute,
+  postXAmzTargetSpencerFrontendServiceDeleteRepositoryRoute,
+  postXAmzTargetSpencerFrontendServiceDescribeImagesRoute,
+  postXAmzTargetSpencerFrontendServiceDescribeImageTagsRoute,
+  postXAmzTargetSpencerFrontendServiceDescribeRegistriesRoute,
+  postXAmzTargetSpencerFrontendServiceDescribeRepositoriesRoute,
+  postXAmzTargetSpencerFrontendServiceGetAuthorizationTokenRoute,
+  postXAmzTargetSpencerFrontendServiceGetRegistryCatalogDataRoute,
+  postXAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataRoute,
+  postXAmzTargetSpencerFrontendServiceGetRepositoryPolicyRoute,
+  postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute,
+  postXAmzTargetSpencerFrontendServiceListTagsForResourceRoute,
+  postXAmzTargetSpencerFrontendServicePutImageRoute,
+  postXAmzTargetSpencerFrontendServicePutRegistryCatalogDataRoute,
+  postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute,
+  postXAmzTargetSpencerFrontendServiceSetRepositoryPolicyRoute,
+  postXAmzTargetSpencerFrontendServiceTagResourceRoute,
+  postXAmzTargetSpencerFrontendServiceUntagResourceRoute,
+  postXAmzTargetSpencerFrontendServiceUploadLayerPartRoute,
+} from './routes'
+import {
+  postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRouteHandler,
+  postXAmzTargetSpencerFrontendServiceBatchDeleteImageRouteHandler,
+  postXAmzTargetSpencerFrontendServiceCompleteLayerUploadRouteHandler,
+  postXAmzTargetSpencerFrontendServiceCreateRepositoryRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDeleteRepositoryRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDescribeImagesRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDescribeImageTagsRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDescribeRegistriesRouteHandler,
+  postXAmzTargetSpencerFrontendServiceDescribeRepositoriesRouteHandler,
+  postXAmzTargetSpencerFrontendServiceGetAuthorizationTokenRouteHandler,
+  postXAmzTargetSpencerFrontendServiceGetRegistryCatalogDataRouteHandler,
+  postXAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataRouteHandler,
+  postXAmzTargetSpencerFrontendServiceGetRepositoryPolicyRouteHandler,
+  postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRouteHandler,
+  postXAmzTargetSpencerFrontendServiceListTagsForResourceRouteHandler,
+  postXAmzTargetSpencerFrontendServicePutImageRouteHandler,
+  postXAmzTargetSpencerFrontendServicePutRegistryCatalogDataRouteHandler,
+  postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRouteHandler,
+  postXAmzTargetSpencerFrontendServiceSetRepositoryPolicyRouteHandler,
+  postXAmzTargetSpencerFrontendServiceTagResourceRouteHandler,
+  postXAmzTargetSpencerFrontendServiceUntagResourceRouteHandler,
+  postXAmzTargetSpencerFrontendServiceUploadLayerPartRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceBatchDeleteImageHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceCompleteLayerUploadHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceCreateRepositoryHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDeleteRepositoryHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDescribeImageTagsHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDescribeImagesHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDescribeRegistriesHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceDescribeRepositoriesHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceGetAuthorizationTokenHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceGetRegistryCatalogDataHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceGetRepositoryPolicyHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceInitiateLayerUploadHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetSpencerFrontendServicePutImageHandler)
-  .route('/', xAmzTargetSpencerFrontendServicePutRegistryCatalogDataHandler)
-  .route('/', xAmzTargetSpencerFrontendServicePutRepositoryCatalogDataHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceSetRepositoryPolicyHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceTagResourceHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceUntagResourceHandler)
-  .route('/', xAmzTargetSpencerFrontendServiceUploadLayerPartHandler)
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRoute,
+    postXAmzTargetSpencerFrontendServiceBatchCheckLayerAvailabilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceBatchDeleteImageRoute,
+    postXAmzTargetSpencerFrontendServiceBatchDeleteImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceCompleteLayerUploadRoute,
+    postXAmzTargetSpencerFrontendServiceCompleteLayerUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceCreateRepositoryRoute,
+    postXAmzTargetSpencerFrontendServiceCreateRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDeleteRepositoryRoute,
+    postXAmzTargetSpencerFrontendServiceDeleteRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRoute,
+    postXAmzTargetSpencerFrontendServiceDeleteRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDescribeImageTagsRoute,
+    postXAmzTargetSpencerFrontendServiceDescribeImageTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDescribeImagesRoute,
+    postXAmzTargetSpencerFrontendServiceDescribeImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDescribeRegistriesRoute,
+    postXAmzTargetSpencerFrontendServiceDescribeRegistriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceDescribeRepositoriesRoute,
+    postXAmzTargetSpencerFrontendServiceDescribeRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceGetAuthorizationTokenRoute,
+    postXAmzTargetSpencerFrontendServiceGetAuthorizationTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceGetRegistryCatalogDataRoute,
+    postXAmzTargetSpencerFrontendServiceGetRegistryCatalogDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataRoute,
+    postXAmzTargetSpencerFrontendServiceGetRepositoryCatalogDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceGetRepositoryPolicyRoute,
+    postXAmzTargetSpencerFrontendServiceGetRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRoute,
+    postXAmzTargetSpencerFrontendServiceInitiateLayerUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceListTagsForResourceRoute,
+    postXAmzTargetSpencerFrontendServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServicePutImageRoute,
+    postXAmzTargetSpencerFrontendServicePutImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServicePutRegistryCatalogDataRoute,
+    postXAmzTargetSpencerFrontendServicePutRegistryCatalogDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRoute,
+    postXAmzTargetSpencerFrontendServicePutRepositoryCatalogDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceSetRepositoryPolicyRoute,
+    postXAmzTargetSpencerFrontendServiceSetRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceTagResourceRoute,
+    postXAmzTargetSpencerFrontendServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceUntagResourceRoute,
+    postXAmzTargetSpencerFrontendServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSpencerFrontendServiceUploadLayerPartRoute,
+    postXAmzTargetSpencerFrontendServiceUploadLayerPartRouteHandler,
+  )
 
 export default app

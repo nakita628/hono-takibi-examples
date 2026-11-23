@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { locationHandler } from './handlers'
+import { getLocationAnalyticsCategoryRatedAreasRoute } from './routes'
+import { getLocationAnalyticsCategoryRatedAreasRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', locationHandler)
+export const api = app.openapi(
+  getLocationAnalyticsCategoryRatedAreasRoute,
+  getLocationAnalyticsCategoryRatedAreasRouteHandler,
+)
 
 export default app

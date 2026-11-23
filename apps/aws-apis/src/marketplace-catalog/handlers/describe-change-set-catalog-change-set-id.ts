@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDescribeChangeSetCatalogChangeSetIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDescribeChangeSetCatalogChangeSetIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const describeChangeSetCatalogChangeSetIdHandler = app.openapi(
-  getDescribeChangeSetCatalogChangeSetIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getDescribeChangeSetCatalogChangeSetIdRouteHandler: RouteHandler<
+  typeof getDescribeChangeSetCatalogChangeSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

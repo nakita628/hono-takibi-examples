@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const ReferenceSchema = z
+const TagAllOf0Schema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
     summary: z
@@ -38,8 +38,11 @@ const ReferenceSchema = z
       }),
   })
   .openapi({ required: [] })
-  .and(z.looseObject({}).openapi({ required: ['type', 'id'] }))
-  .openapi('Reference')
+  .openapi('TagAllOf0')
+
+const ReferenceSchema = TagAllOf0Schema.and(
+  z.looseObject({}).openapi({ required: ['type', 'id'] }),
+).openapi('Reference')
 
 const AuditRecordSchema = z
   .object({
@@ -702,242 +705,193 @@ const AutoPauseNotificationsParametersSchema = z
   })
   .openapi('AutoPauseNotificationsParameters')
 
-const ServiceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('service')
-          .default('service')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the service.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided description of the service.' }),
-        auto_resolve_timeout: z
-          .int()
-          .default(14400)
-          .exactOptional()
-          .openapi({
-            description:
-              'Time in seconds that an incident is automatically resolved if left open for that long. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
-          }),
-        acknowledgement_timeout: z
-          .int()
-          .default(1800)
-          .exactOptional()
-          .openapi({
-            description:
-              'Time in seconds that an incident changes to the Triggered State after being Acknowledged. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time when this service was created', readOnly: true }),
-        status: z
-          .enum(['active', 'warning', 'critical', 'maintenance', 'disabled'])
-          .default('active')
-          .exactOptional()
-          .openapi({
-            description:
-              'The current state of the Service. Valid statuses are:\n\n\n- `active`: The service is enabled and has no open incidents. This is the only status a service can be created with.\n- `warning`: The service is enabled and has one or more acknowledged incidents.\n- `critical`: The service is enabled and has one or more triggered incidents.\n- `maintenance`: The service is under maintenance, no new incidents will be triggered during maintenance mode.\n- `disabled`: The service is disabled and will not have any new triggered incidents.\n',
-          }),
-        last_incident_timestamp: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'The date/time when the most recent incident was created for this service.',
-            readOnly: true,
-          }),
-        escalation_policy: EscalationPolicyReferenceSchema,
-        response_play: z
-          .any()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description: 'Response plays associated with this service.',
-          }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The set of teams associated with this service.',
-            readOnly: true,
-          }),
-        integrations: z
-          .array(IntegrationReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'An array containing Integration objects that belong to this service. If `integrations` is passed as an argument, these are full objects - otherwise, these are references.',
-            readOnly: true,
-          }),
-        incident_urgency_rule: IncidentUrgencyRuleSchema.exactOptional(),
-        support_hours: SupportHoursSchema.exactOptional(),
-        scheduled_actions: z
-          .array(ScheduledActionSchema)
-          .exactOptional()
-          .openapi({ description: 'An array containing scheduled actions for the service.' }),
-        addons: z
-          .array(AddonReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description: 'The array of Add-ons associated with this service.',
-            readOnly: true,
-          }),
-        alert_creation: z
-          .enum(['create_incidents', 'create_alerts_and_incidents'])
-          .default('create_alerts_and_incidents')
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'Whether a service creates only incidents, or both alerts and incidents. A service must create alerts in order to enable incident merging.\n* "create_incidents" - The service will create one incident and zero alerts for each incoming event.\n* "create_alerts_and_incidents" - The service will create one incident and one associated alert for each incoming event.\nThis attribute has been deprecated as all services will be migrated to use alerts and incidents. Afterward, the incident only service setting will no longer be available. For details, please refer to the knowledge base: https://support.pagerduty.com/docs/alerts#enable-and-disable-alerts-on-a-service.\n',
-          }),
-        alert_grouping_parameters: z
-          .xor([
-            AlertGroupingParametersSchema,
-            z
-              .object({
-                id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'id of the related alert grouping setting',
-                  }),
-                type: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'type of reference eg. alert_grouping_setting_reference',
-                  }),
-                summary: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ readOnly: true, description: 'an explanation of this reference' }),
-                self: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'link to api endpoint for this setting',
-                  }),
-                html_url: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'link to the ui page to edit the setting',
-                  }),
-              })
-              .openapi({
-                title: 'Alert Grouping Settings Reference',
-                deprecated: true,
-                description:
-                  "When a service uses alert grouping configuration that is unsupported via the services api, and can only be configured via the [Alert Grouping Settings API](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting). The reference object includes the new location details for the service's Alert Grouping Setting. When an `alert_grouping_settings_reference` is included in a create or update request it will be ignored and no changes are applied to the service.",
-                required: [],
-              }),
-          ])
-          .exactOptional()
-          .openapi({ description: 'Alert Grouping Parameters', deprecated: true }),
-        alert_grouping: z
-          .enum(['time', 'intelligent'])
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. There are three available options:\n* null - No alert grouping on the service. Each alert will create a separate incident;\n* "time" - All alerts within a specified duration will be grouped into the same incident. This duration is set in the `alert_grouping_timeout` setting (described below). Available on Standard, Enterprise, and Event Intelligence plans;\n* "intelligent" - Alerts will be intelligently grouped based on a machine learning model that looks at the alert summary, timing, and the history of grouped alerts. Available on Enterprise and Event Intelligence plans\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
-          }),
-        alert_grouping_timeout: z
-          .int()
-          .exactOptional()
-          .openapi({
-            deprecated: true,
-            description:
-              'The duration in minutes within which to automatically group incoming alerts. This setting applies only when `alert_grouping` is set to `time`. To continue grouping alerts until the Incident is resolved, set this value to `0`.\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
-          }),
-        auto_pause_notifications_parameters: AutoPauseNotificationsParametersSchema.exactOptional(),
-      })
-      .openapi({
-        required: ['type', 'escalation_policy'],
-        example: {
-          id: 'PSI2I2O',
-          summary: 'string',
-          type: 'service',
-          self: 'string',
-          html_url: 'string',
-          name: 'My Web App',
-          description: 'My cool web application that does things.',
-          auto_resolve_timeout: 14400,
-          acknowledgement_timeout: 600,
-          status: 'active',
-          escalation_policy: { id: 'PWIP6CQ', type: 'escalation_policy_reference' },
-          incident_urgency_rule: {
-            type: 'use_support_hours',
-            during_support_hours: { type: 'constant', urgency: 'high' },
-            outside_support_hours: { type: 'constant', urgency: 'low' },
-          },
-          support_hours: {
-            type: 'fixed_time_per_day',
-            time_zone: 'America/Lima',
-            start_time: '09:00:00',
-            end_time: '17:00:00',
-            days_of_week: [1, 2, 3, 4, 5],
-          },
-          scheduled_actions: [
-            {
-              type: 'urgency_change',
-              at: { type: 'named_time', name: 'support_hours_start' },
-              to_urgency: 'high',
-            },
-          ],
-          alert_creation: 'create_alerts_and_incidents',
-          auto_pause_notifications_parameters: { enabled: true, timeout: 300 },
+const ServiceSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('service')
+        .default('service')
+        .openapi({ description: 'The type of object being created.' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the service.' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user-provided description of the service.' }),
+      auto_resolve_timeout: z
+        .int()
+        .default(14400)
+        .exactOptional()
+        .openapi({
+          description:
+            'Time in seconds that an incident is automatically resolved if left open for that long. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
+        }),
+      acknowledgement_timeout: z
+        .int()
+        .default(1800)
+        .exactOptional()
+        .openapi({
+          description:
+            'Time in seconds that an incident changes to the Triggered State after being Acknowledged. Value is `null` if the feature is disabled. Value must not be negative. Setting this field to `0`, `null` (or unset in POST request) will disable the feature.',
+        }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The date/time when this service was created', readOnly: true }),
+      status: z
+        .enum(['active', 'warning', 'critical', 'maintenance', 'disabled'])
+        .default('active')
+        .exactOptional()
+        .openapi({
+          description:
+            'The current state of the Service. Valid statuses are:\n\n\n- `active`: The service is enabled and has no open incidents. This is the only status a service can be created with.\n- `warning`: The service is enabled and has one or more acknowledged incidents.\n- `critical`: The service is enabled and has one or more triggered incidents.\n- `maintenance`: The service is under maintenance, no new incidents will be triggered during maintenance mode.\n- `disabled`: The service is disabled and will not have any new triggered incidents.\n',
+        }),
+      last_incident_timestamp: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The date/time when the most recent incident was created for this service.',
+          readOnly: true,
+        }),
+      escalation_policy: EscalationPolicyReferenceSchema,
+      response_play: z
+        .any()
+        .exactOptional()
+        .openapi({ deprecated: true, description: 'Response plays associated with this service.' }),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({ description: 'The set of teams associated with this service.', readOnly: true }),
+      integrations: z
+        .array(IntegrationReferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'An array containing Integration objects that belong to this service. If `integrations` is passed as an argument, these are full objects - otherwise, these are references.',
+          readOnly: true,
+        }),
+      incident_urgency_rule: IncidentUrgencyRuleSchema.exactOptional(),
+      support_hours: SupportHoursSchema.exactOptional(),
+      scheduled_actions: z
+        .array(ScheduledActionSchema)
+        .exactOptional()
+        .openapi({ description: 'An array containing scheduled actions for the service.' }),
+      addons: z
+        .array(AddonReferenceSchema)
+        .exactOptional()
+        .openapi({
+          description: 'The array of Add-ons associated with this service.',
+          readOnly: true,
+        }),
+      alert_creation: z
+        .enum(['create_incidents', 'create_alerts_and_incidents'])
+        .default('create_alerts_and_incidents')
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          description:
+            'Whether a service creates only incidents, or both alerts and incidents. A service must create alerts in order to enable incident merging.\n* "create_incidents" - The service will create one incident and zero alerts for each incoming event.\n* "create_alerts_and_incidents" - The service will create one incident and one associated alert for each incoming event.\nThis attribute has been deprecated as all services will be migrated to use alerts and incidents. Afterward, the incident only service setting will no longer be available. For details, please refer to the knowledge base: https://support.pagerduty.com/docs/alerts#enable-and-disable-alerts-on-a-service.\n',
+        }),
+      alert_grouping_parameters: z
+        .xor([
+          AlertGroupingParametersSchema,
+          z
+            .object({
+              id: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  readOnly: true,
+                  description: 'id of the related alert grouping setting',
+                }),
+              type: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  readOnly: true,
+                  description: 'type of reference eg. alert_grouping_setting_reference',
+                }),
+              summary: z
+                .string()
+                .exactOptional()
+                .openapi({ readOnly: true, description: 'an explanation of this reference' }),
+              self: z
+                .string()
+                .exactOptional()
+                .openapi({ readOnly: true, description: 'link to api endpoint for this setting' }),
+              html_url: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  readOnly: true,
+                  description: 'link to the ui page to edit the setting',
+                }),
+            })
+            .openapi({
+              title: 'Alert Grouping Settings Reference',
+              deprecated: true,
+              description:
+                "When a service uses alert grouping configuration that is unsupported via the services api, and can only be configured via the [Alert Grouping Settings API](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting). The reference object includes the new location details for the service's Alert Grouping Setting. When an `alert_grouping_settings_reference` is included in a create or update request it will be ignored and no changes are applied to the service.",
+              required: [],
+            }),
+        ])
+        .exactOptional()
+        .openapi({ description: 'Alert Grouping Parameters', deprecated: true }),
+      alert_grouping: z
+        .enum(['time', 'intelligent'])
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          description:
+            'Defines how alerts on this service will be automatically grouped into incidents. Note that the alert grouping features are available only on certain plans. There are three available options:\n* null - No alert grouping on the service. Each alert will create a separate incident;\n* "time" - All alerts within a specified duration will be grouped into the same incident. This duration is set in the `alert_grouping_timeout` setting (described below). Available on Standard, Enterprise, and Event Intelligence plans;\n* "intelligent" - Alerts will be intelligently grouped based on a machine learning model that looks at the alert summary, timing, and the history of grouped alerts. Available on Enterprise and Event Intelligence plans\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
+        }),
+      alert_grouping_timeout: z
+        .int()
+        .exactOptional()
+        .openapi({
+          deprecated: true,
+          description:
+            'The duration in minutes within which to automatically group incoming alerts. This setting applies only when `alert_grouping` is set to `time`. To continue grouping alerts until the Incident is resolved, set this value to `0`.\n\nThis attribute has been deprecated and configuration via [Alert Grouping Settings](https://developer.pagerduty.com/api-reference/587edbc8ff416-create-an-alert-grouping-setting) resource is encouraged.\n',
+        }),
+      auto_pause_notifications_parameters: AutoPauseNotificationsParametersSchema.exactOptional(),
+    })
+    .openapi({
+      required: ['type', 'escalation_policy'],
+      example: {
+        id: 'PSI2I2O',
+        summary: 'string',
+        type: 'service',
+        self: 'string',
+        html_url: 'string',
+        name: 'My Web App',
+        description: 'My cool web application that does things.',
+        auto_resolve_timeout: 14400,
+        acknowledgement_timeout: 600,
+        status: 'active',
+        escalation_policy: { id: 'PWIP6CQ', type: 'escalation_policy_reference' },
+        incident_urgency_rule: {
+          type: 'use_support_hours',
+          during_support_hours: { type: 'constant', urgency: 'high' },
+          outside_support_hours: { type: 'constant', urgency: 'low' },
         },
-      }),
-  )
-  .openapi('Service')
+        support_hours: {
+          type: 'fixed_time_per_day',
+          time_zone: 'America/Lima',
+          start_time: '09:00:00',
+          end_time: '17:00:00',
+          days_of_week: [1, 2, 3, 4, 5],
+        },
+        scheduled_actions: [
+          {
+            type: 'urgency_change',
+            at: { type: 'named_time', name: 'support_hours_start' },
+            to_urgency: 'high',
+          },
+        ],
+        alert_creation: 'create_alerts_and_incidents',
+        auto_pause_notifications_parameters: { enabled: true, timeout: 300 },
+      },
+    }),
+).openapi('Service')
 
 const UserReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('user_reference').exactOptional() }).openapi({ required: [] }),
@@ -965,155 +919,112 @@ const NotificationRuleReferenceSchema = ReferenceSchema.and(
     .openapi({ required: [] }),
 ).openapi('NotificationRuleReference')
 
-const UserSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z.string().max(100).openapi({ description: 'The name of the user.' }),
-        type: z
-          .literal('user')
-          .default('user')
-          .openapi({ description: 'The type of object being created.' }),
-        email: z.email().min(6).max(100).openapi({ description: "The user's email address." }),
-        time_zone: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              "The preferred time zone name. If null, the account's time zone will be used.",
-          }),
-        color: z.string().exactOptional().openapi({ description: 'The schedule color.' }),
-        role: z
-          .enum([
-            'admin',
-            'limited_user',
-            'observer',
-            'owner',
-            'read_only_user',
-            'restricted_access',
-            'read_only_limited_user',
-            'user',
-          ])
-          .exactOptional()
-          .openapi({
-            description:
-              'The user role. Account must have the `read_only_users` ability to set a user as a `read_only_user` or a `read_only_limited_user`, and must have advanced permissions abilities to set a user as `observer` or `restricted_access`.',
-          }),
-        avatar_url: z
-          .url()
-          .exactOptional()
-          .openapi({ description: "The URL of the user's avatar.", readOnly: true }),
-        description: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({ description: "The user's bio." }),
-        invitation_sent: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'If true, the user has an outstanding invitation.',
-          }),
-        job_title: z
-          .string()
-          .max(100)
-          .exactOptional()
-          .openapi({ description: "The user's title." }),
-        created_via_sso: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'If true, the user was created via Single Sign-On (SSO).',
-          }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'The list of teams to which the user belongs. Account must have the `teams` ability to set this.',
-          }),
-        contact_methods: z
-          .array(ContactMethodReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The list of contact methods for the user.' }),
-        notification_rules: z
-          .array(NotificationRuleReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The list of notification rules for the user.' }),
-        http_cal_url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              "iCal HTTP feed URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
-          }),
-        web_cal_url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              "iCal webcal URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
-          }),
-      })
-      .openapi({
-        required: ['name', 'email', 'type'],
-        example: {
-          type: 'user',
-          name: 'Earline Greenholt',
-          email: '125.greenholt.earline@graham.name',
-          time_zone: 'America/Lima',
-          color: 'green',
-          role: 'admin',
-          job_title: 'Director of Engineering',
-          created_via_sso: false,
-          avatar_url: 'https://pd-static-assets.pagerduty.com/users/blank-avatar.png',
-          description: "I'm the boss",
-        },
-      }),
-  )
-  .openapi('User')
+const UserSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z.string().max(100).openapi({ description: 'The name of the user.' }),
+      type: z
+        .literal('user')
+        .default('user')
+        .openapi({ description: 'The type of object being created.' }),
+      email: z.email().min(6).max(100).openapi({ description: "The user's email address." }),
+      time_zone: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            "The preferred time zone name. If null, the account's time zone will be used.",
+        }),
+      color: z.string().exactOptional().openapi({ description: 'The schedule color.' }),
+      role: z
+        .enum([
+          'admin',
+          'limited_user',
+          'observer',
+          'owner',
+          'read_only_user',
+          'restricted_access',
+          'read_only_limited_user',
+          'user',
+        ])
+        .exactOptional()
+        .openapi({
+          description:
+            'The user role. Account must have the `read_only_users` ability to set a user as a `read_only_user` or a `read_only_limited_user`, and must have advanced permissions abilities to set a user as `observer` or `restricted_access`.',
+        }),
+      avatar_url: z
+        .url()
+        .exactOptional()
+        .openapi({ description: "The URL of the user's avatar.", readOnly: true }),
+      description: z
+        .string()
+        .nullable()
+        .exactOptional()
+        .openapi({ description: "The user's bio." }),
+      invitation_sent: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'If true, the user has an outstanding invitation.',
+        }),
+      job_title: z.string().max(100).exactOptional().openapi({ description: "The user's title." }),
+      created_via_sso: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'If true, the user was created via Single Sign-On (SSO).',
+        }),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'The list of teams to which the user belongs. Account must have the `teams` ability to set this.',
+        }),
+      contact_methods: z
+        .array(ContactMethodReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The list of contact methods for the user.' }),
+      notification_rules: z
+        .array(NotificationRuleReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The list of notification rules for the user.' }),
+      http_cal_url: z
+        .url()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            "iCal HTTP feed URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
+        }),
+      web_cal_url: z
+        .url()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            "iCal webcal URL for this user's on-call shifts. Only returned on the `GET /users/{id}` detail endpoint: automatically when viewing your own profile with a user-level token, or when an account admin with `can_update_user` passes `include[]=calendar_urls` for another user. Not returned on list endpoints or with account-level read-only keys.\n\n**Security:** this URL is a bearer credential. Anyone with the URL can read the user's on-call calendar without further authentication. Rotate via `POST /users/{id}/regenerate_private_url_key` if it may have been exposed.",
+        }),
+    })
+    .openapi({
+      required: ['name', 'email', 'type'],
+      example: {
+        type: 'user',
+        name: 'Earline Greenholt',
+        email: '125.greenholt.earline@graham.name',
+        time_zone: 'America/Lima',
+        color: 'green',
+        role: 'admin',
+        job_title: 'Director of Engineering',
+        created_via_sso: false,
+        avatar_url: 'https://pd-static-assets.pagerduty.com/users/blank-avatar.png',
+        description: "I'm the boss",
+      },
+    }),
+).openapi('User')
 
 const AssignmentSchema = z
   .object({
@@ -1371,116 +1282,76 @@ const IncidentReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('incident_reference').exactOptional() }).openapi({ required: [] }),
 ).openapi('IncidentReference')
 
-const LogEntrySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .enum([
-            'acknowledge_log_entry',
-            'annotate_log_entry',
-            'assign_log_entry',
-            'delegate_log_entry',
-            'escalate_log_entry',
-            'exhaust_escalation_path_log_entry',
-            'notify_log_entry',
-            'reach_ack_limit_log_entry',
-            'reach_trigger_limit_log_entry',
-            'repeat_escalation_path_log_entry',
-            'resolve_log_entry',
-            'snooze_log_entry',
-            'trigger_log_entry',
-            'unacknowledge_log_entry',
-            'urgency_change_log_entry',
-            'field_value_change_log_entry',
-            'custom_field_value_change_log_entry',
-          ])
-          .exactOptional(),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'Time at which the log entry was created.' }),
-        channel: ChannelSchema.exactOptional(),
-        agent: AgentReferenceSchema.exactOptional(),
-        note: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Optional field containing a note, if one was included with the log entry.',
-          }),
-        contexts: z
-          .array(ContextSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Contexts to be included with the trigger such as links to graphs or images.',
-          }),
-        service: ServiceReferenceSchema.exactOptional(),
-        incident: IncidentReferenceSchema.exactOptional(),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'Will consist of references unless included' }),
-        event_details: z
-          .object({
-            description: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Additional details about the event.' }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        changeset: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description: 'String record of custom field updates',
-            example: ['Updated serial_number to 123', 'Updated affected_room to ["Queen West"]'],
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('LogEntry')
+const LogEntrySchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'acknowledge_log_entry',
+          'annotate_log_entry',
+          'assign_log_entry',
+          'delegate_log_entry',
+          'escalate_log_entry',
+          'exhaust_escalation_path_log_entry',
+          'notify_log_entry',
+          'reach_ack_limit_log_entry',
+          'reach_trigger_limit_log_entry',
+          'repeat_escalation_path_log_entry',
+          'resolve_log_entry',
+          'snooze_log_entry',
+          'trigger_log_entry',
+          'unacknowledge_log_entry',
+          'urgency_change_log_entry',
+          'field_value_change_log_entry',
+          'custom_field_value_change_log_entry',
+        ])
+        .exactOptional(),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'Time at which the log entry was created.' }),
+      channel: ChannelSchema.exactOptional(),
+      agent: AgentReferenceSchema.exactOptional(),
+      note: z
+        .string()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'Optional field containing a note, if one was included with the log entry.',
+        }),
+      contexts: z
+        .array(ContextSchema)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'Contexts to be included with the trigger such as links to graphs or images.',
+        }),
+      service: ServiceReferenceSchema.exactOptional(),
+      incident: IncidentReferenceSchema.exactOptional(),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'Will consist of references unless included' }),
+      event_details: z
+        .object({
+          description: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Additional details about the event.' }),
+        })
+        .exactOptional()
+        .openapi({ readOnly: true, required: [] }),
+      changeset: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description: 'String record of custom field updates',
+          example: ['Updated serial_number to 123', 'Updated affected_room to ["Queen West"]'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('LogEntry')
 
 const TriggerLogEntrySchema = LogEntrySchema.and(
   z.object({ type: z.literal('trigger_log_entry').exactOptional() }).openapi({ required: [] }),
@@ -1551,171 +1422,93 @@ const EscalationRuleSchema = z
   })
   .openapi('EscalationRule')
 
-const EscalationPolicySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('escalation_policy')
-          .default('escalation_policy')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().openapi({ description: 'The name of the escalation policy.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Escalation policy description.' }),
-        num_loops: z
-          .int()
-          .min(0)
-          .default(0)
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of times the escalation policy will repeat after reaching the end of its escalation.',
-          }),
-        on_call_handoff_notifications: z
-          .enum(['if_has_services', 'always'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Determines how on call handoff notifications will be sent for users on the escalation policy. Defaults to "if_has_services".',
-          }),
-        escalation_rules: z.array(EscalationRuleSchema),
-        services: z.array(ServiceReferenceSchema).exactOptional().openapi({ readOnly: true }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Team associated with the policy. Account must have the `teams` ability to use this parameter. Only one team may be associated with the policy.',
-          }),
-      })
-      .openapi({
-        required: ['type', 'name', 'escalation_rules'],
-        example: {
-          id: 'PQIL2IX',
-          type: 'escalation_policy',
-          name: 'Engineering Escalation Policy',
-          escalation_rules: [
-            {
-              escalation_delay_in_minutes: 30,
-              targets: [{ id: 'PEYSGVF', type: 'user_reference' }],
-              escalation_rule_assignment_strategy: [{ type: 'round_robin' }],
-            },
-          ],
-          services: [{ id: 'PIJ90N7', type: 'service_reference' }],
-          num_loops: 2,
-          on_call_handoff_notifications: 'if_has_services',
-          teams: [{ id: 'PQ9K7I8', type: 'team_reference' }],
-          description: 'Here is the ep for the engineering team.',
-        },
-      }),
-  )
-  .openapi('EscalationPolicy')
+const EscalationPolicySchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('escalation_policy')
+        .default('escalation_policy')
+        .openapi({ description: 'The type of object being created.' }),
+      name: z.string().openapi({ description: 'The name of the escalation policy.' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Escalation policy description.' }),
+      num_loops: z
+        .int()
+        .min(0)
+        .default(0)
+        .exactOptional()
+        .openapi({
+          description:
+            'The number of times the escalation policy will repeat after reaching the end of its escalation.',
+        }),
+      on_call_handoff_notifications: z
+        .enum(['if_has_services', 'always'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Determines how on call handoff notifications will be sent for users on the escalation policy. Defaults to "if_has_services".',
+        }),
+      escalation_rules: z.array(EscalationRuleSchema),
+      services: z.array(ServiceReferenceSchema).exactOptional().openapi({ readOnly: true }),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Team associated with the policy. Account must have the `teams` ability to use this parameter. Only one team may be associated with the policy.',
+        }),
+    })
+    .openapi({
+      required: ['type', 'name', 'escalation_rules'],
+      example: {
+        id: 'PQIL2IX',
+        type: 'escalation_policy',
+        name: 'Engineering Escalation Policy',
+        escalation_rules: [
+          {
+            escalation_delay_in_minutes: 30,
+            targets: [{ id: 'PEYSGVF', type: 'user_reference' }],
+            escalation_rule_assignment_strategy: [{ type: 'round_robin' }],
+          },
+        ],
+        services: [{ id: 'PIJ90N7', type: 'service_reference' }],
+        num_loops: 2,
+        on_call_handoff_notifications: 'if_has_services',
+        teams: [{ id: 'PQ9K7I8', type: 'team_reference' }],
+        description: 'Here is the ep for the engineering team.',
+      },
+    }),
+).openapi('EscalationPolicy')
 
-const TeamSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('team')
-          .default('team')
-          .openapi({ description: 'The type of object being created.' }),
-        name: z.string().max(100).openapi({ description: 'The name of the team.' }),
-        description: z
-          .string()
-          .max(1024)
-          .exactOptional()
-          .openapi({ description: 'The description of the team.' }),
-        default_role: z
-          .enum(['manager', 'none'])
-          .default('manager')
-          .exactOptional()
-          .openapi({
-            description:
-              'The team is private if the value is "none", or public if it is "manager" (the default permissions for a non-member of the team are either "none", or their base role up until "manager").',
-          }),
-      })
-      .openapi({
-        required: ['name', 'type'],
-        example: { type: 'team', name: 'Engineering', description: 'The engineering team' },
-      }),
-  )
-  .openapi('Team')
+const TeamSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('team')
+        .default('team')
+        .openapi({ description: 'The type of object being created.' }),
+      name: z.string().max(100).openapi({ description: 'The name of the team.' }),
+      description: z
+        .string()
+        .max(1024)
+        .exactOptional()
+        .openapi({ description: 'The description of the team.' }),
+      default_role: z
+        .enum(['manager', 'none'])
+        .default('manager')
+        .exactOptional()
+        .openapi({
+          description:
+            'The team is private if the value is "none", or public if it is "manager" (the default permissions for a non-member of the team are either "none", or their base role up until "manager").',
+        }),
+    })
+    .openapi({
+      required: ['name', 'type'],
+      example: { type: 'team', name: 'Engineering', description: 'The engineering team' },
+    }),
+).openapi('Team')
 
 const IncidentActionSchema = z
   .object({
@@ -1757,59 +1550,20 @@ const AcknowledgementSchema = z
   .openapi({ required: ['at', 'acknowledger'] })
   .openapi('Acknowledgement')
 
-const PrioritySchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided short name of the priority.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided description of the priority.' }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Priority')
+const PrioritySchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user-provided short name of the priority.' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user-provided description of the priority.' }),
+    })
+    .openapi({ required: [] }),
+).openapi('Priority')
 
 const ResolveReasonSchema = z
   .object({
@@ -1925,13 +1679,7 @@ const IncidentBodySchema = z
   .openapi({ required: ['type'] })
   .openapi('IncidentBody')
 
-type IncidentType = {
-  id?: string
-  summary?: string | null
-  type?: string
-  self?: string | null
-  html_url?: string | null
-} & {
+type IncidentType = z.infer<typeof TagAllOf0Schema> & {
   incident_number?: number
   title?: string
   created_at?: string
@@ -1974,361 +1722,14 @@ type IncidentType = {
   body?: z.infer<typeof IncidentBodySchema>
 }
 
-type CustomFieldsFieldValueType = {
-  id: string
-  name: string
-  type: 'field_value'
-  display_name: string
-  field_type: 'single_value' | 'single_value_fixed' | 'multi_value' | 'multi_value_fixed'
-  data_type: 'boolean' | 'integer' | 'float' | 'string' | 'datetime' | 'url'
-  description: string | null
-  value:
-    | { value?: boolean | null }
-    | { value?: number | null }
-    | { value?: number | null }
-    | { value?: (string | null) | (string[] | null) }
-    | { value?: string | null }
-    | { value?: string | null }
-}
-
-const CustomFieldsFieldValueSchema: z.ZodType<CustomFieldsFieldValueType> = z
-  .object({
-    id: z.string().openapi({ description: 'Id of the field.' }),
-    name: z
-      .string()
-      .max(50)
-      .openapi({
-        title: 'Field Name',
-        description:
-          'The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.',
-      }),
-    type: z
-      .literal('field_value')
-      .openapi({ description: 'Determines the type of the reference.' }),
-    display_name: z
-      .string()
-      .max(50)
-      .openapi({
-        description: 'The human-readable name of the field. This must be unique across an account.',
-      }),
-    field_type: z
-      .enum(['single_value', 'single_value_fixed', 'multi_value', 'multi_value_fixed'])
-      .openapi({
-        description:
-          'The type of data this field contains. In combination with the `data_type` field.',
-      }),
-    data_type: z
-      .enum(['boolean', 'integer', 'float', 'string', 'datetime', 'url'])
-      .openapi({ description: 'The kind of data the custom field is allowed to contain.' }),
-    description: z
-      .string()
-      .max(1000)
-      .nullable()
-      .openapi({ description: 'A description of the data this field contains.' }),
-    value: z.xor([
-      z
-        .object({ value: z.boolean().nullable().exactOptional() })
-        .openapi({ title: 'Boolean', required: [] }),
-      z
-        .object({ value: z.number().nullable().exactOptional() })
-        .openapi({ title: 'Float', required: [] }),
-      z
-        .object({ value: z.int().nullable().exactOptional() })
-        .openapi({ title: 'Integer', required: [] }),
-      z
-        .object({
-          value: z
-            .xor([
-              z.string().max(200).nullable(),
-              z
-                .array(z.string().max(200))
-                .max(10)
-                .superRefine((items, ctx) => {
-                  const seen = new Map()
-                  for (const [i, val] of items.entries()) {
-                    const key = JSON.stringify(val)
-                    if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-                    else seen.set(key, i)
-                  }
-                })
-                .nullable(),
-            ])
-            .exactOptional(),
-        })
-        .openapi({ title: 'String', required: [] }),
-      z
-        .object({ value: z.iso.datetime({ offset: true }).nullable().exactOptional() })
-        .openapi({ title: 'Datetime', required: [] }),
-      z
-        .object({ value: z.url().max(200).nullable().exactOptional() })
-        .openapi({ title: 'Url', required: [] }),
-    ]),
-  })
-  .openapi({
-    required: [
-      'id',
-      'type',
-      'name',
-      'value',
-      'display_name',
-      'data_type',
-      'field_type',
-      'description',
-    ],
-  })
-  .openapi('CustomFieldsFieldValue')
-
-const CustomFieldsEditableFieldOptionSchema = z
-  .object({
-    data: z
-      .xor([
-        z
-          .object({
-            data_type: z
-              .literal('string')
-              .openapi({
-                description:
-                  "The kind of data represented by this option. Must match the Field's `data_type`.",
-              }),
-            value: z.string().max(100),
-          })
-          .openapi({ required: ['data_type', 'value'] }),
-      ])
-      .exactOptional()
-      .openapi({
-        discriminator: {
-          propertyName: 'data_type',
-          mapping: {
-            string:
-              '#/paths/~1incidents~1custom_fields/get/responses/200/content/application~1json/schema/allOf/0/properties/fields/items/allOf/0/properties/field_options/items/allOf/0/properties/data/oneOf/0',
-          },
-        },
-      }),
-    id: z.string().openapi({ readOnly: true, description: 'The ID of the resource.' }),
-    type: z.literal('field_option').openapi({ readOnly: true }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The date/time the object was created at.', readOnly: true }),
-  })
-  .openapi({ required: ['id', 'type', 'created_at', 'updated_at'], description: '' })
-  .openapi('CustomFieldsEditableFieldOption')
-
-const IncidentTypeCustomFieldsSchema = z
-  .object({
-    enabled: z
-      .boolean()
-      .openapi({ description: 'Whether the custom field is enabled.', readOnly: true }),
-    id: z.string().openapi({ readOnly: true, description: 'The ID of the resource.' }),
-    name: z.lazy(() => CustomFieldsFieldValueSchema),
-    type: z.literal('field').openapi({ readOnly: true }),
-    self: z
-      .url()
-      .nullable()
-      .openapi({
-        readOnly: true,
-        description: 'The API show URL at which the object is accessible',
-      }),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema),
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The date/time the custom field was last updated.', readOnly: true }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The date/time the custom field was created at.', readOnly: true }),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema),
-    default_value: z
-      .xor([
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-      ])
-      .nullable()
-      .exactOptional(),
-    incident_type: z
-      .string()
-      .openapi({
-        description: 'The id of the incident type the custom field is associated with.',
-        readOnly: true,
-      }),
-    summary: z
-      .string()
-      .nullable()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    field_options: z
-      .array(CustomFieldsEditableFieldOptionSchema)
-      .openapi({ description: 'The options for the custom field.' }),
-  })
-  .openapi({
-    required: [
-      'id',
-      'summary',
-      'self',
-      'type',
-      'name',
-      'display_name',
-      'created_at',
-      'updated_at',
-      'data_type',
-      'field_type',
-      'enabled',
-      'incident_type',
-      'field_options',
-    ],
-  })
-  .openapi('IncidentTypeCustomFields')
-
-type CustomFieldsEditableFieldType = {
-  display_name?: z.infer<typeof CustomFieldsFieldValueSchema>
-  description?: z.infer<typeof CustomFieldsFieldValueSchema>
-  default_value?: z.infer<typeof IncidentTypeCustomFieldsSchema>
-  enabled?: true | false
-}
-
-const CustomFieldsEditableFieldSchema: z.ZodType<CustomFieldsEditableFieldType> = z
-  .object({
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    default_value: z.lazy(() => IncidentTypeCustomFieldsSchema).exactOptional(),
-    enabled: z
-      .union([z.literal(true), z.literal(false)])
-      .exactOptional()
-      .openapi({ description: 'Whether the field is enabled.' }),
-  })
-  .openapi({ required: [] })
-  .openapi('CustomFieldsEditableField')
-
-const ServiceCustomFieldsFieldOptionReadModelSchema: z.ZodType<ServiceCustomFieldsFieldOptionReadModelType> =
-  z
-    .lazy(() =>
-      z
-        .object({
-          created_at: z.lazy(() => ServiceCustomFieldsFieldReadModelSchema).exactOptional(),
-          data: z
-            .object({
-              data_type: z
-                .literal('string')
-                .exactOptional()
-                .openapi({
-                  description:
-                    "The kind of data represented by this option. Must match the Field's `data_type`.",
-                }),
-              value: z.string().max(200).exactOptional(),
-            })
-            .exactOptional()
-            .openapi({ required: [] }),
-          id: z.lazy(() => ServiceCustomFieldsFieldReadModelSchema).exactOptional(),
-          type: z.literal('field_option').exactOptional(),
-          updated_at: z.lazy(() => ServiceCustomFieldsFieldReadModelSchema).exactOptional(),
-        })
-        .openapi({ required: [] }),
-    )
-    .openapi('ServiceCustomFieldsFieldOptionReadModel')
-
-type ServiceCustomFieldsFieldReadModelType = {
-  created_at?: string
-  data_type?: z.infer<typeof CustomFieldsFieldValueSchema>
-  description?: z.infer<typeof CustomFieldsFieldValueSchema>
-  display_name?: z.infer<typeof CustomFieldsFieldValueSchema>
-  enabled?: z.infer<typeof CustomFieldsEditableFieldSchema>
-  field_options?: z.infer<typeof ServiceCustomFieldsFieldOptionReadModelSchema>[]
-  field_type?: z.infer<typeof CustomFieldsFieldValueSchema>
-  id?: string
-  name?: z.infer<typeof CustomFieldsFieldValueSchema>
-  self?: string | null
-  summary?: string | null
-  type?: 'field'
-  updated_at?: string
-}
-
-const ServiceCustomFieldsFieldReadModelSchema: z.ZodType<ServiceCustomFieldsFieldReadModelType> = z
-  .lazy(() =>
-    z
-      .object({
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ title: 'Datetime', description: 'The date/time the object was created at.' }),
-        data_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-        description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-        display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-        enabled: z.lazy(() => CustomFieldsEditableFieldSchema).exactOptional(),
-        field_options: z
-          .array(ServiceCustomFieldsFieldOptionReadModelSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The options for the custom field. Applies only to `single_value_fixed` and `multi_value_fixed` field types. These options are returned only if the `include[]` parameter specifies `field_options`.',
-          }),
-        field_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-        id: z.string().exactOptional().openapi({ description: 'The ID of the resource.' }),
-        name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-        self: z
-          .url()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The API show URL at which the object is accessible',
-          }),
-        summary: z
-          .string()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `display_name`.',
-          }),
-        type: z.literal('field').exactOptional().openapi({ readOnly: true }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ title: 'Datetime', description: 'The date/time the object was updated at.' }),
-      })
-      .openapi({ description: 'Details of the custom field.', required: [] }),
-  )
-  .openapi('ServiceCustomFieldsFieldReadModel')
-
-type ServiceCustomFieldsFieldOptionReadModelType = {
-  created_at?: z.infer<typeof ServiceCustomFieldsFieldReadModelSchema>
-  data?: { data_type?: 'string'; value?: string }
-  id?: z.infer<typeof ServiceCustomFieldsFieldReadModelSchema>
-  type?: 'field_option'
-  updated_at?: z.infer<typeof ServiceCustomFieldsFieldReadModelSchema>
-}
-
-type IncidentWorkflowType = {
-  id?: string
-  summary?: string | null
-  type?: string
-  self?: string | null
-  html_url?: string | null
-} & {
+type IncidentWorkflowType = z.infer<typeof TagAllOf0Schema> & {
   type?: 'incident_workflow'
   name?: string
   description?: string
   created_at?: string
   team?: { type?: 'team_reference'; id?: string }
   is_enabled?: boolean
-  steps?: ({
-    id?: string
-    summary?: string | null
-    type?: string
-    self?: string | null
-    html_url?: string | null
-  } & {
+  steps?: (z.infer<typeof TagAllOf0Schema> & {
     type?: 'step'
     name: string
     description?: string
@@ -2339,13 +1740,7 @@ type IncidentWorkflowType = {
       inline_steps_inputs?: {
         name: string
         value: {
-          steps?: ({
-            id?: string
-            summary?: string | null
-            type?: string
-            self?: string | null
-            html_url?: string | null
-          } & {
+          steps?: (z.infer<typeof TagAllOf0Schema> & {
             type?: 'step'
             name: string
             action_configuration: {
@@ -2434,232 +1829,193 @@ const ActionSchema = z
   })
   .openapi('Action')
 
-const IncidentSchema: z.ZodType<IncidentType> = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        incident_number: z
-          .int()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The number of the incident. This is unique across your account.',
-          }),
-        title: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: false,
-            description:
-              'A succinct description of the nature, symptoms, cause, or effect of the incident.',
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'The time the incident was first triggered.',
-            example: '2019-12-01T20:00:00Z',
-            readOnly: true,
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            example: '2019-12-01T21:02:00Z',
-            description: 'The time the incident was last modified.',
-          }),
-        status: z
-          .enum(['triggered', 'acknowledged', 'resolved'])
-          .exactOptional()
-          .openapi({ description: 'The current status of the incident.' }),
-        incident_key: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, description: "The incident's de-duplication key." }),
-        service: z
-          .xor([ServiceReferenceSchema, ServiceSchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The service the incident is on. If the `include[]=services` query parameter is provided, the full service definition will be returned.',
-          }),
-        assignments: z
-          .array(AssignmentSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of all assignments for this incident. This list will be empty if the `Incident.status` is `resolved`. Returns a user reference for each assignment. Full user definitions will be returned if the `include[]=assignees` query parameter is provided.',
-          }),
-        assigned_via: z
-          .enum(['escalation_policy', 'direct_assignment'])
-          .exactOptional()
-          .openapi({
-            description:
-              'How the current incident assignments were decided.  Note that `direct_assignment` incidents will not escalate up the attached `escalation_policy`',
-            readOnly: true,
-          }),
-        last_status_change_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              "The time the status of the incident last changed. If the incident is not currently acknowledged or resolved, this will be the incident's `updated_at`.",
-            example: '2019-12-01T21:01:00Z',
-            readOnly: true,
-          }),
-        resolved_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            example: '2019-12-01T21:01:00Z',
-            description:
-              'The time the incident became "resolved" or `null` if the incident is not resolved.',
-          }),
-        first_trigger_log_entry: z
-          .xor([LogEntryReferenceSchema, TriggerLogEntrySchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The first log entry on the incident. The log entry will be of type `TriggerLogEntry` and will represent information about how the incident was triggered. If the `include[]=first_trigger_log_entries` query parameter is provided, the full log entry definition will be returned.',
-          }),
-        alert_counts: AlertCountSchema.exactOptional(),
-        is_mergeable: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether the incident is mergeable. Only incidents that have alerts, or that are manually created can be merged.',
-            readOnly: true,
-          }),
-        incident_type: z
-          .object({
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The name of the Incident Type.' }),
-          })
-          .exactOptional()
-          .openapi({ description: 'The incident type of the incident.', required: [] }),
-        escalation_policy: z
-          .xor([EscalationPolicyReferenceSchema, EscalationPolicySchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The escalation policy attached to the service that the incident is on. If the `include[]=escalation_policies` query parameter is provided, the full escalation policy definition will be returned.',
-          }),
-        teams: z
-          .array(z.xor([TeamReferenceSchema, TeamSchema]))
-          .exactOptional()
-          .openapi({
-            description:
-              'The teams involved in the incident’s lifecycle. If the `include[]=teams` query parameter is provided, the full team definitions will be returned.',
-          }),
-        pending_actions: z
-          .array(IncidentActionSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'The list of pending_actions on the incident. A pending_action object contains a type of action which can be escalate, unacknowledge, resolve or urgency_change. A pending_action object contains at, the time at which the action will take place. An urgency_change pending_action will contain to, the urgency that the incident will change to.',
-          }),
-        acknowledgements: z
-          .array(AcknowledgementSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'List of all acknowledgements for this incident. This list will be empty if the `Incident.status` is `resolved` or `triggered`. If the `include[]=acknowledgers` query parameter is provided, the full user or service definitions will be returned for each acknowledgement entry.',
-          }),
-        alert_grouping: z
-          .object({
-            grouping_type: z.enum(['basic', 'advanced', 'rules']).exactOptional(),
-            started_at: z.iso.datetime({ offset: true }).exactOptional(),
-            ended_at: z.iso.datetime({ offset: true }).exactOptional(),
-            alert_grouping_active: z.boolean().exactOptional(),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'Describes the alert grouping state of this incident. Will be null if the incident has no alerts.',
-            required: [],
-          }),
-        last_status_change_by: z
-          .xor([AgentReferenceSchema, UserSchema, ServiceSchema])
-          .exactOptional()
-          .openapi({
-            description:
-              'The entity that last changed the status of the incident. If the `include[]=agents` query parameter is provided, the full user/service/integration definition will be returned.',
-          }),
-        priority: PrioritySchema.exactOptional(),
-        resolve_reason: ResolveReasonSchema.exactOptional(),
-        conference_bridge: ConferenceBridgeSchema.exactOptional().openapi({
-          description:
-            'The conference bridge information attached to the incident. Only returned if the `include[]=conference_bridge` query parameter is provided.',
+const IncidentSchema: z.ZodType<IncidentType> = TagAllOf0Schema.and(
+  z
+    .object({
+      incident_number: z
+        .int()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'The number of the incident. This is unique across your account.',
         }),
-        incidents_responders: z
-          .array(IncidentsRespondersReferenceSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'The responders on the incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
-            readOnly: true,
-          }),
-        responder_requests: z
-          .array(ResponderRequestSchema)
-          .exactOptional()
-          .openapi({
-            description:
-              'Previous responder requests made on this incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
-            readOnly: true,
-          }),
-        urgency: z
-          .enum(['high', 'low'])
-          .exactOptional()
-          .openapi({ description: 'The current urgency of the incident.' }),
-        body: IncidentBodySchema.exactOptional().openapi({
+      title: z
+        .string()
+        .exactOptional()
+        .openapi({
+          readOnly: false,
           description:
-            'The additional incident body details. Only returned if the `include[]=body` query parameter is provided.',
+            'A succinct description of the nature, symptoms, cause, or effect of the incident.',
         }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Incident')
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The time the incident was first triggered.',
+          example: '2019-12-01T20:00:00Z',
+          readOnly: true,
+        }),
+      updated_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          example: '2019-12-01T21:02:00Z',
+          description: 'The time the incident was last modified.',
+        }),
+      status: z
+        .enum(['triggered', 'acknowledged', 'resolved'])
+        .exactOptional()
+        .openapi({ description: 'The current status of the incident.' }),
+      incident_key: z
+        .string()
+        .exactOptional()
+        .openapi({ readOnly: true, description: "The incident's de-duplication key." }),
+      service: z
+        .xor([ServiceReferenceSchema, ServiceSchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'The service the incident is on. If the `include[]=services` query parameter is provided, the full service definition will be returned.',
+        }),
+      assignments: z
+        .array(AssignmentSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of all assignments for this incident. This list will be empty if the `Incident.status` is `resolved`. Returns a user reference for each assignment. Full user definitions will be returned if the `include[]=assignees` query parameter is provided.',
+        }),
+      assigned_via: z
+        .enum(['escalation_policy', 'direct_assignment'])
+        .exactOptional()
+        .openapi({
+          description:
+            'How the current incident assignments were decided.  Note that `direct_assignment` incidents will not escalate up the attached `escalation_policy`',
+          readOnly: true,
+        }),
+      last_status_change_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description:
+            "The time the status of the incident last changed. If the incident is not currently acknowledged or resolved, this will be the incident's `updated_at`.",
+          example: '2019-12-01T21:01:00Z',
+          readOnly: true,
+        }),
+      resolved_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          example: '2019-12-01T21:01:00Z',
+          description:
+            'The time the incident became "resolved" or `null` if the incident is not resolved.',
+        }),
+      first_trigger_log_entry: z
+        .xor([LogEntryReferenceSchema, TriggerLogEntrySchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'The first log entry on the incident. The log entry will be of type `TriggerLogEntry` and will represent information about how the incident was triggered. If the `include[]=first_trigger_log_entries` query parameter is provided, the full log entry definition will be returned.',
+        }),
+      alert_counts: AlertCountSchema.exactOptional(),
+      is_mergeable: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether the incident is mergeable. Only incidents that have alerts, or that are manually created can be merged.',
+          readOnly: true,
+        }),
+      incident_type: z
+        .object({
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'The name of the Incident Type.' }),
+        })
+        .exactOptional()
+        .openapi({ description: 'The incident type of the incident.', required: [] }),
+      escalation_policy: z
+        .xor([EscalationPolicyReferenceSchema, EscalationPolicySchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'The escalation policy attached to the service that the incident is on. If the `include[]=escalation_policies` query parameter is provided, the full escalation policy definition will be returned.',
+        }),
+      teams: z
+        .array(z.xor([TeamReferenceSchema, TeamSchema]))
+        .exactOptional()
+        .openapi({
+          description:
+            'The teams involved in the incident’s lifecycle. If the `include[]=teams` query parameter is provided, the full team definitions will be returned.',
+        }),
+      pending_actions: z
+        .array(IncidentActionSchema)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'The list of pending_actions on the incident. A pending_action object contains a type of action which can be escalate, unacknowledge, resolve or urgency_change. A pending_action object contains at, the time at which the action will take place. An urgency_change pending_action will contain to, the urgency that the incident will change to.',
+        }),
+      acknowledgements: z
+        .array(AcknowledgementSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'List of all acknowledgements for this incident. This list will be empty if the `Incident.status` is `resolved` or `triggered`. If the `include[]=acknowledgers` query parameter is provided, the full user or service definitions will be returned for each acknowledgement entry.',
+        }),
+      alert_grouping: z
+        .object({
+          grouping_type: z.enum(['basic', 'advanced', 'rules']).exactOptional(),
+          started_at: z.iso.datetime({ offset: true }).exactOptional(),
+          ended_at: z.iso.datetime({ offset: true }).exactOptional(),
+          alert_grouping_active: z.boolean().exactOptional(),
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'Describes the alert grouping state of this incident. Will be null if the incident has no alerts.',
+          required: [],
+        }),
+      last_status_change_by: z
+        .xor([AgentReferenceSchema, UserSchema, ServiceSchema])
+        .exactOptional()
+        .openapi({
+          description:
+            'The entity that last changed the status of the incident. If the `include[]=agents` query parameter is provided, the full user/service/integration definition will be returned.',
+        }),
+      priority: PrioritySchema.exactOptional(),
+      resolve_reason: ResolveReasonSchema.exactOptional(),
+      conference_bridge: ConferenceBridgeSchema.exactOptional().openapi({
+        description:
+          'The conference bridge information attached to the incident. Only returned if the `include[]=conference_bridge` query parameter is provided.',
+      }),
+      incidents_responders: z
+        .array(IncidentsRespondersReferenceSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'The responders on the incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
+          readOnly: true,
+        }),
+      responder_requests: z
+        .array(ResponderRequestSchema)
+        .exactOptional()
+        .openapi({
+          description:
+            'Previous responder requests made on this incident. Only returned if the account has access to the [responder requests](https://support.pagerduty.com/docs/add-responders) feature.',
+          readOnly: true,
+        }),
+      urgency: z
+        .enum(['high', 'low'])
+        .exactOptional()
+        .openapi({ description: 'The current urgency of the incident.' }),
+      body: IncidentBodySchema.exactOptional().openapi({
+        description:
+          'The additional incident body details. Only returned if the `include[]=body` query parameter is provided.',
+      }),
+    })
+    .openapi({ required: [] }),
+).openapi('Incident')
 
 const AcknowledgeLogEntrySchema = LogEntrySchema.and(
   z
@@ -2815,7 +2171,7 @@ type MatchPredicateType = {
   children: MatchPredicateType[]
 }
 
-type OrchestrationGlobalType = {
+type OrchestrationGlobalAllOf0Type = {
   orchestration_path: {
     type?: string
     parent?: { id?: string; type?: string; self?: string }
@@ -2836,62 +2192,508 @@ type OrchestrationGlobalType = {
     updated_by?: { id?: string; type?: string; self?: string }
     version?: string
   }
-} & {
+}
+
+const OrchestrationGlobalAllOf0Schema: z.ZodType<OrchestrationGlobalAllOf0Type> = z
+  .object({
+    orchestration_path: z
+      .object({
+        type: z.string().default('service').exactOptional().openapi({ readOnly: true }),
+        parent: z
+          .object({
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'ID of the object these Orchestration Rules belongs to.',
+                readOnly: true,
+              }),
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'A string that determines the schema of the parent object',
+                readOnly: true,
+              }),
+            self: z
+              .url()
+              .exactOptional()
+              .openapi({
+                description: 'The API show URL at which the parent object is accessible',
+                readOnly: true,
+              }),
+          })
+          .exactOptional()
+          .openapi({ readOnly: true, required: [] }),
+        sets: z
+          .array(
+            z
+              .object({
+                id: z
+                  .string()
+                  .default('start')
+                  .exactOptional()
+                  .openapi({
+                    description:
+                      'The ID of this set of rules. Rules in other sets can route events into this set using the "route_to" properties.',
+                  }),
+                rules: z
+                  .array(
+                    z
+                      .object({
+                        id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: 'ID of the rule', readOnly: true }),
+                        label: z
+                          .string()
+                          .exactOptional()
+                          .openapi({ description: "A description of this rule's purpose." }),
+                        conditions: z
+                          .array(
+                            z
+                              .object({
+                                expression: z
+                                  .string()
+                                  .exactOptional()
+                                  .openapi({
+                                    description: 'A PCL condition string',
+                                    example: "event.summary matches part 'my service error'",
+                                  }),
+                              })
+                              .openapi({ required: [] }),
+                          )
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
+                          }),
+                        actions: z
+                          .looseObject({})
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'When an event matches this rule, these are the actions that will be taken to change the resulting alert and incident.',
+                          }),
+                        disabled: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'Indicates whether the rule is disabled and would therefore not be evaluated.',
+                          }),
+                      })
+                      .openapi({ required: [] }),
+                  )
+                  .exactOptional(),
+              })
+              .openapi({ description: 'A set of rules', required: [] }),
+          )
+          .exactOptional()
+          .openapi({
+            description:
+              'Must contain at least a "start" set, but can contain any number of additional sets that are routed to by other rules to form a directional graph of rules.',
+          }),
+        catch_all: z
+          .object({
+            actions: z
+              .looseObject({})
+              .exactOptional()
+              .openapi({
+                description:
+                  'These are the actions that will be taken to change the resulting alert and incident.',
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description:
+              'When none of the Rules in a set match an event, we apply the catch_all actions to the event.',
+            required: [],
+          }),
+        created_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'The date/time the object was created.', readOnly: true }),
+        created_by: z
+          .object({
+            id: z.string().exactOptional().openapi({ readOnly: true }),
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+                readOnly: true,
+              }),
+            self: z
+              .url()
+              .exactOptional()
+              .openapi({
+                description: 'The API show URL at which the object is accessible',
+                readOnly: true,
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Reference to the user that created the object.',
+            readOnly: true,
+            required: [],
+          }),
+        updated_at: z.iso
+          .datetime({ offset: true })
+          .exactOptional()
+          .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
+        updated_by: z
+          .object({
+            id: z.string().exactOptional().openapi({ readOnly: true }),
+            type: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+                readOnly: true,
+              }),
+            self: z
+              .url()
+              .exactOptional()
+              .openapi({
+                description: 'The API show URL at which the object is accessible',
+                readOnly: true,
+              }),
+          })
+          .exactOptional()
+          .openapi({
+            description: 'Reference to the user that last updated the object.',
+            readOnly: true,
+            required: [],
+          }),
+        version: z
+          .string()
+          .exactOptional()
+          .openapi({ description: 'Version of these Orchestration Rules', readOnly: true }),
+      })
+      .openapi({ required: [] }),
+  })
+  .openapi({ required: ['orchestration_path'] })
+  .openapi('OrchestrationGlobalAllOf0')
+
+const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0Schema = z
+  .object({
+    suppress: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
+      }),
+    suspend: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
+      }),
+    drop_event: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, this event will be dropped. Dropped events will not trigger or resolve an alert or an incident. Dropped events will not be evaluated against router rules.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0')
+
+const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema = z
+  .object({
+    priority: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.',
+        example: 'P53ZZH5',
+      }),
+    escalation_policy: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.",
+        example: 'PQOMK4S',
+      }),
+    annotate: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1')
+
+const OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema = z
+  .object({
+    severity: z
+      .enum(['info', 'error', 'warning', 'critical'])
+      .exactOptional()
+      .openapi({ description: 'Set the severity of the resulting alert.' }),
+    event_action: z
+      .enum(['trigger', 'resolve'])
+      .exactOptional()
+      .openapi({ description: 'Set whether the resulting alert status is trigger or resolve.' }),
+    variables: z
+      .array(
+        z
+          .object({
+            name: z
+              .string()
+              .exactOptional()
+              .openapi({ description: 'The name of the variable', example: 'server_name' }),
+            path: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description: 'Path to a field in an event, in dot-notation.',
+                example: 'event.summary',
+              }),
+            type: z
+              .literal('regex')
+              .exactOptional()
+              .openapi({
+                description:
+                  'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
+              }),
+            value: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
+                example: 'High CPU on (.*) server',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description:
+          'Populate variables from event payloads and use those variables in other event actions.',
+      }),
+    extractions: z
+      .array(
+        z.union([
+          z
+            .object({
+              target: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The PD-CEF field that will be set with the value from the template.',
+                  example: 'event.summary',
+                }),
+              template: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
+                  example: 'High CPU on {{hostname}} server',
+                }),
+            })
+            .openapi({ description: 'Use a template string & variables', required: [] }),
+          z
+            .object({
+              target: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description: 'The PD-CEF field that will be set with the value from the regex.',
+                  example: 'event.custom_details.server',
+                }),
+              regex: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
+                  example: 'High CPU on (.*) server',
+                }),
+              source: z
+                .string()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'The path to the event field where the regex will be applied to extract a value.',
+                  example: 'event.summary',
+                }),
+            })
+            .openapi({ description: 'Use a regex to extract a value', required: [] }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Dynamically extract values to set and modify new and existing PD-CEF fields.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActions')
+
+const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema = z
+  .object({
+    automation_actions: z
+      .array(
+        z
+          .object({
+            name: z.string().exactOptional().openapi({ description: 'The name of the Webhook.' }),
+            url: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  "The API endpoint where PagerDuty's servers will send the webhook request.",
+              }),
+            auto_send: z
+              .boolean()
+              .default(false)
+              .exactOptional()
+              .openapi({
+                description:
+                  "When true, PagerDuty's servers will automatically send this webhook request as soon as the resulting incident or alert is created. When false, your incident responder will be able to manually trigger the Webhook via the PagerDuty website & mobile app.",
+              }),
+            headers: z
+              .array(
+                z
+                  .object({
+                    key: z.string().exactOptional(),
+                    value: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the header value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  "Specify custom key/value pairs that'll be sent with the webhook request as request headers.",
+              }),
+            trigger_types: z
+              .array(z.enum(['alert_triggered', 'alert_suppressed', 'alert_suspended']))
+              .length(1)
+              .superRefine((items, ctx) => {
+                const seen = new Map()
+                for (const [i, val] of items.entries()) {
+                  const key = JSON.stringify(val)
+                  if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                  else seen.set(key, i)
+                }
+              })
+              .exactOptional()
+              .openapi({
+                description:
+                  'The Webhook will be associated (or automatically triggered, if `auto_send` is `true`) with the incident, whenever an alert reaches the specified state\n\nNote: `auto_send` must be `true` for trigger types of `alert_suppressed` and `alert_suspended`\n',
+              }),
+            parameters: z
+              .array(
+                z
+                  .object({
+                    key: z.string().exactOptional(),
+                    value: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              )
+              .exactOptional()
+              .openapi({
+                description:
+                  "Specify custom key/value pairs that'll be included in the webhook request's JSON payload.",
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Create a Webhoook associated with the resulting incident.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3')
+
+const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema = z
+  .object({
+    incident_type: z
+      .string()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
+        example: 'PT10C33',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4')
+
+const OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema = z
+  .object({
+    incident_custom_field_updates: z
+      .array(
+        z
+          .object({
+            id: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.',
+                example: 'PEXCK89',
+              }),
+            value: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
+                example: 'High CPU on server',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({ description: 'Configure custom field updates for the incident.' }),
+  })
+  .openapi({ required: [] })
+  .openapi('OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5')
+
+type OrchestrationGlobalType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
     type?: unknown
     parent?: { id?: unknown; type?: 'event_orchestration_reference' }
     sets?: unknown
     catch_all?: {
-      actions?: { suppress?: boolean; suspend?: number; drop_event?: boolean } & {
-        priority?: string
-        escalation_policy?: string
-        annotate?: string
-      } & {
-        severity?: 'info' | 'error' | 'warning' | 'critical'
-        event_action?: 'trigger' | 'resolve'
-        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
-        extractions?: (
-          | { target?: string; template?: string }
-          | { target?: string; regex?: string; source?: string }
-        )[]
-      } & {
-        automation_actions?: {
-          name?: string
-          url?: string
-          auto_send?: boolean
-          headers?: { key?: string; value?: string }[]
-          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
-          parameters?: { key?: string; value?: string }[]
-        }[]
-      } & { incident_type?: string | null } & {
-        incident_custom_field_updates?: { id?: string; value?: string }[]
-      }
+      actions?: z.infer<
+        typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0Schema
+      > &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema> &
+        z.infer<typeof OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema> &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema> &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema> &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema>
     }
   }
 }
 
-type OrchestrationRouterType = {
-  orchestration_path: {
-    type?: string
-    parent?: { id?: string; type?: string; self?: string }
-    sets?: {
-      id?: string
-      rules?: {
-        id?: string
-        label?: string
-        conditions?: { expression?: string }[]
-        actions?: { [key: string]: unknown }
-        disabled?: boolean
-      }[]
-    }[]
-    catch_all?: { actions?: { [key: string]: unknown } }
-    created_at?: string
-    created_by?: { id?: string; type?: string; self?: string }
-    updated_at?: string
-    updated_by?: { id?: string; type?: string; self?: string }
-    version?: string
-  }
-} & {
+type OrchestrationRouterType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
     type?: unknown
     parent?: { id?: unknown; type?: 'event_orchestration_reference' }
@@ -2900,68 +2702,72 @@ type OrchestrationRouterType = {
   }
 }
 
-type OrchestrationUnroutedType = {
-  orchestration_path: {
-    type?: string
-    parent?: { id?: string; type?: string; self?: string }
-    sets?: {
-      id?: string
-      rules?: {
-        id?: string
-        label?: string
-        conditions?: { expression?: string }[]
-        actions?: { [key: string]: unknown }
-        disabled?: boolean
-      }[]
-    }[]
-    catch_all?: { actions?: { [key: string]: unknown } }
-    created_at?: string
-    created_by?: { id?: string; type?: string; self?: string }
-    updated_at?: string
-    updated_by?: { id?: string; type?: string; self?: string }
-    version?: string
-  }
-} & {
+type OrchestrationUnroutedType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
     type?: unknown
     parent?: { id?: unknown; type?: 'event_orchestration_reference' }
     sets?: unknown
     catch_all?: {
-      actions?: {
-        severity?: 'info' | 'error' | 'warning' | 'critical'
-        event_action?: 'trigger' | 'resolve'
-        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
-        extractions?: (
-          | { target?: string; template?: string }
-          | { target?: string; regex?: string; source?: string }
-        )[]
-      }
+      actions?: z.infer<typeof OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema>
     }
   }
 }
 
-type ServiceOrchestrationType = {
-  orchestration_path: {
-    type?: string
-    parent?: { id?: string; type?: string; self?: string }
-    sets?: {
-      id?: string
-      rules?: {
-        id?: string
-        label?: string
-        conditions?: { expression?: string }[]
-        actions?: { [key: string]: unknown }
-        disabled?: boolean
-      }[]
-    }[]
-    catch_all?: { actions?: { [key: string]: unknown } }
-    created_at?: string
-    created_by?: { id?: string; type?: string; self?: string }
-    updated_at?: string
-    updated_by?: { id?: string; type?: string; self?: string }
-    version?: string
-  }
-} & {
+const ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0Schema = z
+  .object({
+    suppress: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
+      }),
+    suspend: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0')
+
+const ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3Schema = z
+  .object({
+    pagerduty_automation_actions: z
+      .array(
+        z
+          .object({
+            action_id: z.string().exactOptional().openapi({ description: 'Automation Action ID' }),
+            trigger_types: z
+              .array(z.enum(['alert_triggered', 'alert_suppressed', 'alert_suspended']))
+              .length(1)
+              .superRefine((items, ctx) => {
+                const seen = new Map()
+                for (const [i, val] of items.entries()) {
+                  const key = JSON.stringify(val)
+                  if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+                  else seen.set(key, i)
+                }
+              })
+              .exactOptional()
+              .openapi({
+                description:
+                  'The Automation Action will be triggered whenever an alert reaches the specified state',
+              }),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Configure an Automation Action to be run for certain alert states.',
+      }),
+  })
+  .openapi({ required: [] })
+  .openapi('ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3')
+
+type ServiceOrchestrationType = z.infer<typeof OrchestrationGlobalAllOf0Schema> & {
   orchestration_path?: {
     migrated_at?: string
     migrated_by?: { id?: string; type?: string; self?: string }
@@ -2973,35 +2779,17 @@ type ServiceOrchestrationType = {
     parent?: { id?: unknown; type?: 'service_reference' }
     sets?: unknown
     catch_all?: {
-      actions?: { suppress?: boolean; suspend?: number } & {
-        priority?: string
-        escalation_policy?: string
-        annotate?: string
-      } & {
-        severity?: 'info' | 'error' | 'warning' | 'critical'
-        event_action?: 'trigger' | 'resolve'
-        variables?: { name?: string; path?: string; type?: 'regex'; value?: string }[]
-        extractions?: (
-          | { target?: string; template?: string }
-          | { target?: string; regex?: string; source?: string }
-        )[]
-      } & {
-        pagerduty_automation_actions?: {
-          action_id?: string
-          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
-        }[]
-      } & {
-        automation_actions?: {
-          name?: string
-          url?: string
-          auto_send?: boolean
-          headers?: { key?: string; value?: string }[]
-          trigger_types?: ('alert_triggered' | 'alert_suppressed' | 'alert_suspended')[]
-          parameters?: { key?: string; value?: string }[]
-        }[]
-      } & { incident_type?: string | null } & {
-        incident_custom_field_updates?: { id?: string; value?: string }[]
-      }
+      actions?: z.infer<
+        typeof ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0Schema
+      > &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema> &
+        z.infer<typeof OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema> &
+        z.infer<
+          typeof ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3Schema
+        > &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema> &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema> &
+        z.infer<typeof OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema>
     }
   }
 }
@@ -5239,98 +5027,59 @@ const AutomationActionsUserPermissionsSchema = z
   .openapi({ required: ['permissions'] })
   .openapi('AutomationActionsUserPermissions')
 
-const AutomationActionsRunnerSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        runner_type: AutomationActionsRunnerTypeEnumSchema,
-        name: z.string().openapi({ example: 'us-west-2 prod runner' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            example: 'us-west-2 runner provisioned in the production environment by the SRE team',
-          }),
-        last_seen: z.iso.datetime({ offset: true }).exactOptional(),
-        status: AutomationActionsRunnerStatusEnumSchema,
-        creation_time: z.iso.datetime({ offset: true }),
-        runbook_base_uri: AutomationActionsRunbookBaseURISchema.exactOptional(),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The list of teams associated with the Runner' }),
-        privileges: AutomationActionsUserPermissionsSchema.exactOptional(),
-        associated_actions: z
-          .object({
-            actions: z.array(
-              ReferenceSchema.and(
-                z
-                  .object({ type: z.literal('action_reference').exactOptional() })
-                  .openapi({ required: [] }),
-              ),
+const AutomationActionsRunnerSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      runner_type: AutomationActionsRunnerTypeEnumSchema,
+      name: z.string().openapi({ example: 'us-west-2 prod runner' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          example: 'us-west-2 runner provisioned in the production environment by the SRE team',
+        }),
+      last_seen: z.iso.datetime({ offset: true }).exactOptional(),
+      status: AutomationActionsRunnerStatusEnumSchema,
+      creation_time: z.iso.datetime({ offset: true }),
+      runbook_base_uri: AutomationActionsRunbookBaseURISchema.exactOptional(),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The list of teams associated with the Runner' }),
+      privileges: AutomationActionsUserPermissionsSchema.exactOptional(),
+      associated_actions: z
+        .object({
+          actions: z.array(
+            ReferenceSchema.and(
+              z
+                .object({ type: z.literal('action_reference').exactOptional() })
+                .openapi({ required: [] }),
             ),
-          })
-          .openapi({ required: ['actions'] })
-          .and(
-            z
-              .object({
-                more: z
-                  .boolean()
-                  .openapi({ description: 'Indicates whether more actions exist for the Runner.' }),
-              })
-              .openapi({ required: ['more'] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'References to at most 3 actions associated with the Runner. Use appropriate endpoints to retrieve the full list of associated actions.',
-          }),
-        metadata: z.looseObject({}).exactOptional().openapi({ description: 'Additional metadata' }),
-      })
-      .openapi({
-        description:
-          'A remote entity capable of executing work specified by an action. At maximum, an account can have 1000 runners. If runner maximum is exceeded, a 400 response is returned with error message.',
-        required: ['id', 'type', 'name', 'runner_type', 'status', 'creation_time'],
-      }),
-  )
-  .openapi('AutomationActionsRunner')
+          ),
+        })
+        .openapi({ required: ['actions'] })
+        .and(
+          z
+            .object({
+              more: z
+                .boolean()
+                .openapi({ description: 'Indicates whether more actions exist for the Runner.' }),
+            })
+            .openapi({ required: ['more'] }),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'References to at most 3 actions associated with the Runner. Use appropriate endpoints to retrieve the full list of associated actions.',
+        }),
+      metadata: z.looseObject({}).exactOptional().openapi({ description: 'Additional metadata' }),
+    })
+    .openapi({
+      description:
+        'A remote entity capable of executing work specified by an action. At maximum, an account can have 1000 runners. If runner maximum is exceeded, a 400 response is returned with error message.',
+      required: ['id', 'type', 'name', 'runner_type', 'status', 'creation_time'],
+    }),
+).openapi('AutomationActionsRunner')
 
 const AutomationActionsRunnerRunbookBodySchema = z
   .object({
@@ -5467,292 +5216,199 @@ const AutomationActionsScriptActionDataReferenceSchema = z
   .openapi({ required: ['script'] })
   .openapi('AutomationActionsScriptActionDataReference')
 
-const AutomationActionsInvocationSchema = z
+const AutomationActionsAbstractActionAllOf1LastRunByOneOf1Schema = z
   .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
+    id: z.string().openapi({ example: '/5471da24-eecd-42e2-ac38-a32b2d907406/service/P000000' }),
+    type: z.string().openapi({ example: 'event_orchestration_reference' }),
   })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        action_snapshot: z
-          .object({
-            name: z.string().openapi({ example: 'Restart apache' }),
-            action_type: z
-              .enum(['script', 'process_automation'])
-              .openapi({ example: 'process_automation' }),
-          })
-          .openapi({ required: ['action_type', 'name'] })
-          .and(
+  .openapi({ required: ['type', 'id'] })
+  .openapi('AutomationActionsAbstractActionAllOf1LastRunByOneOf1')
+
+const TemplateAllOf1CreatedByOneOf1Schema = ReferenceSchema.and(
+  z.object({ type: z.literal('account_reference').exactOptional() }).openapi({ required: [] }),
+).openapi('TemplateAllOf1CreatedByOneOf1')
+
+const AutomationActionsInvocationSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      action_snapshot: z
+        .object({
+          name: z.string().openapi({ example: 'Restart apache' }),
+          action_type: z
+            .enum(['script', 'process_automation'])
+            .openapi({ example: 'process_automation' }),
+        })
+        .openapi({ required: ['action_type', 'name'] })
+        .and(
+          z
+            .object({
+              action_data_reference: z
+                .xor([
+                  AutomationActionsProcessAutomationJobActionDataReferenceSchema,
+                  AutomationActionsScriptActionDataReferenceSchema,
+                ])
+                .exactOptional(),
+            })
+            .openapi({ required: [] }),
+        ),
+      runner_id: z.string(),
+      timing: z
+        .array(
+          z
+            .object({
+              timestamp: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
+              state: z
+                .enum([
+                  'prepared',
+                  'created',
+                  'sent',
+                  'queued',
+                  'running',
+                  'aborted',
+                  'completed',
+                  'error',
+                  'unknown',
+                ])
+                .openapi({
+                  description:
+                    'prepared -- the invocation exists and can be referenced, but is NOT available to a Runner <br> created -- the invocation exists and is waiting for a Runner <br> sent -- invocation sent to a Runner <br> queued -- invocation queued by a Runner <br> running -- invocation is being ran by a Runner <br> aborted -- invocation was aborted on a Runner <br> completed -- invocation completed on a Runner <br> error -- invocation encountered an error on a Runner unknown -- transient error encountered when fetching invocation state',
+                  example: 'sent',
+                }),
+            })
+            .openapi({ required: ['timestamp', 'state'] }),
+        )
+        .openapi({
+          description:
+            "A list of state transitions with timestamps, sorted in ascending order by timestamp. Only the 'created' transition is guaranteed to exist at any time.",
+        }),
+      duration: z
+        .int()
+        .exactOptional()
+        .openapi({ description: "The duration of the invocation's execution time.", example: 23 }),
+      state: z
+        .enum([
+          'prepared',
+          'created',
+          'sent',
+          'queued',
+          'running',
+          'aborted',
+          'completed',
+          'error',
+          'unknown',
+        ])
+        .openapi({
+          description:
+            'prepared -- the invocation exists and can be referenced, but is NOT available to a Runner <br> created -- the invocation exists and is waiting for a Runner <br> sent -- invocation sent to a Runner <br> queued -- invocation queued by a Runner <br> running -- invocation is being ran by a Runner <br> aborted -- invocation was aborted on a Runner <br> completed -- invocation completed on a Runner <br> error -- invocation encountered an error on a Runner unknown -- transient error encountered when fetching invocation state',
+          example: 'sent',
+        }),
+      action_id: z.string(),
+      metadata: z
+        .object({
+          agent: z.xor([
+            UserReferenceSchema,
+            AutomationActionsAbstractActionAllOf1LastRunByOneOf1Schema,
+            TemplateAllOf1CreatedByOneOf1Schema,
             z
               .object({
-                action_data_reference: z
-                  .xor([
-                    AutomationActionsProcessAutomationJobActionDataReferenceSchema,
-                    AutomationActionsScriptActionDataReferenceSchema,
-                  ])
-                  .exactOptional(),
+                id: z.string().openapi({ example: 'PT4KHRS' }),
+                type: z.string().openapi({ example: 'incident_workflow_reference' }),
               })
-              .openapi({ required: [] }),
-          ),
-        runner_id: z.string(),
-        timing: z
-          .array(
-            z
-              .object({
-                timestamp: z.iso
-                  .datetime({ offset: true })
-                  .openapi({ description: 'The date/time' }),
-                state: z
-                  .enum([
-                    'prepared',
-                    'created',
-                    'sent',
-                    'queued',
-                    'running',
-                    'aborted',
-                    'completed',
-                    'error',
-                    'unknown',
-                  ])
-                  .openapi({
-                    description:
-                      'prepared -- the invocation exists and can be referenced, but is NOT available to a Runner <br> created -- the invocation exists and is waiting for a Runner <br> sent -- invocation sent to a Runner <br> queued -- invocation queued by a Runner <br> running -- invocation is being ran by a Runner <br> aborted -- invocation was aborted on a Runner <br> completed -- invocation completed on a Runner <br> error -- invocation encountered an error on a Runner unknown -- transient error encountered when fetching invocation state',
-                    example: 'sent',
-                  }),
-              })
-              .openapi({ required: ['timestamp', 'state'] }),
-          )
-          .openapi({
-            description:
-              "A list of state transitions with timestamps, sorted in ascending order by timestamp. Only the 'created' transition is guaranteed to exist at any time.",
-          }),
-        duration: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description: "The duration of the invocation's execution time.",
-            example: 23,
-          }),
-        state: z
-          .enum([
-            'prepared',
-            'created',
-            'sent',
-            'queued',
-            'running',
-            'aborted',
-            'completed',
-            'error',
-            'unknown',
-          ])
-          .openapi({
-            description:
-              'prepared -- the invocation exists and can be referenced, but is NOT available to a Runner <br> created -- the invocation exists and is waiting for a Runner <br> sent -- invocation sent to a Runner <br> queued -- invocation queued by a Runner <br> running -- invocation is being ran by a Runner <br> aborted -- invocation was aborted on a Runner <br> completed -- invocation completed on a Runner <br> error -- invocation encountered an error on a Runner unknown -- transient error encountered when fetching invocation state',
-            example: 'sent',
-          }),
-        action_id: z.string(),
-        metadata: z
-          .object({
-            agent: z.xor([
-              UserReferenceSchema,
-              z
-                .object({
-                  id: z
-                    .string()
-                    .openapi({ example: '/5471da24-eecd-42e2-ac38-a32b2d907406/service/P000000' }),
-                  type: z.string().openapi({ example: 'event_orchestration_reference' }),
-                })
-                .openapi({ required: ['type', 'id'] }),
-              ReferenceSchema.and(
-                z
-                  .object({ type: z.literal('account_reference').exactOptional() })
-                  .openapi({ required: [] }),
-              ),
-              z
-                .object({
-                  id: z.string().openapi({ example: 'PT4KHRS' }),
-                  type: z.string().openapi({ example: 'incident_workflow_reference' }),
-                })
-                .openapi({ required: ['type', 'id'] }),
-            ]),
-            incident: IncidentReferenceSchema.exactOptional(),
-          })
-          .openapi({ required: ['agent'] }),
-      })
-      .openapi({
-        required: [
-          'id',
-          'type',
-          'action_snapshot',
-          'runner_id',
-          'timing',
-          'state',
-          'action_id',
-          'metadata',
-        ],
-      }),
-  )
-  .openapi('AutomationActionsInvocation')
+              .openapi({ required: ['type', 'id'] }),
+          ]),
+          incident: IncidentReferenceSchema.exactOptional(),
+        })
+        .openapi({ required: ['agent'] }),
+    })
+    .openapi({
+      required: [
+        'id',
+        'type',
+        'action_snapshot',
+        'runner_id',
+        'timing',
+        'state',
+        'action_id',
+        'metadata',
+      ],
+    }),
+).openapi('AutomationActionsInvocation')
 
 const AutomationActionsActionClassificationEnumSchema = z
   .enum(['diagnostic', 'remediation'])
   .nullable()
   .openapi('AutomationActionsActionClassificationEnum')
 
-const AutomationActionsAbstractActionSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z.string().openapi({ example: 'Restart apache' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ example: 'Restarts apache on the us-west-2-shopping-cart host' }),
-        action_type: z
-          .enum(['script', 'process_automation'])
-          .openapi({ example: 'process_automation' }),
-        action_classification: AutomationActionsActionClassificationEnumSchema.exactOptional(),
-        runner: z.string().max(36).exactOptional(),
-        runner_type: AutomationActionsRunnerTypeEnumSchema.exactOptional(),
-        services: z.array(ServiceReferenceSchema).exactOptional(),
-        privileges: AutomationActionsUserPermissionsSchema.exactOptional(),
-        metadata: z.looseObject({}).exactOptional(),
-        creation_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
-        modify_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
-        last_run: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time' }),
-        last_run_by: z
-          .xor([
-            UserReferenceSchema,
-            z
-              .object({
-                id: z
-                  .string()
-                  .openapi({ example: '/5471da24-eecd-42e2-ac38-a32b2d907406/service/P000000' }),
-                type: z.string().openapi({ example: 'event_orchestration_reference' }),
-              })
-              .openapi({ required: ['type', 'id'] }),
-            ReferenceSchema.and(
-              z
-                .object({ type: z.literal('account_reference').exactOptional() })
-                .openapi({ required: [] }),
-            ),
-          ])
-          .exactOptional(),
-        only_invocable_on_unresolved_incidents: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description: 'If true, the action can only be invoked against an unresolved incident.',
-            example: false,
-          }),
-        allow_invocation_manually: z
-          .boolean()
-          .default(true)
-          .exactOptional()
-          .openapi({
-            description: 'If true, the action can only be invoked manually by a user.',
-            example: true,
-          }),
-        allow_invocation_from_event_orchestration: z
-          .boolean()
-          .default(true)
-          .exactOptional()
-          .openapi({
-            description:
-              'If true, the action can only be invoked automatically by an Event Orchestration.',
-            example: true,
-          }),
-        map_to_all_services: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            description: 'If true, the action will be associated with every service.',
-            example: false,
-          }),
-      })
-      .openapi({
-        description:
-          'A unit of work to be executed on runner. At most, an account can have 10,000 actions. If action maximum is exceeded, a 400 reponse is returned with error message.',
-        required: ['id', 'type', 'action_type', 'name', 'creation_time', 'modify_time'],
-      }),
-  )
-  .openapi('AutomationActionsAbstractAction')
+const AutomationActionsAbstractActionSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z.string().openapi({ example: 'Restart apache' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ example: 'Restarts apache on the us-west-2-shopping-cart host' }),
+      action_type: z
+        .enum(['script', 'process_automation'])
+        .openapi({ example: 'process_automation' }),
+      action_classification: AutomationActionsActionClassificationEnumSchema.exactOptional(),
+      runner: z.string().max(36).exactOptional(),
+      runner_type: AutomationActionsRunnerTypeEnumSchema.exactOptional(),
+      services: z.array(ServiceReferenceSchema).exactOptional(),
+      privileges: AutomationActionsUserPermissionsSchema.exactOptional(),
+      metadata: z.looseObject({}).exactOptional(),
+      creation_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
+      modify_time: z.iso.datetime({ offset: true }).openapi({ description: 'The date/time' }),
+      last_run: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The date/time' }),
+      last_run_by: z
+        .xor([
+          UserReferenceSchema,
+          AutomationActionsAbstractActionAllOf1LastRunByOneOf1Schema,
+          TemplateAllOf1CreatedByOneOf1Schema,
+        ])
+        .exactOptional(),
+      only_invocable_on_unresolved_incidents: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          description: 'If true, the action can only be invoked against an unresolved incident.',
+          example: false,
+        }),
+      allow_invocation_manually: z
+        .boolean()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          description: 'If true, the action can only be invoked manually by a user.',
+          example: true,
+        }),
+      allow_invocation_from_event_orchestration: z
+        .boolean()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          description:
+            'If true, the action can only be invoked automatically by an Event Orchestration.',
+          example: true,
+        }),
+      map_to_all_services: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          description: 'If true, the action will be associated with every service.',
+          example: false,
+        }),
+    })
+    .openapi({
+      description:
+        'A unit of work to be executed on runner. At most, an account can have 10,000 actions. If action maximum is exceeded, a 400 reponse is returned with error message.',
+      required: ['id', 'type', 'action_type', 'name', 'creation_time', 'modify_time'],
+    }),
+).openapi('AutomationActionsAbstractAction')
 
 const AutomationActionsAbstractActionPostBodySchema = z
   .object({
@@ -5958,128 +5614,7 @@ const ContentBasedIntelligentAlertGroupingConfigurationSchema = z
   })
   .openapi('ContentBasedIntelligentAlertGroupingConfiguration')
 
-const EventRuleActionsCommonSchema = z
-  .object({
-    annotate: z
-      .object({ value: z.string().openapi({ description: 'The content of the note.' }) })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Set a note on the resulting incident.', required: ['value'] }),
-    event_action: z
-      .object({ value: z.enum(['trigger', 'resolve']) })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'Set whether the resulting alert status is trigger or resolve.',
-        required: ['value'],
-      }),
-    extractions: z
-      .array(
-        z.xor([
-          z
-            .object({
-              target: z
-                .string()
-                .openapi({
-                  description: 'The PD-CEF field that will be set with the value from the regex.',
-                }),
-              source: z
-                .string()
-                .openapi({
-                  description:
-                    'The path to the event field where the regex will be applied to extract a value.',
-                }),
-              regex: z
-                .string()
-                .openapi({
-                  description:
-                    'A RE2 regular expression.  If it contains one or more capture groups, their values will be extracted and appended together.  If it contains no capture groups, the whole match is used.',
-                }),
-            })
-            .openapi({ required: ['target', 'source', 'regex'] }),
-          z
-            .object({
-              target: z
-                .string()
-                .openapi({
-                  description: 'The PD-CEF field that will be set with the value from the regex.',
-                }),
-              template: z
-                .string()
-                .openapi({
-                  description:
-                    'A value that will be used to populate the target PD-CEF field.  You can include variables extracted from the payload by using string interpolation.',
-                  example: 'Error number {{count}} on host {{host}}',
-                }),
-            })
-            .openapi({ required: ['target', 'template'] }),
-        ]),
-      )
-      .exactOptional()
-      .openapi({
-        description: 'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-      }),
-    priority: z
-      .object({ value: z.string().openapi({ description: 'The priority ID.' }) })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the priority ID for the resulting incident. You can find the priority you want by calling the priorities endpoint.',
-        required: ['value'],
-      }),
-    severity: z
-      .object({ value: z.enum(['info', 'warning', 'error', 'critical']) })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'Set the severity of the resulting alert.', required: ['value'] }),
-    suppress: z
-      .object({
-        value: z.boolean(),
-        threshold_value: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'The number of occurences needed during the window of time to trigger the theshold.',
-          }),
-        threshold_time_unit: z
-          .enum(['seconds', 'minutes', 'hours'])
-          .exactOptional()
-          .openapi({ description: 'The time unit for the window of time.' }),
-        threshold_time_amount: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The amount of time units for the window of time.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Set whether the resulting alert is suppressed. Can optionally be used with a threshold where resulting alerts will be suppressed until the threshold is met in a window of time. If using a threshold the rule must also set a route action.',
-        required: ['value'],
-      }),
-    suspend: z
-      .object({
-        value: z
-          .int()
-          .openapi({ description: 'The amount of time to suspend the alert in seconds.' }),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description:
-          'Set the length of time to suspend the resulting alert before triggering. Rules with a suspend action must also set a route action, and cannot have a suppress with threshold action',
-        required: ['value'],
-      }),
-  })
-  .openapi({
-    description:
-      'When an event matches this Event Rule, the actions that will be taken to change the resulting Alert and Incident.',
-    required: [],
-  })
-  .openapi('EventRuleActionsCommon')
-
-const ServiceEventRuleSchema = z
+const EventRuleAllOf0Schema = z
   .object({
     id: z
       .string()
@@ -6224,21 +5759,143 @@ const ServiceEventRuleSchema = z
       }),
   })
   .openapi({ required: [] })
-  .and(
-    z
+  .openapi('EventRuleAllOf0')
+
+const EventRuleActionsCommonSchema = z
+  .object({
+    annotate: z
+      .object({ value: z.string().openapi({ description: 'The content of the note.' }) })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Set a note on the resulting incident.', required: ['value'] }),
+    event_action: z
+      .object({ value: z.enum(['trigger', 'resolve']) })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description: 'Set whether the resulting alert status is trigger or resolve.',
+        required: ['value'],
+      }),
+    extractions: z
+      .array(
+        z.xor([
+          z
+            .object({
+              target: z
+                .string()
+                .openapi({
+                  description: 'The PD-CEF field that will be set with the value from the regex.',
+                }),
+              source: z
+                .string()
+                .openapi({
+                  description:
+                    'The path to the event field where the regex will be applied to extract a value.',
+                }),
+              regex: z
+                .string()
+                .openapi({
+                  description:
+                    'A RE2 regular expression.  If it contains one or more capture groups, their values will be extracted and appended together.  If it contains no capture groups, the whole match is used.',
+                }),
+            })
+            .openapi({ required: ['target', 'source', 'regex'] }),
+          z
+            .object({
+              target: z
+                .string()
+                .openapi({
+                  description: 'The PD-CEF field that will be set with the value from the regex.',
+                }),
+              template: z
+                .string()
+                .openapi({
+                  description:
+                    'A value that will be used to populate the target PD-CEF field.  You can include variables extracted from the payload by using string interpolation.',
+                  example: 'Error number {{count}} on host {{host}}',
+                }),
+            })
+            .openapi({ required: ['target', 'template'] }),
+        ]),
+      )
+      .exactOptional()
+      .openapi({
+        description: 'Dynamically extract values to set and modify new and existing PD-CEF fields.',
+      }),
+    priority: z
+      .object({ value: z.string().openapi({ description: 'The priority ID.' }) })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the priority ID for the resulting incident. You can find the priority you want by calling the priorities endpoint.',
+        required: ['value'],
+      }),
+    severity: z
+      .object({ value: z.enum(['info', 'warning', 'error', 'critical']) })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'Set the severity of the resulting alert.', required: ['value'] }),
+    suppress: z
       .object({
-        position: z
+        value: z.boolean(),
+        threshold_value: z
           .int()
           .exactOptional()
           .openapi({
             description:
-              'Position/index of the Event Rule on the Service.  Starting from position 0 (the first rule), rules are evaluated one-by-one until a matching Event Rule is found or the end of the list is reached.',
+              'The number of occurences needed during the window of time to trigger the theshold.',
           }),
-        actions: EventRuleActionsCommonSchema.exactOptional(),
+        threshold_time_unit: z
+          .enum(['seconds', 'minutes', 'hours'])
+          .exactOptional()
+          .openapi({ description: 'The time unit for the window of time.' }),
+        threshold_time_amount: z
+          .int()
+          .exactOptional()
+          .openapi({ description: 'The amount of time units for the window of time.' }),
       })
-      .openapi({ required: [] }),
-  )
-  .openapi('ServiceEventRule')
+      .exactOptional()
+      .openapi({
+        description:
+          'Set whether the resulting alert is suppressed. Can optionally be used with a threshold where resulting alerts will be suppressed until the threshold is met in a window of time. If using a threshold the rule must also set a route action.',
+        required: ['value'],
+      }),
+    suspend: z
+      .object({
+        value: z
+          .int()
+          .openapi({ description: 'The amount of time to suspend the alert in seconds.' }),
+      })
+      .nullable()
+      .exactOptional()
+      .openapi({
+        description:
+          'Set the length of time to suspend the resulting alert before triggering. Rules with a suspend action must also set a route action, and cannot have a suppress with threshold action',
+        required: ['value'],
+      }),
+  })
+  .openapi({
+    description:
+      'When an event matches this Event Rule, the actions that will be taken to change the resulting Alert and Incident.',
+    required: [],
+  })
+  .openapi('EventRuleActionsCommon')
+
+const ServiceEventRuleSchema = EventRuleAllOf0Schema.and(
+  z
+    .object({
+      position: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'Position/index of the Event Rule on the Service.  Starting from position 0 (the first rule), rules are evaluated one-by-one until a matching Event Rule is found or the end of the list is reached.',
+        }),
+      actions: EventRuleActionsCommonSchema.exactOptional(),
+    })
+    .openapi({ required: [] }),
+).openapi('ServiceEventRule')
 
 const EventEnrichmentSchema = z
   .object({
@@ -6545,193 +6202,47 @@ const EventEnrichmentsSchema = z
   .openapi({ required: [] })
   .openapi('EventEnrichments')
 
-const EventRuleSchema = z
-  .object({
-    id: z
-      .string()
-      .exactOptional()
-      .openapi({ readOnly: true, description: 'ID of the Event Rule.' }),
-    self: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: 'the API show URL at which the object is accessible.',
-        readOnly: true,
-      }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Event Rule is disabled and would therefore not be evaluated.',
-      }),
-    conditions: z
-      .object({
-        operator: z
-          .enum(['and', 'or'])
-          .openapi({ description: 'Operator to combine sub-conditions.' }),
-        subconditions: z
-          .array(
-            z
-              .object({
-                operator: z
-                  .enum([
-                    'exists',
-                    'nexists',
-                    'equals',
-                    'nequals',
-                    'contains',
-                    'ncontains',
-                    'matches',
-                    'nmatches',
-                  ])
-                  .openapi({ description: 'The type of operator to apply.' }),
-                parameters: z
-                  .object({
-                    path: z
-                      .string()
-                      .openapi({
-                        description:
-                          'Path to a field in an event, in dot-notation.  For Event Rules on a serivce, this will have to be a PD-CEF field.',
-                      }),
-                    value: z.string().openapi({ description: 'Value to apply to the operator.' }),
-                    options: z
-                      .looseObject({})
-                      .exactOptional()
-                      .openapi({ description: 'Options to configure the operator.' }),
-                  })
-                  .openapi({ required: ['value', 'path'] }),
-              })
-              .openapi({ required: ['operator', 'parameters'] }),
-          )
-          .openapi({ description: 'Array of sub-conditions.' }),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'Conditions evaluated to check if an event matches this Event Rule. Is always empty for the catch_all rule, though.',
-        required: ['operator', 'subconditions'],
-      }),
-    time_frame: z
-      .object({
-        active_between: z
-          .object({
-            start_time: z.int().openapi({ description: 'The start time in milliseconds.' }),
-            end_time: z.int().openapi({ description: 'End time in milliseconds.' }),
-          })
-          .exactOptional()
-          .openapi({
-            required: ['start_time', 'end_time'],
-            description: 'A fixed window of time during which the rule is active.',
-          }),
-        scheduled_weekly: z
-          .object({
-            start_time: z
-              .int()
-              .openapi({
-                description: 'The amount of milliseconds into the day at which the window starts.',
-              }),
-            duration: z
-              .int()
-              .openapi({ description: 'The duration of the window in milliseconds.' }),
-            timezone: z.string().openapi({ description: 'The timezone.' }),
-            weekdays: z
-              .array(z.int())
-              .openapi({
-                description: 'An array of day values. Ex [1, 3, 5] is Monday, Wednesday, Friday.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            required: ['start_time', 'duration', 'timezone', 'weekdays'],
-            description:
-              'A reccuring window of time based on the day of the week, during which the rule is active.',
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Time-based conditions for limiting when the rule is active.',
-        required: [],
-      }),
-    variables: z
-      .array(
+const EventRuleSchema = EventRuleAllOf0Schema.and(
+  z
+    .object({
+      position: z
+        .int()
+        .exactOptional()
+        .openapi({
+          description:
+            'Position/index of the Event Rule in the Ruleset.  Starting from position 0 (the first rule), rules are evaluated one-by-one until a matching rule is found.',
+        }),
+      catch_all: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'Indicates whether the Event Rule is the last Event Rule of the Ruleset that serves as a catch-all. It has limited functionality compared to other rules and always matches.',
+        }),
+      actions: EventRuleActionsCommonSchema.and(
         z
           .object({
-            type: z
-              .literal('regex')
-              .openapi({ description: 'The type of operation to populate the variable.' }),
-            name: z.string().openapi({ description: 'The name of the variable.' }),
-            parameters: z
-              .object({
-                value: z
-                  .string()
-                  .openapi({
-                    description:
-                      'The value for the operation. For example, an RE2 regular expression for regex-type variables.',
-                  }),
-                path: z
-                  .string()
-                  .openapi({
-                    description:
-                      'Path to a field in an event, in dot-notation. For Event Rules on a Service, this will have to be a PD-CEF field.',
-                  }),
-              })
+            route: z
+              .object({ value: z.string().openapi({ description: "The target service's ID." }) })
+              .nullable()
+              .exactOptional()
               .openapi({
-                description: 'The parameters for performing the operation to populate the',
-                required: ['value', 'path'],
+                description:
+                  'Set the service ID of the target service for the resulting alert. You can find the service you want to route to by calling the services endpoint.',
+                required: ['value'],
               }),
           })
-          .openapi({ required: ['type', 'name', 'parameters'] }),
+          .openapi({ required: [] }),
       )
-      .exactOptional()
-      .openapi({
-        description:
-          '[Early Access] Populate variables from event payloads and use those variables in other event actions.',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        position: z
-          .int()
-          .exactOptional()
-          .openapi({
-            description:
-              'Position/index of the Event Rule in the Ruleset.  Starting from position 0 (the first rule), rules are evaluated one-by-one until a matching rule is found.',
-          }),
-        catch_all: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Indicates whether the Event Rule is the last Event Rule of the Ruleset that serves as a catch-all. It has limited functionality compared to other rules and always matches.',
-          }),
-        actions: EventRuleActionsCommonSchema.and(
-          z
-            .object({
-              route: z
-                .object({ value: z.string().openapi({ description: "The target service's ID." }) })
-                .nullable()
-                .exactOptional()
-                .openapi({
-                  description:
-                    'Set the service ID of the target service for the resulting alert. You can find the service you want to route to by calling the services endpoint.',
-                  required: ['value'],
-                }),
-            })
-            .openapi({ required: [] }),
-        )
-          .exactOptional()
-          .openapi({
-            description:
-              'When an event matches this rule, the actions that will be taken to change the resulting alert and incident.',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('EventRule')
+        .exactOptional()
+        .openapi({
+          description:
+            'When an event matches this rule, the actions that will be taken to change the resulting alert and incident.',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('EventRule')
 
 const RecommendedRuleSchema = z
   .object({
@@ -7014,165 +6525,87 @@ const RulesetSchema = z
   })
   .openapi('Ruleset')
 
-const AddonSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .enum(['full_page_addon', 'incident_show_addon'])
-          .openapi({ description: 'The type of Add-on.' }),
-        name: z.string().max(100).openapi({ description: 'The name of the Add-on.' }),
-        src: z
-          .url()
-          .openapi({
-            description:
-              'The source URL to display in a frame in the PagerDuty UI. HTTPS is required.',
-          }),
-      })
-      .openapi({
-        required: ['type', 'name', 'src'],
-        example: {
-          type: 'full_page_addon',
-          name: 'Internal Status Page',
-          src: 'https://intranet.example.com/status',
-        },
-      }),
-  )
-  .openapi('Addon')
+const AddonSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .enum(['full_page_addon', 'incident_show_addon'])
+        .openapi({ description: 'The type of Add-on.' }),
+      name: z.string().max(100).openapi({ description: 'The name of the Add-on.' }),
+      src: z
+        .url()
+        .openapi({
+          description:
+            'The source URL to display in a frame in the PagerDuty UI. HTTPS is required.',
+        }),
+    })
+    .openapi({
+      required: ['type', 'name', 'src'],
+      example: {
+        type: 'full_page_addon',
+        name: 'Internal Status Page',
+        src: 'https://intranet.example.com/status',
+      },
+    }),
+).openapi('Addon')
 
-const BusinessServiceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name of the business service.' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The user-provided description of the business service.' }),
-        point_of_contact: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The point of contact assigned to this service.' }),
-        team: z
-          .object({
-            id: z.string(),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A string that determines the schema of the object.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible.',
-                readOnly: true,
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            title: 'Team',
-            description: 'Reference to the team that owns the business service.',
-            required: ['id'],
-          }),
-      })
-      .openapi({
-        example: {
-          id: 'P3X2XX3',
-          type: 'business_service',
-          name: 'Self-serve mobile checkout',
-          description: 'Checkout service for our mobile clients',
-          point_of_contact: 'PagerDuty Admin',
-          team: {
-            type: 'team_reference',
-            self: 'https://api.pagerduty.com/teams/P3ZQXDF',
-            id: 'P3ZQXDF',
-          },
+const BusinessServiceSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The name of the business service.' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The user-provided description of the business service.' }),
+      point_of_contact: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The point of contact assigned to this service.' }),
+      team: z
+        .object({
+          id: z.string(),
+          type: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A string that determines the schema of the object.',
+              readOnly: true,
+            }),
+          self: z
+            .url()
+            .exactOptional()
+            .openapi({
+              description: 'The API show URL at which the object is accessible.',
+              readOnly: true,
+            }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          title: 'Team',
+          description: 'Reference to the team that owns the business service.',
+          required: ['id'],
+        }),
+    })
+    .openapi({
+      example: {
+        id: 'P3X2XX3',
+        type: 'business_service',
+        name: 'Self-serve mobile checkout',
+        description: 'Checkout service for our mobile clients',
+        point_of_contact: 'PagerDuty Admin',
+        team: {
+          type: 'team_reference',
+          self: 'https://api.pagerduty.com/teams/P3ZQXDF',
+          id: 'P3ZQXDF',
         },
-        required: [],
-      }),
-  )
-  .openapi('BusinessService')
+      },
+      required: [],
+    }),
+).openapi('BusinessService')
 
 const BusinessServiceReferenceSchema = ReferenceSchema.and(
   z
@@ -7180,187 +6613,107 @@ const BusinessServiceReferenceSchema = ReferenceSchema.and(
     .openapi({ required: [] }),
 ).openapi('BusinessServiceReference')
 
-const ChangeEventSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        timestamp: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The time at which the emitting tool detected or generated the event.',
-          }),
-        type: z
-          .literal('change_event')
-          .default('change_event')
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The type of object being created.' }),
-        services: z
-          .array(ServiceReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'An array containing Service objects that this change event is associated with.',
-          }),
-        integration: IntegrationReferenceSchema.exactOptional().openapi({ readOnly: true }),
-        routing_key: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            title: 'Routing Key',
-            description:
-              'This is the 32 character Integration Key for an Integration on a Service. The same Integration Key can be used for both alert and change events.',
-          }),
-        summary: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A brief text summary of the event. Displayed in PagerDuty to provide information about the change. The maximum permitted length of this property is 1024 characters.',
-          }),
-        source: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The unique name of the location where the Change Event occurred.',
-          }),
-        links: z
-          .array(
-            z
-              .object({ href: z.string().exactOptional(), text: z.string().exactOptional() })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'List of links to include.' }),
-        images: z
-          .array(
-            z
-              .object({
-                src: z.string().exactOptional(),
-                href: z.string().exactOptional(),
-                alt: z.string().exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ readOnly: true }),
-        custom_details: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description: 'Additional details about the change event.',
-            title: 'Custom Details',
-          }),
-      })
-      .openapi({
-        example: {
-          summary: 'Build Success - Increase snapshot create timeout to 30 seconds',
-          timestamp: '2020-07-17T08:42:58Z',
-          type: 'change_event',
-          source: 'acme-build-pipeline-tool-default-i-9999',
-          integration: { id: 'PEYSGVF', type: 'inbound_integration_reference' },
-          services: [{ id: 'PEYSGRV', type: 'service_reference' }],
-          custom_details: { build_state: 'passed', build_number: '2', run_time: '1236s' },
-          links: [
-            { href: 'https://acme.pagerduty.dev/build/2', text: 'View more details in Acme!' },
-          ],
-        },
-        required: [],
-      }),
-  )
-  .openapi('ChangeEvent')
+const ChangeEventSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      timestamp: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'The time at which the emitting tool detected or generated the event.',
+        }),
+      type: z
+        .literal('change_event')
+        .default('change_event')
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The type of object being created.' }),
+      services: z
+        .array(ServiceReferenceSchema)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'An array containing Service objects that this change event is associated with.',
+        }),
+      integration: IntegrationReferenceSchema.exactOptional().openapi({ readOnly: true }),
+      routing_key: z
+        .string()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          title: 'Routing Key',
+          description:
+            'This is the 32 character Integration Key for an Integration on a Service. The same Integration Key can be used for both alert and change events.',
+        }),
+      summary: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A brief text summary of the event. Displayed in PagerDuty to provide information about the change. The maximum permitted length of this property is 1024 characters.',
+        }),
+      source: z
+        .string()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'The unique name of the location where the Change Event occurred.',
+        }),
+      links: z
+        .array(
+          z
+            .object({ href: z.string().exactOptional(), text: z.string().exactOptional() })
+            .openapi({ required: [] }),
+        )
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'List of links to include.' }),
+      images: z
+        .array(
+          z
+            .object({
+              src: z.string().exactOptional(),
+              href: z.string().exactOptional(),
+              alt: z.string().exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional()
+        .openapi({ readOnly: true }),
+      custom_details: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({
+          description: 'Additional details about the change event.',
+          title: 'Custom Details',
+        }),
+    })
+    .openapi({
+      example: {
+        summary: 'Build Success - Increase snapshot create timeout to 30 seconds',
+        timestamp: '2020-07-17T08:42:58Z',
+        type: 'change_event',
+        source: 'acme-build-pipeline-tool-default-i-9999',
+        integration: { id: 'PEYSGVF', type: 'inbound_integration_reference' },
+        services: [{ id: 'PEYSGRV', type: 'service_reference' }],
+        custom_details: { build_state: 'passed', build_number: '2', run_time: '1236s' },
+        links: [{ href: 'https://acme.pagerduty.dev/build/2', text: 'View more details in Acme!' }],
+      },
+      required: [],
+    }),
+).openapi('ChangeEvent')
 
-const TagSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('tag')
-          .default('tag')
-          .openapi({ description: 'The type of object being created.' }),
-        label: z.string().max(191).openapi({ description: 'The label of the tag.' }),
-      })
-      .openapi({ required: ['label', 'type'], example: { type: 'tag', label: 'Batman' } }),
-  )
-  .openapi('Tag')
+const TagSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('tag')
+        .default('tag')
+        .openapi({ description: 'The type of object being created.' }),
+      label: z.string().max(191).openapi({ description: 'The label of the tag.' }),
+    })
+    .openapi({ required: ['label', 'type'], example: { type: 'tag', label: 'Batman' } }),
+).openapi('Tag')
 
 const TagReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('tag_reference').exactOptional() }).openapi({ required: [] }),
@@ -7407,7 +6760,7 @@ const IncidentAddonSchema = AddonSchema.and(
   })
   .openapi('IncidentAddon')
 
-const LicenseWithCountsSchema = z
+const LicenseWithCountsAllOf0Schema = z
   .object({
     id: z.string().openapi({ description: 'Uniquely identifies the resource' }),
     description: z
@@ -7433,25 +6786,26 @@ const LicenseWithCountsSchema = z
     summary: z.string().exactOptional().openapi({ description: 'Summary of the License' }),
   })
   .openapi({ required: ['id', 'description', 'name', 'valid_roles'] })
-  .and(
-    z
-      .object({
-        current_value: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'How many of these Licenses are currently allocated to Users' }),
-        allocations_available: z
-          .int()
-          .nullable()
-          .exactOptional()
-          .openapi({
-            description:
-              'How many of these licenses are available to be allocated to a user. If this\nvalue is "null" then there is no limit on the number of allocations allowed.\n',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('LicenseWithCounts')
+  .openapi('LicenseWithCountsAllOf0')
+
+const LicenseWithCountsSchema = LicenseWithCountsAllOf0Schema.and(
+  z
+    .object({
+      current_value: z
+        .int()
+        .exactOptional()
+        .openapi({ description: 'How many of these Licenses are currently allocated to Users' }),
+      allocations_available: z
+        .int()
+        .nullable()
+        .exactOptional()
+        .openapi({
+          description:
+            'How many of these licenses are available to be allocated to a user. If this\nvalue is "null" then there is no limit on the number of allocations allowed.\n',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('LicenseWithCounts')
 
 const LicenseReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('license_reference').exactOptional() }).openapi({ required: [] }),
@@ -7590,141 +6944,63 @@ const UserOAuthDelegationsSchema = z
   .openapi({ required: ['oauth_delegations', 'limit', 'more'] })
   .openapi('UserOAuthDelegations')
 
-const NotificationRuleSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('assignment_notification_rule')
-          .default('assignment_notification_rule')
-          .openapi({ description: 'The type of object being created.' }),
-        start_delay_in_minutes: z
-          .int()
-          .min(0)
-          .openapi({ description: 'The delay before firing the rule, in minutes.' }),
-        contact_method: ContactMethodReferenceSchema,
-        urgency: z
-          .enum(['high', 'low'])
-          .openapi({
-            description:
-              'Which incident urgency this rule is used for. Account must have the `urgencies` ability to have a low urgency notification rule.',
-          }),
-      })
-      .openapi({
-        description: 'A rule for contacting the user.',
-        required: ['start_delay_in_minutes', 'urgency', 'contact_method', 'type'],
-        example: {
-          type: 'assignment_notification_rule',
-          start_delay_in_minutes: 0,
-          contact_method: { id: 'PXPGF42', type: 'email_contact_method_reference' },
-          urgency: 'high',
-        },
-      }),
-  )
-  .openapi('NotificationRule')
+const NotificationRuleSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('assignment_notification_rule')
+        .default('assignment_notification_rule')
+        .openapi({ description: 'The type of object being created.' }),
+      start_delay_in_minutes: z
+        .int()
+        .min(0)
+        .openapi({ description: 'The delay before firing the rule, in minutes.' }),
+      contact_method: ContactMethodReferenceSchema,
+      urgency: z
+        .enum(['high', 'low'])
+        .openapi({
+          description:
+            'Which incident urgency this rule is used for. Account must have the `urgencies` ability to have a low urgency notification rule.',
+        }),
+    })
+    .openapi({
+      description: 'A rule for contacting the user.',
+      required: ['start_delay_in_minutes', 'urgency', 'contact_method', 'type'],
+      example: {
+        type: 'assignment_notification_rule',
+        start_delay_in_minutes: 0,
+        contact_method: { id: 'PXPGF42', type: 'email_contact_method_reference' },
+        urgency: 'high',
+      },
+    }),
+).openapi('NotificationRule')
 
-const ContactMethodSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .enum([
-            'email_contact_method',
-            'phone_contact_method',
-            'push_notification_contact_method',
-            'sms_contact_method',
-            'whatsapp_contact_method',
-          ])
-          .openapi({ description: 'The type of contact method being created.' }),
-        label: z.string().openapi({ description: 'The label (e.g., "Work", "Mobile", etc.).' }),
-        address: z
-          .string()
-          .openapi({
-            description:
-              'The "address" to deliver to: email, phone number, etc., depending on the type.',
-          }),
-      })
-      .openapi({
-        description: 'The method to contact a user.',
-        discriminator: { propertyName: 'type' },
-        required: ['type', 'label', 'address'],
-      }),
-  )
-  .openapi('ContactMethod')
+const ContactMethodSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'email_contact_method',
+          'phone_contact_method',
+          'push_notification_contact_method',
+          'sms_contact_method',
+          'whatsapp_contact_method',
+        ])
+        .openapi({ description: 'The type of contact method being created.' }),
+      label: z.string().openapi({ description: 'The label (e.g., "Work", "Mobile", etc.).' }),
+      address: z
+        .string()
+        .openapi({
+          description:
+            'The "address" to deliver to: email, phone number, etc., depending on the type.',
+        }),
+    })
+    .openapi({
+      description: 'The method to contact a user.',
+      discriminator: { propertyName: 'type' },
+      required: ['type', 'label', 'address'],
+    }),
+).openapi('ContactMethod')
 
 const EmailContactMethodSchema = ContactMethodSchema.and(
   z
@@ -8526,13 +7802,148 @@ const IncidentTypeSchema = z
   .openapi({ required: [] })
   .openapi('IncidentType')
 
-const IncidentTypeCustomFieldWithOptionsSchema = z
+const CustomFieldsFieldValueNameSchema = z
+  .string()
+  .max(50)
+  .openapi({
+    title: 'Field Name',
+    description:
+      'The name of the field. May include ASCII characters, specifically lowercase letters, digits, and underescores. The `name` for a Field must be unique and cannot be changed once created.',
+  })
+  .openapi('CustomFieldsFieldValueName')
+
+const CustomFieldsFieldValueDescriptionSchema = z
+  .string()
+  .max(1000)
+  .nullable()
+  .openapi({ description: 'A description of the data this field contains.' })
+  .openapi('CustomFieldsFieldValueDescription')
+
+const CustomFieldsFieldValueFieldTypeSchema = z
+  .enum(['single_value', 'single_value_fixed', 'multi_value', 'multi_value_fixed'])
+  .openapi({
+    description: 'The type of data this field contains. In combination with the `data_type` field.',
+  })
+  .openapi('CustomFieldsFieldValueFieldType')
+
+const CustomFieldsFieldValueDataTypeSchema = z
+  .enum(['boolean', 'integer', 'float', 'string', 'datetime', 'url'])
+  .openapi({ description: 'The kind of data the custom field is allowed to contain.' })
+  .openapi('CustomFieldsFieldValueDataType')
+
+const CustomFieldsFieldValueDisplayNameSchema = z
+  .string()
+  .max(50)
+  .openapi({
+    description: 'The human-readable name of the field. This must be unique across an account.',
+  })
+  .openapi('CustomFieldsFieldValueDisplayName')
+
+const CustomFieldsFieldValueValueOneOf0Schema = z
+  .object({ value: z.boolean().nullable().exactOptional() })
+  .openapi({ title: 'Boolean', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf0')
+
+const CustomFieldsFieldValueValueOneOf2Schema = z
+  .object({ value: z.int().nullable().exactOptional() })
+  .openapi({ title: 'Integer', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf2')
+
+const CustomFieldsFieldValueValueOneOf1Schema = z
+  .object({ value: z.number().nullable().exactOptional() })
+  .openapi({ title: 'Float', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf1')
+
+const CustomFieldsFieldValueValueOneOf3Schema = z
+  .object({
+    value: z
+      .xor([
+        z.string().max(200).nullable(),
+        z
+          .array(z.string().max(200))
+          .max(10)
+          .superRefine((items, ctx) => {
+            const seen = new Map()
+            for (const [i, val] of items.entries()) {
+              const key = JSON.stringify(val)
+              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+              else seen.set(key, i)
+            }
+          })
+          .nullable(),
+      ])
+      .exactOptional(),
+  })
+  .openapi({ title: 'String', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf3')
+
+const CustomFieldsFieldValueValueOneOf4Schema = z
+  .object({ value: z.iso.datetime({ offset: true }).nullable().exactOptional() })
+  .openapi({ title: 'Datetime', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf4')
+
+const CustomFieldsFieldValueValueOneOf5Schema = z
+  .object({ value: z.url().max(200).nullable().exactOptional() })
+  .openapi({ title: 'Url', required: [] })
+  .openapi('CustomFieldsFieldValueValueOneOf5')
+
+const IncidentTypeCustomFieldsDefaultValueSchema = z
+  .xor([
+    CustomFieldsFieldValueValueOneOf0Schema,
+    CustomFieldsFieldValueValueOneOf2Schema,
+    CustomFieldsFieldValueValueOneOf1Schema,
+    CustomFieldsFieldValueValueOneOf3Schema,
+    CustomFieldsFieldValueValueOneOf4Schema,
+    CustomFieldsFieldValueValueOneOf5Schema,
+  ])
+  .nullable()
+  .openapi('IncidentTypeCustomFieldsDefaultValue')
+
+const CustomFieldsEditableFieldOptionSchema = z
+  .object({
+    data: z
+      .xor([
+        z
+          .object({
+            data_type: z
+              .literal('string')
+              .openapi({
+                description:
+                  "The kind of data represented by this option. Must match the Field's `data_type`.",
+              }),
+            value: z.string().max(100),
+          })
+          .openapi({ required: ['data_type', 'value'] }),
+      ])
+      .exactOptional()
+      .openapi({
+        discriminator: {
+          propertyName: 'data_type',
+          mapping: {
+            string:
+              '#/paths/~1incidents~1custom_fields/get/responses/200/content/application~1json/schema/allOf/0/properties/fields/items/allOf/0/properties/field_options/items/allOf/0/properties/data/oneOf/0',
+          },
+        },
+      }),
+    id: z.string().openapi({ readOnly: true, description: 'The ID of the resource.' }),
+    type: z.literal('field_option').openapi({ readOnly: true }),
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date/time the object was created at.', readOnly: true }),
+  })
+  .openapi({ required: ['id', 'type', 'created_at', 'updated_at'], description: '' })
+  .openapi('CustomFieldsEditableFieldOption')
+
+const IncidentTypeCustomFieldsSchema = z
   .object({
     enabled: z
       .boolean()
       .openapi({ description: 'Whether the custom field is enabled.', readOnly: true }),
     id: z.string().openapi({ readOnly: true, description: 'The ID of the resource.' }),
-    name: z.lazy(() => CustomFieldsFieldValueSchema),
+    name: CustomFieldsFieldValueNameSchema,
     type: z.literal('field').openapi({ readOnly: true }),
     self: z
       .url()
@@ -8541,17 +7952,80 @@ const IncidentTypeCustomFieldWithOptionsSchema = z
         readOnly: true,
         description: 'The API show URL at which the object is accessible',
       }),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema),
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    field_type: CustomFieldsFieldValueFieldTypeSchema,
+    data_type: CustomFieldsFieldValueDataTypeSchema,
+    updated_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date/time the custom field was last updated.', readOnly: true }),
+    created_at: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The date/time the custom field was created at.', readOnly: true }),
+    display_name: CustomFieldsFieldValueDisplayNameSchema,
+    default_value: IncidentTypeCustomFieldsDefaultValueSchema.exactOptional(),
+    incident_type: z
+      .string()
+      .openapi({
+        description: 'The id of the incident type the custom field is associated with.',
+        readOnly: true,
+      }),
+    summary: z
+      .string()
+      .nullable()
+      .openapi({
+        readOnly: true,
+        description:
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+      }),
+    field_options: z
+      .array(CustomFieldsEditableFieldOptionSchema)
+      .openapi({ description: 'The options for the custom field.' }),
+  })
+  .openapi({
+    required: [
+      'id',
+      'summary',
+      'self',
+      'type',
+      'name',
+      'display_name',
+      'created_at',
+      'updated_at',
+      'data_type',
+      'field_type',
+      'enabled',
+      'incident_type',
+      'field_options',
+    ],
+  })
+  .openapi('IncidentTypeCustomFields')
+
+const IncidentTypeCustomFieldWithOptionsSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .openapi({ description: 'Whether the custom field is enabled.', readOnly: true }),
+    id: z.string().openapi({ readOnly: true, description: 'The ID of the resource.' }),
+    name: CustomFieldsFieldValueNameSchema,
+    type: z.literal('field').openapi({ readOnly: true }),
+    self: z
+      .url()
+      .nullable()
+      .openapi({
+        readOnly: true,
+        description: 'The API show URL at which the object is accessible',
+      }),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    field_type: CustomFieldsFieldValueFieldTypeSchema,
+    data_type: CustomFieldsFieldValueDataTypeSchema,
     updated_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
     created_at: z.iso
       .datetime({ offset: true })
       .openapi({ description: 'The date/time the object was created at.', readOnly: true }),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema),
-    default_value: z.lazy(() => IncidentTypeCustomFieldsSchema).exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema,
+    default_value: IncidentTypeCustomFieldsDefaultValueSchema.exactOptional(),
     incident_type: z
       .string()
       .openapi({
@@ -8638,9 +8112,120 @@ const ExtensionSchemaReferenceSchema = ReferenceSchema.and(
     .openapi({ required: [] }),
 ).openapi('ExtensionSchemaReference')
 
-const ExtensionSchema = z
+const ExtensionSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z.string().openapi({ description: 'The name of the extension.' }),
+      type: z
+        .literal('extension')
+        .default('extension')
+        .exactOptional()
+        .openapi({ description: 'The type of object being created.' }),
+      endpoint_url: z.url().exactOptional().openapi({ description: 'The url of the extension.' }),
+      extension_objects: z
+        .array(ServiceReferenceSchema)
+        .openapi({ description: 'The objects for which the extension applies' }),
+      extension_schema: ExtensionSchemaReferenceSchema,
+      temporarily_disabled: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'Whether or not this extension is temporarily disabled; for example, a webhook extension that is repeatedly rejected by the server.',
+        }),
+      config: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({
+          description:
+            'The object that contains extension configuration values depending on the extension schema specification.',
+        }),
+    })
+    .openapi({
+      required: ['extension_objects', 'extension_schema', 'name'],
+      example: {
+        id: 'PJU23I3',
+        endpoint_url: 'https://example.com/receive_a_pagerduty_webhook',
+        name: 'My Webhook',
+        summary: 'My Webhook',
+        type: 'extension',
+        extension_schema: { id: 'PJFWPEP', type: 'extension_schema_reference' },
+        extension_objects: [{ id: 'PIJ90N7', type: 'service_reference' }],
+        config: { anykey: 'anyvalue' },
+      },
+    }),
+).openapi('Extension')
+
+const ServiceCustomFieldsFieldReadModelCreatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({ title: 'Datetime', description: 'The date/time the object was created at.' })
+  .openapi('ServiceCustomFieldsFieldReadModelCreatedAt')
+
+const CustomFieldsEditableFieldEnabledSchema = z
+  .union([z.literal(true), z.literal(false)])
+  .openapi({ description: 'Whether the field is enabled.' })
+  .openapi('CustomFieldsEditableFieldEnabled')
+
+const ServiceCustomFieldsFieldReadModelIdSchema = z
+  .string()
+  .openapi({ description: 'The ID of the resource.' })
+  .openapi('ServiceCustomFieldsFieldReadModelId')
+
+const ServiceCustomFieldsFieldReadModelUpdatedAtSchema = z.iso
+  .datetime({ offset: true })
+  .openapi({ title: 'Datetime', description: 'The date/time the object was updated at.' })
+  .openapi('ServiceCustomFieldsFieldReadModelUpdatedAt')
+
+const ServiceCustomFieldsFieldOptionReadModelSchema = z
   .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
+    created_at: ServiceCustomFieldsFieldReadModelCreatedAtSchema.exactOptional(),
+    data: z
+      .object({
+        data_type: z
+          .literal('string')
+          .exactOptional()
+          .openapi({
+            description:
+              "The kind of data represented by this option. Must match the Field's `data_type`.",
+          }),
+        value: z.string().max(200).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    id: ServiceCustomFieldsFieldReadModelIdSchema.exactOptional(),
+    type: z.literal('field_option').exactOptional(),
+    updated_at: ServiceCustomFieldsFieldReadModelUpdatedAtSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ServiceCustomFieldsFieldOptionReadModel')
+
+const ServiceCustomFieldsFieldReadModelSchema = z
+  .object({
+    created_at: ServiceCustomFieldsFieldReadModelCreatedAtSchema.exactOptional(),
+    data_type: CustomFieldsFieldValueDataTypeSchema.exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
+    enabled: CustomFieldsEditableFieldEnabledSchema.exactOptional(),
+    field_options: z
+      .array(ServiceCustomFieldsFieldOptionReadModelSchema)
+      .exactOptional()
+      .openapi({
+        description:
+          'The options for the custom field. Applies only to `single_value_fixed` and `multi_value_fixed` field types. These options are returned only if the `include[]` parameter specifies `field_options`.',
+      }),
+    field_type: CustomFieldsFieldValueFieldTypeSchema.exactOptional(),
+    id: ServiceCustomFieldsFieldReadModelIdSchema.exactOptional(),
+    name: CustomFieldsFieldValueNameSchema.exactOptional(),
+    self: z
+      .url()
+      .nullable()
+      .exactOptional()
+      .openapi({
+        readOnly: true,
+        description: 'The API show URL at which the object is accessible',
+      }),
     summary: z
       .string()
       .nullable()
@@ -8648,80 +8233,13 @@ const ExtensionSchema = z
       .openapi({
         readOnly: true,
         description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `display_name`.',
       }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
+    type: z.literal('field').exactOptional().openapi({ readOnly: true }),
+    updated_at: ServiceCustomFieldsFieldReadModelUpdatedAtSchema.exactOptional(),
   })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z.string().openapi({ description: 'The name of the extension.' }),
-        type: z
-          .literal('extension')
-          .default('extension')
-          .exactOptional()
-          .openapi({ description: 'The type of object being created.' }),
-        endpoint_url: z.url().exactOptional().openapi({ description: 'The url of the extension.' }),
-        extension_objects: z
-          .array(ServiceReferenceSchema)
-          .openapi({ description: 'The objects for which the extension applies' }),
-        extension_schema: ExtensionSchemaReferenceSchema,
-        temporarily_disabled: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Whether or not this extension is temporarily disabled; for example, a webhook extension that is repeatedly rejected by the server.',
-          }),
-        config: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'The object that contains extension configuration values depending on the extension schema specification.',
-          }),
-      })
-      .openapi({
-        required: ['extension_objects', 'extension_schema', 'name'],
-        example: {
-          id: 'PJU23I3',
-          endpoint_url: 'https://example.com/receive_a_pagerduty_webhook',
-          name: 'My Webhook',
-          summary: 'My Webhook',
-          type: 'extension',
-          extension_schema: { id: 'PJFWPEP', type: 'extension_schema_reference' },
-          extension_objects: [{ id: 'PIJ90N7', type: 'service_reference' }],
-          config: { anykey: 'anyvalue' },
-        },
-      }),
-  )
-  .openapi('Extension')
+  .openapi({ description: 'Details of the custom field.', required: [] })
+  .openapi('ServiceCustomFieldsFieldReadModel')
 
 const ServiceCustomFieldsFieldOptionUpdateModelSchema = z
   .object({
@@ -8754,13 +8272,13 @@ const ServiceCustomFieldsFieldOptionUpdateModelSchema = z
 
 const ServiceCustomFieldsFieldCreateModelSchema = z
   .object({
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema),
-    enabled: z.lazy(() => CustomFieldsEditableFieldSchema).exactOptional(),
+    data_type: CustomFieldsFieldValueDataTypeSchema,
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema,
+    enabled: CustomFieldsEditableFieldEnabledSchema.exactOptional(),
     field_options: z.array(ServiceCustomFieldsFieldOptionUpdateModelSchema).exactOptional(),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema),
-    name: z.lazy(() => CustomFieldsFieldValueSchema),
+    field_type: CustomFieldsFieldValueFieldTypeSchema,
+    name: CustomFieldsFieldValueNameSchema,
   })
   .openapi({
     description: 'Details of the custom field to be created.',
@@ -8770,9 +8288,9 @@ const ServiceCustomFieldsFieldCreateModelSchema = z
 
 const ServiceCustomFieldsFieldUpdateModelSchema = z
   .object({
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    enabled: z.lazy(() => CustomFieldsEditableFieldSchema).exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
+    enabled: CustomFieldsEditableFieldEnabledSchema.exactOptional(),
     field_options: z
       .array(
         ServiceCustomFieldsFieldOptionUpdateModelSchema.and(
@@ -8800,24 +8318,24 @@ const ServiceCustomFieldsFieldUpdateModelSchema = z
 
 const ServiceCustomFieldsFieldValueReadModelSchema = z
   .object({
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    id: z.lazy(() => ServiceCustomFieldsFieldReadModelSchema).exactOptional(),
-    name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    data_type: CustomFieldsFieldValueDataTypeSchema.exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
+    field_type: CustomFieldsFieldValueFieldTypeSchema.exactOptional(),
+    id: ServiceCustomFieldsFieldReadModelIdSchema.exactOptional(),
+    name: CustomFieldsFieldValueNameSchema.exactOptional(),
     type: z
       .literal('field_value')
       .exactOptional()
       .openapi({ description: 'Determines the type of the reference.' }),
     value: z
       .xor([
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
-        z.lazy(() => CustomFieldsFieldValueSchema),
+        CustomFieldsFieldValueValueOneOf0Schema,
+        CustomFieldsFieldValueValueOneOf1Schema,
+        CustomFieldsFieldValueValueOneOf2Schema,
+        CustomFieldsFieldValueValueOneOf3Schema,
+        CustomFieldsFieldValueValueOneOf4Schema,
+        CustomFieldsFieldValueValueOneOf5Schema,
       ])
       .exactOptional(),
   })
@@ -8828,27 +8346,27 @@ const ServiceCustomFieldsFieldValueUpdateModelSchema = z
   .xor([
     z
       .object({
-        id: z.lazy(() => ServiceCustomFieldsFieldReadModelSchema),
+        id: ServiceCustomFieldsFieldReadModelIdSchema,
         value: z.xor([
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
+          CustomFieldsFieldValueValueOneOf0Schema,
+          CustomFieldsFieldValueValueOneOf4Schema,
+          CustomFieldsFieldValueValueOneOf1Schema,
+          CustomFieldsFieldValueValueOneOf2Schema,
+          CustomFieldsFieldValueValueOneOf3Schema,
+          CustomFieldsFieldValueValueOneOf5Schema,
         ]),
       })
       .openapi({ title: 'Value by Field ID', required: ['id', 'value'] }),
     z
       .object({
-        name: z.lazy(() => CustomFieldsFieldValueSchema),
+        name: CustomFieldsFieldValueNameSchema,
         value: z.xor([
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
-          z.lazy(() => CustomFieldsFieldValueSchema),
+          CustomFieldsFieldValueValueOneOf0Schema,
+          CustomFieldsFieldValueValueOneOf4Schema,
+          CustomFieldsFieldValueValueOneOf1Schema,
+          CustomFieldsFieldValueValueOneOf2Schema,
+          CustomFieldsFieldValueValueOneOf3Schema,
+          CustomFieldsFieldValueValueOneOf5Schema,
         ]),
       })
       .openapi({ title: 'Value by Field Name', required: ['name', 'value'] }),
@@ -8936,148 +8454,107 @@ const EmailParserSchema = z
   .openapi({ required: ['action', 'match_predicate'] })
   .openapi('EmailParser')
 
-const IntegrationSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .enum([
-            'aws_cloudwatch_inbound_integration',
-            'cloudkick_inbound_integration',
-            'event_transformer_api_inbound_integration',
-            'generic_email_inbound_integration',
-            'generic_events_api_inbound_integration',
-            'keynote_inbound_integration',
-            'nagios_inbound_integration',
-            'pingdom_inbound_integration',
-            'sql_monitor_inbound_integration',
-            'events_api_v2_inbound_integration',
-          ])
-          .exactOptional(),
-        name: z.string().exactOptional().openapi({ description: 'The name of this integration.' }),
-        service: ServiceReferenceSchema.exactOptional(),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'The date/time when this integration was created.',
-            readOnly: true,
-          }),
-        vendor: VendorReferenceSchema.exactOptional(),
-        integration_email: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'Specify for generic_email_inbound_integration. Must be set to an email address @your-subdomain.pagerduty.com',
-          }),
-        email_incident_creation: z
-          .enum(['on_new_email', 'on_new_email_subject', 'only_if_no_open_incidents', 'use_rules'])
-          .exactOptional()
-          .openapi({ description: 'Specify for generic_email_inbound_integration' }),
-        email_filter_mode: z
-          .enum(['all-email', 'or-rules-email', 'and-rules-email'])
-          .exactOptional()
-          .openapi({
-            description:
-              'Specify for generic_email_inbound_integration. May override email_incident_creation',
-          }),
-        email_parsers: z
-          .array(EmailParserSchema)
-          .min(1)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional()
-          .openapi({ description: 'Specify for generic_email_inbound_integration.' }),
-        email_parsing_fallback: z
-          .enum(['open_new_incident', 'discard'])
-          .exactOptional()
-          .openapi({ description: 'Specify for generic_email_inbound_integration.' }),
-        email_filters: z
-          .array(
-            z
-              .object({
-                subject_mode: z.enum(['match', 'no-match', 'always']),
-                subject_regex: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Specify if subject_mode is set to match or no-match' }),
-                body_mode: z.enum(['match', 'no-match', 'always']),
-                body_regex: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'Specify if body_mode is set to match or no-match' }),
-                from_email_mode: z.enum(['match', 'no-match', 'always']),
-                from_email_regex: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description: 'Specify if from_email_mode is set to match or no-match',
-                  }),
-              })
-              .openapi({ required: ['subject_mode', 'body_mode', 'from_email_mode'] }),
-          )
-          .min(1)
-          .superRefine((items, ctx) => {
-            const seen = new Map()
-            for (const [i, val] of items.entries()) {
-              const key = JSON.stringify(val)
-              if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-              else seen.set(key, i)
-            }
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Specify for generic_email_inbound_integration.',
-            required: ['type', 'name'],
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('Integration')
+const IntegrationSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .enum([
+          'aws_cloudwatch_inbound_integration',
+          'cloudkick_inbound_integration',
+          'event_transformer_api_inbound_integration',
+          'generic_email_inbound_integration',
+          'generic_events_api_inbound_integration',
+          'keynote_inbound_integration',
+          'nagios_inbound_integration',
+          'pingdom_inbound_integration',
+          'sql_monitor_inbound_integration',
+          'events_api_v2_inbound_integration',
+        ])
+        .exactOptional(),
+      name: z.string().exactOptional().openapi({ description: 'The name of this integration.' }),
+      service: ServiceReferenceSchema.exactOptional(),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The date/time when this integration was created.',
+          readOnly: true,
+        }),
+      vendor: VendorReferenceSchema.exactOptional(),
+      integration_email: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'Specify for generic_email_inbound_integration. Must be set to an email address @your-subdomain.pagerduty.com',
+        }),
+      email_incident_creation: z
+        .enum(['on_new_email', 'on_new_email_subject', 'only_if_no_open_incidents', 'use_rules'])
+        .exactOptional()
+        .openapi({ description: 'Specify for generic_email_inbound_integration' }),
+      email_filter_mode: z
+        .enum(['all-email', 'or-rules-email', 'and-rules-email'])
+        .exactOptional()
+        .openapi({
+          description:
+            'Specify for generic_email_inbound_integration. May override email_incident_creation',
+        }),
+      email_parsers: z
+        .array(EmailParserSchema)
+        .min(1)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .exactOptional()
+        .openapi({ description: 'Specify for generic_email_inbound_integration.' }),
+      email_parsing_fallback: z
+        .enum(['open_new_incident', 'discard'])
+        .exactOptional()
+        .openapi({ description: 'Specify for generic_email_inbound_integration.' }),
+      email_filters: z
+        .array(
+          z
+            .object({
+              subject_mode: z.enum(['match', 'no-match', 'always']),
+              subject_regex: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Specify if subject_mode is set to match or no-match' }),
+              body_mode: z.enum(['match', 'no-match', 'always']),
+              body_regex: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Specify if body_mode is set to match or no-match' }),
+              from_email_mode: z.enum(['match', 'no-match', 'always']),
+              from_email_regex: z
+                .string()
+                .exactOptional()
+                .openapi({ description: 'Specify if from_email_mode is set to match or no-match' }),
+            })
+            .openapi({ required: ['subject_mode', 'body_mode', 'from_email_mode'] }),
+        )
+        .min(1)
+        .superRefine((items, ctx) => {
+          const seen = new Map()
+          for (const [i, val] of items.entries()) {
+            const key = JSON.stringify(val)
+            if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+            else seen.set(key, i)
+          }
+        })
+        .exactOptional()
+        .openapi({
+          description: 'Specify for generic_email_inbound_integration.',
+          required: ['type', 'name'],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('Integration')
 
 const MaintenanceWindowReferenceSchema = ReferenceSchema.and(
   z
@@ -9085,91 +8562,52 @@ const MaintenanceWindowReferenceSchema = ReferenceSchema.and(
     .openapi({ required: [] }),
 ).openapi('MaintenanceWindowReference')
 
-const MaintenanceWindowSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('maintenance_window')
-          .default('maintenance_window')
-          .openapi({ description: 'The type of object being created.' }),
-        sequence_number: z
-          .int()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The order in which the maintenance window was created.',
-          }),
-        start_time: z.iso
-          .datetime({ offset: true })
-          .openapi({
-            description:
-              "This maintenance window's start time. This is when the services will stop creating incidents. If this date is in the past, it will be updated to be the current time.",
-          }),
-        end_time: z.iso
-          .datetime({ offset: true })
-          .openapi({
-            description:
-              "This maintenance window's end time. This is when the services will start creating incidents again. This date must be in the future and after the `start_time`.",
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A description for this maintenance window.' }),
-        created_by: UserReferenceSchema.exactOptional(),
-        services: z.array(ServiceReferenceSchema),
-        teams: z.array(TeamReferenceSchema).exactOptional().openapi({ readOnly: true }),
-      })
-      .openapi({
-        required: ['start_time', 'end_time', 'services', 'type'],
-        example: {
-          id: 'PIJ89JD',
-          type: 'maintenance_window',
-          start_time: '2015-11-09T20:00:00-05:00',
-          end_time: '2015-11-09T22:00:00-05:00',
-          description: 'Immanentizing the eschaton',
-          services: [{ id: 'PIJ90N7', type: 'service_reference' }],
-        },
-      }),
-  )
-  .openapi('MaintenanceWindow')
+const MaintenanceWindowSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('maintenance_window')
+        .default('maintenance_window')
+        .openapi({ description: 'The type of object being created.' }),
+      sequence_number: z
+        .int()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'The order in which the maintenance window was created.',
+        }),
+      start_time: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            "This maintenance window's start time. This is when the services will stop creating incidents. If this date is in the past, it will be updated to be the current time.",
+        }),
+      end_time: z.iso
+        .datetime({ offset: true })
+        .openapi({
+          description:
+            "This maintenance window's end time. This is when the services will start creating incidents again. This date must be in the future and after the `start_time`.",
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A description for this maintenance window.' }),
+      created_by: UserReferenceSchema.exactOptional(),
+      services: z.array(ServiceReferenceSchema),
+      teams: z.array(TeamReferenceSchema).exactOptional().openapi({ readOnly: true }),
+    })
+    .openapi({
+      required: ['start_time', 'end_time', 'services', 'type'],
+      example: {
+        id: 'PIJ89JD',
+        type: 'maintenance_window',
+        start_time: '2015-11-09T20:00:00-05:00',
+        end_time: '2015-11-09T22:00:00-05:00',
+        description: 'Immanentizing the eschaton',
+        services: [{ id: 'PIJ90N7', type: 'service_reference' }],
+      },
+    }),
+).openapi('MaintenanceWindow')
 
 const ScheduleReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('schedule_reference').exactOptional() }).openapi({ required: [] }),
@@ -9301,127 +8739,78 @@ const SubScheduleSchema = z
   .openapi({ required: ['name'] })
   .openapi('SubSchedule')
 
-const ScheduleSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z
-          .literal('schedule')
-          .default('schedule')
-          .openapi({ description: 'The type of object being created.' }),
-        schedule_layers: z
-          .array(ScheduleLayerSchema)
-          .exactOptional()
-          .openapi({ description: 'A list of schedule layers.' }),
-        time_zone: z.string().openapi({ description: 'The time zone of the schedule.' }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the schedule' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the schedule' }),
-        final_schedule: SubScheduleSchema.exactOptional(),
-        overrides_subschedule: SubScheduleSchema.exactOptional(),
-        escalation_policies: z
-          .array(EscalationPolicyReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'An array of all of the escalation policies that uses this schedule.',
-          }),
-        users: z
-          .array(UserReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'An array of all of the users on the schedule.',
-          }),
-        teams: z
-          .array(TeamReferenceSchema)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'An array of all of the teams on the schedule.',
-          }),
-        next_oncall_for_user: z
-          .object({
-            start: z
-              .string()
-              .exactOptional()
-              .openapi({ readOnly: true, description: 'The start date for the User shift' }),
-            end: z
-              .string()
-              .exactOptional()
-              .openapi({ readOnly: true, description: 'The end date for the User shift' }),
-            user: ReferenceSchema.exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({
-        required: ['time_zone', 'type'],
-        example: {
-          name: 'Daily Engineering Rotation',
-          type: 'schedule',
-          time_zone: 'America/New_York',
-          description: 'Rotation schedule for engineering',
-          schedule_layers: [
-            {
-              name: 'Night Shift',
-              start: '2015-11-06T20:00:00-05:00',
-              end: '2016-11-06T20:00:00-05:00',
-              rotation_virtual_start: '2015-11-06T20:00:00-05:00',
-              rotation_turn_length_seconds: 86400,
-              users: [{ user: { id: 'PXPGF42', type: 'user_reference' } }],
-              restrictions: [
-                {
-                  type: 'daily_restriction',
-                  start_time_of_day: '08:00:00',
-                  duration_seconds: 32400,
-                },
-              ],
-            },
-          ],
-        },
-      }),
-  )
-  .openapi('Schedule')
+const ScheduleSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z
+        .literal('schedule')
+        .default('schedule')
+        .openapi({ description: 'The type of object being created.' }),
+      schedule_layers: z
+        .array(ScheduleLayerSchema)
+        .exactOptional()
+        .openapi({ description: 'A list of schedule layers.' }),
+      time_zone: z.string().openapi({ description: 'The time zone of the schedule.' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the schedule' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The description of the schedule' }),
+      final_schedule: SubScheduleSchema.exactOptional(),
+      overrides_subschedule: SubScheduleSchema.exactOptional(),
+      escalation_policies: z
+        .array(EscalationPolicyReferenceSchema)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'An array of all of the escalation policies that uses this schedule.',
+        }),
+      users: z
+        .array(UserReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'An array of all of the users on the schedule.' }),
+      teams: z
+        .array(TeamReferenceSchema)
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'An array of all of the teams on the schedule.' }),
+      next_oncall_for_user: z
+        .object({
+          start: z
+            .string()
+            .exactOptional()
+            .openapi({ readOnly: true, description: 'The start date for the User shift' }),
+          end: z
+            .string()
+            .exactOptional()
+            .openapi({ readOnly: true, description: 'The end date for the User shift' }),
+          user: ReferenceSchema.exactOptional(),
+        })
+        .exactOptional()
+        .openapi({ required: [] }),
+    })
+    .openapi({
+      required: ['time_zone', 'type'],
+      example: {
+        name: 'Daily Engineering Rotation',
+        type: 'schedule',
+        time_zone: 'America/New_York',
+        description: 'Rotation schedule for engineering',
+        schedule_layers: [
+          {
+            name: 'Night Shift',
+            start: '2015-11-06T20:00:00-05:00',
+            end: '2016-11-06T20:00:00-05:00',
+            rotation_virtual_start: '2015-11-06T20:00:00-05:00',
+            rotation_turn_length_seconds: 86400,
+            users: [{ user: { id: 'PXPGF42', type: 'user_reference' } }],
+            restrictions: [
+              { type: 'daily_restriction', start_time_of_day: '08:00:00', duration_seconds: 32400 },
+            ],
+          },
+        ],
+      },
+    }),
+).openapi('Schedule')
 
 const SREMemorySchema = z
   .object({
@@ -9509,66 +8898,27 @@ const StatusDashboardSchema = z
   .openapi({ title: 'StatusDashboard', required: [] })
   .openapi('StatusDashboard')
 
-const OverrideSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        start: z.iso
-          .datetime({ offset: true })
-          .openapi({ description: 'The start date and time for the override.' }),
-        end: z.iso
-          .datetime({ offset: true })
-          .openapi({ description: 'The end date and time for the override.' }),
-        user: UserReferenceSchema,
-      })
-      .openapi({
-        required: ['start', 'end', 'user'],
-        example: {
-          start: '2012-07-01T00:00:00-04:00',
-          end: '2012-07-02T00:00:00-04:00',
-          user: { id: 'PEYSGVF', type: 'user_reference' },
-        },
-      }),
-  )
-  .openapi('Override')
+const OverrideSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      id: z.string().exactOptional().openapi({ readOnly: true }),
+      start: z.iso
+        .datetime({ offset: true })
+        .openapi({ description: 'The start date and time for the override.' }),
+      end: z.iso
+        .datetime({ offset: true })
+        .openapi({ description: 'The end date and time for the override.' }),
+      user: UserReferenceSchema,
+    })
+    .openapi({
+      required: ['start', 'end', 'user'],
+      example: {
+        start: '2012-07-01T00:00:00-04:00',
+        end: '2012-07-02T00:00:00-04:00',
+        user: { id: 'PEYSGVF', type: 'user_reference' },
+      },
+    }),
+).openapi('Override')
 
 const WeeklyRestrictionSchema = RestrictionSchema.and(
   z
@@ -9584,6 +8934,12 @@ const WeeklyRestrictionSchema = RestrictionSchema.and(
     })
     .openapi({ required: ['start_day_of_week'] }),
 ).openapi('WeeklyRestriction')
+
+const PaginationTotalSchema = z
+  .int()
+  .nullable()
+  .openapi({ description: 'The total number of records matching the given query.', readOnly: true })
+  .openapi('PaginationTotal')
 
 const PaginationSchema = z
   .object({
@@ -9602,14 +8958,7 @@ const PaginationSchema = z
         description: 'Indicates if there are additional records to return',
         readOnly: true,
       }),
-    total: z
-      .int()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        description: 'The total number of records matching the given query.',
-        readOnly: true,
-      }),
+    total: PaginationTotalSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('Pagination')
@@ -9714,95 +9063,56 @@ const OncallSchema = z
   })
   .openapi('Oncall')
 
-const VendorSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The short name of the vendor' }),
-        website_url: z
-          .url()
-          .exactOptional()
-          .openapi({ readOnly: true, description: "URL of the vendor's main website" }),
-        logo_url: z
-          .url()
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'URL of a logo identifying the vendor' }),
-        thumbnail_url: z
-          .url()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'URL of a small thumbnail image identifying the vendor',
-          }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'A short description of this vendor, and common use-cases of integrations for this vendor.',
-          }),
-        integration_guide_url: z
-          .url()
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'URL of an integration guide for this vendor' }),
-      })
-      .openapi({
-        example: {
-          type: 'vendor',
-          name: 'Amazon CloudWatch',
-          website_url: 'https://aws.amazon.com/cloudwatch',
-          logo_url: 'https://s3.amazonaws.com/pdpartner/cloudwatch_large.png',
-          thumbnail_url: 'https://s3.amazonaws.com/pdpartner/cloudwatch_thumb.png',
+const VendorSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The short name of the vendor' }),
+      website_url: z
+        .url()
+        .exactOptional()
+        .openapi({ readOnly: true, description: "URL of the vendor's main website" }),
+      logo_url: z
+        .url()
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'URL of a logo identifying the vendor' }),
+      thumbnail_url: z
+        .url()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'URL of a small thumbnail image identifying the vendor',
+        }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
           description:
-            'Amazon Web Services CloudWatch provides monitoring for AWS cloud resources and customer-run applications. AWS can collect data, gain insight, and alert users to fix problems within applications and organizations. AWS CloudWatch gives system-wide visibility into resource utilization and notifications can be set for when any metrics cross a specified threshold.',
-          integration_guide_url:
-            'http://www.pagerduty.com/docs/guides/aws-cloudwatch-integration-guide/',
-        },
-        required: [],
-      }),
-  )
-  .openapi('Vendor')
+            'A short description of this vendor, and common use-cases of integrations for this vendor.',
+        }),
+      integration_guide_url: z
+        .url()
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'URL of an integration guide for this vendor' }),
+    })
+    .openapi({
+      example: {
+        type: 'vendor',
+        name: 'Amazon CloudWatch',
+        website_url: 'https://aws.amazon.com/cloudwatch',
+        logo_url: 'https://s3.amazonaws.com/pdpartner/cloudwatch_large.png',
+        thumbnail_url: 'https://s3.amazonaws.com/pdpartner/cloudwatch_thumb.png',
+        description:
+          'Amazon Web Services CloudWatch provides monitoring for AWS cloud resources and customer-run applications. AWS can collect data, gain insight, and alert users to fix problems within applications and organizations. AWS CloudWatch gives system-wide visibility into resource utilization and notifications can be set for when any metrics cross a specified threshold.',
+        integration_guide_url:
+          'http://www.pagerduty.com/docs/guides/aws-cloudwatch-integration-guide/',
+      },
+      required: [],
+    }),
+).openapi('Vendor')
 
 const ExtensionSchemaSchema = z
   .object({
@@ -9895,129 +9205,90 @@ const ExtensionSchemaSchema = z
   })
   .openapi('ExtensionSchema')
 
-const AlertSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ readOnly: true, description: 'The date/time the alert was first triggered.' }),
-        type: z
-          .literal('alert')
-          .default('alert')
-          .openapi({ description: 'The type of object being created.' }),
-        status: z
-          .enum(['triggered', 'resolved'])
-          .exactOptional()
-          .openapi({ description: 'The current status of the alert.' }),
-        alert_key: z
-          .string()
-          .exactOptional()
-          .openapi({ readOnly: true, description: "The alert's de-duplication key." }),
-        service: ServiceReferenceSchema.exactOptional(),
-        first_trigger_log_entry: LogEntryReferenceSchema.exactOptional(),
-        incident: IncidentReferenceSchema.exactOptional(),
-        suppressed: z
-          .boolean()
-          .default(false)
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description:
-              'Whether or not an alert is suppressed. Suppressed alerts are not created with a parent incident.',
-          }),
-        severity: z
-          .enum(['info', 'warning', 'error', 'critical'])
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'The magnitude of the problem as reported by the monitoring tool.',
-          }),
-        integration: IntegrationReferenceSchema.exactOptional(),
-        body: z
-          .object({
-            type: z
-              .literal('alert_body')
-              .exactOptional()
-              .openapi({ description: 'The type of the body.' }),
-            contexts: z
-              .array(ContextSchema)
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description:
-                  'Contexts to be included with the body such as links to graphs or images.',
-              }),
-            details: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description:
-                  'An arbitrary JSON object or string containing any data explaining the nature of the alert.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'A JSON object containing data describing the alert.',
-            title: 'Body',
-            required: [],
-          }),
-      })
-      .openapi({
-        required: ['type'],
-        example: {
-          type: 'alert',
-          status: 'resolved',
-          incident: { id: 'PEYSGVF', type: 'incident_reference' },
-          body: {
-            type: 'alert_body',
-            contexts: [{ type: 'link' }],
-            details: { customKey: 'Server is on fire!', customKey2: 'Other stuff!' },
-          },
+const AlertSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ readOnly: true, description: 'The date/time the alert was first triggered.' }),
+      type: z
+        .literal('alert')
+        .default('alert')
+        .openapi({ description: 'The type of object being created.' }),
+      status: z
+        .enum(['triggered', 'resolved'])
+        .exactOptional()
+        .openapi({ description: 'The current status of the alert.' }),
+      alert_key: z
+        .string()
+        .exactOptional()
+        .openapi({ readOnly: true, description: "The alert's de-duplication key." }),
+      service: ServiceReferenceSchema.exactOptional(),
+      first_trigger_log_entry: LogEntryReferenceSchema.exactOptional(),
+      incident: IncidentReferenceSchema.exactOptional(),
+      suppressed: z
+        .boolean()
+        .default(false)
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description:
+            'Whether or not an alert is suppressed. Suppressed alerts are not created with a parent incident.',
+        }),
+      severity: z
+        .enum(['info', 'warning', 'error', 'critical'])
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'The magnitude of the problem as reported by the monitoring tool.',
+        }),
+      integration: IntegrationReferenceSchema.exactOptional(),
+      body: z
+        .object({
+          type: z
+            .literal('alert_body')
+            .exactOptional()
+            .openapi({ description: 'The type of the body.' }),
+          contexts: z
+            .array(ContextSchema)
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description:
+                'Contexts to be included with the body such as links to graphs or images.',
+            }),
+          details: z
+            .looseObject({})
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description:
+                'An arbitrary JSON object or string containing any data explaining the nature of the alert.',
+            }),
+        })
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'A JSON object containing data describing the alert.',
+          title: 'Body',
+          required: [],
+        }),
+    })
+    .openapi({
+      required: ['type'],
+      example: {
+        type: 'alert',
+        status: 'resolved',
+        incident: { id: 'PEYSGVF', type: 'incident_reference' },
+        body: {
+          type: 'alert_body',
+          contexts: [{ type: 'link' }],
+          details: { customKey: 'Server is on fire!', customKey2: 'Other stuff!' },
         },
-      }),
-  )
-  .openapi('Alert')
+      },
+    }),
+).openapi('Alert')
 
 const AlertReferenceSchema = ReferenceSchema.and(
   z.object({ type: z.literal('alert_reference').exactOptional() }).openapi({ required: [] }),
@@ -10083,591 +9354,428 @@ const IncidentPrivilegeSchema = z
   .openapi({ required: [] })
   .openapi('IncidentPrivilege')
 
-const IncidentWorkflowSchema: z.ZodType<IncidentWorkflowType> = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z.literal('incident_workflow').exactOptional(),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A descriptive name for the Incident Workflow' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A description of what the Incident Workflow does' }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'The timestamp this Incident Workflow was created',
-            readOnly: true,
-          }),
-        team: z
-          .object({
-            type: z
-              .literal('team_reference')
-              .exactOptional()
-              .openapi({ description: 'Type of the referenced object', readOnly: true }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Unique identifier for the resource', readOnly: true }),
-          })
-          .exactOptional()
-          .openapi({
-            readOnly: false,
-            description:
-              'If specified then workflow edit permissions will be scoped to members of this team',
-            required: [],
-          }),
-        is_enabled: z
-          .boolean()
-          .default(true)
-          .exactOptional()
-          .openapi({
-            description:
-              "Indicates whether the Incident Workflow is enabled or not. Disabled workflows will not be triggered, and\nwill not count toward the account's enabled workflow limit.\n",
-          }),
-        steps: z
-          .array(
+const IncidentWorkflowSchema: z.ZodType<IncidentWorkflowType> = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z.literal('incident_workflow').exactOptional(),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A descriptive name for the Incident Workflow' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A description of what the Incident Workflow does' }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The timestamp this Incident Workflow was created',
+          readOnly: true,
+        }),
+      team: z
+        .object({
+          type: z
+            .literal('team_reference')
+            .exactOptional()
+            .openapi({ description: 'Type of the referenced object', readOnly: true }),
+          id: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Unique identifier for the resource', readOnly: true }),
+        })
+        .exactOptional()
+        .openapi({
+          readOnly: false,
+          description:
+            'If specified then workflow edit permissions will be scoped to members of this team',
+          required: [],
+        }),
+      is_enabled: z
+        .boolean()
+        .default(true)
+        .exactOptional()
+        .openapi({
+          description:
+            "Indicates whether the Incident Workflow is enabled or not. Disabled workflows will not be triggered, and\nwill not count toward the account's enabled workflow limit.\n",
+        }),
+      steps: z
+        .array(
+          TagAllOf0Schema.and(
             z
               .object({
-                id: z.string().exactOptional().openapi({ readOnly: true }),
-                summary: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description:
-                      'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-                  }),
-                type: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description:
-                      'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                  }),
-                self: z
-                  .url()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'the API show URL at which the object is accessible',
-                  }),
-                html_url: z
-                  .url()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    readOnly: true,
-                    description: 'a URL at which the entity is uniquely displayed in the Web app',
-                  }),
-              })
-              .openapi({ required: [] })
-              .and(
-                z
-                  .object({
-                    type: z.literal('step').exactOptional(),
-                    name: z.string().openapi({ description: 'A descriptive name for the Step' }),
-                    description: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        readOnly: true,
-                        description: 'A description of the action performed by the Step',
-                      }),
-                    action_configuration: z
-                      .object({
-                        action_id: z
-                          .string()
-                          .openapi({ description: 'The identifier of the Action to execute' }),
-                        description: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'Description of the Action', readOnly: true }),
-                        inputs: z
-                          .array(
-                            z
-                              .object({
-                                name: z
-                                  .string()
-                                  .openapi({
-                                    description:
-                                      'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
-                                  }),
-                                parameter_type: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'The data type of this Input',
-                                    readOnly: true,
-                                  }),
-                                value: z
-                                  .string()
-                                  .openapi({ description: 'The configured value of the Input' }),
-                              })
-                              .openapi({ required: ['name', 'value'] }),
-                          )
-                          .openapi({
-                            description:
-                              'An unordered list of standard inputs used to configure the Action to execute',
-                          }),
-                        inline_steps_inputs: z
-                          .array(
-                            z
-                              .object({
-                                name: z
-                                  .string()
-                                  .openapi({
-                                    description:
-                                      'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
-                                  }),
-                                value: z
-                                  .object({
-                                    steps: z
-                                      .array(
-                                        z
-                                          .object({
-                                            id: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({ readOnly: true }),
-                                            summary: z
-                                              .string()
-                                              .nullable()
-                                              .exactOptional()
-                                              .openapi({
-                                                readOnly: true,
-                                                description:
-                                                  'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-                                              }),
-                                            type: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                readOnly: true,
-                                                description:
-                                                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                                              }),
-                                            self: z
-                                              .url()
-                                              .nullable()
-                                              .exactOptional()
-                                              .openapi({
-                                                readOnly: true,
-                                                description:
-                                                  'the API show URL at which the object is accessible',
-                                              }),
-                                            html_url: z
-                                              .url()
-                                              .nullable()
-                                              .exactOptional()
-                                              .openapi({
-                                                readOnly: true,
-                                                description:
-                                                  'a URL at which the entity is uniquely displayed in the Web app',
-                                              }),
-                                          })
-                                          .openapi({ required: [] })
-                                          .and(
-                                            z
-                                              .object({
-                                                type: z.literal('step').exactOptional(),
-                                                name: z
-                                                  .string()
-                                                  .openapi({
-                                                    description: 'A descriptive name for the Step',
-                                                  }),
-                                                action_configuration: z
-                                                  .object({
-                                                    action_id: z
-                                                      .string()
-                                                      .openapi({
-                                                        description:
-                                                          'The identifier of the Action to execute',
-                                                      }),
-                                                    description: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description: 'Description of the Action',
-                                                        readOnly: true,
-                                                      }),
-                                                    inputs: z
-                                                      .array(
-                                                        z
-                                                          .object({
-                                                            name: z
-                                                              .string()
-                                                              .openapi({
-                                                                description:
-                                                                  'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
-                                                              }),
-                                                            parameter_type: z
-                                                              .string()
-                                                              .exactOptional()
-                                                              .openapi({
-                                                                description:
-                                                                  'The data type of this Input',
-                                                                readOnly: true,
-                                                              }),
-                                                            value: z
-                                                              .string()
-                                                              .openapi({
-                                                                description:
-                                                                  'The configured value of the Input',
-                                                              }),
-                                                          })
-                                                          .openapi({ required: ['name', 'value'] }),
-                                                      )
-                                                      .openapi({
-                                                        description:
-                                                          'An unordered list of standard inputs used to configure the Action to execute',
-                                                      }),
-                                                    outputs: z
-                                                      .array(
-                                                        z
-                                                          .object({
-                                                            name: z
-                                                              .string()
-                                                              .openapi({
-                                                                description:
-                                                                  'The name for this Output. Output names are unique per action and should be used to find a specific Output.',
-                                                                readOnly: true,
-                                                              }),
-                                                            reference_name: z
-                                                              .string()
-                                                              .exactOptional()
-                                                              .openapi({
-                                                                description:
-                                                                  'The reference name of the Output',
-                                                                readOnly: true,
-                                                              }),
-                                                            parameter_type: z
-                                                              .string()
-                                                              .exactOptional()
-                                                              .openapi({
-                                                                description:
-                                                                  'The data type produced by this Output',
-                                                                readOnly: true,
-                                                              }),
-                                                          })
-                                                          .openapi({ required: ['name', 'value'] }),
-                                                      )
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'An unordered list of outputs this action produces',
-                                                        readOnly: true,
-                                                      }),
-                                                  })
-                                                  .openapi({
-                                                    description:
-                                                      'Configuration of automated action executed by this Step',
-                                                    required: ['action_id', 'inputs'],
-                                                  }),
-                                              })
-                                              .openapi({
-                                                required: ['name', 'action_configuration'],
-                                              }),
-                                          ),
-                                      )
-                                      .exactOptional(),
-                                  })
-                                  .openapi({
-                                    description: 'The configured value of the Inline Steps Input',
-                                    required: [],
-                                  }),
-                              })
-                              .openapi({ required: ['name', 'value'] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'An unordered list of specialized inputs used to configure a workflow-within-a-workflow',
-                          }),
-                        outputs: z
-                          .array(
-                            z
-                              .object({
-                                name: z
-                                  .string()
-                                  .openapi({
-                                    description:
-                                      'The name for this Output. Output names are unique per action and should be used to find a specific Output.',
-                                    readOnly: true,
-                                  }),
-                                reference_name: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'The reference name of the Output',
-                                    readOnly: true,
-                                  }),
-                                parameter_type: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'The data type produced by this Output',
-                                    readOnly: true,
-                                  }),
-                              })
-                              .openapi({ required: ['name', 'value'] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description: 'An unordered list of outputs this action produces',
-                            readOnly: true,
-                          }),
-                      })
-                      .openapi({
-                        description: 'Configuration of automated action executed by this Step',
-                        required: ['action_id', 'inputs'],
-                      }),
-                  })
-                  .openapi({ required: ['name', 'action_configuration'] }),
-              ),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'The ordered list of steps that execute sequentially as part of the workflow',
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('IncidentWorkflow')
-
-const IncidentWorkflowActionSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z.literal('action').exactOptional(),
-        domain_name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The Verified Domain of the account that created the action' }),
-        package_name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The Package Name corresponding to the broad category of the Action',
-          }),
-        function_name: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The Function Name describing the specific functionality of the Action',
-          }),
-        version: z.number().exactOptional().openapi({ description: 'The version of the Action' }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The descriptive name of the Action' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A description of the Action' }),
-        action_type: z
-          .enum(['action', 'trigger'])
-          .exactOptional()
-          .openapi({ description: 'The type of Action' }),
-        action_tier: z
-          .enum(['basic-action', 'standard-action', 'premium-action'])
-          .exactOptional()
-          .openapi({ description: 'The tier of the Action' }),
-        trigger_type: z
-          .enum(['polling', 'subscription', 'web'])
-          .exactOptional()
-          .openapi({
-            description: 'The type of Trigger this Action is, if action_type is trigger',
-          }),
-        tags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'A set of tags to apply to this action.' }),
-        search_keywords: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'A set of search keywords to apply to this action.' }),
-        metadata: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'JSON-formatted string of metadata pertaining to the Action' }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date-time at which this Action was created' }),
-        created_by_user_id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The obfuscated Id of the User who created this Action' }),
-        inputs: z
-          .array(
-            z
-              .object({
-                name: z.string().exactOptional().openapi({ description: 'The name of the Input' }),
+                type: z.literal('step').exactOptional(),
+                name: z.string().openapi({ description: 'A descriptive name for the Step' }),
                 description: z
                   .string()
                   .exactOptional()
-                  .openapi({ description: 'Describes what the purpose of the Input' }),
-                type: z
-                  .enum([
-                    'text',
-                    'password',
-                    'integer',
-                    'decimal',
-                    'date',
-                    'dateTime',
-                    'boolean',
-                    'singleChoice',
-                    'multipleChoice',
-                    'json',
-                    'connection',
-                    'trigger',
-                  ])
-                  .exactOptional()
-                  .openapi({ description: 'The data type of this Input' }),
-                default_value: z
-                  .string()
-                  .exactOptional()
                   .openapi({
-                    description: 'Serialized form of the default value that the input will take',
+                    readOnly: true,
+                    description: 'A description of the action performed by the Step',
                   }),
-                is_required: z
-                  .boolean()
-                  .exactOptional()
-                  .openapi({ description: 'Whether a value must be provided for this input' }),
-                is_hidden: z
-                  .boolean()
-                  .exactOptional()
+                action_configuration: z
+                  .object({
+                    action_id: z
+                      .string()
+                      .openapi({ description: 'The identifier of the Action to execute' }),
+                    description: z
+                      .string()
+                      .exactOptional()
+                      .openapi({ description: 'Description of the Action', readOnly: true }),
+                    inputs: z
+                      .array(
+                        z
+                          .object({
+                            name: z
+                              .string()
+                              .openapi({
+                                description:
+                                  'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
+                              }),
+                            parameter_type: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The data type of this Input',
+                                readOnly: true,
+                              }),
+                            value: z
+                              .string()
+                              .openapi({ description: 'The configured value of the Input' }),
+                          })
+                          .openapi({ required: ['name', 'value'] }),
+                      )
+                      .openapi({
+                        description:
+                          'An unordered list of standard inputs used to configure the Action to execute',
+                      }),
+                    inline_steps_inputs: z
+                      .array(
+                        z
+                          .object({
+                            name: z
+                              .string()
+                              .openapi({
+                                description:
+                                  'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
+                              }),
+                            value: z
+                              .object({
+                                steps: z
+                                  .array(
+                                    TagAllOf0Schema.and(
+                                      z
+                                        .object({
+                                          type: z.literal('step').exactOptional(),
+                                          name: z
+                                            .string()
+                                            .openapi({
+                                              description: 'A descriptive name for the Step',
+                                            }),
+                                          action_configuration: z
+                                            .object({
+                                              action_id: z
+                                                .string()
+                                                .openapi({
+                                                  description:
+                                                    'The identifier of the Action to execute',
+                                                }),
+                                              description: z
+                                                .string()
+                                                .exactOptional()
+                                                .openapi({
+                                                  description: 'Description of the Action',
+                                                  readOnly: true,
+                                                }),
+                                              inputs: z
+                                                .array(
+                                                  z
+                                                    .object({
+                                                      name: z
+                                                        .string()
+                                                        .openapi({
+                                                          description:
+                                                            'The name for this Input. Input names are unique per action and should be used to find a specific Input.',
+                                                        }),
+                                                      parameter_type: z
+                                                        .string()
+                                                        .exactOptional()
+                                                        .openapi({
+                                                          description:
+                                                            'The data type of this Input',
+                                                          readOnly: true,
+                                                        }),
+                                                      value: z
+                                                        .string()
+                                                        .openapi({
+                                                          description:
+                                                            'The configured value of the Input',
+                                                        }),
+                                                    })
+                                                    .openapi({ required: ['name', 'value'] }),
+                                                )
+                                                .openapi({
+                                                  description:
+                                                    'An unordered list of standard inputs used to configure the Action to execute',
+                                                }),
+                                              outputs: z
+                                                .array(
+                                                  z
+                                                    .object({
+                                                      name: z
+                                                        .string()
+                                                        .openapi({
+                                                          description:
+                                                            'The name for this Output. Output names are unique per action and should be used to find a specific Output.',
+                                                          readOnly: true,
+                                                        }),
+                                                      reference_name: z
+                                                        .string()
+                                                        .exactOptional()
+                                                        .openapi({
+                                                          description:
+                                                            'The reference name of the Output',
+                                                          readOnly: true,
+                                                        }),
+                                                      parameter_type: z
+                                                        .string()
+                                                        .exactOptional()
+                                                        .openapi({
+                                                          description:
+                                                            'The data type produced by this Output',
+                                                          readOnly: true,
+                                                        }),
+                                                    })
+                                                    .openapi({ required: ['name', 'value'] }),
+                                                )
+                                                .exactOptional()
+                                                .openapi({
+                                                  description:
+                                                    'An unordered list of outputs this action produces',
+                                                  readOnly: true,
+                                                }),
+                                            })
+                                            .openapi({
+                                              description:
+                                                'Configuration of automated action executed by this Step',
+                                              required: ['action_id', 'inputs'],
+                                            }),
+                                        })
+                                        .openapi({ required: ['name', 'action_configuration'] }),
+                                    ),
+                                  )
+                                  .exactOptional(),
+                              })
+                              .openapi({
+                                description: 'The configured value of the Inline Steps Input',
+                                required: [],
+                              }),
+                          })
+                          .openapi({ required: ['name', 'value'] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An unordered list of specialized inputs used to configure a workflow-within-a-workflow',
+                      }),
+                    outputs: z
+                      .array(
+                        z
+                          .object({
+                            name: z
+                              .string()
+                              .openapi({
+                                description:
+                                  'The name for this Output. Output names are unique per action and should be used to find a specific Output.',
+                                readOnly: true,
+                              }),
+                            reference_name: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The reference name of the Output',
+                                readOnly: true,
+                              }),
+                            parameter_type: z
+                              .string()
+                              .exactOptional()
+                              .openapi({
+                                description: 'The data type produced by this Output',
+                                readOnly: true,
+                              }),
+                          })
+                          .openapi({ required: ['name', 'value'] }),
+                      )
+                      .exactOptional()
+                      .openapi({
+                        description: 'An unordered list of outputs this action produces',
+                        readOnly: true,
+                      }),
+                  })
                   .openapi({
-                    description:
-                      'If true then this input will not be shown to users when configuring this action',
+                    description: 'Configuration of automated action executed by this Step',
+                    required: ['action_id', 'inputs'],
                   }),
-                advanced: z.boolean().exactOptional(),
-                metadata: z.string().exactOptional(),
-                connection_type_id: z
-                  .string()
-                  .exactOptional()
-                  .openapi({ description: 'The configured value of the Input' }),
               })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'Inputs whose values used during Action execution' }),
-        outputs: z
-          .array(
-            z
-              .object({
-                name: z.string().exactOptional().openapi({ description: 'The name of the Output' }),
-                description: z.string().exactOptional(),
-                type: z
-                  .enum([
-                    'text',
-                    'password',
-                    'integer',
-                    'decimal',
-                    'date',
-                    'dateTime',
-                    'boolean',
-                    'singleChoice',
-                    'multipleChoice',
-                    'json',
-                  ])
-                  .exactOptional()
-                  .openapi({ description: 'The data type produced by this Output' }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description: 'Outputs whose values set during Action execution',
-            readOnly: true,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('IncidentWorkflowAction')
+              .openapi({ required: ['name', 'action_configuration'] }),
+          ),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'The ordered list of steps that execute sequentially as part of the workflow',
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('IncidentWorkflow')
+
+const IncidentWorkflowActionAllOf1InputsItemsSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the Input' }),
+    description: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Describes what the purpose of the Input' }),
+    type: z
+      .enum([
+        'text',
+        'password',
+        'integer',
+        'decimal',
+        'date',
+        'dateTime',
+        'boolean',
+        'singleChoice',
+        'multipleChoice',
+        'json',
+        'connection',
+        'trigger',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The data type of this Input' }),
+    default_value: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Serialized form of the default value that the input will take' }),
+    is_required: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Whether a value must be provided for this input' }),
+    is_hidden: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'If true then this input will not be shown to users when configuring this action',
+      }),
+    advanced: z.boolean().exactOptional(),
+    metadata: z.string().exactOptional(),
+    connection_type_id: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The configured value of the Input' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IncidentWorkflowActionAllOf1InputsItems')
+
+const IncidentWorkflowActionAllOf1OutputsItemsSchema = z
+  .object({
+    name: z.string().exactOptional().openapi({ description: 'The name of the Output' }),
+    description: z.string().exactOptional(),
+    type: z
+      .enum([
+        'text',
+        'password',
+        'integer',
+        'decimal',
+        'date',
+        'dateTime',
+        'boolean',
+        'singleChoice',
+        'multipleChoice',
+        'json',
+      ])
+      .exactOptional()
+      .openapi({ description: 'The data type produced by this Output' }),
+  })
+  .openapi({ required: [] })
+  .openapi('IncidentWorkflowActionAllOf1OutputsItems')
+
+const IncidentWorkflowActionSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z.literal('action').exactOptional(),
+      domain_name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The Verified Domain of the account that created the action' }),
+      package_name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The Package Name corresponding to the broad category of the Action',
+        }),
+      function_name: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The Function Name describing the specific functionality of the Action',
+        }),
+      version: z.number().exactOptional().openapi({ description: 'The version of the Action' }),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The descriptive name of the Action' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A description of the Action' }),
+      action_type: z
+        .enum(['action', 'trigger'])
+        .exactOptional()
+        .openapi({ description: 'The type of Action' }),
+      action_tier: z
+        .enum(['basic-action', 'standard-action', 'premium-action'])
+        .exactOptional()
+        .openapi({ description: 'The tier of the Action' }),
+      trigger_type: z
+        .enum(['polling', 'subscription', 'web'])
+        .exactOptional()
+        .openapi({ description: 'The type of Trigger this Action is, if action_type is trigger' }),
+      tags: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A set of tags to apply to this action.' }),
+      search_keywords: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A set of search keywords to apply to this action.' }),
+      metadata: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'JSON-formatted string of metadata pertaining to the Action' }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The date-time at which this Action was created' }),
+      created_by_user_id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The obfuscated Id of the User who created this Action' }),
+      inputs: z
+        .array(IncidentWorkflowActionAllOf1InputsItemsSchema)
+        .exactOptional()
+        .openapi({ description: 'Inputs whose values used during Action execution' }),
+      outputs: z
+        .array(IncidentWorkflowActionAllOf1OutputsItemsSchema)
+        .exactOptional()
+        .openapi({
+          description: 'Outputs whose values set during Action execution',
+          readOnly: true,
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('IncidentWorkflowAction')
 
 const IncidentWorkflowInstanceSchema = z
   .object({
@@ -10685,106 +9793,67 @@ const IncidentWorkflowInstanceSchema = z
   .openapi({ required: [] })
   .openapi('IncidentWorkflowInstance')
 
-const IncidentWorkflowTriggerInstanceSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z.literal('incident_workflow_instance').exactOptional(),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A descriptive name for the Incident Workflow Instance' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'A description of what the Incident Workflow does' }),
-        status: z
-          .enum(['completed', 'running', 'queued'])
-          .exactOptional()
-          .openapi({ description: 'The current status of the Incident Workflow Instance' }),
-        started_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The timestamp this Incident Workflow started', readOnly: true }),
-        ended_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The timestamp this Incident Workflow ended', readOnly: true }),
-        workflow: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            name: z.string().nullable().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .literal('workflow_reference')
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-              }),
-            self: z
-              .url()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'the API show URL at which the object is accessible',
-              }),
-            html_url: z
-              .url()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'a URL at which the entity is uniquely displayed in the Web app',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'A reference to the Incident Workflow of which this is an instance',
-            required: [],
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('IncidentWorkflowTriggerInstance')
+const IncidentWorkflowTriggerInstanceSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z.literal('incident_workflow_instance').exactOptional(),
+      name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A descriptive name for the Incident Workflow Instance' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'A description of what the Incident Workflow does' }),
+      status: z
+        .enum(['completed', 'running', 'queued'])
+        .exactOptional()
+        .openapi({ description: 'The current status of the Incident Workflow Instance' }),
+      started_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp this Incident Workflow started', readOnly: true }),
+      ended_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({ description: 'The timestamp this Incident Workflow ended', readOnly: true }),
+      workflow: z
+        .object({
+          id: z.string().exactOptional().openapi({ readOnly: true }),
+          name: z.string().nullable().exactOptional().openapi({ readOnly: true }),
+          type: z
+            .literal('workflow_reference')
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description:
+                'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+            }),
+          self: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'the API show URL at which the object is accessible',
+            }),
+          html_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'a URL at which the entity is uniquely displayed in the Web app',
+            }),
+        })
+        .exactOptional()
+        .openapi({
+          description: 'A reference to the Incident Workflow of which this is an instance',
+          required: [],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('IncidentWorkflowTriggerInstance')
 
 const IncidentWorkflowActionInvocationSchema = z
   .object({
@@ -10796,260 +9865,155 @@ const IncidentWorkflowActionInvocationSchema = z
       .openapi({ description: 'Reference to the Action that was invoked' }),
     inputs: z
       .array(
-        z
-          .object({
-            name: z.string().exactOptional().openapi({ description: 'The name of the Input' }),
-            description: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Describes what the purpose of the Input' }),
-            type: z
-              .enum([
-                'text',
-                'password',
-                'integer',
-                'decimal',
-                'date',
-                'dateTime',
-                'boolean',
-                'singleChoice',
-                'multipleChoice',
-                'json',
-                'connection',
-                'trigger',
-              ])
-              .exactOptional()
-              .openapi({ description: 'The data type of this Input' }),
-            default_value: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'Serialized form of the default value that the input will take',
-              }),
-            is_required: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Whether a value must be provided for this input' }),
-            is_hidden: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'If true then this input will not be shown to users when configuring this action',
-              }),
-            advanced: z.boolean().exactOptional(),
-            metadata: z.string().exactOptional(),
-            connection_type_id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'The configured value of the Input' }),
-          })
-          .openapi({ required: [] })
-          .and(z.object({ value: z.string().exactOptional() }).openapi({ required: [] })),
+        IncidentWorkflowActionAllOf1InputsItemsSchema.and(
+          z.object({ value: z.string().exactOptional() }).openapi({ required: [] }),
+        ),
       )
       .exactOptional(),
     outputs: z
       .array(
-        z
-          .object({
-            name: z.string().exactOptional().openapi({ description: 'The name of the Output' }),
-            description: z.string().exactOptional(),
-            type: z
-              .enum([
-                'text',
-                'password',
-                'integer',
-                'decimal',
-                'date',
-                'dateTime',
-                'boolean',
-                'singleChoice',
-                'multipleChoice',
-                'json',
-              ])
-              .exactOptional()
-              .openapi({ description: 'The data type produced by this Output' }),
-          })
-          .openapi({ required: [] })
-          .and(z.object({ value: z.string().exactOptional() }).openapi({ required: [] })),
+        IncidentWorkflowActionAllOf1OutputsItemsSchema.and(
+          z.object({ value: z.string().exactOptional() }).openapi({ required: [] }),
+        ),
       )
       .exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('IncidentWorkflowActionInvocation')
 
-const IncidentWorkflowTriggerSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        type: z.literal('workflow_trigger').exactOptional(),
-        trigger_type_name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Human readable name for the trigger type' }),
-        trigger_type: z.enum(['conditional', 'manual', 'incident_type']).exactOptional(),
-        condition: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
-          }),
-        trigger_url: z.url().exactOptional(),
-        incident_types: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({
-            description:
-              'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
-          }),
-        workflow: z
-          .object({
-            id: z.string().exactOptional(),
-            type: z
-              .literal('workflow_reference')
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-              }),
-            name: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'A descriptive name for the Incident Workflow' }),
-            self: z
-              .url()
-              .nullable()
-              .exactOptional()
-              .openapi({ description: 'the API show URL at which the object is accessible' }),
-            html_url: z
-              .url()
-              .nullable()
-              .exactOptional()
-              .openapi({
-                description: 'a URL at which the entity is uniquely displayed in the Web app',
-              }),
-          })
-          .exactOptional()
-          .openapi({ description: 'Workflow to start when this trigger is invoked', required: [] }),
-        services: z
-          .array(
-            z
-              .object({
-                id: z.string().exactOptional(),
-                summary: z
-                  .string()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-                  }),
-                type: z
-                  .literal('service')
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                  }),
-                self: z
-                  .url()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({ description: 'the API show URL at which the object is accessible' }),
-                html_url: z
-                  .url()
-                  .nullable()
-                  .exactOptional()
-                  .openapi({
-                    description: 'a URL at which the entity is uniquely displayed in the Web app',
-                  }),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
-          }),
-        is_subscribed_to_all_services: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description: 'Indicates that the Trigger should be associated with All Services',
-          }),
-        permissions: z
-          .object({
-            restricted: z
-              .boolean()
-              .exactOptional()
-              .openapi({
-                description:
-                  'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
-              }),
-            team_id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
-            required: [],
-          }),
-        is_disabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Indicates whether the Trigger is disabled or not. Inherited from the "is_enabled" property on the workflow\nto which this trigger belongs. This attribute is deprecated, and will be removed in a future version of \nthis API.\n',
-            deprecated: true,
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('IncidentWorkflowTrigger')
+const IncidentWorkflowTriggerSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      type: z.literal('workflow_trigger').exactOptional(),
+      trigger_type_name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'Human readable name for the trigger type' }),
+      trigger_type: z.enum(['conditional', 'manual', 'incident_type']).exactOptional(),
+      condition: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
+        }),
+      trigger_url: z.url().exactOptional(),
+      incident_types: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({
+          description:
+            'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
+        }),
+      workflow: z
+        .object({
+          id: z.string().exactOptional(),
+          type: z
+            .literal('workflow_reference')
+            .exactOptional()
+            .openapi({
+              description:
+                'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+            }),
+          name: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'A descriptive name for the Incident Workflow' }),
+          self: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({ description: 'the API show URL at which the object is accessible' }),
+          html_url: z
+            .url()
+            .nullable()
+            .exactOptional()
+            .openapi({
+              description: 'a URL at which the entity is uniquely displayed in the Web app',
+            }),
+        })
+        .exactOptional()
+        .openapi({ description: 'Workflow to start when this trigger is invoked', required: [] }),
+      services: z
+        .array(
+          z
+            .object({
+              id: z.string().exactOptional(),
+              summary: z
+                .string()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
+                }),
+              type: z
+                .literal('service')
+                .exactOptional()
+                .openapi({
+                  description:
+                    'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
+                }),
+              self: z
+                .url()
+                .nullable()
+                .exactOptional()
+                .openapi({ description: 'the API show URL at which the object is accessible' }),
+              html_url: z
+                .url()
+                .nullable()
+                .exactOptional()
+                .openapi({
+                  description: 'a URL at which the entity is uniquely displayed in the Web app',
+                }),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional()
+        .openapi({
+          description:
+            'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
+        }),
+      is_subscribed_to_all_services: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description: 'Indicates that the Trigger should be associated with All Services',
+        }),
+      permissions: z
+        .object({
+          restricted: z
+            .boolean()
+            .exactOptional()
+            .openapi({
+              description:
+                'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
+            }),
+          team_id: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description:
+                'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
+            }),
+        })
+        .exactOptional()
+        .openapi({
+          description:
+            'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
+          required: [],
+        }),
+      is_disabled: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Indicates whether the Trigger is disabled or not. Inherited from the "is_enabled" property on the workflow\nto which this trigger belongs. This attribute is deprecated, and will be removed in a future version of \nthis API.\n',
+          deprecated: true,
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('IncidentWorkflowTrigger')
 
 const CidrEntrySchema = z
   .object({
@@ -11077,6 +10041,29 @@ const CidrEntrySchema = z
   .openapi({ description: 'A single CIDR entry within an IP allow list.', required: ['cidr'] })
   .openapi('CidrEntry')
 
+const IpAllowListTypeSchema = z
+  .literal('ip_allow_list')
+  .default('ip_allow_list')
+  .openapi({ description: 'A string that determines the schema of the object.', readOnly: true })
+  .openapi('IpAllowListType')
+
+const IpAllowListStateSchema = z
+  .enum(['enabled', 'disabled'])
+  .openapi({
+    description:
+      'Whether the allow list is enforced for the account. When `enabled`, only\nrequests from IPs matching one of the `cidr_entries` are permitted to\naccess the subdomain. When `disabled`, the allow list is stored but not\nenforced.\n',
+  })
+  .openapi('IpAllowListState')
+
+const IpAllowListCidrEntriesSchema = z
+  .array(CidrEntrySchema)
+  .max(100)
+  .openapi({
+    description:
+      'The CIDR ranges that are allowed when the allow list is `enabled`. Must\nbe non-empty when `state` is `enabled`.\n',
+  })
+  .openapi('IpAllowListCidrEntries')
+
 const IpAllowListTargetSchema = z
   .object({
     type: z.literal('surface').openapi({ description: 'The kind of target.' }),
@@ -11091,6 +10078,23 @@ const IpAllowListTargetSchema = z
   })
   .openapi('IpAllowListTarget')
 
+const IpAllowListTargetsSchema = z
+  .array(IpAllowListTargetSchema)
+  .min(1)
+  .superRefine((items, ctx) => {
+    const seen = new Map()
+    for (const [i, val] of items.entries()) {
+      const key = JSON.stringify(val)
+      if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
+      else seen.set(key, i)
+    }
+  })
+  .openapi({
+    description:
+      'The surfaces the allow list is enforced on. Must be non-empty and must\nnot contain duplicates.\n',
+  })
+  .openapi('IpAllowListTargets')
+
 const IpAllowListSchema = z
   .object({
     id: z
@@ -11100,42 +10104,10 @@ const IpAllowListSchema = z
         description: 'Unique identifier for the allow list\n(e.g. `AGIS47HYOV6BDODBTMQKMPQPHU`).\n',
         readOnly: true,
       }),
-    type: z
-      .literal('ip_allow_list')
-      .default('ip_allow_list')
-      .exactOptional()
-      .openapi({
-        description: 'A string that determines the schema of the object.',
-        readOnly: true,
-      }),
-    state: z
-      .enum(['enabled', 'disabled'])
-      .openapi({
-        description:
-          'Whether the allow list is enforced for the account. When `enabled`, only\nrequests from IPs matching one of the `cidr_entries` are permitted to\naccess the subdomain. When `disabled`, the allow list is stored but not\nenforced.\n',
-      }),
-    cidr_entries: z
-      .array(CidrEntrySchema)
-      .max(100)
-      .openapi({
-        description:
-          'The CIDR ranges that are allowed when the allow list is `enabled`. Must\nbe non-empty when `state` is `enabled`.\n',
-      }),
-    targets: z
-      .array(IpAllowListTargetSchema)
-      .min(1)
-      .superRefine((items, ctx) => {
-        const seen = new Map()
-        for (const [i, val] of items.entries()) {
-          const key = JSON.stringify(val)
-          if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-          else seen.set(key, i)
-        }
-      })
-      .openapi({
-        description:
-          'The surfaces the allow list is enforced on. Must be non-empty and must\nnot contain duplicates.\n',
-      }),
+    type: IpAllowListTypeSchema.exactOptional(),
+    state: IpAllowListStateSchema,
+    cidr_entries: IpAllowListCidrEntriesSchema,
+    targets: IpAllowListTargetsSchema,
   })
   .openapi({
     description:
@@ -11159,10 +10131,10 @@ const IpAllowListSchema = z
 
 const IpAllowListUpdateSchema = z
   .object({
-    type: z.lazy(() => IpAllowListSchema).exactOptional(),
-    state: z.lazy(() => IpAllowListSchema).exactOptional(),
-    cidr_entries: z.lazy(() => IpAllowListSchema).exactOptional(),
-    targets: z.lazy(() => IpAllowListSchema).exactOptional(),
+    type: IpAllowListTypeSchema.exactOptional(),
+    state: IpAllowListStateSchema.exactOptional(),
+    cidr_entries: IpAllowListCidrEntriesSchema.exactOptional(),
+    targets: IpAllowListTargetsSchema.exactOptional(),
   })
   .openapi({
     description:
@@ -12468,7 +11440,7 @@ const OrchestrationSchema = z
   .openapi({ required: [] })
   .openapi('Orchestration')
 
-const OrchestrationCacheVariableTriggerEventCountSchema = z
+const OrchestrationCacheVariableRecentValueAllOf0Schema = z
   .object({
     id: z.string().exactOptional().openapi({ readOnly: true }),
     name: z.string().openapi({ description: 'The name of the Cache Variable' }),
@@ -12539,7 +11511,10 @@ const OrchestrationCacheVariableTriggerEventCountSchema = z
       }),
   })
   .openapi({ required: ['name', 'configuration'] })
-  .and(
+  .openapi('OrchestrationCacheVariableRecentValueAllOf0')
+
+const OrchestrationCacheVariableTriggerEventCountSchema =
+  OrchestrationCacheVariableRecentValueAllOf0Schema.and(
     z
       .object({
         configuration: z
@@ -12584,81 +11559,11 @@ const OrchestrationCacheVariableTriggerEventCountSchema = z
       })
       .openapi({ required: [] }),
   )
-  .openapi({ title: 'Trigger Event Count' })
-  .openapi('OrchestrationCacheVariableTriggerEventCount')
+    .openapi({ title: 'Trigger Event Count' })
+    .openapi('OrchestrationCacheVariableTriggerEventCount')
 
-const OrchestrationCacheVariableRecentValueSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    name: z.string().openapi({ description: 'The name of the Cache Variable' }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Cache Variable is disabled and would therefore not be evaluated.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-    created_by: z
-      .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-            readOnly: true,
-          }),
-        self: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The API show URL at which the object is accessible',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the user that created the object.',
-        readOnly: true,
-        required: [],
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-    updated_by: z
-      .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-            readOnly: true,
-          }),
-        self: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The API show URL at which the object is accessible',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the user that last updated the object.',
-        readOnly: true,
-        required: [],
-      }),
-  })
-  .openapi({ required: ['name', 'configuration'] })
-  .and(
+const OrchestrationCacheVariableRecentValueSchema =
+  OrchestrationCacheVariableRecentValueAllOf0Schema.and(
     z
       .object({
         configuration: z
@@ -12711,81 +11616,11 @@ const OrchestrationCacheVariableRecentValueSchema = z
       })
       .openapi({ required: [] }),
   )
-  .openapi({ title: 'Recent Value' })
-  .openapi('OrchestrationCacheVariableRecentValue')
+    .openapi({ title: 'Recent Value' })
+    .openapi('OrchestrationCacheVariableRecentValue')
 
-const OrchestrationCacheVariableExternalDataSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    name: z.string().openapi({ description: 'The name of the Cache Variable' }),
-    disabled: z
-      .boolean()
-      .exactOptional()
-      .openapi({
-        description:
-          'Indicates whether the Cache Variable is disabled and would therefore not be evaluated.',
-      }),
-    created_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-    created_by: z
-      .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-            readOnly: true,
-          }),
-        self: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The API show URL at which the object is accessible',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the user that created the object.',
-        readOnly: true,
-        required: [],
-      }),
-    updated_at: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-    updated_by: z
-      .object({
-        id: z.string().exactOptional().openapi({ readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-            readOnly: true,
-          }),
-        self: z
-          .url()
-          .exactOptional()
-          .openapi({
-            description: 'The API show URL at which the object is accessible',
-            readOnly: true,
-          }),
-      })
-      .exactOptional()
-      .openapi({
-        description: 'Reference to the user that last updated the object.',
-        readOnly: true,
-        required: [],
-      }),
-  })
-  .openapi({ required: ['name', 'configuration'] })
-  .and(
+const OrchestrationCacheVariableExternalDataSchema =
+  OrchestrationCacheVariableRecentValueAllOf0Schema.and(
     z
       .object({
         configuration: z
@@ -12825,192 +11660,11 @@ const OrchestrationCacheVariableExternalDataSchema = z
       })
       .openapi({ required: [] }),
   )
-  .openapi({ title: 'External Data' })
-  .openapi('OrchestrationCacheVariableExternalData')
+    .openapi({ title: 'External Data' })
+    .openapi('OrchestrationCacheVariableExternalData')
 
-const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> = z
-  .object({
-    orchestration_path: z
-      .object({
-        type: z.string().default('service').exactOptional().openapi({ readOnly: true }),
-        parent: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'ID of the object these Orchestration Rules belongs to.',
-                readOnly: true,
-              }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A string that determines the schema of the parent object',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the parent object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        sets: z
-          .array(
-            z
-              .object({
-                id: z
-                  .string()
-                  .default('start')
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The ID of this set of rules. Rules in other sets can route events into this set using the "route_to" properties.',
-                  }),
-                rules: z
-                  .array(
-                    z
-                      .object({
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'ID of the rule', readOnly: true }),
-                        label: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "A description of this rule's purpose." }),
-                        conditions: z
-                          .array(
-                            z
-                              .object({
-                                expression: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'A PCL condition string',
-                                    example: "event.summary matches part 'my service error'",
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
-                          }),
-                        actions: z
-                          .looseObject({})
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'When an event matches this rule, these are the actions that will be taken to change the resulting alert and incident.',
-                          }),
-                        disabled: z
-                          .boolean()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Indicates whether the rule is disabled and would therefore not be evaluated.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-              })
-              .openapi({ description: 'A set of rules', required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Must contain at least a "start" set, but can contain any number of additional sets that are routed to by other rules to form a directional graph of rules.',
-          }),
-        catch_all: z
-          .object({
-            actions: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({
-                description:
-                  'These are the actions that will be taken to change the resulting alert and incident.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'When none of the Rules in a set match an event, we apply the catch_all actions to the event.',
-            required: [],
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-        created_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that created the object.',
-            readOnly: true,
-            required: [],
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-        updated_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that last updated the object.',
-            readOnly: true,
-            required: [],
-          }),
-        version: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Version of these Orchestration Rules', readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['orchestration_path'] })
-  .and(
+const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> =
+  OrchestrationGlobalAllOf0Schema.and(
     z
       .object({
         orchestration_path: z
@@ -13059,342 +11713,22 @@ const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> = z
                                       })
                                       .openapi({ required: [] })
                                       .and(
-                                        z
-                                          .object({
-                                            suppress: z
-                                              .boolean()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
-                                              }),
-                                            suspend: z
-                                              .int()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
-                                              }),
-                                            drop_event: z
-                                              .boolean()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'If true, this event will be dropped. Dropped events will not trigger or resolve an alert or an incident. Dropped events will not be evaluated against router rules.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0Schema,
                                       )
                                       .and(
-                                        z
-                                          .object({
-                                            priority: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.',
-                                                example: 'P53ZZH5',
-                                              }),
-                                            escalation_policy: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  "The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.",
-                                                example: 'PQOMK4S',
-                                              }),
-                                            annotate: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema,
                                       )
                                       .and(
-                                        z
-                                          .object({
-                                            severity: z
-                                              .enum(['info', 'error', 'warning', 'critical'])
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Set the severity of the resulting alert.',
-                                              }),
-                                            event_action: z
-                                              .enum(['trigger', 'resolve'])
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Set whether the resulting alert status is trigger or resolve.',
-                                              }),
-                                            variables: z
-                                              .array(
-                                                z
-                                                  .object({
-                                                    name: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description: 'The name of the variable',
-                                                        example: 'server_name',
-                                                      }),
-                                                    path: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'Path to a field in an event, in dot-notation.',
-                                                        example: 'event.summary',
-                                                      }),
-                                                    type: z
-                                                      .literal('regex')
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                                                      }),
-                                                    value: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                        example: 'High CPU on (.*) server',
-                                                      }),
-                                                  })
-                                                  .openapi({ required: [] }),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Populate variables from event payloads and use those variables in other event actions.',
-                                              }),
-                                            extractions: z
-                                              .array(
-                                                z.union([
-                                                  z
-                                                    .object({
-                                                      target: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The PD-CEF field that will be set with the value from the template.',
-                                                          example: 'event.summary',
-                                                        }),
-                                                      template: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                                          example:
-                                                            'High CPU on {{hostname}} server',
-                                                        }),
-                                                    })
-                                                    .openapi({
-                                                      description:
-                                                        'Use a template string & variables',
-                                                      required: [],
-                                                    }),
-                                                  z
-                                                    .object({
-                                                      target: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The PD-CEF field that will be set with the value from the regex.',
-                                                          example: 'event.custom_details.server',
-                                                        }),
-                                                      regex: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                          example: 'High CPU on (.*) server',
-                                                        }),
-                                                      source: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The path to the event field where the regex will be applied to extract a value.',
-                                                          example: 'event.summary',
-                                                        }),
-                                                    })
-                                                    .openapi({
-                                                      description: 'Use a regex to extract a value',
-                                                      required: [],
-                                                    }),
-                                                ]),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema,
                                       )
                                       .and(
-                                        z
-                                          .object({
-                                            automation_actions: z
-                                              .array(
-                                                z
-                                                  .object({
-                                                    name: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description: 'The name of the Webhook.',
-                                                      }),
-                                                    url: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          "The API endpoint where PagerDuty's servers will send the webhook request.",
-                                                      }),
-                                                    auto_send: z
-                                                      .boolean()
-                                                      .default(false)
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          "When true, PagerDuty's servers will automatically send this webhook request as soon as the resulting incident or alert is created. When false, your incident responder will be able to manually trigger the Webhook via the PagerDuty website & mobile app.",
-                                                      }),
-                                                    headers: z
-                                                      .array(
-                                                        z
-                                                          .object({
-                                                            key: z.string().exactOptional(),
-                                                            value: z
-                                                              .string()
-                                                              .exactOptional()
-                                                              .openapi({
-                                                                description:
-                                                                  'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the header value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                                              }),
-                                                          })
-                                                          .openapi({ required: [] }),
-                                                      )
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          "Specify custom key/value pairs that'll be sent with the webhook request as request headers.",
-                                                      }),
-                                                    trigger_types: z
-                                                      .array(
-                                                        z.enum([
-                                                          'alert_triggered',
-                                                          'alert_suppressed',
-                                                          'alert_suspended',
-                                                        ]),
-                                                      )
-                                                      .length(1)
-                                                      .superRefine((items, ctx) => {
-                                                        const seen = new Map()
-                                                        for (const [i, val] of items.entries()) {
-                                                          const key = JSON.stringify(val)
-                                                          if (seen.has(key))
-                                                            ctx.addIssue({
-                                                              code: 'custom',
-                                                              path: [i],
-                                                            })
-                                                          else seen.set(key, i)
-                                                        }
-                                                      })
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'The Webhook will be associated (or automatically triggered, if `auto_send` is `true`) with the incident, whenever an alert reaches the specified state\n\nNote: `auto_send` must be `true` for trigger types of `alert_suppressed` and `alert_suspended`\n',
-                                                      }),
-                                                    parameters: z
-                                                      .array(
-                                                        z
-                                                          .object({
-                                                            key: z.string().exactOptional(),
-                                                            value: z
-                                                              .string()
-                                                              .exactOptional()
-                                                              .openapi({
-                                                                description:
-                                                                  'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.',
-                                                              }),
-                                                          })
-                                                          .openapi({ required: [] }),
-                                                      )
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          "Specify custom key/value pairs that'll be included in the webhook request's JSON payload.",
-                                                      }),
-                                                  })
-                                                  .openapi({ required: [] }),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Create a Webhoook associated with the resulting incident.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema,
                                       )
                                       .and(
-                                        z
-                                          .object({
-                                            incident_type: z
-                                              .string()
-                                              .nullable()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
-                                                example: 'PT10C33',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema,
                                       )
                                       .and(
-                                        z
-                                          .object({
-                                            incident_custom_field_updates: z
-                                              .array(
-                                                z
-                                                  .object({
-                                                    id: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.',
-                                                        example: 'PEXCK89',
-                                                      }),
-                                                    value: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                                        example: 'High CPU on server',
-                                                      }),
-                                                  })
-                                                  .openapi({ required: [] }),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Configure custom field updates for the incident.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema,
                                       )
                                       .exactOptional(),
                                   })
@@ -13425,329 +11759,13 @@ const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> = z
               }),
             catch_all: z
               .object({
-                actions: z
-                  .object({
-                    suppress: z
-                      .boolean()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
-                      }),
-                    suspend: z
-                      .int()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
-                      }),
-                    drop_event: z
-                      .boolean()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'If true, this event will be dropped. Dropped events will not trigger or resolve an alert or an incident. Dropped events will not be evaluated against router rules.',
-                      }),
-                  })
-                  .openapi({ required: [] })
-                  .and(
-                    z
-                      .object({
-                        priority: z
-                          .string()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.',
-                            example: 'P53ZZH5',
-                          }),
-                        escalation_policy: z
-                          .string()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.",
-                            example: 'PQOMK4S',
-                          }),
-                        annotate: z
-                          .string()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        severity: z
-                          .enum(['info', 'error', 'warning', 'critical'])
-                          .exactOptional()
-                          .openapi({ description: 'Set the severity of the resulting alert.' }),
-                        event_action: z
-                          .enum(['trigger', 'resolve'])
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Set whether the resulting alert status is trigger or resolve.',
-                          }),
-                        variables: z
-                          .array(
-                            z
-                              .object({
-                                name: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'The name of the variable',
-                                    example: 'server_name',
-                                  }),
-                                path: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'Path to a field in an event, in dot-notation.',
-                                    example: 'event.summary',
-                                  }),
-                                type: z
-                                  .literal('regex')
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                                  }),
-                                value: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                    example: 'High CPU on (.*) server',
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Populate variables from event payloads and use those variables in other event actions.',
-                          }),
-                        extractions: z
-                          .array(
-                            z.union([
-                              z
-                                .object({
-                                  target: z
-                                    .string()
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'The PD-CEF field that will be set with the value from the template.',
-                                      example: 'event.summary',
-                                    }),
-                                  template: z
-                                    .string()
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                      example: 'High CPU on {{hostname}} server',
-                                    }),
-                                })
-                                .openapi({
-                                  description: 'Use a template string & variables',
-                                  required: [],
-                                }),
-                              z
-                                .object({
-                                  target: z
-                                    .string()
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'The PD-CEF field that will be set with the value from the regex.',
-                                      example: 'event.custom_details.server',
-                                    }),
-                                  regex: z
-                                    .string()
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                      example: 'High CPU on (.*) server',
-                                    }),
-                                  source: z
-                                    .string()
-                                    .exactOptional()
-                                    .openapi({
-                                      description:
-                                        'The path to the event field where the regex will be applied to extract a value.',
-                                      example: 'event.summary',
-                                    }),
-                                })
-                                .openapi({
-                                  description: 'Use a regex to extract a value',
-                                  required: [],
-                                }),
-                            ]),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        automation_actions: z
-                          .array(
-                            z
-                              .object({
-                                name: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({ description: 'The name of the Webhook.' }),
-                                url: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "The API endpoint where PagerDuty's servers will send the webhook request.",
-                                  }),
-                                auto_send: z
-                                  .boolean()
-                                  .default(false)
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "When true, PagerDuty's servers will automatically send this webhook request as soon as the resulting incident or alert is created. When false, your incident responder will be able to manually trigger the Webhook via the PagerDuty website & mobile app.",
-                                  }),
-                                headers: z
-                                  .array(
-                                    z
-                                      .object({
-                                        key: z.string().exactOptional(),
-                                        value: z
-                                          .string()
-                                          .exactOptional()
-                                          .openapi({
-                                            description:
-                                              'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the header value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                          }),
-                                      })
-                                      .openapi({ required: [] }),
-                                  )
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "Specify custom key/value pairs that'll be sent with the webhook request as request headers.",
-                                  }),
-                                trigger_types: z
-                                  .array(
-                                    z.enum([
-                                      'alert_triggered',
-                                      'alert_suppressed',
-                                      'alert_suspended',
-                                    ]),
-                                  )
-                                  .length(1)
-                                  .superRefine((items, ctx) => {
-                                    const seen = new Map()
-                                    for (const [i, val] of items.entries()) {
-                                      const key = JSON.stringify(val)
-                                      if (seen.has(key)) ctx.addIssue({ code: 'custom', path: [i] })
-                                      else seen.set(key, i)
-                                    }
-                                  })
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'The Webhook will be associated (or automatically triggered, if `auto_send` is `true`) with the incident, whenever an alert reaches the specified state\n\nNote: `auto_send` must be `true` for trigger types of `alert_suppressed` and `alert_suspended`\n',
-                                  }),
-                                parameters: z
-                                  .array(
-                                    z
-                                      .object({
-                                        key: z.string().exactOptional(),
-                                        value: z
-                                          .string()
-                                          .exactOptional()
-                                          .openapi({
-                                            description:
-                                              'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.',
-                                          }),
-                                      })
-                                      .openapi({ required: [] }),
-                                  )
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      "Specify custom key/value pairs that'll be included in the webhook request's JSON payload.",
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Create a Webhoook associated with the resulting incident.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        incident_type: z
-                          .string()
-                          .nullable()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
-                            example: 'PT10C33',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .and(
-                    z
-                      .object({
-                        incident_custom_field_updates: z
-                          .array(
-                            z
-                              .object({
-                                id: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.',
-                                    example: 'PEXCK89',
-                                  }),
-                                value: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description:
-                                      'A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                    example: 'High CPU on server',
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description: 'Configure custom field updates for the incident.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
+                actions: OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf0Schema.and(
+                  OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema,
+                )
+                  .and(OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema)
+                  .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema)
+                  .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema)
+                  .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema)
                   .exactOptional(),
               })
               .exactOptional()
@@ -13875,192 +11893,10 @@ const OrchestrationGlobalSchema: z.ZodType<OrchestrationGlobalType> = z
         },
         required: [],
       }),
-  )
-  .openapi('OrchestrationGlobal')
+  ).openapi('OrchestrationGlobal')
 
-const OrchestrationRouterSchema: z.ZodType<OrchestrationRouterType> = z
-  .object({
-    orchestration_path: z
-      .object({
-        type: z.string().default('service').exactOptional().openapi({ readOnly: true }),
-        parent: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'ID of the object these Orchestration Rules belongs to.',
-                readOnly: true,
-              }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A string that determines the schema of the parent object',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the parent object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        sets: z
-          .array(
-            z
-              .object({
-                id: z
-                  .string()
-                  .default('start')
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The ID of this set of rules. Rules in other sets can route events into this set using the "route_to" properties.',
-                  }),
-                rules: z
-                  .array(
-                    z
-                      .object({
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'ID of the rule', readOnly: true }),
-                        label: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "A description of this rule's purpose." }),
-                        conditions: z
-                          .array(
-                            z
-                              .object({
-                                expression: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'A PCL condition string',
-                                    example: "event.summary matches part 'my service error'",
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
-                          }),
-                        actions: z
-                          .looseObject({})
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'When an event matches this rule, these are the actions that will be taken to change the resulting alert and incident.',
-                          }),
-                        disabled: z
-                          .boolean()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Indicates whether the rule is disabled and would therefore not be evaluated.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-              })
-              .openapi({ description: 'A set of rules', required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Must contain at least a "start" set, but can contain any number of additional sets that are routed to by other rules to form a directional graph of rules.',
-          }),
-        catch_all: z
-          .object({
-            actions: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({
-                description:
-                  'These are the actions that will be taken to change the resulting alert and incident.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'When none of the Rules in a set match an event, we apply the catch_all actions to the event.',
-            required: [],
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-        created_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that created the object.',
-            readOnly: true,
-            required: [],
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-        updated_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that last updated the object.',
-            readOnly: true,
-            required: [],
-          }),
-        version: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Version of these Orchestration Rules', readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['orchestration_path'] })
-  .and(
+const OrchestrationRouterSchema: z.ZodType<OrchestrationRouterType> =
+  OrchestrationGlobalAllOf0Schema.and(
     z
       .object({
         orchestration_path: z
@@ -14248,192 +12084,10 @@ const OrchestrationRouterSchema: z.ZodType<OrchestrationRouterType> = z
         },
         required: [],
       }),
-  )
-  .openapi('OrchestrationRouter')
+  ).openapi('OrchestrationRouter')
 
-const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> = z
-  .object({
-    orchestration_path: z
-      .object({
-        type: z.string().default('service').exactOptional().openapi({ readOnly: true }),
-        parent: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'ID of the object these Orchestration Rules belongs to.',
-                readOnly: true,
-              }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A string that determines the schema of the parent object',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the parent object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        sets: z
-          .array(
-            z
-              .object({
-                id: z
-                  .string()
-                  .default('start')
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The ID of this set of rules. Rules in other sets can route events into this set using the "route_to" properties.',
-                  }),
-                rules: z
-                  .array(
-                    z
-                      .object({
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'ID of the rule', readOnly: true }),
-                        label: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "A description of this rule's purpose." }),
-                        conditions: z
-                          .array(
-                            z
-                              .object({
-                                expression: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'A PCL condition string',
-                                    example: "event.summary matches part 'my service error'",
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
-                          }),
-                        actions: z
-                          .looseObject({})
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'When an event matches this rule, these are the actions that will be taken to change the resulting alert and incident.',
-                          }),
-                        disabled: z
-                          .boolean()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Indicates whether the rule is disabled and would therefore not be evaluated.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-              })
-              .openapi({ description: 'A set of rules', required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Must contain at least a "start" set, but can contain any number of additional sets that are routed to by other rules to form a directional graph of rules.',
-          }),
-        catch_all: z
-          .object({
-            actions: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({
-                description:
-                  'These are the actions that will be taken to change the resulting alert and incident.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'When none of the Rules in a set match an event, we apply the catch_all actions to the event.',
-            required: [],
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-        created_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that created the object.',
-            readOnly: true,
-            required: [],
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-        updated_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that last updated the object.',
-            readOnly: true,
-            required: [],
-          }),
-        version: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Version of these Orchestration Rules', readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['orchestration_path'] })
-  .and(
+const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> =
+  OrchestrationGlobalAllOf0Schema.and(
     z
       .object({
         orchestration_path: z
@@ -14482,132 +12136,7 @@ const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> = z
                                       })
                                       .openapi({ required: [] })
                                       .and(
-                                        z
-                                          .object({
-                                            severity: z
-                                              .enum(['info', 'error', 'warning', 'critical'])
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Set the severity of the resulting alert.',
-                                              }),
-                                            event_action: z
-                                              .enum(['trigger', 'resolve'])
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Set whether the resulting alert status is trigger or resolve.',
-                                              }),
-                                            variables: z
-                                              .array(
-                                                z
-                                                  .object({
-                                                    name: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description: 'The name of the variable',
-                                                        example: 'server_name',
-                                                      }),
-                                                    path: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'Path to a field in an event, in dot-notation.',
-                                                        example: 'event.summary',
-                                                      }),
-                                                    type: z
-                                                      .literal('regex')
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                                                      }),
-                                                    value: z
-                                                      .string()
-                                                      .exactOptional()
-                                                      .openapi({
-                                                        description:
-                                                          'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                        example: 'High CPU on (.*) server',
-                                                      }),
-                                                  })
-                                                  .openapi({ required: [] }),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Populate variables from event payloads and use those variables in other event actions.',
-                                              }),
-                                            extractions: z
-                                              .array(
-                                                z.union([
-                                                  z
-                                                    .object({
-                                                      target: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The PD-CEF field that will be set with the value from the template.',
-                                                          example: 'event.summary',
-                                                        }),
-                                                      template: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                                          example:
-                                                            'High CPU on {{hostname}} server',
-                                                        }),
-                                                    })
-                                                    .openapi({
-                                                      description:
-                                                        'Use a template string & variables',
-                                                      required: [],
-                                                    }),
-                                                  z
-                                                    .object({
-                                                      target: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The PD-CEF field that will be set with the value from the regex.',
-                                                          example: 'event.custom_details.server',
-                                                        }),
-                                                      regex: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                          example: 'High CPU on (.*) server',
-                                                        }),
-                                                      source: z
-                                                        .string()
-                                                        .exactOptional()
-                                                        .openapi({
-                                                          description:
-                                                            'The path to the event field where the regex will be applied to extract a value.',
-                                                          example: 'event.summary',
-                                                        }),
-                                                    })
-                                                    .openapi({
-                                                      description: 'Use a regex to extract a value',
-                                                      required: [],
-                                                    }),
-                                                ]),
-                                              )
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
+                                        OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema,
                                       )
                                       .exactOptional(),
                                   })
@@ -14638,127 +12167,8 @@ const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> = z
               }),
             catch_all: z
               .object({
-                actions: z
-                  .object({
-                    severity: z
-                      .enum(['info', 'error', 'warning', 'critical'])
-                      .exactOptional()
-                      .openapi({ description: 'Set the severity of the resulting alert.' }),
-                    event_action: z
-                      .enum(['trigger', 'resolve'])
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Set whether the resulting alert status is trigger or resolve.',
-                      }),
-                    variables: z
-                      .array(
-                        z
-                          .object({
-                            name: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'The name of the variable',
-                                example: 'server_name',
-                              }),
-                            path: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description: 'Path to a field in an event, in dot-notation.',
-                                example: 'event.summary',
-                              }),
-                            type: z
-                              .literal('regex')
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                              }),
-                            value: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                example: 'High CPU on (.*) server',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Populate variables from event payloads and use those variables in other event actions.',
-                      }),
-                    extractions: z
-                      .array(
-                        z.union([
-                          z
-                            .object({
-                              target: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'The PD-CEF field that will be set with the value from the template.',
-                                  example: 'event.summary',
-                                }),
-                              template: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                  example: 'High CPU on {{hostname}} server',
-                                }),
-                            })
-                            .openapi({
-                              description: 'Use a template string & variables',
-                              required: [],
-                            }),
-                          z
-                            .object({
-                              target: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'The PD-CEF field that will be set with the value from the regex.',
-                                  example: 'event.custom_details.server',
-                                }),
-                              regex: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                  example: 'High CPU on (.*) server',
-                                }),
-                              source: z
-                                .string()
-                                .exactOptional()
-                                .openapi({
-                                  description:
-                                    'The path to the event field where the regex will be applied to extract a value.',
-                                  example: 'event.summary',
-                                }),
-                            })
-                            .openapi({
-                              description: 'Use a regex to extract a value',
-                              required: [],
-                            }),
-                        ]),
-                      )
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                      }),
-                  })
-                  .exactOptional()
-                  .openapi({ required: [] }),
+                actions:
+                  OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema.exactOptional(),
               })
               .exactOptional()
               .openapi({ required: [] }),
@@ -14821,192 +12231,10 @@ const OrchestrationUnroutedSchema: z.ZodType<OrchestrationUnroutedType> = z
         },
         required: [],
       }),
-  )
-  .openapi('OrchestrationUnrouted')
+  ).openapi('OrchestrationUnrouted')
 
-const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> = z
-  .object({
-    orchestration_path: z
-      .object({
-        type: z.string().default('service').exactOptional().openapi({ readOnly: true }),
-        parent: z
-          .object({
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'ID of the object these Orchestration Rules belongs to.',
-                readOnly: true,
-              }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A string that determines the schema of the parent object',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the parent object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        sets: z
-          .array(
-            z
-              .object({
-                id: z
-                  .string()
-                  .default('start')
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'The ID of this set of rules. Rules in other sets can route events into this set using the "route_to" properties.',
-                  }),
-                rules: z
-                  .array(
-                    z
-                      .object({
-                        id: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: 'ID of the rule', readOnly: true }),
-                        label: z
-                          .string()
-                          .exactOptional()
-                          .openapi({ description: "A description of this rule's purpose." }),
-                        conditions: z
-                          .array(
-                            z
-                              .object({
-                                expression: z
-                                  .string()
-                                  .exactOptional()
-                                  .openapi({
-                                    description: 'A PCL condition string',
-                                    example: "event.summary matches part 'my service error'",
-                                  }),
-                              })
-                              .openapi({ required: [] }),
-                          )
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Each of these conditions is evaluated to check if an event matches this rule. The rule is considered a match if **any** of these conditions match.',
-                          }),
-                        actions: z
-                          .looseObject({})
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'When an event matches this rule, these are the actions that will be taken to change the resulting alert and incident.',
-                          }),
-                        disabled: z
-                          .boolean()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'Indicates whether the rule is disabled and would therefore not be evaluated.',
-                          }),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-              })
-              .openapi({ description: 'A set of rules', required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description:
-              'Must contain at least a "start" set, but can contain any number of additional sets that are routed to by other rules to form a directional graph of rules.',
-          }),
-        catch_all: z
-          .object({
-            actions: z
-              .looseObject({})
-              .exactOptional()
-              .openapi({
-                description:
-                  'These are the actions that will be taken to change the resulting alert and incident.',
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description:
-              'When none of the Rules in a set match an event, we apply the catch_all actions to the event.',
-            required: [],
-          }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was created.', readOnly: true }),
-        created_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that created the object.',
-            readOnly: true,
-            required: [],
-          }),
-        updated_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({ description: 'The date/time the object was last updated.', readOnly: true }),
-        updated_by: z
-          .object({
-            id: z.string().exactOptional().openapi({ readOnly: true }),
-            type: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description:
-                  'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                readOnly: true,
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                description: 'The API show URL at which the object is accessible',
-                readOnly: true,
-              }),
-          })
-          .exactOptional()
-          .openapi({
-            description: 'Reference to the user that last updated the object.',
-            readOnly: true,
-            required: [],
-          }),
-        version: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Version of these Orchestration Rules', readOnly: true }),
-      })
-      .openapi({ required: [] }),
-  })
-  .openapi({ required: ['orchestration_path'] })
-  .and(
+const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> =
+  OrchestrationGlobalAllOf0Schema.and(
     z
       .object({
         orchestration_path: z
@@ -15137,393 +12365,25 @@ const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> = z
                                           })
                                           .openapi({ required: [] })
                                           .and(
-                                            z
-                                              .object({
-                                                suppress: z
-                                                  .boolean()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
-                                                  }),
-                                                suspend: z
-                                                  .int()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0Schema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                priority: z
-                                                  .string()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.',
-                                                    example: 'P53ZZH5',
-                                                  }),
-                                                escalation_policy: z
-                                                  .string()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      "The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.",
-                                                    example: 'PQOMK4S',
-                                                  }),
-                                                annotate: z
-                                                  .string()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                severity: z
-                                                  .enum(['info', 'error', 'warning', 'critical'])
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Set the severity of the resulting alert.',
-                                                  }),
-                                                event_action: z
-                                                  .enum(['trigger', 'resolve'])
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Set whether the resulting alert status is trigger or resolve.',
-                                                  }),
-                                                variables: z
-                                                  .array(
-                                                    z
-                                                      .object({
-                                                        name: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description: 'The name of the variable',
-                                                            example: 'server_name',
-                                                          }),
-                                                        path: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'Path to a field in an event, in dot-notation.',
-                                                            example: 'event.summary',
-                                                          }),
-                                                        type: z
-                                                          .literal('regex')
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                                                          }),
-                                                        value: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                            example: 'High CPU on (.*) server',
-                                                          }),
-                                                      })
-                                                      .openapi({ required: [] }),
-                                                  )
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Populate variables from event payloads and use those variables in other event actions.',
-                                                  }),
-                                                extractions: z
-                                                  .array(
-                                                    z.union([
-                                                      z
-                                                        .object({
-                                                          target: z
-                                                            .string()
-                                                            .exactOptional()
-                                                            .openapi({
-                                                              description:
-                                                                'The PD-CEF field that will be set with the value from the template.',
-                                                              example: 'event.summary',
-                                                            }),
-                                                          template: z
-                                                            .string()
-                                                            .exactOptional()
-                                                            .openapi({
-                                                              description:
-                                                                'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                                              example:
-                                                                'High CPU on {{hostname}} server',
-                                                            }),
-                                                        })
-                                                        .openapi({
-                                                          description:
-                                                            'Use a template string & variables',
-                                                          required: [],
-                                                        }),
-                                                      z
-                                                        .object({
-                                                          target: z
-                                                            .string()
-                                                            .exactOptional()
-                                                            .openapi({
-                                                              description:
-                                                                'The PD-CEF field that will be set with the value from the regex.',
-                                                              example:
-                                                                'event.custom_details.server',
-                                                            }),
-                                                          regex: z
-                                                            .string()
-                                                            .exactOptional()
-                                                            .openapi({
-                                                              description:
-                                                                'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                                              example: 'High CPU on (.*) server',
-                                                            }),
-                                                          source: z
-                                                            .string()
-                                                            .exactOptional()
-                                                            .openapi({
-                                                              description:
-                                                                'The path to the event field where the regex will be applied to extract a value.',
-                                                              example: 'event.summary',
-                                                            }),
-                                                        })
-                                                        .openapi({
-                                                          description:
-                                                            'Use a regex to extract a value',
-                                                          required: [],
-                                                        }),
-                                                    ]),
-                                                  )
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                pagerduty_automation_actions: z
-                                                  .array(
-                                                    z
-                                                      .object({
-                                                        action_id: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description: 'Automation Action ID',
-                                                          }),
-                                                        trigger_types: z
-                                                          .array(
-                                                            z.enum([
-                                                              'alert_triggered',
-                                                              'alert_suppressed',
-                                                              'alert_suspended',
-                                                            ]),
-                                                          )
-                                                          .length(1)
-                                                          .superRefine((items, ctx) => {
-                                                            const seen = new Map()
-                                                            for (const [
-                                                              i,
-                                                              val,
-                                                            ] of items.entries()) {
-                                                              const key = JSON.stringify(val)
-                                                              if (seen.has(key))
-                                                                ctx.addIssue({
-                                                                  code: 'custom',
-                                                                  path: [i],
-                                                                })
-                                                              else seen.set(key, i)
-                                                            }
-                                                          })
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'The Automation Action will be triggered whenever an alert reaches the specified state',
-                                                          }),
-                                                      })
-                                                      .openapi({ required: [] }),
-                                                  )
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Configure an Automation Action to be run for certain alert states.',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3Schema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                automation_actions: z
-                                                  .array(
-                                                    z
-                                                      .object({
-                                                        name: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description: 'The name of the Webhook.',
-                                                          }),
-                                                        url: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              "The API endpoint where PagerDuty's servers will send the webhook request.",
-                                                          }),
-                                                        auto_send: z
-                                                          .boolean()
-                                                          .default(false)
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              "When true, PagerDuty's servers will automatically send this webhook request as soon as the resulting incident or alert is created. When false, your incident responder will be able to manually trigger the Webhook via the PagerDuty website & mobile app.",
-                                                          }),
-                                                        headers: z
-                                                          .array(
-                                                            z
-                                                              .object({
-                                                                key: z.string().exactOptional(),
-                                                                value: z
-                                                                  .string()
-                                                                  .exactOptional()
-                                                                  .openapi({
-                                                                    description:
-                                                                      'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the header value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                                                  }),
-                                                              })
-                                                              .openapi({ required: [] }),
-                                                          )
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              "Specify custom key/value pairs that'll be sent with the webhook request as request headers.",
-                                                          }),
-                                                        trigger_types: z
-                                                          .array(
-                                                            z.enum([
-                                                              'alert_triggered',
-                                                              'alert_suppressed',
-                                                              'alert_suspended',
-                                                            ]),
-                                                          )
-                                                          .length(1)
-                                                          .superRefine((items, ctx) => {
-                                                            const seen = new Map()
-                                                            for (const [
-                                                              i,
-                                                              val,
-                                                            ] of items.entries()) {
-                                                              const key = JSON.stringify(val)
-                                                              if (seen.has(key))
-                                                                ctx.addIssue({
-                                                                  code: 'custom',
-                                                                  path: [i],
-                                                                })
-                                                              else seen.set(key, i)
-                                                            }
-                                                          })
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'The Webhook will be associated (or automatically triggered, if `auto_send` is `true`) with the incident, whenever an alert reaches the specified state\n\nNote: `auto_send` must be `true` for trigger types of `alert_suppressed` and `alert_suspended`\n',
-                                                          }),
-                                                        parameters: z
-                                                          .array(
-                                                            z
-                                                              .object({
-                                                                key: z.string().exactOptional(),
-                                                                value: z
-                                                                  .string()
-                                                                  .exactOptional()
-                                                                  .openapi({
-                                                                    description:
-                                                                      'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.',
-                                                                  }),
-                                                              })
-                                                              .openapi({ required: [] }),
-                                                          )
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              "Specify custom key/value pairs that'll be included in the webhook request's JSON payload.",
-                                                          }),
-                                                      })
-                                                      .openapi({ required: [] }),
-                                                  )
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Create a Webhoook associated with the resulting incident.',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                incident_type: z
-                                                  .string()
-                                                  .nullable()
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
-                                                    example: 'PT10C33',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema,
                                           )
                                           .and(
-                                            z
-                                              .object({
-                                                incident_custom_field_updates: z
-                                                  .array(
-                                                    z
-                                                      .object({
-                                                        id: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.',
-                                                            example: 'PEXCK89',
-                                                          }),
-                                                        value: z
-                                                          .string()
-                                                          .exactOptional()
-                                                          .openapi({
-                                                            description:
-                                                              'A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                                            example: 'High CPU on server',
-                                                          }),
-                                                      })
-                                                      .openapi({ required: [] }),
-                                                  )
-                                                  .exactOptional()
-                                                  .openapi({
-                                                    description:
-                                                      'Configure custom field updates for the incident.',
-                                                  }),
-                                              })
-                                              .openapi({ required: [] }),
+                                            OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema,
                                           )
                                           .exactOptional(),
                                       })
@@ -15554,370 +12414,18 @@ const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> = z
                   }),
                 catch_all: z
                   .object({
-                    actions: z
-                      .object({
-                        suppress: z
-                          .boolean()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'If true, the resulting alert is suppressed. Suppressed alerts will not trigger an incident.',
-                          }),
-                        suspend: z
-                          .int()
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              "The number of seconds to suspend the resulting alert before triggering. This effectively pauses incident notifications. If a resolve event arrives before the alert triggers then PagerDuty won't create an incident for this the resulting alert.",
-                          }),
-                      })
-                      .openapi({ required: [] })
-                      .and(
-                        z
-                          .object({
-                            priority: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The ID of the priority you want to set on resulting incident. You can find the list of priority IDs for your account by calling the priorities endpoint.',
-                                example: 'P53ZZH5',
-                              }),
-                            escalation_policy: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  "The ID of the Escalation Policy you want to assign incidents to. Event rules with this action will override the Escalation Policy already set on a Service's settings, with what is configured by this action.",
-                                example: 'PQOMK4S',
-                              }),
-                            annotate: z
-                              .string()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Add this text as a note on the resulting incident. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the note. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
+                    actions:
+                      ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf0Schema.and(
+                        OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf1Schema,
                       )
-                      .and(
-                        z
-                          .object({
-                            severity: z
-                              .enum(['info', 'error', 'warning', 'critical'])
-                              .exactOptional()
-                              .openapi({ description: 'Set the severity of the resulting alert.' }),
-                            event_action: z
-                              .enum(['trigger', 'resolve'])
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Set whether the resulting alert status is trigger or resolve.',
-                              }),
-                            variables: z
-                              .array(
-                                z
-                                  .object({
-                                    name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description: 'The name of the variable',
-                                        example: 'server_name',
-                                      }),
-                                    path: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'Path to a field in an event, in dot-notation.',
-                                        example: 'event.summary',
-                                      }),
-                                    type: z
-                                      .literal('regex')
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'The type of operation to populate the variable. Currently only Regex-based variable extraction is supported.',
-                                      }),
-                                    value: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                        example: 'High CPU on (.*) server',
-                                      }),
-                                  })
-                                  .openapi({ required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Populate variables from event payloads and use those variables in other event actions.',
-                              }),
-                            extractions: z
-                              .array(
-                                z.union([
-                                  z
-                                    .object({
-                                      target: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({
-                                          description:
-                                            'The PD-CEF field that will be set with the value from the template.',
-                                          example: 'event.summary',
-                                        }),
-                                      template: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({
-                                          description:
-                                            'A value that will be used to populate the target PD-CEF field. You can include variables extracted from the payload by using string interpolation.',
-                                          example: 'High CPU on {{hostname}} server',
-                                        }),
-                                    })
-                                    .openapi({
-                                      description: 'Use a template string & variables',
-                                      required: [],
-                                    }),
-                                  z
-                                    .object({
-                                      target: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({
-                                          description:
-                                            'The PD-CEF field that will be set with the value from the regex.',
-                                          example: 'event.custom_details.server',
-                                        }),
-                                      regex: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({
-                                          description:
-                                            'A RE2 regular expression. If it contains one or more capture groups, their values will be extracted and appended together. If it contains no capture groups, the whole match is used.',
-                                          example: 'High CPU on (.*) server',
-                                        }),
-                                      source: z
-                                        .string()
-                                        .exactOptional()
-                                        .openapi({
-                                          description:
-                                            'The path to the event field where the regex will be applied to extract a value.',
-                                          example: 'event.summary',
-                                        }),
-                                    })
-                                    .openapi({
-                                      description: 'Use a regex to extract a value',
-                                      required: [],
-                                    }),
-                                ]),
-                              )
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Dynamically extract values to set and modify new and existing PD-CEF fields.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .and(
-                        z
-                          .object({
-                            pagerduty_automation_actions: z
-                              .array(
-                                z
-                                  .object({
-                                    action_id: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({ description: 'Automation Action ID' }),
-                                    trigger_types: z
-                                      .array(
-                                        z.enum([
-                                          'alert_triggered',
-                                          'alert_suppressed',
-                                          'alert_suspended',
-                                        ]),
-                                      )
-                                      .length(1)
-                                      .superRefine((items, ctx) => {
-                                        const seen = new Map()
-                                        for (const [i, val] of items.entries()) {
-                                          const key = JSON.stringify(val)
-                                          if (seen.has(key))
-                                            ctx.addIssue({ code: 'custom', path: [i] })
-                                          else seen.set(key, i)
-                                        }
-                                      })
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'The Automation Action will be triggered whenever an alert reaches the specified state',
-                                      }),
-                                  })
-                                  .openapi({ required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Configure an Automation Action to be run for certain alert states.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .and(
-                        z
-                          .object({
-                            automation_actions: z
-                              .array(
-                                z
-                                  .object({
-                                    name: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({ description: 'The name of the Webhook.' }),
-                                    url: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          "The API endpoint where PagerDuty's servers will send the webhook request.",
-                                      }),
-                                    auto_send: z
-                                      .boolean()
-                                      .default(false)
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          "When true, PagerDuty's servers will automatically send this webhook request as soon as the resulting incident or alert is created. When false, your incident responder will be able to manually trigger the Webhook via the PagerDuty website & mobile app.",
-                                      }),
-                                    headers: z
-                                      .array(
-                                        z
-                                          .object({
-                                            key: z.string().exactOptional(),
-                                            value: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the header value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
-                                      )
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          "Specify custom key/value pairs that'll be sent with the webhook request as request headers.",
-                                      }),
-                                    trigger_types: z
-                                      .array(
-                                        z.enum([
-                                          'alert_triggered',
-                                          'alert_suppressed',
-                                          'alert_suspended',
-                                        ]),
-                                      )
-                                      .length(1)
-                                      .superRefine((items, ctx) => {
-                                        const seen = new Map()
-                                        for (const [i, val] of items.entries()) {
-                                          const key = JSON.stringify(val)
-                                          if (seen.has(key))
-                                            ctx.addIssue({ code: 'custom', path: [i] })
-                                          else seen.set(key, i)
-                                        }
-                                      })
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'The Webhook will be associated (or automatically triggered, if `auto_send` is `true`) with the incident, whenever an alert reaches the specified state\n\nNote: `auto_send` must be `true` for trigger types of `alert_suppressed` and `alert_suspended`\n',
-                                      }),
-                                    parameters: z
-                                      .array(
-                                        z
-                                          .object({
-                                            key: z.string().exactOptional(),
-                                            value: z
-                                              .string()
-                                              .exactOptional()
-                                              .openapi({
-                                                description:
-                                                  'AIOps users can additionally use the {{event}} variable to include elements of the event payload in the parameter value.',
-                                              }),
-                                          })
-                                          .openapi({ required: [] }),
-                                      )
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          "Specify custom key/value pairs that'll be included in the webhook request's JSON payload.",
-                                      }),
-                                  })
-                                  .openapi({ required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'Create a Webhoook associated with the resulting incident.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .and(
-                        z
-                          .object({
-                            incident_type: z
-                              .string()
-                              .nullable()
-                              .exactOptional()
-                              .openapi({
-                                description:
-                                  'The ID of the Incident Type to set on the incident created from the event. You can find the list of IDs by calling the List Incident Types endpoint. Omit it or set it to `null` to leave the Incident Type unset (the key is omitted from responses when unset). If multiple rules set an Incident Type, the last matching rule wins. This action is only available to accounts with access to Incident Types in Event Orchestration.',
-                                example: 'PT10C33',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .and(
-                        z
-                          .object({
-                            incident_custom_field_updates: z
-                              .array(
-                                z
-                                  .object({
-                                    id: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'Unique identifier for the custom field resource. You can find the list of IDs by calling the List Custom Fields endpoint.',
-                                        example: 'PEXCK89',
-                                      }),
-                                    value: z
-                                      .string()
-                                      .exactOptional()
-                                      .openapi({
-                                        description:
-                                          'A value that will be used to populate the specified Incident Custom Field. AIOps users can additionally use the {{event}} variable to include elements of the event payload in the custom field value. For PDRP customers, this feature is branded **Signal Intelligence** in the PagerDuty product UI. The API field names and values (e.g. `aiops`) are unchanged.',
-                                        example: 'High CPU on server',
-                                      }),
-                                  })
-                                  .openapi({ required: [] }),
-                              )
-                              .exactOptional()
-                              .openapi({
-                                description: 'Configure custom field updates for the incident.',
-                              }),
-                          })
-                          .openapi({ required: [] }),
-                      )
-                      .exactOptional(),
+                        .and(OrchestrationUnroutedAllOf1OrchestrationPathCatchAllActionsSchema)
+                        .and(
+                          ServiceOrchestrationAllOf1OrchestrationPathAllOf1CatchAllActionsAllOf3Schema,
+                        )
+                        .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf3Schema)
+                        .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf4Schema)
+                        .and(OrchestrationGlobalAllOf1OrchestrationPathCatchAllActionsAllOf5Schema)
+                        .exactOptional(),
                   })
                   .exactOptional()
                   .openapi({ required: [] }),
@@ -16096,8 +12604,7 @@ const ServiceOrchestrationSchema: z.ZodType<ServiceOrchestrationType> = z
         },
         required: [],
       }),
-  )
-  .openapi('ServiceOrchestration')
+  ).openapi('ServiceOrchestration')
 
 const OrchestrationWarningIneligibleSchema = z
   .object({
@@ -16239,25 +12746,11 @@ const TemplateSchema = EditableTemplateSchema.and(
         }),
       type: z.literal('template').exactOptional(),
       created_by: z
-        .xor([
-          UserReferenceSchema,
-          ReferenceSchema.and(
-            z
-              .object({ type: z.literal('account_reference').exactOptional() })
-              .openapi({ required: [] }),
-          ),
-        ])
+        .xor([UserReferenceSchema, TemplateAllOf1CreatedByOneOf1Schema])
         .exactOptional()
         .openapi({ description: 'User/Account object reference of the creator' }),
       updated_by: z
-        .xor([
-          UserReferenceSchema,
-          ReferenceSchema.and(
-            z
-              .object({ type: z.literal('account_reference').exactOptional() })
-              .openapi({ required: [] }),
-          ),
-        ])
+        .xor([UserReferenceSchema, TemplateAllOf1CreatedByOneOf1Schema])
         .exactOptional()
         .openapi({ description: 'User/Account object reference of the updator' }),
     })
@@ -16339,16 +12832,16 @@ const CustomFieldsFieldSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ description: 'The date/time the object was created at.', readOnly: true }),
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    default_value: z.lazy(() => IncidentTypeCustomFieldsSchema).exactOptional(),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    data_type: CustomFieldsFieldValueDataTypeSchema.exactOptional(),
+    default_value: IncidentTypeCustomFieldsDefaultValueSchema.exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
+    field_type: CustomFieldsFieldValueFieldTypeSchema.exactOptional(),
     id: z
       .string()
       .exactOptional()
       .openapi({ readOnly: true, description: 'The ID of the resource.' }),
-    name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    name: CustomFieldsFieldValueNameSchema.exactOptional(),
     self: z
       .url()
       .nullable()
@@ -16446,6 +12939,16 @@ const CustomFieldsFieldSchema = z
   })
   .openapi('CustomFieldsField')
 
+const CustomFieldsEditableFieldSchema = z
+  .object({
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    default_value: IncidentTypeCustomFieldsDefaultValueSchema.exactOptional(),
+    enabled: CustomFieldsEditableFieldEnabledSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('CustomFieldsEditableField')
+
 const CustomFieldsFieldOptionSchema = CustomFieldsEditableFieldOptionSchema.and(
   z.looseObject({}).openapi({ required: ['id', 'data', 'created_at', 'updated_at'] }),
 ).openapi('CustomFieldsFieldOption')
@@ -16456,10 +12959,10 @@ const CustomFieldsFieldWithOptionsSchema = z
       .datetime({ offset: true })
       .exactOptional()
       .openapi({ description: 'The date/time the object was created at.', readOnly: true }),
-    data_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    default_value: z.lazy(() => IncidentTypeCustomFieldsSchema).exactOptional(),
-    description: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
-    display_name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    data_type: CustomFieldsFieldValueDataTypeSchema.exactOptional(),
+    default_value: IncidentTypeCustomFieldsDefaultValueSchema.exactOptional(),
+    description: CustomFieldsFieldValueDescriptionSchema.exactOptional(),
+    display_name: CustomFieldsFieldValueDisplayNameSchema.exactOptional(),
     field_options: z
       .array(CustomFieldsFieldOptionSchema)
       .nullable()
@@ -16467,12 +12970,12 @@ const CustomFieldsFieldWithOptionsSchema = z
       .openapi({
         description: 'The fixed list of value options that may be stored in this field.',
       }),
-    field_type: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    field_type: CustomFieldsFieldValueFieldTypeSchema.exactOptional(),
     id: z
       .string()
       .exactOptional()
       .openapi({ readOnly: true, description: 'The ID of the resource.' }),
-    name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+    name: CustomFieldsFieldValueNameSchema.exactOptional(),
     self: z
       .url()
       .nullable()
@@ -16570,19 +13073,53 @@ const CustomFieldsFieldWithOptionsSchema = z
   })
   .openapi('CustomFieldsFieldWithOptions')
 
+const CustomFieldsFieldValueSchema = z
+  .object({
+    id: z.string().openapi({ description: 'Id of the field.' }),
+    name: CustomFieldsFieldValueNameSchema,
+    type: z
+      .literal('field_value')
+      .openapi({ description: 'Determines the type of the reference.' }),
+    display_name: CustomFieldsFieldValueDisplayNameSchema,
+    field_type: CustomFieldsFieldValueFieldTypeSchema,
+    data_type: CustomFieldsFieldValueDataTypeSchema,
+    description: CustomFieldsFieldValueDescriptionSchema,
+    value: z.xor([
+      CustomFieldsFieldValueValueOneOf0Schema,
+      CustomFieldsFieldValueValueOneOf1Schema,
+      CustomFieldsFieldValueValueOneOf2Schema,
+      CustomFieldsFieldValueValueOneOf3Schema,
+      CustomFieldsFieldValueValueOneOf4Schema,
+      CustomFieldsFieldValueValueOneOf5Schema,
+    ]),
+  })
+  .openapi({
+    required: [
+      'id',
+      'type',
+      'name',
+      'value',
+      'display_name',
+      'data_type',
+      'field_type',
+      'description',
+    ],
+  })
+  .openapi('CustomFieldsFieldValue')
+
 const CustomFieldsEditableFieldValueSchema = z
   .xor([
     z
       .object({
-        name: z.lazy(() => CustomFieldsFieldValueSchema).exactOptional(),
+        name: CustomFieldsFieldValueNameSchema.exactOptional(),
         value: z
           .xor([
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
+            CustomFieldsFieldValueValueOneOf0Schema,
+            CustomFieldsFieldValueValueOneOf1Schema,
+            CustomFieldsFieldValueValueOneOf2Schema,
+            CustomFieldsFieldValueValueOneOf3Schema,
+            CustomFieldsFieldValueValueOneOf4Schema,
+            CustomFieldsFieldValueValueOneOf5Schema,
           ])
           .exactOptional(),
       })
@@ -16592,12 +13129,12 @@ const CustomFieldsEditableFieldValueSchema = z
         id: z.string().exactOptional().openapi({ description: 'The ID of the Field.' }),
         value: z
           .xor([
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
-            z.lazy(() => CustomFieldsFieldValueSchema),
+            CustomFieldsFieldValueValueOneOf0Schema,
+            CustomFieldsFieldValueValueOneOf1Schema,
+            CustomFieldsFieldValueValueOneOf2Schema,
+            CustomFieldsFieldValueValueOneOf3Schema,
+            CustomFieldsFieldValueValueOneOf4Schema,
+            CustomFieldsFieldValueValueOneOf5Schema,
           ])
           .exactOptional(),
       })
@@ -17009,123 +13546,44 @@ const StatusPagePostSchema = z
   })
   .openapi('StatusPagePost')
 
-const StatusPagePostUpdateRequestSchema = z
+const StatusPagePostUpdateRequestImpactedServicesItemsSchema = z
   .object({
-    self: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description: 'The path to which the Post Update resource is accessible.',
-        readOnly: true,
-      }),
-    post: z
+    service: z
       .object({
-        id: z.string().openapi({ description: 'Status page post unique identifier' }),
-        type: z
+        id: z
           .string()
-          .openapi({ description: 'A string that determines the schema of the object.' }),
-      })
-      .openapi({ description: 'Status Page Post', required: ['id', 'type'] }),
-    message: z.string().max(7500).openapi({ description: 'The message of the Post Update.' }),
-    status: z
-      .object({
-        id: z.string().openapi({ description: 'Status page Status unique identifier' }),
-        type: z
-          .string()
-          .openapi({ description: 'A string that determines the schema of the object.' }),
-      })
-      .openapi({ description: 'Status Page Status', required: ['id', 'type'] }),
-    severity: z
-      .object({
-        id: z.string().openapi({ description: 'Status page Severity unique identifier' }),
-        type: z
-          .string()
-          .openapi({ description: 'A string that determines the schema of the object.' }),
-      })
-      .openapi({ description: 'Status Page Severity', required: ['id', 'type'] }),
-    impacted_services: z
-      .array(
-        z
-          .object({
-            service: z
-              .object({
-                id: z
-                  .string()
-                  .openapi({
-                    description:
-                      'An unique identifier within Status Page scope that defines a Service entry.',
-                  }),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of the object - in this case, a Status Page Service.',
-                  }),
-              })
-              .openapi({ description: 'Status Page Service', required: ['id', 'type'] }),
-            impact: z
-              .object({
-                id: z
-                  .string()
-                  .openapi({
-                    description:
-                      'An unique identifier within Status Page scope that defines a Status Page Impact entry.',
-                  }),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of the object - in this case, a Status Page Impact.',
-                  }),
-              })
-              .openapi({ description: 'Status Page Impact', required: ['id', 'type'] }),
-          })
           .openapi({
-            title: 'StatusPagePostUpdateImpactRequest',
             description:
-              'A Status Page Service and the Impact it has in a Post Update, as sent in a request.',
-            required: ['service', 'impact'],
+              'An unique identifier within Status Page scope that defines a Service entry.',
           }),
-      )
-      .min(0)
-      .openapi({
-        description:
-          'Impacted services represent the status page services affected by a post update, and its impact.',
-      }),
-    update_frequency_ms: z
-      .int()
-      .nullable()
-      .openapi({ description: 'The frequency of the next Post Update in milliseconds.' }),
-    notify_subscribers: z
-      .boolean()
-      .openapi({
-        description: 'Determines if the subscribers should be notified of the Post Update.',
-      }),
-    reported_at: z.iso
-      .datetime({ offset: true })
-      .nullable()
-      .exactOptional()
-      .openapi({ description: 'The date and time the Post Update was reported.' }),
-    type: z
-      .string()
-      .openapi({
-        description:
-          'The type of the object returned by the API - in this case, a Status Page Post Update.',
-      }),
+        type: z
+          .string()
+          .openapi({
+            description: 'The type of the object - in this case, a Status Page Service.',
+          }),
+      })
+      .openapi({ description: 'Status Page Service', required: ['id', 'type'] }),
+    impact: z
+      .object({
+        id: z
+          .string()
+          .openapi({
+            description:
+              'An unique identifier within Status Page scope that defines a Status Page Impact entry.',
+          }),
+        type: z
+          .string()
+          .openapi({ description: 'The type of the object - in this case, a Status Page Impact.' }),
+      })
+      .openapi({ description: 'Status Page Impact', required: ['id', 'type'] }),
   })
   .openapi({
-    title: 'StatusPagePostUpdateRequest',
-    description: 'Attributes for Post Update creation/update',
-    required: [
-      'type',
-      'message',
-      'status',
-      'severity',
-      'update_frequency_ms',
-      'notify_subscribers',
-      'impacted_services',
-      'post',
-    ],
+    title: 'StatusPagePostUpdateImpactRequest',
+    description:
+      'A Status Page Service and the Impact it has in a Post Update, as sent in a request.',
+    required: ['service', 'impact'],
   })
-  .openapi('StatusPagePostUpdateRequest')
+  .openapi('StatusPagePostUpdateRequestImpactedServicesItems')
 
 const StatusPagePostPostRequestSchema = z
   .object({
@@ -17185,7 +13643,7 @@ const StatusPagePostPostRequestSchema = z
               })
               .openapi({ description: 'Status Page Severity', required: ['id', 'type'] }),
             impacted_services: z
-              .array(z.lazy(() => StatusPagePostUpdateRequestSchema))
+              .array(StatusPagePostUpdateRequestImpactedServicesItemsSchema)
               .min(0)
               .openapi({
                 description:
@@ -17287,6 +13745,84 @@ const StatusPagePostPutRequestSchema = z
     required: ['type', 'title', 'post_type', 'starts_at', 'ends_at', 'status_page'],
   })
   .openapi('StatusPagePostPutRequest')
+
+const StatusPagePostUpdateRequestSchema = z
+  .object({
+    self: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description: 'The path to which the Post Update resource is accessible.',
+        readOnly: true,
+      }),
+    post: z
+      .object({
+        id: z.string().openapi({ description: 'Status page post unique identifier' }),
+        type: z
+          .string()
+          .openapi({ description: 'A string that determines the schema of the object.' }),
+      })
+      .openapi({ description: 'Status Page Post', required: ['id', 'type'] }),
+    message: z.string().max(7500).openapi({ description: 'The message of the Post Update.' }),
+    status: z
+      .object({
+        id: z.string().openapi({ description: 'Status page Status unique identifier' }),
+        type: z
+          .string()
+          .openapi({ description: 'A string that determines the schema of the object.' }),
+      })
+      .openapi({ description: 'Status Page Status', required: ['id', 'type'] }),
+    severity: z
+      .object({
+        id: z.string().openapi({ description: 'Status page Severity unique identifier' }),
+        type: z
+          .string()
+          .openapi({ description: 'A string that determines the schema of the object.' }),
+      })
+      .openapi({ description: 'Status Page Severity', required: ['id', 'type'] }),
+    impacted_services: z
+      .array(StatusPagePostUpdateRequestImpactedServicesItemsSchema)
+      .min(0)
+      .openapi({
+        description:
+          'Impacted services represent the status page services affected by a post update, and its impact.',
+      }),
+    update_frequency_ms: z
+      .int()
+      .nullable()
+      .openapi({ description: 'The frequency of the next Post Update in milliseconds.' }),
+    notify_subscribers: z
+      .boolean()
+      .openapi({
+        description: 'Determines if the subscribers should be notified of the Post Update.',
+      }),
+    reported_at: z.iso
+      .datetime({ offset: true })
+      .nullable()
+      .exactOptional()
+      .openapi({ description: 'The date and time the Post Update was reported.' }),
+    type: z
+      .string()
+      .openapi({
+        description:
+          'The type of the object returned by the API - in this case, a Status Page Post Update.',
+      }),
+  })
+  .openapi({
+    title: 'StatusPagePostUpdateRequest',
+    description: 'Attributes for Post Update creation/update',
+    required: [
+      'type',
+      'message',
+      'status',
+      'severity',
+      'update_frequency_ms',
+      'notify_subscribers',
+      'impacted_services',
+      'post',
+    ],
+  })
+  .openapi('StatusPagePostUpdateRequest')
 
 const StatusPagePostmortemSchema = z
   .object({
@@ -17579,338 +14115,253 @@ const StatusPageStatusSchema = z
   })
   .openapi('StatusPageStatus')
 
-const WorkflowIntegrationSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The ID of the integration', readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The type of the resource', readOnly: true }),
-        domain_name: z.string().exactOptional().openapi({ description: 'Will be pagerduty.com' }),
-        package_name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The package that the integration is part of' }),
-        name: z.string().exactOptional().openapi({ description: 'The name of the integration' }),
-        description: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The description of the integration' }),
-        icon_svg: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The svg string of the icon for the integration' }),
-        tags: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'A list of tags applied to the integration' }),
-        search_keywords: z
-          .array(z.string())
-          .exactOptional()
-          .openapi({ description: 'A list of keywords that match this integration' }),
-        is_deprecated: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether or not the integration is deprecated' }),
-        entitled: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Whether or not the integration is entitled' }),
-        application: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The application that this integration is associated with' }),
-        configuration_schema: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'The JSON schema for the configuration of the integration. This is a dynamic field and is different for every integration',
-          }),
-        secrets_schema: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'The JSON schema for the secrets of the integration. This is a dynamic field and is different for every integration',
-          }),
-        created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-        created_by: z
-          .object({
-            type: z
-              .literal('user_reference')
-              .exactOptional()
-              .openapi({ description: 'Type of the referenced object', readOnly: true }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Unique identifier of the user', readOnly: true }),
-            summary: z
-              .string()
-              .exactOptional()
-              .openapi({ readOnly: true, description: "The user's name" }),
-            html_url: z
-              .url()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'a URL at which the entity is uniquely displayed in the Web app',
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'the API show URL at which the object is accessible',
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'Reference to the user who created this connection',
-            required: [],
-          }),
-      })
-      .openapi({ description: 'An Integration that can be used in a Workflow', required: [] }),
-  )
-  .openapi('WorkflowIntegration')
+const WorkflowIntegrationSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ID of the integration', readOnly: true }),
+      type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The type of the resource', readOnly: true }),
+      domain_name: z.string().exactOptional().openapi({ description: 'Will be pagerduty.com' }),
+      package_name: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The package that the integration is part of' }),
+      name: z.string().exactOptional().openapi({ description: 'The name of the integration' }),
+      description: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The description of the integration' }),
+      icon_svg: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The svg string of the icon for the integration' }),
+      tags: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A list of tags applied to the integration' }),
+      search_keywords: z
+        .array(z.string())
+        .exactOptional()
+        .openapi({ description: 'A list of keywords that match this integration' }),
+      is_deprecated: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether or not the integration is deprecated' }),
+      entitled: z
+        .boolean()
+        .exactOptional()
+        .openapi({ description: 'Whether or not the integration is entitled' }),
+      application: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The application that this integration is associated with' }),
+      configuration_schema: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({
+          description:
+            'The JSON schema for the configuration of the integration. This is a dynamic field and is different for every integration',
+        }),
+      secrets_schema: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({
+          description:
+            'The JSON schema for the secrets of the integration. This is a dynamic field and is different for every integration',
+        }),
+      created_at: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+      created_by: z
+        .object({
+          type: z
+            .literal('user_reference')
+            .exactOptional()
+            .openapi({ description: 'Type of the referenced object', readOnly: true }),
+          id: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Unique identifier of the user', readOnly: true }),
+          summary: z
+            .string()
+            .exactOptional()
+            .openapi({ readOnly: true, description: "The user's name" }),
+          html_url: z
+            .url()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'a URL at which the entity is uniquely displayed in the Web app',
+            }),
+          self: z
+            .url()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'the API show URL at which the object is accessible',
+            }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'Reference to the user who created this connection',
+          required: [],
+        }),
+    })
+    .openapi({ description: 'An Integration that can be used in a Workflow', required: [] }),
+).openapi('WorkflowIntegration')
 
-const WorkflowIntegrationConnectionSchema = z
-  .object({
-    id: z.string().exactOptional().openapi({ readOnly: true }),
-    summary: z
-      .string()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-      }),
-    type: z
-      .string()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description:
-          'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-      }),
-    self: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'the API show URL at which the object is accessible',
-      }),
-    html_url: z
-      .url()
-      .nullable()
-      .exactOptional()
-      .openapi({
-        readOnly: true,
-        description: 'a URL at which the entity is uniquely displayed in the Web app',
-      }),
-  })
-  .openapi({ required: [] })
-  .and(
-    z
-      .object({
-        id: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The ID of the connection', readOnly: true }),
-        type: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The type of the connection', readOnly: true }),
-        integration_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The integration ID that this connection is associated with',
-            readOnly: true,
-          }),
-        name: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'The name given to the connection' }),
-        service_url: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The URL of the service that this connection is associated with',
-          }),
-        external_id: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description: 'The ID of the external system that this connection is used to connect to',
-          }),
-        external_id_label: z
-          .string()
-          .exactOptional()
-          .openapi({
-            description:
-              'The label of the external system that this connection is used to connect to',
-          }),
-        scopes: z
-          .array(
-            z.string().openapi({ description: 'The scopes that this connection has access to' }),
-          )
-          .exactOptional(),
-        is_default: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Whether or not this connection is the default connection for this integration',
-          }),
-        health: z
-          .object({
-            is_healthy: z
-              .boolean()
-              .exactOptional()
-              .openapi({ description: 'Whether or not the connection is healthy', readOnly: true }),
-            health_message: z
-              .string()
-              .exactOptional()
-              .openapi({
-                description: 'A message describing the health of the connection',
-                readOnly: true,
-              }),
-            last_checked_at: z.iso
-              .datetime({ offset: true })
-              .exactOptional()
-              .openapi({ description: 'The timestamp of the last health check', readOnly: true }),
-          })
-          .exactOptional()
-          .openapi({ readOnly: true, required: [] }),
-        configuration: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({ description: 'The configuration for this connection' }),
-        secrets: z
-          .looseObject({})
-          .exactOptional()
-          .openapi({
-            description:
-              'The secrets for this connection. This will always be `null` on a response so that secrets are not leaked.',
-          }),
-        teams: z
-          .array(
-            z
-              .object({
-                team_id: z.string().exactOptional().openapi({ description: 'The ID of the team' }),
-                type: z.literal('team_reference').exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({
-            description: 'The teams whose managers are allowed to use or edit this connection',
-          }),
-        apps: z
-          .array(
-            z
-              .object({
-                app_id: z.string().exactOptional().openapi({ description: 'The ID of the app' }),
-                type: z.literal('pd_app_reference').exactOptional(),
-              })
-              .openapi({ required: [] }),
-          )
-          .exactOptional()
-          .openapi({ description: 'The app IDs for this connection' }),
-        created_at: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description: 'The timestamp of when the connection was created',
-            readOnly: true,
-          }),
-        created_by: z
-          .object({
-            type: z
-              .literal('user_reference')
-              .exactOptional()
-              .openapi({ description: 'Type of the referenced object', readOnly: true }),
-            id: z
-              .string()
-              .exactOptional()
-              .openapi({ description: 'Unique identifier of the user', readOnly: true }),
-            summary: z
-              .string()
-              .exactOptional()
-              .openapi({ readOnly: true, description: "The user's name" }),
-            html_url: z
-              .url()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'a URL at which the entity is uniquely displayed in the Web app',
-              }),
-            self: z
-              .url()
-              .exactOptional()
-              .openapi({
-                readOnly: true,
-                description: 'the API show URL at which the object is accessible',
-              }),
-          })
-          .nullable()
-          .exactOptional()
-          .openapi({
-            readOnly: true,
-            description: 'Reference to the user who created this connection',
-            required: [],
-          }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('WorkflowIntegrationConnection')
+const WorkflowIntegrationConnectionSchema = TagAllOf0Schema.and(
+  z
+    .object({
+      id: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The ID of the connection', readOnly: true }),
+      type: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The type of the connection', readOnly: true }),
+      integration_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The integration ID that this connection is associated with',
+          readOnly: true,
+        }),
+      name: z.string().exactOptional().openapi({ description: 'The name given to the connection' }),
+      service_url: z
+        .string()
+        .exactOptional()
+        .openapi({ description: 'The URL of the service that this connection is associated with' }),
+      external_id: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description: 'The ID of the external system that this connection is used to connect to',
+        }),
+      external_id_label: z
+        .string()
+        .exactOptional()
+        .openapi({
+          description:
+            'The label of the external system that this connection is used to connect to',
+        }),
+      scopes: z
+        .array(z.string().openapi({ description: 'The scopes that this connection has access to' }))
+        .exactOptional(),
+      is_default: z
+        .boolean()
+        .exactOptional()
+        .openapi({
+          description:
+            'Whether or not this connection is the default connection for this integration',
+        }),
+      health: z
+        .object({
+          is_healthy: z
+            .boolean()
+            .exactOptional()
+            .openapi({ description: 'Whether or not the connection is healthy', readOnly: true }),
+          health_message: z
+            .string()
+            .exactOptional()
+            .openapi({
+              description: 'A message describing the health of the connection',
+              readOnly: true,
+            }),
+          last_checked_at: z.iso
+            .datetime({ offset: true })
+            .exactOptional()
+            .openapi({ description: 'The timestamp of the last health check', readOnly: true }),
+        })
+        .exactOptional()
+        .openapi({ readOnly: true, required: [] }),
+      configuration: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({ description: 'The configuration for this connection' }),
+      secrets: z
+        .looseObject({})
+        .exactOptional()
+        .openapi({
+          description:
+            'The secrets for this connection. This will always be `null` on a response so that secrets are not leaked.',
+        }),
+      teams: z
+        .array(
+          z
+            .object({
+              team_id: z.string().exactOptional().openapi({ description: 'The ID of the team' }),
+              type: z.literal('team_reference').exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional()
+        .openapi({
+          description: 'The teams whose managers are allowed to use or edit this connection',
+        }),
+      apps: z
+        .array(
+          z
+            .object({
+              app_id: z.string().exactOptional().openapi({ description: 'The ID of the app' }),
+              type: z.literal('pd_app_reference').exactOptional(),
+            })
+            .openapi({ required: [] }),
+        )
+        .exactOptional()
+        .openapi({ description: 'The app IDs for this connection' }),
+      created_at: z.iso
+        .datetime({ offset: true })
+        .exactOptional()
+        .openapi({
+          description: 'The timestamp of when the connection was created',
+          readOnly: true,
+        }),
+      created_by: z
+        .object({
+          type: z
+            .literal('user_reference')
+            .exactOptional()
+            .openapi({ description: 'Type of the referenced object', readOnly: true }),
+          id: z
+            .string()
+            .exactOptional()
+            .openapi({ description: 'Unique identifier of the user', readOnly: true }),
+          summary: z
+            .string()
+            .exactOptional()
+            .openapi({ readOnly: true, description: "The user's name" }),
+          html_url: z
+            .url()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'a URL at which the entity is uniquely displayed in the Web app',
+            }),
+          self: z
+            .url()
+            .exactOptional()
+            .openapi({
+              readOnly: true,
+              description: 'the API show URL at which the object is accessible',
+            }),
+        })
+        .nullable()
+        .exactOptional()
+        .openapi({
+          readOnly: true,
+          description: 'Reference to the user who created this connection',
+          required: [],
+        }),
+    })
+    .openapi({ required: [] }),
+).openapi('WorkflowIntegrationConnection')
 
 const V3ErrorResponseSchema = z
   .object({
@@ -35159,7 +31610,7 @@ export const getEventOrchestrationsIdIntegrationsRoute = createRoute({
           schema: z
             .object({
               integrations: z.array(OrchestrationIntegrationSchema).exactOptional(),
-              total: z.lazy(() => PaginationSchema).exactOptional(),
+              total: PaginationTotalSchema.exactOptional(),
             })
             .openapi({ required: [] }),
           examples: {
@@ -35458,7 +31909,7 @@ export const postEventOrchestrationsIdIntegrationsMigrationRoute = createRoute({
           schema: z
             .object({
               integrations: z.array(OrchestrationIntegrationSchema).exactOptional(),
-              total: z.lazy(() => PaginationSchema).exactOptional(),
+              total: PaginationTotalSchema.exactOptional(),
             })
             .openapi({ required: [] }),
           examples: {
@@ -38967,123 +35418,83 @@ export const postIncidentWorkflowsTriggersRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              trigger: z
-                .object({
-                  id: z.string().exactOptional().openapi({ readOnly: true }),
-                  summary: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description:
-                        'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-                    }),
-                  type: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description:
-                        'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                    }),
-                  self: z
-                    .url()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description: 'the API show URL at which the object is accessible',
-                    }),
-                  html_url: z
-                    .url()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description: 'a URL at which the entity is uniquely displayed in the Web app',
-                    }),
-                })
-                .openapi({ required: [] })
-                .and(
-                  z
-                    .object({
-                      type: z.literal('workflow_trigger').exactOptional(),
-                      trigger_type: z
-                        .enum(['conditional', 'manual', 'incident_type'])
-                        .exactOptional(),
-                      condition: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
-                        }),
-                      trigger_url: z.url().exactOptional(),
-                      incident_types: z
-                        .array(z.string())
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
-                        }),
-                      workflow: z
-                        .object({ id: z.string().exactOptional() })
-                        .exactOptional()
-                        .openapi({
-                          description: 'Workflow to start when this trigger is invoked',
-                          required: [],
-                        }),
-                      services: z
-                        .array(
-                          z.object({ id: z.string().exactOptional() }).openapi({ required: [] }),
-                        )
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
-                        }),
-                      is_subscribed_to_all_services: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Indicates that the Trigger should be associated with All Services',
-                        }),
-                      permissions: z
-                        .object({
-                          restricted: z
-                            .boolean()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
-                            }),
-                          team_id: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
-                            }),
-                        })
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
-                          required: [],
-                        }),
-                      is_disabled: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Indicates whether the Trigger is disabled or not. A previous API version allowed callers to set this\nproperty independently. This behavior is deprecated. This property\'s value will be set based on the \n"is_enabled" property of the workflow to which this trigger belongs.\n',
-                          deprecated: true,
-                        }),
-                    })
-                    .openapi({ required: [] }),
-                ),
+              trigger: TagAllOf0Schema.and(
+                z
+                  .object({
+                    type: z.literal('workflow_trigger').exactOptional(),
+                    trigger_type: z
+                      .enum(['conditional', 'manual', 'incident_type'])
+                      .exactOptional(),
+                    condition: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
+                      }),
+                    trigger_url: z.url().exactOptional(),
+                    incident_types: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
+                      }),
+                    workflow: z
+                      .object({ id: z.string().exactOptional() })
+                      .exactOptional()
+                      .openapi({
+                        description: 'Workflow to start when this trigger is invoked',
+                        required: [],
+                      }),
+                    services: z
+                      .array(z.object({ id: z.string().exactOptional() }).openapi({ required: [] }))
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
+                      }),
+                    is_subscribed_to_all_services: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Indicates that the Trigger should be associated with All Services',
+                      }),
+                    permissions: z
+                      .object({
+                        restricted: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
+                          }),
+                        team_id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
+                        required: [],
+                      }),
+                    is_disabled: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Indicates whether the Trigger is disabled or not. A previous API version allowed callers to set this\nproperty independently. This behavior is deprecated. This property\'s value will be set based on the \n"is_enabled" property of the workflow to which this trigger belongs.\n',
+                        deprecated: true,
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              ),
             })
             .openapi({ required: ['trigger'] }),
           examples: {
@@ -39246,119 +35657,79 @@ export const putIncidentWorkflowsTriggersIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              trigger: z
-                .object({
-                  id: z.string().exactOptional().openapi({ readOnly: true }),
-                  summary: z
-                    .string()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description:
-                        'A short-form, server-generated string that provides succinct, important information about an object suitable for primary labeling of an entity in a client. In many cases, this will be identical to `name`, though it is not intended to be an identifier.',
-                    }),
-                  type: z
-                    .string()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description:
-                        'A string that determines the schema of the object. This must be the standard name for the entity, suffixed by `_reference` if the object is a reference.',
-                    }),
-                  self: z
-                    .url()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description: 'the API show URL at which the object is accessible',
-                    }),
-                  html_url: z
-                    .url()
-                    .nullable()
-                    .exactOptional()
-                    .openapi({
-                      readOnly: true,
-                      description: 'a URL at which the entity is uniquely displayed in the Web app',
-                    }),
-                })
-                .openapi({ required: [] })
-                .and(
-                  z
-                    .object({
-                      type: z.literal('workflow_trigger').exactOptional(),
-                      trigger_type_name: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          readOnly: true,
-                          description: 'Human readable name for the trigger type',
-                        }),
-                      condition: z
-                        .string()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
-                        }),
-                      services: z
-                        .array(
-                          z.object({ id: z.string().exactOptional() }).openapi({ required: [] }),
-                        )
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
-                        }),
-                      is_subscribed_to_all_services: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Indicates that the Trigger should be associated with All Services',
-                        }),
-                      permissions: z
-                        .object({
-                          restricted: z
-                            .boolean()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
-                            }),
-                          team_id: z
-                            .string()
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
-                            }),
-                        })
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
-                          required: [],
-                        }),
-                      is_disabled: z
-                        .boolean()
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'Indicates whether the Trigger is disabled or not. A previous API version allowed callers to update this\nproperty independently. This behavior is deprecated. To update this property set "is_enabled" on the workflow\nto which this trigger belongs.\n',
-                          deprecated: true,
-                        }),
-                      incident_types: z
-                        .array(z.string())
-                        .exactOptional()
-                        .openapi({
-                          description:
-                            'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
-                        }),
-                    })
-                    .openapi({ required: [] }),
-                ),
+              trigger: TagAllOf0Schema.and(
+                z
+                  .object({
+                    type: z.literal('workflow_trigger').exactOptional(),
+                    trigger_type_name: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        readOnly: true,
+                        description: 'Human readable name for the trigger type',
+                      }),
+                    condition: z
+                      .string()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'A PCL condition string.\n\nIf specified, the trigger will execute when the condition is met on an incident.\n\nIf unspecified, the trigger will execute on incident creation.\n\nRequired if trigger_type is “conditional”, not allowed for other trigger types.\n',
+                      }),
+                    services: z
+                      .array(z.object({ id: z.string().exactOptional() }).openapi({ required: [] }))
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An optional array of Services associated with this workflow. Incidents in any of the listed Services are eligible to fire this Trigger',
+                      }),
+                    is_subscribed_to_all_services: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Indicates that the Trigger should be associated with All Services',
+                      }),
+                    permissions: z
+                      .object({
+                        restricted: z
+                          .boolean()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'If true, indicates that the Trigger can only be started by authorized Users. If false, any user can start this Trigger. Applicable only to manual Triggers.',
+                          }),
+                        team_id: z
+                          .string()
+                          .exactOptional()
+                          .openapi({
+                            description:
+                              'The ID of the team whose members can manually start this Trigger. Required and allowed if and only if permissions.restricted is true.',
+                          }),
+                      })
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An object detailing who can start this Trigger. Applicable only to manual Triggers.',
+                        required: [],
+                      }),
+                    is_disabled: z
+                      .boolean()
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'Indicates whether the Trigger is disabled or not. A previous API version allowed callers to update this\nproperty independently. This behavior is deprecated. To update this property set "is_enabled" on the workflow\nto which this trigger belongs.\n',
+                        deprecated: true,
+                      }),
+                    incident_types: z
+                      .array(z.string())
+                      .exactOptional()
+                      .openapi({
+                        description:
+                          'An optional array of Incident Types associated with the trigger when it is of type `incident_type`.',
+                      }),
+                  })
+                  .openapi({ required: [] }),
+              ),
             })
             .openapi({ required: ['trigger'] }),
           examples: {
@@ -45784,49 +42155,7 @@ export const getLicenseAllocationsRoute = createRoute({
                   z
                     .object({
                       user: UserReferenceSchema,
-                      license: z
-                        .object({
-                          id: z
-                            .string()
-                            .openapi({ description: 'Uniquely identifies the resource' }),
-                          description: z
-                            .string()
-                            .openapi({
-                              description:
-                                'Description of the License. May include the names of add-ons associated with\nthe License, if there are any.\n',
-                            }),
-                          name: z.string().openapi({ description: 'Name of the License.\n' }),
-                          valid_roles: z
-                            .array(z.string())
-                            .openapi({
-                              description: 'The roles a User with this License can have',
-                            }),
-                          role_group: z
-                            .enum(['FullUser', 'Stakeholder'])
-                            .exactOptional()
-                            .openapi({
-                              description:
-                                'Indicates whether this License is assignable to full or stakeholder Users',
-                              example: 'FullUser',
-                            }),
-                          type: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'Type of object' }),
-                          self: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'API URL to access the License' }),
-                          html_url: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'HTML URL to access the License' }),
-                          summary: z
-                            .string()
-                            .exactOptional()
-                            .openapi({ description: 'Summary of the License' }),
-                        })
-                        .openapi({ required: ['id', 'description', 'name', 'valid_roles'] }),
+                      license: LicenseWithCountsAllOf0Schema,
                       allocated_at: z.iso
                         .datetime({ offset: true })
                         .openapi({
@@ -57292,44 +53621,7 @@ export const getUsersIdLicenseRoute = createRoute({
       content: {
         'application/json': {
           schema: z
-            .object({
-              license: z
-                .object({
-                  id: z.string().openapi({ description: 'Uniquely identifies the resource' }),
-                  description: z
-                    .string()
-                    .openapi({
-                      description:
-                        'Description of the License. May include the names of add-ons associated with\nthe License, if there are any.\n',
-                    }),
-                  name: z.string().openapi({ description: 'Name of the License.\n' }),
-                  valid_roles: z
-                    .array(z.string())
-                    .openapi({ description: 'The roles a User with this License can have' }),
-                  role_group: z
-                    .enum(['FullUser', 'Stakeholder'])
-                    .exactOptional()
-                    .openapi({
-                      description:
-                        'Indicates whether this License is assignable to full or stakeholder Users',
-                      example: 'FullUser',
-                    }),
-                  type: z.string().exactOptional().openapi({ description: 'Type of object' }),
-                  self: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'API URL to access the License' }),
-                  html_url: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'HTML URL to access the License' }),
-                  summary: z
-                    .string()
-                    .exactOptional()
-                    .openapi({ description: 'Summary of the License' }),
-                })
-                .openapi({ required: ['id', 'description', 'name', 'valid_roles'] }),
-            })
+            .object({ license: LicenseWithCountsAllOf0Schema })
             .openapi({ required: ['license'] }),
           examples: {
             response: {

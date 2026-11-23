@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/superset.apache.local/superset/v1/openapi.yaml',
   output: './src/superset-apache-superset/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/superset-apache-superset/types.ts' },
   client: { output: './src/superset-apache-superset/client.ts', baseUrl: '/' },
   rpc: { output: './src/superset-apache-superset/rpc.ts', parseResponse: true },

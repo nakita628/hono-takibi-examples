@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRecordingRulesRecordingRuleIDRoute,
   deleteRecordingRulesWriterRoute,
   getRecordingRulesRoute,
@@ -10,30 +10,50 @@ import {
   putRecordingRulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRecordingRulesRouteHandler: RouteHandler<typeof getRecordingRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const recordingRulesHandler = app
-  .openapi(getRecordingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecordingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRecordingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecordingRulesTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecordingRulesWriterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRecordingRulesWriterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRecordingRulesWriterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRecordingRulesRecordingRuleIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRecordingRulesRouteHandler: RouteHandler<typeof postRecordingRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putRecordingRulesRouteHandler: RouteHandler<typeof putRecordingRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecordingRulesTestRouteHandler: RouteHandler<
+  typeof postRecordingRulesTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecordingRulesWriterRouteHandler: RouteHandler<
+  typeof deleteRecordingRulesWriterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRecordingRulesWriterRouteHandler: RouteHandler<
+  typeof getRecordingRulesWriterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRecordingRulesWriterRouteHandler: RouteHandler<
+  typeof postRecordingRulesWriterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRecordingRulesRecordingRuleIDRouteHandler: RouteHandler<
+  typeof deleteRecordingRulesRecordingRuleIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

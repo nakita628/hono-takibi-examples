@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFormsFormIdSubmissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFormsFormIdSubmissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const formsHandler = app.openapi(getFormsFormIdSubmissionsRoute, (c) => {
+export const getFormsFormIdSubmissionsRouteHandler: RouteHandler<
+  typeof getFormsFormIdSubmissionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

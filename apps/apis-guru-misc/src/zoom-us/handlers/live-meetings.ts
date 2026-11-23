@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchLiveMeetingsMeetingIdEventsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchLiveMeetingsMeetingIdEventsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const liveMeetingsHandler = app.openapi(patchLiveMeetingsMeetingIdEventsRoute, (c) => {
+export const patchLiveMeetingsMeetingIdEventsRouteHandler: RouteHandler<
+  typeof patchLiveMeetingsMeetingIdEventsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

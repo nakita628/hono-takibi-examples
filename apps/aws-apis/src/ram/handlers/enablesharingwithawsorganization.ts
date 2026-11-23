@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEnablesharingwithawsorganizationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEnablesharingwithawsorganizationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const enablesharingwithawsorganizationHandler = app.openapi(
-  postEnablesharingwithawsorganizationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postEnablesharingwithawsorganizationRouteHandler: RouteHandler<
+  typeof postEnablesharingwithawsorganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

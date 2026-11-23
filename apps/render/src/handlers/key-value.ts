@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKeyValueRedisIdRoute,
   getKeyValueRedisIdConnectionInfoRoute,
   getKeyValueRedisIdRoute,
@@ -10,30 +10,46 @@ import {
   postKeyValueRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKeyValueRouteHandler: RouteHandler<typeof getKeyValueRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const keyValueHandler = app
-  .openapi(getKeyValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeyValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeyValueRedisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchKeyValueRedisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKeyValueRedisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeyValueRedisIdConnectionInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeyValueRedisIdSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeyValueRedisIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postKeyValueRouteHandler: RouteHandler<typeof postKeyValueRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeyValueRedisIdRouteHandler: RouteHandler<typeof getKeyValueRedisIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchKeyValueRedisIdRouteHandler: RouteHandler<
+  typeof patchKeyValueRedisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKeyValueRedisIdRouteHandler: RouteHandler<
+  typeof deleteKeyValueRedisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeyValueRedisIdConnectionInfoRouteHandler: RouteHandler<
+  typeof getKeyValueRedisIdConnectionInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKeyValueRedisIdSuspendRouteHandler: RouteHandler<
+  typeof postKeyValueRedisIdSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKeyValueRedisIdResumeRouteHandler: RouteHandler<
+  typeof postKeyValueRedisIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

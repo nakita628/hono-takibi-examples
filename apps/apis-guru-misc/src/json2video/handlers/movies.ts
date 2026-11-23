@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMoviesRoute, postMoviesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMoviesRoute, postMoviesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMoviesRouteHandler: RouteHandler<typeof getMoviesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const moviesHandler = app
-  .openapi(getMoviesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMoviesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMoviesRouteHandler: RouteHandler<typeof postMoviesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

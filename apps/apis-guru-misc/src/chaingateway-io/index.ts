@@ -1,51 +1,74 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  clearAddressHandler,
-  deleteAddressHandler,
-  exportAddressHandler,
-  getBlockHandler,
-  getEthereumBalanceHandler,
-  getExchangeRateHandler,
-  getGasPriceHandler,
-  getLastBlockNumberHandler,
-  getTokenBalanceHandler,
-  getTokenHandler,
-  getTransactionsHandler,
-  importAddressHandler,
-  listAddressesHandler,
-  listFailedIpNsHandler,
-  listSubscribedAddressesHandler,
-  newAddressHandler,
-  resendFailedIpnHandler,
-  sendEthereumHandler,
-  sendTokenHandler,
-  subscribeAddressHandler,
-  unsubscribeAddressHandler,
+  postClearAddressRoute,
+  postDeleteAddressRoute,
+  postExportAddressRoute,
+  postGetBlockRoute,
+  postGetEthereumBalanceRoute,
+  postGetExchangeRateRoute,
+  postGetGasPriceRoute,
+  postGetLastBlockNumberRoute,
+  postGetTokenBalanceRoute,
+  postGetTokenRoute,
+  postGetTransactionsRoute,
+  postImportAddressRoute,
+  postListAddressesRoute,
+  postListFailedIPNsRoute,
+  postListSubscribedAddressesRoute,
+  postNewAddressRoute,
+  postResendFailedIPNRoute,
+  postSendEthereumRoute,
+  postSendTokenRoute,
+  postSubscribeAddressRoute,
+  postUnsubscribeAddressRoute,
+} from './routes'
+import {
+  postClearAddressRouteHandler,
+  postDeleteAddressRouteHandler,
+  postExportAddressRouteHandler,
+  postGetBlockRouteHandler,
+  postGetEthereumBalanceRouteHandler,
+  postGetExchangeRateRouteHandler,
+  postGetGasPriceRouteHandler,
+  postGetLastBlockNumberRouteHandler,
+  postGetTokenBalanceRouteHandler,
+  postGetTokenRouteHandler,
+  postGetTransactionsRouteHandler,
+  postImportAddressRouteHandler,
+  postListAddressesRouteHandler,
+  postListFailedIPNsRouteHandler,
+  postListSubscribedAddressesRouteHandler,
+  postNewAddressRouteHandler,
+  postResendFailedIPNRouteHandler,
+  postSendEthereumRouteHandler,
+  postSendTokenRouteHandler,
+  postSubscribeAddressRouteHandler,
+  postUnsubscribeAddressRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', clearAddressHandler)
-  .route('/', deleteAddressHandler)
-  .route('/', exportAddressHandler)
-  .route('/', getBlockHandler)
-  .route('/', getEthereumBalanceHandler)
-  .route('/', getExchangeRateHandler)
-  .route('/', getGasPriceHandler)
-  .route('/', getLastBlockNumberHandler)
-  .route('/', getTokenHandler)
-  .route('/', getTokenBalanceHandler)
-  .route('/', getTransactionsHandler)
-  .route('/', importAddressHandler)
-  .route('/', listAddressesHandler)
-  .route('/', listFailedIpNsHandler)
-  .route('/', listSubscribedAddressesHandler)
-  .route('/', newAddressHandler)
-  .route('/', resendFailedIpnHandler)
-  .route('/', sendEthereumHandler)
-  .route('/', sendTokenHandler)
-  .route('/', subscribeAddressHandler)
-  .route('/', unsubscribeAddressHandler)
+  .openapi(postClearAddressRoute, postClearAddressRouteHandler)
+  .openapi(postDeleteAddressRoute, postDeleteAddressRouteHandler)
+  .openapi(postExportAddressRoute, postExportAddressRouteHandler)
+  .openapi(postGetBlockRoute, postGetBlockRouteHandler)
+  .openapi(postGetEthereumBalanceRoute, postGetEthereumBalanceRouteHandler)
+  .openapi(postGetExchangeRateRoute, postGetExchangeRateRouteHandler)
+  .openapi(postGetGasPriceRoute, postGetGasPriceRouteHandler)
+  .openapi(postGetLastBlockNumberRoute, postGetLastBlockNumberRouteHandler)
+  .openapi(postGetTokenRoute, postGetTokenRouteHandler)
+  .openapi(postGetTokenBalanceRoute, postGetTokenBalanceRouteHandler)
+  .openapi(postGetTransactionsRoute, postGetTransactionsRouteHandler)
+  .openapi(postImportAddressRoute, postImportAddressRouteHandler)
+  .openapi(postListAddressesRoute, postListAddressesRouteHandler)
+  .openapi(postListFailedIPNsRoute, postListFailedIPNsRouteHandler)
+  .openapi(postListSubscribedAddressesRoute, postListSubscribedAddressesRouteHandler)
+  .openapi(postNewAddressRoute, postNewAddressRouteHandler)
+  .openapi(postResendFailedIPNRoute, postResendFailedIPNRouteHandler)
+  .openapi(postSendEthereumRoute, postSendEthereumRouteHandler)
+  .openapi(postSendTokenRoute, postSendTokenRouteHandler)
+  .openapi(postSubscribeAddressRoute, postSubscribeAddressRouteHandler)
+  .openapi(postUnsubscribeAddressRoute, postUnsubscribeAddressRouteHandler)
 
 export default app

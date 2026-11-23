@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGenaiModelsRoute, getGenaiRolesRoute, postGenaiProbeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGenaiModelsRoute, getGenaiRolesRoute, postGenaiProbeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGenaiModelsRouteHandler: RouteHandler<typeof getGenaiModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const genaiHandler = app
-  .openapi(getGenaiModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGenaiRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGenaiProbeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGenaiRolesRouteHandler: RouteHandler<typeof getGenaiRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGenaiProbeRouteHandler: RouteHandler<typeof postGenaiProbeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

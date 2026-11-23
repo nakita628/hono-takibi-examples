@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/cowin.gov.cin/cowincert/1.0.0/openapi.yaml',
   output: './src/cowin-gov-cin-cowincert/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cowin-gov-cin-cowincert/types.ts' },
   client: { output: './src/cowin-gov-cin-cowincert/client.ts', baseUrl: '/' },
   rpc: { output: './src/cowin-gov-cin-cowincert/rpc.ts', parseResponse: true },

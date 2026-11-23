@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendHeartbeatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendHeartbeatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendHeartbeatHandler = app.openapi(postSendHeartbeatRoute, (c) => {
+export const postSendHeartbeatRouteHandler: RouteHandler<typeof postSendHeartbeatRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

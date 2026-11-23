@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/lookoutequipment/2020-12-15/openapi.yaml',
   output: './src/lookoutequipment/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lookoutequipment/types.ts' },
   client: { output: './src/lookoutequipment/client.ts', baseUrl: '/' },
   rpc: { output: './src/lookoutequipment/rpc.ts', parseResponse: true },

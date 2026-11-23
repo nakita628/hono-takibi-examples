@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWellKnownChangePasswordRoute, getWellKnownOryWebauthnJsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWellKnownChangePasswordRoute, getWellKnownOryWebauthnJsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWellKnownChangePasswordRouteHandler: RouteHandler<
+  typeof getWellKnownChangePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wellKnownHandler = app
-  .openapi(getWellKnownChangePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellKnownOryWebauthnJsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWellKnownOryWebauthnJsRouteHandler: RouteHandler<
+  typeof getWellKnownOryWebauthnJsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

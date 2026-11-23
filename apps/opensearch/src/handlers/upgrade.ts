@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUpgradeRoute, postUpgradeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUpgradeRoute, postUpgradeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUpgradeRouteHandler: RouteHandler<typeof getUpgradeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const upgradeHandler = app
-  .openapi(getUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUpgradeRouteHandler: RouteHandler<typeof postUpgradeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

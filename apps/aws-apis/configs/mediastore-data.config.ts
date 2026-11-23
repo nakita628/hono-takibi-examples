@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/mediastore-data/2017-09-01/openapi.yaml',
   output: './src/mediastore-data/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mediastore-data/types.ts' },
   client: { output: './src/mediastore-data/client.ts', baseUrl: '/' },
   rpc: { output: './src/mediastore-data/rpc.ts', parseResponse: true },

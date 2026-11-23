@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTargetsIdIndexRoute,
   deleteTargetsTargetIdAssetsIdIndexRoute,
   deleteTargetsTargetIdKeysIdIndexRoute,
@@ -90,270 +90,528 @@ import {
   putTargetsTargetIdWebhooksIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTargetsIndexRouteHandler: RouteHandler<typeof getTargetsIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const targetsHandler = app
-  .openapi(getTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsActivateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllAverageFixTimeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllNeedsAttentionPieIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllNeedsAttentionTopIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllRiskTrendIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllScansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllScheduledscansExpandedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllSeverityTrendIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsAllTopVulnsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsArchiveIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsArchivedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTargetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdAssetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdAssetsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTargetsTargetIdAssetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdAssetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdAssetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdAssetsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdAssetsIdVerifyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdAverageFixTimeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdEventsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdEventsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdFindingsBulkReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdFindingsBulkRetestIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdFindingsBulkUpdateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdFindingsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdFindingsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdFindingsIdLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdFindingsIdRetestIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdIntegrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdIntegrationsJiraCloudIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdIntegrationsJiraServerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdIntegrationsSlackIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdIntegrationsSlackIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdIntegrationsSlackIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdKeysIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdKeysIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTargetsTargetIdKeysIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdKeysIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdRiskTrendIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdScanNowIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansDatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansRetrievePageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdScansIdCancelIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdEndpointsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdReportIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdReportDefaultIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdReportOwaspIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScansIdReportPciIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScheduledscansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdScheduledscansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScheduledscansExpandedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTargetsTargetIdScheduledscansIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdScheduledscansIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdScheduledscansIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdScheduledscansIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdSeverityTrendIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdSiteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdSiteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdSiteIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdSiteVerifyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdTopVulnsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdWebhooksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTargetsTargetIdWebhooksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTargetsTargetIdWebhooksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTargetsTargetIdWebhooksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTargetsTargetIdWebhooksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTargetsTargetIdWebhooksIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTargetsIndexRouteHandler: RouteHandler<typeof postTargetsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsActivateIndexRouteHandler: RouteHandler<
+  typeof postTargetsActivateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllAverageFixTimeIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllAverageFixTimeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllNeedsAttentionPieIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllNeedsAttentionPieIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllNeedsAttentionTopIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllNeedsAttentionTopIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllRiskTrendIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllRiskTrendIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllScansIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllScansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllScheduledscansExpandedIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllScheduledscansExpandedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllSeverityTrendIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllSeverityTrendIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsAllTopVulnsIndexRouteHandler: RouteHandler<
+  typeof getTargetsAllTopVulnsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsArchiveIndexRouteHandler: RouteHandler<
+  typeof postTargetsArchiveIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsArchivedIndexRouteHandler: RouteHandler<
+  typeof postTargetsArchivedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTargetsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTargetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsIdIndexRouteHandler: RouteHandler<typeof getTargetsIdIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsIdIndexRouteHandler: RouteHandler<
+  typeof patchTargetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsIdIndexRouteHandler: RouteHandler<typeof putTargetsIdIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdAssetsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdAssetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdAssetsIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdAssetsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTargetsTargetIdAssetsIdIndexRouteHandler: RouteHandler<
+  typeof deleteTargetsTargetIdAssetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdAssetsIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdAssetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdAssetsIdIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdAssetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdAssetsIdIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdAssetsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdAssetsIdVerifyIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdAssetsIdVerifyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdAverageFixTimeIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdAverageFixTimeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdEventsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdEventsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdEventsIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdEventsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdFindingsBulkReportIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdFindingsBulkReportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdFindingsBulkRetestIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdFindingsBulkRetestIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdFindingsBulkUpdateIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdFindingsBulkUpdateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsReportIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsReportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdFindingsIdIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdFindingsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdFindingsIdIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdFindingsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdFindingsIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdFindingsIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdFindingsIdLogIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdFindingsIdLogIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdFindingsIdRetestIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdFindingsIdRetestIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdIntegrationsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdIntegrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdIntegrationsJiraCloudIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdIntegrationsJiraCloudIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdIntegrationsJiraServerIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdIntegrationsJiraServerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdIntegrationsSlackIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdIntegrationsSlackIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdIntegrationsSlackIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdIntegrationsSlackIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdIntegrationsSlackIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdIntegrationsSlackIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdKeysIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdKeysIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdKeysIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdKeysIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTargetsTargetIdKeysIdIndexRouteHandler: RouteHandler<
+  typeof deleteTargetsTargetIdKeysIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdKeysIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdKeysIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdRiskTrendIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdRiskTrendIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdScanNowIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdScanNowIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansDatesIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansDatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansRetrievePageIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansRetrievePageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdScansIdCancelIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdScansIdCancelIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdEndpointsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdEndpointsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdReportIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdReportIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdReportDefaultIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdReportDefaultIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdReportOwaspIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdReportOwaspIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScansIdReportPciIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScansIdReportPciIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScheduledscansIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScheduledscansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdScheduledscansIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdScheduledscansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScheduledscansExpandedIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScheduledscansExpandedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTargetsTargetIdScheduledscansIdIndexRouteHandler: RouteHandler<
+  typeof deleteTargetsTargetIdScheduledscansIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdScheduledscansIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdScheduledscansIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdScheduledscansIdIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdScheduledscansIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdScheduledscansIdIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdScheduledscansIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdSeverityTrendIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdSeverityTrendIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdSiteIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdSiteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdSiteIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdSiteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdSiteIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdSiteIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdSiteVerifyIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdSiteVerifyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdTopVulnsIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdTopVulnsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdWebhooksIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdWebhooksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTargetsTargetIdWebhooksIndexRouteHandler: RouteHandler<
+  typeof postTargetsTargetIdWebhooksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTargetsTargetIdWebhooksIdIndexRouteHandler: RouteHandler<
+  typeof deleteTargetsTargetIdWebhooksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTargetsTargetIdWebhooksIdIndexRouteHandler: RouteHandler<
+  typeof getTargetsTargetIdWebhooksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTargetsTargetIdWebhooksIdIndexRouteHandler: RouteHandler<
+  typeof patchTargetsTargetIdWebhooksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTargetsTargetIdWebhooksIdIndexRouteHandler: RouteHandler<
+  typeof putTargetsTargetIdWebhooksIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

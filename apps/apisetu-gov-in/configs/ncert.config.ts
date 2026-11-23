@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/ncert/3.0.0/openapi.yaml',
   output: './src/ncert/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ncert/types.ts' },
   client: { output: './src/ncert/client.ts', baseUrl: '/' },
   rpc: { output: './src/ncert/rpc.ts', parseResponse: true },

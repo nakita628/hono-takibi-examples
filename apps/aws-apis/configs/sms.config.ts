@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/sms/2016-10-24/openapi.yaml',
   output: './src/sms/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sms/types.ts' },
   client: { output: './src/sms/client.ts', baseUrl: '/' },
   rpc: { output: './src/sms/rpc.ts', parseResponse: true },

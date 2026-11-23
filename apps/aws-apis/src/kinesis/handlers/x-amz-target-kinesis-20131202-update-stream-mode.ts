@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetKinesis20131202UpdateStreamModeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetKinesis20131202UpdateStreamModeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetKinesis20131202UpdateStreamModeHandler = app.openapi(
-  postXAmzTargetKinesis20131202UpdateStreamModeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetKinesis20131202UpdateStreamModeRouteHandler: RouteHandler<
+  typeof postXAmzTargetKinesis20131202UpdateStreamModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -65,7 +65,7 @@ type Record = {
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/records.:format': {
+    '/records.{format}': {
       $get:
         | {
             input: { param: { format: 'json' | 'xml' } } & {
@@ -496,7 +496,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/records/:record_id.:format': {
+    '/records/:record_id.{format}': {
       $get:
         | {
             input: { param: { record_id: number; format: 'json' | 'xml' } } & {
@@ -540,7 +540,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/records/:record_id/more_like_this.:format': {
+    '/records/:record_id/more_like_this.{format}': {
       $get:
         | {
             input: { param: { record_id: number; format: 'json' | 'xml' } } & {

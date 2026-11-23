@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getShuttleMappingErrorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getShuttleMappingErrorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const shuttleMappingErrorsHandler = app.openapi(getShuttleMappingErrorsRoute, (c) => {
+export const getShuttleMappingErrorsRouteHandler: RouteHandler<
+  typeof getShuttleMappingErrorsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deletePitRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deletePitRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pitHandler = app.openapi(deletePitRoute, (c) => {
+export const deletePitRouteHandler: RouteHandler<typeof deletePitRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -4,7 +4,7 @@ export default defineConfig({
   // box/box-openapi
   input: 'https://raw.githubusercontent.com/box/box-openapi/main/openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

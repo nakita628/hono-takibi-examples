@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSimpleWorkflowServiceRegisterDomainHandler = app.openapi(
-  postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSimpleWorkflowServiceRegisterDomainRouteHandler: RouteHandler<
+  typeof postXAmzTargetSimpleWorkflowServiceRegisterDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

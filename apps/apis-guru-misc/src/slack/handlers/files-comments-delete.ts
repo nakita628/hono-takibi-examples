@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFilesCommentsDeleteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFilesCommentsDeleteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const filesCommentsDeleteHandler = app.openapi(postFilesCommentsDeleteRoute, (c) => {
+export const postFilesCommentsDeleteRouteHandler: RouteHandler<
+  typeof postFilesCommentsDeleteRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

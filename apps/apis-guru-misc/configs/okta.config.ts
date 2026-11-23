@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/okta.local/1.0.0/openapi.yaml',
   output: './src/okta/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/okta/types.ts' },
   client: { output: './src/okta/client.ts', baseUrl: '/' },
   rpc: { output: './src/okta/rpc.ts', parseResponse: true },

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIntersectionsIntersectionIDOutputFormatRoute,
   getIntersectionsNearestOutputFormatRoute,
   getIntersectionsNearOutputFormatRoute,
   getIntersectionsWithinOutputFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntersectionsNearOutputFormatRouteHandler: RouteHandler<
+  typeof getIntersectionsNearOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const intersectionsHandler = app
-  .openapi(getIntersectionsNearOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntersectionsNearestOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntersectionsWithinOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntersectionsIntersectionIDOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIntersectionsNearestOutputFormatRouteHandler: RouteHandler<
+  typeof getIntersectionsNearestOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntersectionsWithinOutputFormatRouteHandler: RouteHandler<
+  typeof getIntersectionsWithinOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntersectionsIntersectionIDOutputFormatRouteHandler: RouteHandler<
+  typeof getIntersectionsIntersectionIDOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

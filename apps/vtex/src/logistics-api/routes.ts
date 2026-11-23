@@ -3619,7 +3619,7 @@ export const getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyId
           }),
       }),
     },
-    responses: { 200: { description: 'OK', content: {} } },
+    responses: { 200: { description: 'OK' } },
   })
 
 export const getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTimeRoute =
@@ -3732,7 +3732,7 @@ export const getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyId
           }),
       }),
     },
-    responses: { 200: { description: 'OK', content: {} } },
+    responses: { 200: { description: 'OK' } },
   })
 
 export const postApiLogisticsPvtConfigurationCarriersCarrierIdAdddayofweekblockedRoute =

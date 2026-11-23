@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDeploymentAllocationsDeploymentIDRoute,
   getDeploymentDeploymentIDRoute,
   postDeploymentAllocationHealthDeploymentIDRoute,
@@ -9,27 +9,44 @@ import {
   postDeploymentUnblockDeploymentIDRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeploymentDeploymentIDRouteHandler: RouteHandler<
+  typeof getDeploymentDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deploymentHandler = app
-  .openapi(getDeploymentDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentAllocationHealthDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeploymentAllocationsDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentFailDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentPauseDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentPromoteDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeploymentUnblockDeploymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeploymentAllocationHealthDeploymentIDRouteHandler: RouteHandler<
+  typeof postDeploymentAllocationHealthDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeploymentAllocationsDeploymentIDRouteHandler: RouteHandler<
+  typeof getDeploymentAllocationsDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentFailDeploymentIDRouteHandler: RouteHandler<
+  typeof postDeploymentFailDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentPauseDeploymentIDRouteHandler: RouteHandler<
+  typeof postDeploymentPauseDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentPromoteDeploymentIDRouteHandler: RouteHandler<
+  typeof postDeploymentPromoteDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeploymentUnblockDeploymentIDRouteHandler: RouteHandler<
+  typeof postDeploymentUnblockDeploymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

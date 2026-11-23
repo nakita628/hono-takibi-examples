@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUsersBlocksRoute,
   getUsersBlocksRoute,
   getUsersExtensionsListRoute,
@@ -10,30 +10,42 @@ import {
   putUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersRouteHandler: RouteHandler<typeof getUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersExtensionsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putUsersRouteHandler: RouteHandler<typeof putUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersBlocksRouteHandler: RouteHandler<typeof getUsersBlocksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersBlocksRouteHandler: RouteHandler<typeof putUsersBlocksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersBlocksRouteHandler: RouteHandler<typeof deleteUsersBlocksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersExtensionsListRouteHandler: RouteHandler<
+  typeof getUsersExtensionsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersExtensionsRouteHandler: RouteHandler<typeof getUsersExtensionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersExtensionsRouteHandler: RouteHandler<typeof putUsersExtensionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

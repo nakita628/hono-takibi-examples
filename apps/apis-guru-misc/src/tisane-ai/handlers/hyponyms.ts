@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHyponymsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHyponymsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const hyponymsHandler = app.openapi(getHyponymsRoute, (c) => {
+export const getHyponymsRouteHandler: RouteHandler<typeof getHyponymsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

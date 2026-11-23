@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMetadataQueriesExecuteReadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMetadataQueriesExecuteReadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metadataQueriesHandler = app.openapi(postMetadataQueriesExecuteReadRoute, (c) => {
+export const postMetadataQueriesExecuteReadRouteHandler: RouteHandler<
+  typeof postMetadataQueriesExecuteReadRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -107,12 +107,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cms/audit-logs/2026-09/export': {
-      $post: {
-        input: { json: CmsAuditLoggingExportSettings }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: CmsAuditLoggingExportSettings }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: CmsAuditLoggingExportSettings }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

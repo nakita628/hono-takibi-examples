@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/soundcloud.com/1.0.0/openapi.yaml',
   output: './src/soundcloud/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/soundcloud/types.ts' },
   client: { output: './src/soundcloud/client.ts', baseUrl: '/' },
   rpc: { output: './src/soundcloud/rpc.ts', parseResponse: true },

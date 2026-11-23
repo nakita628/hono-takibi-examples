@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/cpy.re/peertube/5.1.0/openapi.yaml',
   output: './src/cpy-re-peertube/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cpy-re-peertube/types.ts' },
   client: { output: './src/cpy-re-peertube/client.ts', baseUrl: '/' },
   rpc: { output: './src/cpy-re-peertube/rpc.ts', parseResponse: true },

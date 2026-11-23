@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDmSv20160101UpdateSubscriptionsToEventBridgeHandler = app.openapi(
-  postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

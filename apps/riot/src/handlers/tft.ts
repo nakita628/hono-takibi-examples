@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTftLeagueV1ByPuuidPuuidRoute,
   getTftLeagueV1ChallengerRoute,
   getTftLeagueV1EntriesTierDivisionRoute,
@@ -13,39 +13,68 @@ import {
   getTftSummonerV1SummonersMeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTftLeagueV1ByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getTftLeagueV1ByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tftHandler = app
-  .openapi(getTftLeagueV1ByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftLeagueV1ChallengerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftLeagueV1EntriesTierDivisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftLeagueV1GrandmasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftLeagueV1MasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftLeagueV1RatedLaddersQueueTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftMatchV1MatchesByPuuidPuuidIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftMatchV1MatchesMatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftStatusV1PlatformDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftSummonerV1SummonersByPuuidEncryptedPUUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTftSummonerV1SummonersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTftLeagueV1ChallengerRouteHandler: RouteHandler<
+  typeof getTftLeagueV1ChallengerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftLeagueV1EntriesTierDivisionRouteHandler: RouteHandler<
+  typeof getTftLeagueV1EntriesTierDivisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftLeagueV1GrandmasterRouteHandler: RouteHandler<
+  typeof getTftLeagueV1GrandmasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftLeagueV1MasterRouteHandler: RouteHandler<
+  typeof getTftLeagueV1MasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftLeagueV1RatedLaddersQueueTopRouteHandler: RouteHandler<
+  typeof getTftLeagueV1RatedLaddersQueueTopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftMatchV1MatchesByPuuidPuuidIdsRouteHandler: RouteHandler<
+  typeof getTftMatchV1MatchesByPuuidPuuidIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftMatchV1MatchesMatchIdRouteHandler: RouteHandler<
+  typeof getTftMatchV1MatchesMatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftStatusV1PlatformDataRouteHandler: RouteHandler<
+  typeof getTftStatusV1PlatformDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftSummonerV1SummonersByPuuidEncryptedPUUIDRouteHandler: RouteHandler<
+  typeof getTftSummonerV1SummonersByPuuidEncryptedPUUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTftSummonerV1SummonersMeRouteHandler: RouteHandler<
+  typeof getTftSummonerV1SummonersMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

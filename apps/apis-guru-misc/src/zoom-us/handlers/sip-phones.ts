@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSipPhonesPhoneIdRoute,
   getSipPhonesRoute,
   patchSipPhonesPhoneIdRoute,
   postSipPhonesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSipPhonesRouteHandler: RouteHandler<typeof getSipPhonesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sipPhonesHandler = app
-  .openapi(getSipPhonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSipPhonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSipPhonesPhoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSipPhonesPhoneIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSipPhonesRouteHandler: RouteHandler<typeof postSipPhonesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSipPhonesPhoneIdRouteHandler: RouteHandler<
+  typeof deleteSipPhonesPhoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSipPhonesPhoneIdRouteHandler: RouteHandler<
+  typeof patchSipPhonesPhoneIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

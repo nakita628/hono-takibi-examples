@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAttorneyAttorneyIdAssociatedPartiesRoute, getAttorneyAttorneyIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getAttorneyAttorneyIdAssociatedPartiesRoute,
+  getAttorneyAttorneyIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getAttorneyAttorneyIdRouteHandler: RouteHandler<
+  typeof getAttorneyAttorneyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const attorneyHandler = app
-  .openapi(getAttorneyAttorneyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttorneyAttorneyIdAssociatedPartiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAttorneyAttorneyIdAssociatedPartiesRouteHandler: RouteHandler<
+  typeof getAttorneyAttorneyIdAssociatedPartiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

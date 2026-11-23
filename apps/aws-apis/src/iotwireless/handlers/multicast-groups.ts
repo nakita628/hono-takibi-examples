@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMulticastGroupsIdRoute,
   deleteMulticastGroupsIdSessionRoute,
   deleteMulticastGroupsIdWirelessDevicesWirelessDeviceIdRoute,
@@ -15,45 +15,80 @@ import {
   putMulticastGroupsIdWirelessDeviceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putMulticastGroupsIdWirelessDeviceRouteHandler: RouteHandler<
+  typeof putMulticastGroupsIdWirelessDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const multicastGroupsHandler = app
-  .openapi(putMulticastGroupsIdWirelessDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMulticastGroupsIdSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMulticastGroupsIdSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMulticastGroupsIdSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMulticastGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMulticastGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMulticastGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMulticastGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMulticastGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMulticastGroupsIdWirelessDevicesWirelessDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMulticastGroupsIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMulticastGroupsIdBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMulticastGroupsIdBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMulticastGroupsIdSessionRouteHandler: RouteHandler<
+  typeof deleteMulticastGroupsIdSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMulticastGroupsIdSessionRouteHandler: RouteHandler<
+  typeof getMulticastGroupsIdSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMulticastGroupsIdSessionRouteHandler: RouteHandler<
+  typeof putMulticastGroupsIdSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMulticastGroupsRouteHandler: RouteHandler<
+  typeof postMulticastGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMulticastGroupsRouteHandler: RouteHandler<typeof getMulticastGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMulticastGroupsIdRouteHandler: RouteHandler<
+  typeof deleteMulticastGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMulticastGroupsIdRouteHandler: RouteHandler<
+  typeof getMulticastGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMulticastGroupsIdRouteHandler: RouteHandler<
+  typeof patchMulticastGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMulticastGroupsIdWirelessDevicesWirelessDeviceIdRouteHandler: RouteHandler<
+  typeof deleteMulticastGroupsIdWirelessDevicesWirelessDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMulticastGroupsIdDataRouteHandler: RouteHandler<
+  typeof postMulticastGroupsIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMulticastGroupsIdBulkRouteHandler: RouteHandler<
+  typeof patchMulticastGroupsIdBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMulticastGroupsIdBulkRouteHandler: RouteHandler<
+  typeof postMulticastGroupsIdBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

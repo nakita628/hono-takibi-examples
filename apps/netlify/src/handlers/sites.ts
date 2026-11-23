@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSitesSiteIdAssetsAssetIdRoute,
   deleteSitesSiteIdBuildHooksIdRoute,
   deleteSitesSiteIdDatabaseBranchBranchIdRoute,
@@ -93,279 +93,542 @@ import {
   putSitesSiteIdUnlinkRepoRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSitesRouteHandler: RouteHandler<typeof getSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sitesHandler = app
-  .openapi(getSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdSslCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdFormsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdFormsFormIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdAssetsAssetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdAssetsAssetIdPublicSignatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdFilesFilePathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdSnippetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdSnippetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdSnippetsSnippetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdSnippetsSnippetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdSnippetsSnippetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdBuildHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdBuildHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdBuildHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdBuildHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdBuildHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDeploysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDeploysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDeploysDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDeploysDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDeploysDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDeploysDeployIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdBuildsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdBuildsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDeployedBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdUnlinkRepoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdRollbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdAgentRunnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdServiceInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdServicesAddonInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdServicesAddonInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdServicesAddonInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdServicesAddonInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdIdentityIdentityIdUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdIdentityIdentityIdUsersLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdTrafficSplitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdTrafficSplitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdTrafficSplitsSplitTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdTrafficSplitsSplitTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdTrafficSplitsSplitTestIdPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdTrafficSplitsSplitTestIdUnpublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDevServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDevServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDevServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDevServersDevServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDevServersDevServerIdStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDevServerHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDevServerHooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDevServerHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDevServerHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDevServerHooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdAiGatewayTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseBranchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseBranchBranchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDatabaseBranchBranchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseBranchBranchIdResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDatabaseBranchBranchIdComputeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSitesSiteIdDatabaseComputeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseComputeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDatabaseComputeSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseMigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseMigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseMigrationsDeployIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSitesSiteIdDatabaseSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSitesSiteIdDatabaseSnapshotSnapshotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSitesSiteIdDatabaseSnapshotSnapshotIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSitesRouteHandler: RouteHandler<typeof postSitesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdRouteHandler: RouteHandler<typeof getSitesSiteIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSitesSiteIdRouteHandler: RouteHandler<typeof patchSitesSiteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdRouteHandler: RouteHandler<typeof deleteSitesSiteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdSslRouteHandler: RouteHandler<typeof postSitesSiteIdSslRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdSslRouteHandler: RouteHandler<typeof getSitesSiteIdSslRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdSslCertificatesRouteHandler: RouteHandler<
+  typeof getSitesSiteIdSslCertificatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdFunctionsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdFormsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdFormsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdFormsFormIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdFormsFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdSubmissionsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdFilesRouteHandler: RouteHandler<
+  typeof getSitesSiteIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdAssetsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdAssetsRouteHandler: RouteHandler<
+  typeof postSitesSiteIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdAssetsAssetIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdAssetsAssetIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdAssetsAssetIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdAssetsAssetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdAssetsAssetIdPublicSignatureRouteHandler: RouteHandler<
+  typeof getSitesSiteIdAssetsAssetIdPublicSignatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdFilesFilePathRouteHandler: RouteHandler<
+  typeof getSitesSiteIdFilesFilePathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdSnippetsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdSnippetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdSnippetsRouteHandler: RouteHandler<
+  typeof postSitesSiteIdSnippetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdSnippetsSnippetIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdSnippetsSnippetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdSnippetsSnippetIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdSnippetsSnippetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdSnippetsSnippetIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdSnippetsSnippetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdMetadataRouteHandler: RouteHandler<
+  typeof getSitesSiteIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdMetadataRouteHandler: RouteHandler<
+  typeof putSitesSiteIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdBuildHooksRouteHandler: RouteHandler<
+  typeof getSitesSiteIdBuildHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdBuildHooksRouteHandler: RouteHandler<
+  typeof postSitesSiteIdBuildHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdBuildHooksIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdBuildHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdBuildHooksIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdBuildHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdBuildHooksIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdBuildHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDeploysRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDeploysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDeploysRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDeploysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDeploysDeployIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDeploysDeployIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDeploysDeployIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdDeploysDeployIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDeploysDeployIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDeploysDeployIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDeploysDeployIdRestoreRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDeploysDeployIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdBuildsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdBuildsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdBuildsRouteHandler: RouteHandler<
+  typeof postSitesSiteIdBuildsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDeployedBranchesRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDeployedBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdUnlinkRepoRouteHandler: RouteHandler<
+  typeof putSitesSiteIdUnlinkRepoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdEnableRouteHandler: RouteHandler<
+  typeof putSitesSiteIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDisableRouteHandler: RouteHandler<
+  typeof putSitesSiteIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDnsRouteHandler: RouteHandler<typeof getSitesSiteIdDnsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDnsRouteHandler: RouteHandler<typeof putSitesSiteIdDnsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdRollbackRouteHandler: RouteHandler<
+  typeof putSitesSiteIdRollbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdAgentRunnersRouteHandler: RouteHandler<
+  typeof postSitesSiteIdAgentRunnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdServiceInstancesRouteHandler: RouteHandler<
+  typeof getSitesSiteIdServiceInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdServicesAddonInstancesRouteHandler: RouteHandler<
+  typeof postSitesSiteIdServicesAddonInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdServicesAddonInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdServicesAddonInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdServicesAddonInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdServicesAddonInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdServicesAddonInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdServicesAddonInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdIdentityIdentityIdUsersUserIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdIdentityIdentityIdUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdIdentityIdentityIdUsersLookupRouteHandler: RouteHandler<
+  typeof postSitesSiteIdIdentityIdentityIdUsersLookupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdTrafficSplitsRouteHandler: RouteHandler<
+  typeof postSitesSiteIdTrafficSplitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdTrafficSplitsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdTrafficSplitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdTrafficSplitsSplitTestIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdTrafficSplitsSplitTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdTrafficSplitsSplitTestIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdTrafficSplitsSplitTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdTrafficSplitsSplitTestIdPublishRouteHandler: RouteHandler<
+  typeof postSitesSiteIdTrafficSplitsSplitTestIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdTrafficSplitsSplitTestIdUnpublishRouteHandler: RouteHandler<
+  typeof postSitesSiteIdTrafficSplitsSplitTestIdUnpublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDevServersRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDevServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDevServersRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDevServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDevServersRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDevServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDevServersDevServerIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDevServersDevServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDevServersDevServerIdStateRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDevServersDevServerIdStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDevServerHooksRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDevServerHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDevServerHooksRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDevServerHooksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDevServerHooksIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDevServerHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDevServerHooksIdRouteHandler: RouteHandler<
+  typeof putSitesSiteIdDevServerHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDevServerHooksIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDevServerHooksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdAiGatewayTokenRouteHandler: RouteHandler<
+  typeof getSitesSiteIdAiGatewayTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDatabaseRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseBranchRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseBranchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseBranchesRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseBranchBranchIdRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseBranchBranchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDatabaseBranchBranchIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDatabaseBranchBranchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseBranchBranchIdResetRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseBranchBranchIdResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDatabaseBranchBranchIdComputeSettingsRouteHandler: RouteHandler<
+  typeof putSitesSiteIdDatabaseBranchBranchIdComputeSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSitesSiteIdDatabaseComputeSettingsRouteHandler: RouteHandler<
+  typeof putSitesSiteIdDatabaseComputeSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseComputeSettingsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseComputeSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDatabaseComputeSettingsRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDatabaseComputeSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseMigrationsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseMigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseMigrationsNameRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseMigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseMigrationsDeployIdRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseMigrationsDeployIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseSnapshotRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSitesSiteIdDatabaseSnapshotsRouteHandler: RouteHandler<
+  typeof getSitesSiteIdDatabaseSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSitesSiteIdDatabaseSnapshotSnapshotIdRouteHandler: RouteHandler<
+  typeof deleteSitesSiteIdDatabaseSnapshotSnapshotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSitesSiteIdDatabaseSnapshotSnapshotIdRestoreRouteHandler: RouteHandler<
+  typeof postSitesSiteIdDatabaseSnapshotSnapshotIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

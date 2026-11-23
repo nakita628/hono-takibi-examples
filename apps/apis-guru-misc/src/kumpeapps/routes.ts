@@ -1506,22 +1506,19 @@ export const getKkidAllowanceRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Returned',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -1631,22 +1628,19 @@ export const postKkidAllowanceRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Returned',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -1849,22 +1843,19 @@ export const postKkidApnsRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Returned',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -2017,22 +2008,19 @@ export const getKkidChorelistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Found.',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -2303,22 +2291,19 @@ export const putKkidChorelistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Found.',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -2674,31 +2659,25 @@ export const postKkidChorelistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Found.',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
       content: { 'application/json': { schema: _405Schema } },
     },
-    409: {
-      description: 'Conflict- idChoreList parameter was not supplied or is blank',
-      content: {},
-    },
+    409: { description: 'Conflict- idChoreList parameter was not supplied or is blank' },
     412: {
       description: 'API Access Denied! Your API key is invalid, expired, or not supplied!',
       content: { 'application/json': { schema: _412Schema } },
@@ -2748,31 +2727,25 @@ export const deleteKkidChorelistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     206: {
       description: 'No Data Found.',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
       content: { 'application/json': { schema: _405Schema } },
     },
-    409: {
-      description: 'Conflict- idChoreList parameter was not supplied or is blank',
-      content: {},
-    },
+    409: { description: 'Conflict- idChoreList parameter was not supplied or is blank' },
     412: {
       description: 'API Access Denied! Your API key is invalid, expired, or not supplied!',
       content: { 'application/json': { schema: _412Schema } },
@@ -2866,7 +2839,6 @@ export const postKkidMasteruserRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -2875,7 +2847,6 @@ export const postKkidMasteruserRoute = createRoute({
     409: {
       description:
         'Create user unsuccessful! This is normally because the username or password already exists in the KumpeApps system.',
-      content: {},
     },
   },
   security: [{ app_key: [] }],
@@ -3176,22 +3147,19 @@ export const getKkidUserlistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     204: {
       description: 'No Data Returned',
       content: { 'application/json': { schema: NodataSchema } },
     },
-    400: { description: 'bad input parameter', content: {} },
+    400: { description: 'bad input parameter' },
     401: {
       description:
         'Unauthorized- API credentials not supplied. Ensure you have passed proper Username and Password parameters',
-      content: {},
     },
     403: {
       description:
         'Forbidden- User access is denied. API user either does not have access or has been banned/locked.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -3408,7 +3376,6 @@ export const putKkidUserlistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -3417,7 +3384,6 @@ export const putKkidUserlistRoute = createRoute({
     409: {
       description:
         'Update user unsuccessful. This could be due to invalid userID, new username already exists, new email already exists, or an unknown error.',
-      content: {},
     },
     412: {
       description: 'API Access Denied! Your API key is invalid, expired, or not supplied!',
@@ -3511,7 +3477,6 @@ export const postKkidUserlistRoute = createRoute({
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -3520,7 +3485,6 @@ export const postKkidUserlistRoute = createRoute({
     409: {
       description:
         'Create user unsuccessful! This is normally because the username or password already exists in the KumpeApps system.',
-      content: {},
     },
     412: {
       description: 'API Access Denied! Your API key is invalid, expired, or not supplied!',
@@ -3564,11 +3528,10 @@ export const deleteKkidUserlistRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'User Deleted', content: {} },
+    200: { description: 'User Deleted' },
     202: {
       description:
         'Accepted- Access Granted but data flow did not complete due to an unknown error.',
-      content: {},
     },
     405: {
       description: 'Method Not Allowed- API user does not have access to use this method',
@@ -3577,7 +3540,6 @@ export const deleteKkidUserlistRoute = createRoute({
     409: {
       description:
         'Create user unsuccessful! This is normally because the username or password already exists in the KumpeApps system.',
-      content: {},
     },
     412: {
       description: 'API Access Denied! Your API key is invalid, expired, or not supplied!',

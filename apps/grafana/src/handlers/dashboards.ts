@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDashboardsUidDashboardUidPublicDashboardsUidRoute,
   deleteDashboardsUidUidRoute,
   getDashboardsHomeRoute,
@@ -23,69 +23,128 @@ import {
   postDashboardsVariablesSharedClustersRescanRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDashboardsDbRouteHandler: RouteHandler<typeof postDashboardsDbRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dashboardsHandler = app
-  .openapi(postDashboardsDbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsHomeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsInterpolateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsPublicDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsUidDashboardUidPublicDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsUidDashboardUidPublicDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsUidDashboardUidPublicDashboardsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDashboardsUidDashboardUidPublicDashboardsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsUidUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsUidUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsUidUidPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsUidUidPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsUidUidRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsUidUidVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsUidUidVersionsDashboardVersionIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsVariablesPromoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsVariablesSharedClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsVariablesSharedClustersOccurrencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsVariablesSharedClustersRescanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDashboardsHomeRouteHandler: RouteHandler<typeof getDashboardsHomeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsImportRouteHandler: RouteHandler<
+  typeof postDashboardsImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsInterpolateRouteHandler: RouteHandler<
+  typeof postDashboardsInterpolateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsPublicDashboardsRouteHandler: RouteHandler<
+  typeof getDashboardsPublicDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsTagsRouteHandler: RouteHandler<typeof getDashboardsTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsUidDashboardUidPublicDashboardsRouteHandler: RouteHandler<
+  typeof getDashboardsUidDashboardUidPublicDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsUidDashboardUidPublicDashboardsRouteHandler: RouteHandler<
+  typeof postDashboardsUidDashboardUidPublicDashboardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsUidDashboardUidPublicDashboardsUidRouteHandler: RouteHandler<
+  typeof deleteDashboardsUidDashboardUidPublicDashboardsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDashboardsUidDashboardUidPublicDashboardsUidRouteHandler: RouteHandler<
+  typeof patchDashboardsUidDashboardUidPublicDashboardsUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsUidUidRouteHandler: RouteHandler<
+  typeof deleteDashboardsUidUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsUidUidRouteHandler: RouteHandler<
+  typeof getDashboardsUidUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsUidUidPermissionsRouteHandler: RouteHandler<
+  typeof getDashboardsUidUidPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsUidUidPermissionsRouteHandler: RouteHandler<
+  typeof postDashboardsUidUidPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsUidUidRestoreRouteHandler: RouteHandler<
+  typeof postDashboardsUidUidRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsUidUidVersionsRouteHandler: RouteHandler<
+  typeof getDashboardsUidUidVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsUidUidVersionsDashboardVersionIDRouteHandler: RouteHandler<
+  typeof getDashboardsUidUidVersionsDashboardVersionIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsVariablesPromoteRouteHandler: RouteHandler<
+  typeof postDashboardsVariablesPromoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsVariablesSharedClustersRouteHandler: RouteHandler<
+  typeof getDashboardsVariablesSharedClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsVariablesSharedClustersOccurrencesRouteHandler: RouteHandler<
+  typeof getDashboardsVariablesSharedClustersOccurrencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsVariablesSharedClustersRescanRouteHandler: RouteHandler<
+  typeof postDashboardsVariablesSharedClustersRescanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

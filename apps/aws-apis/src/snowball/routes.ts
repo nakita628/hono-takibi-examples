@@ -595,8 +595,8 @@ const JobMetadataSchema = z
 const JobMetadataListSchema = z.array(JobMetadataSchema).openapi('JobMetadataList')
 
 type DescribeJobResultType = {
-  JobMetadata?: z.infer<typeof JobMetadataSchema> & unknown
-  SubJobMetadata?: z.infer<typeof JobMetadataListSchema> & unknown
+  JobMetadata?: z.infer<typeof JobMetadataSchema>
+  SubJobMetadata?: z.infer<typeof JobMetadataListSchema>
 }
 
 const CancelClusterResultSchema = z.looseObject({}).openapi('CancelClusterResult')

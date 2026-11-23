@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMPutComplianceItemsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMPutComplianceItemsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmPutComplianceItemsHandler = app.openapi(
-  postXAmzTargetAmazonSSMPutComplianceItemsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMPutComplianceItemsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMPutComplianceItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

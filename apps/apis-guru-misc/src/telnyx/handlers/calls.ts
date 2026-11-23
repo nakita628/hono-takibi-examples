@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCallsCallControlIdRoute,
   postCallsCallControlIdActionsAnswerRoute,
   postCallsCallControlIdActionsBridgeRoute,
@@ -27,81 +27,150 @@ import {
   postCallsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCallsRouteHandler: RouteHandler<typeof postCallsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const callsHandler = app
-  .openapi(postCallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCallsCallControlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsAnswerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsBridgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsEnqueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsForkStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsForkStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsGatherStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsGatherUsingAudioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsGatherUsingSpeakRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsHangupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsLeaveQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsPlaybackStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsPlaybackStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsRecordPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsRecordResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsRecordStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsRecordStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsReferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsSendDtmfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsSpeakRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsTranscriptionStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsTranscriptionStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallsCallControlIdActionsTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCallsCallControlIdRouteHandler: RouteHandler<
+  typeof getCallsCallControlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsAnswerRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsAnswerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsBridgeRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsEnqueueRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsEnqueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsForkStartRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsForkStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsForkStopRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsForkStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsGatherStopRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsGatherStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsGatherUsingAudioRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsGatherUsingAudioRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsGatherUsingSpeakRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsGatherUsingSpeakRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsHangupRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsHangupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsLeaveQueueRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsLeaveQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsPlaybackStartRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsPlaybackStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsPlaybackStopRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsPlaybackStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsRecordPauseRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsRecordPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsRecordResumeRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsRecordResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsRecordStartRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsRecordStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsRecordStopRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsRecordStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsReferRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsReferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsRejectRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsSendDtmfRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsSendDtmfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsSpeakRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsSpeakRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsTranscriptionStartRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsTranscriptionStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsTranscriptionStopRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsTranscriptionStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCallsCallControlIdActionsTransferRouteHandler: RouteHandler<
+  typeof postCallsCallControlIdActionsTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChecksChkIdRoute,
   getChecksChkIdRoute,
   getChecksRoute,
   postChecksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChecksRouteHandler: RouteHandler<typeof getChecksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const checksHandler = app
-  .openapi(getChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChecksChkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChecksChkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChecksRouteHandler: RouteHandler<typeof postChecksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChecksChkIdRouteHandler: RouteHandler<typeof getChecksChkIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChecksChkIdRouteHandler: RouteHandler<typeof deleteChecksChkIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

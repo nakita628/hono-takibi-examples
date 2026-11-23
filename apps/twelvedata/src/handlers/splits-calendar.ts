@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSplitsCalendarRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSplitsCalendarRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const splitsCalendarHandler = app.openapi(getSplitsCalendarRoute, (c) => {
+export const getSplitsCalendarRouteHandler: RouteHandler<typeof getSplitsCalendarRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

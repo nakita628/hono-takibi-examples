@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/kinesisvideo/2017-09-30/openapi.yaml',
   output: './src/kinesisvideo/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kinesisvideo/types.ts' },
   client: { output: './src/kinesisvideo/client.ts', baseUrl: '/' },
   rpc: { output: './src/kinesisvideo/rpc.ts', parseResponse: true },

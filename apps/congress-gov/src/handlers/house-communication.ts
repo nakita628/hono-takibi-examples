@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHouseCommunicationCongressCommunicationTypeCommunicationNumberRoute,
   getHouseCommunicationCongressCommunicationTypeRoute,
   getHouseCommunicationCongressRoute,
   getHouseCommunicationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHouseCommunicationRouteHandler: RouteHandler<
+  typeof getHouseCommunicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const houseCommunicationHandler = app
-  .openapi(getHouseCommunicationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHouseCommunicationCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHouseCommunicationCongressCommunicationTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHouseCommunicationCongressCommunicationTypeCommunicationNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHouseCommunicationCongressRouteHandler: RouteHandler<
+  typeof getHouseCommunicationCongressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHouseCommunicationCongressCommunicationTypeRouteHandler: RouteHandler<
+  typeof getHouseCommunicationCongressCommunicationTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHouseCommunicationCongressCommunicationTypeCommunicationNumberRouteHandler: RouteHandler<
+  typeof getHouseCommunicationCongressCommunicationTypeCommunicationNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

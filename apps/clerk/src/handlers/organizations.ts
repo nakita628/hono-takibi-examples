@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOrganizationsOrganizationIdDomainsDomainIdRoute,
   deleteOrganizationsOrganizationIdLogoRoute,
   deleteOrganizationsOrganizationIdMembershipsUserIdRoute,
@@ -30,90 +30,170 @@ import {
   putOrganizationsOrganizationIdMetadataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrganizationsRouteHandler: RouteHandler<typeof getOrganizationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const organizationsHandler = app
-  .openapi(getOrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrganizationsOrganizationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationsOrganizationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrganizationsOrganizationIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrganizationsOrganizationIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrganizationsOrganizationIdLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationsOrganizationIdLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdBillingSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdBillingCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdBillingCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdInvitationsBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdInvitationsPendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdInvitationsInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdInvitationsInvitationIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrganizationsOrganizationIdMembershipsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationsOrganizationIdMembershipsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrganizationsOrganizationIdMembershipsUserIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrganizationIdDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrganizationsOrganizationIdDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationsOrganizationIdDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrganizationIdDomainsDomainIdVerifyOwnershipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrganizationsRouteHandler: RouteHandler<typeof postOrganizationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrganizationIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrganizationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdMetadataRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOrganizationsOrganizationIdMetadataRouteHandler: RouteHandler<
+  typeof putOrganizationsOrganizationIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOrganizationsOrganizationIdLogoRouteHandler: RouteHandler<
+  typeof putOrganizationsOrganizationIdLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrganizationIdLogoRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrganizationIdLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdBillingSubscriptionRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdBillingSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdBillingCreditsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdBillingCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdBillingCreditsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdBillingCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdInvitationsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdInvitationsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdInvitationsBulkRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdInvitationsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdInvitationsPendingRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdInvitationsPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdInvitationsInvitationIdRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdInvitationsInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdInvitationsInvitationIdRevokeRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdInvitationsInvitationIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdMembershipsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdMembershipsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdMembershipsUserIdRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdMembershipsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrganizationIdMembershipsUserIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrganizationIdMembershipsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdMembershipsUserIdMetadataRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdMembershipsUserIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdDomainsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrganizationIdDomainsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrganizationIdDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrganizationsOrganizationIdDomainsDomainIdRouteHandler: RouteHandler<
+  typeof patchOrganizationsOrganizationIdDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrganizationIdDomainsDomainIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrganizationIdDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrganizationIdDomainsDomainIdVerifyOwnershipRouteHandler: RouteHandler<
+  typeof postOrganizationsOrganizationIdDomainsDomainIdVerifyOwnershipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

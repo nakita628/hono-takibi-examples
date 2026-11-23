@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ProjectsScriptIdDeploymentsDeploymentIdRoute,
   getV1ProcessesListScriptProcessesRoute,
   getV1ProcessesRoute,
@@ -18,54 +18,94 @@ import {
   putV1ProjectsScriptIdDeploymentsDeploymentIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ProcessesRouteHandler: RouteHandler<typeof getV1ProcessesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProcessesListScriptProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProjectsScriptIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsScriptIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsScriptIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProjectsScriptIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsScriptIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsScriptIdVersionsVersionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ScriptsScriptIdRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1ProcessesListScriptProcessesRouteHandler: RouteHandler<
+  typeof getV1ProcessesListScriptProcessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsRouteHandler: RouteHandler<typeof postV1ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdContentRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProjectsScriptIdContentRouteHandler: RouteHandler<
+  typeof putV1ProjectsScriptIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdDeploymentsRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsScriptIdDeploymentsRouteHandler: RouteHandler<
+  typeof postV1ProjectsScriptIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsScriptIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsScriptIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProjectsScriptIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof putV1ProjectsScriptIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdMetricsRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdVersionsRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsScriptIdVersionsRouteHandler: RouteHandler<
+  typeof postV1ProjectsScriptIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsScriptIdVersionsVersionNumberRouteHandler: RouteHandler<
+  typeof getV1ProjectsScriptIdVersionsVersionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ScriptsScriptIdRunRouteHandler: RouteHandler<
+  typeof postV1ScriptsScriptIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

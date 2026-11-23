@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteClientsIdClientLogoRoute,
   deleteClientsIdClientRoute,
   getClientsIdClientRoute,
@@ -9,27 +9,40 @@ import {
   putClientsIdClientRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getClientsRouteHandler: RouteHandler<typeof getClientsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const clientsHandler = app
-  .openapi(getClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClientsIdClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getClientsIdClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putClientsIdClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteClientsIdClientLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postClientsIdClientLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postClientsRouteHandler: RouteHandler<typeof postClientsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClientsIdClientRouteHandler: RouteHandler<
+  typeof deleteClientsIdClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getClientsIdClientRouteHandler: RouteHandler<typeof getClientsIdClientRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putClientsIdClientRouteHandler: RouteHandler<typeof putClientsIdClientRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteClientsIdClientLogoRouteHandler: RouteHandler<
+  typeof deleteClientsIdClientLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postClientsIdClientLogoRouteHandler: RouteHandler<
+  typeof postClientsIdClientLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

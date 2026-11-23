@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSStepFunctionsStopExecutionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSStepFunctionsStopExecutionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsStepFunctionsStopExecutionHandler = app.openapi(
-  postXAmzTargetAWSStepFunctionsStopExecutionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSStepFunctionsStopExecutionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSStepFunctionsStopExecutionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

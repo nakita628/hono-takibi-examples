@@ -40270,7 +40270,7 @@ export const postMediaBridge202609AppIdPropertiesObjectTypeBatchArchiveRoute = c
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -40686,7 +40686,7 @@ export const deleteMediaBridge202609AppIdPropertiesObjectTypeGroupsGroupNameRout
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -40934,7 +40934,7 @@ export const deleteMediaBridge202609AppIdPropertiesObjectTypePropertyNameRoute =
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 
@@ -41334,7 +41334,7 @@ export const deleteMediaBridge202609AppIdSchemasObjectTypeAssociationsAssociatio
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ developer_hapikey: [] }],
   })
 
@@ -41826,7 +41826,7 @@ export const deleteMediaBridge202609AppIdSettingsOembedDomainsRoute = createRout
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })
 

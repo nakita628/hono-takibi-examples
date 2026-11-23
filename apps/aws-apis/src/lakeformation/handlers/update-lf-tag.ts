@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUpdateLFTagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUpdateLFTagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const updateLfTagHandler = app.openapi(postUpdateLFTagRoute, (c) => {
+export const postUpdateLFTagRouteHandler: RouteHandler<typeof postUpdateLFTagRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

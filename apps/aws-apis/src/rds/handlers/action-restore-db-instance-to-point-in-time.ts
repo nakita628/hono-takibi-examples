@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionRestoreDBInstanceToPointInTimeRoute,
   postActionRestoreDBInstanceToPointInTimeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRestoreDBInstanceToPointInTimeRouteHandler: RouteHandler<
+  typeof getActionRestoreDBInstanceToPointInTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRestoreDbInstanceToPointInTimeHandler = app
-  .openapi(getActionRestoreDBInstanceToPointInTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRestoreDBInstanceToPointInTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRestoreDBInstanceToPointInTimeRouteHandler: RouteHandler<
+  typeof postActionRestoreDBInstanceToPointInTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

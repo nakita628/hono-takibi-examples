@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/truora.com/1.0.0/openapi.yaml',
   output: './src/truora/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/truora/types.ts' },
   client: { output: './src/truora/client.ts', baseUrl: '/' },
   rpc: { output: './src/truora/rpc.ts', parseResponse: true },

@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReisezentrenIdRoute,
   getReisezentrenLocLatLonDistRoute,
   getReisezentrenLocLatLonRoute,
   getReisezentrenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReisezentrenRouteHandler: RouteHandler<typeof getReisezentrenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reisezentrenHandler = app
-  .openapi(getReisezentrenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReisezentrenLocLatLonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReisezentrenLocLatLonDistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReisezentrenIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReisezentrenLocLatLonRouteHandler: RouteHandler<
+  typeof getReisezentrenLocLatLonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReisezentrenLocLatLonDistRouteHandler: RouteHandler<
+  typeof getReisezentrenLocLatLonDistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReisezentrenIdRouteHandler: RouteHandler<typeof getReisezentrenIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

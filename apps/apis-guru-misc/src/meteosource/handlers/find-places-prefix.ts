@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFindPlacesPrefixRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFindPlacesPrefixRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const findPlacesPrefixHandler = app.openapi(getFindPlacesPrefixRoute, (c) => {
+export const getFindPlacesPrefixRouteHandler: RouteHandler<
+  typeof getFindPlacesPrefixRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

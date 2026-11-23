@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/probely.com/1.2.0/openapi.yaml',
   output: './src/probely/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/probely/types.ts' },
   client: { output: './src/probely/client.ts', baseUrl: '/' },
   rpc: { output: './src/probely/rpc.ts', parseResponse: true },

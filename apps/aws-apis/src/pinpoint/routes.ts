@@ -660,31 +660,31 @@ const CampaignLimitsSchema = z
   .openapi('CampaignLimits')
 
 type CampaignResponseType = {
-  AdditionalTreatments?: z.infer<typeof ListOfTreatmentResourceSchema> & unknown
-  ApplicationId: z.infer<typeof StringSchema> & unknown
-  Arn: z.infer<typeof StringSchema> & unknown
-  CreationDate: z.infer<typeof StringSchema> & unknown
-  CustomDeliveryConfiguration?: z.infer<typeof CustomDeliveryConfigurationSchema> & unknown
-  DefaultState?: z.infer<typeof CampaignStateSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  HoldoutPercent?: z.infer<typeof IntegerSchema> & unknown
-  Hook?: z.infer<typeof CampaignHookSchema> & unknown
-  Id: z.infer<typeof StringSchema> & unknown
-  IsPaused?: z.infer<typeof BooleanSchema> & unknown
-  LastModifiedDate: z.infer<typeof StringSchema> & unknown
-  Limits?: z.infer<typeof CampaignLimitsSchema> & unknown
-  MessageConfiguration?: z.infer<typeof MessageConfigurationSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Schedule?: z.infer<typeof ScheduleSchema> & unknown
-  SegmentId: z.infer<typeof StringSchema> & unknown
-  SegmentVersion: z.infer<typeof IntegerSchema> & unknown
-  State?: z.infer<typeof CampaignStateSchema> & unknown
-  tags?: z.infer<typeof MapOfStringSchema> & unknown
-  TemplateConfiguration?: z.infer<typeof TemplateConfigurationSchema> & unknown
-  TreatmentDescription?: z.infer<typeof StringSchema> & unknown
-  TreatmentName?: z.infer<typeof StringSchema> & unknown
-  Version?: z.infer<typeof IntegerSchema> & unknown
-  Priority?: z.infer<typeof IntegerSchema> & unknown
+  AdditionalTreatments?: z.infer<typeof ListOfTreatmentResourceSchema>
+  ApplicationId: z.infer<typeof StringSchema>
+  Arn: z.infer<typeof StringSchema>
+  CreationDate: z.infer<typeof StringSchema>
+  CustomDeliveryConfiguration?: z.infer<typeof CustomDeliveryConfigurationSchema>
+  DefaultState?: z.infer<typeof CampaignStateSchema>
+  Description?: z.infer<typeof StringSchema>
+  HoldoutPercent?: z.infer<typeof IntegerSchema>
+  Hook?: z.infer<typeof CampaignHookSchema>
+  Id: z.infer<typeof StringSchema>
+  IsPaused?: z.infer<typeof BooleanSchema>
+  LastModifiedDate: z.infer<typeof StringSchema>
+  Limits?: z.infer<typeof CampaignLimitsSchema>
+  MessageConfiguration?: z.infer<typeof MessageConfigurationSchema>
+  Name?: z.infer<typeof StringSchema>
+  Schedule?: z.infer<typeof ScheduleSchema>
+  SegmentId: z.infer<typeof StringSchema>
+  SegmentVersion: z.infer<typeof IntegerSchema>
+  State?: z.infer<typeof CampaignStateSchema>
+  tags?: z.infer<typeof MapOfStringSchema>
+  TemplateConfiguration?: z.infer<typeof TemplateConfigurationSchema>
+  TreatmentDescription?: z.infer<typeof StringSchema>
+  TreatmentName?: z.infer<typeof StringSchema>
+  Version?: z.infer<typeof IntegerSchema>
+  Priority?: z.infer<typeof IntegerSchema>
 }
 
 const CampaignResponseSchema: z.ZodType<CampaignResponseType> = z
@@ -1050,8 +1050,8 @@ const ListOfSimpleConditionSchema = z.array(SimpleConditionSchema).openapi('List
 const OperatorSchema = z.enum(['ALL', 'ANY']).openapi('Operator')
 
 type ConditionType = {
-  Conditions?: z.infer<typeof ListOfSimpleConditionSchema> & unknown
-  Operator?: z.infer<typeof OperatorSchema> & unknown
+  Conditions?: z.infer<typeof ListOfSimpleConditionSchema>
+  Operator?: z.infer<typeof OperatorSchema>
 }
 
 const ConditionSchema: z.ZodType<ConditionType> = z
@@ -1090,10 +1090,10 @@ const WaitTimeSchema = z
   .openapi('WaitTime')
 
 type ConditionalSplitActivityType = {
-  Condition?: z.infer<typeof ConditionSchema> & unknown
-  EvaluationWaitTime?: z.infer<typeof WaitTimeSchema> & unknown
-  FalseActivity?: z.infer<typeof StringSchema> & unknown
-  TrueActivity?: z.infer<typeof StringSchema> & unknown
+  Condition?: z.infer<typeof ConditionSchema>
+  EvaluationWaitTime?: z.infer<typeof WaitTimeSchema>
+  FalseActivity?: z.infer<typeof StringSchema>
+  TrueActivity?: z.infer<typeof StringSchema>
 }
 
 const ConditionalSplitActivitySchema: z.ZodType<ConditionalSplitActivityType> = z
@@ -1202,9 +1202,9 @@ const ListOfMultiConditionalBranchSchema: z.ZodType<ListOfMultiConditionalBranch
   .openapi('ListOfMultiConditionalBranch')
 
 type MultiConditionalSplitActivityType = {
-  Branches?: z.infer<typeof ListOfMultiConditionalBranchSchema> & unknown
-  DefaultActivity?: z.infer<typeof StringSchema> & unknown
-  EvaluationWaitTime?: z.infer<typeof WaitTimeSchema> & unknown
+  Branches?: z.infer<typeof ListOfMultiConditionalBranchSchema>
+  DefaultActivity?: z.infer<typeof StringSchema>
+  EvaluationWaitTime?: z.infer<typeof WaitTimeSchema>
 }
 
 const MultiConditionalSplitActivitySchema: z.ZodType<MultiConditionalSplitActivityType> = z
@@ -1389,17 +1389,17 @@ const ContactCenterActivitySchema = z
   .openapi('ContactCenterActivity')
 
 type ActivityType = {
-  CUSTOM?: z.infer<typeof CustomMessageActivitySchema> & unknown
-  ConditionalSplit?: z.infer<typeof ConditionalSplitActivitySchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  EMAIL?: z.infer<typeof EmailMessageActivitySchema> & unknown
-  Holdout?: z.infer<typeof HoldoutActivitySchema> & unknown
-  MultiCondition?: z.infer<typeof MultiConditionalSplitActivitySchema> & unknown
-  PUSH?: z.infer<typeof PushMessageActivitySchema> & unknown
-  RandomSplit?: z.infer<typeof RandomSplitActivitySchema> & unknown
-  SMS?: z.infer<typeof SMSMessageActivitySchema> & unknown
-  Wait?: z.infer<typeof WaitActivitySchema> & unknown
-  ContactCenter?: z.infer<typeof ContactCenterActivitySchema> & unknown
+  CUSTOM?: z.infer<typeof CustomMessageActivitySchema>
+  ConditionalSplit?: z.infer<typeof ConditionalSplitActivitySchema>
+  Description?: z.infer<typeof StringSchema>
+  EMAIL?: z.infer<typeof EmailMessageActivitySchema>
+  Holdout?: z.infer<typeof HoldoutActivitySchema>
+  MultiCondition?: z.infer<typeof MultiConditionalSplitActivitySchema>
+  PUSH?: z.infer<typeof PushMessageActivitySchema>
+  RandomSplit?: z.infer<typeof RandomSplitActivitySchema>
+  SMS?: z.infer<typeof SMSMessageActivitySchema>
+  Wait?: z.infer<typeof WaitActivitySchema>
+  ContactCenter?: z.infer<typeof ContactCenterActivitySchema>
 }
 
 const ActivitySchema: z.ZodType<ActivityType> = z
@@ -1651,27 +1651,27 @@ const ClosedDaysSchema = z
   .openapi('ClosedDays')
 
 type JourneyResponseType = {
-  Activities?: z.infer<typeof MapOfActivitySchema> & unknown
-  ApplicationId: z.infer<typeof StringSchema> & unknown
-  CreationDate?: z.infer<typeof StringSchema> & unknown
-  Id: z.infer<typeof StringSchema> & unknown
-  LastModifiedDate?: z.infer<typeof StringSchema> & unknown
-  Limits?: z.infer<typeof JourneyLimitsSchema> & unknown
-  LocalTime?: z.infer<typeof BooleanSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  QuietTime?: z.infer<typeof QuietTimeSchema> & unknown
-  RefreshFrequency?: z.infer<typeof StringSchema> & unknown
-  Schedule?: z.infer<typeof JourneyScheduleSchema> & unknown
-  StartActivity?: z.infer<typeof StringSchema> & unknown
-  StartCondition?: z.infer<typeof StartConditionSchema> & unknown
-  State?: z.infer<typeof StateSchema> & unknown
-  tags?: z.infer<typeof MapOfStringSchema> & unknown
-  WaitForQuietTime?: z.infer<typeof BooleanSchema> & unknown
-  RefreshOnSegmentUpdate?: z.infer<typeof BooleanSchema> & unknown
-  JourneyChannelSettings?: z.infer<typeof JourneyChannelSettingsSchema> & unknown
-  SendingSchedule?: z.infer<typeof BooleanSchema> & unknown
-  OpenHours?: z.infer<typeof OpenHoursSchema> & unknown
-  ClosedDays?: z.infer<typeof ClosedDaysSchema> & unknown
+  Activities?: z.infer<typeof MapOfActivitySchema>
+  ApplicationId: z.infer<typeof StringSchema>
+  CreationDate?: z.infer<typeof StringSchema>
+  Id: z.infer<typeof StringSchema>
+  LastModifiedDate?: z.infer<typeof StringSchema>
+  Limits?: z.infer<typeof JourneyLimitsSchema>
+  LocalTime?: z.infer<typeof BooleanSchema>
+  Name: z.infer<typeof StringSchema>
+  QuietTime?: z.infer<typeof QuietTimeSchema>
+  RefreshFrequency?: z.infer<typeof StringSchema>
+  Schedule?: z.infer<typeof JourneyScheduleSchema>
+  StartActivity?: z.infer<typeof StringSchema>
+  StartCondition?: z.infer<typeof StartConditionSchema>
+  State?: z.infer<typeof StateSchema>
+  tags?: z.infer<typeof MapOfStringSchema>
+  WaitForQuietTime?: z.infer<typeof BooleanSchema>
+  RefreshOnSegmentUpdate?: z.infer<typeof BooleanSchema>
+  JourneyChannelSettings?: z.infer<typeof JourneyChannelSettingsSchema>
+  SendingSchedule?: z.infer<typeof BooleanSchema>
+  OpenHours?: z.infer<typeof OpenHoursSchema>
+  ClosedDays?: z.infer<typeof ClosedDaysSchema>
 }
 
 const JourneyResponseSchema: z.ZodType<JourneyResponseType> = z
@@ -1847,8 +1847,8 @@ const ListOfSegmentGroupSchema = z.array(SegmentGroupSchema).openapi('ListOfSegm
 const IncludeSchema = z.enum(['ALL', 'ANY', 'NONE']).openapi('Include')
 
 type SegmentGroupListType = {
-  Groups?: z.infer<typeof ListOfSegmentGroupSchema> & unknown
-  Include?: z.infer<typeof IncludeSchema> & unknown
+  Groups?: z.infer<typeof ListOfSegmentGroupSchema>
+  Include?: z.infer<typeof IncludeSchema>
 }
 
 const SegmentGroupListSchema: z.ZodType<SegmentGroupListType> = z
@@ -1872,18 +1872,18 @@ const SegmentGroupListSchema: z.ZodType<SegmentGroupListType> = z
 const SegmentTypeSchema = z.enum(['DIMENSIONAL', 'IMPORT']).openapi('SegmentType')
 
 type SegmentResponseType = {
-  ApplicationId: z.infer<typeof StringSchema> & unknown
-  Arn: z.infer<typeof StringSchema> & unknown
-  CreationDate: z.infer<typeof StringSchema> & unknown
-  Dimensions?: z.infer<typeof SegmentDimensionsSchema> & unknown
-  Id: z.infer<typeof StringSchema> & unknown
-  ImportDefinition?: z.infer<typeof SegmentImportResourceSchema> & unknown
-  LastModifiedDate?: z.infer<typeof StringSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  SegmentGroups?: z.infer<typeof SegmentGroupListSchema> & unknown
-  SegmentType: z.infer<typeof SegmentTypeSchema> & unknown
-  tags?: z.infer<typeof MapOfStringSchema> & unknown
-  Version?: z.infer<typeof IntegerSchema> & unknown
+  ApplicationId: z.infer<typeof StringSchema>
+  Arn: z.infer<typeof StringSchema>
+  CreationDate: z.infer<typeof StringSchema>
+  Dimensions?: z.infer<typeof SegmentDimensionsSchema>
+  Id: z.infer<typeof StringSchema>
+  ImportDefinition?: z.infer<typeof SegmentImportResourceSchema>
+  LastModifiedDate?: z.infer<typeof StringSchema>
+  Name?: z.infer<typeof StringSchema>
+  SegmentGroups?: z.infer<typeof SegmentGroupListSchema>
+  SegmentType: z.infer<typeof SegmentTypeSchema>
+  tags?: z.infer<typeof MapOfStringSchema>
+  Version?: z.infer<typeof IntegerSchema>
 }
 
 const SegmentResponseSchema: z.ZodType<SegmentResponseType> = z
@@ -1948,8 +1948,8 @@ const ListOfCampaignResponseSchema: z.ZodType<ListOfCampaignResponseType> = z
   .openapi('ListOfCampaignResponse')
 
 type CampaignsResponseType = {
-  Item: z.infer<typeof ListOfCampaignResponseSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Item: z.infer<typeof ListOfCampaignResponseSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const CampaignsResponseSchema: z.ZodType<CampaignsResponseType> = z
@@ -2050,7 +2050,7 @@ const ListOfInAppMessageCampaignSchema: z.ZodType<ListOfInAppMessageCampaignType
   .openapi('ListOfInAppMessageCampaign')
 
 type InAppMessagesResponseType = {
-  InAppMessageCampaigns?: z.infer<typeof ListOfInAppMessageCampaignSchema> & unknown
+  InAppMessageCampaigns?: z.infer<typeof ListOfInAppMessageCampaignSchema>
 }
 
 const InAppMessagesResponseSchema: z.ZodType<InAppMessagesResponseType> = z
@@ -2079,8 +2079,8 @@ const ListOfSegmentResponseSchema: z.ZodType<ListOfSegmentResponseType> = z
   .openapi('ListOfSegmentResponse')
 
 type SegmentsResponseType = {
-  Item: z.infer<typeof ListOfSegmentResponseSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Item: z.infer<typeof ListOfSegmentResponseSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const SegmentsResponseSchema: z.ZodType<SegmentsResponseType> = z
@@ -2112,8 +2112,8 @@ const ListOfJourneyResponseSchema: z.ZodType<ListOfJourneyResponseType> = z
   .openapi('ListOfJourneyResponse')
 
 type JourneysResponseType = {
-  Item: z.infer<typeof ListOfJourneyResponseSchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Item: z.infer<typeof ListOfJourneyResponseSchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 const JourneysResponseSchema: z.ZodType<JourneysResponseType> = z
@@ -2149,23 +2149,23 @@ const ListOfWriteTreatmentResourceSchema: z.ZodType<ListOfWriteTreatmentResource
   .openapi('ListOfWriteTreatmentResource')
 
 type WriteCampaignRequestType = {
-  AdditionalTreatments?: z.infer<typeof ListOfWriteTreatmentResourceSchema> & unknown
-  CustomDeliveryConfiguration?: z.infer<typeof CustomDeliveryConfigurationSchema> & unknown
-  Description?: z.infer<typeof StringSchema> & unknown
-  HoldoutPercent?: z.infer<typeof IntegerSchema> & unknown
-  Hook?: z.infer<typeof CampaignHookSchema> & unknown
-  IsPaused?: z.infer<typeof BooleanSchema> & unknown
-  Limits?: z.infer<typeof CampaignLimitsSchema> & unknown
-  MessageConfiguration?: z.infer<typeof MessageConfigurationSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  Schedule?: z.infer<typeof ScheduleSchema> & unknown
-  SegmentId?: z.infer<typeof StringSchema> & unknown
-  SegmentVersion?: z.infer<typeof IntegerSchema> & unknown
-  tags?: z.infer<typeof MapOfStringSchema> & unknown
-  TemplateConfiguration?: z.infer<typeof TemplateConfigurationSchema> & unknown
-  TreatmentDescription?: z.infer<typeof StringSchema> & unknown
-  TreatmentName?: z.infer<typeof StringSchema> & unknown
-  Priority?: z.infer<typeof IntegerSchema> & unknown
+  AdditionalTreatments?: z.infer<typeof ListOfWriteTreatmentResourceSchema>
+  CustomDeliveryConfiguration?: z.infer<typeof CustomDeliveryConfigurationSchema>
+  Description?: z.infer<typeof StringSchema>
+  HoldoutPercent?: z.infer<typeof IntegerSchema>
+  Hook?: z.infer<typeof CampaignHookSchema>
+  IsPaused?: z.infer<typeof BooleanSchema>
+  Limits?: z.infer<typeof CampaignLimitsSchema>
+  MessageConfiguration?: z.infer<typeof MessageConfigurationSchema>
+  Name?: z.infer<typeof StringSchema>
+  Schedule?: z.infer<typeof ScheduleSchema>
+  SegmentId?: z.infer<typeof StringSchema>
+  SegmentVersion?: z.infer<typeof IntegerSchema>
+  tags?: z.infer<typeof MapOfStringSchema>
+  TemplateConfiguration?: z.infer<typeof TemplateConfigurationSchema>
+  TreatmentDescription?: z.infer<typeof StringSchema>
+  TreatmentName?: z.infer<typeof StringSchema>
+  Priority?: z.infer<typeof IntegerSchema>
 }
 
 const WriteCampaignRequestSchema: z.ZodType<WriteCampaignRequestType> = z
@@ -2239,24 +2239,24 @@ type CreateCampaignRequestType = {
 }
 
 type WriteJourneyRequestType = {
-  Activities?: z.infer<typeof MapOfActivitySchema> & unknown
-  CreationDate?: z.infer<typeof StringSchema> & unknown
-  LastModifiedDate?: z.infer<typeof StringSchema> & unknown
-  Limits?: z.infer<typeof JourneyLimitsSchema> & unknown
-  LocalTime?: z.infer<typeof BooleanSchema> & unknown
-  Name: z.infer<typeof StringSchema> & unknown
-  QuietTime?: z.infer<typeof QuietTimeSchema> & unknown
-  RefreshFrequency?: z.infer<typeof StringSchema> & unknown
-  Schedule?: z.infer<typeof JourneyScheduleSchema> & unknown
-  StartActivity?: z.infer<typeof StringSchema> & unknown
-  StartCondition?: z.infer<typeof StartConditionSchema> & unknown
-  State?: z.infer<typeof StateSchema> & unknown
-  WaitForQuietTime?: z.infer<typeof BooleanSchema> & unknown
-  RefreshOnSegmentUpdate?: z.infer<typeof BooleanSchema> & unknown
-  JourneyChannelSettings?: z.infer<typeof JourneyChannelSettingsSchema> & unknown
-  SendingSchedule?: z.infer<typeof BooleanSchema> & unknown
-  OpenHours?: z.infer<typeof OpenHoursSchema> & unknown
-  ClosedDays?: z.infer<typeof ClosedDaysSchema> & unknown
+  Activities?: z.infer<typeof MapOfActivitySchema>
+  CreationDate?: z.infer<typeof StringSchema>
+  LastModifiedDate?: z.infer<typeof StringSchema>
+  Limits?: z.infer<typeof JourneyLimitsSchema>
+  LocalTime?: z.infer<typeof BooleanSchema>
+  Name: z.infer<typeof StringSchema>
+  QuietTime?: z.infer<typeof QuietTimeSchema>
+  RefreshFrequency?: z.infer<typeof StringSchema>
+  Schedule?: z.infer<typeof JourneyScheduleSchema>
+  StartActivity?: z.infer<typeof StringSchema>
+  StartCondition?: z.infer<typeof StartConditionSchema>
+  State?: z.infer<typeof StateSchema>
+  WaitForQuietTime?: z.infer<typeof BooleanSchema>
+  RefreshOnSegmentUpdate?: z.infer<typeof BooleanSchema>
+  JourneyChannelSettings?: z.infer<typeof JourneyChannelSettingsSchema>
+  SendingSchedule?: z.infer<typeof BooleanSchema>
+  OpenHours?: z.infer<typeof OpenHoursSchema>
+  ClosedDays?: z.infer<typeof ClosedDaysSchema>
 }
 
 const WriteJourneyRequestSchema: z.ZodType<WriteJourneyRequestType> = z
@@ -2336,10 +2336,10 @@ const WriteJourneyRequestSchema: z.ZodType<WriteJourneyRequestType> = z
 type CreateJourneyRequestType = { WriteJourneyRequest: z.infer<typeof WriteJourneyRequestSchema> }
 
 type WriteSegmentRequestType = {
-  Dimensions?: z.infer<typeof SegmentDimensionsSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  SegmentGroups?: z.infer<typeof SegmentGroupListSchema> & unknown
-  tags?: z.infer<typeof MapOfStringSchema> & unknown
+  Dimensions?: z.infer<typeof SegmentDimensionsSchema>
+  Name?: z.infer<typeof StringSchema>
+  SegmentGroups?: z.infer<typeof SegmentGroupListSchema>
+  tags?: z.infer<typeof MapOfStringSchema>
 }
 
 const WriteSegmentRequestSchema: z.ZodType<WriteSegmentRequestType> = z

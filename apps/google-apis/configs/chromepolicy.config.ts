@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/chromepolicy/v1/openapi.yaml',
   output: './src/chromepolicy/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chromepolicy/types.ts' },
   client: { output: './src/chromepolicy/client.ts', baseUrl: '/' },
   rpc: { output: './src/chromepolicy/rpc.ts', parseResponse: true },

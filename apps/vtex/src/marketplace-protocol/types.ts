@@ -581,7 +581,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders': {
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders': {
       $post: {
         input: { param: { accountName: string; environment: string } } & {
           query: { sc?: string | undefined; affiliateId: string }
@@ -695,7 +695,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders/:orderId/fulfill': {
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders/:orderId/fulfill': {
       $post: {
         input: { param: { accountName: string; environment: string; orderId: string } } & {
           query: { sc?: string | undefined; affiliateId: string }

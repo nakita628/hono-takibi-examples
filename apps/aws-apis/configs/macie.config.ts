@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/macie/2017-12-19/openapi.yaml',
   output: './src/macie/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/macie/types.ts' },
   client: { output: './src/macie/client.ts', baseUrl: '/' },
   rpc: { output: './src/macie/rpc.ts', parseResponse: true },

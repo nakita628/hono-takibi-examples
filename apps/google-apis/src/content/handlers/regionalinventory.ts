@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRegionalinventoryBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRegionalinventoryBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const regionalinventoryHandler = app.openapi(postRegionalinventoryBatchRoute, (c) => {
+export const postRegionalinventoryBatchRouteHandler: RouteHandler<
+  typeof postRegionalinventoryBatchRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

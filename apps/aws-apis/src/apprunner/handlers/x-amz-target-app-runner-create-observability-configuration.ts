@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAppRunnerCreateObservabilityConfigurationHandler = app.openapi(
-  postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAppRunnerCreateObservabilityConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAppRunnerCreateObservabilityConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

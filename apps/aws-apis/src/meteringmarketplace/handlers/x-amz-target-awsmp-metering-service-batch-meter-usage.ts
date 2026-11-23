@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSMPMeteringServiceBatchMeterUsageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSMPMeteringServiceBatchMeterUsageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsmpMeteringServiceBatchMeterUsageHandler = app.openapi(
-  postXAmzTargetAWSMPMeteringServiceBatchMeterUsageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSMPMeteringServiceBatchMeterUsageRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSMPMeteringServiceBatchMeterUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

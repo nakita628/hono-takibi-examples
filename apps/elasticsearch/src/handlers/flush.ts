@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFlushRoute, postFlushRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFlushRoute, postFlushRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFlushRouteHandler: RouteHandler<typeof getFlushRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const flushHandler = app
-  .openapi(getFlushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFlushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFlushRouteHandler: RouteHandler<typeof postFlushRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

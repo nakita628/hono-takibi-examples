@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCustomsearchV1Route, getCustomsearchV1SiterestrictRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCustomsearchV1Route, getCustomsearchV1SiterestrictRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCustomsearchV1RouteHandler: RouteHandler<typeof getCustomsearchV1Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const customsearchHandler = app
-  .openapi(getCustomsearchV1Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomsearchV1SiterestrictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCustomsearchV1SiterestrictRouteHandler: RouteHandler<
+  typeof getCustomsearchV1SiterestrictRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

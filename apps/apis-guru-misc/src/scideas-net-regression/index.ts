@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { regressionHandler } from './handlers'
+import { postRegressionApiRoute } from './routes'
+import { postRegressionApiRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', regressionHandler)
+export const api = app.openapi(postRegressionApiRoute, postRegressionApiRouteHandler)
 
 export default app

@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDanglingIndexUuidRoute,
   getDanglingRoute,
   postDanglingIndexUuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDanglingRouteHandler: RouteHandler<typeof getDanglingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const danglingHandler = app
-  .openapi(getDanglingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDanglingIndexUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDanglingIndexUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDanglingIndexUuidRouteHandler: RouteHandler<
+  typeof deleteDanglingIndexUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDanglingIndexUuidRouteHandler: RouteHandler<
+  typeof postDanglingIndexUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

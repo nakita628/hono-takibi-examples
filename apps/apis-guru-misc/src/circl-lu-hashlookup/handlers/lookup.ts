@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLookupMd5Md5Route, getLookupSha1Sha1Route, getLookupSha256Sha256Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getLookupMd5Md5Route,
+  getLookupSha1Sha1Route,
+  getLookupSha256Sha256Route,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getLookupMd5Md5RouteHandler: RouteHandler<typeof getLookupMd5Md5Route> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lookupHandler = app
-  .openapi(getLookupMd5Md5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupSha1Sha1Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLookupSha256Sha256Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLookupSha1Sha1RouteHandler: RouteHandler<typeof getLookupSha1Sha1Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLookupSha256Sha256RouteHandler: RouteHandler<
+  typeof getLookupSha256Sha256Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

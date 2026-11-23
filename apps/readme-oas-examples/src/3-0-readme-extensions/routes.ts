@@ -91,10 +91,7 @@ export const postXCodeSamplesRoute = createRoute({
       required: true,
     },
   },
-  responses: {
-    200: { description: 'OK', content: {} },
-    404: { description: 'Not Found', content: {} },
-  },
+  responses: { 200: { description: 'OK' }, 404: { description: 'Not Found' } },
 })
 
 export const postXHeadersRoute = createRoute({

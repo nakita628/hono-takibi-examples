@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSettingsURuffConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSettingsURuffConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const settingsUHandler = app.openapi(getSettingsURuffConfigRoute, (c) => {
+export const getSettingsURuffConfigRouteHandler: RouteHandler<
+  typeof getSettingsURuffConfigRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

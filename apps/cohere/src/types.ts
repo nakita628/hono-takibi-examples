@@ -1251,86 +1251,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: {
-              header: {
-                'X-Client-Name'?: string | undefined
-                Accepts?: 'text/event-stream' | undefined
-              }
-            } & {
-              json: {
-                message: string
-                model?: string | undefined
-                stream?: boolean | undefined
-                preamble?: string | undefined
-                chat_history?: Message[] | undefined
-                conversation_id?: string | undefined
-                prompt_truncation?: 'OFF' | 'AUTO' | 'AUTO_PRESERVE_ORDER' | undefined
-                connectors?: ChatConnector[] | undefined
-                search_queries_only?: boolean | undefined
-                documents?: ChatDocument[] | undefined
-                citation_quality?: 'ENABLED' | 'DISABLED' | 'FAST' | 'ACCURATE' | 'OFF' | undefined
-                temperature?: number | undefined
-                max_tokens?: number | undefined
-                max_input_tokens?: number | undefined
-                k?: number | undefined
-                p?: number | undefined
-                seed?: number | undefined
-                stop_sequences?: string[] | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                raw_prompting?: boolean | undefined
-                tools?: Tool[] | undefined
-                tool_results?: ToolResult[] | undefined
-                force_single_step?: boolean | undefined
-                response_format?: ResponseFormat | undefined
-                safety_mode?: 'CONTEXTUAL' | 'STRICT' | 'NONE' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: {
-              header: {
-                'X-Client-Name'?: string | undefined
-                Accepts?: 'text/event-stream' | undefined
-              }
-            } & {
-              json: {
-                message: string
-                model?: string | undefined
-                stream?: boolean | undefined
-                preamble?: string | undefined
-                chat_history?: Message[] | undefined
-                conversation_id?: string | undefined
-                prompt_truncation?: 'OFF' | 'AUTO' | 'AUTO_PRESERVE_ORDER' | undefined
-                connectors?: ChatConnector[] | undefined
-                search_queries_only?: boolean | undefined
-                documents?: ChatDocument[] | undefined
-                citation_quality?: 'ENABLED' | 'DISABLED' | 'FAST' | 'ACCURATE' | 'OFF' | undefined
-                temperature?: number | undefined
-                max_tokens?: number | undefined
-                max_input_tokens?: number | undefined
-                k?: number | undefined
-                p?: number | undefined
-                seed?: number | undefined
-                stop_sequences?: string[] | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                raw_prompting?: boolean | undefined
-                tools?: Tool[] | undefined
-                tool_results?: ToolResult[] | undefined
-                force_single_step?: boolean | undefined
-                response_format?: ResponseFormat | undefined
-                safety_mode?: 'CONTEXTUAL' | 'STRICT' | 'NONE' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -1695,66 +1615,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                stream?: boolean | undefined
-                model: string
-                messages: ChatMessages
-                tools?: ToolV2[] | undefined
-                strict_tools?: boolean | undefined
-                documents?: (string | Document)[] | undefined
-                citation_options?: CitationOptions | undefined
-                response_format?: ResponseFormatV2 | undefined
-                safety_mode?: 'CONTEXTUAL' | 'STRICT' | 'OFF' | undefined
-                max_tokens?: number | undefined
-                stop_sequences?: string[] | undefined
-                temperature?: number | undefined
-                seed?: number | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                k?: number | undefined
-                p?: number | undefined
-                logprobs?: boolean | undefined
-                tool_choice?: 'REQUIRED' | 'NONE' | undefined
-                thinking?: Thinking | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                stream?: boolean | undefined
-                model: string
-                messages: ChatMessages
-                tools?: ToolV2[] | undefined
-                strict_tools?: boolean | undefined
-                documents?: (string | Document)[] | undefined
-                citation_options?: CitationOptions | undefined
-                response_format?: ResponseFormatV2 | undefined
-                safety_mode?: 'CONTEXTUAL' | 'STRICT' | 'OFF' | undefined
-                max_tokens?: number | undefined
-                stop_sequences?: string[] | undefined
-                temperature?: number | undefined
-                seed?: number | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                k?: number | undefined
-                p?: number | undefined
-                logprobs?: boolean | undefined
-                tool_choice?: 'REQUIRED' | 'NONE' | undefined
-                thinking?: Thinking | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -1934,30 +1794,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model: string
-                document: ParseDocument
-                output_format?: ParseOutputFormat | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model: string
-                document: ParseDocument
-                output_format?: ParseOutputFormat | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } } & {
@@ -2243,58 +2079,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                prompt: string
-                model?: string | undefined
-                num_generations?: number | undefined
-                stream?: boolean | undefined
-                max_tokens?: number | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-                temperature?: number | undefined
-                seed?: number | undefined
-                preset?: string | undefined
-                end_sequences?: string[] | undefined
-                stop_sequences?: string[] | undefined
-                k?: number | undefined
-                p?: number | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                return_likelihoods?: 'GENERATION' | 'ALL' | 'NONE' | undefined
-                raw_prompting?: boolean | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                prompt: string
-                model?: string | undefined
-                num_generations?: number | undefined
-                stream?: boolean | undefined
-                max_tokens?: number | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-                temperature?: number | undefined
-                seed?: number | undefined
-                preset?: string | undefined
-                end_sequences?: string[] | undefined
-                stop_sequences?: string[] | undefined
-                k?: number | undefined
-                p?: number | undefined
-                frequency_penalty?: number | undefined
-                presence_penalty?: number | undefined
-                return_likelihoods?: 'GENERATION' | 'ALL' | 'NONE' | undefined
-                raw_prompting?: boolean | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -2483,36 +2267,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                texts?: string[] | undefined
-                images?: string[] | undefined
-                model?: string | undefined
-                input_type?: EmbedInputType | undefined
-                embedding_types?: EmbeddingType[] | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                texts?: string[] | undefined
-                images?: string[] | undefined
-                model?: string | undefined
-                input_type?: EmbedInputType | undefined
-                embedding_types?: EmbeddingType[] | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } } & {
@@ -2728,44 +2482,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                texts?: string[] | undefined
-                images?: string[] | undefined
-                model: string
-                input_type: EmbedInputType
-                inputs?: EmbedInput[] | undefined
-                max_tokens?: number | undefined
-                output_dimension?: number | undefined
-                embedding_types?: EmbeddingType[] | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                texts?: string[] | undefined
-                images?: string[] | undefined
-                model: string
-                input_type: EmbedInputType
-                inputs?: EmbedInput[] | undefined
-                max_tokens?: number | undefined
-                output_dimension?: number | undefined
-                embedding_types?: EmbeddingType[] | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -2919,32 +2635,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: {
-              form: {
-                model: string
-                language: string
-                temperature?: number | undefined
-                file: File
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: {
-              form: {
-                model: string
-                language: string
-                temperature?: number | undefined
-                file: File
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: {
@@ -3287,22 +2977,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: CreateEmbedJobRequest
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: CreateEmbedJobRequest
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -3371,18 +3045,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } }
@@ -3458,18 +3120,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -3535,18 +3185,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
@@ -3695,38 +3333,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model?: string | undefined
-                query: string
-                documents: (string | RerankDocument)[]
-                top_n?: number | undefined
-                rank_fields?: string[] | undefined
-                return_documents?: boolean | undefined
-                max_chunks_per_doc?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model?: string | undefined
-                query: string
-                documents: (string | RerankDocument)[]
-                top_n?: number | undefined
-                rank_fields?: string[] | undefined
-                return_documents?: boolean | undefined
-                max_chunks_per_doc?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } } & {
@@ -3930,38 +3536,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model: string
-                query: string
-                documents: string[]
-                top_n?: number | undefined
-                max_tokens_per_doc?: number | undefined
-                relevant_spans?: RerankRelevantSpans | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                model: string
-                query: string
-                documents: string[]
-                top_n?: number | undefined
-                max_tokens_per_doc?: number | undefined
-                relevant_spans?: RerankRelevantSpans | undefined
-                priority?: number | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -4126,34 +3700,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                inputs: string[]
-                examples?: ClassifyExample[] | undefined
-                model?: string | undefined
-                preset?: string | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                inputs: string[]
-                examples?: ClassifyExample[] | undefined
-                model?: string | undefined
-                preset?: string | undefined
-                truncate?: 'NONE' | 'START' | 'END' | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } } & {
@@ -4365,44 +3911,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: {
-              query: {
-                name: string
-                type: DatasetType
-                keep_original_file?: boolean | undefined
-                skip_malformed_input?: boolean | undefined
-                keep_fields?: string[] | undefined
-                optional_fields?: string[] | undefined
-                text_separator?: string | undefined
-                csv_delimiter?: string | undefined
-              }
-            } & { header: { 'X-Client-Name'?: string | undefined } } & {
-              form: { data: File; eval_data?: File | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: {
-              query: {
-                name: string
-                type: DatasetType
-                keep_original_file?: boolean | undefined
-                skip_malformed_input?: boolean | undefined
-                keep_fields?: string[] | undefined
-                optional_fields?: string[] | undefined
-                text_separator?: string | undefined
-                csv_delimiter?: string | undefined
-              }
-            } & { header: { 'X-Client-Name'?: string | undefined } } & {
-              form: { data: File; eval_data?: File | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -4581,36 +4089,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & { header: { 'X-Client-Name'?: string | undefined } }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: {
-              query: {
-                datasetType?: string | undefined
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                validationStatus?: DatasetValidationStatus | undefined
-              }
-            } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: {
-              query: {
-                datasetType?: string | undefined
-                before?: string | undefined
-                after?: string | undefined
-                limit?: number | undefined
-                offset?: number | undefined
-                validationStatus?: DatasetValidationStatus | undefined
-              }
-            } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -4708,18 +4186,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { header: { 'X-Client-Name'?: string | undefined } }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -4790,18 +4256,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -4864,18 +4318,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
@@ -5035,38 +4477,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                text: string
-                length?: 'short' | 'medium' | 'long' | undefined
-                format?: 'paragraph' | 'bullets' | undefined
-                model?: string | undefined
-                extractiveness?: 'low' | 'medium' | 'high' | undefined
-                temperature?: number | undefined
-                additional_command?: string | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: {
-                text: string
-                length?: 'short' | 'medium' | 'long' | undefined
-                format?: 'paragraph' | 'bullets' | undefined
-                model?: string | undefined
-                extractiveness?: 'low' | 'medium' | 'high' | undefined
-                temperature?: number | undefined
-                additional_command?: string | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -5183,22 +4593,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: { text: string; model: string }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: { text: string; model: string }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -5284,22 +4678,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: { tokens: number[]; model: string }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: { tokens: number[]; model: string }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } } & {
@@ -5399,22 +4777,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { query: { limit?: number | undefined; offset?: number | undefined } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { query: { limit?: number | undefined; offset?: number | undefined } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -5504,22 +4866,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: CreateConnectorRequest
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } } & {
-              json: CreateConnectorRequest
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -5591,18 +4937,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
@@ -5691,22 +5025,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & { json: UpdateConnectorRequest }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            } & { json: UpdateConnectorRequest }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            } & { json: UpdateConnectorRequest }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -5775,18 +5093,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { id: string } } & { header: { 'X-Client-Name'?: string | undefined } }
@@ -5871,22 +5177,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { id: string } } & {
-              query: { after_token_redirect?: string | undefined }
-            } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { id: string } } & {
-              query: { after_token_redirect?: string | undefined }
-            } & { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { id: string } } & {
@@ -5979,22 +5269,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { param: { model: string } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { param: { model: string } } & {
-              header: { 'X-Client-Name'?: string | undefined }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { param: { model: string } } & {
@@ -6134,32 +5408,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: {
-              query: {
-                page_size?: number | undefined
-                page_token?: string | undefined
-                endpoint?: CompatibleEndpoint | undefined
-                default_only?: boolean | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
-          }
-        | {
-            input: {
-              query: {
-                page_size?: number | undefined
-                page_token?: string | undefined
-                endpoint?: CompatibleEndpoint | undefined
-                default_only?: boolean | undefined
-              }
-            }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
             status: 500
           }
         | {
@@ -6250,18 +5498,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { message?: string | undefined; id?: string | undefined }
             outputFormat: 'json'
             status: 429
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 498
-          }
-        | {
-            input: { header: { 'X-Client-Name'?: string | undefined } }
-            output: { message?: string | undefined; id?: string | undefined }
-            outputFormat: 'json'
-            status: 499
           }
         | {
             input: { header: { 'X-Client-Name'?: string | undefined } }

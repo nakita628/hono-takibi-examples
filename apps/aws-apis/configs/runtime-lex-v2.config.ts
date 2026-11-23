@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/runtime.lex.v2/2020-08-07/openapi.yaml',
   output: './src/runtime-lex-v2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/runtime-lex-v2/types.ts' },
   client: { output: './src/runtime-lex-v2/client.ts', baseUrl: '/' },
   rpc: { output: './src/runtime-lex-v2/rpc.ts', parseResponse: true },

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTelephonyDeviceInfosRoute,
   getTelephonyTelephonyConversationIdJournalRoute,
   getTelephonyTelephonyConversationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTelephonyDeviceInfosRouteHandler: RouteHandler<
+  typeof getTelephonyDeviceInfosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const telephonyHandler = app
-  .openapi(getTelephonyDeviceInfosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTelephonyTelephonyConversationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTelephonyTelephonyConversationIdJournalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTelephonyTelephonyConversationIdRouteHandler: RouteHandler<
+  typeof getTelephonyTelephonyConversationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTelephonyTelephonyConversationIdJournalRouteHandler: RouteHandler<
+  typeof getTelephonyTelephonyConversationIdJournalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

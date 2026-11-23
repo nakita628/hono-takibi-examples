@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsPoseidonServiceV20151101AssociateConfigurationItemsToApplicationHandler =
-  app.openapi(
-    postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630CreateTapeWithBarcodeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630CreateTapeWithBarcodeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630CreateTapeWithBarcodeHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630CreateTapeWithBarcodeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630CreateTapeWithBarcodeRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630CreateTapeWithBarcodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

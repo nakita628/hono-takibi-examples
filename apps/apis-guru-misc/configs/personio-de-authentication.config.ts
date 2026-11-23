@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/personio.de/authentication/1.0/openapi.yaml',
   output: './src/personio-de-authentication/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/personio-de-authentication/types.ts' },
   client: { output: './src/personio-de-authentication/client.ts', baseUrl: '/' },
   rpc: { output: './src/personio-de-authentication/rpc.ts', parseResponse: true },

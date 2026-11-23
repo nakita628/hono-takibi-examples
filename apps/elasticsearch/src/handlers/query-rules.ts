@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQueryRulesRulesetIdRoute,
   deleteQueryRulesRulesetIdRuleRuleIdRoute,
   getQueryRulesRoute,
@@ -10,30 +10,48 @@ import {
   putQueryRulesRulesetIdRuleRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueryRulesRulesetIdRuleRuleIdRouteHandler: RouteHandler<
+  typeof getQueryRulesRulesetIdRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queryRulesHandler = app
-  .openapi(getQueryRulesRulesetIdRuleRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueryRulesRulesetIdRuleRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryRulesRulesetIdRuleRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryRulesRulesetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueryRulesRulesetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryRulesRulesetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryRulesRulesetIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putQueryRulesRulesetIdRuleRuleIdRouteHandler: RouteHandler<
+  typeof putQueryRulesRulesetIdRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryRulesRulesetIdRuleRuleIdRouteHandler: RouteHandler<
+  typeof deleteQueryRulesRulesetIdRuleRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryRulesRulesetIdRouteHandler: RouteHandler<
+  typeof getQueryRulesRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQueryRulesRulesetIdRouteHandler: RouteHandler<
+  typeof putQueryRulesRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryRulesRulesetIdRouteHandler: RouteHandler<
+  typeof deleteQueryRulesRulesetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryRulesRouteHandler: RouteHandler<typeof getQueryRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueryRulesRulesetIdTestRouteHandler: RouteHandler<
+  typeof postQueryRulesRulesetIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

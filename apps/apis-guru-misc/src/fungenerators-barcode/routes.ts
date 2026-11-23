@@ -30,10 +30,7 @@ export const postBarcodeDecodeRoute = createRoute({
       },
     },
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -42,10 +39,7 @@ export const getBarcodeDecodeTypesRoute = createRoute({
   path: '/barcode/decode/types',
   tags: ['Barcode'],
   description: 'Get the supported barcode types for the decoding process.',
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -134,10 +128,7 @@ export const getBarcodeEncodeRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -146,9 +137,6 @@ export const getBarcodeEncodeTypesRoute = createRoute({
   path: '/barcode/encode/types',
   tags: ['Barcode'],
   description: 'Get the supported barcode types for encoding / image generation.',
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })

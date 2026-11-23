@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePhoneNumberPhoneNumberIdContactFlowInstanceIdRoute,
   deletePhoneNumberPhoneNumberIdRoute,
   getPhoneNumberPhoneNumberIdRoute,
@@ -10,30 +10,50 @@ import {
   putPhoneNumberPhoneNumberIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putPhoneNumberPhoneNumberIdContactFlowRouteHandler: RouteHandler<
+  typeof putPhoneNumberPhoneNumberIdContactFlowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const phoneNumberHandler = app
-  .openapi(putPhoneNumberPhoneNumberIdContactFlowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumberClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhoneNumberPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneNumberPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPhoneNumberPhoneNumberIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePhoneNumberPhoneNumberIdContactFlowInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumberListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPhoneNumberSearchAvailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPhoneNumberClaimRouteHandler: RouteHandler<
+  typeof postPhoneNumberClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPhoneNumberPhoneNumberIdRouteHandler: RouteHandler<
+  typeof getPhoneNumberPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneNumberPhoneNumberIdRouteHandler: RouteHandler<
+  typeof deletePhoneNumberPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPhoneNumberPhoneNumberIdRouteHandler: RouteHandler<
+  typeof putPhoneNumberPhoneNumberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePhoneNumberPhoneNumberIdContactFlowInstanceIdRouteHandler: RouteHandler<
+  typeof deletePhoneNumberPhoneNumberIdContactFlowInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumberListRouteHandler: RouteHandler<
+  typeof postPhoneNumberListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPhoneNumberSearchAvailableRouteHandler: RouteHandler<
+  typeof postPhoneNumberSearchAvailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

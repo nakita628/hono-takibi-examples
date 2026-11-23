@@ -1,97 +1,272 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetFmrsServiceCancelTaskExecutionHandler,
-  xAmzTargetFmrsServiceCreateAgentHandler,
-  xAmzTargetFmrsServiceCreateLocationEfsHandler,
-  xAmzTargetFmrsServiceCreateLocationFsxLustreHandler,
-  xAmzTargetFmrsServiceCreateLocationFsxOntapHandler,
-  xAmzTargetFmrsServiceCreateLocationFsxOpenZfsHandler,
-  xAmzTargetFmrsServiceCreateLocationFsxWindowsHandler,
-  xAmzTargetFmrsServiceCreateLocationHdfsHandler,
-  xAmzTargetFmrsServiceCreateLocationNfsHandler,
-  xAmzTargetFmrsServiceCreateLocationObjectStorageHandler,
-  xAmzTargetFmrsServiceCreateLocationS3Handler,
-  xAmzTargetFmrsServiceCreateLocationSmbHandler,
-  xAmzTargetFmrsServiceCreateTaskHandler,
-  xAmzTargetFmrsServiceDeleteAgentHandler,
-  xAmzTargetFmrsServiceDeleteLocationHandler,
-  xAmzTargetFmrsServiceDeleteTaskHandler,
-  xAmzTargetFmrsServiceDescribeAgentHandler,
-  xAmzTargetFmrsServiceDescribeLocationEfsHandler,
-  xAmzTargetFmrsServiceDescribeLocationFsxLustreHandler,
-  xAmzTargetFmrsServiceDescribeLocationFsxOntapHandler,
-  xAmzTargetFmrsServiceDescribeLocationFsxOpenZfsHandler,
-  xAmzTargetFmrsServiceDescribeLocationFsxWindowsHandler,
-  xAmzTargetFmrsServiceDescribeLocationHdfsHandler,
-  xAmzTargetFmrsServiceDescribeLocationNfsHandler,
-  xAmzTargetFmrsServiceDescribeLocationObjectStorageHandler,
-  xAmzTargetFmrsServiceDescribeLocationS3Handler,
-  xAmzTargetFmrsServiceDescribeLocationSmbHandler,
-  xAmzTargetFmrsServiceDescribeTaskExecutionHandler,
-  xAmzTargetFmrsServiceDescribeTaskHandler,
-  xAmzTargetFmrsServiceListAgentsHandler,
-  xAmzTargetFmrsServiceListLocationsHandler,
-  xAmzTargetFmrsServiceListTagsForResourceHandler,
-  xAmzTargetFmrsServiceListTaskExecutionsHandler,
-  xAmzTargetFmrsServiceListTasksHandler,
-  xAmzTargetFmrsServiceStartTaskExecutionHandler,
-  xAmzTargetFmrsServiceTagResourceHandler,
-  xAmzTargetFmrsServiceUntagResourceHandler,
-  xAmzTargetFmrsServiceUpdateAgentHandler,
-  xAmzTargetFmrsServiceUpdateLocationHdfsHandler,
-  xAmzTargetFmrsServiceUpdateLocationNfsHandler,
-  xAmzTargetFmrsServiceUpdateLocationObjectStorageHandler,
-  xAmzTargetFmrsServiceUpdateLocationSmbHandler,
-  xAmzTargetFmrsServiceUpdateTaskExecutionHandler,
-  xAmzTargetFmrsServiceUpdateTaskHandler,
+  postXAmzTargetFmrsServiceCancelTaskExecutionRoute,
+  postXAmzTargetFmrsServiceCreateAgentRoute,
+  postXAmzTargetFmrsServiceCreateLocationEfsRoute,
+  postXAmzTargetFmrsServiceCreateLocationFsxLustreRoute,
+  postXAmzTargetFmrsServiceCreateLocationFsxOntapRoute,
+  postXAmzTargetFmrsServiceCreateLocationFsxOpenZfsRoute,
+  postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute,
+  postXAmzTargetFmrsServiceCreateLocationHdfsRoute,
+  postXAmzTargetFmrsServiceCreateLocationNfsRoute,
+  postXAmzTargetFmrsServiceCreateLocationObjectStorageRoute,
+  postXAmzTargetFmrsServiceCreateLocationS3Route,
+  postXAmzTargetFmrsServiceCreateLocationSmbRoute,
+  postXAmzTargetFmrsServiceCreateTaskRoute,
+  postXAmzTargetFmrsServiceDeleteAgentRoute,
+  postXAmzTargetFmrsServiceDeleteLocationRoute,
+  postXAmzTargetFmrsServiceDeleteTaskRoute,
+  postXAmzTargetFmrsServiceDescribeAgentRoute,
+  postXAmzTargetFmrsServiceDescribeLocationEfsRoute,
+  postXAmzTargetFmrsServiceDescribeLocationFsxLustreRoute,
+  postXAmzTargetFmrsServiceDescribeLocationFsxOntapRoute,
+  postXAmzTargetFmrsServiceDescribeLocationFsxOpenZfsRoute,
+  postXAmzTargetFmrsServiceDescribeLocationFsxWindowsRoute,
+  postXAmzTargetFmrsServiceDescribeLocationHdfsRoute,
+  postXAmzTargetFmrsServiceDescribeLocationNfsRoute,
+  postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute,
+  postXAmzTargetFmrsServiceDescribeLocationS3Route,
+  postXAmzTargetFmrsServiceDescribeLocationSmbRoute,
+  postXAmzTargetFmrsServiceDescribeTaskExecutionRoute,
+  postXAmzTargetFmrsServiceDescribeTaskRoute,
+  postXAmzTargetFmrsServiceListAgentsRoute,
+  postXAmzTargetFmrsServiceListLocationsRoute,
+  postXAmzTargetFmrsServiceListTagsForResourceRoute,
+  postXAmzTargetFmrsServiceListTaskExecutionsRoute,
+  postXAmzTargetFmrsServiceListTasksRoute,
+  postXAmzTargetFmrsServiceStartTaskExecutionRoute,
+  postXAmzTargetFmrsServiceTagResourceRoute,
+  postXAmzTargetFmrsServiceUntagResourceRoute,
+  postXAmzTargetFmrsServiceUpdateAgentRoute,
+  postXAmzTargetFmrsServiceUpdateLocationHdfsRoute,
+  postXAmzTargetFmrsServiceUpdateLocationNfsRoute,
+  postXAmzTargetFmrsServiceUpdateLocationObjectStorageRoute,
+  postXAmzTargetFmrsServiceUpdateLocationSmbRoute,
+  postXAmzTargetFmrsServiceUpdateTaskExecutionRoute,
+  postXAmzTargetFmrsServiceUpdateTaskRoute,
+} from './routes'
+import {
+  postXAmzTargetFmrsServiceCancelTaskExecutionRouteHandler,
+  postXAmzTargetFmrsServiceCreateAgentRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationEfsRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationFsxLustreRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationFsxOntapRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationFsxOpenZfsRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationFsxWindowsRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationHdfsRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationNfsRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationObjectStorageRouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationS3RouteHandler,
+  postXAmzTargetFmrsServiceCreateLocationSmbRouteHandler,
+  postXAmzTargetFmrsServiceCreateTaskRouteHandler,
+  postXAmzTargetFmrsServiceDeleteAgentRouteHandler,
+  postXAmzTargetFmrsServiceDeleteLocationRouteHandler,
+  postXAmzTargetFmrsServiceDeleteTaskRouteHandler,
+  postXAmzTargetFmrsServiceDescribeAgentRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationEfsRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationFsxLustreRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationFsxOntapRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationFsxOpenZfsRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationFsxWindowsRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationHdfsRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationNfsRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationObjectStorageRouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationS3RouteHandler,
+  postXAmzTargetFmrsServiceDescribeLocationSmbRouteHandler,
+  postXAmzTargetFmrsServiceDescribeTaskExecutionRouteHandler,
+  postXAmzTargetFmrsServiceDescribeTaskRouteHandler,
+  postXAmzTargetFmrsServiceListAgentsRouteHandler,
+  postXAmzTargetFmrsServiceListLocationsRouteHandler,
+  postXAmzTargetFmrsServiceListTagsForResourceRouteHandler,
+  postXAmzTargetFmrsServiceListTaskExecutionsRouteHandler,
+  postXAmzTargetFmrsServiceListTasksRouteHandler,
+  postXAmzTargetFmrsServiceStartTaskExecutionRouteHandler,
+  postXAmzTargetFmrsServiceTagResourceRouteHandler,
+  postXAmzTargetFmrsServiceUntagResourceRouteHandler,
+  postXAmzTargetFmrsServiceUpdateAgentRouteHandler,
+  postXAmzTargetFmrsServiceUpdateLocationHdfsRouteHandler,
+  postXAmzTargetFmrsServiceUpdateLocationNfsRouteHandler,
+  postXAmzTargetFmrsServiceUpdateLocationObjectStorageRouteHandler,
+  postXAmzTargetFmrsServiceUpdateLocationSmbRouteHandler,
+  postXAmzTargetFmrsServiceUpdateTaskExecutionRouteHandler,
+  postXAmzTargetFmrsServiceUpdateTaskRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetFmrsServiceCancelTaskExecutionHandler)
-  .route('/', xAmzTargetFmrsServiceCreateAgentHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationEfsHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationFsxLustreHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationFsxOntapHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationFsxOpenZfsHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationFsxWindowsHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationHdfsHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationNfsHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationObjectStorageHandler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationS3Handler)
-  .route('/', xAmzTargetFmrsServiceCreateLocationSmbHandler)
-  .route('/', xAmzTargetFmrsServiceCreateTaskHandler)
-  .route('/', xAmzTargetFmrsServiceDeleteAgentHandler)
-  .route('/', xAmzTargetFmrsServiceDeleteLocationHandler)
-  .route('/', xAmzTargetFmrsServiceDeleteTaskHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeAgentHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationEfsHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationFsxLustreHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationFsxOntapHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationFsxOpenZfsHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationFsxWindowsHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationHdfsHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationNfsHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationObjectStorageHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationS3Handler)
-  .route('/', xAmzTargetFmrsServiceDescribeLocationSmbHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeTaskHandler)
-  .route('/', xAmzTargetFmrsServiceDescribeTaskExecutionHandler)
-  .route('/', xAmzTargetFmrsServiceListAgentsHandler)
-  .route('/', xAmzTargetFmrsServiceListLocationsHandler)
-  .route('/', xAmzTargetFmrsServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetFmrsServiceListTaskExecutionsHandler)
-  .route('/', xAmzTargetFmrsServiceListTasksHandler)
-  .route('/', xAmzTargetFmrsServiceStartTaskExecutionHandler)
-  .route('/', xAmzTargetFmrsServiceTagResourceHandler)
-  .route('/', xAmzTargetFmrsServiceUntagResourceHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateAgentHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateLocationHdfsHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateLocationNfsHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateLocationObjectStorageHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateLocationSmbHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateTaskHandler)
-  .route('/', xAmzTargetFmrsServiceUpdateTaskExecutionHandler)
+  .openapi(
+    postXAmzTargetFmrsServiceCancelTaskExecutionRoute,
+    postXAmzTargetFmrsServiceCancelTaskExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateAgentRoute,
+    postXAmzTargetFmrsServiceCreateAgentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationEfsRoute,
+    postXAmzTargetFmrsServiceCreateLocationEfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationFsxLustreRoute,
+    postXAmzTargetFmrsServiceCreateLocationFsxLustreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationFsxOntapRoute,
+    postXAmzTargetFmrsServiceCreateLocationFsxOntapRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationFsxOpenZfsRoute,
+    postXAmzTargetFmrsServiceCreateLocationFsxOpenZfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute,
+    postXAmzTargetFmrsServiceCreateLocationFsxWindowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationHdfsRoute,
+    postXAmzTargetFmrsServiceCreateLocationHdfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationNfsRoute,
+    postXAmzTargetFmrsServiceCreateLocationNfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationObjectStorageRoute,
+    postXAmzTargetFmrsServiceCreateLocationObjectStorageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationS3Route,
+    postXAmzTargetFmrsServiceCreateLocationS3RouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateLocationSmbRoute,
+    postXAmzTargetFmrsServiceCreateLocationSmbRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceCreateTaskRoute,
+    postXAmzTargetFmrsServiceCreateTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDeleteAgentRoute,
+    postXAmzTargetFmrsServiceDeleteAgentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDeleteLocationRoute,
+    postXAmzTargetFmrsServiceDeleteLocationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDeleteTaskRoute,
+    postXAmzTargetFmrsServiceDeleteTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeAgentRoute,
+    postXAmzTargetFmrsServiceDescribeAgentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationEfsRoute,
+    postXAmzTargetFmrsServiceDescribeLocationEfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationFsxLustreRoute,
+    postXAmzTargetFmrsServiceDescribeLocationFsxLustreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationFsxOntapRoute,
+    postXAmzTargetFmrsServiceDescribeLocationFsxOntapRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationFsxOpenZfsRoute,
+    postXAmzTargetFmrsServiceDescribeLocationFsxOpenZfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationFsxWindowsRoute,
+    postXAmzTargetFmrsServiceDescribeLocationFsxWindowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationHdfsRoute,
+    postXAmzTargetFmrsServiceDescribeLocationHdfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationNfsRoute,
+    postXAmzTargetFmrsServiceDescribeLocationNfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute,
+    postXAmzTargetFmrsServiceDescribeLocationObjectStorageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationS3Route,
+    postXAmzTargetFmrsServiceDescribeLocationS3RouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeLocationSmbRoute,
+    postXAmzTargetFmrsServiceDescribeLocationSmbRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeTaskRoute,
+    postXAmzTargetFmrsServiceDescribeTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceDescribeTaskExecutionRoute,
+    postXAmzTargetFmrsServiceDescribeTaskExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceListAgentsRoute,
+    postXAmzTargetFmrsServiceListAgentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceListLocationsRoute,
+    postXAmzTargetFmrsServiceListLocationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceListTagsForResourceRoute,
+    postXAmzTargetFmrsServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceListTaskExecutionsRoute,
+    postXAmzTargetFmrsServiceListTaskExecutionsRouteHandler,
+  )
+  .openapi(postXAmzTargetFmrsServiceListTasksRoute, postXAmzTargetFmrsServiceListTasksRouteHandler)
+  .openapi(
+    postXAmzTargetFmrsServiceStartTaskExecutionRoute,
+    postXAmzTargetFmrsServiceStartTaskExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceTagResourceRoute,
+    postXAmzTargetFmrsServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUntagResourceRoute,
+    postXAmzTargetFmrsServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateAgentRoute,
+    postXAmzTargetFmrsServiceUpdateAgentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateLocationHdfsRoute,
+    postXAmzTargetFmrsServiceUpdateLocationHdfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateLocationNfsRoute,
+    postXAmzTargetFmrsServiceUpdateLocationNfsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateLocationObjectStorageRoute,
+    postXAmzTargetFmrsServiceUpdateLocationObjectStorageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateLocationSmbRoute,
+    postXAmzTargetFmrsServiceUpdateLocationSmbRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateTaskRoute,
+    postXAmzTargetFmrsServiceUpdateTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetFmrsServiceUpdateTaskExecutionRoute,
+    postXAmzTargetFmrsServiceUpdateTaskExecutionRouteHandler,
+  )
 
 export default app

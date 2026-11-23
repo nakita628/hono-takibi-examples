@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSingFrameAudioQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSingFrameAudioQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const singFrameAudioQueryHandler = app.openapi(postSingFrameAudioQueryRoute, (c) => {
+export const postSingFrameAudioQueryRouteHandler: RouteHandler<
+  typeof postSingFrameAudioQueryRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

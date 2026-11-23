@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuthMfaFactorsIdRoute,
   deleteAuthSessionRoute,
   getAuthMfaFactorsRoute,
@@ -18,54 +18,96 @@ import {
   postAuthUserAuthProviderUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthMfaChallengesIdVerifyRouteHandler: RouteHandler<
+  typeof postAuthMfaChallengesIdVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authHandler = app
-  .openapi(postAuthMfaChallengesIdVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthMfaFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthMfaFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthMfaFactorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthMfaFactorsIdVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthMfaRecoveryCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthTokenRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthUserProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthUserAuthProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthUserAuthProviderCallbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthUserAuthProviderRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthUserAuthProviderResetPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthUserAuthProviderUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthAuthProviderUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAuthMfaFactorsRouteHandler: RouteHandler<typeof getAuthMfaFactorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthMfaFactorsRouteHandler: RouteHandler<typeof postAuthMfaFactorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthMfaFactorsIdRouteHandler: RouteHandler<
+  typeof deleteAuthMfaFactorsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthMfaFactorsIdVerifyRouteHandler: RouteHandler<
+  typeof postAuthMfaFactorsIdVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthMfaRecoveryCodesRouteHandler: RouteHandler<
+  typeof postAuthMfaRecoveryCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthSessionRouteHandler: RouteHandler<typeof postAuthSessionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthSessionRouteHandler: RouteHandler<typeof deleteAuthSessionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthTokenRefreshRouteHandler: RouteHandler<
+  typeof postAuthTokenRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthUserProvidersRouteHandler: RouteHandler<
+  typeof getAuthUserProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthUserAuthProviderRouteHandler: RouteHandler<
+  typeof postAuthUserAuthProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthUserAuthProviderCallbackRouteHandler: RouteHandler<
+  typeof postAuthUserAuthProviderCallbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthUserAuthProviderRegisterRouteHandler: RouteHandler<
+  typeof postAuthUserAuthProviderRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthUserAuthProviderResetPasswordRouteHandler: RouteHandler<
+  typeof postAuthUserAuthProviderResetPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthUserAuthProviderUpdateRouteHandler: RouteHandler<
+  typeof postAuthUserAuthProviderUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthAuthProviderUserRouteHandler: RouteHandler<
+  typeof postAuthAuthProviderUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

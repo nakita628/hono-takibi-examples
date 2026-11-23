@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuthApiKeyKeyRoute,
   deleteAuthTokenRoute,
   getAuthApiKeyRoute,
@@ -7,21 +7,24 @@ import {
   postAuthTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAuthApiKeyRouteHandler: RouteHandler<typeof getAuthApiKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authHandler = app
-  .openapi(getAuthApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthApiKeyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthApiKeyRouteHandler: RouteHandler<typeof postAuthApiKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthApiKeyKeyRouteHandler: RouteHandler<
+  typeof deleteAuthApiKeyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthTokenRouteHandler: RouteHandler<typeof deleteAuthTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthTokenRouteHandler: RouteHandler<typeof postAuthTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

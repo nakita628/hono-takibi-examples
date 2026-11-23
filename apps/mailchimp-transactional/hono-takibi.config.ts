@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/mailchimp/mailchimp-client-lib-codegen/blob/93f2cc719a314605947bd0642716f5e0a060cd55/spec/transactional.openapi.json
   input: 'https://raw.githubusercontent.com/mailchimp/mailchimp-client-lib-codegen/main/spec/transactional.openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

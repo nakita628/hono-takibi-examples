@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1ConversionFromToRoute,
   getV1HistoricCryptoFromToDateRoute,
   getV1HistoricForexFromToDateRoute,
@@ -39,117 +39,224 @@ import {
   getV1RelatedCompaniesTickerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ConversionFromToRouteHandler: RouteHandler<
+  typeof getV1ConversionFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ConversionFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1HistoricCryptoFromToDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1HistoricForexFromToDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsEmaCryptoTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsEmaFxTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsEmaIndicesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsEmaOptionsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsEmaStockTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsMacdCryptoTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsMacdFxTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsMacdIndicesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsMacdOptionsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsMacdStockTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsRsiCryptoTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsRsiFxTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsRsiIndicesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsRsiOptionsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsRsiStockTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsSmaCryptoTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsSmaFxTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsSmaIndicesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsSmaOptionsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1IndicatorsSmaStockTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LastCryptoFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LastQuoteCurrenciesFromToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MarketstatusNowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MarketstatusUpcomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OpenCloseCryptoFromToDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OpenCloseIndicesTickerDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OpenCloseOptionsTickerDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OpenCloseStocksTickerDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReferenceIposRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReferenceSecFilingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReferenceSecFilingsFilingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReferenceSecFilingsFilingIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ReferenceSecFilingsFilingIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RelatedCompaniesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1HistoricCryptoFromToDateRouteHandler: RouteHandler<
+  typeof getV1HistoricCryptoFromToDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1HistoricForexFromToDateRouteHandler: RouteHandler<
+  typeof getV1HistoricForexFromToDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsEmaCryptoTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsEmaCryptoTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsEmaFxTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsEmaFxTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsEmaIndicesTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsEmaIndicesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsEmaOptionsTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsEmaOptionsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsEmaStockTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsEmaStockTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsMacdCryptoTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsMacdCryptoTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsMacdFxTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsMacdFxTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsMacdIndicesTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsMacdIndicesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsMacdOptionsTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsMacdOptionsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsMacdStockTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsMacdStockTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsRsiCryptoTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsRsiCryptoTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsRsiFxTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsRsiFxTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsRsiIndicesTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsRsiIndicesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsRsiOptionsTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsRsiOptionsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsRsiStockTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsRsiStockTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsSmaCryptoTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsSmaCryptoTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsSmaFxTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsSmaFxTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsSmaIndicesTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsSmaIndicesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsSmaOptionsTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsSmaOptionsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1IndicatorsSmaStockTickerRouteHandler: RouteHandler<
+  typeof getV1IndicatorsSmaStockTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LastCryptoFromToRouteHandler: RouteHandler<
+  typeof getV1LastCryptoFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LastQuoteCurrenciesFromToRouteHandler: RouteHandler<
+  typeof getV1LastQuoteCurrenciesFromToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MarketstatusNowRouteHandler: RouteHandler<
+  typeof getV1MarketstatusNowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MarketstatusUpcomingRouteHandler: RouteHandler<
+  typeof getV1MarketstatusUpcomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OpenCloseCryptoFromToDateRouteHandler: RouteHandler<
+  typeof getV1OpenCloseCryptoFromToDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OpenCloseIndicesTickerDateRouteHandler: RouteHandler<
+  typeof getV1OpenCloseIndicesTickerDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OpenCloseOptionsTickerDateRouteHandler: RouteHandler<
+  typeof getV1OpenCloseOptionsTickerDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OpenCloseStocksTickerDateRouteHandler: RouteHandler<
+  typeof getV1OpenCloseStocksTickerDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReferenceIposRouteHandler: RouteHandler<typeof getV1ReferenceIposRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReferenceSecFilingsRouteHandler: RouteHandler<
+  typeof getV1ReferenceSecFilingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReferenceSecFilingsFilingIdRouteHandler: RouteHandler<
+  typeof getV1ReferenceSecFilingsFilingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReferenceSecFilingsFilingIdFilesRouteHandler: RouteHandler<
+  typeof getV1ReferenceSecFilingsFilingIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ReferenceSecFilingsFilingIdFilesFileIdRouteHandler: RouteHandler<
+  typeof getV1ReferenceSecFilingsFilingIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RelatedCompaniesTickerRouteHandler: RouteHandler<
+  typeof getV1RelatedCompaniesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

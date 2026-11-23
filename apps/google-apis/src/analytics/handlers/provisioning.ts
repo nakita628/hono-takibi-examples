@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postProvisioningCreateAccountTicketRoute,
   postProvisioningCreateAccountTreeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postProvisioningCreateAccountTicketRouteHandler: RouteHandler<
+  typeof postProvisioningCreateAccountTicketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const provisioningHandler = app
-  .openapi(postProvisioningCreateAccountTicketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProvisioningCreateAccountTreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProvisioningCreateAccountTreeRouteHandler: RouteHandler<
+  typeof postProvisioningCreateAccountTreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

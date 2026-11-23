@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEarningsRatesEarningsRateIDRoute,
   getEarningsRatesRoute,
   postEarningsRatesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEarningsRatesRouteHandler: RouteHandler<typeof getEarningsRatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const earningsRatesHandler = app
-  .openapi(getEarningsRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEarningsRatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEarningsRatesEarningsRateIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEarningsRatesRouteHandler: RouteHandler<typeof postEarningsRatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEarningsRatesEarningsRateIDRouteHandler: RouteHandler<
+  typeof getEarningsRatesEarningsRateIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

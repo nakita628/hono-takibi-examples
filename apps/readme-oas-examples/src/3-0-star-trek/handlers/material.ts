@@ -1,15 +1,18 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMaterialRoute, getMaterialSearchRoute, postMaterialSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMaterialRoute, getMaterialSearchRoute, postMaterialSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMaterialRouteHandler: RouteHandler<typeof getMaterialRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const materialHandler = app
-  .openapi(getMaterialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMaterialSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMaterialSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMaterialSearchRouteHandler: RouteHandler<typeof getMaterialSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMaterialSearchRouteHandler: RouteHandler<typeof postMaterialSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

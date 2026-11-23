@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnrichmentEventEnrichmentsIdAssociationsRoute,
   deleteEnrichmentEventEnrichmentsIdRoute,
   deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute,
@@ -36,108 +36,206 @@ import {
   putEnrichmentSchemasSchemaIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEnrichmentIntegrationsServicenowRouteHandler: RouteHandler<
+  typeof getEnrichmentIntegrationsServicenowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const enrichmentHandler = app
-  .openapi(getEnrichmentIntegrationsServicenowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentIntegrationsServicenowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentIntegrationsServicenowIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentIntegrationsServicenowIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentIntegrationsServicenowIntegrationIdTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentIntegrationsServicenowCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentSchemasSchemaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentSchemasSchemaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentSchemasSchemaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentSchemasSchemaIdRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentSchemasSchemaIdRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentSchemasSchemaIdRecordsRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentEventEnrichmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentEventEnrichmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentEventEnrichmentsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentEventEnrichmentsDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentEventEnrichmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentEventEnrichmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentEventEnrichmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentEventEnrichmentsIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentEventEnrichmentsIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnrichmentEventEnrichmentsIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnrichmentEventEnrichmentsIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnrichmentEventEnrichmentsIdRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEnrichmentIntegrationsServicenowRouteHandler: RouteHandler<
+  typeof postEnrichmentIntegrationsServicenowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentIntegrationsServicenowIntegrationIdRouteHandler: RouteHandler<
+  typeof getEnrichmentIntegrationsServicenowIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentIntegrationsServicenowIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentIntegrationsServicenowIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentIntegrationsServicenowIntegrationIdTablesRouteHandler: RouteHandler<
+  typeof postEnrichmentIntegrationsServicenowIntegrationIdTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler: RouteHandler<
+  typeof putEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRouteHandler: RouteHandler<
+  typeof postEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRouteHandler: RouteHandler<
+  typeof getEnrichmentIntegrationsServicenowIntegrationIdTablesTableIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentIntegrationsServicenowCredentialsRouteHandler: RouteHandler<
+  typeof postEnrichmentIntegrationsServicenowCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler: RouteHandler<
+  typeof getEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler: RouteHandler<
+  typeof putEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentIntegrationsServicenowCredentialsCredentialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentQueryRouteHandler: RouteHandler<
+  typeof postEnrichmentQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentSchemasRouteHandler: RouteHandler<
+  typeof getEnrichmentSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentSchemasRouteHandler: RouteHandler<
+  typeof postEnrichmentSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentSchemasSchemaIdRouteHandler: RouteHandler<
+  typeof getEnrichmentSchemasSchemaIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentSchemasSchemaIdRouteHandler: RouteHandler<
+  typeof putEnrichmentSchemasSchemaIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentSchemasSchemaIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentSchemasSchemaIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentSchemasSchemaIdRecordsRouteHandler: RouteHandler<
+  typeof getEnrichmentSchemasSchemaIdRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentSchemasSchemaIdRecordsRouteHandler: RouteHandler<
+  typeof postEnrichmentSchemasSchemaIdRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentSchemasSchemaIdRecordsRecordIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentSchemasSchemaIdRecordsRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentEventEnrichmentsRouteHandler: RouteHandler<
+  typeof getEnrichmentEventEnrichmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentEventEnrichmentsRouteHandler: RouteHandler<
+  typeof postEnrichmentEventEnrichmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentEventEnrichmentsDefaultRouteHandler: RouteHandler<
+  typeof getEnrichmentEventEnrichmentsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentEventEnrichmentsDefaultRouteHandler: RouteHandler<
+  typeof putEnrichmentEventEnrichmentsDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentEventEnrichmentsIdRouteHandler: RouteHandler<
+  typeof getEnrichmentEventEnrichmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentEventEnrichmentsIdRouteHandler: RouteHandler<
+  typeof putEnrichmentEventEnrichmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentEventEnrichmentsIdRouteHandler: RouteHandler<
+  typeof deleteEnrichmentEventEnrichmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentEventEnrichmentsIdAssociationsRouteHandler: RouteHandler<
+  typeof getEnrichmentEventEnrichmentsIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnrichmentEventEnrichmentsIdAssociationsRouteHandler: RouteHandler<
+  typeof postEnrichmentEventEnrichmentsIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnrichmentEventEnrichmentsIdAssociationsRouteHandler: RouteHandler<
+  typeof deleteEnrichmentEventEnrichmentsIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnrichmentEventEnrichmentsIdRulesRouteHandler: RouteHandler<
+  typeof getEnrichmentEventEnrichmentsIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnrichmentEventEnrichmentsIdRulesRouteHandler: RouteHandler<
+  typeof putEnrichmentEventEnrichmentsIdRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

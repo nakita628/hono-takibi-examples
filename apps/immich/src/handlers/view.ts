@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getViewFolderRoute, getViewFolderUniquePathsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getViewFolderRoute, getViewFolderUniquePathsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getViewFolderRouteHandler: RouteHandler<typeof getViewFolderRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const viewHandler = app
-  .openapi(getViewFolderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getViewFolderUniquePathsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getViewFolderUniquePathsRouteHandler: RouteHandler<
+  typeof getViewFolderUniquePathsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

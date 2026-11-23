@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSosBucketsUsageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSosBucketsUsageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sosBucketsUsageHandler = app.openapi(getSosBucketsUsageRoute, (c) => {
+export const getSosBucketsUsageRouteHandler: RouteHandler<typeof getSosBucketsUsageRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

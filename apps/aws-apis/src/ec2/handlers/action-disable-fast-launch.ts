@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDisableFastLaunchRoute, postActionDisableFastLaunchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDisableFastLaunchRoute, postActionDisableFastLaunchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDisableFastLaunchRouteHandler: RouteHandler<
+  typeof getActionDisableFastLaunchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDisableFastLaunchHandler = app
-  .openapi(getActionDisableFastLaunchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDisableFastLaunchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDisableFastLaunchRouteHandler: RouteHandler<
+  typeof postActionDisableFastLaunchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

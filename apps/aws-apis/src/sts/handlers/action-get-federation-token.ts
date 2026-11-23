@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionGetFederationTokenRoute, postActionGetFederationTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionGetFederationTokenRoute, postActionGetFederationTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetFederationTokenRouteHandler: RouteHandler<
+  typeof getActionGetFederationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetFederationTokenHandler = app
-  .openapi(getActionGetFederationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetFederationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetFederationTokenRouteHandler: RouteHandler<
+  typeof postActionGetFederationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,21 +1,98 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  accountNameEnvironmentComBrHandler,
-  accountNameVtexcommercestableComBrHandler,
-  apiHandler,
-  fulfillmentEndpointHandler,
-  marketplaceServicesEndpointHandler,
-  portalVtexcommercestableComBrHandler,
+  postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute,
+  postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute,
+  postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRoute,
+  postApiCheckoutPubOrderFormsSimulationRoute,
+  postFulfillmentEndpointPvtOrderFormsSimulationRoute,
+  postFulfillmentEndpointPvtOrdersOrderIdCancelRoute,
+  postFulfillmentEndpointPvtOrdersRoute,
+  postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute,
+  postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRoute,
+  postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRoute,
+  putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRoute,
+} from './routes'
+import {
+  postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRouteHandler,
+  postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRouteHandler,
+  postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRouteHandler,
+  postApiCheckoutPubOrderFormsSimulationRouteHandler,
+  postFulfillmentEndpointPvtOrderFormsSimulationRouteHandler,
+  postFulfillmentEndpointPvtOrdersOrderIdCancelRouteHandler,
+  postFulfillmentEndpointPvtOrdersRouteHandler,
+  postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRouteHandler,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRouteHandler,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRouteHandler,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRouteHandler,
+  postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRouteHandler,
+  postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRouteHandler,
+  postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRouteHandler,
+  putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', apiHandler)
-  .route('/', portalVtexcommercestableComBrHandler)
-  .route('/', accountNameVtexcommercestableComBrHandler)
-  .route('/', accountNameEnvironmentComBrHandler)
-  .route('/', fulfillmentEndpointHandler)
-  .route('/', marketplaceServicesEndpointHandler)
+  .openapi(
+    postApiCheckoutPubOrderFormsSimulationRoute,
+    postApiCheckoutPubOrderFormsSimulationRouteHandler,
+  )
+  .openapi(
+    postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRoute,
+    postPortalVtexcommercestableComBrApiMkpCategoryMapperCategoriesMarketplaceIdRouteHandler,
+  )
+  .openapi(
+    postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRoute,
+    postPortalVtexcommercestableComBrApiMkpCategoryMapperConnectorRegisterRouteHandler,
+  )
+  .openapi(
+    postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRoute,
+    postAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersRouteHandler,
+  )
+  .openapi(
+    putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRoute,
+    putAccountNameVtexcommercestableComBrApiOrderIntegrationOrdersStatusRouteHandler,
+  )
+  .openapi(
+    postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute,
+    postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRouteHandler,
+  )
+  .openapi(
+    postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute,
+    postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRouteHandler,
+  )
+  .openapi(
+    postFulfillmentEndpointPvtOrderFormsSimulationRoute,
+    postFulfillmentEndpointPvtOrderFormsSimulationRouteHandler,
+  )
+  .openapi(postFulfillmentEndpointPvtOrdersRoute, postFulfillmentEndpointPvtOrdersRouteHandler)
+  .openapi(
+    postFulfillmentEndpointPvtOrdersOrderIdCancelRoute,
+    postFulfillmentEndpointPvtOrdersOrderIdCancelRouteHandler,
+  )
+  .openapi(
+    postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute,
+    postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRouteHandler,
+  )
+  .openapi(
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute,
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRouteHandler,
+  )
+  .openapi(
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute,
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRouteHandler,
+  )
+  .openapi(
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute,
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRouteHandler,
+  )
+  .openapi(
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute,
+    postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRouteHandler,
+  )
 
 export default app

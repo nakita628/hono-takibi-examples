@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsThanosRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsThanosRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsThanosHandler = app.openapi(getDbaasSettingsThanosRoute, (c) => {
+export const getDbaasSettingsThanosRouteHandler: RouteHandler<
+  typeof getDbaasSettingsThanosRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

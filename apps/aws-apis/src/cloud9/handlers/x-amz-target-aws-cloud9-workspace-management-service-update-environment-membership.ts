@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipHandler =
-  app.openapi(
-    postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCloud9WorkspaceManagementServiceUpdateEnvironmentMembershipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

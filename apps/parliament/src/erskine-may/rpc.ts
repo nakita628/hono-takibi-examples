@@ -76,8 +76,8 @@ export async function getApiSectionSectionId(
 }
 
 export async function getApiSectionSectionIdStep(
-  args: InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>,
+  args: InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api.Section[':sectionId,:step'].$get(args, options))
+  return await parseResponse(client.api.Section[':sectionId,{step}'].$get(args, options))
 }

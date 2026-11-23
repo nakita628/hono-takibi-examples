@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCounterpartyCounterpartyIdRoute,
   getCounterpartyCounterpartyIdRoute,
   postCounterpartyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCounterpartyRouteHandler: RouteHandler<typeof postCounterpartyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const counterpartyHandler = app
-  .openapi(postCounterpartyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCounterpartyCounterpartyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCounterpartyCounterpartyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCounterpartyCounterpartyIdRouteHandler: RouteHandler<
+  typeof getCounterpartyCounterpartyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCounterpartyCounterpartyIdRouteHandler: RouteHandler<
+  typeof deleteCounterpartyCounterpartyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

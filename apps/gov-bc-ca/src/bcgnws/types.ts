@@ -565,7 +565,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/names/:nameId.:outputFormat': {
+    '/names/:nameId.{outputFormat}': {
       $get:
         | {
             input: {

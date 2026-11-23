@@ -28545,7 +28545,7 @@ export const deleteV1ResponderEndpointsRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Endpoint disenrolled successfully', content: {} },
+    200: { description: 'Endpoint disenrolled successfully' },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     404: NotFoundResponse,
@@ -30583,10 +30583,7 @@ export const postV1TokenizationsTokenizationTokenPauseRoute = createRoute({
     }),
   },
   responses: {
-    200: {
-      description: 'Pause tokenization request successfully delivered to the card network.',
-      content: {},
-    },
+    200: { description: 'Pause tokenization request successfully delivered to the card network.' },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
     404: NotFoundResponse,
@@ -30621,7 +30618,6 @@ export const postV1TokenizationsTokenizationTokenUnpauseRoute = createRoute({
   responses: {
     200: {
       description: 'Unpause tokenization request successfully delivered to the card network.',
-      content: {},
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
@@ -30657,7 +30653,6 @@ export const postV1TokenizationsTokenizationTokenDeactivateRoute = createRoute({
   responses: {
     200: {
       description: 'Deactivate tokenization request successfully delivered to the card network.',
-      content: {},
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
@@ -30693,7 +30688,6 @@ export const postV1TokenizationsTokenizationTokenActivateRoute = createRoute({
   responses: {
     200: {
       description: 'Activate tokenization request successfully delivered to the card network.',
-      content: {},
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,
@@ -30752,7 +30746,6 @@ export const postV1TokenizationsTokenizationTokenResendActivationCodeRoute = cre
   responses: {
     200: {
       description: 'Resend activation code request successfully delivered to the card network.',
-      content: {},
     },
     400: BadRequestResponse,
     401: UnauthorizedResponse,

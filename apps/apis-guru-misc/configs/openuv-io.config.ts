@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openuv.io/v1/openapi.yaml',
   output: './src/openuv-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openuv-io/types.ts' },
   client: { output: './src/openuv-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/openuv-io/rpc.ts', parseResponse: true },

@@ -4754,30 +4754,30 @@ export function injectFilesIdDownload<
 }
 
 export function getFilesIdDownloadExtensionQueryKey(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['files', '/files/:id/download:extension', keyArgs] as const
+  return ['files', '/files/:id/download{extension}', keyArgs] as const
 }
 
 export function getFilesIdDownloadExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+          Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
         >
       >
     >,
@@ -4788,7 +4788,7 @@ export function getFilesIdDownloadExtensionQueryOptions<
     queryKey: getFilesIdDownloadExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.files[':id']['download:extension'].$get(args, {
+        client.files[':id']['download{extension}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -4801,20 +4801,20 @@ export function injectFilesIdDownloadExtension<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+        Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: () => InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.files)[':id']['download:extension']['$get']>>
+              Awaited<ReturnType<(typeof client.files)[':id']['download{extension}']['$get']>>
             >
           >
         >,

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDisplayPreferencesDisplayPreferencesIdRoute,
   postDisplayPreferencesDisplayPreferencesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDisplayPreferencesDisplayPreferencesIdRouteHandler: RouteHandler<
+  typeof getDisplayPreferencesDisplayPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const displayPreferencesHandler = app
-  .openapi(getDisplayPreferencesDisplayPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDisplayPreferencesDisplayPreferencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDisplayPreferencesDisplayPreferencesIdRouteHandler: RouteHandler<
+  typeof postDisplayPreferencesDisplayPreferencesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

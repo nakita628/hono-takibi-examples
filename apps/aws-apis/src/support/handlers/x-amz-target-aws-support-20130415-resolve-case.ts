@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSupport20130415ResolveCaseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSupport20130415ResolveCaseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSupport20130415ResolveCaseHandler = app.openapi(
-  postXAmzTargetAWSSupport20130415ResolveCaseRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSSupport20130415ResolveCaseRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSupport20130415ResolveCaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

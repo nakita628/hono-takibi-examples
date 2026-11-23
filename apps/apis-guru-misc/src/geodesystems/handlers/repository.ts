@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRepositoryEntryShowRoute,
   getRepositorySearchType2017BoulderElectionExpendituresRoute,
   getRepositorySearchTypeAnyRoute,
@@ -243,729 +243,1448 @@ import {
   getRepositorySearchTypeWikipageRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRepositoryEntryShowRouteHandler: RouteHandler<
+  typeof getRepositoryEntryShowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const repositoryHandler = app
-  .openapi(getRepositoryEntryShowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchType2017BoulderElectionExpendituresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeAnyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBeforeafterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBiblioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioDicomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioDicomTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioFastaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioFastqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioHmmerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOmeTiffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologyAssayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologyCohortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologyPersonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologySampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologySeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioOntologyStudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioSamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioSfPdbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioSraRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioStockholmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBioTaxonomyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBlogentryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBolderRentalHousingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBostonCrimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulder2017ElectionContributionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderCampaignContributionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderConsultingServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderCountyVoterDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderCrimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeBoulderEmployeeSalariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCalendarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCampaignDonorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCampaignExpendituresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCataloglinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCdmGridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeChatroomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeColoradoWaterRightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCommitteeDonationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCommunityDatahubRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeCommunityResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeConstructionPermitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeDbCoIndicatorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeEarthSatelliteLandsatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFaqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFecPacsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFeccandidatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFitsDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeFtpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGadgetsCountdownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGadgetsStockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGadgetsWeatherRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGazeteerCensusTractsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGazeteerCountiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoGeojsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoGeotiffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoGpxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoHdf5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoKmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoShapefileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGeoShapefileFipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGlossaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGridaggregationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeHipchatGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeHomepageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeIncidentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeJeopardyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLatlonimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLidarCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLidarLasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLidarLvisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLocalfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMapGooglemapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaAudiofileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaImageloopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaPhotoalbumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaVideoChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaVideoQuicktimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeMediaYoutubevideoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeNotesJsonfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeNotesNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeNotesNotebookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeNwsfeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeOpendaplinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeOwlClassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeOwlOntologyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePasteitentryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePointTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePoliceStopDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectCampaignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectCasestudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectContributionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectDataformatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectDatasetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectExperimentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectFieldnoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectGpsControlpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectGpsRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectGpsRinexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectInstrumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectLearningResourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectMeetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectProgramRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectSiteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectSoftwarepackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectStandardNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectSurveylocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectTermRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectVisitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeProjectVocabularyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePropertySalesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePropertydbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypePythonNotebookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeSlackTeamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeStatusboardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeSunrisesunsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTmdbmoviesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTodoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTripEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTripFlightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTripHotelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTripReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTripTripRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeAwcMetarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeBizStockseriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeBlsSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeBlsSurveyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeCensusAcsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDaymetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDbTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentCsvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentDocRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentPptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDocumentXlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeDrilsdownCasestudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEdgarFilingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEiaCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEiaSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriFeatureserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriGeometryserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriGpserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriImageserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriLayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriMapserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriRestfolderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriRestserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeEsriRestserviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeExtremesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeFredCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeFredSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsAgencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsStopsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeGtfsTripRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeHazarddataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeHydroColoradoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeIdvBundleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeImageAirportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeImageWebcamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeMbRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeMbCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeMbPointBasicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeMetametaDictionaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeMetametaFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeNasaamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeNcssRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeNitfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointAmerifluxLevel2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointAmrcFinalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointAmrcFreewaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointCzoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointGcnetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointGeomagIaga2002Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointHydroWatermlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIcebridgeAtmIcessnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIcebridgeAtmQfitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr3Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIcebridgeParisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointIdvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointInlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNcdcClimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNetcdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNoaaCarbonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNoaaFlaskEventRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNoaaFlaskMonthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNoaaMadisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointNoaaTowerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanCnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanCsvSadoTTSRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanCsvSadoMeteoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanCsvSadoPositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanNetcdfGliderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanNetcdfTrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOceanOoiDmgxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointOpenaqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointPboPositionTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointSimpleRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointSnotelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePointWsbbGgpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypePsdMonthlyClimateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeQuandlSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeServiceGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeServiceLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeSocrataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeSoundingCodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeSoundingFrdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeSoundingGsdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeSoundingWyomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeTmyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeTweetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeUsgsGaugeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeVirtualRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeWmsCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeTypeWmsLayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeUfoSightingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeUsPlacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeVoteYesnoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeWeblogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRepositorySearchTypeWikipageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRepositorySearchType2017BoulderElectionExpendituresRouteHandler: RouteHandler<
+  typeof getRepositorySearchType2017BoulderElectionExpendituresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeAnyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeAnyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBeforeafterRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBeforeafterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBiblioRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBiblioRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioDicomRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioDicomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioDicomTestRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioDicomTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioFastaRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioFastaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioFastqRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioFastqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioHmmerIndexRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioHmmerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOmeTiffRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOmeTiffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologyAssayRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologyAssayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologyCohortRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologyCohortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologyPersonRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologyPersonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologySampleRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologySampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologySeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologySeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioOntologyStudyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioOntologyStudyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioSamRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioSamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioSfPdbRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioSfPdbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioSraRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioSraRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioStockholmRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioStockholmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBioTaxonomyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBioTaxonomyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBlogentryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBlogentryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBolderRentalHousingRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBolderRentalHousingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBookmarksRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBookmarksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBostonCrimeRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBostonCrimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulder2017ElectionContributionsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulder2017ElectionContributionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderCampaignContributionsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderCampaignContributionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderConsultingServicesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderConsultingServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderCountyVoterDetailsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderCountyVoterDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderCrimesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderCrimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderEmailsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderEmailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeBoulderEmployeeSalariesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeBoulderEmployeeSalariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCalendarRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCalendarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCampaignDonorsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCampaignDonorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCampaignExpendituresRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCampaignExpendituresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCataloglinkRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCataloglinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCdmGridRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCdmGridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeChatroomRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeChatroomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeColoradoWaterRightsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeColoradoWaterRightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCommitteeDonationsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCommitteeDonationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCommunityDatahubRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCommunityDatahubRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeCommunityResourceRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeCommunityResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeConstructionPermitsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeConstructionPermitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeContactRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeDbCoIndicatorsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeDbCoIndicatorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeEarthSatelliteLandsatRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeEarthSatelliteLandsatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFaqRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFaqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFecPacsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFecPacsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFeccandidatesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFeccandidatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFeedRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFileRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFitsDataRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFitsDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeFtpRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeFtpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGadgetsCountdownRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGadgetsCountdownRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGadgetsStockRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGadgetsStockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGadgetsWeatherRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGadgetsWeatherRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGazeteerCensusTractsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGazeteerCensusTractsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGazeteerCountiesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGazeteerCountiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoGeojsonRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoGeojsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoGeotiffRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoGeotiffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoGpxRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoGpxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoHdf5RouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoHdf5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoKmlRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoKmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoShapefileRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoShapefileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGeoShapefileFipsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGeoShapefileFipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGlossaryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGlossaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGridaggregationRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGridaggregationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeGroupRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeHipchatGroupRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeHipchatGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeHomepageRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeHomepageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeIncidentRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeIncidentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeJeopardyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeJeopardyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLatlonimageRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLatlonimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLidarCollectionRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLidarCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLidarLasRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLidarLasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLidarLvisRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLidarLvisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLinkRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLocalfilesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLocalfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeLocationsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMapGooglemapRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMapGooglemapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaAudiofileRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaAudiofileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaImageloopRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaImageloopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaPhotoalbumRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaPhotoalbumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaVideoChannelRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaVideoChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaVideoQuicktimeRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaVideoQuicktimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeMediaYoutubevideoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeMediaYoutubevideoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeNotesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeNotesJsonfileRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeNotesJsonfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeNotesNoteRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeNotesNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeNotesNotebookRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeNotesNotebookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeNwsfeedRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeNwsfeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeOpendaplinkRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeOpendaplinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeOwlClassRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeOwlClassRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeOwlOntologyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeOwlOntologyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePasteitentryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePasteitentryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePointTextRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePointTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePoliceStopDataRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePoliceStopDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePollRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectCampaignRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectCampaignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectCasestudyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectCasestudyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectContributionRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectContributionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectDataformatRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectDataformatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectDatasetRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectDatasetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectDeploymentRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectExperimentRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectExperimentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectFieldnoteRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectFieldnoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectGpsControlpointsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectGpsControlpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectGpsRawRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectGpsRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectGpsRinexRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectGpsRinexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectInstrumentRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectInstrumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectLearningResourceRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectLearningResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectMeetingRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectMeetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectOrganizationRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectOrganizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectProgramRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectProgramRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectProjectRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectServiceRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectSiteRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectSiteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectSoftwarepackageRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectSoftwarepackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectStandardNameRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectStandardNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectSurveylocationRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectSurveylocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectTermRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectTermRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectVisitRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectVisitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeProjectVocabularyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeProjectVocabularyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePropertySalesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePropertySalesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePropertydbRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePropertydbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypePythonNotebookRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypePythonNotebookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeSlackTeamRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeSlackTeamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeStatusboardRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeStatusboardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeSunrisesunsetRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeSunrisesunsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTasksRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTmdbmoviesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTmdbmoviesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTodoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTodoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTripEventRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTripEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTripFlightRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTripFlightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTripHotelRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTripHotelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTripReportRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTripReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTripTripRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTripTripRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeAwcMetarRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeAwcMetarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeBizStockseriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeBizStockseriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeBlsSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeBlsSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeBlsSurveyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeBlsSurveyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeCensusAcsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeCensusAcsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDaymetRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDaymetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDbTableRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDbTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentCsvRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentCsvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentDocRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentDocRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentHtmlRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentPdfRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentPptRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentPptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDocumentXlsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDocumentXlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeDrilsdownCasestudyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeDrilsdownCasestudyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEdgarFilingRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEdgarFilingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEiaCategoryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEiaCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEiaSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEiaSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriFeatureserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriFeatureserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriGeometryserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriGeometryserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriGpserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriGpserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriImageserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriImageserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriLayerRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriLayerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriMapserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriMapserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriRestfolderRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriRestfolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriRestserverRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriRestserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeEsriRestserviceRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeEsriRestserviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeExtremesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeExtremesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeFredCategoryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeFredCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeFredSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeFredSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsAgencyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsAgencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsRouteRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsRoutesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsStopRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsStopsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsStopsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeGtfsTripRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeGtfsTripRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeHazarddataRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeHazarddataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeHydroColoradoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeHydroColoradoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeIdvBundleRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeIdvBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeImageRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeImageAirportRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeImageAirportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeImageWebcamRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeImageWebcamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeMbRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeMbRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeMbCollectionRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeMbCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeMbPointBasicRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeMbPointBasicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeMetametaDictionaryRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeMetametaDictionaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeMetametaFieldRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeMetametaFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeNasaamesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeNasaamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeNcssRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeNcssRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeNitfRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeNitfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointAmerifluxLevel2RouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointAmerifluxLevel2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointAmrcFinalRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointAmrcFinalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointAmrcFreewaveRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointAmrcFreewaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointCzoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointCzoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointGcnetRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointGcnetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointGeomagIaga2002RouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointGeomagIaga2002Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointHydroWatermlRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointHydroWatermlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIcebridgeAtmIcessnRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIcebridgeAtmIcessnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIcebridgeAtmQfitRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIcebridgeAtmQfitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr2RouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr3RouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIcebridgeMccordsIrmcr3Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIcebridgeParisRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIcebridgeParisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointIdvRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointIdvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointInlineRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointInlineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNcdcClimateRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNcdcClimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNetcdfRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNetcdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNoaaCarbonRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNoaaCarbonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNoaaFlaskEventRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNoaaFlaskEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNoaaFlaskMonthRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNoaaFlaskMonthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNoaaMadisRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNoaaMadisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointNoaaTowerRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointNoaaTowerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanCnvRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanCnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanCsvSadoTTSRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanCsvSadoTTSRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanCsvSadoMeteoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanCsvSadoMeteoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanCsvSadoPositionRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanCsvSadoPositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanNetcdfGliderRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanNetcdfGliderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanNetcdfTrackRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanNetcdfTrackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOceanOoiDmgxRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOceanOoiDmgxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointOpenaqRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointOpenaqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointPboPositionTimeSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointPboPositionTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointSimpleRecordsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointSimpleRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointSnotelRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointSnotelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointTextRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePointWsbbGgpRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePointWsbbGgpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypePsdMonthlyClimateIndexRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypePsdMonthlyClimateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeQuandlSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeQuandlSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeServiceGroupRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeServiceGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeServiceLinkRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeServiceLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeSocrataSeriesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeSocrataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeSoundingCodRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeSoundingCodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeSoundingFrdRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeSoundingFrdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeSoundingGsdRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeSoundingGsdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeSoundingWyomingRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeSoundingWyomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeTmyRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeTmyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeTweetRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeTweetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeUsgsGaugeRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeUsgsGaugeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeVirtualRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeVirtualRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeWmsCapabilitiesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeWmsCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeTypeWmsLayerRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeTypeWmsLayerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeUfoSightingsRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeUfoSightingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeUsPlacesRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeUsPlacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeVoteYesnoRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeVoteYesnoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeWeblogRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeWeblogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRepositorySearchTypeWikipageRouteHandler: RouteHandler<
+  typeof getRepositorySearchTypeWikipageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

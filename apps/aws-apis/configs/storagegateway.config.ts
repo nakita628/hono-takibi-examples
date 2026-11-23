@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/storagegateway/2013-06-30/openapi.yaml',
   output: './src/storagegateway/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/storagegateway/types.ts' },
   client: { output: './src/storagegateway/client.ts', baseUrl: '/' },
   rpc: { output: './src/storagegateway/rpc.ts', parseResponse: true },

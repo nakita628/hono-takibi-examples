@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOktaAuthProvidersIdRoute, getOktaAuthProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOktaAuthProvidersIdRoute, getOktaAuthProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOktaAuthProvidersRouteHandler: RouteHandler<
+  typeof getOktaAuthProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oktaAuthProvidersHandler = app
-  .openapi(getOktaAuthProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOktaAuthProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOktaAuthProvidersIdRouteHandler: RouteHandler<
+  typeof getOktaAuthProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

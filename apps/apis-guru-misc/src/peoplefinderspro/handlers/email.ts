@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmailEnrichRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmailEnrichRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const emailHandler = app.openapi(postEmailEnrichRoute, (c) => {
+export const postEmailEnrichRouteHandler: RouteHandler<typeof postEmailEnrichRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSlottypesNameRoute,
   deleteSlottypesNameVersionVersionRoute,
   getSlottypesIndexRoute,
@@ -9,27 +9,44 @@ import {
   putSlottypesNameVersionsLATESTRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSlottypesNameVersionsRouteHandler: RouteHandler<
+  typeof postSlottypesNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const slottypesHandler = app
-  .openapi(postSlottypesNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSlottypesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSlottypesNameVersionVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlottypesNameVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlottypesNameVersionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlottypesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSlottypesNameVersionsLATESTRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSlottypesNameRouteHandler: RouteHandler<
+  typeof deleteSlottypesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSlottypesNameVersionVersionRouteHandler: RouteHandler<
+  typeof deleteSlottypesNameVersionVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlottypesNameVersionsVersionRouteHandler: RouteHandler<
+  typeof getSlottypesNameVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlottypesNameVersionsIndexRouteHandler: RouteHandler<
+  typeof getSlottypesNameVersionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlottypesIndexRouteHandler: RouteHandler<typeof getSlottypesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSlottypesNameVersionsLATESTRouteHandler: RouteHandler<
+  typeof putSlottypesNameVersionsLATESTRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOauth21AuthorizeRoute,
   getOauth21FilesIdRoute,
   getOauth21FilesIndexRoute,
@@ -19,57 +19,100 @@ import {
   postOauth21TokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauth21AuthorizeRouteHandler: RouteHandler<
+  typeof getOauth21AuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(getOauth21AuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21CodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21FileUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21FileUriRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21FilesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21FilesIssuedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21FilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21PullDoctypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21PullIssuersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21PullParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21PullPulldocumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21RevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth21TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21UserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth21XmlUriRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth22FilesIssuedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth22XmlEaadhaarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauth21CodeRouteHandler: RouteHandler<typeof postOauth21CodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21FileUploadRouteHandler: RouteHandler<
+  typeof postOauth21FileUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21FileUriRouteHandler: RouteHandler<typeof getOauth21FileUriRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21FilesIndexRouteHandler: RouteHandler<
+  typeof getOauth21FilesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21FilesIssuedRouteHandler: RouteHandler<
+  typeof getOauth21FilesIssuedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21FilesIdRouteHandler: RouteHandler<typeof getOauth21FilesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21PullDoctypeRouteHandler: RouteHandler<
+  typeof postOauth21PullDoctypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21PullIssuersRouteHandler: RouteHandler<
+  typeof postOauth21PullIssuersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21PullParametersRouteHandler: RouteHandler<
+  typeof postOauth21PullParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21PullPulldocumentRouteHandler: RouteHandler<
+  typeof postOauth21PullPulldocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21RevokeRouteHandler: RouteHandler<typeof postOauth21RevokeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth21TokenRouteHandler: RouteHandler<typeof postOauth21TokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21UserRouteHandler: RouteHandler<typeof getOauth21UserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth21XmlUriRouteHandler: RouteHandler<typeof getOauth21XmlUriRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth22FilesIssuedRouteHandler: RouteHandler<
+  typeof getOauth22FilesIssuedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth22XmlEaadhaarRouteHandler: RouteHandler<
+  typeof getOauth22XmlEaadhaarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

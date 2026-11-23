@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPhonePlaybackRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPhonePlaybackRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const phonePlaybackHandler = app.openapi(postPhonePlaybackRoute, (c) => {
+export const postPhonePlaybackRouteHandler: RouteHandler<typeof postPhonePlaybackRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

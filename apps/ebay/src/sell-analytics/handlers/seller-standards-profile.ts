@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSellerStandardsProfileProgramCycleRoute,
   getSellerStandardsProfileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSellerStandardsProfileRouteHandler: RouteHandler<
+  typeof getSellerStandardsProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sellerStandardsProfileHandler = app
-  .openapi(getSellerStandardsProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSellerStandardsProfileProgramCycleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSellerStandardsProfileProgramCycleRouteHandler: RouteHandler<
+  typeof getSellerStandardsProfileProgramCycleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

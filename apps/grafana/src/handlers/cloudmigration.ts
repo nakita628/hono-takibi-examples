@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCloudmigrationMigrationUidRoute,
   deleteCloudmigrationTokenUidRoute,
   getCloudmigrationMigrationRoute,
@@ -15,45 +15,80 @@ import {
   postCloudmigrationTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCloudmigrationMigrationRouteHandler: RouteHandler<
+  typeof getCloudmigrationMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cloudmigrationHandler = app
-  .openapi(getCloudmigrationMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCloudmigrationMigrationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCloudmigrationMigrationUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCloudmigrationMigrationUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCloudmigrationMigrationUidSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCloudmigrationMigrationUidSnapshotSnapshotUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCloudmigrationMigrationUidSnapshotSnapshotUidCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCloudmigrationMigrationUidSnapshotSnapshotUidUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCloudmigrationMigrationUidSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCloudmigrationResourcesDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCloudmigrationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCloudmigrationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCloudmigrationTokenUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCloudmigrationMigrationRouteHandler: RouteHandler<
+  typeof postCloudmigrationMigrationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCloudmigrationMigrationUidRouteHandler: RouteHandler<
+  typeof deleteCloudmigrationMigrationUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCloudmigrationMigrationUidRouteHandler: RouteHandler<
+  typeof getCloudmigrationMigrationUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCloudmigrationMigrationUidSnapshotRouteHandler: RouteHandler<
+  typeof postCloudmigrationMigrationUidSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCloudmigrationMigrationUidSnapshotSnapshotUidRouteHandler: RouteHandler<
+  typeof getCloudmigrationMigrationUidSnapshotSnapshotUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCloudmigrationMigrationUidSnapshotSnapshotUidCancelRouteHandler: RouteHandler<
+  typeof postCloudmigrationMigrationUidSnapshotSnapshotUidCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCloudmigrationMigrationUidSnapshotSnapshotUidUploadRouteHandler: RouteHandler<
+  typeof postCloudmigrationMigrationUidSnapshotSnapshotUidUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCloudmigrationMigrationUidSnapshotsRouteHandler: RouteHandler<
+  typeof getCloudmigrationMigrationUidSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCloudmigrationResourcesDependenciesRouteHandler: RouteHandler<
+  typeof getCloudmigrationResourcesDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCloudmigrationTokenRouteHandler: RouteHandler<
+  typeof getCloudmigrationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCloudmigrationTokenRouteHandler: RouteHandler<
+  typeof postCloudmigrationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCloudmigrationTokenUidRouteHandler: RouteHandler<
+  typeof deleteCloudmigrationTokenUidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

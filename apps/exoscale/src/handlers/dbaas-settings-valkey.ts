@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsValkeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsValkeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsValkeyHandler = app.openapi(getDbaasSettingsValkeyRoute, (c) => {
+export const getDbaasSettingsValkeyRouteHandler: RouteHandler<
+  typeof getDbaasSettingsValkeyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

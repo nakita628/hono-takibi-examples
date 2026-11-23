@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postConversationsCloseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postConversationsCloseRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const conversationsCloseHandler = app.openapi(postConversationsCloseRoute, (c) => {
+export const postConversationsCloseRouteHandler: RouteHandler<
+  typeof postConversationsCloseRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

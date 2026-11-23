@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDeleteIpamRoute, postActionDeleteIpamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDeleteIpamRoute, postActionDeleteIpamRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteIpamRouteHandler: RouteHandler<
+  typeof getActionDeleteIpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteIpamHandler = app
-  .openapi(getActionDeleteIpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteIpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteIpamRouteHandler: RouteHandler<
+  typeof postActionDeleteIpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

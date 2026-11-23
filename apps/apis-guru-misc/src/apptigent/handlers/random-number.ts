@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRandomNumberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRandomNumberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const randomNumberHandler = app.openapi(postRandomNumberRoute, (c) => {
+export const postRandomNumberRouteHandler: RouteHandler<typeof postRandomNumberRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/frauddetector/2019-11-15/openapi.yaml',
   output: './src/frauddetector/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/frauddetector/types.ts' },
   client: { output: './src/frauddetector/client.ts', baseUrl: '/' },
   rpc: { output: './src/frauddetector/rpc.ts', parseResponse: true },

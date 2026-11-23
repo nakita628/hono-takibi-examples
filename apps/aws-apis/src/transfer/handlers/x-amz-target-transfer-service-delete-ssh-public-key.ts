@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTransferServiceDeleteSshPublicKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTransferServiceDeleteSshPublicKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTransferServiceDeleteSshPublicKeyHandler = app.openapi(
-  postXAmzTargetTransferServiceDeleteSshPublicKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTransferServiceDeleteSshPublicKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetTransferServiceDeleteSshPublicKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

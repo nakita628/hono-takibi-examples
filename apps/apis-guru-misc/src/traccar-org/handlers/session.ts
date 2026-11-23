@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteSessionRoute, getSessionRoute, postSessionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteSessionRoute, getSessionRoute, postSessionRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSessionRouteHandler: RouteHandler<typeof deleteSessionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sessionHandler = app
-  .openapi(deleteSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSessionRouteHandler: RouteHandler<typeof getSessionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionRouteHandler: RouteHandler<typeof postSessionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

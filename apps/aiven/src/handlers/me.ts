@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMeAuthenticationMethodsUserAuthenticationMethodIdRoute,
   getMeAccountInvitesRoute,
   getMeAuthenticationMethodsRoute,
@@ -16,48 +16,74 @@ import {
   putMePasswordRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMePasswordStrengthRouteHandler: RouteHandler<
+  typeof postMePasswordStrengthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const meHandler = app
-  .openapi(postMePasswordStrengthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMe2faRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMe2faOtpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeAccountInvitesAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeAccountInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeAccountInvitesRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMeAuthenticationMethodsUserAuthenticationMethodIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeAuthenticationMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeExpireTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMeReferralValidationReferralCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putMe2faRouteHandler: RouteHandler<typeof putMe2faRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMe2faOtpRouteHandler: RouteHandler<typeof putMe2faOtpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeAccountInvitesAcceptRouteHandler: RouteHandler<
+  typeof postMeAccountInvitesAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeAccountInvitesRouteHandler: RouteHandler<
+  typeof getMeAccountInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeAccountInvitesRejectRouteHandler: RouteHandler<
+  typeof postMeAccountInvitesRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMeAuthenticationMethodsUserAuthenticationMethodIdRouteHandler: RouteHandler<
+  typeof deleteMeAuthenticationMethodsUserAuthenticationMethodIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeAuthenticationMethodsRouteHandler: RouteHandler<
+  typeof getMeAuthenticationMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeExpireTokensRouteHandler: RouteHandler<typeof postMeExpireTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeRouteHandler: RouteHandler<typeof getMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMeRouteHandler: RouteHandler<typeof patchMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMeLogoutRouteHandler: RouteHandler<typeof postMeLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMePasswordRouteHandler: RouteHandler<typeof putMePasswordRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMeReferralValidationReferralCodeRouteHandler: RouteHandler<
+  typeof getMeReferralValidationReferralCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

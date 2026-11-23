@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetEbsEncryptionByDefaultRoute,
   postActionGetEbsEncryptionByDefaultRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetEbsEncryptionByDefaultRouteHandler: RouteHandler<
+  typeof getActionGetEbsEncryptionByDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetEbsEncryptionByDefaultHandler = app
-  .openapi(getActionGetEbsEncryptionByDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetEbsEncryptionByDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetEbsEncryptionByDefaultRouteHandler: RouteHandler<
+  typeof postActionGetEbsEncryptionByDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateSpotDatafeedSubscriptionRoute,
   postActionCreateSpotDatafeedSubscriptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateSpotDatafeedSubscriptionRouteHandler: RouteHandler<
+  typeof getActionCreateSpotDatafeedSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateSpotDatafeedSubscriptionHandler = app
-  .openapi(getActionCreateSpotDatafeedSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateSpotDatafeedSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateSpotDatafeedSubscriptionRouteHandler: RouteHandler<
+  typeof postActionCreateSpotDatafeedSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

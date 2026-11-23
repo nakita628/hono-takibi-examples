@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAiGatewayBudgetsDefaultsRoute,
   deleteAiGatewayBudgetsRoute,
   deleteAiGatewayByokCredentialsCredentialIdRoute,
@@ -25,75 +25,140 @@ import {
   putAiGatewayBudgetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAiGatewayByokCredentialsRouteHandler: RouteHandler<
+  typeof postAiGatewayByokCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aiGatewayHandler = app
-  .openapi(postAiGatewayByokCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayByokCredentialsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayByokCredentialsCredentialIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAiGatewayByokCredentialsCredentialIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayByokCredentialsCredentialIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAiGatewayVirtualModelConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayVirtualModelConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAiGatewayVirtualModelConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayVirtualModelConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayVirtualModelConfigsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayVirtualModelConfigsVmcSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAiGatewayVirtualModelConfigsVmcSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayVirtualModelConfigsVmcSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAiGatewayRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAiGatewayRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayBudgetsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAiGatewayBudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayBudgetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAiGatewayBudgetsDefaultsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAiGatewayBudgetsDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAiGatewayBudgetsDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAiGatewayByokCredentialsListRouteHandler: RouteHandler<
+  typeof getAiGatewayByokCredentialsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayByokCredentialsCredentialIdRouteHandler: RouteHandler<
+  typeof getAiGatewayByokCredentialsCredentialIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAiGatewayByokCredentialsCredentialIdRouteHandler: RouteHandler<
+  typeof patchAiGatewayByokCredentialsCredentialIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayByokCredentialsCredentialIdRouteHandler: RouteHandler<
+  typeof deleteAiGatewayByokCredentialsCredentialIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAiGatewayVirtualModelConfigsRouteHandler: RouteHandler<
+  typeof postAiGatewayVirtualModelConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayVirtualModelConfigsRouteHandler: RouteHandler<
+  typeof getAiGatewayVirtualModelConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAiGatewayVirtualModelConfigsRouteHandler: RouteHandler<
+  typeof patchAiGatewayVirtualModelConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayVirtualModelConfigsRouteHandler: RouteHandler<
+  typeof deleteAiGatewayVirtualModelConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayVirtualModelConfigsListRouteHandler: RouteHandler<
+  typeof getAiGatewayVirtualModelConfigsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayVirtualModelConfigsVmcSlugRouteHandler: RouteHandler<
+  typeof getAiGatewayVirtualModelConfigsVmcSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAiGatewayVirtualModelConfigsVmcSlugRouteHandler: RouteHandler<
+  typeof patchAiGatewayVirtualModelConfigsVmcSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayVirtualModelConfigsVmcSlugRouteHandler: RouteHandler<
+  typeof deleteAiGatewayVirtualModelConfigsVmcSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAiGatewayRulesRouteHandler: RouteHandler<typeof postAiGatewayRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayRulesRouteHandler: RouteHandler<typeof getAiGatewayRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAiGatewayRulesRouteHandler: RouteHandler<
+  typeof patchAiGatewayRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayRulesRouteHandler: RouteHandler<
+  typeof deleteAiGatewayRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayBudgetsListRouteHandler: RouteHandler<
+  typeof getAiGatewayBudgetsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAiGatewayBudgetsRouteHandler: RouteHandler<
+  typeof putAiGatewayBudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayBudgetsRouteHandler: RouteHandler<
+  typeof deleteAiGatewayBudgetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAiGatewayBudgetsDefaultsListRouteHandler: RouteHandler<
+  typeof getAiGatewayBudgetsDefaultsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAiGatewayBudgetsDefaultsRouteHandler: RouteHandler<
+  typeof putAiGatewayBudgetsDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAiGatewayBudgetsDefaultsRouteHandler: RouteHandler<
+  typeof deleteAiGatewayBudgetsDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

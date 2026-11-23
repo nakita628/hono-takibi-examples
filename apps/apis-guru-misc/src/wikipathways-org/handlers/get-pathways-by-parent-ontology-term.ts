@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetPathwaysByParentOntologyTermRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetPathwaysByParentOntologyTermRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getPathwaysByParentOntologyTermHandler = app.openapi(
-  getGetPathwaysByParentOntologyTermRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getGetPathwaysByParentOntologyTermRouteHandler: RouteHandler<
+  typeof getGetPathwaysByParentOntologyTermRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getToolsRoute, postToolsInvokeRoute, postToolsSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getToolsRoute, postToolsInvokeRoute, postToolsSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getToolsRouteHandler: RouteHandler<typeof getToolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const toolsHandler = app
-  .openapi(getToolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolsInvokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postToolsSearchRouteHandler: RouteHandler<typeof postToolsSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolsInvokeRouteHandler: RouteHandler<typeof postToolsInvokeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

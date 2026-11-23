@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postCashflowReportGetRoute,
   postCashflowReportInsightsGetRoute,
   postCashflowReportRefreshRoute,
   postCashflowReportTransactionsGetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCashflowReportRefreshRouteHandler: RouteHandler<
+  typeof postCashflowReportRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cashflowReportHandler = app
-  .openapi(postCashflowReportRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCashflowReportGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCashflowReportTransactionsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCashflowReportInsightsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCashflowReportGetRouteHandler: RouteHandler<
+  typeof postCashflowReportGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCashflowReportTransactionsGetRouteHandler: RouteHandler<
+  typeof postCashflowReportTransactionsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCashflowReportInsightsGetRouteHandler: RouteHandler<
+  typeof postCashflowReportInsightsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

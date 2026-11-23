@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/kumpeapps.com/5.0.0/openapi.yaml',
   output: './src/kumpeapps/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kumpeapps/types.ts' },
   client: { output: './src/kumpeapps/client.ts', baseUrl: '/' },
   rpc: { output: './src/kumpeapps/rpc.ts', parseResponse: true },

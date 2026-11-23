@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSipRulesSipRuleIdRoute,
   getSipRulesRoute,
   getSipRulesSipRuleIdRoute,
@@ -7,21 +7,28 @@ import {
   putSipRulesSipRuleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSipRulesRouteHandler: RouteHandler<typeof postSipRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sipRulesHandler = app
-  .openapi(postSipRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSipRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSipRulesSipRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSipRulesSipRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSipRulesSipRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSipRulesRouteHandler: RouteHandler<typeof getSipRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSipRulesSipRuleIdRouteHandler: RouteHandler<
+  typeof deleteSipRulesSipRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSipRulesSipRuleIdRouteHandler: RouteHandler<
+  typeof getSipRulesSipRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSipRulesSipRuleIdRouteHandler: RouteHandler<
+  typeof putSipRulesSipRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

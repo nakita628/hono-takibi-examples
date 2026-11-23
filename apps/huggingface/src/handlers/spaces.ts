@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSpacesNamespaceRepoResolveRevPathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSpacesNamespaceRepoResolveRevPathRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const spacesHandler = app.openapi(getSpacesNamespaceRepoResolveRevPathRoute, (c) => {
+export const getSpacesNamespaceRepoResolveRevPathRouteHandler: RouteHandler<
+  typeof getSpacesNamespaceRepoResolveRevPathRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

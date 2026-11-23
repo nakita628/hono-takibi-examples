@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getScenariosItemTimingsRoute,
   getScenariosLaneRolesRoute,
   getScenariosMiscRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScenariosItemTimingsRouteHandler: RouteHandler<
+  typeof getScenariosItemTimingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scenariosHandler = app
-  .openapi(getScenariosItemTimingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScenariosLaneRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScenariosMiscRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScenariosLaneRolesRouteHandler: RouteHandler<
+  typeof getScenariosLaneRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScenariosMiscRouteHandler: RouteHandler<typeof getScenariosMiscRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

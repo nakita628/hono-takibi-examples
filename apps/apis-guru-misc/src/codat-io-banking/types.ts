@@ -1,13 +1,12 @@
+type AccountBalanceAccountBalanceAmounts = {
+  available?: (number | null) | undefined
+  current?: number | undefined
+  limit?: (number | null) | undefined
+}
 type DateTime = string
 type AccountBalance = {
   accountId?: string | undefined
-  balance?:
-    | {
-        available?: (number | null) | undefined
-        current?: number | undefined
-        limit?: (number | null) | undefined
-      }
-    | undefined
+  balance?: AccountBalanceAccountBalanceAmounts | undefined
   date?: DateTime | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
@@ -21,31 +20,33 @@ type AccountBalances = {
   pageSize: number
   totalResults: number
 }
+type AccountAccountIdentifierType =
+  | 'Account'
+  | 'Card'
+  | 'Credit'
+  | 'Depository'
+  | 'Investment'
+  | 'Loan'
+  | 'Other'
+type AccountAccountIdentifiers = {
+  bankCode?: (string | null) | undefined
+  bic?: (string | null) | undefined
+  iban?: (string | null) | undefined
+  maskedAccountNumber?: (string | null) | undefined
+  number?: (string | null) | undefined
+  subtype?: (string | null) | undefined
+  type: AccountAccountIdentifierType
+}
+type AccountAccountInstitution = { id?: string | undefined; name?: string | undefined }
 type AccountType = 'Unknown' | 'Credit' | 'Debit'
 type Account = {
-  balance?:
-    | {
-        available?: (number | null) | undefined
-        current?: number | undefined
-        limit?: (number | null) | undefined
-      }
-    | undefined
+  balance?: AccountBalanceAccountBalanceAmounts | undefined
   currency?: string | undefined
   holder?: (string | null) | undefined
   id?: string | undefined
-  identifiers?:
-    | {
-        bankCode?: (string | null) | undefined
-        bic?: (string | null) | undefined
-        iban?: (string | null) | undefined
-        maskedAccountNumber?: (string | null) | undefined
-        number?: (string | null) | undefined
-        subtype?: (string | null) | undefined
-        type: 'Account' | 'Card' | 'Credit' | 'Depository' | 'Investment' | 'Loan' | 'Other'
-      }
-    | undefined
+  identifiers?: AccountAccountIdentifiers | undefined
   informalName?: (string | null) | undefined
-  institution?: { id?: string | undefined; name?: string | undefined } | undefined
+  institution?: AccountAccountInstitution | undefined
   name?: string | undefined
   type?: AccountType | undefined
   modifiedDate?: DateTime | undefined
@@ -58,12 +59,13 @@ type Accounts = {
   pageSize: number
   totalResults: number
 }
+type TransactionCategoryTransactionCategoryStatus = 'Unknown' | 'Active' | 'Archived'
 type TransactionCategory = {
   hasChildren?: boolean | undefined
   id?: string | undefined
   name?: string | undefined
   parentId?: (string | null) | undefined
-  status?: 'Unknown' | 'Active' | 'Archived' | undefined
+  status?: TransactionCategoryTransactionCategoryStatus | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }
@@ -74,33 +76,34 @@ type TransactionCategories = {
   pageSize: number
   totalResults: number
 }
+type TransactionTransactionCode =
+  | 'Unknown'
+  | 'Fee'
+  | 'Payment'
+  | 'Cash'
+  | 'Transfer'
+  | 'Interest'
+  | 'Cashback'
+  | 'Cheque'
+  | 'DirectDebit'
+  | 'Purchase'
+  | 'StandingOrder'
+  | 'Adjustment'
+  | 'Credit'
+  | 'Other'
+  | 'NotSupported'
+type TransactionCategoryTransactionCategoryRef = { id: string; name?: (string | null) | undefined }
 type Transaction = {
   accountId?: string | undefined
   amount?: number | undefined
   authorizedDate?: DateTime | undefined
-  code?:
-    | 'Unknown'
-    | 'Fee'
-    | 'Payment'
-    | 'Cash'
-    | 'Transfer'
-    | 'Interest'
-    | 'Cashback'
-    | 'Cheque'
-    | 'DirectDebit'
-    | 'Purchase'
-    | 'StandingOrder'
-    | 'Adjustment'
-    | 'Credit'
-    | 'Other'
-    | 'NotSupported'
-    | undefined
+  code?: TransactionTransactionCode | undefined
   currency?: string | undefined
   description?: (string | null) | undefined
   id?: string | undefined
   merchantName?: (string | null) | undefined
   postedDate?: DateTime | undefined
-  transactionCategoryRef?: { id: string; name?: (string | null) | undefined } | undefined
+  transactionCategoryRef?: TransactionCategoryTransactionCategoryRef | undefined
   modifiedDate?: DateTime | undefined
   sourceModifiedDate?: DateTime | undefined
 }

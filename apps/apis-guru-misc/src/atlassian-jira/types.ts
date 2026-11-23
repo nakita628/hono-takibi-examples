@@ -6282,6 +6282,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { dashboardId: string; itemId: string; propertyKey: string } } & {
+              json: { [x: string]: unknown }
+            }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -6745,7 +6753,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string } } & { json: UpdateCustomFieldDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: UpdateCustomFieldDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: UpdateCustomFieldDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: UpdateCustomFieldDetails }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -6779,6 +6805,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 401
           }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                isAnyIssueType?: boolean | undefined
+                isGlobalContext?: boolean | undefined
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                isAnyIssueType?: boolean | undefined
+                isGlobalContext?: boolean | undefined
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $post:
         | {
             input: { param: { fieldId: string } } & { json: CreateCustomFieldContext }
@@ -6803,6 +6857,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: CreateCustomFieldContext }
+            output: {}
+            outputFormat: string
+            status: 409
           }
     }
   } & {
@@ -6832,6 +6892,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 401
           }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
       $put:
         | {
             input: { param: { fieldId: string } } & { json: CustomFieldContextDefaultValueUpdate }
@@ -6843,7 +6927,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string } } & { json: CustomFieldContextDefaultValueUpdate }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: CustomFieldContextDefaultValueUpdate }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: CustomFieldContextDefaultValueUpdate }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & { json: CustomFieldContextDefaultValueUpdate }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -6873,6 +6975,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 401
           }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/rest/api/3/field/:fieldId/context/mapping': {
@@ -6891,7 +7005,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             } & { json: ProjectIssueTypeMappings }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: { startAt?: bigint | undefined; maxResults?: number | undefined }
+            } & { json: ProjectIssueTypeMappings }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: { startAt?: bigint | undefined; maxResults?: number | undefined }
+            } & { json: ProjectIssueTypeMappings }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: { startAt?: bigint | undefined; maxResults?: number | undefined }
+            } & { json: ProjectIssueTypeMappings }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -6921,6 +7059,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 401
           }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string } } & {
+              query: {
+                contextId?: bigint[] | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/rest/api/3/field/:fieldId/context/:contextId': {
@@ -6935,7 +7097,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $put:
         | {
@@ -6952,7 +7132,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: CustomFieldContextUpdateDetails
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: CustomFieldContextUpdateDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: CustomFieldContextUpdateDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -6968,7 +7172,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 409
           }
     }
   } & {
@@ -6984,7 +7212,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7014,7 +7260,46 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              query: {
+                optionId?: bigint | undefined
+                onlyOptions?: boolean | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              query: {
+                optionId?: bigint | undefined
+                onlyOptions?: boolean | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              query: {
+                optionId?: bigint | undefined
+                onlyOptions?: boolean | undefined
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $post:
         | {
@@ -7031,7 +7316,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionCreateRequest
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionCreateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionCreateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $put:
         | {
@@ -7048,7 +7357,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionUpdateRequest
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionUpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: BulkCustomFieldOptionUpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7068,7 +7401,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: OrderOfCustomFieldOptions
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: OrderOfCustomFieldOptions
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & {
+              json: OrderOfCustomFieldOptions
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7084,7 +7441,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint; optionId: bigint } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint; optionId: bigint } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint; optionId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint; optionId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7100,7 +7475,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7116,7 +7509,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { fieldId: string; contextId: bigint } } & { json: ProjectIds }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7426,6 +7837,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { fieldKey: string; optionId: bigint } } & {
+              query: {
+                replaceWith?: bigint | undefined
+                jql?: string | undefined
+                overrideScreenSecurity?: boolean | undefined
+                overrideEditableFlag?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
           }
         | {
             input: { param: { fieldKey: string; optionId: bigint } } & {
@@ -7794,7 +8218,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: UpdateFieldConfigurationSchemeDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: UpdateFieldConfigurationSchemeDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: UpdateFieldConfigurationSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 403
           }
     }
   } & {
@@ -7923,7 +8359,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: FieldConfigurationSchemeProjectAssociation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: FieldConfigurationSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: FieldConfigurationSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: FieldConfigurationSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -7950,7 +8404,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { id: bigint } } & { json: UpdateFieldConfigurationSchemeDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: bigint } } & { json: UpdateFieldConfigurationSchemeDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { id: bigint } } & { json: UpdateFieldConfigurationSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { id: bigint } } & { json: UpdateFieldConfigurationSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -8659,6 +9131,36 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 401
+          }
+        | {
+            input: {
+              query: {
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+                groupId?: string[] | undefined
+                groupName?: string[] | undefined
+                accessType?: string | undefined
+                applicationKey?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: {
+              query: {
+                startAt?: bigint | undefined
+                maxResults?: number | undefined
+                groupId?: string[] | undefined
+                groupName?: string[] | undefined
+                accessType?: string | undefined
+                applicationKey?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -9998,6 +10500,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueIdOrKey: string } } & { json: RemoteIssueLinkRequest }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueIdOrKey: string } } & { json: RemoteIssueLinkRequest }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -10085,6 +10593,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { [x: string]: unknown }
             outputFormat: 'json'
             status: 204
+          }
+        | {
+            input: { param: { issueIdOrKey: string; linkId: string } } & {
+              json: RemoteIssueLinkRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 400
           }
         | {
             input: { param: { issueIdOrKey: string; linkId: string } } & {
@@ -11357,7 +11873,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 201
           }
+        | { input: { json: IssueTypeSchemeDetails }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: IssueTypeSchemeDetails }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: IssueTypeSchemeDetails }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: IssueTypeSchemeDetails }; output: {}; outputFormat: string; status: 409 }
     }
   } & {
     '/rest/api/3/issuetypescheme/mapping': {
@@ -11473,7 +11992,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: IssueTypeSchemeProjectAssociation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: IssueTypeSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: IssueTypeSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: IssueTypeSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11489,7 +12026,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeSchemeId: bigint } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $put:
         | {
@@ -11502,7 +12057,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeSchemeUpdateDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeSchemeUpdateDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeSchemeUpdateDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeSchemeUpdateDetails }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11518,7 +12091,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11534,7 +12125,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeSchemeId: bigint } } & { json: OrderOfIssueTypes }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: OrderOfIssueTypes }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: OrderOfIssueTypes }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint } } & { json: OrderOfIssueTypes }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11550,7 +12159,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeSchemeId: bigint; issueTypeId: bigint } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint; issueTypeId: bigint } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint; issueTypeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeSchemeId: bigint; issueTypeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11627,7 +12254,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: IssueTypeScreenSchemeDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 409
           }
     }
   } & {
@@ -11744,7 +12395,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: IssueTypeScreenSchemeProjectAssociation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: IssueTypeScreenSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11760,6 +12429,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeScreenSchemeId: string } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -11767,6 +12442,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $put:
         | {
@@ -11783,7 +12464,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeUpdateDetails
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeUpdateDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeUpdateDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11803,6 +12508,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeMappingDetails
+            }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -11812,6 +12525,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeMappingDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: IssueTypeScreenSchemeMappingDetails
+            }
+            output: {}
+            outputFormat: string
+            status: 409
           }
     }
   } & {
@@ -11831,7 +12560,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: UpdateDefaultScreenScheme
+            }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: UpdateDefaultScreenScheme
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & {
+              json: UpdateDefaultScreenScheme
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -11847,7 +12600,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { issueTypeScreenSchemeId: string } } & { json: IssueTypeIds }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { issueTypeScreenSchemeId: string } } & { json: IssueTypeIds }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -12287,6 +13058,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: {
+              query: {
+                startAt?: string | undefined
+                maxResults?: string | undefined
+                id?: string[] | undefined
+                projectId?: string[] | undefined
+                onlyDefault?: boolean | undefined
+                expand?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
             status: 401
           }
       $post:
@@ -12557,6 +13343,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
+        | { input: { json: PermissionsKeysBean }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: PermissionsKeysBean }; output: {}; outputFormat: string; status: 401 }
     }
   } & {
@@ -15116,7 +15903,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | { input: { json: ScreenDetails }; output: Screen; outputFormat: 'json'; status: 201 }
+        | { input: { json: ScreenDetails }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: ScreenDetails }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ScreenDetails }; output: {}; outputFormat: string; status: 403 }
     }
   } & {
     '/rest/api/3/screens/addToDefault/:fieldId': {
@@ -15135,7 +15924,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/rest/api/3/screens/:screenId': {
       $delete:
         | { input: { param: { screenId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { screenId: bigint } }; output: {}; outputFormat: string; status: 400 }
         | { input: { param: { screenId: bigint } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { screenId: bigint } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { screenId: bigint } }; output: {}; outputFormat: string; status: 404 }
       $put:
         | {
             input: { param: { screenId: bigint } } & { json: UpdateScreenDetails }
@@ -15147,7 +15939,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { screenId: bigint } } & { json: UpdateScreenDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { screenId: bigint } } & { json: UpdateScreenDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { screenId: bigint } } & { json: UpdateScreenDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { screenId: bigint } } & { json: UpdateScreenDetails }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -15521,7 +16331,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 201
           }
+        | { input: { json: ScreenSchemeDetails }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: ScreenSchemeDetails }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ScreenSchemeDetails }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: ScreenSchemeDetails }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/rest/api/3/screenscheme/:screenSchemeId': {
@@ -15536,7 +16349,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { screenSchemeId: string } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { screenSchemeId: string } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { screenSchemeId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { screenSchemeId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
       $put:
         | {
@@ -15549,7 +16380,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { screenSchemeId: string } } & { json: UpdateScreenSchemeDetails }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { screenSchemeId: string } } & { json: UpdateScreenSchemeDetails }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { param: { screenSchemeId: string } } & { json: UpdateScreenSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { screenSchemeId: string } } & { json: UpdateScreenSchemeDetails }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -15701,6 +16550,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { id?: string[] | undefined } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { id?: string[] | undefined } }
+            output: {}
+            outputFormat: string
             status: 401
           }
       $get:
@@ -15729,6 +16584,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
+        | { input: { json: StatusCreateRequest }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: StatusCreateRequest }; output: {}; outputFormat: string; status: 401 }
       $put:
         | {
@@ -15737,6 +16593,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 204
           }
+        | { input: { json: StatusUpdateRequest }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: StatusUpdateRequest }; output: {}; outputFormat: string; status: 401 }
     }
   } & {
@@ -17874,7 +18731,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 201
           }
+        | { input: { json: CreateWorkflowDetails }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: CreateWorkflowDetails }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: CreateWorkflowDetails }; output: {}; outputFormat: string; status: 403 }
+        | { input: { json: CreateWorkflowDetails }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/rest/api/3/workflow/rule/config': {
@@ -18351,7 +19211,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/rest/api/3/workflow/:entityId': {
       $delete:
         | { input: { param: { entityId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { entityId: string } }; output: {}; outputFormat: string; status: 400 }
         | { input: { param: { entityId: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { entityId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { entityId: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/rest/api/3/workflowscheme': {
@@ -18398,7 +19261,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { projectId: bigint[] } }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { query: { projectId: bigint[] } }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { query: { projectId: bigint[] } }
+            output: {}
+            outputFormat: string
+            status: 403
           }
       $put:
         | {
@@ -18411,7 +19286,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { json: WorkflowSchemeProjectAssociation }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: WorkflowSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
             status: 401
+          }
+        | {
+            input: { json: WorkflowSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { json: WorkflowSchemeProjectAssociation }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {
@@ -18825,6 +19718,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { validateOnly?: boolean | undefined } } & {
+              json: PublishDraftWorkflowScheme
+            }
+            output: {}
+            outputFormat: string
             status: 401
           }
         | {
@@ -18834,6 +19735,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 403
+          }
+        | {
+            input: { param: { id: bigint } } & { query: { validateOnly?: boolean | undefined } } & {
+              json: PublishDraftWorkflowScheme
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
     }
   } & {

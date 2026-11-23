@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOpsWorks20130218CreateUserProfileRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOpsWorks20130218CreateUserProfileRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOpsWorks20130218CreateUserProfileHandler = app.openapi(
-  postXAmzTargetOpsWorks20130218CreateUserProfileRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOpsWorks20130218CreateUserProfileRouteHandler: RouteHandler<
+  typeof postXAmzTargetOpsWorks20130218CreateUserProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

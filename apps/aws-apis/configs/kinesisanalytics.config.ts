@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/kinesisanalytics/2015-08-14/openapi.yaml',
   output: './src/kinesisanalytics/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kinesisanalytics/types.ts' },
   client: { output: './src/kinesisanalytics/client.ts', baseUrl: '/' },
   rpc: { output: './src/kinesisanalytics/rpc.ts', parseResponse: true },

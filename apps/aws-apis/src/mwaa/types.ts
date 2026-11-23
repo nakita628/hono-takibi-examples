@@ -1,10 +1,7 @@
 type CreateCliTokenResponse = { CliToken?: {} | undefined; WebServerHostname?: {} | undefined }
-type ResourceNotFoundException = { [x: string]: unknown }
 type ConfigValue = string
 type TagValue = string
 type CreateEnvironmentOutput = { Arn?: {} | undefined }
-type ValidationException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type DeleteEnvironmentOutput = { [x: string]: unknown }
 type GetEnvironmentOutput = {
   Environment?:
@@ -89,7 +86,6 @@ type GetEnvironmentOutput = {
 }
 type UpdateEnvironmentOutput = { Arn?: {} | undefined }
 type CreateWebLoginTokenResponse = { WebServerHostname?: {} | undefined; WebToken?: {} | undefined }
-type AccessDeniedException = { [x: string]: unknown }
 type ListEnvironmentsOutput = { Environments: {}; NextToken?: {} | undefined }
 type ListTagsForResourceOutput = { Tags?: {} | undefined }
 type TagResourceOutput = { [x: string]: unknown }
@@ -115,906 +111,262 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/clitoken/:Name': {
-      $post:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateCliTokenResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: CreateCliTokenResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/environments/:Name': {
-      $put:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path: string
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn: string
-                KmsKey?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration: {
-                  SecurityGroupIds?: {} | undefined
-                  SubnetIds?: {} | undefined
+      $put: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        } & {
+          json: {
+            AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
+            AirflowVersion?: string | undefined
+            DagS3Path: string
+            EnvironmentClass?: string | undefined
+            ExecutionRoleArn: string
+            KmsKey?: string | undefined
+            LoggingConfiguration?:
+              | {
+                  DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
                 }
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn: string
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: CreateEnvironmentOutput
-            outputFormat: 'json'
-            status: 200
+              | undefined
+            MaxWorkers?: number | undefined
+            MinWorkers?: number | undefined
+            NetworkConfiguration: { SecurityGroupIds?: {} | undefined; SubnetIds?: {} | undefined }
+            PluginsS3ObjectVersion?: string | undefined
+            PluginsS3Path?: string | undefined
+            RequirementsS3ObjectVersion?: string | undefined
+            RequirementsS3Path?: string | undefined
+            Schedulers?: number | undefined
+            SourceBucketArn: string
+            StartupScriptS3ObjectVersion?: string | undefined
+            StartupScriptS3Path?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
+            WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
+            WeeklyMaintenanceWindowStart?: string | undefined
           }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path: string
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn: string
-                KmsKey?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration: {
-                  SecurityGroupIds?: {} | undefined
-                  SubnetIds?: {} | undefined
+        }
+        output: CreateEnvironmentOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        }
+        output: DeleteEnvironmentOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        }
+        output: GetEnvironmentOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        } & {
+          json: {
+            AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
+            AirflowVersion?: string | undefined
+            DagS3Path?: string | undefined
+            EnvironmentClass?: string | undefined
+            ExecutionRoleArn?: string | undefined
+            LoggingConfiguration?:
+              | {
+                  DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
+                  WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
                 }
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn: string
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+              | undefined
+            MaxWorkers?: number | undefined
+            MinWorkers?: number | undefined
+            NetworkConfiguration?: { SecurityGroupIds?: {} | undefined } | undefined
+            PluginsS3ObjectVersion?: string | undefined
+            PluginsS3Path?: string | undefined
+            RequirementsS3ObjectVersion?: string | undefined
+            RequirementsS3Path?: string | undefined
+            Schedulers?: number | undefined
+            SourceBucketArn?: string | undefined
+            StartupScriptS3ObjectVersion?: string | undefined
+            StartupScriptS3Path?: string | undefined
+            WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
+            WeeklyMaintenanceWindowStart?: string | undefined
           }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path: string
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn: string
-                KmsKey?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration: {
-                  SecurityGroupIds?: {} | undefined
-                  SubnetIds?: {} | undefined
-                }
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn: string
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-      $delete:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteEnvironmentOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-      $get:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetEnvironmentOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-      $patch:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path?: string | undefined
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration?: { SecurityGroupIds?: {} | undefined } | undefined
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn?: string | undefined
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: UpdateEnvironmentOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path?: string | undefined
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration?: { SecurityGroupIds?: {} | undefined } | undefined
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn?: string | undefined
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path?: string | undefined
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration?: { SecurityGroupIds?: {} | undefined } | undefined
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn?: string | undefined
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AirflowConfigurationOptions?: { [x: string]: ConfigValue } | undefined
-                AirflowVersion?: string | undefined
-                DagS3Path?: string | undefined
-                EnvironmentClass?: string | undefined
-                ExecutionRoleArn?: string | undefined
-                LoggingConfiguration?:
-                  | {
-                      DagProcessingLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      SchedulerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      TaskLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WebserverLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                      WorkerLogs?: { Enabled: {}; LogLevel: {} } | undefined
-                    }
-                  | undefined
-                MaxWorkers?: number | undefined
-                MinWorkers?: number | undefined
-                NetworkConfiguration?: { SecurityGroupIds?: {} | undefined } | undefined
-                PluginsS3ObjectVersion?: string | undefined
-                PluginsS3Path?: string | undefined
-                RequirementsS3ObjectVersion?: string | undefined
-                RequirementsS3Path?: string | undefined
-                Schedulers?: number | undefined
-                SourceBucketArn?: string | undefined
-                StartupScriptS3ObjectVersion?: string | undefined
-                StartupScriptS3Path?: string | undefined
-                WebserverAccessMode?: 'PRIVATE_ONLY' | 'PUBLIC_ONLY' | undefined
-                WeeklyMaintenanceWindowStart?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UpdateEnvironmentOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/webtoken/:Name': {
-      $post:
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateWebLoginTokenResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { Name: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { Name: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: CreateWebLoginTokenResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/environments': {
-      $get:
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListEnvironmentsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { query: { MaxResults?: number | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListEnvironmentsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:ResourceArn': {
-      $get:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: TagResourceOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { Tags: { [x: string]: TagValue } } }
+        output: TagResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/metrics/environments/:EnvironmentName': {
-      $post:
-        | {
-            input: { param: { EnvironmentName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricData: MetricDatum[] } }
-            output: PublishMetricsOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { EnvironmentName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { EnvironmentName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricData: MetricDatum[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { EnvironmentName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricData: MetricDatum[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { MetricData: MetricDatum[] } }
+        output: PublishMetricsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:ResourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

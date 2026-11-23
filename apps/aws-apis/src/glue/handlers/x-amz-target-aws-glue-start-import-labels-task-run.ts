@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueStartImportLabelsTaskRunHandler = app.openapi(
-  postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueStartImportLabelsTaskRunRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

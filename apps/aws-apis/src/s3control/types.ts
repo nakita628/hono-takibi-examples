@@ -35,8 +35,6 @@ type GetAccessPointForObjectLambdaResult = {
   Alias?: { Value?: {} | undefined; Status?: {} | undefined } | undefined
 }
 type CreateBucketResult = { BucketArn?: {} | undefined }
-type BucketAlreadyExists = { [x: string]: unknown }
-type BucketAlreadyOwnedByYou = { [x: string]: unknown }
 type S3SetObjectLegalHoldOperation = { LegalHold: { Status: {} } }
 type S3SetObjectRetentionOperation = {
   BypassGovernanceRetention?: {} | undefined
@@ -44,10 +42,6 @@ type S3SetObjectRetentionOperation = {
 }
 type S3Tag = { Key: {}; Value: {} }
 type CreateJobResult = { JobId?: {} | undefined }
-type TooManyRequestsException = { [x: string]: unknown }
-type BadRequestException = { [x: string]: unknown }
-type IdempotencyException = { [x: string]: unknown }
-type InternalServiceException = { [x: string]: unknown }
 type JobStatus =
   | 'Active'
   | 'Cancelled'
@@ -63,8 +57,6 @@ type JobStatus =
   | 'Ready'
   | 'Suspended'
 type ListJobsResult = { NextToken?: {} | undefined; Jobs?: {} | undefined }
-type InvalidRequestException = { [x: string]: unknown }
-type InvalidNextTokenException = { [x: string]: unknown }
 type CreateMultiRegionAccessPointResult = { RequestTokenARN?: {} | undefined }
 type GetAccessPointPolicyResult = { Policy?: {} | undefined }
 type GetAccessPointPolicyForObjectLambdaResult = { Policy?: {} | undefined }
@@ -78,10 +70,8 @@ type GetBucketPolicyResult = { Policy?: {} | undefined }
 type GetBucketReplicationResult = { ReplicationConfiguration?: { Role: {}; Rules: {} } | undefined }
 type GetBucketTaggingResult = { TagSet: {} }
 type DeleteJobTaggingResult = { [x: string]: unknown }
-type NotFoundException = { [x: string]: unknown }
 type GetJobTaggingResult = { Tags?: {} | undefined }
 type PutJobTaggingResult = { [x: string]: unknown }
-type TooManyTagsException = { [x: string]: unknown }
 type DeleteMultiRegionAccessPointResult = { RequestTokenARN?: {} | undefined }
 type GetPublicAccessBlockOutput = {
   PublicAccessBlockConfiguration?:
@@ -93,7 +83,6 @@ type GetPublicAccessBlockOutput = {
       }
     | undefined
 }
-type NoSuchPublicAccessBlockConfiguration = { [x: string]: unknown }
 type SelectionCriteria = {
   Delimiter?: {} | undefined
   MaxDepth?: {} | undefined
@@ -385,7 +374,6 @@ type UpdateJobStatusResult = {
   Status?: {} | undefined
   StatusUpdateReason?: {} | undefined
 }
-type JobStatusException = { [x: string]: unknown }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
@@ -521,876 +509,198 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v20180820/bucket/:name': {
-      $put:
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-outpost-id'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: CreateBucketResult
-            outputFormat: 'text'
-            status: 200
+      $put: {
+        input: { param: { name: string } } & {
+          header: {
+            'x-amz-acl'?:
+              | 'private'
+              | 'public-read'
+              | 'public-read-write'
+              | 'authenticated-read'
+              | undefined
+            'x-amz-grant-full-control'?: string | undefined
+            'x-amz-grant-read'?: string | undefined
+            'x-amz-grant-read-acp'?: string | undefined
+            'x-amz-grant-write'?: string | undefined
+            'x-amz-grant-write-acp'?: string | undefined
+            'x-amz-bucket-object-lock-enabled'?: boolean | undefined
+            'x-amz-outpost-id'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-outpost-id'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: BucketAlreadyExists
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { name: string } } & {
-              header: {
-                'x-amz-acl'?:
-                  | 'private'
-                  | 'public-read'
-                  | 'public-read-write'
-                  | 'authenticated-read'
-                  | undefined
-                'x-amz-grant-full-control'?: string | undefined
-                'x-amz-grant-read'?: string | undefined
-                'x-amz-grant-read-acp'?: string | undefined
-                'x-amz-grant-write'?: string | undefined
-                'x-amz-grant-write-acp'?: string | undefined
-                'x-amz-bucket-object-lock-enabled'?: boolean | undefined
-                'x-amz-outpost-id'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined
-              }
-            }
-            output: BucketAlreadyOwnedByYou
-            outputFormat: 'text'
-            status: 481
-          }
+        } & {
+          json: { CreateBucketConfiguration?: { LocationConstraint?: {} | undefined } | undefined }
+        }
+        output: CreateBucketResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/v20180820/jobs#x-amz-account-id': {
-      $post:
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConfirmationRequired?: boolean | undefined
-                Operation: {
-                  LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
-                  S3PutObjectCopy?:
-                    | {
-                        TargetResource?: {} | undefined
-                        CannedAccessControlList?: {} | undefined
-                        AccessControlGrants?: {} | undefined
-                        MetadataDirective?: {} | undefined
-                        ModifiedSinceConstraint?: {} | undefined
-                        NewObjectMetadata?:
-                          | {
-                              CacheControl?: {} | undefined
-                              ContentDisposition?: {} | undefined
-                              ContentEncoding?: {} | undefined
-                              ContentLanguage?: {} | undefined
-                              UserMetadata?: {} | undefined
-                              ContentLength?: {} | undefined
-                              ContentMD5?: {} | undefined
-                              ContentType?: {} | undefined
-                              HttpExpiresDate?: {} | undefined
-                              RequesterCharged?: {} | undefined
-                              SSEAlgorithm?: {} | undefined
-                            }
-                          | undefined
-                        NewObjectTagging?: {} | undefined
-                        RedirectLocation?: {} | undefined
-                        RequesterPays?: {} | undefined
-                        StorageClass?: {} | undefined
-                        UnModifiedSinceConstraint?: {} | undefined
-                        SSEAwsKmsKeyId?: {} | undefined
-                        TargetKeyPrefix?: {} | undefined
-                        ObjectLockLegalHoldStatus?: {} | undefined
-                        ObjectLockMode?: {} | undefined
-                        ObjectLockRetainUntilDate?: {} | undefined
-                        BucketKeyEnabled?: {} | undefined
-                        ChecksumAlgorithm?: {} | undefined
-                      }
+      $post: {
+        input: {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
+          }
+        } & {
+          json: {
+            ConfirmationRequired?: boolean | undefined
+            Operation: {
+              LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
+              S3PutObjectCopy?:
+                | {
+                    TargetResource?: {} | undefined
+                    CannedAccessControlList?: {} | undefined
+                    AccessControlGrants?: {} | undefined
+                    MetadataDirective?: {} | undefined
+                    ModifiedSinceConstraint?: {} | undefined
+                    NewObjectMetadata?:
+                      | {
+                          CacheControl?: {} | undefined
+                          ContentDisposition?: {} | undefined
+                          ContentEncoding?: {} | undefined
+                          ContentLanguage?: {} | undefined
+                          UserMetadata?: {} | undefined
+                          ContentLength?: {} | undefined
+                          ContentMD5?: {} | undefined
+                          ContentType?: {} | undefined
+                          HttpExpiresDate?: {} | undefined
+                          RequesterCharged?: {} | undefined
+                          SSEAlgorithm?: {} | undefined
+                        }
+                      | undefined
+                    NewObjectTagging?: {} | undefined
+                    RedirectLocation?: {} | undefined
+                    RequesterPays?: {} | undefined
+                    StorageClass?: {} | undefined
+                    UnModifiedSinceConstraint?: {} | undefined
+                    SSEAwsKmsKeyId?: {} | undefined
+                    TargetKeyPrefix?: {} | undefined
+                    ObjectLockLegalHoldStatus?: {} | undefined
+                    ObjectLockMode?: {} | undefined
+                    ObjectLockRetainUntilDate?: {} | undefined
+                    BucketKeyEnabled?: {} | undefined
+                    ChecksumAlgorithm?: {} | undefined
+                  }
+                | undefined
+              S3PutObjectAcl?:
+                | {
+                    AccessControlPolicy?:
+                      | {
+                          AccessControlList?:
+                            | {
+                                Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
+                                Grants?: {} | undefined
+                              }
+                            | undefined
+                          CannedAccessControlList?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
+              S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
+              S3DeleteObjectTagging?: {} | undefined
+              S3InitiateRestoreObject?:
+                | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
+                | undefined
+              S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
+              S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
+              S3ReplicateObject?: {} | undefined
+            }
+            Report: {
+              Bucket?: {} | undefined
+              Format?: {} | undefined
+              Enabled?: {} | undefined
+              Prefix?: {} | undefined
+              ReportScope?: {} | undefined
+            }
+            ClientRequestToken: string
+            Manifest?:
+              | {
+                  Spec?: { Format: {}; Fields?: {} | undefined } | undefined
+                  Location?:
+                    | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
                     | undefined
-                  S3PutObjectAcl?:
+                }
+              | undefined
+            Description?: string | undefined
+            Priority: number
+            RoleArn: string
+            Tags?: S3Tag[] | undefined
+            ManifestGenerator?:
+              | {
+                  S3JobManifestGenerator?:
                     | {
-                        AccessControlPolicy?:
+                        ExpectedBucketOwner?: {} | undefined
+                        SourceBucket: {}
+                        ManifestOutputLocation?:
                           | {
-                              AccessControlList?:
-                                | {
-                                    Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
-                                    Grants?: {} | undefined
-                                  }
+                              ExpectedManifestBucketOwner?: {} | undefined
+                              Bucket: {}
+                              ManifestPrefix?: {} | undefined
+                              ManifestEncryption?:
+                                | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
                                 | undefined
-                              CannedAccessControlList?: {} | undefined
+                              ManifestFormat: {}
                             }
                           | undefined
-                      }
-                    | undefined
-                  S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
-                  S3DeleteObjectTagging?: {} | undefined
-                  S3InitiateRestoreObject?:
-                    | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
-                    | undefined
-                  S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
-                  S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
-                  S3ReplicateObject?: {} | undefined
-                }
-                Report: {
-                  Bucket?: {} | undefined
-                  Format?: {} | undefined
-                  Enabled?: {} | undefined
-                  Prefix?: {} | undefined
-                  ReportScope?: {} | undefined
-                }
-                ClientRequestToken: string
-                Manifest?:
-                  | {
-                      Spec?: { Format: {}; Fields?: {} | undefined } | undefined
-                      Location?:
-                        | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
-                        | undefined
-                    }
-                  | undefined
-                Description?: string | undefined
-                Priority: number
-                RoleArn: string
-                Tags?: S3Tag[] | undefined
-                ManifestGenerator?:
-                  | {
-                      S3JobManifestGenerator?:
-                        | {
-                            ExpectedBucketOwner?: {} | undefined
-                            SourceBucket: {}
-                            ManifestOutputLocation?:
-                              | {
-                                  ExpectedManifestBucketOwner?: {} | undefined
-                                  Bucket: {}
-                                  ManifestPrefix?: {} | undefined
-                                  ManifestEncryption?:
-                                    | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
-                                    | undefined
-                                  ManifestFormat: {}
-                                }
-                              | undefined
-                            Filter?:
-                              | {
-                                  EligibleForReplication?: {} | undefined
-                                  CreatedAfter?: {} | undefined
-                                  CreatedBefore?: {} | undefined
-                                  ObjectReplicationStatuses?: {} | undefined
-                                }
-                              | undefined
-                            EnableManifestOutput: {}
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: CreateJobResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConfirmationRequired?: boolean | undefined
-                Operation: {
-                  LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
-                  S3PutObjectCopy?:
-                    | {
-                        TargetResource?: {} | undefined
-                        CannedAccessControlList?: {} | undefined
-                        AccessControlGrants?: {} | undefined
-                        MetadataDirective?: {} | undefined
-                        ModifiedSinceConstraint?: {} | undefined
-                        NewObjectMetadata?:
+                        Filter?:
                           | {
-                              CacheControl?: {} | undefined
-                              ContentDisposition?: {} | undefined
-                              ContentEncoding?: {} | undefined
-                              ContentLanguage?: {} | undefined
-                              UserMetadata?: {} | undefined
-                              ContentLength?: {} | undefined
-                              ContentMD5?: {} | undefined
-                              ContentType?: {} | undefined
-                              HttpExpiresDate?: {} | undefined
-                              RequesterCharged?: {} | undefined
-                              SSEAlgorithm?: {} | undefined
+                              EligibleForReplication?: {} | undefined
+                              CreatedAfter?: {} | undefined
+                              CreatedBefore?: {} | undefined
+                              ObjectReplicationStatuses?: {} | undefined
                             }
                           | undefined
-                        NewObjectTagging?: {} | undefined
-                        RedirectLocation?: {} | undefined
-                        RequesterPays?: {} | undefined
-                        StorageClass?: {} | undefined
-                        UnModifiedSinceConstraint?: {} | undefined
-                        SSEAwsKmsKeyId?: {} | undefined
-                        TargetKeyPrefix?: {} | undefined
-                        ObjectLockLegalHoldStatus?: {} | undefined
-                        ObjectLockMode?: {} | undefined
-                        ObjectLockRetainUntilDate?: {} | undefined
-                        BucketKeyEnabled?: {} | undefined
-                        ChecksumAlgorithm?: {} | undefined
+                        EnableManifestOutput: {}
                       }
                     | undefined
-                  S3PutObjectAcl?:
-                    | {
-                        AccessControlPolicy?:
-                          | {
-                              AccessControlList?:
-                                | {
-                                    Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
-                                    Grants?: {} | undefined
-                                  }
-                                | undefined
-                              CannedAccessControlList?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
-                  S3DeleteObjectTagging?: {} | undefined
-                  S3InitiateRestoreObject?:
-                    | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
-                    | undefined
-                  S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
-                  S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
-                  S3ReplicateObject?: {} | undefined
                 }
-                Report: {
-                  Bucket?: {} | undefined
-                  Format?: {} | undefined
-                  Enabled?: {} | undefined
-                  Prefix?: {} | undefined
-                  ReportScope?: {} | undefined
-                }
-                ClientRequestToken: string
-                Manifest?:
-                  | {
-                      Spec?: { Format: {}; Fields?: {} | undefined } | undefined
-                      Location?:
-                        | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
-                        | undefined
-                    }
-                  | undefined
-                Description?: string | undefined
-                Priority: number
-                RoleArn: string
-                Tags?: S3Tag[] | undefined
-                ManifestGenerator?:
-                  | {
-                      S3JobManifestGenerator?:
-                        | {
-                            ExpectedBucketOwner?: {} | undefined
-                            SourceBucket: {}
-                            ManifestOutputLocation?:
-                              | {
-                                  ExpectedManifestBucketOwner?: {} | undefined
-                                  Bucket: {}
-                                  ManifestPrefix?: {} | undefined
-                                  ManifestEncryption?:
-                                    | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
-                                    | undefined
-                                  ManifestFormat: {}
-                                }
-                              | undefined
-                            Filter?:
-                              | {
-                                  EligibleForReplication?: {} | undefined
-                                  CreatedAfter?: {} | undefined
-                                  CreatedBefore?: {} | undefined
-                                  ObjectReplicationStatuses?: {} | undefined
-                                }
-                              | undefined
-                            EnableManifestOutput: {}
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 480
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConfirmationRequired?: boolean | undefined
-                Operation: {
-                  LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
-                  S3PutObjectCopy?:
-                    | {
-                        TargetResource?: {} | undefined
-                        CannedAccessControlList?: {} | undefined
-                        AccessControlGrants?: {} | undefined
-                        MetadataDirective?: {} | undefined
-                        ModifiedSinceConstraint?: {} | undefined
-                        NewObjectMetadata?:
-                          | {
-                              CacheControl?: {} | undefined
-                              ContentDisposition?: {} | undefined
-                              ContentEncoding?: {} | undefined
-                              ContentLanguage?: {} | undefined
-                              UserMetadata?: {} | undefined
-                              ContentLength?: {} | undefined
-                              ContentMD5?: {} | undefined
-                              ContentType?: {} | undefined
-                              HttpExpiresDate?: {} | undefined
-                              RequesterCharged?: {} | undefined
-                              SSEAlgorithm?: {} | undefined
-                            }
-                          | undefined
-                        NewObjectTagging?: {} | undefined
-                        RedirectLocation?: {} | undefined
-                        RequesterPays?: {} | undefined
-                        StorageClass?: {} | undefined
-                        UnModifiedSinceConstraint?: {} | undefined
-                        SSEAwsKmsKeyId?: {} | undefined
-                        TargetKeyPrefix?: {} | undefined
-                        ObjectLockLegalHoldStatus?: {} | undefined
-                        ObjectLockMode?: {} | undefined
-                        ObjectLockRetainUntilDate?: {} | undefined
-                        BucketKeyEnabled?: {} | undefined
-                        ChecksumAlgorithm?: {} | undefined
-                      }
-                    | undefined
-                  S3PutObjectAcl?:
-                    | {
-                        AccessControlPolicy?:
-                          | {
-                              AccessControlList?:
-                                | {
-                                    Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
-                                    Grants?: {} | undefined
-                                  }
-                                | undefined
-                              CannedAccessControlList?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
-                  S3DeleteObjectTagging?: {} | undefined
-                  S3InitiateRestoreObject?:
-                    | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
-                    | undefined
-                  S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
-                  S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
-                  S3ReplicateObject?: {} | undefined
-                }
-                Report: {
-                  Bucket?: {} | undefined
-                  Format?: {} | undefined
-                  Enabled?: {} | undefined
-                  Prefix?: {} | undefined
-                  ReportScope?: {} | undefined
-                }
-                ClientRequestToken: string
-                Manifest?:
-                  | {
-                      Spec?: { Format: {}; Fields?: {} | undefined } | undefined
-                      Location?:
-                        | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
-                        | undefined
-                    }
-                  | undefined
-                Description?: string | undefined
-                Priority: number
-                RoleArn: string
-                Tags?: S3Tag[] | undefined
-                ManifestGenerator?:
-                  | {
-                      S3JobManifestGenerator?:
-                        | {
-                            ExpectedBucketOwner?: {} | undefined
-                            SourceBucket: {}
-                            ManifestOutputLocation?:
-                              | {
-                                  ExpectedManifestBucketOwner?: {} | undefined
-                                  Bucket: {}
-                                  ManifestPrefix?: {} | undefined
-                                  ManifestEncryption?:
-                                    | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
-                                    | undefined
-                                  ManifestFormat: {}
-                                }
-                              | undefined
-                            Filter?:
-                              | {
-                                  EligibleForReplication?: {} | undefined
-                                  CreatedAfter?: {} | undefined
-                                  CreatedBefore?: {} | undefined
-                                  ObjectReplicationStatuses?: {} | undefined
-                                }
-                              | undefined
-                            EnableManifestOutput: {}
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateJobResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            jobStatuses?: JobStatus[] | undefined
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConfirmationRequired?: boolean | undefined
-                Operation: {
-                  LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
-                  S3PutObjectCopy?:
-                    | {
-                        TargetResource?: {} | undefined
-                        CannedAccessControlList?: {} | undefined
-                        AccessControlGrants?: {} | undefined
-                        MetadataDirective?: {} | undefined
-                        ModifiedSinceConstraint?: {} | undefined
-                        NewObjectMetadata?:
-                          | {
-                              CacheControl?: {} | undefined
-                              ContentDisposition?: {} | undefined
-                              ContentEncoding?: {} | undefined
-                              ContentLanguage?: {} | undefined
-                              UserMetadata?: {} | undefined
-                              ContentLength?: {} | undefined
-                              ContentMD5?: {} | undefined
-                              ContentType?: {} | undefined
-                              HttpExpiresDate?: {} | undefined
-                              RequesterCharged?: {} | undefined
-                              SSEAlgorithm?: {} | undefined
-                            }
-                          | undefined
-                        NewObjectTagging?: {} | undefined
-                        RedirectLocation?: {} | undefined
-                        RequesterPays?: {} | undefined
-                        StorageClass?: {} | undefined
-                        UnModifiedSinceConstraint?: {} | undefined
-                        SSEAwsKmsKeyId?: {} | undefined
-                        TargetKeyPrefix?: {} | undefined
-                        ObjectLockLegalHoldStatus?: {} | undefined
-                        ObjectLockMode?: {} | undefined
-                        ObjectLockRetainUntilDate?: {} | undefined
-                        BucketKeyEnabled?: {} | undefined
-                        ChecksumAlgorithm?: {} | undefined
-                      }
-                    | undefined
-                  S3PutObjectAcl?:
-                    | {
-                        AccessControlPolicy?:
-                          | {
-                              AccessControlList?:
-                                | {
-                                    Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
-                                    Grants?: {} | undefined
-                                  }
-                                | undefined
-                              CannedAccessControlList?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
-                  S3DeleteObjectTagging?: {} | undefined
-                  S3InitiateRestoreObject?:
-                    | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
-                    | undefined
-                  S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
-                  S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
-                  S3ReplicateObject?: {} | undefined
-                }
-                Report: {
-                  Bucket?: {} | undefined
-                  Format?: {} | undefined
-                  Enabled?: {} | undefined
-                  Prefix?: {} | undefined
-                  ReportScope?: {} | undefined
-                }
-                ClientRequestToken: string
-                Manifest?:
-                  | {
-                      Spec?: { Format: {}; Fields?: {} | undefined } | undefined
-                      Location?:
-                        | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
-                        | undefined
-                    }
-                  | undefined
-                Description?: string | undefined
-                Priority: number
-                RoleArn: string
-                Tags?: S3Tag[] | undefined
-                ManifestGenerator?:
-                  | {
-                      S3JobManifestGenerator?:
-                        | {
-                            ExpectedBucketOwner?: {} | undefined
-                            SourceBucket: {}
-                            ManifestOutputLocation?:
-                              | {
-                                  ExpectedManifestBucketOwner?: {} | undefined
-                                  Bucket: {}
-                                  ManifestPrefix?: {} | undefined
-                                  ManifestEncryption?:
-                                    | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
-                                    | undefined
-                                  ManifestFormat: {}
-                                }
-                              | undefined
-                            Filter?:
-                              | {
-                                  EligibleForReplication?: {} | undefined
-                                  CreatedAfter?: {} | undefined
-                                  CreatedBefore?: {} | undefined
-                                  ObjectReplicationStatuses?: {} | undefined
-                                }
-                              | undefined
-                            EnableManifestOutput: {}
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: IdempotencyException
-            outputFormat: 'text'
-            status: 482
+        } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConfirmationRequired?: boolean | undefined
-                Operation: {
-                  LambdaInvoke?: { FunctionArn?: {} | undefined } | undefined
-                  S3PutObjectCopy?:
-                    | {
-                        TargetResource?: {} | undefined
-                        CannedAccessControlList?: {} | undefined
-                        AccessControlGrants?: {} | undefined
-                        MetadataDirective?: {} | undefined
-                        ModifiedSinceConstraint?: {} | undefined
-                        NewObjectMetadata?:
-                          | {
-                              CacheControl?: {} | undefined
-                              ContentDisposition?: {} | undefined
-                              ContentEncoding?: {} | undefined
-                              ContentLanguage?: {} | undefined
-                              UserMetadata?: {} | undefined
-                              ContentLength?: {} | undefined
-                              ContentMD5?: {} | undefined
-                              ContentType?: {} | undefined
-                              HttpExpiresDate?: {} | undefined
-                              RequesterCharged?: {} | undefined
-                              SSEAlgorithm?: {} | undefined
-                            }
-                          | undefined
-                        NewObjectTagging?: {} | undefined
-                        RedirectLocation?: {} | undefined
-                        RequesterPays?: {} | undefined
-                        StorageClass?: {} | undefined
-                        UnModifiedSinceConstraint?: {} | undefined
-                        SSEAwsKmsKeyId?: {} | undefined
-                        TargetKeyPrefix?: {} | undefined
-                        ObjectLockLegalHoldStatus?: {} | undefined
-                        ObjectLockMode?: {} | undefined
-                        ObjectLockRetainUntilDate?: {} | undefined
-                        BucketKeyEnabled?: {} | undefined
-                        ChecksumAlgorithm?: {} | undefined
-                      }
-                    | undefined
-                  S3PutObjectAcl?:
-                    | {
-                        AccessControlPolicy?:
-                          | {
-                              AccessControlList?:
-                                | {
-                                    Owner: { ID?: {} | undefined; DisplayName?: {} | undefined }
-                                    Grants?: {} | undefined
-                                  }
-                                | undefined
-                              CannedAccessControlList?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  S3PutObjectTagging?: { TagSet?: {} | undefined } | undefined
-                  S3DeleteObjectTagging?: {} | undefined
-                  S3InitiateRestoreObject?:
-                    | { ExpirationInDays?: {} | undefined; GlacierJobTier?: {} | undefined }
-                    | undefined
-                  S3PutObjectLegalHold?: S3SetObjectLegalHoldOperation | undefined
-                  S3PutObjectRetention?: S3SetObjectRetentionOperation | undefined
-                  S3ReplicateObject?: {} | undefined
-                }
-                Report: {
-                  Bucket?: {} | undefined
-                  Format?: {} | undefined
-                  Enabled?: {} | undefined
-                  Prefix?: {} | undefined
-                  ReportScope?: {} | undefined
-                }
-                ClientRequestToken: string
-                Manifest?:
-                  | {
-                      Spec?: { Format: {}; Fields?: {} | undefined } | undefined
-                      Location?:
-                        | { ObjectArn: {}; ObjectVersionId?: {} | undefined; ETag: {} }
-                        | undefined
-                    }
-                  | undefined
-                Description?: string | undefined
-                Priority: number
-                RoleArn: string
-                Tags?: S3Tag[] | undefined
-                ManifestGenerator?:
-                  | {
-                      S3JobManifestGenerator?:
-                        | {
-                            ExpectedBucketOwner?: {} | undefined
-                            SourceBucket: {}
-                            ManifestOutputLocation?:
-                              | {
-                                  ExpectedManifestBucketOwner?: {} | undefined
-                                  Bucket: {}
-                                  ManifestPrefix?: {} | undefined
-                                  ManifestEncryption?:
-                                    | { SSES3?: {} | undefined; SSEKMS?: { KeyId: {} } | undefined }
-                                    | undefined
-                                  ManifestFormat: {}
-                                }
-                              | undefined
-                            Filter?:
-                              | {
-                                  EligibleForReplication?: {} | undefined
-                                  CreatedAfter?: {} | undefined
-                                  CreatedBefore?: {} | undefined
-                                  ObjectReplicationStatuses?: {} | undefined
-                                }
-                              | undefined
-                            EnableManifestOutput: {}
-                          }
-                        | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 483
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                jobStatuses?: JobStatus[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListJobsResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                jobStatuses?: JobStatus[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                jobStatuses?: JobStatus[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                jobStatuses?: JobStatus[] | undefined
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidNextTokenException
-            outputFormat: 'text'
-            status: 482
-          }
+        }
+        output: ListJobsResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/v20180820/async-requests/mrap/create#x-amz-account-id': {
@@ -1787,230 +1097,57 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v20180820/jobs/:id/tagging#x-amz-account-id': {
-      $delete:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteJobTaggingResult
-            outputFormat: 'text'
-            status: 200
+      $delete: {
+        input: { param: { id: string } } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DeleteJobTaggingResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $get: {
+        input: { param: { id: string } } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: GetJobTaggingResult
+        outputFormat: 'text'
+        status: 200
+      }
+      $put: {
+        input: { param: { id: string } } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $get:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetJobTaggingResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-      $put:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: S3Tag[] } }
-            output: PutJobTaggingResult
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: S3Tag[] } }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: S3Tag[] } }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: S3Tag[] } }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: S3Tag[] } }
-            output: TooManyTagsException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: { Tags: S3Tag[] } }
+        output: PutJobTaggingResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/v20180820/async-requests/mrap/delete#x-amz-account-id': {
@@ -2051,41 +1188,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: string
         status: 200
       }
-      $get:
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetPublicAccessBlockOutput
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NoSuchPublicAccessBlockConfiguration
-            outputFormat: 'text'
-            status: 480
-          }
+        }
+        output: GetPublicAccessBlockOutput
+        outputFormat: 'text'
+        status: 200
+      }
       $put: {
         input: {
           header: {
@@ -2274,92 +1393,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v20180820/jobs/:id#x-amz-account-id': {
-      $get:
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeJobResult
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { param: { id: string } } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 483
-          }
+        }
+        output: DescribeJobResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/v20180820/async-requests/mrap/:request_token#x-amz-account-id': {
@@ -2766,228 +1816,48 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v20180820/jobs/:id/priority#x-amz-account-id&priority': {
-      $post:
-        | {
-            input: { param: { id: string } } & { query: { priority: number } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UpdateJobPriorityResult
-            outputFormat: 'text'
-            status: 200
+      $post: {
+        input: { param: { id: string } } & { query: { priority: number } } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & { query: { priority: number } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { param: { id: string } } & { query: { priority: number } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & { query: { priority: number } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & { query: { priority: number } } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 483
-          }
+        }
+        output: UpdateJobPriorityResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/v20180820/jobs/:id/status#x-amz-account-id&requestedJobStatus': {
-      $post:
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UpdateJobStatusResult
-            outputFormat: 'text'
-            status: 200
+      $post: {
+        input: { param: { id: string } } & {
+          query: {
+            requestedJobStatus: 'Cancelled' | 'Ready'
+            statusUpdateReason?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'x-amz-account-id': string
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: NotFoundException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: JobStatusException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { param: { id: string } } & {
-              query: {
-                requestedJobStatus: 'Cancelled' | 'Ready'
-                statusUpdateReason?: string | undefined
-              }
-            } & {
-              header: {
-                'x-amz-account-id': string
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServiceException
-            outputFormat: 'text'
-            status: 484
-          }
+        }
+        output: UpdateJobStatusResult
+        outputFormat: 'text'
+        status: 200
+      }
     }
   },
   '/'

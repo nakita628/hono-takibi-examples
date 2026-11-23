@@ -69,7 +69,7 @@ export const getDataV1AvailabilityIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getDataV1ConstraintVariableRoute = createRoute({
@@ -149,7 +149,7 @@ export const getDataV1ConstraintVariableRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getDataV1MapNewRoute = createRoute({
@@ -229,7 +229,7 @@ export const getDataV1MapNewRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getDataV1ValuesRoute = createRoute({
@@ -347,7 +347,7 @@ export const getDataV1ValuesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEntityV1Route = createRoute({
@@ -428,7 +428,7 @@ export const getEntityV1Route = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEntityV1RelationRoute = createRoute({
@@ -532,7 +532,7 @@ export const getEntityV1RelationRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSearchV1DatasetRoute = createRoute({
@@ -642,7 +642,7 @@ export const getSearchV1DatasetRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSearchV1QuestionRoute = createRoute({
@@ -738,7 +738,7 @@ export const getSearchV1QuestionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSuggestV1TypeRoute = createRoute({
@@ -844,5 +844,5 @@ export const getSuggestV1TypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

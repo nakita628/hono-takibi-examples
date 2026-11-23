@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCatchementAreasIdRoute, getCatchementAreasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCatchementAreasIdRoute, getCatchementAreasRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCatchementAreasRouteHandler: RouteHandler<typeof getCatchementAreasRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const catchementAreasHandler = app
-  .openapi(getCatchementAreasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCatchementAreasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCatchementAreasIdRouteHandler: RouteHandler<
+  typeof getCatchementAreasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

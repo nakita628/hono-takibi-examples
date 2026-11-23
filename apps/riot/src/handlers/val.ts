@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getValConsoleRankedV1LeaderboardsByActActIdRoute,
   getValContentV1ContentsRoute,
   getValMatchConsoleV1MatchesMatchIdRoute,
@@ -12,36 +12,62 @@ import {
   getValStatusV1PlatformDataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getValMatchConsoleV1MatchesMatchIdRouteHandler: RouteHandler<
+  typeof getValMatchConsoleV1MatchesMatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const valHandler = app
-  .openapi(getValMatchConsoleV1MatchesMatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValMatchConsoleV1MatchlistsByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValMatchConsoleV1RecentMatchesByQueueQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValConsoleRankedV1LeaderboardsByActActIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValContentV1ContentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValMatchV1MatchesMatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValMatchV1MatchlistsByPuuidPuuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValMatchV1RecentMatchesByQueueQueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValRankedV1LeaderboardsByActActIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getValStatusV1PlatformDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getValMatchConsoleV1MatchlistsByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getValMatchConsoleV1MatchlistsByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValMatchConsoleV1RecentMatchesByQueueQueueRouteHandler: RouteHandler<
+  typeof getValMatchConsoleV1RecentMatchesByQueueQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValConsoleRankedV1LeaderboardsByActActIdRouteHandler: RouteHandler<
+  typeof getValConsoleRankedV1LeaderboardsByActActIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValContentV1ContentsRouteHandler: RouteHandler<
+  typeof getValContentV1ContentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValMatchV1MatchesMatchIdRouteHandler: RouteHandler<
+  typeof getValMatchV1MatchesMatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValMatchV1MatchlistsByPuuidPuuidRouteHandler: RouteHandler<
+  typeof getValMatchV1MatchlistsByPuuidPuuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValMatchV1RecentMatchesByQueueQueueRouteHandler: RouteHandler<
+  typeof getValMatchV1RecentMatchesByQueueQueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValRankedV1LeaderboardsByActActIdRouteHandler: RouteHandler<
+  typeof getValRankedV1LeaderboardsByActActIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getValStatusV1PlatformDataRouteHandler: RouteHandler<
+  typeof getValStatusV1PlatformDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

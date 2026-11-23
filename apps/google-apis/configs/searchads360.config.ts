@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/searchads360/v0/openapi.yaml',
   output: './src/searchads360/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/searchads360/types.ts' },
   client: { output: './src/searchads360/client.ts', baseUrl: '/' },
   rpc: { output: './src/searchads360/rpc.ts', parseResponse: true },

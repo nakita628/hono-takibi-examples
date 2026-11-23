@@ -1781,20 +1781,20 @@ export function usePostRidesIdReserve<TError = DefaultError, TOnMutateResult = u
 
 export function getRidesPagePagePerPagePerPageQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>
+    InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
   return [
-    'rides?page=:page&per_page=:per_page',
-    '/rides?page=:page&per_page=:per_page',
+    'rides?page={page}&per_page={per_page}',
+    '/rides?page={page}&per_page={per_page}',
     keyArgs,
   ] as const
 }
 
 export function getRidesPagePagePerPagePerPageQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>
+    InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1802,7 +1802,7 @@ export function getRidesPagePagePerPagePerPageQueryOptions(
     queryKey: computed(() => getRidesPagePagePerPagePerPageQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['rides?page=:page&per_page=:per_page'].$get(toValue(args), {
+        client['rides?page={page}&per_page={per_page}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1815,14 +1815,14 @@ export function useRidesPagePagePerPagePerPage<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+        Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>
+    InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1831,7 +1831,9 @@ export function useRidesPagePagePerPagePerPage<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>
+                >
               >
             >
           >,
@@ -1840,7 +1842,9 @@ export function useRidesPagePagePerPagePerPage<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+                Awaited<
+                  ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>
+                >
               >
             >
           >,
@@ -1859,7 +1863,7 @@ export function useRidesPagePagePerPagePerPage<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+          Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
         >
       >
     >,
@@ -1872,7 +1876,7 @@ export function useRidesPagePagePerPagePerPage<
       queryKey: computed(() => getRidesPagePagePerPagePerPageQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['rides?page=:page&per_page=:per_page'].$get(toValue(args), {
+          client['rides?page={page}&per_page={per_page}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1885,8 +1889,8 @@ export function useRidesPagePagePerPagePerPage<
 
 export function getPostRidesPagePagePerPagePerPageMutationKey() {
   return [
-    'rides?page=:page&per_page=:per_page',
-    '/rides?page=:page&per_page=:per_page',
+    'rides?page={page}&per_page={per_page}',
+    '/rides?page={page}&per_page={per_page}',
     'POST',
   ] as const
 }
@@ -1899,19 +1903,19 @@ export function getPostRidesPagePagePerPagePerPageMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>>
+          Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>,
+    InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostRidesPagePagePerPagePerPageMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>,
+      args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>,
     ) {
-      return parseResponse(client['rides?page=:page&per_page=:per_page'].$post(args, options))
+      return parseResponse(client['rides?page={page}&per_page={per_page}'].$post(args, options))
     },
   })
 }
@@ -1927,12 +1931,14 @@ export function usePostRidesPagePagePerPagePerPage<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>>
+                Awaited<
+                  ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>
+                >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>,
+          InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }

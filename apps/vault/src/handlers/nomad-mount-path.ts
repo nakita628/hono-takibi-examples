@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNomadMountPathConfigAccessRoute,
   deleteNomadMountPathConfigLeaseRoute,
   deleteNomadMountPathRoleNameRoute,
@@ -13,39 +13,68 @@ import {
   postNomadMountPathRoleNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNomadMountPathConfigAccessRouteHandler: RouteHandler<
+  typeof getNomadMountPathConfigAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const nomadMountPathHandler = app
-  .openapi(getNomadMountPathConfigAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNomadMountPathConfigAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNomadMountPathConfigAccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNomadMountPathConfigLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNomadMountPathConfigLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNomadMountPathConfigLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNomadMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNomadMountPathRoleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNomadMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNomadMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNomadMountPathRoleNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNomadMountPathConfigAccessRouteHandler: RouteHandler<
+  typeof postNomadMountPathConfigAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNomadMountPathConfigAccessRouteHandler: RouteHandler<
+  typeof deleteNomadMountPathConfigAccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNomadMountPathConfigLeaseRouteHandler: RouteHandler<
+  typeof getNomadMountPathConfigLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNomadMountPathConfigLeaseRouteHandler: RouteHandler<
+  typeof postNomadMountPathConfigLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNomadMountPathConfigLeaseRouteHandler: RouteHandler<
+  typeof deleteNomadMountPathConfigLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNomadMountPathCredsNameRouteHandler: RouteHandler<
+  typeof getNomadMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNomadMountPathRoleIndexRouteHandler: RouteHandler<
+  typeof getNomadMountPathRoleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNomadMountPathRoleNameRouteHandler: RouteHandler<
+  typeof getNomadMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNomadMountPathRoleNameRouteHandler: RouteHandler<
+  typeof postNomadMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNomadMountPathRoleNameRouteHandler: RouteHandler<
+  typeof deleteNomadMountPathRoleNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

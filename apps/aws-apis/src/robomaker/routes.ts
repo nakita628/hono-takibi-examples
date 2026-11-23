@@ -568,8 +568,8 @@ const SimulationJobsSchema: z.ZodType<SimulationJobsType> = z
 const ArnsSchema = z.array(ArnSchema).min(1).max(100).openapi('Arns')
 
 type BatchDescribeSimulationJobResponseType = {
-  jobs?: z.infer<typeof SimulationJobsSchema> & unknown
-  unprocessedJobs?: z.infer<typeof ArnsSchema> & unknown
+  jobs?: z.infer<typeof SimulationJobsSchema>
+  unprocessedJobs?: z.infer<typeof ArnsSchema>
 }
 
 const SimulationJobBatchStatusSchema = z
@@ -730,10 +730,10 @@ const SimulationJobRequestSchema = z
 const FailedAtSchema = z.iso.datetime({ offset: true }).openapi('FailedAt')
 
 type FailedCreateSimulationJobRequestType = {
-  request?: z.infer<typeof SimulationJobRequestSchema> & unknown
-  failureReason?: z.infer<typeof GenericStringSchema> & unknown
-  failureCode?: z.infer<typeof SimulationJobErrorCodeSchema> & unknown
-  failedAt?: z.infer<typeof FailedAtSchema> & unknown
+  request?: z.infer<typeof SimulationJobRequestSchema>
+  failureReason?: z.infer<typeof GenericStringSchema>
+  failureCode?: z.infer<typeof SimulationJobErrorCodeSchema>
+  failedAt?: z.infer<typeof FailedAtSchema>
 }
 
 const FailedCreateSimulationJobRequestSchema: z.ZodType<FailedCreateSimulationJobRequestType> = z
@@ -816,39 +816,39 @@ const SimulationJobSummariesSchema = z
   .openapi('SimulationJobSummaries')
 
 type DescribeSimulationJobBatchResponseType = {
-  arn?: z.infer<typeof ArnSchema> & unknown
-  status?: z.infer<typeof SimulationJobBatchStatusSchema> & unknown
-  lastUpdatedAt?: z.infer<typeof LastUpdatedAtSchema> & unknown
-  createdAt?: z.infer<typeof CreatedAtSchema> & unknown
-  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema> & unknown
-  batchPolicy?: z.infer<typeof BatchPolicySchema> & unknown
-  failureCode?: z.infer<typeof SimulationJobBatchErrorCodeSchema> & unknown
-  failureReason?: z.infer<typeof GenericStringSchema> & unknown
-  failedRequests?: z.infer<typeof FailedCreateSimulationJobRequestsSchema> & unknown
-  pendingRequests?: z.infer<typeof CreateSimulationJobRequestsSchema> & unknown
-  createdRequests?: z.infer<typeof SimulationJobSummariesSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  arn?: z.infer<typeof ArnSchema>
+  status?: z.infer<typeof SimulationJobBatchStatusSchema>
+  lastUpdatedAt?: z.infer<typeof LastUpdatedAtSchema>
+  createdAt?: z.infer<typeof CreatedAtSchema>
+  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema>
+  batchPolicy?: z.infer<typeof BatchPolicySchema>
+  failureCode?: z.infer<typeof SimulationJobBatchErrorCodeSchema>
+  failureReason?: z.infer<typeof GenericStringSchema>
+  failedRequests?: z.infer<typeof FailedCreateSimulationJobRequestsSchema>
+  pendingRequests?: z.infer<typeof CreateSimulationJobRequestsSchema>
+  createdRequests?: z.infer<typeof SimulationJobSummariesSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 type StartSimulationJobBatchResponseType = {
-  arn?: z.infer<typeof ArnSchema> & unknown
-  status?: z.infer<typeof SimulationJobBatchStatusSchema> & unknown
-  createdAt?: z.infer<typeof CreatedAtSchema> & unknown
-  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema> & unknown
-  batchPolicy?: z.infer<typeof BatchPolicySchema> & unknown
-  failureCode?: z.infer<typeof SimulationJobBatchErrorCodeSchema> & unknown
-  failureReason?: z.infer<typeof GenericStringSchema> & unknown
-  failedRequests?: z.infer<typeof FailedCreateSimulationJobRequestsSchema> & unknown
-  pendingRequests?: z.infer<typeof CreateSimulationJobRequestsSchema> & unknown
-  createdRequests?: z.infer<typeof SimulationJobSummariesSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  arn?: z.infer<typeof ArnSchema>
+  status?: z.infer<typeof SimulationJobBatchStatusSchema>
+  createdAt?: z.infer<typeof CreatedAtSchema>
+  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema>
+  batchPolicy?: z.infer<typeof BatchPolicySchema>
+  failureCode?: z.infer<typeof SimulationJobBatchErrorCodeSchema>
+  failureReason?: z.infer<typeof GenericStringSchema>
+  failedRequests?: z.infer<typeof FailedCreateSimulationJobRequestsSchema>
+  pendingRequests?: z.infer<typeof CreateSimulationJobRequestsSchema>
+  createdRequests?: z.infer<typeof SimulationJobSummariesSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 type StartSimulationJobBatchRequestType = {
-  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema> & unknown
-  batchPolicy?: z.infer<typeof BatchPolicySchema> & unknown
-  createSimulationJobRequests: z.infer<typeof CreateSimulationJobRequestsSchema> & unknown
-  tags?: z.infer<typeof TagMapSchema> & unknown
+  clientRequestToken?: z.infer<typeof ClientRequestTokenSchema>
+  batchPolicy?: z.infer<typeof BatchPolicySchema>
+  createSimulationJobRequests: z.infer<typeof CreateSimulationJobRequestsSchema>
+  tags?: z.infer<typeof TagMapSchema>
 }
 
 const BatchDeleteWorldsResponseSchema = z

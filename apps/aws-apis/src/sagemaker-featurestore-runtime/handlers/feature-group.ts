@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringEventTimeRoute,
   getFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringRoute,
   putFeatureGroupFeatureGroupNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringEventTimeRouteHandler: RouteHandler<
+  typeof deleteFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringEventTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const featureGroupHandler = app
-  .openapi(deleteFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringEventTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFeatureGroupFeatureGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringRouteHandler: RouteHandler<
+  typeof getFeatureGroupFeatureGroupNameRecordIdentifierValueAsStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFeatureGroupFeatureGroupNameRouteHandler: RouteHandler<
+  typeof putFeatureGroupFeatureGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

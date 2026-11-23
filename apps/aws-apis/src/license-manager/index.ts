@@ -1,109 +1,311 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsLicenseManagerAcceptGrantHandler,
-  xAmzTargetAwsLicenseManagerCheckInLicenseHandler,
-  xAmzTargetAwsLicenseManagerCheckoutBorrowLicenseHandler,
-  xAmzTargetAwsLicenseManagerCheckoutLicenseHandler,
-  xAmzTargetAwsLicenseManagerCreateGrantHandler,
-  xAmzTargetAwsLicenseManagerCreateGrantVersionHandler,
-  xAmzTargetAwsLicenseManagerCreateLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerCreateLicenseConversionTaskForResourceHandler,
-  xAmzTargetAwsLicenseManagerCreateLicenseHandler,
-  xAmzTargetAwsLicenseManagerCreateLicenseManagerReportGeneratorHandler,
-  xAmzTargetAwsLicenseManagerCreateLicenseVersionHandler,
-  xAmzTargetAwsLicenseManagerCreateTokenHandler,
-  xAmzTargetAwsLicenseManagerDeleteGrantHandler,
-  xAmzTargetAwsLicenseManagerDeleteLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerDeleteLicenseHandler,
-  xAmzTargetAwsLicenseManagerDeleteLicenseManagerReportGeneratorHandler,
-  xAmzTargetAwsLicenseManagerDeleteTokenHandler,
-  xAmzTargetAwsLicenseManagerExtendLicenseConsumptionHandler,
-  xAmzTargetAwsLicenseManagerGetAccessTokenHandler,
-  xAmzTargetAwsLicenseManagerGetGrantHandler,
-  xAmzTargetAwsLicenseManagerGetLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerGetLicenseConversionTaskHandler,
-  xAmzTargetAwsLicenseManagerGetLicenseHandler,
-  xAmzTargetAwsLicenseManagerGetLicenseManagerReportGeneratorHandler,
-  xAmzTargetAwsLicenseManagerGetLicenseUsageHandler,
-  xAmzTargetAwsLicenseManagerGetServiceSettingsHandler,
-  xAmzTargetAwsLicenseManagerListAssociationsForLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerListDistributedGrantsHandler,
-  xAmzTargetAwsLicenseManagerListFailuresForLicenseConfigurationOperationsHandler,
-  xAmzTargetAwsLicenseManagerListLicenseConfigurationsHandler,
-  xAmzTargetAwsLicenseManagerListLicenseConversionTasksHandler,
-  xAmzTargetAwsLicenseManagerListLicenseManagerReportGeneratorsHandler,
-  xAmzTargetAwsLicenseManagerListLicensesHandler,
-  xAmzTargetAwsLicenseManagerListLicenseSpecificationsForResourceHandler,
-  xAmzTargetAwsLicenseManagerListLicenseVersionsHandler,
-  xAmzTargetAwsLicenseManagerListReceivedGrantsForOrganizationHandler,
-  xAmzTargetAwsLicenseManagerListReceivedGrantsHandler,
-  xAmzTargetAwsLicenseManagerListReceivedLicensesForOrganizationHandler,
-  xAmzTargetAwsLicenseManagerListReceivedLicensesHandler,
-  xAmzTargetAwsLicenseManagerListResourceInventoryHandler,
-  xAmzTargetAwsLicenseManagerListTagsForResourceHandler,
-  xAmzTargetAwsLicenseManagerListTokensHandler,
-  xAmzTargetAwsLicenseManagerListUsageForLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerRejectGrantHandler,
-  xAmzTargetAwsLicenseManagerTagResourceHandler,
-  xAmzTargetAwsLicenseManagerUntagResourceHandler,
-  xAmzTargetAwsLicenseManagerUpdateLicenseConfigurationHandler,
-  xAmzTargetAwsLicenseManagerUpdateLicenseManagerReportGeneratorHandler,
-  xAmzTargetAwsLicenseManagerUpdateLicenseSpecificationsForResourceHandler,
-  xAmzTargetAwsLicenseManagerUpdateServiceSettingsHandler,
+  postXAmzTargetAWSLicenseManagerAcceptGrantRoute,
+  postXAmzTargetAWSLicenseManagerCheckInLicenseRoute,
+  postXAmzTargetAWSLicenseManagerCheckoutBorrowLicenseRoute,
+  postXAmzTargetAWSLicenseManagerCheckoutLicenseRoute,
+  postXAmzTargetAWSLicenseManagerCreateGrantRoute,
+  postXAmzTargetAWSLicenseManagerCreateGrantVersionRoute,
+  postXAmzTargetAWSLicenseManagerCreateLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerCreateLicenseConversionTaskForResourceRoute,
+  postXAmzTargetAWSLicenseManagerCreateLicenseManagerReportGeneratorRoute,
+  postXAmzTargetAWSLicenseManagerCreateLicenseRoute,
+  postXAmzTargetAWSLicenseManagerCreateLicenseVersionRoute,
+  postXAmzTargetAWSLicenseManagerCreateTokenRoute,
+  postXAmzTargetAWSLicenseManagerDeleteGrantRoute,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseManagerReportGeneratorRoute,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseRoute,
+  postXAmzTargetAWSLicenseManagerDeleteTokenRoute,
+  postXAmzTargetAWSLicenseManagerExtendLicenseConsumptionRoute,
+  postXAmzTargetAWSLicenseManagerGetAccessTokenRoute,
+  postXAmzTargetAWSLicenseManagerGetGrantRoute,
+  postXAmzTargetAWSLicenseManagerGetLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerGetLicenseConversionTaskRoute,
+  postXAmzTargetAWSLicenseManagerGetLicenseManagerReportGeneratorRoute,
+  postXAmzTargetAWSLicenseManagerGetLicenseRoute,
+  postXAmzTargetAWSLicenseManagerGetLicenseUsageRoute,
+  postXAmzTargetAWSLicenseManagerGetServiceSettingsRoute,
+  postXAmzTargetAWSLicenseManagerListAssociationsForLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerListDistributedGrantsRoute,
+  postXAmzTargetAWSLicenseManagerListFailuresForLicenseConfigurationOperationsRoute,
+  postXAmzTargetAWSLicenseManagerListLicenseConfigurationsRoute,
+  postXAmzTargetAWSLicenseManagerListLicenseConversionTasksRoute,
+  postXAmzTargetAWSLicenseManagerListLicenseManagerReportGeneratorsRoute,
+  postXAmzTargetAWSLicenseManagerListLicenseSpecificationsForResourceRoute,
+  postXAmzTargetAWSLicenseManagerListLicensesRoute,
+  postXAmzTargetAWSLicenseManagerListLicenseVersionsRoute,
+  postXAmzTargetAWSLicenseManagerListReceivedGrantsForOrganizationRoute,
+  postXAmzTargetAWSLicenseManagerListReceivedGrantsRoute,
+  postXAmzTargetAWSLicenseManagerListReceivedLicensesForOrganizationRoute,
+  postXAmzTargetAWSLicenseManagerListReceivedLicensesRoute,
+  postXAmzTargetAWSLicenseManagerListResourceInventoryRoute,
+  postXAmzTargetAWSLicenseManagerListTagsForResourceRoute,
+  postXAmzTargetAWSLicenseManagerListTokensRoute,
+  postXAmzTargetAWSLicenseManagerListUsageForLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerRejectGrantRoute,
+  postXAmzTargetAWSLicenseManagerTagResourceRoute,
+  postXAmzTargetAWSLicenseManagerUntagResourceRoute,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseConfigurationRoute,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseManagerReportGeneratorRoute,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseSpecificationsForResourceRoute,
+  postXAmzTargetAWSLicenseManagerUpdateServiceSettingsRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSLicenseManagerAcceptGrantRouteHandler,
+  postXAmzTargetAWSLicenseManagerCheckInLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerCheckoutBorrowLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerCheckoutLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateGrantRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateGrantVersionRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateLicenseConversionTaskForResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateLicenseManagerReportGeneratorRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateLicenseVersionRouteHandler,
+  postXAmzTargetAWSLicenseManagerCreateTokenRouteHandler,
+  postXAmzTargetAWSLicenseManagerDeleteGrantRouteHandler,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseManagerReportGeneratorRouteHandler,
+  postXAmzTargetAWSLicenseManagerDeleteLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerDeleteTokenRouteHandler,
+  postXAmzTargetAWSLicenseManagerExtendLicenseConsumptionRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetAccessTokenRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetGrantRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetLicenseConversionTaskRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetLicenseManagerReportGeneratorRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetLicenseRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetLicenseUsageRouteHandler,
+  postXAmzTargetAWSLicenseManagerGetServiceSettingsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListAssociationsForLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerListDistributedGrantsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListFailuresForLicenseConfigurationOperationsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicenseConfigurationsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicenseConversionTasksRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicenseManagerReportGeneratorsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicenseSpecificationsForResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicensesRouteHandler,
+  postXAmzTargetAWSLicenseManagerListLicenseVersionsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListReceivedGrantsForOrganizationRouteHandler,
+  postXAmzTargetAWSLicenseManagerListReceivedGrantsRouteHandler,
+  postXAmzTargetAWSLicenseManagerListReceivedLicensesForOrganizationRouteHandler,
+  postXAmzTargetAWSLicenseManagerListReceivedLicensesRouteHandler,
+  postXAmzTargetAWSLicenseManagerListResourceInventoryRouteHandler,
+  postXAmzTargetAWSLicenseManagerListTagsForResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerListTokensRouteHandler,
+  postXAmzTargetAWSLicenseManagerListUsageForLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerRejectGrantRouteHandler,
+  postXAmzTargetAWSLicenseManagerTagResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerUntagResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseConfigurationRouteHandler,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseManagerReportGeneratorRouteHandler,
+  postXAmzTargetAWSLicenseManagerUpdateLicenseSpecificationsForResourceRouteHandler,
+  postXAmzTargetAWSLicenseManagerUpdateServiceSettingsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsLicenseManagerAcceptGrantHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCheckInLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCheckoutBorrowLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCheckoutLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateGrantHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateGrantVersionHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateLicenseConversionTaskForResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateLicenseManagerReportGeneratorHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateLicenseVersionHandler)
-  .route('/', xAmzTargetAwsLicenseManagerCreateTokenHandler)
-  .route('/', xAmzTargetAwsLicenseManagerDeleteGrantHandler)
-  .route('/', xAmzTargetAwsLicenseManagerDeleteLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerDeleteLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerDeleteLicenseManagerReportGeneratorHandler)
-  .route('/', xAmzTargetAwsLicenseManagerDeleteTokenHandler)
-  .route('/', xAmzTargetAwsLicenseManagerExtendLicenseConsumptionHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetAccessTokenHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetGrantHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetLicenseHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetLicenseConversionTaskHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetLicenseManagerReportGeneratorHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetLicenseUsageHandler)
-  .route('/', xAmzTargetAwsLicenseManagerGetServiceSettingsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListAssociationsForLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListDistributedGrantsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListFailuresForLicenseConfigurationOperationsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicenseConfigurationsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicenseConversionTasksHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicenseManagerReportGeneratorsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicenseSpecificationsForResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicenseVersionsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListLicensesHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListReceivedGrantsHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListReceivedGrantsForOrganizationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListReceivedLicensesHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListReceivedLicensesForOrganizationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListResourceInventoryHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListTokensHandler)
-  .route('/', xAmzTargetAwsLicenseManagerListUsageForLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerRejectGrantHandler)
-  .route('/', xAmzTargetAwsLicenseManagerTagResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerUntagResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerUpdateLicenseConfigurationHandler)
-  .route('/', xAmzTargetAwsLicenseManagerUpdateLicenseManagerReportGeneratorHandler)
-  .route('/', xAmzTargetAwsLicenseManagerUpdateLicenseSpecificationsForResourceHandler)
-  .route('/', xAmzTargetAwsLicenseManagerUpdateServiceSettingsHandler)
+  .openapi(
+    postXAmzTargetAWSLicenseManagerAcceptGrantRoute,
+    postXAmzTargetAWSLicenseManagerAcceptGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCheckInLicenseRoute,
+    postXAmzTargetAWSLicenseManagerCheckInLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCheckoutBorrowLicenseRoute,
+    postXAmzTargetAWSLicenseManagerCheckoutBorrowLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCheckoutLicenseRoute,
+    postXAmzTargetAWSLicenseManagerCheckoutLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateGrantRoute,
+    postXAmzTargetAWSLicenseManagerCreateGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateGrantVersionRoute,
+    postXAmzTargetAWSLicenseManagerCreateGrantVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateLicenseRoute,
+    postXAmzTargetAWSLicenseManagerCreateLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerCreateLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateLicenseConversionTaskForResourceRoute,
+    postXAmzTargetAWSLicenseManagerCreateLicenseConversionTaskForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateLicenseManagerReportGeneratorRoute,
+    postXAmzTargetAWSLicenseManagerCreateLicenseManagerReportGeneratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateLicenseVersionRoute,
+    postXAmzTargetAWSLicenseManagerCreateLicenseVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerCreateTokenRoute,
+    postXAmzTargetAWSLicenseManagerCreateTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerDeleteGrantRoute,
+    postXAmzTargetAWSLicenseManagerDeleteGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerDeleteLicenseRoute,
+    postXAmzTargetAWSLicenseManagerDeleteLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerDeleteLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerDeleteLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerDeleteLicenseManagerReportGeneratorRoute,
+    postXAmzTargetAWSLicenseManagerDeleteLicenseManagerReportGeneratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerDeleteTokenRoute,
+    postXAmzTargetAWSLicenseManagerDeleteTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerExtendLicenseConsumptionRoute,
+    postXAmzTargetAWSLicenseManagerExtendLicenseConsumptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetAccessTokenRoute,
+    postXAmzTargetAWSLicenseManagerGetAccessTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetGrantRoute,
+    postXAmzTargetAWSLicenseManagerGetGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetLicenseRoute,
+    postXAmzTargetAWSLicenseManagerGetLicenseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerGetLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetLicenseConversionTaskRoute,
+    postXAmzTargetAWSLicenseManagerGetLicenseConversionTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetLicenseManagerReportGeneratorRoute,
+    postXAmzTargetAWSLicenseManagerGetLicenseManagerReportGeneratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetLicenseUsageRoute,
+    postXAmzTargetAWSLicenseManagerGetLicenseUsageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerGetServiceSettingsRoute,
+    postXAmzTargetAWSLicenseManagerGetServiceSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListAssociationsForLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerListAssociationsForLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListDistributedGrantsRoute,
+    postXAmzTargetAWSLicenseManagerListDistributedGrantsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListFailuresForLicenseConfigurationOperationsRoute,
+    postXAmzTargetAWSLicenseManagerListFailuresForLicenseConfigurationOperationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicenseConfigurationsRoute,
+    postXAmzTargetAWSLicenseManagerListLicenseConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicenseConversionTasksRoute,
+    postXAmzTargetAWSLicenseManagerListLicenseConversionTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicenseManagerReportGeneratorsRoute,
+    postXAmzTargetAWSLicenseManagerListLicenseManagerReportGeneratorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicenseSpecificationsForResourceRoute,
+    postXAmzTargetAWSLicenseManagerListLicenseSpecificationsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicenseVersionsRoute,
+    postXAmzTargetAWSLicenseManagerListLicenseVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListLicensesRoute,
+    postXAmzTargetAWSLicenseManagerListLicensesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListReceivedGrantsRoute,
+    postXAmzTargetAWSLicenseManagerListReceivedGrantsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListReceivedGrantsForOrganizationRoute,
+    postXAmzTargetAWSLicenseManagerListReceivedGrantsForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListReceivedLicensesRoute,
+    postXAmzTargetAWSLicenseManagerListReceivedLicensesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListReceivedLicensesForOrganizationRoute,
+    postXAmzTargetAWSLicenseManagerListReceivedLicensesForOrganizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListResourceInventoryRoute,
+    postXAmzTargetAWSLicenseManagerListResourceInventoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListTagsForResourceRoute,
+    postXAmzTargetAWSLicenseManagerListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListTokensRoute,
+    postXAmzTargetAWSLicenseManagerListTokensRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerListUsageForLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerListUsageForLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerRejectGrantRoute,
+    postXAmzTargetAWSLicenseManagerRejectGrantRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerTagResourceRoute,
+    postXAmzTargetAWSLicenseManagerTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerUntagResourceRoute,
+    postXAmzTargetAWSLicenseManagerUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerUpdateLicenseConfigurationRoute,
+    postXAmzTargetAWSLicenseManagerUpdateLicenseConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerUpdateLicenseManagerReportGeneratorRoute,
+    postXAmzTargetAWSLicenseManagerUpdateLicenseManagerReportGeneratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerUpdateLicenseSpecificationsForResourceRoute,
+    postXAmzTargetAWSLicenseManagerUpdateLicenseSpecificationsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSLicenseManagerUpdateServiceSettingsRoute,
+    postXAmzTargetAWSLicenseManagerUpdateServiceSettingsRouteHandler,
+  )
 
 export default app

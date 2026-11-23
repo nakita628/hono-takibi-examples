@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStatsSeriesPeriodFieldsRoute,
   getStatsTotalRoute,
   postStatsIncrementFieldRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postStatsIncrementFieldRouteHandler: RouteHandler<
+  typeof postStatsIncrementFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statsHandler = app
-  .openapi(postStatsIncrementFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsSeriesPeriodFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatsTotalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatsSeriesPeriodFieldsRouteHandler: RouteHandler<
+  typeof getStatsSeriesPeriodFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatsTotalRouteHandler: RouteHandler<typeof getStatsTotalRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

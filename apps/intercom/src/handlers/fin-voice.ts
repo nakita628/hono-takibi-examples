@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFinVoiceCollectIdRoute,
   getFinVoiceConversationConversationIdRoute,
   getFinVoiceExternalIdExternalIdRoute,
@@ -7,21 +7,32 @@ import {
   postFinVoiceRegisterRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFinVoiceRegisterRouteHandler: RouteHandler<
+  typeof postFinVoiceRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const finVoiceHandler = app
-  .openapi(postFinVoiceRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinVoiceCollectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinVoiceExternalIdExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinVoicePhoneNumberPhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFinVoiceConversationConversationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFinVoiceCollectIdRouteHandler: RouteHandler<
+  typeof getFinVoiceCollectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinVoiceExternalIdExternalIdRouteHandler: RouteHandler<
+  typeof getFinVoiceExternalIdExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinVoicePhoneNumberPhoneNumberRouteHandler: RouteHandler<
+  typeof getFinVoicePhoneNumberPhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFinVoiceConversationConversationIdRouteHandler: RouteHandler<
+  typeof getFinVoiceConversationConversationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

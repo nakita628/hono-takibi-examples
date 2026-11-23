@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getglobalnumberinfo/1.0.0/openapi.yaml',
   output: './src/getglobalnumberinfo/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getglobalnumberinfo/types.ts' },
   client: { output: './src/getglobalnumberinfo/client.ts', baseUrl: '/' },
   rpc: { output: './src/getglobalnumberinfo/rpc.ts', parseResponse: true },

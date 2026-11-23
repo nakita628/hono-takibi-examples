@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionRemoveRoleFromInstanceProfileRoute,
   postActionRemoveRoleFromInstanceProfileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRemoveRoleFromInstanceProfileRouteHandler: RouteHandler<
+  typeof getActionRemoveRoleFromInstanceProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRemoveRoleFromInstanceProfileHandler = app
-  .openapi(getActionRemoveRoleFromInstanceProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRemoveRoleFromInstanceProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRemoveRoleFromInstanceProfileRouteHandler: RouteHandler<
+  typeof postActionRemoveRoleFromInstanceProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

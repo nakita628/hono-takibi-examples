@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Account/Audit%20Logs/Rollouts/144923/2026-09/auditLogs.json',
   output: './src/account-audit-logs/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/account-audit-logs/types.ts' },
   client: { output: './src/account-audit-logs/client.ts', baseUrl: '/' },
   rpc: { output: './src/account-audit-logs/rpc.ts', parseResponse: true },

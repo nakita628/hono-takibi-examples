@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVirtualBankAccountsRoute,
   getVirtualBankAccountsVirtualBankAccountIdRoute,
   postVirtualBankAccountsCreateUsingPermanentTokenRoute,
@@ -8,24 +8,38 @@ import {
   postVirtualBankAccountsVirtualBankAccountIdDeleteRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRouteHandler: RouteHandler<
+  typeof postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const virtualBankAccountsHandler = app
-  .openapi(postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualBankAccountsVirtualBankAccountIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualBankAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualBankAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVirtualBankAccountsVirtualBankAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVirtualBankAccountsCreateUsingPermanentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVirtualBankAccountsVirtualBankAccountIdDeleteRouteHandler: RouteHandler<
+  typeof postVirtualBankAccountsVirtualBankAccountIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualBankAccountsRouteHandler: RouteHandler<
+  typeof getVirtualBankAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVirtualBankAccountsRouteHandler: RouteHandler<
+  typeof postVirtualBankAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVirtualBankAccountsVirtualBankAccountIdRouteHandler: RouteHandler<
+  typeof getVirtualBankAccountsVirtualBankAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVirtualBankAccountsCreateUsingPermanentTokenRouteHandler: RouteHandler<
+  typeof postVirtualBankAccountsCreateUsingPermanentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

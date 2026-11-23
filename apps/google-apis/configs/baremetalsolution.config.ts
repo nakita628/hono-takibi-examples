@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/baremetalsolution/v2/openapi.yaml',
   output: './src/baremetalsolution/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/baremetalsolution/types.ts' },
   client: { output: './src/baremetalsolution/client.ts', baseUrl: '/' },
   rpc: { output: './src/baremetalsolution/rpc.ts', parseResponse: true },

@@ -1,87 +1,245 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentHandler,
-  xAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateHitTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateHitWithHitTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockHandler,
-  xAmzTargetMTurkRequesterServiceV20170117DeleteHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockHandler,
-  xAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetAssignmentHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetFileUploadUrlHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreHandler,
-  xAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListHiTsForQualificationTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListHiTsHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListReviewableHiTsHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksHandler,
-  xAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeHandler,
-  xAmzTargetMTurkRequesterServiceV20170117NotifyWorkersHandler,
-  xAmzTargetMTurkRequesterServiceV20170117RejectAssignmentHandler,
-  xAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestHandler,
-  xAmzTargetMTurkRequesterServiceV20170117SendBonusHandler,
-  xAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationHandler,
-  xAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117UpdateHitReviewStatusHandler,
-  xAmzTargetMTurkRequesterServiceV20170117UpdateHitTypeOfHitHandler,
-  xAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsHandler,
-  xAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITWithHITTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetAssignmentRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetFileUploadURLRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListHITsForQualificationTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListHITsRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListReviewableHITsRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117NotifyWorkersRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117RejectAssignmentRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117SendBonusRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateHITReviewStatusRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateHITTypeOfHITRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsRoute,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeRoute,
+} from './routes'
+import {
+  postXAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateHITWithHITTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetAssignmentRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetFileUploadURLRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListHITsForQualificationTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListHITsRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListReviewableHITsRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117NotifyWorkersRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117RejectAssignmentRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117SendBonusRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateHITReviewStatusRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateHITTypeOfHITRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsRouteHandler,
+  postXAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateHitTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateHitWithHitTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117DeleteHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetAssignmentHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetFileUploadUrlHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListHiTsHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListHiTsForQualificationTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListReviewableHiTsHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117NotifyWorkersHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117RejectAssignmentHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117SendBonusHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117UpdateHitReviewStatusHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117UpdateHitTypeOfHitHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsHandler)
-  .route('/', xAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeHandler)
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117AcceptQualificationRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ApproveAssignmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117AssociateQualificationWithWorkerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateAdditionalAssignmentsForHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITWithHITTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateHITWithHITTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateQualificationTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117CreateWorkerBlockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteQualificationTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117DeleteWorkerBlockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117DisassociateQualificationFromWorkerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetAccountBalanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetAssignmentRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetAssignmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetFileUploadURLRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetFileUploadURLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetQualificationScoreRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117GetQualificationTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListAssignmentsForHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListBonusPaymentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListHITsRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListHITsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListHITsForQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListHITsForQualificationTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListQualificationRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListQualificationTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListReviewPolicyResultsForHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListReviewableHITsRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListReviewableHITsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListWorkerBlocksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117ListWorkersWithQualificationTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117NotifyWorkersRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117NotifyWorkersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117RejectAssignmentRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117RejectAssignmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117RejectQualificationRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117SendBonusRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117SendBonusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117SendTestEventNotificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateExpirationForHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateHITReviewStatusRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateHITReviewStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateHITTypeOfHITRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateHITTypeOfHITRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateNotificationSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeRoute,
+    postXAmzTargetMTurkRequesterServiceV20170117UpdateQualificationTypeRouteHandler,
+  )
 
 export default app

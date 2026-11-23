@@ -385,7 +385,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { param: { sectionId: number } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
-    '/api/Section/:sectionId,:step': {
+    '/api/Section/:sectionId,{step}': {
       $get:
         | {
             input: { param: { sectionId: number; step: number } }

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLibraryVirtualFoldersPathsRoute,
   deleteLibraryVirtualFoldersRoute,
   getLibraryMediaFoldersRoute,
@@ -18,54 +18,98 @@ import {
   postLibraryVirtualFoldersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLibraryMediaUpdatedRouteHandler: RouteHandler<
+  typeof postLibraryMediaUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const libraryHandler = app
-  .openapi(postLibraryMediaUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLibraryMediaFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryMoviesAddedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryMoviesUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLibraryPhysicalPathsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibrarySeriesAddedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibrarySeriesUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLibraryVirtualFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryVirtualFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLibraryVirtualFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryVirtualFoldersLibraryOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryVirtualFoldersNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryVirtualFoldersPathsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLibraryVirtualFoldersPathsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibraryVirtualFoldersPathsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLibraryMediaFoldersRouteHandler: RouteHandler<
+  typeof getLibraryMediaFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryMoviesAddedRouteHandler: RouteHandler<
+  typeof postLibraryMoviesAddedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryMoviesUpdatedRouteHandler: RouteHandler<
+  typeof postLibraryMoviesUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLibraryPhysicalPathsRouteHandler: RouteHandler<
+  typeof getLibraryPhysicalPathsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryRefreshRouteHandler: RouteHandler<typeof postLibraryRefreshRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibrarySeriesAddedRouteHandler: RouteHandler<
+  typeof postLibrarySeriesAddedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibrarySeriesUpdatedRouteHandler: RouteHandler<
+  typeof postLibrarySeriesUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLibraryVirtualFoldersRouteHandler: RouteHandler<
+  typeof getLibraryVirtualFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryVirtualFoldersRouteHandler: RouteHandler<
+  typeof postLibraryVirtualFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLibraryVirtualFoldersRouteHandler: RouteHandler<
+  typeof deleteLibraryVirtualFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryVirtualFoldersLibraryOptionsRouteHandler: RouteHandler<
+  typeof postLibraryVirtualFoldersLibraryOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryVirtualFoldersNameRouteHandler: RouteHandler<
+  typeof postLibraryVirtualFoldersNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryVirtualFoldersPathsRouteHandler: RouteHandler<
+  typeof postLibraryVirtualFoldersPathsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLibraryVirtualFoldersPathsRouteHandler: RouteHandler<
+  typeof deleteLibraryVirtualFoldersPathsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibraryVirtualFoldersPathsUpdateRouteHandler: RouteHandler<
+  typeof postLibraryVirtualFoldersPathsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

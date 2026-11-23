@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteContainersContainerIdFilesFileIdRoute,
   deleteContainersContainerIdRoute,
   getContainersContainerIdFilesFileIdContentRoute,
@@ -11,33 +11,52 @@ import {
   postContainersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getContainersRouteHandler: RouteHandler<typeof getContainersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const containersHandler = app
-  .openapi(getContainersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContainersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContainersContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContainersContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContainersContainerIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContainersContainerIdFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContainersContainerIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContainersContainerIdFilesFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContainersContainerIdFilesFileIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postContainersRouteHandler: RouteHandler<typeof postContainersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContainersContainerIdRouteHandler: RouteHandler<
+  typeof getContainersContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContainersContainerIdRouteHandler: RouteHandler<
+  typeof deleteContainersContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContainersContainerIdFilesRouteHandler: RouteHandler<
+  typeof postContainersContainerIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContainersContainerIdFilesRouteHandler: RouteHandler<
+  typeof getContainersContainerIdFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContainersContainerIdFilesFileIdRouteHandler: RouteHandler<
+  typeof getContainersContainerIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContainersContainerIdFilesFileIdRouteHandler: RouteHandler<
+  typeof deleteContainersContainerIdFilesFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContainersContainerIdFilesFileIdContentRouteHandler: RouteHandler<
+  typeof getContainersContainerIdFilesFileIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

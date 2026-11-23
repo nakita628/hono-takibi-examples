@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPublicDashboardsAccessTokenAnnotationsRoute,
   getPublicDashboardsAccessTokenRoute,
   postPublicDashboardsAccessTokenPanelsPanelIdQueryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPublicDashboardsAccessTokenRouteHandler: RouteHandler<
+  typeof getPublicDashboardsAccessTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const publicHandler = app
-  .openapi(getPublicDashboardsAccessTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPublicDashboardsAccessTokenAnnotationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPublicDashboardsAccessTokenPanelsPanelIdQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPublicDashboardsAccessTokenAnnotationsRouteHandler: RouteHandler<
+  typeof getPublicDashboardsAccessTokenAnnotationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPublicDashboardsAccessTokenPanelsPanelIdQueryRouteHandler: RouteHandler<
+  typeof postPublicDashboardsAccessTokenPanelsPanelIdQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

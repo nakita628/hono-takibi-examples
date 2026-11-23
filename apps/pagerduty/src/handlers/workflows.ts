@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute,
   getWorkflowsIntegrationsConnectionsRoute,
   getWorkflowsIntegrationsIdRoute,
@@ -10,30 +10,50 @@ import {
   postWorkflowsIntegrationsIntegrationIdConnectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkflowsIntegrationsRouteHandler: RouteHandler<
+  typeof getWorkflowsIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workflowsHandler = app
-  .openapi(getWorkflowsIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIntegrationsConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIntegrationsIntegrationIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkflowsIntegrationsIntegrationIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkflowsIntegrationsIdRouteHandler: RouteHandler<
+  typeof getWorkflowsIntegrationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIntegrationsConnectionsRouteHandler: RouteHandler<
+  typeof getWorkflowsIntegrationsConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler: RouteHandler<
+  typeof getWorkflowsIntegrationsIntegrationIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkflowsIntegrationsIntegrationIdConnectionsRouteHandler: RouteHandler<
+  typeof postWorkflowsIntegrationsIntegrationIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler: RouteHandler<
+  typeof getWorkflowsIntegrationsIntegrationIdConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler: RouteHandler<
+  typeof patchWorkflowsIntegrationsIntegrationIdConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRouteHandler: RouteHandler<
+  typeof deleteWorkflowsIntegrationsIntegrationIdConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

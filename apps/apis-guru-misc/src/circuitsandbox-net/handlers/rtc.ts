@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRtcSessionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRtcSessionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rtcHandler = app.openapi(getRtcSessionsRoute, (c) => {
+export const getRtcSessionsRouteHandler: RouteHandler<typeof getRtcSessionsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

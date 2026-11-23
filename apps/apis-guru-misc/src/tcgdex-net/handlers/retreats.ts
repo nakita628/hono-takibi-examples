@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRetreatsRetreatRoute, getRetreatsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRetreatsRetreatRoute, getRetreatsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRetreatsRouteHandler: RouteHandler<typeof getRetreatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const retreatsHandler = app
-  .openapi(getRetreatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetreatsRetreatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRetreatsRetreatRouteHandler: RouteHandler<typeof getRetreatsRetreatRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

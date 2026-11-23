@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postTransferAuthorizationCancelRoute,
   postTransferAuthorizationCreateRoute,
   postTransferBalanceGetRoute,
@@ -45,135 +45,258 @@ import {
   postTransferSweepListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTransferGetRouteHandler: RouteHandler<typeof postTransferGetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transferHandler = app
-  .openapi(postTransferGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRecurringGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferAuthorizationCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferAuthorizationCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferBalanceGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferCapabilitiesGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferConfigurationGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferLedgerGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferLedgerDistributeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferLedgerDepositRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferLedgerWithdrawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferOriginatorFundingAccountUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferOriginatorFundingAccountCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferMetricsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRecurringCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRecurringListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRecurringCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferEventListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferLedgerEventListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferEventSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferSweepGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferSweepListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferMigrateAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferIntentCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferIntentGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRepaymentListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRepaymentReturnListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferPlatformRequirementSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferOriginatorCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferQuestionnaireCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferDiligenceSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferDiligenceDocumentUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferOriginatorGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferOriginatorListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRefundCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferReturnRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRefundGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferRefundCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferPlatformOriginatorCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransferPlatformPersonCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTransferRecurringGetRouteHandler: RouteHandler<
+  typeof postTransferRecurringGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferAuthorizationCreateRouteHandler: RouteHandler<
+  typeof postTransferAuthorizationCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferAuthorizationCancelRouteHandler: RouteHandler<
+  typeof postTransferAuthorizationCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferBalanceGetRouteHandler: RouteHandler<
+  typeof postTransferBalanceGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferCapabilitiesGetRouteHandler: RouteHandler<
+  typeof postTransferCapabilitiesGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferConfigurationGetRouteHandler: RouteHandler<
+  typeof postTransferConfigurationGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferLedgerGetRouteHandler: RouteHandler<
+  typeof postTransferLedgerGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferLedgerDistributeRouteHandler: RouteHandler<
+  typeof postTransferLedgerDistributeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferLedgerDepositRouteHandler: RouteHandler<
+  typeof postTransferLedgerDepositRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferLedgerWithdrawRouteHandler: RouteHandler<
+  typeof postTransferLedgerWithdrawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferOriginatorFundingAccountUpdateRouteHandler: RouteHandler<
+  typeof postTransferOriginatorFundingAccountUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferOriginatorFundingAccountCreateRouteHandler: RouteHandler<
+  typeof postTransferOriginatorFundingAccountCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferMetricsGetRouteHandler: RouteHandler<
+  typeof postTransferMetricsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferCreateRouteHandler: RouteHandler<typeof postTransferCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRecurringCreateRouteHandler: RouteHandler<
+  typeof postTransferRecurringCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferListRouteHandler: RouteHandler<typeof postTransferListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRecurringListRouteHandler: RouteHandler<
+  typeof postTransferRecurringListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferCancelRouteHandler: RouteHandler<typeof postTransferCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRecurringCancelRouteHandler: RouteHandler<
+  typeof postTransferRecurringCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferEventListRouteHandler: RouteHandler<
+  typeof postTransferEventListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferLedgerEventListRouteHandler: RouteHandler<
+  typeof postTransferLedgerEventListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferEventSyncRouteHandler: RouteHandler<
+  typeof postTransferEventSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferSweepGetRouteHandler: RouteHandler<
+  typeof postTransferSweepGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferSweepListRouteHandler: RouteHandler<
+  typeof postTransferSweepListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferMigrateAccountRouteHandler: RouteHandler<
+  typeof postTransferMigrateAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferIntentCreateRouteHandler: RouteHandler<
+  typeof postTransferIntentCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferIntentGetRouteHandler: RouteHandler<
+  typeof postTransferIntentGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRepaymentListRouteHandler: RouteHandler<
+  typeof postTransferRepaymentListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRepaymentReturnListRouteHandler: RouteHandler<
+  typeof postTransferRepaymentReturnListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferPlatformRequirementSubmitRouteHandler: RouteHandler<
+  typeof postTransferPlatformRequirementSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferOriginatorCreateRouteHandler: RouteHandler<
+  typeof postTransferOriginatorCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferQuestionnaireCreateRouteHandler: RouteHandler<
+  typeof postTransferQuestionnaireCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferDiligenceSubmitRouteHandler: RouteHandler<
+  typeof postTransferDiligenceSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferDiligenceDocumentUploadRouteHandler: RouteHandler<
+  typeof postTransferDiligenceDocumentUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferOriginatorGetRouteHandler: RouteHandler<
+  typeof postTransferOriginatorGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferOriginatorListRouteHandler: RouteHandler<
+  typeof postTransferOriginatorListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRefundCreateRouteHandler: RouteHandler<
+  typeof postTransferRefundCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferReturnRecoverRouteHandler: RouteHandler<
+  typeof postTransferReturnRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRefundGetRouteHandler: RouteHandler<
+  typeof postTransferRefundGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferRefundCancelRouteHandler: RouteHandler<
+  typeof postTransferRefundCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferPlatformOriginatorCreateRouteHandler: RouteHandler<
+  typeof postTransferPlatformOriginatorCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransferPlatformPersonCreateRouteHandler: RouteHandler<
+  typeof postTransferPlatformPersonCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

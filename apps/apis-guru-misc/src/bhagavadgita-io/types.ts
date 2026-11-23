@@ -251,6 +251,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {}
             outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: { client_id: string; client_secret: string; grant_type: string; scope: string }
+            } & {
+              form: { client_id: string; client_secret: string; grant_type: string; scope: string }
+            }
+            output: {}
+            outputFormat: string
             status: 400
           }
         | {

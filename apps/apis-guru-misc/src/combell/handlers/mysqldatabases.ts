@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMysqldatabasesDatabaseNameRoute,
   deleteMysqldatabasesDatabaseNameUsersUserNameRoute,
   getMysqldatabasesDatabaseNameRoute,
@@ -11,33 +11,56 @@ import {
   putMysqldatabasesDatabaseNameUsersUserNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMysqldatabasesRouteHandler: RouteHandler<typeof getMysqldatabasesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const mysqldatabasesHandler = app
-  .openapi(getMysqldatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMysqldatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMysqldatabasesDatabaseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMysqldatabasesDatabaseNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMysqldatabasesDatabaseNameUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMysqldatabasesDatabaseNameUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMysqldatabasesDatabaseNameUsersUserNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMysqldatabasesDatabaseNameUsersUserNamePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMysqldatabasesDatabaseNameUsersUserNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMysqldatabasesRouteHandler: RouteHandler<typeof postMysqldatabasesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMysqldatabasesDatabaseNameRouteHandler: RouteHandler<
+  typeof deleteMysqldatabasesDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMysqldatabasesDatabaseNameRouteHandler: RouteHandler<
+  typeof getMysqldatabasesDatabaseNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMysqldatabasesDatabaseNameUsersRouteHandler: RouteHandler<
+  typeof getMysqldatabasesDatabaseNameUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMysqldatabasesDatabaseNameUsersRouteHandler: RouteHandler<
+  typeof postMysqldatabasesDatabaseNameUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMysqldatabasesDatabaseNameUsersUserNameRouteHandler: RouteHandler<
+  typeof deleteMysqldatabasesDatabaseNameUsersUserNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMysqldatabasesDatabaseNameUsersUserNamePasswordRouteHandler: RouteHandler<
+  typeof putMysqldatabasesDatabaseNameUsersUserNamePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMysqldatabasesDatabaseNameUsersUserNameStatusRouteHandler: RouteHandler<
+  typeof putMysqldatabasesDatabaseNameUsersUserNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

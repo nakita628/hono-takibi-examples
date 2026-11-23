@@ -171,10 +171,10 @@ export async function postFilesFileIdCopy(
 }
 
 export async function getFilesFileIdThumbnailExtension(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.files[':file_id']['thumbnail.:extension'].$get(args, options))
+  return await parseResponse(client.files[':file_id']['thumbnail.{extension}'].$get(args, options))
 }
 
 export async function getFilesFileIdCollaborations(

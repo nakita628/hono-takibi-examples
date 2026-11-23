@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSimCardOrderPreviewRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSimCardOrderPreviewRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const simCardOrderPreviewHandler = app.openapi(postSimCardOrderPreviewRoute, (c) => {
+export const postSimCardOrderPreviewRouteHandler: RouteHandler<
+  typeof postSimCardOrderPreviewRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

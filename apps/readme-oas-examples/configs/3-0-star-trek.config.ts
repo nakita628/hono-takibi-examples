@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/star-trek.yaml',
   output: './src/3-0-star-trek/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-star-trek/types.ts' },
   client: { output: './src/3-0-star-trek/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-star-trek/rpc.ts', parseResponse: true },

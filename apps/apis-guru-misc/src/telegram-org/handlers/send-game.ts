@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendGameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendGameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendGameHandler = app.openapi(postSendGameRoute, (c) => {
+export const postSendGameRouteHandler: RouteHandler<typeof postSendGameRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

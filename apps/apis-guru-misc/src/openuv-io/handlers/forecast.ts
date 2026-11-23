@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getForecastRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getForecastRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const forecastHandler = app.openapi(getForecastRoute, (c) => {
+export const getForecastRouteHandler: RouteHandler<typeof getForecastRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

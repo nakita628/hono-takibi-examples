@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionEnableVpcClassicLinkDnsSupportRoute,
   postActionEnableVpcClassicLinkDnsSupportRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionEnableVpcClassicLinkDnsSupportRouteHandler: RouteHandler<
+  typeof getActionEnableVpcClassicLinkDnsSupportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionEnableVpcClassicLinkDnsSupportHandler = app
-  .openapi(getActionEnableVpcClassicLinkDnsSupportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionEnableVpcClassicLinkDnsSupportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionEnableVpcClassicLinkDnsSupportRouteHandler: RouteHandler<
+  typeof postActionEnableVpcClassicLinkDnsSupportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

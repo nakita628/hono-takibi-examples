@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ip2location.com/geolocation/1.0/openapi.yaml',
   output: './src/ip2location-geolocation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ip2location-geolocation/types.ts' },
   client: { output: './src/ip2location-geolocation/client.ts', baseUrl: '/' },
   rpc: { output: './src/ip2location-geolocation/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMerchantIdAccountsAccountIdRoute,
   deleteMerchantIdDatafeedsDatafeedIdRoute,
   deleteMerchantIdPosTargetMerchantIdStoreStoreCodeRoute,
@@ -75,225 +75,440 @@ import {
   putMerchantIdShippingsettingsAccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMerchantIdAccountsRouteHandler: RouteHandler<
+  typeof getMerchantIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const merchantIdHandler = app
-  .openapi(getMerchantIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMerchantIdAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMerchantIdAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdAccountsAccountIdClaimwebsiteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdAccountsAccountIdLinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdAccountstatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdAccountstatusesAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdAccounttaxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdAccounttaxAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMerchantIdAccounttaxAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdDatafeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdDatafeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMerchantIdDatafeedsDatafeedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdDatafeedsDatafeedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMerchantIdDatafeedsDatafeedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdDatafeedsDatafeedIdFetchNowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdDatafeedstatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdDatafeedstatusesDatafeedIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdLiasettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdLiasettingsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMerchantIdLiasettingsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdLiasettingsAccountIdAccessiblegmbaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdLiasettingsAccountIdRequestgmbaccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdLiasettingsAccountIdRequestinventoryverificationCountryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdLiasettingsAccountIdSetinventoryverificationcontactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdLiasettingsAccountIdSetposdataproviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrderinvoicesOrderIdCreateChargeInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrderinvoicesOrderIdCreateRefundInvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrderreportsDisbursementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrderreportsDisbursementsDisbursementIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrderreturnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrderreturnsReturnIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdCancelLineItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdInStoreRefundLineItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdRejectReturnLineItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdReturnLineItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdReturnRefundLineItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdSetLineItemMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdShipLineItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdTestreturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdUpdateLineItemShippingDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdUpdateMerchantOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdOrdersOrderIdUpdateShipmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdOrdersbymerchantidMerchantOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdPosTargetMerchantIdInventoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdPosTargetMerchantIdSaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdPosTargetMerchantIdStoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdPosTargetMerchantIdStoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMerchantIdPosTargetMerchantIdStoreStoreCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdPosTargetMerchantIdStoreStoreCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMerchantIdProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdProductstatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdProductstatusesProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdShippingsettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdShippingsettingsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMerchantIdShippingsettingsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdSupportedCarriersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdSupportedHolidaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdSupportedPickupServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdTestordersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdTestordersOrderIdAdvanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMerchantIdTestordersOrderIdCancelByCustomerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMerchantIdTestordertemplatesTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMerchantIdAccountsRouteHandler: RouteHandler<
+  typeof postMerchantIdAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMerchantIdAccountsAccountIdRouteHandler: RouteHandler<
+  typeof deleteMerchantIdAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getMerchantIdAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMerchantIdAccountsAccountIdRouteHandler: RouteHandler<
+  typeof putMerchantIdAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdAccountsAccountIdClaimwebsiteRouteHandler: RouteHandler<
+  typeof postMerchantIdAccountsAccountIdClaimwebsiteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdAccountsAccountIdLinkRouteHandler: RouteHandler<
+  typeof postMerchantIdAccountsAccountIdLinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdAccountstatusesRouteHandler: RouteHandler<
+  typeof getMerchantIdAccountstatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdAccountstatusesAccountIdRouteHandler: RouteHandler<
+  typeof getMerchantIdAccountstatusesAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdAccounttaxRouteHandler: RouteHandler<
+  typeof getMerchantIdAccounttaxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdAccounttaxAccountIdRouteHandler: RouteHandler<
+  typeof getMerchantIdAccounttaxAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMerchantIdAccounttaxAccountIdRouteHandler: RouteHandler<
+  typeof putMerchantIdAccounttaxAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdDatafeedsRouteHandler: RouteHandler<
+  typeof getMerchantIdDatafeedsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdDatafeedsRouteHandler: RouteHandler<
+  typeof postMerchantIdDatafeedsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMerchantIdDatafeedsDatafeedIdRouteHandler: RouteHandler<
+  typeof deleteMerchantIdDatafeedsDatafeedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdDatafeedsDatafeedIdRouteHandler: RouteHandler<
+  typeof getMerchantIdDatafeedsDatafeedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMerchantIdDatafeedsDatafeedIdRouteHandler: RouteHandler<
+  typeof putMerchantIdDatafeedsDatafeedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdDatafeedsDatafeedIdFetchNowRouteHandler: RouteHandler<
+  typeof postMerchantIdDatafeedsDatafeedIdFetchNowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdDatafeedstatusesRouteHandler: RouteHandler<
+  typeof getMerchantIdDatafeedstatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdDatafeedstatusesDatafeedIdRouteHandler: RouteHandler<
+  typeof getMerchantIdDatafeedstatusesDatafeedIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdLiasettingsRouteHandler: RouteHandler<
+  typeof getMerchantIdLiasettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdLiasettingsAccountIdRouteHandler: RouteHandler<
+  typeof getMerchantIdLiasettingsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMerchantIdLiasettingsAccountIdRouteHandler: RouteHandler<
+  typeof putMerchantIdLiasettingsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdLiasettingsAccountIdAccessiblegmbaccountsRouteHandler: RouteHandler<
+  typeof getMerchantIdLiasettingsAccountIdAccessiblegmbaccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdLiasettingsAccountIdRequestgmbaccessRouteHandler: RouteHandler<
+  typeof postMerchantIdLiasettingsAccountIdRequestgmbaccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdLiasettingsAccountIdRequestinventoryverificationCountryRouteHandler: RouteHandler<
+  typeof postMerchantIdLiasettingsAccountIdRequestinventoryverificationCountryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdLiasettingsAccountIdSetinventoryverificationcontactRouteHandler: RouteHandler<
+  typeof postMerchantIdLiasettingsAccountIdSetinventoryverificationcontactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdLiasettingsAccountIdSetposdataproviderRouteHandler: RouteHandler<
+  typeof postMerchantIdLiasettingsAccountIdSetposdataproviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrderinvoicesOrderIdCreateChargeInvoiceRouteHandler: RouteHandler<
+  typeof postMerchantIdOrderinvoicesOrderIdCreateChargeInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrderinvoicesOrderIdCreateRefundInvoiceRouteHandler: RouteHandler<
+  typeof postMerchantIdOrderinvoicesOrderIdCreateRefundInvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrderreportsDisbursementsRouteHandler: RouteHandler<
+  typeof getMerchantIdOrderreportsDisbursementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrderreportsDisbursementsDisbursementIdTransactionsRouteHandler: RouteHandler<
+  typeof getMerchantIdOrderreportsDisbursementsDisbursementIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrderreturnsRouteHandler: RouteHandler<
+  typeof getMerchantIdOrderreturnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrderreturnsReturnIdRouteHandler: RouteHandler<
+  typeof getMerchantIdOrderreturnsReturnIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrdersRouteHandler: RouteHandler<
+  typeof getMerchantIdOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrdersOrderIdRouteHandler: RouteHandler<
+  typeof getMerchantIdOrdersOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdAcknowledgeRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdCancelRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdCancelLineItemRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdCancelLineItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdInStoreRefundLineItemRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdInStoreRefundLineItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdRefundRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdRejectReturnLineItemRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdRejectReturnLineItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdReturnLineItemRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdReturnLineItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdReturnRefundLineItemRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdReturnRefundLineItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdSetLineItemMetadataRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdSetLineItemMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdShipLineItemsRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdShipLineItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdTestreturnRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdTestreturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdUpdateLineItemShippingDetailsRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdUpdateLineItemShippingDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdUpdateMerchantOrderIdRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdUpdateMerchantOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdOrdersOrderIdUpdateShipmentRouteHandler: RouteHandler<
+  typeof postMerchantIdOrdersOrderIdUpdateShipmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdOrdersbymerchantidMerchantOrderIdRouteHandler: RouteHandler<
+  typeof getMerchantIdOrdersbymerchantidMerchantOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdPosTargetMerchantIdInventoryRouteHandler: RouteHandler<
+  typeof postMerchantIdPosTargetMerchantIdInventoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdPosTargetMerchantIdSaleRouteHandler: RouteHandler<
+  typeof postMerchantIdPosTargetMerchantIdSaleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdPosTargetMerchantIdStoreRouteHandler: RouteHandler<
+  typeof getMerchantIdPosTargetMerchantIdStoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdPosTargetMerchantIdStoreRouteHandler: RouteHandler<
+  typeof postMerchantIdPosTargetMerchantIdStoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMerchantIdPosTargetMerchantIdStoreStoreCodeRouteHandler: RouteHandler<
+  typeof deleteMerchantIdPosTargetMerchantIdStoreStoreCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdPosTargetMerchantIdStoreStoreCodeRouteHandler: RouteHandler<
+  typeof getMerchantIdPosTargetMerchantIdStoreStoreCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdProductsRouteHandler: RouteHandler<
+  typeof getMerchantIdProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdProductsRouteHandler: RouteHandler<
+  typeof postMerchantIdProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMerchantIdProductsProductIdRouteHandler: RouteHandler<
+  typeof deleteMerchantIdProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdProductsProductIdRouteHandler: RouteHandler<
+  typeof getMerchantIdProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdProductstatusesRouteHandler: RouteHandler<
+  typeof getMerchantIdProductstatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdProductstatusesProductIdRouteHandler: RouteHandler<
+  typeof getMerchantIdProductstatusesProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdShippingsettingsRouteHandler: RouteHandler<
+  typeof getMerchantIdShippingsettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdShippingsettingsAccountIdRouteHandler: RouteHandler<
+  typeof getMerchantIdShippingsettingsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMerchantIdShippingsettingsAccountIdRouteHandler: RouteHandler<
+  typeof putMerchantIdShippingsettingsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdSupportedCarriersRouteHandler: RouteHandler<
+  typeof getMerchantIdSupportedCarriersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdSupportedHolidaysRouteHandler: RouteHandler<
+  typeof getMerchantIdSupportedHolidaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdSupportedPickupServicesRouteHandler: RouteHandler<
+  typeof getMerchantIdSupportedPickupServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdTestordersRouteHandler: RouteHandler<
+  typeof postMerchantIdTestordersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdTestordersOrderIdAdvanceRouteHandler: RouteHandler<
+  typeof postMerchantIdTestordersOrderIdAdvanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMerchantIdTestordersOrderIdCancelByCustomerRouteHandler: RouteHandler<
+  typeof postMerchantIdTestordersOrderIdCancelByCustomerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMerchantIdTestordertemplatesTemplateNameRouteHandler: RouteHandler<
+  typeof getMerchantIdTestordertemplatesTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

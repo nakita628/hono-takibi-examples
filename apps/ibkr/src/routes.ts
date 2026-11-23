@@ -37293,7 +37293,7 @@ export const getGwApiV1TaxVouchersRequestIdDownloadRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'File downloaded successfully', content: {} },
+    200: { description: 'File downloaded successfully' },
     401: {
       description: 'OAuth2 verification failed',
       content: { 'application/json': { schema: ErrorResponseSchema } },

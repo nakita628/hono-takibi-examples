@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAggregateRoute, postAggregateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAggregateRoute, postAggregateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAggregateRouteHandler: RouteHandler<typeof getAggregateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aggregateHandler = app
-  .openapi(getAggregateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAggregateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAggregateRouteHandler: RouteHandler<typeof postAggregateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

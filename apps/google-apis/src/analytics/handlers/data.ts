@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDataGaRoute, getDataMcfRoute, getDataRealtimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDataGaRoute, getDataMcfRoute, getDataRealtimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDataGaRouteHandler: RouteHandler<typeof getDataGaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dataHandler = app
-  .openapi(getDataGaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataMcfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDataRealtimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDataMcfRouteHandler: RouteHandler<typeof getDataMcfRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDataRealtimeRouteHandler: RouteHandler<typeof getDataRealtimeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesHandler = app.openapi(
-  postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

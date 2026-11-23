@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBoundCongressionalRecordRoute,
   getBoundCongressionalRecordYearMonthDayRoute,
   getBoundCongressionalRecordYearMonthRoute,
   getBoundCongressionalRecordYearRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBoundCongressionalRecordRouteHandler: RouteHandler<
+  typeof getBoundCongressionalRecordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const boundCongressionalRecordHandler = app
-  .openapi(getBoundCongressionalRecordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoundCongressionalRecordYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoundCongressionalRecordYearMonthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBoundCongressionalRecordYearMonthDayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBoundCongressionalRecordYearRouteHandler: RouteHandler<
+  typeof getBoundCongressionalRecordYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoundCongressionalRecordYearMonthRouteHandler: RouteHandler<
+  typeof getBoundCongressionalRecordYearMonthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBoundCongressionalRecordYearMonthDayRouteHandler: RouteHandler<
+  typeof getBoundCongressionalRecordYearMonthDayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

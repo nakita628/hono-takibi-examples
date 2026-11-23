@@ -179495,7 +179495,6 @@ export const getV2KubernetesClustersClusterIdKubeconfigRoute = createRoute({
   responses: {
     200: {
       description: 'A kubeconfig file for the cluster in YAML format.',
-      content: {},
       headers: z.object({
         'ratelimit-limit': z
           .int()

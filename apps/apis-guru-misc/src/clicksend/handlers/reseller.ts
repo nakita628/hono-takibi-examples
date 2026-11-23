@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getResellerAccountsClientUserIdRoute,
   getResellerAccountsRoute,
   getResellerRoute,
@@ -11,33 +11,52 @@ import {
   putResellerTransferCreditRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getResellerRouteHandler: RouteHandler<typeof getResellerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const resellerHandler = app
-  .openapi(getResellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResellerAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResellerAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResellerAccountsPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResellerAccountsClientUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResellerAccountsClientUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResellerTransferCreditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResellerSubdomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putResellerRouteHandler: RouteHandler<typeof putResellerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResellerAccountsRouteHandler: RouteHandler<
+  typeof getResellerAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResellerAccountsRouteHandler: RouteHandler<
+  typeof postResellerAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResellerAccountsPublicRouteHandler: RouteHandler<
+  typeof postResellerAccountsPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResellerAccountsClientUserIdRouteHandler: RouteHandler<
+  typeof getResellerAccountsClientUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putResellerAccountsClientUserIdRouteHandler: RouteHandler<
+  typeof putResellerAccountsClientUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putResellerTransferCreditRouteHandler: RouteHandler<
+  typeof putResellerTransferCreditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResellerSubdomainRouteHandler: RouteHandler<
+  typeof getResellerSubdomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

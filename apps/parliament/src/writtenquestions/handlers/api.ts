@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiDailyreportsDailyreportsRoute,
   getApiWrittenquestionsQuestionsDateUinRoute,
   getApiWrittenquestionsQuestionsIdRoute,
@@ -9,27 +9,44 @@ import {
   getApiWrittenstatementsStatementsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiDailyreportsDailyreportsRouteHandler: RouteHandler<
+  typeof getApiDailyreportsDailyreportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiDailyreportsDailyreportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenquestionsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenquestionsQuestionsDateUinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenquestionsQuestionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenstatementsStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenstatementsStatementsDateUinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiWrittenstatementsStatementsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiWrittenquestionsQuestionsRouteHandler: RouteHandler<
+  typeof getApiWrittenquestionsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWrittenquestionsQuestionsDateUinRouteHandler: RouteHandler<
+  typeof getApiWrittenquestionsQuestionsDateUinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWrittenquestionsQuestionsIdRouteHandler: RouteHandler<
+  typeof getApiWrittenquestionsQuestionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWrittenstatementsStatementsRouteHandler: RouteHandler<
+  typeof getApiWrittenstatementsStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWrittenstatementsStatementsDateUinRouteHandler: RouteHandler<
+  typeof getApiWrittenstatementsStatementsDateUinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiWrittenstatementsStatementsIdRouteHandler: RouteHandler<
+  typeof getApiWrittenstatementsStatementsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

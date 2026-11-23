@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionBatchDeleteScheduledActionRoute,
   postActionBatchDeleteScheduledActionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionBatchDeleteScheduledActionRouteHandler: RouteHandler<
+  typeof getActionBatchDeleteScheduledActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionBatchDeleteScheduledActionHandler = app
-  .openapi(getActionBatchDeleteScheduledActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionBatchDeleteScheduledActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionBatchDeleteScheduledActionRouteHandler: RouteHandler<
+  typeof postActionBatchDeleteScheduledActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

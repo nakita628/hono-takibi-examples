@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateHandler = app.openapi(
-  postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRouteHandler: RouteHandler<
+  typeof postXAmzTargetIotThingsGraphFrontEndServiceDeleteSystemTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

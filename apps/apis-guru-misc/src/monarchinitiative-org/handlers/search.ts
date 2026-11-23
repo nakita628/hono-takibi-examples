@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchEntityAutocompleteTermRoute,
   getSearchEntityHpoPlTermRoute,
   getSearchEntityTermRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchEntityAutocompleteTermRouteHandler: RouteHandler<
+  typeof getSearchEntityAutocompleteTermRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchEntityAutocompleteTermRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchEntityHpoPlTermRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchEntityTermRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchEntityHpoPlTermRouteHandler: RouteHandler<
+  typeof getSearchEntityHpoPlTermRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchEntityTermRouteHandler: RouteHandler<
+  typeof getSearchEntityTermRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

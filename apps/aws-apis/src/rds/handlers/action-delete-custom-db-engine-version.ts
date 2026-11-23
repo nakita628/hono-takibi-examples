@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteCustomDBEngineVersionRoute,
   postActionDeleteCustomDBEngineVersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteCustomDBEngineVersionRouteHandler: RouteHandler<
+  typeof getActionDeleteCustomDBEngineVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteCustomDbEngineVersionHandler = app
-  .openapi(getActionDeleteCustomDBEngineVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteCustomDBEngineVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteCustomDBEngineVersionRouteHandler: RouteHandler<
+  typeof postActionDeleteCustomDBEngineVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

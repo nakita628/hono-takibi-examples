@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetIoTSecuredTunnelingCloseTunnelHandler = app.openapi(
-  postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetIoTSecuredTunnelingCloseTunnelRouteHandler: RouteHandler<
+  typeof postXAmzTargetIoTSecuredTunnelingCloseTunnelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

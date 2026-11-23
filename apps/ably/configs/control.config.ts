@@ -7,7 +7,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/ably/open-specs/main/definitions/control-v1.yaml',
   output: './src/control/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/control/types.ts' },
   client: { output: './src/control/client.ts', baseUrl: '/' },
   rpc: { output: './src/control/rpc.ts', parseResponse: true },

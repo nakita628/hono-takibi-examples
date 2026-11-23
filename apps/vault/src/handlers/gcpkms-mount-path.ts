@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGcpkmsMountPathConfigRoute,
   deleteGcpkmsMountPathKeysDeregisterKeyRoute,
   deleteGcpkmsMountPathKeysKeyRoute,
@@ -23,69 +23,128 @@ import {
   postGcpkmsMountPathVerifyKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGcpkmsMountPathConfigRouteHandler: RouteHandler<
+  typeof getGcpkmsMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const gcpkmsMountPathHandler = app
-  .openapi(getGcpkmsMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGcpkmsMountPathConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathDecryptKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathEncryptKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGcpkmsMountPathKeysIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGcpkmsMountPathKeysConfigKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysConfigKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysDeregisterKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGcpkmsMountPathKeysDeregisterKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysRegisterKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysRotateKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysTrimKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGcpkmsMountPathKeysTrimKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGcpkmsMountPathKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGcpkmsMountPathKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGcpkmsMountPathPubkeyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathReencryptKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathSignKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGcpkmsMountPathVerifyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGcpkmsMountPathConfigRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGcpkmsMountPathConfigRouteHandler: RouteHandler<
+  typeof deleteGcpkmsMountPathConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathDecryptKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathDecryptKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathEncryptKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathEncryptKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGcpkmsMountPathKeysIndexRouteHandler: RouteHandler<
+  typeof getGcpkmsMountPathKeysIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGcpkmsMountPathKeysConfigKeyRouteHandler: RouteHandler<
+  typeof getGcpkmsMountPathKeysConfigKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysConfigKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysConfigKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysDeregisterKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysDeregisterKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGcpkmsMountPathKeysDeregisterKeyRouteHandler: RouteHandler<
+  typeof deleteGcpkmsMountPathKeysDeregisterKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysRegisterKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysRegisterKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysRotateKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysRotateKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysTrimKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysTrimKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGcpkmsMountPathKeysTrimKeyRouteHandler: RouteHandler<
+  typeof deleteGcpkmsMountPathKeysTrimKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGcpkmsMountPathKeysKeyRouteHandler: RouteHandler<
+  typeof getGcpkmsMountPathKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathKeysKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGcpkmsMountPathKeysKeyRouteHandler: RouteHandler<
+  typeof deleteGcpkmsMountPathKeysKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGcpkmsMountPathPubkeyKeyRouteHandler: RouteHandler<
+  typeof getGcpkmsMountPathPubkeyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathReencryptKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathReencryptKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathSignKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathSignKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGcpkmsMountPathVerifyKeyRouteHandler: RouteHandler<
+  typeof postGcpkmsMountPathVerifyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

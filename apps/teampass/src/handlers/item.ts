@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteItemDeleteRoute,
   getItemAllTagsRoute,
   getItemChangesRoute,
@@ -11,33 +11,44 @@ import {
   putItemUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getItemGetRouteHandler: RouteHandler<typeof getItemGetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const itemHandler = app
-  .openapi(getItemGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemInFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemFindByUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemGetOtpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemAllTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putItemUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getItemInFoldersRouteHandler: RouteHandler<typeof getItemInFoldersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemFindByUrlRouteHandler: RouteHandler<typeof getItemFindByUrlRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemGetOtpRouteHandler: RouteHandler<typeof getItemGetOtpRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemChangesRouteHandler: RouteHandler<typeof getItemChangesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemAllTagsRouteHandler: RouteHandler<typeof getItemAllTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemCreateRouteHandler: RouteHandler<typeof postItemCreateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putItemUpdateRouteHandler: RouteHandler<typeof putItemUpdateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemDeleteRouteHandler: RouteHandler<typeof deleteItemDeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

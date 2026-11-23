@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/clouddebugger/v2/openapi.yaml',
   output: './src/clouddebugger/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/clouddebugger/types.ts' },
   client: { output: './src/clouddebugger/client.ts', baseUrl: '/' },
   rpc: { output: './src/clouddebugger/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGenomeFeaturesWithinBuildReferenceBeginEndRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGenomeFeaturesWithinBuildReferenceBeginEndRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const genomeHandler = app.openapi(
-  getGenomeFeaturesWithinBuildReferenceBeginEndRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getGenomeFeaturesWithinBuildReferenceBeginEndRouteHandler: RouteHandler<
+  typeof getGenomeFeaturesWithinBuildReferenceBeginEndRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

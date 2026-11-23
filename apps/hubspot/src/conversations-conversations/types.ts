@@ -679,12 +679,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { threadId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { threadId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { threadId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { threadId: bigint } } & {
@@ -718,12 +720,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { threadId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { threadId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { threadId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/conversations/conversations/2026-09/threads/:threadId/messages': {

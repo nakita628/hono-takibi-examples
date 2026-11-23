@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apple.com/sirikit-cloud-media/1.0.2/openapi.yaml',
   output: './src/apple-sirikit-cloud-media/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apple-sirikit-cloud-media/types.ts' },
   client: { output: './src/apple-sirikit-cloud-media/client.ts', baseUrl: '/' },
   rpc: { output: './src/apple-sirikit-cloud-media/rpc.ts', parseResponse: true },

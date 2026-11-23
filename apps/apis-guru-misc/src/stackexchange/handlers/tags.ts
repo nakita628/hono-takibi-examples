@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTagsModeratorOnlyRoute,
   getTagsRequiredRoute,
   getTagsRoute,
@@ -13,39 +13,58 @@ import {
   getTagsTagTopAskersPeriodRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTagsRouteHandler: RouteHandler<typeof getTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tagsHandler = app
-  .openapi(getTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsModeratorOnlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsRequiredRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagsFaqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagsRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagsSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagsWikisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagTopAnswerersPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagTopAskersPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTagsModeratorOnlyRouteHandler: RouteHandler<
+  typeof getTagsModeratorOnlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsRequiredRouteHandler: RouteHandler<typeof getTagsRequiredRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsSynonymsRouteHandler: RouteHandler<typeof getTagsSynonymsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagsFaqRouteHandler: RouteHandler<typeof getTagsTagsFaqRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagsInfoRouteHandler: RouteHandler<typeof getTagsTagsInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagsRelatedRouteHandler: RouteHandler<typeof getTagsTagsRelatedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagsSynonymsRouteHandler: RouteHandler<
+  typeof getTagsTagsSynonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagsWikisRouteHandler: RouteHandler<typeof getTagsTagsWikisRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagTopAnswerersPeriodRouteHandler: RouteHandler<
+  typeof getTagsTagTopAnswerersPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagTopAskersPeriodRouteHandler: RouteHandler<
+  typeof getTagsTagTopAskersPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

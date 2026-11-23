@@ -1,103 +1,293 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesHandler,
-  xAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsHandler,
-  xAmzTargetCodeDeploy20141006BatchGetApplicationsHandler,
-  xAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsHandler,
-  xAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesHandler,
-  xAmzTargetCodeDeploy20141006BatchGetDeploymentsHandler,
-  xAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsHandler,
-  xAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesHandler,
-  xAmzTargetCodeDeploy20141006ContinueDeploymentHandler,
-  xAmzTargetCodeDeploy20141006CreateApplicationHandler,
-  xAmzTargetCodeDeploy20141006CreateDeploymentConfigHandler,
-  xAmzTargetCodeDeploy20141006CreateDeploymentGroupHandler,
-  xAmzTargetCodeDeploy20141006CreateDeploymentHandler,
-  xAmzTargetCodeDeploy20141006DeleteApplicationHandler,
-  xAmzTargetCodeDeploy20141006DeleteDeploymentConfigHandler,
-  xAmzTargetCodeDeploy20141006DeleteDeploymentGroupHandler,
-  xAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenHandler,
-  xAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdHandler,
-  xAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceHandler,
-  xAmzTargetCodeDeploy20141006GetApplicationHandler,
-  xAmzTargetCodeDeploy20141006GetApplicationRevisionHandler,
-  xAmzTargetCodeDeploy20141006GetDeploymentConfigHandler,
-  xAmzTargetCodeDeploy20141006GetDeploymentGroupHandler,
-  xAmzTargetCodeDeploy20141006GetDeploymentHandler,
-  xAmzTargetCodeDeploy20141006GetDeploymentInstanceHandler,
-  xAmzTargetCodeDeploy20141006GetDeploymentTargetHandler,
-  xAmzTargetCodeDeploy20141006GetOnPremisesInstanceHandler,
-  xAmzTargetCodeDeploy20141006ListApplicationRevisionsHandler,
-  xAmzTargetCodeDeploy20141006ListApplicationsHandler,
-  xAmzTargetCodeDeploy20141006ListDeploymentConfigsHandler,
-  xAmzTargetCodeDeploy20141006ListDeploymentGroupsHandler,
-  xAmzTargetCodeDeploy20141006ListDeploymentInstancesHandler,
-  xAmzTargetCodeDeploy20141006ListDeploymentsHandler,
-  xAmzTargetCodeDeploy20141006ListDeploymentTargetsHandler,
-  xAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesHandler,
-  xAmzTargetCodeDeploy20141006ListOnPremisesInstancesHandler,
-  xAmzTargetCodeDeploy20141006ListTagsForResourceHandler,
-  xAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusHandler,
-  xAmzTargetCodeDeploy20141006RegisterApplicationRevisionHandler,
-  xAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceHandler,
-  xAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesHandler,
-  xAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationHandler,
-  xAmzTargetCodeDeploy20141006StopDeploymentHandler,
-  xAmzTargetCodeDeploy20141006TagResourceHandler,
-  xAmzTargetCodeDeploy20141006UntagResourceHandler,
-  xAmzTargetCodeDeploy20141006UpdateApplicationHandler,
-  xAmzTargetCodeDeploy20141006UpdateDeploymentGroupHandler,
+  postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetApplicationsRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentsRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsRoute,
+  postXAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesRoute,
+  postXAmzTargetCodeDeploy20141006ContinueDeploymentRoute,
+  postXAmzTargetCodeDeploy20141006CreateApplicationRoute,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentConfigRoute,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentGroupRoute,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentRoute,
+  postXAmzTargetCodeDeploy20141006DeleteApplicationRoute,
+  postXAmzTargetCodeDeploy20141006DeleteDeploymentConfigRoute,
+  postXAmzTargetCodeDeploy20141006DeleteDeploymentGroupRoute,
+  postXAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenRoute,
+  postXAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdRoute,
+  postXAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceRoute,
+  postXAmzTargetCodeDeploy20141006GetApplicationRevisionRoute,
+  postXAmzTargetCodeDeploy20141006GetApplicationRoute,
+  postXAmzTargetCodeDeploy20141006GetDeploymentConfigRoute,
+  postXAmzTargetCodeDeploy20141006GetDeploymentGroupRoute,
+  postXAmzTargetCodeDeploy20141006GetDeploymentInstanceRoute,
+  postXAmzTargetCodeDeploy20141006GetDeploymentRoute,
+  postXAmzTargetCodeDeploy20141006GetDeploymentTargetRoute,
+  postXAmzTargetCodeDeploy20141006GetOnPremisesInstanceRoute,
+  postXAmzTargetCodeDeploy20141006ListApplicationRevisionsRoute,
+  postXAmzTargetCodeDeploy20141006ListApplicationsRoute,
+  postXAmzTargetCodeDeploy20141006ListDeploymentConfigsRoute,
+  postXAmzTargetCodeDeploy20141006ListDeploymentGroupsRoute,
+  postXAmzTargetCodeDeploy20141006ListDeploymentInstancesRoute,
+  postXAmzTargetCodeDeploy20141006ListDeploymentsRoute,
+  postXAmzTargetCodeDeploy20141006ListDeploymentTargetsRoute,
+  postXAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesRoute,
+  postXAmzTargetCodeDeploy20141006ListOnPremisesInstancesRoute,
+  postXAmzTargetCodeDeploy20141006ListTagsForResourceRoute,
+  postXAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusRoute,
+  postXAmzTargetCodeDeploy20141006RegisterApplicationRevisionRoute,
+  postXAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceRoute,
+  postXAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesRoute,
+  postXAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationRoute,
+  postXAmzTargetCodeDeploy20141006StopDeploymentRoute,
+  postXAmzTargetCodeDeploy20141006TagResourceRoute,
+  postXAmzTargetCodeDeploy20141006UntagResourceRoute,
+  postXAmzTargetCodeDeploy20141006UpdateApplicationRoute,
+  postXAmzTargetCodeDeploy20141006UpdateDeploymentGroupRoute,
+} from './routes'
+import {
+  postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetApplicationsRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentsRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsRouteHandler,
+  postXAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006ContinueDeploymentRouteHandler,
+  postXAmzTargetCodeDeploy20141006CreateApplicationRouteHandler,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentConfigRouteHandler,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentGroupRouteHandler,
+  postXAmzTargetCodeDeploy20141006CreateDeploymentRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeleteApplicationRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeleteDeploymentConfigRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeleteDeploymentGroupRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdRouteHandler,
+  postXAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetApplicationRevisionRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetApplicationRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetDeploymentConfigRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetDeploymentGroupRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetDeploymentInstanceRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetDeploymentRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetDeploymentTargetRouteHandler,
+  postXAmzTargetCodeDeploy20141006GetOnPremisesInstanceRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListApplicationRevisionsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListApplicationsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListDeploymentConfigsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListDeploymentGroupsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListDeploymentInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListDeploymentsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListDeploymentTargetsRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListOnPremisesInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006ListTagsForResourceRouteHandler,
+  postXAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusRouteHandler,
+  postXAmzTargetCodeDeploy20141006RegisterApplicationRevisionRouteHandler,
+  postXAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceRouteHandler,
+  postXAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesRouteHandler,
+  postXAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationRouteHandler,
+  postXAmzTargetCodeDeploy20141006StopDeploymentRouteHandler,
+  postXAmzTargetCodeDeploy20141006TagResourceRouteHandler,
+  postXAmzTargetCodeDeploy20141006UntagResourceRouteHandler,
+  postXAmzTargetCodeDeploy20141006UpdateApplicationRouteHandler,
+  postXAmzTargetCodeDeploy20141006UpdateDeploymentGroupRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetApplicationsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetDeploymentsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ContinueDeploymentHandler)
-  .route('/', xAmzTargetCodeDeploy20141006CreateApplicationHandler)
-  .route('/', xAmzTargetCodeDeploy20141006CreateDeploymentHandler)
-  .route('/', xAmzTargetCodeDeploy20141006CreateDeploymentConfigHandler)
-  .route('/', xAmzTargetCodeDeploy20141006CreateDeploymentGroupHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeleteApplicationHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeleteDeploymentConfigHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeleteDeploymentGroupHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdHandler)
-  .route('/', xAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetApplicationHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetApplicationRevisionHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetDeploymentHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetDeploymentConfigHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetDeploymentGroupHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetDeploymentInstanceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetDeploymentTargetHandler)
-  .route('/', xAmzTargetCodeDeploy20141006GetOnPremisesInstanceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListApplicationRevisionsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListApplicationsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListDeploymentConfigsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListDeploymentGroupsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListDeploymentInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListDeploymentTargetsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListDeploymentsHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListOnPremisesInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006ListTagsForResourceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusHandler)
-  .route('/', xAmzTargetCodeDeploy20141006RegisterApplicationRevisionHandler)
-  .route('/', xAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesHandler)
-  .route('/', xAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationHandler)
-  .route('/', xAmzTargetCodeDeploy20141006StopDeploymentHandler)
-  .route('/', xAmzTargetCodeDeploy20141006TagResourceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006UntagResourceHandler)
-  .route('/', xAmzTargetCodeDeploy20141006UpdateApplicationHandler)
-  .route('/', xAmzTargetCodeDeploy20141006UpdateDeploymentGroupHandler)
+  .openapi(
+    postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRoute,
+    postXAmzTargetCodeDeploy20141006AddTagsToOnPremisesInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetApplicationRevisionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetApplicationsRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentsRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetDeploymentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesRoute,
+    postXAmzTargetCodeDeploy20141006BatchGetOnPremisesInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ContinueDeploymentRoute,
+    postXAmzTargetCodeDeploy20141006ContinueDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006CreateApplicationRoute,
+    postXAmzTargetCodeDeploy20141006CreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006CreateDeploymentRoute,
+    postXAmzTargetCodeDeploy20141006CreateDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006CreateDeploymentConfigRoute,
+    postXAmzTargetCodeDeploy20141006CreateDeploymentConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006CreateDeploymentGroupRoute,
+    postXAmzTargetCodeDeploy20141006CreateDeploymentGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeleteApplicationRoute,
+    postXAmzTargetCodeDeploy20141006DeleteApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeleteDeploymentConfigRoute,
+    postXAmzTargetCodeDeploy20141006DeleteDeploymentConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeleteDeploymentGroupRoute,
+    postXAmzTargetCodeDeploy20141006DeleteDeploymentGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenRoute,
+    postXAmzTargetCodeDeploy20141006DeleteGitHubAccountTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdRoute,
+    postXAmzTargetCodeDeploy20141006DeleteResourcesByExternalIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceRoute,
+    postXAmzTargetCodeDeploy20141006DeregisterOnPremisesInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetApplicationRoute,
+    postXAmzTargetCodeDeploy20141006GetApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetApplicationRevisionRoute,
+    postXAmzTargetCodeDeploy20141006GetApplicationRevisionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetDeploymentRoute,
+    postXAmzTargetCodeDeploy20141006GetDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetDeploymentConfigRoute,
+    postXAmzTargetCodeDeploy20141006GetDeploymentConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetDeploymentGroupRoute,
+    postXAmzTargetCodeDeploy20141006GetDeploymentGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetDeploymentInstanceRoute,
+    postXAmzTargetCodeDeploy20141006GetDeploymentInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetDeploymentTargetRoute,
+    postXAmzTargetCodeDeploy20141006GetDeploymentTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006GetOnPremisesInstanceRoute,
+    postXAmzTargetCodeDeploy20141006GetOnPremisesInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListApplicationRevisionsRoute,
+    postXAmzTargetCodeDeploy20141006ListApplicationRevisionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListApplicationsRoute,
+    postXAmzTargetCodeDeploy20141006ListApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListDeploymentConfigsRoute,
+    postXAmzTargetCodeDeploy20141006ListDeploymentConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListDeploymentGroupsRoute,
+    postXAmzTargetCodeDeploy20141006ListDeploymentGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListDeploymentInstancesRoute,
+    postXAmzTargetCodeDeploy20141006ListDeploymentInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListDeploymentTargetsRoute,
+    postXAmzTargetCodeDeploy20141006ListDeploymentTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListDeploymentsRoute,
+    postXAmzTargetCodeDeploy20141006ListDeploymentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesRoute,
+    postXAmzTargetCodeDeploy20141006ListGitHubAccountTokenNamesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListOnPremisesInstancesRoute,
+    postXAmzTargetCodeDeploy20141006ListOnPremisesInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006ListTagsForResourceRoute,
+    postXAmzTargetCodeDeploy20141006ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusRoute,
+    postXAmzTargetCodeDeploy20141006PutLifecycleEventHookExecutionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006RegisterApplicationRevisionRoute,
+    postXAmzTargetCodeDeploy20141006RegisterApplicationRevisionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceRoute,
+    postXAmzTargetCodeDeploy20141006RegisterOnPremisesInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesRoute,
+    postXAmzTargetCodeDeploy20141006RemoveTagsFromOnPremisesInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationRoute,
+    postXAmzTargetCodeDeploy20141006SkipWaitTimeForInstanceTerminationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006StopDeploymentRoute,
+    postXAmzTargetCodeDeploy20141006StopDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006TagResourceRoute,
+    postXAmzTargetCodeDeploy20141006TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006UntagResourceRoute,
+    postXAmzTargetCodeDeploy20141006UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006UpdateApplicationRoute,
+    postXAmzTargetCodeDeploy20141006UpdateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeDeploy20141006UpdateDeploymentGroupRoute,
+    postXAmzTargetCodeDeploy20141006UpdateDeploymentGroupRouteHandler,
+  )
 
 export default app

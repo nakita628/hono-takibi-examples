@@ -2273,18 +2273,18 @@ export async function postApiPostsUsernamePostSlugCommentCommentIdReply(
 }
 
 export async function getApiCollectionsNamespaceSlugId(
-  args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$get']>,
+  args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.api.collections[':namespace'][':slug-:id'].$get(args, options))
+  return await parseResponse(client.api.collections[':namespace'][':slug-{id}'].$get(args, options))
 }
 
 export async function patchApiCollectionsNamespaceSlugId(
-  args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-:id']['$patch']>,
+  args: InferRequestType<(typeof client.api.collections)[':namespace'][':slug-{id}']['$patch']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.collections[':namespace'][':slug-:id'].$patch(args, options),
+    client.api.collections[':namespace'][':slug-{id}'].$patch(args, options),
   )
 }
 
@@ -2304,12 +2304,12 @@ export async function patchApiCollectionsNamespaceSlug(
 
 export async function postApiCollectionsNamespaceSlugIdItems(
   args: InferRequestType<
-    (typeof client.api.collections)[':namespace'][':slug-:id']['items']['$post']
+    (typeof client.api.collections)[':namespace'][':slug-{id}']['items']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.collections[':namespace'][':slug-:id'].items.$post(args, options),
+    client.api.collections[':namespace'][':slug-{id}'].items.$post(args, options),
   )
 }
 
@@ -2338,23 +2338,23 @@ export async function postApiCollections(
 
 export async function getApiCollectionsNamespaceSlugIdResourceGroup(
   args: InferRequestType<
-    (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$get']
+    (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.collections[':namespace'][':slug-:id']['resource-group'].$get(args, options),
+    client.api.collections[':namespace'][':slug-{id}']['resource-group'].$get(args, options),
   )
 }
 
 export async function postApiCollectionsNamespaceSlugIdResourceGroup(
   args: InferRequestType<
-    (typeof client.api.collections)[':namespace'][':slug-:id']['resource-group']['$post']
+    (typeof client.api.collections)[':namespace'][':slug-{id}']['resource-group']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.collections[':namespace'][':slug-:id']['resource-group'].$post(args, options),
+    client.api.collections[':namespace'][':slug-{id}']['resource-group'].$post(args, options),
   )
 }
 

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmAddGenericVhostUserRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmAddGenericVhostUserRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmAddGenericVhostUserHandler = app.openapi(putVmAddGenericVhostUserRoute, (c) => {
+export const putVmAddGenericVhostUserRouteHandler: RouteHandler<
+  typeof putVmAddGenericVhostUserRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

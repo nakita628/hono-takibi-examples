@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDescribeIpv6PoolsRoute, postActionDescribeIpv6PoolsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDescribeIpv6PoolsRoute, postActionDescribeIpv6PoolsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeIpv6PoolsRouteHandler: RouteHandler<
+  typeof getActionDescribeIpv6PoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeIpv6PoolsHandler = app
-  .openapi(getActionDescribeIpv6PoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeIpv6PoolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeIpv6PoolsRouteHandler: RouteHandler<
+  typeof postActionDescribeIpv6PoolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

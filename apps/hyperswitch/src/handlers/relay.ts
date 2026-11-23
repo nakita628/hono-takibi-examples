@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRelayRelayIdRoute, postRelayRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRelayRelayIdRoute, postRelayRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRelayRouteHandler: RouteHandler<typeof postRelayRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const relayHandler = app
-  .openapi(postRelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRelayRelayIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRelayRelayIdRouteHandler: RouteHandler<typeof getRelayRelayIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

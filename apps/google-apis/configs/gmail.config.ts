@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/gmail/v1/openapi.yaml',
   output: './src/gmail/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gmail/types.ts' },
   client: { output: './src/gmail/client.ts', baseUrl: '/' },
   rpc: { output: './src/gmail/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAgentWorkersGetMinVersionRoute,
   getAgentWorkersListBlacklistedTokensRoute,
   postAgentWorkersBlacklistTokenRoute,
@@ -7,21 +7,32 @@ import {
   postAgentWorkersRemoveBlacklistTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAgentWorkersCreateAgentTokenRouteHandler: RouteHandler<
+  typeof postAgentWorkersCreateAgentTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const agentWorkersHandler = app
-  .openapi(postAgentWorkersCreateAgentTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentWorkersBlacklistTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentWorkersRemoveBlacklistTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentWorkersListBlacklistedTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentWorkersGetMinVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAgentWorkersBlacklistTokenRouteHandler: RouteHandler<
+  typeof postAgentWorkersBlacklistTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentWorkersRemoveBlacklistTokenRouteHandler: RouteHandler<
+  typeof postAgentWorkersRemoveBlacklistTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentWorkersListBlacklistedTokensRouteHandler: RouteHandler<
+  typeof getAgentWorkersListBlacklistedTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentWorkersGetMinVersionRouteHandler: RouteHandler<
+  typeof getAgentWorkersGetMinVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

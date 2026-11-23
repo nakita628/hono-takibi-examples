@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetManagedPrefixListAssociationsRoute,
   postActionGetManagedPrefixListAssociationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetManagedPrefixListAssociationsRouteHandler: RouteHandler<
+  typeof getActionGetManagedPrefixListAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetManagedPrefixListAssociationsHandler = app
-  .openapi(getActionGetManagedPrefixListAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetManagedPrefixListAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetManagedPrefixListAssociationsRouteHandler: RouteHandler<
+  typeof postActionGetManagedPrefixListAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postFinAskRoute,
   postFinCapabilitiesRoute,
   postFinCsatRoute,
@@ -9,27 +9,34 @@ import {
   postFinStartRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFinStartRouteHandler: RouteHandler<typeof postFinStartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const finHandler = app
-  .openapi(postFinStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinCsatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinAskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinProceduresProcedureIdRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFinEscalateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFinReplyRouteHandler: RouteHandler<typeof postFinReplyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFinCsatRouteHandler: RouteHandler<typeof postFinCsatRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFinCapabilitiesRouteHandler: RouteHandler<
+  typeof postFinCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFinAskRouteHandler: RouteHandler<typeof postFinAskRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFinProceduresProcedureIdRunRouteHandler: RouteHandler<
+  typeof postFinProceduresProcedureIdRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFinEscalateRouteHandler: RouteHandler<typeof postFinEscalateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

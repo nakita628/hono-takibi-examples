@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGrocerylistItemGuidRoute,
   deleteGrocerylistRoute,
   getGrocerylistRoute,
@@ -12,36 +12,60 @@ import {
   putGrocerylistItemGuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteGrocerylistRouteHandler: RouteHandler<typeof deleteGrocerylistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const grocerylistHandler = app
-  .openapi(deleteGrocerylistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGrocerylistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistClearcheckedlinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistDepartmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistItemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGrocerylistItemGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGrocerylistItemGuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistLineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistRecipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGrocerylistSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGrocerylistRouteHandler: RouteHandler<typeof getGrocerylistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistClearcheckedlinesRouteHandler: RouteHandler<
+  typeof postGrocerylistClearcheckedlinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistDepartmentRouteHandler: RouteHandler<
+  typeof postGrocerylistDepartmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistItemRouteHandler: RouteHandler<
+  typeof postGrocerylistItemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGrocerylistItemGuidRouteHandler: RouteHandler<
+  typeof deleteGrocerylistItemGuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGrocerylistItemGuidRouteHandler: RouteHandler<
+  typeof putGrocerylistItemGuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistLineRouteHandler: RouteHandler<
+  typeof postGrocerylistLineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistRecipeRouteHandler: RouteHandler<
+  typeof postGrocerylistRecipeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGrocerylistSyncRouteHandler: RouteHandler<
+  typeof postGrocerylistSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

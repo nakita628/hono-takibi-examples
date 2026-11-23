@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetFeedbackRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetFeedbackRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getFeedbackHandler = app.openapi(postGetFeedbackRoute, (c) => {
+export const postGetFeedbackRouteHandler: RouteHandler<typeof postGetFeedbackRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

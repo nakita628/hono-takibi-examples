@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStyleguideRoute, postStyleguideRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStyleguideRoute, postStyleguideRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStyleguideRouteHandler: RouteHandler<typeof getStyleguideRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const styleguideHandler = app
-  .openapi(getStyleguideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStyleguideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStyleguideRouteHandler: RouteHandler<typeof postStyleguideRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

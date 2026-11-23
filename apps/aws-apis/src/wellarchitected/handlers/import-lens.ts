@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putImportLensRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putImportLensRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const importLensHandler = app.openapi(putImportLensRoute, (c) => {
+export const putImportLensRouteHandler: RouteHandler<typeof putImportLensRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

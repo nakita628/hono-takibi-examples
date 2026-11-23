@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/nios/3.0.0/openapi.yaml',
   output: './src/nios/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nios/types.ts' },
   client: { output: './src/nios/client.ts', baseUrl: '/' },
   rpc: { output: './src/nios/rpc.ts', parseResponse: true },

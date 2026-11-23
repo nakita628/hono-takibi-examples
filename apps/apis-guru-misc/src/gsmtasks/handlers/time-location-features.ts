@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTimeLocationFeaturesIdIndexRoute,
   getTimeLocationFeaturesIdIndexRoute,
   getTimeLocationFeaturesIndexRoute,
@@ -8,24 +8,38 @@ import {
   putTimeLocationFeaturesIdIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTimeLocationFeaturesIndexRouteHandler: RouteHandler<
+  typeof getTimeLocationFeaturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const timeLocationFeaturesHandler = app
-  .openapi(getTimeLocationFeaturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTimeLocationFeaturesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTimeLocationFeaturesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTimeLocationFeaturesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTimeLocationFeaturesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTimeLocationFeaturesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTimeLocationFeaturesIndexRouteHandler: RouteHandler<
+  typeof postTimeLocationFeaturesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTimeLocationFeaturesIdIndexRouteHandler: RouteHandler<
+  typeof deleteTimeLocationFeaturesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTimeLocationFeaturesIdIndexRouteHandler: RouteHandler<
+  typeof getTimeLocationFeaturesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTimeLocationFeaturesIdIndexRouteHandler: RouteHandler<
+  typeof patchTimeLocationFeaturesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTimeLocationFeaturesIdIndexRouteHandler: RouteHandler<
+  typeof putTimeLocationFeaturesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

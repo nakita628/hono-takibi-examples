@@ -1441,18 +1441,18 @@ export function useImmutableGetPlaces<TError = unknown>(
 }
 
 export function getGetPlacesPlaceKey(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
 ) {
-  return ['places', '/places/$:place', args] as const
+  return ['places', '/places/${place}', args] as const
 }
 
 export function useGetPlacesPlace<TError = unknown>(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
         >
       >,
       TError
@@ -1469,25 +1469,25 @@ export function useGetPlacesPlace<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.places['$:place'].$get(args, clientOptions)),
+      async () => parseResponse(client.places['${place}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPlacesPlace<TError = unknown>(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
         >
       >,
       TError
@@ -1504,13 +1504,13 @@ export function useImmutableGetPlacesPlace<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.places['$:place'].$get(args, clientOptions)),
+      async () => parseResponse(client.places['${place}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

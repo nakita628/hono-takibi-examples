@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteToolboxSandboxIdToolboxFilesRoute,
   deleteToolboxSandboxIdToolboxGitBranchesRoute,
   deleteToolboxSandboxIdToolboxProcessPtySessionIdRoute,
@@ -70,210 +70,410 @@ import {
   postToolboxSandboxIdToolboxProcessSessionSessionIdExecRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getToolboxSandboxIdToolboxProjectDirRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProjectDirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const toolboxHandler = app
-  .openapi(getToolboxSandboxIdToolboxProjectDirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxUserHomeDirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxWorkDirRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteToolboxSandboxIdToolboxFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxFilesDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesBulkDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxFilesFindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesFolderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxFilesInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxFilesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxFilesBulkUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteToolboxSandboxIdToolboxGitBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxGitBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxGitHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitPullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitPushRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxGitCheckoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxGitStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxProcessExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxProcessSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteToolboxSandboxIdToolboxProcessSessionSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessSessionSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxProcessSessionSessionIdExecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessPtyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxProcessPtyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteToolboxSandboxIdToolboxProcessPtySessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxProcessPtySessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxProcessPtySessionIdResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxLspCompletionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxLspDidCloseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxLspDidOpenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxLspDocumentSymbolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxLspStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxLspStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxLspWorkspaceSymbolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseProcessProcessNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseProcessProcessNameRestartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseProcessProcessNameLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseProcessProcessNameErrorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseMousePositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseMouseMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseMouseClickRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseMouseDragRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseMouseScrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseKeyboardTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseKeyboardKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postToolboxSandboxIdToolboxComputeruseKeyboardHotkeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseScreenshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseScreenshotRegionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseScreenshotCompressedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseScreenshotRegionCompressedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseDisplayInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getToolboxSandboxIdToolboxComputeruseDisplayWindowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getToolboxSandboxIdToolboxUserHomeDirRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxUserHomeDirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxWorkDirRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxWorkDirRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteToolboxSandboxIdToolboxFilesRouteHandler: RouteHandler<
+  typeof deleteToolboxSandboxIdToolboxFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxFilesRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxFilesDownloadRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxFilesDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesBulkDownloadRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesBulkDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxFilesFindRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxFilesFindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesFolderRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxFilesInfoRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxFilesInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesMoveRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesPermissionsRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesReplaceRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxFilesSearchRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxFilesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesUploadRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxFilesBulkUploadRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxFilesBulkUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitAddRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteToolboxSandboxIdToolboxGitBranchesRouteHandler: RouteHandler<
+  typeof deleteToolboxSandboxIdToolboxGitBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxGitBranchesRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxGitBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitBranchesRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitCloneRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitCommitRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitCommitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxGitHistoryRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxGitHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitPullRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitPullRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitPushRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitPushRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxGitCheckoutRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxGitCheckoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxGitStatusRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxGitStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxProcessExecuteRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxProcessExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessSessionRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxProcessSessionRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxProcessSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteToolboxSandboxIdToolboxProcessSessionSessionIdRouteHandler: RouteHandler<
+  typeof deleteToolboxSandboxIdToolboxProcessSessionSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessSessionSessionIdRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessSessionSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxProcessSessionSessionIdExecRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxProcessSessionSessionIdExecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdLogsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessSessionSessionIdCommandCommandIdLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessPtyRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessPtyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxProcessPtyRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxProcessPtyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteToolboxSandboxIdToolboxProcessPtySessionIdRouteHandler: RouteHandler<
+  typeof deleteToolboxSandboxIdToolboxProcessPtySessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxProcessPtySessionIdRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxProcessPtySessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxProcessPtySessionIdResizeRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxProcessPtySessionIdResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxLspCompletionsRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxLspCompletionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxLspDidCloseRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxLspDidCloseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxLspDidOpenRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxLspDidOpenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxLspDocumentSymbolsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxLspDocumentSymbolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxLspStartRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxLspStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxLspStopRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxLspStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxLspWorkspaceSymbolsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxLspWorkspaceSymbolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseStartRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseStopRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseStatusRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseProcessProcessNameStatusRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseProcessProcessNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseProcessProcessNameRestartRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseProcessProcessNameRestartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseProcessProcessNameLogsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseProcessProcessNameLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseProcessProcessNameErrorsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseProcessProcessNameErrorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseMousePositionRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseMousePositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseMouseMoveRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseMouseMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseMouseClickRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseMouseClickRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseMouseDragRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseMouseDragRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseMouseScrollRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseMouseScrollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseKeyboardTypeRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseKeyboardTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseKeyboardKeyRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseKeyboardKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postToolboxSandboxIdToolboxComputeruseKeyboardHotkeyRouteHandler: RouteHandler<
+  typeof postToolboxSandboxIdToolboxComputeruseKeyboardHotkeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseScreenshotRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseScreenshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseScreenshotRegionRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseScreenshotRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseScreenshotCompressedRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseScreenshotCompressedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseScreenshotRegionCompressedRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseScreenshotRegionCompressedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseDisplayInfoRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseDisplayInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getToolboxSandboxIdToolboxComputeruseDisplayWindowsRouteHandler: RouteHandler<
+  typeof getToolboxSandboxIdToolboxComputeruseDisplayWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/marketplace-apps.yaml',
   output: './src/marketplace-apps/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/marketplace-apps/types.ts' },
   client: { output: './src/marketplace-apps/client.ts', baseUrl: '/' },
   rpc: { output: './src/marketplace-apps/rpc.ts', parseResponse: true },

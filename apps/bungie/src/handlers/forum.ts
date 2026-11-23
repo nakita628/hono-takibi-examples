@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getForumGetCoreTopicsPagedPageSortQuickDateCategoryFilterIndexRoute,
   getForumGetForumTagSuggestionsIndexRoute,
   getForumGetPostAndParentAwaitingApprovalChildPostIdIndexRoute,
@@ -12,42 +12,62 @@ import {
   postForumRecruitSummariesIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getForumGetTopicsPagedPagePageSizeGroupSortQuickDateCategoryFilterIndexRouteHandler: RouteHandler<
+  typeof getForumGetTopicsPagedPagePageSizeGroupSortQuickDateCategoryFilterIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const forumHandler = app
-  .openapi(getForumGetTopicsPagedPagePageSizeGroupSortQuickDateCategoryFilterIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getForumGetCoreTopicsPagedPageSortQuickDateCategoryFilterIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getForumGetPostsThreadedPagedParentPostIdPagePageSizeReplySizeGetParentPostRootThreadModeSortModeIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getForumGetPostsThreadedPagedFromChildChildPostIdPagePageSizeReplySizeRootThreadModeSortModeIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getForumGetPostAndParentChildPostIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getForumGetPostAndParentAwaitingApprovalChildPostIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getForumGetTopicForContentContentIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getForumGetForumTagSuggestionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getForumPollTopicIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postForumRecruitSummariesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getForumGetCoreTopicsPagedPageSortQuickDateCategoryFilterIndexRouteHandler: RouteHandler<
+  typeof getForumGetCoreTopicsPagedPageSortQuickDateCategoryFilterIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetPostsThreadedPagedParentPostIdPagePageSizeReplySizeGetParentPostRootThreadModeSortModeIndexRouteHandler: RouteHandler<
+  typeof getForumGetPostsThreadedPagedParentPostIdPagePageSizeReplySizeGetParentPostRootThreadModeSortModeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetPostsThreadedPagedFromChildChildPostIdPagePageSizeReplySizeRootThreadModeSortModeIndexRouteHandler: RouteHandler<
+  typeof getForumGetPostsThreadedPagedFromChildChildPostIdPagePageSizeReplySizeRootThreadModeSortModeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetPostAndParentChildPostIdIndexRouteHandler: RouteHandler<
+  typeof getForumGetPostAndParentChildPostIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetPostAndParentAwaitingApprovalChildPostIdIndexRouteHandler: RouteHandler<
+  typeof getForumGetPostAndParentAwaitingApprovalChildPostIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetTopicForContentContentIdIndexRouteHandler: RouteHandler<
+  typeof getForumGetTopicForContentContentIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumGetForumTagSuggestionsIndexRouteHandler: RouteHandler<
+  typeof getForumGetForumTagSuggestionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getForumPollTopicIdIndexRouteHandler: RouteHandler<
+  typeof getForumPollTopicIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postForumRecruitSummariesIndexRouteHandler: RouteHandler<
+  typeof postForumRecruitSummariesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

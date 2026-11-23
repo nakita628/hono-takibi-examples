@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsInsightsIndexServiceListCostAllocationTagsHandler = app.openapi(
-  postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceModifySelfservicePermissionsHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceModifySelfservicePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

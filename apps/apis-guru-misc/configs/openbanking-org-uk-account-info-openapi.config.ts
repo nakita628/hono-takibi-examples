@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openbanking.org.uk/account-info-openapi/3.1.7/openapi.yaml',
   output: './src/openbanking-org-uk-account-info-openapi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openbanking-org-uk-account-info-openapi/types.ts' },
   client: { output: './src/openbanking-org-uk-account-info-openapi/client.ts', baseUrl: '/' },
   rpc: { output: './src/openbanking-org-uk-account-info-openapi/rpc.ts', parseResponse: true },

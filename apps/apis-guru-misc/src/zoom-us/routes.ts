@@ -25943,7 +25943,7 @@ export const patchAccountsAccountIdOptionsRoute = createRoute({
       description:
         '**Error Code:** `200`<br>\nThe pay mode cannot be updated for a sub account which already has an existing plan.',
     },
-    204: { description: '**HTTP Status Code:** `204`<br>\nAccount options updated.', content: {} },
+    204: { description: '**HTTP Status Code:** `204`<br>\nAccount options updated.' },
     400: {
       description:
         '**HTTP Status Code:** `400`<br>\n**Error Code:** `2100`<br> The collection method cannot be changed after the purchase is complete.',
@@ -116721,7 +116721,7 @@ export const deleteUsersUserIdSchedulersRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: '**HTTP Status Code:** `204`<br> All schedulers deleted.\n', content: {} },
+    204: { description: '**HTTP Status Code:** `204`<br> All schedulers deleted.\n' },
     404: {
       description:
         '**HTTP Status Code:** `404` **Not Found**<br><br>\n**Error Code:** `1001`<br>\nUser does not exist: $userId.\n',
@@ -122170,7 +122170,7 @@ export const putUsersUserIdStatusRoute = createRoute({
   },
   responses: {
     200: { description: '' },
-    204: { description: '**HTTP Status Code:** `204`<br>\nStatus updated.', content: {} },
+    204: { description: '**HTTP Status Code:** `204`<br>\nStatus updated.' },
     400: {
       description:
         "**HTTP Status Code:** `400` **Bad Request**<br><br>\n**Error Code:** `200`<br>\nZoom Room and Admin users' status can not be activated or deactivated.<br><br>\n**Error Code:** `3412`<br>Your request to activate the user was not approved at this time because your account has reached the permitted maximum number of $maxAllowedNumber basic users. Please remove existing basic user(s) from your Users list or the Pending Users list before attempting to activate this user.<br>\n**Error Code:** `2033`<br>Your request to activate the basic user was not approved because you have already reached the maximum basic user limit allowed in your account. For additional help regarding this issue, contact the Zoom Customer Support team.\n",

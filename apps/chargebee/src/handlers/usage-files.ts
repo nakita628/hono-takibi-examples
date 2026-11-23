@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsageFilesUsageFileIdProcessingStatusRoute,
   postUsageFilesUploadUrlRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsageFilesUsageFileIdProcessingStatusRouteHandler: RouteHandler<
+  typeof getUsageFilesUsageFileIdProcessingStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usageFilesHandler = app
-  .openapi(getUsageFilesUsageFileIdProcessingStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsageFilesUploadUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUsageFilesUploadUrlRouteHandler: RouteHandler<
+  typeof postUsageFilesUploadUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

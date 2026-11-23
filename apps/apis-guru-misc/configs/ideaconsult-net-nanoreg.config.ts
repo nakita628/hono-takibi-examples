@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ideaconsult.net/nanoreg/4.0.0/openapi.yaml',
   output: './src/ideaconsult-net-nanoreg/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ideaconsult-net-nanoreg/types.ts' },
   client: { output: './src/ideaconsult-net-nanoreg/client.ts', baseUrl: '/' },
   rpc: { output: './src/ideaconsult-net-nanoreg/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMarketplaceMarketplaceIdGetAutomotivePartsCompatibilityPoliciesRoute,
   getMarketplaceMarketplaceIdGetExtendedProducerResponsibilityPoliciesRoute,
   getMarketplaceMarketplaceIdGetHazardousMaterialsLabelsRoute,
@@ -9,27 +9,44 @@ import {
   getMarketplaceMarketplaceIdGetReturnPoliciesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMarketplaceMarketplaceIdGetAutomotivePartsCompatibilityPoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetAutomotivePartsCompatibilityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const marketplaceHandler = app
-  .openapi(getMarketplaceMarketplaceIdGetAutomotivePartsCompatibilityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetExtendedProducerResponsibilityPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetHazardousMaterialsLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetItemConditionPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetListingStructurePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetNegotiatedPricePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketplaceMarketplaceIdGetReturnPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMarketplaceMarketplaceIdGetExtendedProducerResponsibilityPoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetExtendedProducerResponsibilityPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketplaceMarketplaceIdGetHazardousMaterialsLabelsRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetHazardousMaterialsLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketplaceMarketplaceIdGetItemConditionPoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetItemConditionPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketplaceMarketplaceIdGetListingStructurePoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetListingStructurePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketplaceMarketplaceIdGetNegotiatedPricePoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetNegotiatedPricePoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketplaceMarketplaceIdGetReturnPoliciesRouteHandler: RouteHandler<
+  typeof getMarketplaceMarketplaceIdGetReturnPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

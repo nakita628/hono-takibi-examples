@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRebootRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRebootRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const rebootHandler = app.openapi(postRebootRoute, (c) => {
+export const postRebootRouteHandler: RouteHandler<typeof postRebootRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

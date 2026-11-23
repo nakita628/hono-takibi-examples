@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnythingArrayOfObjectsRoute,
   getAnythingArrayOfPrimitivesRoute,
   getAnythingMarkdownRoute,
@@ -9,27 +9,44 @@ import {
   getAnythingReturnsAsJsonButIsActuallyStringRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnythingArrayOfPrimitivesRouteHandler: RouteHandler<
+  typeof getAnythingArrayOfPrimitivesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(getAnythingArrayOfPrimitivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingMarkdownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingArrayOfObjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingPolymorphismRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingRecursiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingReturnsAsJsonButIsActuallyStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnythingObjectRouteHandler: RouteHandler<typeof getAnythingObjectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingMarkdownRouteHandler: RouteHandler<
+  typeof getAnythingMarkdownRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingArrayOfObjectsRouteHandler: RouteHandler<
+  typeof getAnythingArrayOfObjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingPolymorphismRouteHandler: RouteHandler<
+  typeof getAnythingPolymorphismRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingRecursiveRouteHandler: RouteHandler<
+  typeof getAnythingRecursiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingReturnsAsJsonButIsActuallyStringRouteHandler: RouteHandler<
+  typeof getAnythingReturnsAsJsonButIsActuallyStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

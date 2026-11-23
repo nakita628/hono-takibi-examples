@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebinarsWebinarIdPanelistsPanelistIdRoute,
   deleteWebinarsWebinarIdPanelistsRoute,
   deleteWebinarsWebinarIdPollsPollIdRoute,
@@ -24,72 +24,134 @@ import {
   putWebinarsWebinarIdStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteWebinarsWebinarIdRouteHandler: RouteHandler<
+  typeof deleteWebinarsWebinarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webinarsHandler = app
-  .openapi(deleteWebinarsWebinarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebinarsWebinarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebinarsWebinarIdBatchRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebinarsWebinarIdPanelistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdPanelistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebinarsWebinarIdPanelistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebinarsWebinarIdPanelistsPanelistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebinarsWebinarIdPollsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebinarsWebinarIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebinarsWebinarIdPollsPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebinarsWebinarIdRegistrantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWebinarsWebinarIdRegistrantsQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebinarsWebinarIdRegistrantsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebinarsWebinarIdRegistrantsRegistrantIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdRegistrantsRegistrantIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWebinarsWebinarIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebinarsWebinarIdTrackingSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebinarsWebinarIdRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebinarsWebinarIdRouteHandler: RouteHandler<
+  typeof patchWebinarsWebinarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebinarsWebinarIdBatchRegistrantsRouteHandler: RouteHandler<
+  typeof postWebinarsWebinarIdBatchRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebinarsWebinarIdPanelistsRouteHandler: RouteHandler<
+  typeof deleteWebinarsWebinarIdPanelistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdPanelistsRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdPanelistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebinarsWebinarIdPanelistsRouteHandler: RouteHandler<
+  typeof postWebinarsWebinarIdPanelistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebinarsWebinarIdPanelistsPanelistIdRouteHandler: RouteHandler<
+  typeof deleteWebinarsWebinarIdPanelistsPanelistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdPollsRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebinarsWebinarIdPollsRouteHandler: RouteHandler<
+  typeof postWebinarsWebinarIdPollsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebinarsWebinarIdPollsPollIdRouteHandler: RouteHandler<
+  typeof deleteWebinarsWebinarIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdPollsPollIdRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebinarsWebinarIdPollsPollIdRouteHandler: RouteHandler<
+  typeof putWebinarsWebinarIdPollsPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdRegistrantsRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebinarsWebinarIdRegistrantsRouteHandler: RouteHandler<
+  typeof postWebinarsWebinarIdRegistrantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWebinarsWebinarIdRegistrantsQuestionsRouteHandler: RouteHandler<
+  typeof patchWebinarsWebinarIdRegistrantsQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebinarsWebinarIdRegistrantsStatusRouteHandler: RouteHandler<
+  typeof putWebinarsWebinarIdRegistrantsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebinarsWebinarIdRegistrantsRegistrantIdRouteHandler: RouteHandler<
+  typeof deleteWebinarsWebinarIdRegistrantsRegistrantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdRegistrantsRegistrantIdRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdRegistrantsRegistrantIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWebinarsWebinarIdStatusRouteHandler: RouteHandler<
+  typeof putWebinarsWebinarIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebinarsWebinarIdTrackingSourcesRouteHandler: RouteHandler<
+  typeof getWebinarsWebinarIdTrackingSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

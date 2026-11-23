@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRegistriesIdRoute,
   getRegistriesIdRoute,
   getRegistriesRoute,
@@ -9,27 +9,36 @@ import {
   putRegistriesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRegistriesRouteHandler: RouteHandler<typeof getRegistriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const registriesHandler = app
-  .openapi(getRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRegistriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRegistriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistriesIdConfigureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistriesPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRegistriesRouteHandler: RouteHandler<typeof postRegistriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRegistriesIdRouteHandler: RouteHandler<typeof deleteRegistriesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistriesIdRouteHandler: RouteHandler<typeof getRegistriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRegistriesIdRouteHandler: RouteHandler<typeof putRegistriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegistriesIdConfigureRouteHandler: RouteHandler<
+  typeof postRegistriesIdConfigureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRegistriesPingRouteHandler: RouteHandler<typeof postRegistriesPingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

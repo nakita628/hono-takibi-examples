@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/maif.local/otoroshi/1.5.0-dev/openapi.yaml',
   output: './src/maif-otoroshi/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/maif-otoroshi/types.ts' },
   client: { output: './src/maif-otoroshi/client.ts', baseUrl: '/' },
   rpc: { output: './src/maif-otoroshi/rpc.ts', parseResponse: true },

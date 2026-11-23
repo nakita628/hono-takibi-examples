@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAssessmentFrameworksFrameworkIdRoute,
   getAssessmentFrameworksFrameworkIdRoute,
   postAssessmentFrameworksFrameworkIdShareRequestsRoute,
@@ -7,21 +7,32 @@ import {
   putAssessmentFrameworksFrameworkIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAssessmentFrameworksRouteHandler: RouteHandler<
+  typeof postAssessmentFrameworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assessmentFrameworksHandler = app
-  .openapi(postAssessmentFrameworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAssessmentFrameworksFrameworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssessmentFrameworksFrameworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAssessmentFrameworksFrameworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAssessmentFrameworksFrameworkIdShareRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAssessmentFrameworksFrameworkIdRouteHandler: RouteHandler<
+  typeof deleteAssessmentFrameworksFrameworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssessmentFrameworksFrameworkIdRouteHandler: RouteHandler<
+  typeof getAssessmentFrameworksFrameworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAssessmentFrameworksFrameworkIdRouteHandler: RouteHandler<
+  typeof putAssessmentFrameworksFrameworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAssessmentFrameworksFrameworkIdShareRequestsRouteHandler: RouteHandler<
+  typeof postAssessmentFrameworksFrameworkIdShareRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

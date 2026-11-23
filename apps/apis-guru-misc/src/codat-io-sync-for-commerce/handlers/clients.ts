@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getClientsClientIdConfigUiAccountsPlatformPlatformKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getClientsClientIdConfigUiAccountsPlatformPlatformKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const clientsHandler = app.openapi(
-  getClientsClientIdConfigUiAccountsPlatformPlatformKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getClientsClientIdConfigUiAccountsPlatformPlatformKeyRouteHandler: RouteHandler<
+  typeof getClientsClientIdConfigUiAccountsPlatformPlatformKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/id4i.de/1.0.2/openapi.yaml',
   output: './src/id4i-de/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/id4i-de/types.ts' },
   client: { output: './src/id4i-de/client.ts', baseUrl: '/' },
   rpc: { output: './src/id4i-de/rpc.ts', parseResponse: true },

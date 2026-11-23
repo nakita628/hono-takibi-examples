@@ -337,12 +337,12 @@ const PerformanceInsightsStatsSchema = z
   .openapi('PerformanceInsightsStats')
 
 type PerformanceInsightsMetricsDetailType = {
-  MetricDisplayName?: z.infer<typeof PerformanceInsightsMetricDisplayNameSchema> & unknown
-  Unit?: z.infer<typeof PerformanceInsightsMetricUnitSchema> & unknown
-  MetricQuery?: z.infer<typeof PerformanceInsightsMetricQuerySchema> & unknown
-  ReferenceData?: z.infer<typeof PerformanceInsightsReferenceDataListSchema> & unknown
-  StatsAtAnomaly?: z.infer<typeof PerformanceInsightsStatsSchema> & unknown
-  StatsAtBaseline?: z.infer<typeof PerformanceInsightsStatsSchema> & unknown
+  MetricDisplayName?: z.infer<typeof PerformanceInsightsMetricDisplayNameSchema>
+  Unit?: z.infer<typeof PerformanceInsightsMetricUnitSchema>
+  MetricQuery?: z.infer<typeof PerformanceInsightsMetricQuerySchema>
+  ReferenceData?: z.infer<typeof PerformanceInsightsReferenceDataListSchema>
+  StatsAtAnomaly?: z.infer<typeof PerformanceInsightsStatsSchema>
+  StatsAtBaseline?: z.infer<typeof PerformanceInsightsStatsSchema>
 }
 
 const PerformanceInsightsMetricsDetailSchema: z.ZodType<PerformanceInsightsMetricsDetailType> = z
@@ -385,8 +385,8 @@ const PerformanceInsightsMetricsDetailsSchema: z.ZodType<PerformanceInsightsMetr
   .openapi('PerformanceInsightsMetricsDetails')
 
 type AnomalySourceDetailsType = {
-  CloudWatchMetrics?: z.infer<typeof CloudWatchMetricsDetailsSchema> & unknown
-  PerformanceInsightsMetrics?: z.infer<typeof PerformanceInsightsMetricsDetailsSchema> & unknown
+  CloudWatchMetrics?: z.infer<typeof CloudWatchMetricsDetailsSchema>
+  PerformanceInsightsMetrics?: z.infer<typeof PerformanceInsightsMetricsDetailsSchema>
 }
 
 const AnomalySourceDetailsSchema: z.ZodType<AnomalySourceDetailsType> = z
@@ -543,20 +543,20 @@ const AnomalyResourcesSchema = z.array(AnomalyResourceSchema).openapi('AnomalyRe
 const AnomalyDescriptionSchema = z.string().openapi('AnomalyDescription')
 
 type ProactiveAnomalyType = {
-  Id?: z.infer<typeof AnomalyIdSchema> & unknown
-  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
-  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
-  UpdateTime?: z.infer<typeof TimestampSchema> & unknown
+  Id?: z.infer<typeof AnomalyIdSchema>
+  Severity?: z.infer<typeof AnomalySeveritySchema>
+  Status?: z.infer<typeof AnomalyStatusSchema>
+  UpdateTime?: z.infer<typeof TimestampSchema>
   AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
-  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema>
   PredictionTimeRange?: z.infer<typeof PredictionTimeRangeSchema>
-  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
-  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema>
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema>
   ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
-  Limit?: z.infer<typeof AnomalyLimitSchema> & unknown
-  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema> & unknown
-  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
-  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+  Limit?: z.infer<typeof AnomalyLimitSchema>
+  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema>
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema>
+  Description?: z.infer<typeof AnomalyDescriptionSchema>
 }
 
 const ProactiveAnomalySchema: z.ZodType<ProactiveAnomalyType> = z
@@ -615,19 +615,19 @@ const AnomalyTypeSchema = z.enum(['CAUSAL', 'CONTEXTUAL']).openapi('AnomalyType'
 const AnomalyNameSchema = z.string().openapi('AnomalyName')
 
 type ReactiveAnomalyType = {
-  Id?: z.infer<typeof AnomalyIdSchema> & unknown
-  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
-  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  Id?: z.infer<typeof AnomalyIdSchema>
+  Severity?: z.infer<typeof AnomalySeveritySchema>
+  Status?: z.infer<typeof AnomalyStatusSchema>
   AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
-  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
-  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
-  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema>
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema>
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema>
   ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
-  Type?: z.infer<typeof AnomalyTypeSchema> & unknown
-  Name?: z.infer<typeof AnomalyNameSchema> & unknown
-  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
-  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema> & unknown
-  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+  Type?: z.infer<typeof AnomalyTypeSchema>
+  Name?: z.infer<typeof AnomalyNameSchema>
+  Description?: z.infer<typeof AnomalyDescriptionSchema>
+  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema>
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema>
 }
 
 const ReactiveAnomalySchema: z.ZodType<ReactiveAnomalyType> = z
@@ -683,25 +683,25 @@ const ReactiveAnomalySchema: z.ZodType<ReactiveAnomalyType> = z
   .openapi('ReactiveAnomaly')
 
 type DescribeAnomalyResponseType = {
-  ProactiveAnomaly?: z.infer<typeof ProactiveAnomalySchema> & unknown
-  ReactiveAnomaly?: z.infer<typeof ReactiveAnomalySchema> & unknown
+  ProactiveAnomaly?: z.infer<typeof ProactiveAnomalySchema>
+  ReactiveAnomaly?: z.infer<typeof ReactiveAnomalySchema>
 }
 
 type ProactiveAnomalySummaryType = {
-  Id?: z.infer<typeof AnomalyIdSchema> & unknown
-  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
-  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
-  UpdateTime?: z.infer<typeof TimestampSchema> & unknown
+  Id?: z.infer<typeof AnomalyIdSchema>
+  Severity?: z.infer<typeof AnomalySeveritySchema>
+  Status?: z.infer<typeof AnomalyStatusSchema>
+  UpdateTime?: z.infer<typeof TimestampSchema>
   AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
-  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema>
   PredictionTimeRange?: z.infer<typeof PredictionTimeRangeSchema>
-  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
-  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema>
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema>
   ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
-  Limit?: z.infer<typeof AnomalyLimitSchema> & unknown
-  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema> & unknown
-  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
-  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
+  Limit?: z.infer<typeof AnomalyLimitSchema>
+  SourceMetadata?: z.infer<typeof AnomalySourceMetadataSchema>
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema>
+  Description?: z.infer<typeof AnomalyDescriptionSchema>
 }
 
 const ProactiveAnomalySummarySchema: z.ZodType<ProactiveAnomalySummaryType> = z
@@ -760,19 +760,19 @@ const ProactiveAnomaliesSchema: z.ZodType<ProactiveAnomaliesType> = z
   .openapi('ProactiveAnomalies')
 
 type ReactiveAnomalySummaryType = {
-  Id?: z.infer<typeof AnomalyIdSchema> & unknown
-  Severity?: z.infer<typeof AnomalySeveritySchema> & unknown
-  Status?: z.infer<typeof AnomalyStatusSchema> & unknown
+  Id?: z.infer<typeof AnomalyIdSchema>
+  Severity?: z.infer<typeof AnomalySeveritySchema>
+  Status?: z.infer<typeof AnomalyStatusSchema>
   AnomalyTimeRange?: z.infer<typeof AnomalyTimeRangeSchema>
-  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema> & unknown
-  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema> & unknown
-  AssociatedInsightId?: z.infer<typeof InsightIdSchema> & unknown
+  AnomalyReportedTimeRange?: z.infer<typeof AnomalyReportedTimeRangeSchema>
+  SourceDetails?: z.infer<typeof AnomalySourceDetailsSchema>
+  AssociatedInsightId?: z.infer<typeof InsightIdSchema>
   ResourceCollection?: z.infer<typeof ResourceCollectionSchema>
-  Type?: z.infer<typeof AnomalyTypeSchema> & unknown
-  Name?: z.infer<typeof AnomalyNameSchema> & unknown
-  Description?: z.infer<typeof AnomalyDescriptionSchema> & unknown
-  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema> & unknown
-  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema> & unknown
+  Type?: z.infer<typeof AnomalyTypeSchema>
+  Name?: z.infer<typeof AnomalyNameSchema>
+  Description?: z.infer<typeof AnomalyDescriptionSchema>
+  CausalAnomalyId?: z.infer<typeof AnomalyIdSchema>
+  AnomalyResources?: z.infer<typeof AnomalyResourcesSchema>
 }
 
 const ReactiveAnomalySummarySchema: z.ZodType<ReactiveAnomalySummaryType> = z
@@ -840,9 +840,9 @@ const UuidNextTokenSchema = z
   .openapi('UuidNextToken')
 
 type ListAnomaliesForInsightResponseType = {
-  ProactiveAnomalies?: z.infer<typeof ProactiveAnomaliesSchema> & unknown
-  ReactiveAnomalies?: z.infer<typeof ReactiveAnomaliesSchema> & unknown
-  NextToken?: z.infer<typeof UuidNextTokenSchema> & unknown
+  ProactiveAnomalies?: z.infer<typeof ProactiveAnomaliesSchema>
+  ReactiveAnomalies?: z.infer<typeof ReactiveAnomaliesSchema>
+  NextToken?: z.infer<typeof UuidNextTokenSchema>
 }
 
 const RecommendationDescriptionSchema = z.string().openapi('RecommendationDescription')
@@ -1051,8 +1051,8 @@ const RecommendationsSchema: z.ZodType<RecommendationsType> = z
   .openapi('Recommendations')
 
 type ListRecommendationsResponseType = {
-  Recommendations?: z.infer<typeof RecommendationsSchema> & unknown
-  NextToken?: z.infer<typeof UuidNextTokenSchema> & unknown
+  Recommendations?: z.infer<typeof RecommendationsSchema>
+  NextToken?: z.infer<typeof UuidNextTokenSchema>
 }
 
 const NotificationChannelIdSchema = z

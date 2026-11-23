@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/math.tools/1.5/openapi.yaml',
   output: './src/math-tools/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/math-tools/types.ts' },
   client: { output: './src/math-tools/client.ts', baseUrl: '/' },
   rpc: { output: './src/math-tools/rpc.ts', parseResponse: true },

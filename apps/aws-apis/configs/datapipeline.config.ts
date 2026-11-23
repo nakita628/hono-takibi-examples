@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/datapipeline/2012-10-29/openapi.yaml',
   output: './src/datapipeline/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/datapipeline/types.ts' },
   client: { output: './src/datapipeline/client.ts', baseUrl: '/' },
   rpc: { output: './src/datapipeline/rpc.ts', parseResponse: true },

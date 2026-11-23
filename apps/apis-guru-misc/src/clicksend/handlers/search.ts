@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSearchContactsListsQQRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSearchContactsListsQQRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const searchHandler = app.openapi(getSearchContactsListsQQRoute, (c) => {
+export const getSearchContactsListsQQRouteHandler: RouteHandler<
+  typeof getSearchContactsListsQQRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

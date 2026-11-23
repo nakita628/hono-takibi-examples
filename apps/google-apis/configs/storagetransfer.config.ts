@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/storagetransfer/v1/openapi.yaml',
   output: './src/storagetransfer/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/storagetransfer/types.ts' },
   client: { output: './src/storagetransfer/client.ts', baseUrl: '/' },
   rpc: { output: './src/storagetransfer/rpc.ts', parseResponse: true },

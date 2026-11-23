@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { checkCodeHandler, sendCodeHandler } from './handlers'
+import { postCheckCodeRoute, postSendCodeRoute } from './routes'
+import { postCheckCodeRouteHandler, postSendCodeRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', checkCodeHandler).route('/', sendCodeHandler)
+export const api = app
+  .openapi(postCheckCodeRoute, postCheckCodeRouteHandler)
+  .openapi(postSendCodeRoute, postSendCodeRouteHandler)
 
 export default app

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getProvidersIdConnectorConnectionsRoute,
   getProvidersIdConnectorLogosMainRoute,
   getProvidersIdConnectorLogosRoute,
@@ -11,33 +11,54 @@ import {
   getProvidersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProvidersRouteHandler: RouteHandler<typeof getProvidersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const providersHandler = app
-  .openapi(getProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorLogosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorLogosMainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorLogosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorSourcesIdConnectorSourceFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdConnectorSourcesIdSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProvidersIdProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProvidersIdConnectorConnectionsRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorLogosRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorLogosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorLogosMainRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorLogosMainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorLogosThumbnailRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorLogosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorSourcesRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorSourcesIdConnectorSourceFieldsRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorSourcesIdConnectorSourceFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdConnectorSourcesIdSourceRouteHandler: RouteHandler<
+  typeof getProvidersIdConnectorSourcesIdSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProvidersIdProviderRouteHandler: RouteHandler<
+  typeof getProvidersIdProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

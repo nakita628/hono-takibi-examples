@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1CitiesRoute,
   getV1CountriesCountryIdRoute,
   getV1CountriesRoute,
@@ -12,36 +12,50 @@ import {
   getV1SourcesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1CitiesRouteHandler: RouteHandler<typeof getV1CitiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1CitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CountriesCountryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LatestLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationsLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1CountriesRouteHandler: RouteHandler<typeof getV1CountriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CountriesCountryIdRouteHandler: RouteHandler<
+  typeof getV1CountriesCountryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LatestRouteHandler: RouteHandler<typeof getV1LatestRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LatestLocationIdRouteHandler: RouteHandler<
+  typeof getV1LatestLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationsRouteHandler: RouteHandler<typeof getV1LocationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationsLocationIdRouteHandler: RouteHandler<
+  typeof getV1LocationsLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeasurementsRouteHandler: RouteHandler<typeof getV1MeasurementsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParametersRouteHandler: RouteHandler<typeof getV1ParametersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SourcesRouteHandler: RouteHandler<typeof getV1SourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

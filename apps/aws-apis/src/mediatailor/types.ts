@@ -305,7 +305,6 @@ type ListPlaybackConfigurationsResponse = { Items?: {} | undefined; NextToken?: 
 type ListPrefetchSchedulesResponse = { Items?: {} | undefined; NextToken?: {} | undefined }
 type ListSourceLocationsResponse = { Items?: {} | undefined; NextToken?: {} | undefined }
 type ListTagsForResourceResponse = { Tags?: {} | undefined }
-type BadRequestException = { [x: string]: unknown }
 type ListVodSourcesResponse = { Items?: {} | undefined; NextToken?: {} | undefined }
 type MapOfString = { [x: string]: String }
 type PutPlaybackConfigurationResponse = {
@@ -1142,72 +1141,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/tags/:ResourceArn': {
-      $get:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { ResourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: {}
-            outputFormat: string
-            status: 204
-          }
-        | {
-            input: { param: { ResourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: String } } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { tags: { [x: string]: String } } }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/sourceLocation/:SourceLocationName/vodSources': {
@@ -1319,39 +1284,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/tags/:ResourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { ResourceArn: string } } & { query: { tagKeys: String[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceArn: string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   },
   '/'

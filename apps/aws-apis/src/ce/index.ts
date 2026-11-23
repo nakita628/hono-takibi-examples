@@ -1,89 +1,233 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsInsightsIndexServiceCreateAnomalyMonitorHandler,
-  xAmzTargetAwsInsightsIndexServiceCreateAnomalySubscriptionHandler,
-  xAmzTargetAwsInsightsIndexServiceCreateCostCategoryDefinitionHandler,
-  xAmzTargetAwsInsightsIndexServiceDeleteAnomalyMonitorHandler,
-  xAmzTargetAwsInsightsIndexServiceDeleteAnomalySubscriptionHandler,
-  xAmzTargetAwsInsightsIndexServiceDeleteCostCategoryDefinitionHandler,
-  xAmzTargetAwsInsightsIndexServiceDescribeCostCategoryDefinitionHandler,
-  xAmzTargetAwsInsightsIndexServiceGetAnomaliesHandler,
-  xAmzTargetAwsInsightsIndexServiceGetAnomalyMonitorsHandler,
-  xAmzTargetAwsInsightsIndexServiceGetAnomalySubscriptionsHandler,
-  xAmzTargetAwsInsightsIndexServiceGetCostAndUsageHandler,
-  xAmzTargetAwsInsightsIndexServiceGetCostAndUsageWithResourcesHandler,
-  xAmzTargetAwsInsightsIndexServiceGetCostCategoriesHandler,
-  xAmzTargetAwsInsightsIndexServiceGetCostForecastHandler,
-  xAmzTargetAwsInsightsIndexServiceGetDimensionValuesHandler,
-  xAmzTargetAwsInsightsIndexServiceGetReservationCoverageHandler,
-  xAmzTargetAwsInsightsIndexServiceGetReservationPurchaseRecommendationHandler,
-  xAmzTargetAwsInsightsIndexServiceGetReservationUtilizationHandler,
-  xAmzTargetAwsInsightsIndexServiceGetRightsizingRecommendationHandler,
-  xAmzTargetAwsInsightsIndexServiceGetSavingsPlansCoverageHandler,
-  xAmzTargetAwsInsightsIndexServiceGetSavingsPlansPurchaseRecommendationHandler,
-  xAmzTargetAwsInsightsIndexServiceGetSavingsPlansUtilizationDetailsHandler,
-  xAmzTargetAwsInsightsIndexServiceGetSavingsPlansUtilizationHandler,
-  xAmzTargetAwsInsightsIndexServiceGetTagsHandler,
-  xAmzTargetAwsInsightsIndexServiceGetUsageForecastHandler,
-  xAmzTargetAwsInsightsIndexServiceListCostAllocationTagsHandler,
-  xAmzTargetAwsInsightsIndexServiceListCostCategoryDefinitionsHandler,
-  xAmzTargetAwsInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationHandler,
-  xAmzTargetAwsInsightsIndexServiceListTagsForResourceHandler,
-  xAmzTargetAwsInsightsIndexServiceProvideAnomalyFeedbackHandler,
-  xAmzTargetAwsInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationHandler,
-  xAmzTargetAwsInsightsIndexServiceTagResourceHandler,
-  xAmzTargetAwsInsightsIndexServiceUntagResourceHandler,
-  xAmzTargetAwsInsightsIndexServiceUpdateAnomalyMonitorHandler,
-  xAmzTargetAwsInsightsIndexServiceUpdateAnomalySubscriptionHandler,
-  xAmzTargetAwsInsightsIndexServiceUpdateCostAllocationTagsStatusHandler,
-  xAmzTargetAwsInsightsIndexServiceUpdateCostCategoryDefinitionHandler,
+  postXAmzTargetAWSInsightsIndexServiceCreateAnomalyMonitorRoute,
+  postXAmzTargetAWSInsightsIndexServiceCreateAnomalySubscriptionRoute,
+  postXAmzTargetAWSInsightsIndexServiceCreateCostCategoryDefinitionRoute,
+  postXAmzTargetAWSInsightsIndexServiceDeleteAnomalyMonitorRoute,
+  postXAmzTargetAWSInsightsIndexServiceDeleteAnomalySubscriptionRoute,
+  postXAmzTargetAWSInsightsIndexServiceDeleteCostCategoryDefinitionRoute,
+  postXAmzTargetAWSInsightsIndexServiceDescribeCostCategoryDefinitionRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomaliesRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomalyMonitorsRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomalySubscriptionsRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageWithResourcesRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetCostCategoriesRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetCostForecastRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationCoverageRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationPurchaseRecommendationRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationUtilizationRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetRightsizingRecommendationRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansPurchaseRecommendationRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationDetailsRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetTagsRoute,
+  postXAmzTargetAWSInsightsIndexServiceGetUsageForecastRoute,
+  postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute,
+  postXAmzTargetAWSInsightsIndexServiceListCostCategoryDefinitionsRoute,
+  postXAmzTargetAWSInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationRoute,
+  postXAmzTargetAWSInsightsIndexServiceListTagsForResourceRoute,
+  postXAmzTargetAWSInsightsIndexServiceProvideAnomalyFeedbackRoute,
+  postXAmzTargetAWSInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationRoute,
+  postXAmzTargetAWSInsightsIndexServiceTagResourceRoute,
+  postXAmzTargetAWSInsightsIndexServiceUntagResourceRoute,
+  postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute,
+  postXAmzTargetAWSInsightsIndexServiceUpdateAnomalySubscriptionRoute,
+  postXAmzTargetAWSInsightsIndexServiceUpdateCostAllocationTagsStatusRoute,
+  postXAmzTargetAWSInsightsIndexServiceUpdateCostCategoryDefinitionRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSInsightsIndexServiceCreateAnomalyMonitorRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceCreateAnomalySubscriptionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceCreateCostCategoryDefinitionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceDeleteAnomalyMonitorRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceDeleteAnomalySubscriptionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceDeleteCostCategoryDefinitionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceDescribeCostCategoryDefinitionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomaliesRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomalyMonitorsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetAnomalySubscriptionsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageWithResourcesRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetCostCategoriesRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetCostForecastRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationCoverageRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationPurchaseRecommendationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetReservationUtilizationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetRightsizingRecommendationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansPurchaseRecommendationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationDetailsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetTagsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceGetUsageForecastRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceListCostCategoryDefinitionsRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceListTagsForResourceRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceProvideAnomalyFeedbackRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceTagResourceRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceUntagResourceRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceUpdateAnomalySubscriptionRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceUpdateCostAllocationTagsStatusRouteHandler,
+  postXAmzTargetAWSInsightsIndexServiceUpdateCostCategoryDefinitionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsInsightsIndexServiceCreateAnomalyMonitorHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceCreateAnomalySubscriptionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceCreateCostCategoryDefinitionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceDeleteAnomalyMonitorHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceDeleteAnomalySubscriptionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceDeleteCostCategoryDefinitionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceDescribeCostCategoryDefinitionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetAnomaliesHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetAnomalyMonitorsHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetAnomalySubscriptionsHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetCostAndUsageHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetCostAndUsageWithResourcesHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetCostCategoriesHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetCostForecastHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetDimensionValuesHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetReservationCoverageHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetReservationPurchaseRecommendationHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetReservationUtilizationHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetRightsizingRecommendationHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetSavingsPlansCoverageHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetSavingsPlansPurchaseRecommendationHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetSavingsPlansUtilizationHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetSavingsPlansUtilizationDetailsHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetTagsHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceGetUsageForecastHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceListCostAllocationTagsHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceListCostCategoryDefinitionsHandler)
-  .route(
-    '/',
-    xAmzTargetAwsInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationHandler,
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceCreateAnomalyMonitorRoute,
+    postXAmzTargetAWSInsightsIndexServiceCreateAnomalyMonitorRouteHandler,
   )
-  .route('/', xAmzTargetAwsInsightsIndexServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceProvideAnomalyFeedbackHandler)
-  .route(
-    '/',
-    xAmzTargetAwsInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationHandler,
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceCreateAnomalySubscriptionRoute,
+    postXAmzTargetAWSInsightsIndexServiceCreateAnomalySubscriptionRouteHandler,
   )
-  .route('/', xAmzTargetAwsInsightsIndexServiceTagResourceHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceUntagResourceHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceUpdateAnomalyMonitorHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceUpdateAnomalySubscriptionHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceUpdateCostAllocationTagsStatusHandler)
-  .route('/', xAmzTargetAwsInsightsIndexServiceUpdateCostCategoryDefinitionHandler)
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceCreateCostCategoryDefinitionRoute,
+    postXAmzTargetAWSInsightsIndexServiceCreateCostCategoryDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceDeleteAnomalyMonitorRoute,
+    postXAmzTargetAWSInsightsIndexServiceDeleteAnomalyMonitorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceDeleteAnomalySubscriptionRoute,
+    postXAmzTargetAWSInsightsIndexServiceDeleteAnomalySubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceDeleteCostCategoryDefinitionRoute,
+    postXAmzTargetAWSInsightsIndexServiceDeleteCostCategoryDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceDescribeCostCategoryDefinitionRoute,
+    postXAmzTargetAWSInsightsIndexServiceDescribeCostCategoryDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetAnomaliesRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetAnomaliesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetAnomalyMonitorsRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetAnomalyMonitorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetAnomalySubscriptionsRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetAnomalySubscriptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageWithResourcesRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetCostAndUsageWithResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetCostCategoriesRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetCostCategoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetCostForecastRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetCostForecastRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetDimensionValuesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetReservationCoverageRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetReservationCoverageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetReservationPurchaseRecommendationRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetReservationPurchaseRecommendationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetReservationUtilizationRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetReservationUtilizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetRightsizingRecommendationRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetRightsizingRecommendationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansCoverageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansPurchaseRecommendationRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansPurchaseRecommendationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationDetailsRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetSavingsPlansUtilizationDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetTagsRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceGetUsageForecastRoute,
+    postXAmzTargetAWSInsightsIndexServiceGetUsageForecastRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRoute,
+    postXAmzTargetAWSInsightsIndexServiceListCostAllocationTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceListCostCategoryDefinitionsRoute,
+    postXAmzTargetAWSInsightsIndexServiceListCostCategoryDefinitionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationRoute,
+    postXAmzTargetAWSInsightsIndexServiceListSavingsPlansPurchaseRecommendationGenerationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceListTagsForResourceRoute,
+    postXAmzTargetAWSInsightsIndexServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceProvideAnomalyFeedbackRoute,
+    postXAmzTargetAWSInsightsIndexServiceProvideAnomalyFeedbackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationRoute,
+    postXAmzTargetAWSInsightsIndexServiceStartSavingsPlansPurchaseRecommendationGenerationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceTagResourceRoute,
+    postXAmzTargetAWSInsightsIndexServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceUntagResourceRoute,
+    postXAmzTargetAWSInsightsIndexServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRoute,
+    postXAmzTargetAWSInsightsIndexServiceUpdateAnomalyMonitorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceUpdateAnomalySubscriptionRoute,
+    postXAmzTargetAWSInsightsIndexServiceUpdateAnomalySubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceUpdateCostAllocationTagsStatusRoute,
+    postXAmzTargetAWSInsightsIndexServiceUpdateCostAllocationTagsStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSInsightsIndexServiceUpdateCostCategoryDefinitionRoute,
+    postXAmzTargetAWSInsightsIndexServiceUpdateCostCategoryDefinitionRouteHandler,
+  )
 
 export default app

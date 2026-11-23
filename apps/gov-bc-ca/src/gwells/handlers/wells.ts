@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWellsIndexRoute,
   getWellsTagFilesRoute,
   getWellsTagsIndexRoute,
   getWellsWellTagNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWellsIndexRouteHandler: RouteHandler<typeof getWellsIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wellsHandler = app
-  .openapi(getWellsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellsTagsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellsTagFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellsWellTagNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWellsTagsIndexRouteHandler: RouteHandler<typeof getWellsTagsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWellsTagFilesRouteHandler: RouteHandler<typeof getWellsTagFilesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWellsWellTagNumberRouteHandler: RouteHandler<
+  typeof getWellsWellTagNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

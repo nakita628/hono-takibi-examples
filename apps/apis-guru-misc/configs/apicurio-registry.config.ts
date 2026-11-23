@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apicurio.local/registry/2.4.x/openapi.yaml',
   output: './src/apicurio-registry/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apicurio-registry/types.ts' },
   client: { output: './src/apicurio-registry/client.ts', baseUrl: '/' },
   rpc: { output: './src/apicurio-registry/rpc.ts', parseResponse: true },

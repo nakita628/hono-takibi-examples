@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListRobotApplicationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListRobotApplicationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listRobotApplicationsHandler = app.openapi(postListRobotApplicationsRoute, (c) => {
+export const postListRobotApplicationsRouteHandler: RouteHandler<
+  typeof postListRobotApplicationsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

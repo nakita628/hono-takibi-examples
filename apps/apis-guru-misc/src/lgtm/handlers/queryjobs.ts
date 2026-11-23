@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQueryjobsQueryjobIdResultsProjectIdRoute,
   getQueryjobsQueryjobIdResultsRoute,
   getQueryjobsQueryjobIdRoute,
   postQueryjobsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQueryjobsRouteHandler: RouteHandler<typeof postQueryjobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queryjobsHandler = app
-  .openapi(postQueryjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryjobsQueryjobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryjobsQueryjobIdResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryjobsQueryjobIdResultsProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQueryjobsQueryjobIdRouteHandler: RouteHandler<
+  typeof getQueryjobsQueryjobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryjobsQueryjobIdResultsRouteHandler: RouteHandler<
+  typeof getQueryjobsQueryjobIdResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryjobsQueryjobIdResultsProjectIdRouteHandler: RouteHandler<
+  typeof getQueryjobsQueryjobIdResultsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

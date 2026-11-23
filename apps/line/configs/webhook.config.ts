@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/line/line-openapi/main/webhook.yml',
   output: './src/webhook/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/webhook/types.ts' },
   client: { output: './src/webhook/client.ts', baseUrl: '/' },
   rpc: { output: './src/webhook/rpc.ts', parseResponse: true },

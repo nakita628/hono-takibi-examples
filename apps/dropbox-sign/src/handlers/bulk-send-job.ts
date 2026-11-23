@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBulkSendJobBulkSendJobIdRoute, getBulkSendJobListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBulkSendJobBulkSendJobIdRoute, getBulkSendJobListRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBulkSendJobBulkSendJobIdRouteHandler: RouteHandler<
+  typeof getBulkSendJobBulkSendJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bulkSendJobHandler = app
-  .openapi(getBulkSendJobBulkSendJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkSendJobListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBulkSendJobListRouteHandler: RouteHandler<typeof getBulkSendJobListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

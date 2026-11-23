@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRoute,
   getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute,
   getFineTuningJobsFineTuningJobIdCheckpointsRoute,
@@ -15,45 +15,80 @@ import {
   postFineTuningJobsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFineTuningAlphaGradersRunRouteHandler: RouteHandler<
+  typeof postFineTuningAlphaGradersRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fineTuningHandler = app
-  .openapi(postFineTuningAlphaGradersRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningAlphaGradersValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTuningJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTuningJobsFineTuningJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningJobsFineTuningJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTuningJobsFineTuningJobIdCheckpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFineTuningJobsFineTuningJobIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningJobsFineTuningJobIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFineTuningJobsFineTuningJobIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFineTuningAlphaGradersValidateRouteHandler: RouteHandler<
+  typeof postFineTuningAlphaGradersValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler: RouteHandler<
+  typeof getFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRouteHandler: RouteHandler<
+  typeof postFineTuningCheckpointsFineTunedModelCheckpointPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRouteHandler: RouteHandler<
+  typeof deleteFineTuningCheckpointsFineTunedModelCheckpointPermissionsPermissionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTuningJobsRouteHandler: RouteHandler<typeof postFineTuningJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTuningJobsRouteHandler: RouteHandler<typeof getFineTuningJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTuningJobsFineTuningJobIdRouteHandler: RouteHandler<
+  typeof getFineTuningJobsFineTuningJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTuningJobsFineTuningJobIdCancelRouteHandler: RouteHandler<
+  typeof postFineTuningJobsFineTuningJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTuningJobsFineTuningJobIdCheckpointsRouteHandler: RouteHandler<
+  typeof getFineTuningJobsFineTuningJobIdCheckpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFineTuningJobsFineTuningJobIdEventsRouteHandler: RouteHandler<
+  typeof getFineTuningJobsFineTuningJobIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTuningJobsFineTuningJobIdPauseRouteHandler: RouteHandler<
+  typeof postFineTuningJobsFineTuningJobIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFineTuningJobsFineTuningJobIdResumeRouteHandler: RouteHandler<
+  typeof postFineTuningJobsFineTuningJobIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSksClusterIdNodepoolSksNodepoolIdRoute,
   deleteSksClusterIdRoute,
   getSksClusterIdAuthorityAuthorityCertRoute,
@@ -23,69 +23,120 @@ import {
   putSksClusterIdUpgradeServiceLevelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putSksClusterIdNodepoolSksNodepoolIdRouteHandler: RouteHandler<
+  typeof putSksClusterIdNodepoolSksNodepoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sksClusterHandler = app
-  .openapi(putSksClusterIdNodepoolSksNodepoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSksClusterIdNodepoolSksNodepoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSksClusterIdNodepoolSksNodepoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSksClusterIdAuthorityAuthorityCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdNodepoolSksNodepoolIdScaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdUpgradeServiceLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdRotateCsiCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdNodepoolSksNodepoolIdEvictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSksClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSksClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSksClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSksClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSksClusterIdInspectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdRotateCcmCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdGenerateKarpenterNodepoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdGenerateKarpenterExoscaleNodeclassRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSksClusterIdNodepoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdRotateKarpenterCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdRotateOperatorsCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSksClusterIdUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSksClusterIdNodepoolSksNodepoolIdRouteHandler: RouteHandler<
+  typeof getSksClusterIdNodepoolSksNodepoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSksClusterIdNodepoolSksNodepoolIdRouteHandler: RouteHandler<
+  typeof deleteSksClusterIdNodepoolSksNodepoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSksClusterIdAuthorityAuthorityCertRouteHandler: RouteHandler<
+  typeof getSksClusterIdAuthorityAuthorityCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdNodepoolSksNodepoolIdScaleRouteHandler: RouteHandler<
+  typeof putSksClusterIdNodepoolSksNodepoolIdScaleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdUpgradeServiceLevelRouteHandler: RouteHandler<
+  typeof putSksClusterIdUpgradeServiceLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdRotateCsiCredentialsRouteHandler: RouteHandler<
+  typeof putSksClusterIdRotateCsiCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdNodepoolSksNodepoolIdEvictRouteHandler: RouteHandler<
+  typeof putSksClusterIdNodepoolSksNodepoolIdEvictRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSksClusterRouteHandler: RouteHandler<typeof postSksClusterRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSksClusterRouteHandler: RouteHandler<typeof getSksClusterRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSksClusterIdRouteHandler: RouteHandler<typeof deleteSksClusterIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSksClusterIdRouteHandler: RouteHandler<typeof getSksClusterIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdRouteHandler: RouteHandler<typeof putSksClusterIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSksClusterIdInspectionRouteHandler: RouteHandler<
+  typeof getSksClusterIdInspectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdRotateCcmCredentialsRouteHandler: RouteHandler<
+  typeof putSksClusterIdRotateCcmCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdGenerateKarpenterNodepoolRouteHandler: RouteHandler<
+  typeof putSksClusterIdGenerateKarpenterNodepoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdGenerateKarpenterExoscaleNodeclassRouteHandler: RouteHandler<
+  typeof putSksClusterIdGenerateKarpenterExoscaleNodeclassRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSksClusterIdNodepoolRouteHandler: RouteHandler<
+  typeof postSksClusterIdNodepoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdRotateKarpenterCredentialsRouteHandler: RouteHandler<
+  typeof putSksClusterIdRotateKarpenterCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdRotateOperatorsCaRouteHandler: RouteHandler<
+  typeof putSksClusterIdRotateOperatorsCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSksClusterIdUpgradeRouteHandler: RouteHandler<
+  typeof putSksClusterIdUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

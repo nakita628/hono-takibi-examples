@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getT3maRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getT3maRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const t3maHandler = app.openapi(getT3maRoute, (c) => {
+export const getT3maRouteHandler: RouteHandler<typeof getT3maRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

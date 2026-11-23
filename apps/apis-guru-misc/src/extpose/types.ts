@@ -13,7 +13,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/user-extensions': {
-      $get: { input: {}; output: Extension[]; outputFormat: 'json'; status: 200 }
+      $get:
+        | { input: {}; output: Extension[]; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 400 }
     }
   },
   '/'

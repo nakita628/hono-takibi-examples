@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1TagsResourceArnTagKeysRoute,
   getV1TagsResourceArnRoute,
   postV1CanceljobRoute,
@@ -26,78 +26,140 @@ import {
   postV1UpdateschedulingpolicyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1CanceljobRouteHandler: RouteHandler<typeof postV1CanceljobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1CanceljobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CreatecomputeenvironmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CreatejobqueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CreateschedulingpolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeletecomputeenvironmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeletejobqueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeleteschedulingpolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeregisterjobdefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DescribecomputeenvironmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DescribejobdefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DescribejobqueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DescribejobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DescribeschedulingpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ListjobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ListschedulingpoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TagsResourceArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1RegisterjobdefinitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SubmitjobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1TerminatejobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1TagsResourceArnTagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UpdatecomputeenvironmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UpdatejobqueueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UpdateschedulingpolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1CreatecomputeenvironmentRouteHandler: RouteHandler<
+  typeof postV1CreatecomputeenvironmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CreatejobqueueRouteHandler: RouteHandler<
+  typeof postV1CreatejobqueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CreateschedulingpolicyRouteHandler: RouteHandler<
+  typeof postV1CreateschedulingpolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeletecomputeenvironmentRouteHandler: RouteHandler<
+  typeof postV1DeletecomputeenvironmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeletejobqueueRouteHandler: RouteHandler<
+  typeof postV1DeletejobqueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeleteschedulingpolicyRouteHandler: RouteHandler<
+  typeof postV1DeleteschedulingpolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeregisterjobdefinitionRouteHandler: RouteHandler<
+  typeof postV1DeregisterjobdefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DescribecomputeenvironmentsRouteHandler: RouteHandler<
+  typeof postV1DescribecomputeenvironmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DescribejobdefinitionsRouteHandler: RouteHandler<
+  typeof postV1DescribejobdefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DescribejobqueuesRouteHandler: RouteHandler<
+  typeof postV1DescribejobqueuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DescribejobsRouteHandler: RouteHandler<typeof postV1DescribejobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DescribeschedulingpoliciesRouteHandler: RouteHandler<
+  typeof postV1DescribeschedulingpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ListjobsRouteHandler: RouteHandler<typeof postV1ListjobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ListschedulingpoliciesRouteHandler: RouteHandler<
+  typeof postV1ListschedulingpoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof getV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TagsResourceArnRouteHandler: RouteHandler<
+  typeof postV1TagsResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1RegisterjobdefinitionRouteHandler: RouteHandler<
+  typeof postV1RegisterjobdefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SubmitjobRouteHandler: RouteHandler<typeof postV1SubmitjobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1TerminatejobRouteHandler: RouteHandler<typeof postV1TerminatejobRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1TagsResourceArnTagKeysRouteHandler: RouteHandler<
+  typeof deleteV1TagsResourceArnTagKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UpdatecomputeenvironmentRouteHandler: RouteHandler<
+  typeof postV1UpdatecomputeenvironmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UpdatejobqueueRouteHandler: RouteHandler<
+  typeof postV1UpdatejobqueueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UpdateschedulingpolicyRouteHandler: RouteHandler<
+  typeof postV1UpdateschedulingpolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

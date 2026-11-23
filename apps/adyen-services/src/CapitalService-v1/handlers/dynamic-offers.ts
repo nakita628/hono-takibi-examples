@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDynamicOffersRoute,
   postDynamicOffersIdCalculateRoute,
   postDynamicOffersIdGrantOfferRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDynamicOffersRouteHandler: RouteHandler<typeof getDynamicOffersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dynamicOffersHandler = app
-  .openapi(getDynamicOffersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDynamicOffersIdCalculateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDynamicOffersIdGrantOfferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDynamicOffersIdCalculateRouteHandler: RouteHandler<
+  typeof postDynamicOffersIdCalculateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDynamicOffersIdGrantOfferRouteHandler: RouteHandler<
+  typeof postDynamicOffersIdGrantOfferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

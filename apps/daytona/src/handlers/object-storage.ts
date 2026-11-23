@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getObjectStoragePushAccessRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getObjectStoragePushAccessRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const objectStorageHandler = app.openapi(getObjectStoragePushAccessRoute, (c) => {
+export const getObjectStoragePushAccessRouteHandler: RouteHandler<
+  typeof getObjectStoragePushAccessRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

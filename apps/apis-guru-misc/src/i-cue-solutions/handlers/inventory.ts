@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postInventoryAmazonIpiRoute,
   postInventoryCaryyingCostRoute,
   postInventoryEoqRoute,
@@ -15,45 +15,80 @@ import {
   postInventoryTurnsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInventoryAmazonIpiRouteHandler: RouteHandler<
+  typeof postInventoryAmazonIpiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const inventoryHandler = app
-  .openapi(postInventoryAmazonIpiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryCaryyingCostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryEoqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryFillRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryFinancialImapctForecastAccuracyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryInventoryTurnoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryLtdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryMoqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryOptimalServiceLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryReorderPointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventorySafetyStockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryServiceLevelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInventoryTurnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInventoryCaryyingCostRouteHandler: RouteHandler<
+  typeof postInventoryCaryyingCostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryEoqRouteHandler: RouteHandler<typeof postInventoryEoqRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryFillRateRouteHandler: RouteHandler<
+  typeof postInventoryFillRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryFinancialImapctForecastAccuracyRouteHandler: RouteHandler<
+  typeof postInventoryFinancialImapctForecastAccuracyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryInventoryTurnoverRouteHandler: RouteHandler<
+  typeof postInventoryInventoryTurnoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryLtdRouteHandler: RouteHandler<typeof postInventoryLtdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryMoqRouteHandler: RouteHandler<typeof postInventoryMoqRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryOptimalServiceLevelRouteHandler: RouteHandler<
+  typeof postInventoryOptimalServiceLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryReorderPointRouteHandler: RouteHandler<
+  typeof postInventoryReorderPointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventorySafetyStockRouteHandler: RouteHandler<
+  typeof postInventorySafetyStockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryServiceLevelRouteHandler: RouteHandler<
+  typeof postInventoryServiceLevelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInventoryTurnsRouteHandler: RouteHandler<typeof postInventoryTurnsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

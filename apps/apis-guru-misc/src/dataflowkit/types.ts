@@ -154,7 +154,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/convert/url/pdf': {
-      $post: { input: { json: Url2pdfrequest }; output: File; outputFormat: 'text'; status: 200 }
+      $post:
+        | { input: { json: Url2pdfrequest }; output: File; outputFormat: 'text'; status: 200 }
+        | { input: { json: Url2pdfrequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: Url2pdfrequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Url2pdfrequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/convert/url/screenshot': {
@@ -171,28 +175,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
+        | { input: { json: Url2screenshotrequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: Url2screenshotrequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Url2screenshotrequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/fetch': {
-      $post: { input: { json: Fetchrequest }; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: { json: Fetchrequest }; output: {}; outputFormat: string; status: 200 }
+        | { input: { json: Fetchrequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: Fetchrequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Fetchrequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/parse': {
-      $post: {
-        input: { json: Parserequest }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: Parserequest }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: Parserequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: Parserequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Parserequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/serp': {
-      $post: {
-        input: { json: Serprequest }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: Serprequest }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { json: Serprequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: Serprequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Serprequest }; output: {}; outputFormat: string; status: 500 }
     }
   },
   '/'

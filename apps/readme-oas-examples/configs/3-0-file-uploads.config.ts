@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/file-uploads.yaml',
   output: './src/3-0-file-uploads/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-file-uploads/types.ts' },
   client: { output: './src/3-0-file-uploads/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-file-uploads/rpc.ts', parseResponse: true },

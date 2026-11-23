@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSchedulesPreviewRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSchedulesPreviewRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const schedulesHandler = app.openapi(postSchedulesPreviewRoute, (c) => {
+export const postSchedulesPreviewRouteHandler: RouteHandler<
+  typeof postSchedulesPreviewRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

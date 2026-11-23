@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMembersIdBoardBackgroundsIdBackgroundRoute,
   deleteMembersIdBoardStarsIdStarRoute,
   deleteMembersIdCustomBoardBackgroundsIdBackgroundRoute,
@@ -47,141 +47,268 @@ import {
   putMembersIdSavedSearchesIdSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMembersIdRouteHandler: RouteHandler<typeof getMembersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const membersHandler = app
-  .openapi(getMembersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardBackgroundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdBoardBackgroundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMembersIdBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardStarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdBoardStarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardStarsIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdBoardStarsIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMembersIdBoardStarsIdStarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdBoardsInvitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomBoardBackgroundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdCustomBoardBackgroundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdCustomBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMembersIdCustomBoardBackgroundsIdBackgroundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomEmojiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdCustomEmojiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomEmojiIdEmojiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdCustomStickersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdCustomStickersIdStickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMembersIdCustomStickersIdStickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdOrganizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdOrganizationsInvitedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdSavedSearchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdSavedSearchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdSavedSearchesIdSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdSavedSearchesIdSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMembersIdSavedSearchesIdSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMembersIdOneTimeMessagesDismissedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdNotificationChannelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdNotificationChannelSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMembersIdNotificationChannelSettingsChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdNotificationChannelSettingsChannelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMembersIdNotificationChannelSettingsChannelBlockedKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putMembersIdRouteHandler: RouteHandler<typeof putMembersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdFieldRouteHandler: RouteHandler<typeof getMembersIdFieldRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdActionsRouteHandler: RouteHandler<
+  typeof getMembersIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardBackgroundsRouteHandler: RouteHandler<
+  typeof getMembersIdBoardBackgroundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdBoardBackgroundsRouteHandler: RouteHandler<
+  typeof postMembersIdBoardBackgroundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof getMembersIdBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof putMembersIdBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMembersIdBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof deleteMembersIdBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardStarsRouteHandler: RouteHandler<
+  typeof getMembersIdBoardStarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdBoardStarsRouteHandler: RouteHandler<
+  typeof postMembersIdBoardStarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardStarsIdStarRouteHandler: RouteHandler<
+  typeof getMembersIdBoardStarsIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdBoardStarsIdStarRouteHandler: RouteHandler<
+  typeof putMembersIdBoardStarsIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMembersIdBoardStarsIdStarRouteHandler: RouteHandler<
+  typeof deleteMembersIdBoardStarsIdStarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardsRouteHandler: RouteHandler<typeof getMembersIdBoardsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdBoardsInvitedRouteHandler: RouteHandler<
+  typeof getMembersIdBoardsInvitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCardsRouteHandler: RouteHandler<typeof getMembersIdCardsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomBoardBackgroundsRouteHandler: RouteHandler<
+  typeof getMembersIdCustomBoardBackgroundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdCustomBoardBackgroundsRouteHandler: RouteHandler<
+  typeof postMembersIdCustomBoardBackgroundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof getMembersIdCustomBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdCustomBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof putMembersIdCustomBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMembersIdCustomBoardBackgroundsIdBackgroundRouteHandler: RouteHandler<
+  typeof deleteMembersIdCustomBoardBackgroundsIdBackgroundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomEmojiRouteHandler: RouteHandler<
+  typeof getMembersIdCustomEmojiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdCustomEmojiRouteHandler: RouteHandler<
+  typeof postMembersIdCustomEmojiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomEmojiIdEmojiRouteHandler: RouteHandler<
+  typeof getMembersIdCustomEmojiIdEmojiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomStickersRouteHandler: RouteHandler<
+  typeof getMembersIdCustomStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdCustomStickersRouteHandler: RouteHandler<
+  typeof postMembersIdCustomStickersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdCustomStickersIdStickerRouteHandler: RouteHandler<
+  typeof getMembersIdCustomStickersIdStickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMembersIdCustomStickersIdStickerRouteHandler: RouteHandler<
+  typeof deleteMembersIdCustomStickersIdStickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdNotificationsRouteHandler: RouteHandler<
+  typeof getMembersIdNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdOrganizationsRouteHandler: RouteHandler<
+  typeof getMembersIdOrganizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdOrganizationsInvitedRouteHandler: RouteHandler<
+  typeof getMembersIdOrganizationsInvitedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdSavedSearchesRouteHandler: RouteHandler<
+  typeof getMembersIdSavedSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdSavedSearchesRouteHandler: RouteHandler<
+  typeof postMembersIdSavedSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdSavedSearchesIdSearchRouteHandler: RouteHandler<
+  typeof getMembersIdSavedSearchesIdSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdSavedSearchesIdSearchRouteHandler: RouteHandler<
+  typeof putMembersIdSavedSearchesIdSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMembersIdSavedSearchesIdSearchRouteHandler: RouteHandler<
+  typeof deleteMembersIdSavedSearchesIdSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdTokensRouteHandler: RouteHandler<typeof getMembersIdTokensRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdAvatarRouteHandler: RouteHandler<
+  typeof postMembersIdAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMembersIdOneTimeMessagesDismissedRouteHandler: RouteHandler<
+  typeof postMembersIdOneTimeMessagesDismissedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdNotificationChannelSettingsRouteHandler: RouteHandler<
+  typeof getMembersIdNotificationChannelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdNotificationChannelSettingsRouteHandler: RouteHandler<
+  typeof putMembersIdNotificationChannelSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMembersIdNotificationChannelSettingsChannelRouteHandler: RouteHandler<
+  typeof getMembersIdNotificationChannelSettingsChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdNotificationChannelSettingsChannelRouteHandler: RouteHandler<
+  typeof putMembersIdNotificationChannelSettingsChannelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMembersIdNotificationChannelSettingsChannelBlockedKeysRouteHandler: RouteHandler<
+  typeof putMembersIdNotificationChannelSettingsChannelBlockedKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

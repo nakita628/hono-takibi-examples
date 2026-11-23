@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTransitionsTransitionIdRoute,
   getTransitionsRoute,
   getTransitionsTransitionIdExecutionsExecutionIdRoute,
@@ -17,51 +17,88 @@ import {
   postTransitionsTransitionIdExecutionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTransitionsRouteHandler: RouteHandler<typeof getTransitionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transitionsHandler = app
-  .openapi(getTransitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsTransitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTransitionsTransitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransitionsTransitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsTransitionsTransitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTransitionsTransitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransitionsTransitionIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsTransitionsTransitionIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransitionsTransitionIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransitionsTransitionIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsTransitionsTransitionIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTransitionsTransitionIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsTransitionsRouteHandler: RouteHandler<typeof optionsTransitionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransitionsRouteHandler: RouteHandler<typeof postTransitionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTransitionsTransitionIdRouteHandler: RouteHandler<
+  typeof deleteTransitionsTransitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransitionsTransitionIdRouteHandler: RouteHandler<
+  typeof getTransitionsTransitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsTransitionsTransitionIdRouteHandler: RouteHandler<
+  typeof optionsTransitionsTransitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTransitionsTransitionIdRouteHandler: RouteHandler<
+  typeof patchTransitionsTransitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransitionsTransitionIdExecutionsRouteHandler: RouteHandler<
+  typeof getTransitionsTransitionIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsTransitionsTransitionIdExecutionsRouteHandler: RouteHandler<
+  typeof optionsTransitionsTransitionIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransitionsTransitionIdExecutionsRouteHandler: RouteHandler<
+  typeof postTransitionsTransitionIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransitionsTransitionIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof getTransitionsTransitionIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsTransitionsTransitionIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof optionsTransitionsTransitionIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTransitionsTransitionIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof patchTransitionsTransitionIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRouteHandler: RouteHandler<
+  typeof optionsTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRouteHandler: RouteHandler<
+  typeof postTransitionsTransitionIdExecutionsExecutionIdHeartbeatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

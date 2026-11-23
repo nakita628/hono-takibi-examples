@@ -4707,7 +4707,7 @@ export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute = creat
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute =
@@ -4837,7 +4837,7 @@ export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfil
         },
       },
     },
-    responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+    responses: { 200: { description: 'OK', headers: z.object({}) } },
   })
 
 export const postFulfillmentEndpointPvtOrderFormsSimulationRoute = createRoute({
@@ -5997,7 +5997,7 @@ export const postFulfillmentEndpointPvtOrdersRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postFulfillmentEndpointPvtOrdersOrderIdCancelRoute = createRoute({
@@ -6088,7 +6088,7 @@ export const postFulfillmentEndpointPvtOrdersOrderIdCancelRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute = createRoute({
@@ -6180,7 +6180,7 @@ export const postFulfillmentEndpointPvtOrdersSellerOrderIdFulfillRoute = createR
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRoute = createRoute({
@@ -6269,7 +6269,7 @@ export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdCancelRou
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRoute = createRoute({
@@ -6404,7 +6404,7 @@ export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceRo
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberRoute =
@@ -6520,7 +6520,7 @@ export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceIn
         required: true,
       },
     },
-    responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+    responses: { 200: { description: 'OK', headers: z.object({}) } },
   })
 
 export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceInvoiceNumberTrackingRoute =
@@ -6663,5 +6663,5 @@ export const postMarketplaceServicesEndpointPvtOrdersMarketplaceOrderIdInvoiceIn
         required: true,
       },
     },
-    responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+    responses: { 200: { description: 'OK', headers: z.object({}) } },
   })

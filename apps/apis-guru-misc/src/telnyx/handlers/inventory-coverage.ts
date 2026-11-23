@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getInventoryCoverageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getInventoryCoverageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const inventoryCoverageHandler = app.openapi(getInventoryCoverageRoute, (c) => {
+export const getInventoryCoverageRouteHandler: RouteHandler<
+  typeof getInventoryCoverageRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

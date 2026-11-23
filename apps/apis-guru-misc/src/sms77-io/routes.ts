@@ -510,7 +510,7 @@ export const postLookupRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postLookupCnamRoute = createRoute({
@@ -543,7 +543,7 @@ export const postLookupCnamRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postLookupFormatRoute = createRoute({
@@ -576,7 +576,7 @@ export const postLookupFormatRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postLookupHlrRoute = createRoute({
@@ -609,7 +609,7 @@ export const postLookupHlrRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postLookupMnpRoute = createRoute({
@@ -654,7 +654,7 @@ export const postLookupMnpRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getPricingRoute = createRoute({
@@ -692,7 +692,7 @@ export const getPricingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postSmsRoute = createRoute({

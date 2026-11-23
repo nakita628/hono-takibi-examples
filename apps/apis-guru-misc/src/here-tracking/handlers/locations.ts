@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLocationsV4LocationIdRoute,
   deleteLocationsV4Route,
   getLocationsV4HealthRoute,
@@ -10,30 +10,46 @@ import {
   putLocationsV4LocationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteLocationsV4RouteHandler: RouteHandler<typeof deleteLocationsV4Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const locationsHandler = app
-  .openapi(deleteLocationsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocationsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLocationsV4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocationsV4HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocationsV4VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLocationsV4LocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLocationsV4LocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLocationsV4LocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLocationsV4RouteHandler: RouteHandler<typeof getLocationsV4Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLocationsV4RouteHandler: RouteHandler<typeof postLocationsV4Route> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLocationsV4HealthRouteHandler: RouteHandler<
+  typeof getLocationsV4HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLocationsV4VersionRouteHandler: RouteHandler<
+  typeof getLocationsV4VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLocationsV4LocationIdRouteHandler: RouteHandler<
+  typeof deleteLocationsV4LocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLocationsV4LocationIdRouteHandler: RouteHandler<
+  typeof getLocationsV4LocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLocationsV4LocationIdRouteHandler: RouteHandler<
+  typeof putLocationsV4LocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetFmrsServiceDescribeLocationObjectStorageHandler = app.openapi(
-  postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetFmrsServiceDescribeLocationObjectStorageRouteHandler: RouteHandler<
+  typeof postXAmzTargetFmrsServiceDescribeLocationObjectStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

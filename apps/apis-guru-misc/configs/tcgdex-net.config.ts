@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/tcgdex.net/2.0.0/openapi.yaml',
   output: './src/tcgdex-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tcgdex-net/types.ts' },
   client: { output: './src/tcgdex-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/tcgdex-net/rpc.ts', parseResponse: true },

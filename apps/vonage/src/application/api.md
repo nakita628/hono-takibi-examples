@@ -502,10 +502,10 @@ You can find your API secret in your [account overview](https://dashboard.nexmo.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |_links|[links](#schemalinks)|false|none|A series of links between resources in this API in the following [HAL specification](http://stateless.co/hal_specification.html).|
-|id|string|false|none|The ID allocated to your application by Nexmo.|
+|id|[applicationBaseId](#schemaapplicationbaseid)|false|none|The ID allocated to your application by Nexmo.|
 |keys|[keys](#schemakeys)|false|none|The Nexmo product that you access with this application.|
 |messages|[messages](#schemamessages)|true|none|The Nexmo product that you access with this application.|
-|name|string|true|none|The name of your application|
+|name|[applicationBaseName](#schemaapplicationbasename)|true|none|The name of your application|
 |voice|[voice](#schemavoice)|true|none|The Nexmo product that you access with this application.|
 
 <h2 id="tocS_applicationBase">applicationBase</h2>
@@ -526,8 +526,8 @@ You can find your API secret in your [account overview](https://dashboard.nexmo.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|string|false|none|The ID allocated to your application by Nexmo.|
-|name|string|false|none|The name of your application|
+|id|[applicationBaseId](#schemaapplicationbaseid)|false|none|The ID allocated to your application by Nexmo.|
+|name|[applicationBaseName](#schemaapplicationbasename)|false|none|The name of your application|
 
 <h2 id="tocS_applicationCreated">applicationCreated</h2>
 <!-- backwards compatibility -->
@@ -573,10 +573,10 @@ You can find your API secret in your [account overview](https://dashboard.nexmo.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |_links|[links](#schemalinks)|false|none|A series of links between resources in this API in the following [HAL specification](http://stateless.co/hal_specification.html).|
-|id|string|false|none|The ID allocated to your application by Nexmo.|
+|id|[applicationBaseId](#schemaapplicationbaseid)|false|none|The ID allocated to your application by Nexmo.|
 |keys|[keys](#schemakeys)|false|none|The Nexmo product that you access with this application.|
 |messages|[messages](#schemamessages)|true|none|The Nexmo product that you access with this application.|
-|name|string|true|none|The name of your application|
+|name|[applicationBaseName](#schemaapplicationbasename)|true|none|The name of your application|
 |voice|[voice](#schemavoice)|true|none|The Nexmo product that you access with this application.|
 |keys|[keysWithPrivateKey](#schemakeyswithprivatekey)|false|none|none|
 
@@ -634,11 +634,11 @@ You can find your API secret in your [account overview](https://dashboard.nexmo.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_embedded|object|true|none|none|
+|_embedded|[applicationsBaseEmbedded](#schemaapplicationsbaseembedded)|true|none|none|
 |_links|[links](#schemalinks)|true|none|A series of links between resources in this API in the following [HAL specification](http://stateless.co/hal_specification.html).|
-|count|integer|true|none|The number of items associated with your account.|
-|page_index|integer|true|none|The offset from the first page.|
-|page_size|integer|true|none|The number of items returned on each call to this endpoint. The default is 10 records.|
+|count|[applicationsBaseCount](#schemaapplicationsbasecount)|true|none|The number of items associated with your account.|
+|page_index|[applicationsBasePageIndex](#schemaapplicationsbasepageindex)|true|none|The offset from the first page.|
+|page_size|[applicationsBasePageSize](#schemaapplicationsbasepagesize)|true|none|The number of items returned on each call to this endpoint. The default is 10 records.|
 
 <h2 id="tocS_applicationsBase">applicationsBase</h2>
 <!-- backwards compatibility -->
@@ -691,10 +691,10 @@ You can find your API secret in your [account overview](https://dashboard.nexmo.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|_embedded|object|false|none|none|
-|count|integer|false|none|The number of items associated with your account.|
-|page_index|integer|false|none|The offset from the first page.|
-|page_size|integer|false|none|The number of items returned on each call to this endpoint. The default is 10 records.|
+|_embedded|[applicationsBaseEmbedded](#schemaapplicationsbaseembedded)|false|none|none|
+|count|[applicationsBaseCount](#schemaapplicationsbasecount)|false|none|The number of items associated with your account.|
+|page_index|[applicationsBasePageIndex](#schemaapplicationsbasepageindex)|false|none|The offset from the first page.|
+|page_size|[applicationsBasePageSize](#schemaapplicationsbasepagesize)|false|none|The number of items returned on each call to this endpoint. The default is 10 records.|
 
 <h2 id="tocS_keys">keys</h2>
 <!-- backwards compatibility -->
@@ -812,3 +812,116 @@ The Nexmo product that you access with this application.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |webhooks|[object]|false|none|none|
+
+<h2 id="tocS_applicationBaseId">applicationBaseId</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationbaseid"></a>
+<a id="schema_applicationBaseId"></a>
+<a id="tocSapplicationbaseid"></a>
+<a id="tocsapplicationbaseid"></a>
+
+```json
+"aaaaaaaa-bbbb-cccc-dddd-0123456789ab"
+```
+
+The ID allocated to your application by Nexmo.
+
+<h2 id="tocS_applicationBaseName">applicationBaseName</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationbasename"></a>
+<a id="schema_applicationBaseName"></a>
+<a id="tocSapplicationbasename"></a>
+<a id="tocsapplicationbasename"></a>
+
+```json
+"My Application"
+```
+
+The name of your application
+
+<h2 id="tocS_applicationsBaseEmbedded">applicationsBaseEmbedded</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationsbaseembedded"></a>
+<a id="schema_applicationsBaseEmbedded"></a>
+<a id="tocSapplicationsbaseembedded"></a>
+<a id="tocsapplicationsbaseembedded"></a>
+
+```json
+{
+  "applications": [
+    {
+      "_links": {
+        "href": "/v1/applications/aaaaaaaa-bbbb-cccc-dddd-0123456789ab"
+      },
+      "id": "aaaaaaaa-bbbb-cccc-dddd-0123456789ab",
+      "keys": {
+        "public_key": "PUBLIC_KEY"
+      },
+      "messages": {
+        "webhooks": [
+          {
+            "endpoint": "https://example.com/webhooks/status",
+            "endpoint_type": "status_url",
+            "http_method": "POST"
+          }
+        ]
+      },
+      "name": "My Application",
+      "voice": {
+        "webhooks": [
+          {
+            "endpoint": "https://example.com/webhooks/answer",
+            "endpoint_type": "answer_url",
+            "http_method": "GET"
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|applications|[[application](#schemaapplication)]|false|none|The collection of your applications. Each object contains information about an an individual application. The public_key is not included in the application information.|
+
+<h2 id="tocS_applicationsBaseCount">applicationsBaseCount</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationsbasecount"></a>
+<a id="schema_applicationsBaseCount"></a>
+<a id="tocSapplicationsbasecount"></a>
+<a id="tocsapplicationsbasecount"></a>
+
+```json
+1
+```
+
+The number of items associated with your account.
+
+<h2 id="tocS_applicationsBasePageIndex">applicationsBasePageIndex</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationsbasepageindex"></a>
+<a id="schema_applicationsBasePageIndex"></a>
+<a id="tocSapplicationsbasepageindex"></a>
+<a id="tocsapplicationsbasepageindex"></a>
+
+```json
+1
+```
+
+The offset from the first page.
+
+<h2 id="tocS_applicationsBasePageSize">applicationsBasePageSize</h2>
+<!-- backwards compatibility -->
+<a id="schemaapplicationsbasepagesize"></a>
+<a id="schema_applicationsBasePageSize"></a>
+<a id="tocSapplicationsbasepagesize"></a>
+<a id="tocsapplicationsbasepagesize"></a>
+
+```json
+10
+```
+
+The number of items returned on each call to this endpoint. The default is 10 records.

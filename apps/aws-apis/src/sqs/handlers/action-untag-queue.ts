@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postActionUntagQueueRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postActionUntagQueueRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const actionUntagQueueHandler = app.openapi(postActionUntagQueueRoute, (c) => {
+export const postActionUntagQueueRouteHandler: RouteHandler<
+  typeof postActionUntagQueueRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

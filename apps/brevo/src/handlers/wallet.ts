@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWalletPassesPassIdInstallUrlContactIdRoute,
   postWalletPassesInstallationIdRedeemRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWalletPassesPassIdInstallUrlContactIdRouteHandler: RouteHandler<
+  typeof getWalletPassesPassIdInstallUrlContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const walletHandler = app
-  .openapi(getWalletPassesPassIdInstallUrlContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletPassesInstallationIdRedeemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWalletPassesInstallationIdRedeemRouteHandler: RouteHandler<
+  typeof postWalletPassesInstallationIdRedeemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

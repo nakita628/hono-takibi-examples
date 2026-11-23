@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCartClearCacheJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCartClearCacheJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cartClearCacheJsonHandler = app.openapi(postCartClearCacheJsonRoute, (c) => {
+export const postCartClearCacheJsonRouteHandler: RouteHandler<
+  typeof postCartClearCacheJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ProvisioningAlertRulesUIDRoute,
   deleteV1ProvisioningContactPointsUIDRoute,
   deleteV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute,
@@ -38,114 +38,218 @@ import {
   putV1SsoSettingsKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ProvisioningAlertRulesRouteHandler: RouteHandler<
+  typeof getV1ProvisioningAlertRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ProvisioningAlertRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProvisioningAlertRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningAlertRulesExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningAlertRulesUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningAlertRulesUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningAlertRulesUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningAlertRulesUIDExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningContactPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProvisioningContactPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningContactPointsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningContactPointsUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningContactPointsUIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningFolderFolderUIDRuleGroupsGroupExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningMuteTimingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProvisioningMuteTimingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningMuteTimingsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningMuteTimingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningMuteTimingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningMuteTimingsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningMuteTimingsNameExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningPoliciesExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProvisioningTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProvisioningTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ProvisioningTemplatesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SsoSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SsoSettingsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SsoSettingsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1SsoSettingsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1SsoSettingsKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ProvisioningAlertRulesRouteHandler: RouteHandler<
+  typeof postV1ProvisioningAlertRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningAlertRulesExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningAlertRulesExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningAlertRulesUIDRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningAlertRulesUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningAlertRulesUIDRouteHandler: RouteHandler<
+  typeof getV1ProvisioningAlertRulesUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningAlertRulesUIDRouteHandler: RouteHandler<
+  typeof putV1ProvisioningAlertRulesUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningAlertRulesUIDExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningAlertRulesUIDExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningContactPointsRouteHandler: RouteHandler<
+  typeof getV1ProvisioningContactPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProvisioningContactPointsRouteHandler: RouteHandler<
+  typeof postV1ProvisioningContactPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningContactPointsExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningContactPointsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningContactPointsUIDRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningContactPointsUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningContactPointsUIDRouteHandler: RouteHandler<
+  typeof putV1ProvisioningContactPointsUIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningFolderFolderUIDRuleGroupsGroupRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningFolderFolderUIDRuleGroupsGroupRouteHandler: RouteHandler<
+  typeof getV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningFolderFolderUIDRuleGroupsGroupRouteHandler: RouteHandler<
+  typeof putV1ProvisioningFolderFolderUIDRuleGroupsGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningFolderFolderUIDRuleGroupsGroupExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningFolderFolderUIDRuleGroupsGroupExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningMuteTimingsRouteHandler: RouteHandler<
+  typeof getV1ProvisioningMuteTimingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProvisioningMuteTimingsRouteHandler: RouteHandler<
+  typeof postV1ProvisioningMuteTimingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningMuteTimingsExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningMuteTimingsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningMuteTimingsNameRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningMuteTimingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningMuteTimingsNameRouteHandler: RouteHandler<
+  typeof getV1ProvisioningMuteTimingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningMuteTimingsNameRouteHandler: RouteHandler<
+  typeof putV1ProvisioningMuteTimingsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningMuteTimingsNameExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningMuteTimingsNameExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningPoliciesRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningPoliciesRouteHandler: RouteHandler<
+  typeof getV1ProvisioningPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningPoliciesRouteHandler: RouteHandler<
+  typeof putV1ProvisioningPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningPoliciesExportRouteHandler: RouteHandler<
+  typeof getV1ProvisioningPoliciesExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningTemplatesRouteHandler: RouteHandler<
+  typeof getV1ProvisioningTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProvisioningTemplatesNameRouteHandler: RouteHandler<
+  typeof deleteV1ProvisioningTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProvisioningTemplatesNameRouteHandler: RouteHandler<
+  typeof getV1ProvisioningTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ProvisioningTemplatesNameRouteHandler: RouteHandler<
+  typeof putV1ProvisioningTemplatesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SsoSettingsRouteHandler: RouteHandler<typeof getV1SsoSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SsoSettingsKeyRouteHandler: RouteHandler<
+  typeof deleteV1SsoSettingsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SsoSettingsKeyRouteHandler: RouteHandler<
+  typeof getV1SsoSettingsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1SsoSettingsKeyRouteHandler: RouteHandler<
+  typeof patchV1SsoSettingsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1SsoSettingsKeyRouteHandler: RouteHandler<
+  typeof putV1SsoSettingsKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

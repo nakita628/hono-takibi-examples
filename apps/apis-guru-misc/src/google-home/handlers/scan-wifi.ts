@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postScanWifiRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postScanWifiRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const scanWifiHandler = app.openapi(postScanWifiRoute, (c) => {
+export const postScanWifiRouteHandler: RouteHandler<typeof postScanWifiRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

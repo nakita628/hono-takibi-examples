@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShineFrontendService20170701ListTerminologiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShineFrontendService20170701ListTerminologiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShineFrontendService20170701ListTerminologiesHandler = app.openapi(
-  postXAmzTargetAWSShineFrontendService20170701ListTerminologiesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShineFrontendService20170701ListTerminologiesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShineFrontendService20170701ListTerminologiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAppRunnerDeleteConnectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAppRunnerDeleteConnectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAppRunnerDeleteConnectionHandler = app.openapi(
-  postXAmzTargetAppRunnerDeleteConnectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAppRunnerDeleteConnectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAppRunnerDeleteConnectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDetectorDetectorIdFilterFilterNameRoute,
   deleteDetectorDetectorIdIpsetIpSetIdRoute,
   deleteDetectorDetectorIdPublishingDestinationDestinationIdRoute,
@@ -59,177 +59,340 @@ import {
   postDetectorRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDetectorDetectorIdAdministratorRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdAdministratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const detectorHandler = app
-  .openapi(postDetectorDetectorIdAdministratorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdAdministratorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdIpsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdIpsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdMemberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdPublishingDestinationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdPublishingDestinationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdThreatintelsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdThreatintelsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorDetectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorDetectorIdFilterFilterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdFilterFilterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFilterFilterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorDetectorIdIpsetIpSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdIpsetIpSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdIpsetIpSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorDetectorIdPublishingDestinationDestinationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdPublishingDestinationDestinationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdPublishingDestinationDestinationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMalwareScansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdAdministratorDisassociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMasterDisassociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberDisassociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdCoverageStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDetectorDetectorIdMalwareScanSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMalwareScanSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberDetectorGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFreeTrialDaysRemainingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdUsageStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberInviteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdCoverageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsUnarchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdFindingsFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDetectorDetectorIdMemberDetectorUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDetectorDetectorIdAdministratorRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdAdministratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMasterRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdMasterRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsArchiveRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorRouteHandler: RouteHandler<typeof postDetectorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorRouteHandler: RouteHandler<typeof getDetectorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFilterRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdFilterRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdIpsetRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdIpsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdIpsetRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdIpsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdMemberRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdMemberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdPublishingDestinationRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdPublishingDestinationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdPublishingDestinationRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdPublishingDestinationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsCreateRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdThreatintelsetRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdThreatintelsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdThreatintelsetRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdThreatintelsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorDetectorIdRouteHandler: RouteHandler<
+  typeof deleteDetectorDetectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorDetectorIdFilterFilterNameRouteHandler: RouteHandler<
+  typeof deleteDetectorDetectorIdFilterFilterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdFilterFilterNameRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdFilterFilterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFilterFilterNameRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFilterFilterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorDetectorIdIpsetIpSetIdRouteHandler: RouteHandler<
+  typeof deleteDetectorDetectorIdIpsetIpSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdIpsetIpSetIdRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdIpsetIpSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdIpsetIpSetIdRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdIpsetIpSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberDeleteRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorDetectorIdPublishingDestinationDestinationIdRouteHandler: RouteHandler<
+  typeof deleteDetectorDetectorIdPublishingDestinationDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdPublishingDestinationDestinationIdRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdPublishingDestinationDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdPublishingDestinationDestinationIdRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdPublishingDestinationDestinationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDetectorDetectorIdThreatintelsetThreatIntelSetIdRouteHandler: RouteHandler<
+  typeof deleteDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdThreatintelsetThreatIntelSetIdRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdThreatintelsetThreatIntelSetIdRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdThreatintelsetThreatIntelSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMalwareScansRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMalwareScansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdAdminRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdAdminRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdAdministratorDisassociateRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdAdministratorDisassociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMasterDisassociateRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMasterDisassociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberDisassociateRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberDisassociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdCoverageStatisticsRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdCoverageStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsGetRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsStatisticsRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDetectorDetectorIdMalwareScanSettingsRouteHandler: RouteHandler<
+  typeof getDetectorDetectorIdMalwareScanSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMalwareScanSettingsRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMalwareScanSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberDetectorGetRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberDetectorGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberGetRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFreeTrialDaysRemainingRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFreeTrialDaysRemainingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdUsageStatisticsRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdUsageStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberInviteRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberInviteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdCoverageRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdCoverageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberStartRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberStopRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsUnarchiveRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdFindingsFeedbackRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdFindingsFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDetectorDetectorIdMemberDetectorUpdateRouteHandler: RouteHandler<
+  typeof postDetectorDetectorIdMemberDetectorUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

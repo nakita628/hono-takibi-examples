@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/api2cart.com/1.1/openapi.yaml',
   output: './src/api2cart/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/api2cart/types.ts' },
   client: { output: './src/api2cart/client.ts', baseUrl: '/' },
   rpc: { output: './src/api2cart/rpc.ts', parseResponse: true },

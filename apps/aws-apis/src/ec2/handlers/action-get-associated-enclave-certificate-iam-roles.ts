@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionGetAssociatedEnclaveCertificateIamRolesRoute,
   postActionGetAssociatedEnclaveCertificateIamRolesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetAssociatedEnclaveCertificateIamRolesRouteHandler: RouteHandler<
+  typeof getActionGetAssociatedEnclaveCertificateIamRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetAssociatedEnclaveCertificateIamRolesHandler = app
-  .openapi(getActionGetAssociatedEnclaveCertificateIamRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetAssociatedEnclaveCertificateIamRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetAssociatedEnclaveCertificateIamRolesRouteHandler: RouteHandler<
+  typeof postActionGetAssociatedEnclaveCertificateIamRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

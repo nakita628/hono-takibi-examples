@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUsersMeAlertWordsRoute,
   deleteUsersMeAndroidGcmRegIdRoute,
   deleteUsersMeApnsDeviceTokenRoute,
@@ -40,120 +40,216 @@ import {
   postUsersUserIdStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersRouteHandler: RouteHandler<typeof getUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdReactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdOrEmailPresenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeApiKeyRegenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersMeAlertWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeAlertWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeAlertWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMePresenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersMeProfileDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeProfileDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersMeStreamIdTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersMeSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersMeSubscriptionsMutedTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeMutedUsersMutedUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeMutedUsersMutedUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeApnsDeviceTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeApnsDeviceTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeAndroidGcmRegIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeAndroidGcmRegIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdSubscriptionsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersMeAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersMeSubscriptionsPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersMeSubscriptionsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUsersRouteHandler: RouteHandler<typeof postUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdReactivateRouteHandler: RouteHandler<
+  typeof postUsersUserIdReactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdStatusRouteHandler: RouteHandler<
+  typeof postUsersUserIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdStatusRouteHandler: RouteHandler<
+  typeof getUsersUserIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdOrEmailPresenceRouteHandler: RouteHandler<
+  typeof getUsersUserIdOrEmailPresenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersMeRouteHandler: RouteHandler<typeof getUsersMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeRouteHandler: RouteHandler<typeof deleteUsersMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeApiKeyRegenerateRouteHandler: RouteHandler<
+  typeof postUsersMeApiKeyRegenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersMeAlertWordsRouteHandler: RouteHandler<
+  typeof getUsersMeAlertWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeAlertWordsRouteHandler: RouteHandler<
+  typeof postUsersMeAlertWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeAlertWordsRouteHandler: RouteHandler<
+  typeof deleteUsersMeAlertWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMePresenceRouteHandler: RouteHandler<
+  typeof postUsersMePresenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersMeProfileDataRouteHandler: RouteHandler<
+  typeof patchUsersMeProfileDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeProfileDataRouteHandler: RouteHandler<
+  typeof deleteUsersMeProfileDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeStatusRouteHandler: RouteHandler<typeof postUsersMeStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersMeStreamIdTopicsRouteHandler: RouteHandler<
+  typeof getUsersMeStreamIdTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersMeSubscriptionsRouteHandler: RouteHandler<
+  typeof getUsersMeSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeSubscriptionsRouteHandler: RouteHandler<
+  typeof postUsersMeSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeSubscriptionsRouteHandler: RouteHandler<
+  typeof deleteUsersMeSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersMeSubscriptionsMutedTopicsRouteHandler: RouteHandler<
+  typeof patchUsersMeSubscriptionsMutedTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeMutedUsersMutedUserIdRouteHandler: RouteHandler<
+  typeof postUsersMeMutedUsersMutedUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeMutedUsersMutedUserIdRouteHandler: RouteHandler<
+  typeof deleteUsersMeMutedUsersMutedUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeApnsDeviceTokenRouteHandler: RouteHandler<
+  typeof postUsersMeApnsDeviceTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeApnsDeviceTokenRouteHandler: RouteHandler<
+  typeof deleteUsersMeApnsDeviceTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeAndroidGcmRegIdRouteHandler: RouteHandler<
+  typeof postUsersMeAndroidGcmRegIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeAndroidGcmRegIdRouteHandler: RouteHandler<
+  typeof deleteUsersMeAndroidGcmRegIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdSubscriptionsStreamIdRouteHandler: RouteHandler<
+  typeof getUsersUserIdSubscriptionsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdChannelsRouteHandler: RouteHandler<
+  typeof getUsersUserIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeAvatarRouteHandler: RouteHandler<typeof postUsersMeAvatarRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersMeAvatarRouteHandler: RouteHandler<
+  typeof deleteUsersMeAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersMeSubscriptionsPropertiesRouteHandler: RouteHandler<
+  typeof postUsersMeSubscriptionsPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersMeSubscriptionsStreamIdRouteHandler: RouteHandler<
+  typeof patchUsersMeSubscriptionsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersEmailRouteHandler: RouteHandler<typeof getUsersEmailRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersEmailRouteHandler: RouteHandler<typeof patchUsersEmailRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdRouteHandler: RouteHandler<typeof getUsersUserIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersUserIdRouteHandler: RouteHandler<typeof patchUsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUsersUserIdRouteHandler: RouteHandler<typeof deleteUsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

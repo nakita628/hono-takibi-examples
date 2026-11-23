@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/dataproc/v1/openapi.yaml',
   output: './src/dataproc/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dataproc/types.ts' },
   client: { output: './src/dataproc/client.ts', baseUrl: '/' },
   rpc: { output: './src/dataproc/rpc.ts', parseResponse: true },

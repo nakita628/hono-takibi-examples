@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWorkspaceMembershipsWorkspaceMembershipGidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWorkspaceMembershipsWorkspaceMembershipGidRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const workspaceMembershipsHandler = app.openapi(
-  getWorkspaceMembershipsWorkspaceMembershipGidRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getWorkspaceMembershipsWorkspaceMembershipGidRouteHandler: RouteHandler<
+  typeof getWorkspaceMembershipsWorkspaceMembershipGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

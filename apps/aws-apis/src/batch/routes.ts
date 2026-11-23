@@ -549,9 +549,9 @@ const NodeRangePropertySchema = z
 const NodeRangePropertiesSchema = z.array(NodeRangePropertySchema).openapi('NodeRangeProperties')
 
 type NodePropertiesType = {
-  numNodes: z.infer<typeof IntegerSchema> & unknown
-  mainNode: z.infer<typeof IntegerSchema> & unknown
-  nodeRangeProperties: z.infer<typeof NodeRangePropertiesSchema> & unknown
+  numNodes: z.infer<typeof IntegerSchema>
+  mainNode: z.infer<typeof IntegerSchema>
+  nodeRangeProperties: z.infer<typeof NodeRangePropertiesSchema>
 }
 
 const NodePropertiesSchema: z.ZodType<NodePropertiesType> = z
@@ -863,22 +863,22 @@ const EksPropertiesSchema = z
 const OrchestrationTypeSchema = z.enum(['ECS', 'EKS']).openapi('OrchestrationType')
 
 type JobDefinitionType = {
-  jobDefinitionName: z.infer<typeof StringSchema> & unknown
-  jobDefinitionArn: z.infer<typeof StringSchema> & unknown
-  revision: z.infer<typeof IntegerSchema> & unknown
-  status?: z.infer<typeof StringSchema> & unknown
-  type: z.infer<typeof StringSchema> & unknown
-  schedulingPriority?: z.infer<typeof IntegerSchema> & unknown
-  parameters?: z.infer<typeof ParametersMapSchema> & unknown
-  retryStrategy?: z.infer<typeof RetryStrategySchema> & unknown
-  containerProperties?: z.infer<typeof ContainerPropertiesSchema> & unknown
-  timeout?: z.infer<typeof JobTimeoutSchema> & unknown
-  nodeProperties?: z.infer<typeof NodePropertiesSchema> & unknown
-  tags?: z.infer<typeof TagrisTagsMapSchema> & unknown
-  propagateTags?: z.infer<typeof BooleanSchema> & unknown
-  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema> & unknown
-  eksProperties?: z.infer<typeof EksPropertiesSchema> & unknown
-  containerOrchestrationType?: z.infer<typeof OrchestrationTypeSchema> & unknown
+  jobDefinitionName: z.infer<typeof StringSchema>
+  jobDefinitionArn: z.infer<typeof StringSchema>
+  revision: z.infer<typeof IntegerSchema>
+  status?: z.infer<typeof StringSchema>
+  type: z.infer<typeof StringSchema>
+  schedulingPriority?: z.infer<typeof IntegerSchema>
+  parameters?: z.infer<typeof ParametersMapSchema>
+  retryStrategy?: z.infer<typeof RetryStrategySchema>
+  containerProperties?: z.infer<typeof ContainerPropertiesSchema>
+  timeout?: z.infer<typeof JobTimeoutSchema>
+  nodeProperties?: z.infer<typeof NodePropertiesSchema>
+  tags?: z.infer<typeof TagrisTagsMapSchema>
+  propagateTags?: z.infer<typeof BooleanSchema>
+  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema>
+  eksProperties?: z.infer<typeof EksPropertiesSchema>
+  containerOrchestrationType?: z.infer<typeof OrchestrationTypeSchema>
 }
 
 const JobDefinitionSchema: z.ZodType<JobDefinitionType> = z
@@ -952,8 +952,8 @@ const JobDefinitionListSchema: z.ZodType<JobDefinitionListType> = z
   .openapi('JobDefinitionList')
 
 type DescribeJobDefinitionsResponseType = {
-  jobDefinitions?: z.infer<typeof JobDefinitionListSchema> & unknown
-  nextToken?: z.infer<typeof StringSchema> & unknown
+  jobDefinitions?: z.infer<typeof JobDefinitionListSchema>
+  nextToken?: z.infer<typeof StringSchema>
 }
 
 const JobStatusSchema = z
@@ -1356,34 +1356,34 @@ const EksAttemptDetailSchema = z
 const EksAttemptDetailsSchema = z.array(EksAttemptDetailSchema).openapi('EksAttemptDetails')
 
 type JobDetailType = {
-  jobArn?: z.infer<typeof StringSchema> & unknown
-  jobName: z.infer<typeof StringSchema> & unknown
-  jobId: z.infer<typeof StringSchema> & unknown
-  jobQueue: z.infer<typeof StringSchema> & unknown
-  status: z.infer<typeof JobStatusSchema> & unknown
-  shareIdentifier?: z.infer<typeof StringSchema> & unknown
-  schedulingPriority?: z.infer<typeof IntegerSchema> & unknown
-  attempts?: z.infer<typeof AttemptDetailsSchema> & unknown
-  statusReason?: z.infer<typeof StringSchema> & unknown
-  createdAt?: z.infer<typeof LongSchema> & unknown
-  retryStrategy?: z.infer<typeof RetryStrategySchema> & unknown
-  startedAt: z.infer<typeof LongSchema> & unknown
-  stoppedAt?: z.infer<typeof LongSchema> & unknown
-  dependsOn?: z.infer<typeof JobDependencyListSchema> & unknown
-  jobDefinition: z.infer<typeof StringSchema> & unknown
-  parameters?: z.infer<typeof ParametersMapSchema> & unknown
-  container?: z.infer<typeof ContainerDetailSchema> & unknown
-  nodeDetails?: z.infer<typeof NodeDetailsSchema> & unknown
-  nodeProperties?: z.infer<typeof NodePropertiesSchema> & unknown
-  arrayProperties?: z.infer<typeof ArrayPropertiesDetailSchema> & unknown
-  timeout?: z.infer<typeof JobTimeoutSchema> & unknown
-  tags?: z.infer<typeof TagrisTagsMapSchema> & unknown
-  propagateTags?: z.infer<typeof BooleanSchema> & unknown
-  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema> & unknown
-  eksProperties?: z.infer<typeof EksPropertiesDetailSchema> & unknown
-  eksAttempts?: z.infer<typeof EksAttemptDetailsSchema> & unknown
-  isCancelled?: z.infer<typeof BooleanSchema> & unknown
-  isTerminated?: z.infer<typeof BooleanSchema> & unknown
+  jobArn?: z.infer<typeof StringSchema>
+  jobName: z.infer<typeof StringSchema>
+  jobId: z.infer<typeof StringSchema>
+  jobQueue: z.infer<typeof StringSchema>
+  status: z.infer<typeof JobStatusSchema>
+  shareIdentifier?: z.infer<typeof StringSchema>
+  schedulingPriority?: z.infer<typeof IntegerSchema>
+  attempts?: z.infer<typeof AttemptDetailsSchema>
+  statusReason?: z.infer<typeof StringSchema>
+  createdAt?: z.infer<typeof LongSchema>
+  retryStrategy?: z.infer<typeof RetryStrategySchema>
+  startedAt: z.infer<typeof LongSchema>
+  stoppedAt?: z.infer<typeof LongSchema>
+  dependsOn?: z.infer<typeof JobDependencyListSchema>
+  jobDefinition: z.infer<typeof StringSchema>
+  parameters?: z.infer<typeof ParametersMapSchema>
+  container?: z.infer<typeof ContainerDetailSchema>
+  nodeDetails?: z.infer<typeof NodeDetailsSchema>
+  nodeProperties?: z.infer<typeof NodePropertiesSchema>
+  arrayProperties?: z.infer<typeof ArrayPropertiesDetailSchema>
+  timeout?: z.infer<typeof JobTimeoutSchema>
+  tags?: z.infer<typeof TagrisTagsMapSchema>
+  propagateTags?: z.infer<typeof BooleanSchema>
+  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema>
+  eksProperties?: z.infer<typeof EksPropertiesDetailSchema>
+  eksAttempts?: z.infer<typeof EksAttemptDetailsSchema>
+  isCancelled?: z.infer<typeof BooleanSchema>
+  isTerminated?: z.infer<typeof BooleanSchema>
 }
 
 const JobDetailSchema: z.ZodType<JobDetailType> = z
@@ -1495,23 +1495,23 @@ const JobDetailListSchema: z.ZodType<JobDetailListType> = z
   .array(JobDetailSchema)
   .openapi('JobDetailList')
 
-type DescribeJobsResponseType = { jobs?: z.infer<typeof JobDetailListSchema> & unknown }
+type DescribeJobsResponseType = { jobs?: z.infer<typeof JobDetailListSchema> }
 
 const JobDefinitionTypeSchema = z.enum(['container', 'multinode']).openapi('JobDefinitionType')
 
 type RegisterJobDefinitionRequestType = {
-  jobDefinitionName: z.infer<typeof StringSchema> & unknown
-  type: z.infer<typeof JobDefinitionTypeSchema> & unknown
-  parameters?: z.infer<typeof ParametersMapSchema> & unknown
-  schedulingPriority?: z.infer<typeof IntegerSchema> & unknown
-  containerProperties?: z.infer<typeof ContainerPropertiesSchema> & unknown
-  nodeProperties?: z.infer<typeof NodePropertiesSchema> & unknown
-  retryStrategy?: z.infer<typeof RetryStrategySchema> & unknown
-  propagateTags?: z.infer<typeof BooleanSchema> & unknown
-  timeout?: z.infer<typeof JobTimeoutSchema> & unknown
-  tags?: z.infer<typeof TagrisTagsMapSchema> & unknown
-  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema> & unknown
-  eksProperties?: z.infer<typeof EksPropertiesSchema> & unknown
+  jobDefinitionName: z.infer<typeof StringSchema>
+  type: z.infer<typeof JobDefinitionTypeSchema>
+  parameters?: z.infer<typeof ParametersMapSchema>
+  schedulingPriority?: z.infer<typeof IntegerSchema>
+  containerProperties?: z.infer<typeof ContainerPropertiesSchema>
+  nodeProperties?: z.infer<typeof NodePropertiesSchema>
+  retryStrategy?: z.infer<typeof RetryStrategySchema>
+  propagateTags?: z.infer<typeof BooleanSchema>
+  timeout?: z.infer<typeof JobTimeoutSchema>
+  tags?: z.infer<typeof TagrisTagsMapSchema>
+  platformCapabilities?: z.infer<typeof PlatformCapabilityListSchema>
+  eksProperties?: z.infer<typeof EksPropertiesSchema>
 }
 
 const CancelJobResponseSchema = z

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVerificationsByPhoneNumberPhoneNumberRoute,
   getVerificationsVerificationIdRoute,
   postVerificationsByPhoneNumberPhoneNumberActionsVerifyRoute,
@@ -10,30 +10,50 @@ import {
   postVerificationsWhatsappRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVerificationsByPhoneNumberPhoneNumberRouteHandler: RouteHandler<
+  typeof getVerificationsByPhoneNumberPhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const verificationsHandler = app
-  .openapi(getVerificationsByPhoneNumberPhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsByPhoneNumberPhoneNumberActionsVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsCallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsFlashcallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsPsd2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerificationsWhatsappRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVerificationsVerificationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVerificationsByPhoneNumberPhoneNumberActionsVerifyRouteHandler: RouteHandler<
+  typeof postVerificationsByPhoneNumberPhoneNumberActionsVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerificationsCallRouteHandler: RouteHandler<
+  typeof postVerificationsCallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerificationsFlashcallRouteHandler: RouteHandler<
+  typeof postVerificationsFlashcallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerificationsPsd2RouteHandler: RouteHandler<
+  typeof postVerificationsPsd2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerificationsSmsRouteHandler: RouteHandler<
+  typeof postVerificationsSmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerificationsWhatsappRouteHandler: RouteHandler<
+  typeof postVerificationsWhatsappRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVerificationsVerificationIdRouteHandler: RouteHandler<
+  typeof getVerificationsVerificationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

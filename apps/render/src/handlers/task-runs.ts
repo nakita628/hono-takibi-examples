@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTaskRunsTaskRunIdRoute,
   getTaskRunsEventsRoute,
   getTaskRunsRoute,
@@ -7,21 +7,28 @@ import {
   postTaskRunsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaskRunsRouteHandler: RouteHandler<typeof getTaskRunsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const taskRunsHandler = app
-  .openapi(getTaskRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTaskRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskRunsEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaskRunsTaskRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTaskRunsTaskRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTaskRunsRouteHandler: RouteHandler<typeof postTaskRunsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaskRunsEventsRouteHandler: RouteHandler<typeof getTaskRunsEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTaskRunsTaskRunIdRouteHandler: RouteHandler<
+  typeof getTaskRunsTaskRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTaskRunsTaskRunIdRouteHandler: RouteHandler<
+  typeof deleteTaskRunsTaskRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

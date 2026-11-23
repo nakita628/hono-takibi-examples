@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNumberReservationsNumberReservationIdRoute,
   getNumberReservationsRoute,
   postNumberReservationsNumberReservationIdActionsExtendRoute,
   postNumberReservationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNumberReservationsRouteHandler: RouteHandler<
+  typeof getNumberReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const numberReservationsHandler = app
-  .openapi(getNumberReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNumberReservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNumberReservationsNumberReservationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNumberReservationsNumberReservationIdActionsExtendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNumberReservationsRouteHandler: RouteHandler<
+  typeof postNumberReservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNumberReservationsNumberReservationIdRouteHandler: RouteHandler<
+  typeof getNumberReservationsNumberReservationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNumberReservationsNumberReservationIdActionsExtendRouteHandler: RouteHandler<
+  typeof postNumberReservationsNumberReservationIdActionsExtendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

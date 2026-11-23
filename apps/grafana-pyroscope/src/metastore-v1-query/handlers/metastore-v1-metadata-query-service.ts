@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMetastoreV1MetadataQueryServiceQueryMetadataLabelsRoute,
   postMetastoreV1MetadataQueryServiceQueryMetadataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMetastoreV1MetadataQueryServiceQueryMetadataRouteHandler: RouteHandler<
+  typeof postMetastoreV1MetadataQueryServiceQueryMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metastoreV1MetadataQueryServiceHandler = app
-  .openapi(postMetastoreV1MetadataQueryServiceQueryMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetastoreV1MetadataQueryServiceQueryMetadataLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetastoreV1MetadataQueryServiceQueryMetadataLabelsRouteHandler: RouteHandler<
+  typeof postMetastoreV1MetadataQueryServiceQueryMetadataLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

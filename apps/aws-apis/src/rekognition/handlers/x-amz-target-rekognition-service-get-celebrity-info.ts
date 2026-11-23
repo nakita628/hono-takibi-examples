@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRekognitionServiceGetCelebrityInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRekognitionServiceGetCelebrityInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRekognitionServiceGetCelebrityInfoHandler = app.openapi(
-  postXAmzTargetRekognitionServiceGetCelebrityInfoRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRekognitionServiceGetCelebrityInfoRouteHandler: RouteHandler<
+  typeof postXAmzTargetRekognitionServiceGetCelebrityInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

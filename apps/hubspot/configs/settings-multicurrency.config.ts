@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/Multicurrency/Rollouts/145897/2026-09/multicurrency.json',
   output: './src/settings-multicurrency/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/settings-multicurrency/types.ts' },
   client: { output: './src/settings-multicurrency/client.ts', baseUrl: '/' },
   rpc: { output: './src/settings-multicurrency/rpc.ts', parseResponse: true },

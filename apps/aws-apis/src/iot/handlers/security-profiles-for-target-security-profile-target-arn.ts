@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSecurityProfilesForTargetSecurityProfileTargetArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSecurityProfilesForTargetSecurityProfileTargetArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const securityProfilesForTargetSecurityProfileTargetArnHandler = app.openapi(
-  getSecurityProfilesForTargetSecurityProfileTargetArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getSecurityProfilesForTargetSecurityProfileTargetArnRouteHandler: RouteHandler<
+  typeof getSecurityProfilesForTargetSecurityProfileTargetArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

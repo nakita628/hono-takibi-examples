@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVpcIdRoute,
   deleteVpcVpcIdSubnetIdRoute,
   deleteVpcVpcIdSubnetSubnetIdRouteIdRoute,
@@ -18,54 +18,88 @@ import {
   putVpcVpcIdSubnetSubnetIdDetachRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putVpcVpcIdSubnetSubnetIdAttachRouteHandler: RouteHandler<
+  typeof putVpcVpcIdSubnetSubnetIdAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vpcHandler = app
-  .openapi(putVpcVpcIdSubnetSubnetIdAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcVpcIdRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVpcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcVpcIdSubnetSubnetIdRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVpcVpcIdSubnetSubnetIdRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcVpcIdSubnetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVpcVpcIdSubnetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVpcVpcIdSubnetSubnetIdRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVpcVpcIdSubnetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVpcVpcIdSubnetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcVpcIdSubnetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVpcVpcIdSubnetSubnetIdDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVpcIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVpcIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVpcIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVpcVpcIdRouteRouteHandler: RouteHandler<typeof getVpcVpcIdRouteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVpcRouteHandler: RouteHandler<typeof postVpcRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpcRouteHandler: RouteHandler<typeof getVpcRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpcVpcIdSubnetSubnetIdRouteRouteHandler: RouteHandler<
+  typeof getVpcVpcIdSubnetSubnetIdRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVpcVpcIdSubnetSubnetIdRouteRouteHandler: RouteHandler<
+  typeof postVpcVpcIdSubnetSubnetIdRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpcVpcIdSubnetRouteHandler: RouteHandler<typeof getVpcVpcIdSubnetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVpcVpcIdSubnetRouteHandler: RouteHandler<typeof postVpcVpcIdSubnetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVpcVpcIdSubnetSubnetIdRouteIdRouteHandler: RouteHandler<
+  typeof deleteVpcVpcIdSubnetSubnetIdRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVpcVpcIdSubnetIdRouteHandler: RouteHandler<
+  typeof deleteVpcVpcIdSubnetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVpcVpcIdSubnetIdRouteHandler: RouteHandler<
+  typeof putVpcVpcIdSubnetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpcVpcIdSubnetIdRouteHandler: RouteHandler<
+  typeof getVpcVpcIdSubnetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVpcVpcIdSubnetSubnetIdDetachRouteHandler: RouteHandler<
+  typeof putVpcVpcIdSubnetSubnetIdDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVpcIdRouteHandler: RouteHandler<typeof putVpcIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVpcIdRouteHandler: RouteHandler<typeof getVpcIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVpcIdRouteHandler: RouteHandler<typeof deleteVpcIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

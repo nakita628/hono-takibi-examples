@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScrapersScraperTargetIDLabelsLabelIDRoute,
   deleteScrapersScraperTargetIDMembersUserIDRoute,
   deleteScrapersScraperTargetIDOwnersUserIDRoute,
@@ -16,48 +16,82 @@ import {
   postScrapersScraperTargetIDOwnersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScrapersRouteHandler: RouteHandler<typeof getScrapersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scrapersHandler = app
-  .openapi(getScrapersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrapersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScrapersScraperTargetIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapersScraperTargetIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchScrapersScraperTargetIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapersScraperTargetIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrapersScraperTargetIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScrapersScraperTargetIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapersScraperTargetIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrapersScraperTargetIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScrapersScraperTargetIDMembersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScrapersScraperTargetIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrapersScraperTargetIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScrapersScraperTargetIDOwnersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postScrapersRouteHandler: RouteHandler<typeof postScrapersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScrapersScraperTargetIDRouteHandler: RouteHandler<
+  typeof deleteScrapersScraperTargetIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScrapersScraperTargetIDRouteHandler: RouteHandler<
+  typeof getScrapersScraperTargetIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchScrapersScraperTargetIDRouteHandler: RouteHandler<
+  typeof patchScrapersScraperTargetIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScrapersScraperTargetIDLabelsRouteHandler: RouteHandler<
+  typeof getScrapersScraperTargetIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScrapersScraperTargetIDLabelsRouteHandler: RouteHandler<
+  typeof postScrapersScraperTargetIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScrapersScraperTargetIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteScrapersScraperTargetIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScrapersScraperTargetIDMembersRouteHandler: RouteHandler<
+  typeof getScrapersScraperTargetIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScrapersScraperTargetIDMembersRouteHandler: RouteHandler<
+  typeof postScrapersScraperTargetIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScrapersScraperTargetIDMembersUserIDRouteHandler: RouteHandler<
+  typeof deleteScrapersScraperTargetIDMembersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScrapersScraperTargetIDOwnersRouteHandler: RouteHandler<
+  typeof getScrapersScraperTargetIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScrapersScraperTargetIDOwnersRouteHandler: RouteHandler<
+  typeof postScrapersScraperTargetIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScrapersScraperTargetIDOwnersUserIDRouteHandler: RouteHandler<
+  typeof deleteScrapersScraperTargetIDOwnersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

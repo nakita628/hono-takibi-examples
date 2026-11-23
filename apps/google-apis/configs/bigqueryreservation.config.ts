@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/bigqueryreservation/v1beta1/openapi.yaml',
   output: './src/bigqueryreservation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigqueryreservation/types.ts' },
   client: { output: './src/bigqueryreservation/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigqueryreservation/rpc.ts', parseResponse: true },

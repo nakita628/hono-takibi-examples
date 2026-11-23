@@ -279,7 +279,7 @@ export const postApiCheckoutPubGatewayCallbackOrderGroupRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     500: {
       description: 'Internal Server Error',
       content: {
@@ -372,7 +372,7 @@ export const getApiCheckoutPubOrderFormRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
   security: [],
 })
 
@@ -448,7 +448,7 @@ export const getApiCheckoutPubOrderFormOrderFormIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: '', headers: z.object({}) } },
   security: [],
 })
 
@@ -727,7 +727,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsClientProfileDataR
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [],
 })
 
@@ -838,7 +838,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsMarketingDataRoute
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
   security: [],
 })
 
@@ -1068,7 +1068,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsPaymentDataRoute =
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: '', headers: z.object({}) } },
   security: [],
 })
 
@@ -1268,7 +1268,7 @@ export const postApiCheckoutPubOrderFormOrderFormIdAttachmentsShippingDataRoute 
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: '', headers: z.object({}) } },
   security: [],
 })
 
@@ -3355,7 +3355,7 @@ export const putApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldNameRou
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: '', headers: z.object({}) } },
   security: [],
 })
 
@@ -3440,7 +3440,7 @@ export const deleteApiCheckoutPubOrderFormOrderFormIdCustomDataAppIdAppFieldName
           }),
       }),
     },
-    responses: { 200: { description: 'OK', content: {} } },
+    responses: { 200: { description: 'OK' } },
     security: [],
   },
 )
@@ -3520,7 +3520,7 @@ export const getApiCheckoutPubOrderFormOrderFormIdInstallmentsRoute = createRout
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [],
 })
 
@@ -7412,7 +7412,7 @@ export const putApiCheckoutPubOrderFormOrderFormIdItemsItemIndexPriceRoute = cre
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postApiCheckoutPubOrderFormOrderFormIdMessagesClearRoute = createRoute({
@@ -9158,7 +9158,7 @@ export const patchApiCheckoutPubOrderFormOrderFormIdProfileRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: '', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: '', headers: z.object({}) } },
   security: [],
 })
 
@@ -13600,7 +13600,7 @@ export const getApiCheckoutPubPickupPointsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
   security: [],
 })
 
@@ -13671,7 +13671,7 @@ export const getApiCheckoutPubPostalCodeCountryCodePostalCodeRoute = createRoute
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
   security: [],
 })
 
@@ -14256,7 +14256,7 @@ export const getApiCheckoutPvtConfigurationWindowToChangeSellerRoute = createRou
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postApiCheckoutPvtConfigurationWindowToChangeSellerRoute = createRoute({

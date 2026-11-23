@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { formHandler } from './handlers'
+import { putFormPrimitiveRoute } from './routes'
+import { putFormPrimitiveRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', formHandler)
+export const api = app.openapi(putFormPrimitiveRoute, putFormPrimitiveRouteHandler)
 
 export default app

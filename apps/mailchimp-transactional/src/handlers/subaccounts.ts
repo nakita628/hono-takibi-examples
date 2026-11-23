@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSubaccountsAddRoute,
   postSubaccountsDeleteRoute,
   postSubaccountsInfoRoute,
@@ -9,27 +9,44 @@ import {
   postSubaccountsUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSubaccountsListRouteHandler: RouteHandler<
+  typeof postSubaccountsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const subaccountsHandler = app
-  .openapi(postSubaccountsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSubaccountsAddRouteHandler: RouteHandler<typeof postSubaccountsAddRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubaccountsInfoRouteHandler: RouteHandler<
+  typeof postSubaccountsInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubaccountsUpdateRouteHandler: RouteHandler<
+  typeof postSubaccountsUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubaccountsDeleteRouteHandler: RouteHandler<
+  typeof postSubaccountsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubaccountsPauseRouteHandler: RouteHandler<
+  typeof postSubaccountsPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSubaccountsResumeRouteHandler: RouteHandler<
+  typeof postSubaccountsResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

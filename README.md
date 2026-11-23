@@ -4,7 +4,8 @@ Generation examples for [hono-takibi](https://github.com/nakita628/hono-takibi).
 
 Each document has one `hono-takibi.config.ts` that generates everything hono-takibi can write, next to its `routes.ts`:
 `api.md` (docs), `types.ts` (type), `client.ts` (client), `rpc.ts` (RPC functions with `parseResponse`),
-`hooks/` (SWR and the React, Preact, Solid, Vue, Svelte and Angular TanStack Query hooks) and `index.ts` with `handlers/` (template).
+`hooks/` (SWR and the React, Preact, Solid, Vue, Svelte and Angular TanStack Query hooks) and `index.ts` with `handlers/` (template,
+with `routeHandler: true`: one `RouteHandler` per operation).
 The template's handler stubs are filled with `throw new Error('Not implemented')` so that the code typechecks ([nakita628/hono-takibi#497](https://github.com/nakita628/hono-takibi/issues/497)).
 When one output stops the whole run, the config leaves that output out and says why in a comment.
 Typecheck results are in [docs/typecheck.md](./docs/typecheck.md); the Output column below links the routes and the docs.
@@ -338,7 +339,7 @@ New documents are added every day by the routine in [docs/daily-routine.md](./do
 | [influxdb-cloud](./apps/influxdb-cloud) | [cloud.yml](https://raw.githubusercontent.com/influxdata/openapi/master/contracts/cloud.yml) | [routes.ts](./apps/influxdb-cloud/src/routes.ts) · [api.md](./apps/influxdb-cloud/src/api.md) |
 | [aiven](./apps/aiven) | [openapi.json](https://api.aiven.io/doc/openapi.json) | [routes.ts](./apps/aiven/src/routes.ts) · [api.md](./apps/aiven/src/api.md) |
 | [onepassword-connect](./apps/onepassword-connect) | [spec.yaml](https://raw.githubusercontent.com/1password/connect/main/docs/openapi/spec.yaml) | [routes.ts](./apps/onepassword-connect/src/routes.ts) · [api.md](./apps/onepassword-connect/src/api.md) |
-| [vapi](./apps/vapi) | [api-json](https://api.vapi.ai/api-json) | not generated: hono-takibi 0.32.7 inlines every `$ref` of a sibling `oneOf` into `.openapi()` and runs out of string length ([nakita628/hono-takibi#510](https://github.com/nakita628/hono-takibi/issues/510)) |
+| [vapi](./apps/vapi) | [api-json](https://api.vapi.ai/api-json) | [routes.ts](./apps/vapi/src/routes.ts) · [api.md](./apps/vapi/src/api.md) |
 | [unleash](./apps/unleash) | [openapi.json](https://app.getunleash.io/demo/docs/openapi.json) | [routes.ts](./apps/unleash/src/routes.ts) · [api.md](./apps/unleash/src/api.md) |
 | [alpaca-trading](./apps/alpaca-trading) | [trading-api.json](https://docs.alpaca.markets/openapi/trading-api.json) | [routes.ts](./apps/alpaca-trading/src/routes.ts) · [api.md](./apps/alpaca-trading/src/api.md) |
 | [alpaca-market-data](./apps/alpaca-market-data) | [market-data-api.json](https://docs.alpaca.markets/openapi/market-data-api.json) | [routes.ts](./apps/alpaca-market-data/src/routes.ts) · [api.md](./apps/alpaca-market-data/src/api.md) |

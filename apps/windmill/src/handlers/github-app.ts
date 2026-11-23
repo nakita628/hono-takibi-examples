@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGithubAppGhesAssignWorkspaceIdInstallationIdRoute,
   getGithubAppConnectedRepositoriesRoute,
   getGithubAppGhesConfigRoute,
@@ -7,21 +7,32 @@ import {
   postGithubAppGhesAssignRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGithubAppConnectedRepositoriesRouteHandler: RouteHandler<
+  typeof getGithubAppConnectedRepositoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const githubAppHandler = app
-  .openapi(getGithubAppConnectedRepositoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubAppGhesConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubAppGhesDiscoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGithubAppGhesAssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGithubAppGhesAssignWorkspaceIdInstallationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGithubAppGhesConfigRouteHandler: RouteHandler<
+  typeof getGithubAppGhesConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGithubAppGhesDiscoverRouteHandler: RouteHandler<
+  typeof getGithubAppGhesDiscoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGithubAppGhesAssignRouteHandler: RouteHandler<
+  typeof postGithubAppGhesAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGithubAppGhesAssignWorkspaceIdInstallationIdRouteHandler: RouteHandler<
+  typeof deleteGithubAppGhesAssignWorkspaceIdInstallationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

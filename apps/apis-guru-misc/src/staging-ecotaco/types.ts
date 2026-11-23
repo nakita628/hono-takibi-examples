@@ -12,7 +12,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { header: { Accept?: string | undefined; 'Accept-Language'?: string | undefined } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
       $put: {
         input: { header: { Accept?: string | undefined; 'Accept-Language'?: string | undefined } }
@@ -208,7 +208,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/rides?page=:page&per_page=:per_page': {
+    '/rides?page={page}&per_page={per_page}': {
       $get: {
         input: { param: { page: number; per_page: number } } & {
           header: { Accept?: string | undefined; 'Accept-Language'?: string | undefined }
@@ -223,7 +223,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   } & {

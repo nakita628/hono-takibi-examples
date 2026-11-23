@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeCommit20150413GetCommentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeCommit20150413GetCommentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeCommit20150413GetCommentHandler = app.openapi(
-  postXAmzTargetCodeCommit20150413GetCommentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeCommit20150413GetCommentRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeCommit20150413GetCommentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getThingRegistrationTasksRoute,
   getThingRegistrationTasksTaskIdReportsReportTypeRoute,
   getThingRegistrationTasksTaskIdRoute,
@@ -7,21 +7,32 @@ import {
   putThingRegistrationTasksTaskIdCancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getThingRegistrationTasksTaskIdRouteHandler: RouteHandler<
+  typeof getThingRegistrationTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const thingRegistrationTasksHandler = app
-  .openapi(getThingRegistrationTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThingRegistrationTasksTaskIdReportsReportTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThingRegistrationTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postThingRegistrationTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putThingRegistrationTasksTaskIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getThingRegistrationTasksTaskIdReportsReportTypeRouteHandler: RouteHandler<
+  typeof getThingRegistrationTasksTaskIdReportsReportTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getThingRegistrationTasksRouteHandler: RouteHandler<
+  typeof getThingRegistrationTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postThingRegistrationTasksRouteHandler: RouteHandler<
+  typeof postThingRegistrationTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putThingRegistrationTasksTaskIdCancelRouteHandler: RouteHandler<
+  typeof putThingRegistrationTasksTaskIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

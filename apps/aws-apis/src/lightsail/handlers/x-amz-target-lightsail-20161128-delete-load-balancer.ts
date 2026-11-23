@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLightsail20161128DeleteLoadBalancerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLightsail20161128DeleteLoadBalancerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLightsail20161128DeleteLoadBalancerHandler = app.openapi(
-  postXAmzTargetLightsail20161128DeleteLoadBalancerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLightsail20161128DeleteLoadBalancerRouteHandler: RouteHandler<
+  typeof postXAmzTargetLightsail20161128DeleteLoadBalancerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCallControlApplicationsIdRoute,
   getCallControlApplicationsIdRoute,
   getCallControlApplicationsRoute,
@@ -7,21 +7,32 @@ import {
   postCallControlApplicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCallControlApplicationsRouteHandler: RouteHandler<
+  typeof getCallControlApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const callControlApplicationsHandler = app
-  .openapi(getCallControlApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCallControlApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCallControlApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCallControlApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCallControlApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCallControlApplicationsRouteHandler: RouteHandler<
+  typeof postCallControlApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCallControlApplicationsIdRouteHandler: RouteHandler<
+  typeof deleteCallControlApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCallControlApplicationsIdRouteHandler: RouteHandler<
+  typeof getCallControlApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCallControlApplicationsIdRouteHandler: RouteHandler<
+  typeof patchCallControlApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

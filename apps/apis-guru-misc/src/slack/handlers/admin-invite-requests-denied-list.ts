@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminInviteRequestsDeniedListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminInviteRequestsDeniedListRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminInviteRequestsDeniedListHandler = app.openapi(
-  getAdminInviteRequestsDeniedListRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getAdminInviteRequestsDeniedListRouteHandler: RouteHandler<
+  typeof getAdminInviteRequestsDeniedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

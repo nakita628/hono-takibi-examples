@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getReferencesAircraftAircraftCodeRoute,
   getReferencesAirlinesAirlineCodeRoute,
   getReferencesAirportsAirportCodeRoute,
@@ -8,24 +8,38 @@ import {
   getReferencesCountriesCountryCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReferencesAircraftAircraftCodeRouteHandler: RouteHandler<
+  typeof getReferencesAircraftAircraftCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const referencesHandler = app
-  .openapi(getReferencesAircraftAircraftCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReferencesAirlinesAirlineCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReferencesAirportsNearestLatitudeLongitudeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReferencesAirportsAirportCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReferencesCitiesCityCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReferencesCountriesCountryCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReferencesAirlinesAirlineCodeRouteHandler: RouteHandler<
+  typeof getReferencesAirlinesAirlineCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReferencesAirportsNearestLatitudeLongitudeRouteHandler: RouteHandler<
+  typeof getReferencesAirportsNearestLatitudeLongitudeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReferencesAirportsAirportCodeRouteHandler: RouteHandler<
+  typeof getReferencesAirportsAirportCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReferencesCitiesCityCodeRouteHandler: RouteHandler<
+  typeof getReferencesCitiesCityCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReferencesCountriesCountryCodeRouteHandler: RouteHandler<
+  typeof getReferencesCountriesCountryCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

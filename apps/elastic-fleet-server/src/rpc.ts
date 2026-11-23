@@ -67,12 +67,12 @@ export async function getApiFleetFileId(
 
 export async function getApiAgentsUpgradesMajorMinorPatchPgpPublicKey(
   args: InferRequestType<
-    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(args, options),
+    client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(args, options),
   )
 }
 

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateSubnetCidrReservationRoute,
   postActionCreateSubnetCidrReservationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateSubnetCidrReservationRouteHandler: RouteHandler<
+  typeof getActionCreateSubnetCidrReservationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateSubnetCidrReservationHandler = app
-  .openapi(getActionCreateSubnetCidrReservationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateSubnetCidrReservationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateSubnetCidrReservationRouteHandler: RouteHandler<
+  typeof postActionCreateSubnetCidrReservationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

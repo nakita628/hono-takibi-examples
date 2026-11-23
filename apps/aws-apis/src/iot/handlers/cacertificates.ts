@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCacertificatesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCacertificatesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cacertificatesHandler = app.openapi(getCacertificatesRoute, (c) => {
+export const getCacertificatesRouteHandler: RouteHandler<typeof getCacertificatesRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

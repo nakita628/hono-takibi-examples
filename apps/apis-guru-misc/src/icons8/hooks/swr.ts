@@ -13,15 +13,19 @@ export function getApiKey() {
 
 export function getGetApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
 ) {
-  return ['api', '/api/iconsets/v3/categories?platform=:platform&language=:language', args] as const
+  return [
+    'api',
+    '/api/iconsets/v3/categories?platform={platform}&language={language}',
+    args,
+  ] as const
 }
 
 export function useGetApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<TError = unknown>(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -30,7 +34,7 @@ export function useGetApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<TE
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -57,7 +61,7 @@ export function useGetApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<TE
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -68,7 +72,7 @@ export function useGetApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<TE
       swrKey,
       async () =>
         parseResponse(
-          client.api.iconsets.v3['categories?platform=:platform&language=:language'].$get(
+          client.api.iconsets.v3['categories?platform={platform}&language={language}'].$get(
             args,
             clientOptions,
           ),
@@ -82,7 +86,7 @@ export function useImmutableGetApiIconsetsV3CategoriesPlatformPlatformLanguageLa
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -91,7 +95,7 @@ export function useImmutableGetApiIconsetsV3CategoriesPlatformPlatformLanguageLa
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -118,7 +122,7 @@ export function useImmutableGetApiIconsetsV3CategoriesPlatformPlatformLanguageLa
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -129,7 +133,7 @@ export function useImmutableGetApiIconsetsV3CategoriesPlatformPlatformLanguageLa
       swrKey,
       async () =>
         parseResponse(
-          client.api.iconsets.v3['categories?platform=:platform&language=:language'].$get(
+          client.api.iconsets.v3['categories?platform={platform}&language={language}'].$get(
             args,
             clientOptions,
           ),
@@ -141,12 +145,12 @@ export function useImmutableGetApiIconsetsV3CategoriesPlatformPlatformLanguageLa
 
 export function getGetApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language',
+    '/api/iconsets/v3/category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}',
     args,
   ] as const
 }
@@ -155,7 +159,7 @@ export function useGetApiIconsetsV3CategoryCategoryCategorySubcategorySubcategor
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -164,7 +168,7 @@ export function useGetApiIconsetsV3CategoryCategoryCategorySubcategorySubcategor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -193,7 +197,7 @@ export function useGetApiIconsetsV3CategoryCategoryCategorySubcategorySubcategor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -205,7 +209,7 @@ export function useGetApiIconsetsV3CategoryCategoryCategorySubcategorySubcategor
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language'
+            'category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -217,7 +221,7 @@ export function useImmutableGetApiIconsetsV3CategoryCategoryCategorySubcategoryS
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -226,7 +230,7 @@ export function useImmutableGetApiIconsetsV3CategoryCategoryCategorySubcategoryS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -255,7 +259,7 @@ export function useImmutableGetApiIconsetsV3CategoryCategoryCategorySubcategoryS
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -267,7 +271,7 @@ export function useImmutableGetApiIconsetsV3CategoryCategoryCategorySubcategoryS
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language'
+            'category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -277,12 +281,12 @@ export function useImmutableGetApiIconsetsV3CategoryCategoryCategorySubcategoryS
 
 export function getGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language',
+    '/api/iconsets/v3/latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}',
     args,
   ] as const
 }
@@ -291,7 +295,7 @@ export function useGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatfor
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -300,7 +304,7 @@ export function useGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -329,7 +333,7 @@ export function useGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -341,7 +345,7 @@ export function useGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatfor
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language'
+            'latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -353,7 +357,7 @@ export function useImmutableGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffs
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -362,7 +366,7 @@ export function useImmutableGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -391,7 +395,7 @@ export function useImmutableGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
               >
             >
           >
@@ -403,7 +407,7 @@ export function useImmutableGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffs
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language'
+            'latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -413,12 +417,12 @@ export function useImmutableGetApiIconsetsV3LatestTermTermAmountAmountOffsetOffs
 
 export function getGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount',
+    '/api/iconsets/v3/search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}',
     args,
   ] as const
 }
@@ -427,7 +431,7 @@ export function useGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatfor
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -436,7 +440,7 @@ export function useGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -465,7 +469,7 @@ export function useGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -477,7 +481,7 @@ export function useGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatfor
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+            'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -489,7 +493,7 @@ export function useImmutableGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffs
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -498,7 +502,7 @@ export function useImmutableGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -527,7 +531,7 @@ export function useImmutableGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -539,7 +543,7 @@ export function useImmutableGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffs
       async () =>
         parseResponse(
           client.api.iconsets.v3[
-            'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+            'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -548,19 +552,19 @@ export function useImmutableGetApiIconsetsV3SearchTermTermAmountAmountOffsetOffs
 }
 
 export function getGetApiIconsetsV3TotalSinceSinceKey(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
 ) {
-  return ['api', '/api/iconsets/v3/total?since=:since', args] as const
+  return ['api', '/api/iconsets/v3/total?since={since}', args] as const
 }
 
 export function useGetApiIconsetsV3TotalSinceSince<TError = unknown>(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
           >
         >
       >,
@@ -583,7 +587,7 @@ export function useGetApiIconsetsV3TotalSinceSince<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
           >
         >
       >,
@@ -591,20 +595,20 @@ export function useGetApiIconsetsV3TotalSinceSince<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api.iconsets.v3['total?since=:since'].$get(args, clientOptions)),
+        parseResponse(client.api.iconsets.v3['total?since={since}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiIconsetsV3TotalSinceSince<TError = unknown>(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
           >
         >
       >,
@@ -627,7 +631,7 @@ export function useImmutableGetApiIconsetsV3TotalSinceSince<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+            Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
           >
         >
       >,
@@ -635,7 +639,7 @@ export function useImmutableGetApiIconsetsV3TotalSinceSince<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api.iconsets.v3['total?since=:since'].$get(args, clientOptions)),
+        parseResponse(client.api.iconsets.v3['total?since={since}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -643,12 +647,12 @@ export function useImmutableGetApiIconsetsV3TotalSinceSince<TError = unknown>(
 
 export function getGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v4/search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount',
+    '/api/iconsets/v4/search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}',
     args,
   ] as const
 }
@@ -657,7 +661,7 @@ export function useGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatfor
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -666,7 +670,7 @@ export function useGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -695,7 +699,7 @@ export function useGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatfor
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -707,7 +711,7 @@ export function useGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatfor
       async () =>
         parseResponse(
           client.api.iconsets.v4[
-            'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+            'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -719,7 +723,7 @@ export function useImmutableGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffs
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -728,7 +732,7 @@ export function useImmutableGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -757,7 +761,7 @@ export function useImmutableGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffs
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
               >
             >
           >
@@ -769,7 +773,7 @@ export function useImmutableGetApiIconsetsV4SearchTermTermAmountAmountOffsetOffs
       async () =>
         parseResponse(
           client.api.iconsets.v4[
-            'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+            'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,

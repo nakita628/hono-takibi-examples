@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTagsTagIdRoute,
   getTagsRoute,
   getTagsTagIdBookmarksRoute,
@@ -8,24 +8,28 @@ import {
   postTagsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTagsRouteHandler: RouteHandler<typeof getTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tagsHandler = app
-  .openapi(getTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTagsTagIdBookmarksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTagsRouteHandler: RouteHandler<typeof postTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagIdRouteHandler: RouteHandler<typeof getTagsTagIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTagsTagIdRouteHandler: RouteHandler<typeof deleteTagsTagIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTagsTagIdRouteHandler: RouteHandler<typeof patchTagsTagIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTagsTagIdBookmarksRouteHandler: RouteHandler<
+  typeof getTagsTagIdBookmarksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

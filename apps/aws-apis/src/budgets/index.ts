@@ -1,55 +1,149 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsBudgetServiceGatewayCreateBudgetActionHandler,
-  xAmzTargetAwsBudgetServiceGatewayCreateBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayCreateNotificationHandler,
-  xAmzTargetAwsBudgetServiceGatewayCreateSubscriberHandler,
-  xAmzTargetAwsBudgetServiceGatewayDeleteBudgetActionHandler,
-  xAmzTargetAwsBudgetServiceGatewayDeleteBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayDeleteNotificationHandler,
-  xAmzTargetAwsBudgetServiceGatewayDeleteSubscriberHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionHistoriesHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionsForAccountHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionsForBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetNotificationsForAccountHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetPerformanceHistoryHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeBudgetsHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeNotificationsForBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayDescribeSubscribersForNotificationHandler,
-  xAmzTargetAwsBudgetServiceGatewayExecuteBudgetActionHandler,
-  xAmzTargetAwsBudgetServiceGatewayUpdateBudgetActionHandler,
-  xAmzTargetAwsBudgetServiceGatewayUpdateBudgetHandler,
-  xAmzTargetAwsBudgetServiceGatewayUpdateNotificationHandler,
-  xAmzTargetAwsBudgetServiceGatewayUpdateSubscriberHandler,
+  postXAmzTargetAWSBudgetServiceGatewayCreateBudgetActionRoute,
+  postXAmzTargetAWSBudgetServiceGatewayCreateBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayCreateNotificationRoute,
+  postXAmzTargetAWSBudgetServiceGatewayCreateSubscriberRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetActionRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteNotificationRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionHistoriesRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForAccountRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetNotificationsForAccountRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetPerformanceHistoryRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetsRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeNotificationsForBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeSubscribersForNotificationRoute,
+  postXAmzTargetAWSBudgetServiceGatewayExecuteBudgetActionRoute,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetActionRoute,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetRoute,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateNotificationRoute,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSBudgetServiceGatewayCreateBudgetActionRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayCreateBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayCreateNotificationRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayCreateSubscriberRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetActionRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteNotificationRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionHistoriesRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForAccountRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetNotificationsForAccountRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetPerformanceHistoryRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetsRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeNotificationsForBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayDescribeSubscribersForNotificationRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayExecuteBudgetActionRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetActionRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateNotificationRouteHandler,
+  postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsBudgetServiceGatewayCreateBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayCreateBudgetActionHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayCreateNotificationHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayCreateSubscriberHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDeleteBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDeleteBudgetActionHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDeleteNotificationHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDeleteSubscriberHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionHistoriesHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionsForAccountHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetActionsForBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetNotificationsForAccountHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetPerformanceHistoryHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeBudgetsHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeNotificationsForBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayDescribeSubscribersForNotificationHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayExecuteBudgetActionHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayUpdateBudgetHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayUpdateBudgetActionHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayUpdateNotificationHandler)
-  .route('/', xAmzTargetAwsBudgetServiceGatewayUpdateSubscriberHandler)
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayCreateBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayCreateBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayCreateBudgetActionRoute,
+    postXAmzTargetAWSBudgetServiceGatewayCreateBudgetActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayCreateNotificationRoute,
+    postXAmzTargetAWSBudgetServiceGatewayCreateNotificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayCreateSubscriberRoute,
+    postXAmzTargetAWSBudgetServiceGatewayCreateSubscriberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetActionRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDeleteBudgetActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDeleteNotificationRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDeleteNotificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDeleteSubscriberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionHistoriesRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionHistoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForAccountRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetActionsForBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetNotificationsForAccountRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetNotificationsForAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetPerformanceHistoryRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetPerformanceHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetsRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeBudgetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeNotificationsForBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeNotificationsForBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayDescribeSubscribersForNotificationRoute,
+    postXAmzTargetAWSBudgetServiceGatewayDescribeSubscribersForNotificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayExecuteBudgetActionRoute,
+    postXAmzTargetAWSBudgetServiceGatewayExecuteBudgetActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetRoute,
+    postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetActionRoute,
+    postXAmzTargetAWSBudgetServiceGatewayUpdateBudgetActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayUpdateNotificationRoute,
+    postXAmzTargetAWSBudgetServiceGatewayUpdateNotificationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRoute,
+    postXAmzTargetAWSBudgetServiceGatewayUpdateSubscriberRouteHandler,
+  )
 
 export default app

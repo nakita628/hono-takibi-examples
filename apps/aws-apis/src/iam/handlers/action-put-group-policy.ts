@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionPutGroupPolicyRoute, postActionPutGroupPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionPutGroupPolicyRoute, postActionPutGroupPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionPutGroupPolicyRouteHandler: RouteHandler<
+  typeof getActionPutGroupPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionPutGroupPolicyHandler = app
-  .openapi(getActionPutGroupPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionPutGroupPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionPutGroupPolicyRouteHandler: RouteHandler<
+  typeof postActionPutGroupPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

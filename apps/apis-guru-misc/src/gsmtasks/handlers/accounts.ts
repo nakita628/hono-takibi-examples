@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsIdManagersIndexRoute,
   deleteAccountsIdWorkersIndexRoute,
   getAccountsIdBraintreeCustomerIndexRoute,
@@ -24,72 +24,134 @@ import {
   putAccountsIdStripeSetDefaultPaymentMethodIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsIndexRouteHandler: RouteHandler<typeof getAccountsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAccountsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdBraintreeCustomerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsIdChangeOwnerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsIdManagersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdManagersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsIdManagersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsIdStripeAttachPaymentMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsIdStripeCreateSetupIntentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsIdStripeCreateSetupIntentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsIdStripeDetachPaymentMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdStripeGetPaymentMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdStripeGetSetupAttemptIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdStripeGetSetupIntentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdStripePaymentMethodsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsIdStripeSetDefaultPaymentMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdStripeSetupIntentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsIdWorkersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsIdWorkersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsIdWorkersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAccountsIdIndexRouteHandler: RouteHandler<typeof getAccountsIdIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAccountsIdIndexRouteHandler: RouteHandler<
+  typeof patchAccountsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsIdIndexRouteHandler: RouteHandler<typeof putAccountsIdIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdBraintreeCustomerIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdBraintreeCustomerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsIdChangeOwnerIndexRouteHandler: RouteHandler<
+  typeof postAccountsIdChangeOwnerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsIdManagersIndexRouteHandler: RouteHandler<
+  typeof deleteAccountsIdManagersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdManagersIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdManagersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsIdManagersIndexRouteHandler: RouteHandler<
+  typeof postAccountsIdManagersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsIdStripeAttachPaymentMethodIndexRouteHandler: RouteHandler<
+  typeof putAccountsIdStripeAttachPaymentMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsIdStripeCreateSetupIntentIndexRouteHandler: RouteHandler<
+  typeof postAccountsIdStripeCreateSetupIntentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsIdStripeCreateSetupIntentIndexRouteHandler: RouteHandler<
+  typeof putAccountsIdStripeCreateSetupIntentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsIdStripeDetachPaymentMethodIndexRouteHandler: RouteHandler<
+  typeof putAccountsIdStripeDetachPaymentMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdStripeGetPaymentMethodIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdStripeGetPaymentMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdStripeGetSetupAttemptIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdStripeGetSetupAttemptIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdStripeGetSetupIntentIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdStripeGetSetupIntentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdStripePaymentMethodsIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdStripePaymentMethodsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsIdStripeSetDefaultPaymentMethodIndexRouteHandler: RouteHandler<
+  typeof putAccountsIdStripeSetDefaultPaymentMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdStripeSetupIntentsIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdStripeSetupIntentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsIdWorkersIndexRouteHandler: RouteHandler<
+  typeof deleteAccountsIdWorkersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsIdWorkersIndexRouteHandler: RouteHandler<
+  typeof getAccountsIdWorkersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsIdWorkersIndexRouteHandler: RouteHandler<
+  typeof postAccountsIdWorkersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

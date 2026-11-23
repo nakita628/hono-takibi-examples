@@ -1068,22 +1068,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v2/locations/tiles/mobile-generalized/:z/:x/:y.pbf': {
-      $get: {
-        input: { param: { z: number; x: number; y: number } } & {
-          query: {
-            parameter?: number | string | undefined
-            location?: number[] | undefined
-            lastUpdatedFrom?: string | string | undefined
-            lastUpdatedTo?: string | string | undefined
-            isMobile?: boolean | undefined
-            project?: number | undefined
-            isAnalysis?: boolean | undefined
+      $get:
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v2/locations/tiles/mobile/tiles.json': {
@@ -1091,24 +1108,43 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v2/locations/tiles/mobile/:z/:x/:y.pbf': {
-      $get: {
-        input: { param: { z: number; x: number; y: number } } & {
-          query: {
-            dateFrom: string | string
-            dateTo: string | string
-            parameter?: number | string | undefined
-            location?: number[] | undefined
-            lastUpdatedFrom?: string | string | undefined
-            lastUpdatedTo?: string | string | undefined
-            isMobile?: boolean | undefined
-            project?: number | undefined
-            isAnalysis?: boolean | undefined
+      $get:
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                dateFrom: string | string
+                dateTo: string | string
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                dateFrom: string | string
+                dateTo: string | string
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v2/locations/tiles/tiles.json': {
@@ -1120,22 +1156,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v2/locations/tiles/:z/:x/:y.pbf': {
-      $get: {
-        input: { param: { z: number; x: number; y: number } } & {
-          query: {
-            parameter?: number | string | undefined
-            location?: number[] | undefined
-            lastUpdatedFrom?: string | string | undefined
-            lastUpdatedTo?: string | string | undefined
-            isMobile?: boolean | undefined
-            project?: number | undefined
-            isAnalysis?: boolean | undefined
+      $get:
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: HTTPValidationError
-        outputFormat: 'json'
-        status: 422
-      }
+        | {
+            input: { param: { z: number; x: number; y: number } } & {
+              query: {
+                parameter?: number | string | undefined
+                location?: number[] | undefined
+                lastUpdatedFrom?: string | string | undefined
+                lastUpdatedTo?: string | string | undefined
+                isMobile?: boolean | undefined
+                project?: number | undefined
+                isAnalysis?: boolean | undefined
+              }
+            }
+            output: HTTPValidationError
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/v2/locations/:location_id': {

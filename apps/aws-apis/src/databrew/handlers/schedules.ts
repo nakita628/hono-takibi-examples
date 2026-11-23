@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSchedulesNameRoute,
   getSchedulesNameRoute,
   getSchedulesRoute,
@@ -7,21 +7,28 @@ import {
   putSchedulesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSchedulesRouteHandler: RouteHandler<typeof postSchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schedulesHandler = app
-  .openapi(postSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSchedulesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchedulesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSchedulesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSchedulesRouteHandler: RouteHandler<typeof getSchedulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSchedulesNameRouteHandler: RouteHandler<
+  typeof deleteSchedulesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchedulesNameRouteHandler: RouteHandler<typeof getSchedulesNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSchedulesNameRouteHandler: RouteHandler<typeof putSchedulesNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

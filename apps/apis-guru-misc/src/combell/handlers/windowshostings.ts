@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWindowshostingsDomainNameRoute, getWindowshostingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWindowshostingsDomainNameRoute, getWindowshostingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWindowshostingsRouteHandler: RouteHandler<typeof getWindowshostingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const windowshostingsHandler = app
-  .openapi(getWindowshostingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWindowshostingsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWindowshostingsDomainNameRouteHandler: RouteHandler<
+  typeof getWindowshostingsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

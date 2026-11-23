@@ -1,8 +1,20 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { etcerHandler, govidHandler, sicerHandler } from './handlers'
+import {
+  postEtcerCertificateRoute,
+  postGovidCertificateRoute,
+  postSicerCertificateRoute,
+} from './routes'
+import {
+  postEtcerCertificateRouteHandler,
+  postGovidCertificateRouteHandler,
+  postSicerCertificateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', etcerHandler).route('/', govidHandler).route('/', sicerHandler)
+export const api = app
+  .openapi(postEtcerCertificateRoute, postEtcerCertificateRouteHandler)
+  .openapi(postGovidCertificateRoute, postGovidCertificateRouteHandler)
+  .openapi(postSicerCertificateRoute, postSicerCertificateRouteHandler)
 
 export default app

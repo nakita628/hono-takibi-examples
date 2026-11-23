@@ -2699,7 +2699,7 @@ export const getBuildProjectNameRepositoryNameBuildconfigRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     401: {
       description:
         'Unauthorized.\n\nXML Schema used for body validation: [status.xsd](../schema/status.xsd)\n',
@@ -3821,7 +3821,7 @@ export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameLogRout
     }),
   },
   responses: {
-    200: { description: 'This endpoint returns the log file content\n', content: {} },
+    200: { description: 'This endpoint returns the log file content\n' },
     401: {
       description:
         'Unauthorized.\n\nXML Schema used for body validation: [status.xsd](../schema/status.xsd)\n',

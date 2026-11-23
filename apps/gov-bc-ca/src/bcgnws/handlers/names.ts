@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNamesChangesRoute,
   getNamesDecisionsRecentRoute,
   getNamesDecisionsYearRoute,
@@ -11,33 +11,48 @@ import {
   getNamesSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNamesChangesRouteHandler: RouteHandler<typeof getNamesChangesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const namesHandler = app
-  .openapi(getNamesChangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesDecisionsRecentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesDecisionsYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesInsideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesNearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesNotOfficialSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesOfficialSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNamesNameIdOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNamesDecisionsRecentRouteHandler: RouteHandler<
+  typeof getNamesDecisionsRecentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesDecisionsYearRouteHandler: RouteHandler<
+  typeof getNamesDecisionsYearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesInsideRouteHandler: RouteHandler<typeof getNamesInsideRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesNearRouteHandler: RouteHandler<typeof getNamesNearRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesNotOfficialSearchRouteHandler: RouteHandler<
+  typeof getNamesNotOfficialSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesOfficialSearchRouteHandler: RouteHandler<
+  typeof getNamesOfficialSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesSearchRouteHandler: RouteHandler<typeof getNamesSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNamesNameIdOutputFormatRouteHandler: RouteHandler<
+  typeof getNamesNameIdOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

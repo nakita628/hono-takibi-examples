@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wiremock.org/admin/2.35.0/openapi.yaml',
   output: './src/wiremock-org-admin/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wiremock-org-admin/types.ts' },
   client: { output: './src/wiremock-org-admin/client.ts', baseUrl: '/' },
   rpc: { output: './src/wiremock-org-admin/rpc.ts', parseResponse: true },

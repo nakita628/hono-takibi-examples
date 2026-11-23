@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/loket.nl/V2/openapi.yaml',
   output: './src/loket-nl/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/loket-nl/types.ts' },
   client: { output: './src/loket-nl/client.ts', baseUrl: '/' },
   rpc: { output: './src/loket-nl/rpc.ts', parseResponse: true },

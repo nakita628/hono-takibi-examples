@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTopLevelObjectOfEverythingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTopLevelObjectOfEverythingRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const topLevelObjectHandler = app.openapi(postTopLevelObjectOfEverythingRoute, (c) => {
+export const postTopLevelObjectOfEverythingRouteHandler: RouteHandler<
+  typeof postTopLevelObjectOfEverythingRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

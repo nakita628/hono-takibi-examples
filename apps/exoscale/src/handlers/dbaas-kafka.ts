@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDbaasKafkaNameRoute,
   deleteDbaasKafkaNameSchemaRegistryAclConfigAclIdRoute,
   deleteDbaasKafkaNameTopicAclConfigAclIdRoute,
@@ -17,51 +17,92 @@ import {
   putDbaasKafkaServiceNameUserUsernamePasswordResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDbaasKafkaNameRouteHandler: RouteHandler<typeof getDbaasKafkaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasKafkaHandler = app
-  .openapi(getDbaasKafkaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasKafkaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasKafkaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasKafkaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasKafkaNameSchemaRegistryAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasKafkaServiceNameConnectPasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasKafkaServiceNameUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDbaasKafkaNameTopicAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasKafkaNameSchemaRegistryAclConfigAclIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasKafkaServiceNameUserUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasKafkaServiceNameUserUsernamePasswordRevealRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasKafkaNameMaintenanceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDbaasKafkaNameAclConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDbaasKafkaServiceNameUserUsernamePasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasKafkaNameTopicAclConfigAclIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDbaasKafkaNameRouteHandler: RouteHandler<typeof postDbaasKafkaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasKafkaNameRouteHandler: RouteHandler<typeof putDbaasKafkaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasKafkaNameRouteHandler: RouteHandler<
+  typeof deleteDbaasKafkaNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasKafkaNameSchemaRegistryAclConfigRouteHandler: RouteHandler<
+  typeof postDbaasKafkaNameSchemaRegistryAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasKafkaServiceNameConnectPasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasKafkaServiceNameConnectPasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasKafkaServiceNameUserRouteHandler: RouteHandler<
+  typeof postDbaasKafkaServiceNameUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDbaasKafkaNameTopicAclConfigRouteHandler: RouteHandler<
+  typeof postDbaasKafkaNameTopicAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasKafkaNameSchemaRegistryAclConfigAclIdRouteHandler: RouteHandler<
+  typeof deleteDbaasKafkaNameSchemaRegistryAclConfigAclIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasKafkaServiceNameUserUsernameRouteHandler: RouteHandler<
+  typeof deleteDbaasKafkaServiceNameUserUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasKafkaServiceNameUserUsernamePasswordRevealRouteHandler: RouteHandler<
+  typeof getDbaasKafkaServiceNameUserUsernamePasswordRevealRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasKafkaNameMaintenanceStartRouteHandler: RouteHandler<
+  typeof putDbaasKafkaNameMaintenanceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDbaasKafkaNameAclConfigRouteHandler: RouteHandler<
+  typeof getDbaasKafkaNameAclConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDbaasKafkaServiceNameUserUsernamePasswordResetRouteHandler: RouteHandler<
+  typeof putDbaasKafkaServiceNameUserUsernamePasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDbaasKafkaNameTopicAclConfigAclIdRouteHandler: RouteHandler<
+  typeof deleteDbaasKafkaNameTopicAclConfigAclIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

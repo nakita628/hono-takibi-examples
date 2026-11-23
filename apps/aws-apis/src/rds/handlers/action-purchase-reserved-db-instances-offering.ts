@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionPurchaseReservedDBInstancesOfferingRoute,
   postActionPurchaseReservedDBInstancesOfferingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionPurchaseReservedDBInstancesOfferingRouteHandler: RouteHandler<
+  typeof getActionPurchaseReservedDBInstancesOfferingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionPurchaseReservedDbInstancesOfferingHandler = app
-  .openapi(getActionPurchaseReservedDBInstancesOfferingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionPurchaseReservedDBInstancesOfferingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionPurchaseReservedDBInstancesOfferingRouteHandler: RouteHandler<
+  typeof postActionPurchaseReservedDBInstancesOfferingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

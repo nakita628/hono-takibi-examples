@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAttributesDeleteAttributeIdRoute,
   getAttributesAttributeStatisticsContextPercentageRoute,
   getAttributesDescribeTypesRoute,
@@ -15,45 +15,78 @@ import {
   putAttributesEditAttributeIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAttributesRestSearchRouteHandler: RouteHandler<
+  typeof postAttributesRestSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const attributesHandler = app
-  .openapi(postAttributesRestSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributesAddEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAttributesEditAttributeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAttributesDeleteAttributeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributesRestoreAttributeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributesAddTagAttributeIdTagIdLocalLocalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributesRemoveTagAttributeIdTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributesViewAttributeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributesGetAttributeByB64ValueBase64ValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributesAttributeStatisticsContextPercentageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAttributesDescribeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAttributesEnrichAttributeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAttributesAddEventIdRouteHandler: RouteHandler<
+  typeof postAttributesAddEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAttributesEditAttributeIdRouteHandler: RouteHandler<
+  typeof putAttributesEditAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAttributesDeleteAttributeIdRouteHandler: RouteHandler<
+  typeof deleteAttributesDeleteAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributesRestoreAttributeIdRouteHandler: RouteHandler<
+  typeof postAttributesRestoreAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributesAddTagAttributeIdTagIdLocalLocalRouteHandler: RouteHandler<
+  typeof postAttributesAddTagAttributeIdTagIdLocalLocalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributesRemoveTagAttributeIdTagIdRouteHandler: RouteHandler<
+  typeof postAttributesRemoveTagAttributeIdTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributesRouteHandler: RouteHandler<typeof getAttributesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributesViewAttributeIdRouteHandler: RouteHandler<
+  typeof getAttributesViewAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributesGetAttributeByB64ValueBase64ValueRouteHandler: RouteHandler<
+  typeof getAttributesGetAttributeByB64ValueBase64ValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributesAttributeStatisticsContextPercentageRouteHandler: RouteHandler<
+  typeof getAttributesAttributeStatisticsContextPercentageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAttributesDescribeTypesRouteHandler: RouteHandler<
+  typeof getAttributesDescribeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAttributesEnrichAttributeIdRouteHandler: RouteHandler<
+  typeof postAttributesEnrichAttributeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getInterferenceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getInterferenceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const interferenceHandler = app.openapi(getInterferenceRoute, (c) => {
+export const getInterferenceRouteHandler: RouteHandler<typeof getInterferenceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDescribeResizeRoute, postActionDescribeResizeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDescribeResizeRoute, postActionDescribeResizeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeResizeRouteHandler: RouteHandler<
+  typeof getActionDescribeResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeResizeHandler = app
-  .openapi(getActionDescribeResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeResizeRouteHandler: RouteHandler<
+  typeof postActionDescribeResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3578,20 +3578,20 @@ export function useOauthRights<
 }
 
 export function getOpenapiType2QueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.:type']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.{type}']['$get']>>,
 ) {
-  return ['openapi.:type', '/openapi.:type', toValue(args)] as const
+  return ['openapi.{type}', '/openapi.{type}', toValue(args)] as const
 }
 
 export function getOpenapiType2QueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.:type']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.{type}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getOpenapiType2QueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['openapi.:type'].$get(toValue(args), {
+        client['openapi.{type}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -3602,25 +3602,25 @@ export function getOpenapiType2QueryOptions(
 
 export function useOpenapiType2<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.:type']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['openapi.{type}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
         UseQueryOptions<
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+              typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
             >
           >,
           TError,
           TData,
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+              typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
             >
           >,
           ReturnType<typeof getOpenapiType2QueryKey>
@@ -3637,7 +3637,7 @@ export function useOpenapiType2<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.:type']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['openapi.{type}']['$get']>>>
       >
     >,
     TError,
@@ -3649,7 +3649,7 @@ export function useOpenapiType2<
       queryKey: computed(() => getOpenapiType2QueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['openapi.:type'].$get(toValue(args), {
+          client['openapi.{type}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -15774,15 +15774,15 @@ export function useProductsInstances<
 
 export function getProductsInstancesTypeVersionQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>
+    InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>
   >,
 ) {
-  return ['products', '/products/instances/:type-:version', toValue(args)] as const
+  return ['products', '/products/instances/:type-{version}', toValue(args)] as const
 }
 
 export function getProductsInstancesTypeVersionQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>
+    InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -15790,7 +15790,7 @@ export function getProductsInstancesTypeVersionQueryOptions(
     queryKey: computed(() => getProductsInstancesTypeVersionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.products.instances[':type-:version'].$get(toValue(args), {
+        client.products.instances[':type-{version}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -15803,14 +15803,14 @@ export function useProductsInstancesTypeVersion<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+        Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.products.instances)[':type-:version']['$get']>
+    InferRequestType<(typeof client.products.instances)[':type-{version}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -15819,7 +15819,7 @@ export function useProductsInstancesTypeVersion<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+                Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
               >
             >
           >,
@@ -15828,7 +15828,7 @@ export function useProductsInstancesTypeVersion<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+                Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
               >
             >
           >,
@@ -15847,7 +15847,7 @@ export function useProductsInstancesTypeVersion<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.products.instances)[':type-:version']['$get']>>
+          Awaited<ReturnType<(typeof client.products.instances)[':type-{version}']['$get']>>
         >
       >
     >,
@@ -15860,7 +15860,7 @@ export function useProductsInstancesTypeVersion<
       queryKey: computed(() => getProductsInstancesTypeVersionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.products.instances[':type-:version'].$get(toValue(args), {
+          client.products.instances[':type-{version}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

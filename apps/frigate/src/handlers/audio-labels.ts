@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAudioLabelsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAudioLabelsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const audioLabelsHandler = app.openapi(getAudioLabelsRoute, (c) => {
+export const getAudioLabelsRouteHandler: RouteHandler<typeof getAudioLabelsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

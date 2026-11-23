@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
   deleteIncidentsCustomFieldsFieldIdRoute,
   deleteIncidentsIdNotesNoteIdRoute,
@@ -63,192 +63,358 @@ import {
   putIncidentsTypesTypeIdOrNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIncidentsRouteHandler: RouteHandler<typeof getIncidentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const incidentsHandler = app
-  .openapi(getIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdBusinessServicesBusinessServiceIdImpactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdBusinessServicesImpactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdCustomFieldsValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdCustomFieldsValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdLogEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdNotesNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentsIdNotesNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdOutlierIncidentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdPastIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdRelatedChangeEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdRelatedIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdResponderRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdResponderRequestsCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsReviewsActionItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsIdReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdReviewActionItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdReviewMarkersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdScribeTranscriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdSnoozeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdStatusUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsIdStatusUpdatesSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdStatusUpdatesSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsIdStatusUpdatesUnsubscribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesTypeIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsTypesTypeIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesTypeIdOrNameCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsTypesTypeIdOrNameCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postIncidentsCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentsCustomFieldsFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIncidentsCustomFieldsFieldIdFieldOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIncidentsCustomFieldsFieldIdFieldOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putIncidentsRouteHandler: RouteHandler<typeof putIncidentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsRouteHandler: RouteHandler<typeof postIncidentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdRouteHandler: RouteHandler<typeof getIncidentsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdRouteHandler: RouteHandler<typeof putIncidentsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdAlertsRouteHandler: RouteHandler<
+  typeof getIncidentsIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdAlertsRouteHandler: RouteHandler<
+  typeof putIncidentsIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdAlertsAlertIdRouteHandler: RouteHandler<
+  typeof getIncidentsIdAlertsAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdAlertsAlertIdRouteHandler: RouteHandler<
+  typeof putIncidentsIdAlertsAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdBusinessServicesBusinessServiceIdImpactsRouteHandler: RouteHandler<
+  typeof putIncidentsIdBusinessServicesBusinessServiceIdImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdBusinessServicesImpactsRouteHandler: RouteHandler<
+  typeof getIncidentsIdBusinessServicesImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdCustomFieldsValuesRouteHandler: RouteHandler<
+  typeof getIncidentsIdCustomFieldsValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdCustomFieldsValuesRouteHandler: RouteHandler<
+  typeof putIncidentsIdCustomFieldsValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdLogEntriesRouteHandler: RouteHandler<
+  typeof getIncidentsIdLogEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdMergeRouteHandler: RouteHandler<
+  typeof putIncidentsIdMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdNotesRouteHandler: RouteHandler<
+  typeof getIncidentsIdNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdNotesRouteHandler: RouteHandler<
+  typeof postIncidentsIdNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdNotesNoteIdRouteHandler: RouteHandler<
+  typeof putIncidentsIdNotesNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentsIdNotesNoteIdRouteHandler: RouteHandler<
+  typeof deleteIncidentsIdNotesNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdOutlierIncidentRouteHandler: RouteHandler<
+  typeof getIncidentsIdOutlierIncidentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdPastIncidentsRouteHandler: RouteHandler<
+  typeof getIncidentsIdPastIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdRelatedChangeEventsRouteHandler: RouteHandler<
+  typeof getIncidentsIdRelatedChangeEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdRelatedIncidentsRouteHandler: RouteHandler<
+  typeof getIncidentsIdRelatedIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdResponderRequestsRouteHandler: RouteHandler<
+  typeof postIncidentsIdResponderRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdResponderRequestsCancelRouteHandler: RouteHandler<
+  typeof putIncidentsIdResponderRequestsCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsReviewsRouteHandler: RouteHandler<
+  typeof getIncidentsReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsReviewsActionItemsRouteHandler: RouteHandler<
+  typeof getIncidentsReviewsActionItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdReviewRouteHandler: RouteHandler<
+  typeof getIncidentsIdReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdReviewRouteHandler: RouteHandler<
+  typeof postIncidentsIdReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsIdReviewRouteHandler: RouteHandler<
+  typeof putIncidentsIdReviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdReviewActionItemsRouteHandler: RouteHandler<
+  typeof getIncidentsIdReviewActionItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdReviewMarkersRouteHandler: RouteHandler<
+  typeof postIncidentsIdReviewMarkersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdScribeTranscriptsRouteHandler: RouteHandler<
+  typeof getIncidentsIdScribeTranscriptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdSnoozeRouteHandler: RouteHandler<
+  typeof postIncidentsIdSnoozeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdStatusUpdatesRouteHandler: RouteHandler<
+  typeof postIncidentsIdStatusUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsIdStatusUpdatesSubscribersRouteHandler: RouteHandler<
+  typeof getIncidentsIdStatusUpdatesSubscribersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdStatusUpdatesSubscribersRouteHandler: RouteHandler<
+  typeof postIncidentsIdStatusUpdatesSubscribersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsIdStatusUpdatesUnsubscribeRouteHandler: RouteHandler<
+  typeof postIncidentsIdStatusUpdatesUnsubscribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesRouteHandler: RouteHandler<typeof getIncidentsTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsTypesRouteHandler: RouteHandler<typeof postIncidentsTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesTypeIdOrNameRouteHandler: RouteHandler<
+  typeof getIncidentsTypesTypeIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsTypesTypeIdOrNameRouteHandler: RouteHandler<
+  typeof putIncidentsTypesTypeIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler: RouteHandler<
+  typeof getIncidentsTypesTypeIdOrNameCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsTypesTypeIdOrNameCustomFieldsRouteHandler: RouteHandler<
+  typeof postIncidentsTypesTypeIdOrNameCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler: RouteHandler<
+  typeof getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRouteHandler: RouteHandler<
+  typeof postIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler: RouteHandler<
+  typeof getIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler: RouteHandler<
+  typeof putIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler: RouteHandler<
+  typeof deleteIncidentsTypesTypeIdOrNameCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsCustomFieldsRouteHandler: RouteHandler<
+  typeof postIncidentsCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsCustomFieldsRouteHandler: RouteHandler<
+  typeof getIncidentsCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof getIncidentsCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof putIncidentsCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentsCustomFieldsFieldIdRouteHandler: RouteHandler<
+  typeof deleteIncidentsCustomFieldsFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler: RouteHandler<
+  typeof postIncidentsCustomFieldsFieldIdFieldOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIncidentsCustomFieldsFieldIdFieldOptionsRouteHandler: RouteHandler<
+  typeof getIncidentsCustomFieldsFieldIdFieldOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler: RouteHandler<
+  typeof putIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRouteHandler: RouteHandler<
+  typeof deleteIncidentsCustomFieldsFieldIdFieldOptionsFieldOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

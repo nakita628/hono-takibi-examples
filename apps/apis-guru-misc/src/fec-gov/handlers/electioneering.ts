@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getElectioneeringAggregatesIndexRoute,
   getElectioneeringByCandidateIndexRoute,
   getElectioneeringIndexRoute,
   getElectioneeringTotalsByCandidateIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getElectioneeringIndexRouteHandler: RouteHandler<
+  typeof getElectioneeringIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const electioneeringHandler = app
-  .openapi(getElectioneeringIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElectioneeringAggregatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElectioneeringByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElectioneeringTotalsByCandidateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getElectioneeringAggregatesIndexRouteHandler: RouteHandler<
+  typeof getElectioneeringAggregatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getElectioneeringByCandidateIndexRouteHandler: RouteHandler<
+  typeof getElectioneeringByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getElectioneeringTotalsByCandidateIndexRouteHandler: RouteHandler<
+  typeof getElectioneeringTotalsByCandidateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

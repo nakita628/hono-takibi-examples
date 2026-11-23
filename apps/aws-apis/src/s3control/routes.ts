@@ -806,25 +806,25 @@ const S3GeneratedManifestDescriptorSchema = z
   .openapi('S3GeneratedManifestDescriptor')
 
 type JobDescriptorType = {
-  JobId?: z.infer<typeof JobIdSchema> & unknown
-  ConfirmationRequired?: z.infer<typeof ConfirmationRequiredSchema> & unknown
-  Description?: z.infer<typeof NonEmptyMaxLength256StringSchema> & unknown
-  JobArn?: z.infer<typeof JobArnSchema> & unknown
-  Status?: z.infer<typeof JobStatusSchema> & unknown
-  Manifest?: z.infer<typeof JobManifestSchema> & unknown
-  Operation?: z.infer<typeof JobOperationSchema> & unknown
-  Priority?: z.infer<typeof JobPrioritySchema> & unknown
-  ProgressSummary?: z.infer<typeof JobProgressSummarySchema> & unknown
-  StatusUpdateReason?: z.infer<typeof JobStatusUpdateReasonSchema> & unknown
-  FailureReasons?: z.infer<typeof JobFailureListSchema> & unknown
-  Report?: z.infer<typeof JobReportSchema> & unknown
-  CreationTime?: z.infer<typeof JobCreationTimeSchema> & unknown
-  TerminationDate?: z.infer<typeof JobTerminationDateSchema> & unknown
-  RoleArn?: z.infer<typeof IAMRoleArnSchema> & unknown
-  SuspendedDate?: z.infer<typeof SuspendedDateSchema> & unknown
-  SuspendedCause?: z.infer<typeof SuspendedCauseSchema> & unknown
-  ManifestGenerator?: z.infer<typeof JobManifestGeneratorSchema> & unknown
-  GeneratedManifestDescriptor?: z.infer<typeof S3GeneratedManifestDescriptorSchema> & unknown
+  JobId?: z.infer<typeof JobIdSchema>
+  ConfirmationRequired?: z.infer<typeof ConfirmationRequiredSchema>
+  Description?: z.infer<typeof NonEmptyMaxLength256StringSchema>
+  JobArn?: z.infer<typeof JobArnSchema>
+  Status?: z.infer<typeof JobStatusSchema>
+  Manifest?: z.infer<typeof JobManifestSchema>
+  Operation?: z.infer<typeof JobOperationSchema>
+  Priority?: z.infer<typeof JobPrioritySchema>
+  ProgressSummary?: z.infer<typeof JobProgressSummarySchema>
+  StatusUpdateReason?: z.infer<typeof JobStatusUpdateReasonSchema>
+  FailureReasons?: z.infer<typeof JobFailureListSchema>
+  Report?: z.infer<typeof JobReportSchema>
+  CreationTime?: z.infer<typeof JobCreationTimeSchema>
+  TerminationDate?: z.infer<typeof JobTerminationDateSchema>
+  RoleArn?: z.infer<typeof IAMRoleArnSchema>
+  SuspendedDate?: z.infer<typeof SuspendedDateSchema>
+  SuspendedCause?: z.infer<typeof SuspendedCauseSchema>
+  ManifestGenerator?: z.infer<typeof JobManifestGeneratorSchema>
+  GeneratedManifestDescriptor?: z.infer<typeof S3GeneratedManifestDescriptorSchema>
 }
 
 const JobDescriptorSchema: z.ZodType<JobDescriptorType> = z
@@ -902,7 +902,7 @@ const JobDescriptorSchema: z.ZodType<JobDescriptorType> = z
   })
   .openapi('JobDescriptor')
 
-type DescribeJobResultType = { Job?: z.infer<typeof JobDescriptorSchema> & unknown }
+type DescribeJobResultType = { Job?: z.infer<typeof JobDescriptorSchema> }
 
 const RoleSchema = z.string().openapi('Role')
 
@@ -1244,7 +1244,7 @@ const ReplicationConfigurationSchema = z
   .openapi('ReplicationConfiguration')
 
 type GetBucketReplicationResultType = {
-  ReplicationConfiguration?: z.infer<typeof ReplicationConfigurationSchema> & unknown
+  ReplicationConfiguration?: z.infer<typeof ReplicationConfigurationSchema>
 }
 
 const NonEmptyMaxLength64StringSchema = z
@@ -1254,16 +1254,16 @@ const NonEmptyMaxLength64StringSchema = z
   .openapi('NonEmptyMaxLength64String')
 
 type CreateJobRequestType = {
-  ConfirmationRequired?: z.infer<typeof ConfirmationRequiredSchema> & unknown
-  Operation: z.infer<typeof JobOperationSchema> & unknown
-  Report: z.infer<typeof JobReportSchema> & unknown
-  ClientRequestToken: z.infer<typeof NonEmptyMaxLength64StringSchema> & unknown
-  Manifest?: z.infer<typeof JobManifestSchema> & unknown
-  Description?: z.infer<typeof NonEmptyMaxLength256StringSchema> & unknown
-  Priority: z.infer<typeof JobPrioritySchema> & unknown
-  RoleArn: z.infer<typeof IAMRoleArnSchema> & unknown
-  Tags?: z.infer<typeof S3TagSetSchema> & unknown
-  ManifestGenerator?: z.infer<typeof JobManifestGeneratorSchema> & unknown
+  ConfirmationRequired?: z.infer<typeof ConfirmationRequiredSchema>
+  Operation: z.infer<typeof JobOperationSchema>
+  Report: z.infer<typeof JobReportSchema>
+  ClientRequestToken: z.infer<typeof NonEmptyMaxLength64StringSchema>
+  Manifest?: z.infer<typeof JobManifestSchema>
+  Description?: z.infer<typeof NonEmptyMaxLength256StringSchema>
+  Priority: z.infer<typeof JobPrioritySchema>
+  RoleArn: z.infer<typeof IAMRoleArnSchema>
+  Tags?: z.infer<typeof S3TagSetSchema>
+  ManifestGenerator?: z.infer<typeof JobManifestGeneratorSchema>
 }
 
 const DateSchema = z.iso.datetime({ offset: true }).openapi('Date')
@@ -1473,11 +1473,11 @@ const LifecycleConfigurationSchema = z
   .openapi('LifecycleConfiguration')
 
 type PutBucketLifecycleConfigurationRequestType = {
-  LifecycleConfiguration?: z.infer<typeof LifecycleConfigurationSchema> & unknown
+  LifecycleConfiguration?: z.infer<typeof LifecycleConfigurationSchema>
 }
 
 type PutBucketReplicationRequestType = {
-  ReplicationConfiguration: z.infer<typeof ReplicationConfigurationSchema> & unknown
+  ReplicationConfiguration: z.infer<typeof ReplicationConfigurationSchema>
 }
 
 const S3AccessPointArnSchema = z.string().min(4).max(128).openapi('S3AccessPointArn')

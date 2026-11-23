@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/groundstation/2019-05-23/openapi.yaml',
   output: './src/groundstation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/groundstation/types.ts' },
   client: { output: './src/groundstation/client.ts', baseUrl: '/' },
   rpc: { output: './src/groundstation/rpc.ts', parseResponse: true },

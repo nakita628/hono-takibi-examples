@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBulkEventsRetryIdRoute,
   getBulkEventsRetryPlanRoute,
   getBulkEventsRetryRoute,
@@ -17,51 +17,92 @@ import {
   postBulkRequestsRetryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBulkEventsRetryRouteHandler: RouteHandler<typeof getBulkEventsRetryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const bulkHandler = app
-  .openapi(getBulkEventsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkEventsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkEventsRetryPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkEventsRetryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkEventsRetryIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkIgnoredEventsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkIgnoredEventsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkIgnoredEventsRetryPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkIgnoredEventsRetryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkIgnoredEventsRetryIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkRequestsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkRequestsRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkRequestsRetryPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBulkRequestsRetryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBulkRequestsRetryIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBulkEventsRetryRouteHandler: RouteHandler<
+  typeof postBulkEventsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkEventsRetryPlanRouteHandler: RouteHandler<
+  typeof getBulkEventsRetryPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkEventsRetryIdRouteHandler: RouteHandler<
+  typeof getBulkEventsRetryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkEventsRetryIdCancelRouteHandler: RouteHandler<
+  typeof postBulkEventsRetryIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkIgnoredEventsRetryRouteHandler: RouteHandler<
+  typeof getBulkIgnoredEventsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkIgnoredEventsRetryRouteHandler: RouteHandler<
+  typeof postBulkIgnoredEventsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkIgnoredEventsRetryPlanRouteHandler: RouteHandler<
+  typeof getBulkIgnoredEventsRetryPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkIgnoredEventsRetryIdRouteHandler: RouteHandler<
+  typeof getBulkIgnoredEventsRetryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkIgnoredEventsRetryIdCancelRouteHandler: RouteHandler<
+  typeof postBulkIgnoredEventsRetryIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkRequestsRetryRouteHandler: RouteHandler<
+  typeof getBulkRequestsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkRequestsRetryRouteHandler: RouteHandler<
+  typeof postBulkRequestsRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkRequestsRetryPlanRouteHandler: RouteHandler<
+  typeof getBulkRequestsRetryPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBulkRequestsRetryIdRouteHandler: RouteHandler<
+  typeof getBulkRequestsRetryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBulkRequestsRetryIdCancelRouteHandler: RouteHandler<
+  typeof postBulkRequestsRetryIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

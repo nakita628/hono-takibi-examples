@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatDfsSlatesByDateDateRoute,
   getFormatPlayerGameProjectionStatsByDateDateRoute,
   getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatDfsSlatesByDateDateRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatDfsSlatesByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatPlayerGameProjectionStatsByDateDateRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

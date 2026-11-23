@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetTemporaryGlueTableCredentialsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetTemporaryGlueTableCredentialsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getTemporaryGlueTableCredentialsHandler = app.openapi(
-  postGetTemporaryGlueTableCredentialsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGetTemporaryGlueTableCredentialsRouteHandler: RouteHandler<
+  typeof postGetTemporaryGlueTableCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUploadStickerFileRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUploadStickerFileRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const uploadStickerFileHandler = app.openapi(postUploadStickerFileRoute, (c) => {
+export const postUploadStickerFileRouteHandler: RouteHandler<
+  typeof postUploadStickerFileRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

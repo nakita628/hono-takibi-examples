@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/nexmo.com/conversation/2.0.1/openapi.yaml',
   output: './src/conversation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/conversation/types.ts' },
   client: { output: './src/conversation/client.ts', baseUrl: '/' },
   rpc: { output: './src/conversation/rpc.ts', parseResponse: true },

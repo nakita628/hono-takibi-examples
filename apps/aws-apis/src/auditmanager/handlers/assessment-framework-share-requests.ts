@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAssessmentFrameworkShareRequestsRequestIdRequestTypeRoute,
   putAssessmentFrameworkShareRequestsRequestIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAssessmentFrameworkShareRequestsRequestIdRequestTypeRouteHandler: RouteHandler<
+  typeof deleteAssessmentFrameworkShareRequestsRequestIdRequestTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assessmentFrameworkShareRequestsHandler = app
-  .openapi(deleteAssessmentFrameworkShareRequestsRequestIdRequestTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAssessmentFrameworkShareRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAssessmentFrameworkShareRequestsRequestIdRouteHandler: RouteHandler<
+  typeof putAssessmentFrameworkShareRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

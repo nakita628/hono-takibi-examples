@@ -6533,7 +6533,7 @@ export const postCmsPages202609LandingPagesAbTestEndRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -6550,7 +6550,7 @@ export const postCmsPages202609LandingPagesAbTestRerunRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -6569,7 +6569,7 @@ export const postCmsPages202609LandingPagesBatchArchiveRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: { 'application/json': { schema: BatchResponsePageWithErrorsSchema, example: null } },
@@ -6968,7 +6968,7 @@ export const postCmsPages202609LandingPagesFoldersBatchArchiveRoute = createRout
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: {
@@ -7211,7 +7211,7 @@ export const deleteCmsPages202609LandingPagesFoldersObjectIdRoute = createRoute(
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7555,7 +7555,7 @@ export const putCmsPages202609LandingPagesMultiLanguageSetNewLangPrimaryRoute = 
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7589,7 +7589,7 @@ export const postCmsPages202609LandingPagesScheduleRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7702,7 +7702,7 @@ export const deleteCmsPages202609LandingPagesObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7865,7 +7865,7 @@ export const postCmsPages202609LandingPagesObjectIdDraftPushLiveRoute = createRo
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7894,7 +7894,7 @@ export const postCmsPages202609LandingPagesObjectIdDraftResetRoute = createRoute
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -8444,7 +8444,7 @@ export const postCmsPages202609SitePagesAbTestEndRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
@@ -8461,7 +8461,7 @@ export const postCmsPages202609SitePagesAbTestRerunRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
@@ -8480,7 +8480,7 @@ export const postCmsPages202609SitePagesBatchArchiveRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: { 'application/json': { schema: BatchResponsePageWithErrorsSchema, example: null } },
@@ -8715,7 +8715,7 @@ export const putCmsPages202609SitePagesMultiLanguageSetNewLangPrimaryRoute = cre
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -8749,7 +8749,7 @@ export const postCmsPages202609SitePagesScheduleRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
@@ -8867,7 +8867,7 @@ export const deleteCmsPages202609SitePagesObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
@@ -9035,7 +9035,7 @@ export const postCmsPages202609SitePagesObjectIdDraftPushLiveRoute = createRoute
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 
@@ -9064,7 +9064,7 @@ export const postCmsPages202609SitePagesObjectIdDraftResetRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketplace_validation'] }, { oauth2: ['content'] }],
 })
 

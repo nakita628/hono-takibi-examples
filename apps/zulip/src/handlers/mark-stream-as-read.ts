@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMarkStreamAsReadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMarkStreamAsReadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const markStreamAsReadHandler = app.openapi(postMarkStreamAsReadRoute, (c) => {
+export const postMarkStreamAsReadRouteHandler: RouteHandler<
+  typeof postMarkStreamAsReadRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

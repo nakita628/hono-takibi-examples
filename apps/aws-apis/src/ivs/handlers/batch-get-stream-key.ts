@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBatchGetStreamKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBatchGetStreamKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const batchGetStreamKeyHandler = app.openapi(postBatchGetStreamKeyRoute, (c) => {
+export const postBatchGetStreamKeyRouteHandler: RouteHandler<
+  typeof postBatchGetStreamKeyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

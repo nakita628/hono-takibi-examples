@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getContactAttributesInstanceIdInitialContactIdRoute,
   getContactReferencesInstanceIdContactIdReferenceTypesRoute,
   postContactAttributesRoute,
@@ -20,60 +20,104 @@ import {
   putContactTaskRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postContactCreateParticipantRouteHandler: RouteHandler<
+  typeof postContactCreateParticipantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const contactHandler = app
-  .openapi(postContactCreateParticipantRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactAttributesInstanceIdInitialContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactReferencesInstanceIdContactIdReferenceTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactMonitorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactResumeRecordingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactStartRecordingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactStartStreamingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactOutboundVoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactTaskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactStopRecordingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactStopStreamingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactSuspendRecordingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactParticipantRoleConfigInstanceIdContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getContactAttributesInstanceIdInitialContactIdRouteHandler: RouteHandler<
+  typeof getContactAttributesInstanceIdInitialContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactReferencesInstanceIdContactIdReferenceTypesRouteHandler: RouteHandler<
+  typeof getContactReferencesInstanceIdContactIdReferenceTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactMonitorRouteHandler: RouteHandler<typeof postContactMonitorRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactResumeRecordingRouteHandler: RouteHandler<
+  typeof postContactResumeRecordingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putContactChatRouteHandler: RouteHandler<typeof putContactChatRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactStartRecordingRouteHandler: RouteHandler<
+  typeof postContactStartRecordingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactStartStreamingRouteHandler: RouteHandler<
+  typeof postContactStartStreamingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putContactOutboundVoiceRouteHandler: RouteHandler<
+  typeof putContactOutboundVoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putContactTaskRouteHandler: RouteHandler<typeof putContactTaskRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactStopRouteHandler: RouteHandler<typeof postContactStopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactStopRecordingRouteHandler: RouteHandler<
+  typeof postContactStopRecordingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactStopStreamingRouteHandler: RouteHandler<
+  typeof postContactStopStreamingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactSuspendRecordingRouteHandler: RouteHandler<
+  typeof postContactSuspendRecordingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactTransferRouteHandler: RouteHandler<
+  typeof postContactTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactAttributesRouteHandler: RouteHandler<
+  typeof postContactAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactScheduleRouteHandler: RouteHandler<
+  typeof postContactScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putContactParticipantRoleConfigInstanceIdContactIdRouteHandler: RouteHandler<
+  typeof putContactParticipantRoleConfigInstanceIdContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

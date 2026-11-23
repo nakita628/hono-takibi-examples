@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueUpdateJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueUpdateJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueUpdateJobHandler = app.openapi(
-  postXAmzTargetAWSGlueUpdateJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueUpdateJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueUpdateJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

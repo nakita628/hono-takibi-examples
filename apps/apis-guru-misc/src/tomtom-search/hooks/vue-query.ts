@@ -18,15 +18,15 @@ export function getSearchKey() {
 
 export function getSearchVersionNumberAdditionalDataExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/additionalData.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/additionalData.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberAdditionalDataExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -34,7 +34,7 @@ export function getSearchVersionNumberAdditionalDataExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberAdditionalDataExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber']['additionalData.:ext'].$get(toValue(args), {
+        client.search[':versionNumber']['additionalData.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -47,14 +47,16 @@ export function useSearchVersionNumberAdditionalDataExt<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -65,7 +67,7 @@ export function useSearchVersionNumberAdditionalDataExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['additionalData.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']
                   >
                 >
               >
@@ -78,7 +80,7 @@ export function useSearchVersionNumberAdditionalDataExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['additionalData.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']
                   >
                 >
               >
@@ -100,7 +102,7 @@ export function useSearchVersionNumberAdditionalDataExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['additionalData.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['additionalData.{ext}']['$get']>
           >
         >
       >
@@ -114,7 +116,7 @@ export function useSearchVersionNumberAdditionalDataExt<
       queryKey: computed(() => getSearchVersionNumberAdditionalDataExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber']['additionalData.:ext'].$get(toValue(args), {
+          client.search[':versionNumber']['additionalData.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -127,15 +129,15 @@ export function useSearchVersionNumberAdditionalDataExt<
 
 export function getSearchVersionNumberCSCategoryExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/cS/:category.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/cS/:category.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberCSCategoryExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -143,7 +145,7 @@ export function getSearchVersionNumberCSCategoryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberCSCategoryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].cS[':category.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].cS[':category.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -157,7 +159,7 @@ export function useSearchVersionNumberCSCategoryExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
         >
       >
     >
@@ -165,7 +167,7 @@ export function useSearchVersionNumberCSCategoryExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -176,7 +178,7 @@ export function useSearchVersionNumberCSCategoryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']
                   >
                 >
               >
@@ -189,7 +191,7 @@ export function useSearchVersionNumberCSCategoryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']
                   >
                 >
               >
@@ -211,7 +213,7 @@ export function useSearchVersionNumberCSCategoryExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['cS'][':category.{ext}']['$get']>
           >
         >
       >
@@ -225,7 +227,7 @@ export function useSearchVersionNumberCSCategoryExt<
       queryKey: computed(() => getSearchVersionNumberCSCategoryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].cS[':category.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].cS[':category.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -239,17 +241,17 @@ export function useSearchVersionNumberCSCategoryExt<
 export function getSearchVersionNumberCategorySearchQueryExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
     >
   >,
 ) {
-  return ['search', '/search/:versionNumber/categorySearch/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/categorySearch/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberCategorySearchQueryExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -258,7 +260,7 @@ export function getSearchVersionNumberCategorySearchQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberCategorySearchQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].categorySearch[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].categorySearch[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -273,7 +275,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+            (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
           >
         >
       >
@@ -283,7 +285,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
     >
   >,
   options?: {
@@ -295,7 +297,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -308,7 +310,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -331,7 +333,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['categorySearch'][':query.:ext']['$get']
+              (typeof client.search)[':versionNumber']['categorySearch'][':query.{ext}']['$get']
             >
           >
         >
@@ -346,7 +348,7 @@ export function useSearchVersionNumberCategorySearchQueryExt<
       queryKey: computed(() => getSearchVersionNumberCategorySearchQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].categorySearch[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].categorySearch[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -359,15 +361,15 @@ export function useSearchVersionNumberCategorySearchQueryExt<
 
 export function getSearchVersionNumberGeocodeQueryExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/geocode/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/geocode/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberGeocodeQueryExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -375,7 +377,7 @@ export function getSearchVersionNumberGeocodeQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberGeocodeQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].geocode[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].geocode[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -389,7 +391,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']>
         >
       >
     >
@@ -397,7 +399,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -408,7 +410,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -421,7 +423,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -443,7 +445,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['geocode'][':query.{ext}']['$get']>
           >
         >
       >
@@ -457,7 +459,7 @@ export function useSearchVersionNumberGeocodeQueryExt<
       queryKey: computed(() => getSearchVersionNumberGeocodeQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].geocode[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].geocode[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -470,15 +472,15 @@ export function useSearchVersionNumberGeocodeQueryExt<
 
 export function getSearchVersionNumberGeometryFilterExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/geometryFilter.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/geometryFilter.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberGeometryFilterExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -486,7 +488,7 @@ export function getSearchVersionNumberGeometryFilterExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberGeometryFilterExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber']['geometryFilter.:ext'].$get(toValue(args), {
+        client.search[':versionNumber']['geometryFilter.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -499,14 +501,16 @@ export function useSearchVersionNumberGeometryFilterExt<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -517,7 +521,7 @@ export function useSearchVersionNumberGeometryFilterExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']
                   >
                 >
               >
@@ -530,7 +534,7 @@ export function useSearchVersionNumberGeometryFilterExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']
                   >
                 >
               >
@@ -552,7 +556,7 @@ export function useSearchVersionNumberGeometryFilterExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$get']>
           >
         >
       >
@@ -566,7 +570,7 @@ export function useSearchVersionNumberGeometryFilterExt<
       queryKey: computed(() => getSearchVersionNumberGeometryFilterExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber']['geometryFilter.:ext'].$get(toValue(args), {
+          client.search[':versionNumber']['geometryFilter.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -578,7 +582,7 @@ export function useSearchVersionNumberGeometryFilterExt<
 }
 
 export function getPostSearchVersionNumberGeometryFilterExtMutationKey() {
-  return ['search', '/search/:versionNumber/geometryFilter.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/geometryFilter.{ext}', 'POST'] as const
 }
 
 export function getPostSearchVersionNumberGeometryFilterExtMutationOptions<
@@ -590,23 +594,23 @@ export function getPostSearchVersionNumberGeometryFilterExtMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']>
+            ReturnType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']>
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']>,
+    InferRequestType<(typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostSearchVersionNumberGeometryFilterExtMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']
+        (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']
       >,
     ) {
       return parseResponse(
-        client.search[':versionNumber']['geometryFilter.:ext'].$post(args, options),
+        client.search[':versionNumber']['geometryFilter.{ext}'].$post(args, options),
       )
     },
   })
@@ -625,7 +629,7 @@ export function usePostSearchVersionNumberGeometryFilterExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']
+                    (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']
                   >
                 >
               >
@@ -633,7 +637,7 @@ export function usePostSearchVersionNumberGeometryFilterExt<
           >,
           TError,
           InferRequestType<
-            (typeof client.search)[':versionNumber']['geometryFilter.:ext']['$post']
+            (typeof client.search)[':versionNumber']['geometryFilter.{ext}']['$post']
           >,
           TOnMutateResult
         >,
@@ -663,17 +667,17 @@ export function usePostSearchVersionNumberGeometryFilterExt<
 export function getSearchVersionNumberGeometrySearchQueryExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
     >
   >,
 ) {
-  return ['search', '/search/:versionNumber/geometrySearch/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/geometrySearch/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberGeometrySearchQueryExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -682,7 +686,7 @@ export function getSearchVersionNumberGeometrySearchQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberGeometrySearchQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].geometrySearch[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].geometrySearch[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -697,7 +701,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+            (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
           >
         >
       >
@@ -707,7 +711,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+      (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
     >
   >,
   options?: {
@@ -719,7 +723,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -732,7 +736,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -755,7 +759,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$get']
+              (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$get']
             >
           >
         >
@@ -770,7 +774,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
       queryKey: computed(() => getSearchVersionNumberGeometrySearchQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].geometrySearch[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].geometrySearch[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -782,7 +786,7 @@ export function useSearchVersionNumberGeometrySearchQueryExt<
 }
 
 export function getPostSearchVersionNumberGeometrySearchQueryExtMutationKey() {
-  return ['search', '/search/:versionNumber/geometrySearch/:query.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/geometrySearch/:query.{ext}', 'POST'] as const
 }
 
 export function getPostSearchVersionNumberGeometrySearchQueryExtMutationOptions<
@@ -795,7 +799,7 @@ export function getPostSearchVersionNumberGeometrySearchQueryExtMutationOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+              (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
             >
           >
         >
@@ -803,18 +807,18 @@ export function getPostSearchVersionNumberGeometrySearchQueryExtMutationOptions<
     >,
     TError,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+      (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostSearchVersionNumberGeometrySearchQueryExtMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+        (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
       >,
     ) {
       return parseResponse(
-        client.search[':versionNumber'].geometrySearch[':query.:ext'].$post(args, options),
+        client.search[':versionNumber'].geometrySearch[':query.{ext}'].$post(args, options),
       )
     },
   })
@@ -833,7 +837,7 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+                    (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
                   >
                 >
               >
@@ -841,7 +845,7 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<
           >,
           TError,
           InferRequestType<
-            (typeof client.search)[':versionNumber']['geometrySearch'][':query.:ext']['$post']
+            (typeof client.search)[':versionNumber']['geometrySearch'][':query.{ext}']['$post']
           >,
           TOnMutateResult
         >,
@@ -870,15 +874,15 @@ export function usePostSearchVersionNumberGeometrySearchQueryExt<
 
 export function getSearchVersionNumberNearbySearchExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/nearbySearch/.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/nearbySearch/.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberNearbySearchExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -886,7 +890,7 @@ export function getSearchVersionNumberNearbySearchExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberNearbySearchExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].nearbySearch['.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].nearbySearch['.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -900,7 +904,7 @@ export function useSearchVersionNumberNearbySearchExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
         >
       >
     >
@@ -908,7 +912,7 @@ export function useSearchVersionNumberNearbySearchExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -919,7 +923,7 @@ export function useSearchVersionNumberNearbySearchExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']
                   >
                 >
               >
@@ -932,7 +936,7 @@ export function useSearchVersionNumberNearbySearchExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']
                   >
                 >
               >
@@ -954,7 +958,7 @@ export function useSearchVersionNumberNearbySearchExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['nearbySearch']['.{ext}']['$get']>
           >
         >
       >
@@ -968,7 +972,7 @@ export function useSearchVersionNumberNearbySearchExt<
       queryKey: computed(() => getSearchVersionNumberNearbySearchExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].nearbySearch['.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].nearbySearch['.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -981,15 +985,15 @@ export function useSearchVersionNumberNearbySearchExt<
 
 export function getSearchVersionNumberPoiSearchQueryExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/poiSearch/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/poiSearch/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberPoiSearchQueryExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -997,7 +1001,7 @@ export function getSearchVersionNumberPoiSearchQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberPoiSearchQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].poiSearch[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].poiSearch[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1011,7 +1015,7 @@ export function useSearchVersionNumberPoiSearchQueryExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']>
         >
       >
     >
@@ -1019,7 +1023,7 @@ export function useSearchVersionNumberPoiSearchQueryExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1030,7 +1034,7 @@ export function useSearchVersionNumberPoiSearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -1043,7 +1047,7 @@ export function useSearchVersionNumberPoiSearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -1065,7 +1069,9 @@ export function useSearchVersionNumberPoiSearchQueryExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['poiSearch'][':query.:ext']['$get']>
+            ReturnType<
+              (typeof client.search)[':versionNumber']['poiSearch'][':query.{ext}']['$get']
+            >
           >
         >
       >
@@ -1079,7 +1085,7 @@ export function useSearchVersionNumberPoiSearchQueryExt<
       queryKey: computed(() => getSearchVersionNumberPoiSearchQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].poiSearch[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].poiSearch[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1093,13 +1099,13 @@ export function useSearchVersionNumberPoiSearchQueryExt<
 export function getSearchVersionNumberReverseGeocodeCrossStreetPositionExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
     >
   >,
 ) {
   return [
     'search',
-    '/search/:versionNumber/reverseGeocode/crossStreet/:position.:ext',
+    '/search/:versionNumber/reverseGeocode/crossStreet/:position.{ext}',
     toValue(args),
   ] as const
 }
@@ -1107,7 +1113,7 @@ export function getSearchVersionNumberReverseGeocodeCrossStreetPositionExtQueryK
 export function getSearchVersionNumberReverseGeocodeCrossStreetPositionExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1118,7 +1124,7 @@ export function getSearchVersionNumberReverseGeocodeCrossStreetPositionExtQueryO
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].reverseGeocode.crossStreet[':position.:ext'].$get(
+        client.search[':versionNumber'].reverseGeocode.crossStreet[':position.{ext}'].$get(
           toValue(args),
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -1133,7 +1139,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+            (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
           >
         >
       >
@@ -1143,7 +1149,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
     >
   >,
   options?: {
@@ -1155,7 +1161,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
                   >
                 >
               >
@@ -1168,7 +1174,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
                   >
                 >
               >
@@ -1191,7 +1197,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.:ext']['$get']
+              (typeof client.search)[':versionNumber']['reverseGeocode']['crossStreet'][':position.{ext}']['$get']
             >
           >
         >
@@ -1208,7 +1214,7 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.:ext'].$get(
+          client.search[':versionNumber'].reverseGeocode.crossStreet[':position.{ext}'].$get(
             toValue(args),
             { ...clientOptions, init: { ...clientOptions?.init, signal } },
           ),
@@ -1222,17 +1228,17 @@ export function useSearchVersionNumberReverseGeocodeCrossStreetPositionExt<
 export function getSearchVersionNumberReverseGeocodePositionExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
     >
   >,
 ) {
-  return ['search', '/search/:versionNumber/reverseGeocode/:position.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/reverseGeocode/:position.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberReverseGeocodePositionExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1241,7 +1247,7 @@ export function getSearchVersionNumberReverseGeocodePositionExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberReverseGeocodePositionExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].reverseGeocode[':position.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].reverseGeocode[':position.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1256,7 +1262,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+            (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
           >
         >
       >
@@ -1266,7 +1272,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+      (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
     >
   >,
   options?: {
@@ -1278,7 +1284,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
                   >
                 >
               >
@@ -1291,7 +1297,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
                   >
                 >
               >
@@ -1314,7 +1320,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['reverseGeocode'][':position.:ext']['$get']
+              (typeof client.search)[':versionNumber']['reverseGeocode'][':position.{ext}']['$get']
             >
           >
         >
@@ -1329,7 +1335,7 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
       queryKey: computed(() => getSearchVersionNumberReverseGeocodePositionExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].reverseGeocode[':position.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].reverseGeocode[':position.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1343,13 +1349,13 @@ export function useSearchVersionNumberReverseGeocodePositionExt<
 export function getSearchVersionNumberRoutedFilterPositionHeadingExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
     >
   >,
 ) {
   return [
     'search',
-    '/search/:versionNumber/routedFilter/:position/:heading.:ext',
+    '/search/:versionNumber/routedFilter/:position/:heading.{ext}',
     toValue(args),
   ] as const
 }
@@ -1357,7 +1363,7 @@ export function getSearchVersionNumberRoutedFilterPositionHeadingExtQueryKey(
 export function getSearchVersionNumberRoutedFilterPositionHeadingExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1366,7 +1372,7 @@ export function getSearchVersionNumberRoutedFilterPositionHeadingExtQueryOptions
     queryKey: computed(() => getSearchVersionNumberRoutedFilterPositionHeadingExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$get(
+        client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$get(
           toValue(args),
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -1381,7 +1387,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
           >
         >
       >
@@ -1391,7 +1397,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
     >
   >,
   options?: {
@@ -1403,7 +1409,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
                   >
                 >
               >
@@ -1416,7 +1422,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
                   >
                 >
               >
@@ -1439,7 +1445,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$get']
+              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$get']
             >
           >
         >
@@ -1454,7 +1460,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
       queryKey: computed(() => getSearchVersionNumberRoutedFilterPositionHeadingExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$get(
+          client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$get(
             toValue(args),
             { ...clientOptions, init: { ...clientOptions?.init, signal } },
           ),
@@ -1466,7 +1472,7 @@ export function useSearchVersionNumberRoutedFilterPositionHeadingExt<
 }
 
 export function getPostSearchVersionNumberRoutedFilterPositionHeadingExtMutationKey() {
-  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/routedFilter/:position/:heading.{ext}', 'POST'] as const
 }
 
 export function getPostSearchVersionNumberRoutedFilterPositionHeadingExtMutationOptions<
@@ -1479,7 +1485,7 @@ export function getPostSearchVersionNumberRoutedFilterPositionHeadingExtMutation
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+              (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
             >
           >
         >
@@ -1487,18 +1493,18 @@ export function getPostSearchVersionNumberRoutedFilterPositionHeadingExtMutation
     >,
     TError,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+      (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostSearchVersionNumberRoutedFilterPositionHeadingExtMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+        (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
       >,
     ) {
       return parseResponse(
-        client.search[':versionNumber'].routedFilter[':position'][':heading.:ext'].$post(
+        client.search[':versionNumber'].routedFilter[':position'][':heading.{ext}'].$post(
           args,
           options,
         ),
@@ -1520,7 +1526,7 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+                    (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
                   >
                 >
               >
@@ -1528,7 +1534,7 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
           >,
           TError,
           InferRequestType<
-            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.:ext']['$post']
+            (typeof client.search)[':versionNumber']['routedFilter'][':position'][':heading.{ext}']['$post']
           >,
           TOnMutateResult
         >,
@@ -1558,13 +1564,13 @@ export function usePostSearchVersionNumberRoutedFilterPositionHeadingExt<
 export function getSearchVersionNumberRoutedSearchQueryPositionHeadingExtQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
     >
   >,
 ) {
   return [
     'search',
-    '/search/:versionNumber/routedSearch/:query/:position/:heading.:ext',
+    '/search/:versionNumber/routedSearch/:query/:position/:heading.{ext}',
     toValue(args),
   ] as const
 }
@@ -1572,7 +1578,7 @@ export function getSearchVersionNumberRoutedSearchQueryPositionHeadingExtQueryKe
 export function getSearchVersionNumberRoutedSearchQueryPositionHeadingExtQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1583,7 +1589,7 @@ export function getSearchVersionNumberRoutedSearchQueryPositionHeadingExtQueryOp
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].routedSearch[':query'][':position'][':heading.:ext'].$get(
+        client.search[':versionNumber'].routedSearch[':query'][':position'][':heading.{ext}'].$get(
           toValue(args),
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -1598,7 +1604,7 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+            (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
           >
         >
       >
@@ -1608,7 +1614,7 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+      (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
     >
   >,
   options?: {
@@ -1620,7 +1626,7 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
                   >
                 >
               >
@@ -1633,7 +1639,7 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
                   >
                 >
               >
@@ -1656,7 +1662,7 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.:ext']['$get']
+              (typeof client.search)[':versionNumber']['routedSearch'][':query'][':position'][':heading.{ext}']['$get']
             >
           >
         >
@@ -1673,10 +1679,9 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].routedSearch[':query'][':position'][':heading.:ext'].$get(
-            toValue(args),
-            { ...clientOptions, init: { ...clientOptions?.init, signal } },
-          ),
+          client.search[':versionNumber'].routedSearch[':query'][':position'][
+            ':heading.{ext}'
+          ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
       },
     },
@@ -1686,15 +1691,15 @@ export function useSearchVersionNumberRoutedSearchQueryPositionHeadingExt<
 
 export function getSearchVersionNumberSQueryExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/s/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/s/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberSQueryExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1702,7 +1707,7 @@ export function getSearchVersionNumberSQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberSQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].s[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].s[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1715,14 +1720,14 @@ export function useSearchVersionNumberSQueryExt<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>>
+        Awaited<ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1732,7 +1737,7 @@ export function useSearchVersionNumberSQueryExt<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+                  ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
                 >
               >
             >
@@ -1743,7 +1748,7 @@ export function useSearchVersionNumberSQueryExt<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>
+                  ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>
                 >
               >
             >
@@ -1763,7 +1768,7 @@ export function useSearchVersionNumberSQueryExt<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.search)[':versionNumber']['s'][':query.:ext']['$get']>>
+          Awaited<ReturnType<(typeof client.search)[':versionNumber']['s'][':query.{ext}']['$get']>>
         >
       >
     >,
@@ -1776,7 +1781,7 @@ export function useSearchVersionNumberSQueryExt<
       queryKey: computed(() => getSearchVersionNumberSQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].s[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].s[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1789,15 +1794,15 @@ export function useSearchVersionNumberSQueryExt<
 
 export function getSearchVersionNumberSearchQueryExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/search/:query.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/search/:query.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberSearchQueryExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1805,7 +1810,7 @@ export function getSearchVersionNumberSearchQueryExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberSearchQueryExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber'].search[':query.:ext'].$get(toValue(args), {
+        client.search[':versionNumber'].search[':query.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1819,7 +1824,7 @@ export function useSearchVersionNumberSearchQueryExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
         >
       >
     >
@@ -1827,7 +1832,7 @@ export function useSearchVersionNumberSearchQueryExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1838,7 +1843,7 @@ export function useSearchVersionNumberSearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -1851,7 +1856,7 @@ export function useSearchVersionNumberSearchQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']
                   >
                 >
               >
@@ -1873,7 +1878,7 @@ export function useSearchVersionNumberSearchQueryExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['search'][':query.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['search'][':query.{ext}']['$get']>
           >
         >
       >
@@ -1887,7 +1892,7 @@ export function useSearchVersionNumberSearchQueryExt<
       queryKey: computed(() => getSearchVersionNumberSearchQueryExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber'].search[':query.:ext'].$get(toValue(args), {
+          client.search[':versionNumber'].search[':query.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1899,7 +1904,7 @@ export function useSearchVersionNumberSearchQueryExt<
 }
 
 export function getPostSearchVersionNumberSearchAlongRouteQueryExtMutationKey() {
-  return ['search', '/search/:versionNumber/searchAlongRoute/:query.:ext', 'POST'] as const
+  return ['search', '/search/:versionNumber/searchAlongRoute/:query.{ext}', 'POST'] as const
 }
 
 export function getPostSearchVersionNumberSearchAlongRouteQueryExtMutationOptions<
@@ -1912,7 +1917,7 @@ export function getPostSearchVersionNumberSearchAlongRouteQueryExtMutationOption
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+              (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
             >
           >
         >
@@ -1920,18 +1925,18 @@ export function getPostSearchVersionNumberSearchAlongRouteQueryExtMutationOption
     >,
     TError,
     InferRequestType<
-      (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+      (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostSearchVersionNumberSearchAlongRouteQueryExtMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+        (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
       >,
     ) {
       return parseResponse(
-        client.search[':versionNumber'].searchAlongRoute[':query.:ext'].$post(args, options),
+        client.search[':versionNumber'].searchAlongRoute[':query.{ext}'].$post(args, options),
       )
     },
   })
@@ -1950,7 +1955,7 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+                    (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
                   >
                 >
               >
@@ -1958,7 +1963,7 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<
           >,
           TError,
           InferRequestType<
-            (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.:ext']['$post']
+            (typeof client.search)[':versionNumber']['searchAlongRoute'][':query.{ext}']['$post']
           >,
           TOnMutateResult
         >,
@@ -1987,15 +1992,15 @@ export function usePostSearchVersionNumberSearchAlongRouteQueryExt<
 
 export function getSearchVersionNumberStructuredGeocodeExtQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']>
   >,
 ) {
-  return ['search', '/search/:versionNumber/structuredGeocode.:ext', toValue(args)] as const
+  return ['search', '/search/:versionNumber/structuredGeocode.{ext}', toValue(args)] as const
 }
 
 export function getSearchVersionNumberStructuredGeocodeExtQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2003,7 +2008,7 @@ export function getSearchVersionNumberStructuredGeocodeExtQueryOptions(
     queryKey: computed(() => getSearchVersionNumberStructuredGeocodeExtQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.search[':versionNumber']['structuredGeocode.:ext'].$get(toValue(args), {
+        client.search[':versionNumber']['structuredGeocode.{ext}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2017,7 +2022,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+          ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']>
         >
       >
     >
@@ -2025,7 +2030,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+    InferRequestType<(typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -2036,7 +2041,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
                   >
                 >
               >
@@ -2049,7 +2054,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']
+                    (typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']
                   >
                 >
               >
@@ -2071,7 +2076,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.:ext']['$get']>
+            ReturnType<(typeof client.search)[':versionNumber']['structuredGeocode.{ext}']['$get']>
           >
         >
       >
@@ -2085,7 +2090,7 @@ export function useSearchVersionNumberStructuredGeocodeExt<
       queryKey: computed(() => getSearchVersionNumberStructuredGeocodeExtQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.search[':versionNumber']['structuredGeocode.:ext'].$get(toValue(args), {
+          client.search[':versionNumber']['structuredGeocode.{ext}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

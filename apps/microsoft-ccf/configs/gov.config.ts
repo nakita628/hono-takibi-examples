@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/microsoft/CCF/main/doc/schemas/gov_openapi.json',
   output: './src/gov/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gov/types.ts' },
   client: { output: './src/gov/client.ts', baseUrl: '/' },
   rpc: { output: './src/gov/rpc.ts', parseResponse: true },

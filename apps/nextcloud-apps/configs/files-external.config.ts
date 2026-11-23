@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/files_external/openapi.json',
   output: './src/files-external/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/files-external/types.ts' },
   client: { output: './src/files-external/client.ts', baseUrl: '/' },
   rpc: { output: './src/files-external/rpc.ts', parseResponse: true },

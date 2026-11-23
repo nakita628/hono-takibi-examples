@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMaxRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMaxRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const maxHandler = app.openapi(getMaxRoute, (c) => {
+export const getMaxRouteHandler: RouteHandler<typeof getMaxRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

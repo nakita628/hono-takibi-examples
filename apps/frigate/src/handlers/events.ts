@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEventsEventIdRetainRoute,
   deleteEventsEventIdRoute,
   deleteEventsIndexRoute,
@@ -25,75 +25,136 @@ import {
   putEventsEventIdFalsePositiveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEventsRouteHandler: RouteHandler<typeof getEventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsHandler = app
-  .openapi(getEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsExploreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEventsEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdRetainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEventsEventIdRetainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdPlusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEventsEventIdFalsePositiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdSubLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdRecognizedLicensePlateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsEventIdDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEventsEventIdDescriptionRegenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEventsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventsCameraNameLabelCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEventsEventIdEndRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdSnapshotJpgRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdThumbnailExtensionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdSnapshotCleanWebpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdClipMp4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsEventIdPreviewGifRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEventsExploreRouteHandler: RouteHandler<typeof getEventsExploreRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsSearchRouteHandler: RouteHandler<typeof getEventsSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsSummaryRouteHandler: RouteHandler<typeof getEventsSummaryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdRouteHandler: RouteHandler<typeof getEventsEventIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEventsEventIdRouteHandler: RouteHandler<
+  typeof deleteEventsEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdRetainRouteHandler: RouteHandler<
+  typeof postEventsEventIdRetainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEventsEventIdRetainRouteHandler: RouteHandler<
+  typeof deleteEventsEventIdRetainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdPlusRouteHandler: RouteHandler<
+  typeof postEventsEventIdPlusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEventsEventIdFalsePositiveRouteHandler: RouteHandler<
+  typeof putEventsEventIdFalsePositiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdSubLabelRouteHandler: RouteHandler<
+  typeof postEventsEventIdSubLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdRecognizedLicensePlateRouteHandler: RouteHandler<
+  typeof postEventsEventIdRecognizedLicensePlateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdAttributesRouteHandler: RouteHandler<
+  typeof postEventsEventIdAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsEventIdDescriptionRouteHandler: RouteHandler<
+  typeof postEventsEventIdDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEventsEventIdDescriptionRegenerateRouteHandler: RouteHandler<
+  typeof putEventsEventIdDescriptionRegenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEventsIndexRouteHandler: RouteHandler<typeof deleteEventsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventsCameraNameLabelCreateRouteHandler: RouteHandler<
+  typeof postEventsCameraNameLabelCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEventsEventIdEndRouteHandler: RouteHandler<
+  typeof putEventsEventIdEndRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdSnapshotJpgRouteHandler: RouteHandler<
+  typeof getEventsEventIdSnapshotJpgRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdThumbnailExtensionRouteHandler: RouteHandler<
+  typeof getEventsEventIdThumbnailExtensionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdSnapshotCleanWebpRouteHandler: RouteHandler<
+  typeof getEventsEventIdSnapshotCleanWebpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdClipMp4RouteHandler: RouteHandler<
+  typeof getEventsEventIdClipMp4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsEventIdPreviewGifRouteHandler: RouteHandler<
+  typeof getEventsEventIdPreviewGifRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

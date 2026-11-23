@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiKeyBalanceTransfersRoute,
   getApiKeyCreditTransfersRoute,
   getApiKeySubaccountsRoute,
@@ -11,33 +11,56 @@ import {
   postApiKeyTransferNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiKeyBalanceTransfersRouteHandler: RouteHandler<
+  typeof getApiKeyBalanceTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiKeyHandler = app
-  .openapi(getApiKeyBalanceTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeyBalanceTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeyCreditTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeyCreditTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeySubaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeySubaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeySubaccountsSubaccountKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiKeySubaccountsSubaccountKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeyTransferNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiKeyBalanceTransfersRouteHandler: RouteHandler<
+  typeof postApiKeyBalanceTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiKeyCreditTransfersRouteHandler: RouteHandler<
+  typeof getApiKeyCreditTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiKeyCreditTransfersRouteHandler: RouteHandler<
+  typeof postApiKeyCreditTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiKeySubaccountsRouteHandler: RouteHandler<
+  typeof getApiKeySubaccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiKeySubaccountsRouteHandler: RouteHandler<
+  typeof postApiKeySubaccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiKeySubaccountsSubaccountKeyRouteHandler: RouteHandler<
+  typeof getApiKeySubaccountsSubaccountKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiKeySubaccountsSubaccountKeyRouteHandler: RouteHandler<
+  typeof patchApiKeySubaccountsSubaccountKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiKeyTransferNumberRouteHandler: RouteHandler<
+  typeof postApiKeyTransferNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

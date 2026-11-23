@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRestaurantsBylatlongRoute,
   getRestaurantsBypostcodePostcodeRoute,
   getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute,
@@ -26,84 +26,146 @@ import {
   putRestaurantsTenantRestaurantIdServicetimesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRestaurantsBylatlongRouteHandler: RouteHandler<
+  typeof getRestaurantsBylatlongRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const restaurantsHandler = app
-  .openapi(getRestaurantsBylatlongRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsBypostcodePostcodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRestaurantsDriverEtaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealGroupIdDealitemvariationsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseJustificationRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getRestaurantsTenantRestaurantIdFeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRestaurantsTenantRestaurantIdFeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRestaurantsTenantRestaurantIdMenuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdOrdertimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRestaurantsTenantRestaurantIdOrdertimesDayOfWeekServiceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRestaurantsTenantRestaurantIdServicetimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRestaurantsBypostcodePostcodeRouteHandler: RouteHandler<
+  typeof getRestaurantsBypostcodePostcodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsDriverEtaRouteHandler: RouteHandler<
+  typeof putRestaurantsDriverEtaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueAvailabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueCategoriesRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueCategoriesCategoryIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueItemsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealGroupIdDealitemvariationsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueItemsItemIdDealgroupsDealGroupIdDealitemvariationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueItemsItemIdModifiergroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCatalogueItemsItemIdVariationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCustomerclaimsRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCustomerclaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdCustomerclaimsIdRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdCustomerclaimsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRouteHandler: RouteHandler<
+  typeof postRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseJustificationRouteHandler: RouteHandler<
+  typeof putRestaurantsTenantRestaurantIdCustomerclaimsIdRestaurantresponseJustificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdFeesRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdFeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsTenantRestaurantIdFeesRouteHandler: RouteHandler<
+  typeof putRestaurantsTenantRestaurantIdFeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdMenuRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsTenantRestaurantIdMenuRouteHandler: RouteHandler<
+  typeof putRestaurantsTenantRestaurantIdMenuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdOrdertimesRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdOrdertimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsTenantRestaurantIdOrdertimesDayOfWeekServiceTypeRouteHandler: RouteHandler<
+  typeof putRestaurantsTenantRestaurantIdOrdertimesDayOfWeekServiceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRestaurantsTenantRestaurantIdServicetimesRouteHandler: RouteHandler<
+  typeof getRestaurantsTenantRestaurantIdServicetimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRestaurantsTenantRestaurantIdServicetimesRouteHandler: RouteHandler<
+  typeof putRestaurantsTenantRestaurantIdServicetimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

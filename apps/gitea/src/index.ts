@@ -1,53 +1,2171 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  adminHandler,
-  gitignoreHandler,
-  labelHandler,
-  licensesHandler,
-  markdownHandler,
-  markupHandler,
-  notificationsHandler,
-  orgHandler,
-  orgsHandler,
-  packagesHandler,
-  reposHandler,
-  repositoriesHandler,
-  searchHandler,
-  settingsHandler,
-  signingKeyGpgHandler,
-  signingKeyPubHandler,
-  teamsHandler,
-  tokenHandler,
-  topicsHandler,
-  userHandler,
-  usersHandler,
-  versionHandler,
+  deleteAdminActionsRunnersRunnerIdRoute,
+  deleteAdminHooksIdRoute,
+  deleteAdminUsersUsernameBadgesRoute,
+  deleteAdminUsersUsernameKeysIdRoute,
+  deleteAdminUsersUsernameRoute,
+  deleteOrgsOrgActionsRunnersRunnerIdRoute,
+  deleteOrgsOrgActionsSecretsSecretnameRoute,
+  deleteOrgsOrgActionsVariablesVariablenameRoute,
+  deleteOrgsOrgAvatarRoute,
+  deleteOrgsOrgBlocksUsernameRoute,
+  deleteOrgsOrgHooksIdRoute,
+  deleteOrgsOrgLabelsIdRoute,
+  deleteOrgsOrgMembersUsernameRoute,
+  deleteOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  deleteOrgsOrgProjectsIdColumnsColumnIdRoute,
+  deleteOrgsOrgProjectsIdRoute,
+  deleteOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+  deleteOrgsOrgPublicMembersUsernameRoute,
+  deleteOrgsOrgReposRoute,
+  deleteOrgsOrgRoute,
+  deletePackagesOwnerTypeNameRoute,
+  deletePackagesOwnerTypeNameVersionRoute,
+  deleteReposOwnerRepoActionsArtifactsArtifactIdRoute,
+  deleteReposOwnerRepoActionsRunnersRunnerIdRoute,
+  deleteReposOwnerRepoActionsRunsRunRoute,
+  deleteReposOwnerRepoActionsSecretsSecretnameRoute,
+  deleteReposOwnerRepoActionsVariablesVariablenameRoute,
+  deleteReposOwnerRepoAvatarRoute,
+  deleteReposOwnerRepoBranchesBranchRoute,
+  deleteReposOwnerRepoBranchProtectionsNameRoute,
+  deleteReposOwnerRepoCollaboratorsCollaboratorRoute,
+  deleteReposOwnerRepoContentsFilepathRoute,
+  deleteReposOwnerRepoHooksGitIdRoute,
+  deleteReposOwnerRepoHooksIdRoute,
+  deleteReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+  deleteReposOwnerRepoIssuesCommentsIdReactionsRoute,
+  deleteReposOwnerRepoIssuesCommentsIdRoute,
+  deleteReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+  deleteReposOwnerRepoIssuesIndexAssigneesRoute,
+  deleteReposOwnerRepoIssuesIndexBlocksRoute,
+  deleteReposOwnerRepoIssuesIndexCommentsIdRoute,
+  deleteReposOwnerRepoIssuesIndexDependenciesRoute,
+  deleteReposOwnerRepoIssuesIndexLabelsIdRoute,
+  deleteReposOwnerRepoIssuesIndexLabelsRoute,
+  deleteReposOwnerRepoIssuesIndexLockRoute,
+  deleteReposOwnerRepoIssuesIndexPinRoute,
+  deleteReposOwnerRepoIssuesIndexReactionsRoute,
+  deleteReposOwnerRepoIssuesIndexRoute,
+  deleteReposOwnerRepoIssuesIndexStopwatchDeleteRoute,
+  deleteReposOwnerRepoIssuesIndexSubscriptionsUserRoute,
+  deleteReposOwnerRepoIssuesIndexTimesIdRoute,
+  deleteReposOwnerRepoIssuesIndexTimesRoute,
+  deleteReposOwnerRepoKeysIdRoute,
+  deleteReposOwnerRepoLabelsIdRoute,
+  deleteReposOwnerRepoMilestonesIdRoute,
+  deleteReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  deleteReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+  deleteReposOwnerRepoProjectsIdRoute,
+  deleteReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+  deleteReposOwnerRepoPullsIndexMergeRoute,
+  deleteReposOwnerRepoPullsIndexRequestedReviewersRoute,
+  deleteReposOwnerRepoPullsIndexReviewsIdRoute,
+  deleteReposOwnerRepoPushMirrorsNameRoute,
+  deleteReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+  deleteReposOwnerRepoReleasesIdRoute,
+  deleteReposOwnerRepoReleasesTagsTagRoute,
+  deleteReposOwnerRepoRoute,
+  deleteReposOwnerRepoSubscriptionRoute,
+  deleteReposOwnerRepoTagProtectionsIdRoute,
+  deleteReposOwnerRepoTagsTagRoute,
+  deleteReposOwnerRepoTeamsTeamRoute,
+  deleteReposOwnerRepoTopicsTopicRoute,
+  deleteReposOwnerRepoWikiPagePageNameRoute,
+  deleteTeamsIdMembersUsernameRoute,
+  deleteTeamsIdReposOrgRepoRoute,
+  deleteTeamsIdRoute,
+  deleteTokenRoute,
+  deleteUserActionsRunnersRunnerIdRoute,
+  deleteUserActionsSecretsSecretnameRoute,
+  deleteUserActionsVariablesVariablenameRoute,
+  deleteUserApplicationsOauth2IdRoute,
+  deleteUserAvatarRoute,
+  deleteUserBlocksUsernameRoute,
+  deleteUserEmailsRoute,
+  deleteUserFollowingUsernameRoute,
+  deleteUserGpgKeysIdRoute,
+  deleteUserHooksIdRoute,
+  deleteUserKeysIdRoute,
+  deleteUserProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  deleteUserProjectsIdColumnsColumnIdRoute,
+  deleteUserProjectsIdRoute,
+  deleteUserProjectsIdWorkflowsWorkflowIdRoute,
+  deleteUserStarredOwnerRepoRoute,
+  deleteUsersUsernameTokensTokenRoute,
+  getAdminActionsJobsRoute,
+  getAdminActionsRunnersRoute,
+  getAdminActionsRunnersRunnerIdRoute,
+  getAdminActionsRunsRoute,
+  getAdminCronRoute,
+  getAdminEmailsRoute,
+  getAdminEmailsSearchRoute,
+  getAdminHooksIdRoute,
+  getAdminHooksRoute,
+  getAdminOrgsRoute,
+  getAdminPackagesRoute,
+  getAdminUsersRoute,
+  getAdminUsersUsernameBadgesRoute,
+  getGitignoreTemplatesNameRoute,
+  getGitignoreTemplatesRoute,
+  getLabelTemplatesNameRoute,
+  getLabelTemplatesRoute,
+  getLicensesNameRoute,
+  getLicensesRoute,
+  getNotificationsNewRoute,
+  getNotificationsRoute,
+  getNotificationsThreadsIdRoute,
+  getOrgsOrgActionsJobsRoute,
+  getOrgsOrgActionsRunnersRoute,
+  getOrgsOrgActionsRunnersRunnerIdRoute,
+  getOrgsOrgActionsRunsRoute,
+  getOrgsOrgActionsSecretsRoute,
+  getOrgsOrgActionsVariablesRoute,
+  getOrgsOrgActionsVariablesVariablenameRoute,
+  getOrgsOrgActivitiesFeedsRoute,
+  getOrgsOrgBlocksRoute,
+  getOrgsOrgBlocksUsernameRoute,
+  getOrgsOrgHooksIdRoute,
+  getOrgsOrgHooksRoute,
+  getOrgsOrgLabelsIdRoute,
+  getOrgsOrgLabelsRoute,
+  getOrgsOrgMembersRoute,
+  getOrgsOrgMembersUsernameRoute,
+  getOrgsOrgProjectsIdColumnsColumnIdIssuesRoute,
+  getOrgsOrgProjectsIdColumnsColumnIdRoute,
+  getOrgsOrgProjectsIdColumnsRoute,
+  getOrgsOrgProjectsIdRoute,
+  getOrgsOrgProjectsIdWorkflowsRoute,
+  getOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+  getOrgsOrgProjectsRoute,
+  getOrgsOrgPublicMembersRoute,
+  getOrgsOrgPublicMembersUsernameRoute,
+  getOrgsOrgReposRoute,
+  getOrgsOrgRoute,
+  getOrgsOrgTeamsRoute,
+  getOrgsOrgTeamsSearchRoute,
+  getOrgsRoute,
+  getPackagesOwnerRoute,
+  getPackagesOwnerTypeNameDashLatestRoute,
+  getPackagesOwnerTypeNameRoute,
+  getPackagesOwnerTypeNameVersionFilesRoute,
+  getPackagesOwnerTypeNameVersionRoute,
+  getReposIssuesSearchRoute,
+  getRepositoriesIdRoute,
+  getReposOwnerRepoActionsArtifactsArtifactIdRoute,
+  getReposOwnerRepoActionsArtifactsArtifactIdZipRoute,
+  getReposOwnerRepoActionsArtifactsRoute,
+  getReposOwnerRepoActionsJobsJobIdLogsRoute,
+  getReposOwnerRepoActionsJobsJobIdRoute,
+  getReposOwnerRepoActionsJobsRoute,
+  getReposOwnerRepoActionsRunnersRoute,
+  getReposOwnerRepoActionsRunnersRunnerIdRoute,
+  getReposOwnerRepoActionsRunsRoute,
+  getReposOwnerRepoActionsRunsRunArtifactsRoute,
+  getReposOwnerRepoActionsRunsRunAttemptsAttemptJobsRoute,
+  getReposOwnerRepoActionsRunsRunAttemptsAttemptRoute,
+  getReposOwnerRepoActionsRunsRunJobsRoute,
+  getReposOwnerRepoActionsRunsRunLogsRoute,
+  getReposOwnerRepoActionsRunsRunRoute,
+  getReposOwnerRepoActionsSecretsRoute,
+  getReposOwnerRepoActionsTasksRoute,
+  getReposOwnerRepoActionsVariablesRoute,
+  getReposOwnerRepoActionsVariablesVariablenameRoute,
+  getReposOwnerRepoActionsWorkflowsRoute,
+  getReposOwnerRepoActionsWorkflowsWorkflowIdRoute,
+  getReposOwnerRepoActionsWorkflowsWorkflowIdRunsRoute,
+  getReposOwnerRepoActivitiesFeedsRoute,
+  getReposOwnerRepoArchiveArchiveRoute,
+  getReposOwnerRepoAssigneesAssigneeRoute,
+  getReposOwnerRepoAssigneesRoute,
+  getReposOwnerRepoBranchesBranchRoute,
+  getReposOwnerRepoBranchesRoute,
+  getReposOwnerRepoBranchProtectionsNameRoute,
+  getReposOwnerRepoBranchProtectionsRoute,
+  getReposOwnerRepoCodeSearchRoute,
+  getReposOwnerRepoCollaboratorsCollaboratorPermissionRoute,
+  getReposOwnerRepoCollaboratorsCollaboratorRoute,
+  getReposOwnerRepoCollaboratorsRoute,
+  getReposOwnerRepoCommitsRefStatusesRoute,
+  getReposOwnerRepoCommitsRefStatusRoute,
+  getReposOwnerRepoCommitsRoute,
+  getReposOwnerRepoCommitsShaPullRoute,
+  getReposOwnerRepoCompareBaseheadRoute,
+  getReposOwnerRepoContentsExtFilepathRoute,
+  getReposOwnerRepoContentsFilepathRoute,
+  getReposOwnerRepoContentsRoute,
+  getReposOwnerRepoEditorconfigFilepathRoute,
+  getReposOwnerRepoFileContentsRoute,
+  getReposOwnerRepoForksRoute,
+  getReposOwnerRepoGitBlobsShaRoute,
+  getReposOwnerRepoGitCommitsShaDiffTypeRoute,
+  getReposOwnerRepoGitCommitsShaRoute,
+  getReposOwnerRepoGitNotesShaRoute,
+  getReposOwnerRepoGitRefsRefRoute,
+  getReposOwnerRepoGitRefsRoute,
+  getReposOwnerRepoGitTagsShaRoute,
+  getReposOwnerRepoGitTreesShaRoute,
+  getReposOwnerRepoHooksGitIdRoute,
+  getReposOwnerRepoHooksGitRoute,
+  getReposOwnerRepoHooksIdDeliveriesRoute,
+  getReposOwnerRepoHooksIdDeliveriesUuidRoute,
+  getReposOwnerRepoHooksIdRoute,
+  getReposOwnerRepoHooksRoute,
+  getReposOwnerRepoIssueConfigRoute,
+  getReposOwnerRepoIssueConfigValidateRoute,
+  getReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+  getReposOwnerRepoIssuesCommentsIdAssetsRoute,
+  getReposOwnerRepoIssuesCommentsIdReactionsRoute,
+  getReposOwnerRepoIssuesCommentsIdRoute,
+  getReposOwnerRepoIssuesCommentsRoute,
+  getReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+  getReposOwnerRepoIssuesIndexAssetsRoute,
+  getReposOwnerRepoIssuesIndexAssigneesAssigneeRoute,
+  getReposOwnerRepoIssuesIndexBlocksRoute,
+  getReposOwnerRepoIssuesIndexCommentsRoute,
+  getReposOwnerRepoIssuesIndexDependenciesRoute,
+  getReposOwnerRepoIssuesIndexLabelsRoute,
+  getReposOwnerRepoIssuesIndexReactionsRoute,
+  getReposOwnerRepoIssuesIndexRoute,
+  getReposOwnerRepoIssuesIndexSubscriptionsCheckRoute,
+  getReposOwnerRepoIssuesIndexSubscriptionsRoute,
+  getReposOwnerRepoIssuesIndexTimelineRoute,
+  getReposOwnerRepoIssuesIndexTimesRoute,
+  getReposOwnerRepoIssuesPinnedRoute,
+  getReposOwnerRepoIssuesRoute,
+  getReposOwnerRepoIssueTemplatesRoute,
+  getReposOwnerRepoKeysIdRoute,
+  getReposOwnerRepoKeysRoute,
+  getReposOwnerRepoLabelsIdRoute,
+  getReposOwnerRepoLabelsRoute,
+  getReposOwnerRepoLanguagesRoute,
+  getReposOwnerRepoLicensesRoute,
+  getReposOwnerRepoMediaFilepathRoute,
+  getReposOwnerRepoMilestonesIdRoute,
+  getReposOwnerRepoMilestonesRoute,
+  getReposOwnerRepoNewPinAllowedRoute,
+  getReposOwnerRepoNotificationsRoute,
+  getReposOwnerRepoProjectsIdColumnsColumnIdIssuesRoute,
+  getReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+  getReposOwnerRepoProjectsIdColumnsRoute,
+  getReposOwnerRepoProjectsIdRoute,
+  getReposOwnerRepoProjectsIdWorkflowsRoute,
+  getReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+  getReposOwnerRepoProjectsRoute,
+  getReposOwnerRepoPullsBaseHeadRoute,
+  getReposOwnerRepoPullsIndexCommitsRoute,
+  getReposOwnerRepoPullsIndexDiffTypeRoute,
+  getReposOwnerRepoPullsIndexFilesRoute,
+  getReposOwnerRepoPullsIndexMergeRoute,
+  getReposOwnerRepoPullsIndexReviewsIdCommentsRoute,
+  getReposOwnerRepoPullsIndexReviewsIdRoute,
+  getReposOwnerRepoPullsIndexReviewsRoute,
+  getReposOwnerRepoPullsIndexRoute,
+  getReposOwnerRepoPullsPinnedRoute,
+  getReposOwnerRepoPullsRoute,
+  getReposOwnerRepoPushMirrorsNameRoute,
+  getReposOwnerRepoPushMirrorsRoute,
+  getReposOwnerRepoRawFilepathRoute,
+  getReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+  getReposOwnerRepoReleasesIdAssetsRoute,
+  getReposOwnerRepoReleasesIdRoute,
+  getReposOwnerRepoReleasesLatestRoute,
+  getReposOwnerRepoReleasesRoute,
+  getReposOwnerRepoReleasesTagsTagRoute,
+  getReposOwnerRepoReviewersRoute,
+  getReposOwnerRepoRoute,
+  getReposOwnerRepoSigningKeyGpgRoute,
+  getReposOwnerRepoSigningKeyPubRoute,
+  getReposOwnerRepoStargazersRoute,
+  getReposOwnerRepoStatusesShaRoute,
+  getReposOwnerRepoSubscribersRoute,
+  getReposOwnerRepoSubscriptionRoute,
+  getReposOwnerRepoTagProtectionsIdRoute,
+  getReposOwnerRepoTagProtectionsRoute,
+  getReposOwnerRepoTagsRoute,
+  getReposOwnerRepoTagsTagRoute,
+  getReposOwnerRepoTeamsRoute,
+  getReposOwnerRepoTeamsTeamRoute,
+  getReposOwnerRepoTimesRoute,
+  getReposOwnerRepoTimesUserRoute,
+  getReposOwnerRepoTopicsRoute,
+  getReposOwnerRepoWikiPagePageNameRoute,
+  getReposOwnerRepoWikiPagesRoute,
+  getReposOwnerRepoWikiRevisionsPageNameRoute,
+  getReposSearchRoute,
+  getSearchCodeRoute,
+  getSettingsApiRoute,
+  getSettingsAttachmentRoute,
+  getSettingsRepositoryRoute,
+  getSettingsUiRoute,
+  getSigningKeyGpgRoute,
+  getSigningKeyPubRoute,
+  getTeamsIdActivitiesFeedsRoute,
+  getTeamsIdMembersRoute,
+  getTeamsIdMembersUsernameRoute,
+  getTeamsIdReposOrgRepoRoute,
+  getTeamsIdReposRoute,
+  getTeamsIdRoute,
+  getTokenRoute,
+  getTopicsSearchRoute,
+  getUserActionsJobsRoute,
+  getUserActionsRunnersRoute,
+  getUserActionsRunnersRunnerIdRoute,
+  getUserActionsRunsRoute,
+  getUserActionsVariablesRoute,
+  getUserActionsVariablesVariablenameRoute,
+  getUserApplicationsOauth2IdRoute,
+  getUserApplicationsOauth2Route,
+  getUserBlocksRoute,
+  getUserBlocksUsernameRoute,
+  getUserEmailsRoute,
+  getUserFollowersRoute,
+  getUserFollowingRoute,
+  getUserFollowingUsernameRoute,
+  getUserGpgKeysIdRoute,
+  getUserGpgKeysRoute,
+  getUserGpgKeyTokenRoute,
+  getUserHooksIdRoute,
+  getUserHooksRoute,
+  getUserKeysIdRoute,
+  getUserKeysRoute,
+  getUserOrgsRoute,
+  getUserProjectsIdColumnsColumnIdIssuesRoute,
+  getUserProjectsIdColumnsColumnIdRoute,
+  getUserProjectsIdColumnsRoute,
+  getUserProjectsIdRoute,
+  getUserProjectsIdWorkflowsRoute,
+  getUserProjectsIdWorkflowsWorkflowIdRoute,
+  getUserProjectsRoute,
+  getUserReposRoute,
+  getUserRoute,
+  getUserSettingsRoute,
+  getUsersSearchRoute,
+  getUserStarredOwnerRepoRoute,
+  getUserStarredRoute,
+  getUserStopwatchesRoute,
+  getUserSubscriptionsRoute,
+  getUsersUsernameActivitiesFeedsRoute,
+  getUsersUsernameFollowersRoute,
+  getUsersUsernameFollowingRoute,
+  getUsersUsernameFollowingTargetRoute,
+  getUsersUsernameGpgKeysRoute,
+  getUsersUsernameHeatmapRoute,
+  getUsersUsernameKeysRoute,
+  getUsersUsernameOrgsOrgPermissionsRoute,
+  getUsersUsernameOrgsRoute,
+  getUsersUsernameProjectsRoute,
+  getUsersUsernameReposRoute,
+  getUsersUsernameRoute,
+  getUsersUsernameStarredRoute,
+  getUsersUsernameSubscriptionsRoute,
+  getUsersUsernameTokensRoute,
+  getUserTeamsRoute,
+  getUserTimesRoute,
+  getVersionRoute,
+  patchAdminActionsRunnersRunnerIdRoute,
+  patchAdminHooksIdRoute,
+  patchAdminUsersUsernameRoute,
+  patchNotificationsThreadsIdRoute,
+  patchOrgsOrgActionsRunnersRunnerIdRoute,
+  patchOrgsOrgHooksIdRoute,
+  patchOrgsOrgLabelsIdRoute,
+  patchOrgsOrgProjectsIdColumnsColumnIdRoute,
+  patchOrgsOrgProjectsIdRoute,
+  patchOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+  patchOrgsOrgRoute,
+  patchReposOwnerRepoActionsRunnersRunnerIdRoute,
+  patchReposOwnerRepoBranchesBranchRoute,
+  patchReposOwnerRepoBranchProtectionsNameRoute,
+  patchReposOwnerRepoHooksGitIdRoute,
+  patchReposOwnerRepoHooksIdRoute,
+  patchReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+  patchReposOwnerRepoIssuesCommentsIdRoute,
+  patchReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+  patchReposOwnerRepoIssuesIndexCommentsIdRoute,
+  patchReposOwnerRepoIssuesIndexPinPositionRoute,
+  patchReposOwnerRepoIssuesIndexRoute,
+  patchReposOwnerRepoLabelsIdRoute,
+  patchReposOwnerRepoMilestonesIdRoute,
+  patchReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+  patchReposOwnerRepoProjectsIdRoute,
+  patchReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+  patchReposOwnerRepoPullsIndexRoute,
+  patchReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+  patchReposOwnerRepoReleasesIdRoute,
+  patchReposOwnerRepoRoute,
+  patchReposOwnerRepoTagProtectionsIdRoute,
+  patchReposOwnerRepoWikiPagePageNameRoute,
+  patchTeamsIdRoute,
+  patchUserActionsRunnersRunnerIdRoute,
+  patchUserApplicationsOauth2IdRoute,
+  patchUserHooksIdRoute,
+  patchUserProjectsIdColumnsColumnIdRoute,
+  patchUserProjectsIdRoute,
+  patchUserProjectsIdWorkflowsWorkflowIdRoute,
+  patchUserSettingsRoute,
+  postAdminActionsRunnersRegistrationTokenRoute,
+  postAdminCronTaskRoute,
+  postAdminHooksRoute,
+  postAdminUsersRoute,
+  postAdminUsersUsernameBadgesRoute,
+  postAdminUsersUsernameKeysRoute,
+  postAdminUsersUsernameOrgsRoute,
+  postAdminUsersUsernameRenameRoute,
+  postAdminUsersUsernameReposRoute,
+  postMarkdownRawRoute,
+  postMarkdownRoute,
+  postMarkupRoute,
+  postOrgOrgReposRoute,
+  postOrgsOrgActionsRunnersRegistrationTokenRoute,
+  postOrgsOrgActionsVariablesVariablenameRoute,
+  postOrgsOrgAvatarRoute,
+  postOrgsOrgHooksRoute,
+  postOrgsOrgLabelsRoute,
+  postOrgsOrgProjectsIdColumnsColumnIdDefaultRoute,
+  postOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  postOrgsOrgProjectsIdColumnsMoveRoute,
+  postOrgsOrgProjectsIdColumnsRoute,
+  postOrgsOrgProjectsIdIssuesIssueIdMoveRoute,
+  postOrgsOrgProjectsIdWorkflowsRoute,
+  postOrgsOrgProjectsRoute,
+  postOrgsOrgRenameRoute,
+  postOrgsOrgReposRoute,
+  postOrgsOrgTeamsRoute,
+  postOrgsRoute,
+  postPackagesOwnerTypeNameDashLinkRepoNameRoute,
+  postPackagesOwnerTypeNameDashUnlinkRoute,
+  postReposMigrateRoute,
+  postReposOwnerRepoActionsRunnersRegistrationTokenRoute,
+  postReposOwnerRepoActionsRunsRunApproveRoute,
+  postReposOwnerRepoActionsRunsRunCancelRoute,
+  postReposOwnerRepoActionsRunsRunForceCancelRoute,
+  postReposOwnerRepoActionsRunsRunJobsJobIdRerunRoute,
+  postReposOwnerRepoActionsRunsRunRerunFailedJobsRoute,
+  postReposOwnerRepoActionsRunsRunRerunRoute,
+  postReposOwnerRepoActionsVariablesVariablenameRoute,
+  postReposOwnerRepoActionsWorkflowsWorkflowIdDispatchesRoute,
+  postReposOwnerRepoAvatarRoute,
+  postReposOwnerRepoBranchesRoute,
+  postReposOwnerRepoBranchProtectionsPriorityRoute,
+  postReposOwnerRepoBranchProtectionsRoute,
+  postReposOwnerRepoContentsFilepathRoute,
+  postReposOwnerRepoContentsRoute,
+  postReposOwnerRepoDiffpatchRoute,
+  postReposOwnerRepoFileContentsRoute,
+  postReposOwnerRepoForksRoute,
+  postReposOwnerRepoHooksIdTestsRoute,
+  postReposOwnerRepoHooksRoute,
+  postReposOwnerRepoIssuesCommentsIdAssetsRoute,
+  postReposOwnerRepoIssuesCommentsIdReactionsRoute,
+  postReposOwnerRepoIssuesIndexAssetsRoute,
+  postReposOwnerRepoIssuesIndexAssigneesRoute,
+  postReposOwnerRepoIssuesIndexBlocksRoute,
+  postReposOwnerRepoIssuesIndexCommentsRoute,
+  postReposOwnerRepoIssuesIndexDeadlineRoute,
+  postReposOwnerRepoIssuesIndexDependenciesRoute,
+  postReposOwnerRepoIssuesIndexLabelsRoute,
+  postReposOwnerRepoIssuesIndexPinRoute,
+  postReposOwnerRepoIssuesIndexReactionsRoute,
+  postReposOwnerRepoIssuesIndexStopwatchStartRoute,
+  postReposOwnerRepoIssuesIndexStopwatchStopRoute,
+  postReposOwnerRepoIssuesIndexTimesRoute,
+  postReposOwnerRepoIssuesRoute,
+  postReposOwnerRepoKeysRoute,
+  postReposOwnerRepoKeysTokensRoute,
+  postReposOwnerRepoLabelsRoute,
+  postReposOwnerRepoMergeUpstreamRoute,
+  postReposOwnerRepoMilestonesRoute,
+  postReposOwnerRepoMirrorSyncRoute,
+  postReposOwnerRepoProjectsIdColumnsColumnIdDefaultRoute,
+  postReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  postReposOwnerRepoProjectsIdColumnsMoveRoute,
+  postReposOwnerRepoProjectsIdColumnsRoute,
+  postReposOwnerRepoProjectsIdIssuesIssueIdMoveRoute,
+  postReposOwnerRepoProjectsIdWorkflowsRoute,
+  postReposOwnerRepoProjectsRoute,
+  postReposOwnerRepoPullsCommentsIdResolveRoute,
+  postReposOwnerRepoPullsCommentsIdUnresolveRoute,
+  postReposOwnerRepoPullsIndexCommentsIdRepliesRoute,
+  postReposOwnerRepoPullsIndexMergeRoute,
+  postReposOwnerRepoPullsIndexRequestedReviewersRoute,
+  postReposOwnerRepoPullsIndexReviewsIdDismissalsRoute,
+  postReposOwnerRepoPullsIndexReviewsIdRoute,
+  postReposOwnerRepoPullsIndexReviewsIdUndismissalsRoute,
+  postReposOwnerRepoPullsIndexReviewsRoute,
+  postReposOwnerRepoPullsIndexUpdateRoute,
+  postReposOwnerRepoPullsRoute,
+  postReposOwnerRepoPushMirrorsRoute,
+  postReposOwnerRepoPushMirrorsSyncRoute,
+  postReposOwnerRepoReleasesIdAssetsRoute,
+  postReposOwnerRepoReleasesRoute,
+  postReposOwnerRepoStatusesShaRoute,
+  postReposOwnerRepoTagProtectionsRoute,
+  postReposOwnerRepoTagsRoute,
+  postReposOwnerRepoTransferAcceptRoute,
+  postReposOwnerRepoTransferRejectRoute,
+  postReposOwnerRepoTransferRoute,
+  postReposOwnerRepoWikiNewRoute,
+  postReposTemplateOwnerTemplateRepoGenerateRoute,
+  postUserActionsRunnersRegistrationTokenRoute,
+  postUserActionsVariablesVariablenameRoute,
+  postUserApplicationsOauth2Route,
+  postUserAvatarRoute,
+  postUserEmailsRoute,
+  postUserGpgKeysRoute,
+  postUserGpgKeyVerifyRoute,
+  postUserHooksRoute,
+  postUserKeysRoute,
+  postUserProjectsIdColumnsColumnIdDefaultRoute,
+  postUserProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+  postUserProjectsIdColumnsMoveRoute,
+  postUserProjectsIdColumnsRoute,
+  postUserProjectsIdIssuesIssueIdMoveRoute,
+  postUserProjectsIdWorkflowsRoute,
+  postUserProjectsRoute,
+  postUserReposRoute,
+  postUsersUsernameTokensRoute,
+  putNotificationsRoute,
+  putOrgsOrgActionsSecretsSecretnameRoute,
+  putOrgsOrgActionsVariablesVariablenameRoute,
+  putOrgsOrgBlocksUsernameRoute,
+  putOrgsOrgPublicMembersUsernameRoute,
+  putReposOwnerRepoActionsSecretsSecretnameRoute,
+  putReposOwnerRepoActionsVariablesVariablenameRoute,
+  putReposOwnerRepoActionsWorkflowsWorkflowIdDisableRoute,
+  putReposOwnerRepoActionsWorkflowsWorkflowIdEnableRoute,
+  putReposOwnerRepoBranchesBranchRoute,
+  putReposOwnerRepoCollaboratorsCollaboratorRoute,
+  putReposOwnerRepoContentsFilepathRoute,
+  putReposOwnerRepoIssuesIndexLabelsRoute,
+  putReposOwnerRepoIssuesIndexLockRoute,
+  putReposOwnerRepoIssuesIndexSubscriptionsUserRoute,
+  putReposOwnerRepoNotificationsRoute,
+  putReposOwnerRepoSubscriptionRoute,
+  putReposOwnerRepoTeamsTeamRoute,
+  putReposOwnerRepoTopicsRoute,
+  putReposOwnerRepoTopicsTopicRoute,
+  putTeamsIdMembersUsernameRoute,
+  putTeamsIdReposOrgRepoRoute,
+  putUserActionsSecretsSecretnameRoute,
+  putUserActionsVariablesVariablenameRoute,
+  putUserBlocksUsernameRoute,
+  putUserFollowingUsernameRoute,
+  putUserStarredOwnerRepoRoute,
+} from './routes'
+import {
+  deleteAdminActionsRunnersRunnerIdRouteHandler,
+  deleteAdminHooksIdRouteHandler,
+  deleteAdminUsersUsernameBadgesRouteHandler,
+  deleteAdminUsersUsernameKeysIdRouteHandler,
+  deleteAdminUsersUsernameRouteHandler,
+  deleteOrgsOrgActionsRunnersRunnerIdRouteHandler,
+  deleteOrgsOrgActionsSecretsSecretnameRouteHandler,
+  deleteOrgsOrgActionsVariablesVariablenameRouteHandler,
+  deleteOrgsOrgAvatarRouteHandler,
+  deleteOrgsOrgBlocksUsernameRouteHandler,
+  deleteOrgsOrgHooksIdRouteHandler,
+  deleteOrgsOrgLabelsIdRouteHandler,
+  deleteOrgsOrgMembersUsernameRouteHandler,
+  deleteOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  deleteOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  deleteOrgsOrgProjectsIdRouteHandler,
+  deleteOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  deleteOrgsOrgPublicMembersUsernameRouteHandler,
+  deleteOrgsOrgReposRouteHandler,
+  deleteOrgsOrgRouteHandler,
+  deletePackagesOwnerTypeNameRouteHandler,
+  deletePackagesOwnerTypeNameVersionRouteHandler,
+  deleteReposOwnerRepoActionsArtifactsArtifactIdRouteHandler,
+  deleteReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  deleteReposOwnerRepoActionsRunsRunRouteHandler,
+  deleteReposOwnerRepoActionsSecretsSecretnameRouteHandler,
+  deleteReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  deleteReposOwnerRepoAvatarRouteHandler,
+  deleteReposOwnerRepoBranchesBranchRouteHandler,
+  deleteReposOwnerRepoBranchProtectionsNameRouteHandler,
+  deleteReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  deleteReposOwnerRepoContentsFilepathRouteHandler,
+  deleteReposOwnerRepoHooksGitIdRouteHandler,
+  deleteReposOwnerRepoHooksIdRouteHandler,
+  deleteReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  deleteReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  deleteReposOwnerRepoIssuesCommentsIdRouteHandler,
+  deleteReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  deleteReposOwnerRepoIssuesIndexAssigneesRouteHandler,
+  deleteReposOwnerRepoIssuesIndexBlocksRouteHandler,
+  deleteReposOwnerRepoIssuesIndexCommentsIdRouteHandler,
+  deleteReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  deleteReposOwnerRepoIssuesIndexLabelsIdRouteHandler,
+  deleteReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  deleteReposOwnerRepoIssuesIndexLockRouteHandler,
+  deleteReposOwnerRepoIssuesIndexPinRouteHandler,
+  deleteReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  deleteReposOwnerRepoIssuesIndexRouteHandler,
+  deleteReposOwnerRepoIssuesIndexStopwatchDeleteRouteHandler,
+  deleteReposOwnerRepoIssuesIndexSubscriptionsUserRouteHandler,
+  deleteReposOwnerRepoIssuesIndexTimesIdRouteHandler,
+  deleteReposOwnerRepoIssuesIndexTimesRouteHandler,
+  deleteReposOwnerRepoKeysIdRouteHandler,
+  deleteReposOwnerRepoLabelsIdRouteHandler,
+  deleteReposOwnerRepoMilestonesIdRouteHandler,
+  deleteReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  deleteReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  deleteReposOwnerRepoProjectsIdRouteHandler,
+  deleteReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  deleteReposOwnerRepoPullsIndexMergeRouteHandler,
+  deleteReposOwnerRepoPullsIndexRequestedReviewersRouteHandler,
+  deleteReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  deleteReposOwnerRepoPushMirrorsNameRouteHandler,
+  deleteReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  deleteReposOwnerRepoReleasesIdRouteHandler,
+  deleteReposOwnerRepoReleasesTagsTagRouteHandler,
+  deleteReposOwnerRepoRouteHandler,
+  deleteReposOwnerRepoSubscriptionRouteHandler,
+  deleteReposOwnerRepoTagProtectionsIdRouteHandler,
+  deleteReposOwnerRepoTagsTagRouteHandler,
+  deleteReposOwnerRepoTeamsTeamRouteHandler,
+  deleteReposOwnerRepoTopicsTopicRouteHandler,
+  deleteReposOwnerRepoWikiPagePageNameRouteHandler,
+  deleteTeamsIdMembersUsernameRouteHandler,
+  deleteTeamsIdReposOrgRepoRouteHandler,
+  deleteTeamsIdRouteHandler,
+  deleteTokenRouteHandler,
+  deleteUserActionsRunnersRunnerIdRouteHandler,
+  deleteUserActionsSecretsSecretnameRouteHandler,
+  deleteUserActionsVariablesVariablenameRouteHandler,
+  deleteUserApplicationsOauth2IdRouteHandler,
+  deleteUserAvatarRouteHandler,
+  deleteUserBlocksUsernameRouteHandler,
+  deleteUserEmailsRouteHandler,
+  deleteUserFollowingUsernameRouteHandler,
+  deleteUserGpgKeysIdRouteHandler,
+  deleteUserHooksIdRouteHandler,
+  deleteUserKeysIdRouteHandler,
+  deleteUserProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  deleteUserProjectsIdColumnsColumnIdRouteHandler,
+  deleteUserProjectsIdRouteHandler,
+  deleteUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  deleteUserStarredOwnerRepoRouteHandler,
+  deleteUsersUsernameTokensTokenRouteHandler,
+  getAdminActionsJobsRouteHandler,
+  getAdminActionsRunnersRouteHandler,
+  getAdminActionsRunnersRunnerIdRouteHandler,
+  getAdminActionsRunsRouteHandler,
+  getAdminCronRouteHandler,
+  getAdminEmailsRouteHandler,
+  getAdminEmailsSearchRouteHandler,
+  getAdminHooksIdRouteHandler,
+  getAdminHooksRouteHandler,
+  getAdminOrgsRouteHandler,
+  getAdminPackagesRouteHandler,
+  getAdminUsersRouteHandler,
+  getAdminUsersUsernameBadgesRouteHandler,
+  getGitignoreTemplatesNameRouteHandler,
+  getGitignoreTemplatesRouteHandler,
+  getLabelTemplatesNameRouteHandler,
+  getLabelTemplatesRouteHandler,
+  getLicensesNameRouteHandler,
+  getLicensesRouteHandler,
+  getNotificationsNewRouteHandler,
+  getNotificationsRouteHandler,
+  getNotificationsThreadsIdRouteHandler,
+  getOrgsOrgActionsJobsRouteHandler,
+  getOrgsOrgActionsRunnersRouteHandler,
+  getOrgsOrgActionsRunnersRunnerIdRouteHandler,
+  getOrgsOrgActionsRunsRouteHandler,
+  getOrgsOrgActionsSecretsRouteHandler,
+  getOrgsOrgActionsVariablesRouteHandler,
+  getOrgsOrgActionsVariablesVariablenameRouteHandler,
+  getOrgsOrgActivitiesFeedsRouteHandler,
+  getOrgsOrgBlocksRouteHandler,
+  getOrgsOrgBlocksUsernameRouteHandler,
+  getOrgsOrgHooksIdRouteHandler,
+  getOrgsOrgHooksRouteHandler,
+  getOrgsOrgLabelsIdRouteHandler,
+  getOrgsOrgLabelsRouteHandler,
+  getOrgsOrgMembersRouteHandler,
+  getOrgsOrgMembersUsernameRouteHandler,
+  getOrgsOrgProjectsIdColumnsColumnIdIssuesRouteHandler,
+  getOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  getOrgsOrgProjectsIdColumnsRouteHandler,
+  getOrgsOrgProjectsIdRouteHandler,
+  getOrgsOrgProjectsIdWorkflowsRouteHandler,
+  getOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  getOrgsOrgProjectsRouteHandler,
+  getOrgsOrgPublicMembersRouteHandler,
+  getOrgsOrgPublicMembersUsernameRouteHandler,
+  getOrgsOrgReposRouteHandler,
+  getOrgsOrgRouteHandler,
+  getOrgsOrgTeamsRouteHandler,
+  getOrgsOrgTeamsSearchRouteHandler,
+  getOrgsRouteHandler,
+  getPackagesOwnerRouteHandler,
+  getPackagesOwnerTypeNameDashLatestRouteHandler,
+  getPackagesOwnerTypeNameRouteHandler,
+  getPackagesOwnerTypeNameVersionFilesRouteHandler,
+  getPackagesOwnerTypeNameVersionRouteHandler,
+  getReposIssuesSearchRouteHandler,
+  getRepositoriesIdRouteHandler,
+  getReposOwnerRepoActionsArtifactsArtifactIdRouteHandler,
+  getReposOwnerRepoActionsArtifactsArtifactIdZipRouteHandler,
+  getReposOwnerRepoActionsArtifactsRouteHandler,
+  getReposOwnerRepoActionsJobsJobIdLogsRouteHandler,
+  getReposOwnerRepoActionsJobsJobIdRouteHandler,
+  getReposOwnerRepoActionsJobsRouteHandler,
+  getReposOwnerRepoActionsRunnersRouteHandler,
+  getReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  getReposOwnerRepoActionsRunsRouteHandler,
+  getReposOwnerRepoActionsRunsRunArtifactsRouteHandler,
+  getReposOwnerRepoActionsRunsRunAttemptsAttemptJobsRouteHandler,
+  getReposOwnerRepoActionsRunsRunAttemptsAttemptRouteHandler,
+  getReposOwnerRepoActionsRunsRunJobsRouteHandler,
+  getReposOwnerRepoActionsRunsRunLogsRouteHandler,
+  getReposOwnerRepoActionsRunsRunRouteHandler,
+  getReposOwnerRepoActionsSecretsRouteHandler,
+  getReposOwnerRepoActionsTasksRouteHandler,
+  getReposOwnerRepoActionsVariablesRouteHandler,
+  getReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  getReposOwnerRepoActionsWorkflowsRouteHandler,
+  getReposOwnerRepoActionsWorkflowsWorkflowIdRouteHandler,
+  getReposOwnerRepoActionsWorkflowsWorkflowIdRunsRouteHandler,
+  getReposOwnerRepoActivitiesFeedsRouteHandler,
+  getReposOwnerRepoArchiveArchiveRouteHandler,
+  getReposOwnerRepoAssigneesAssigneeRouteHandler,
+  getReposOwnerRepoAssigneesRouteHandler,
+  getReposOwnerRepoBranchesBranchRouteHandler,
+  getReposOwnerRepoBranchesRouteHandler,
+  getReposOwnerRepoBranchProtectionsNameRouteHandler,
+  getReposOwnerRepoBranchProtectionsRouteHandler,
+  getReposOwnerRepoCodeSearchRouteHandler,
+  getReposOwnerRepoCollaboratorsCollaboratorPermissionRouteHandler,
+  getReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  getReposOwnerRepoCollaboratorsRouteHandler,
+  getReposOwnerRepoCommitsRefStatusesRouteHandler,
+  getReposOwnerRepoCommitsRefStatusRouteHandler,
+  getReposOwnerRepoCommitsRouteHandler,
+  getReposOwnerRepoCommitsShaPullRouteHandler,
+  getReposOwnerRepoCompareBaseheadRouteHandler,
+  getReposOwnerRepoContentsExtFilepathRouteHandler,
+  getReposOwnerRepoContentsFilepathRouteHandler,
+  getReposOwnerRepoContentsRouteHandler,
+  getReposOwnerRepoEditorconfigFilepathRouteHandler,
+  getReposOwnerRepoFileContentsRouteHandler,
+  getReposOwnerRepoForksRouteHandler,
+  getReposOwnerRepoGitBlobsShaRouteHandler,
+  getReposOwnerRepoGitCommitsShaDiffTypeRouteHandler,
+  getReposOwnerRepoGitCommitsShaRouteHandler,
+  getReposOwnerRepoGitNotesShaRouteHandler,
+  getReposOwnerRepoGitRefsRefRouteHandler,
+  getReposOwnerRepoGitRefsRouteHandler,
+  getReposOwnerRepoGitTagsShaRouteHandler,
+  getReposOwnerRepoGitTreesShaRouteHandler,
+  getReposOwnerRepoHooksGitIdRouteHandler,
+  getReposOwnerRepoHooksGitRouteHandler,
+  getReposOwnerRepoHooksIdDeliveriesRouteHandler,
+  getReposOwnerRepoHooksIdDeliveriesUuidRouteHandler,
+  getReposOwnerRepoHooksIdRouteHandler,
+  getReposOwnerRepoHooksRouteHandler,
+  getReposOwnerRepoIssueConfigRouteHandler,
+  getReposOwnerRepoIssueConfigValidateRouteHandler,
+  getReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  getReposOwnerRepoIssuesCommentsIdAssetsRouteHandler,
+  getReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  getReposOwnerRepoIssuesCommentsIdRouteHandler,
+  getReposOwnerRepoIssuesCommentsRouteHandler,
+  getReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  getReposOwnerRepoIssuesIndexAssetsRouteHandler,
+  getReposOwnerRepoIssuesIndexAssigneesAssigneeRouteHandler,
+  getReposOwnerRepoIssuesIndexBlocksRouteHandler,
+  getReposOwnerRepoIssuesIndexCommentsRouteHandler,
+  getReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  getReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  getReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  getReposOwnerRepoIssuesIndexRouteHandler,
+  getReposOwnerRepoIssuesIndexSubscriptionsCheckRouteHandler,
+  getReposOwnerRepoIssuesIndexSubscriptionsRouteHandler,
+  getReposOwnerRepoIssuesIndexTimelineRouteHandler,
+  getReposOwnerRepoIssuesIndexTimesRouteHandler,
+  getReposOwnerRepoIssuesPinnedRouteHandler,
+  getReposOwnerRepoIssuesRouteHandler,
+  getReposOwnerRepoIssueTemplatesRouteHandler,
+  getReposOwnerRepoKeysIdRouteHandler,
+  getReposOwnerRepoKeysRouteHandler,
+  getReposOwnerRepoLabelsIdRouteHandler,
+  getReposOwnerRepoLabelsRouteHandler,
+  getReposOwnerRepoLanguagesRouteHandler,
+  getReposOwnerRepoLicensesRouteHandler,
+  getReposOwnerRepoMediaFilepathRouteHandler,
+  getReposOwnerRepoMilestonesIdRouteHandler,
+  getReposOwnerRepoMilestonesRouteHandler,
+  getReposOwnerRepoNewPinAllowedRouteHandler,
+  getReposOwnerRepoNotificationsRouteHandler,
+  getReposOwnerRepoProjectsIdColumnsColumnIdIssuesRouteHandler,
+  getReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  getReposOwnerRepoProjectsIdColumnsRouteHandler,
+  getReposOwnerRepoProjectsIdRouteHandler,
+  getReposOwnerRepoProjectsIdWorkflowsRouteHandler,
+  getReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  getReposOwnerRepoProjectsRouteHandler,
+  getReposOwnerRepoPullsBaseHeadRouteHandler,
+  getReposOwnerRepoPullsIndexCommitsRouteHandler,
+  getReposOwnerRepoPullsIndexDiffTypeRouteHandler,
+  getReposOwnerRepoPullsIndexFilesRouteHandler,
+  getReposOwnerRepoPullsIndexMergeRouteHandler,
+  getReposOwnerRepoPullsIndexReviewsIdCommentsRouteHandler,
+  getReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  getReposOwnerRepoPullsIndexReviewsRouteHandler,
+  getReposOwnerRepoPullsIndexRouteHandler,
+  getReposOwnerRepoPullsPinnedRouteHandler,
+  getReposOwnerRepoPullsRouteHandler,
+  getReposOwnerRepoPushMirrorsNameRouteHandler,
+  getReposOwnerRepoPushMirrorsRouteHandler,
+  getReposOwnerRepoRawFilepathRouteHandler,
+  getReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  getReposOwnerRepoReleasesIdAssetsRouteHandler,
+  getReposOwnerRepoReleasesIdRouteHandler,
+  getReposOwnerRepoReleasesLatestRouteHandler,
+  getReposOwnerRepoReleasesRouteHandler,
+  getReposOwnerRepoReleasesTagsTagRouteHandler,
+  getReposOwnerRepoReviewersRouteHandler,
+  getReposOwnerRepoRouteHandler,
+  getReposOwnerRepoSigningKeyGpgRouteHandler,
+  getReposOwnerRepoSigningKeyPubRouteHandler,
+  getReposOwnerRepoStargazersRouteHandler,
+  getReposOwnerRepoStatusesShaRouteHandler,
+  getReposOwnerRepoSubscribersRouteHandler,
+  getReposOwnerRepoSubscriptionRouteHandler,
+  getReposOwnerRepoTagProtectionsIdRouteHandler,
+  getReposOwnerRepoTagProtectionsRouteHandler,
+  getReposOwnerRepoTagsRouteHandler,
+  getReposOwnerRepoTagsTagRouteHandler,
+  getReposOwnerRepoTeamsRouteHandler,
+  getReposOwnerRepoTeamsTeamRouteHandler,
+  getReposOwnerRepoTimesRouteHandler,
+  getReposOwnerRepoTimesUserRouteHandler,
+  getReposOwnerRepoTopicsRouteHandler,
+  getReposOwnerRepoWikiPagePageNameRouteHandler,
+  getReposOwnerRepoWikiPagesRouteHandler,
+  getReposOwnerRepoWikiRevisionsPageNameRouteHandler,
+  getReposSearchRouteHandler,
+  getSearchCodeRouteHandler,
+  getSettingsApiRouteHandler,
+  getSettingsAttachmentRouteHandler,
+  getSettingsRepositoryRouteHandler,
+  getSettingsUiRouteHandler,
+  getSigningKeyGpgRouteHandler,
+  getSigningKeyPubRouteHandler,
+  getTeamsIdActivitiesFeedsRouteHandler,
+  getTeamsIdMembersRouteHandler,
+  getTeamsIdMembersUsernameRouteHandler,
+  getTeamsIdReposOrgRepoRouteHandler,
+  getTeamsIdReposRouteHandler,
+  getTeamsIdRouteHandler,
+  getTokenRouteHandler,
+  getTopicsSearchRouteHandler,
+  getUserActionsJobsRouteHandler,
+  getUserActionsRunnersRouteHandler,
+  getUserActionsRunnersRunnerIdRouteHandler,
+  getUserActionsRunsRouteHandler,
+  getUserActionsVariablesRouteHandler,
+  getUserActionsVariablesVariablenameRouteHandler,
+  getUserApplicationsOauth2IdRouteHandler,
+  getUserApplicationsOauth2RouteHandler,
+  getUserBlocksRouteHandler,
+  getUserBlocksUsernameRouteHandler,
+  getUserEmailsRouteHandler,
+  getUserFollowersRouteHandler,
+  getUserFollowingRouteHandler,
+  getUserFollowingUsernameRouteHandler,
+  getUserGpgKeysIdRouteHandler,
+  getUserGpgKeysRouteHandler,
+  getUserGpgKeyTokenRouteHandler,
+  getUserHooksIdRouteHandler,
+  getUserHooksRouteHandler,
+  getUserKeysIdRouteHandler,
+  getUserKeysRouteHandler,
+  getUserOrgsRouteHandler,
+  getUserProjectsIdColumnsColumnIdIssuesRouteHandler,
+  getUserProjectsIdColumnsColumnIdRouteHandler,
+  getUserProjectsIdColumnsRouteHandler,
+  getUserProjectsIdRouteHandler,
+  getUserProjectsIdWorkflowsRouteHandler,
+  getUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  getUserProjectsRouteHandler,
+  getUserReposRouteHandler,
+  getUserRouteHandler,
+  getUserSettingsRouteHandler,
+  getUsersSearchRouteHandler,
+  getUserStarredOwnerRepoRouteHandler,
+  getUserStarredRouteHandler,
+  getUserStopwatchesRouteHandler,
+  getUserSubscriptionsRouteHandler,
+  getUsersUsernameActivitiesFeedsRouteHandler,
+  getUsersUsernameFollowersRouteHandler,
+  getUsersUsernameFollowingRouteHandler,
+  getUsersUsernameFollowingTargetRouteHandler,
+  getUsersUsernameGpgKeysRouteHandler,
+  getUsersUsernameHeatmapRouteHandler,
+  getUsersUsernameKeysRouteHandler,
+  getUsersUsernameOrgsOrgPermissionsRouteHandler,
+  getUsersUsernameOrgsRouteHandler,
+  getUsersUsernameProjectsRouteHandler,
+  getUsersUsernameReposRouteHandler,
+  getUsersUsernameRouteHandler,
+  getUsersUsernameStarredRouteHandler,
+  getUsersUsernameSubscriptionsRouteHandler,
+  getUsersUsernameTokensRouteHandler,
+  getUserTeamsRouteHandler,
+  getUserTimesRouteHandler,
+  getVersionRouteHandler,
+  patchAdminActionsRunnersRunnerIdRouteHandler,
+  patchAdminHooksIdRouteHandler,
+  patchAdminUsersUsernameRouteHandler,
+  patchNotificationsThreadsIdRouteHandler,
+  patchOrgsOrgActionsRunnersRunnerIdRouteHandler,
+  patchOrgsOrgHooksIdRouteHandler,
+  patchOrgsOrgLabelsIdRouteHandler,
+  patchOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  patchOrgsOrgProjectsIdRouteHandler,
+  patchOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  patchOrgsOrgRouteHandler,
+  patchReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  patchReposOwnerRepoBranchesBranchRouteHandler,
+  patchReposOwnerRepoBranchProtectionsNameRouteHandler,
+  patchReposOwnerRepoHooksGitIdRouteHandler,
+  patchReposOwnerRepoHooksIdRouteHandler,
+  patchReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  patchReposOwnerRepoIssuesCommentsIdRouteHandler,
+  patchReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  patchReposOwnerRepoIssuesIndexCommentsIdRouteHandler,
+  patchReposOwnerRepoIssuesIndexPinPositionRouteHandler,
+  patchReposOwnerRepoIssuesIndexRouteHandler,
+  patchReposOwnerRepoLabelsIdRouteHandler,
+  patchReposOwnerRepoMilestonesIdRouteHandler,
+  patchReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  patchReposOwnerRepoProjectsIdRouteHandler,
+  patchReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  patchReposOwnerRepoPullsIndexRouteHandler,
+  patchReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  patchReposOwnerRepoReleasesIdRouteHandler,
+  patchReposOwnerRepoRouteHandler,
+  patchReposOwnerRepoTagProtectionsIdRouteHandler,
+  patchReposOwnerRepoWikiPagePageNameRouteHandler,
+  patchTeamsIdRouteHandler,
+  patchUserActionsRunnersRunnerIdRouteHandler,
+  patchUserApplicationsOauth2IdRouteHandler,
+  patchUserHooksIdRouteHandler,
+  patchUserProjectsIdColumnsColumnIdRouteHandler,
+  patchUserProjectsIdRouteHandler,
+  patchUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  patchUserSettingsRouteHandler,
+  postAdminActionsRunnersRegistrationTokenRouteHandler,
+  postAdminCronTaskRouteHandler,
+  postAdminHooksRouteHandler,
+  postAdminUsersRouteHandler,
+  postAdminUsersUsernameBadgesRouteHandler,
+  postAdminUsersUsernameKeysRouteHandler,
+  postAdminUsersUsernameOrgsRouteHandler,
+  postAdminUsersUsernameRenameRouteHandler,
+  postAdminUsersUsernameReposRouteHandler,
+  postMarkdownRawRouteHandler,
+  postMarkdownRouteHandler,
+  postMarkupRouteHandler,
+  postOrgOrgReposRouteHandler,
+  postOrgsOrgActionsRunnersRegistrationTokenRouteHandler,
+  postOrgsOrgActionsVariablesVariablenameRouteHandler,
+  postOrgsOrgAvatarRouteHandler,
+  postOrgsOrgHooksRouteHandler,
+  postOrgsOrgLabelsRouteHandler,
+  postOrgsOrgProjectsIdColumnsColumnIdDefaultRouteHandler,
+  postOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  postOrgsOrgProjectsIdColumnsMoveRouteHandler,
+  postOrgsOrgProjectsIdColumnsRouteHandler,
+  postOrgsOrgProjectsIdIssuesIssueIdMoveRouteHandler,
+  postOrgsOrgProjectsIdWorkflowsRouteHandler,
+  postOrgsOrgProjectsRouteHandler,
+  postOrgsOrgRenameRouteHandler,
+  postOrgsOrgReposRouteHandler,
+  postOrgsOrgTeamsRouteHandler,
+  postOrgsRouteHandler,
+  postPackagesOwnerTypeNameDashLinkRepoNameRouteHandler,
+  postPackagesOwnerTypeNameDashUnlinkRouteHandler,
+  postReposMigrateRouteHandler,
+  postReposOwnerRepoActionsRunnersRegistrationTokenRouteHandler,
+  postReposOwnerRepoActionsRunsRunApproveRouteHandler,
+  postReposOwnerRepoActionsRunsRunCancelRouteHandler,
+  postReposOwnerRepoActionsRunsRunForceCancelRouteHandler,
+  postReposOwnerRepoActionsRunsRunJobsJobIdRerunRouteHandler,
+  postReposOwnerRepoActionsRunsRunRerunFailedJobsRouteHandler,
+  postReposOwnerRepoActionsRunsRunRerunRouteHandler,
+  postReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  postReposOwnerRepoActionsWorkflowsWorkflowIdDispatchesRouteHandler,
+  postReposOwnerRepoAvatarRouteHandler,
+  postReposOwnerRepoBranchesRouteHandler,
+  postReposOwnerRepoBranchProtectionsPriorityRouteHandler,
+  postReposOwnerRepoBranchProtectionsRouteHandler,
+  postReposOwnerRepoContentsFilepathRouteHandler,
+  postReposOwnerRepoContentsRouteHandler,
+  postReposOwnerRepoDiffpatchRouteHandler,
+  postReposOwnerRepoFileContentsRouteHandler,
+  postReposOwnerRepoForksRouteHandler,
+  postReposOwnerRepoHooksIdTestsRouteHandler,
+  postReposOwnerRepoHooksRouteHandler,
+  postReposOwnerRepoIssuesCommentsIdAssetsRouteHandler,
+  postReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  postReposOwnerRepoIssuesIndexAssetsRouteHandler,
+  postReposOwnerRepoIssuesIndexAssigneesRouteHandler,
+  postReposOwnerRepoIssuesIndexBlocksRouteHandler,
+  postReposOwnerRepoIssuesIndexCommentsRouteHandler,
+  postReposOwnerRepoIssuesIndexDeadlineRouteHandler,
+  postReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  postReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  postReposOwnerRepoIssuesIndexPinRouteHandler,
+  postReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  postReposOwnerRepoIssuesIndexStopwatchStartRouteHandler,
+  postReposOwnerRepoIssuesIndexStopwatchStopRouteHandler,
+  postReposOwnerRepoIssuesIndexTimesRouteHandler,
+  postReposOwnerRepoIssuesRouteHandler,
+  postReposOwnerRepoKeysRouteHandler,
+  postReposOwnerRepoKeysTokensRouteHandler,
+  postReposOwnerRepoLabelsRouteHandler,
+  postReposOwnerRepoMergeUpstreamRouteHandler,
+  postReposOwnerRepoMilestonesRouteHandler,
+  postReposOwnerRepoMirrorSyncRouteHandler,
+  postReposOwnerRepoProjectsIdColumnsColumnIdDefaultRouteHandler,
+  postReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  postReposOwnerRepoProjectsIdColumnsMoveRouteHandler,
+  postReposOwnerRepoProjectsIdColumnsRouteHandler,
+  postReposOwnerRepoProjectsIdIssuesIssueIdMoveRouteHandler,
+  postReposOwnerRepoProjectsIdWorkflowsRouteHandler,
+  postReposOwnerRepoProjectsRouteHandler,
+  postReposOwnerRepoPullsCommentsIdResolveRouteHandler,
+  postReposOwnerRepoPullsCommentsIdUnresolveRouteHandler,
+  postReposOwnerRepoPullsIndexCommentsIdRepliesRouteHandler,
+  postReposOwnerRepoPullsIndexMergeRouteHandler,
+  postReposOwnerRepoPullsIndexRequestedReviewersRouteHandler,
+  postReposOwnerRepoPullsIndexReviewsIdDismissalsRouteHandler,
+  postReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  postReposOwnerRepoPullsIndexReviewsIdUndismissalsRouteHandler,
+  postReposOwnerRepoPullsIndexReviewsRouteHandler,
+  postReposOwnerRepoPullsIndexUpdateRouteHandler,
+  postReposOwnerRepoPullsRouteHandler,
+  postReposOwnerRepoPushMirrorsRouteHandler,
+  postReposOwnerRepoPushMirrorsSyncRouteHandler,
+  postReposOwnerRepoReleasesIdAssetsRouteHandler,
+  postReposOwnerRepoReleasesRouteHandler,
+  postReposOwnerRepoStatusesShaRouteHandler,
+  postReposOwnerRepoTagProtectionsRouteHandler,
+  postReposOwnerRepoTagsRouteHandler,
+  postReposOwnerRepoTransferAcceptRouteHandler,
+  postReposOwnerRepoTransferRejectRouteHandler,
+  postReposOwnerRepoTransferRouteHandler,
+  postReposOwnerRepoWikiNewRouteHandler,
+  postReposTemplateOwnerTemplateRepoGenerateRouteHandler,
+  postUserActionsRunnersRegistrationTokenRouteHandler,
+  postUserActionsVariablesVariablenameRouteHandler,
+  postUserApplicationsOauth2RouteHandler,
+  postUserAvatarRouteHandler,
+  postUserEmailsRouteHandler,
+  postUserGpgKeysRouteHandler,
+  postUserGpgKeyVerifyRouteHandler,
+  postUserHooksRouteHandler,
+  postUserKeysRouteHandler,
+  postUserProjectsIdColumnsColumnIdDefaultRouteHandler,
+  postUserProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  postUserProjectsIdColumnsMoveRouteHandler,
+  postUserProjectsIdColumnsRouteHandler,
+  postUserProjectsIdIssuesIssueIdMoveRouteHandler,
+  postUserProjectsIdWorkflowsRouteHandler,
+  postUserProjectsRouteHandler,
+  postUserReposRouteHandler,
+  postUsersUsernameTokensRouteHandler,
+  putNotificationsRouteHandler,
+  putOrgsOrgActionsSecretsSecretnameRouteHandler,
+  putOrgsOrgActionsVariablesVariablenameRouteHandler,
+  putOrgsOrgBlocksUsernameRouteHandler,
+  putOrgsOrgPublicMembersUsernameRouteHandler,
+  putReposOwnerRepoActionsSecretsSecretnameRouteHandler,
+  putReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  putReposOwnerRepoActionsWorkflowsWorkflowIdDisableRouteHandler,
+  putReposOwnerRepoActionsWorkflowsWorkflowIdEnableRouteHandler,
+  putReposOwnerRepoBranchesBranchRouteHandler,
+  putReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  putReposOwnerRepoContentsFilepathRouteHandler,
+  putReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  putReposOwnerRepoIssuesIndexLockRouteHandler,
+  putReposOwnerRepoIssuesIndexSubscriptionsUserRouteHandler,
+  putReposOwnerRepoNotificationsRouteHandler,
+  putReposOwnerRepoSubscriptionRouteHandler,
+  putReposOwnerRepoTeamsTeamRouteHandler,
+  putReposOwnerRepoTopicsRouteHandler,
+  putReposOwnerRepoTopicsTopicRouteHandler,
+  putTeamsIdMembersUsernameRouteHandler,
+  putTeamsIdReposOrgRepoRouteHandler,
+  putUserActionsSecretsSecretnameRouteHandler,
+  putUserActionsVariablesVariablenameRouteHandler,
+  putUserBlocksUsernameRouteHandler,
+  putUserFollowingUsernameRouteHandler,
+  putUserStarredOwnerRepoRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', adminHandler)
-  .route('/', gitignoreHandler)
-  .route('/', labelHandler)
-  .route('/', licensesHandler)
-  .route('/', markdownHandler)
-  .route('/', markupHandler)
-  .route('/', notificationsHandler)
-  .route('/', orgHandler)
-  .route('/', orgsHandler)
-  .route('/', packagesHandler)
-  .route('/', reposHandler)
-  .route('/', repositoriesHandler)
-  .route('/', searchHandler)
-  .route('/', settingsHandler)
-  .route('/', signingKeyGpgHandler)
-  .route('/', signingKeyPubHandler)
-  .route('/', teamsHandler)
-  .route('/', tokenHandler)
-  .route('/', topicsHandler)
-  .route('/', userHandler)
-  .route('/', usersHandler)
-  .route('/', versionHandler)
+  .openapi(getAdminActionsJobsRoute, getAdminActionsJobsRouteHandler)
+  .openapi(getAdminActionsRunnersRoute, getAdminActionsRunnersRouteHandler)
+  .openapi(
+    postAdminActionsRunnersRegistrationTokenRoute,
+    postAdminActionsRunnersRegistrationTokenRouteHandler,
+  )
+  .openapi(deleteAdminActionsRunnersRunnerIdRoute, deleteAdminActionsRunnersRunnerIdRouteHandler)
+  .openapi(getAdminActionsRunnersRunnerIdRoute, getAdminActionsRunnersRunnerIdRouteHandler)
+  .openapi(patchAdminActionsRunnersRunnerIdRoute, patchAdminActionsRunnersRunnerIdRouteHandler)
+  .openapi(getAdminActionsRunsRoute, getAdminActionsRunsRouteHandler)
+  .openapi(getAdminCronRoute, getAdminCronRouteHandler)
+  .openapi(postAdminCronTaskRoute, postAdminCronTaskRouteHandler)
+  .openapi(getAdminEmailsRoute, getAdminEmailsRouteHandler)
+  .openapi(getAdminEmailsSearchRoute, getAdminEmailsSearchRouteHandler)
+  .openapi(getAdminHooksRoute, getAdminHooksRouteHandler)
+  .openapi(postAdminHooksRoute, postAdminHooksRouteHandler)
+  .openapi(deleteAdminHooksIdRoute, deleteAdminHooksIdRouteHandler)
+  .openapi(getAdminHooksIdRoute, getAdminHooksIdRouteHandler)
+  .openapi(patchAdminHooksIdRoute, patchAdminHooksIdRouteHandler)
+  .openapi(getAdminOrgsRoute, getAdminOrgsRouteHandler)
+  .openapi(getAdminPackagesRoute, getAdminPackagesRouteHandler)
+  .openapi(getAdminUsersRoute, getAdminUsersRouteHandler)
+  .openapi(postAdminUsersRoute, postAdminUsersRouteHandler)
+  .openapi(deleteAdminUsersUsernameRoute, deleteAdminUsersUsernameRouteHandler)
+  .openapi(patchAdminUsersUsernameRoute, patchAdminUsersUsernameRouteHandler)
+  .openapi(deleteAdminUsersUsernameBadgesRoute, deleteAdminUsersUsernameBadgesRouteHandler)
+  .openapi(getAdminUsersUsernameBadgesRoute, getAdminUsersUsernameBadgesRouteHandler)
+  .openapi(postAdminUsersUsernameBadgesRoute, postAdminUsersUsernameBadgesRouteHandler)
+  .openapi(postAdminUsersUsernameKeysRoute, postAdminUsersUsernameKeysRouteHandler)
+  .openapi(deleteAdminUsersUsernameKeysIdRoute, deleteAdminUsersUsernameKeysIdRouteHandler)
+  .openapi(postAdminUsersUsernameOrgsRoute, postAdminUsersUsernameOrgsRouteHandler)
+  .openapi(postAdminUsersUsernameRenameRoute, postAdminUsersUsernameRenameRouteHandler)
+  .openapi(postAdminUsersUsernameReposRoute, postAdminUsersUsernameReposRouteHandler)
+  .openapi(getGitignoreTemplatesRoute, getGitignoreTemplatesRouteHandler)
+  .openapi(getGitignoreTemplatesNameRoute, getGitignoreTemplatesNameRouteHandler)
+  .openapi(getLabelTemplatesRoute, getLabelTemplatesRouteHandler)
+  .openapi(getLabelTemplatesNameRoute, getLabelTemplatesNameRouteHandler)
+  .openapi(getLicensesRoute, getLicensesRouteHandler)
+  .openapi(getLicensesNameRoute, getLicensesNameRouteHandler)
+  .openapi(postMarkdownRoute, postMarkdownRouteHandler)
+  .openapi(postMarkdownRawRoute, postMarkdownRawRouteHandler)
+  .openapi(postMarkupRoute, postMarkupRouteHandler)
+  .openapi(getNotificationsRoute, getNotificationsRouteHandler)
+  .openapi(putNotificationsRoute, putNotificationsRouteHandler)
+  .openapi(getNotificationsNewRoute, getNotificationsNewRouteHandler)
+  .openapi(getNotificationsThreadsIdRoute, getNotificationsThreadsIdRouteHandler)
+  .openapi(patchNotificationsThreadsIdRoute, patchNotificationsThreadsIdRouteHandler)
+  .openapi(postOrgOrgReposRoute, postOrgOrgReposRouteHandler)
+  .openapi(getOrgsRoute, getOrgsRouteHandler)
+  .openapi(postOrgsRoute, postOrgsRouteHandler)
+  .openapi(deleteOrgsOrgRoute, deleteOrgsOrgRouteHandler)
+  .openapi(getOrgsOrgRoute, getOrgsOrgRouteHandler)
+  .openapi(patchOrgsOrgRoute, patchOrgsOrgRouteHandler)
+  .openapi(getOrgsOrgActionsJobsRoute, getOrgsOrgActionsJobsRouteHandler)
+  .openapi(getOrgsOrgActionsRunnersRoute, getOrgsOrgActionsRunnersRouteHandler)
+  .openapi(
+    postOrgsOrgActionsRunnersRegistrationTokenRoute,
+    postOrgsOrgActionsRunnersRegistrationTokenRouteHandler,
+  )
+  .openapi(
+    deleteOrgsOrgActionsRunnersRunnerIdRoute,
+    deleteOrgsOrgActionsRunnersRunnerIdRouteHandler,
+  )
+  .openapi(getOrgsOrgActionsRunnersRunnerIdRoute, getOrgsOrgActionsRunnersRunnerIdRouteHandler)
+  .openapi(patchOrgsOrgActionsRunnersRunnerIdRoute, patchOrgsOrgActionsRunnersRunnerIdRouteHandler)
+  .openapi(getOrgsOrgActionsRunsRoute, getOrgsOrgActionsRunsRouteHandler)
+  .openapi(getOrgsOrgActionsSecretsRoute, getOrgsOrgActionsSecretsRouteHandler)
+  .openapi(
+    deleteOrgsOrgActionsSecretsSecretnameRoute,
+    deleteOrgsOrgActionsSecretsSecretnameRouteHandler,
+  )
+  .openapi(putOrgsOrgActionsSecretsSecretnameRoute, putOrgsOrgActionsSecretsSecretnameRouteHandler)
+  .openapi(getOrgsOrgActionsVariablesRoute, getOrgsOrgActionsVariablesRouteHandler)
+  .openapi(
+    deleteOrgsOrgActionsVariablesVariablenameRoute,
+    deleteOrgsOrgActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    getOrgsOrgActionsVariablesVariablenameRoute,
+    getOrgsOrgActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    postOrgsOrgActionsVariablesVariablenameRoute,
+    postOrgsOrgActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    putOrgsOrgActionsVariablesVariablenameRoute,
+    putOrgsOrgActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(getOrgsOrgActivitiesFeedsRoute, getOrgsOrgActivitiesFeedsRouteHandler)
+  .openapi(deleteOrgsOrgAvatarRoute, deleteOrgsOrgAvatarRouteHandler)
+  .openapi(postOrgsOrgAvatarRoute, postOrgsOrgAvatarRouteHandler)
+  .openapi(getOrgsOrgBlocksRoute, getOrgsOrgBlocksRouteHandler)
+  .openapi(deleteOrgsOrgBlocksUsernameRoute, deleteOrgsOrgBlocksUsernameRouteHandler)
+  .openapi(getOrgsOrgBlocksUsernameRoute, getOrgsOrgBlocksUsernameRouteHandler)
+  .openapi(putOrgsOrgBlocksUsernameRoute, putOrgsOrgBlocksUsernameRouteHandler)
+  .openapi(getOrgsOrgHooksRoute, getOrgsOrgHooksRouteHandler)
+  .openapi(postOrgsOrgHooksRoute, postOrgsOrgHooksRouteHandler)
+  .openapi(deleteOrgsOrgHooksIdRoute, deleteOrgsOrgHooksIdRouteHandler)
+  .openapi(getOrgsOrgHooksIdRoute, getOrgsOrgHooksIdRouteHandler)
+  .openapi(patchOrgsOrgHooksIdRoute, patchOrgsOrgHooksIdRouteHandler)
+  .openapi(getOrgsOrgLabelsRoute, getOrgsOrgLabelsRouteHandler)
+  .openapi(postOrgsOrgLabelsRoute, postOrgsOrgLabelsRouteHandler)
+  .openapi(deleteOrgsOrgLabelsIdRoute, deleteOrgsOrgLabelsIdRouteHandler)
+  .openapi(getOrgsOrgLabelsIdRoute, getOrgsOrgLabelsIdRouteHandler)
+  .openapi(patchOrgsOrgLabelsIdRoute, patchOrgsOrgLabelsIdRouteHandler)
+  .openapi(getOrgsOrgMembersRoute, getOrgsOrgMembersRouteHandler)
+  .openapi(deleteOrgsOrgMembersUsernameRoute, deleteOrgsOrgMembersUsernameRouteHandler)
+  .openapi(getOrgsOrgMembersUsernameRoute, getOrgsOrgMembersUsernameRouteHandler)
+  .openapi(getOrgsOrgProjectsRoute, getOrgsOrgProjectsRouteHandler)
+  .openapi(postOrgsOrgProjectsRoute, postOrgsOrgProjectsRouteHandler)
+  .openapi(deleteOrgsOrgProjectsIdRoute, deleteOrgsOrgProjectsIdRouteHandler)
+  .openapi(getOrgsOrgProjectsIdRoute, getOrgsOrgProjectsIdRouteHandler)
+  .openapi(patchOrgsOrgProjectsIdRoute, patchOrgsOrgProjectsIdRouteHandler)
+  .openapi(getOrgsOrgProjectsIdColumnsRoute, getOrgsOrgProjectsIdColumnsRouteHandler)
+  .openapi(postOrgsOrgProjectsIdColumnsRoute, postOrgsOrgProjectsIdColumnsRouteHandler)
+  .openapi(postOrgsOrgProjectsIdColumnsMoveRoute, postOrgsOrgProjectsIdColumnsMoveRouteHandler)
+  .openapi(
+    deleteOrgsOrgProjectsIdColumnsColumnIdRoute,
+    deleteOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    getOrgsOrgProjectsIdColumnsColumnIdRoute,
+    getOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    patchOrgsOrgProjectsIdColumnsColumnIdRoute,
+    patchOrgsOrgProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    postOrgsOrgProjectsIdColumnsColumnIdDefaultRoute,
+    postOrgsOrgProjectsIdColumnsColumnIdDefaultRouteHandler,
+  )
+  .openapi(
+    getOrgsOrgProjectsIdColumnsColumnIdIssuesRoute,
+    getOrgsOrgProjectsIdColumnsColumnIdIssuesRouteHandler,
+  )
+  .openapi(
+    deleteOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    deleteOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    postOrgsOrgProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postOrgsOrgProjectsIdIssuesIssueIdMoveRoute,
+    postOrgsOrgProjectsIdIssuesIssueIdMoveRouteHandler,
+  )
+  .openapi(getOrgsOrgProjectsIdWorkflowsRoute, getOrgsOrgProjectsIdWorkflowsRouteHandler)
+  .openapi(postOrgsOrgProjectsIdWorkflowsRoute, postOrgsOrgProjectsIdWorkflowsRouteHandler)
+  .openapi(
+    deleteOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+    deleteOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    getOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+    getOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    patchOrgsOrgProjectsIdWorkflowsWorkflowIdRoute,
+    patchOrgsOrgProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(getOrgsOrgPublicMembersRoute, getOrgsOrgPublicMembersRouteHandler)
+  .openapi(deleteOrgsOrgPublicMembersUsernameRoute, deleteOrgsOrgPublicMembersUsernameRouteHandler)
+  .openapi(getOrgsOrgPublicMembersUsernameRoute, getOrgsOrgPublicMembersUsernameRouteHandler)
+  .openapi(putOrgsOrgPublicMembersUsernameRoute, putOrgsOrgPublicMembersUsernameRouteHandler)
+  .openapi(postOrgsOrgRenameRoute, postOrgsOrgRenameRouteHandler)
+  .openapi(deleteOrgsOrgReposRoute, deleteOrgsOrgReposRouteHandler)
+  .openapi(getOrgsOrgReposRoute, getOrgsOrgReposRouteHandler)
+  .openapi(postOrgsOrgReposRoute, postOrgsOrgReposRouteHandler)
+  .openapi(getOrgsOrgTeamsRoute, getOrgsOrgTeamsRouteHandler)
+  .openapi(postOrgsOrgTeamsRoute, postOrgsOrgTeamsRouteHandler)
+  .openapi(getOrgsOrgTeamsSearchRoute, getOrgsOrgTeamsSearchRouteHandler)
+  .openapi(getPackagesOwnerRoute, getPackagesOwnerRouteHandler)
+  .openapi(deletePackagesOwnerTypeNameRoute, deletePackagesOwnerTypeNameRouteHandler)
+  .openapi(getPackagesOwnerTypeNameRoute, getPackagesOwnerTypeNameRouteHandler)
+  .openapi(getPackagesOwnerTypeNameDashLatestRoute, getPackagesOwnerTypeNameDashLatestRouteHandler)
+  .openapi(
+    postPackagesOwnerTypeNameDashLinkRepoNameRoute,
+    postPackagesOwnerTypeNameDashLinkRepoNameRouteHandler,
+  )
+  .openapi(
+    postPackagesOwnerTypeNameDashUnlinkRoute,
+    postPackagesOwnerTypeNameDashUnlinkRouteHandler,
+  )
+  .openapi(deletePackagesOwnerTypeNameVersionRoute, deletePackagesOwnerTypeNameVersionRouteHandler)
+  .openapi(getPackagesOwnerTypeNameVersionRoute, getPackagesOwnerTypeNameVersionRouteHandler)
+  .openapi(
+    getPackagesOwnerTypeNameVersionFilesRoute,
+    getPackagesOwnerTypeNameVersionFilesRouteHandler,
+  )
+  .openapi(getReposIssuesSearchRoute, getReposIssuesSearchRouteHandler)
+  .openapi(postReposMigrateRoute, postReposMigrateRouteHandler)
+  .openapi(getReposSearchRoute, getReposSearchRouteHandler)
+  .openapi(deleteReposOwnerRepoRoute, deleteReposOwnerRepoRouteHandler)
+  .openapi(getReposOwnerRepoRoute, getReposOwnerRepoRouteHandler)
+  .openapi(patchReposOwnerRepoRoute, patchReposOwnerRepoRouteHandler)
+  .openapi(getReposOwnerRepoActionsArtifactsRoute, getReposOwnerRepoActionsArtifactsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoActionsArtifactsArtifactIdRoute,
+    deleteReposOwnerRepoActionsArtifactsArtifactIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsArtifactsArtifactIdRoute,
+    getReposOwnerRepoActionsArtifactsArtifactIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsArtifactsArtifactIdZipRoute,
+    getReposOwnerRepoActionsArtifactsArtifactIdZipRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsJobsRoute, getReposOwnerRepoActionsJobsRouteHandler)
+  .openapi(getReposOwnerRepoActionsJobsJobIdRoute, getReposOwnerRepoActionsJobsJobIdRouteHandler)
+  .openapi(
+    getReposOwnerRepoActionsJobsJobIdLogsRoute,
+    getReposOwnerRepoActionsJobsJobIdLogsRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsRunnersRoute, getReposOwnerRepoActionsRunnersRouteHandler)
+  .openapi(
+    postReposOwnerRepoActionsRunnersRegistrationTokenRoute,
+    postReposOwnerRepoActionsRunnersRegistrationTokenRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoActionsRunnersRunnerIdRoute,
+    deleteReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunnersRunnerIdRoute,
+    getReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoActionsRunnersRunnerIdRoute,
+    patchReposOwnerRepoActionsRunnersRunnerIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsRunsRoute, getReposOwnerRepoActionsRunsRouteHandler)
+  .openapi(deleteReposOwnerRepoActionsRunsRunRoute, deleteReposOwnerRepoActionsRunsRunRouteHandler)
+  .openapi(getReposOwnerRepoActionsRunsRunRoute, getReposOwnerRepoActionsRunsRunRouteHandler)
+  .openapi(
+    postReposOwnerRepoActionsRunsRunApproveRoute,
+    postReposOwnerRepoActionsRunsRunApproveRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunsRunArtifactsRoute,
+    getReposOwnerRepoActionsRunsRunArtifactsRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunsRunAttemptsAttemptRoute,
+    getReposOwnerRepoActionsRunsRunAttemptsAttemptRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunsRunAttemptsAttemptJobsRoute,
+    getReposOwnerRepoActionsRunsRunAttemptsAttemptJobsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsRunsRunCancelRoute,
+    postReposOwnerRepoActionsRunsRunCancelRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsRunsRunForceCancelRoute,
+    postReposOwnerRepoActionsRunsRunForceCancelRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunsRunJobsRoute,
+    getReposOwnerRepoActionsRunsRunJobsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsRunsRunJobsJobIdRerunRoute,
+    postReposOwnerRepoActionsRunsRunJobsJobIdRerunRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsRunsRunLogsRoute,
+    getReposOwnerRepoActionsRunsRunLogsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsRunsRunRerunRoute,
+    postReposOwnerRepoActionsRunsRunRerunRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsRunsRunRerunFailedJobsRoute,
+    postReposOwnerRepoActionsRunsRunRerunFailedJobsRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsSecretsRoute, getReposOwnerRepoActionsSecretsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoActionsSecretsSecretnameRoute,
+    deleteReposOwnerRepoActionsSecretsSecretnameRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoActionsSecretsSecretnameRoute,
+    putReposOwnerRepoActionsSecretsSecretnameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsTasksRoute, getReposOwnerRepoActionsTasksRouteHandler)
+  .openapi(getReposOwnerRepoActionsVariablesRoute, getReposOwnerRepoActionsVariablesRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoActionsVariablesVariablenameRoute,
+    deleteReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsVariablesVariablenameRoute,
+    getReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsVariablesVariablenameRoute,
+    postReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoActionsVariablesVariablenameRoute,
+    putReposOwnerRepoActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActionsWorkflowsRoute, getReposOwnerRepoActionsWorkflowsRouteHandler)
+  .openapi(
+    getReposOwnerRepoActionsWorkflowsWorkflowIdRoute,
+    getReposOwnerRepoActionsWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoActionsWorkflowsWorkflowIdDisableRoute,
+    putReposOwnerRepoActionsWorkflowsWorkflowIdDisableRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoActionsWorkflowsWorkflowIdDispatchesRoute,
+    postReposOwnerRepoActionsWorkflowsWorkflowIdDispatchesRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoActionsWorkflowsWorkflowIdEnableRoute,
+    putReposOwnerRepoActionsWorkflowsWorkflowIdEnableRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoActionsWorkflowsWorkflowIdRunsRoute,
+    getReposOwnerRepoActionsWorkflowsWorkflowIdRunsRouteHandler,
+  )
+  .openapi(getReposOwnerRepoActivitiesFeedsRoute, getReposOwnerRepoActivitiesFeedsRouteHandler)
+  .openapi(getReposOwnerRepoArchiveArchiveRoute, getReposOwnerRepoArchiveArchiveRouteHandler)
+  .openapi(getReposOwnerRepoAssigneesRoute, getReposOwnerRepoAssigneesRouteHandler)
+  .openapi(getReposOwnerRepoAssigneesAssigneeRoute, getReposOwnerRepoAssigneesAssigneeRouteHandler)
+  .openapi(deleteReposOwnerRepoAvatarRoute, deleteReposOwnerRepoAvatarRouteHandler)
+  .openapi(postReposOwnerRepoAvatarRoute, postReposOwnerRepoAvatarRouteHandler)
+  .openapi(getReposOwnerRepoBranchProtectionsRoute, getReposOwnerRepoBranchProtectionsRouteHandler)
+  .openapi(
+    postReposOwnerRepoBranchProtectionsRoute,
+    postReposOwnerRepoBranchProtectionsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoBranchProtectionsPriorityRoute,
+    postReposOwnerRepoBranchProtectionsPriorityRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoBranchProtectionsNameRoute,
+    deleteReposOwnerRepoBranchProtectionsNameRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoBranchProtectionsNameRoute,
+    getReposOwnerRepoBranchProtectionsNameRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoBranchProtectionsNameRoute,
+    patchReposOwnerRepoBranchProtectionsNameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoBranchesRoute, getReposOwnerRepoBranchesRouteHandler)
+  .openapi(postReposOwnerRepoBranchesRoute, postReposOwnerRepoBranchesRouteHandler)
+  .openapi(deleteReposOwnerRepoBranchesBranchRoute, deleteReposOwnerRepoBranchesBranchRouteHandler)
+  .openapi(getReposOwnerRepoBranchesBranchRoute, getReposOwnerRepoBranchesBranchRouteHandler)
+  .openapi(patchReposOwnerRepoBranchesBranchRoute, patchReposOwnerRepoBranchesBranchRouteHandler)
+  .openapi(putReposOwnerRepoBranchesBranchRoute, putReposOwnerRepoBranchesBranchRouteHandler)
+  .openapi(getReposOwnerRepoCodeSearchRoute, getReposOwnerRepoCodeSearchRouteHandler)
+  .openapi(getReposOwnerRepoCollaboratorsRoute, getReposOwnerRepoCollaboratorsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoCollaboratorsCollaboratorRoute,
+    deleteReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoCollaboratorsCollaboratorRoute,
+    getReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoCollaboratorsCollaboratorRoute,
+    putReposOwnerRepoCollaboratorsCollaboratorRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoCollaboratorsCollaboratorPermissionRoute,
+    getReposOwnerRepoCollaboratorsCollaboratorPermissionRouteHandler,
+  )
+  .openapi(getReposOwnerRepoCommitsRoute, getReposOwnerRepoCommitsRouteHandler)
+  .openapi(getReposOwnerRepoCommitsRefStatusRoute, getReposOwnerRepoCommitsRefStatusRouteHandler)
+  .openapi(
+    getReposOwnerRepoCommitsRefStatusesRoute,
+    getReposOwnerRepoCommitsRefStatusesRouteHandler,
+  )
+  .openapi(getReposOwnerRepoCommitsShaPullRoute, getReposOwnerRepoCommitsShaPullRouteHandler)
+  .openapi(getReposOwnerRepoCompareBaseheadRoute, getReposOwnerRepoCompareBaseheadRouteHandler)
+  .openapi(getReposOwnerRepoContentsRoute, getReposOwnerRepoContentsRouteHandler)
+  .openapi(postReposOwnerRepoContentsRoute, postReposOwnerRepoContentsRouteHandler)
+  .openapi(
+    getReposOwnerRepoContentsExtFilepathRoute,
+    getReposOwnerRepoContentsExtFilepathRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoContentsFilepathRoute,
+    deleteReposOwnerRepoContentsFilepathRouteHandler,
+  )
+  .openapi(getReposOwnerRepoContentsFilepathRoute, getReposOwnerRepoContentsFilepathRouteHandler)
+  .openapi(postReposOwnerRepoContentsFilepathRoute, postReposOwnerRepoContentsFilepathRouteHandler)
+  .openapi(putReposOwnerRepoContentsFilepathRoute, putReposOwnerRepoContentsFilepathRouteHandler)
+  .openapi(postReposOwnerRepoDiffpatchRoute, postReposOwnerRepoDiffpatchRouteHandler)
+  .openapi(
+    getReposOwnerRepoEditorconfigFilepathRoute,
+    getReposOwnerRepoEditorconfigFilepathRouteHandler,
+  )
+  .openapi(getReposOwnerRepoFileContentsRoute, getReposOwnerRepoFileContentsRouteHandler)
+  .openapi(postReposOwnerRepoFileContentsRoute, postReposOwnerRepoFileContentsRouteHandler)
+  .openapi(getReposOwnerRepoForksRoute, getReposOwnerRepoForksRouteHandler)
+  .openapi(postReposOwnerRepoForksRoute, postReposOwnerRepoForksRouteHandler)
+  .openapi(getReposOwnerRepoGitBlobsShaRoute, getReposOwnerRepoGitBlobsShaRouteHandler)
+  .openapi(getReposOwnerRepoGitCommitsShaRoute, getReposOwnerRepoGitCommitsShaRouteHandler)
+  .openapi(
+    getReposOwnerRepoGitCommitsShaDiffTypeRoute,
+    getReposOwnerRepoGitCommitsShaDiffTypeRouteHandler,
+  )
+  .openapi(getReposOwnerRepoGitNotesShaRoute, getReposOwnerRepoGitNotesShaRouteHandler)
+  .openapi(getReposOwnerRepoGitRefsRoute, getReposOwnerRepoGitRefsRouteHandler)
+  .openapi(getReposOwnerRepoGitRefsRefRoute, getReposOwnerRepoGitRefsRefRouteHandler)
+  .openapi(getReposOwnerRepoGitTagsShaRoute, getReposOwnerRepoGitTagsShaRouteHandler)
+  .openapi(getReposOwnerRepoGitTreesShaRoute, getReposOwnerRepoGitTreesShaRouteHandler)
+  .openapi(getReposOwnerRepoHooksRoute, getReposOwnerRepoHooksRouteHandler)
+  .openapi(postReposOwnerRepoHooksRoute, postReposOwnerRepoHooksRouteHandler)
+  .openapi(getReposOwnerRepoHooksGitRoute, getReposOwnerRepoHooksGitRouteHandler)
+  .openapi(deleteReposOwnerRepoHooksGitIdRoute, deleteReposOwnerRepoHooksGitIdRouteHandler)
+  .openapi(getReposOwnerRepoHooksGitIdRoute, getReposOwnerRepoHooksGitIdRouteHandler)
+  .openapi(patchReposOwnerRepoHooksGitIdRoute, patchReposOwnerRepoHooksGitIdRouteHandler)
+  .openapi(deleteReposOwnerRepoHooksIdRoute, deleteReposOwnerRepoHooksIdRouteHandler)
+  .openapi(getReposOwnerRepoHooksIdRoute, getReposOwnerRepoHooksIdRouteHandler)
+  .openapi(patchReposOwnerRepoHooksIdRoute, patchReposOwnerRepoHooksIdRouteHandler)
+  .openapi(getReposOwnerRepoHooksIdDeliveriesRoute, getReposOwnerRepoHooksIdDeliveriesRouteHandler)
+  .openapi(
+    getReposOwnerRepoHooksIdDeliveriesUuidRoute,
+    getReposOwnerRepoHooksIdDeliveriesUuidRouteHandler,
+  )
+  .openapi(postReposOwnerRepoHooksIdTestsRoute, postReposOwnerRepoHooksIdTestsRouteHandler)
+  .openapi(getReposOwnerRepoIssueConfigRoute, getReposOwnerRepoIssueConfigRouteHandler)
+  .openapi(
+    getReposOwnerRepoIssueConfigValidateRoute,
+    getReposOwnerRepoIssueConfigValidateRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssueTemplatesRoute, getReposOwnerRepoIssueTemplatesRouteHandler)
+  .openapi(getReposOwnerRepoIssuesRoute, getReposOwnerRepoIssuesRouteHandler)
+  .openapi(postReposOwnerRepoIssuesRoute, postReposOwnerRepoIssuesRouteHandler)
+  .openapi(getReposOwnerRepoIssuesCommentsRoute, getReposOwnerRepoIssuesCommentsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoIssuesCommentsIdRoute,
+    deleteReposOwnerRepoIssuesCommentsIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssuesCommentsIdRoute, getReposOwnerRepoIssuesCommentsIdRouteHandler)
+  .openapi(
+    patchReposOwnerRepoIssuesCommentsIdRoute,
+    patchReposOwnerRepoIssuesCommentsIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesCommentsIdAssetsRoute,
+    getReposOwnerRepoIssuesCommentsIdAssetsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesCommentsIdAssetsRoute,
+    postReposOwnerRepoIssuesCommentsIdAssetsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+    deleteReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+    getReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRoute,
+    patchReposOwnerRepoIssuesCommentsIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesCommentsIdReactionsRoute,
+    deleteReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesCommentsIdReactionsRoute,
+    getReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesCommentsIdReactionsRoute,
+    postReposOwnerRepoIssuesCommentsIdReactionsRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssuesPinnedRoute, getReposOwnerRepoIssuesPinnedRouteHandler)
+  .openapi(deleteReposOwnerRepoIssuesIndexRoute, deleteReposOwnerRepoIssuesIndexRouteHandler)
+  .openapi(getReposOwnerRepoIssuesIndexRoute, getReposOwnerRepoIssuesIndexRouteHandler)
+  .openapi(patchReposOwnerRepoIssuesIndexRoute, patchReposOwnerRepoIssuesIndexRouteHandler)
+  .openapi(getReposOwnerRepoIssuesIndexAssetsRoute, getReposOwnerRepoIssuesIndexAssetsRouteHandler)
+  .openapi(
+    postReposOwnerRepoIssuesIndexAssetsRoute,
+    postReposOwnerRepoIssuesIndexAssetsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+    deleteReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+    getReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoIssuesIndexAssetsAttachmentIdRoute,
+    patchReposOwnerRepoIssuesIndexAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexAssigneesRoute,
+    deleteReposOwnerRepoIssuesIndexAssigneesRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexAssigneesRoute,
+    postReposOwnerRepoIssuesIndexAssigneesRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexAssigneesAssigneeRoute,
+    getReposOwnerRepoIssuesIndexAssigneesAssigneeRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexBlocksRoute,
+    deleteReposOwnerRepoIssuesIndexBlocksRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssuesIndexBlocksRoute, getReposOwnerRepoIssuesIndexBlocksRouteHandler)
+  .openapi(
+    postReposOwnerRepoIssuesIndexBlocksRoute,
+    postReposOwnerRepoIssuesIndexBlocksRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexCommentsRoute,
+    getReposOwnerRepoIssuesIndexCommentsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexCommentsRoute,
+    postReposOwnerRepoIssuesIndexCommentsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexCommentsIdRoute,
+    deleteReposOwnerRepoIssuesIndexCommentsIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoIssuesIndexCommentsIdRoute,
+    patchReposOwnerRepoIssuesIndexCommentsIdRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexDeadlineRoute,
+    postReposOwnerRepoIssuesIndexDeadlineRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexDependenciesRoute,
+    deleteReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexDependenciesRoute,
+    getReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexDependenciesRoute,
+    postReposOwnerRepoIssuesIndexDependenciesRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexLabelsRoute,
+    deleteReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssuesIndexLabelsRoute, getReposOwnerRepoIssuesIndexLabelsRouteHandler)
+  .openapi(
+    postReposOwnerRepoIssuesIndexLabelsRoute,
+    postReposOwnerRepoIssuesIndexLabelsRouteHandler,
+  )
+  .openapi(putReposOwnerRepoIssuesIndexLabelsRoute, putReposOwnerRepoIssuesIndexLabelsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexLabelsIdRoute,
+    deleteReposOwnerRepoIssuesIndexLabelsIdRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexLockRoute,
+    deleteReposOwnerRepoIssuesIndexLockRouteHandler,
+  )
+  .openapi(putReposOwnerRepoIssuesIndexLockRoute, putReposOwnerRepoIssuesIndexLockRouteHandler)
+  .openapi(deleteReposOwnerRepoIssuesIndexPinRoute, deleteReposOwnerRepoIssuesIndexPinRouteHandler)
+  .openapi(postReposOwnerRepoIssuesIndexPinRoute, postReposOwnerRepoIssuesIndexPinRouteHandler)
+  .openapi(
+    patchReposOwnerRepoIssuesIndexPinPositionRoute,
+    patchReposOwnerRepoIssuesIndexPinPositionRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexReactionsRoute,
+    deleteReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexReactionsRoute,
+    getReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexReactionsRoute,
+    postReposOwnerRepoIssuesIndexReactionsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexStopwatchDeleteRoute,
+    deleteReposOwnerRepoIssuesIndexStopwatchDeleteRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexStopwatchStartRoute,
+    postReposOwnerRepoIssuesIndexStopwatchStartRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoIssuesIndexStopwatchStopRoute,
+    postReposOwnerRepoIssuesIndexStopwatchStopRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexSubscriptionsRoute,
+    getReposOwnerRepoIssuesIndexSubscriptionsRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexSubscriptionsCheckRoute,
+    getReposOwnerRepoIssuesIndexSubscriptionsCheckRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexSubscriptionsUserRoute,
+    deleteReposOwnerRepoIssuesIndexSubscriptionsUserRouteHandler,
+  )
+  .openapi(
+    putReposOwnerRepoIssuesIndexSubscriptionsUserRoute,
+    putReposOwnerRepoIssuesIndexSubscriptionsUserRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoIssuesIndexTimelineRoute,
+    getReposOwnerRepoIssuesIndexTimelineRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexTimesRoute,
+    deleteReposOwnerRepoIssuesIndexTimesRouteHandler,
+  )
+  .openapi(getReposOwnerRepoIssuesIndexTimesRoute, getReposOwnerRepoIssuesIndexTimesRouteHandler)
+  .openapi(postReposOwnerRepoIssuesIndexTimesRoute, postReposOwnerRepoIssuesIndexTimesRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoIssuesIndexTimesIdRoute,
+    deleteReposOwnerRepoIssuesIndexTimesIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoKeysRoute, getReposOwnerRepoKeysRouteHandler)
+  .openapi(postReposOwnerRepoKeysRoute, postReposOwnerRepoKeysRouteHandler)
+  .openapi(postReposOwnerRepoKeysTokensRoute, postReposOwnerRepoKeysTokensRouteHandler)
+  .openapi(deleteReposOwnerRepoKeysIdRoute, deleteReposOwnerRepoKeysIdRouteHandler)
+  .openapi(getReposOwnerRepoKeysIdRoute, getReposOwnerRepoKeysIdRouteHandler)
+  .openapi(getReposOwnerRepoLabelsRoute, getReposOwnerRepoLabelsRouteHandler)
+  .openapi(postReposOwnerRepoLabelsRoute, postReposOwnerRepoLabelsRouteHandler)
+  .openapi(deleteReposOwnerRepoLabelsIdRoute, deleteReposOwnerRepoLabelsIdRouteHandler)
+  .openapi(getReposOwnerRepoLabelsIdRoute, getReposOwnerRepoLabelsIdRouteHandler)
+  .openapi(patchReposOwnerRepoLabelsIdRoute, patchReposOwnerRepoLabelsIdRouteHandler)
+  .openapi(getReposOwnerRepoLanguagesRoute, getReposOwnerRepoLanguagesRouteHandler)
+  .openapi(getReposOwnerRepoLicensesRoute, getReposOwnerRepoLicensesRouteHandler)
+  .openapi(getReposOwnerRepoMediaFilepathRoute, getReposOwnerRepoMediaFilepathRouteHandler)
+  .openapi(postReposOwnerRepoMergeUpstreamRoute, postReposOwnerRepoMergeUpstreamRouteHandler)
+  .openapi(getReposOwnerRepoMilestonesRoute, getReposOwnerRepoMilestonesRouteHandler)
+  .openapi(postReposOwnerRepoMilestonesRoute, postReposOwnerRepoMilestonesRouteHandler)
+  .openapi(deleteReposOwnerRepoMilestonesIdRoute, deleteReposOwnerRepoMilestonesIdRouteHandler)
+  .openapi(getReposOwnerRepoMilestonesIdRoute, getReposOwnerRepoMilestonesIdRouteHandler)
+  .openapi(patchReposOwnerRepoMilestonesIdRoute, patchReposOwnerRepoMilestonesIdRouteHandler)
+  .openapi(postReposOwnerRepoMirrorSyncRoute, postReposOwnerRepoMirrorSyncRouteHandler)
+  .openapi(getReposOwnerRepoNewPinAllowedRoute, getReposOwnerRepoNewPinAllowedRouteHandler)
+  .openapi(getReposOwnerRepoNotificationsRoute, getReposOwnerRepoNotificationsRouteHandler)
+  .openapi(putReposOwnerRepoNotificationsRoute, putReposOwnerRepoNotificationsRouteHandler)
+  .openapi(getReposOwnerRepoProjectsRoute, getReposOwnerRepoProjectsRouteHandler)
+  .openapi(postReposOwnerRepoProjectsRoute, postReposOwnerRepoProjectsRouteHandler)
+  .openapi(deleteReposOwnerRepoProjectsIdRoute, deleteReposOwnerRepoProjectsIdRouteHandler)
+  .openapi(getReposOwnerRepoProjectsIdRoute, getReposOwnerRepoProjectsIdRouteHandler)
+  .openapi(patchReposOwnerRepoProjectsIdRoute, patchReposOwnerRepoProjectsIdRouteHandler)
+  .openapi(getReposOwnerRepoProjectsIdColumnsRoute, getReposOwnerRepoProjectsIdColumnsRouteHandler)
+  .openapi(
+    postReposOwnerRepoProjectsIdColumnsRoute,
+    postReposOwnerRepoProjectsIdColumnsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoProjectsIdColumnsMoveRoute,
+    postReposOwnerRepoProjectsIdColumnsMoveRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+    deleteReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+    getReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoProjectsIdColumnsColumnIdRoute,
+    patchReposOwnerRepoProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoProjectsIdColumnsColumnIdDefaultRoute,
+    postReposOwnerRepoProjectsIdColumnsColumnIdDefaultRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoProjectsIdColumnsColumnIdIssuesRoute,
+    getReposOwnerRepoProjectsIdColumnsColumnIdIssuesRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    deleteReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    postReposOwnerRepoProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoProjectsIdIssuesIssueIdMoveRoute,
+    postReposOwnerRepoProjectsIdIssuesIssueIdMoveRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoProjectsIdWorkflowsRoute,
+    getReposOwnerRepoProjectsIdWorkflowsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoProjectsIdWorkflowsRoute,
+    postReposOwnerRepoProjectsIdWorkflowsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+    deleteReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+    getReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoProjectsIdWorkflowsWorkflowIdRoute,
+    patchReposOwnerRepoProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPullsRoute, getReposOwnerRepoPullsRouteHandler)
+  .openapi(postReposOwnerRepoPullsRoute, postReposOwnerRepoPullsRouteHandler)
+  .openapi(
+    postReposOwnerRepoPullsCommentsIdResolveRoute,
+    postReposOwnerRepoPullsCommentsIdResolveRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsCommentsIdUnresolveRoute,
+    postReposOwnerRepoPullsCommentsIdUnresolveRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPullsPinnedRoute, getReposOwnerRepoPullsPinnedRouteHandler)
+  .openapi(getReposOwnerRepoPullsBaseHeadRoute, getReposOwnerRepoPullsBaseHeadRouteHandler)
+  .openapi(getReposOwnerRepoPullsIndexRoute, getReposOwnerRepoPullsIndexRouteHandler)
+  .openapi(patchReposOwnerRepoPullsIndexRoute, patchReposOwnerRepoPullsIndexRouteHandler)
+  .openapi(
+    getReposOwnerRepoPullsIndexDiffTypeRoute,
+    getReposOwnerRepoPullsIndexDiffTypeRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsIndexCommentsIdRepliesRoute,
+    postReposOwnerRepoPullsIndexCommentsIdRepliesRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPullsIndexCommitsRoute, getReposOwnerRepoPullsIndexCommitsRouteHandler)
+  .openapi(getReposOwnerRepoPullsIndexFilesRoute, getReposOwnerRepoPullsIndexFilesRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoPullsIndexMergeRoute,
+    deleteReposOwnerRepoPullsIndexMergeRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPullsIndexMergeRoute, getReposOwnerRepoPullsIndexMergeRouteHandler)
+  .openapi(postReposOwnerRepoPullsIndexMergeRoute, postReposOwnerRepoPullsIndexMergeRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoPullsIndexRequestedReviewersRoute,
+    deleteReposOwnerRepoPullsIndexRequestedReviewersRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsIndexRequestedReviewersRoute,
+    postReposOwnerRepoPullsIndexRequestedReviewersRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPullsIndexReviewsRoute, getReposOwnerRepoPullsIndexReviewsRouteHandler)
+  .openapi(
+    postReposOwnerRepoPullsIndexReviewsRoute,
+    postReposOwnerRepoPullsIndexReviewsRouteHandler,
+  )
+  .openapi(
+    deleteReposOwnerRepoPullsIndexReviewsIdRoute,
+    deleteReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoPullsIndexReviewsIdRoute,
+    getReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsIndexReviewsIdRoute,
+    postReposOwnerRepoPullsIndexReviewsIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoPullsIndexReviewsIdCommentsRoute,
+    getReposOwnerRepoPullsIndexReviewsIdCommentsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsIndexReviewsIdDismissalsRoute,
+    postReposOwnerRepoPullsIndexReviewsIdDismissalsRouteHandler,
+  )
+  .openapi(
+    postReposOwnerRepoPullsIndexReviewsIdUndismissalsRoute,
+    postReposOwnerRepoPullsIndexReviewsIdUndismissalsRouteHandler,
+  )
+  .openapi(postReposOwnerRepoPullsIndexUpdateRoute, postReposOwnerRepoPullsIndexUpdateRouteHandler)
+  .openapi(getReposOwnerRepoPushMirrorsRoute, getReposOwnerRepoPushMirrorsRouteHandler)
+  .openapi(postReposOwnerRepoPushMirrorsRoute, postReposOwnerRepoPushMirrorsRouteHandler)
+  .openapi(postReposOwnerRepoPushMirrorsSyncRoute, postReposOwnerRepoPushMirrorsSyncRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoPushMirrorsNameRoute,
+    deleteReposOwnerRepoPushMirrorsNameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoPushMirrorsNameRoute, getReposOwnerRepoPushMirrorsNameRouteHandler)
+  .openapi(getReposOwnerRepoRawFilepathRoute, getReposOwnerRepoRawFilepathRouteHandler)
+  .openapi(getReposOwnerRepoReleasesRoute, getReposOwnerRepoReleasesRouteHandler)
+  .openapi(postReposOwnerRepoReleasesRoute, postReposOwnerRepoReleasesRouteHandler)
+  .openapi(getReposOwnerRepoReleasesLatestRoute, getReposOwnerRepoReleasesLatestRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoReleasesTagsTagRoute,
+    deleteReposOwnerRepoReleasesTagsTagRouteHandler,
+  )
+  .openapi(getReposOwnerRepoReleasesTagsTagRoute, getReposOwnerRepoReleasesTagsTagRouteHandler)
+  .openapi(deleteReposOwnerRepoReleasesIdRoute, deleteReposOwnerRepoReleasesIdRouteHandler)
+  .openapi(getReposOwnerRepoReleasesIdRoute, getReposOwnerRepoReleasesIdRouteHandler)
+  .openapi(patchReposOwnerRepoReleasesIdRoute, patchReposOwnerRepoReleasesIdRouteHandler)
+  .openapi(getReposOwnerRepoReleasesIdAssetsRoute, getReposOwnerRepoReleasesIdAssetsRouteHandler)
+  .openapi(postReposOwnerRepoReleasesIdAssetsRoute, postReposOwnerRepoReleasesIdAssetsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+    deleteReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    getReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+    getReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    patchReposOwnerRepoReleasesIdAssetsAttachmentIdRoute,
+    patchReposOwnerRepoReleasesIdAssetsAttachmentIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoReviewersRoute, getReposOwnerRepoReviewersRouteHandler)
+  .openapi(getReposOwnerRepoSigningKeyGpgRoute, getReposOwnerRepoSigningKeyGpgRouteHandler)
+  .openapi(getReposOwnerRepoSigningKeyPubRoute, getReposOwnerRepoSigningKeyPubRouteHandler)
+  .openapi(getReposOwnerRepoStargazersRoute, getReposOwnerRepoStargazersRouteHandler)
+  .openapi(getReposOwnerRepoStatusesShaRoute, getReposOwnerRepoStatusesShaRouteHandler)
+  .openapi(postReposOwnerRepoStatusesShaRoute, postReposOwnerRepoStatusesShaRouteHandler)
+  .openapi(getReposOwnerRepoSubscribersRoute, getReposOwnerRepoSubscribersRouteHandler)
+  .openapi(deleteReposOwnerRepoSubscriptionRoute, deleteReposOwnerRepoSubscriptionRouteHandler)
+  .openapi(getReposOwnerRepoSubscriptionRoute, getReposOwnerRepoSubscriptionRouteHandler)
+  .openapi(putReposOwnerRepoSubscriptionRoute, putReposOwnerRepoSubscriptionRouteHandler)
+  .openapi(getReposOwnerRepoTagProtectionsRoute, getReposOwnerRepoTagProtectionsRouteHandler)
+  .openapi(postReposOwnerRepoTagProtectionsRoute, postReposOwnerRepoTagProtectionsRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoTagProtectionsIdRoute,
+    deleteReposOwnerRepoTagProtectionsIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoTagProtectionsIdRoute, getReposOwnerRepoTagProtectionsIdRouteHandler)
+  .openapi(
+    patchReposOwnerRepoTagProtectionsIdRoute,
+    patchReposOwnerRepoTagProtectionsIdRouteHandler,
+  )
+  .openapi(getReposOwnerRepoTagsRoute, getReposOwnerRepoTagsRouteHandler)
+  .openapi(postReposOwnerRepoTagsRoute, postReposOwnerRepoTagsRouteHandler)
+  .openapi(deleteReposOwnerRepoTagsTagRoute, deleteReposOwnerRepoTagsTagRouteHandler)
+  .openapi(getReposOwnerRepoTagsTagRoute, getReposOwnerRepoTagsTagRouteHandler)
+  .openapi(getReposOwnerRepoTeamsRoute, getReposOwnerRepoTeamsRouteHandler)
+  .openapi(deleteReposOwnerRepoTeamsTeamRoute, deleteReposOwnerRepoTeamsTeamRouteHandler)
+  .openapi(getReposOwnerRepoTeamsTeamRoute, getReposOwnerRepoTeamsTeamRouteHandler)
+  .openapi(putReposOwnerRepoTeamsTeamRoute, putReposOwnerRepoTeamsTeamRouteHandler)
+  .openapi(getReposOwnerRepoTimesRoute, getReposOwnerRepoTimesRouteHandler)
+  .openapi(getReposOwnerRepoTimesUserRoute, getReposOwnerRepoTimesUserRouteHandler)
+  .openapi(getReposOwnerRepoTopicsRoute, getReposOwnerRepoTopicsRouteHandler)
+  .openapi(putReposOwnerRepoTopicsRoute, putReposOwnerRepoTopicsRouteHandler)
+  .openapi(deleteReposOwnerRepoTopicsTopicRoute, deleteReposOwnerRepoTopicsTopicRouteHandler)
+  .openapi(putReposOwnerRepoTopicsTopicRoute, putReposOwnerRepoTopicsTopicRouteHandler)
+  .openapi(postReposOwnerRepoTransferRoute, postReposOwnerRepoTransferRouteHandler)
+  .openapi(postReposOwnerRepoTransferAcceptRoute, postReposOwnerRepoTransferAcceptRouteHandler)
+  .openapi(postReposOwnerRepoTransferRejectRoute, postReposOwnerRepoTransferRejectRouteHandler)
+  .openapi(postReposOwnerRepoWikiNewRoute, postReposOwnerRepoWikiNewRouteHandler)
+  .openapi(
+    deleteReposOwnerRepoWikiPagePageNameRoute,
+    deleteReposOwnerRepoWikiPagePageNameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoWikiPagePageNameRoute, getReposOwnerRepoWikiPagePageNameRouteHandler)
+  .openapi(
+    patchReposOwnerRepoWikiPagePageNameRoute,
+    patchReposOwnerRepoWikiPagePageNameRouteHandler,
+  )
+  .openapi(getReposOwnerRepoWikiPagesRoute, getReposOwnerRepoWikiPagesRouteHandler)
+  .openapi(
+    getReposOwnerRepoWikiRevisionsPageNameRoute,
+    getReposOwnerRepoWikiRevisionsPageNameRouteHandler,
+  )
+  .openapi(
+    postReposTemplateOwnerTemplateRepoGenerateRoute,
+    postReposTemplateOwnerTemplateRepoGenerateRouteHandler,
+  )
+  .openapi(getRepositoriesIdRoute, getRepositoriesIdRouteHandler)
+  .openapi(getSearchCodeRoute, getSearchCodeRouteHandler)
+  .openapi(getSettingsApiRoute, getSettingsApiRouteHandler)
+  .openapi(getSettingsAttachmentRoute, getSettingsAttachmentRouteHandler)
+  .openapi(getSettingsRepositoryRoute, getSettingsRepositoryRouteHandler)
+  .openapi(getSettingsUiRoute, getSettingsUiRouteHandler)
+  .openapi(getSigningKeyGpgRoute, getSigningKeyGpgRouteHandler)
+  .openapi(getSigningKeyPubRoute, getSigningKeyPubRouteHandler)
+  .openapi(deleteTeamsIdRoute, deleteTeamsIdRouteHandler)
+  .openapi(getTeamsIdRoute, getTeamsIdRouteHandler)
+  .openapi(patchTeamsIdRoute, patchTeamsIdRouteHandler)
+  .openapi(getTeamsIdActivitiesFeedsRoute, getTeamsIdActivitiesFeedsRouteHandler)
+  .openapi(getTeamsIdMembersRoute, getTeamsIdMembersRouteHandler)
+  .openapi(deleteTeamsIdMembersUsernameRoute, deleteTeamsIdMembersUsernameRouteHandler)
+  .openapi(getTeamsIdMembersUsernameRoute, getTeamsIdMembersUsernameRouteHandler)
+  .openapi(putTeamsIdMembersUsernameRoute, putTeamsIdMembersUsernameRouteHandler)
+  .openapi(getTeamsIdReposRoute, getTeamsIdReposRouteHandler)
+  .openapi(deleteTeamsIdReposOrgRepoRoute, deleteTeamsIdReposOrgRepoRouteHandler)
+  .openapi(getTeamsIdReposOrgRepoRoute, getTeamsIdReposOrgRepoRouteHandler)
+  .openapi(putTeamsIdReposOrgRepoRoute, putTeamsIdReposOrgRepoRouteHandler)
+  .openapi(deleteTokenRoute, deleteTokenRouteHandler)
+  .openapi(getTokenRoute, getTokenRouteHandler)
+  .openapi(getTopicsSearchRoute, getTopicsSearchRouteHandler)
+  .openapi(getUserRoute, getUserRouteHandler)
+  .openapi(getUserActionsJobsRoute, getUserActionsJobsRouteHandler)
+  .openapi(getUserActionsRunnersRoute, getUserActionsRunnersRouteHandler)
+  .openapi(
+    postUserActionsRunnersRegistrationTokenRoute,
+    postUserActionsRunnersRegistrationTokenRouteHandler,
+  )
+  .openapi(deleteUserActionsRunnersRunnerIdRoute, deleteUserActionsRunnersRunnerIdRouteHandler)
+  .openapi(getUserActionsRunnersRunnerIdRoute, getUserActionsRunnersRunnerIdRouteHandler)
+  .openapi(patchUserActionsRunnersRunnerIdRoute, patchUserActionsRunnersRunnerIdRouteHandler)
+  .openapi(getUserActionsRunsRoute, getUserActionsRunsRouteHandler)
+  .openapi(deleteUserActionsSecretsSecretnameRoute, deleteUserActionsSecretsSecretnameRouteHandler)
+  .openapi(putUserActionsSecretsSecretnameRoute, putUserActionsSecretsSecretnameRouteHandler)
+  .openapi(getUserActionsVariablesRoute, getUserActionsVariablesRouteHandler)
+  .openapi(
+    deleteUserActionsVariablesVariablenameRoute,
+    deleteUserActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    getUserActionsVariablesVariablenameRoute,
+    getUserActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    postUserActionsVariablesVariablenameRoute,
+    postUserActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(
+    putUserActionsVariablesVariablenameRoute,
+    putUserActionsVariablesVariablenameRouteHandler,
+  )
+  .openapi(getUserApplicationsOauth2Route, getUserApplicationsOauth2RouteHandler)
+  .openapi(postUserApplicationsOauth2Route, postUserApplicationsOauth2RouteHandler)
+  .openapi(deleteUserApplicationsOauth2IdRoute, deleteUserApplicationsOauth2IdRouteHandler)
+  .openapi(getUserApplicationsOauth2IdRoute, getUserApplicationsOauth2IdRouteHandler)
+  .openapi(patchUserApplicationsOauth2IdRoute, patchUserApplicationsOauth2IdRouteHandler)
+  .openapi(deleteUserAvatarRoute, deleteUserAvatarRouteHandler)
+  .openapi(postUserAvatarRoute, postUserAvatarRouteHandler)
+  .openapi(getUserBlocksRoute, getUserBlocksRouteHandler)
+  .openapi(deleteUserBlocksUsernameRoute, deleteUserBlocksUsernameRouteHandler)
+  .openapi(getUserBlocksUsernameRoute, getUserBlocksUsernameRouteHandler)
+  .openapi(putUserBlocksUsernameRoute, putUserBlocksUsernameRouteHandler)
+  .openapi(deleteUserEmailsRoute, deleteUserEmailsRouteHandler)
+  .openapi(getUserEmailsRoute, getUserEmailsRouteHandler)
+  .openapi(postUserEmailsRoute, postUserEmailsRouteHandler)
+  .openapi(getUserFollowersRoute, getUserFollowersRouteHandler)
+  .openapi(getUserFollowingRoute, getUserFollowingRouteHandler)
+  .openapi(deleteUserFollowingUsernameRoute, deleteUserFollowingUsernameRouteHandler)
+  .openapi(getUserFollowingUsernameRoute, getUserFollowingUsernameRouteHandler)
+  .openapi(putUserFollowingUsernameRoute, putUserFollowingUsernameRouteHandler)
+  .openapi(getUserGpgKeyTokenRoute, getUserGpgKeyTokenRouteHandler)
+  .openapi(postUserGpgKeyVerifyRoute, postUserGpgKeyVerifyRouteHandler)
+  .openapi(getUserGpgKeysRoute, getUserGpgKeysRouteHandler)
+  .openapi(postUserGpgKeysRoute, postUserGpgKeysRouteHandler)
+  .openapi(deleteUserGpgKeysIdRoute, deleteUserGpgKeysIdRouteHandler)
+  .openapi(getUserGpgKeysIdRoute, getUserGpgKeysIdRouteHandler)
+  .openapi(getUserHooksRoute, getUserHooksRouteHandler)
+  .openapi(postUserHooksRoute, postUserHooksRouteHandler)
+  .openapi(deleteUserHooksIdRoute, deleteUserHooksIdRouteHandler)
+  .openapi(getUserHooksIdRoute, getUserHooksIdRouteHandler)
+  .openapi(patchUserHooksIdRoute, patchUserHooksIdRouteHandler)
+  .openapi(getUserKeysRoute, getUserKeysRouteHandler)
+  .openapi(postUserKeysRoute, postUserKeysRouteHandler)
+  .openapi(deleteUserKeysIdRoute, deleteUserKeysIdRouteHandler)
+  .openapi(getUserKeysIdRoute, getUserKeysIdRouteHandler)
+  .openapi(getUserOrgsRoute, getUserOrgsRouteHandler)
+  .openapi(getUserProjectsRoute, getUserProjectsRouteHandler)
+  .openapi(postUserProjectsRoute, postUserProjectsRouteHandler)
+  .openapi(deleteUserProjectsIdRoute, deleteUserProjectsIdRouteHandler)
+  .openapi(getUserProjectsIdRoute, getUserProjectsIdRouteHandler)
+  .openapi(patchUserProjectsIdRoute, patchUserProjectsIdRouteHandler)
+  .openapi(getUserProjectsIdColumnsRoute, getUserProjectsIdColumnsRouteHandler)
+  .openapi(postUserProjectsIdColumnsRoute, postUserProjectsIdColumnsRouteHandler)
+  .openapi(postUserProjectsIdColumnsMoveRoute, postUserProjectsIdColumnsMoveRouteHandler)
+  .openapi(
+    deleteUserProjectsIdColumnsColumnIdRoute,
+    deleteUserProjectsIdColumnsColumnIdRouteHandler,
+  )
+  .openapi(getUserProjectsIdColumnsColumnIdRoute, getUserProjectsIdColumnsColumnIdRouteHandler)
+  .openapi(patchUserProjectsIdColumnsColumnIdRoute, patchUserProjectsIdColumnsColumnIdRouteHandler)
+  .openapi(
+    postUserProjectsIdColumnsColumnIdDefaultRoute,
+    postUserProjectsIdColumnsColumnIdDefaultRouteHandler,
+  )
+  .openapi(
+    getUserProjectsIdColumnsColumnIdIssuesRoute,
+    getUserProjectsIdColumnsColumnIdIssuesRouteHandler,
+  )
+  .openapi(
+    deleteUserProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    deleteUserProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postUserProjectsIdColumnsColumnIdIssuesIssueIdRoute,
+    postUserProjectsIdColumnsColumnIdIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    postUserProjectsIdIssuesIssueIdMoveRoute,
+    postUserProjectsIdIssuesIssueIdMoveRouteHandler,
+  )
+  .openapi(getUserProjectsIdWorkflowsRoute, getUserProjectsIdWorkflowsRouteHandler)
+  .openapi(postUserProjectsIdWorkflowsRoute, postUserProjectsIdWorkflowsRouteHandler)
+  .openapi(
+    deleteUserProjectsIdWorkflowsWorkflowIdRoute,
+    deleteUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    getUserProjectsIdWorkflowsWorkflowIdRoute,
+    getUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(
+    patchUserProjectsIdWorkflowsWorkflowIdRoute,
+    patchUserProjectsIdWorkflowsWorkflowIdRouteHandler,
+  )
+  .openapi(getUserReposRoute, getUserReposRouteHandler)
+  .openapi(postUserReposRoute, postUserReposRouteHandler)
+  .openapi(getUserSettingsRoute, getUserSettingsRouteHandler)
+  .openapi(patchUserSettingsRoute, patchUserSettingsRouteHandler)
+  .openapi(getUserStarredRoute, getUserStarredRouteHandler)
+  .openapi(deleteUserStarredOwnerRepoRoute, deleteUserStarredOwnerRepoRouteHandler)
+  .openapi(getUserStarredOwnerRepoRoute, getUserStarredOwnerRepoRouteHandler)
+  .openapi(putUserStarredOwnerRepoRoute, putUserStarredOwnerRepoRouteHandler)
+  .openapi(getUserStopwatchesRoute, getUserStopwatchesRouteHandler)
+  .openapi(getUserSubscriptionsRoute, getUserSubscriptionsRouteHandler)
+  .openapi(getUserTeamsRoute, getUserTeamsRouteHandler)
+  .openapi(getUserTimesRoute, getUserTimesRouteHandler)
+  .openapi(getUsersSearchRoute, getUsersSearchRouteHandler)
+  .openapi(getUsersUsernameRoute, getUsersUsernameRouteHandler)
+  .openapi(getUsersUsernameActivitiesFeedsRoute, getUsersUsernameActivitiesFeedsRouteHandler)
+  .openapi(getUsersUsernameFollowersRoute, getUsersUsernameFollowersRouteHandler)
+  .openapi(getUsersUsernameFollowingRoute, getUsersUsernameFollowingRouteHandler)
+  .openapi(getUsersUsernameFollowingTargetRoute, getUsersUsernameFollowingTargetRouteHandler)
+  .openapi(getUsersUsernameGpgKeysRoute, getUsersUsernameGpgKeysRouteHandler)
+  .openapi(getUsersUsernameHeatmapRoute, getUsersUsernameHeatmapRouteHandler)
+  .openapi(getUsersUsernameKeysRoute, getUsersUsernameKeysRouteHandler)
+  .openapi(getUsersUsernameOrgsRoute, getUsersUsernameOrgsRouteHandler)
+  .openapi(getUsersUsernameOrgsOrgPermissionsRoute, getUsersUsernameOrgsOrgPermissionsRouteHandler)
+  .openapi(getUsersUsernameProjectsRoute, getUsersUsernameProjectsRouteHandler)
+  .openapi(getUsersUsernameReposRoute, getUsersUsernameReposRouteHandler)
+  .openapi(getUsersUsernameStarredRoute, getUsersUsernameStarredRouteHandler)
+  .openapi(getUsersUsernameSubscriptionsRoute, getUsersUsernameSubscriptionsRouteHandler)
+  .openapi(getUsersUsernameTokensRoute, getUsersUsernameTokensRouteHandler)
+  .openapi(postUsersUsernameTokensRoute, postUsersUsernameTokensRouteHandler)
+  .openapi(deleteUsersUsernameTokensTokenRoute, deleteUsersUsernameTokensTokenRouteHandler)
+  .openapi(getVersionRoute, getVersionRouteHandler)
 
 export default app

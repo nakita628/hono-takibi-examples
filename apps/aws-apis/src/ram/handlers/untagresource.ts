@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUntagresourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUntagresourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const untagresourceHandler = app.openapi(postUntagresourceRoute, (c) => {
+export const postUntagresourceRouteHandler: RouteHandler<typeof postUntagresourceRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

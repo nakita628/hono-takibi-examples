@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEditMessageLiveLocationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEditMessageLiveLocationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const editMessageLiveLocationHandler = app.openapi(postEditMessageLiveLocationRoute, (c) => {
+export const postEditMessageLiveLocationRouteHandler: RouteHandler<
+  typeof postEditMessageLiveLocationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -344,7 +344,7 @@ export const postMerchantsMerchantIdPaymentsAppsInstallationIdRevokeRoute = crea
     }),
   },
   responses: {
-    200: { description: 'OK - the request has succeeded.', content: {} },
+    200: { description: 'OK - the request has succeeded.' },
     400: {
       description: 'Bad Request - a problem reading or understanding the request.',
       content: { 'application/json': { schema: DefaultErrorResponseEntitySchema } },

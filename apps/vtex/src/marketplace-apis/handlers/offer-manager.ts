@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOfferManagerPvtOffersRoute,
   getOfferManagerPvtProductProductIdRoute,
   getOfferManagerPvtProductProductIdSkuSkuIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOfferManagerPvtOffersRouteHandler: RouteHandler<
+  typeof getOfferManagerPvtOffersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const offerManagerHandler = app
-  .openapi(getOfferManagerPvtOffersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOfferManagerPvtProductProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOfferManagerPvtProductProductIdSkuSkuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOfferManagerPvtProductProductIdRouteHandler: RouteHandler<
+  typeof getOfferManagerPvtProductProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOfferManagerPvtProductProductIdSkuSkuIdRouteHandler: RouteHandler<
+  typeof getOfferManagerPvtProductProductIdSkuSkuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAssetsAssetAddressesRoute,
   getAssetsAssetHistoryRoute,
   getAssetsAssetRoute,
@@ -10,30 +10,46 @@ import {
   getAssetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAssetsRouteHandler: RouteHandler<typeof getAssetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assetsHandler = app
-  .openapi(getAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetTxsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsAssetUtxosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssetsPolicyPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAssetsAssetRouteHandler: RouteHandler<typeof getAssetsAssetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetHistoryRouteHandler: RouteHandler<
+  typeof getAssetsAssetHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetTxsRouteHandler: RouteHandler<typeof getAssetsAssetTxsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetTransactionsRouteHandler: RouteHandler<
+  typeof getAssetsAssetTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetAddressesRouteHandler: RouteHandler<
+  typeof getAssetsAssetAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsAssetUtxosRouteHandler: RouteHandler<
+  typeof getAssetsAssetUtxosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAssetsPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof getAssetsPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

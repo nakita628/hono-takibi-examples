@@ -1,11 +1,16 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { balanceHandler, validateBasicHandler, validateHandler } from './handlers'
+import { getBalanceRoute, getValidateBasicRoute, getValidateRoute } from './routes'
+import {
+  getBalanceRouteHandler,
+  getValidateBasicRouteHandler,
+  getValidateRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', balanceHandler)
-  .route('/', validateHandler)
-  .route('/', validateBasicHandler)
+  .openapi(getBalanceRoute, getBalanceRouteHandler)
+  .openapi(getValidateRoute, getValidateRouteHandler)
+  .openapi(getValidateBasicRoute, getValidateBasicRouteHandler)
 
 export default app

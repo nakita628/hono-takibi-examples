@@ -2137,23 +2137,34 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/bank_accounts/:bank_id/verify': {
-      $post: {
-        input: { param: { bank_id: BankId } } & { json: BankAccountVerify } & {
-          form: BankAccountVerify
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { bank_id: BankId } } & { json: BankAccountVerify } & {
+              form: BankAccountVerify
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { bank_id: BankId } } & { json: BankAccountVerify } & {
+              form: BankAccountVerify
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/bank_accounts/:bank_id': {
-      $get: {
-        input: { param: { bank_id: BankId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { bank_id: BankId } }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { param: { bank_id: BankId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { bank_id: BankId } }
@@ -2210,60 +2221,115 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { json: BankAccountBase } & { form: BankAccountBase }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BankAccountBase } & { form: BankAccountBase }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: BankAccountBase } & { form: BankAccountBase }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/billing_groups/:bg_id': {
-      $get: { input: { param: { bg_id: BgId } }; output: Error; outputFormat: 'json'; status: 200 }
-      $post: {
-        input: { param: { bg_id: BgId } } & { json: BillingGroupBase } & { form: BillingGroupBase }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { bg_id: BgId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { bg_id: BgId } }; output: Error; outputFormat: 'json'; status: 200 }
+      $post:
+        | {
+            input: { param: { bg_id: BgId } } & { json: BillingGroupBase } & {
+              form: BillingGroupBase
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { bg_id: BgId } } & { json: BillingGroupBase } & {
+              form: BillingGroupBase
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/billing_groups': {
-      $get: {
-        input: {
-          query: {
-            limit?: number | undefined
-            offset?: number | undefined
-            include?: string[] | undefined
-            date_created?: DateFilter | undefined
-            date_modified?: DateFilter | undefined
-            sort_by?:
-              | {
-                  date_created?: 'asc' | 'desc' | undefined
-                  date_modified?: 'asc' | 'desc' | undefined
-                }
-              | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                offset?: number | undefined
+                include?: string[] | undefined
+                date_created?: DateFilter | undefined
+                date_modified?: DateFilter | undefined
+                sort_by?:
+                  | {
+                      date_created?: 'asc' | 'desc' | undefined
+                      date_modified?: 'asc' | 'desc' | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: BillingGroupEditable } & { form: BillingGroupEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                offset?: number | undefined
+                include?: string[] | undefined
+                date_created?: DateFilter | undefined
+                date_modified?: DateFilter | undefined
+                sort_by?:
+                  | {
+                      date_created?: 'asc' | 'desc' | undefined
+                      date_modified?: 'asc' | 'desc' | undefined
+                    }
+                  | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { json: BillingGroupEditable } & { form: BillingGroupEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: BillingGroupEditable } & { form: BillingGroupEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/booklets/:booklet_id': {
-      $get: {
-        input: { param: { booklet_id: BookletId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { booklet_id: BookletId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { booklet_id: BookletId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { booklet_id: BookletId } }
@@ -2340,52 +2406,101 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined }
-        } & { json: BookletEditable } & { form: BookletEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: BookletEditable } & { form: BookletEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: BookletEditable } & { form: BookletEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/buckslips': {
-      $get: {
-        input: {
-          query: {
-            limit?: number | undefined
-            'before/after'?: { before?: string | undefined; after?: string | undefined } | undefined
-            include?: string[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                'before/after'?:
+                  | { before?: string | undefined; after?: string | undefined }
+                  | undefined
+                include?: string[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: BuckslipEditable } & { form: BuckslipEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                'before/after'?:
+                  | { before?: string | undefined; after?: string | undefined }
+                  | undefined
+                include?: string[] | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { json: BuckslipEditable } & { form: BuckslipEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: BuckslipEditable } & { form: BuckslipEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/buckslips/:buckslip_id': {
-      $get: {
-        input: { param: { buckslip_id: BuckslipId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipUpdatable } & {
-          form: BuckslipUpdatable
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { buckslip_id: BuckslipId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { buckslip_id: BuckslipId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $patch:
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipUpdatable } & {
+              form: BuckslipUpdatable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipUpdatable } & {
+              form: BuckslipUpdatable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { buckslip_id: BuckslipId } }
@@ -2402,22 +2517,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/buckslips/:buckslip_id/orders': {
-      $get: {
-        input: { param: { buckslip_id: BuckslipId } } & {
-          query: { limit?: number | undefined; offset?: number | undefined }
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipOrderEditable } & {
-          form: BuckslipOrderEditable
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & {
+              query: { limit?: number | undefined; offset?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & {
+              query: { limit?: number | undefined; offset?: number | undefined }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipOrderEditable } & {
+              form: BuckslipOrderEditable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { buckslip_id: BuckslipId } } & { json: BuckslipOrderEditable } & {
+              form: BuckslipOrderEditable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/bulk/us_verifications': {
@@ -2476,31 +2609,46 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
-          json: CampaignWritable
-        } & { form: CampaignWritable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
+              json: CampaignWritable
+            } & { form: CampaignWritable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
+              json: CampaignWritable
+            } & { form: CampaignWritable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/campaigns/:cmp_id': {
-      $get: {
-        input: { param: { cmp_id: CmpId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { cmp_id: CmpId } } & { json: CampaignUpdatable } & {
-          form: CampaignUpdatable
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { cmp_id: CmpId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { cmp_id: CmpId } }; output: Error; outputFormat: 'json'; status: 200 }
+      $patch:
+        | {
+            input: { param: { cmp_id: CmpId } } & { json: CampaignUpdatable } & {
+              form: CampaignUpdatable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { cmp_id: CmpId } } & { json: CampaignUpdatable } & {
+              form: CampaignUpdatable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { cmp_id: CmpId } }
@@ -2512,48 +2660,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/campaigns/:cmp_id/send': {
-      $post: {
-        input: { param: { cmp_id: CmpId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | { input: { param: { cmp_id: CmpId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { cmp_id: CmpId } }; output: Error; outputFormat: 'json'; status: 200 }
     }
   } & {
     '/cards': {
-      $get: {
-        input: {
-          query: {
-            limit?: number | undefined
-            'before/after'?: { before?: string | undefined; after?: string | undefined } | undefined
-            include?: string[] | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                'before/after'?:
+                  | { before?: string | undefined; after?: string | undefined }
+                  | undefined
+                include?: string[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { json: CardEditable } & { form: CardEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                limit?: number | undefined
+                'before/after'?:
+                  | { before?: string | undefined; after?: string | undefined }
+                  | undefined
+                include?: string[] | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { json: CardEditable } & { form: CardEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: CardEditable } & { form: CardEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/cards/:card_id': {
-      $get: {
-        input: { param: { card_id: CardId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { card_id: CardId } } & { json: CardUpdatable } & { form: CardUpdatable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { card_id: CardId } }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { param: { card_id: CardId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { param: { card_id: CardId } } & { json: CardUpdatable } & {
+              form: CardUpdatable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { card_id: CardId } } & { json: CardUpdatable } & {
+              form: CardUpdatable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { card_id: CardId } }
@@ -2570,22 +2752,40 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/cards/:card_id/orders': {
-      $get: {
-        input: { param: { card_id: CardId } } & {
-          query: { limit?: number | undefined; offset?: number | undefined }
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { card_id: CardId } } & { json: CardOrderEditable } & {
-          form: CardOrderEditable
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { card_id: CardId } } & {
+              query: { limit?: number | undefined; offset?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { card_id: CardId } } & {
+              query: { limit?: number | undefined; offset?: number | undefined }
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { param: { card_id: CardId } } & { json: CardOrderEditable } & {
+              form: CardOrderEditable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { card_id: CardId } } & { json: CardOrderEditable } & {
+              form: CardOrderEditable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/checks': {
@@ -2649,23 +2849,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined }
-        } & { json: CheckEditable } & { form: CheckEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: CheckEditable } & { form: CheckEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: CheckEditable } & { form: CheckEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/checks/:chk_id': {
-      $get: {
-        input: { param: { chk_id: ChkId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { chk_id: ChkId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { chk_id: ChkId } }; output: Error; outputFormat: 'json'; status: 200 }
       $delete:
         | {
             input: { param: { chk_id: ChkId } }
@@ -2677,29 +2883,42 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/creatives': {
-      $post: {
-        input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
-          json: CreativeWritable
-        } & { form: CreativeWritable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
+              json: CreativeWritable
+            } & { form: CreativeWritable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { header: { 'x-lang-output'?: 'native' | 'match' | undefined } } & {
+              json: CreativeWritable
+            } & { form: CreativeWritable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/creatives/:crv_id': {
-      $get: {
-        input: { param: { crv_id: CrvId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { crv_id: CrvId } } & { json: CreativeBase } & { form: CreativeBase }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { crv_id: CrvId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { crv_id: CrvId } }; output: Error; outputFormat: 'json'; status: 200 }
+      $patch:
+        | {
+            input: { param: { crv_id: CrvId } } & { json: CreativeBase } & { form: CreativeBase }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { crv_id: CrvId } } & { json: CreativeBase } & { form: CreativeBase }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/identity_validation': {
@@ -2732,17 +2951,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: { input: { form: Create }; output: Error; outputFormat: 'json'; status: 422 }
+      $post:
+        | { input: { form: Create }; output: {}; outputFormat: string; status: 200 }
+        | { input: { form: Create }; output: Error; outputFormat: 'json'; status: 422 }
     }
   } & {
     '/informed_delivery_campaigns/:usps_campaign_id': {
-      $get: {
-        input: { param: { usps_campaign_id: UspsCampaignId } }
-        output: Error
-        outputFormat: 'json'
-        status: 404
-      }
+      $get:
+        | {
+            input: { param: { usps_campaign_id: UspsCampaignId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { usps_campaign_id: UspsCampaignId } }
+            output: Error
+            outputFormat: 'json'
+            status: 404
+          }
       $patch:
+        | {
+            input: { param: { usps_campaign_id: UspsCampaignId } } & { form: Update }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { usps_campaign_id: UspsCampaignId } } & { form: Update }
             output: Error
@@ -2778,12 +3012,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/letters/:ltr_id': {
-      $get: {
-        input: { param: { ltr_id: LtrId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { ltr_id: LtrId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { ltr_id: LtrId } }; output: Error; outputFormat: 'json'; status: 200 }
       $delete:
         | {
             input: { param: { ltr_id: LtrId } }
@@ -2859,23 +3090,29 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined; 'Lob-Version'?: string | undefined }
-        } & { json: LetterEditable } & { form: LetterEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'Lob-Version'?: string | undefined }
+            } & { json: LetterEditable } & { form: LetterEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'Lob-Version'?: string | undefined }
+            } & { json: LetterEditable } & { form: LetterEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/postcards/:psc_id': {
-      $get: {
-        input: { param: { psc_id: PscId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { psc_id: PscId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { psc_id: PscId } }; output: Error; outputFormat: 'json'; status: 200 }
       $delete:
         | {
             input: { param: { psc_id: PscId } }
@@ -2951,14 +3188,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined }
-        } & { json: PostcardEditable } & { form: PostcardEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: PostcardEditable } & { form: PostcardEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: PostcardEditable } & { form: PostcardEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/qr_code_analytics': {
@@ -3143,36 +3389,49 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/resource_proofs/:res_prf_id': {
-      $get: {
-        input: { param: { res_prf_id: ResPrfId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $patch: {
-        input: { param: { res_prf_id: ResPrfId } } & { json: ResourceProofUpdatable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { res_prf_id: ResPrfId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { res_prf_id: ResPrfId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $patch:
+        | {
+            input: { param: { res_prf_id: ResPrfId } } & { json: ResourceProofUpdatable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { res_prf_id: ResPrfId } } & { json: ResourceProofUpdatable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/resource_proofs': {
-      $post: {
-        input: { json: ResourceProofEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | { input: { json: ResourceProofEditable }; output: {}; outputFormat: string; status: 201 }
+        | {
+            input: { json: ResourceProofEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/self_mailers/:sfm_id': {
-      $get: {
-        input: { param: { sfm_id: SfmId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { sfm_id: SfmId } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { sfm_id: SfmId } }; output: Error; outputFormat: 'json'; status: 200 }
       $delete:
         | {
             input: { param: { sfm_id: SfmId } }
@@ -3248,23 +3507,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined }
-        } & { json: SelfMailerEditable } & { form: SelfMailerEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: SelfMailerEditable } & { form: SelfMailerEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: SelfMailerEditable } & { form: SelfMailerEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/snap_packs/:snap_pack_id': {
-      $get: {
-        input: { param: { snap_pack_id: SnapPackId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { snap_pack_id: SnapPackId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { snap_pack_id: SnapPackId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { snap_pack_id: SnapPackId } }
@@ -3341,31 +3616,56 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { query: { idempotency_key?: string | undefined } } & {
-          header: { 'Idempotency-Key'?: string | undefined }
-        } & { json: SnapPackEditable } & { form: SnapPackEditable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: SnapPackEditable } & { form: SnapPackEditable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { query: { idempotency_key?: string | undefined } } & {
+              header: { 'Idempotency-Key'?: string | undefined }
+            } & { json: SnapPackEditable } & { form: SnapPackEditable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/templates/:tmpl_id/versions/:vrsn_id': {
-      $get: {
-        input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } } & {
-          json: TemplateVersionUpdatable
-        } & { form: TemplateVersionUpdatable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } } & {
+              json: TemplateVersionUpdatable
+            } & { form: TemplateVersionUpdatable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } } & {
+              json: TemplateVersionUpdatable
+            } & { form: TemplateVersionUpdatable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { tmpl_id: TmplId; vrsn_id: VrsnId } }
@@ -3420,29 +3720,51 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { param: { tmpl_id: TmplId } } & { json: TemplateVersionWritable } & {
-          form: TemplateVersionWritable
-        }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { tmpl_id: TmplId } } & { json: TemplateVersionWritable } & {
+              form: TemplateVersionWritable
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tmpl_id: TmplId } } & { json: TemplateVersionWritable } & {
+              form: TemplateVersionWritable
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/templates/:tmpl_id': {
-      $get: {
-        input: { param: { tmpl_id: TmplId } }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { tmpl_id: TmplId } } & { json: TemplateUpdate } & { form: TemplateUpdate }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | { input: { param: { tmpl_id: TmplId } }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { param: { tmpl_id: TmplId } }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
+      $post:
+        | {
+            input: { param: { tmpl_id: TmplId } } & { json: TemplateUpdate } & {
+              form: TemplateUpdate
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tmpl_id: TmplId } } & { json: TemplateUpdate } & {
+              form: TemplateUpdate
+            }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
       $delete:
         | {
             input: { param: { tmpl_id: TmplId } }
@@ -3499,12 +3821,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $post: {
-        input: { json: TemplateWritable } & { form: TemplateWritable }
-        output: Error
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: TemplateWritable } & { form: TemplateWritable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: TemplateWritable } & { form: TemplateWritable }
+            output: Error
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/uploads': {
@@ -3514,16 +3843,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { json: UploadWritable }
-        output: { detail?: { loc: (string | number)[]; msg: string; type: string }[] | undefined }
-        outputFormat: 'json'
-        status: 422
-      }
+      $post:
+        | { input: { json: UploadWritable }; output: {}; outputFormat: string; status: 201 }
+        | {
+            input: { json: UploadWritable }
+            output: {
+              detail?: { loc: (string | number)[]; msg: string; type: string }[] | undefined
+            }
+            outputFormat: 'json'
+            status: 422
+          }
     }
   } & {
     '/uploads/:upl_id': {
       $get:
+        | { input: { param: { upl_id: UplId } }; output: {}; outputFormat: string; status: 200 }
         | { input: { param: { upl_id: UplId } }; output: Error; outputFormat: 'json'; status: 404 }
         | {
             input: { param: { upl_id: UplId } }
@@ -3534,6 +3868,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 422
           }
       $patch:
+        | {
+            input: { param: { upl_id: UplId } } & { json: UploadUpdatable }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { upl_id: UplId } } & { json: UploadUpdatable }
             output: Error

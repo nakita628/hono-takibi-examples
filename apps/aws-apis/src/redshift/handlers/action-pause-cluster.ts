@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionPauseClusterRoute, postActionPauseClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionPauseClusterRoute, postActionPauseClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionPauseClusterRouteHandler: RouteHandler<
+  typeof getActionPauseClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionPauseClusterHandler = app
-  .openapi(getActionPauseClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionPauseClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionPauseClusterRouteHandler: RouteHandler<
+  typeof postActionPauseClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHardwareHwaccelRoute, getHardwareProbeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHardwareHwaccelRoute, getHardwareProbeRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHardwareProbeRouteHandler: RouteHandler<typeof getHardwareProbeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const hardwareHandler = app
-  .openapi(getHardwareProbeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHardwareHwaccelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHardwareHwaccelRouteHandler: RouteHandler<typeof getHardwareHwaccelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

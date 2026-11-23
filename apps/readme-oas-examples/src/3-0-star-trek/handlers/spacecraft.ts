@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSpacecraftRoute, getSpacecraftSearchRoute, postSpacecraftSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getSpacecraftRoute,
+  getSpacecraftSearchRoute,
+  postSpacecraftSearchRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getSpacecraftRouteHandler: RouteHandler<typeof getSpacecraftRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const spacecraftHandler = app
-  .openapi(getSpacecraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSpacecraftSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSpacecraftSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSpacecraftSearchRouteHandler: RouteHandler<
+  typeof getSpacecraftSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSpacecraftSearchRouteHandler: RouteHandler<
+  typeof postSpacecraftSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

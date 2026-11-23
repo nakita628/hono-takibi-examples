@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaNameRoute,
   getV1betaAccessPoliciesRoute,
   getV1betaNameRoute,
@@ -11,33 +11,52 @@ import {
   postV1betaParentServicePerimetersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1betaAccessPoliciesRouteHandler: RouteHandler<
+  typeof getV1betaAccessPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(getV1betaAccessPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaAccessPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentAccessLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentAccessLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentServicePerimetersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentServicePerimetersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1betaAccessPoliciesRouteHandler: RouteHandler<
+  typeof postV1betaAccessPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1betaNameRouteHandler: RouteHandler<typeof deleteV1betaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaNameRouteHandler: RouteHandler<typeof patchV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentAccessLevelsRouteHandler: RouteHandler<
+  typeof getV1betaParentAccessLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentAccessLevelsRouteHandler: RouteHandler<
+  typeof postV1betaParentAccessLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentServicePerimetersRouteHandler: RouteHandler<
+  typeof getV1betaParentServicePerimetersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentServicePerimetersRouteHandler: RouteHandler<
+  typeof postV1betaParentServicePerimetersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

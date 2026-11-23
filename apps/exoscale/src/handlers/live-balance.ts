@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLiveBalanceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLiveBalanceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const liveBalanceHandler = app.openapi(getLiveBalanceRoute, (c) => {
+export const getLiveBalanceRouteHandler: RouteHandler<typeof getLiveBalanceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

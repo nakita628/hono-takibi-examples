@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iot-jobs-data/2017-09-29/openapi.yaml',
   output: './src/iot-jobs-data/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iot-jobs-data/types.ts' },
   client: { output: './src/iot-jobs-data/client.ts', baseUrl: '/' },
   rpc: { output: './src/iot-jobs-data/rpc.ts', parseResponse: true },

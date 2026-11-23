@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/truesight.local/11.1.00/openapi.yaml',
   output: './src/truesight/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/truesight/types.ts' },
   client: { output: './src/truesight/client.ts', baseUrl: '/' },
   rpc: { output: './src/truesight/rpc.ts', parseResponse: true },

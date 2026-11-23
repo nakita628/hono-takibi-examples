@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVolumesNameRoute,
   getVolumesNameRoute,
   getVolumesRoute,
@@ -7,21 +7,26 @@ import {
   postVolumesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVolumesRouteHandler: RouteHandler<typeof postVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const volumesHandler = app
-  .openapi(postVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVolumesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVolumesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVolumesRouteHandler: RouteHandler<typeof getVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesNameRouteHandler: RouteHandler<typeof getVolumesNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVolumesNameRouteHandler: RouteHandler<typeof patchVolumesNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVolumesNameRouteHandler: RouteHandler<typeof deleteVolumesNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

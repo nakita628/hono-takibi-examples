@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisSchedulingK8sIoV1PriorityclassesNameRoute,
   deleteApisSchedulingK8sIoV1PriorityclassesRoute,
   getApisSchedulingK8sIoV1IndexRoute,
@@ -12,36 +12,62 @@ import {
   putApisSchedulingK8sIoV1PriorityclassesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisSchedulingK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisSchedulingK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisSchedulingK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisSchedulingK8sIoV1PriorityclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisSchedulingK8sIoV1PriorityclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisSchedulingK8sIoV1PriorityclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisSchedulingK8sIoV1PriorityclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisSchedulingK8sIoV1PriorityclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisSchedulingK8sIoV1PriorityclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisSchedulingK8sIoV1PriorityclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisSchedulingK8sIoV1WatchPriorityclassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisSchedulingK8sIoV1WatchPriorityclassesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApisSchedulingK8sIoV1PriorityclassesRouteHandler: RouteHandler<
+  typeof deleteApisSchedulingK8sIoV1PriorityclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisSchedulingK8sIoV1PriorityclassesRouteHandler: RouteHandler<
+  typeof getApisSchedulingK8sIoV1PriorityclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisSchedulingK8sIoV1PriorityclassesRouteHandler: RouteHandler<
+  typeof postApisSchedulingK8sIoV1PriorityclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisSchedulingK8sIoV1PriorityclassesNameRouteHandler: RouteHandler<
+  typeof deleteApisSchedulingK8sIoV1PriorityclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisSchedulingK8sIoV1PriorityclassesNameRouteHandler: RouteHandler<
+  typeof getApisSchedulingK8sIoV1PriorityclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisSchedulingK8sIoV1PriorityclassesNameRouteHandler: RouteHandler<
+  typeof patchApisSchedulingK8sIoV1PriorityclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisSchedulingK8sIoV1PriorityclassesNameRouteHandler: RouteHandler<
+  typeof putApisSchedulingK8sIoV1PriorityclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisSchedulingK8sIoV1WatchPriorityclassesRouteHandler: RouteHandler<
+  typeof getApisSchedulingK8sIoV1WatchPriorityclassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisSchedulingK8sIoV1WatchPriorityclassesNameRouteHandler: RouteHandler<
+  typeof getApisSchedulingK8sIoV1WatchPriorityclassesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

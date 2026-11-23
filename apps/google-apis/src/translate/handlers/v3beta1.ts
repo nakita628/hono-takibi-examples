@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3beta1NameRoute,
   getV3beta1NameLocationsRoute,
   getV3beta1NameOperationsRoute,
@@ -16,48 +16,84 @@ import {
   postV3beta1ParentTranslateTextRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV3beta1NameRouteHandler: RouteHandler<typeof deleteV3beta1NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v3beta1Handler = app
-  .openapi(deleteV3beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3beta1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3beta1NameLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3beta1NameOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1NameWaitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3beta1ParentGlossariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentGlossariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3beta1ParentSupportedLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentBatchTranslateDocumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentBatchTranslateTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentDetectLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentTranslateDocumentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3beta1ParentTranslateTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3beta1NameRouteHandler: RouteHandler<typeof getV3beta1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3beta1NameLocationsRouteHandler: RouteHandler<
+  typeof getV3beta1NameLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3beta1NameOperationsRouteHandler: RouteHandler<
+  typeof getV3beta1NameOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1NameCancelRouteHandler: RouteHandler<
+  typeof postV3beta1NameCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1NameWaitRouteHandler: RouteHandler<
+  typeof postV3beta1NameWaitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3beta1ParentGlossariesRouteHandler: RouteHandler<
+  typeof getV3beta1ParentGlossariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentGlossariesRouteHandler: RouteHandler<
+  typeof postV3beta1ParentGlossariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3beta1ParentSupportedLanguagesRouteHandler: RouteHandler<
+  typeof getV3beta1ParentSupportedLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentBatchTranslateDocumentRouteHandler: RouteHandler<
+  typeof postV3beta1ParentBatchTranslateDocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentBatchTranslateTextRouteHandler: RouteHandler<
+  typeof postV3beta1ParentBatchTranslateTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentDetectLanguageRouteHandler: RouteHandler<
+  typeof postV3beta1ParentDetectLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentTranslateDocumentRouteHandler: RouteHandler<
+  typeof postV3beta1ParentTranslateDocumentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3beta1ParentTranslateTextRouteHandler: RouteHandler<
+  typeof postV3beta1ParentTranslateTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

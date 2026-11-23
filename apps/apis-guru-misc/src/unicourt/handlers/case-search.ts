@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCaseSearchCaseSearchIdRoute, getCaseSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCaseSearchCaseSearchIdRoute, getCaseSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCaseSearchRouteHandler: RouteHandler<typeof getCaseSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const caseSearchHandler = app
-  .openapi(getCaseSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCaseSearchCaseSearchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCaseSearchCaseSearchIdRouteHandler: RouteHandler<
+  typeof getCaseSearchCaseSearchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -2074,7 +2074,7 @@ export const putCrmAssociations202609FromObjectTypeToObjectTypeLabelsRoute = cre
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.objects.tickets.write'] },
     { oauth2: ['crm.objects.tickets.read'] },
@@ -2389,7 +2389,7 @@ export const deleteCrmAssociations202609FromObjectTypeToObjectTypeLabelsAssociat
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [
       { oauth2: ['crm.objects.tickets.write'] },
       { oauth2: ['crm.objects.tickets.read'] },

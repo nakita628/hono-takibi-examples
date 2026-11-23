@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmObjects202609ContactsContactIdRoute,
   deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
   getCrmObjects202609ContactsContactIdAssociationsToObjectTypeRoute,
@@ -19,60 +19,104 @@ import {
   putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmObjects202609ContactsRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmObjects202609ContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsBatchArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsBatchCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsBatchReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsBatchUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsGdprDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmObjects202609ContactsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjects202609ContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609ContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmObjects202609ContactsContactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmObjects202609ContactsContactIdAssociationsToObjectTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmObjects202609ContactsRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsBatchArchiveRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsBatchArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsBatchCreateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsBatchCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsBatchReadRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsBatchReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsBatchUpdateRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsBatchUpsertRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsBatchUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsGdprDeleteRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsGdprDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsMergeRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmObjects202609ContactsSearchRouteHandler: RouteHandler<
+  typeof postCrmObjects202609ContactsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609ContactsContactIdRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609ContactsContactIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609ContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmObjects202609ContactsContactIdRouteHandler: RouteHandler<
+  typeof patchCrmObjects202609ContactsContactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmObjects202609ContactsContactIdAssociationsToObjectTypeRouteHandler: RouteHandler<
+  typeof getCrmObjects202609ContactsContactIdAssociationsToObjectTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609FromObjectTypeFromObjectIdAssociationsDefaultToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof putCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRouteHandler: RouteHandler<
+  typeof deleteCrmObjects202609ObjectTypeObjectIdAssociationsToObjectTypeToObjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

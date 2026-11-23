@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postScrobblePauseRoute, postScrobbleStartRoute, postScrobbleStopRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postScrobblePauseRoute,
+  postScrobbleStartRoute,
+  postScrobbleStopRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postScrobblePauseRouteHandler: RouteHandler<typeof postScrobblePauseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const scrobbleHandler = app
-  .openapi(postScrobblePauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrobbleStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScrobbleStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postScrobbleStartRouteHandler: RouteHandler<typeof postScrobbleStartRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postScrobbleStopRouteHandler: RouteHandler<typeof postScrobbleStopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

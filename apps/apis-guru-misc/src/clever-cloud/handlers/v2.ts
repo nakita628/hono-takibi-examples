@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2ProvidersAddonMatomoResourcesMatomoIdRoute,
   postV2ProvidersAddonMatomoResourcesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2ProvidersAddonMatomoResourcesRouteHandler: RouteHandler<
+  typeof postV2ProvidersAddonMatomoResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2ProvidersAddonMatomoResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2ProvidersAddonMatomoResourcesMatomoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV2ProvidersAddonMatomoResourcesMatomoIdRouteHandler: RouteHandler<
+  typeof deleteV2ProvidersAddonMatomoResourcesMatomoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

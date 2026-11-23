@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBotBotNameAliasBotAliasUserUserIdSessionRoute,
   getBotBotNameAliasBotAliasUserUserIdSessionIndexRoute,
   postBotBotNameAliasBotAliasUserUserIdContentContentTypeRoute,
@@ -7,21 +7,32 @@ import {
   postBotBotNameAliasBotAliasUserUserIdTextRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBotBotNameAliasBotAliasUserUserIdSessionRouteHandler: RouteHandler<
+  typeof deleteBotBotNameAliasBotAliasUserUserIdSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const botHandler = app
-  .openapi(deleteBotBotNameAliasBotAliasUserUserIdSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotBotNameAliasBotAliasUserUserIdSessionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotBotNameAliasBotAliasUserUserIdSessionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotBotNameAliasBotAliasUserUserIdContentContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBotBotNameAliasBotAliasUserUserIdTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBotBotNameAliasBotAliasUserUserIdSessionRouteHandler: RouteHandler<
+  typeof postBotBotNameAliasBotAliasUserUserIdSessionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotBotNameAliasBotAliasUserUserIdSessionIndexRouteHandler: RouteHandler<
+  typeof getBotBotNameAliasBotAliasUserUserIdSessionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBotBotNameAliasBotAliasUserUserIdContentContentTypeRouteHandler: RouteHandler<
+  typeof postBotBotNameAliasBotAliasUserUserIdContentContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBotBotNameAliasBotAliasUserUserIdTextRouteHandler: RouteHandler<
+  typeof postBotBotNameAliasBotAliasUserUserIdTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -2706,7 +2706,7 @@ export const deleteCommercePaymentLinks202609PaymentLinksPaymentLinkIdRoute = cr
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['commerce.payment_links.delete'] }],
 })
 

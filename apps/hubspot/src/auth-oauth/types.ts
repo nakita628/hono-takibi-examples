@@ -225,26 +225,47 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/oauth/2026-09/token/revoke': {
-      $post: {
-        input: {
-          json: {
-            client_id?: string | undefined
-            client_secret?: string | undefined
-            token?: string | undefined
-            token_type_hint?: string | undefined
+      $post:
+        | {
+            input: {
+              json: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                token?: string | undefined
+                token_type_hint?: string | undefined
+              }
+            } & {
+              form: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                token?: string | undefined
+                token_type_hint?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        } & {
-          form: {
-            client_id?: string | undefined
-            client_secret?: string | undefined
-            token?: string | undefined
-            token_type_hint?: string | undefined
+        | {
+            input: {
+              json: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                token?: string | undefined
+                token_type_hint?: string | undefined
+              }
+            } & {
+              form: {
+                client_id?: string | undefined
+                client_secret?: string | undefined
+                token?: string | undefined
+                token_type_hint?: string | undefined
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
           }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
     }
   },
   '/'

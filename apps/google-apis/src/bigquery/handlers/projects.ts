@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute,
   deleteProjectsProjectIdDatasetsDatasetIdRoute,
   deleteProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute,
@@ -36,108 +36,204 @@ import {
   putProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsRouteHandler: RouteHandler<typeof getProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdDatasetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectIdDatasetsDatasetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdRoutinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdDatasetsDatasetIdRoutinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdDatasetsDatasetIdTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdTablesTableIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdDatasetsDatasetIdTablesTableIdInsertAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdDatasetsDatasetIdTablesTableIdRowAccessPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdDatasetsDatasetIdUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdJobsJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdJobsJobIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsProjectIdQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdQueriesJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getProjectsProjectIdDatasetsRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdDatasetsRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdDatasetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof patchProjectsProjectIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectIdDatasetsDatasetIdRouteHandler: RouteHandler<
+  typeof putProjectsProjectIdDatasetsDatasetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdModelsRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdDatasetsDatasetIdModelsModelIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdModelsModelIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectIdDatasetsDatasetIdModelsModelIdRouteHandler: RouteHandler<
+  typeof patchProjectsProjectIdDatasetsDatasetIdModelsModelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdRoutinesRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdRoutinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdDatasetsDatasetIdRoutinesRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdDatasetsDatasetIdRoutinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRouteHandler: RouteHandler<
+  typeof putProjectsProjectIdDatasetsDatasetIdRoutinesRoutineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdTablesRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdDatasetsDatasetIdTablesRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdDatasetsDatasetIdTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdDatasetsDatasetIdTablesTableIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdTablesTableIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchProjectsProjectIdDatasetsDatasetIdTablesTableIdRouteHandler: RouteHandler<
+  typeof patchProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectIdDatasetsDatasetIdTablesTableIdRouteHandler: RouteHandler<
+  typeof putProjectsProjectIdDatasetsDatasetIdTablesTableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdTablesTableIdDataRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdTablesTableIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdDatasetsDatasetIdTablesTableIdInsertAllRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdDatasetsDatasetIdTablesTableIdInsertAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdDatasetsDatasetIdTablesTableIdRowAccessPoliciesRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdDatasetsDatasetIdTablesTableIdRowAccessPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdDatasetsDatasetIdUndeleteRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdDatasetsDatasetIdUndeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdJobsRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdJobsRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdJobsJobIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdJobsJobIdCancelRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdJobsJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdJobsJobIdDeleteRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdJobsJobIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectsProjectIdQueriesRouteHandler: RouteHandler<
+  typeof postProjectsProjectIdQueriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdQueriesJobIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdQueriesJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdServiceAccountRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

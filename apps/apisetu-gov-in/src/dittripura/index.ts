@@ -1,45 +1,65 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  chcerHandler,
-  dncerHandler,
-  dpcerHandler,
-  fslcsHandler,
-  grredHandler,
-  incerHandler,
-  isoalHandler,
-  lvcerHandler,
-  malcsHandler,
-  mpkbyHandler,
-  obcerHandler,
-  ritinHandler,
-  rmcerHandler,
-  rscerHandler,
-  shcerHandler,
-  smcerHandler,
-  sslcsHandler,
-  vrwmiHandler,
+  postChcerCertificateRoute,
+  postDncerCertificateRoute,
+  postDpcerCertificateRoute,
+  postFslcsCertificateRoute,
+  postGrredCertificateRoute,
+  postIncerCertificateRoute,
+  postIsoalCertificateRoute,
+  postLvcerCertificateRoute,
+  postMalcsCertificateRoute,
+  postMpkbyCertificateRoute,
+  postObcerCertificateRoute,
+  postRitinCertificateRoute,
+  postRmcerCertificateRoute,
+  postRscerCertificateRoute,
+  postShcerCertificateRoute,
+  postSmcerCertificateRoute,
+  postSslcsCertificateRoute,
+  postVrwmiCertificateRoute,
+} from './routes'
+import {
+  postChcerCertificateRouteHandler,
+  postDncerCertificateRouteHandler,
+  postDpcerCertificateRouteHandler,
+  postFslcsCertificateRouteHandler,
+  postGrredCertificateRouteHandler,
+  postIncerCertificateRouteHandler,
+  postIsoalCertificateRouteHandler,
+  postLvcerCertificateRouteHandler,
+  postMalcsCertificateRouteHandler,
+  postMpkbyCertificateRouteHandler,
+  postObcerCertificateRouteHandler,
+  postRitinCertificateRouteHandler,
+  postRmcerCertificateRouteHandler,
+  postRscerCertificateRouteHandler,
+  postShcerCertificateRouteHandler,
+  postSmcerCertificateRouteHandler,
+  postSslcsCertificateRouteHandler,
+  postVrwmiCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', chcerHandler)
-  .route('/', dncerHandler)
-  .route('/', dpcerHandler)
-  .route('/', fslcsHandler)
-  .route('/', grredHandler)
-  .route('/', incerHandler)
-  .route('/', isoalHandler)
-  .route('/', lvcerHandler)
-  .route('/', malcsHandler)
-  .route('/', mpkbyHandler)
-  .route('/', obcerHandler)
-  .route('/', ritinHandler)
-  .route('/', rmcerHandler)
-  .route('/', rscerHandler)
-  .route('/', shcerHandler)
-  .route('/', smcerHandler)
-  .route('/', sslcsHandler)
-  .route('/', vrwmiHandler)
+  .openapi(postChcerCertificateRoute, postChcerCertificateRouteHandler)
+  .openapi(postDncerCertificateRoute, postDncerCertificateRouteHandler)
+  .openapi(postDpcerCertificateRoute, postDpcerCertificateRouteHandler)
+  .openapi(postFslcsCertificateRoute, postFslcsCertificateRouteHandler)
+  .openapi(postGrredCertificateRoute, postGrredCertificateRouteHandler)
+  .openapi(postIncerCertificateRoute, postIncerCertificateRouteHandler)
+  .openapi(postIsoalCertificateRoute, postIsoalCertificateRouteHandler)
+  .openapi(postLvcerCertificateRoute, postLvcerCertificateRouteHandler)
+  .openapi(postMalcsCertificateRoute, postMalcsCertificateRouteHandler)
+  .openapi(postMpkbyCertificateRoute, postMpkbyCertificateRouteHandler)
+  .openapi(postObcerCertificateRoute, postObcerCertificateRouteHandler)
+  .openapi(postRitinCertificateRoute, postRitinCertificateRouteHandler)
+  .openapi(postRmcerCertificateRoute, postRmcerCertificateRouteHandler)
+  .openapi(postRscerCertificateRoute, postRscerCertificateRouteHandler)
+  .openapi(postShcerCertificateRoute, postShcerCertificateRouteHandler)
+  .openapi(postSmcerCertificateRoute, postSmcerCertificateRouteHandler)
+  .openapi(postSslcsCertificateRoute, postSslcsCertificateRouteHandler)
+  .openapi(postVrwmiCertificateRoute, postVrwmiCertificateRouteHandler)
 
 export default app

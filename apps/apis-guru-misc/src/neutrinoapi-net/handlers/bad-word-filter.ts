@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postBadWordFilterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postBadWordFilterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const badWordFilterHandler = app.openapi(postBadWordFilterRoute, (c) => {
+export const postBadWordFilterRouteHandler: RouteHandler<typeof postBadWordFilterRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

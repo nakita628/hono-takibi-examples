@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAccountsAccountIdBalancesRoute,
   getAccountsAccountIdBeneficiariesRoute,
   getAccountsAccountIdDirectDebitsRoute,
@@ -18,54 +18,96 @@ import {
   getAccountsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdBeneficiariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdDirectDebitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdOffersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdPartiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdPartyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdProductRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdScheduledPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdStandingOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdStatementsStatementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdStatementsStatementIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdStatementsStatementIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIdTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAccountsAccountIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdBalancesRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdBeneficiariesRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdBeneficiariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdDirectDebitsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdDirectDebitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdOffersRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdOffersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdPartiesRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdPartiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdPartyRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdPartyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdProductRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdProductRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdScheduledPaymentsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdScheduledPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdStandingOrdersRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdStandingOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdStatementsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdStatementsStatementIdRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdStatementsStatementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdStatementsStatementIdFileRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdStatementsStatementIdFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdStatementsStatementIdTransactionsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdStatementsStatementIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIdTransactionsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIdTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

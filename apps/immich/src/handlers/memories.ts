@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMemoriesIdAssetsRoute,
   deleteMemoriesIdRoute,
   getMemoriesIdRoute,
@@ -10,30 +10,42 @@ import {
   putMemoriesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMemoriesRouteHandler: RouteHandler<typeof getMemoriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const memoriesHandler = app
-  .openapi(getMemoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMemoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMemoriesStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMemoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMemoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMemoriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMemoriesIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMemoriesIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMemoriesRouteHandler: RouteHandler<typeof postMemoriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMemoriesStatisticsRouteHandler: RouteHandler<
+  typeof getMemoriesStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMemoriesIdRouteHandler: RouteHandler<typeof deleteMemoriesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMemoriesIdRouteHandler: RouteHandler<typeof getMemoriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMemoriesIdRouteHandler: RouteHandler<typeof putMemoriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMemoriesIdAssetsRouteHandler: RouteHandler<
+  typeof deleteMemoriesIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMemoriesIdAssetsRouteHandler: RouteHandler<
+  typeof putMemoriesIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTeamdrivesTeamDriveIdRoute,
   getTeamdrivesRoute,
   getTeamdrivesTeamDriveIdRoute,
@@ -7,21 +7,28 @@ import {
   postTeamdrivesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamdrivesRouteHandler: RouteHandler<typeof getTeamdrivesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamdrivesHandler = app
-  .openapi(getTeamdrivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTeamdrivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTeamdrivesTeamDriveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamdrivesTeamDriveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTeamdrivesTeamDriveIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTeamdrivesRouteHandler: RouteHandler<typeof postTeamdrivesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTeamdrivesTeamDriveIdRouteHandler: RouteHandler<
+  typeof deleteTeamdrivesTeamDriveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamdrivesTeamDriveIdRouteHandler: RouteHandler<
+  typeof getTeamdrivesTeamDriveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTeamdrivesTeamDriveIdRouteHandler: RouteHandler<
+  typeof patchTeamdrivesTeamDriveIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -25,7 +25,7 @@ type AirportResponse = { AirportResource?: AirportResource | undefined }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/cargo/getRoute/:origin-:destination/:fromDate/:productCode': {
+    '/cargo/getRoute/:origin-{destination}/:fromDate/:productCode': {
       $get: {
         input: {
           param: {
@@ -58,7 +58,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/cargo/shipmentTracking/:aWBPrefix-:aWBNumber': {
+    '/cargo/shipmentTracking/:aWBPrefix-{aWBNumber}': {
       $get: {
         input: { param: { aWBPrefix: string; aWBNumber: string } } & { header: { Accept: string } }
         output: { [x: string]: unknown }
@@ -180,7 +180,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/references/airports/nearest/:latitude,:longitude': {
+    '/references/airports/nearest/:latitude,{longitude}': {
       $get: {
         input: { param: { latitude: number; longitude: number } } & {
           query: { lang?: string | undefined }

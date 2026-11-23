@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postIamOrganizationPolicyResetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postIamOrganizationPolicyResetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const iamOrganizationPolicyResetHandler = app.openapi(
-  postIamOrganizationPolicyResetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postIamOrganizationPolicyResetRouteHandler: RouteHandler<
+  typeof postIamOrganizationPolicyResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

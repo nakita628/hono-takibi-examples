@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postTagsAllTimeSeriesRoute,
   postTagsDeleteRoute,
   postTagsInfoRoute,
@@ -7,21 +7,26 @@ import {
   postTagsTimeSeriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTagsListRouteHandler: RouteHandler<typeof postTagsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tagsHandler = app
-  .openapi(postTagsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTagsAllTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTagsDeleteRouteHandler: RouteHandler<typeof postTagsDeleteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTagsInfoRouteHandler: RouteHandler<typeof postTagsInfoRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTagsTimeSeriesRouteHandler: RouteHandler<typeof postTagsTimeSeriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTagsAllTimeSeriesRouteHandler: RouteHandler<
+  typeof postTagsAllTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

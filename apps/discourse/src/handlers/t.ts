@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTIdJsonRoute,
   getTExternalIdExternalIdJsonRoute,
   getTIdJsonRoute,
@@ -14,42 +14,66 @@ import {
   putTIdStatusJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTIdPostsJsonRouteHandler: RouteHandler<typeof getTIdPostsJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tHandler = app
-  .openapi(getTIdPostsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTDashIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTIdInviteJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTIdInviteGroupJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTIdBookmarkJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTIdStatusJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTIdNotificationsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTIdChangeTimestampJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTIdTimerJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTExternalIdExternalIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTIdJsonRouteHandler: RouteHandler<typeof getTIdJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTIdJsonRouteHandler: RouteHandler<typeof deleteTIdJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTDashIdJsonRouteHandler: RouteHandler<typeof putTDashIdJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTIdInviteJsonRouteHandler: RouteHandler<typeof postTIdInviteJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTIdInviteGroupJsonRouteHandler: RouteHandler<
+  typeof postTIdInviteGroupJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTIdBookmarkJsonRouteHandler: RouteHandler<typeof putTIdBookmarkJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putTIdStatusJsonRouteHandler: RouteHandler<typeof putTIdStatusJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTIdNotificationsJsonRouteHandler: RouteHandler<
+  typeof postTIdNotificationsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTIdChangeTimestampJsonRouteHandler: RouteHandler<
+  typeof putTIdChangeTimestampJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTIdTimerJsonRouteHandler: RouteHandler<typeof postTIdTimerJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTExternalIdExternalIdJsonRouteHandler: RouteHandler<
+  typeof getTExternalIdExternalIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

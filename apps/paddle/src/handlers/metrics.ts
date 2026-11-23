@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetricsActiveSubscribersRoute,
   getMetricsChargebacksRoute,
   getMetricsCheckoutConversionRoute,
@@ -11,33 +11,56 @@ import {
   postMetricsExploreRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetricsExploreEntitiesRouteHandler: RouteHandler<
+  typeof getMetricsExploreEntitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsHandler = app
-  .openapi(getMetricsExploreEntitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetricsExploreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMonthlyRecurringRevenueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsActiveSubscribersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMonthlyRecurringRevenueChangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsRevenueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsChargebacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsCheckoutConversionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetricsExploreRouteHandler: RouteHandler<typeof postMetricsExploreRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMonthlyRecurringRevenueRouteHandler: RouteHandler<
+  typeof getMetricsMonthlyRecurringRevenueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsActiveSubscribersRouteHandler: RouteHandler<
+  typeof getMetricsActiveSubscribersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMonthlyRecurringRevenueChangeRouteHandler: RouteHandler<
+  typeof getMetricsMonthlyRecurringRevenueChangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsRevenueRouteHandler: RouteHandler<typeof getMetricsRevenueRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsRefundsRouteHandler: RouteHandler<typeof getMetricsRefundsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsChargebacksRouteHandler: RouteHandler<
+  typeof getMetricsChargebacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsCheckoutConversionRouteHandler: RouteHandler<
+  typeof getMetricsCheckoutConversionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

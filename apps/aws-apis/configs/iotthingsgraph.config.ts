@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iotthingsgraph/2018-09-06/openapi.yaml',
   output: './src/iotthingsgraph/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iotthingsgraph/types.ts' },
   client: { output: './src/iotthingsgraph/client.ts', baseUrl: '/' },
   rpc: { output: './src/iotthingsgraph/rpc.ts', parseResponse: true },

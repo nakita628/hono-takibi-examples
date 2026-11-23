@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/rds-data/2018-08-01/openapi.yaml',
   output: './src/rds-data/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rds-data/types.ts' },
   client: { output: './src/rds-data/client.ts', baseUrl: '/' },
   rpc: { output: './src/rds-data/rpc.ts', parseResponse: true },

@@ -1,8 +1,2480 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { docsHandler, v1Handler, v2Handler } from './handlers'
+import {
+  deleteV1AssetsAssetIdRoute,
+  deleteV1AudioIsolationHistoryHistoryItemIdRoute,
+  deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+  deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRoute,
+  deleteV1ConvaiAgentsAgentIdDraftsRoute,
+  deleteV1ConvaiAgentsAgentIdHoldAudioRoute,
+  deleteV1ConvaiAgentsAgentIdRoute,
+  deleteV1ConvaiAgentTestingFoldersFolderIdRoute,
+  deleteV1ConvaiAgentTestingTestIdRoute,
+  deleteV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+  deleteV1ConvaiBatchCallingBatchIdRoute,
+  deleteV1ConvaiConversationsConversationIdFilesFileIdRoute,
+  deleteV1ConvaiConversationsConversationIdRoute,
+  deleteV1ConvaiConversationsConversationIdTagsTagIdRoute,
+  deleteV1ConvaiEnvironmentsEnvironmentRoute,
+  deleteV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+  deleteV1ConvaiKnowledgeBaseDocumentationIdRagIndexRagIndexIdRoute,
+  deleteV1ConvaiKnowledgeBaseDocumentationIdRoute,
+  deleteV1ConvaiMcpServersMcpServerIdRoute,
+  deleteV1ConvaiMcpServersMcpServerIdToolApprovalsToolNameRoute,
+  deleteV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+  deleteV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRoute,
+  deleteV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+  deleteV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+  deleteV1ConvaiRealtimeConversationsConversationIdConversationGroupRoute,
+  deleteV1ConvaiSecretsSecretIdRoute,
+  deleteV1ConvaiTagsTagIdRoute,
+  deleteV1ConvaiToolsToolIdRoute,
+  deleteV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+  deleteV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+  deleteV1DubbingDubbingIdRoute,
+  deleteV1DubbingProjectProjectIdLanguageLanguageIdRoute,
+  deleteV1DubbingProjectProjectIdRoute,
+  deleteV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRoute,
+  deleteV1DubbingResourceDubbingIdSegmentSegmentIdRoute,
+  deleteV1HistoryHistoryItemIdRoute,
+  deleteV1MusicFinetunesFinetuneIdRoute,
+  deleteV1ProductionsOrdersOrderIdItemsItemIdRoute,
+  deleteV1ReceptionAssetsAssetIdRoute,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRoute,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRoute,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRoute,
+  deleteV1ReceptionHolidaysHolidayIdRoute,
+  deleteV1ReceptionKnowledgeSourcesSourceIdRoute,
+  deleteV1ReceptionLocationsLocationIdRoute,
+  deleteV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRoute,
+  deleteV1ReceptionProductsProductIdRoute,
+  deleteV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+  deleteV1ReceptionServicesServiceIdRoute,
+  deleteV1ReceptionStaffStaffIdRoute,
+  deleteV1ReceptionTeamInvitesRoute,
+  deleteV1ReceptionTeamMembersUserIdRoute,
+  deleteV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRoute,
+  deleteV1SpeechEngineSpeechEngineIdRoute,
+  deleteV1SpeechToTextTranscriptsTranscriptionIdRoute,
+  deleteV1StudioProjectsProjectIdChaptersChapterIdRoute,
+  deleteV1StudioProjectsProjectIdRoute,
+  deleteV1VoicesCollectionsCollectionIdRoute,
+  deleteV1VoicesCollectionsCollectionIdVoiceVoiceIdRoute,
+  deleteV1VoicesPvcVoiceIdSamplesSampleIdRoute,
+  deleteV1VoicesVoiceIdRoute,
+  deleteV1VoicesVoiceIdSamplesSampleIdRoute,
+  deleteV1WorkspaceAuthConnectionsAuthConnectionIdRoute,
+  deleteV1WorkspaceInvitesRoute,
+  deleteV1WorkspaceWebhooksWebhookIdRoute,
+  getDocsRoute,
+  getV1AssetsAssetIdRoute,
+  getV1AssetsRoute,
+  getV1AudioEffectsCatalogRoute,
+  getV1AudioIsolationHistoryRoute,
+  getV1AudioNativeProjectIdSettingsRoute,
+  getV1ConvaiAgentAgentIdKnowledgeBaseSizeRoute,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRoute,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRoute,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdRebasePreviewRoute,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdRoute,
+  getV1ConvaiAgentsAgentIdBranchesRoute,
+  getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRoute,
+  getV1ConvaiAgentsAgentIdDeploymentsRoute,
+  getV1ConvaiAgentsAgentIdLinkRoute,
+  getV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRoute,
+  getV1ConvaiAgentsAgentIdMergeProposalsRoute,
+  getV1ConvaiAgentsAgentIdRoute,
+  getV1ConvaiAgentsAgentIdSubagentDependentsRoute,
+  getV1ConvaiAgentsAgentIdTopicsRoute,
+  getV1ConvaiAgentsAgentIdTriageTicketsAssignableUsersRoute,
+  getV1ConvaiAgentsAgentIdTriageTicketsRoute,
+  getV1ConvaiAgentsAgentIdVersionsVersionIdRoute,
+  getV1ConvaiAgentsAgentIdWidgetRoute,
+  getV1ConvaiAgentsRoute,
+  getV1ConvaiAgentsSummariesRoute,
+  getV1ConvaiAgentTestingFoldersFolderIdRoute,
+  getV1ConvaiAgentTestingRoute,
+  getV1ConvaiAgentTestingTestIdRoute,
+  getV1ConvaiAnalysisItemsAnalysisItemIdDependentAgentsRoute,
+  getV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+  getV1ConvaiAnalysisItemsAnalysisItemIdVersionsRoute,
+  getV1ConvaiAnalysisItemsRoute,
+  getV1ConvaiAnalyticsLiveCountRoute,
+  getV1ConvaiBatchCallingBatchIdExportRoute,
+  getV1ConvaiBatchCallingBatchIdRoute,
+  getV1ConvaiBatchCallingWorkspaceRoute,
+  getV1ConvaiConversationGetSignedUrl2Route,
+  getV1ConvaiConversationGetSignedUrlRoute,
+  getV1ConvaiConversationsConversationIdAudioRoute,
+  getV1ConvaiConversationsConversationIdFilesFileIdRoute,
+  getV1ConvaiConversationsConversationIdRoute,
+  getV1ConvaiConversationsConversationIdSipMessagesRoute,
+  getV1ConvaiConversationsConversationIdSummaryRoute,
+  getV1ConvaiConversationsConversationIdTurnsTurnIdEventsRoute,
+  getV1ConvaiConversationsConversationIdTurnsTurnIdRoute,
+  getV1ConvaiConversationsMessagesSmartSearchRoute,
+  getV1ConvaiConversationsMessagesTextSearchRoute,
+  getV1ConvaiConversationsResolveRoute,
+  getV1ConvaiConversationsRoute,
+  getV1ConvaiConversationTokenRoute,
+  getV1ConvaiEnvironmentsRoute,
+  getV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+  getV1ConvaiEnvironmentVariablesRoute,
+  getV1ConvaiKnowledgeBaseCrawlCrawlJobIdRoute,
+  getV1ConvaiKnowledgeBaseCrawlRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunkChunkIdRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunksRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdContentRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdDependentAgentsRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdRagIndexRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdRoute,
+  getV1ConvaiKnowledgeBaseDocumentationIdSourceFileUrlRoute,
+  getV1ConvaiKnowledgeBaseRagIndexRoute,
+  getV1ConvaiKnowledgeBaseRoute,
+  getV1ConvaiKnowledgeBaseSearchRoute,
+  getV1ConvaiKnowledgeBaseSummariesRoute,
+  getV1ConvaiLlmListRoute,
+  getV1ConvaiMcpServersMcpServerIdRoute,
+  getV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+  getV1ConvaiMcpServersMcpServerIdToolsRoute,
+  getV1ConvaiMcpServersRoute,
+  getV1ConvaiOutboundCampaignsAttentionRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdCallsRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdExportRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdFollowUpRequestsRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdProgressRoute,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdRoute,
+  getV1ConvaiOutboundCampaignsCampaignsRoute,
+  getV1ConvaiOutboundCampaignsConfigRoute,
+  getV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+  getV1ConvaiPhoneNumbersPhoneNumberIdSipMessagesRoute,
+  getV1ConvaiPhoneNumbersRoute,
+  getV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+  getV1ConvaiRealtimeConversationGroupsRoute,
+  getV1ConvaiSecretsRoute,
+  getV1ConvaiSecretsSecretIdDependenciesResourceTypeRoute,
+  getV1ConvaiSecretsSecretIdRoute,
+  getV1ConvaiSettingsDashboardRoute,
+  getV1ConvaiSettingsRoute,
+  getV1ConvaiTagsRoute,
+  getV1ConvaiTagsTagIdRoute,
+  getV1ConvaiTestInvocationsRoute,
+  getV1ConvaiTestInvocationsTestInvocationIdRoute,
+  getV1ConvaiToolsRoute,
+  getV1ConvaiToolsToolIdDependentAgentsRoute,
+  getV1ConvaiToolsToolIdExecutionsRoute,
+  getV1ConvaiToolsToolIdRoute,
+  getV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+  getV1ConvaiTriageTicketsRoute,
+  getV1ConvaiUsersRoute,
+  getV1ConvaiV2PhoneNumbersRoute,
+  getV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+  getV1ConvaiWhatsappAccountsRoute,
+  getV1DubbingDubbingIdAudioLanguageCodeRoute,
+  getV1DubbingDubbingIdRoute,
+  getV1DubbingDubbingIdTranscriptLanguageCodeRoute,
+  getV1DubbingDubbingIdTranscriptsLanguageCodeFormatFormatTypeRoute,
+  getV1DubbingProjectProjectIdLanguageLanguageIdRoute,
+  getV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRoute,
+  getV1DubbingProjectProjectIdLanguageRoute,
+  getV1DubbingProjectProjectIdRoute,
+  getV1DubbingProjectProjectIdTranscriptRoute,
+  getV1DubbingProjectRoute,
+  getV1DubbingResourceDubbingIdRoute,
+  getV1DubbingResourceDubbingIdSpeakerSpeakerIdSimilarVoicesRoute,
+  getV1DubbingRoute,
+  getV1FlowsImageGenerationIdRoute,
+  getV1FlowsImageRoute,
+  getV1FlowsTemplatesRoute,
+  getV1FlowsTemplatesTemplateIdRoute,
+  getV1FlowsTemplatesTemplateIdRunsRoute,
+  getV1FlowsTemplatesTemplateIdRunsRunIdRoute,
+  getV1FlowsTextToSpeechGenerationIdRoute,
+  getV1FlowsTextToSpeechRoute,
+  getV1FlowsVideoGenerationIdRoute,
+  getV1FlowsVideoRoute,
+  getV1HistoryHistoryItemIdAudioRoute,
+  getV1HistoryHistoryItemIdRoute,
+  getV1HistoryRoute,
+  getV1ModelsRoute,
+  getV1MusicFinetunesFinetuneIdRoute,
+  getV1MusicFinetunesRoute,
+  getV1ProductionsOrdersLanguagesOrderItemKindRoute,
+  getV1ProductionsOrdersOrderIdDeliverablesRoute,
+  getV1ProductionsOrdersOrderIdMediaMediaIdRoute,
+  getV1ProductionsOrdersOrderIdRoute,
+  getV1ProductionsOrdersRoute,
+  getV1PronunciationDictionariesDictionaryIdVersionIdDownloadRoute,
+  getV1PronunciationDictionariesPronunciationDictionaryIdRoute,
+  getV1PronunciationDictionariesRoute,
+  getV1ReceptionAgentInfoRoute,
+  getV1ReceptionAssetsAssetIdRoute,
+  getV1ReceptionAssetsRoute,
+  getV1ReceptionCustomerFacingAgentsAgentIdProceduresRoute,
+  getV1ReceptionCustomerFacingAgentsRoute,
+  getV1ReceptionHolidaysHolidayIdRoute,
+  getV1ReceptionHolidaysRoute,
+  getV1ReceptionKnowledgeSourcesRoute,
+  getV1ReceptionKnowledgeSourcesSourceIdRoute,
+  getV1ReceptionLocationsLocationIdRoute,
+  getV1ReceptionLocationsRoute,
+  getV1ReceptionPhoneNumbersAssignmentsRoute,
+  getV1ReceptionProductsProductIdRoute,
+  getV1ReceptionProductsRoute,
+  getV1ReceptionResellerBillingInvoicesInvoiceIdRoute,
+  getV1ReceptionResellerBillingInvoicesRoute,
+  getV1ReceptionResellerBillingUpcomingRoute,
+  getV1ReceptionResellerTierLadderRoute,
+  getV1ReceptionResellerWorkspacesRoute,
+  getV1ReceptionServicesRoute,
+  getV1ReceptionServicesServiceIdRoute,
+  getV1ReceptionStaffRoute,
+  getV1ReceptionStaffStaffIdRoute,
+  getV1ReceptionTeamInvitesRoute,
+  getV1ReceptionTeamMembersRoute,
+  getV1ServiceAccountsRoute,
+  getV1ServiceAccountsServiceAccountUserIdApiKeysRoute,
+  getV1SharedVoicesRoute,
+  getV1SpeechEngineRoute,
+  getV1SpeechEngineSpeechEngineIdRoute,
+  getV1SpeechToTextTranscriptsTranscriptionIdRoute,
+  getV1StudioProjectsProjectIdChaptersChapterIdRoute,
+  getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdRoute,
+  getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsRoute,
+  getV1StudioProjectsProjectIdChaptersRoute,
+  getV1StudioProjectsProjectIdMutedTracksRoute,
+  getV1StudioProjectsProjectIdRoute,
+  getV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdRoute,
+  getV1StudioProjectsProjectIdSnapshotsRoute,
+  getV1StudioProjectsRoute,
+  getV1TextToVoiceGeneratedVoiceIdStreamRoute,
+  getV1UsageCharacterStatsRoute,
+  getV1UserRoute,
+  getV1UserSubscriptionRoute,
+  getV1VoicesAccentsRoute,
+  getV1VoicesCollectionsCollectionIdRoute,
+  getV1VoicesCollectionsRoute,
+  getV1VoicesPvcVoiceIdCaptchaRoute,
+  getV1VoicesPvcVoiceIdSamplesSampleIdAudioRoute,
+  getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersRoute,
+  getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersSpeakerIdAudioRoute,
+  getV1VoicesPvcVoiceIdSamplesSampleIdWaveformRoute,
+  getV1VoicesRoute,
+  getV1VoicesSettingsDefaultRoute,
+  getV1VoicesVoiceIdRoute,
+  getV1VoicesVoiceIdSamplesSampleIdAudioRoute,
+  getV1VoicesVoiceIdSettingsRoute,
+  getV1WorkspaceAuditLogsRoute,
+  getV1WorkspaceAuthConnectionsRoute,
+  getV1WorkspaceGroupsRoute,
+  getV1WorkspaceGroupsSearchRoute,
+  getV1WorkspaceMembersRoute,
+  getV1WorkspaceResourcesResourceIdRoute,
+  getV1WorkspaceWebhooksRoute,
+  getV2VoicesRoute,
+  patchV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+  patchV1ConvaiAgentsAgentIdBranchesBranchIdRoute,
+  patchV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRoute,
+  patchV1ConvaiAgentsAgentIdRoute,
+  patchV1ConvaiAgentTestingFoldersFolderIdRoute,
+  patchV1ConvaiAnalysisItemsAnalysisItemIdAttachmentsRoute,
+  patchV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+  patchV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+  patchV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRoute,
+  patchV1ConvaiKnowledgeBaseDocumentationIdRoute,
+  patchV1ConvaiKnowledgeBaseDocumentationIdUpdateFileRoute,
+  patchV1ConvaiMcpServersMcpServerIdApprovalPolicyRoute,
+  patchV1ConvaiMcpServersMcpServerIdRoute,
+  patchV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+  patchV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+  patchV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+  patchV1ConvaiSecretsSecretIdRoute,
+  patchV1ConvaiSettingsDashboardRoute,
+  patchV1ConvaiSettingsRoute,
+  patchV1ConvaiTagsTagIdRoute,
+  patchV1ConvaiTestInvocationsTestInvocationIdRoute,
+  patchV1ConvaiToolsToolIdRoute,
+  patchV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+  patchV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+  patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentSegmentIdRoute,
+  patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentsRoute,
+  patchV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRoute,
+  patchV1DubbingProjectProjectIdTranscriptSegmentsRoute,
+  patchV1DubbingResourceDubbingIdSegmentSegmentIdLanguageRoute,
+  patchV1DubbingResourceDubbingIdSpeakerSpeakerIdRoute,
+  patchV1MusicFinetunesFinetuneIdRoute,
+  patchV1ProductionsOrdersOrderIdRoute,
+  patchV1PronunciationDictionariesPronunciationDictionaryIdRoute,
+  patchV1ReceptionCustomerFacingAgentsAgentIdRoute,
+  patchV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRoute,
+  patchV1ReceptionProductsProductIdStockRoute,
+  patchV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+  patchV1ReceptionTeamMembersUserIdRoute,
+  patchV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRoute,
+  patchV1SpeechEngineSpeechEngineIdRoute,
+  patchV1VoicesCollectionsCollectionIdRoute,
+  patchV1WorkspaceAuthConnectionsAuthConnectionIdRoute,
+  patchV1WorkspaceWebhooksWebhookIdRoute,
+  postV1AssetsRoute,
+  postV1AudioIsolationRoute,
+  postV1AudioIsolationStreamRoute,
+  postV1AudioNativeContentRoute,
+  postV1AudioNativeProjectIdContentRoute,
+  postV1AudioNativeRoute,
+  postV1ContentProvenanceWatermarkRoute,
+  postV1ConvaiAgentAgentIdLlmUsageCalculateRoute,
+  postV1ConvaiAgentsAgentIdAvatarRoute,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresCompileRoute,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRoute,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdRebaseRoute,
+  postV1ConvaiAgentsAgentIdBranchesRoute,
+  postV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergeRoute,
+  postV1ConvaiAgentsAgentIdDeploymentsRoute,
+  postV1ConvaiAgentsAgentIdDraftsRoute,
+  postV1ConvaiAgentsAgentIdDuplicateRoute,
+  postV1ConvaiAgentsAgentIdHoldAudioRoute,
+  postV1ConvaiAgentsAgentIdKnowledgeBaseRagQueryRoute,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdCommentsRoute,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdMergeRoute,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdReviewsRoute,
+  postV1ConvaiAgentsAgentIdMergeProposalsRoute,
+  postV1ConvaiAgentsAgentIdRunTestsRoute,
+  postV1ConvaiAgentsAgentIdSimulateConversationRoute,
+  postV1ConvaiAgentsAgentIdSimulateConversationStreamRoute,
+  postV1ConvaiAgentsAgentIdTriageTicketsRoute,
+  postV1ConvaiAgentsCreateRoute,
+  postV1ConvaiAgentTestingBulkMoveRoute,
+  postV1ConvaiAgentTestingCreateRoute,
+  postV1ConvaiAgentTestingFoldersRoute,
+  postV1ConvaiAgentTestingSummariesRoute,
+  postV1ConvaiAnalysisItemsAnalysisItemIdCopyRoute,
+  postV1ConvaiAnalysisItemsRoute,
+  postV1ConvaiBatchCallingBatchIdCancelRoute,
+  postV1ConvaiBatchCallingBatchIdRetryRoute,
+  postV1ConvaiBatchCallingSubmitRoute,
+  postV1ConvaiConversationsConversationIdAnalysisEvaluationsRunRoute,
+  postV1ConvaiConversationsConversationIdAnalysisRunRoute,
+  postV1ConvaiConversationsConversationIdFeedbackRoute,
+  postV1ConvaiConversationsConversationIdFilesRoute,
+  postV1ConvaiConversationsConversationIdMessagesRoute,
+  postV1ConvaiConversationsConversationIdMessagesStreamRoute,
+  postV1ConvaiConversationsConversationIdTagsRoute,
+  postV1ConvaiConversationsRoute,
+  postV1ConvaiEnvironmentsRoute,
+  postV1ConvaiEnvironmentVariablesRoute,
+  postV1ConvaiExotelOutboundCallRoute,
+  postV1ConvaiKnowledgeBaseBulkDeleteRoute,
+  postV1ConvaiKnowledgeBaseBulkMoveRoute,
+  postV1ConvaiKnowledgeBaseCrawlCrawlJobIdCancelRoute,
+  postV1ConvaiKnowledgeBaseCrawlRoute,
+  postV1ConvaiKnowledgeBaseDependentAgentsRoute,
+  postV1ConvaiKnowledgeBaseDocumentationIdRagIndexRoute,
+  postV1ConvaiKnowledgeBaseDocumentationIdRefreshRoute,
+  postV1ConvaiKnowledgeBaseDocumentIdMoveRoute,
+  postV1ConvaiKnowledgeBaseFileRoute,
+  postV1ConvaiKnowledgeBaseFolderRoute,
+  postV1ConvaiKnowledgeBaseRagIndexRoute,
+  postV1ConvaiKnowledgeBaseRoute,
+  postV1ConvaiKnowledgeBaseTextRoute,
+  postV1ConvaiKnowledgeBaseUrlRoute,
+  postV1ConvaiLlmUsageCalculateRoute,
+  postV1ConvaiMcpServersMcpServerIdToolApprovalsRoute,
+  postV1ConvaiMcpServersMcpServerIdToolConfigsRoute,
+  postV1ConvaiMcpServersRoute,
+  postV1ConvaiOutboundCampaignsAttentionAttentionIdResolveRoute,
+  postV1ConvaiOutboundCampaignsAttentionAttentionIdRetryRoute,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdPauseRoute,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdResumeRoute,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdStopRoute,
+  postV1ConvaiOutboundCampaignsCampaignsPauseAllRoute,
+  postV1ConvaiOutboundCampaignsCampaignsStopAllRoute,
+  postV1ConvaiOutboundCampaignsCampaignsSubmitRoute,
+  postV1ConvaiPhoneNumbersRoute,
+  postV1ConvaiRealtimeClientSecretsRoute,
+  postV1ConvaiRealtimeConversationGroupsRoute,
+  postV1ConvaiSecretsRoute,
+  postV1ConvaiSipTrunkOutboundCallRoute,
+  postV1ConvaiTagsRoute,
+  postV1ConvaiTestInvocationsTestInvocationIdCancelRoute,
+  postV1ConvaiTestInvocationsTestInvocationIdResubmitRoute,
+  postV1ConvaiToolsRoute,
+  postV1ConvaiTriageTicketsAgentqaTicketIdCommentsRoute,
+  postV1ConvaiTriageTicketsAgentqaTicketIdMergeRoute,
+  postV1ConvaiTriageTicketsAgentqaTicketIdTurnCommentsRoute,
+  postV1ConvaiTriageTicketsRoute,
+  postV1ConvaiTwilioOutboundCallRoute,
+  postV1ConvaiTwilioRegisterCallRoute,
+  postV1ConvaiWhatsappOutboundCallRoute,
+  postV1ConvaiWhatsappOutboundMessageRoute,
+  postV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRegenerateRoute,
+  postV1DubbingProjectProjectIdLanguageRoute,
+  postV1DubbingProjectProjectIdTranscriptSegmentRoute,
+  postV1DubbingProjectRoute,
+  postV1DubbingResourceDubbingIdDubRoute,
+  postV1DubbingResourceDubbingIdLanguageRoute,
+  postV1DubbingResourceDubbingIdMigrateSegmentsRoute,
+  postV1DubbingResourceDubbingIdRenderLanguageRoute,
+  postV1DubbingResourceDubbingIdSpeakerRoute,
+  postV1DubbingResourceDubbingIdSpeakerSpeakerIdSegmentRoute,
+  postV1DubbingResourceDubbingIdTranscribeRoute,
+  postV1DubbingResourceDubbingIdTranslateRoute,
+  postV1DubbingRoute,
+  postV1FlowsImageRoute,
+  postV1FlowsTemplatesTemplateIdRunsRoute,
+  postV1FlowsTextToSpeechRoute,
+  postV1FlowsVideoRoute,
+  postV1ForcedAlignmentRoute,
+  postV1HistoryDownloadRoute,
+  postV1MusicDetailedRoute,
+  postV1MusicDetailedStreamRoute,
+  postV1MusicFinetunesRoute,
+  postV1MusicPlanRoute,
+  postV1MusicRoute,
+  postV1MusicStemSeparationRoute,
+  postV1MusicStreamRoute,
+  postV1MusicUploadRoute,
+  postV1MusicVideoToMusicRoute,
+  postV1ProductionsOrdersOrderIdItemsRoute,
+  postV1ProductionsOrdersOrderIdMediaRoute,
+  postV1ProductionsOrdersOrderIdSubmitRoute,
+  postV1ProductionsOrdersRoute,
+  postV1PronunciationDictionariesAddFromFileRoute,
+  postV1PronunciationDictionariesAddFromRulesRoute,
+  postV1PronunciationDictionariesPronunciationDictionaryIdAddRulesRoute,
+  postV1PronunciationDictionariesPronunciationDictionaryIdRemoveRulesRoute,
+  postV1PronunciationDictionariesPronunciationDictionaryIdSetRulesRoute,
+  postV1ReceptionAssetsRoute,
+  postV1ReceptionCustomerFacingAgentsAgentIdActivateRoute,
+  postV1ReceptionCustomerFacingAgentsAgentIdProceduresRoute,
+  postV1ReceptionCustomerFacingAgentsAgentIdRulesRoute,
+  postV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRoute,
+  postV1ReceptionHolidaysRoute,
+  postV1ReceptionKnowledgeSourcesRoute,
+  postV1ReceptionKnowledgeSourcesUrlsRoute,
+  postV1ReceptionLocationsRoute,
+  postV1ReceptionPhoneNumbersAssignmentsRoute,
+  postV1ReceptionProductsProductIdStockAdjustRoute,
+  postV1ReceptionProductsRoute,
+  postV1ReceptionResellerWorkspacesRoute,
+  postV1ReceptionResellerWorkspacesWorkspaceIdCompleteOnboardingRoute,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionCancelDowngradeRoute,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRestoreRoute,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+  postV1ReceptionServicesRoute,
+  postV1ReceptionServicesServiceIdConfirmUpdateRoute,
+  postV1ReceptionStaffRoute,
+  postV1ReceptionTeamInvitesRoute,
+  postV1ServiceAccountsRoute,
+  postV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdDisableRoute,
+  postV1ServiceAccountsServiceAccountUserIdApiKeysRoute,
+  postV1SimilarVoicesRoute,
+  postV1SingleUseTokenTokenTypeRoute,
+  postV1SoundGenerationRoute,
+  postV1SpeechEngineRoute,
+  postV1SpeechEngineSpeechEngineIdDuplicateRoute,
+  postV1SpeechToTextRoute,
+  postV1StudioPodcastsRoute,
+  postV1StudioProjectsProjectIdChaptersChapterIdConvertRoute,
+  postV1StudioProjectsProjectIdChaptersChapterIdRoute,
+  postV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdStreamRoute,
+  postV1StudioProjectsProjectIdChaptersRoute,
+  postV1StudioProjectsProjectIdContentRoute,
+  postV1StudioProjectsProjectIdConvertRoute,
+  postV1StudioProjectsProjectIdPronunciationDictionariesRoute,
+  postV1StudioProjectsProjectIdRoute,
+  postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdArchiveRoute,
+  postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdStreamRoute,
+  postV1StudioProjectsRoute,
+  postV1TextToDialogueRoute,
+  postV1TextToDialogueStreamRoute,
+  postV1TextToDialogueStreamWithTimestampsRoute,
+  postV1TextToDialogueWithTimestampsRoute,
+  postV1TextToSpeechVoiceIdRoute,
+  postV1TextToSpeechVoiceIdStreamRoute,
+  postV1TextToSpeechVoiceIdStreamWithTimestampsRoute,
+  postV1TextToSpeechVoiceIdWithTimestampsRoute,
+  postV1TextToVoiceCreatePreviewsRoute,
+  postV1TextToVoiceDesignRoute,
+  postV1TextToVoiceRoute,
+  postV1TextToVoiceVoiceIdRemixRoute,
+  postV1VoiceChangerVoiceIdRoute,
+  postV1VoiceChangerVoiceIdStreamRoute,
+  postV1VoicesAddPublicUserIdVoiceIdRoute,
+  postV1VoicesAddRoute,
+  postV1VoicesCollectionsCollectionIdVoiceVoiceIdRoute,
+  postV1VoicesCollectionsRoute,
+  postV1VoicesPvcRoute,
+  postV1VoicesPvcVoiceIdCaptchaRoute,
+  postV1VoicesPvcVoiceIdRoute,
+  postV1VoicesPvcVoiceIdSamplesRoute,
+  postV1VoicesPvcVoiceIdSamplesSampleIdRoute,
+  postV1VoicesPvcVoiceIdSamplesSampleIdSeparateSpeakersRoute,
+  postV1VoicesPvcVoiceIdTrainRoute,
+  postV1VoicesPvcVoiceIdVerificationRoute,
+  postV1VoicesVoiceIdEditRoute,
+  postV1VoicesVoiceIdReplicateToIsolatedEnvironmentRoute,
+  postV1VoicesVoiceIdSettingsEditRoute,
+  postV1WorkspaceAnalyticsQueryUsageByProductOverTimeRoute,
+  postV1WorkspaceAnalyticsRequestsRoute,
+  postV1WorkspaceAnalyticsUsageRoute,
+  postV1WorkspaceAuthConnectionsRoute,
+  postV1WorkspaceGroupsGroupIdMembersRemoveRoute,
+  postV1WorkspaceGroupsGroupIdMembersRoute,
+  postV1WorkspaceInvitesAddBulkRoute,
+  postV1WorkspaceInvitesAddRoute,
+  postV1WorkspaceMembersRoute,
+  postV1WorkspaceResourcesResourceIdShareRoute,
+  postV1WorkspaceResourcesResourceIdUnshareRoute,
+  postV1WorkspacesApiKeysDisableRoute,
+  postV1WorkspacesApiKeysThirdPartyDisablingRoute,
+  postV1WorkspaceWebhooksRoute,
+  postV1WorkspaceWebhooksWebhookIdDeliveriesDeliveryIdRedeliverRoute,
+  postV1WorkspaceWebhooksWebhookIdTestRoute,
+  putV1ConvaiAgentTestingTestIdRoute,
+  putV1ConvaiOutboundCampaignsConfigRoute,
+  putV1ConvaiRealtimeConversationsConversationIdConversationGroupRoute,
+  putV1ReceptionAgentInfoRoute,
+  putV1ReceptionAssetsAssetIdRoute,
+  putV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRoute,
+  putV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRoute,
+  putV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRoute,
+  putV1ReceptionHolidaysHolidayIdRoute,
+  putV1ReceptionLocationsLocationIdRoute,
+  putV1ReceptionProductsProductIdRoute,
+  putV1ReceptionServicesServiceIdRoute,
+  putV1ReceptionStaffStaffIdRoute,
+  putV1WorkspaceMembersUserIdUsageLimitRoute,
+} from './routes'
+import {
+  deleteV1AssetsAssetIdRouteHandler,
+  deleteV1AudioIsolationHistoryHistoryItemIdRouteHandler,
+  deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRouteHandler,
+  deleteV1ConvaiAgentsAgentIdDraftsRouteHandler,
+  deleteV1ConvaiAgentsAgentIdHoldAudioRouteHandler,
+  deleteV1ConvaiAgentsAgentIdRouteHandler,
+  deleteV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  deleteV1ConvaiAgentTestingTestIdRouteHandler,
+  deleteV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  deleteV1ConvaiBatchCallingBatchIdRouteHandler,
+  deleteV1ConvaiConversationsConversationIdFilesFileIdRouteHandler,
+  deleteV1ConvaiConversationsConversationIdRouteHandler,
+  deleteV1ConvaiConversationsConversationIdTagsTagIdRouteHandler,
+  deleteV1ConvaiEnvironmentsEnvironmentRouteHandler,
+  deleteV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  deleteV1ConvaiKnowledgeBaseDocumentationIdRagIndexRagIndexIdRouteHandler,
+  deleteV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  deleteV1ConvaiMcpServersMcpServerIdRouteHandler,
+  deleteV1ConvaiMcpServersMcpServerIdToolApprovalsToolNameRouteHandler,
+  deleteV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  deleteV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRouteHandler,
+  deleteV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  deleteV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  deleteV1ConvaiRealtimeConversationsConversationIdConversationGroupRouteHandler,
+  deleteV1ConvaiSecretsSecretIdRouteHandler,
+  deleteV1ConvaiTagsTagIdRouteHandler,
+  deleteV1ConvaiToolsToolIdRouteHandler,
+  deleteV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  deleteV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  deleteV1DubbingDubbingIdRouteHandler,
+  deleteV1DubbingProjectProjectIdLanguageLanguageIdRouteHandler,
+  deleteV1DubbingProjectProjectIdRouteHandler,
+  deleteV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRouteHandler,
+  deleteV1DubbingResourceDubbingIdSegmentSegmentIdRouteHandler,
+  deleteV1HistoryHistoryItemIdRouteHandler,
+  deleteV1MusicFinetunesFinetuneIdRouteHandler,
+  deleteV1ProductionsOrdersOrderIdItemsItemIdRouteHandler,
+  deleteV1ReceptionAssetsAssetIdRouteHandler,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRouteHandler,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRouteHandler,
+  deleteV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRouteHandler,
+  deleteV1ReceptionHolidaysHolidayIdRouteHandler,
+  deleteV1ReceptionKnowledgeSourcesSourceIdRouteHandler,
+  deleteV1ReceptionLocationsLocationIdRouteHandler,
+  deleteV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRouteHandler,
+  deleteV1ReceptionProductsProductIdRouteHandler,
+  deleteV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  deleteV1ReceptionServicesServiceIdRouteHandler,
+  deleteV1ReceptionStaffStaffIdRouteHandler,
+  deleteV1ReceptionTeamInvitesRouteHandler,
+  deleteV1ReceptionTeamMembersUserIdRouteHandler,
+  deleteV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRouteHandler,
+  deleteV1SpeechEngineSpeechEngineIdRouteHandler,
+  deleteV1SpeechToTextTranscriptsTranscriptionIdRouteHandler,
+  deleteV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  deleteV1StudioProjectsProjectIdRouteHandler,
+  deleteV1VoicesCollectionsCollectionIdRouteHandler,
+  deleteV1VoicesCollectionsCollectionIdVoiceVoiceIdRouteHandler,
+  deleteV1VoicesPvcVoiceIdSamplesSampleIdRouteHandler,
+  deleteV1VoicesVoiceIdRouteHandler,
+  deleteV1VoicesVoiceIdSamplesSampleIdRouteHandler,
+  deleteV1WorkspaceAuthConnectionsAuthConnectionIdRouteHandler,
+  deleteV1WorkspaceInvitesRouteHandler,
+  deleteV1WorkspaceWebhooksWebhookIdRouteHandler,
+  getDocsRouteHandler,
+  getV1AssetsAssetIdRouteHandler,
+  getV1AssetsRouteHandler,
+  getV1AudioEffectsCatalogRouteHandler,
+  getV1AudioIsolationHistoryRouteHandler,
+  getV1AudioNativeProjectIdSettingsRouteHandler,
+  getV1ConvaiAgentAgentIdKnowledgeBaseSizeRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdRebasePreviewRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesBranchIdRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesRouteHandler,
+  getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRouteHandler,
+  getV1ConvaiAgentsAgentIdDeploymentsRouteHandler,
+  getV1ConvaiAgentsAgentIdLinkRouteHandler,
+  getV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRouteHandler,
+  getV1ConvaiAgentsAgentIdMergeProposalsRouteHandler,
+  getV1ConvaiAgentsAgentIdRouteHandler,
+  getV1ConvaiAgentsAgentIdSubagentDependentsRouteHandler,
+  getV1ConvaiAgentsAgentIdTopicsRouteHandler,
+  getV1ConvaiAgentsAgentIdTriageTicketsAssignableUsersRouteHandler,
+  getV1ConvaiAgentsAgentIdTriageTicketsRouteHandler,
+  getV1ConvaiAgentsAgentIdVersionsVersionIdRouteHandler,
+  getV1ConvaiAgentsAgentIdWidgetRouteHandler,
+  getV1ConvaiAgentsRouteHandler,
+  getV1ConvaiAgentsSummariesRouteHandler,
+  getV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  getV1ConvaiAgentTestingRouteHandler,
+  getV1ConvaiAgentTestingTestIdRouteHandler,
+  getV1ConvaiAnalysisItemsAnalysisItemIdDependentAgentsRouteHandler,
+  getV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  getV1ConvaiAnalysisItemsAnalysisItemIdVersionsRouteHandler,
+  getV1ConvaiAnalysisItemsRouteHandler,
+  getV1ConvaiAnalyticsLiveCountRouteHandler,
+  getV1ConvaiBatchCallingBatchIdExportRouteHandler,
+  getV1ConvaiBatchCallingBatchIdRouteHandler,
+  getV1ConvaiBatchCallingWorkspaceRouteHandler,
+  getV1ConvaiConversationGetSignedUrl2RouteHandler,
+  getV1ConvaiConversationGetSignedUrlRouteHandler,
+  getV1ConvaiConversationsConversationIdAudioRouteHandler,
+  getV1ConvaiConversationsConversationIdFilesFileIdRouteHandler,
+  getV1ConvaiConversationsConversationIdRouteHandler,
+  getV1ConvaiConversationsConversationIdSipMessagesRouteHandler,
+  getV1ConvaiConversationsConversationIdSummaryRouteHandler,
+  getV1ConvaiConversationsConversationIdTurnsTurnIdEventsRouteHandler,
+  getV1ConvaiConversationsConversationIdTurnsTurnIdRouteHandler,
+  getV1ConvaiConversationsMessagesSmartSearchRouteHandler,
+  getV1ConvaiConversationsMessagesTextSearchRouteHandler,
+  getV1ConvaiConversationsResolveRouteHandler,
+  getV1ConvaiConversationsRouteHandler,
+  getV1ConvaiConversationTokenRouteHandler,
+  getV1ConvaiEnvironmentsRouteHandler,
+  getV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  getV1ConvaiEnvironmentVariablesRouteHandler,
+  getV1ConvaiKnowledgeBaseCrawlCrawlJobIdRouteHandler,
+  getV1ConvaiKnowledgeBaseCrawlRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunkChunkIdRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdChunksRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdContentRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdDependentAgentsRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdRagIndexRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  getV1ConvaiKnowledgeBaseDocumentationIdSourceFileUrlRouteHandler,
+  getV1ConvaiKnowledgeBaseRagIndexRouteHandler,
+  getV1ConvaiKnowledgeBaseRouteHandler,
+  getV1ConvaiKnowledgeBaseSearchRouteHandler,
+  getV1ConvaiKnowledgeBaseSummariesRouteHandler,
+  getV1ConvaiLlmListRouteHandler,
+  getV1ConvaiMcpServersMcpServerIdRouteHandler,
+  getV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  getV1ConvaiMcpServersMcpServerIdToolsRouteHandler,
+  getV1ConvaiMcpServersRouteHandler,
+  getV1ConvaiOutboundCampaignsAttentionRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdCallsRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdExportRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdFollowUpRequestsRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdProgressRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsCampaignIdRouteHandler,
+  getV1ConvaiOutboundCampaignsCampaignsRouteHandler,
+  getV1ConvaiOutboundCampaignsConfigRouteHandler,
+  getV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  getV1ConvaiPhoneNumbersPhoneNumberIdSipMessagesRouteHandler,
+  getV1ConvaiPhoneNumbersRouteHandler,
+  getV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  getV1ConvaiRealtimeConversationGroupsRouteHandler,
+  getV1ConvaiSecretsRouteHandler,
+  getV1ConvaiSecretsSecretIdDependenciesResourceTypeRouteHandler,
+  getV1ConvaiSecretsSecretIdRouteHandler,
+  getV1ConvaiSettingsDashboardRouteHandler,
+  getV1ConvaiSettingsRouteHandler,
+  getV1ConvaiTagsRouteHandler,
+  getV1ConvaiTagsTagIdRouteHandler,
+  getV1ConvaiTestInvocationsRouteHandler,
+  getV1ConvaiTestInvocationsTestInvocationIdRouteHandler,
+  getV1ConvaiToolsRouteHandler,
+  getV1ConvaiToolsToolIdDependentAgentsRouteHandler,
+  getV1ConvaiToolsToolIdExecutionsRouteHandler,
+  getV1ConvaiToolsToolIdRouteHandler,
+  getV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  getV1ConvaiTriageTicketsRouteHandler,
+  getV1ConvaiUsersRouteHandler,
+  getV1ConvaiV2PhoneNumbersRouteHandler,
+  getV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  getV1ConvaiWhatsappAccountsRouteHandler,
+  getV1DubbingDubbingIdAudioLanguageCodeRouteHandler,
+  getV1DubbingDubbingIdRouteHandler,
+  getV1DubbingDubbingIdTranscriptLanguageCodeRouteHandler,
+  getV1DubbingDubbingIdTranscriptsLanguageCodeFormatFormatTypeRouteHandler,
+  getV1DubbingProjectProjectIdLanguageLanguageIdRouteHandler,
+  getV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRouteHandler,
+  getV1DubbingProjectProjectIdLanguageRouteHandler,
+  getV1DubbingProjectProjectIdRouteHandler,
+  getV1DubbingProjectProjectIdTranscriptRouteHandler,
+  getV1DubbingProjectRouteHandler,
+  getV1DubbingResourceDubbingIdRouteHandler,
+  getV1DubbingResourceDubbingIdSpeakerSpeakerIdSimilarVoicesRouteHandler,
+  getV1DubbingRouteHandler,
+  getV1FlowsImageGenerationIdRouteHandler,
+  getV1FlowsImageRouteHandler,
+  getV1FlowsTemplatesRouteHandler,
+  getV1FlowsTemplatesTemplateIdRouteHandler,
+  getV1FlowsTemplatesTemplateIdRunsRouteHandler,
+  getV1FlowsTemplatesTemplateIdRunsRunIdRouteHandler,
+  getV1FlowsTextToSpeechGenerationIdRouteHandler,
+  getV1FlowsTextToSpeechRouteHandler,
+  getV1FlowsVideoGenerationIdRouteHandler,
+  getV1FlowsVideoRouteHandler,
+  getV1HistoryHistoryItemIdAudioRouteHandler,
+  getV1HistoryHistoryItemIdRouteHandler,
+  getV1HistoryRouteHandler,
+  getV1ModelsRouteHandler,
+  getV1MusicFinetunesFinetuneIdRouteHandler,
+  getV1MusicFinetunesRouteHandler,
+  getV1ProductionsOrdersLanguagesOrderItemKindRouteHandler,
+  getV1ProductionsOrdersOrderIdDeliverablesRouteHandler,
+  getV1ProductionsOrdersOrderIdMediaMediaIdRouteHandler,
+  getV1ProductionsOrdersOrderIdRouteHandler,
+  getV1ProductionsOrdersRouteHandler,
+  getV1PronunciationDictionariesDictionaryIdVersionIdDownloadRouteHandler,
+  getV1PronunciationDictionariesPronunciationDictionaryIdRouteHandler,
+  getV1PronunciationDictionariesRouteHandler,
+  getV1ReceptionAgentInfoRouteHandler,
+  getV1ReceptionAssetsAssetIdRouteHandler,
+  getV1ReceptionAssetsRouteHandler,
+  getV1ReceptionCustomerFacingAgentsAgentIdProceduresRouteHandler,
+  getV1ReceptionCustomerFacingAgentsRouteHandler,
+  getV1ReceptionHolidaysHolidayIdRouteHandler,
+  getV1ReceptionHolidaysRouteHandler,
+  getV1ReceptionKnowledgeSourcesRouteHandler,
+  getV1ReceptionKnowledgeSourcesSourceIdRouteHandler,
+  getV1ReceptionLocationsLocationIdRouteHandler,
+  getV1ReceptionLocationsRouteHandler,
+  getV1ReceptionPhoneNumbersAssignmentsRouteHandler,
+  getV1ReceptionProductsProductIdRouteHandler,
+  getV1ReceptionProductsRouteHandler,
+  getV1ReceptionResellerBillingInvoicesInvoiceIdRouteHandler,
+  getV1ReceptionResellerBillingInvoicesRouteHandler,
+  getV1ReceptionResellerBillingUpcomingRouteHandler,
+  getV1ReceptionResellerTierLadderRouteHandler,
+  getV1ReceptionResellerWorkspacesRouteHandler,
+  getV1ReceptionServicesRouteHandler,
+  getV1ReceptionServicesServiceIdRouteHandler,
+  getV1ReceptionStaffRouteHandler,
+  getV1ReceptionStaffStaffIdRouteHandler,
+  getV1ReceptionTeamInvitesRouteHandler,
+  getV1ReceptionTeamMembersRouteHandler,
+  getV1ServiceAccountsRouteHandler,
+  getV1ServiceAccountsServiceAccountUserIdApiKeysRouteHandler,
+  getV1SharedVoicesRouteHandler,
+  getV1SpeechEngineRouteHandler,
+  getV1SpeechEngineSpeechEngineIdRouteHandler,
+  getV1SpeechToTextTranscriptsTranscriptionIdRouteHandler,
+  getV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdRouteHandler,
+  getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsRouteHandler,
+  getV1StudioProjectsProjectIdChaptersRouteHandler,
+  getV1StudioProjectsProjectIdMutedTracksRouteHandler,
+  getV1StudioProjectsProjectIdRouteHandler,
+  getV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdRouteHandler,
+  getV1StudioProjectsProjectIdSnapshotsRouteHandler,
+  getV1StudioProjectsRouteHandler,
+  getV1TextToVoiceGeneratedVoiceIdStreamRouteHandler,
+  getV1UsageCharacterStatsRouteHandler,
+  getV1UserRouteHandler,
+  getV1UserSubscriptionRouteHandler,
+  getV1VoicesAccentsRouteHandler,
+  getV1VoicesCollectionsCollectionIdRouteHandler,
+  getV1VoicesCollectionsRouteHandler,
+  getV1VoicesPvcVoiceIdCaptchaRouteHandler,
+  getV1VoicesPvcVoiceIdSamplesSampleIdAudioRouteHandler,
+  getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersRouteHandler,
+  getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersSpeakerIdAudioRouteHandler,
+  getV1VoicesPvcVoiceIdSamplesSampleIdWaveformRouteHandler,
+  getV1VoicesRouteHandler,
+  getV1VoicesSettingsDefaultRouteHandler,
+  getV1VoicesVoiceIdRouteHandler,
+  getV1VoicesVoiceIdSamplesSampleIdAudioRouteHandler,
+  getV1VoicesVoiceIdSettingsRouteHandler,
+  getV1WorkspaceAuditLogsRouteHandler,
+  getV1WorkspaceAuthConnectionsRouteHandler,
+  getV1WorkspaceGroupsRouteHandler,
+  getV1WorkspaceGroupsSearchRouteHandler,
+  getV1WorkspaceMembersRouteHandler,
+  getV1WorkspaceResourcesResourceIdRouteHandler,
+  getV1WorkspaceWebhooksRouteHandler,
+  getV2VoicesRouteHandler,
+  patchV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  patchV1ConvaiAgentsAgentIdBranchesBranchIdRouteHandler,
+  patchV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRouteHandler,
+  patchV1ConvaiAgentsAgentIdRouteHandler,
+  patchV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  patchV1ConvaiAnalysisItemsAnalysisItemIdAttachmentsRouteHandler,
+  patchV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  patchV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  patchV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRouteHandler,
+  patchV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  patchV1ConvaiKnowledgeBaseDocumentationIdUpdateFileRouteHandler,
+  patchV1ConvaiMcpServersMcpServerIdApprovalPolicyRouteHandler,
+  patchV1ConvaiMcpServersMcpServerIdRouteHandler,
+  patchV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  patchV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  patchV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  patchV1ConvaiSecretsSecretIdRouteHandler,
+  patchV1ConvaiSettingsDashboardRouteHandler,
+  patchV1ConvaiSettingsRouteHandler,
+  patchV1ConvaiTagsTagIdRouteHandler,
+  patchV1ConvaiTestInvocationsTestInvocationIdRouteHandler,
+  patchV1ConvaiToolsToolIdRouteHandler,
+  patchV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  patchV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentSegmentIdRouteHandler,
+  patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentsRouteHandler,
+  patchV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRouteHandler,
+  patchV1DubbingProjectProjectIdTranscriptSegmentsRouteHandler,
+  patchV1DubbingResourceDubbingIdSegmentSegmentIdLanguageRouteHandler,
+  patchV1DubbingResourceDubbingIdSpeakerSpeakerIdRouteHandler,
+  patchV1MusicFinetunesFinetuneIdRouteHandler,
+  patchV1ProductionsOrdersOrderIdRouteHandler,
+  patchV1PronunciationDictionariesPronunciationDictionaryIdRouteHandler,
+  patchV1ReceptionCustomerFacingAgentsAgentIdRouteHandler,
+  patchV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRouteHandler,
+  patchV1ReceptionProductsProductIdStockRouteHandler,
+  patchV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  patchV1ReceptionTeamMembersUserIdRouteHandler,
+  patchV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRouteHandler,
+  patchV1SpeechEngineSpeechEngineIdRouteHandler,
+  patchV1VoicesCollectionsCollectionIdRouteHandler,
+  patchV1WorkspaceAuthConnectionsAuthConnectionIdRouteHandler,
+  patchV1WorkspaceWebhooksWebhookIdRouteHandler,
+  postV1AssetsRouteHandler,
+  postV1AudioIsolationRouteHandler,
+  postV1AudioIsolationStreamRouteHandler,
+  postV1AudioNativeContentRouteHandler,
+  postV1AudioNativeProjectIdContentRouteHandler,
+  postV1AudioNativeRouteHandler,
+  postV1ContentProvenanceWatermarkRouteHandler,
+  postV1ConvaiAgentAgentIdLlmUsageCalculateRouteHandler,
+  postV1ConvaiAgentsAgentIdAvatarRouteHandler,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresCompileRouteHandler,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRouteHandler,
+  postV1ConvaiAgentsAgentIdBranchesBranchIdRebaseRouteHandler,
+  postV1ConvaiAgentsAgentIdBranchesRouteHandler,
+  postV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergeRouteHandler,
+  postV1ConvaiAgentsAgentIdDeploymentsRouteHandler,
+  postV1ConvaiAgentsAgentIdDraftsRouteHandler,
+  postV1ConvaiAgentsAgentIdDuplicateRouteHandler,
+  postV1ConvaiAgentsAgentIdHoldAudioRouteHandler,
+  postV1ConvaiAgentsAgentIdKnowledgeBaseRagQueryRouteHandler,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdCommentsRouteHandler,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdMergeRouteHandler,
+  postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdReviewsRouteHandler,
+  postV1ConvaiAgentsAgentIdMergeProposalsRouteHandler,
+  postV1ConvaiAgentsAgentIdRunTestsRouteHandler,
+  postV1ConvaiAgentsAgentIdSimulateConversationRouteHandler,
+  postV1ConvaiAgentsAgentIdSimulateConversationStreamRouteHandler,
+  postV1ConvaiAgentsAgentIdTriageTicketsRouteHandler,
+  postV1ConvaiAgentsCreateRouteHandler,
+  postV1ConvaiAgentTestingBulkMoveRouteHandler,
+  postV1ConvaiAgentTestingCreateRouteHandler,
+  postV1ConvaiAgentTestingFoldersRouteHandler,
+  postV1ConvaiAgentTestingSummariesRouteHandler,
+  postV1ConvaiAnalysisItemsAnalysisItemIdCopyRouteHandler,
+  postV1ConvaiAnalysisItemsRouteHandler,
+  postV1ConvaiBatchCallingBatchIdCancelRouteHandler,
+  postV1ConvaiBatchCallingBatchIdRetryRouteHandler,
+  postV1ConvaiBatchCallingSubmitRouteHandler,
+  postV1ConvaiConversationsConversationIdAnalysisEvaluationsRunRouteHandler,
+  postV1ConvaiConversationsConversationIdAnalysisRunRouteHandler,
+  postV1ConvaiConversationsConversationIdFeedbackRouteHandler,
+  postV1ConvaiConversationsConversationIdFilesRouteHandler,
+  postV1ConvaiConversationsConversationIdMessagesRouteHandler,
+  postV1ConvaiConversationsConversationIdMessagesStreamRouteHandler,
+  postV1ConvaiConversationsConversationIdTagsRouteHandler,
+  postV1ConvaiConversationsRouteHandler,
+  postV1ConvaiEnvironmentsRouteHandler,
+  postV1ConvaiEnvironmentVariablesRouteHandler,
+  postV1ConvaiExotelOutboundCallRouteHandler,
+  postV1ConvaiKnowledgeBaseBulkDeleteRouteHandler,
+  postV1ConvaiKnowledgeBaseBulkMoveRouteHandler,
+  postV1ConvaiKnowledgeBaseCrawlCrawlJobIdCancelRouteHandler,
+  postV1ConvaiKnowledgeBaseCrawlRouteHandler,
+  postV1ConvaiKnowledgeBaseDependentAgentsRouteHandler,
+  postV1ConvaiKnowledgeBaseDocumentationIdRagIndexRouteHandler,
+  postV1ConvaiKnowledgeBaseDocumentationIdRefreshRouteHandler,
+  postV1ConvaiKnowledgeBaseDocumentIdMoveRouteHandler,
+  postV1ConvaiKnowledgeBaseFileRouteHandler,
+  postV1ConvaiKnowledgeBaseFolderRouteHandler,
+  postV1ConvaiKnowledgeBaseRagIndexRouteHandler,
+  postV1ConvaiKnowledgeBaseRouteHandler,
+  postV1ConvaiKnowledgeBaseTextRouteHandler,
+  postV1ConvaiKnowledgeBaseUrlRouteHandler,
+  postV1ConvaiLlmUsageCalculateRouteHandler,
+  postV1ConvaiMcpServersMcpServerIdToolApprovalsRouteHandler,
+  postV1ConvaiMcpServersMcpServerIdToolConfigsRouteHandler,
+  postV1ConvaiMcpServersRouteHandler,
+  postV1ConvaiOutboundCampaignsAttentionAttentionIdResolveRouteHandler,
+  postV1ConvaiOutboundCampaignsAttentionAttentionIdRetryRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdPauseRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdResumeRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsCampaignIdStopRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsPauseAllRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsStopAllRouteHandler,
+  postV1ConvaiOutboundCampaignsCampaignsSubmitRouteHandler,
+  postV1ConvaiPhoneNumbersRouteHandler,
+  postV1ConvaiRealtimeClientSecretsRouteHandler,
+  postV1ConvaiRealtimeConversationGroupsRouteHandler,
+  postV1ConvaiSecretsRouteHandler,
+  postV1ConvaiSipTrunkOutboundCallRouteHandler,
+  postV1ConvaiTagsRouteHandler,
+  postV1ConvaiTestInvocationsTestInvocationIdCancelRouteHandler,
+  postV1ConvaiTestInvocationsTestInvocationIdResubmitRouteHandler,
+  postV1ConvaiToolsRouteHandler,
+  postV1ConvaiTriageTicketsAgentqaTicketIdCommentsRouteHandler,
+  postV1ConvaiTriageTicketsAgentqaTicketIdMergeRouteHandler,
+  postV1ConvaiTriageTicketsAgentqaTicketIdTurnCommentsRouteHandler,
+  postV1ConvaiTriageTicketsRouteHandler,
+  postV1ConvaiTwilioOutboundCallRouteHandler,
+  postV1ConvaiTwilioRegisterCallRouteHandler,
+  postV1ConvaiWhatsappOutboundCallRouteHandler,
+  postV1ConvaiWhatsappOutboundMessageRouteHandler,
+  postV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRegenerateRouteHandler,
+  postV1DubbingProjectProjectIdLanguageRouteHandler,
+  postV1DubbingProjectProjectIdTranscriptSegmentRouteHandler,
+  postV1DubbingProjectRouteHandler,
+  postV1DubbingResourceDubbingIdDubRouteHandler,
+  postV1DubbingResourceDubbingIdLanguageRouteHandler,
+  postV1DubbingResourceDubbingIdMigrateSegmentsRouteHandler,
+  postV1DubbingResourceDubbingIdRenderLanguageRouteHandler,
+  postV1DubbingResourceDubbingIdSpeakerRouteHandler,
+  postV1DubbingResourceDubbingIdSpeakerSpeakerIdSegmentRouteHandler,
+  postV1DubbingResourceDubbingIdTranscribeRouteHandler,
+  postV1DubbingResourceDubbingIdTranslateRouteHandler,
+  postV1DubbingRouteHandler,
+  postV1FlowsImageRouteHandler,
+  postV1FlowsTemplatesTemplateIdRunsRouteHandler,
+  postV1FlowsTextToSpeechRouteHandler,
+  postV1FlowsVideoRouteHandler,
+  postV1ForcedAlignmentRouteHandler,
+  postV1HistoryDownloadRouteHandler,
+  postV1MusicDetailedRouteHandler,
+  postV1MusicDetailedStreamRouteHandler,
+  postV1MusicFinetunesRouteHandler,
+  postV1MusicPlanRouteHandler,
+  postV1MusicRouteHandler,
+  postV1MusicStemSeparationRouteHandler,
+  postV1MusicStreamRouteHandler,
+  postV1MusicUploadRouteHandler,
+  postV1MusicVideoToMusicRouteHandler,
+  postV1ProductionsOrdersOrderIdItemsRouteHandler,
+  postV1ProductionsOrdersOrderIdMediaRouteHandler,
+  postV1ProductionsOrdersOrderIdSubmitRouteHandler,
+  postV1ProductionsOrdersRouteHandler,
+  postV1PronunciationDictionariesAddFromFileRouteHandler,
+  postV1PronunciationDictionariesAddFromRulesRouteHandler,
+  postV1PronunciationDictionariesPronunciationDictionaryIdAddRulesRouteHandler,
+  postV1PronunciationDictionariesPronunciationDictionaryIdRemoveRulesRouteHandler,
+  postV1PronunciationDictionariesPronunciationDictionaryIdSetRulesRouteHandler,
+  postV1ReceptionAssetsRouteHandler,
+  postV1ReceptionCustomerFacingAgentsAgentIdActivateRouteHandler,
+  postV1ReceptionCustomerFacingAgentsAgentIdProceduresRouteHandler,
+  postV1ReceptionCustomerFacingAgentsAgentIdRulesRouteHandler,
+  postV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRouteHandler,
+  postV1ReceptionHolidaysRouteHandler,
+  postV1ReceptionKnowledgeSourcesRouteHandler,
+  postV1ReceptionKnowledgeSourcesUrlsRouteHandler,
+  postV1ReceptionLocationsRouteHandler,
+  postV1ReceptionPhoneNumbersAssignmentsRouteHandler,
+  postV1ReceptionProductsProductIdStockAdjustRouteHandler,
+  postV1ReceptionProductsRouteHandler,
+  postV1ReceptionResellerWorkspacesRouteHandler,
+  postV1ReceptionResellerWorkspacesWorkspaceIdCompleteOnboardingRouteHandler,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionCancelDowngradeRouteHandler,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRestoreRouteHandler,
+  postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  postV1ReceptionServicesRouteHandler,
+  postV1ReceptionServicesServiceIdConfirmUpdateRouteHandler,
+  postV1ReceptionStaffRouteHandler,
+  postV1ReceptionTeamInvitesRouteHandler,
+  postV1ServiceAccountsRouteHandler,
+  postV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdDisableRouteHandler,
+  postV1ServiceAccountsServiceAccountUserIdApiKeysRouteHandler,
+  postV1SimilarVoicesRouteHandler,
+  postV1SingleUseTokenTokenTypeRouteHandler,
+  postV1SoundGenerationRouteHandler,
+  postV1SpeechEngineRouteHandler,
+  postV1SpeechEngineSpeechEngineIdDuplicateRouteHandler,
+  postV1SpeechToTextRouteHandler,
+  postV1StudioPodcastsRouteHandler,
+  postV1StudioProjectsProjectIdChaptersChapterIdConvertRouteHandler,
+  postV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  postV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdStreamRouteHandler,
+  postV1StudioProjectsProjectIdChaptersRouteHandler,
+  postV1StudioProjectsProjectIdContentRouteHandler,
+  postV1StudioProjectsProjectIdConvertRouteHandler,
+  postV1StudioProjectsProjectIdPronunciationDictionariesRouteHandler,
+  postV1StudioProjectsProjectIdRouteHandler,
+  postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdArchiveRouteHandler,
+  postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdStreamRouteHandler,
+  postV1StudioProjectsRouteHandler,
+  postV1TextToDialogueRouteHandler,
+  postV1TextToDialogueStreamRouteHandler,
+  postV1TextToDialogueStreamWithTimestampsRouteHandler,
+  postV1TextToDialogueWithTimestampsRouteHandler,
+  postV1TextToSpeechVoiceIdRouteHandler,
+  postV1TextToSpeechVoiceIdStreamRouteHandler,
+  postV1TextToSpeechVoiceIdStreamWithTimestampsRouteHandler,
+  postV1TextToSpeechVoiceIdWithTimestampsRouteHandler,
+  postV1TextToVoiceCreatePreviewsRouteHandler,
+  postV1TextToVoiceDesignRouteHandler,
+  postV1TextToVoiceRouteHandler,
+  postV1TextToVoiceVoiceIdRemixRouteHandler,
+  postV1VoiceChangerVoiceIdRouteHandler,
+  postV1VoiceChangerVoiceIdStreamRouteHandler,
+  postV1VoicesAddPublicUserIdVoiceIdRouteHandler,
+  postV1VoicesAddRouteHandler,
+  postV1VoicesCollectionsCollectionIdVoiceVoiceIdRouteHandler,
+  postV1VoicesCollectionsRouteHandler,
+  postV1VoicesPvcRouteHandler,
+  postV1VoicesPvcVoiceIdCaptchaRouteHandler,
+  postV1VoicesPvcVoiceIdRouteHandler,
+  postV1VoicesPvcVoiceIdSamplesRouteHandler,
+  postV1VoicesPvcVoiceIdSamplesSampleIdRouteHandler,
+  postV1VoicesPvcVoiceIdSamplesSampleIdSeparateSpeakersRouteHandler,
+  postV1VoicesPvcVoiceIdTrainRouteHandler,
+  postV1VoicesPvcVoiceIdVerificationRouteHandler,
+  postV1VoicesVoiceIdEditRouteHandler,
+  postV1VoicesVoiceIdReplicateToIsolatedEnvironmentRouteHandler,
+  postV1VoicesVoiceIdSettingsEditRouteHandler,
+  postV1WorkspaceAnalyticsQueryUsageByProductOverTimeRouteHandler,
+  postV1WorkspaceAnalyticsRequestsRouteHandler,
+  postV1WorkspaceAnalyticsUsageRouteHandler,
+  postV1WorkspaceAuthConnectionsRouteHandler,
+  postV1WorkspaceGroupsGroupIdMembersRemoveRouteHandler,
+  postV1WorkspaceGroupsGroupIdMembersRouteHandler,
+  postV1WorkspaceInvitesAddBulkRouteHandler,
+  postV1WorkspaceInvitesAddRouteHandler,
+  postV1WorkspaceMembersRouteHandler,
+  postV1WorkspaceResourcesResourceIdShareRouteHandler,
+  postV1WorkspaceResourcesResourceIdUnshareRouteHandler,
+  postV1WorkspacesApiKeysDisableRouteHandler,
+  postV1WorkspacesApiKeysThirdPartyDisablingRouteHandler,
+  postV1WorkspaceWebhooksRouteHandler,
+  postV1WorkspaceWebhooksWebhookIdDeliveriesDeliveryIdRedeliverRouteHandler,
+  postV1WorkspaceWebhooksWebhookIdTestRouteHandler,
+  putV1ConvaiAgentTestingTestIdRouteHandler,
+  putV1ConvaiOutboundCampaignsConfigRouteHandler,
+  putV1ConvaiRealtimeConversationsConversationIdConversationGroupRouteHandler,
+  putV1ReceptionAgentInfoRouteHandler,
+  putV1ReceptionAssetsAssetIdRouteHandler,
+  putV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRouteHandler,
+  putV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRouteHandler,
+  putV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRouteHandler,
+  putV1ReceptionHolidaysHolidayIdRouteHandler,
+  putV1ReceptionLocationsLocationIdRouteHandler,
+  putV1ReceptionProductsProductIdRouteHandler,
+  putV1ReceptionServicesServiceIdRouteHandler,
+  putV1ReceptionStaffStaffIdRouteHandler,
+  putV1WorkspaceMembersUserIdUsageLimitRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', v1Handler).route('/', v2Handler).route('/', docsHandler)
+export const api = app
+  .openapi(getV1HistoryRoute, getV1HistoryRouteHandler)
+  .openapi(getV1HistoryHistoryItemIdRoute, getV1HistoryHistoryItemIdRouteHandler)
+  .openapi(deleteV1HistoryHistoryItemIdRoute, deleteV1HistoryHistoryItemIdRouteHandler)
+  .openapi(getV1HistoryHistoryItemIdAudioRoute, getV1HistoryHistoryItemIdAudioRouteHandler)
+  .openapi(postV1HistoryDownloadRoute, postV1HistoryDownloadRouteHandler)
+  .openapi(postV1SoundGenerationRoute, postV1SoundGenerationRouteHandler)
+  .openapi(postV1AudioIsolationRoute, postV1AudioIsolationRouteHandler)
+  .openapi(getV1AudioIsolationHistoryRoute, getV1AudioIsolationHistoryRouteHandler)
+  .openapi(
+    deleteV1AudioIsolationHistoryHistoryItemIdRoute,
+    deleteV1AudioIsolationHistoryHistoryItemIdRouteHandler,
+  )
+  .openapi(postV1AudioIsolationStreamRoute, postV1AudioIsolationStreamRouteHandler)
+  .openapi(getV1AudioEffectsCatalogRoute, getV1AudioEffectsCatalogRouteHandler)
+  .openapi(
+    deleteV1VoicesVoiceIdSamplesSampleIdRoute,
+    deleteV1VoicesVoiceIdSamplesSampleIdRouteHandler,
+  )
+  .openapi(
+    getV1VoicesVoiceIdSamplesSampleIdAudioRoute,
+    getV1VoicesVoiceIdSamplesSampleIdAudioRouteHandler,
+  )
+  .openapi(postV1TextToSpeechVoiceIdRoute, postV1TextToSpeechVoiceIdRouteHandler)
+  .openapi(
+    postV1TextToSpeechVoiceIdWithTimestampsRoute,
+    postV1TextToSpeechVoiceIdWithTimestampsRouteHandler,
+  )
+  .openapi(postV1TextToSpeechVoiceIdStreamRoute, postV1TextToSpeechVoiceIdStreamRouteHandler)
+  .openapi(
+    postV1TextToSpeechVoiceIdStreamWithTimestampsRoute,
+    postV1TextToSpeechVoiceIdStreamWithTimestampsRouteHandler,
+  )
+  .openapi(postV1TextToDialogueRoute, postV1TextToDialogueRouteHandler)
+  .openapi(postV1TextToDialogueStreamRoute, postV1TextToDialogueStreamRouteHandler)
+  .openapi(
+    postV1TextToDialogueStreamWithTimestampsRoute,
+    postV1TextToDialogueStreamWithTimestampsRouteHandler,
+  )
+  .openapi(postV1TextToDialogueWithTimestampsRoute, postV1TextToDialogueWithTimestampsRouteHandler)
+  .openapi(postV1VoiceChangerVoiceIdRoute, postV1VoiceChangerVoiceIdRouteHandler)
+  .openapi(postV1VoiceChangerVoiceIdStreamRoute, postV1VoiceChangerVoiceIdStreamRouteHandler)
+  .openapi(postV1TextToVoiceCreatePreviewsRoute, postV1TextToVoiceCreatePreviewsRouteHandler)
+  .openapi(postV1TextToVoiceRoute, postV1TextToVoiceRouteHandler)
+  .openapi(postV1TextToVoiceDesignRoute, postV1TextToVoiceDesignRouteHandler)
+  .openapi(postV1TextToVoiceVoiceIdRemixRoute, postV1TextToVoiceVoiceIdRemixRouteHandler)
+  .openapi(
+    getV1TextToVoiceGeneratedVoiceIdStreamRoute,
+    getV1TextToVoiceGeneratedVoiceIdStreamRouteHandler,
+  )
+  .openapi(getV1UserRoute, getV1UserRouteHandler)
+  .openapi(getV1UserSubscriptionRoute, getV1UserSubscriptionRouteHandler)
+  .openapi(getV1VoicesCollectionsRoute, getV1VoicesCollectionsRouteHandler)
+  .openapi(postV1VoicesCollectionsRoute, postV1VoicesCollectionsRouteHandler)
+  .openapi(getV1VoicesCollectionsCollectionIdRoute, getV1VoicesCollectionsCollectionIdRouteHandler)
+  .openapi(
+    patchV1VoicesCollectionsCollectionIdRoute,
+    patchV1VoicesCollectionsCollectionIdRouteHandler,
+  )
+  .openapi(
+    deleteV1VoicesCollectionsCollectionIdRoute,
+    deleteV1VoicesCollectionsCollectionIdRouteHandler,
+  )
+  .openapi(
+    postV1VoicesCollectionsCollectionIdVoiceVoiceIdRoute,
+    postV1VoicesCollectionsCollectionIdVoiceVoiceIdRouteHandler,
+  )
+  .openapi(
+    deleteV1VoicesCollectionsCollectionIdVoiceVoiceIdRoute,
+    deleteV1VoicesCollectionsCollectionIdVoiceVoiceIdRouteHandler,
+  )
+  .openapi(getV1VoicesSettingsDefaultRoute, getV1VoicesSettingsDefaultRouteHandler)
+  .openapi(getV1VoicesVoiceIdSettingsRoute, getV1VoicesVoiceIdSettingsRouteHandler)
+  .openapi(postV1VoicesVoiceIdSettingsEditRoute, postV1VoicesVoiceIdSettingsEditRouteHandler)
+  .openapi(getV1VoicesAccentsRoute, getV1VoicesAccentsRouteHandler)
+  .openapi(getV1VoicesRoute, getV1VoicesRouteHandler)
+  .openapi(getV1VoicesVoiceIdRoute, getV1VoicesVoiceIdRouteHandler)
+  .openapi(deleteV1VoicesVoiceIdRoute, deleteV1VoicesVoiceIdRouteHandler)
+  .openapi(postV1VoicesVoiceIdEditRoute, postV1VoicesVoiceIdEditRouteHandler)
+  .openapi(getV2VoicesRoute, getV2VoicesRouteHandler)
+  .openapi(
+    postV1VoicesVoiceIdReplicateToIsolatedEnvironmentRoute,
+    postV1VoicesVoiceIdReplicateToIsolatedEnvironmentRouteHandler,
+  )
+  .openapi(postV1VoicesAddRoute, postV1VoicesAddRouteHandler)
+  .openapi(postV1VoicesAddPublicUserIdVoiceIdRoute, postV1VoicesAddPublicUserIdVoiceIdRouteHandler)
+  .openapi(postV1StudioPodcastsRoute, postV1StudioPodcastsRouteHandler)
+  .openapi(
+    postV1StudioProjectsProjectIdPronunciationDictionariesRoute,
+    postV1StudioProjectsProjectIdPronunciationDictionariesRouteHandler,
+  )
+  .openapi(getV1StudioProjectsRoute, getV1StudioProjectsRouteHandler)
+  .openapi(postV1StudioProjectsRoute, postV1StudioProjectsRouteHandler)
+  .openapi(postV1StudioProjectsProjectIdRoute, postV1StudioProjectsProjectIdRouteHandler)
+  .openapi(getV1StudioProjectsProjectIdRoute, getV1StudioProjectsProjectIdRouteHandler)
+  .openapi(deleteV1StudioProjectsProjectIdRoute, deleteV1StudioProjectsProjectIdRouteHandler)
+  .openapi(
+    postV1StudioProjectsProjectIdContentRoute,
+    postV1StudioProjectsProjectIdContentRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdConvertRoute,
+    postV1StudioProjectsProjectIdConvertRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdSnapshotsRoute,
+    getV1StudioProjectsProjectIdSnapshotsRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdRoute,
+    getV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdStreamRoute,
+    postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdStreamRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdArchiveRoute,
+    postV1StudioProjectsProjectIdSnapshotsProjectSnapshotIdArchiveRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdChaptersRoute,
+    getV1StudioProjectsProjectIdChaptersRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdChaptersRoute,
+    postV1StudioProjectsProjectIdChaptersRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdChaptersChapterIdRoute,
+    getV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdChaptersChapterIdRoute,
+    postV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  )
+  .openapi(
+    deleteV1StudioProjectsProjectIdChaptersChapterIdRoute,
+    deleteV1StudioProjectsProjectIdChaptersChapterIdRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdChaptersChapterIdConvertRoute,
+    postV1StudioProjectsProjectIdChaptersChapterIdConvertRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsRoute,
+    getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdRoute,
+    getV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdRouteHandler,
+  )
+  .openapi(
+    postV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdStreamRoute,
+    postV1StudioProjectsProjectIdChaptersChapterIdSnapshotsChapterSnapshotIdStreamRouteHandler,
+  )
+  .openapi(
+    getV1StudioProjectsProjectIdMutedTracksRoute,
+    getV1StudioProjectsProjectIdMutedTracksRouteHandler,
+  )
+  .openapi(postV1AudioNativeRoute, postV1AudioNativeRouteHandler)
+  .openapi(getV1AudioNativeProjectIdSettingsRoute, getV1AudioNativeProjectIdSettingsRouteHandler)
+  .openapi(postV1AudioNativeProjectIdContentRoute, postV1AudioNativeProjectIdContentRouteHandler)
+  .openapi(postV1AudioNativeContentRoute, postV1AudioNativeContentRouteHandler)
+  .openapi(postV1DubbingProjectRoute, postV1DubbingProjectRouteHandler)
+  .openapi(getV1DubbingProjectRoute, getV1DubbingProjectRouteHandler)
+  .openapi(getV1DubbingProjectProjectIdRoute, getV1DubbingProjectProjectIdRouteHandler)
+  .openapi(deleteV1DubbingProjectProjectIdRoute, deleteV1DubbingProjectProjectIdRouteHandler)
+  .openapi(
+    postV1DubbingProjectProjectIdLanguageRoute,
+    postV1DubbingProjectProjectIdLanguageRouteHandler,
+  )
+  .openapi(
+    getV1DubbingProjectProjectIdLanguageRoute,
+    getV1DubbingProjectProjectIdLanguageRouteHandler,
+  )
+  .openapi(
+    getV1DubbingProjectProjectIdLanguageLanguageIdRoute,
+    getV1DubbingProjectProjectIdLanguageLanguageIdRouteHandler,
+  )
+  .openapi(
+    deleteV1DubbingProjectProjectIdLanguageLanguageIdRoute,
+    deleteV1DubbingProjectProjectIdLanguageLanguageIdRouteHandler,
+  )
+  .openapi(
+    getV1DubbingProjectProjectIdTranscriptRoute,
+    getV1DubbingProjectProjectIdTranscriptRouteHandler,
+  )
+  .openapi(
+    patchV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRoute,
+    patchV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRouteHandler,
+  )
+  .openapi(
+    deleteV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRoute,
+    deleteV1DubbingProjectProjectIdTranscriptSegmentSegmentIdRouteHandler,
+  )
+  .openapi(
+    patchV1DubbingProjectProjectIdTranscriptSegmentsRoute,
+    patchV1DubbingProjectProjectIdTranscriptSegmentsRouteHandler,
+  )
+  .openapi(
+    postV1DubbingProjectProjectIdTranscriptSegmentRoute,
+    postV1DubbingProjectProjectIdTranscriptSegmentRouteHandler,
+  )
+  .openapi(
+    getV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRoute,
+    getV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRouteHandler,
+  )
+  .openapi(
+    patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentSegmentIdRoute,
+    patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentSegmentIdRouteHandler,
+  )
+  .openapi(
+    patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentsRoute,
+    patchV1DubbingProjectProjectIdLanguageLanguageIdTranscriptSegmentsRouteHandler,
+  )
+  .openapi(
+    postV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRegenerateRoute,
+    postV1DubbingProjectProjectIdLanguageLanguageIdTranscriptRegenerateRouteHandler,
+  )
+  .openapi(getV1DubbingResourceDubbingIdRoute, getV1DubbingResourceDubbingIdRouteHandler)
+  .openapi(
+    postV1DubbingResourceDubbingIdLanguageRoute,
+    postV1DubbingResourceDubbingIdLanguageRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdSpeakerSpeakerIdSegmentRoute,
+    postV1DubbingResourceDubbingIdSpeakerSpeakerIdSegmentRouteHandler,
+  )
+  .openapi(
+    patchV1DubbingResourceDubbingIdSegmentSegmentIdLanguageRoute,
+    patchV1DubbingResourceDubbingIdSegmentSegmentIdLanguageRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdMigrateSegmentsRoute,
+    postV1DubbingResourceDubbingIdMigrateSegmentsRouteHandler,
+  )
+  .openapi(
+    deleteV1DubbingResourceDubbingIdSegmentSegmentIdRoute,
+    deleteV1DubbingResourceDubbingIdSegmentSegmentIdRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdTranscribeRoute,
+    postV1DubbingResourceDubbingIdTranscribeRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdTranslateRoute,
+    postV1DubbingResourceDubbingIdTranslateRouteHandler,
+  )
+  .openapi(postV1DubbingResourceDubbingIdDubRoute, postV1DubbingResourceDubbingIdDubRouteHandler)
+  .openapi(
+    patchV1DubbingResourceDubbingIdSpeakerSpeakerIdRoute,
+    patchV1DubbingResourceDubbingIdSpeakerSpeakerIdRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdSpeakerRoute,
+    postV1DubbingResourceDubbingIdSpeakerRouteHandler,
+  )
+  .openapi(
+    getV1DubbingResourceDubbingIdSpeakerSpeakerIdSimilarVoicesRoute,
+    getV1DubbingResourceDubbingIdSpeakerSpeakerIdSimilarVoicesRouteHandler,
+  )
+  .openapi(
+    postV1DubbingResourceDubbingIdRenderLanguageRoute,
+    postV1DubbingResourceDubbingIdRenderLanguageRouteHandler,
+  )
+  .openapi(getV1DubbingRoute, getV1DubbingRouteHandler)
+  .openapi(postV1DubbingRoute, postV1DubbingRouteHandler)
+  .openapi(getV1DubbingDubbingIdRoute, getV1DubbingDubbingIdRouteHandler)
+  .openapi(deleteV1DubbingDubbingIdRoute, deleteV1DubbingDubbingIdRouteHandler)
+  .openapi(
+    getV1DubbingDubbingIdAudioLanguageCodeRoute,
+    getV1DubbingDubbingIdAudioLanguageCodeRouteHandler,
+  )
+  .openapi(
+    getV1DubbingDubbingIdTranscriptLanguageCodeRoute,
+    getV1DubbingDubbingIdTranscriptLanguageCodeRouteHandler,
+  )
+  .openapi(
+    getV1DubbingDubbingIdTranscriptsLanguageCodeFormatFormatTypeRoute,
+    getV1DubbingDubbingIdTranscriptsLanguageCodeFormatFormatTypeRouteHandler,
+  )
+  .openapi(getV1ModelsRoute, getV1ModelsRouteHandler)
+  .openapi(postV1ContentProvenanceWatermarkRoute, postV1ContentProvenanceWatermarkRouteHandler)
+  .openapi(postV1SimilarVoicesRoute, postV1SimilarVoicesRouteHandler)
+  .openapi(getV1SharedVoicesRoute, getV1SharedVoicesRouteHandler)
+  .openapi(getV1UsageCharacterStatsRoute, getV1UsageCharacterStatsRouteHandler)
+  .openapi(
+    postV1PronunciationDictionariesAddFromFileRoute,
+    postV1PronunciationDictionariesAddFromFileRouteHandler,
+  )
+  .openapi(
+    postV1PronunciationDictionariesAddFromRulesRoute,
+    postV1PronunciationDictionariesAddFromRulesRouteHandler,
+  )
+  .openapi(
+    patchV1PronunciationDictionariesPronunciationDictionaryIdRoute,
+    patchV1PronunciationDictionariesPronunciationDictionaryIdRouteHandler,
+  )
+  .openapi(
+    getV1PronunciationDictionariesPronunciationDictionaryIdRoute,
+    getV1PronunciationDictionariesPronunciationDictionaryIdRouteHandler,
+  )
+  .openapi(
+    postV1PronunciationDictionariesPronunciationDictionaryIdSetRulesRoute,
+    postV1PronunciationDictionariesPronunciationDictionaryIdSetRulesRouteHandler,
+  )
+  .openapi(
+    postV1PronunciationDictionariesPronunciationDictionaryIdAddRulesRoute,
+    postV1PronunciationDictionariesPronunciationDictionaryIdAddRulesRouteHandler,
+  )
+  .openapi(
+    postV1PronunciationDictionariesPronunciationDictionaryIdRemoveRulesRoute,
+    postV1PronunciationDictionariesPronunciationDictionaryIdRemoveRulesRouteHandler,
+  )
+  .openapi(
+    getV1PronunciationDictionariesDictionaryIdVersionIdDownloadRoute,
+    getV1PronunciationDictionariesDictionaryIdVersionIdDownloadRouteHandler,
+  )
+  .openapi(getV1PronunciationDictionariesRoute, getV1PronunciationDictionariesRouteHandler)
+  .openapi(postV1WorkspacesApiKeysDisableRoute, postV1WorkspacesApiKeysDisableRouteHandler)
+  .openapi(
+    postV1WorkspacesApiKeysThirdPartyDisablingRoute,
+    postV1WorkspacesApiKeysThirdPartyDisablingRouteHandler,
+  )
+  .openapi(
+    getV1ServiceAccountsServiceAccountUserIdApiKeysRoute,
+    getV1ServiceAccountsServiceAccountUserIdApiKeysRouteHandler,
+  )
+  .openapi(
+    postV1ServiceAccountsServiceAccountUserIdApiKeysRoute,
+    postV1ServiceAccountsServiceAccountUserIdApiKeysRouteHandler,
+  )
+  .openapi(
+    patchV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRoute,
+    patchV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRoute,
+    deleteV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdRouteHandler,
+  )
+  .openapi(
+    postV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdDisableRoute,
+    postV1ServiceAccountsServiceAccountUserIdApiKeysApiKeyIdDisableRouteHandler,
+  )
+  .openapi(getV1WorkspaceAuditLogsRoute, getV1WorkspaceAuditLogsRouteHandler)
+  .openapi(postV1WorkspaceAuthConnectionsRoute, postV1WorkspaceAuthConnectionsRouteHandler)
+  .openapi(getV1WorkspaceAuthConnectionsRoute, getV1WorkspaceAuthConnectionsRouteHandler)
+  .openapi(
+    patchV1WorkspaceAuthConnectionsAuthConnectionIdRoute,
+    patchV1WorkspaceAuthConnectionsAuthConnectionIdRouteHandler,
+  )
+  .openapi(
+    deleteV1WorkspaceAuthConnectionsAuthConnectionIdRoute,
+    deleteV1WorkspaceAuthConnectionsAuthConnectionIdRouteHandler,
+  )
+  .openapi(getV1ServiceAccountsRoute, getV1ServiceAccountsRouteHandler)
+  .openapi(postV1ServiceAccountsRoute, postV1ServiceAccountsRouteHandler)
+  .openapi(getV1WorkspaceGroupsRoute, getV1WorkspaceGroupsRouteHandler)
+  .openapi(getV1WorkspaceGroupsSearchRoute, getV1WorkspaceGroupsSearchRouteHandler)
+  .openapi(
+    postV1WorkspaceGroupsGroupIdMembersRemoveRoute,
+    postV1WorkspaceGroupsGroupIdMembersRemoveRouteHandler,
+  )
+  .openapi(
+    postV1WorkspaceGroupsGroupIdMembersRoute,
+    postV1WorkspaceGroupsGroupIdMembersRouteHandler,
+  )
+  .openapi(postV1WorkspaceInvitesAddRoute, postV1WorkspaceInvitesAddRouteHandler)
+  .openapi(postV1WorkspaceInvitesAddBulkRoute, postV1WorkspaceInvitesAddBulkRouteHandler)
+  .openapi(deleteV1WorkspaceInvitesRoute, deleteV1WorkspaceInvitesRouteHandler)
+  .openapi(getV1WorkspaceMembersRoute, getV1WorkspaceMembersRouteHandler)
+  .openapi(postV1WorkspaceMembersRoute, postV1WorkspaceMembersRouteHandler)
+  .openapi(
+    putV1WorkspaceMembersUserIdUsageLimitRoute,
+    putV1WorkspaceMembersUserIdUsageLimitRouteHandler,
+  )
+  .openapi(getV1WorkspaceResourcesResourceIdRoute, getV1WorkspaceResourcesResourceIdRouteHandler)
+  .openapi(
+    postV1WorkspaceResourcesResourceIdShareRoute,
+    postV1WorkspaceResourcesResourceIdShareRouteHandler,
+  )
+  .openapi(
+    postV1WorkspaceResourcesResourceIdUnshareRoute,
+    postV1WorkspaceResourcesResourceIdUnshareRouteHandler,
+  )
+  .openapi(getV1WorkspaceWebhooksRoute, getV1WorkspaceWebhooksRouteHandler)
+  .openapi(postV1WorkspaceWebhooksRoute, postV1WorkspaceWebhooksRouteHandler)
+  .openapi(patchV1WorkspaceWebhooksWebhookIdRoute, patchV1WorkspaceWebhooksWebhookIdRouteHandler)
+  .openapi(deleteV1WorkspaceWebhooksWebhookIdRoute, deleteV1WorkspaceWebhooksWebhookIdRouteHandler)
+  .openapi(postV1MusicVideoToMusicRoute, postV1MusicVideoToMusicRouteHandler)
+  .openapi(postV1SpeechToTextRoute, postV1SpeechToTextRouteHandler)
+  .openapi(
+    getV1SpeechToTextTranscriptsTranscriptionIdRoute,
+    getV1SpeechToTextTranscriptsTranscriptionIdRouteHandler,
+  )
+  .openapi(
+    deleteV1SpeechToTextTranscriptsTranscriptionIdRoute,
+    deleteV1SpeechToTextTranscriptsTranscriptionIdRouteHandler,
+  )
+  .openapi(postV1SingleUseTokenTokenTypeRoute, postV1SingleUseTokenTokenTypeRouteHandler)
+  .openapi(postV1ForcedAlignmentRoute, postV1ForcedAlignmentRouteHandler)
+  .openapi(
+    getV1ConvaiConversationGetSignedUrlRoute,
+    getV1ConvaiConversationGetSignedUrlRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationGetSignedUrl2Route,
+    getV1ConvaiConversationGetSignedUrl2RouteHandler,
+  )
+  .openapi(getV1ConvaiConversationTokenRoute, getV1ConvaiConversationTokenRouteHandler)
+  .openapi(postV1ConvaiTwilioOutboundCallRoute, postV1ConvaiTwilioOutboundCallRouteHandler)
+  .openapi(postV1ConvaiTwilioRegisterCallRoute, postV1ConvaiTwilioRegisterCallRouteHandler)
+  .openapi(postV1ConvaiExotelOutboundCallRoute, postV1ConvaiExotelOutboundCallRouteHandler)
+  .openapi(postV1ConvaiWhatsappOutboundCallRoute, postV1ConvaiWhatsappOutboundCallRouteHandler)
+  .openapi(
+    postV1ConvaiWhatsappOutboundMessageRoute,
+    postV1ConvaiWhatsappOutboundMessageRouteHandler,
+  )
+  .openapi(postV1ConvaiAgentsCreateRoute, postV1ConvaiAgentsCreateRouteHandler)
+  .openapi(getV1ConvaiAgentsSummariesRoute, getV1ConvaiAgentsSummariesRouteHandler)
+  .openapi(getV1ConvaiAgentsAgentIdRoute, getV1ConvaiAgentsAgentIdRouteHandler)
+  .openapi(patchV1ConvaiAgentsAgentIdRoute, patchV1ConvaiAgentsAgentIdRouteHandler)
+  .openapi(deleteV1ConvaiAgentsAgentIdRoute, deleteV1ConvaiAgentsAgentIdRouteHandler)
+  .openapi(
+    getV1ConvaiAgentsAgentIdSubagentDependentsRoute,
+    getV1ConvaiAgentsAgentIdSubagentDependentsRouteHandler,
+  )
+  .openapi(getV1ConvaiAgentsAgentIdWidgetRoute, getV1ConvaiAgentsAgentIdWidgetRouteHandler)
+  .openapi(getV1ConvaiAgentsAgentIdLinkRoute, getV1ConvaiAgentsAgentIdLinkRouteHandler)
+  .openapi(postV1ConvaiAgentsAgentIdAvatarRoute, postV1ConvaiAgentsAgentIdAvatarRouteHandler)
+  .openapi(postV1ConvaiAgentsAgentIdHoldAudioRoute, postV1ConvaiAgentsAgentIdHoldAudioRouteHandler)
+  .openapi(
+    deleteV1ConvaiAgentsAgentIdHoldAudioRoute,
+    deleteV1ConvaiAgentsAgentIdHoldAudioRouteHandler,
+  )
+  .openapi(getV1ConvaiAgentsRoute, getV1ConvaiAgentsRouteHandler)
+  .openapi(
+    getV1ConvaiAgentAgentIdKnowledgeBaseSizeRoute,
+    getV1ConvaiAgentAgentIdKnowledgeBaseSizeRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentAgentIdLlmUsageCalculateRoute,
+    postV1ConvaiAgentAgentIdLlmUsageCalculateRouteHandler,
+  )
+  .openapi(postV1ConvaiAgentsAgentIdDuplicateRoute, postV1ConvaiAgentsAgentIdDuplicateRouteHandler)
+  .openapi(
+    postV1ConvaiAgentsAgentIdSimulateConversationRoute,
+    postV1ConvaiAgentsAgentIdSimulateConversationRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdSimulateConversationStreamRoute,
+    postV1ConvaiAgentsAgentIdSimulateConversationStreamRouteHandler,
+  )
+  .openapi(postV1ConvaiAgentTestingCreateRoute, postV1ConvaiAgentTestingCreateRouteHandler)
+  .openapi(postV1ConvaiAgentTestingFoldersRoute, postV1ConvaiAgentTestingFoldersRouteHandler)
+  .openapi(
+    getV1ConvaiAgentTestingFoldersFolderIdRoute,
+    getV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiAgentTestingFoldersFolderIdRoute,
+    patchV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiAgentTestingFoldersFolderIdRoute,
+    deleteV1ConvaiAgentTestingFoldersFolderIdRouteHandler,
+  )
+  .openapi(postV1ConvaiAgentTestingBulkMoveRoute, postV1ConvaiAgentTestingBulkMoveRouteHandler)
+  .openapi(getV1ConvaiAgentTestingTestIdRoute, getV1ConvaiAgentTestingTestIdRouteHandler)
+  .openapi(putV1ConvaiAgentTestingTestIdRoute, putV1ConvaiAgentTestingTestIdRouteHandler)
+  .openapi(deleteV1ConvaiAgentTestingTestIdRoute, deleteV1ConvaiAgentTestingTestIdRouteHandler)
+  .openapi(postV1ConvaiAgentTestingSummariesRoute, postV1ConvaiAgentTestingSummariesRouteHandler)
+  .openapi(getV1ConvaiAgentTestingRoute, getV1ConvaiAgentTestingRouteHandler)
+  .openapi(getV1ConvaiTestInvocationsRoute, getV1ConvaiTestInvocationsRouteHandler)
+  .openapi(postV1ConvaiAgentsAgentIdRunTestsRoute, postV1ConvaiAgentsAgentIdRunTestsRouteHandler)
+  .openapi(
+    getV1ConvaiTestInvocationsTestInvocationIdRoute,
+    getV1ConvaiTestInvocationsTestInvocationIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiTestInvocationsTestInvocationIdRoute,
+    patchV1ConvaiTestInvocationsTestInvocationIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiTestInvocationsTestInvocationIdCancelRoute,
+    postV1ConvaiTestInvocationsTestInvocationIdCancelRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiTestInvocationsTestInvocationIdResubmitRoute,
+    postV1ConvaiTestInvocationsTestInvocationIdResubmitRouteHandler,
+  )
+  .openapi(getV1ConvaiConversationsRoute, getV1ConvaiConversationsRouteHandler)
+  .openapi(postV1ConvaiConversationsRoute, postV1ConvaiConversationsRouteHandler)
+  .openapi(getV1ConvaiUsersRoute, getV1ConvaiUsersRouteHandler)
+  .openapi(getV1ConvaiConversationsResolveRoute, getV1ConvaiConversationsResolveRouteHandler)
+  .openapi(
+    getV1ConvaiConversationsConversationIdRoute,
+    getV1ConvaiConversationsConversationIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiConversationsConversationIdRoute,
+    deleteV1ConvaiConversationsConversationIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdSummaryRoute,
+    getV1ConvaiConversationsConversationIdSummaryRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdSipMessagesRoute,
+    getV1ConvaiConversationsConversationIdSipMessagesRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdAudioRoute,
+    getV1ConvaiConversationsConversationIdAudioRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdFilesFileIdRoute,
+    getV1ConvaiConversationsConversationIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiConversationsConversationIdFilesFileIdRoute,
+    deleteV1ConvaiConversationsConversationIdFilesFileIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdFeedbackRoute,
+    postV1ConvaiConversationsConversationIdFeedbackRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsMessagesTextSearchRoute,
+    getV1ConvaiConversationsMessagesTextSearchRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsMessagesSmartSearchRoute,
+    getV1ConvaiConversationsMessagesSmartSearchRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdTagsRoute,
+    postV1ConvaiConversationsConversationIdTagsRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiConversationsConversationIdTagsTagIdRoute,
+    deleteV1ConvaiConversationsConversationIdTagsTagIdRouteHandler,
+  )
+  .openapi(getV1ConvaiTagsRoute, getV1ConvaiTagsRouteHandler)
+  .openapi(postV1ConvaiTagsRoute, postV1ConvaiTagsRouteHandler)
+  .openapi(getV1ConvaiTagsTagIdRoute, getV1ConvaiTagsTagIdRouteHandler)
+  .openapi(patchV1ConvaiTagsTagIdRoute, patchV1ConvaiTagsTagIdRouteHandler)
+  .openapi(deleteV1ConvaiTagsTagIdRoute, deleteV1ConvaiTagsTagIdRouteHandler)
+  .openapi(
+    getV1ConvaiAgentsAgentIdTriageTicketsRoute,
+    getV1ConvaiAgentsAgentIdTriageTicketsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdTriageTicketsRoute,
+    postV1ConvaiAgentsAgentIdTriageTicketsRouteHandler,
+  )
+  .openapi(getV1ConvaiTriageTicketsRoute, getV1ConvaiTriageTicketsRouteHandler)
+  .openapi(postV1ConvaiTriageTicketsRoute, postV1ConvaiTriageTicketsRouteHandler)
+  .openapi(
+    getV1ConvaiAgentsAgentIdTriageTicketsAssignableUsersRoute,
+    getV1ConvaiAgentsAgentIdTriageTicketsAssignableUsersRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+    getV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+    patchV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiTriageTicketsAgentqaTicketIdRoute,
+    deleteV1ConvaiTriageTicketsAgentqaTicketIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiTriageTicketsAgentqaTicketIdCommentsRoute,
+    postV1ConvaiTriageTicketsAgentqaTicketIdCommentsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiTriageTicketsAgentqaTicketIdMergeRoute,
+    postV1ConvaiTriageTicketsAgentqaTicketIdMergeRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiTriageTicketsAgentqaTicketIdTurnCommentsRoute,
+    postV1ConvaiTriageTicketsAgentqaTicketIdTurnCommentsRouteHandler,
+  )
+  .openapi(postV1ConvaiPhoneNumbersRoute, postV1ConvaiPhoneNumbersRouteHandler)
+  .openapi(getV1ConvaiPhoneNumbersRoute, getV1ConvaiPhoneNumbersRouteHandler)
+  .openapi(
+    getV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+    getV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+    deleteV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiPhoneNumbersPhoneNumberIdRoute,
+    patchV1ConvaiPhoneNumbersPhoneNumberIdRouteHandler,
+  )
+  .openapi(getV1ConvaiV2PhoneNumbersRoute, getV1ConvaiV2PhoneNumbersRouteHandler)
+  .openapi(
+    getV1ConvaiPhoneNumbersPhoneNumberIdSipMessagesRoute,
+    getV1ConvaiPhoneNumbersPhoneNumberIdSipMessagesRouteHandler,
+  )
+  .openapi(postV1ConvaiLlmUsageCalculateRoute, postV1ConvaiLlmUsageCalculateRouteHandler)
+  .openapi(getV1ConvaiLlmListRoute, getV1ConvaiLlmListRouteHandler)
+  .openapi(
+    postV1ConvaiConversationsConversationIdFilesRoute,
+    postV1ConvaiConversationsConversationIdFilesRouteHandler,
+  )
+  .openapi(getV1ConvaiAnalyticsLiveCountRoute, getV1ConvaiAnalyticsLiveCountRouteHandler)
+  .openapi(getV1ConvaiKnowledgeBaseSummariesRoute, getV1ConvaiKnowledgeBaseSummariesRouteHandler)
+  .openapi(postV1ConvaiKnowledgeBaseRoute, postV1ConvaiKnowledgeBaseRouteHandler)
+  .openapi(getV1ConvaiKnowledgeBaseRoute, getV1ConvaiKnowledgeBaseRouteHandler)
+  .openapi(postV1ConvaiKnowledgeBaseUrlRoute, postV1ConvaiKnowledgeBaseUrlRouteHandler)
+  .openapi(postV1ConvaiKnowledgeBaseCrawlRoute, postV1ConvaiKnowledgeBaseCrawlRouteHandler)
+  .openapi(getV1ConvaiKnowledgeBaseCrawlRoute, getV1ConvaiKnowledgeBaseCrawlRouteHandler)
+  .openapi(
+    getV1ConvaiKnowledgeBaseCrawlCrawlJobIdRoute,
+    getV1ConvaiKnowledgeBaseCrawlCrawlJobIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiKnowledgeBaseCrawlCrawlJobIdCancelRoute,
+    postV1ConvaiKnowledgeBaseCrawlCrawlJobIdCancelRouteHandler,
+  )
+  .openapi(postV1ConvaiKnowledgeBaseFileRoute, postV1ConvaiKnowledgeBaseFileRouteHandler)
+  .openapi(postV1ConvaiKnowledgeBaseTextRoute, postV1ConvaiKnowledgeBaseTextRouteHandler)
+  .openapi(postV1ConvaiKnowledgeBaseFolderRoute, postV1ConvaiKnowledgeBaseFolderRouteHandler)
+  .openapi(
+    patchV1ConvaiKnowledgeBaseDocumentationIdRoute,
+    patchV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiKnowledgeBaseDocumentationIdRoute,
+    deleteV1ConvaiKnowledgeBaseDocumentationIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRoute,
+    patchV1ConvaiKnowledgeBaseDocumentationIdChunkingOverrideRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiKnowledgeBaseDocumentationIdUpdateFileRoute,
+    patchV1ConvaiKnowledgeBaseDocumentationIdUpdateFileRouteHandler,
+  )
+  .openapi(postV1ConvaiKnowledgeBaseRagIndexRoute, postV1ConvaiKnowledgeBaseRagIndexRouteHandler)
+  .openapi(getV1ConvaiKnowledgeBaseRagIndexRoute, getV1ConvaiKnowledgeBaseRagIndexRouteHandler)
+  .openapi(
+    postV1ConvaiKnowledgeBaseDocumentationIdRefreshRoute,
+    postV1ConvaiKnowledgeBaseDocumentationIdRefreshRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiKnowledgeBaseDocumentationIdRagIndexRoute,
+    postV1ConvaiKnowledgeBaseDocumentationIdRagIndexRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdRagIndexRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdRagIndexRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiKnowledgeBaseDocumentationIdRagIndexRagIndexIdRoute,
+    deleteV1ConvaiKnowledgeBaseDocumentationIdRagIndexRagIndexIdRouteHandler,
+  )
+  .openapi(getV1ConvaiKnowledgeBaseSearchRoute, getV1ConvaiKnowledgeBaseSearchRouteHandler)
+  .openapi(
+    postV1ConvaiAgentsAgentIdKnowledgeBaseRagQueryRoute,
+    postV1ConvaiAgentsAgentIdKnowledgeBaseRagQueryRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdDependentAgentsRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdDependentAgentsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiKnowledgeBaseDependentAgentsRoute,
+    postV1ConvaiKnowledgeBaseDependentAgentsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdContentRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdContentRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdSourceFileUrlRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdSourceFileUrlRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdChunkChunkIdRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdChunkChunkIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiKnowledgeBaseDocumentationIdChunksRoute,
+    getV1ConvaiKnowledgeBaseDocumentationIdChunksRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiKnowledgeBaseDocumentIdMoveRoute,
+    postV1ConvaiKnowledgeBaseDocumentIdMoveRouteHandler,
+  )
+  .openapi(postV1ConvaiKnowledgeBaseBulkMoveRoute, postV1ConvaiKnowledgeBaseBulkMoveRouteHandler)
+  .openapi(
+    postV1ConvaiKnowledgeBaseBulkDeleteRoute,
+    postV1ConvaiKnowledgeBaseBulkDeleteRouteHandler,
+  )
+  .openapi(getV1ConvaiAgentsAgentIdTopicsRoute, getV1ConvaiAgentsAgentIdTopicsRouteHandler)
+  .openapi(postV1ConvaiToolsRoute, postV1ConvaiToolsRouteHandler)
+  .openapi(getV1ConvaiToolsRoute, getV1ConvaiToolsRouteHandler)
+  .openapi(getV1ConvaiToolsToolIdRoute, getV1ConvaiToolsToolIdRouteHandler)
+  .openapi(patchV1ConvaiToolsToolIdRoute, patchV1ConvaiToolsToolIdRouteHandler)
+  .openapi(deleteV1ConvaiToolsToolIdRoute, deleteV1ConvaiToolsToolIdRouteHandler)
+  .openapi(
+    getV1ConvaiToolsToolIdDependentAgentsRoute,
+    getV1ConvaiToolsToolIdDependentAgentsRouteHandler,
+  )
+  .openapi(getV1ConvaiToolsToolIdExecutionsRoute, getV1ConvaiToolsToolIdExecutionsRouteHandler)
+  .openapi(postV1ConvaiAnalysisItemsRoute, postV1ConvaiAnalysisItemsRouteHandler)
+  .openapi(getV1ConvaiAnalysisItemsRoute, getV1ConvaiAnalysisItemsRouteHandler)
+  .openapi(
+    patchV1ConvaiAnalysisItemsAnalysisItemIdAttachmentsRoute,
+    patchV1ConvaiAnalysisItemsAnalysisItemIdAttachmentsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+    getV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+    patchV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiAnalysisItemsAnalysisItemIdRoute,
+    deleteV1ConvaiAnalysisItemsAnalysisItemIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAnalysisItemsAnalysisItemIdVersionsRoute,
+    getV1ConvaiAnalysisItemsAnalysisItemIdVersionsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAnalysisItemsAnalysisItemIdCopyRoute,
+    postV1ConvaiAnalysisItemsAnalysisItemIdCopyRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAnalysisItemsAnalysisItemIdDependentAgentsRoute,
+    getV1ConvaiAnalysisItemsAnalysisItemIdDependentAgentsRouteHandler,
+  )
+  .openapi(getV1ConvaiSettingsRoute, getV1ConvaiSettingsRouteHandler)
+  .openapi(patchV1ConvaiSettingsRoute, patchV1ConvaiSettingsRouteHandler)
+  .openapi(getV1ConvaiSettingsDashboardRoute, getV1ConvaiSettingsDashboardRouteHandler)
+  .openapi(patchV1ConvaiSettingsDashboardRoute, patchV1ConvaiSettingsDashboardRouteHandler)
+  .openapi(postV1ConvaiSecretsRoute, postV1ConvaiSecretsRouteHandler)
+  .openapi(getV1ConvaiSecretsRoute, getV1ConvaiSecretsRouteHandler)
+  .openapi(getV1ConvaiSecretsSecretIdRoute, getV1ConvaiSecretsSecretIdRouteHandler)
+  .openapi(deleteV1ConvaiSecretsSecretIdRoute, deleteV1ConvaiSecretsSecretIdRouteHandler)
+  .openapi(patchV1ConvaiSecretsSecretIdRoute, patchV1ConvaiSecretsSecretIdRouteHandler)
+  .openapi(
+    getV1ConvaiSecretsSecretIdDependenciesResourceTypeRoute,
+    getV1ConvaiSecretsSecretIdDependenciesResourceTypeRouteHandler,
+  )
+  .openapi(postV1ConvaiBatchCallingSubmitRoute, postV1ConvaiBatchCallingSubmitRouteHandler)
+  .openapi(getV1ConvaiBatchCallingWorkspaceRoute, getV1ConvaiBatchCallingWorkspaceRouteHandler)
+  .openapi(getV1ConvaiBatchCallingBatchIdRoute, getV1ConvaiBatchCallingBatchIdRouteHandler)
+  .openapi(deleteV1ConvaiBatchCallingBatchIdRoute, deleteV1ConvaiBatchCallingBatchIdRouteHandler)
+  .openapi(
+    postV1ConvaiBatchCallingBatchIdCancelRoute,
+    postV1ConvaiBatchCallingBatchIdCancelRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiBatchCallingBatchIdRetryRoute,
+    postV1ConvaiBatchCallingBatchIdRetryRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiBatchCallingBatchIdExportRoute,
+    getV1ConvaiBatchCallingBatchIdExportRouteHandler,
+  )
+  .openapi(postV1ConvaiSipTrunkOutboundCallRoute, postV1ConvaiSipTrunkOutboundCallRouteHandler)
+  .openapi(postV1ConvaiMcpServersRoute, postV1ConvaiMcpServersRouteHandler)
+  .openapi(getV1ConvaiMcpServersRoute, getV1ConvaiMcpServersRouteHandler)
+  .openapi(getV1ConvaiMcpServersMcpServerIdRoute, getV1ConvaiMcpServersMcpServerIdRouteHandler)
+  .openapi(
+    deleteV1ConvaiMcpServersMcpServerIdRoute,
+    deleteV1ConvaiMcpServersMcpServerIdRouteHandler,
+  )
+  .openapi(patchV1ConvaiMcpServersMcpServerIdRoute, patchV1ConvaiMcpServersMcpServerIdRouteHandler)
+  .openapi(
+    getV1ConvaiMcpServersMcpServerIdToolsRoute,
+    getV1ConvaiMcpServersMcpServerIdToolsRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiMcpServersMcpServerIdApprovalPolicyRoute,
+    patchV1ConvaiMcpServersMcpServerIdApprovalPolicyRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiMcpServersMcpServerIdToolApprovalsRoute,
+    postV1ConvaiMcpServersMcpServerIdToolApprovalsRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiMcpServersMcpServerIdToolApprovalsToolNameRoute,
+    deleteV1ConvaiMcpServersMcpServerIdToolApprovalsToolNameRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiMcpServersMcpServerIdToolConfigsRoute,
+    postV1ConvaiMcpServersMcpServerIdToolConfigsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+    getV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+    patchV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRoute,
+    deleteV1ConvaiMcpServersMcpServerIdToolConfigsToolNameRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+    getV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+    patchV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiWhatsappAccountsPhoneNumberIdRoute,
+    deleteV1ConvaiWhatsappAccountsPhoneNumberIdRouteHandler,
+  )
+  .openapi(getV1ConvaiWhatsappAccountsRoute, getV1ConvaiWhatsappAccountsRouteHandler)
+  .openapi(postV1ConvaiAgentsAgentIdBranchesRoute, postV1ConvaiAgentsAgentIdBranchesRouteHandler)
+  .openapi(getV1ConvaiAgentsAgentIdBranchesRoute, getV1ConvaiAgentsAgentIdBranchesRouteHandler)
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesBranchIdRoute,
+    getV1ConvaiAgentsAgentIdBranchesBranchIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiAgentsAgentIdBranchesBranchIdRoute,
+    patchV1ConvaiAgentsAgentIdBranchesBranchIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdVersionsVersionIdRoute,
+    getV1ConvaiAgentsAgentIdVersionsVersionIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRoute,
+    getV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergePreviewRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergeRoute,
+    postV1ConvaiAgentsAgentIdBranchesSourceBranchIdMergeRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesBranchIdRebasePreviewRoute,
+    getV1ConvaiAgentsAgentIdBranchesBranchIdRebasePreviewRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdBranchesBranchIdRebaseRoute,
+    postV1ConvaiAgentsAgentIdBranchesBranchIdRebaseRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdDeploymentsRoute,
+    postV1ConvaiAgentsAgentIdDeploymentsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdDeploymentsRoute,
+    getV1ConvaiAgentsAgentIdDeploymentsRouteHandler,
+  )
+  .openapi(postV1ConvaiAgentsAgentIdDraftsRoute, postV1ConvaiAgentsAgentIdDraftsRouteHandler)
+  .openapi(deleteV1ConvaiAgentsAgentIdDraftsRoute, deleteV1ConvaiAgentsAgentIdDraftsRouteHandler)
+  .openapi(
+    postV1ConvaiAgentsAgentIdMergeProposalsRoute,
+    postV1ConvaiAgentsAgentIdMergeProposalsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdMergeProposalsRoute,
+    getV1ConvaiAgentsAgentIdMergeProposalsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRoute,
+    getV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRoute,
+    patchV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdReviewsRoute,
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdReviewsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdCommentsRoute,
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdCommentsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdMergeRoute,
+    postV1ConvaiAgentsAgentIdMergeProposalsMergeProposalIdMergeRouteHandler,
+  )
+  .openapi(getV1ConvaiOutboundCampaignsConfigRoute, getV1ConvaiOutboundCampaignsConfigRouteHandler)
+  .openapi(putV1ConvaiOutboundCampaignsConfigRoute, putV1ConvaiOutboundCampaignsConfigRouteHandler)
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsRoute,
+    getV1ConvaiOutboundCampaignsCampaignsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsPauseAllRoute,
+    postV1ConvaiOutboundCampaignsCampaignsPauseAllRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsStopAllRoute,
+    postV1ConvaiOutboundCampaignsCampaignsStopAllRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsSubmitRoute,
+    postV1ConvaiOutboundCampaignsCampaignsSubmitRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdProgressRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdProgressRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdCallsRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdCallsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdFollowUpRequestsRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdFollowUpRequestsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdExportRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdExportRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRoute,
+    getV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRoute,
+    deleteV1ConvaiOutboundCampaignsCampaignsCampaignIdLeadsLeadIdRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdPauseRoute,
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdPauseRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdResumeRoute,
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdResumeRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdStopRoute,
+    postV1ConvaiOutboundCampaignsCampaignsCampaignIdStopRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiOutboundCampaignsAttentionRoute,
+    getV1ConvaiOutboundCampaignsAttentionRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsAttentionAttentionIdRetryRoute,
+    postV1ConvaiOutboundCampaignsAttentionAttentionIdRetryRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiOutboundCampaignsAttentionAttentionIdResolveRoute,
+    postV1ConvaiOutboundCampaignsAttentionAttentionIdResolveRouteHandler,
+  )
+  .openapi(getV1SpeechEngineRoute, getV1SpeechEngineRouteHandler)
+  .openapi(postV1SpeechEngineRoute, postV1SpeechEngineRouteHandler)
+  .openapi(getV1SpeechEngineSpeechEngineIdRoute, getV1SpeechEngineSpeechEngineIdRouteHandler)
+  .openapi(patchV1SpeechEngineSpeechEngineIdRoute, patchV1SpeechEngineSpeechEngineIdRouteHandler)
+  .openapi(deleteV1SpeechEngineSpeechEngineIdRoute, deleteV1SpeechEngineSpeechEngineIdRouteHandler)
+  .openapi(
+    postV1SpeechEngineSpeechEngineIdDuplicateRoute,
+    postV1SpeechEngineSpeechEngineIdDuplicateRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdMessagesRoute,
+    postV1ConvaiConversationsConversationIdMessagesRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdMessagesStreamRoute,
+    postV1ConvaiConversationsConversationIdMessagesStreamRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdTurnsTurnIdRoute,
+    getV1ConvaiConversationsConversationIdTurnsTurnIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiConversationsConversationIdTurnsTurnIdEventsRoute,
+    getV1ConvaiConversationsConversationIdTurnsTurnIdEventsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRoute,
+    postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRoute,
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresCompileRoute,
+    postV1ConvaiAgentsAgentIdBranchesBranchIdProceduresCompileRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRoute,
+    deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRoute,
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+    getV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+    patchV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRoute,
+    deleteV1ConvaiAgentsAgentIdBranchesBranchIdProceduresProcedureIdDraftRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdAnalysisRunRoute,
+    postV1ConvaiConversationsConversationIdAnalysisRunRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiConversationsConversationIdAnalysisEvaluationsRunRoute,
+    postV1ConvaiConversationsConversationIdAnalysisEvaluationsRunRouteHandler,
+  )
+  .openapi(getV1ConvaiEnvironmentVariablesRoute, getV1ConvaiEnvironmentVariablesRouteHandler)
+  .openapi(postV1ConvaiEnvironmentVariablesRoute, postV1ConvaiEnvironmentVariablesRouteHandler)
+  .openapi(
+    getV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+    getV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+    patchV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiEnvironmentVariablesEnvVarIdRoute,
+    deleteV1ConvaiEnvironmentVariablesEnvVarIdRouteHandler,
+  )
+  .openapi(getV1ConvaiEnvironmentsRoute, getV1ConvaiEnvironmentsRouteHandler)
+  .openapi(postV1ConvaiEnvironmentsRoute, postV1ConvaiEnvironmentsRouteHandler)
+  .openapi(
+    deleteV1ConvaiEnvironmentsEnvironmentRoute,
+    deleteV1ConvaiEnvironmentsEnvironmentRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiRealtimeConversationGroupsRoute,
+    getV1ConvaiRealtimeConversationGroupsRouteHandler,
+  )
+  .openapi(
+    postV1ConvaiRealtimeConversationGroupsRoute,
+    postV1ConvaiRealtimeConversationGroupsRouteHandler,
+  )
+  .openapi(
+    getV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+    getV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  )
+  .openapi(
+    patchV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+    patchV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiRealtimeConversationGroupsConversationGroupIdRoute,
+    deleteV1ConvaiRealtimeConversationGroupsConversationGroupIdRouteHandler,
+  )
+  .openapi(
+    putV1ConvaiRealtimeConversationsConversationIdConversationGroupRoute,
+    putV1ConvaiRealtimeConversationsConversationIdConversationGroupRouteHandler,
+  )
+  .openapi(
+    deleteV1ConvaiRealtimeConversationsConversationIdConversationGroupRoute,
+    deleteV1ConvaiRealtimeConversationsConversationIdConversationGroupRouteHandler,
+  )
+  .openapi(postV1ConvaiRealtimeClientSecretsRoute, postV1ConvaiRealtimeClientSecretsRouteHandler)
+  .openapi(postV1MusicPlanRoute, postV1MusicPlanRouteHandler)
+  .openapi(postV1MusicRoute, postV1MusicRouteHandler)
+  .openapi(postV1MusicDetailedRoute, postV1MusicDetailedRouteHandler)
+  .openapi(postV1MusicDetailedStreamRoute, postV1MusicDetailedStreamRouteHandler)
+  .openapi(postV1MusicStreamRoute, postV1MusicStreamRouteHandler)
+  .openapi(postV1MusicUploadRoute, postV1MusicUploadRouteHandler)
+  .openapi(postV1MusicStemSeparationRoute, postV1MusicStemSeparationRouteHandler)
+  .openapi(getV1MusicFinetunesRoute, getV1MusicFinetunesRouteHandler)
+  .openapi(postV1MusicFinetunesRoute, postV1MusicFinetunesRouteHandler)
+  .openapi(getV1MusicFinetunesFinetuneIdRoute, getV1MusicFinetunesFinetuneIdRouteHandler)
+  .openapi(patchV1MusicFinetunesFinetuneIdRoute, patchV1MusicFinetunesFinetuneIdRouteHandler)
+  .openapi(deleteV1MusicFinetunesFinetuneIdRoute, deleteV1MusicFinetunesFinetuneIdRouteHandler)
+  .openapi(postV1ProductionsOrdersRoute, postV1ProductionsOrdersRouteHandler)
+  .openapi(getV1ProductionsOrdersRoute, getV1ProductionsOrdersRouteHandler)
+  .openapi(getV1ProductionsOrdersOrderIdRoute, getV1ProductionsOrdersOrderIdRouteHandler)
+  .openapi(patchV1ProductionsOrdersOrderIdRoute, patchV1ProductionsOrdersOrderIdRouteHandler)
+  .openapi(
+    postV1ProductionsOrdersOrderIdMediaRoute,
+    postV1ProductionsOrdersOrderIdMediaRouteHandler,
+  )
+  .openapi(
+    getV1ProductionsOrdersOrderIdMediaMediaIdRoute,
+    getV1ProductionsOrdersOrderIdMediaMediaIdRouteHandler,
+  )
+  .openapi(
+    postV1ProductionsOrdersOrderIdItemsRoute,
+    postV1ProductionsOrdersOrderIdItemsRouteHandler,
+  )
+  .openapi(
+    deleteV1ProductionsOrdersOrderIdItemsItemIdRoute,
+    deleteV1ProductionsOrdersOrderIdItemsItemIdRouteHandler,
+  )
+  .openapi(
+    postV1ProductionsOrdersOrderIdSubmitRoute,
+    postV1ProductionsOrdersOrderIdSubmitRouteHandler,
+  )
+  .openapi(
+    getV1ProductionsOrdersOrderIdDeliverablesRoute,
+    getV1ProductionsOrdersOrderIdDeliverablesRouteHandler,
+  )
+  .openapi(
+    getV1ProductionsOrdersLanguagesOrderItemKindRoute,
+    getV1ProductionsOrdersLanguagesOrderItemKindRouteHandler,
+  )
+  .openapi(postV1VoicesPvcRoute, postV1VoicesPvcRouteHandler)
+  .openapi(postV1VoicesPvcVoiceIdRoute, postV1VoicesPvcVoiceIdRouteHandler)
+  .openapi(postV1VoicesPvcVoiceIdSamplesRoute, postV1VoicesPvcVoiceIdSamplesRouteHandler)
+  .openapi(
+    postV1VoicesPvcVoiceIdSamplesSampleIdRoute,
+    postV1VoicesPvcVoiceIdSamplesSampleIdRouteHandler,
+  )
+  .openapi(
+    deleteV1VoicesPvcVoiceIdSamplesSampleIdRoute,
+    deleteV1VoicesPvcVoiceIdSamplesSampleIdRouteHandler,
+  )
+  .openapi(
+    getV1VoicesPvcVoiceIdSamplesSampleIdAudioRoute,
+    getV1VoicesPvcVoiceIdSamplesSampleIdAudioRouteHandler,
+  )
+  .openapi(
+    getV1VoicesPvcVoiceIdSamplesSampleIdWaveformRoute,
+    getV1VoicesPvcVoiceIdSamplesSampleIdWaveformRouteHandler,
+  )
+  .openapi(
+    getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersRoute,
+    getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersRouteHandler,
+  )
+  .openapi(
+    postV1VoicesPvcVoiceIdSamplesSampleIdSeparateSpeakersRoute,
+    postV1VoicesPvcVoiceIdSamplesSampleIdSeparateSpeakersRouteHandler,
+  )
+  .openapi(
+    getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersSpeakerIdAudioRoute,
+    getV1VoicesPvcVoiceIdSamplesSampleIdSpeakersSpeakerIdAudioRouteHandler,
+  )
+  .openapi(getV1VoicesPvcVoiceIdCaptchaRoute, getV1VoicesPvcVoiceIdCaptchaRouteHandler)
+  .openapi(postV1VoicesPvcVoiceIdCaptchaRoute, postV1VoicesPvcVoiceIdCaptchaRouteHandler)
+  .openapi(postV1VoicesPvcVoiceIdTrainRoute, postV1VoicesPvcVoiceIdTrainRouteHandler)
+  .openapi(postV1VoicesPvcVoiceIdVerificationRoute, postV1VoicesPvcVoiceIdVerificationRouteHandler)
+  .openapi(postV1FlowsVideoRoute, postV1FlowsVideoRouteHandler)
+  .openapi(getV1FlowsVideoRoute, getV1FlowsVideoRouteHandler)
+  .openapi(getV1FlowsVideoGenerationIdRoute, getV1FlowsVideoGenerationIdRouteHandler)
+  .openapi(postV1FlowsImageRoute, postV1FlowsImageRouteHandler)
+  .openapi(getV1FlowsImageRoute, getV1FlowsImageRouteHandler)
+  .openapi(getV1FlowsImageGenerationIdRoute, getV1FlowsImageGenerationIdRouteHandler)
+  .openapi(postV1FlowsTextToSpeechRoute, postV1FlowsTextToSpeechRouteHandler)
+  .openapi(getV1FlowsTextToSpeechRoute, getV1FlowsTextToSpeechRouteHandler)
+  .openapi(getV1FlowsTextToSpeechGenerationIdRoute, getV1FlowsTextToSpeechGenerationIdRouteHandler)
+  .openapi(postV1FlowsTemplatesTemplateIdRunsRoute, postV1FlowsTemplatesTemplateIdRunsRouteHandler)
+  .openapi(getV1FlowsTemplatesTemplateIdRunsRoute, getV1FlowsTemplatesTemplateIdRunsRouteHandler)
+  .openapi(
+    getV1FlowsTemplatesTemplateIdRunsRunIdRoute,
+    getV1FlowsTemplatesTemplateIdRunsRunIdRouteHandler,
+  )
+  .openapi(getV1FlowsTemplatesRoute, getV1FlowsTemplatesRouteHandler)
+  .openapi(getV1FlowsTemplatesTemplateIdRoute, getV1FlowsTemplatesTemplateIdRouteHandler)
+  .openapi(postV1AssetsRoute, postV1AssetsRouteHandler)
+  .openapi(getV1AssetsRoute, getV1AssetsRouteHandler)
+  .openapi(getV1AssetsAssetIdRoute, getV1AssetsAssetIdRouteHandler)
+  .openapi(deleteV1AssetsAssetIdRoute, deleteV1AssetsAssetIdRouteHandler)
+  .openapi(
+    postV1WorkspaceAnalyticsQueryUsageByProductOverTimeRoute,
+    postV1WorkspaceAnalyticsQueryUsageByProductOverTimeRouteHandler,
+  )
+  .openapi(postV1WorkspaceAnalyticsUsageRoute, postV1WorkspaceAnalyticsUsageRouteHandler)
+  .openapi(postV1WorkspaceAnalyticsRequestsRoute, postV1WorkspaceAnalyticsRequestsRouteHandler)
+  .openapi(
+    postV1WorkspaceWebhooksWebhookIdTestRoute,
+    postV1WorkspaceWebhooksWebhookIdTestRouteHandler,
+  )
+  .openapi(
+    postV1WorkspaceWebhooksWebhookIdDeliveriesDeliveryIdRedeliverRoute,
+    postV1WorkspaceWebhooksWebhookIdDeliveriesDeliveryIdRedeliverRouteHandler,
+  )
+  .openapi(getV1ReceptionServicesRoute, getV1ReceptionServicesRouteHandler)
+  .openapi(postV1ReceptionServicesRoute, postV1ReceptionServicesRouteHandler)
+  .openapi(getV1ReceptionServicesServiceIdRoute, getV1ReceptionServicesServiceIdRouteHandler)
+  .openapi(putV1ReceptionServicesServiceIdRoute, putV1ReceptionServicesServiceIdRouteHandler)
+  .openapi(deleteV1ReceptionServicesServiceIdRoute, deleteV1ReceptionServicesServiceIdRouteHandler)
+  .openapi(
+    postV1ReceptionServicesServiceIdConfirmUpdateRoute,
+    postV1ReceptionServicesServiceIdConfirmUpdateRouteHandler,
+  )
+  .openapi(getV1ReceptionAssetsRoute, getV1ReceptionAssetsRouteHandler)
+  .openapi(postV1ReceptionAssetsRoute, postV1ReceptionAssetsRouteHandler)
+  .openapi(getV1ReceptionAssetsAssetIdRoute, getV1ReceptionAssetsAssetIdRouteHandler)
+  .openapi(putV1ReceptionAssetsAssetIdRoute, putV1ReceptionAssetsAssetIdRouteHandler)
+  .openapi(deleteV1ReceptionAssetsAssetIdRoute, deleteV1ReceptionAssetsAssetIdRouteHandler)
+  .openapi(getV1ReceptionProductsRoute, getV1ReceptionProductsRouteHandler)
+  .openapi(postV1ReceptionProductsRoute, postV1ReceptionProductsRouteHandler)
+  .openapi(getV1ReceptionProductsProductIdRoute, getV1ReceptionProductsProductIdRouteHandler)
+  .openapi(putV1ReceptionProductsProductIdRoute, putV1ReceptionProductsProductIdRouteHandler)
+  .openapi(deleteV1ReceptionProductsProductIdRoute, deleteV1ReceptionProductsProductIdRouteHandler)
+  .openapi(
+    patchV1ReceptionProductsProductIdStockRoute,
+    patchV1ReceptionProductsProductIdStockRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionProductsProductIdStockAdjustRoute,
+    postV1ReceptionProductsProductIdStockAdjustRouteHandler,
+  )
+  .openapi(getV1ReceptionStaffRoute, getV1ReceptionStaffRouteHandler)
+  .openapi(postV1ReceptionStaffRoute, postV1ReceptionStaffRouteHandler)
+  .openapi(getV1ReceptionStaffStaffIdRoute, getV1ReceptionStaffStaffIdRouteHandler)
+  .openapi(putV1ReceptionStaffStaffIdRoute, putV1ReceptionStaffStaffIdRouteHandler)
+  .openapi(deleteV1ReceptionStaffStaffIdRoute, deleteV1ReceptionStaffStaffIdRouteHandler)
+  .openapi(getV1ReceptionCustomerFacingAgentsRoute, getV1ReceptionCustomerFacingAgentsRouteHandler)
+  .openapi(
+    patchV1ReceptionCustomerFacingAgentsAgentIdRoute,
+    patchV1ReceptionCustomerFacingAgentsAgentIdRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionCustomerFacingAgentsAgentIdActivateRoute,
+    postV1ReceptionCustomerFacingAgentsAgentIdActivateRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionCustomerFacingAgentsAgentIdRulesRoute,
+    postV1ReceptionCustomerFacingAgentsAgentIdRulesRouteHandler,
+  )
+  .openapi(
+    putV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRoute,
+    putV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRoute,
+    deleteV1ReceptionCustomerFacingAgentsAgentIdRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    getV1ReceptionCustomerFacingAgentsAgentIdProceduresRoute,
+    getV1ReceptionCustomerFacingAgentsAgentIdProceduresRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionCustomerFacingAgentsAgentIdProceduresRoute,
+    postV1ReceptionCustomerFacingAgentsAgentIdProceduresRouteHandler,
+  )
+  .openapi(
+    putV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRoute,
+    putV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRoute,
+    deleteV1ReceptionCustomerFacingAgentsAgentIdProceduresProcedureIdRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRoute,
+    postV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRouteHandler,
+  )
+  .openapi(
+    putV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRoute,
+    putV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRoute,
+    deleteV1ReceptionCustomerFacingAgentsAgentIdTransferRulesRuleIdRouteHandler,
+  )
+  .openapi(
+    getV1ReceptionPhoneNumbersAssignmentsRoute,
+    getV1ReceptionPhoneNumbersAssignmentsRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionPhoneNumbersAssignmentsRoute,
+    postV1ReceptionPhoneNumbersAssignmentsRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRoute,
+    deleteV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRouteHandler,
+  )
+  .openapi(
+    patchV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRoute,
+    patchV1ReceptionPhoneNumbersAssignmentsPhoneAssignmentIdRouteHandler,
+  )
+  .openapi(getV1ReceptionHolidaysRoute, getV1ReceptionHolidaysRouteHandler)
+  .openapi(postV1ReceptionHolidaysRoute, postV1ReceptionHolidaysRouteHandler)
+  .openapi(getV1ReceptionHolidaysHolidayIdRoute, getV1ReceptionHolidaysHolidayIdRouteHandler)
+  .openapi(putV1ReceptionHolidaysHolidayIdRoute, putV1ReceptionHolidaysHolidayIdRouteHandler)
+  .openapi(deleteV1ReceptionHolidaysHolidayIdRoute, deleteV1ReceptionHolidaysHolidayIdRouteHandler)
+  .openapi(getV1ReceptionLocationsRoute, getV1ReceptionLocationsRouteHandler)
+  .openapi(postV1ReceptionLocationsRoute, postV1ReceptionLocationsRouteHandler)
+  .openapi(getV1ReceptionLocationsLocationIdRoute, getV1ReceptionLocationsLocationIdRouteHandler)
+  .openapi(putV1ReceptionLocationsLocationIdRoute, putV1ReceptionLocationsLocationIdRouteHandler)
+  .openapi(
+    deleteV1ReceptionLocationsLocationIdRoute,
+    deleteV1ReceptionLocationsLocationIdRouteHandler,
+  )
+  .openapi(getV1ReceptionAgentInfoRoute, getV1ReceptionAgentInfoRouteHandler)
+  .openapi(putV1ReceptionAgentInfoRoute, putV1ReceptionAgentInfoRouteHandler)
+  .openapi(getV1ReceptionKnowledgeSourcesRoute, getV1ReceptionKnowledgeSourcesRouteHandler)
+  .openapi(postV1ReceptionKnowledgeSourcesRoute, postV1ReceptionKnowledgeSourcesRouteHandler)
+  .openapi(
+    getV1ReceptionKnowledgeSourcesSourceIdRoute,
+    getV1ReceptionKnowledgeSourcesSourceIdRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionKnowledgeSourcesSourceIdRoute,
+    deleteV1ReceptionKnowledgeSourcesSourceIdRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionKnowledgeSourcesUrlsRoute,
+    postV1ReceptionKnowledgeSourcesUrlsRouteHandler,
+  )
+  .openapi(getV1ReceptionResellerWorkspacesRoute, getV1ReceptionResellerWorkspacesRouteHandler)
+  .openapi(postV1ReceptionResellerWorkspacesRoute, postV1ReceptionResellerWorkspacesRouteHandler)
+  .openapi(
+    postV1ReceptionResellerWorkspacesWorkspaceIdCompleteOnboardingRoute,
+    postV1ReceptionResellerWorkspacesWorkspaceIdCompleteOnboardingRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  )
+  .openapi(
+    patchV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+    patchV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  )
+  .openapi(
+    deleteV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRoute,
+    deleteV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRestoreRoute,
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionRestoreRouteHandler,
+  )
+  .openapi(
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionCancelDowngradeRoute,
+    postV1ReceptionResellerWorkspacesWorkspaceIdSubscriptionCancelDowngradeRouteHandler,
+  )
+  .openapi(getV1ReceptionResellerTierLadderRoute, getV1ReceptionResellerTierLadderRouteHandler)
+  .openapi(
+    getV1ReceptionResellerBillingInvoicesRoute,
+    getV1ReceptionResellerBillingInvoicesRouteHandler,
+  )
+  .openapi(
+    getV1ReceptionResellerBillingInvoicesInvoiceIdRoute,
+    getV1ReceptionResellerBillingInvoicesInvoiceIdRouteHandler,
+  )
+  .openapi(
+    getV1ReceptionResellerBillingUpcomingRoute,
+    getV1ReceptionResellerBillingUpcomingRouteHandler,
+  )
+  .openapi(getV1ReceptionTeamMembersRoute, getV1ReceptionTeamMembersRouteHandler)
+  .openapi(getV1ReceptionTeamInvitesRoute, getV1ReceptionTeamInvitesRouteHandler)
+  .openapi(postV1ReceptionTeamInvitesRoute, postV1ReceptionTeamInvitesRouteHandler)
+  .openapi(deleteV1ReceptionTeamInvitesRoute, deleteV1ReceptionTeamInvitesRouteHandler)
+  .openapi(patchV1ReceptionTeamMembersUserIdRoute, patchV1ReceptionTeamMembersUserIdRouteHandler)
+  .openapi(deleteV1ReceptionTeamMembersUserIdRoute, deleteV1ReceptionTeamMembersUserIdRouteHandler)
+  .openapi(getDocsRoute, getDocsRouteHandler)
 
 export default app

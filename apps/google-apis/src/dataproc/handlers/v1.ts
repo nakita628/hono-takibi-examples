@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   deleteV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute,
   deleteV1ProjectsProjectIdRegionsRegionJobsJobIdRoute,
@@ -36,108 +36,200 @@ import {
   putV1NameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ProjectsProjectIdRegionsRegionClustersRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdRegionsRegionClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ProjectsProjectIdRegionsRegionClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionClustersClusterNameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionClustersClusterNameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectIdRegionsRegionJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ProjectsProjectIdRegionsRegionJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ProjectsProjectIdRegionsRegionJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ProjectsProjectIdRegionsRegionJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionJobsJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionJobsSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameInstantiateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentAutoscalingPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentAutoscalingPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentBatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentBatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentNodeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentWorkflowTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentWorkflowTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentWorkflowTemplatesInstantiateInlineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ProjectRegionClusterInjectCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ProjectsProjectIdRegionsRegionClustersRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectIdRegionsRegionClustersClusterNameRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectIdRegionsRegionClustersClusterNameRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectIdRegionsRegionClustersClusterNameRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectIdRegionsRegionClustersClusterNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionClustersClusterNameDiagnoseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionClustersClusterNameRepairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionClustersClusterNameStartRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionClustersClusterNameStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionClustersClusterNameStopRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionClustersClusterNameStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectIdRegionsRegionJobsRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdRegionsRegionJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ProjectsProjectIdRegionsRegionJobsJobIdRouteHandler: RouteHandler<
+  typeof deleteV1ProjectsProjectIdRegionsRegionJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ProjectsProjectIdRegionsRegionJobsJobIdRouteHandler: RouteHandler<
+  typeof getV1ProjectsProjectIdRegionsRegionJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ProjectsProjectIdRegionsRegionJobsJobIdRouteHandler: RouteHandler<
+  typeof patchV1ProjectsProjectIdRegionsRegionJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionJobsJobIdCancelRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionJobsJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionJobsSubmitRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionJobsSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationRouteHandler: RouteHandler<
+  typeof postV1ProjectsProjectIdRegionsRegionJobsSubmitAsOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1NameRouteHandler: RouteHandler<typeof putV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameCancelRouteHandler: RouteHandler<typeof postV1NameCancelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameInstantiateRouteHandler: RouteHandler<
+  typeof postV1NameInstantiateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameResizeRouteHandler: RouteHandler<typeof postV1NameResizeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentAutoscalingPoliciesRouteHandler: RouteHandler<
+  typeof getV1ParentAutoscalingPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentAutoscalingPoliciesRouteHandler: RouteHandler<
+  typeof postV1ParentAutoscalingPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentBatchesRouteHandler: RouteHandler<typeof getV1ParentBatchesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentBatchesRouteHandler: RouteHandler<
+  typeof postV1ParentBatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentNodeGroupsRouteHandler: RouteHandler<
+  typeof postV1ParentNodeGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentWorkflowTemplatesRouteHandler: RouteHandler<
+  typeof getV1ParentWorkflowTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentWorkflowTemplatesRouteHandler: RouteHandler<
+  typeof postV1ParentWorkflowTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentWorkflowTemplatesInstantiateInlineRouteHandler: RouteHandler<
+  typeof postV1ParentWorkflowTemplatesInstantiateInlineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ProjectRegionClusterInjectCredentialsRouteHandler: RouteHandler<
+  typeof postV1ProjectRegionClusterInjectCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1ResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1ResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postV1ResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHumanLoopsFlowDefinitionArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHumanLoopsFlowDefinitionArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const humanLoopsFlowDefinitionArnHandler = app.openapi(
-  getHumanLoopsFlowDefinitionArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getHumanLoopsFlowDefinitionArnRouteHandler: RouteHandler<
+  typeof getHumanLoopsFlowDefinitionArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

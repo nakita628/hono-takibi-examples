@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOauth2RegisterIdRoute,
   getOauth2AuthRoute,
   getOauth2DeviceVerifyRoute,
@@ -12,36 +12,58 @@ import {
   putOauth2RegisterIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauth2AuthRouteHandler: RouteHandler<typeof getOauth2AuthRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(getOauth2AuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2DeviceAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2DeviceVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2RegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOauth2RegisterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2RegisterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOauth2RegisterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2RevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2SessionsLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauth2TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauth2DeviceAuthRouteHandler: RouteHandler<
+  typeof postOauth2DeviceAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2DeviceVerifyRouteHandler: RouteHandler<
+  typeof getOauth2DeviceVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2RegisterRouteHandler: RouteHandler<typeof postOauth2RegisterRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOauth2RegisterIdRouteHandler: RouteHandler<
+  typeof deleteOauth2RegisterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2RegisterIdRouteHandler: RouteHandler<
+  typeof getOauth2RegisterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOauth2RegisterIdRouteHandler: RouteHandler<
+  typeof putOauth2RegisterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2RevokeRouteHandler: RouteHandler<typeof postOauth2RevokeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2SessionsLogoutRouteHandler: RouteHandler<
+  typeof getOauth2SessionsLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauth2TokenRouteHandler: RouteHandler<typeof postOauth2TokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getClickstreamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getClickstreamRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const clickstreamHandler = app.openapi(getClickstreamRoute, (c) => {
+export const getClickstreamRouteHandler: RouteHandler<typeof getClickstreamRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEventSourcesRoute, putEventSourcesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEventSourcesRoute, putEventSourcesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEventSourcesRouteHandler: RouteHandler<typeof postEventSourcesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const eventSourcesHandler = app
-  .openapi(postEventSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEventSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putEventSourcesRouteHandler: RouteHandler<typeof putEventSourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

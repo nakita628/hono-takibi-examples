@@ -8,8 +8,6 @@ type CountClosedWorkflowExecutionsInput = {
   closeStatusFilter?: { status: {} } | undefined
 }
 type WorkflowExecutionCount = { count: {}; truncated?: {} | undefined }
-type UnknownResourceFault = { [x: string]: unknown }
-type OperationNotPermittedFault = { [x: string]: unknown }
 type CountOpenWorkflowExecutionsInput = {
   domain: {}
   startTimeFilter: { oldestDate: {}; latestDate?: {} | undefined }
@@ -21,9 +19,7 @@ type CountPendingActivityTasksInput = { domain: {}; taskList: { name: {} } }
 type PendingTaskCount = { count: {}; truncated?: {} | undefined }
 type CountPendingDecisionTasksInput = { domain: {}; taskList: { name: {} } }
 type DeprecateActivityTypeInput = { domain: {}; activityType: { name: {}; version: {} } }
-type TypeDeprecatedFault = { [x: string]: unknown }
 type DeprecateDomainInput = { name: {} }
-type DomainDeprecatedFault = { [x: string]: unknown }
 type DeprecateWorkflowTypeInput = { domain: {}; workflowType: { name: {}; version: {} } }
 type DescribeActivityTypeInput = { domain: {}; activityType: { name: {}; version: {} } }
 type ActivityTypeDetail = {
@@ -146,7 +142,6 @@ type ListOpenWorkflowExecutionsInput = {
 }
 type ListTagsForResourceInput = { resourceArn: {} }
 type ListTagsForResourceOutput = { tags?: {} | undefined }
-type LimitExceededFault = { [x: string]: unknown }
 type ListWorkflowTypesInput = {
   domain: {}
   name?: {} | undefined
@@ -196,15 +191,12 @@ type RegisterActivityTypeInput = {
   defaultTaskScheduleToStartTimeout?: {} | undefined
   defaultTaskScheduleToCloseTimeout?: {} | undefined
 }
-type TypeAlreadyExistsFault = { [x: string]: unknown }
 type RegisterDomainInput = {
   name: {}
   description?: {} | undefined
   workflowExecutionRetentionPeriodInDays: {}
   tags?: {} | undefined
 }
-type DomainAlreadyExistsFault = { [x: string]: unknown }
-type TooManyTagsFault = { [x: string]: unknown }
 type RegisterWorkflowTypeInput = {
   domain: {}
   name: {}
@@ -251,8 +243,6 @@ type StartWorkflowExecutionInput = {
   lambdaRole?: {} | undefined
 }
 type Run = { runId?: {} | undefined }
-type WorkflowExecutionAlreadyStartedFault = { [x: string]: unknown }
-type DefaultUndefinedFault = { [x: string]: unknown }
 type TagResourceInput = { resourceArn: {}; tags: {} }
 type TerminateWorkflowExecutionInput = {
   domain: {}
@@ -270,2437 +260,757 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#X-Amz-Target=SimpleWorkflowService.CountClosedWorkflowExecutions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountClosedWorkflowExecutionsInput }
-            output: WorkflowExecutionCount
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.CountClosedWorkflowExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountClosedWorkflowExecutionsInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountClosedWorkflowExecutionsInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CountClosedWorkflowExecutionsInput }
+        output: WorkflowExecutionCount
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.CountOpenWorkflowExecutions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountOpenWorkflowExecutionsInput }
-            output: WorkflowExecutionCount
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.CountOpenWorkflowExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountOpenWorkflowExecutionsInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountOpenWorkflowExecutionsInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CountOpenWorkflowExecutionsInput }
+        output: WorkflowExecutionCount
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.CountPendingActivityTasks': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingActivityTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingActivityTasksInput }
-            output: PendingTaskCount
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.CountPendingActivityTasks'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingActivityTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingActivityTasksInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingActivityTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingActivityTasksInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CountPendingActivityTasksInput }
+        output: PendingTaskCount
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.CountPendingDecisionTasks': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingDecisionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingDecisionTasksInput }
-            output: PendingTaskCount
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.CountPendingDecisionTasks'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingDecisionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingDecisionTasksInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.CountPendingDecisionTasks'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CountPendingDecisionTasksInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: CountPendingDecisionTasksInput }
+        output: PendingTaskCount
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DeprecateActivityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateActivityTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DeprecateActivityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateActivityTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateActivityTypeInput }
-            output: TypeDeprecatedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateActivityTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeprecateActivityTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DeprecateDomain': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateDomainInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DeprecateDomain'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateDomainInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateDomainInput }
-            output: DomainDeprecatedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateDomainInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeprecateDomainInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DeprecateWorkflowType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateWorkflowTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DeprecateWorkflowType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateWorkflowTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateWorkflowTypeInput }
-            output: TypeDeprecatedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeprecateWorkflowTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: DeprecateWorkflowTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DescribeActivityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivityTypeInput }
-            output: ActivityTypeDetail
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DescribeActivityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivityTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeActivityTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeActivityTypeInput }
+        output: ActivityTypeDetail
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DescribeDomain': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainInput }
-            output: DomainDetail
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DescribeDomain'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeDomainInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeDomainInput }
+        output: DomainDetail
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DescribeWorkflowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowExecutionInput }
-            output: WorkflowExecutionDetail
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowExecutionInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowExecutionInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeWorkflowExecutionInput }
+        output: WorkflowExecutionDetail
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.DescribeWorkflowType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowTypeInput }
-            output: WorkflowTypeDetail
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.DescribeWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeWorkflowTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: DescribeWorkflowTypeInput }
+        output: WorkflowTypeDetail
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.GetWorkflowExecutionHistory': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.GetWorkflowExecutionHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowExecutionHistoryInput }
-            output: History
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.GetWorkflowExecutionHistory'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.GetWorkflowExecutionHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowExecutionHistoryInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.GetWorkflowExecutionHistory'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetWorkflowExecutionHistoryInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: GetWorkflowExecutionHistoryInput }
+        output: History
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListActivityTypes': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListActivityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListActivityTypesInput }
-            output: ActivityTypeInfos
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListActivityTypes'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListActivityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListActivityTypesInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListActivityTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListActivityTypesInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListActivityTypesInput }
+        output: ActivityTypeInfos
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListClosedWorkflowExecutions': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClosedWorkflowExecutionsInput }
-            output: WorkflowExecutionInfos
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListClosedWorkflowExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClosedWorkflowExecutionsInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListClosedWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListClosedWorkflowExecutionsInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListClosedWorkflowExecutionsInput }
+        output: WorkflowExecutionInfos
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListDomains': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListDomains'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDomainsInput }
-            output: DomainInfos
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListDomains'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListDomains'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListDomainsInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: ListDomainsInput }
+        output: DomainInfos
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListOpenWorkflowExecutions': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpenWorkflowExecutionsInput }
-            output: WorkflowExecutionInfos
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListOpenWorkflowExecutions'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpenWorkflowExecutionsInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListOpenWorkflowExecutions'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListOpenWorkflowExecutionsInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListOpenWorkflowExecutionsInput }
+        output: WorkflowExecutionInfos
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListTagsForResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceInput }
-            output: ListTagsForResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListTagsForResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListTagsForResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListTagsForResourceInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: ListTagsForResourceInput }
+        output: ListTagsForResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.ListWorkflowTypes': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListWorkflowTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowTypesInput }
-            output: WorkflowTypeInfos
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.ListWorkflowTypes'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListWorkflowTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowTypesInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.ListWorkflowTypes'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ListWorkflowTypesInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: ListWorkflowTypesInput }
+        output: WorkflowTypeInfos
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.PollForActivityTask': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForActivityTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForActivityTaskInput }
-            output: ActivityTask
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.PollForActivityTask'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForActivityTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForActivityTaskInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForActivityTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForActivityTaskInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForActivityTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForActivityTaskInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: PollForActivityTaskInput }
+        output: ActivityTask
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.PollForDecisionTask': {
-      $post:
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForDecisionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForDecisionTaskInput }
-            output: DecisionTask
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.PollForDecisionTask'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForDecisionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForDecisionTaskInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForDecisionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForDecisionTaskInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { maximumPageSize?: string | undefined; nextPageToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.PollForDecisionTask'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PollForDecisionTaskInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: PollForDecisionTaskInput }
+        output: DecisionTask
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RecordActivityTaskHeartbeat': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RecordActivityTaskHeartbeat'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RecordActivityTaskHeartbeatInput }
-            output: ActivityTaskStatus
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RecordActivityTaskHeartbeat'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RecordActivityTaskHeartbeat'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RecordActivityTaskHeartbeatInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RecordActivityTaskHeartbeat'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RecordActivityTaskHeartbeatInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RecordActivityTaskHeartbeatInput }
+        output: ActivityTaskStatus
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RegisterActivityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterActivityTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterActivityTypeInput }
-            output: TypeAlreadyExistsFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterActivityTypeInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterActivityTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterActivityTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: RegisterActivityTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RegisterDomain': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDomainInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDomainInput }
-            output: DomainAlreadyExistsFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDomainInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDomainInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterDomainInput }
-            output: TooManyTagsFault
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: RegisterDomainInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RegisterWorkflowType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterWorkflowTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterWorkflowTypeInput }
-            output: TypeAlreadyExistsFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterWorkflowTypeInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterWorkflowTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RegisterWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RegisterWorkflowTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: RegisterWorkflowTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RequestCancelWorkflowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RequestCancelWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RequestCancelWorkflowExecutionInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RequestCancelWorkflowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RequestCancelWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RequestCancelWorkflowExecutionInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RequestCancelWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RequestCancelWorkflowExecutionInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RequestCancelWorkflowExecutionInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RespondActivityTaskCanceled': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCanceled'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCanceledInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCanceled'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCanceled'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCanceledInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCanceled'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCanceledInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RespondActivityTaskCanceledInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RespondActivityTaskCompleted': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCompletedInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCompleted'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCompletedInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskCompletedInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RespondActivityTaskCompletedInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RespondActivityTaskFailed': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskFailed'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskFailedInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskFailed'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskFailed'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskFailedInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondActivityTaskFailed'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondActivityTaskFailedInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RespondActivityTaskFailedInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.RespondDecisionTaskCompleted': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondDecisionTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondDecisionTaskCompletedInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.RespondDecisionTaskCompleted'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondDecisionTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondDecisionTaskCompletedInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.RespondDecisionTaskCompleted'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: RespondDecisionTaskCompletedInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: RespondDecisionTaskCompletedInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.SignalWorkflowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.SignalWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SignalWorkflowExecutionInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.SignalWorkflowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.SignalWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SignalWorkflowExecutionInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.SignalWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SignalWorkflowExecutionInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: SignalWorkflowExecutionInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.StartWorkflowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: Run
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: TypeDeprecatedFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: WorkflowExecutionAlreadyStartedFault
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.StartWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: StartWorkflowExecutionInput }
-            output: DefaultUndefinedFault
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: StartWorkflowExecutionInput }
+        output: Run
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.TagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.TagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceInput }
-            output: TooManyTagsFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TagResourceInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: TagResourceInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.TerminateWorkflowExecution': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TerminateWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateWorkflowExecutionInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.TerminateWorkflowExecution'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TerminateWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateWorkflowExecutionInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.TerminateWorkflowExecution'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TerminateWorkflowExecutionInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: TerminateWorkflowExecutionInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.UndeprecateActivityType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateActivityTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.UndeprecateActivityType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateActivityTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateActivityTypeInput }
-            output: TypeAlreadyExistsFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateActivityType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateActivityTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UndeprecateActivityTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.UndeprecateDomain': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateDomainInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.UndeprecateDomain'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateDomainInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateDomainInput }
-            output: DomainAlreadyExistsFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateDomain'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateDomainInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UndeprecateDomainInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.UndeprecateWorkflowType': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateWorkflowTypeInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.UndeprecateWorkflowType'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateWorkflowTypeInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateWorkflowTypeInput }
-            output: TypeAlreadyExistsFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UndeprecateWorkflowType'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UndeprecateWorkflowTypeInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UndeprecateWorkflowTypeInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#X-Amz-Target=SimpleWorkflowService.UntagResource': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceInput }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Target': 'SimpleWorkflowService.UntagResource'
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceInput }
-            output: UnknownResourceFault
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceInput }
-            output: LimitExceededFault
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Target': 'SimpleWorkflowService.UntagResource'
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UntagResourceInput }
-            output: OperationNotPermittedFault
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: UntagResourceInput }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   },
   '/'

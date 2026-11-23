@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWorkerCmdCheckconstraintsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWorkerCmdCheckconstraintsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const workerCmdCheckconstraintsHandler = app.openapi(
-  postWorkerCmdCheckconstraintsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postWorkerCmdCheckconstraintsRouteHandler: RouteHandler<
+  typeof postWorkerCmdCheckconstraintsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

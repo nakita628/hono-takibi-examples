@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnalyticsRawIncidentsIdResponsesRoute,
   getAnalyticsRawIncidentsIdRoute,
   postAnalyticsMetricsIncidentsAllRoute,
@@ -18,54 +18,98 @@ import {
   postAnalyticsRawUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAnalyticsMetricsIncidentsAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analyticsHandler = app
-  .openapi(postAnalyticsMetricsIncidentsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsEscalationPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsEscalationPoliciesAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsServicesAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsIncidentsTeamsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsPdAdvanceUsageFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsRespondersAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsRespondersTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsMetricsUsersAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsRawIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsRawIncidentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsRawIncidentsIdResponsesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsRawRespondersResponderIdIncidentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalyticsRawUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnalyticsMetricsIncidentsEscalationPoliciesRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsEscalationPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsIncidentsEscalationPoliciesAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsEscalationPoliciesAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsIncidentsServicesRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsIncidentsServicesAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsServicesAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsIncidentsTeamsRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsIncidentsTeamsAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsIncidentsTeamsAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsPdAdvanceUsageFeaturesRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsPdAdvanceUsageFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsRespondersAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsRespondersAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsRespondersTeamsRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsRespondersTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsMetricsUsersAllRouteHandler: RouteHandler<
+  typeof postAnalyticsMetricsUsersAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsRawIncidentsRouteHandler: RouteHandler<
+  typeof postAnalyticsRawIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsRawIncidentsIdRouteHandler: RouteHandler<
+  typeof getAnalyticsRawIncidentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsRawIncidentsIdResponsesRouteHandler: RouteHandler<
+  typeof getAnalyticsRawIncidentsIdResponsesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsRawRespondersResponderIdIncidentsRouteHandler: RouteHandler<
+  typeof postAnalyticsRawRespondersResponderIdIncidentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalyticsRawUsersRouteHandler: RouteHandler<
+  typeof postAnalyticsRawUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

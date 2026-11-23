@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShuttleSystemsShuttleSystemIdRoute,
   getShuttleSystemsRoute,
   getShuttleSystemsShuttleSystemIdRoute,
@@ -8,24 +8,38 @@ import {
   putShuttleSystemsShuttleSystemIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShuttleSystemsRouteHandler: RouteHandler<typeof getShuttleSystemsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const shuttleSystemsHandler = app
-  .openapi(getShuttleSystemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleSystemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShuttleSystemsShuttleSystemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putShuttleSystemsShuttleSystemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShuttleSystemsShuttleSystemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleSystemsShuttleSystemIdIssueRegistrationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postShuttleSystemsRouteHandler: RouteHandler<typeof postShuttleSystemsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShuttleSystemsShuttleSystemIdRouteHandler: RouteHandler<
+  typeof getShuttleSystemsShuttleSystemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putShuttleSystemsShuttleSystemIdRouteHandler: RouteHandler<
+  typeof putShuttleSystemsShuttleSystemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShuttleSystemsShuttleSystemIdRouteHandler: RouteHandler<
+  typeof deleteShuttleSystemsShuttleSystemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShuttleSystemsShuttleSystemIdIssueRegistrationTokenRouteHandler: RouteHandler<
+  typeof postShuttleSystemsShuttleSystemIdIssueRegistrationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

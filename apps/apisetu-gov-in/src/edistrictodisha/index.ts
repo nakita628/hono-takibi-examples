@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  ctcerHandler,
-  ewcerHandler,
-  lhcerHandler,
-  obcerHandler,
-  ror1bHandler,
-  slcerHandler,
+  postCtcerCertificateRoute,
+  postEwcerCertificateRoute,
+  postLhcerCertificateRoute,
+  postObcerCertificateRoute,
+  postRor1bCertificateRoute,
+  postSlcerCertificateRoute,
+} from './routes'
+import {
+  postCtcerCertificateRouteHandler,
+  postEwcerCertificateRouteHandler,
+  postLhcerCertificateRouteHandler,
+  postObcerCertificateRouteHandler,
+  postRor1bCertificateRouteHandler,
+  postSlcerCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', ctcerHandler)
-  .route('/', ewcerHandler)
-  .route('/', lhcerHandler)
-  .route('/', obcerHandler)
-  .route('/', ror1bHandler)
-  .route('/', slcerHandler)
+  .openapi(postCtcerCertificateRoute, postCtcerCertificateRouteHandler)
+  .openapi(postEwcerCertificateRoute, postEwcerCertificateRouteHandler)
+  .openapi(postLhcerCertificateRoute, postLhcerCertificateRouteHandler)
+  .openapi(postObcerCertificateRoute, postObcerCertificateRouteHandler)
+  .openapi(postRor1bCertificateRoute, postRor1bCertificateRouteHandler)
+  .openapi(postSlcerCertificateRoute, postSlcerCertificateRouteHandler)
 
 export default app

@@ -29,6 +29,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -151,6 +164,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/dpcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -291,6 +317,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -413,6 +452,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/incer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -553,6 +605,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -675,6 +740,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/ndcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -815,6 +893,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -937,6 +1028,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/rmcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -1077,6 +1181,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -1199,6 +1316,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/rucer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {
@@ -1339,6 +1469,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -1461,6 +1604,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/vlcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?: { CertificateNumber: string } | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {

@@ -1201,7 +1201,7 @@ curl https://peertube.example.com/api/v1/accounts/chocobozzz%20%7C%20chocobozzz%
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |search|query|string|false|Plain text search, applied to various parts of the model depending on endpoint|
@@ -3767,7 +3767,7 @@ curl https://peertube.example.com/api/v1/users/me/videos \
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |search|query|string|false|Plain text search, applied to various parts of the model depending on endpoint|
@@ -4352,7 +4352,7 @@ curl https://peertube.example.com/api/v1/users/me/subscriptions/videos \
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |search|query|string|false|Plain text search, applied to various parts of the model depending on endpoint|
@@ -8319,7 +8319,7 @@ curl https://peertube.example.com/api/v1/videos \
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |search|query|string|false|Plain text search, applied to various parts of the model depending on endpoint|
@@ -10231,7 +10231,7 @@ curl https://peertube.example.com/api/v1/video-channels/my_username%20%7C%20my_u
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |search|query|string|false|Plain text search, applied to various parts of the model depending on endpoint|
@@ -10502,11 +10502,11 @@ videoPasswords:
 |---|---|---|---|---|
 |body|body|[VideoCreateImport](#schemavideocreateimport)|false|none|
 |» *oneOf*|body|object|false|none|
-|» targetUrl|body|string(url)|true|remote URL where to find the import's source video|
+|» targetUrl|body|[VideoImportTargetUrl](#schemavideoimporttargeturl)|true|remote URL where to find the import's source video|
 |» *oneOf*|body|object|false|none|
-|» magnetUri|body|string(uri)|true|magnet URI allowing to resolve the import's source video|
+|» magnetUri|body|[VideoImportMagnetUri](#schemavideoimportmagneturi)|true|magnet URI allowing to resolve the import's source video|
 |» *oneOf*|body|object|false|none|
-|» torrentfile|body|string(binary)|true|Torrent file containing only the video file|
+|» torrentfile|body|[VideoImportTorrentfile](#schemavideoimporttorrentfile)|true|Torrent file containing only the video file|
 |» name|body|string|true|Video name|
 |» channelId|body|integer|true|Channel id that will contain this video|
 |» privacy|body|[VideoPrivacySet](#schemavideoprivacyset)|false|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
@@ -15510,7 +15510,7 @@ Status Code **200**
 |videoPlaylist|object|false|none|none|
 |» id|[id](#schemaid)|false|none|none|
 |» uuid|[UUIDv4](#schemauuidv4)|false|none|none|
-|» shortUUID|object|false|none|none|
+|» shortUUID|[VideoPlaylistShortUUID](#schemavideoplaylistshortuuid)|false|none|none|
 
 <aside class="warning">
 To perform this operation, you must be authenticated by means of one of the following methods:
@@ -15859,7 +15859,7 @@ curl 'https://peertube.example.com/api/v1/users/me/video-playlists/videos-exist?
 
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
-|videoIds|query|[object]|true|The video ids to check|
+|videoIds|query|[[VideoId](#schemavideoid)]|true|The video ids to check|
 
 > Example responses
 
@@ -17140,7 +17140,7 @@ curl 'https://peertube.example.com/api/v1/search/videos?search=string' \
 |hasWebVideoFiles|query|boolean|false|**PeerTube >= 6.0** Display only videos that have Web Video files|
 |host|query|string|false|Find elements owned by this host|
 |autoTagOneOf|query|string \| [string]|false|**PeerTube >= 6.2** **Admins and moderators only** filter on videos that contain one of these automatic tags|
-|stateOneOf|query|integer \| [integer]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
+|stateOneOf|query|[VideoStateConstantId](#schemavideostateconstantid) \| [[VideoStateConstantId](#schemavideostateconstantid)]|false|**PeerTube >= 8.2** **Admins and moderators only** filter on videos that have one of these states|
 |privacyOneOf|query|[VideoPrivacySet](#schemavideoprivacyset)|false|**PeerTube >= 4.0** Display only videos in this specific privacy/privacies|
 |excludeAlreadyWatched|query|boolean|false|Whether or not to exclude videos that are in the user's video history|
 |startDate|query|string(date-time)|false|Get videos that are published after this date|
@@ -17780,7 +17780,7 @@ curl https://peertube.example.com/api/v1/server/redundancy/videos \
 |Name|In|Type|Required|Description|
 |---|---|---|---|---|
 |body|body|object|false|none|
-|» videoId|body|object|true|object id for the video|
+|» videoId|body|[VideoId](#schemavideoid)|true|object id for the video|
 
 <h3 id="mirror-a-video-responses">Responses</h3>
 
@@ -19936,7 +19936,7 @@ curl https://peertube.example.com/api/v1/users/me/videos/imports \
 |targetUrl|query|string|false|Filter on import target URL|
 |videoChannelSyncId|query|number|false|Filter on imports created by a specific channel synchronization|
 |search|query|string|false|Search in video names|
-|stateOneOf|query|[integer]|false|Filter on import state|
+|stateOneOf|query|[[VideoImportStateConstantId](#schemavideoimportstateconstantid)]|false|Filter on import state|
 
 #### Enumerated Values
 
@@ -20320,9 +20320,9 @@ curl https://peertube.example.com/api/v1/video-playlists/42/videos \
 |---|---|---|---|---|
 |playlistId|path|[id](#schemaid)|true|Playlist id|
 |body|body|object|false|none|
-|» videoId|body|object|true|Video to add in the playlist|
-|» » *oneOf*|body|object|false|universal identifier for the video, that can be used across instances|
-|» » *oneOf*|body|object|false|object id for the video|
+|» videoId|body|[VideoUuid](#schemavideouuid) \| [VideoId](#schemavideoid)|true|Video to add in the playlist|
+|» » *oneOf*|body|[VideoUuid](#schemavideouuid)|false|universal identifier for the video, that can be used across instances|
+|» » *oneOf*|body|[VideoId](#schemavideoid)|false|object id for the video|
 |» startTimestamp|body|integer(seconds)|false|Start the video at this specific timestamp|
 |» stopTimestamp|body|integer(seconds)|false|Stop the video at this specific timestamp|
 
@@ -23682,7 +23682,7 @@ The activity target:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|false|none|The video state:<br>- `1`: Published<br>- `2`: To transcode<br>- `3`: To import<br>- `4`: Waiting for live stream<br>- `5`: Live ended<br>- `6`: To move to an external storage (object storage...)<br>- `7`: Transcoding failed<br>- `8`: Moving to an external storage failed<br>- `9`: To edit using studio edition feature<br>- `10`: To move to the file system<br>- `11`: Moving to the file system failed<br>- `12`: Import failed<br>- `13`: To duplicate, the files of another video are being copied<br>- `14`: Duplication failed, the files of the other video could not be copied<br>- `15`: The studio edition of a video saved as a new video failed<br>|
+|id|[VideoStateConstantId](#schemavideostateconstantid)|false|none|The video state:<br>- `1`: Published<br>- `2`: To transcode<br>- `3`: To import<br>- `4`: Waiting for live stream<br>- `5`: Live ended<br>- `6`: To move to an external storage (object storage...)<br>- `7`: Transcoding failed<br>- `8`: Moving to an external storage failed<br>- `9`: To edit using studio edition feature<br>- `10`: To move to the file system<br>- `11`: Moving to the file system failed<br>- `12`: Import failed<br>- `13`: To duplicate, the files of another video are being copied<br>- `14`: Duplication failed, the files of the other video could not be copied<br>- `15`: The studio edition of a video saved as a new video failed<br>|
 |label|string|false|none|none|
 
 #### Enumerated Values
@@ -24357,10 +24357,10 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|object|false|none|object id for the video|
-|uuid|object|false|none|universal identifier for the video, that can be used across instances|
-|name|string|false|none|title of the video|
-|state|object|false|none|represents the internal state of the video processing within the PeerTube instance|
+|id|[VideoId](#schemavideoid)|false|none|object id for the video|
+|uuid|[VideoUuid](#schemavideouuid)|false|none|universal identifier for the video, that can be used across instances|
+|name|[VideoName](#schemavideoname)|false|none|title of the video|
+|state|[VideoState](#schemavideostate)|false|none|represents the internal state of the video processing within the PeerTube instance|
 
 <h2 id="tocS_Video">Video</h2>
 <!-- backwards compatibility -->
@@ -24493,9 +24493,9 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|object|false|none|object id for the video|
-|uuid|object|false|none|universal identifier for the video, that can be used across instances|
-|shortUUID|object|false|none|none|
+|id|[VideoId](#schemavideoid)|false|none|object id for the video|
+|uuid|[VideoUuid](#schemavideouuid)|false|none|universal identifier for the video, that can be used across instances|
+|shortUUID|[VideoShortUUID](#schemavideoshortuuid)|false|none|none|
 |isLive|boolean|false|none|none|
 |liveSchedules|[[LiveSchedule](#schemaliveschedule)]|false|none|none|
 |createdAt|string(date-time)|false|none|time at which the video object was first drafted|
@@ -24510,7 +24510,7 @@ resolutions and their labels for the video
 |duration|integer(seconds)|false|none|duration of the video in seconds|
 |aspectRatio|number(float) \| null|false|none|**PeerTube >= 6.1** Aspect ratio of the video stream|
 |isLocal|boolean|false|none|none|
-|name|string|false|none|title of the video|
+|name|[VideoName](#schemavideoname)|false|none|title of the video|
 |thumbnailPath|string \| null|false|none|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnails instead. Null if the file is stored in object storage: use the non-deprecated field instead.|
 |previewPath|string \| null|false|none|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnails instead. Null if the file is stored in object storage: use the non-deprecated field instead.|
 |thumbnails|[[Thumbnail](#schemathumbnail)]|false|none|**PeerTube >= 8.1** Array of thumbnails for the video|
@@ -24526,7 +24526,7 @@ resolutions and their labels for the video
 |commercialContent|[VideoCommercialContentConstant](#schemavideocommercialcontentconstant)|false|none|none|
 |recommendationScope|[VideoRecommendationScopeConstant](#schemavideorecommendationscopeconstant)|false|none|none|
 |waitTranscoding|boolean \| null|false|none|none|
-|state|object|false|none|represents the internal state of the video processing within the PeerTube instance|
+|state|[VideoState](#schemavideostate)|false|none|represents the internal state of the video processing within the PeerTube instance|
 |scheduledUpdate|object \| null|false|none|none|
 |blacklisted|boolean \| null|false|none|none|
 |blacklistedReason|string \| null|false|none|none|
@@ -24826,9 +24826,9 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|object|false|none|object id for the video|
-|uuid|object|false|none|universal identifier for the video, that can be used across instances|
-|shortUUID|object|false|none|none|
+|id|[VideoId](#schemavideoid)|false|none|object id for the video|
+|uuid|[VideoUuid](#schemavideouuid)|false|none|universal identifier for the video, that can be used across instances|
+|shortUUID|[VideoShortUUID](#schemavideoshortuuid)|false|none|none|
 |isLive|boolean|false|none|none|
 |liveSchedules|[[LiveSchedule](#schemaliveschedule)]|false|none|none|
 |createdAt|string(date-time)|false|none|time at which the video object was first drafted|
@@ -24843,7 +24843,7 @@ resolutions and their labels for the video
 |duration|integer(seconds)|false|none|duration of the video in seconds|
 |aspectRatio|number(float) \| null|false|none|**PeerTube >= 6.1** Aspect ratio of the video stream|
 |isLocal|boolean|false|none|none|
-|name|string|false|none|title of the video|
+|name|[VideoName](#schemavideoname)|false|none|title of the video|
 |thumbnailPath|string \| null|false|none|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnails instead. Null if the file is stored in object storage: use the non-deprecated field instead.|
 |previewPath|string \| null|false|none|**Deprecated.** Deprecated in PeerTube v8.1, use thumbnails instead. Null if the file is stored in object storage: use the non-deprecated field instead.|
 |thumbnails|[[Thumbnail](#schemathumbnail)]|false|none|**PeerTube >= 8.1** Array of thumbnails for the video|
@@ -24859,7 +24859,7 @@ resolutions and their labels for the video
 |commercialContent|[VideoCommercialContentConstant](#schemavideocommercialcontentconstant)|false|none|none|
 |recommendationScope|[VideoRecommendationScopeConstant](#schemavideorecommendationscopeconstant)|false|none|none|
 |waitTranscoding|boolean \| null|false|none|none|
-|state|object|false|none|represents the internal state of the video processing within the PeerTube instance|
+|state|[VideoState](#schemavideostate)|false|none|represents the internal state of the video processing within the PeerTube instance|
 |scheduledUpdate|object \| null|false|none|none|
 |blacklisted|boolean \| null|false|none|none|
 |blacklistedReason|string \| null|false|none|none|
@@ -25287,7 +25287,7 @@ resolutions and their labels for the video
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|id|integer|false|none|The video import state (Pending = `1`, Success = `2`, Failed = `3`, Rejected = `4`, Cancelled = `5`, Processing = `6`)<br>|
+|id|[VideoImportStateConstantId](#schemavideoimportstateconstantid)|false|none|The video import state (Pending = `1`, Success = `2`, Failed = `3`, Rejected = `4`, Cancelled = `5`, Processing = `6`)<br>|
 |label|string|false|none|none|
 
 #### Enumerated Values
@@ -25351,11 +25351,11 @@ resolutions and their labels for the video
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |*oneOf*|object|false|none|none|
-|targetUrl|string(url)|true|none|remote URL where to find the import's source video|
+|targetUrl|[VideoImportTargetUrl](#schemavideoimporttargeturl)|true|none|remote URL where to find the import's source video|
 |*oneOf*|object|false|none|none|
-|magnetUri|string(uri)|true|none|magnet URI allowing to resolve the import's source video|
+|magnetUri|[VideoImportMagnetUri](#schemavideoimportmagneturi)|true|none|magnet URI allowing to resolve the import's source video|
 |*oneOf*|object|false|none|none|
-|torrentfile|string(binary)|true|none|Torrent file containing only the video file|
+|torrentfile|[VideoImportTorrentfile](#schemavideoimporttorrentfile)|true|none|Torrent file containing only the video file|
 |name|string|true|none|Video name|
 |channelId|integer|true|none|Channel id that will contain this video|
 |privacy|[VideoPrivacySet](#schemavideoprivacyset)|false|none|privacy id of the video (see [/videos/privacies](https://docs.joinpeertube.org/api-rest-reference/api/operations/getvideoprivacypolicies.html))|
@@ -25555,9 +25555,9 @@ resolutions and their labels for the video
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
-|targetUrl|string(url)|false|none|remote URL where to find the import's source video|
-|magnetUri|string(uri)|false|none|magnet URI allowing to resolve the import's source video|
-|torrentfile|string(binary)|false|none|Torrent file containing only the video file|
+|targetUrl|[VideoImportTargetUrl](#schemavideoimporttargeturl)|false|none|remote URL where to find the import's source video|
+|magnetUri|[VideoImportMagnetUri](#schemavideoimportmagneturi)|false|none|magnet URI allowing to resolve the import's source video|
+|torrentfile|[VideoImportTorrentfile](#schemavideoimporttorrentfile)|false|none|Torrent file containing only the video file|
 |torrentName|string|false|none|none|
 |state|object|false|none|none|
 |error|string|false|none|none|
@@ -26326,7 +26326,7 @@ Representation of a ownership change
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
 |uuid|[UUIDv4](#schemauuidv4)|false|none|none|
-|shortUUID|object|false|none|none|
+|shortUUID|[VideoPlaylistShortUUID](#schemavideoplaylistshortuuid)|false|none|none|
 |createdAt|string(date-time)|false|none|none|
 |updatedAt|string(date-time)|false|none|none|
 |description|string|false|none|none|
@@ -26395,16 +26395,16 @@ Representation of a ownership change
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
-|url|string(url)|false|none|none|
-|text|string(html)|false|none|Text of the comment|
+|url|[VideoCommentUrl](#schemavideocommenturl)|false|none|none|
+|text|[VideoCommentText](#schemavideocommenttext)|false|none|Text of the comment|
 |threadId|[id](#schemaid)|false|none|none|
-|inReplyToCommentId|object \| null|false|none|none|
-|videoId|object|false|none|object id for the video|
-|createdAt|string(date-time)|false|none|none|
-|updatedAt|string(date-time)|false|none|none|
+|inReplyToCommentId|[VideoCommentInReplyToCommentId](#schemavideocommentinreplytocommentid)|false|none|none|
+|videoId|[VideoId](#schemavideoid)|false|none|object id for the video|
+|createdAt|[VideoCommentCreatedAt](#schemavideocommentcreatedat)|false|none|none|
+|updatedAt|[VideoCommentUpdatedAt](#schemavideocommentupdatedat)|false|none|none|
 |deletedAt|string(date-time) \| null|false|none|none|
 |isDeleted|boolean|false|none|none|
-|heldForReview|boolean|false|none|none|
+|heldForReview|[VideoCommentHeldForReview](#schemavideocommentheldforreview)|false|none|none|
 |totalRepliesFromVideoAuthor|integer|false|none|none|
 |totalReplies|integer|false|none|none|
 |account|[Account](#schemaaccount)|false|none|none|
@@ -26577,13 +26577,13 @@ Representation of a ownership change
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
-|url|string(url)|false|none|none|
-|text|string(html)|false|none|Text of the comment|
-|heldForReview|boolean|false|none|none|
+|url|[VideoCommentUrl](#schemavideocommenturl)|false|none|none|
+|text|[VideoCommentText](#schemavideocommenttext)|false|none|Text of the comment|
+|heldForReview|[VideoCommentHeldForReview](#schemavideocommentheldforreview)|false|none|none|
 |threadId|[id](#schemaid)|false|none|none|
-|inReplyToCommentId|object \| null|false|none|none|
-|createdAt|string(date-time)|false|none|none|
-|updatedAt|string(date-time)|false|none|none|
+|inReplyToCommentId|[VideoCommentInReplyToCommentId](#schemavideocommentinreplytocommentid)|false|none|none|
+|createdAt|[VideoCommentCreatedAt](#schemavideocommentcreatedat)|false|none|none|
+|updatedAt|[VideoCommentUpdatedAt](#schemavideocommentupdatedat)|false|none|none|
 |account|[Account](#schemaaccount)|false|none|none|
 |video|[VideoInfo](#schemavideoinfo)|false|none|none|
 |automaticTags|[string]|false|none|none|
@@ -28945,7 +28945,7 @@ Reason categories that help triage reports
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
 |username|[username](#schemausername)|false|none|immutable name of the user, used to find or mention its actor|
-|email|string(email)|false|none|The user email|
+|email|[UserEmail](#schemauseremail)|false|none|The user email|
 |emailVerified|boolean|false|none|Has the user confirmed their email address?|
 |nsfwPolicy|[NSFWPolicy](#schemansfwpolicy)|false|none|none|
 |nsfwFlagsDisplayed|[NSFWFlag](#schemansfwflag)|false|none|<br>NSFW flags (can be combined using bitwise or operator)<br>- `0` NONE<br>- `1` VIOLENT<br>- `2` EXPLICIT_SEX<br>|
@@ -29195,7 +29195,7 @@ Reason categories that help triage reports
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
 |username|[username](#schemausername)|false|none|immutable name of the user, used to find or mention its actor|
-|email|string(email)|false|none|The user email|
+|email|[UserEmail](#schemauseremail)|false|none|The user email|
 |emailVerified|boolean|false|none|Has the user confirmed their email address?|
 |nsfwPolicy|[NSFWPolicy](#schemansfwpolicy)|false|none|none|
 |nsfwFlagsDisplayed|[NSFWFlag](#schemansfwflag)|false|none|<br>NSFW flags (can be combined using bitwise or operator)<br>- `0` NONE<br>- `1` VIOLENT<br>- `2` EXPLICIT_SEX<br>|
@@ -31949,7 +31949,7 @@ The runner job state:
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |id|[id](#schemaid)|false|none|none|
-|password|string|false|none|none|
+|password|[VideoPasswordPassword](#schemavideopasswordpassword)|false|none|none|
 |videoId|[id](#schemaid)|false|none|none|
 
 <h2 id="tocS_VideoPasswordList">VideoPasswordList</h2>
@@ -32250,3 +32250,279 @@ Representation of a channel collaboration
 The user import state:
   - `1`: Pending
   - `2`: Accepted
+
+<h2 id="tocS_VideoImportStateConstantId">VideoImportStateConstantId</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoimportstateconstantid"></a>
+<a id="schema_VideoImportStateConstantId"></a>
+<a id="tocSvideoimportstateconstantid"></a>
+<a id="tocsvideoimportstateconstantid"></a>
+
+```json
+1
+```
+
+The video import state (Pending = `1`, Success = `2`, Failed = `3`, Rejected = `4`, Cancelled = `5`, Processing = `6`)
+
+<h2 id="tocS_VideoId">VideoId</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoid"></a>
+<a id="schema_VideoId"></a>
+<a id="tocSvideoid"></a>
+<a id="tocsvideoid"></a>
+
+```json
+{}
+```
+
+object id for the video
+
+<h2 id="tocS_VideoPlaylistShortUUID">VideoPlaylistShortUUID</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoplaylistshortuuid"></a>
+<a id="schema_VideoPlaylistShortUUID"></a>
+<a id="tocSvideoplaylistshortuuid"></a>
+<a id="tocsvideoplaylistshortuuid"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_VideoUuid">VideoUuid</h2>
+<!-- backwards compatibility -->
+<a id="schemavideouuid"></a>
+<a id="schema_VideoUuid"></a>
+<a id="tocSvideouuid"></a>
+<a id="tocsvideouuid"></a>
+
+```json
+{}
+```
+
+universal identifier for the video, that can be used across instances
+
+<h2 id="tocS_VideoCommentText">VideoCommentText</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommenttext"></a>
+<a id="schema_VideoCommentText"></a>
+<a id="tocSvideocommenttext"></a>
+<a id="tocsvideocommenttext"></a>
+
+```json
+"This video is wonderful!"
+```
+
+Text of the comment
+
+<h2 id="tocS_VideoStateConstantId">VideoStateConstantId</h2>
+<!-- backwards compatibility -->
+<a id="schemavideostateconstantid"></a>
+<a id="schema_VideoStateConstantId"></a>
+<a id="tocSvideostateconstantid"></a>
+<a id="tocsvideostateconstantid"></a>
+
+```json
+1
+```
+
+The video state:
+- `1`: Published
+- `2`: To transcode
+- `3`: To import
+- `4`: Waiting for live stream
+- `5`: Live ended
+- `6`: To move to an external storage (object storage...)
+- `7`: Transcoding failed
+- `8`: Moving to an external storage failed
+- `9`: To edit using studio edition feature
+- `10`: To move to the file system
+- `11`: Moving to the file system failed
+- `12`: Import failed
+- `13`: To duplicate, the files of another video are being copied
+- `14`: Duplication failed, the files of the other video could not be copied
+- `15`: The studio edition of a video saved as a new video failed
+
+<h2 id="tocS_VideoName">VideoName</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoname"></a>
+<a id="schema_VideoName"></a>
+<a id="tocSvideoname"></a>
+<a id="tocsvideoname"></a>
+
+```json
+"What is PeerTube?"
+```
+
+title of the video
+
+<h2 id="tocS_VideoState">VideoState</h2>
+<!-- backwards compatibility -->
+<a id="schemavideostate"></a>
+<a id="schema_VideoState"></a>
+<a id="tocSvideostate"></a>
+<a id="tocsvideostate"></a>
+
+```json
+{
+  "id": 1,
+  "label": "string"
+}
+```
+
+represents the internal state of the video processing within the PeerTube instance
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|[VideoStateConstantId](#schemavideostateconstantid)|false|none|The video state:<br>- `1`: Published<br>- `2`: To transcode<br>- `3`: To import<br>- `4`: Waiting for live stream<br>- `5`: Live ended<br>- `6`: To move to an external storage (object storage...)<br>- `7`: Transcoding failed<br>- `8`: Moving to an external storage failed<br>- `9`: To edit using studio edition feature<br>- `10`: To move to the file system<br>- `11`: Moving to the file system failed<br>- `12`: Import failed<br>- `13`: To duplicate, the files of another video are being copied<br>- `14`: Duplication failed, the files of the other video could not be copied<br>- `15`: The studio edition of a video saved as a new video failed<br>|
+|label|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|id|1|
+|id|2|
+|id|3|
+|id|4|
+|id|5|
+|id|6|
+|id|7|
+|id|8|
+|id|9|
+|id|10|
+|id|11|
+|id|12|
+|id|13|
+|id|14|
+|id|15|
+
+<h2 id="tocS_VideoImportTargetUrl">VideoImportTargetUrl</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoimporttargeturl"></a>
+<a id="schema_VideoImportTargetUrl"></a>
+<a id="tocSvideoimporttargeturl"></a>
+<a id="tocsvideoimporttargeturl"></a>
+
+```json
+"https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d"
+```
+
+remote URL where to find the import's source video
+
+<h2 id="tocS_VideoImportMagnetUri">VideoImportMagnetUri</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoimportmagneturi"></a>
+<a id="schema_VideoImportMagnetUri"></a>
+<a id="tocSvideoimportmagneturi"></a>
+<a id="tocsvideoimportmagneturi"></a>
+
+```json
+"http://example.com"
+```
+
+magnet URI allowing to resolve the import's source video
+
+<h2 id="tocS_VideoImportTorrentfile">VideoImportTorrentfile</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoimporttorrentfile"></a>
+<a id="schema_VideoImportTorrentfile"></a>
+<a id="tocSvideoimporttorrentfile"></a>
+<a id="tocsvideoimporttorrentfile"></a>
+
+```json
+"string"
+```
+
+Torrent file containing only the video file
+
+<h2 id="tocS_VideoCommentUrl">VideoCommentUrl</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommenturl"></a>
+<a id="schema_VideoCommentUrl"></a>
+<a id="tocSvideocommenturl"></a>
+<a id="tocsvideocommenturl"></a>
+
+```json
+"http://example.com"
+```
+
+<h2 id="tocS_VideoCommentHeldForReview">VideoCommentHeldForReview</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommentheldforreview"></a>
+<a id="schema_VideoCommentHeldForReview"></a>
+<a id="tocSvideocommentheldforreview"></a>
+<a id="tocsvideocommentheldforreview"></a>
+
+```json
+true
+```
+
+<h2 id="tocS_VideoCommentInReplyToCommentId">VideoCommentInReplyToCommentId</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommentinreplytocommentid"></a>
+<a id="schema_VideoCommentInReplyToCommentId"></a>
+<a id="tocSvideocommentinreplytocommentid"></a>
+<a id="tocsvideocommentinreplytocommentid"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_VideoCommentCreatedAt">VideoCommentCreatedAt</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommentcreatedat"></a>
+<a id="schema_VideoCommentCreatedAt"></a>
+<a id="tocSvideocommentcreatedat"></a>
+<a id="tocsvideocommentcreatedat"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+<h2 id="tocS_VideoCommentUpdatedAt">VideoCommentUpdatedAt</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocommentupdatedat"></a>
+<a id="schema_VideoCommentUpdatedAt"></a>
+<a id="tocSvideocommentupdatedat"></a>
+<a id="tocsvideocommentupdatedat"></a>
+
+```json
+"1970-01-01T00:00:00Z"
+```
+
+<h2 id="tocS_VideoShortUUID">VideoShortUUID</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoshortuuid"></a>
+<a id="schema_VideoShortUUID"></a>
+<a id="tocSvideoshortuuid"></a>
+<a id="tocsvideoshortuuid"></a>
+
+```json
+{}
+```
+
+<h2 id="tocS_UserEmail">UserEmail</h2>
+<!-- backwards compatibility -->
+<a id="schemauseremail"></a>
+<a id="schema_UserEmail"></a>
+<a id="tocSuseremail"></a>
+<a id="tocsuseremail"></a>
+
+```json
+"user@example.com"
+```
+
+The user email
+
+<h2 id="tocS_VideoPasswordPassword">VideoPasswordPassword</h2>
+<!-- backwards compatibility -->
+<a id="schemavideopasswordpassword"></a>
+<a id="schema_VideoPasswordPassword"></a>
+<a id="tocSvideopasswordpassword"></a>
+<a id="tocsvideopasswordpassword"></a>
+
+```json
+"string"
+```

@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPausedIncidentReportsAlertsRoute, getPausedIncidentReportsCountsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getPausedIncidentReportsAlertsRoute,
+  getPausedIncidentReportsCountsRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getPausedIncidentReportsAlertsRouteHandler: RouteHandler<
+  typeof getPausedIncidentReportsAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pausedIncidentReportsHandler = app
-  .openapi(getPausedIncidentReportsAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPausedIncidentReportsCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPausedIncidentReportsCountsRouteHandler: RouteHandler<
+  typeof getPausedIncidentReportsCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

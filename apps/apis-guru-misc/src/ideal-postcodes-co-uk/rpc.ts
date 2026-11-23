@@ -157,10 +157,10 @@ export async function getPlaces(
 }
 
 export async function getPlacesPlace(
-  args: InferRequestType<(typeof client.places)['$:place']['$get']>,
+  args: InferRequestType<(typeof client.places)['${place}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.places['$:place'].$get(args, options))
+  return await parseResponse(client.places['${place}'].$get(args, options))
 }
 
 export async function getPostcodesPostcode(

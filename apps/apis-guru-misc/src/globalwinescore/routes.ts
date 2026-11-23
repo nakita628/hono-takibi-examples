@@ -187,7 +187,7 @@ export const getGlobalwinescoresIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const getGlobalwinescoresLatestIndexRoute = createRoute({
@@ -369,5 +369,5 @@ export const getGlobalwinescoresLatestIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })

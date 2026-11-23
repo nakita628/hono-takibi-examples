@@ -11896,7 +11896,7 @@ export const postApiOrdersExpressionsJsonataRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getApiOrdersFeedRoute = createRoute({

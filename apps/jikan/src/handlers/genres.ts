@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGenresAnimeRoute, getGenresMangaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGenresAnimeRoute, getGenresMangaRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGenresAnimeRouteHandler: RouteHandler<typeof getGenresAnimeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const genresHandler = app
-  .openapi(getGenresAnimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGenresMangaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGenresMangaRouteHandler: RouteHandler<typeof getGenresMangaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

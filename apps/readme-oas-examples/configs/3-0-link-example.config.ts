@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/link-example.yaml',
   output: './src/3-0-link-example/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/3-0-link-example/types.ts' },
   client: { output: './src/3-0-link-example/client.ts', baseUrl: '/' },

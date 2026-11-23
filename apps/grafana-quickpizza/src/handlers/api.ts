@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiDeleteRoute,
   deleteApiRatingsIdRoute,
   deleteApiRatingsRoute,
@@ -37,111 +37,166 @@ import {
   putApiRatingsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiPizzaRouteHandler: RouteHandler<typeof postApiPizzaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(postApiPizzaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPizzaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiIngredientsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDoughsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiToolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRatingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiRatingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiRatingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiRatingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersTokenLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersTokenLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAdminLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCsrfTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAdjectivesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiStatusStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBytesNRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDelayDelayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiPostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiPutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCookiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCookiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiHeadersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiBasicAuthUsernamePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiXmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiPizzaIdRouteHandler: RouteHandler<typeof getApiPizzaIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiIngredientsTypeRouteHandler: RouteHandler<
+  typeof getApiIngredientsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDoughsRouteHandler: RouteHandler<typeof getApiDoughsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiToolsRouteHandler: RouteHandler<typeof getApiToolsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRatingsRouteHandler: RouteHandler<typeof postApiRatingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRatingsRouteHandler: RouteHandler<typeof getApiRatingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiRatingsRouteHandler: RouteHandler<typeof deleteApiRatingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRatingsIdRouteHandler: RouteHandler<typeof getApiRatingsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiRatingsIdRouteHandler: RouteHandler<typeof putApiRatingsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiRatingsIdRouteHandler: RouteHandler<typeof patchApiRatingsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiRatingsIdRouteHandler: RouteHandler<typeof deleteApiRatingsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersRouteHandler: RouteHandler<typeof postApiUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersTokenLoginRouteHandler: RouteHandler<
+  typeof postApiUsersTokenLoginRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersTokenLogoutRouteHandler: RouteHandler<
+  typeof postApiUsersTokenLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAdminLoginRouteHandler: RouteHandler<typeof postApiAdminLoginRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCsrfTokenRouteHandler: RouteHandler<typeof postApiCsrfTokenRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiQuotesRouteHandler: RouteHandler<typeof getApiQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiNamesRouteHandler: RouteHandler<typeof getApiNamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAdjectivesRouteHandler: RouteHandler<typeof getApiAdjectivesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiConfigRouteHandler: RouteHandler<typeof getApiConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiStatusStatusRouteHandler: RouteHandler<typeof getApiStatusStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBytesNRouteHandler: RouteHandler<typeof getApiBytesNRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDelayDelayRouteHandler: RouteHandler<typeof getApiDelayDelayRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiGetRouteHandler: RouteHandler<typeof getApiGetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDeleteRouteHandler: RouteHandler<typeof deleteApiDeleteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiPostRouteHandler: RouteHandler<typeof postApiPostRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiPutRouteHandler: RouteHandler<typeof putApiPutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiPatchRouteHandler: RouteHandler<typeof patchApiPatchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCookiesRouteHandler: RouteHandler<typeof getApiCookiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCookiesRouteHandler: RouteHandler<typeof postApiCookiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiHeadersRouteHandler: RouteHandler<typeof getApiHeadersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiBasicAuthUsernamePasswordRouteHandler: RouteHandler<
+  typeof getApiBasicAuthUsernamePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiJsonRouteHandler: RouteHandler<typeof getApiJsonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiXmlRouteHandler: RouteHandler<typeof getApiXmlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

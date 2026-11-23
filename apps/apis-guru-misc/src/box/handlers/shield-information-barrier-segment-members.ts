@@ -1,29 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute,
   getShieldInformationBarrierSegmentMembersRoute,
   getShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute,
   postShieldInformationBarrierSegmentMembersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShieldInformationBarrierSegmentMembersRouteHandler: RouteHandler<
+  typeof getShieldInformationBarrierSegmentMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shieldInformationBarrierSegmentMembersHandler = app
-  .openapi(getShieldInformationBarrierSegmentMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShieldInformationBarrierSegmentMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postShieldInformationBarrierSegmentMembersRouteHandler: RouteHandler<
+  typeof postShieldInformationBarrierSegmentMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRouteHandler: RouteHandler<
+  typeof deleteShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRouteHandler: RouteHandler<
+  typeof getShieldInformationBarrierSegmentMembersShieldInformationBarrierSegmentMemberIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

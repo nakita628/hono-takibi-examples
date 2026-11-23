@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTrashEmptyRoute, postTrashRestoreAssetsRoute, postTrashRestoreRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postTrashEmptyRoute,
+  postTrashRestoreAssetsRoute,
+  postTrashRestoreRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postTrashEmptyRouteHandler: RouteHandler<typeof postTrashEmptyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const trashHandler = app
-  .openapi(postTrashEmptyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrashRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTrashRestoreAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTrashRestoreRouteHandler: RouteHandler<typeof postTrashRestoreRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTrashRestoreAssetsRouteHandler: RouteHandler<
+  typeof postTrashRestoreAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

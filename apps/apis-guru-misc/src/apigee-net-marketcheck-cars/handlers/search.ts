@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchCarActiveRoute,
   getSearchCarAuctionActiveRoute,
   getSearchCarAutoCompleteRoute,
@@ -19,57 +19,104 @@ import {
   postSearchCarActiveRankRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchCarActiveRouteHandler: RouteHandler<typeof getSearchCarActiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchCarActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchCarActiveRankRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchCarActiveRankListingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarAuctionActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarAutoCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarFsboActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarIncentiveOemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarRecentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarUkActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchCarUkRecentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchHeavyEquipmentActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchHeavyEquipmentAutoCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchMotorcycleActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchMotorcycleAutoCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchRvActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchRvAutoCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchRvUkActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSearchCarActiveRankRouteHandler: RouteHandler<
+  typeof postSearchCarActiveRankRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchCarActiveRankListingsRouteHandler: RouteHandler<
+  typeof postSearchCarActiveRankListingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarAuctionActiveRouteHandler: RouteHandler<
+  typeof getSearchCarAuctionActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarAutoCompleteRouteHandler: RouteHandler<
+  typeof getSearchCarAutoCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarFsboActiveRouteHandler: RouteHandler<
+  typeof getSearchCarFsboActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarIncentiveOemRouteHandler: RouteHandler<
+  typeof getSearchCarIncentiveOemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarRecentsRouteHandler: RouteHandler<
+  typeof getSearchCarRecentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarUkActiveRouteHandler: RouteHandler<
+  typeof getSearchCarUkActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchCarUkRecentsRouteHandler: RouteHandler<
+  typeof getSearchCarUkRecentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchHeavyEquipmentActiveRouteHandler: RouteHandler<
+  typeof getSearchHeavyEquipmentActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchHeavyEquipmentAutoCompleteRouteHandler: RouteHandler<
+  typeof getSearchHeavyEquipmentAutoCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchMotorcycleActiveRouteHandler: RouteHandler<
+  typeof getSearchMotorcycleActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchMotorcycleAutoCompleteRouteHandler: RouteHandler<
+  typeof getSearchMotorcycleAutoCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchRvActiveRouteHandler: RouteHandler<typeof getSearchRvActiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchRvAutoCompleteRouteHandler: RouteHandler<
+  typeof getSearchRvAutoCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchRvUkActiveRouteHandler: RouteHandler<
+  typeof getSearchRvUkActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

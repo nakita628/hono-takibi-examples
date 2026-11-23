@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPutEncryptionConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPutEncryptionConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const putEncryptionConfigHandler = app.openapi(postPutEncryptionConfigRoute, (c) => {
+export const postPutEncryptionConfigRouteHandler: RouteHandler<
+  typeof postPutEncryptionConfigRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

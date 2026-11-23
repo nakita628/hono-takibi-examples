@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCourseMappingsOfferingIdExternalCourseIdRoute,
   getCourseMappingsExternalcourseExternalCourseIdRoute,
   getCourseMappingsOfferingIdRoute,
@@ -7,21 +7,32 @@ import {
   putCourseMappingsOfferingIdExternalCourseIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCourseMappingsRouteHandler: RouteHandler<typeof getCourseMappingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const courseMappingsHandler = app
-  .openapi(getCourseMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCourseMappingsExternalcourseExternalCourseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCourseMappingsOfferingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCourseMappingsOfferingIdExternalCourseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCourseMappingsOfferingIdExternalCourseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCourseMappingsExternalcourseExternalCourseIdRouteHandler: RouteHandler<
+  typeof getCourseMappingsExternalcourseExternalCourseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCourseMappingsOfferingIdRouteHandler: RouteHandler<
+  typeof getCourseMappingsOfferingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCourseMappingsOfferingIdExternalCourseIdRouteHandler: RouteHandler<
+  typeof deleteCourseMappingsOfferingIdExternalCourseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCourseMappingsOfferingIdExternalCourseIdRouteHandler: RouteHandler<
+  typeof putCourseMappingsOfferingIdExternalCourseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

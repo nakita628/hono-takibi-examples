@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rumble.run/2.15.0/openapi.yaml',
   output: './src/rumble-run/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rumble-run/types.ts' },
   client: { output: './src/rumble-run/client.ts', baseUrl: '/' },
   rpc: { output: './src/rumble-run/rpc.ts', parseResponse: true },

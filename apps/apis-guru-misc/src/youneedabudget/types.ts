@@ -377,15 +377,6 @@ type SaveTransactionWithId = {
   subtransactions?: SaveSubTransaction[] | undefined
 }
 type PatchTransactionsWrapper = { transactions: SaveTransactionWithId[] }
-type SaveTransactionsResponse = {
-  data: {
-    duplicate_import_ids?: string[] | undefined
-    server_knowledge: bigint
-    transaction?: TransactionDetail | undefined
-    transaction_ids: string[]
-    transactions?: TransactionDetail[] | undefined
-  }
-}
 type SaveTransaction = {
   account_id?: string | undefined
   amount?: bigint | undefined
@@ -403,6 +394,15 @@ type SaveTransaction = {
 type PostTransactionsWrapper = {
   transaction?: SaveTransaction | undefined
   transactions?: SaveTransaction[] | undefined
+}
+type SaveTransactionsResponse = {
+  data: {
+    duplicate_import_ids?: string[] | undefined
+    server_knowledge: bigint
+    transaction?: TransactionDetail | undefined
+    transaction_ids: string[]
+    transactions?: TransactionDetail[] | undefined
+  }
 }
 type BulkTransactions = { transactions: SaveTransaction[] }
 type BulkResponse = {
@@ -1014,19 +1014,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 404
           }
-      $patch:
-        | {
-            input: { param: { budget_id: string } } & { json: PatchTransactionsWrapper }
-            output: SaveTransactionsResponse
-            outputFormat: 'json'
-            status: 209
-          }
-        | {
-            input: { param: { budget_id: string } } & { json: PatchTransactionsWrapper }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 400
-          }
+      $patch: {
+        input: { param: { budget_id: string } } & { json: PatchTransactionsWrapper }
+        output: ErrorResponse
+        outputFormat: 'json'
+        status: 400
+      }
       $post:
         | {
             input: { param: { budget_id: string } } & { json: PostTransactionsWrapper }

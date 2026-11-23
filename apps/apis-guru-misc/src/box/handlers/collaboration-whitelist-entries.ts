@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute,
   getCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute,
   getCollaborationWhitelistEntriesRoute,
   postCollaborationWhitelistEntriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCollaborationWhitelistEntriesRouteHandler: RouteHandler<
+  typeof getCollaborationWhitelistEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const collaborationWhitelistEntriesHandler = app
-  .openapi(getCollaborationWhitelistEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollaborationWhitelistEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCollaborationWhitelistEntriesRouteHandler: RouteHandler<
+  typeof postCollaborationWhitelistEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRouteHandler: RouteHandler<
+  typeof deleteCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRouteHandler: RouteHandler<
+  typeof getCollaborationWhitelistEntriesCollaborationWhitelistEntryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

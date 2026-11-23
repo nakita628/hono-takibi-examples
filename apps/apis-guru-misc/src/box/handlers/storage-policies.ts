@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStoragePoliciesRoute, getStoragePoliciesStoragePolicyIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStoragePoliciesRoute, getStoragePoliciesStoragePolicyIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStoragePoliciesRouteHandler: RouteHandler<typeof getStoragePoliciesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const storagePoliciesHandler = app
-  .openapi(getStoragePoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStoragePoliciesStoragePolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStoragePoliciesStoragePolicyIdRouteHandler: RouteHandler<
+  typeof getStoragePoliciesStoragePolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

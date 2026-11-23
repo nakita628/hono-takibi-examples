@@ -146,8 +146,8 @@ const UsageRecordResultListSchema = z
 const UsageRecordListSchema = z.array(UsageRecordSchema).min(0).max(25).openapi('UsageRecordList')
 
 type BatchMeterUsageResultType = {
-  Results?: z.infer<typeof UsageRecordResultListSchema> & unknown
-  UnprocessedRecords?: z.infer<typeof UsageRecordListSchema> & unknown
+  Results?: z.infer<typeof UsageRecordResultListSchema>
+  UnprocessedRecords?: z.infer<typeof UsageRecordListSchema>
 }
 
 const BatchMeterUsageResultSchema: z.ZodType<BatchMeterUsageResultType> = z

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getKamaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getKamaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const kamaHandler = app.openapi(getKamaRoute, (c) => {
+export const getKamaRouteHandler: RouteHandler<typeof getKamaRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRegionsRegionIdRoute, getRegionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRegionsRegionIdRoute, getRegionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRegionsRouteHandler: RouteHandler<typeof getRegionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const regionsHandler = app
-  .openapi(getRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegionsRegionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRegionsRegionIdRouteHandler: RouteHandler<typeof getRegionsRegionIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

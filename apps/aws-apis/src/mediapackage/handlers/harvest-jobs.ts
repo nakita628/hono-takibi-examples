@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHarvestJobsIdRoute, getHarvestJobsRoute, postHarvestJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHarvestJobsIdRoute, getHarvestJobsRoute, postHarvestJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postHarvestJobsRouteHandler: RouteHandler<typeof postHarvestJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const harvestJobsHandler = app
-  .openapi(postHarvestJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHarvestJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHarvestJobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHarvestJobsRouteHandler: RouteHandler<typeof getHarvestJobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHarvestJobsIdRouteHandler: RouteHandler<typeof getHarvestJobsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

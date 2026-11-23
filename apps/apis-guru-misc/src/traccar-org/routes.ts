@@ -758,7 +758,7 @@ export const deleteAttributesComputedIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getCalendarsRoute = createRoute({
@@ -874,7 +874,7 @@ export const deleteCalendarsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getCommandsRoute = createRoute({
@@ -1014,10 +1014,7 @@ export const getCommandsSendRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: z.array(CommandSchema) } } },
-    400: {
-      description: "Could happen when the user doesn't have permission for the device",
-      content: {},
-    },
+    400: { description: "Could happen when the user doesn't have permission for the device" },
   },
 })
 
@@ -1040,7 +1037,6 @@ export const postCommandsSendRoute = createRoute({
     400: {
       description:
         "Could happen when the user doesn't have permission or an incorrect command _type_ for the device",
-      content: {},
     },
   },
 })
@@ -1109,7 +1105,6 @@ export const getCommandsTypesRoute = createRoute({
     400: {
       description:
         'Could happen when trying to fetch from a device the user does not have permission',
-      content: {},
     },
   },
 })
@@ -1164,7 +1159,7 @@ export const deleteCommandsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getDevicesRoute = createRoute({
@@ -1245,7 +1240,7 @@ export const getDevicesRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: z.array(DeviceSchema) } } },
-    400: { description: 'No permission', content: {} },
+    400: { description: 'No permission' },
   },
 })
 
@@ -1310,7 +1305,7 @@ export const deleteDevicesIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const putDevicesIdAccumulatorsRoute = createRoute({
@@ -1336,7 +1331,7 @@ export const putDevicesIdAccumulatorsRoute = createRoute({
     }),
     body: { content: { 'application/json': { schema: DeviceAccumulatorsSchema } }, required: true },
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getDriversRoute = createRoute({
@@ -1493,7 +1488,7 @@ export const deleteDriversIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getEventsIdRoute = createRoute({
@@ -1681,7 +1676,7 @@ export const deleteGeofencesIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getGroupsRoute = createRoute({
@@ -1739,7 +1734,7 @@ export const postGroupsRoute = createRoute({
   request: { body: { content: { 'application/json': { schema: GroupSchema } }, required: true } },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: GroupSchema } } },
-    400: { description: 'No permission', content: {} },
+    400: { description: 'No permission' },
   },
 })
 
@@ -1793,7 +1788,7 @@ export const deleteGroupsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getMaintenanceRoute = createRoute({
@@ -1955,7 +1950,7 @@ export const deleteMaintenanceIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getNotificationsRoute = createRoute({
@@ -2073,8 +2068,8 @@ export const postNotificationsTestRoute = createRoute({
   tags: ['Notifications'],
   summary: 'Send test notification to current user via Email and SMS',
   responses: {
-    204: { description: 'Successful sending', content: {} },
-    400: { description: 'Could happen if sending has failed', content: {} },
+    204: { description: 'Successful sending' },
+    400: { description: 'Could happen if sending has failed' },
   },
 })
 
@@ -2141,7 +2136,7 @@ export const deleteNotificationsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const postPermissionsRoute = createRoute({
@@ -2154,7 +2149,7 @@ export const postPermissionsRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: PermissionSchema } } },
-    400: { description: 'No permission', content: {} },
+    400: { description: 'No permission' },
   },
 })
 
@@ -2166,7 +2161,7 @@ export const deletePermissionsRoute = createRoute({
   request: {
     body: { content: { 'application/json': { schema: PermissionSchema } }, required: true },
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getPositionsRoute = createRoute({
@@ -2803,7 +2798,7 @@ export const getSessionRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: UserSchema } } },
-    404: { description: 'Not Found', content: {} },
+    404: { description: 'Not Found' },
   },
 })
 
@@ -2826,7 +2821,7 @@ export const postSessionRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: UserSchema } } },
-    401: { description: 'Unauthorized', content: {} },
+    401: { description: 'Unauthorized' },
   },
 })
 
@@ -2835,7 +2830,7 @@ export const deleteSessionRoute = createRoute({
   path: '/session',
   tags: ['Session'],
   summary: 'Close the Session',
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })
 
 export const getStatisticsRoute = createRoute({
@@ -2900,7 +2895,7 @@ export const getUsersRoute = createRoute({
   },
   responses: {
     200: { description: 'OK', content: { 'application/json': { schema: z.array(UserSchema) } } },
-    400: { description: 'No Permission', content: {} },
+    400: { description: 'No Permission' },
   },
 })
 
@@ -2965,5 +2960,5 @@ export const deleteUsersIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
 })

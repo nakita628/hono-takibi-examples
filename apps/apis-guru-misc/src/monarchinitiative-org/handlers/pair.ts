@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPairSimJaccardId1Id2Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPairSimJaccardId1Id2Route } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pairHandler = app.openapi(getPairSimJaccardId1Id2Route, (c) => {
+export const getPairSimJaccardId1Id2RouteHandler: RouteHandler<
+  typeof getPairSimJaccardId1Id2Route
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

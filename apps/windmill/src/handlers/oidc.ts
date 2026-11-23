@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOidcSigningStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOidcSigningStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const oidcHandler = app.openapi(getOidcSigningStatusRoute, (c) => {
+export const getOidcSigningStatusRouteHandler: RouteHandler<
+  typeof getOidcSigningStatusRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

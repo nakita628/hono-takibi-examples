@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postJoinStringsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postJoinStringsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const joinStringsHandler = app.openapi(postJoinStringsRoute, (c) => {
+export const postJoinStringsRouteHandler: RouteHandler<typeof postJoinStringsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

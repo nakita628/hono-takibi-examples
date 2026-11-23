@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDeviceFarm20150623CreateVpceConfigurationHandler = app.openapi(
-  postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRouteHandler: RouteHandler<
+  typeof postXAmzTargetDeviceFarm20150623CreateVPCEConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

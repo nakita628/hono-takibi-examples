@@ -1,13 +1,1391 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { isAliveHandler, oauthHandler, opikHandler, v1Handler, wellKnownHandler } from './handlers'
+import {
+  deleteV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+  deleteV1PrivateDashboardsDashboardIdRoute,
+  deleteV1PrivateDatasetsIdRoute,
+  deleteV1PrivateDatasetsIdVersionsVersionHashTagsTagRoute,
+  deleteV1PrivateFeedbackDefinitionsIdRoute,
+  deleteV1PrivateGuardrailsPoliciesIdRoute,
+  deleteV1PrivateInsightsViewsInsightsViewIdRoute,
+  deleteV1PrivateLocalRunnersRunnerIdRoute,
+  deleteV1PrivateOllieStateRoute,
+  deleteV1PrivateProjectsIdRoute,
+  deleteV1PrivatePromptsIdRoute,
+  deleteV1PrivateRetentionRulesRuleIdRoute,
+  deleteV1PrivateSpansIdRoute,
+  deleteV1PrivateTracesIdRoute,
+  deleteV1PrivateWorkspacesConfigurationsRoute,
+  getIsAlivePingRoute,
+  getIsAliveVerRoute,
+  getOauthAuthorizeContextRoute,
+  getOauthAuthorizeRoute,
+  getV1InternalDashboardSavedQueriesIdRoute,
+  getV1InternalUsageBiDatasetsRoute,
+  getV1InternalUsageBiExperimentsRoute,
+  getV1InternalUsageBiSpansRoute,
+  getV1InternalUsageBiTracesRoute,
+  getV1InternalUsageWorkspaceSpanCountsBreakdownRoute,
+  getV1InternalUsageWorkspaceSpanCountsRoute,
+  getV1InternalUsageWorkspaceTraceCountsRoute,
+  getV1PrivateAgentConfigsBlueprintsBlueprintIdDeltasRoute,
+  getV1PrivateAgentConfigsBlueprintsBlueprintIdRoute,
+  getV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+  getV1PrivateAgentConfigsBlueprintsHistoryProjectsProjectIdRoute,
+  getV1PrivateAgentConfigsBlueprintsLatestProjectsProjectIdRoute,
+  getV1PrivateAgentConfigsBlueprintsProjectsProjectIdNamesNameRoute,
+  getV1PrivateAgentInsightsIssuesIssueIdRoute,
+  getV1PrivateAgentInsightsIssuesRoute,
+  getV1PrivateAgentInsightsJobsProjectIdRoute,
+  getV1PrivateAlertsIdRoute,
+  getV1PrivateAlertsRoute,
+  getV1PrivateAlertsWebhooksExamplesRoute,
+  getV1PrivateAnnotationQueuesIdRoute,
+  getV1PrivateAnnotationQueuesQueueIdLocksRoute,
+  getV1PrivateAnnotationQueuesRoute,
+  getV1PrivateAttachmentDownloadRoute,
+  getV1PrivateAttachmentListRoute,
+  getV1PrivateAuthWorkspaceRoute,
+  getV1PrivateAutomationsEvaluatorsIdLogsRoute,
+  getV1PrivateAutomationsEvaluatorsIdRoute,
+  getV1PrivateAutomationsEvaluatorsRoute,
+  getV1PrivateDashboardsDashboardIdRoute,
+  getV1PrivateDashboardsRoute,
+  getV1PrivateDatasetsExportJobsJobIdDownloadRoute,
+  getV1PrivateDatasetsExportJobsJobIdRoute,
+  getV1PrivateDatasetsExportJobsRoute,
+  getV1PrivateDatasetsIdItemsExperimentsItemsOutputColumnsRoute,
+  getV1PrivateDatasetsIdItemsExperimentsItemsRoute,
+  getV1PrivateDatasetsIdItemsExperimentsItemsStatsRoute,
+  getV1PrivateDatasetsIdItemsRoute,
+  getV1PrivateDatasetsIdRoute,
+  getV1PrivateDatasetsIdVersionsDiffRoute,
+  getV1PrivateDatasetsIdVersionsHashVersionHashRoute,
+  getV1PrivateDatasetsIdVersionsRoute,
+  getV1PrivateDatasetsItemsItemIdRoute,
+  getV1PrivateDatasetsRoute,
+  getV1PrivateEnvironmentsIdRoute,
+  getV1PrivateEnvironmentsRoute,
+  getV1PrivateExperimentsFeedbackScoresNamesRoute,
+  getV1PrivateExperimentsGroupsAggregationsRoute,
+  getV1PrivateExperimentsGroupsRoute,
+  getV1PrivateExperimentsIdRoute,
+  getV1PrivateExperimentsItemsIdRoute,
+  getV1PrivateExperimentsRoute,
+  getV1PrivateFeedbackDefinitionsIdRoute,
+  getV1PrivateFeedbackDefinitionsRoute,
+  getV1PrivateGuardrailsPoliciesIdRoute,
+  getV1PrivateGuardrailsPoliciesRoute,
+  getV1PrivateInsightsViewsInsightsViewIdRoute,
+  getV1PrivateInsightsViewsRoute,
+  getV1PrivateLlmModelsProfilesRoute,
+  getV1PrivateLlmModelsRoute,
+  getV1PrivateLlmProviderKeyIdRoute,
+  getV1PrivateLlmProviderKeyRoute,
+  getV1PrivateLocalRunnersJobsJobIdLogsRoute,
+  getV1PrivateLocalRunnersJobsJobIdRoute,
+  getV1PrivateLocalRunnersRoute,
+  getV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdRoute,
+  getV1PrivateLocalRunnersRunnerIdJobsRoute,
+  getV1PrivateLocalRunnersRunnerIdRoute,
+  getV1PrivateOllieStateRoute,
+  getV1PrivateOptimizationsIdRoute,
+  getV1PrivateOptimizationsRoute,
+  getV1PrivateOptimizationsStudioIdLogsRoute,
+  getV1PrivateProjectsFeedbackScoresNamesRoute,
+  getV1PrivateProjectsIdRoute,
+  getV1PrivateProjectsIdTokenUsageNamesRoute,
+  getV1PrivateProjectsProjectIdActivitiesRoute,
+  getV1PrivateProjectsProjectIdAlertsRoute,
+  getV1PrivateProjectsProjectIdDashboardsRoute,
+  getV1PrivateProjectsProjectIdDatasetsRoute,
+  getV1PrivateProjectsProjectIdExperimentsRoute,
+  getV1PrivateProjectsProjectIdOptimizationsRoute,
+  getV1PrivateProjectsProjectIdPromptsRoute,
+  getV1PrivateProjectsProjectIdReportsPreferencesRoute,
+  getV1PrivateProjectsProjectIdReportsRoute,
+  getV1PrivateProjectsRoute,
+  getV1PrivateProjectsStatsRoute,
+  getV1PrivatePromptsByCommitCommitRoute,
+  getV1PrivatePromptsIdRoute,
+  getV1PrivatePromptsIdVersionsRoute,
+  getV1PrivatePromptsPromptIdVersionsByNumberVersionNumberRoute,
+  getV1PrivatePromptsRoute,
+  getV1PrivatePromptsVersionsVersionIdRoute,
+  getV1PrivateReportFailuresRoute,
+  getV1PrivateRetentionRulesRoute,
+  getV1PrivateRetentionRulesRuleIdRoute,
+  getV1PrivateSpansExistsRoute,
+  getV1PrivateSpansFeedbackScoresNamesRoute,
+  getV1PrivateSpansIdRoute,
+  getV1PrivateSpansRoute,
+  getV1PrivateSpansSpanIdCommentsCommentIdRoute,
+  getV1PrivateSpansStatsRoute,
+  getV1PrivateTogglesRoute,
+  getV1PrivateTracesExistsRoute,
+  getV1PrivateTracesFeedbackScoresNamesRoute,
+  getV1PrivateTracesIdRoute,
+  getV1PrivateTracesRoute,
+  getV1PrivateTracesStatsRoute,
+  getV1PrivateTracesThreadsFeedbackScoresNamesRoute,
+  getV1PrivateTracesThreadsRoute,
+  getV1PrivateTracesThreadsStatsRoute,
+  getV1PrivateTracesThreadsThreadIdCommentsCommentIdRoute,
+  getV1PrivateTracesTraceIdCommentsCommentIdRoute,
+  getV1PrivateWelcomeWizardRoute,
+  getV1PrivateWorkspacePermissionsRoute,
+  getV1PrivateWorkspacesConfigurationsRoute,
+  getV1SessionRedirectDatasetsRoute,
+  getV1SessionRedirectExperimentsRoute,
+  getV1SessionRedirectOptimizationsRoute,
+  getV1SessionRedirectProjectsRoute,
+  getWellKnownOauthAuthorizationServerRoute,
+  patchV1PrivateAgentConfigsBlueprintsRoute,
+  patchV1PrivateAgentInsightsIssuesIssueIdRoute,
+  patchV1PrivateAgentInsightsJobsProjectIdRoute,
+  patchV1PrivateAnnotationQueuesIdRoute,
+  patchV1PrivateAutomationsEvaluatorsIdRoute,
+  patchV1PrivateDashboardsDashboardIdRoute,
+  patchV1PrivateDatasetsIdVersionsHashVersionHashRoute,
+  patchV1PrivateDatasetsItemsBatchRoute,
+  patchV1PrivateDatasetsItemsItemIdRoute,
+  patchV1PrivateEnvironmentsIdRoute,
+  patchV1PrivateExperimentsBatchRoute,
+  patchV1PrivateExperimentsIdRoute,
+  patchV1PrivateInsightsViewsInsightsViewIdRoute,
+  patchV1PrivateLlmProviderKeyIdRoute,
+  patchV1PrivateLocalRunnersRunnerIdChecklistRoute,
+  patchV1PrivateProjectsIdRoute,
+  patchV1PrivatePromptsVersionsRoute,
+  patchV1PrivatePromptsVersionsVersionIdEnvironmentsRoute,
+  patchV1PrivateSpansBatchRoute,
+  patchV1PrivateSpansCommentsCommentIdRoute,
+  patchV1PrivateSpansIdRoute,
+  patchV1PrivateTracesBatchRoute,
+  patchV1PrivateTracesCommentsCommentIdRoute,
+  patchV1PrivateTracesIdRoute,
+  patchV1PrivateTracesThreadsBatchRoute,
+  patchV1PrivateTracesThreadsCommentsCommentIdRoute,
+  patchV1PrivateTracesThreadsThreadModelIdRoute,
+  postOauthAuthorizeRoute,
+  postOauthRegisterRoute,
+  postOauthRevokeRoute,
+  postOauthTokenRoute,
+  postOpikAuthOauthRoute,
+  postV1InternalAgentInsightsEnrollmentRoute,
+  postV1InternalAnalyticsQueriesProjectsProjectIdRoute,
+  postV1InternalAnalyticsQueriesRoute,
+  postV1InternalDashboardSavedQueriesRoute,
+  postV1InternalUsageProjectsRoute,
+  postV1PrivateAgentConfigsBlueprintsEnvironmentsRoute,
+  postV1PrivateAgentConfigsBlueprintsProjectsProjectIdMasksMaskIdRoute,
+  postV1PrivateAgentConfigsBlueprintsRemoveKeysRoute,
+  postV1PrivateAgentConfigsBlueprintsRoute,
+  postV1PrivateAgentInsightsIssuesRoute,
+  postV1PrivateAgentInsightsJobsProjectIdRoute,
+  postV1PrivateAgentInsightsJobsProjectIdTriggerRoute,
+  postV1PrivateAlertsDeleteRoute,
+  postV1PrivateAlertsRoute,
+  postV1PrivateAlertsWebhooksTestsRoute,
+  postV1PrivateAnnotationQueuesBatchRoute,
+  postV1PrivateAnnotationQueuesDeleteRoute,
+  postV1PrivateAnnotationQueuesIdItemsAddRoute,
+  postV1PrivateAnnotationQueuesIdItemsDeleteRoute,
+  postV1PrivateAnnotationQueuesIdItemsSearchRoute,
+  postV1PrivateAnnotationQueuesRoute,
+  postV1PrivateAttachmentDeleteRoute,
+  postV1PrivateAttachmentUploadCompleteRoute,
+  postV1PrivateAttachmentUploadStartRoute,
+  postV1PrivateAuthRoute,
+  postV1PrivateAutomationsEvaluatorsDeleteRoute,
+  postV1PrivateAutomationsEvaluatorsRoute,
+  postV1PrivateChatCompletionsRoute,
+  postV1PrivateDashboardsDashboardIdWidgetsWidgetIdQueryRoute,
+  postV1PrivateDashboardsDeleteBatchRoute,
+  postV1PrivateDashboardsRoute,
+  postV1PrivateDatasetsDatasetIdItemsFromSpansRoute,
+  postV1PrivateDatasetsDatasetIdItemsFromTracesRoute,
+  postV1PrivateDatasetsDeleteBatchRoute,
+  postV1PrivateDatasetsDeleteRoute,
+  postV1PrivateDatasetsIdExpansionsRoute,
+  postV1PrivateDatasetsIdExportRoute,
+  postV1PrivateDatasetsIdItemsChangesRoute,
+  postV1PrivateDatasetsIdVersionsHashVersionHashTagsRoute,
+  postV1PrivateDatasetsIdVersionsRestoreRoute,
+  postV1PrivateDatasetsIdVersionsRetrieveRoute,
+  postV1PrivateDatasetsItemsDeleteRoute,
+  postV1PrivateDatasetsItemsFromCsvRoute,
+  postV1PrivateDatasetsItemsFromJsonRoute,
+  postV1PrivateDatasetsItemsStreamRoute,
+  postV1PrivateDatasetsRetrieveRoute,
+  postV1PrivateDatasetsRoute,
+  postV1PrivateEnvironmentsDeleteRoute,
+  postV1PrivateEnvironmentsRoute,
+  postV1PrivateExperimentsDeleteRoute,
+  postV1PrivateExperimentsExecuteRoute,
+  postV1PrivateExperimentsFinishRoute,
+  postV1PrivateExperimentsItemsDeleteRoute,
+  postV1PrivateExperimentsItemsRoute,
+  postV1PrivateExperimentsItemsStreamRoute,
+  postV1PrivateExperimentsRoute,
+  postV1PrivateExperimentsStreamRoute,
+  postV1PrivateFeedbackDefinitionsDeleteRoute,
+  postV1PrivateFeedbackDefinitionsRoute,
+  postV1PrivateGuardrailsPoliciesRoute,
+  postV1PrivateGuardrailsRoute,
+  postV1PrivateGuardrailsValidationsRoute,
+  postV1PrivateInsightsViewsDeleteBatchRoute,
+  postV1PrivateInsightsViewsInsightsViewIdWidgetsWidgetIdQueryRoute,
+  postV1PrivateInsightsViewsRoute,
+  postV1PrivateLlmProviderKeyAuthConfigTestRoute,
+  postV1PrivateLlmProviderKeyDeleteRoute,
+  postV1PrivateLlmProviderKeyRoute,
+  postV1PrivateLocalRunnersJobsJobIdCancelRoute,
+  postV1PrivateLocalRunnersJobsJobIdLogsRoute,
+  postV1PrivateLocalRunnersJobsJobIdResultsRoute,
+  postV1PrivateLocalRunnersJobsRoute,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdResultsRoute,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsNextRoute,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsRoute,
+  postV1PrivateLocalRunnersRunnerIdHeartbeatsRoute,
+  postV1PrivateLocalRunnersRunnerIdJobsNextRoute,
+  postV1PrivateManualEvaluationSpansRoute,
+  postV1PrivateManualEvaluationThreadsRoute,
+  postV1PrivateManualEvaluationTracesRoute,
+  postV1PrivateOllamaModelsRoute,
+  postV1PrivateOllamaTestConnectionRoute,
+  postV1PrivateOptimizationsDeleteRoute,
+  postV1PrivateOptimizationsRoute,
+  postV1PrivateOtelV1TracesRoute,
+  postV1PrivatePairingSessionsRoute,
+  postV1PrivatePairingSessionsSessionIdActivateRoute,
+  postV1PrivateProjectsDeleteRoute,
+  postV1PrivateProjectsIdKpiCardsRoute,
+  postV1PrivateProjectsIdMetricsRoute,
+  postV1PrivateProjectsProjectIdReportsGenerateRoute,
+  postV1PrivateProjectsProjectIdReportsReportIdCompleteRoute,
+  postV1PrivateProjectsRetrieveRoute,
+  postV1PrivateProjectsRoute,
+  postV1PrivatePromptsDeleteRoute,
+  postV1PrivatePromptsPromptIdVersionsVersionIdRestoreRoute,
+  postV1PrivatePromptsRetrieveByCommitsRoute,
+  postV1PrivatePromptsRoute,
+  postV1PrivatePromptsVersionsRetrieveByIdsRoute,
+  postV1PrivatePromptsVersionsRetrieveRoute,
+  postV1PrivatePromptsVersionsRoute,
+  postV1PrivateReportFailuresRoute,
+  postV1PrivateRetentionRulesRoute,
+  postV1PrivateSpansBatchRoute,
+  postV1PrivateSpansCommentsDeleteRoute,
+  postV1PrivateSpansIdCommentsRoute,
+  postV1PrivateSpansIdFeedbackScoresDeleteRoute,
+  postV1PrivateSpansRoute,
+  postV1PrivateSpansSearchRoute,
+  postV1PrivateTracesBatchRoute,
+  postV1PrivateTracesCommentsDeleteRoute,
+  postV1PrivateTracesDeleteRoute,
+  postV1PrivateTracesIdCommentsRoute,
+  postV1PrivateTracesIdFeedbackScoresDeleteRoute,
+  postV1PrivateTracesRoute,
+  postV1PrivateTracesSearchRoute,
+  postV1PrivateTracesThreadsCommentsDeleteRoute,
+  postV1PrivateTracesThreadsDeleteRoute,
+  postV1PrivateTracesThreadsFeedbackScoresDeleteRoute,
+  postV1PrivateTracesThreadsIdCommentsRoute,
+  postV1PrivateTracesThreadsRetrieveRoute,
+  postV1PrivateTracesThreadsSearchRoute,
+  postV1PrivateWelcomeWizardRoute,
+  postV1PrivateWorkspacesCostsRoute,
+  postV1PrivateWorkspacesCostsSummariesRoute,
+  postV1PrivateWorkspacesMetricsRoute,
+  postV1PrivateWorkspacesMetricsSpansRoute,
+  postV1PrivateWorkspacesMetricsSummariesRoute,
+  postV1PrivateWorkspacesTokenUsageNamesRoute,
+  putV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+  putV1PrivateAgentInsightsJobsProjectIdGuidanceRoute,
+  putV1PrivateAlertsIdRoute,
+  putV1PrivateAnnotationQueuesQueueIdItemsItemIdLockRoute,
+  putV1PrivateAssertionResultsRoute,
+  putV1PrivateAttachmentUploadRoute,
+  putV1PrivateDatasetsExportJobsJobIdMarkViewedRoute,
+  putV1PrivateDatasetsIdRoute,
+  putV1PrivateDatasetsItemsRoute,
+  putV1PrivateExperimentsCancelRoute,
+  putV1PrivateExperimentsItemsBulkRoute,
+  putV1PrivateFeedbackDefinitionsIdRoute,
+  putV1PrivateGuardrailsPoliciesIdRoute,
+  putV1PrivateLocalRunnersRunnerIdAgentsRoute,
+  putV1PrivateOllieStateRoute,
+  putV1PrivateOptimizationsIdRoute,
+  putV1PrivateOptimizationsRoute,
+  putV1PrivateProjectsProjectIdReportsPreferencesRoute,
+  putV1PrivatePromptsIdRoute,
+  putV1PrivateSpansFeedbackScoresRoute,
+  putV1PrivateSpansIdFeedbackScoresRoute,
+  putV1PrivateTracesFeedbackScoresRoute,
+  putV1PrivateTracesIdFeedbackScoresRoute,
+  putV1PrivateTracesThreadsCloseRoute,
+  putV1PrivateTracesThreadsFeedbackScoresRoute,
+  putV1PrivateTracesThreadsOpenRoute,
+  putV1PrivateWorkspacesConfigurationsRoute,
+} from './routes'
+import {
+  deleteV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  deleteV1PrivateDashboardsDashboardIdRouteHandler,
+  deleteV1PrivateDatasetsIdRouteHandler,
+  deleteV1PrivateDatasetsIdVersionsVersionHashTagsTagRouteHandler,
+  deleteV1PrivateFeedbackDefinitionsIdRouteHandler,
+  deleteV1PrivateGuardrailsPoliciesIdRouteHandler,
+  deleteV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  deleteV1PrivateLocalRunnersRunnerIdRouteHandler,
+  deleteV1PrivateOllieStateRouteHandler,
+  deleteV1PrivateProjectsIdRouteHandler,
+  deleteV1PrivatePromptsIdRouteHandler,
+  deleteV1PrivateRetentionRulesRuleIdRouteHandler,
+  deleteV1PrivateSpansIdRouteHandler,
+  deleteV1PrivateTracesIdRouteHandler,
+  deleteV1PrivateWorkspacesConfigurationsRouteHandler,
+  getIsAlivePingRouteHandler,
+  getIsAliveVerRouteHandler,
+  getOauthAuthorizeContextRouteHandler,
+  getOauthAuthorizeRouteHandler,
+  getV1InternalDashboardSavedQueriesIdRouteHandler,
+  getV1InternalUsageBiDatasetsRouteHandler,
+  getV1InternalUsageBiExperimentsRouteHandler,
+  getV1InternalUsageBiSpansRouteHandler,
+  getV1InternalUsageBiTracesRouteHandler,
+  getV1InternalUsageWorkspaceSpanCountsBreakdownRouteHandler,
+  getV1InternalUsageWorkspaceSpanCountsRouteHandler,
+  getV1InternalUsageWorkspaceTraceCountsRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsBlueprintIdDeltasRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsBlueprintIdRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsHistoryProjectsProjectIdRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsLatestProjectsProjectIdRouteHandler,
+  getV1PrivateAgentConfigsBlueprintsProjectsProjectIdNamesNameRouteHandler,
+  getV1PrivateAgentInsightsIssuesIssueIdRouteHandler,
+  getV1PrivateAgentInsightsIssuesRouteHandler,
+  getV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  getV1PrivateAlertsIdRouteHandler,
+  getV1PrivateAlertsRouteHandler,
+  getV1PrivateAlertsWebhooksExamplesRouteHandler,
+  getV1PrivateAnnotationQueuesIdRouteHandler,
+  getV1PrivateAnnotationQueuesQueueIdLocksRouteHandler,
+  getV1PrivateAnnotationQueuesRouteHandler,
+  getV1PrivateAttachmentDownloadRouteHandler,
+  getV1PrivateAttachmentListRouteHandler,
+  getV1PrivateAuthWorkspaceRouteHandler,
+  getV1PrivateAutomationsEvaluatorsIdLogsRouteHandler,
+  getV1PrivateAutomationsEvaluatorsIdRouteHandler,
+  getV1PrivateAutomationsEvaluatorsRouteHandler,
+  getV1PrivateDashboardsDashboardIdRouteHandler,
+  getV1PrivateDashboardsRouteHandler,
+  getV1PrivateDatasetsExportJobsJobIdDownloadRouteHandler,
+  getV1PrivateDatasetsExportJobsJobIdRouteHandler,
+  getV1PrivateDatasetsExportJobsRouteHandler,
+  getV1PrivateDatasetsIdItemsExperimentsItemsOutputColumnsRouteHandler,
+  getV1PrivateDatasetsIdItemsExperimentsItemsRouteHandler,
+  getV1PrivateDatasetsIdItemsExperimentsItemsStatsRouteHandler,
+  getV1PrivateDatasetsIdItemsRouteHandler,
+  getV1PrivateDatasetsIdRouteHandler,
+  getV1PrivateDatasetsIdVersionsDiffRouteHandler,
+  getV1PrivateDatasetsIdVersionsHashVersionHashRouteHandler,
+  getV1PrivateDatasetsIdVersionsRouteHandler,
+  getV1PrivateDatasetsItemsItemIdRouteHandler,
+  getV1PrivateDatasetsRouteHandler,
+  getV1PrivateEnvironmentsIdRouteHandler,
+  getV1PrivateEnvironmentsRouteHandler,
+  getV1PrivateExperimentsFeedbackScoresNamesRouteHandler,
+  getV1PrivateExperimentsGroupsAggregationsRouteHandler,
+  getV1PrivateExperimentsGroupsRouteHandler,
+  getV1PrivateExperimentsIdRouteHandler,
+  getV1PrivateExperimentsItemsIdRouteHandler,
+  getV1PrivateExperimentsRouteHandler,
+  getV1PrivateFeedbackDefinitionsIdRouteHandler,
+  getV1PrivateFeedbackDefinitionsRouteHandler,
+  getV1PrivateGuardrailsPoliciesIdRouteHandler,
+  getV1PrivateGuardrailsPoliciesRouteHandler,
+  getV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  getV1PrivateInsightsViewsRouteHandler,
+  getV1PrivateLlmModelsProfilesRouteHandler,
+  getV1PrivateLlmModelsRouteHandler,
+  getV1PrivateLlmProviderKeyIdRouteHandler,
+  getV1PrivateLlmProviderKeyRouteHandler,
+  getV1PrivateLocalRunnersJobsJobIdLogsRouteHandler,
+  getV1PrivateLocalRunnersJobsJobIdRouteHandler,
+  getV1PrivateLocalRunnersRouteHandler,
+  getV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdRouteHandler,
+  getV1PrivateLocalRunnersRunnerIdJobsRouteHandler,
+  getV1PrivateLocalRunnersRunnerIdRouteHandler,
+  getV1PrivateOllieStateRouteHandler,
+  getV1PrivateOptimizationsIdRouteHandler,
+  getV1PrivateOptimizationsRouteHandler,
+  getV1PrivateOptimizationsStudioIdLogsRouteHandler,
+  getV1PrivateProjectsFeedbackScoresNamesRouteHandler,
+  getV1PrivateProjectsIdRouteHandler,
+  getV1PrivateProjectsIdTokenUsageNamesRouteHandler,
+  getV1PrivateProjectsProjectIdActivitiesRouteHandler,
+  getV1PrivateProjectsProjectIdAlertsRouteHandler,
+  getV1PrivateProjectsProjectIdDashboardsRouteHandler,
+  getV1PrivateProjectsProjectIdDatasetsRouteHandler,
+  getV1PrivateProjectsProjectIdExperimentsRouteHandler,
+  getV1PrivateProjectsProjectIdOptimizationsRouteHandler,
+  getV1PrivateProjectsProjectIdPromptsRouteHandler,
+  getV1PrivateProjectsProjectIdReportsPreferencesRouteHandler,
+  getV1PrivateProjectsProjectIdReportsRouteHandler,
+  getV1PrivateProjectsRouteHandler,
+  getV1PrivateProjectsStatsRouteHandler,
+  getV1PrivatePromptsByCommitCommitRouteHandler,
+  getV1PrivatePromptsIdRouteHandler,
+  getV1PrivatePromptsIdVersionsRouteHandler,
+  getV1PrivatePromptsPromptIdVersionsByNumberVersionNumberRouteHandler,
+  getV1PrivatePromptsRouteHandler,
+  getV1PrivatePromptsVersionsVersionIdRouteHandler,
+  getV1PrivateReportFailuresRouteHandler,
+  getV1PrivateRetentionRulesRouteHandler,
+  getV1PrivateRetentionRulesRuleIdRouteHandler,
+  getV1PrivateSpansExistsRouteHandler,
+  getV1PrivateSpansFeedbackScoresNamesRouteHandler,
+  getV1PrivateSpansIdRouteHandler,
+  getV1PrivateSpansRouteHandler,
+  getV1PrivateSpansSpanIdCommentsCommentIdRouteHandler,
+  getV1PrivateSpansStatsRouteHandler,
+  getV1PrivateTogglesRouteHandler,
+  getV1PrivateTracesExistsRouteHandler,
+  getV1PrivateTracesFeedbackScoresNamesRouteHandler,
+  getV1PrivateTracesIdRouteHandler,
+  getV1PrivateTracesRouteHandler,
+  getV1PrivateTracesStatsRouteHandler,
+  getV1PrivateTracesThreadsFeedbackScoresNamesRouteHandler,
+  getV1PrivateTracesThreadsRouteHandler,
+  getV1PrivateTracesThreadsStatsRouteHandler,
+  getV1PrivateTracesThreadsThreadIdCommentsCommentIdRouteHandler,
+  getV1PrivateTracesTraceIdCommentsCommentIdRouteHandler,
+  getV1PrivateWelcomeWizardRouteHandler,
+  getV1PrivateWorkspacePermissionsRouteHandler,
+  getV1PrivateWorkspacesConfigurationsRouteHandler,
+  getV1SessionRedirectDatasetsRouteHandler,
+  getV1SessionRedirectExperimentsRouteHandler,
+  getV1SessionRedirectOptimizationsRouteHandler,
+  getV1SessionRedirectProjectsRouteHandler,
+  getWellKnownOauthAuthorizationServerRouteHandler,
+  patchV1PrivateAgentConfigsBlueprintsRouteHandler,
+  patchV1PrivateAgentInsightsIssuesIssueIdRouteHandler,
+  patchV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  patchV1PrivateAnnotationQueuesIdRouteHandler,
+  patchV1PrivateAutomationsEvaluatorsIdRouteHandler,
+  patchV1PrivateDashboardsDashboardIdRouteHandler,
+  patchV1PrivateDatasetsIdVersionsHashVersionHashRouteHandler,
+  patchV1PrivateDatasetsItemsBatchRouteHandler,
+  patchV1PrivateDatasetsItemsItemIdRouteHandler,
+  patchV1PrivateEnvironmentsIdRouteHandler,
+  patchV1PrivateExperimentsBatchRouteHandler,
+  patchV1PrivateExperimentsIdRouteHandler,
+  patchV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  patchV1PrivateLlmProviderKeyIdRouteHandler,
+  patchV1PrivateLocalRunnersRunnerIdChecklistRouteHandler,
+  patchV1PrivateProjectsIdRouteHandler,
+  patchV1PrivatePromptsVersionsRouteHandler,
+  patchV1PrivatePromptsVersionsVersionIdEnvironmentsRouteHandler,
+  patchV1PrivateSpansBatchRouteHandler,
+  patchV1PrivateSpansCommentsCommentIdRouteHandler,
+  patchV1PrivateSpansIdRouteHandler,
+  patchV1PrivateTracesBatchRouteHandler,
+  patchV1PrivateTracesCommentsCommentIdRouteHandler,
+  patchV1PrivateTracesIdRouteHandler,
+  patchV1PrivateTracesThreadsBatchRouteHandler,
+  patchV1PrivateTracesThreadsCommentsCommentIdRouteHandler,
+  patchV1PrivateTracesThreadsThreadModelIdRouteHandler,
+  postOauthAuthorizeRouteHandler,
+  postOauthRegisterRouteHandler,
+  postOauthRevokeRouteHandler,
+  postOauthTokenRouteHandler,
+  postOpikAuthOauthRouteHandler,
+  postV1InternalAgentInsightsEnrollmentRouteHandler,
+  postV1InternalAnalyticsQueriesProjectsProjectIdRouteHandler,
+  postV1InternalAnalyticsQueriesRouteHandler,
+  postV1InternalDashboardSavedQueriesRouteHandler,
+  postV1InternalUsageProjectsRouteHandler,
+  postV1PrivateAgentConfigsBlueprintsEnvironmentsRouteHandler,
+  postV1PrivateAgentConfigsBlueprintsProjectsProjectIdMasksMaskIdRouteHandler,
+  postV1PrivateAgentConfigsBlueprintsRemoveKeysRouteHandler,
+  postV1PrivateAgentConfigsBlueprintsRouteHandler,
+  postV1PrivateAgentInsightsIssuesRouteHandler,
+  postV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  postV1PrivateAgentInsightsJobsProjectIdTriggerRouteHandler,
+  postV1PrivateAlertsDeleteRouteHandler,
+  postV1PrivateAlertsRouteHandler,
+  postV1PrivateAlertsWebhooksTestsRouteHandler,
+  postV1PrivateAnnotationQueuesBatchRouteHandler,
+  postV1PrivateAnnotationQueuesDeleteRouteHandler,
+  postV1PrivateAnnotationQueuesIdItemsAddRouteHandler,
+  postV1PrivateAnnotationQueuesIdItemsDeleteRouteHandler,
+  postV1PrivateAnnotationQueuesIdItemsSearchRouteHandler,
+  postV1PrivateAnnotationQueuesRouteHandler,
+  postV1PrivateAttachmentDeleteRouteHandler,
+  postV1PrivateAttachmentUploadCompleteRouteHandler,
+  postV1PrivateAttachmentUploadStartRouteHandler,
+  postV1PrivateAuthRouteHandler,
+  postV1PrivateAutomationsEvaluatorsDeleteRouteHandler,
+  postV1PrivateAutomationsEvaluatorsRouteHandler,
+  postV1PrivateChatCompletionsRouteHandler,
+  postV1PrivateDashboardsDashboardIdWidgetsWidgetIdQueryRouteHandler,
+  postV1PrivateDashboardsDeleteBatchRouteHandler,
+  postV1PrivateDashboardsRouteHandler,
+  postV1PrivateDatasetsDatasetIdItemsFromSpansRouteHandler,
+  postV1PrivateDatasetsDatasetIdItemsFromTracesRouteHandler,
+  postV1PrivateDatasetsDeleteBatchRouteHandler,
+  postV1PrivateDatasetsDeleteRouteHandler,
+  postV1PrivateDatasetsIdExpansionsRouteHandler,
+  postV1PrivateDatasetsIdExportRouteHandler,
+  postV1PrivateDatasetsIdItemsChangesRouteHandler,
+  postV1PrivateDatasetsIdVersionsHashVersionHashTagsRouteHandler,
+  postV1PrivateDatasetsIdVersionsRestoreRouteHandler,
+  postV1PrivateDatasetsIdVersionsRetrieveRouteHandler,
+  postV1PrivateDatasetsItemsDeleteRouteHandler,
+  postV1PrivateDatasetsItemsFromCsvRouteHandler,
+  postV1PrivateDatasetsItemsFromJsonRouteHandler,
+  postV1PrivateDatasetsItemsStreamRouteHandler,
+  postV1PrivateDatasetsRetrieveRouteHandler,
+  postV1PrivateDatasetsRouteHandler,
+  postV1PrivateEnvironmentsDeleteRouteHandler,
+  postV1PrivateEnvironmentsRouteHandler,
+  postV1PrivateExperimentsDeleteRouteHandler,
+  postV1PrivateExperimentsExecuteRouteHandler,
+  postV1PrivateExperimentsFinishRouteHandler,
+  postV1PrivateExperimentsItemsDeleteRouteHandler,
+  postV1PrivateExperimentsItemsRouteHandler,
+  postV1PrivateExperimentsItemsStreamRouteHandler,
+  postV1PrivateExperimentsRouteHandler,
+  postV1PrivateExperimentsStreamRouteHandler,
+  postV1PrivateFeedbackDefinitionsDeleteRouteHandler,
+  postV1PrivateFeedbackDefinitionsRouteHandler,
+  postV1PrivateGuardrailsPoliciesRouteHandler,
+  postV1PrivateGuardrailsRouteHandler,
+  postV1PrivateGuardrailsValidationsRouteHandler,
+  postV1PrivateInsightsViewsDeleteBatchRouteHandler,
+  postV1PrivateInsightsViewsInsightsViewIdWidgetsWidgetIdQueryRouteHandler,
+  postV1PrivateInsightsViewsRouteHandler,
+  postV1PrivateLlmProviderKeyAuthConfigTestRouteHandler,
+  postV1PrivateLlmProviderKeyDeleteRouteHandler,
+  postV1PrivateLlmProviderKeyRouteHandler,
+  postV1PrivateLocalRunnersJobsJobIdCancelRouteHandler,
+  postV1PrivateLocalRunnersJobsJobIdLogsRouteHandler,
+  postV1PrivateLocalRunnersJobsJobIdResultsRouteHandler,
+  postV1PrivateLocalRunnersJobsRouteHandler,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdResultsRouteHandler,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsNextRouteHandler,
+  postV1PrivateLocalRunnersRunnerIdBridgeCommandsRouteHandler,
+  postV1PrivateLocalRunnersRunnerIdHeartbeatsRouteHandler,
+  postV1PrivateLocalRunnersRunnerIdJobsNextRouteHandler,
+  postV1PrivateManualEvaluationSpansRouteHandler,
+  postV1PrivateManualEvaluationThreadsRouteHandler,
+  postV1PrivateManualEvaluationTracesRouteHandler,
+  postV1PrivateOllamaModelsRouteHandler,
+  postV1PrivateOllamaTestConnectionRouteHandler,
+  postV1PrivateOptimizationsDeleteRouteHandler,
+  postV1PrivateOptimizationsRouteHandler,
+  postV1PrivateOtelV1TracesRouteHandler,
+  postV1PrivatePairingSessionsRouteHandler,
+  postV1PrivatePairingSessionsSessionIdActivateRouteHandler,
+  postV1PrivateProjectsDeleteRouteHandler,
+  postV1PrivateProjectsIdKpiCardsRouteHandler,
+  postV1PrivateProjectsIdMetricsRouteHandler,
+  postV1PrivateProjectsProjectIdReportsGenerateRouteHandler,
+  postV1PrivateProjectsProjectIdReportsReportIdCompleteRouteHandler,
+  postV1PrivateProjectsRetrieveRouteHandler,
+  postV1PrivateProjectsRouteHandler,
+  postV1PrivatePromptsDeleteRouteHandler,
+  postV1PrivatePromptsPromptIdVersionsVersionIdRestoreRouteHandler,
+  postV1PrivatePromptsRetrieveByCommitsRouteHandler,
+  postV1PrivatePromptsRouteHandler,
+  postV1PrivatePromptsVersionsRetrieveByIdsRouteHandler,
+  postV1PrivatePromptsVersionsRetrieveRouteHandler,
+  postV1PrivatePromptsVersionsRouteHandler,
+  postV1PrivateReportFailuresRouteHandler,
+  postV1PrivateRetentionRulesRouteHandler,
+  postV1PrivateSpansBatchRouteHandler,
+  postV1PrivateSpansCommentsDeleteRouteHandler,
+  postV1PrivateSpansIdCommentsRouteHandler,
+  postV1PrivateSpansIdFeedbackScoresDeleteRouteHandler,
+  postV1PrivateSpansRouteHandler,
+  postV1PrivateSpansSearchRouteHandler,
+  postV1PrivateTracesBatchRouteHandler,
+  postV1PrivateTracesCommentsDeleteRouteHandler,
+  postV1PrivateTracesDeleteRouteHandler,
+  postV1PrivateTracesIdCommentsRouteHandler,
+  postV1PrivateTracesIdFeedbackScoresDeleteRouteHandler,
+  postV1PrivateTracesRouteHandler,
+  postV1PrivateTracesSearchRouteHandler,
+  postV1PrivateTracesThreadsCommentsDeleteRouteHandler,
+  postV1PrivateTracesThreadsDeleteRouteHandler,
+  postV1PrivateTracesThreadsFeedbackScoresDeleteRouteHandler,
+  postV1PrivateTracesThreadsIdCommentsRouteHandler,
+  postV1PrivateTracesThreadsRetrieveRouteHandler,
+  postV1PrivateTracesThreadsSearchRouteHandler,
+  postV1PrivateWelcomeWizardRouteHandler,
+  postV1PrivateWorkspacesCostsRouteHandler,
+  postV1PrivateWorkspacesCostsSummariesRouteHandler,
+  postV1PrivateWorkspacesMetricsRouteHandler,
+  postV1PrivateWorkspacesMetricsSpansRouteHandler,
+  postV1PrivateWorkspacesMetricsSummariesRouteHandler,
+  postV1PrivateWorkspacesTokenUsageNamesRouteHandler,
+  putV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  putV1PrivateAgentInsightsJobsProjectIdGuidanceRouteHandler,
+  putV1PrivateAlertsIdRouteHandler,
+  putV1PrivateAnnotationQueuesQueueIdItemsItemIdLockRouteHandler,
+  putV1PrivateAssertionResultsRouteHandler,
+  putV1PrivateAttachmentUploadRouteHandler,
+  putV1PrivateDatasetsExportJobsJobIdMarkViewedRouteHandler,
+  putV1PrivateDatasetsIdRouteHandler,
+  putV1PrivateDatasetsItemsRouteHandler,
+  putV1PrivateExperimentsCancelRouteHandler,
+  putV1PrivateExperimentsItemsBulkRouteHandler,
+  putV1PrivateFeedbackDefinitionsIdRouteHandler,
+  putV1PrivateGuardrailsPoliciesIdRouteHandler,
+  putV1PrivateLocalRunnersRunnerIdAgentsRouteHandler,
+  putV1PrivateOllieStateRouteHandler,
+  putV1PrivateOptimizationsIdRouteHandler,
+  putV1PrivateOptimizationsRouteHandler,
+  putV1PrivateProjectsProjectIdReportsPreferencesRouteHandler,
+  putV1PrivatePromptsIdRouteHandler,
+  putV1PrivateSpansFeedbackScoresRouteHandler,
+  putV1PrivateSpansIdFeedbackScoresRouteHandler,
+  putV1PrivateTracesFeedbackScoresRouteHandler,
+  putV1PrivateTracesIdFeedbackScoresRouteHandler,
+  putV1PrivateTracesThreadsCloseRouteHandler,
+  putV1PrivateTracesThreadsFeedbackScoresRouteHandler,
+  putV1PrivateTracesThreadsOpenRouteHandler,
+  putV1PrivateWorkspacesConfigurationsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', oauthHandler)
-  .route('/', wellKnownHandler)
-  .route('/', opikHandler)
-  .route('/', v1Handler)
-  .route('/', isAliveHandler)
+  .openapi(getOauthAuthorizeRoute, getOauthAuthorizeRouteHandler)
+  .openapi(postOauthAuthorizeRoute, postOauthAuthorizeRouteHandler)
+  .openapi(getOauthAuthorizeContextRoute, getOauthAuthorizeContextRouteHandler)
+  .openapi(
+    getWellKnownOauthAuthorizationServerRoute,
+    getWellKnownOauthAuthorizationServerRouteHandler,
+  )
+  .openapi(postOauthRegisterRoute, postOauthRegisterRouteHandler)
+  .openapi(postOauthRevokeRoute, postOauthRevokeRouteHandler)
+  .openapi(postOauthTokenRoute, postOauthTokenRouteHandler)
+  .openapi(postOpikAuthOauthRoute, postOpikAuthOauthRouteHandler)
+  .openapi(
+    postV1InternalAgentInsightsEnrollmentRoute,
+    postV1InternalAgentInsightsEnrollmentRouteHandler,
+  )
+  .openapi(
+    postV1InternalAnalyticsQueriesProjectsProjectIdRoute,
+    postV1InternalAnalyticsQueriesProjectsProjectIdRouteHandler,
+  )
+  .openapi(postV1InternalAnalyticsQueriesRoute, postV1InternalAnalyticsQueriesRouteHandler)
+  .openapi(
+    postV1InternalDashboardSavedQueriesRoute,
+    postV1InternalDashboardSavedQueriesRouteHandler,
+  )
+  .openapi(
+    getV1InternalDashboardSavedQueriesIdRoute,
+    getV1InternalDashboardSavedQueriesIdRouteHandler,
+  )
+  .openapi(postV1InternalUsageProjectsRoute, postV1InternalUsageProjectsRouteHandler)
+  .openapi(getV1InternalUsageBiDatasetsRoute, getV1InternalUsageBiDatasetsRouteHandler)
+  .openapi(getV1InternalUsageBiExperimentsRoute, getV1InternalUsageBiExperimentsRouteHandler)
+  .openapi(getV1InternalUsageBiSpansRoute, getV1InternalUsageBiSpansRouteHandler)
+  .openapi(
+    getV1InternalUsageWorkspaceSpanCountsBreakdownRoute,
+    getV1InternalUsageWorkspaceSpanCountsBreakdownRouteHandler,
+  )
+  .openapi(
+    getV1InternalUsageWorkspaceSpanCountsRoute,
+    getV1InternalUsageWorkspaceSpanCountsRouteHandler,
+  )
+  .openapi(getV1InternalUsageBiTracesRoute, getV1InternalUsageBiTracesRouteHandler)
+  .openapi(
+    getV1InternalUsageWorkspaceTraceCountsRoute,
+    getV1InternalUsageWorkspaceTraceCountsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentConfigsBlueprintsRoute,
+    postV1PrivateAgentConfigsBlueprintsRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateAgentConfigsBlueprintsRoute,
+    patchV1PrivateAgentConfigsBlueprintsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentConfigsBlueprintsProjectsProjectIdMasksMaskIdRoute,
+    postV1PrivateAgentConfigsBlueprintsProjectsProjectIdMasksMaskIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentConfigsBlueprintsEnvironmentsRoute,
+    postV1PrivateAgentConfigsBlueprintsEnvironmentsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+    getV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    putV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+    putV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    deleteV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRoute,
+    deleteV1PrivateAgentConfigsBlueprintsEnvironmentsEnvNameProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsBlueprintIdRoute,
+    getV1PrivateAgentConfigsBlueprintsBlueprintIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsProjectsProjectIdNamesNameRoute,
+    getV1PrivateAgentConfigsBlueprintsProjectsProjectIdNamesNameRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsHistoryProjectsProjectIdRoute,
+    getV1PrivateAgentConfigsBlueprintsHistoryProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsBlueprintIdDeltasRoute,
+    getV1PrivateAgentConfigsBlueprintsBlueprintIdDeltasRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentConfigsBlueprintsLatestProjectsProjectIdRoute,
+    getV1PrivateAgentConfigsBlueprintsLatestProjectsProjectIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentConfigsBlueprintsRemoveKeysRoute,
+    postV1PrivateAgentConfigsBlueprintsRemoveKeysRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAgentInsightsJobsProjectIdRoute,
+    getV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentInsightsJobsProjectIdRoute,
+    postV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateAgentInsightsJobsProjectIdRoute,
+    patchV1PrivateAgentInsightsJobsProjectIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAgentInsightsJobsProjectIdTriggerRoute,
+    postV1PrivateAgentInsightsJobsProjectIdTriggerRouteHandler,
+  )
+  .openapi(
+    putV1PrivateAgentInsightsJobsProjectIdGuidanceRoute,
+    putV1PrivateAgentInsightsJobsProjectIdGuidanceRouteHandler,
+  )
+  .openapi(getV1PrivateAgentInsightsIssuesRoute, getV1PrivateAgentInsightsIssuesRouteHandler)
+  .openapi(postV1PrivateAgentInsightsIssuesRoute, postV1PrivateAgentInsightsIssuesRouteHandler)
+  .openapi(
+    getV1PrivateAgentInsightsIssuesIssueIdRoute,
+    getV1PrivateAgentInsightsIssuesIssueIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateAgentInsightsIssuesIssueIdRoute,
+    patchV1PrivateAgentInsightsIssuesIssueIdRouteHandler,
+  )
+  .openapi(getV1PrivateAlertsRoute, getV1PrivateAlertsRouteHandler)
+  .openapi(postV1PrivateAlertsRoute, postV1PrivateAlertsRouteHandler)
+  .openapi(postV1PrivateAlertsDeleteRoute, postV1PrivateAlertsDeleteRouteHandler)
+  .openapi(getV1PrivateAlertsIdRoute, getV1PrivateAlertsIdRouteHandler)
+  .openapi(putV1PrivateAlertsIdRoute, putV1PrivateAlertsIdRouteHandler)
+  .openapi(getV1PrivateAlertsWebhooksExamplesRoute, getV1PrivateAlertsWebhooksExamplesRouteHandler)
+  .openapi(postV1PrivateAlertsWebhooksTestsRoute, postV1PrivateAlertsWebhooksTestsRouteHandler)
+  .openapi(
+    postV1PrivateAnnotationQueuesIdItemsAddRoute,
+    postV1PrivateAnnotationQueuesIdItemsAddRouteHandler,
+  )
+  .openapi(getV1PrivateAnnotationQueuesRoute, getV1PrivateAnnotationQueuesRouteHandler)
+  .openapi(postV1PrivateAnnotationQueuesRoute, postV1PrivateAnnotationQueuesRouteHandler)
+  .openapi(postV1PrivateAnnotationQueuesBatchRoute, postV1PrivateAnnotationQueuesBatchRouteHandler)
+  .openapi(
+    postV1PrivateAnnotationQueuesDeleteRoute,
+    postV1PrivateAnnotationQueuesDeleteRouteHandler,
+  )
+  .openapi(getV1PrivateAnnotationQueuesIdRoute, getV1PrivateAnnotationQueuesIdRouteHandler)
+  .openapi(patchV1PrivateAnnotationQueuesIdRoute, patchV1PrivateAnnotationQueuesIdRouteHandler)
+  .openapi(
+    getV1PrivateAnnotationQueuesQueueIdLocksRoute,
+    getV1PrivateAnnotationQueuesQueueIdLocksRouteHandler,
+  )
+  .openapi(
+    putV1PrivateAnnotationQueuesQueueIdItemsItemIdLockRoute,
+    putV1PrivateAnnotationQueuesQueueIdItemsItemIdLockRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAnnotationQueuesIdItemsDeleteRoute,
+    postV1PrivateAnnotationQueuesIdItemsDeleteRouteHandler,
+  )
+  .openapi(
+    postV1PrivateAnnotationQueuesIdItemsSearchRoute,
+    postV1PrivateAnnotationQueuesIdItemsSearchRouteHandler,
+  )
+  .openapi(putV1PrivateAssertionResultsRoute, putV1PrivateAssertionResultsRouteHandler)
+  .openapi(getV1PrivateAttachmentListRoute, getV1PrivateAttachmentListRouteHandler)
+  .openapi(
+    postV1PrivateAttachmentUploadCompleteRoute,
+    postV1PrivateAttachmentUploadCompleteRouteHandler,
+  )
+  .openapi(postV1PrivateAttachmentDeleteRoute, postV1PrivateAttachmentDeleteRouteHandler)
+  .openapi(getV1PrivateAttachmentDownloadRoute, getV1PrivateAttachmentDownloadRouteHandler)
+  .openapi(postV1PrivateAttachmentUploadStartRoute, postV1PrivateAttachmentUploadStartRouteHandler)
+  .openapi(putV1PrivateAttachmentUploadRoute, putV1PrivateAttachmentUploadRouteHandler)
+  .openapi(postV1PrivateAuthRoute, postV1PrivateAuthRouteHandler)
+  .openapi(getV1PrivateAuthWorkspaceRoute, getV1PrivateAuthWorkspaceRouteHandler)
+  .openapi(getV1PrivateAutomationsEvaluatorsRoute, getV1PrivateAutomationsEvaluatorsRouteHandler)
+  .openapi(postV1PrivateAutomationsEvaluatorsRoute, postV1PrivateAutomationsEvaluatorsRouteHandler)
+  .openapi(
+    postV1PrivateAutomationsEvaluatorsDeleteRoute,
+    postV1PrivateAutomationsEvaluatorsDeleteRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAutomationsEvaluatorsIdRoute,
+    getV1PrivateAutomationsEvaluatorsIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateAutomationsEvaluatorsIdRoute,
+    patchV1PrivateAutomationsEvaluatorsIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivateAutomationsEvaluatorsIdLogsRoute,
+    getV1PrivateAutomationsEvaluatorsIdLogsRouteHandler,
+  )
+  .openapi(postV1PrivateChatCompletionsRoute, postV1PrivateChatCompletionsRouteHandler)
+  .openapi(getV1PrivateDashboardsRoute, getV1PrivateDashboardsRouteHandler)
+  .openapi(postV1PrivateDashboardsRoute, postV1PrivateDashboardsRouteHandler)
+  .openapi(getV1PrivateDashboardsDashboardIdRoute, getV1PrivateDashboardsDashboardIdRouteHandler)
+  .openapi(
+    deleteV1PrivateDashboardsDashboardIdRoute,
+    deleteV1PrivateDashboardsDashboardIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateDashboardsDashboardIdRoute,
+    patchV1PrivateDashboardsDashboardIdRouteHandler,
+  )
+  .openapi(postV1PrivateDashboardsDeleteBatchRoute, postV1PrivateDashboardsDeleteBatchRouteHandler)
+  .openapi(
+    postV1PrivateDashboardsDashboardIdWidgetsWidgetIdQueryRoute,
+    postV1PrivateDashboardsDashboardIdWidgetsWidgetIdQueryRouteHandler,
+  )
+  .openapi(
+    postV1PrivateDatasetsIdItemsChangesRoute,
+    postV1PrivateDatasetsIdItemsChangesRouteHandler,
+  )
+  .openapi(patchV1PrivateDatasetsItemsBatchRoute, patchV1PrivateDatasetsItemsBatchRouteHandler)
+  .openapi(getV1PrivateDatasetsRoute, getV1PrivateDatasetsRouteHandler)
+  .openapi(postV1PrivateDatasetsRoute, postV1PrivateDatasetsRouteHandler)
+  .openapi(putV1PrivateDatasetsItemsRoute, putV1PrivateDatasetsItemsRouteHandler)
+  .openapi(postV1PrivateDatasetsItemsFromCsvRoute, postV1PrivateDatasetsItemsFromCsvRouteHandler)
+  .openapi(postV1PrivateDatasetsItemsFromJsonRoute, postV1PrivateDatasetsItemsFromJsonRouteHandler)
+  .openapi(
+    postV1PrivateDatasetsDatasetIdItemsFromSpansRoute,
+    postV1PrivateDatasetsDatasetIdItemsFromSpansRouteHandler,
+  )
+  .openapi(
+    postV1PrivateDatasetsDatasetIdItemsFromTracesRoute,
+    postV1PrivateDatasetsDatasetIdItemsFromTracesRouteHandler,
+  )
+  .openapi(getV1PrivateDatasetsIdRoute, getV1PrivateDatasetsIdRouteHandler)
+  .openapi(putV1PrivateDatasetsIdRoute, putV1PrivateDatasetsIdRouteHandler)
+  .openapi(deleteV1PrivateDatasetsIdRoute, deleteV1PrivateDatasetsIdRouteHandler)
+  .openapi(postV1PrivateDatasetsDeleteRoute, postV1PrivateDatasetsDeleteRouteHandler)
+  .openapi(postV1PrivateDatasetsItemsDeleteRoute, postV1PrivateDatasetsItemsDeleteRouteHandler)
+  .openapi(postV1PrivateDatasetsDeleteBatchRoute, postV1PrivateDatasetsDeleteBatchRouteHandler)
+  .openapi(
+    getV1PrivateDatasetsExportJobsJobIdDownloadRoute,
+    getV1PrivateDatasetsExportJobsJobIdDownloadRouteHandler,
+  )
+  .openapi(postV1PrivateDatasetsIdExpansionsRoute, postV1PrivateDatasetsIdExpansionsRouteHandler)
+  .openapi(
+    getV1PrivateDatasetsIdItemsExperimentsItemsRoute,
+    getV1PrivateDatasetsIdItemsExperimentsItemsRouteHandler,
+  )
+  .openapi(postV1PrivateDatasetsRetrieveRoute, postV1PrivateDatasetsRetrieveRouteHandler)
+  .openapi(
+    getV1PrivateDatasetsIdItemsExperimentsItemsStatsRoute,
+    getV1PrivateDatasetsIdItemsExperimentsItemsStatsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateDatasetsExportJobsJobIdRoute,
+    getV1PrivateDatasetsExportJobsJobIdRouteHandler,
+  )
+  .openapi(getV1PrivateDatasetsExportJobsRoute, getV1PrivateDatasetsExportJobsRouteHandler)
+  .openapi(getV1PrivateDatasetsItemsItemIdRoute, getV1PrivateDatasetsItemsItemIdRouteHandler)
+  .openapi(patchV1PrivateDatasetsItemsItemIdRoute, patchV1PrivateDatasetsItemsItemIdRouteHandler)
+  .openapi(getV1PrivateDatasetsIdItemsRoute, getV1PrivateDatasetsIdItemsRouteHandler)
+  .openapi(
+    getV1PrivateDatasetsIdItemsExperimentsItemsOutputColumnsRoute,
+    getV1PrivateDatasetsIdItemsExperimentsItemsOutputColumnsRouteHandler,
+  )
+  .openapi(
+    putV1PrivateDatasetsExportJobsJobIdMarkViewedRoute,
+    putV1PrivateDatasetsExportJobsJobIdMarkViewedRouteHandler,
+  )
+  .openapi(postV1PrivateDatasetsIdExportRoute, postV1PrivateDatasetsIdExportRouteHandler)
+  .openapi(postV1PrivateDatasetsItemsStreamRoute, postV1PrivateDatasetsItemsStreamRouteHandler)
+  .openapi(getV1PrivateDatasetsIdVersionsDiffRoute, getV1PrivateDatasetsIdVersionsDiffRouteHandler)
+  .openapi(
+    postV1PrivateDatasetsIdVersionsHashVersionHashTagsRoute,
+    postV1PrivateDatasetsIdVersionsHashVersionHashTagsRouteHandler,
+  )
+  .openapi(
+    deleteV1PrivateDatasetsIdVersionsVersionHashTagsTagRoute,
+    deleteV1PrivateDatasetsIdVersionsVersionHashTagsTagRouteHandler,
+  )
+  .openapi(
+    getV1PrivateDatasetsIdVersionsHashVersionHashRoute,
+    getV1PrivateDatasetsIdVersionsHashVersionHashRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateDatasetsIdVersionsHashVersionHashRoute,
+    patchV1PrivateDatasetsIdVersionsHashVersionHashRouteHandler,
+  )
+  .openapi(getV1PrivateDatasetsIdVersionsRoute, getV1PrivateDatasetsIdVersionsRouteHandler)
+  .openapi(
+    postV1PrivateDatasetsIdVersionsRestoreRoute,
+    postV1PrivateDatasetsIdVersionsRestoreRouteHandler,
+  )
+  .openapi(
+    postV1PrivateDatasetsIdVersionsRetrieveRoute,
+    postV1PrivateDatasetsIdVersionsRetrieveRouteHandler,
+  )
+  .openapi(getV1PrivateEnvironmentsRoute, getV1PrivateEnvironmentsRouteHandler)
+  .openapi(postV1PrivateEnvironmentsRoute, postV1PrivateEnvironmentsRouteHandler)
+  .openapi(postV1PrivateEnvironmentsDeleteRoute, postV1PrivateEnvironmentsDeleteRouteHandler)
+  .openapi(getV1PrivateEnvironmentsIdRoute, getV1PrivateEnvironmentsIdRouteHandler)
+  .openapi(patchV1PrivateEnvironmentsIdRoute, patchV1PrivateEnvironmentsIdRouteHandler)
+  .openapi(patchV1PrivateExperimentsBatchRoute, patchV1PrivateExperimentsBatchRouteHandler)
+  .openapi(putV1PrivateExperimentsCancelRoute, putV1PrivateExperimentsCancelRouteHandler)
+  .openapi(getV1PrivateExperimentsRoute, getV1PrivateExperimentsRouteHandler)
+  .openapi(postV1PrivateExperimentsRoute, postV1PrivateExperimentsRouteHandler)
+  .openapi(postV1PrivateExperimentsItemsRoute, postV1PrivateExperimentsItemsRouteHandler)
+  .openapi(
+    postV1PrivateExperimentsItemsDeleteRoute,
+    postV1PrivateExperimentsItemsDeleteRouteHandler,
+  )
+  .openapi(postV1PrivateExperimentsDeleteRoute, postV1PrivateExperimentsDeleteRouteHandler)
+  .openapi(postV1PrivateExperimentsExecuteRoute, postV1PrivateExperimentsExecuteRouteHandler)
+  .openapi(putV1PrivateExperimentsItemsBulkRoute, putV1PrivateExperimentsItemsBulkRouteHandler)
+  .openapi(
+    getV1PrivateExperimentsFeedbackScoresNamesRoute,
+    getV1PrivateExperimentsFeedbackScoresNamesRouteHandler,
+  )
+  .openapi(getV1PrivateExperimentsGroupsRoute, getV1PrivateExperimentsGroupsRouteHandler)
+  .openapi(
+    getV1PrivateExperimentsGroupsAggregationsRoute,
+    getV1PrivateExperimentsGroupsAggregationsRouteHandler,
+  )
+  .openapi(postV1PrivateExperimentsFinishRoute, postV1PrivateExperimentsFinishRouteHandler)
+  .openapi(getV1PrivateExperimentsIdRoute, getV1PrivateExperimentsIdRouteHandler)
+  .openapi(patchV1PrivateExperimentsIdRoute, patchV1PrivateExperimentsIdRouteHandler)
+  .openapi(getV1PrivateExperimentsItemsIdRoute, getV1PrivateExperimentsItemsIdRouteHandler)
+  .openapi(
+    postV1PrivateExperimentsItemsStreamRoute,
+    postV1PrivateExperimentsItemsStreamRouteHandler,
+  )
+  .openapi(postV1PrivateExperimentsStreamRoute, postV1PrivateExperimentsStreamRouteHandler)
+  .openapi(getV1PrivateFeedbackDefinitionsRoute, getV1PrivateFeedbackDefinitionsRouteHandler)
+  .openapi(postV1PrivateFeedbackDefinitionsRoute, postV1PrivateFeedbackDefinitionsRouteHandler)
+  .openapi(getV1PrivateFeedbackDefinitionsIdRoute, getV1PrivateFeedbackDefinitionsIdRouteHandler)
+  .openapi(putV1PrivateFeedbackDefinitionsIdRoute, putV1PrivateFeedbackDefinitionsIdRouteHandler)
+  .openapi(
+    deleteV1PrivateFeedbackDefinitionsIdRoute,
+    deleteV1PrivateFeedbackDefinitionsIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateFeedbackDefinitionsDeleteRoute,
+    postV1PrivateFeedbackDefinitionsDeleteRouteHandler,
+  )
+  .openapi(getV1PrivateGuardrailsPoliciesRoute, getV1PrivateGuardrailsPoliciesRouteHandler)
+  .openapi(postV1PrivateGuardrailsPoliciesRoute, postV1PrivateGuardrailsPoliciesRouteHandler)
+  .openapi(getV1PrivateGuardrailsPoliciesIdRoute, getV1PrivateGuardrailsPoliciesIdRouteHandler)
+  .openapi(putV1PrivateGuardrailsPoliciesIdRoute, putV1PrivateGuardrailsPoliciesIdRouteHandler)
+  .openapi(
+    deleteV1PrivateGuardrailsPoliciesIdRoute,
+    deleteV1PrivateGuardrailsPoliciesIdRouteHandler,
+  )
+  .openapi(postV1PrivateGuardrailsRoute, postV1PrivateGuardrailsRouteHandler)
+  .openapi(postV1PrivateGuardrailsValidationsRoute, postV1PrivateGuardrailsValidationsRouteHandler)
+  .openapi(getV1PrivateInsightsViewsRoute, getV1PrivateInsightsViewsRouteHandler)
+  .openapi(postV1PrivateInsightsViewsRoute, postV1PrivateInsightsViewsRouteHandler)
+  .openapi(
+    getV1PrivateInsightsViewsInsightsViewIdRoute,
+    getV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  )
+  .openapi(
+    deleteV1PrivateInsightsViewsInsightsViewIdRoute,
+    deleteV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateInsightsViewsInsightsViewIdRoute,
+    patchV1PrivateInsightsViewsInsightsViewIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateInsightsViewsDeleteBatchRoute,
+    postV1PrivateInsightsViewsDeleteBatchRouteHandler,
+  )
+  .openapi(
+    postV1PrivateInsightsViewsInsightsViewIdWidgetsWidgetIdQueryRoute,
+    postV1PrivateInsightsViewsInsightsViewIdWidgetsWidgetIdQueryRouteHandler,
+  )
+  .openapi(getV1PrivateLlmModelsRoute, getV1PrivateLlmModelsRouteHandler)
+  .openapi(getV1PrivateLlmModelsProfilesRoute, getV1PrivateLlmModelsProfilesRouteHandler)
+  .openapi(postV1PrivateLlmProviderKeyDeleteRoute, postV1PrivateLlmProviderKeyDeleteRouteHandler)
+  .openapi(getV1PrivateLlmProviderKeyRoute, getV1PrivateLlmProviderKeyRouteHandler)
+  .openapi(postV1PrivateLlmProviderKeyRoute, postV1PrivateLlmProviderKeyRouteHandler)
+  .openapi(getV1PrivateLlmProviderKeyIdRoute, getV1PrivateLlmProviderKeyIdRouteHandler)
+  .openapi(patchV1PrivateLlmProviderKeyIdRoute, patchV1PrivateLlmProviderKeyIdRouteHandler)
+  .openapi(
+    postV1PrivateLlmProviderKeyAuthConfigTestRoute,
+    postV1PrivateLlmProviderKeyAuthConfigTestRouteHandler,
+  )
+  .openapi(
+    getV1PrivateLocalRunnersJobsJobIdLogsRoute,
+    getV1PrivateLocalRunnersJobsJobIdLogsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersJobsJobIdLogsRoute,
+    postV1PrivateLocalRunnersJobsJobIdLogsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersJobsJobIdCancelRoute,
+    postV1PrivateLocalRunnersJobsJobIdCancelRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsRoute,
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsRouteHandler,
+  )
+  .openapi(postV1PrivateLocalRunnersJobsRoute, postV1PrivateLocalRunnersJobsRouteHandler)
+  .openapi(getV1PrivateLocalRunnersRunnerIdRoute, getV1PrivateLocalRunnersRunnerIdRouteHandler)
+  .openapi(
+    deleteV1PrivateLocalRunnersRunnerIdRoute,
+    deleteV1PrivateLocalRunnersRunnerIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdRoute,
+    getV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdRouteHandler,
+  )
+  .openapi(getV1PrivateLocalRunnersJobsJobIdRoute, getV1PrivateLocalRunnersJobsJobIdRouteHandler)
+  .openapi(
+    postV1PrivateLocalRunnersRunnerIdHeartbeatsRoute,
+    postV1PrivateLocalRunnersRunnerIdHeartbeatsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateLocalRunnersRunnerIdJobsRoute,
+    getV1PrivateLocalRunnersRunnerIdJobsRouteHandler,
+  )
+  .openapi(getV1PrivateLocalRunnersRoute, getV1PrivateLocalRunnersRouteHandler)
+  .openapi(
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsNextRoute,
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsNextRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersRunnerIdJobsNextRoute,
+    postV1PrivateLocalRunnersRunnerIdJobsNextRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateLocalRunnersRunnerIdChecklistRoute,
+    patchV1PrivateLocalRunnersRunnerIdChecklistRouteHandler,
+  )
+  .openapi(
+    putV1PrivateLocalRunnersRunnerIdAgentsRoute,
+    putV1PrivateLocalRunnersRunnerIdAgentsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdResultsRoute,
+    postV1PrivateLocalRunnersRunnerIdBridgeCommandsCommandIdResultsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateLocalRunnersJobsJobIdResultsRoute,
+    postV1PrivateLocalRunnersJobsJobIdResultsRouteHandler,
+  )
+  .openapi(postV1PrivateManualEvaluationSpansRoute, postV1PrivateManualEvaluationSpansRouteHandler)
+  .openapi(
+    postV1PrivateManualEvaluationThreadsRoute,
+    postV1PrivateManualEvaluationThreadsRouteHandler,
+  )
+  .openapi(
+    postV1PrivateManualEvaluationTracesRoute,
+    postV1PrivateManualEvaluationTracesRouteHandler,
+  )
+  .openapi(postV1PrivateOllamaModelsRoute, postV1PrivateOllamaModelsRouteHandler)
+  .openapi(postV1PrivateOllamaTestConnectionRoute, postV1PrivateOllamaTestConnectionRouteHandler)
+  .openapi(getV1PrivateOllieStateRoute, getV1PrivateOllieStateRouteHandler)
+  .openapi(putV1PrivateOllieStateRoute, putV1PrivateOllieStateRouteHandler)
+  .openapi(deleteV1PrivateOllieStateRoute, deleteV1PrivateOllieStateRouteHandler)
+  .openapi(postV1PrivateOtelV1TracesRoute, postV1PrivateOtelV1TracesRouteHandler)
+  .openapi(getV1PrivateOptimizationsRoute, getV1PrivateOptimizationsRouteHandler)
+  .openapi(putV1PrivateOptimizationsRoute, putV1PrivateOptimizationsRouteHandler)
+  .openapi(postV1PrivateOptimizationsRoute, postV1PrivateOptimizationsRouteHandler)
+  .openapi(postV1PrivateOptimizationsDeleteRoute, postV1PrivateOptimizationsDeleteRouteHandler)
+  .openapi(getV1PrivateOptimizationsIdRoute, getV1PrivateOptimizationsIdRouteHandler)
+  .openapi(putV1PrivateOptimizationsIdRoute, putV1PrivateOptimizationsIdRouteHandler)
+  .openapi(
+    getV1PrivateOptimizationsStudioIdLogsRoute,
+    getV1PrivateOptimizationsStudioIdLogsRouteHandler,
+  )
+  .openapi(
+    postV1PrivatePairingSessionsSessionIdActivateRoute,
+    postV1PrivatePairingSessionsSessionIdActivateRouteHandler,
+  )
+  .openapi(postV1PrivatePairingSessionsRoute, postV1PrivatePairingSessionsRouteHandler)
+  .openapi(
+    getV1PrivateProjectsProjectIdAlertsRoute,
+    getV1PrivateProjectsProjectIdAlertsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdDashboardsRoute,
+    getV1PrivateProjectsProjectIdDashboardsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdDatasetsRoute,
+    getV1PrivateProjectsProjectIdDatasetsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdExperimentsRoute,
+    getV1PrivateProjectsProjectIdExperimentsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdOptimizationsRoute,
+    getV1PrivateProjectsProjectIdOptimizationsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdPromptsRoute,
+    getV1PrivateProjectsProjectIdPromptsRouteHandler,
+  )
+  .openapi(getV1PrivateProjectsRoute, getV1PrivateProjectsRouteHandler)
+  .openapi(postV1PrivateProjectsRoute, postV1PrivateProjectsRouteHandler)
+  .openapi(getV1PrivateProjectsIdRoute, getV1PrivateProjectsIdRouteHandler)
+  .openapi(deleteV1PrivateProjectsIdRoute, deleteV1PrivateProjectsIdRouteHandler)
+  .openapi(patchV1PrivateProjectsIdRoute, patchV1PrivateProjectsIdRouteHandler)
+  .openapi(postV1PrivateProjectsDeleteRoute, postV1PrivateProjectsDeleteRouteHandler)
+  .openapi(
+    getV1PrivateProjectsFeedbackScoresNamesRoute,
+    getV1PrivateProjectsFeedbackScoresNamesRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsIdTokenUsageNamesRoute,
+    getV1PrivateProjectsIdTokenUsageNamesRouteHandler,
+  )
+  .openapi(postV1PrivateProjectsIdKpiCardsRoute, postV1PrivateProjectsIdKpiCardsRouteHandler)
+  .openapi(postV1PrivateProjectsIdMetricsRoute, postV1PrivateProjectsIdMetricsRouteHandler)
+  .openapi(getV1PrivateProjectsStatsRoute, getV1PrivateProjectsStatsRouteHandler)
+  .openapi(postV1PrivateProjectsRetrieveRoute, postV1PrivateProjectsRetrieveRouteHandler)
+  .openapi(getV1PrivatePromptsRoute, getV1PrivatePromptsRouteHandler)
+  .openapi(postV1PrivatePromptsRoute, postV1PrivatePromptsRouteHandler)
+  .openapi(postV1PrivatePromptsVersionsRoute, postV1PrivatePromptsVersionsRouteHandler)
+  .openapi(patchV1PrivatePromptsVersionsRoute, patchV1PrivatePromptsVersionsRouteHandler)
+  .openapi(getV1PrivatePromptsIdRoute, getV1PrivatePromptsIdRouteHandler)
+  .openapi(putV1PrivatePromptsIdRoute, putV1PrivatePromptsIdRouteHandler)
+  .openapi(deleteV1PrivatePromptsIdRoute, deleteV1PrivatePromptsIdRouteHandler)
+  .openapi(postV1PrivatePromptsDeleteRoute, postV1PrivatePromptsDeleteRouteHandler)
+  .openapi(getV1PrivatePromptsByCommitCommitRoute, getV1PrivatePromptsByCommitCommitRouteHandler)
+  .openapi(
+    getV1PrivatePromptsVersionsVersionIdRoute,
+    getV1PrivatePromptsVersionsVersionIdRouteHandler,
+  )
+  .openapi(
+    getV1PrivatePromptsPromptIdVersionsByNumberVersionNumberRoute,
+    getV1PrivatePromptsPromptIdVersionsByNumberVersionNumberRouteHandler,
+  )
+  .openapi(getV1PrivatePromptsIdVersionsRoute, getV1PrivatePromptsIdVersionsRouteHandler)
+  .openapi(
+    postV1PrivatePromptsRetrieveByCommitsRoute,
+    postV1PrivatePromptsRetrieveByCommitsRouteHandler,
+  )
+  .openapi(
+    postV1PrivatePromptsPromptIdVersionsVersionIdRestoreRoute,
+    postV1PrivatePromptsPromptIdVersionsVersionIdRestoreRouteHandler,
+  )
+  .openapi(
+    postV1PrivatePromptsVersionsRetrieveRoute,
+    postV1PrivatePromptsVersionsRetrieveRouteHandler,
+  )
+  .openapi(
+    postV1PrivatePromptsVersionsRetrieveByIdsRoute,
+    postV1PrivatePromptsVersionsRetrieveByIdsRouteHandler,
+  )
+  .openapi(
+    patchV1PrivatePromptsVersionsVersionIdEnvironmentsRoute,
+    patchV1PrivatePromptsVersionsVersionIdEnvironmentsRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdActivitiesRoute,
+    getV1PrivateProjectsProjectIdActivitiesRouteHandler,
+  )
+  .openapi(getV1PrivateReportFailuresRoute, getV1PrivateReportFailuresRouteHandler)
+  .openapi(postV1PrivateReportFailuresRoute, postV1PrivateReportFailuresRouteHandler)
+  .openapi(
+    postV1PrivateProjectsProjectIdReportsReportIdCompleteRoute,
+    postV1PrivateProjectsProjectIdReportsReportIdCompleteRouteHandler,
+  )
+  .openapi(
+    postV1PrivateProjectsProjectIdReportsGenerateRoute,
+    postV1PrivateProjectsProjectIdReportsGenerateRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdReportsPreferencesRoute,
+    getV1PrivateProjectsProjectIdReportsPreferencesRouteHandler,
+  )
+  .openapi(
+    putV1PrivateProjectsProjectIdReportsPreferencesRoute,
+    putV1PrivateProjectsProjectIdReportsPreferencesRouteHandler,
+  )
+  .openapi(
+    getV1PrivateProjectsProjectIdReportsRoute,
+    getV1PrivateProjectsProjectIdReportsRouteHandler,
+  )
+  .openapi(getV1PrivateRetentionRulesRoute, getV1PrivateRetentionRulesRouteHandler)
+  .openapi(postV1PrivateRetentionRulesRoute, postV1PrivateRetentionRulesRouteHandler)
+  .openapi(getV1PrivateRetentionRulesRuleIdRoute, getV1PrivateRetentionRulesRuleIdRouteHandler)
+  .openapi(
+    deleteV1PrivateRetentionRulesRuleIdRoute,
+    deleteV1PrivateRetentionRulesRuleIdRouteHandler,
+  )
+  .openapi(getV1PrivateTogglesRoute, getV1PrivateTogglesRouteHandler)
+  .openapi(postV1PrivateSpansIdCommentsRoute, postV1PrivateSpansIdCommentsRouteHandler)
+  .openapi(putV1PrivateSpansIdFeedbackScoresRoute, putV1PrivateSpansIdFeedbackScoresRouteHandler)
+  .openapi(postV1PrivateSpansBatchRoute, postV1PrivateSpansBatchRouteHandler)
+  .openapi(patchV1PrivateSpansBatchRoute, patchV1PrivateSpansBatchRouteHandler)
+  .openapi(getV1PrivateSpansRoute, getV1PrivateSpansRouteHandler)
+  .openapi(postV1PrivateSpansRoute, postV1PrivateSpansRouteHandler)
+  .openapi(getV1PrivateSpansIdRoute, getV1PrivateSpansIdRouteHandler)
+  .openapi(deleteV1PrivateSpansIdRoute, deleteV1PrivateSpansIdRouteHandler)
+  .openapi(patchV1PrivateSpansIdRoute, patchV1PrivateSpansIdRouteHandler)
+  .openapi(postV1PrivateSpansCommentsDeleteRoute, postV1PrivateSpansCommentsDeleteRouteHandler)
+  .openapi(
+    postV1PrivateSpansIdFeedbackScoresDeleteRoute,
+    postV1PrivateSpansIdFeedbackScoresDeleteRouteHandler,
+  )
+  .openapi(
+    getV1PrivateSpansFeedbackScoresNamesRoute,
+    getV1PrivateSpansFeedbackScoresNamesRouteHandler,
+  )
+  .openapi(
+    getV1PrivateSpansSpanIdCommentsCommentIdRoute,
+    getV1PrivateSpansSpanIdCommentsCommentIdRouteHandler,
+  )
+  .openapi(getV1PrivateSpansStatsRoute, getV1PrivateSpansStatsRouteHandler)
+  .openapi(putV1PrivateSpansFeedbackScoresRoute, putV1PrivateSpansFeedbackScoresRouteHandler)
+  .openapi(postV1PrivateSpansSearchRoute, postV1PrivateSpansSearchRouteHandler)
+  .openapi(getV1PrivateSpansExistsRoute, getV1PrivateSpansExistsRouteHandler)
+  .openapi(
+    patchV1PrivateSpansCommentsCommentIdRoute,
+    patchV1PrivateSpansCommentsCommentIdRouteHandler,
+  )
+  .openapi(
+    postV1PrivateTracesThreadsIdCommentsRoute,
+    postV1PrivateTracesThreadsIdCommentsRouteHandler,
+  )
+  .openapi(postV1PrivateTracesIdCommentsRoute, postV1PrivateTracesIdCommentsRouteHandler)
+  .openapi(putV1PrivateTracesIdFeedbackScoresRoute, putV1PrivateTracesIdFeedbackScoresRouteHandler)
+  .openapi(postV1PrivateTracesBatchRoute, postV1PrivateTracesBatchRouteHandler)
+  .openapi(patchV1PrivateTracesBatchRoute, patchV1PrivateTracesBatchRouteHandler)
+  .openapi(patchV1PrivateTracesThreadsBatchRoute, patchV1PrivateTracesThreadsBatchRouteHandler)
+  .openapi(putV1PrivateTracesThreadsCloseRoute, putV1PrivateTracesThreadsCloseRouteHandler)
+  .openapi(getV1PrivateTracesRoute, getV1PrivateTracesRouteHandler)
+  .openapi(postV1PrivateTracesRoute, postV1PrivateTracesRouteHandler)
+  .openapi(getV1PrivateTracesIdRoute, getV1PrivateTracesIdRouteHandler)
+  .openapi(deleteV1PrivateTracesIdRoute, deleteV1PrivateTracesIdRouteHandler)
+  .openapi(patchV1PrivateTracesIdRoute, patchV1PrivateTracesIdRouteHandler)
+  .openapi(
+    postV1PrivateTracesThreadsCommentsDeleteRoute,
+    postV1PrivateTracesThreadsCommentsDeleteRouteHandler,
+  )
+  .openapi(
+    postV1PrivateTracesThreadsFeedbackScoresDeleteRoute,
+    postV1PrivateTracesThreadsFeedbackScoresDeleteRouteHandler,
+  )
+  .openapi(postV1PrivateTracesCommentsDeleteRoute, postV1PrivateTracesCommentsDeleteRouteHandler)
+  .openapi(
+    postV1PrivateTracesIdFeedbackScoresDeleteRoute,
+    postV1PrivateTracesIdFeedbackScoresDeleteRouteHandler,
+  )
+  .openapi(postV1PrivateTracesThreadsDeleteRoute, postV1PrivateTracesThreadsDeleteRouteHandler)
+  .openapi(postV1PrivateTracesDeleteRoute, postV1PrivateTracesDeleteRouteHandler)
+  .openapi(
+    getV1PrivateTracesFeedbackScoresNamesRoute,
+    getV1PrivateTracesFeedbackScoresNamesRouteHandler,
+  )
+  .openapi(
+    getV1PrivateTracesThreadsFeedbackScoresNamesRoute,
+    getV1PrivateTracesThreadsFeedbackScoresNamesRouteHandler,
+  )
+  .openapi(getV1PrivateTracesStatsRoute, getV1PrivateTracesStatsRouteHandler)
+  .openapi(
+    getV1PrivateTracesThreadsThreadIdCommentsCommentIdRoute,
+    getV1PrivateTracesThreadsThreadIdCommentsCommentIdRouteHandler,
+  )
+  .openapi(getV1PrivateTracesThreadsStatsRoute, getV1PrivateTracesThreadsStatsRouteHandler)
+  .openapi(
+    getV1PrivateTracesTraceIdCommentsCommentIdRoute,
+    getV1PrivateTracesTraceIdCommentsCommentIdRouteHandler,
+  )
+  .openapi(postV1PrivateTracesThreadsRetrieveRoute, postV1PrivateTracesThreadsRetrieveRouteHandler)
+  .openapi(getV1PrivateTracesThreadsRoute, getV1PrivateTracesThreadsRouteHandler)
+  .openapi(putV1PrivateTracesThreadsOpenRoute, putV1PrivateTracesThreadsOpenRouteHandler)
+  .openapi(
+    putV1PrivateTracesThreadsFeedbackScoresRoute,
+    putV1PrivateTracesThreadsFeedbackScoresRouteHandler,
+  )
+  .openapi(putV1PrivateTracesFeedbackScoresRoute, putV1PrivateTracesFeedbackScoresRouteHandler)
+  .openapi(postV1PrivateTracesThreadsSearchRoute, postV1PrivateTracesThreadsSearchRouteHandler)
+  .openapi(postV1PrivateTracesSearchRoute, postV1PrivateTracesSearchRouteHandler)
+  .openapi(getV1PrivateTracesExistsRoute, getV1PrivateTracesExistsRouteHandler)
+  .openapi(
+    patchV1PrivateTracesThreadsThreadModelIdRoute,
+    patchV1PrivateTracesThreadsThreadModelIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateTracesThreadsCommentsCommentIdRoute,
+    patchV1PrivateTracesThreadsCommentsCommentIdRouteHandler,
+  )
+  .openapi(
+    patchV1PrivateTracesCommentsCommentIdRoute,
+    patchV1PrivateTracesCommentsCommentIdRouteHandler,
+  )
+  .openapi(getV1PrivateWelcomeWizardRoute, getV1PrivateWelcomeWizardRouteHandler)
+  .openapi(postV1PrivateWelcomeWizardRoute, postV1PrivateWelcomeWizardRouteHandler)
+  .openapi(getV1PrivateWorkspacePermissionsRoute, getV1PrivateWorkspacePermissionsRouteHandler)
+  .openapi(
+    postV1PrivateWorkspacesCostsSummariesRoute,
+    postV1PrivateWorkspacesCostsSummariesRouteHandler,
+  )
+  .openapi(
+    getV1PrivateWorkspacesConfigurationsRoute,
+    getV1PrivateWorkspacesConfigurationsRouteHandler,
+  )
+  .openapi(
+    putV1PrivateWorkspacesConfigurationsRoute,
+    putV1PrivateWorkspacesConfigurationsRouteHandler,
+  )
+  .openapi(
+    deleteV1PrivateWorkspacesConfigurationsRoute,
+    deleteV1PrivateWorkspacesConfigurationsRouteHandler,
+  )
+  .openapi(postV1PrivateWorkspacesCostsRoute, postV1PrivateWorkspacesCostsRouteHandler)
+  .openapi(postV1PrivateWorkspacesMetricsRoute, postV1PrivateWorkspacesMetricsRouteHandler)
+  .openapi(
+    postV1PrivateWorkspacesMetricsSpansRoute,
+    postV1PrivateWorkspacesMetricsSpansRouteHandler,
+  )
+  .openapi(
+    postV1PrivateWorkspacesTokenUsageNamesRoute,
+    postV1PrivateWorkspacesTokenUsageNamesRouteHandler,
+  )
+  .openapi(
+    postV1PrivateWorkspacesMetricsSummariesRoute,
+    postV1PrivateWorkspacesMetricsSummariesRouteHandler,
+  )
+  .openapi(getV1SessionRedirectDatasetsRoute, getV1SessionRedirectDatasetsRouteHandler)
+  .openapi(getV1SessionRedirectExperimentsRoute, getV1SessionRedirectExperimentsRouteHandler)
+  .openapi(getV1SessionRedirectOptimizationsRoute, getV1SessionRedirectOptimizationsRouteHandler)
+  .openapi(getV1SessionRedirectProjectsRoute, getV1SessionRedirectProjectsRouteHandler)
+  .openapi(getIsAlivePingRoute, getIsAlivePingRouteHandler)
+  .openapi(getIsAliveVerRoute, getIsAliveVerRouteHandler)
 
 export default app

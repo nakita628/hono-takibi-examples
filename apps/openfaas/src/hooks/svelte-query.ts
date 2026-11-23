@@ -1006,7 +1006,7 @@ export function createPostAsyncFunctionFunctionName<
 }
 
 export function getPostAsyncFunctionFunctionNameNamespaceMutationKey() {
-  return ['async-function', '/async-function/:functionName.:namespace', 'POST'] as const
+  return ['async-function', '/async-function/:functionName.{namespace}', 'POST'] as const
 }
 
 export function getPostAsyncFunctionFunctionNameNamespaceMutationOptions<
@@ -1018,23 +1018,23 @@ export function getPostAsyncFunctionFunctionNameNamespaceMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client)['async-function'][':functionName.:namespace']['$post']>
+            ReturnType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client)['async-function'][':functionName.:namespace']['$post']>,
+    InferRequestType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostAsyncFunctionFunctionNameNamespaceMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client)['async-function'][':functionName.:namespace']['$post']
+        (typeof client)['async-function'][':functionName.{namespace}']['$post']
       >,
     ) {
       return parseResponse(
-        client['async-function'][':functionName.:namespace'].$post(args, options),
+        client['async-function'][':functionName.{namespace}'].$post(args, options),
       )
     },
   })
@@ -1051,13 +1051,13 @@ export function createPostAsyncFunctionFunctionNameNamespace<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client)['async-function'][':functionName.:namespace']['$post']>
+                ReturnType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>
               >
             >
           >
         >,
         TError,
-        InferRequestType<(typeof client)['async-function'][':functionName.:namespace']['$post']>,
+        InferRequestType<(typeof client)['async-function'][':functionName.{namespace}']['$post']>,
         TOnMutateResult
       >,
       'mutationFn'
@@ -1142,7 +1142,7 @@ export function createPostFunctionFunctionName<TError = DefaultError, TOnMutateR
 }
 
 export function getPostFunctionFunctionNameNamespaceMutationKey() {
-  return ['function', '/function/:functionName.:namespace', 'POST'] as const
+  return ['function', '/function/:functionName.{namespace}', 'POST'] as const
 }
 
 export function getPostFunctionFunctionNameNamespaceMutationOptions<
@@ -1153,19 +1153,19 @@ export function getPostFunctionFunctionNameNamespaceMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.function)[':functionName.:namespace']['$post']>>
+          Awaited<ReturnType<(typeof client.function)[':functionName.{namespace}']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']>,
+    InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostFunctionFunctionNameNamespaceMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']>,
+      args: InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>,
     ) {
-      return parseResponse(client.function[':functionName.:namespace'].$post(args, options))
+      return parseResponse(client.function[':functionName.{namespace}'].$post(args, options))
     },
   })
 }
@@ -1180,12 +1180,12 @@ export function createPostFunctionFunctionNameNamespace<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.function)[':functionName.:namespace']['$post']>>
+              Awaited<ReturnType<(typeof client.function)[':functionName.{namespace}']['$post']>>
             >
           >
         >,
         TError,
-        InferRequestType<(typeof client.function)[':functionName.:namespace']['$post']>,
+        InferRequestType<(typeof client.function)[':functionName.{namespace}']['$post']>,
         TOnMutateResult
       >,
       'mutationFn'

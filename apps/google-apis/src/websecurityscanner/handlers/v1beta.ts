@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1betaNameRoute,
   getV1betaNameRoute,
   getV1betaParentCrawledUrlsRoute,
@@ -13,39 +13,64 @@ import {
   postV1betaParentScanConfigsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1betaNameRouteHandler: RouteHandler<typeof deleteV1betaNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1betaHandler = app
-  .openapi(deleteV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1betaNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNameStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaNameStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentCrawledUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentFindingTypeStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentFindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentScanConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1betaParentScanConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1betaParentScanRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1betaNameRouteHandler: RouteHandler<typeof getV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1betaNameRouteHandler: RouteHandler<typeof patchV1betaNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaNameStartRouteHandler: RouteHandler<
+  typeof postV1betaNameStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaNameStopRouteHandler: RouteHandler<typeof postV1betaNameStopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentCrawledUrlsRouteHandler: RouteHandler<
+  typeof getV1betaParentCrawledUrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentFindingTypeStatsRouteHandler: RouteHandler<
+  typeof getV1betaParentFindingTypeStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentFindingsRouteHandler: RouteHandler<
+  typeof getV1betaParentFindingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentScanConfigsRouteHandler: RouteHandler<
+  typeof getV1betaParentScanConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1betaParentScanConfigsRouteHandler: RouteHandler<
+  typeof postV1betaParentScanConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1betaParentScanRunsRouteHandler: RouteHandler<
+  typeof getV1betaParentScanRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

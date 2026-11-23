@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOgcApiRoute,
   getOgcCollectionsCollectionIdMapRoute,
   getOgcCollectionsCollectionIdRoute,
@@ -23,69 +23,118 @@ import {
   getOgcTileMatrixSetsTileMatrixSetIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOgcRouteHandler: RouteHandler<typeof getOgcRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ogcHandler = app
-  .openapi(getOgcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsCollectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsCollectionIdMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsCollectionIdTilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsCollectionIdTilesTileMatrixSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcCollectionsCollectionIdTilesTileMatrixSetIdTileMatrixTileRowTileColRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcConformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcMapTilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcMapTilesTileMatrixSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcMapTilesTileMatrixSetIdTileMatrixTileRowTileColRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesStyleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesStyleIdMapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesStyleIdMapTilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesStyleIdMapTilesTileMatrixSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcStylesStyleIdMapTilesTileMatrixSetIdTileMatrixTileRowTileColRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcTileMatrixSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOgcTileMatrixSetsTileMatrixSetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOgcApiRouteHandler: RouteHandler<typeof getOgcApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsRouteHandler: RouteHandler<typeof getOgcCollectionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsCollectionIdRouteHandler: RouteHandler<
+  typeof getOgcCollectionsCollectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsCollectionIdMapRouteHandler: RouteHandler<
+  typeof getOgcCollectionsCollectionIdMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsCollectionIdTilesRouteHandler: RouteHandler<
+  typeof getOgcCollectionsCollectionIdTilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsCollectionIdTilesTileMatrixSetIdRouteHandler: RouteHandler<
+  typeof getOgcCollectionsCollectionIdTilesTileMatrixSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcCollectionsCollectionIdTilesTileMatrixSetIdTileMatrixTileRowTileColRouteHandler: RouteHandler<
+  typeof getOgcCollectionsCollectionIdTilesTileMatrixSetIdTileMatrixTileRowTileColRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcConformanceRouteHandler: RouteHandler<typeof getOgcConformanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcMapRouteHandler: RouteHandler<typeof getOgcMapRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcMapTilesRouteHandler: RouteHandler<typeof getOgcMapTilesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcMapTilesTileMatrixSetIdRouteHandler: RouteHandler<
+  typeof getOgcMapTilesTileMatrixSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcMapTilesTileMatrixSetIdTileMatrixTileRowTileColRouteHandler: RouteHandler<
+  typeof getOgcMapTilesTileMatrixSetIdTileMatrixTileRowTileColRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesRouteHandler: RouteHandler<typeof getOgcStylesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesStyleIdRouteHandler: RouteHandler<
+  typeof getOgcStylesStyleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesStyleIdMapRouteHandler: RouteHandler<
+  typeof getOgcStylesStyleIdMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesStyleIdMapTilesRouteHandler: RouteHandler<
+  typeof getOgcStylesStyleIdMapTilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesStyleIdMapTilesTileMatrixSetIdRouteHandler: RouteHandler<
+  typeof getOgcStylesStyleIdMapTilesTileMatrixSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcStylesStyleIdMapTilesTileMatrixSetIdTileMatrixTileRowTileColRouteHandler: RouteHandler<
+  typeof getOgcStylesStyleIdMapTilesTileMatrixSetIdTileMatrixTileRowTileColRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcTileMatrixSetsRouteHandler: RouteHandler<
+  typeof getOgcTileMatrixSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOgcTileMatrixSetsTileMatrixSetIdRouteHandler: RouteHandler<
+  typeof getOgcTileMatrixSetsTileMatrixSetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

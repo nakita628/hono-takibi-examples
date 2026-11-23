@@ -8,7 +8,7 @@ export const getQuestionsRoute = createRoute({
   tags: [],
   summary: 'List All Questions',
   operationId: 'List All Questions',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postQuestionsRoute = createRoute({
@@ -42,7 +42,6 @@ export const postQuestionsRoute = createRoute({
   responses: {
     201: {
       description: 'Created',
-      content: {},
       headers: z.object({
         Location: z
           .string()

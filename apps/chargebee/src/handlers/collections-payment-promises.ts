@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute,
   getCollectionsPaymentPromisesRoute,
   postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRoute,
@@ -7,21 +7,32 @@ import {
   postCollectionsPaymentPromisesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCollectionsPaymentPromisesRouteHandler: RouteHandler<
+  typeof getCollectionsPaymentPromisesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const collectionsPaymentPromisesHandler = app
-  .openapi(getCollectionsPaymentPromisesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsPaymentPromisesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCollectionsPaymentPromisesRouteHandler: RouteHandler<
+  typeof postCollectionsPaymentPromisesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRouteHandler: RouteHandler<
+  typeof postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler: RouteHandler<
+  typeof getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler: RouteHandler<
+  typeof postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRecordActionTrailsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRecordActionTrailsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const recordActionTrailsHandler = app.openapi(postRecordActionTrailsRoute, (c) => {
+export const postRecordActionTrailsRouteHandler: RouteHandler<
+  typeof postRecordActionTrailsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

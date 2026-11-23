@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsKendraFrontendServiceDeleteExperienceHandler = app.openapi(
-  postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSKendraFrontendServiceDeleteExperienceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

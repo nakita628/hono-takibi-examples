@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSharedColorTransformationAttributesIdRoute,
   getSharedColorTransformationsIdRoute,
   getSharedColorTypesIdRoute,
@@ -33,99 +33,186 @@ import {
   getSharedTextIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSharedColorTransformationAttributesIdRouteHandler: RouteHandler<
+  typeof getSharedColorTransformationAttributesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sharedHandler = app
-  .openapi(getSharedColorTransformationAttributesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedColorTransformationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedColorTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedColorTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedColorTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedDashTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedDashTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedDashTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedEffectAttributesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedEffectTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedEffectTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedEffectTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedEffectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedFillMapIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedFillTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedFillTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedFillTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedGradientFillsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedGradientStopsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedImageFillsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndSizesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndSizesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndSizesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLineEndTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedLinesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedParagraphIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedSolidFillsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedTextIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharedTextContainerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSharedColorTransformationsIdRouteHandler: RouteHandler<
+  typeof getSharedColorTransformationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedColorTypesRouteHandler: RouteHandler<
+  typeof getSharedColorTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedColorTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedColorTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedColorTypesIdRouteHandler: RouteHandler<
+  typeof getSharedColorTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedDashTypesRouteHandler: RouteHandler<typeof getSharedDashTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedDashTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedDashTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedDashTypesIdRouteHandler: RouteHandler<
+  typeof getSharedDashTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedEffectAttributesIdRouteHandler: RouteHandler<
+  typeof getSharedEffectAttributesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedEffectTypesRouteHandler: RouteHandler<
+  typeof getSharedEffectTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedEffectTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedEffectTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedEffectTypesIdRouteHandler: RouteHandler<
+  typeof getSharedEffectTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedEffectsIdRouteHandler: RouteHandler<typeof getSharedEffectsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedFillMapIdRouteHandler: RouteHandler<typeof getSharedFillMapIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedFillTypesRouteHandler: RouteHandler<typeof getSharedFillTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedFillTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedFillTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedFillTypesIdRouteHandler: RouteHandler<
+  typeof getSharedFillTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedGradientFillsIdRouteHandler: RouteHandler<
+  typeof getSharedGradientFillsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedGradientStopsIdRouteHandler: RouteHandler<
+  typeof getSharedGradientStopsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedImageFillsIdRouteHandler: RouteHandler<
+  typeof getSharedImageFillsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndSizesRouteHandler: RouteHandler<
+  typeof getSharedLineEndSizesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndSizesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedLineEndSizesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndSizesIdRouteHandler: RouteHandler<
+  typeof getSharedLineEndSizesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndTypesRouteHandler: RouteHandler<
+  typeof getSharedLineEndTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSharedLineEndTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLineEndTypesIdRouteHandler: RouteHandler<
+  typeof getSharedLineEndTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedLinesIdRouteHandler: RouteHandler<typeof getSharedLinesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedParagraphIdRouteHandler: RouteHandler<
+  typeof getSharedParagraphIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedSolidFillsIdRouteHandler: RouteHandler<
+  typeof getSharedSolidFillsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedTextIdRouteHandler: RouteHandler<typeof getSharedTextIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharedTextContainerIdRouteHandler: RouteHandler<
+  typeof getSharedTextContainerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

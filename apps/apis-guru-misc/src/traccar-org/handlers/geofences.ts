@@ -1,23 +1,25 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGeofencesIdRoute,
   getGeofencesRoute,
   postGeofencesRoute,
   putGeofencesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGeofencesRouteHandler: RouteHandler<typeof getGeofencesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const geofencesHandler = app
-  .openapi(getGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGeofencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGeofencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGeofencesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGeofencesRouteHandler: RouteHandler<typeof postGeofencesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGeofencesIdRouteHandler: RouteHandler<typeof deleteGeofencesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putGeofencesIdRouteHandler: RouteHandler<typeof putGeofencesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

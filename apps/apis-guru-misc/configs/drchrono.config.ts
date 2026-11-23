@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/drchrono.com/v4 (Hunt Valley)/openapi.yaml',
   output: './src/drchrono/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/drchrono/types.ts' },
   client: { output: './src/drchrono/client.ts', baseUrl: '/' },
   rpc: { output: './src/drchrono/rpc.ts', parseResponse: true },

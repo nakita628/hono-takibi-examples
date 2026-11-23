@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsIdentityStoreIsMemberInGroupsHandler = app.openapi(
-  postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSIdentityStoreIsMemberInGroupsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSPriceListServiceListPriceListsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSPriceListServiceListPriceListsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsPriceListServiceListPriceListsHandler = app.openapi(
-  postXAmzTargetAWSPriceListServiceListPriceListsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSPriceListServiceListPriceListsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSPriceListServiceListPriceListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

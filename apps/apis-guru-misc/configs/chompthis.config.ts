@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/chompthis.com/1.0.0-oas3/openapi.yaml',
   output: './src/chompthis/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chompthis/types.ts' },
   client: { output: './src/chompthis/client.ts', baseUrl: '/' },
   rpc: { output: './src/chompthis/rpc.ts', parseResponse: true },

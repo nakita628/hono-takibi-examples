@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWageprojectionCladataCollectiveLaborAgreementIdRoute,
   getWageprojectionCollectivelaboragreementsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWageprojectionCladataCollectiveLaborAgreementIdRouteHandler: RouteHandler<
+  typeof getWageprojectionCladataCollectiveLaborAgreementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wageprojectionHandler = app
-  .openapi(getWageprojectionCladataCollectiveLaborAgreementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWageprojectionCollectivelaboragreementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWageprojectionCollectivelaboragreementsRouteHandler: RouteHandler<
+  typeof getWageprojectionCollectivelaboragreementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

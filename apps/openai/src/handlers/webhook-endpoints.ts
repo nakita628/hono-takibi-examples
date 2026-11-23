@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWebhookEndpointsWebhookEndpointIdRoute,
   getWebhookEndpointsRoute,
   getWebhookEndpointsWebhookEndpointIdRoute,
@@ -9,27 +9,44 @@ import {
   postWebhookEndpointsWebhookEndpointIdTestRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebhookEndpointsRouteHandler: RouteHandler<
+  typeof getWebhookEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhookEndpointsHandler = app
-  .openapi(getWebhookEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookEndpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebhookEndpointsWebhookEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookEndpointsWebhookEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWebhookEndpointsWebhookEndpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookEndpointsWebhookEndpointIdRotateSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhookEndpointsWebhookEndpointIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWebhookEndpointsRouteHandler: RouteHandler<
+  typeof postWebhookEndpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWebhookEndpointsWebhookEndpointIdRouteHandler: RouteHandler<
+  typeof getWebhookEndpointsWebhookEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookEndpointsWebhookEndpointIdRouteHandler: RouteHandler<
+  typeof postWebhookEndpointsWebhookEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWebhookEndpointsWebhookEndpointIdRouteHandler: RouteHandler<
+  typeof deleteWebhookEndpointsWebhookEndpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookEndpointsWebhookEndpointIdRotateSecretRouteHandler: RouteHandler<
+  typeof postWebhookEndpointsWebhookEndpointIdRotateSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWebhookEndpointsWebhookEndpointIdTestRouteHandler: RouteHandler<
+  typeof postWebhookEndpointsWebhookEndpointIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

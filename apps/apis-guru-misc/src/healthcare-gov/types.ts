@@ -204,7 +204,7 @@ type StatePage = {
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/api/articles:mediaTypeExtension': {
+    '/api/articles{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -220,7 +220,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/blog:mediaTypeExtension': {
+    '/api/blog{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -236,7 +236,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/glossary:mediaTypeExtension': {
+    '/api/glossary{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -252,7 +252,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/questions:mediaTypeExtension': {
+    '/api/questions{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -268,7 +268,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/states:mediaTypeExtension': {
+    '/api/states{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -284,7 +284,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/topics:mediaTypeExtension': {
+    '/api/topics{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json' } }
@@ -300,7 +300,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/blog/:pageName:mediaTypeExtension': {
+    '/blog/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -316,7 +316,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/es/blog/:pageName:mediaTypeExtension': {
+    '/es/blog/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -332,7 +332,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/es/glossary/:pageName:mediaTypeExtension': {
+    '/es/glossary/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -348,7 +348,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/es/question/:pageName:mediaTypeExtension': {
+    '/es/question/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -364,7 +364,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/es/:pageName:mediaTypeExtension': {
+    '/es/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -380,7 +380,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/es/:stateName:mediaTypeExtension': {
+    '/es/:stateName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; stateName: string } }
@@ -396,7 +396,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/glossary/:pageName:mediaTypeExtension': {
+    '/glossary/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -412,7 +412,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/question/:pageName:mediaTypeExtension': {
+    '/question/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -428,7 +428,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/:pageName:mediaTypeExtension': {
+    '/:pageName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; pageName: string } }
@@ -444,7 +444,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/:stateName:mediaTypeExtension': {
+    '/:stateName{mediaTypeExtension}': {
       $get:
         | {
             input: { param: { mediaTypeExtension: '.json'; stateName: string } }

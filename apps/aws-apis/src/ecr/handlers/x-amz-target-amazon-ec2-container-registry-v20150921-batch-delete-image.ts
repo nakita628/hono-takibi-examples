@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerRegistryV20150921BatchDeleteImageHandler = app.openapi(
-  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

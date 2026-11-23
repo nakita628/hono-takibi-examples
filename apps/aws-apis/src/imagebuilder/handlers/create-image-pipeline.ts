@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putCreateImagePipelineRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putCreateImagePipelineRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createImagePipelineHandler = app.openapi(putCreateImagePipelineRoute, (c) => {
+export const putCreateImagePipelineRouteHandler: RouteHandler<
+  typeof putCreateImagePipelineRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

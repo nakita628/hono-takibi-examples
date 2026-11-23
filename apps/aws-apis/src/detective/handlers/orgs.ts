@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postOrgsAdminAccountslistRoute,
   postOrgsDescribeOrganizationConfigurationRoute,
   postOrgsDisableAdminAccountRoute,
@@ -7,21 +7,32 @@ import {
   postOrgsUpdateOrganizationConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOrgsDescribeOrganizationConfigurationRouteHandler: RouteHandler<
+  typeof postOrgsDescribeOrganizationConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const orgsHandler = app
-  .openapi(postOrgsDescribeOrganizationConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrgsDisableAdminAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrgsEnableAdminAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrgsAdminAccountslistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrgsUpdateOrganizationConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrgsDisableAdminAccountRouteHandler: RouteHandler<
+  typeof postOrgsDisableAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrgsEnableAdminAccountRouteHandler: RouteHandler<
+  typeof postOrgsEnableAdminAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrgsAdminAccountslistRouteHandler: RouteHandler<
+  typeof postOrgsAdminAccountslistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrgsUpdateOrganizationConfigurationRouteHandler: RouteHandler<
+  typeof postOrgsUpdateOrganizationConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

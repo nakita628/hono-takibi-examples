@@ -4,12 +4,12 @@ import { client } from './client'
 
 export async function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFrames(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+    client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
       'time-frames'
     ].$get(args, options),
   )
@@ -17,14 +17,14 @@ export async function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippin
 
 export async function getApiLogisticsCapacityResourcesCarrierCapacityTypeShippingPolicyIdTimeFramesWindowDayFWindowStartTimeTWindowEndTime(
   args: InferRequestType<
-    (typeof client.api)['logistics-capacity']['resources']['carrier@:capacityType@:shippingPolicyId']['time-frames'][':windowDayF:windowStartTimeT:windowEndTime']['$get']
+    (typeof client.api)['logistics-capacity']['resources']['carrier@{capacityType}@{shippingPolicyId}']['time-frames'][':windowDayF{windowStartTime}T{windowEndTime}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.api['logistics-capacity'].resources['carrier@:capacityType@:shippingPolicyId'][
+    client.api['logistics-capacity'].resources['carrier@{capacityType}@{shippingPolicyId}'][
       'time-frames'
-    ][':windowDayF:windowStartTimeT:windowEndTime'].$get(args, options),
+    ][':windowDayF{windowStartTime}T{windowEndTime}'].$get(args, options),
   )
 }
 

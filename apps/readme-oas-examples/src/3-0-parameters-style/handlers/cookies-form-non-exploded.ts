@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCookiesFormNonExplodedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCookiesFormNonExplodedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cookiesFormNonExplodedHandler = app.openapi(getCookiesFormNonExplodedRoute, (c) => {
+export const getCookiesFormNonExplodedRouteHandler: RouteHandler<
+  typeof getCookiesFormNonExplodedRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

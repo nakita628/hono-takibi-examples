@@ -1,23 +1,32 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  airQualityHandler,
-  findPlacesHandler,
-  findPlacesPrefixHandler,
-  mapHandler,
-  nearestPlaceHandler,
-  pointHandler,
-  timeMachineHandler,
+  getAirQualityRoute,
+  getFindPlacesPrefixRoute,
+  getFindPlacesRoute,
+  getMapRoute,
+  getNearestPlaceRoute,
+  getPointRoute,
+  getTimeMachineRoute,
+} from './routes'
+import {
+  getAirQualityRouteHandler,
+  getFindPlacesPrefixRouteHandler,
+  getFindPlacesRouteHandler,
+  getMapRouteHandler,
+  getNearestPlaceRouteHandler,
+  getPointRouteHandler,
+  getTimeMachineRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', airQualityHandler)
-  .route('/', findPlacesHandler)
-  .route('/', findPlacesPrefixHandler)
-  .route('/', mapHandler)
-  .route('/', nearestPlaceHandler)
-  .route('/', pointHandler)
-  .route('/', timeMachineHandler)
+  .openapi(getAirQualityRoute, getAirQualityRouteHandler)
+  .openapi(getFindPlacesRoute, getFindPlacesRouteHandler)
+  .openapi(getFindPlacesPrefixRoute, getFindPlacesPrefixRouteHandler)
+  .openapi(getMapRoute, getMapRouteHandler)
+  .openapi(getNearestPlaceRoute, getNearestPlaceRouteHandler)
+  .openapi(getPointRoute, getPointRouteHandler)
+  .openapi(getTimeMachineRoute, getTimeMachineRouteHandler)
 
 export default app

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOrgOrgIDOidcCustomClaimsRoute,
   deleteOrgOrgIDProjectProjectIDOidcCustomClaimsRoute,
   getOrgOrgIDOidcCustomClaimsRoute,
@@ -8,24 +8,38 @@ import {
   patchOrgOrgIDProjectProjectIDOidcCustomClaimsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrgOrgIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof getOrgOrgIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const orgHandler = app
-  .openapi(getOrgOrgIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrgOrgIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrgOrgIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrgOrgIDProjectProjectIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrgOrgIDProjectProjectIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOrgOrgIDProjectProjectIDOidcCustomClaimsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteOrgOrgIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof deleteOrgOrgIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrgOrgIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof patchOrgOrgIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrgOrgIDProjectProjectIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof getOrgOrgIDProjectProjectIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrgOrgIDProjectProjectIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof deleteOrgOrgIDProjectProjectIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOrgOrgIDProjectProjectIDOidcCustomClaimsRouteHandler: RouteHandler<
+  typeof patchOrgOrgIDProjectProjectIDOidcCustomClaimsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/MasterData-API-/1.0/openapi.yaml',
   output: './src/masterdata-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/masterdata-api/types.ts' },
   client: { output: './src/masterdata-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/masterdata-api/rpc.ts', parseResponse: true },

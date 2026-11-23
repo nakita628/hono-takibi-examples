@@ -213,11 +213,10 @@ const RoleArnSchema = z
   .openapi('RoleArn')
 
 type LakeFormationDataPermissionAssetType = {
-  LakeFormationDataPermissionDetails: z.infer<typeof LakeFormationDataPermissionDetailsSchema> &
-    unknown
-  LakeFormationDataPermissionType: z.infer<typeof LakeFormationDataPermissionTypeSchema> & unknown
-  Permissions: z.infer<typeof ListOfLFPermissionsSchema> & unknown
-  RoleArn?: z.infer<typeof RoleArnSchema> & unknown
+  LakeFormationDataPermissionDetails: z.infer<typeof LakeFormationDataPermissionDetailsSchema>
+  LakeFormationDataPermissionType: z.infer<typeof LakeFormationDataPermissionTypeSchema>
+  Permissions: z.infer<typeof ListOfLFPermissionsSchema>
+  RoleArn?: z.infer<typeof RoleArnSchema>
 }
 
 const LakeFormationDataPermissionAssetSchema: z.ZodType<LakeFormationDataPermissionAssetType> = z
@@ -247,12 +246,11 @@ const LakeFormationDataPermissionAssetSchema: z.ZodType<LakeFormationDataPermiss
   .openapi('LakeFormationDataPermissionAsset')
 
 type AssetDetailsType = {
-  S3SnapshotAsset?: z.infer<typeof S3SnapshotAssetSchema> & unknown
-  RedshiftDataShareAsset?: z.infer<typeof RedshiftDataShareAssetSchema> & unknown
-  ApiGatewayApiAsset?: z.infer<typeof ApiGatewayApiAssetSchema> & unknown
-  S3DataAccessAsset?: z.infer<typeof S3DataAccessAssetSchema> & unknown
-  LakeFormationDataPermissionAsset?: z.infer<typeof LakeFormationDataPermissionAssetSchema> &
-    unknown
+  S3SnapshotAsset?: z.infer<typeof S3SnapshotAssetSchema>
+  RedshiftDataShareAsset?: z.infer<typeof RedshiftDataShareAssetSchema>
+  ApiGatewayApiAsset?: z.infer<typeof ApiGatewayApiAssetSchema>
+  S3DataAccessAsset?: z.infer<typeof S3DataAccessAssetSchema>
+  LakeFormationDataPermissionAsset?: z.infer<typeof LakeFormationDataPermissionAssetSchema>
 }
 
 const AssetDetailsSchema: z.ZodType<AssetDetailsType> = z
@@ -292,16 +290,16 @@ const IdSchema = z.string().openapi('Id')
 const AssetNameSchema = z.string().openapi('AssetName')
 
 type GetAssetResponseType = {
-  Arn?: z.infer<typeof ArnSchema> & unknown
-  AssetDetails?: z.infer<typeof AssetDetailsSchema> & unknown
-  AssetType?: z.infer<typeof AssetTypeSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampSchema> & unknown
-  DataSetId?: z.infer<typeof IdSchema> & unknown
-  Id?: z.infer<typeof IdSchema> & unknown
-  Name?: z.infer<typeof AssetNameSchema> & unknown
-  RevisionId?: z.infer<typeof IdSchema> & unknown
-  SourceId?: z.infer<typeof IdSchema> & unknown
-  UpdatedAt?: z.infer<typeof TimestampSchema> & unknown
+  Arn?: z.infer<typeof ArnSchema>
+  AssetDetails?: z.infer<typeof AssetDetailsSchema>
+  AssetType?: z.infer<typeof AssetTypeSchema>
+  CreatedAt?: z.infer<typeof TimestampSchema>
+  DataSetId?: z.infer<typeof IdSchema>
+  Id?: z.infer<typeof IdSchema>
+  Name?: z.infer<typeof AssetNameSchema>
+  RevisionId?: z.infer<typeof IdSchema>
+  SourceId?: z.infer<typeof IdSchema>
+  UpdatedAt?: z.infer<typeof TimestampSchema>
 }
 
 const ExportAssetToSignedUrlResponseDetailsSchema = z
@@ -845,21 +843,21 @@ const ListOfJobEntrySchema: z.ZodType<ListOfJobEntryType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type ListJobsResponseType = {
-  Jobs?: z.infer<typeof ListOfJobEntrySchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Jobs?: z.infer<typeof ListOfJobEntrySchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type AssetEntryType = {
-  Arn: z.infer<typeof ArnSchema> & unknown
-  AssetDetails: z.infer<typeof AssetDetailsSchema> & unknown
-  AssetType: z.infer<typeof AssetTypeSchema> & unknown
-  CreatedAt: z.infer<typeof TimestampSchema> & unknown
-  DataSetId: z.infer<typeof IdSchema> & unknown
-  Id: z.infer<typeof IdSchema> & unknown
-  Name: z.infer<typeof AssetNameSchema> & unknown
-  RevisionId: z.infer<typeof IdSchema> & unknown
-  SourceId?: z.infer<typeof IdSchema> & unknown
-  UpdatedAt: z.infer<typeof TimestampSchema> & unknown
+  Arn: z.infer<typeof ArnSchema>
+  AssetDetails: z.infer<typeof AssetDetailsSchema>
+  AssetType: z.infer<typeof AssetTypeSchema>
+  CreatedAt: z.infer<typeof TimestampSchema>
+  DataSetId: z.infer<typeof IdSchema>
+  Id: z.infer<typeof IdSchema>
+  Name: z.infer<typeof AssetNameSchema>
+  RevisionId: z.infer<typeof IdSchema>
+  SourceId?: z.infer<typeof IdSchema>
+  UpdatedAt: z.infer<typeof TimestampSchema>
 }
 
 const AssetEntrySchema: z.ZodType<AssetEntryType> = z
@@ -915,21 +913,21 @@ const ListOfAssetEntrySchema: z.ZodType<ListOfAssetEntryType> = z
   .openapi('ListOfAssetEntry')
 
 type ListRevisionAssetsResponseType = {
-  Assets?: z.infer<typeof ListOfAssetEntrySchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  Assets?: z.infer<typeof ListOfAssetEntrySchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type UpdateAssetResponseType = {
-  Arn?: z.infer<typeof ArnSchema> & unknown
-  AssetDetails?: z.infer<typeof AssetDetailsSchema> & unknown
-  AssetType?: z.infer<typeof AssetTypeSchema> & unknown
-  CreatedAt?: z.infer<typeof TimestampSchema> & unknown
-  DataSetId?: z.infer<typeof IdSchema> & unknown
-  Id?: z.infer<typeof IdSchema> & unknown
-  Name?: z.infer<typeof AssetNameSchema> & unknown
-  RevisionId?: z.infer<typeof IdSchema> & unknown
-  SourceId?: z.infer<typeof IdSchema> & unknown
-  UpdatedAt?: z.infer<typeof TimestampSchema> & unknown
+  Arn?: z.infer<typeof ArnSchema>
+  AssetDetails?: z.infer<typeof AssetDetailsSchema>
+  AssetType?: z.infer<typeof AssetTypeSchema>
+  CreatedAt?: z.infer<typeof TimestampSchema>
+  DataSetId?: z.infer<typeof IdSchema>
+  Id?: z.infer<typeof IdSchema>
+  Name?: z.infer<typeof AssetNameSchema>
+  RevisionId?: z.infer<typeof IdSchema>
+  SourceId?: z.infer<typeof IdSchema>
+  UpdatedAt?: z.infer<typeof TimestampSchema>
 }
 
 const ResourceNotFoundExceptionSchema = z.any().openapi('ResourceNotFoundException')

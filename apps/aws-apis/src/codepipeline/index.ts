@@ -1,87 +1,245 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCodePipeline20150709AcknowledgeJobHandler,
-  xAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobHandler,
-  xAmzTargetCodePipeline20150709CreateCustomActionTypeHandler,
-  xAmzTargetCodePipeline20150709CreatePipelineHandler,
-  xAmzTargetCodePipeline20150709DeleteCustomActionTypeHandler,
-  xAmzTargetCodePipeline20150709DeletePipelineHandler,
-  xAmzTargetCodePipeline20150709DeleteWebhookHandler,
-  xAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyHandler,
-  xAmzTargetCodePipeline20150709DisableStageTransitionHandler,
-  xAmzTargetCodePipeline20150709EnableStageTransitionHandler,
-  xAmzTargetCodePipeline20150709GetActionTypeHandler,
-  xAmzTargetCodePipeline20150709GetJobDetailsHandler,
-  xAmzTargetCodePipeline20150709GetPipelineExecutionHandler,
-  xAmzTargetCodePipeline20150709GetPipelineHandler,
-  xAmzTargetCodePipeline20150709GetPipelineStateHandler,
-  xAmzTargetCodePipeline20150709GetThirdPartyJobDetailsHandler,
-  xAmzTargetCodePipeline20150709ListActionExecutionsHandler,
-  xAmzTargetCodePipeline20150709ListActionTypesHandler,
-  xAmzTargetCodePipeline20150709ListPipelineExecutionsHandler,
-  xAmzTargetCodePipeline20150709ListPipelinesHandler,
-  xAmzTargetCodePipeline20150709ListTagsForResourceHandler,
-  xAmzTargetCodePipeline20150709ListWebhooksHandler,
-  xAmzTargetCodePipeline20150709PollForJobsHandler,
-  xAmzTargetCodePipeline20150709PollForThirdPartyJobsHandler,
-  xAmzTargetCodePipeline20150709PutActionRevisionHandler,
-  xAmzTargetCodePipeline20150709PutApprovalResultHandler,
-  xAmzTargetCodePipeline20150709PutJobFailureResultHandler,
-  xAmzTargetCodePipeline20150709PutJobSuccessResultHandler,
-  xAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultHandler,
-  xAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultHandler,
-  xAmzTargetCodePipeline20150709PutWebhookHandler,
-  xAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyHandler,
-  xAmzTargetCodePipeline20150709RetryStageExecutionHandler,
-  xAmzTargetCodePipeline20150709StartPipelineExecutionHandler,
-  xAmzTargetCodePipeline20150709StopPipelineExecutionHandler,
-  xAmzTargetCodePipeline20150709TagResourceHandler,
-  xAmzTargetCodePipeline20150709UntagResourceHandler,
-  xAmzTargetCodePipeline20150709UpdateActionTypeHandler,
-  xAmzTargetCodePipeline20150709UpdatePipelineHandler,
+  postXAmzTargetCodePipeline20150709AcknowledgeJobRoute,
+  postXAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobRoute,
+  postXAmzTargetCodePipeline20150709CreateCustomActionTypeRoute,
+  postXAmzTargetCodePipeline20150709CreatePipelineRoute,
+  postXAmzTargetCodePipeline20150709DeleteCustomActionTypeRoute,
+  postXAmzTargetCodePipeline20150709DeletePipelineRoute,
+  postXAmzTargetCodePipeline20150709DeleteWebhookRoute,
+  postXAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyRoute,
+  postXAmzTargetCodePipeline20150709DisableStageTransitionRoute,
+  postXAmzTargetCodePipeline20150709EnableStageTransitionRoute,
+  postXAmzTargetCodePipeline20150709GetActionTypeRoute,
+  postXAmzTargetCodePipeline20150709GetJobDetailsRoute,
+  postXAmzTargetCodePipeline20150709GetPipelineExecutionRoute,
+  postXAmzTargetCodePipeline20150709GetPipelineRoute,
+  postXAmzTargetCodePipeline20150709GetPipelineStateRoute,
+  postXAmzTargetCodePipeline20150709GetThirdPartyJobDetailsRoute,
+  postXAmzTargetCodePipeline20150709ListActionExecutionsRoute,
+  postXAmzTargetCodePipeline20150709ListActionTypesRoute,
+  postXAmzTargetCodePipeline20150709ListPipelineExecutionsRoute,
+  postXAmzTargetCodePipeline20150709ListPipelinesRoute,
+  postXAmzTargetCodePipeline20150709ListTagsForResourceRoute,
+  postXAmzTargetCodePipeline20150709ListWebhooksRoute,
+  postXAmzTargetCodePipeline20150709PollForJobsRoute,
+  postXAmzTargetCodePipeline20150709PollForThirdPartyJobsRoute,
+  postXAmzTargetCodePipeline20150709PutActionRevisionRoute,
+  postXAmzTargetCodePipeline20150709PutApprovalResultRoute,
+  postXAmzTargetCodePipeline20150709PutJobFailureResultRoute,
+  postXAmzTargetCodePipeline20150709PutJobSuccessResultRoute,
+  postXAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultRoute,
+  postXAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultRoute,
+  postXAmzTargetCodePipeline20150709PutWebhookRoute,
+  postXAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyRoute,
+  postXAmzTargetCodePipeline20150709RetryStageExecutionRoute,
+  postXAmzTargetCodePipeline20150709StartPipelineExecutionRoute,
+  postXAmzTargetCodePipeline20150709StopPipelineExecutionRoute,
+  postXAmzTargetCodePipeline20150709TagResourceRoute,
+  postXAmzTargetCodePipeline20150709UntagResourceRoute,
+  postXAmzTargetCodePipeline20150709UpdateActionTypeRoute,
+  postXAmzTargetCodePipeline20150709UpdatePipelineRoute,
+} from './routes'
+import {
+  postXAmzTargetCodePipeline20150709AcknowledgeJobRouteHandler,
+  postXAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobRouteHandler,
+  postXAmzTargetCodePipeline20150709CreateCustomActionTypeRouteHandler,
+  postXAmzTargetCodePipeline20150709CreatePipelineRouteHandler,
+  postXAmzTargetCodePipeline20150709DeleteCustomActionTypeRouteHandler,
+  postXAmzTargetCodePipeline20150709DeletePipelineRouteHandler,
+  postXAmzTargetCodePipeline20150709DeleteWebhookRouteHandler,
+  postXAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyRouteHandler,
+  postXAmzTargetCodePipeline20150709DisableStageTransitionRouteHandler,
+  postXAmzTargetCodePipeline20150709EnableStageTransitionRouteHandler,
+  postXAmzTargetCodePipeline20150709GetActionTypeRouteHandler,
+  postXAmzTargetCodePipeline20150709GetJobDetailsRouteHandler,
+  postXAmzTargetCodePipeline20150709GetPipelineExecutionRouteHandler,
+  postXAmzTargetCodePipeline20150709GetPipelineRouteHandler,
+  postXAmzTargetCodePipeline20150709GetPipelineStateRouteHandler,
+  postXAmzTargetCodePipeline20150709GetThirdPartyJobDetailsRouteHandler,
+  postXAmzTargetCodePipeline20150709ListActionExecutionsRouteHandler,
+  postXAmzTargetCodePipeline20150709ListActionTypesRouteHandler,
+  postXAmzTargetCodePipeline20150709ListPipelineExecutionsRouteHandler,
+  postXAmzTargetCodePipeline20150709ListPipelinesRouteHandler,
+  postXAmzTargetCodePipeline20150709ListTagsForResourceRouteHandler,
+  postXAmzTargetCodePipeline20150709ListWebhooksRouteHandler,
+  postXAmzTargetCodePipeline20150709PollForJobsRouteHandler,
+  postXAmzTargetCodePipeline20150709PollForThirdPartyJobsRouteHandler,
+  postXAmzTargetCodePipeline20150709PutActionRevisionRouteHandler,
+  postXAmzTargetCodePipeline20150709PutApprovalResultRouteHandler,
+  postXAmzTargetCodePipeline20150709PutJobFailureResultRouteHandler,
+  postXAmzTargetCodePipeline20150709PutJobSuccessResultRouteHandler,
+  postXAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultRouteHandler,
+  postXAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultRouteHandler,
+  postXAmzTargetCodePipeline20150709PutWebhookRouteHandler,
+  postXAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyRouteHandler,
+  postXAmzTargetCodePipeline20150709RetryStageExecutionRouteHandler,
+  postXAmzTargetCodePipeline20150709StartPipelineExecutionRouteHandler,
+  postXAmzTargetCodePipeline20150709StopPipelineExecutionRouteHandler,
+  postXAmzTargetCodePipeline20150709TagResourceRouteHandler,
+  postXAmzTargetCodePipeline20150709UntagResourceRouteHandler,
+  postXAmzTargetCodePipeline20150709UpdateActionTypeRouteHandler,
+  postXAmzTargetCodePipeline20150709UpdatePipelineRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCodePipeline20150709AcknowledgeJobHandler)
-  .route('/', xAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobHandler)
-  .route('/', xAmzTargetCodePipeline20150709CreateCustomActionTypeHandler)
-  .route('/', xAmzTargetCodePipeline20150709CreatePipelineHandler)
-  .route('/', xAmzTargetCodePipeline20150709DeleteCustomActionTypeHandler)
-  .route('/', xAmzTargetCodePipeline20150709DeletePipelineHandler)
-  .route('/', xAmzTargetCodePipeline20150709DeleteWebhookHandler)
-  .route('/', xAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyHandler)
-  .route('/', xAmzTargetCodePipeline20150709DisableStageTransitionHandler)
-  .route('/', xAmzTargetCodePipeline20150709EnableStageTransitionHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetActionTypeHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetJobDetailsHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetPipelineHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetPipelineExecutionHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetPipelineStateHandler)
-  .route('/', xAmzTargetCodePipeline20150709GetThirdPartyJobDetailsHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListActionExecutionsHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListActionTypesHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListPipelineExecutionsHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListPipelinesHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListTagsForResourceHandler)
-  .route('/', xAmzTargetCodePipeline20150709ListWebhooksHandler)
-  .route('/', xAmzTargetCodePipeline20150709PollForJobsHandler)
-  .route('/', xAmzTargetCodePipeline20150709PollForThirdPartyJobsHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutActionRevisionHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutApprovalResultHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutJobFailureResultHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutJobSuccessResultHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultHandler)
-  .route('/', xAmzTargetCodePipeline20150709PutWebhookHandler)
-  .route('/', xAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyHandler)
-  .route('/', xAmzTargetCodePipeline20150709RetryStageExecutionHandler)
-  .route('/', xAmzTargetCodePipeline20150709StartPipelineExecutionHandler)
-  .route('/', xAmzTargetCodePipeline20150709StopPipelineExecutionHandler)
-  .route('/', xAmzTargetCodePipeline20150709TagResourceHandler)
-  .route('/', xAmzTargetCodePipeline20150709UntagResourceHandler)
-  .route('/', xAmzTargetCodePipeline20150709UpdateActionTypeHandler)
-  .route('/', xAmzTargetCodePipeline20150709UpdatePipelineHandler)
+  .openapi(
+    postXAmzTargetCodePipeline20150709AcknowledgeJobRoute,
+    postXAmzTargetCodePipeline20150709AcknowledgeJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobRoute,
+    postXAmzTargetCodePipeline20150709AcknowledgeThirdPartyJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709CreateCustomActionTypeRoute,
+    postXAmzTargetCodePipeline20150709CreateCustomActionTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709CreatePipelineRoute,
+    postXAmzTargetCodePipeline20150709CreatePipelineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709DeleteCustomActionTypeRoute,
+    postXAmzTargetCodePipeline20150709DeleteCustomActionTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709DeletePipelineRoute,
+    postXAmzTargetCodePipeline20150709DeletePipelineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709DeleteWebhookRoute,
+    postXAmzTargetCodePipeline20150709DeleteWebhookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyRoute,
+    postXAmzTargetCodePipeline20150709DeregisterWebhookWithThirdPartyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709DisableStageTransitionRoute,
+    postXAmzTargetCodePipeline20150709DisableStageTransitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709EnableStageTransitionRoute,
+    postXAmzTargetCodePipeline20150709EnableStageTransitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetActionTypeRoute,
+    postXAmzTargetCodePipeline20150709GetActionTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetJobDetailsRoute,
+    postXAmzTargetCodePipeline20150709GetJobDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetPipelineRoute,
+    postXAmzTargetCodePipeline20150709GetPipelineRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetPipelineExecutionRoute,
+    postXAmzTargetCodePipeline20150709GetPipelineExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetPipelineStateRoute,
+    postXAmzTargetCodePipeline20150709GetPipelineStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709GetThirdPartyJobDetailsRoute,
+    postXAmzTargetCodePipeline20150709GetThirdPartyJobDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListActionExecutionsRoute,
+    postXAmzTargetCodePipeline20150709ListActionExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListActionTypesRoute,
+    postXAmzTargetCodePipeline20150709ListActionTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListPipelineExecutionsRoute,
+    postXAmzTargetCodePipeline20150709ListPipelineExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListPipelinesRoute,
+    postXAmzTargetCodePipeline20150709ListPipelinesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListTagsForResourceRoute,
+    postXAmzTargetCodePipeline20150709ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709ListWebhooksRoute,
+    postXAmzTargetCodePipeline20150709ListWebhooksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PollForJobsRoute,
+    postXAmzTargetCodePipeline20150709PollForJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PollForThirdPartyJobsRoute,
+    postXAmzTargetCodePipeline20150709PollForThirdPartyJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutActionRevisionRoute,
+    postXAmzTargetCodePipeline20150709PutActionRevisionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutApprovalResultRoute,
+    postXAmzTargetCodePipeline20150709PutApprovalResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutJobFailureResultRoute,
+    postXAmzTargetCodePipeline20150709PutJobFailureResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutJobSuccessResultRoute,
+    postXAmzTargetCodePipeline20150709PutJobSuccessResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultRoute,
+    postXAmzTargetCodePipeline20150709PutThirdPartyJobFailureResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultRoute,
+    postXAmzTargetCodePipeline20150709PutThirdPartyJobSuccessResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709PutWebhookRoute,
+    postXAmzTargetCodePipeline20150709PutWebhookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyRoute,
+    postXAmzTargetCodePipeline20150709RegisterWebhookWithThirdPartyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709RetryStageExecutionRoute,
+    postXAmzTargetCodePipeline20150709RetryStageExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709StartPipelineExecutionRoute,
+    postXAmzTargetCodePipeline20150709StartPipelineExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709StopPipelineExecutionRoute,
+    postXAmzTargetCodePipeline20150709StopPipelineExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709TagResourceRoute,
+    postXAmzTargetCodePipeline20150709TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709UntagResourceRoute,
+    postXAmzTargetCodePipeline20150709UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709UpdateActionTypeRoute,
+    postXAmzTargetCodePipeline20150709UpdateActionTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodePipeline20150709UpdatePipelineRoute,
+    postXAmzTargetCodePipeline20150709UpdatePipelineRouteHandler,
+  )
 
 export default app

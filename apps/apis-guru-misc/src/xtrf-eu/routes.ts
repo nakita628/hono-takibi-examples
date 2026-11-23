@@ -9224,7 +9224,7 @@ export const postFilesRoute = createRoute({
       required: true,
     },
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getJobsJobIdRoute = createRoute({
@@ -9382,7 +9382,7 @@ export const postJobsJobIdFilesOutputRoute = createRoute({
       required: true,
     },
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getJobsJobIdFilesFileIdRoute = createRoute({
@@ -9727,7 +9727,7 @@ export const getProjectsFilesFileIdDownloadRoute = createRoute({
         }),
     }),
   },
-  responses: { default: { description: 'Success!', content: {} } },
+  responses: { default: { description: 'Success!' } },
 })
 
 export const getProjectsIdsRoute = createRoute({
@@ -10893,7 +10893,7 @@ export const deleteProvidersPersonsPersonIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'Success', content: {} } },
+  responses: { 204: { description: 'Success' } },
 })
 
 export const getProvidersPersonsPersonIdContactRoute = createRoute({
@@ -13972,7 +13972,7 @@ export const getV2JobsForExternalIdRoute = createRoute({
         }),
     }),
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getV2JobsJobIdRoute = createRoute({
@@ -14080,7 +14080,7 @@ export const postV2JobsJobIdFilesAddExternalLinkRoute = createRoute({
       required: true,
     },
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const getV2JobsJobIdFilesDeliveredRoute = createRoute({
@@ -14778,7 +14778,7 @@ export const getV2ProjectsFilesFileIdDownloadFileNameRoute = createRoute({
         }),
     }),
   },
-  responses: { default: { description: 'Success', content: {} } },
+  responses: { default: { description: 'Success' } },
 })
 
 export const getV2ProjectsForExternalIdExternalProjectIdRoute = createRoute({
@@ -15322,7 +15322,7 @@ export const postV2ProjectsProjectIdFilesAddExternalLinkRoute = createRoute({
       required: true,
     },
   },
-  responses: { default: { description: 'default response', content: {} } },
+  responses: { default: { description: 'default response' } },
 })
 
 export const postV2ProjectsProjectIdFilesAddLinkRoute = createRoute({
@@ -16374,7 +16374,7 @@ export const getV2QuotesFilesFileIdDownloadFileNameRoute = createRoute({
         }),
     }),
   },
-  responses: { default: { description: 'Success', content: {} } },
+  responses: { default: { description: 'Success' } },
 })
 
 export const getV2QuotesQuoteIdRoute = createRoute({

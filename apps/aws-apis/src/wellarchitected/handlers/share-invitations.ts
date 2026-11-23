@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getShareInvitationsRoute, patchShareInvitationsShareInvitationIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getShareInvitationsRoute,
+  patchShareInvitationsShareInvitationIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getShareInvitationsRouteHandler: RouteHandler<
+  typeof getShareInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shareInvitationsHandler = app
-  .openapi(getShareInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchShareInvitationsShareInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchShareInvitationsShareInvitationIdRouteHandler: RouteHandler<
+  typeof patchShareInvitationsShareInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatDfsSlatesByDateDateRoute,
   getFormatInjuredPlayersCompetitionRoute,
   getFormatPlayerGameProjectionStatsByCompetitionCompetitionDateRoute,
@@ -8,24 +8,38 @@ import {
   getFormatUpcomingDfsSlatesByCompetitionCompetitionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatDfsSlatesByDateDateRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatDfsSlatesByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatInjuredPlayersCompetitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByCompetitionCompetitionDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatUpcomingDfsSlatesByCompetitionCompetitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatInjuredPlayersCompetitionRouteHandler: RouteHandler<
+  typeof getFormatInjuredPlayersCompetitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByCompetitionCompetitionDateRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByCompetitionCompetitionDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByDateDateRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatUpcomingDfsSlatesByCompetitionCompetitionIdRouteHandler: RouteHandler<
+  typeof getFormatUpcomingDfsSlatesByCompetitionCompetitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

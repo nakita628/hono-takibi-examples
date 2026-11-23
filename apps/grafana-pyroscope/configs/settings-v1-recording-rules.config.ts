@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/grafana/pyroscope/main/api/connect-openapi/gen/settings/v1/recording_rules.openapi.yaml',
   output: './src/settings-v1-recording-rules/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/settings-v1-recording-rules/types.ts' },
   client: { output: './src/settings-v1-recording-rules/client.ts', baseUrl: '/' },
   rpc: { output: './src/settings-v1-recording-rules/rpc.ts', parseResponse: true },

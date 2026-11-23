@@ -109,7 +109,7 @@ export function getQueryQueryOptions(
   }
 }
 
-export function useQuery<
+export function useGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
@@ -156,20 +156,20 @@ export function useQuery<
 }
 
 export function getQueryExtensionQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.:extension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.{extension}']['$get']>>,
 ) {
-  return ['query.:extension', '/query.:extension', toValue(args)] as const
+  return ['query.{extension}', '/query.{extension}', toValue(args)] as const
 }
 
 export function getQueryExtensionQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.:extension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.{extension}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getQueryExtensionQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client['query.:extension'].$get(toValue(args), {
+        client['query.{extension}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -181,26 +181,30 @@ export function getQueryExtensionQueryOptions(
 export function useQueryExtension<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.:extension']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client)['query.{extension}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
         UseQueryOptions<
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>
+              >
             >
           >,
           TError,
           TData,
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>
+              >
             >
           >,
           ReturnType<typeof getQueryExtensionQueryKey>
@@ -217,7 +221,7 @@ export function useQueryExtension<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
       >
     >,
     TError,
@@ -229,7 +233,7 @@ export function useQueryExtension<
       queryKey: computed(() => getQueryExtensionQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client['query.:extension'].$get(toValue(args), {
+          client['query.{extension}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

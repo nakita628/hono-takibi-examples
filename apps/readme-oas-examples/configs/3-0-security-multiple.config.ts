@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/security-multiple.yaml',
   output: './src/3-0-security-multiple/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-security-multiple/types.ts' },
   client: { output: './src/3-0-security-multiple/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-security-multiple/rpc.ts', parseResponse: true },

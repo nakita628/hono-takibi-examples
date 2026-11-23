@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDellistenoireRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDellistenoireRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dellistenoireHandler = app.openapi(postDellistenoireRoute, (c) => {
+export const postDellistenoireRouteHandler: RouteHandler<typeof postDellistenoireRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

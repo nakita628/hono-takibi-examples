@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteCategoryImageDeleteJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteCategoryImageDeleteJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const categoryImageDeleteJsonHandler = app.openapi(
-  deleteCategoryImageDeleteJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteCategoryImageDeleteJsonRouteHandler: RouteHandler<
+  typeof deleteCategoryImageDeleteJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

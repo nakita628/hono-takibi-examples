@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDisassociateWebsiteCertificateAuthorityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDisassociateWebsiteCertificateAuthorityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const disassociateWebsiteCertificateAuthorityHandler = app.openapi(
-  postDisassociateWebsiteCertificateAuthorityRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDisassociateWebsiteCertificateAuthorityRouteHandler: RouteHandler<
+  typeof postDisassociateWebsiteCertificateAuthorityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

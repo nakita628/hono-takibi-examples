@@ -595,7 +595,7 @@ export const deleteCmsSourceCode202609EnvironmentContentPathRoute = createRoute(
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['cms.source_code.write'] },
     { oauth2: ['marketplace_validation'] },

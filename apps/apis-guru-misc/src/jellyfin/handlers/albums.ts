@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAlbumsIdInstantMixRoute, getAlbumsItemIdSimilarRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAlbumsIdInstantMixRoute, getAlbumsItemIdSimilarRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlbumsIdInstantMixRouteHandler: RouteHandler<
+  typeof getAlbumsIdInstantMixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const albumsHandler = app
-  .openapi(getAlbumsIdInstantMixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsItemIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAlbumsItemIdSimilarRouteHandler: RouteHandler<
+  typeof getAlbumsItemIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInternationalScheduledPaymentConsentsConsentIdFundsConfirmationRoute,
   getInternationalScheduledPaymentConsentsConsentIdRoute,
   postInternationalScheduledPaymentConsentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInternationalScheduledPaymentConsentsRouteHandler: RouteHandler<
+  typeof postInternationalScheduledPaymentConsentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const internationalScheduledPaymentConsentsHandler = app
-  .openapi(postInternationalScheduledPaymentConsentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternationalScheduledPaymentConsentsConsentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternationalScheduledPaymentConsentsConsentIdFundsConfirmationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInternationalScheduledPaymentConsentsConsentIdRouteHandler: RouteHandler<
+  typeof getInternationalScheduledPaymentConsentsConsentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInternationalScheduledPaymentConsentsConsentIdFundsConfirmationRouteHandler: RouteHandler<
+  typeof getInternationalScheduledPaymentConsentsConsentIdFundsConfirmationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

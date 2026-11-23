@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSearchV1DatasetRoute, getSearchV1QuestionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSearchV1DatasetRoute, getSearchV1QuestionRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchV1DatasetRouteHandler: RouteHandler<typeof getSearchV1DatasetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchV1DatasetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchV1QuestionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchV1QuestionRouteHandler: RouteHandler<
+  typeof getSearchV1QuestionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

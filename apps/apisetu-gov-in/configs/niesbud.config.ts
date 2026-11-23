@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/niesbud/3.0.0/openapi.yaml',
   output: './src/niesbud/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/niesbud/types.ts' },
   client: { output: './src/niesbud/client.ts', baseUrl: '/' },
   rpc: { output: './src/niesbud/rpc.ts', parseResponse: true },

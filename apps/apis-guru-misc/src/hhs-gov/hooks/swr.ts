@@ -368,20 +368,20 @@ export function useImmutableGetResourcesCampaignsIdMediaJson<TError = unknown>(
 }
 
 export function getGetResourcesCampaignsIdSyndicateFormatKey(
-  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/campaigns/:id/syndicate.:format', args] as const
+  return ['resources', '/resources/campaigns/:id/syndicate.{format}', args] as const
 }
 
 export function useGetResourcesCampaignsIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -406,7 +406,7 @@ export function useGetResourcesCampaignsIdSyndicateFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -416,7 +416,7 @@ export function useGetResourcesCampaignsIdSyndicateFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.resources.campaigns[':id']['syndicate.:format'].$get(args, clientOptions),
+          client.resources.campaigns[':id']['syndicate.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -424,14 +424,14 @@ export function useGetResourcesCampaignsIdSyndicateFormat<TError = unknown>(
 }
 
 export function useImmutableGetResourcesCampaignsIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -456,7 +456,7 @@ export function useImmutableGetResourcesCampaignsIdSyndicateFormat<TError = unkn
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.campaigns)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -466,7 +466,7 @@ export function useImmutableGetResourcesCampaignsIdSyndicateFormat<TError = unkn
       swrKey,
       async () =>
         parseResponse(
-          client.resources.campaigns[':id']['syndicate.:format'].$get(args, clientOptions),
+          client.resources.campaigns[':id']['syndicate.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -834,19 +834,21 @@ export function useImmutableGetResourcesMediaFeaturedJson<TError = unknown>(
 }
 
 export function getGetResourcesMediaMostPopularMediaFormatKey(
-  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/media/mostPopularMedia.:format', args] as const
+  return ['resources', '/resources/media/mostPopularMedia.{format}', args] as const
 }
 
 export function useGetResourcesMediaMostPopularMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
+            >
           >
         >
       >,
@@ -869,7 +871,9 @@ export function useGetResourcesMediaMostPopularMediaFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
+            >
           >
         >
       >,
@@ -877,20 +881,24 @@ export function useGetResourcesMediaMostPopularMediaFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.media['mostPopularMedia.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.resources.media['mostPopularMedia.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesMediaMostPopularMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
+            >
           >
         >
       >,
@@ -913,7 +921,9 @@ export function useImmutableGetResourcesMediaMostPopularMediaFormat<TError = unk
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)['mostPopularMedia.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)['mostPopularMedia.{format}']['$get']>
+            >
           >
         >
       >,
@@ -921,7 +931,9 @@ export function useImmutableGetResourcesMediaMostPopularMediaFormat<TError = unk
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.media['mostPopularMedia.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.resources.media['mostPopularMedia.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
@@ -1394,20 +1406,20 @@ export function useImmutableGetResourcesMediaIdPreviewJpg<TError = unknown>(
 }
 
 export function getGetResourcesMediaIdRelatedMediaFormatKey(
-  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/media/:id/relatedMedia.:format', args] as const
+  return ['resources', '/resources/media/:id/relatedMedia.{format}', args] as const
 }
 
 export function useGetResourcesMediaIdRelatedMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
             >
           >
         >
@@ -1432,7 +1444,7 @@ export function useGetResourcesMediaIdRelatedMediaFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
             >
           >
         >
@@ -1442,7 +1454,7 @@ export function useGetResourcesMediaIdRelatedMediaFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.resources.media[':id']['relatedMedia.:format'].$get(args, clientOptions),
+          client.resources.media[':id']['relatedMedia.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1450,14 +1462,14 @@ export function useGetResourcesMediaIdRelatedMediaFormat<TError = unknown>(
 }
 
 export function useImmutableGetResourcesMediaIdRelatedMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
             >
           >
         >
@@ -1482,7 +1494,7 @@ export function useImmutableGetResourcesMediaIdRelatedMediaFormat<TError = unkno
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.:format']['$get']>
+              ReturnType<(typeof client.resources.media)[':id']['relatedMedia.{format}']['$get']>
             >
           >
         >
@@ -1492,7 +1504,7 @@ export function useImmutableGetResourcesMediaIdRelatedMediaFormat<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client.resources.media[':id']['relatedMedia.:format'].$get(args, clientOptions),
+          client.resources.media[':id']['relatedMedia.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1500,19 +1512,21 @@ export function useImmutableGetResourcesMediaIdRelatedMediaFormat<TError = unkno
 }
 
 export function getGetResourcesMediaIdSyndicateFormatKey(
-  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/media/:id/syndicate.:format', args] as const
+  return ['resources', '/resources/media/:id/syndicate.{format}', args] as const
 }
 
 export function useGetResourcesMediaIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
+            >
           >
         >
       >,
@@ -1535,7 +1549,9 @@ export function useGetResourcesMediaIdSyndicateFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
+            >
           >
         >
       >,
@@ -1543,20 +1559,24 @@ export function useGetResourcesMediaIdSyndicateFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.media[':id']['syndicate.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.resources.media[':id']['syndicate.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesMediaIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
+            >
           >
         >
       >,
@@ -1579,7 +1599,9 @@ export function useImmutableGetResourcesMediaIdSyndicateFormat<TError = unknown>
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.media)[':id']['syndicate.:format']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.resources.media)[':id']['syndicate.{format}']['$get']>
+            >
           >
         >
       >,
@@ -1587,7 +1609,9 @@ export function useImmutableGetResourcesMediaIdSyndicateFormat<TError = unknown>
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.media[':id']['syndicate.:format'].$get(args, clientOptions)),
+        parseResponse(
+          client.resources.media[':id']['syndicate.{format}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
@@ -1794,19 +1818,19 @@ export function useImmutableGetResourcesMediaIdYoutubeMetaDataJson<TError = unkn
 }
 
 export function getGetResourcesMediaTypesFormatKey(
-  args: InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/mediaTypes.:format', args] as const
+  return ['resources', '/resources/mediaTypes.{format}', args] as const
 }
 
 export function useGetResourcesMediaTypesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
           >
         >
       >,
@@ -1829,27 +1853,27 @@ export function useGetResourcesMediaTypesFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources['mediaTypes.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources['mediaTypes.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesMediaTypesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources)['mediaTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['mediaTypes.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
           >
         >
       >,
@@ -1872,14 +1896,14 @@ export function useImmutableGetResourcesMediaTypesFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['mediaTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['mediaTypes.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources['mediaTypes.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources['mediaTypes.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -2070,20 +2094,20 @@ export function useImmutableGetResourcesSourcesIdJson<TError = unknown>(
 }
 
 export function getGetResourcesSourcesIdSyndicateFormatKey(
-  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/sources/:id/syndicate.:format', args] as const
+  return ['resources', '/resources/sources/:id/syndicate.{format}', args] as const
 }
 
 export function useGetResourcesSourcesIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -2108,7 +2132,7 @@ export function useGetResourcesSourcesIdSyndicateFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -2118,7 +2142,7 @@ export function useGetResourcesSourcesIdSyndicateFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.resources.sources[':id']['syndicate.:format'].$get(args, clientOptions),
+          client.resources.sources[':id']['syndicate.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2126,14 +2150,14 @@ export function useGetResourcesSourcesIdSyndicateFormat<TError = unknown>(
 }
 
 export function useImmutableGetResourcesSourcesIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -2158,7 +2182,7 @@ export function useImmutableGetResourcesSourcesIdSyndicateFormat<TError = unknow
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.resources.sources)[':id']['syndicate.:format']['$get']>
+              ReturnType<(typeof client.resources.sources)[':id']['syndicate.{format}']['$get']>
             >
           >
         >
@@ -2168,7 +2192,7 @@ export function useImmutableGetResourcesSourcesIdSyndicateFormat<TError = unknow
       swrKey,
       async () =>
         parseResponse(
-          client.resources.sources[':id']['syndicate.:format'].$get(args, clientOptions),
+          client.resources.sources[':id']['syndicate.{format}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -2176,19 +2200,19 @@ export function useImmutableGetResourcesSourcesIdSyndicateFormat<TError = unknow
 }
 
 export function getGetResourcesTagsFormatKey(
-  args: InferRequestType<(typeof client.resources)['tags.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['tags.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags.:format', args] as const
+  return ['resources', '/resources/tags.{format}', args] as const
 }
 
 export function useGetResourcesTagsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources)['tags.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['tags.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
           >
         >
       >,
@@ -2211,27 +2235,27 @@ export function useGetResourcesTagsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources['tags.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources['tags.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources)['tags.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources)['tags.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
           >
         >
       >,
@@ -2254,33 +2278,33 @@ export function useImmutableGetResourcesTagsFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources)['tags.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources)['tags.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources['tags.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources['tags.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsTagLanguagesFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/tagLanguages.:format', args] as const
+  return ['resources', '/resources/tags/tagLanguages.{format}', args] as const
 }
 
 export function useGetResourcesTagsTagLanguagesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
           >
         >
       >,
@@ -2303,7 +2327,7 @@ export function useGetResourcesTagsTagLanguagesFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
           >
         >
       >,
@@ -2311,20 +2335,20 @@ export function useGetResourcesTagsTagLanguagesFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags['tagLanguages.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags['tagLanguages.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsTagLanguagesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
           >
         >
       >,
@@ -2347,7 +2371,7 @@ export function useImmutableGetResourcesTagsTagLanguagesFormat<TError = unknown>
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagLanguages.{format}']['$get']>>
           >
         >
       >,
@@ -2355,26 +2379,26 @@ export function useImmutableGetResourcesTagsTagLanguagesFormat<TError = unknown>
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags['tagLanguages.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags['tagLanguages.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsTagTypesFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/tagTypes.:format', args] as const
+  return ['resources', '/resources/tags/tagTypes.{format}', args] as const
 }
 
 export function useGetResourcesTagsTagTypesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
           >
         >
       >,
@@ -2397,7 +2421,7 @@ export function useGetResourcesTagsTagTypesFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
           >
         >
       >,
@@ -2405,20 +2429,20 @@ export function useGetResourcesTagsTagTypesFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags['tagTypes.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags['tagTypes.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsTagTypesFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)['tagTypes.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
           >
         >
       >,
@@ -2441,7 +2465,7 @@ export function useImmutableGetResourcesTagsTagTypesFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)['tagTypes.{format}']['$get']>>
           >
         >
       >,
@@ -2449,26 +2473,26 @@ export function useImmutableGetResourcesTagsTagTypesFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags['tagTypes.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags['tagTypes.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsIdFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/:id.:format', args] as const
+  return ['resources', '/resources/tags/:id.{format}', args] as const
 }
 
 export function useGetResourcesTagsIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
           >
         >
       >,
@@ -2491,27 +2515,27 @@ export function useGetResourcesTagsIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources.tags[':id.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources.tags[':id.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsIdFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
           >
         >
       >,
@@ -2534,33 +2558,33 @@ export function useImmutableGetResourcesTagsIdFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id.{format}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.resources.tags[':id.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client.resources.tags[':id.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsIdMediaFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/:id/media.:format', args] as const
+  return ['resources', '/resources/tags/:id/media.{format}', args] as const
 }
 
 export function useGetResourcesTagsIdMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
           >
         >
       >,
@@ -2583,7 +2607,7 @@ export function useGetResourcesTagsIdMediaFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
           >
         >
       >,
@@ -2591,20 +2615,20 @@ export function useGetResourcesTagsIdMediaFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['media.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['media.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsIdMediaFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['media.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
           >
         >
       >,
@@ -2627,7 +2651,7 @@ export function useImmutableGetResourcesTagsIdMediaFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['media.{format}']['$get']>>
           >
         >
       >,
@@ -2635,26 +2659,26 @@ export function useImmutableGetResourcesTagsIdMediaFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['media.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['media.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsIdRelatedFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/:id/related.:format', args] as const
+  return ['resources', '/resources/tags/:id/related.{format}', args] as const
 }
 
 export function useGetResourcesTagsIdRelatedFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
           >
         >
       >,
@@ -2677,7 +2701,7 @@ export function useGetResourcesTagsIdRelatedFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
           >
         >
       >,
@@ -2685,20 +2709,20 @@ export function useGetResourcesTagsIdRelatedFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['related.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['related.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsIdRelatedFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['related.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
           >
         >
       >,
@@ -2721,7 +2745,7 @@ export function useImmutableGetResourcesTagsIdRelatedFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['related.{format}']['$get']>>
           >
         >
       >,
@@ -2729,26 +2753,26 @@ export function useImmutableGetResourcesTagsIdRelatedFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['related.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['related.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetResourcesTagsIdSyndicateFormatKey(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>,
 ) {
-  return ['resources', '/resources/tags/:id/syndicate.:format', args] as const
+  return ['resources', '/resources/tags/:id/syndicate.{format}', args] as const
 }
 
 export function useGetResourcesTagsIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
           >
         >
       >,
@@ -2771,7 +2795,7 @@ export function useGetResourcesTagsIdSyndicateFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
           >
         >
       >,
@@ -2779,20 +2803,20 @@ export function useGetResourcesTagsIdSyndicateFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['syndicate.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['syndicate.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetResourcesTagsIdSyndicateFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>,
+  args: InferRequestType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
           >
         >
       >,
@@ -2815,7 +2839,7 @@ export function useImmutableGetResourcesTagsIdSyndicateFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.:format']['$get']>>
+            Awaited<ReturnType<(typeof client.resources.tags)[':id']['syndicate.{format}']['$get']>>
           >
         >
       >,
@@ -2823,7 +2847,7 @@ export function useImmutableGetResourcesTagsIdSyndicateFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.resources.tags[':id']['syndicate.:format'].$get(args, clientOptions)),
+        parseResponse(client.resources.tags[':id']['syndicate.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

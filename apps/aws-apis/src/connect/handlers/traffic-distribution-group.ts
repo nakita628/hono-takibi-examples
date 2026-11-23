@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTrafficDistributionGroupTrafficDistributionGroupIdRoute,
   getTrafficDistributionGroupTrafficDistributionGroupIdRoute,
   putTrafficDistributionGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putTrafficDistributionGroupRouteHandler: RouteHandler<
+  typeof putTrafficDistributionGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const trafficDistributionGroupHandler = app
-  .openapi(putTrafficDistributionGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTrafficDistributionGroupTrafficDistributionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTrafficDistributionGroupTrafficDistributionGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteTrafficDistributionGroupTrafficDistributionGroupIdRouteHandler: RouteHandler<
+  typeof deleteTrafficDistributionGroupTrafficDistributionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTrafficDistributionGroupTrafficDistributionGroupIdRouteHandler: RouteHandler<
+  typeof getTrafficDistributionGroupTrafficDistributionGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

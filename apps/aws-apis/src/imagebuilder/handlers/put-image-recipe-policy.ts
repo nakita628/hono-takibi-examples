@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putPutImageRecipePolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putPutImageRecipePolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const putImageRecipePolicyHandler = app.openapi(putPutImageRecipePolicyRoute, (c) => {
+export const putPutImageRecipePolicyRouteHandler: RouteHandler<
+  typeof putPutImageRecipePolicyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

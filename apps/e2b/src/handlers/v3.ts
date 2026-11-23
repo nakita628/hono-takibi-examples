@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV3TemplatesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV3TemplatesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v3Handler = app.openapi(postV3TemplatesRoute, (c) => {
+export const postV3TemplatesRouteHandler: RouteHandler<typeof postV3TemplatesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

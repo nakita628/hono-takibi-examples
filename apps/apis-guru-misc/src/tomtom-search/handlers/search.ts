@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSearchVersionNumberAdditionalDataExtRoute,
   getSearchVersionNumberCategorySearchQueryExtRoute,
   getSearchVersionNumberCSCategoryExtRoute,
@@ -21,63 +21,116 @@ import {
   postSearchVersionNumberSearchAlongRouteQueryExtRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSearchVersionNumberAdditionalDataExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberAdditionalDataExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const searchHandler = app
-  .openapi(getSearchVersionNumberAdditionalDataExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberCSCategoryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberCategorySearchQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberGeocodeQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberGeometryFilterExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchVersionNumberGeometryFilterExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberGeometrySearchQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchVersionNumberGeometrySearchQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberNearbySearchExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberPoiSearchQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberReverseGeocodeCrossStreetPositionExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberReverseGeocodePositionExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberRoutedFilterPositionHeadingExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchVersionNumberRoutedFilterPositionHeadingExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberRoutedSearchQueryPositionHeadingExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberSQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberSearchQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSearchVersionNumberSearchAlongRouteQueryExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSearchVersionNumberStructuredGeocodeExtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSearchVersionNumberCSCategoryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberCSCategoryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberCategorySearchQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberCategorySearchQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberGeocodeQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberGeocodeQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberGeometryFilterExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberGeometryFilterExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchVersionNumberGeometryFilterExtRouteHandler: RouteHandler<
+  typeof postSearchVersionNumberGeometryFilterExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberGeometrySearchQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberGeometrySearchQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchVersionNumberGeometrySearchQueryExtRouteHandler: RouteHandler<
+  typeof postSearchVersionNumberGeometrySearchQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberNearbySearchExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberNearbySearchExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberPoiSearchQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberPoiSearchQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberReverseGeocodeCrossStreetPositionExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberReverseGeocodeCrossStreetPositionExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberReverseGeocodePositionExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberReverseGeocodePositionExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberRoutedFilterPositionHeadingExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberRoutedFilterPositionHeadingExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchVersionNumberRoutedFilterPositionHeadingExtRouteHandler: RouteHandler<
+  typeof postSearchVersionNumberRoutedFilterPositionHeadingExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberRoutedSearchQueryPositionHeadingExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberRoutedSearchQueryPositionHeadingExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberSQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberSQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberSearchQueryExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberSearchQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSearchVersionNumberSearchAlongRouteQueryExtRouteHandler: RouteHandler<
+  typeof postSearchVersionNumberSearchAlongRouteQueryExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSearchVersionNumberStructuredGeocodeExtRouteHandler: RouteHandler<
+  typeof getSearchVersionNumberStructuredGeocodeExtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRekognitionServiceStartTextDetectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRekognitionServiceStartTextDetectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRekognitionServiceStartTextDetectionHandler = app.openapi(
-  postXAmzTargetRekognitionServiceStartTextDetectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRekognitionServiceStartTextDetectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetRekognitionServiceStartTextDetectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

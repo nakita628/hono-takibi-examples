@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getChargeMetricsDataChargeMetricsDiscountAllocationDetailRoute,
   getChargeMetricsDataChargeMetricsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChargeMetricsDataChargeMetricsRouteHandler: RouteHandler<
+  typeof getChargeMetricsDataChargeMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chargeMetricsHandler = app
-  .openapi(getChargeMetricsDataChargeMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChargeMetricsDataChargeMetricsDiscountAllocationDetailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getChargeMetricsDataChargeMetricsDiscountAllocationDetailRouteHandler: RouteHandler<
+  typeof getChargeMetricsDataChargeMetricsDiscountAllocationDetailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

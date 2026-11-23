@@ -54,7 +54,7 @@ export const getRoute = createRoute({
   tags: ['EcoTa.co API Root'],
   summary: 'Retrieve the version API',
   operationId: 'Retrieve the version API',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAccountsRoute = createRoute({
@@ -93,7 +93,7 @@ export const getAccountsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAccountsRoute = createRoute({
@@ -132,7 +132,7 @@ export const putAccountsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAccountsRoute = createRoute({
@@ -171,7 +171,7 @@ export const postAccountsRoute = createRoute({
         }),
     }),
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
 })
 
 export const postAccountsPasswordRoute = createRoute({
@@ -249,7 +249,7 @@ export const getAccountsPaymentMethodsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAccountsSettingsRoute = createRoute({
@@ -288,7 +288,7 @@ export const postAccountsSettingsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAccountsSignInRoute = createRoute({
@@ -327,7 +327,7 @@ export const postAccountsSignInRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAccountsUpdatePasswordRoute = createRoute({
@@ -366,7 +366,7 @@ export const putAccountsUpdatePasswordRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAddressesPlacesAutocompleteRoute = createRoute({
@@ -446,7 +446,7 @@ export const postAddressesPlacesDetailsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getCatchementAreasRoute = createRoute({
@@ -485,7 +485,7 @@ export const getCatchementAreasRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getCatchementAreasIdRoute = createRoute({
@@ -546,7 +546,7 @@ export const getCatchementAreasIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getCreditCardsRoute = createRoute({
@@ -657,7 +657,7 @@ export const getProductsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getProductsIdRoute = createRoute({
@@ -718,7 +718,7 @@ export const getProductsIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPromotionalCodesRoute = createRoute({
@@ -757,7 +757,7 @@ export const getPromotionalCodesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPromotionalCodesRoute = createRoute({
@@ -844,7 +844,7 @@ export const getRidesIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRidesIdCancelRoute = createRoute({
@@ -906,7 +906,7 @@ export const getRidesIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRidesIdCancelFeesRoute = createRoute({
@@ -968,7 +968,7 @@ export const getRidesIdCancelFeesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRidesIdEstimateRoute = createRoute({
@@ -1029,7 +1029,7 @@ export const getRidesIdEstimateRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postRidesIdReserveRoute = createRoute({
@@ -1092,7 +1092,7 @@ export const postRidesIdReserveRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRidesPagePagePerPagePerPageRoute = createRoute({
@@ -1250,7 +1250,7 @@ export const postRidesPagePagePerPagePerPageRoute = createRoute({
         }),
     }),
   },
-  responses: { 201: { description: 'Created', content: {}, headers: z.object({}) } },
+  responses: { 201: { description: 'Created', headers: z.object({}) } },
 })
 
 export const getVersionRoute = createRoute({
@@ -1274,5 +1274,5 @@ export const getVersionRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBelegeBelegUuidRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBelegeBelegUuidRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const belegeHandler = app.openapi(getBelegeBelegUuidRoute, (c) => {
+export const getBelegeBelegUuidRouteHandler: RouteHandler<typeof getBelegeBelegUuidRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

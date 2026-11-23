@@ -1,8 +1,2888 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler, oauthHandler } from './handlers'
+import {
+  deleteApiV2ApiTokensIdRoute,
+  deleteApiV2AttachmentsAttachmentIdRoute,
+  deleteApiV2AutomationsAutomationIdRoute,
+  deleteApiV2AutomationsDestroyManyRoute,
+  deleteApiV2BookmarksBookmarkIdRoute,
+  deleteApiV2BrandAgentsBrandAgentIdRoute,
+  deleteApiV2BrandsBrandIdLogoRoute,
+  deleteApiV2BrandsBrandIdRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRoute,
+  deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+  deleteApiV2CustomRolesCustomRoleIdRoute,
+  deleteApiV2CustomStatusesCustomStatusIdRoute,
+  deleteApiV2DeletedTicketsDestroyManyRoute,
+  deleteApiV2DeletedTicketsTicketIdRoute,
+  deleteApiV2DeletedUsersDeletedUserIdRoute,
+  deleteApiV2DeletionSchedulesDeletionScheduleIdRoute,
+  deleteApiV2DynamicContentItemsDynamicContentItemIdRoute,
+  deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+  deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute,
+  deleteApiV2GroupMembershipsDestroyManyRoute,
+  deleteApiV2GroupMembershipsGroupMembershipIdRoute,
+  deleteApiV2GroupsGroupIdRoute,
+  deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+  deleteApiV2ItAssetManagementAssetsAssetIdRoute,
+  deleteApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+  deleteApiV2ItAssetManagementFieldsIdRoute,
+  deleteApiV2ItAssetManagementLocationsLocationIdRoute,
+  deleteApiV2ItAssetManagementStatusesStatusIdRoute,
+  deleteApiV2MacrosDestroyManyRoute,
+  deleteApiV2MacrosMacroIdRoute,
+  deleteApiV2OauthClientsOauthClientIdRoute,
+  deleteApiV2OauthTokensCurrentRoute,
+  deleteApiV2OauthTokensOauthTokenIdRoute,
+  deleteApiV2OrganizationFieldsOrganizationFieldIdRoute,
+  deleteApiV2OrganizationMembershipsDestroyManyRoute,
+  deleteApiV2OrganizationMembershipsOrganizationMembershipIdRoute,
+  deleteApiV2OrganizationsDestroyManyRoute,
+  deleteApiV2OrganizationsOrganizationIdRoute,
+  deleteApiV2OrganizationsOrganizationIdTagsRoute,
+  deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute,
+  deleteApiV2QueuesQueueIdRoute,
+  deleteApiV2RecipientAddressesSupportAddressIdRoute,
+  deleteApiV2ResourceCollectionsResourceCollectionIdRoute,
+  deleteApiV2RoutingAttributesAttributeIdRoute,
+  deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+  deleteApiV2SavedSearchesIdRoute,
+  deleteApiV2SharingAgreementsSharingAgreementIdRoute,
+  deleteApiV2SlasPoliciesSlaPolicyIdRoute,
+  deleteApiV2SuspendedTicketsDestroyManyRoute,
+  deleteApiV2SuspendedTicketsIdRoute,
+  deleteApiV2TargetsTargetIdRoute,
+  deleteApiV2TaskListsTaskListIdRoute,
+  deleteApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+  deleteApiV2TaskListTemplatesTaskListTemplateIdRoute,
+  deleteApiV2TicketContentPinsContentPinIdRoute,
+  deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute,
+  deleteApiV2TicketFieldsTicketFieldIdRoute,
+  deleteApiV2TicketFormsTicketFormIdRoute,
+  deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+  deleteApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRoute,
+  deleteApiV2TicketsDestroyManyRoute,
+  deleteApiV2TicketsTicketIdRoute,
+  deleteApiV2TicketsTicketIdTagsRoute,
+  deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLinkIdRoute,
+  deleteApiV2TriggerCategoriesTriggerCategoryIdRoute,
+  deleteApiV2TriggersDestroyManyRoute,
+  deleteApiV2TriggersTriggerIdRoute,
+  deleteApiV2UploadsTokenRoute,
+  deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute,
+  deleteApiV2UserFieldsUserFieldIdRoute,
+  deleteApiV2UsersDestroyManyRoute,
+  deleteApiV2UsersMeLogoutRoute,
+  deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute,
+  deleteApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+  deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute,
+  deleteApiV2UsersUserIdOrganizationsOrganizationIdRoute,
+  deleteApiV2UsersUserIdRoute,
+  deleteApiV2UsersUserIdSessionsRoute,
+  deleteApiV2UsersUserIdSessionsSessionIdRoute,
+  deleteApiV2UsersUserIdSuspensionRoute,
+  deleteApiV2UsersUserIdTagsRoute,
+  deleteApiV2ViewsDestroyManyRoute,
+  deleteApiV2ViewsViewIdRoute,
+  deleteApiV2WorkspacesDestroyManyRoute,
+  deleteApiV2WorkspacesWorkspaceIdRoute,
+  getApiV2AccountEmailSettingsRoute,
+  getApiV2AccountsAvailableRoute,
+  getApiV2AccountSettingsRoute,
+  getApiV2ActivitiesActivityIdRoute,
+  getApiV2ActivitiesCountRoute,
+  getApiV2ActivitiesRoute,
+  getApiV2ApiTokensRoute,
+  getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRoute,
+  getApiV2ApprovalRequestsRoute,
+  getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdRoute,
+  getApiV2AttachmentsAttachmentIdRoute,
+  getApiV2AuditLogsAuditLogIdRoute,
+  getApiV2AuditLogsRoute,
+  getApiV2AutocompleteTagsRoute,
+  getApiV2AutomationsActiveRoute,
+  getApiV2AutomationsAutomationIdRoute,
+  getApiV2AutomationsRoute,
+  getApiV2AutomationsSearchRoute,
+  getApiV2BookmarksRoute,
+  getApiV2BrandAgentsBrandAgentIdRoute,
+  getApiV2BrandAgentsRoute,
+  getApiV2BrandsBrandIdAgentsRoute,
+  getApiV2BrandsBrandIdCheckHostMappingRoute,
+  getApiV2BrandsBrandIdRoute,
+  getApiV2BrandsBrandIdUserMigrationsMigrationIdRoute,
+  getApiV2BrandsBrandIdUserMigrationsRoute,
+  getApiV2BrandsCheckHostMappingRoute,
+  getApiV2BrandsRoute,
+  getApiV2ChannelsTwitterMonitoredTwitterHandlesMonitoredTwitterHandleIdRoute,
+  getApiV2ChannelsTwitterMonitoredTwitterHandlesRoute,
+  getApiV2ChannelsTwitterTicketsCommentIdStatusesRoute,
+  getApiV2ChannelsWhatsappTemplatesLanguagesRoute,
+  getApiV2ChannelsWhatsappTemplatesRoute,
+  getApiV2CountriesIdJsonRoute,
+  getApiV2CountriesJsonRoute,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRoute,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesRoute,
+  getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+  getApiV2CustomObjectsCustomObjectKeyFieldsRoute,
+  getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRoute,
+  getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute,
+  getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsCountRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDownloadRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute,
+  getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRoute,
+  getApiV2CustomObjectsCustomObjectKeyRoute,
+  getApiV2CustomObjectsCustomObjectKeyTriggersActiveRoute,
+  getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRoute,
+  getApiV2CustomObjectsCustomObjectKeyTriggersRoute,
+  getApiV2CustomObjectsCustomObjectKeyTriggersSearchRoute,
+  getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+  getApiV2CustomObjectsLimitsObjectLimitRoute,
+  getApiV2CustomObjectsLimitsRecordLimitRoute,
+  getApiV2CustomObjectsRoute,
+  getApiV2CustomRolesCustomRoleIdRoute,
+  getApiV2CustomRolesRoute,
+  getApiV2CustomStatusesCustomStatusIdRoute,
+  getApiV2CustomStatusesRoute,
+  getApiV2CustomStatusesShowManyRoute,
+  getApiV2DeletedTicketsRoute,
+  getApiV2DeletedUsersCountRoute,
+  getApiV2DeletedUsersDeletedUserIdRoute,
+  getApiV2DeletedUsersRoute,
+  getApiV2DeletionSchedulesDeletionScheduleIdRoute,
+  getApiV2DeletionSchedulesRoute,
+  getApiV2DynamicContentItemsDynamicContentItemIdRoute,
+  getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+  getApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute,
+  getApiV2DynamicContentItemsRoute,
+  getApiV2DynamicContentItemsShowManyRoute,
+  getApiV2EmailNotificationsNotificationIdRoute,
+  getApiV2EmailNotificationsRoute,
+  getApiV2EmailNotificationsShowManyRoute,
+  getApiV2EndUsersUserIdIdentitiesRoute,
+  getApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute,
+  getApiV2GroupMembershipsAssignableRoute,
+  getApiV2GroupMembershipsGroupMembershipIdRoute,
+  getApiV2GroupMembershipsRoute,
+  getApiV2GroupsAssignableRoute,
+  getApiV2GroupsAutocompleteRoute,
+  getApiV2GroupsAvailableAgentsRoute,
+  getApiV2GroupsCountRoute,
+  getApiV2GroupsDefaultRoute,
+  getApiV2GroupsGroupIdMembershipsAssignableRoute,
+  getApiV2GroupsGroupIdMembershipsRoute,
+  getApiV2GroupsGroupIdRoute,
+  getApiV2GroupsGroupIdUsersCountRoute,
+  getApiV2GroupsGroupIdUsersRoute,
+  getApiV2GroupSlasPoliciesDefinitionsRoute,
+  getApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+  getApiV2GroupSlasPoliciesRoute,
+  getApiV2GroupsRoute,
+  getApiV2IncrementalCustomObjectsCustomObjectKeyCursorRoute,
+  getApiV2IncrementalIncrementalResourceSampleRoute,
+  getApiV2IncrementalOrganizationsRoute,
+  getApiV2IncrementalRoutingAttributesRoute,
+  getApiV2IncrementalRoutingAttributeValuesRoute,
+  getApiV2IncrementalRoutingInstanceValuesRoute,
+  getApiV2IncrementalTicketEventsRoute,
+  getApiV2IncrementalTicketMetricEventsRoute,
+  getApiV2IncrementalTicketsCursorRoute,
+  getApiV2IncrementalTicketsRoute,
+  getApiV2IncrementalUsersCursorRoute,
+  getApiV2IncrementalUsersRoute,
+  getApiV2ItAssetManagementAssetsAssetIdRoute,
+  getApiV2ItAssetManagementAssetsRoute,
+  getApiV2ItAssetManagementAssetsSearchRoute,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsAssetTypeFieldIdRoute,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsRoute,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+  getApiV2ItAssetManagementAssetTypesRoute,
+  getApiV2ItAssetManagementFieldsIdRoute,
+  getApiV2ItAssetManagementFieldsRoute,
+  getApiV2ItAssetManagementLocationsLocationIdRoute,
+  getApiV2ItAssetManagementLocationsRoute,
+  getApiV2ItAssetManagementStatusesRoute,
+  getApiV2ItAssetManagementStatusesStatusIdRoute,
+  getApiV2JobStatusesJobStatusIdRoute,
+  getApiV2JobStatusesRoute,
+  getApiV2JobStatusesShowManyRoute,
+  getApiV2LocalesAgentRoute,
+  getApiV2LocalesCurrentRoute,
+  getApiV2LocalesDetectBestLocaleRoute,
+  getApiV2LocalesLocaleIdRoute,
+  getApiV2LocalesPublicRoute,
+  getApiV2LocalesRoute,
+  getApiV2MacrosActionsRoute,
+  getApiV2MacrosActiveRoute,
+  getApiV2MacrosAttachmentsAttachmentIdContentRoute,
+  getApiV2MacrosAttachmentsAttachmentIdRoute,
+  getApiV2MacrosCategoriesRoute,
+  getApiV2MacrosDefinitionsRoute,
+  getApiV2MacrosGroupsRoute,
+  getApiV2MacrosMacroIdApplyRoute,
+  getApiV2MacrosMacroIdAttachmentsRoute,
+  getApiV2MacrosMacroIdRoute,
+  getApiV2MacrosMostUsedRoute,
+  getApiV2MacrosNewRoute,
+  getApiV2MacrosRoute,
+  getApiV2MacrosSearchRoute,
+  getApiV2OauthClientsOauthClientIdRoute,
+  getApiV2OauthClientsRoute,
+  getApiV2OauthGlobalClientsGlobalClientIdRoute,
+  getApiV2OauthGlobalClientsRoute,
+  getApiV2OauthGlobalClientsTokenSummaryRoute,
+  getApiV2OauthTokensCurrentRoute,
+  getApiV2OauthTokensOauthTokenIdRoute,
+  getApiV2OauthTokensRoute,
+  getApiV2OrganizationFieldsOrganizationFieldIdRoute,
+  getApiV2OrganizationFieldsRoute,
+  getApiV2OrganizationMembershipsOrganizationMembershipIdRoute,
+  getApiV2OrganizationMembershipsRoute,
+  getApiV2OrganizationMergesOrganizationMergeIdRoute,
+  getApiV2OrganizationsAutocompleteRoute,
+  getApiV2OrganizationsCountRoute,
+  getApiV2OrganizationsOrganizationIdMergesRoute,
+  getApiV2OrganizationsOrganizationIdOrganizationMembershipsRoute,
+  getApiV2OrganizationsOrganizationIdRelatedRoute,
+  getApiV2OrganizationsOrganizationIdRequestsRoute,
+  getApiV2OrganizationsOrganizationIdRoute,
+  getApiV2OrganizationsOrganizationIdSubscriptionsRoute,
+  getApiV2OrganizationsOrganizationIdTagsRoute,
+  getApiV2OrganizationsOrganizationIdTicketsCountRoute,
+  getApiV2OrganizationsOrganizationIdTicketsRoute,
+  getApiV2OrganizationsOrganizationIdUsersCountRoute,
+  getApiV2OrganizationsOrganizationIdUsersRoute,
+  getApiV2OrganizationsRoute,
+  getApiV2OrganizationsSearchRoute,
+  getApiV2OrganizationsShowManyRoute,
+  getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute,
+  getApiV2OrganizationSubscriptionsRoute,
+  getApiV2ProblemsRoute,
+  getApiV2QueuesDefinitionsRoute,
+  getApiV2QueuesQueueIdRoute,
+  getApiV2QueuesRoute,
+  getApiV2RecipientAddressesRoute,
+  getApiV2RecipientAddressesSupportAddressIdRoute,
+  getApiV2RelationshipsDefinitionsTargetTypeRoute,
+  getApiV2RemoteAuthenticationsRoute,
+  getApiV2RequestsCcdRoute,
+  getApiV2RequestsOpenRoute,
+  getApiV2RequestsRequestIdCommentsRoute,
+  getApiV2RequestsRequestIdCommentsTicketCommentIdRoute,
+  getApiV2RequestsRequestIdRoute,
+  getApiV2RequestsRoute,
+  getApiV2RequestsSearchRoute,
+  getApiV2RequestsSolvedRoute,
+  getApiV2ResourceCollectionsResourceCollectionIdRoute,
+  getApiV2ResourceCollectionsRoute,
+  getApiV2RoutingAgentsInstanceValuesRoute,
+  getApiV2RoutingAgentsUserIdInstanceValuesRoute,
+  getApiV2RoutingAttributesAttributeIdRoute,
+  getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+  getApiV2RoutingAttributesAttributeIdValuesRoute,
+  getApiV2RoutingAttributesDefinitionsRoute,
+  getApiV2RoutingAttributesRoute,
+  getApiV2RoutingRequirementsFulfilledRoute,
+  getApiV2RoutingTicketsTicketIdInstanceValuesRoute,
+  getApiV2SatisfactionRatingsCountRoute,
+  getApiV2SatisfactionRatingsRoute,
+  getApiV2SatisfactionRatingsSatisfactionRatingIdRoute,
+  getApiV2SatisfactionReasonsRoute,
+  getApiV2SatisfactionReasonsSatisfactionReasonIdRoute,
+  getApiV2SavedSearchesRoute,
+  getApiV2SearchCountRoute,
+  getApiV2SearchExportRoute,
+  getApiV2SearchRoute,
+  getApiV2SecuritySettingsRoute,
+  getApiV2SessionsRoute,
+  getApiV2SharingAgreementsRoute,
+  getApiV2SharingAgreementsSharingAgreementIdRoute,
+  getApiV2SkipsRoute,
+  getApiV2SlasPoliciesDefinitionsRoute,
+  getApiV2SlasPoliciesRoute,
+  getApiV2SlasPoliciesSlaPolicyIdRoute,
+  getApiV2SuspendedTicketsIdRoute,
+  getApiV2SuspendedTicketsRoute,
+  getApiV2TagsCountRoute,
+  getApiV2TagsRoute,
+  getApiV2TargetFailuresRoute,
+  getApiV2TargetFailuresTargetFailureIdRoute,
+  getApiV2TargetsRoute,
+  getApiV2TargetsTargetIdRoute,
+  getApiV2TargetTypeTargetIdRelationshipFieldsFieldIdSourceTypeRoute,
+  getApiV2TaskListsTaskListIdRoute,
+  getApiV2TaskListsTaskListIdTaskItemsRoute,
+  getApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+  getApiV2TaskListTemplatesRoute,
+  getApiV2TaskListTemplatesTaskListTemplateIdRoute,
+  getApiV2TaskListTemplatesTaskListTemplateIdTasksRoute,
+  getApiV2TicketAuditsRoute,
+  getApiV2TicketContentPinsRoute,
+  getApiV2TicketFieldsCountRoute,
+  getApiV2TicketFieldsRoute,
+  getApiV2TicketFieldsShowManyRoute,
+  getApiV2TicketFieldsTicketFieldIdOptionsRoute,
+  getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute,
+  getApiV2TicketFieldsTicketFieldIdRoute,
+  getApiV2TicketFormsRoute,
+  getApiV2TicketFormsShowManyRoute,
+  getApiV2TicketFormStatusesRoute,
+  getApiV2TicketFormStatusesShowManyRoute,
+  getApiV2TicketFormsTicketFormIdRoute,
+  getApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+  getApiV2TicketMetricsRoute,
+  getApiV2TicketMetricsTicketMetricIdRoute,
+  getApiV2TicketsAutocompleteRoute,
+  getApiV2TicketsCountRoute,
+  getApiV2TicketsMessagingConversationsConversationIdTicketRoute,
+  getApiV2TicketsRecentRoute,
+  getApiV2TicketsRoute,
+  getApiV2TicketsShowManyRoute,
+  getApiV2TicketsTicketIdAuditsCountRoute,
+  getApiV2TicketsTicketIdAuditsRoute,
+  getApiV2TicketsTicketIdAuditsTicketAuditIdRoute,
+  getApiV2TicketsTicketIdCollaboratorsRoute,
+  getApiV2TicketsTicketIdCommentsCountRoute,
+  getApiV2TicketsTicketIdCommentsRoute,
+  getApiV2TicketsTicketIdConversationLogRoute,
+  getApiV2TicketsTicketIdEmailCcsRoute,
+  getApiV2TicketsTicketIdFollowersRoute,
+  getApiV2TicketsTicketIdGroupSlasPolicyMetricsRoute,
+  getApiV2TicketsTicketIdIncidentsRoute,
+  getApiV2TicketsTicketIdMacrosMacroIdApplyRoute,
+  getApiV2TicketsTicketIdMetricEventsRoute,
+  getApiV2TicketsTicketIdMetricsRoute,
+  getApiV2TicketsTicketIdParentTicketTasksRoute,
+  getApiV2TicketsTicketIdRelatedRoute,
+  getApiV2TicketsTicketIdRoute,
+  getApiV2TicketsTicketIdSkipsRoute,
+  getApiV2TicketsTicketIdSlasPolicyMetricsRoute,
+  getApiV2TicketsTicketIdTagsRoute,
+  getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute,
+  getApiV2TicketsTicketIdTaskListsRoute,
+  getApiV2TriggerCategoriesRoute,
+  getApiV2TriggerCategoriesTriggerCategoryIdRoute,
+  getApiV2TriggersActiveRoute,
+  getApiV2TriggersDefinitionsRoute,
+  getApiV2TriggersLimitsRoute,
+  getApiV2TriggersRoute,
+  getApiV2TriggersSearchRoute,
+  getApiV2TriggersTriggerIdRevisionsRoute,
+  getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRoute,
+  getApiV2TriggersTriggerIdRoute,
+  getApiV2UserFieldsRoute,
+  getApiV2UserFieldsShowManyRoute,
+  getApiV2UserFieldsUserFieldIdOptionsRoute,
+  getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute,
+  getApiV2UserFieldsUserFieldIdRoute,
+  getApiV2UsersAutocompleteRoute,
+  getApiV2UsersCountRoute,
+  getApiV2UsersMeOauthClientsRoute,
+  getApiV2UsersMeRoute,
+  getApiV2UsersMeSessionRenewRoute,
+  getApiV2UsersMeSessionRoute,
+  getApiV2UsersMeSettingsRoute,
+  getApiV2UsersRoute,
+  getApiV2UsersSearchRoute,
+  getApiV2UsersShowManyRoute,
+  getApiV2UsersUserIdBrandAgentsBrandAgentIdRoute,
+  getApiV2UsersUserIdBrandAgentsRoute,
+  getApiV2UsersUserIdComplianceDeletionStatusesRoute,
+  getApiV2UsersUserIdEntitlementsFullRoute,
+  getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute,
+  getApiV2UsersUserIdGroupMembershipsRoute,
+  getApiV2UsersUserIdGroupsCountRoute,
+  getApiV2UsersUserIdGroupsRoute,
+  getApiV2UsersUserIdIdentitiesRoute,
+  getApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+  getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute,
+  getApiV2UsersUserIdOrganizationMembershipsRoute,
+  getApiV2UsersUserIdOrganizationsCountRoute,
+  getApiV2UsersUserIdOrganizationsRoute,
+  getApiV2UsersUserIdOrganizationSubscriptionsRoute,
+  getApiV2UsersUserIdPasswordRequirementsRoute,
+  getApiV2UsersUserIdRelatedRoute,
+  getApiV2UsersUserIdRequestsRoute,
+  getApiV2UsersUserIdRoute,
+  getApiV2UsersUserIdSessionsRoute,
+  getApiV2UsersUserIdSessionsSessionIdRoute,
+  getApiV2UsersUserIdSkipsRoute,
+  getApiV2UsersUserIdSuspensionRoute,
+  getApiV2UsersUserIdTagsRoute,
+  getApiV2UsersUserIdTicketsAssignedCountRoute,
+  getApiV2UsersUserIdTicketsAssignedRoute,
+  getApiV2UsersUserIdTicketsCcdCountRoute,
+  getApiV2UsersUserIdTicketsCcdRoute,
+  getApiV2UsersUserIdTicketsFollowedRoute,
+  getApiV2UsersUserIdTicketsRequestedRoute,
+  getApiV2ViewsActiveRoute,
+  getApiV2ViewsCompactRoute,
+  getApiV2ViewsCountManyRoute,
+  getApiV2ViewsCountRoute,
+  getApiV2ViewsDefinitionsRoute,
+  getApiV2ViewsRoute,
+  getApiV2ViewsSearchRoute,
+  getApiV2ViewsShowManyRoute,
+  getApiV2ViewsViewIdCountRoute,
+  getApiV2ViewsViewIdExecuteRoute,
+  getApiV2ViewsViewIdExportRoute,
+  getApiV2ViewsViewIdRoute,
+  getApiV2ViewsViewIdTicketsRoute,
+  getApiV2WorkspacesRoute,
+  getApiV2WorkspacesWorkspaceIdRoute,
+  patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdDecisionRoute,
+  patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRoute,
+  patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+  patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+  patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRoute,
+  patchApiV2CustomObjectsCustomObjectKeyRoute,
+  patchApiV2ItAssetManagementAssetsAssetIdRoute,
+  patchApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+  patchApiV2ItAssetManagementFieldsIdRoute,
+  patchApiV2ItAssetManagementLocationsLocationIdRoute,
+  patchApiV2ItAssetManagementStatusesStatusIdRoute,
+  patchApiV2QueuesOrderRoute,
+  patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+  patchApiV2TriggerCategoriesTriggerCategoryIdRoute,
+  postApiV2AccountsRoute,
+  postApiV2AnyChannelChannelbackReportErrorRoute,
+  postApiV2AnyChannelPushRoute,
+  postApiV2AnyChannelValidateTokenRoute,
+  postApiV2ApiTokensRoute,
+  postApiV2ApprovalClarificationFlowMessagesRoute,
+  postApiV2ApprovalRequestsRoute,
+  postApiV2AuditLogsExportRoute,
+  postApiV2AutocompleteTagsRoute,
+  postApiV2AutomationsRoute,
+  postApiV2BookmarksRoute,
+  postApiV2BrandAgentsRoute,
+  postApiV2BrandsBrandIdUserMigrationsRoute,
+  postApiV2BrandsRoute,
+  postApiV2ChannelsTwitterTicketsRoute,
+  postApiV2ChannelsVoiceAgentsAgentIdTicketsTicketIdDisplayRoute,
+  postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRoute,
+  postApiV2ChannelsVoiceTicketsRoute,
+  postApiV2CustomObjectsCustomObjectKeyAccessRulesRoute,
+  postApiV2CustomObjectsCustomObjectKeyFieldsRoute,
+  postApiV2CustomObjectsCustomObjectKeyJobsRoute,
+  postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute,
+  postApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+  postApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute,
+  postApiV2CustomObjectsCustomObjectKeyTriggersRoute,
+  postApiV2CustomObjectsRoute,
+  postApiV2CustomRolesRoute,
+  postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRoute,
+  postApiV2CustomStatusesRoute,
+  postApiV2DeletionSchedulesRoute,
+  postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyRoute,
+  postApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute,
+  postApiV2DynamicContentItemsRoute,
+  postApiV2EndUsersUserIdIdentitiesRoute,
+  postApiV2GroupMembershipsCreateManyRoute,
+  postApiV2GroupMembershipsRoute,
+  postApiV2GroupSlasPoliciesRoute,
+  postApiV2GroupsRoute,
+  postApiV2ImportsTicketsCreateManyRoute,
+  postApiV2ImportsTicketsRoute,
+  postApiV2ItAssetManagementAssetsJobsRoute,
+  postApiV2ItAssetManagementAssetsRoute,
+  postApiV2ItAssetManagementAssetsSearchRoute,
+  postApiV2ItAssetManagementAssetTypesRoute,
+  postApiV2ItAssetManagementFieldsRoute,
+  postApiV2ItAssetManagementLocationsRoute,
+  postApiV2ItAssetManagementStatusesRoute,
+  postApiV2MacrosAttachmentsRoute,
+  postApiV2MacrosMacroIdAttachmentsRoute,
+  postApiV2MacrosRoute,
+  postApiV2OauthClientsRoute,
+  postApiV2OauthTokensDeleteManyRoute,
+  postApiV2OrganizationFieldsRoute,
+  postApiV2OrganizationMembershipsCreateManyRoute,
+  postApiV2OrganizationMembershipsRoute,
+  postApiV2OrganizationsCreateManyRoute,
+  postApiV2OrganizationsCreateOrUpdateRoute,
+  postApiV2OrganizationsOrganizationIdMergeRoute,
+  postApiV2OrganizationsOrganizationIdTagsRoute,
+  postApiV2OrganizationsRoute,
+  postApiV2OrganizationSubscriptionsRoute,
+  postApiV2ProblemsAutocompleteRoute,
+  postApiV2PushNotificationDevicesDestroyManyRoute,
+  postApiV2QueuesRoute,
+  postApiV2RecipientAddressesRoute,
+  postApiV2RequestsRoute,
+  postApiV2ResourceCollectionsRoute,
+  postApiV2RoutingAgentsInstanceValuesJobsRoute,
+  postApiV2RoutingAgentsUserIdInstanceValuesRoute,
+  postApiV2RoutingAttributesAttributeIdValuesRoute,
+  postApiV2RoutingAttributesRoute,
+  postApiV2RoutingTicketsTicketIdInstanceValuesRoute,
+  postApiV2SavedSearchesRoute,
+  postApiV2SharingAgreementsRoute,
+  postApiV2SkipsRoute,
+  postApiV2SlasPoliciesRoute,
+  postApiV2SuspendedTicketsAttachmentsRoute,
+  postApiV2SuspendedTicketsExportRoute,
+  postApiV2TargetsRoute,
+  postApiV2TaskListsTaskListIdTaskItemsRoute,
+  postApiV2TaskListTemplatesRoute,
+  postApiV2TicketContentPinsRoute,
+  postApiV2TicketFieldsRoute,
+  postApiV2TicketFieldsTicketFieldIdOptionsRoute,
+  postApiV2TicketFormsRoute,
+  postApiV2TicketFormsTicketFormIdCloneRoute,
+  postApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+  postApiV2TicketsCreateManyRoute,
+  postApiV2TicketsRoute,
+  postApiV2TicketsTicketIdMergeRoute,
+  postApiV2TicketsTicketIdSatisfactionRatingRoute,
+  postApiV2TicketsTicketIdTagsRoute,
+  postApiV2TicketsTicketIdTaskItemsTaskItemIdSubticketRoute,
+  postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute,
+  postApiV2TicketsTicketIdTaskListsRoute,
+  postApiV2TriggerCategoriesJobsRoute,
+  postApiV2TriggerCategoriesRoute,
+  postApiV2TriggersRoute,
+  postApiV2TriggersValidateRoute,
+  postApiV2UploadsRoute,
+  postApiV2UserFieldsRoute,
+  postApiV2UserFieldsUserFieldIdOptionsRoute,
+  postApiV2UsersAutocompleteRoute,
+  postApiV2UsersCreateManyRoute,
+  postApiV2UsersCreateOrUpdateManyRoute,
+  postApiV2UsersCreateOrUpdateRoute,
+  postApiV2UsersLogoutManyRoute,
+  postApiV2UsersRequestCreateRoute,
+  postApiV2UsersRoute,
+  postApiV2UsersUserIdGroupMembershipsRoute,
+  postApiV2UsersUserIdIdentitiesRoute,
+  postApiV2UsersUserIdOrganizationMembershipsRoute,
+  postApiV2UsersUserIdPasswordRoute,
+  postApiV2UsersUserIdSuspensionRoute,
+  postApiV2UsersUserIdTagsRoute,
+  postApiV2ViewsPreviewCountRoute,
+  postApiV2ViewsPreviewRoute,
+  postApiV2ViewsRoute,
+  postApiV2WorkspacesRoute,
+  postOauthTokensRoute,
+  putApiV2AccountEmailSettingsRoute,
+  putApiV2AccountSettingsRoute,
+  putApiV2ApiTokensIdRoute,
+  putApiV2AttachmentsAttachmentIdRoute,
+  putApiV2AutomationsAutomationIdRoute,
+  putApiV2AutomationsUpdateManyRoute,
+  putApiV2BrandsBrandIdLogoRoute,
+  putApiV2BrandsBrandIdRoute,
+  putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRoute,
+  putApiV2ChannelsWhatsappTemplatesToggleManyRoute,
+  putApiV2ChatFileRedactionsTicketIdRoute,
+  putApiV2ChatRedactionsTicketIdRoute,
+  putApiV2CommentRedactionsTicketCommentIdRoute,
+  putApiV2CustomObjectsCustomObjectKeyFieldsReorderRoute,
+  putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute,
+  putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRoute,
+  putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+  putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRoute,
+  putApiV2CustomRolesCustomRoleIdRoute,
+  putApiV2CustomStatusDefaultRoute,
+  putApiV2CustomStatusesCustomStatusIdRoute,
+  putApiV2DeletedTicketsRestoreManyRoute,
+  putApiV2DeletedTicketsTicketIdRestoreRoute,
+  putApiV2DeletionSchedulesDeletionScheduleIdRoute,
+  putApiV2DynamicContentItemsDynamicContentItemIdRoute,
+  putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+  putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRoute,
+  putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute,
+  putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute,
+  putApiV2GroupsGroupIdRoute,
+  putApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+  putApiV2GroupSlasPoliciesReorderRoute,
+  putApiV2MacrosMacroIdRoute,
+  putApiV2MacrosUpdateManyRoute,
+  putApiV2OauthClientsOauthClientIdGenerateSecretRoute,
+  putApiV2OauthClientsOauthClientIdRoute,
+  putApiV2OrganizationFieldsOrganizationFieldIdRoute,
+  putApiV2OrganizationFieldsReorderRoute,
+  putApiV2OrganizationsOrganizationIdRoute,
+  putApiV2OrganizationsOrganizationIdTagsRoute,
+  putApiV2OrganizationsUpdateManyRoute,
+  putApiV2QueuesQueueIdRoute,
+  putApiV2RecipientAddressesSupportAddressIdRoute,
+  putApiV2RecipientAddressesSupportAddressIdVerifyRoute,
+  putApiV2RequestsRequestIdRoute,
+  putApiV2ResourceCollectionsResourceCollectionIdRoute,
+  putApiV2RoutingAttributesAttributeIdRoute,
+  putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+  putApiV2SavedSearchesIdRoute,
+  putApiV2SharingAgreementsSharingAgreementIdRoute,
+  putApiV2SlasPoliciesReorderRoute,
+  putApiV2SlasPoliciesSlaPolicyIdRoute,
+  putApiV2SuspendedTicketsBulkRecoverRoute,
+  putApiV2SuspendedTicketsIdRecoverRoute,
+  putApiV2SuspendedTicketsRecoverManyRoute,
+  putApiV2TargetsTargetIdRoute,
+  putApiV2TaskListsTaskListIdRoute,
+  putApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+  putApiV2TaskListTemplatesTaskListTemplateIdRoute,
+  putApiV2TicketFieldsReorderRoute,
+  putApiV2TicketFieldsTicketFieldIdRoute,
+  putApiV2TicketFormsReorderRoute,
+  putApiV2TicketFormsTicketFormIdRoute,
+  putApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+  putApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRoute,
+  putApiV2TicketsMarkManyAsSpamRoute,
+  putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRoute,
+  putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdRedactRoute,
+  putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRoute,
+  putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRoute,
+  putApiV2TicketsTicketIdMarkAsSpamRoute,
+  putApiV2TicketsTicketIdRoute,
+  putApiV2TicketsTicketIdTagsRoute,
+  putApiV2TicketsUpdateManyRoute,
+  putApiV2TriggersReorderRoute,
+  putApiV2TriggersTriggerIdRoute,
+  putApiV2TriggersUpdateManyRoute,
+  putApiV2UserFieldsReorderRoute,
+  putApiV2UserFieldsUserFieldIdRoute,
+  putApiV2UsersMeSettingsRoute,
+  putApiV2UsersUpdateManyRoute,
+  putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRoute,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRoute,
+  putApiV2UsersUserIdMergeRoute,
+  putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdMakeDefaultRoute,
+  putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRoute,
+  putApiV2UsersUserIdPasswordRoute,
+  putApiV2UsersUserIdRoute,
+  putApiV2UsersUserIdSuspensionRoute,
+  putApiV2UsersUserIdTagsRoute,
+  putApiV2ViewsUpdateManyRoute,
+  putApiV2ViewsViewIdRoute,
+  putApiV2WorkspacesReorderRoute,
+  putApiV2WorkspacesWorkspaceIdRoute,
+} from './routes'
+import {
+  deleteApiV2ApiTokensIdRouteHandler,
+  deleteApiV2AttachmentsAttachmentIdRouteHandler,
+  deleteApiV2AutomationsAutomationIdRouteHandler,
+  deleteApiV2AutomationsDestroyManyRouteHandler,
+  deleteApiV2BookmarksBookmarkIdRouteHandler,
+  deleteApiV2BrandAgentsBrandAgentIdRouteHandler,
+  deleteApiV2BrandsBrandIdLogoRouteHandler,
+  deleteApiV2BrandsBrandIdRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRouteHandler,
+  deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  deleteApiV2CustomRolesCustomRoleIdRouteHandler,
+  deleteApiV2CustomStatusesCustomStatusIdRouteHandler,
+  deleteApiV2DeletedTicketsDestroyManyRouteHandler,
+  deleteApiV2DeletedTicketsTicketIdRouteHandler,
+  deleteApiV2DeletedUsersDeletedUserIdRouteHandler,
+  deleteApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  deleteApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  deleteApiV2GroupMembershipsDestroyManyRouteHandler,
+  deleteApiV2GroupMembershipsGroupMembershipIdRouteHandler,
+  deleteApiV2GroupsGroupIdRouteHandler,
+  deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  deleteApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  deleteApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  deleteApiV2ItAssetManagementFieldsIdRouteHandler,
+  deleteApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  deleteApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  deleteApiV2MacrosDestroyManyRouteHandler,
+  deleteApiV2MacrosMacroIdRouteHandler,
+  deleteApiV2OauthClientsOauthClientIdRouteHandler,
+  deleteApiV2OauthTokensCurrentRouteHandler,
+  deleteApiV2OauthTokensOauthTokenIdRouteHandler,
+  deleteApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  deleteApiV2OrganizationMembershipsDestroyManyRouteHandler,
+  deleteApiV2OrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  deleteApiV2OrganizationsDestroyManyRouteHandler,
+  deleteApiV2OrganizationsOrganizationIdRouteHandler,
+  deleteApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRouteHandler,
+  deleteApiV2QueuesQueueIdRouteHandler,
+  deleteApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  deleteApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  deleteApiV2RoutingAttributesAttributeIdRouteHandler,
+  deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  deleteApiV2SavedSearchesIdRouteHandler,
+  deleteApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  deleteApiV2SlasPoliciesSlaPolicyIdRouteHandler,
+  deleteApiV2SuspendedTicketsDestroyManyRouteHandler,
+  deleteApiV2SuspendedTicketsIdRouteHandler,
+  deleteApiV2TargetsTargetIdRouteHandler,
+  deleteApiV2TaskListsTaskListIdRouteHandler,
+  deleteApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  deleteApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  deleteApiV2TicketContentPinsContentPinIdRouteHandler,
+  deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRouteHandler,
+  deleteApiV2TicketFieldsTicketFieldIdRouteHandler,
+  deleteApiV2TicketFormsTicketFormIdRouteHandler,
+  deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  deleteApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRouteHandler,
+  deleteApiV2TicketsDestroyManyRouteHandler,
+  deleteApiV2TicketsTicketIdRouteHandler,
+  deleteApiV2TicketsTicketIdTagsRouteHandler,
+  deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLinkIdRouteHandler,
+  deleteApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  deleteApiV2TriggersDestroyManyRouteHandler,
+  deleteApiV2TriggersTriggerIdRouteHandler,
+  deleteApiV2UploadsTokenRouteHandler,
+  deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRouteHandler,
+  deleteApiV2UserFieldsUserFieldIdRouteHandler,
+  deleteApiV2UsersDestroyManyRouteHandler,
+  deleteApiV2UsersMeLogoutRouteHandler,
+  deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRouteHandler,
+  deleteApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  deleteApiV2UsersUserIdOrganizationsOrganizationIdRouteHandler,
+  deleteApiV2UsersUserIdRouteHandler,
+  deleteApiV2UsersUserIdSessionsRouteHandler,
+  deleteApiV2UsersUserIdSessionsSessionIdRouteHandler,
+  deleteApiV2UsersUserIdSuspensionRouteHandler,
+  deleteApiV2UsersUserIdTagsRouteHandler,
+  deleteApiV2ViewsDestroyManyRouteHandler,
+  deleteApiV2ViewsViewIdRouteHandler,
+  deleteApiV2WorkspacesDestroyManyRouteHandler,
+  deleteApiV2WorkspacesWorkspaceIdRouteHandler,
+  getApiV2AccountEmailSettingsRouteHandler,
+  getApiV2AccountsAvailableRouteHandler,
+  getApiV2AccountSettingsRouteHandler,
+  getApiV2ActivitiesActivityIdRouteHandler,
+  getApiV2ActivitiesCountRouteHandler,
+  getApiV2ActivitiesRouteHandler,
+  getApiV2ApiTokensRouteHandler,
+  getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRouteHandler,
+  getApiV2ApprovalRequestsRouteHandler,
+  getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdRouteHandler,
+  getApiV2AttachmentsAttachmentIdRouteHandler,
+  getApiV2AuditLogsAuditLogIdRouteHandler,
+  getApiV2AuditLogsRouteHandler,
+  getApiV2AutocompleteTagsRouteHandler,
+  getApiV2AutomationsActiveRouteHandler,
+  getApiV2AutomationsAutomationIdRouteHandler,
+  getApiV2AutomationsRouteHandler,
+  getApiV2AutomationsSearchRouteHandler,
+  getApiV2BookmarksRouteHandler,
+  getApiV2BrandAgentsBrandAgentIdRouteHandler,
+  getApiV2BrandAgentsRouteHandler,
+  getApiV2BrandsBrandIdAgentsRouteHandler,
+  getApiV2BrandsBrandIdCheckHostMappingRouteHandler,
+  getApiV2BrandsBrandIdRouteHandler,
+  getApiV2BrandsBrandIdUserMigrationsMigrationIdRouteHandler,
+  getApiV2BrandsBrandIdUserMigrationsRouteHandler,
+  getApiV2BrandsCheckHostMappingRouteHandler,
+  getApiV2BrandsRouteHandler,
+  getApiV2ChannelsTwitterMonitoredTwitterHandlesMonitoredTwitterHandleIdRouteHandler,
+  getApiV2ChannelsTwitterMonitoredTwitterHandlesRouteHandler,
+  getApiV2ChannelsTwitterTicketsCommentIdStatusesRouteHandler,
+  getApiV2ChannelsWhatsappTemplatesLanguagesRouteHandler,
+  getApiV2ChannelsWhatsappTemplatesRouteHandler,
+  getApiV2CountriesIdJsonRouteHandler,
+  getApiV2CountriesJsonRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyAccessRulesRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyFieldsRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsCountRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDownloadRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsSearchRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyTriggersActiveRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyTriggersRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyTriggersSearchRouteHandler,
+  getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  getApiV2CustomObjectsLimitsObjectLimitRouteHandler,
+  getApiV2CustomObjectsLimitsRecordLimitRouteHandler,
+  getApiV2CustomObjectsRouteHandler,
+  getApiV2CustomRolesCustomRoleIdRouteHandler,
+  getApiV2CustomRolesRouteHandler,
+  getApiV2CustomStatusesCustomStatusIdRouteHandler,
+  getApiV2CustomStatusesRouteHandler,
+  getApiV2CustomStatusesShowManyRouteHandler,
+  getApiV2DeletedTicketsRouteHandler,
+  getApiV2DeletedUsersCountRouteHandler,
+  getApiV2DeletedUsersDeletedUserIdRouteHandler,
+  getApiV2DeletedUsersRouteHandler,
+  getApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  getApiV2DeletionSchedulesRouteHandler,
+  getApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  getApiV2DynamicContentItemsDynamicContentItemIdVariantsRouteHandler,
+  getApiV2DynamicContentItemsRouteHandler,
+  getApiV2DynamicContentItemsShowManyRouteHandler,
+  getApiV2EmailNotificationsNotificationIdRouteHandler,
+  getApiV2EmailNotificationsRouteHandler,
+  getApiV2EmailNotificationsShowManyRouteHandler,
+  getApiV2EndUsersUserIdIdentitiesRouteHandler,
+  getApiV2EndUsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  getApiV2GroupMembershipsAssignableRouteHandler,
+  getApiV2GroupMembershipsGroupMembershipIdRouteHandler,
+  getApiV2GroupMembershipsRouteHandler,
+  getApiV2GroupsAssignableRouteHandler,
+  getApiV2GroupsAutocompleteRouteHandler,
+  getApiV2GroupsAvailableAgentsRouteHandler,
+  getApiV2GroupsCountRouteHandler,
+  getApiV2GroupsDefaultRouteHandler,
+  getApiV2GroupsGroupIdMembershipsAssignableRouteHandler,
+  getApiV2GroupsGroupIdMembershipsRouteHandler,
+  getApiV2GroupsGroupIdRouteHandler,
+  getApiV2GroupsGroupIdUsersCountRouteHandler,
+  getApiV2GroupsGroupIdUsersRouteHandler,
+  getApiV2GroupSlasPoliciesDefinitionsRouteHandler,
+  getApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  getApiV2GroupSlasPoliciesRouteHandler,
+  getApiV2GroupsRouteHandler,
+  getApiV2IncrementalCustomObjectsCustomObjectKeyCursorRouteHandler,
+  getApiV2IncrementalIncrementalResourceSampleRouteHandler,
+  getApiV2IncrementalOrganizationsRouteHandler,
+  getApiV2IncrementalRoutingAttributesRouteHandler,
+  getApiV2IncrementalRoutingAttributeValuesRouteHandler,
+  getApiV2IncrementalRoutingInstanceValuesRouteHandler,
+  getApiV2IncrementalTicketEventsRouteHandler,
+  getApiV2IncrementalTicketMetricEventsRouteHandler,
+  getApiV2IncrementalTicketsCursorRouteHandler,
+  getApiV2IncrementalTicketsRouteHandler,
+  getApiV2IncrementalUsersCursorRouteHandler,
+  getApiV2IncrementalUsersRouteHandler,
+  getApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  getApiV2ItAssetManagementAssetsRouteHandler,
+  getApiV2ItAssetManagementAssetsSearchRouteHandler,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsAssetTypeFieldIdRouteHandler,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsRouteHandler,
+  getApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  getApiV2ItAssetManagementAssetTypesRouteHandler,
+  getApiV2ItAssetManagementFieldsIdRouteHandler,
+  getApiV2ItAssetManagementFieldsRouteHandler,
+  getApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  getApiV2ItAssetManagementLocationsRouteHandler,
+  getApiV2ItAssetManagementStatusesRouteHandler,
+  getApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  getApiV2JobStatusesJobStatusIdRouteHandler,
+  getApiV2JobStatusesRouteHandler,
+  getApiV2JobStatusesShowManyRouteHandler,
+  getApiV2LocalesAgentRouteHandler,
+  getApiV2LocalesCurrentRouteHandler,
+  getApiV2LocalesDetectBestLocaleRouteHandler,
+  getApiV2LocalesLocaleIdRouteHandler,
+  getApiV2LocalesPublicRouteHandler,
+  getApiV2LocalesRouteHandler,
+  getApiV2MacrosActionsRouteHandler,
+  getApiV2MacrosActiveRouteHandler,
+  getApiV2MacrosAttachmentsAttachmentIdContentRouteHandler,
+  getApiV2MacrosAttachmentsAttachmentIdRouteHandler,
+  getApiV2MacrosCategoriesRouteHandler,
+  getApiV2MacrosDefinitionsRouteHandler,
+  getApiV2MacrosGroupsRouteHandler,
+  getApiV2MacrosMacroIdApplyRouteHandler,
+  getApiV2MacrosMacroIdAttachmentsRouteHandler,
+  getApiV2MacrosMacroIdRouteHandler,
+  getApiV2MacrosMostUsedRouteHandler,
+  getApiV2MacrosNewRouteHandler,
+  getApiV2MacrosRouteHandler,
+  getApiV2MacrosSearchRouteHandler,
+  getApiV2OauthClientsOauthClientIdRouteHandler,
+  getApiV2OauthClientsRouteHandler,
+  getApiV2OauthGlobalClientsGlobalClientIdRouteHandler,
+  getApiV2OauthGlobalClientsRouteHandler,
+  getApiV2OauthGlobalClientsTokenSummaryRouteHandler,
+  getApiV2OauthTokensCurrentRouteHandler,
+  getApiV2OauthTokensOauthTokenIdRouteHandler,
+  getApiV2OauthTokensRouteHandler,
+  getApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  getApiV2OrganizationFieldsRouteHandler,
+  getApiV2OrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  getApiV2OrganizationMembershipsRouteHandler,
+  getApiV2OrganizationMergesOrganizationMergeIdRouteHandler,
+  getApiV2OrganizationsAutocompleteRouteHandler,
+  getApiV2OrganizationsCountRouteHandler,
+  getApiV2OrganizationsOrganizationIdMergesRouteHandler,
+  getApiV2OrganizationsOrganizationIdOrganizationMembershipsRouteHandler,
+  getApiV2OrganizationsOrganizationIdRelatedRouteHandler,
+  getApiV2OrganizationsOrganizationIdRequestsRouteHandler,
+  getApiV2OrganizationsOrganizationIdRouteHandler,
+  getApiV2OrganizationsOrganizationIdSubscriptionsRouteHandler,
+  getApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  getApiV2OrganizationsOrganizationIdTicketsCountRouteHandler,
+  getApiV2OrganizationsOrganizationIdTicketsRouteHandler,
+  getApiV2OrganizationsOrganizationIdUsersCountRouteHandler,
+  getApiV2OrganizationsOrganizationIdUsersRouteHandler,
+  getApiV2OrganizationsRouteHandler,
+  getApiV2OrganizationsSearchRouteHandler,
+  getApiV2OrganizationsShowManyRouteHandler,
+  getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRouteHandler,
+  getApiV2OrganizationSubscriptionsRouteHandler,
+  getApiV2ProblemsRouteHandler,
+  getApiV2QueuesDefinitionsRouteHandler,
+  getApiV2QueuesQueueIdRouteHandler,
+  getApiV2QueuesRouteHandler,
+  getApiV2RecipientAddressesRouteHandler,
+  getApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  getApiV2RelationshipsDefinitionsTargetTypeRouteHandler,
+  getApiV2RemoteAuthenticationsRouteHandler,
+  getApiV2RequestsCcdRouteHandler,
+  getApiV2RequestsOpenRouteHandler,
+  getApiV2RequestsRequestIdCommentsRouteHandler,
+  getApiV2RequestsRequestIdCommentsTicketCommentIdRouteHandler,
+  getApiV2RequestsRequestIdRouteHandler,
+  getApiV2RequestsRouteHandler,
+  getApiV2RequestsSearchRouteHandler,
+  getApiV2RequestsSolvedRouteHandler,
+  getApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  getApiV2ResourceCollectionsRouteHandler,
+  getApiV2RoutingAgentsInstanceValuesRouteHandler,
+  getApiV2RoutingAgentsUserIdInstanceValuesRouteHandler,
+  getApiV2RoutingAttributesAttributeIdRouteHandler,
+  getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  getApiV2RoutingAttributesAttributeIdValuesRouteHandler,
+  getApiV2RoutingAttributesDefinitionsRouteHandler,
+  getApiV2RoutingAttributesRouteHandler,
+  getApiV2RoutingRequirementsFulfilledRouteHandler,
+  getApiV2RoutingTicketsTicketIdInstanceValuesRouteHandler,
+  getApiV2SatisfactionRatingsCountRouteHandler,
+  getApiV2SatisfactionRatingsRouteHandler,
+  getApiV2SatisfactionRatingsSatisfactionRatingIdRouteHandler,
+  getApiV2SatisfactionReasonsRouteHandler,
+  getApiV2SatisfactionReasonsSatisfactionReasonIdRouteHandler,
+  getApiV2SavedSearchesRouteHandler,
+  getApiV2SearchCountRouteHandler,
+  getApiV2SearchExportRouteHandler,
+  getApiV2SearchRouteHandler,
+  getApiV2SecuritySettingsRouteHandler,
+  getApiV2SessionsRouteHandler,
+  getApiV2SharingAgreementsRouteHandler,
+  getApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  getApiV2SkipsRouteHandler,
+  getApiV2SlasPoliciesDefinitionsRouteHandler,
+  getApiV2SlasPoliciesRouteHandler,
+  getApiV2SlasPoliciesSlaPolicyIdRouteHandler,
+  getApiV2SuspendedTicketsIdRouteHandler,
+  getApiV2SuspendedTicketsRouteHandler,
+  getApiV2TagsCountRouteHandler,
+  getApiV2TagsRouteHandler,
+  getApiV2TargetFailuresRouteHandler,
+  getApiV2TargetFailuresTargetFailureIdRouteHandler,
+  getApiV2TargetsRouteHandler,
+  getApiV2TargetsTargetIdRouteHandler,
+  getApiV2TargetTypeTargetIdRelationshipFieldsFieldIdSourceTypeRouteHandler,
+  getApiV2TaskListsTaskListIdRouteHandler,
+  getApiV2TaskListsTaskListIdTaskItemsRouteHandler,
+  getApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  getApiV2TaskListTemplatesRouteHandler,
+  getApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  getApiV2TaskListTemplatesTaskListTemplateIdTasksRouteHandler,
+  getApiV2TicketAuditsRouteHandler,
+  getApiV2TicketContentPinsRouteHandler,
+  getApiV2TicketFieldsCountRouteHandler,
+  getApiV2TicketFieldsRouteHandler,
+  getApiV2TicketFieldsShowManyRouteHandler,
+  getApiV2TicketFieldsTicketFieldIdOptionsRouteHandler,
+  getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRouteHandler,
+  getApiV2TicketFieldsTicketFieldIdRouteHandler,
+  getApiV2TicketFormsRouteHandler,
+  getApiV2TicketFormsShowManyRouteHandler,
+  getApiV2TicketFormStatusesRouteHandler,
+  getApiV2TicketFormStatusesShowManyRouteHandler,
+  getApiV2TicketFormsTicketFormIdRouteHandler,
+  getApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  getApiV2TicketMetricsRouteHandler,
+  getApiV2TicketMetricsTicketMetricIdRouteHandler,
+  getApiV2TicketsAutocompleteRouteHandler,
+  getApiV2TicketsCountRouteHandler,
+  getApiV2TicketsMessagingConversationsConversationIdTicketRouteHandler,
+  getApiV2TicketsRecentRouteHandler,
+  getApiV2TicketsRouteHandler,
+  getApiV2TicketsShowManyRouteHandler,
+  getApiV2TicketsTicketIdAuditsCountRouteHandler,
+  getApiV2TicketsTicketIdAuditsRouteHandler,
+  getApiV2TicketsTicketIdAuditsTicketAuditIdRouteHandler,
+  getApiV2TicketsTicketIdCollaboratorsRouteHandler,
+  getApiV2TicketsTicketIdCommentsCountRouteHandler,
+  getApiV2TicketsTicketIdCommentsRouteHandler,
+  getApiV2TicketsTicketIdConversationLogRouteHandler,
+  getApiV2TicketsTicketIdEmailCcsRouteHandler,
+  getApiV2TicketsTicketIdFollowersRouteHandler,
+  getApiV2TicketsTicketIdGroupSlasPolicyMetricsRouteHandler,
+  getApiV2TicketsTicketIdIncidentsRouteHandler,
+  getApiV2TicketsTicketIdMacrosMacroIdApplyRouteHandler,
+  getApiV2TicketsTicketIdMetricEventsRouteHandler,
+  getApiV2TicketsTicketIdMetricsRouteHandler,
+  getApiV2TicketsTicketIdParentTicketTasksRouteHandler,
+  getApiV2TicketsTicketIdRelatedRouteHandler,
+  getApiV2TicketsTicketIdRouteHandler,
+  getApiV2TicketsTicketIdSkipsRouteHandler,
+  getApiV2TicketsTicketIdSlasPolicyMetricsRouteHandler,
+  getApiV2TicketsTicketIdTagsRouteHandler,
+  getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRouteHandler,
+  getApiV2TicketsTicketIdTaskListsRouteHandler,
+  getApiV2TriggerCategoriesRouteHandler,
+  getApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  getApiV2TriggersActiveRouteHandler,
+  getApiV2TriggersDefinitionsRouteHandler,
+  getApiV2TriggersLimitsRouteHandler,
+  getApiV2TriggersRouteHandler,
+  getApiV2TriggersSearchRouteHandler,
+  getApiV2TriggersTriggerIdRevisionsRouteHandler,
+  getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRouteHandler,
+  getApiV2TriggersTriggerIdRouteHandler,
+  getApiV2UserFieldsRouteHandler,
+  getApiV2UserFieldsShowManyRouteHandler,
+  getApiV2UserFieldsUserFieldIdOptionsRouteHandler,
+  getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRouteHandler,
+  getApiV2UserFieldsUserFieldIdRouteHandler,
+  getApiV2UsersAutocompleteRouteHandler,
+  getApiV2UsersCountRouteHandler,
+  getApiV2UsersMeOauthClientsRouteHandler,
+  getApiV2UsersMeRouteHandler,
+  getApiV2UsersMeSessionRenewRouteHandler,
+  getApiV2UsersMeSessionRouteHandler,
+  getApiV2UsersMeSettingsRouteHandler,
+  getApiV2UsersRouteHandler,
+  getApiV2UsersSearchRouteHandler,
+  getApiV2UsersShowManyRouteHandler,
+  getApiV2UsersUserIdBrandAgentsBrandAgentIdRouteHandler,
+  getApiV2UsersUserIdBrandAgentsRouteHandler,
+  getApiV2UsersUserIdComplianceDeletionStatusesRouteHandler,
+  getApiV2UsersUserIdEntitlementsFullRouteHandler,
+  getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRouteHandler,
+  getApiV2UsersUserIdGroupMembershipsRouteHandler,
+  getApiV2UsersUserIdGroupsCountRouteHandler,
+  getApiV2UsersUserIdGroupsRouteHandler,
+  getApiV2UsersUserIdIdentitiesRouteHandler,
+  getApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  getApiV2UsersUserIdOrganizationMembershipsRouteHandler,
+  getApiV2UsersUserIdOrganizationsCountRouteHandler,
+  getApiV2UsersUserIdOrganizationsRouteHandler,
+  getApiV2UsersUserIdOrganizationSubscriptionsRouteHandler,
+  getApiV2UsersUserIdPasswordRequirementsRouteHandler,
+  getApiV2UsersUserIdRelatedRouteHandler,
+  getApiV2UsersUserIdRequestsRouteHandler,
+  getApiV2UsersUserIdRouteHandler,
+  getApiV2UsersUserIdSessionsRouteHandler,
+  getApiV2UsersUserIdSessionsSessionIdRouteHandler,
+  getApiV2UsersUserIdSkipsRouteHandler,
+  getApiV2UsersUserIdSuspensionRouteHandler,
+  getApiV2UsersUserIdTagsRouteHandler,
+  getApiV2UsersUserIdTicketsAssignedCountRouteHandler,
+  getApiV2UsersUserIdTicketsAssignedRouteHandler,
+  getApiV2UsersUserIdTicketsCcdCountRouteHandler,
+  getApiV2UsersUserIdTicketsCcdRouteHandler,
+  getApiV2UsersUserIdTicketsFollowedRouteHandler,
+  getApiV2UsersUserIdTicketsRequestedRouteHandler,
+  getApiV2ViewsActiveRouteHandler,
+  getApiV2ViewsCompactRouteHandler,
+  getApiV2ViewsCountManyRouteHandler,
+  getApiV2ViewsCountRouteHandler,
+  getApiV2ViewsDefinitionsRouteHandler,
+  getApiV2ViewsRouteHandler,
+  getApiV2ViewsSearchRouteHandler,
+  getApiV2ViewsShowManyRouteHandler,
+  getApiV2ViewsViewIdCountRouteHandler,
+  getApiV2ViewsViewIdExecuteRouteHandler,
+  getApiV2ViewsViewIdExportRouteHandler,
+  getApiV2ViewsViewIdRouteHandler,
+  getApiV2ViewsViewIdTicketsRouteHandler,
+  getApiV2WorkspacesRouteHandler,
+  getApiV2WorkspacesWorkspaceIdRouteHandler,
+  patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdDecisionRouteHandler,
+  patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRouteHandler,
+  patchApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  patchApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  patchApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  patchApiV2ItAssetManagementFieldsIdRouteHandler,
+  patchApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  patchApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  patchApiV2QueuesOrderRouteHandler,
+  patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  patchApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  postApiV2AccountsRouteHandler,
+  postApiV2AnyChannelChannelbackReportErrorRouteHandler,
+  postApiV2AnyChannelPushRouteHandler,
+  postApiV2AnyChannelValidateTokenRouteHandler,
+  postApiV2ApiTokensRouteHandler,
+  postApiV2ApprovalClarificationFlowMessagesRouteHandler,
+  postApiV2ApprovalRequestsRouteHandler,
+  postApiV2AuditLogsExportRouteHandler,
+  postApiV2AutocompleteTagsRouteHandler,
+  postApiV2AutomationsRouteHandler,
+  postApiV2BookmarksRouteHandler,
+  postApiV2BrandAgentsRouteHandler,
+  postApiV2BrandsBrandIdUserMigrationsRouteHandler,
+  postApiV2BrandsRouteHandler,
+  postApiV2ChannelsTwitterTicketsRouteHandler,
+  postApiV2ChannelsVoiceAgentsAgentIdTicketsTicketIdDisplayRouteHandler,
+  postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRouteHandler,
+  postApiV2ChannelsVoiceTicketsRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyAccessRulesRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyFieldsRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyJobsRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyRecordsSearchRouteHandler,
+  postApiV2CustomObjectsCustomObjectKeyTriggersRouteHandler,
+  postApiV2CustomObjectsRouteHandler,
+  postApiV2CustomRolesRouteHandler,
+  postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRouteHandler,
+  postApiV2CustomStatusesRouteHandler,
+  postApiV2DeletionSchedulesRouteHandler,
+  postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyRouteHandler,
+  postApiV2DynamicContentItemsDynamicContentItemIdVariantsRouteHandler,
+  postApiV2DynamicContentItemsRouteHandler,
+  postApiV2EndUsersUserIdIdentitiesRouteHandler,
+  postApiV2GroupMembershipsCreateManyRouteHandler,
+  postApiV2GroupMembershipsRouteHandler,
+  postApiV2GroupSlasPoliciesRouteHandler,
+  postApiV2GroupsRouteHandler,
+  postApiV2ImportsTicketsCreateManyRouteHandler,
+  postApiV2ImportsTicketsRouteHandler,
+  postApiV2ItAssetManagementAssetsJobsRouteHandler,
+  postApiV2ItAssetManagementAssetsRouteHandler,
+  postApiV2ItAssetManagementAssetsSearchRouteHandler,
+  postApiV2ItAssetManagementAssetTypesRouteHandler,
+  postApiV2ItAssetManagementFieldsRouteHandler,
+  postApiV2ItAssetManagementLocationsRouteHandler,
+  postApiV2ItAssetManagementStatusesRouteHandler,
+  postApiV2MacrosAttachmentsRouteHandler,
+  postApiV2MacrosMacroIdAttachmentsRouteHandler,
+  postApiV2MacrosRouteHandler,
+  postApiV2OauthClientsRouteHandler,
+  postApiV2OauthTokensDeleteManyRouteHandler,
+  postApiV2OrganizationFieldsRouteHandler,
+  postApiV2OrganizationMembershipsCreateManyRouteHandler,
+  postApiV2OrganizationMembershipsRouteHandler,
+  postApiV2OrganizationsCreateManyRouteHandler,
+  postApiV2OrganizationsCreateOrUpdateRouteHandler,
+  postApiV2OrganizationsOrganizationIdMergeRouteHandler,
+  postApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  postApiV2OrganizationsRouteHandler,
+  postApiV2OrganizationSubscriptionsRouteHandler,
+  postApiV2ProblemsAutocompleteRouteHandler,
+  postApiV2PushNotificationDevicesDestroyManyRouteHandler,
+  postApiV2QueuesRouteHandler,
+  postApiV2RecipientAddressesRouteHandler,
+  postApiV2RequestsRouteHandler,
+  postApiV2ResourceCollectionsRouteHandler,
+  postApiV2RoutingAgentsInstanceValuesJobsRouteHandler,
+  postApiV2RoutingAgentsUserIdInstanceValuesRouteHandler,
+  postApiV2RoutingAttributesAttributeIdValuesRouteHandler,
+  postApiV2RoutingAttributesRouteHandler,
+  postApiV2RoutingTicketsTicketIdInstanceValuesRouteHandler,
+  postApiV2SavedSearchesRouteHandler,
+  postApiV2SharingAgreementsRouteHandler,
+  postApiV2SkipsRouteHandler,
+  postApiV2SlasPoliciesRouteHandler,
+  postApiV2SuspendedTicketsAttachmentsRouteHandler,
+  postApiV2SuspendedTicketsExportRouteHandler,
+  postApiV2TargetsRouteHandler,
+  postApiV2TaskListsTaskListIdTaskItemsRouteHandler,
+  postApiV2TaskListTemplatesRouteHandler,
+  postApiV2TicketContentPinsRouteHandler,
+  postApiV2TicketFieldsRouteHandler,
+  postApiV2TicketFieldsTicketFieldIdOptionsRouteHandler,
+  postApiV2TicketFormsRouteHandler,
+  postApiV2TicketFormsTicketFormIdCloneRouteHandler,
+  postApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  postApiV2TicketsCreateManyRouteHandler,
+  postApiV2TicketsRouteHandler,
+  postApiV2TicketsTicketIdMergeRouteHandler,
+  postApiV2TicketsTicketIdSatisfactionRatingRouteHandler,
+  postApiV2TicketsTicketIdTagsRouteHandler,
+  postApiV2TicketsTicketIdTaskItemsTaskItemIdSubticketRouteHandler,
+  postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRouteHandler,
+  postApiV2TicketsTicketIdTaskListsRouteHandler,
+  postApiV2TriggerCategoriesJobsRouteHandler,
+  postApiV2TriggerCategoriesRouteHandler,
+  postApiV2TriggersRouteHandler,
+  postApiV2TriggersValidateRouteHandler,
+  postApiV2UploadsRouteHandler,
+  postApiV2UserFieldsRouteHandler,
+  postApiV2UserFieldsUserFieldIdOptionsRouteHandler,
+  postApiV2UsersAutocompleteRouteHandler,
+  postApiV2UsersCreateManyRouteHandler,
+  postApiV2UsersCreateOrUpdateManyRouteHandler,
+  postApiV2UsersCreateOrUpdateRouteHandler,
+  postApiV2UsersLogoutManyRouteHandler,
+  postApiV2UsersRequestCreateRouteHandler,
+  postApiV2UsersRouteHandler,
+  postApiV2UsersUserIdGroupMembershipsRouteHandler,
+  postApiV2UsersUserIdIdentitiesRouteHandler,
+  postApiV2UsersUserIdOrganizationMembershipsRouteHandler,
+  postApiV2UsersUserIdPasswordRouteHandler,
+  postApiV2UsersUserIdSuspensionRouteHandler,
+  postApiV2UsersUserIdTagsRouteHandler,
+  postApiV2ViewsPreviewCountRouteHandler,
+  postApiV2ViewsPreviewRouteHandler,
+  postApiV2ViewsRouteHandler,
+  postApiV2WorkspacesRouteHandler,
+  postOauthTokensRouteHandler,
+  putApiV2AccountEmailSettingsRouteHandler,
+  putApiV2AccountSettingsRouteHandler,
+  putApiV2ApiTokensIdRouteHandler,
+  putApiV2AttachmentsAttachmentIdRouteHandler,
+  putApiV2AutomationsAutomationIdRouteHandler,
+  putApiV2AutomationsUpdateManyRouteHandler,
+  putApiV2BrandsBrandIdLogoRouteHandler,
+  putApiV2BrandsBrandIdRouteHandler,
+  putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRouteHandler,
+  putApiV2ChannelsWhatsappTemplatesToggleManyRouteHandler,
+  putApiV2ChatFileRedactionsTicketIdRouteHandler,
+  putApiV2ChatRedactionsTicketIdRouteHandler,
+  putApiV2CommentRedactionsTicketCommentIdRouteHandler,
+  putApiV2CustomObjectsCustomObjectKeyFieldsReorderRouteHandler,
+  putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRouteHandler,
+  putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRouteHandler,
+  putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRouteHandler,
+  putApiV2CustomRolesCustomRoleIdRouteHandler,
+  putApiV2CustomStatusDefaultRouteHandler,
+  putApiV2CustomStatusesCustomStatusIdRouteHandler,
+  putApiV2DeletedTicketsRestoreManyRouteHandler,
+  putApiV2DeletedTicketsTicketIdRestoreRouteHandler,
+  putApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  putApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRouteHandler,
+  putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRouteHandler,
+  putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRouteHandler,
+  putApiV2GroupsGroupIdRouteHandler,
+  putApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  putApiV2GroupSlasPoliciesReorderRouteHandler,
+  putApiV2MacrosMacroIdRouteHandler,
+  putApiV2MacrosUpdateManyRouteHandler,
+  putApiV2OauthClientsOauthClientIdGenerateSecretRouteHandler,
+  putApiV2OauthClientsOauthClientIdRouteHandler,
+  putApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  putApiV2OrganizationFieldsReorderRouteHandler,
+  putApiV2OrganizationsOrganizationIdRouteHandler,
+  putApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  putApiV2OrganizationsUpdateManyRouteHandler,
+  putApiV2QueuesQueueIdRouteHandler,
+  putApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  putApiV2RecipientAddressesSupportAddressIdVerifyRouteHandler,
+  putApiV2RequestsRequestIdRouteHandler,
+  putApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  putApiV2RoutingAttributesAttributeIdRouteHandler,
+  putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  putApiV2SavedSearchesIdRouteHandler,
+  putApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  putApiV2SlasPoliciesReorderRouteHandler,
+  putApiV2SlasPoliciesSlaPolicyIdRouteHandler,
+  putApiV2SuspendedTicketsBulkRecoverRouteHandler,
+  putApiV2SuspendedTicketsIdRecoverRouteHandler,
+  putApiV2SuspendedTicketsRecoverManyRouteHandler,
+  putApiV2TargetsTargetIdRouteHandler,
+  putApiV2TaskListsTaskListIdRouteHandler,
+  putApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  putApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  putApiV2TicketFieldsReorderRouteHandler,
+  putApiV2TicketFieldsTicketFieldIdRouteHandler,
+  putApiV2TicketFormsReorderRouteHandler,
+  putApiV2TicketFormsTicketFormIdRouteHandler,
+  putApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  putApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRouteHandler,
+  putApiV2TicketsMarkManyAsSpamRouteHandler,
+  putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRouteHandler,
+  putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdRedactRouteHandler,
+  putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRouteHandler,
+  putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRouteHandler,
+  putApiV2TicketsTicketIdMarkAsSpamRouteHandler,
+  putApiV2TicketsTicketIdRouteHandler,
+  putApiV2TicketsTicketIdTagsRouteHandler,
+  putApiV2TicketsUpdateManyRouteHandler,
+  putApiV2TriggersReorderRouteHandler,
+  putApiV2TriggersTriggerIdRouteHandler,
+  putApiV2TriggersUpdateManyRouteHandler,
+  putApiV2UserFieldsReorderRouteHandler,
+  putApiV2UserFieldsUserFieldIdRouteHandler,
+  putApiV2UsersMeSettingsRouteHandler,
+  putApiV2UsersUpdateManyRouteHandler,
+  putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRouteHandler,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRouteHandler,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRouteHandler,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRouteHandler,
+  putApiV2UsersUserIdMergeRouteHandler,
+  putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdMakeDefaultRouteHandler,
+  putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRouteHandler,
+  putApiV2UsersUserIdPasswordRouteHandler,
+  putApiV2UsersUserIdRouteHandler,
+  putApiV2UsersUserIdSuspensionRouteHandler,
+  putApiV2UsersUserIdTagsRouteHandler,
+  putApiV2ViewsUpdateManyRouteHandler,
+  putApiV2ViewsViewIdRouteHandler,
+  putApiV2WorkspacesReorderRouteHandler,
+  putApiV2WorkspacesWorkspaceIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler).route('/', oauthHandler)
+export const api = app
+  .openapi(
+    getApiV2TargetTypeTargetIdRelationshipFieldsFieldIdSourceTypeRoute,
+    getApiV2TargetTypeTargetIdRelationshipFieldsFieldIdSourceTypeRouteHandler,
+  )
+  .openapi(getApiV2AccountEmailSettingsRoute, getApiV2AccountEmailSettingsRouteHandler)
+  .openapi(putApiV2AccountEmailSettingsRoute, putApiV2AccountEmailSettingsRouteHandler)
+  .openapi(getApiV2AccountSettingsRoute, getApiV2AccountSettingsRouteHandler)
+  .openapi(putApiV2AccountSettingsRoute, putApiV2AccountSettingsRouteHandler)
+  .openapi(postApiV2AccountsRoute, postApiV2AccountsRouteHandler)
+  .openapi(getApiV2AccountsAvailableRoute, getApiV2AccountsAvailableRouteHandler)
+  .openapi(getApiV2ActivitiesRoute, getApiV2ActivitiesRouteHandler)
+  .openapi(getApiV2ActivitiesActivityIdRoute, getApiV2ActivitiesActivityIdRouteHandler)
+  .openapi(getApiV2ActivitiesCountRoute, getApiV2ActivitiesCountRouteHandler)
+  .openapi(
+    postApiV2AnyChannelChannelbackReportErrorRoute,
+    postApiV2AnyChannelChannelbackReportErrorRouteHandler,
+  )
+  .openapi(postApiV2AnyChannelPushRoute, postApiV2AnyChannelPushRouteHandler)
+  .openapi(postApiV2AnyChannelValidateTokenRoute, postApiV2AnyChannelValidateTokenRouteHandler)
+  .openapi(getApiV2ApiTokensRoute, getApiV2ApiTokensRouteHandler)
+  .openapi(postApiV2ApiTokensRoute, postApiV2ApiTokensRouteHandler)
+  .openapi(putApiV2ApiTokensIdRoute, putApiV2ApiTokensIdRouteHandler)
+  .openapi(deleteApiV2ApiTokensIdRoute, deleteApiV2ApiTokensIdRouteHandler)
+  .openapi(
+    postApiV2ApprovalClarificationFlowMessagesRoute,
+    postApiV2ApprovalClarificationFlowMessagesRouteHandler,
+  )
+  .openapi(
+    getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRoute,
+    getApiV2ApprovalClarificationFlowMessagesApprovalRequestIdRouteHandler,
+  )
+  .openapi(getApiV2ApprovalRequestsRoute, getApiV2ApprovalRequestsRouteHandler)
+  .openapi(postApiV2ApprovalRequestsRoute, postApiV2ApprovalRequestsRouteHandler)
+  .openapi(
+    getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdRoute,
+    getApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdDecisionRoute,
+    patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdApprovalRequestsIdDecisionRouteHandler,
+  )
+  .openapi(
+    patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRoute,
+    patchApiV2ApprovalWorkflowInstancesWorkflowInstanceIdWithdrawRouteHandler,
+  )
+  .openapi(getApiV2AttachmentsAttachmentIdRoute, getApiV2AttachmentsAttachmentIdRouteHandler)
+  .openapi(putApiV2AttachmentsAttachmentIdRoute, putApiV2AttachmentsAttachmentIdRouteHandler)
+  .openapi(deleteApiV2AttachmentsAttachmentIdRoute, deleteApiV2AttachmentsAttachmentIdRouteHandler)
+  .openapi(getApiV2AuditLogsRoute, getApiV2AuditLogsRouteHandler)
+  .openapi(getApiV2AuditLogsAuditLogIdRoute, getApiV2AuditLogsAuditLogIdRouteHandler)
+  .openapi(postApiV2AuditLogsExportRoute, postApiV2AuditLogsExportRouteHandler)
+  .openapi(getApiV2AutocompleteTagsRoute, getApiV2AutocompleteTagsRouteHandler)
+  .openapi(postApiV2AutocompleteTagsRoute, postApiV2AutocompleteTagsRouteHandler)
+  .openapi(getApiV2AutomationsRoute, getApiV2AutomationsRouteHandler)
+  .openapi(postApiV2AutomationsRoute, postApiV2AutomationsRouteHandler)
+  .openapi(getApiV2AutomationsAutomationIdRoute, getApiV2AutomationsAutomationIdRouteHandler)
+  .openapi(putApiV2AutomationsAutomationIdRoute, putApiV2AutomationsAutomationIdRouteHandler)
+  .openapi(deleteApiV2AutomationsAutomationIdRoute, deleteApiV2AutomationsAutomationIdRouteHandler)
+  .openapi(getApiV2AutomationsActiveRoute, getApiV2AutomationsActiveRouteHandler)
+  .openapi(deleteApiV2AutomationsDestroyManyRoute, deleteApiV2AutomationsDestroyManyRouteHandler)
+  .openapi(getApiV2AutomationsSearchRoute, getApiV2AutomationsSearchRouteHandler)
+  .openapi(putApiV2AutomationsUpdateManyRoute, putApiV2AutomationsUpdateManyRouteHandler)
+  .openapi(getApiV2BookmarksRoute, getApiV2BookmarksRouteHandler)
+  .openapi(postApiV2BookmarksRoute, postApiV2BookmarksRouteHandler)
+  .openapi(deleteApiV2BookmarksBookmarkIdRoute, deleteApiV2BookmarksBookmarkIdRouteHandler)
+  .openapi(getApiV2BrandAgentsRoute, getApiV2BrandAgentsRouteHandler)
+  .openapi(postApiV2BrandAgentsRoute, postApiV2BrandAgentsRouteHandler)
+  .openapi(getApiV2BrandAgentsBrandAgentIdRoute, getApiV2BrandAgentsBrandAgentIdRouteHandler)
+  .openapi(deleteApiV2BrandAgentsBrandAgentIdRoute, deleteApiV2BrandAgentsBrandAgentIdRouteHandler)
+  .openapi(getApiV2BrandsRoute, getApiV2BrandsRouteHandler)
+  .openapi(postApiV2BrandsRoute, postApiV2BrandsRouteHandler)
+  .openapi(getApiV2BrandsBrandIdRoute, getApiV2BrandsBrandIdRouteHandler)
+  .openapi(putApiV2BrandsBrandIdRoute, putApiV2BrandsBrandIdRouteHandler)
+  .openapi(deleteApiV2BrandsBrandIdRoute, deleteApiV2BrandsBrandIdRouteHandler)
+  .openapi(getApiV2BrandsBrandIdAgentsRoute, getApiV2BrandsBrandIdAgentsRouteHandler)
+  .openapi(
+    getApiV2BrandsBrandIdCheckHostMappingRoute,
+    getApiV2BrandsBrandIdCheckHostMappingRouteHandler,
+  )
+  .openapi(putApiV2BrandsBrandIdLogoRoute, putApiV2BrandsBrandIdLogoRouteHandler)
+  .openapi(deleteApiV2BrandsBrandIdLogoRoute, deleteApiV2BrandsBrandIdLogoRouteHandler)
+  .openapi(
+    getApiV2BrandsBrandIdUserMigrationsRoute,
+    getApiV2BrandsBrandIdUserMigrationsRouteHandler,
+  )
+  .openapi(
+    postApiV2BrandsBrandIdUserMigrationsRoute,
+    postApiV2BrandsBrandIdUserMigrationsRouteHandler,
+  )
+  .openapi(
+    getApiV2BrandsBrandIdUserMigrationsMigrationIdRoute,
+    getApiV2BrandsBrandIdUserMigrationsMigrationIdRouteHandler,
+  )
+  .openapi(getApiV2BrandsCheckHostMappingRoute, getApiV2BrandsCheckHostMappingRouteHandler)
+  .openapi(
+    getApiV2ChannelsTwitterMonitoredTwitterHandlesRoute,
+    getApiV2ChannelsTwitterMonitoredTwitterHandlesRouteHandler,
+  )
+  .openapi(
+    getApiV2ChannelsTwitterMonitoredTwitterHandlesMonitoredTwitterHandleIdRoute,
+    getApiV2ChannelsTwitterMonitoredTwitterHandlesMonitoredTwitterHandleIdRouteHandler,
+  )
+  .openapi(postApiV2ChannelsTwitterTicketsRoute, postApiV2ChannelsTwitterTicketsRouteHandler)
+  .openapi(
+    getApiV2ChannelsTwitterTicketsCommentIdStatusesRoute,
+    getApiV2ChannelsTwitterTicketsCommentIdStatusesRouteHandler,
+  )
+  .openapi(
+    postApiV2ChannelsVoiceAgentsAgentIdTicketsTicketIdDisplayRoute,
+    postApiV2ChannelsVoiceAgentsAgentIdTicketsTicketIdDisplayRouteHandler,
+  )
+  .openapi(
+    postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRoute,
+    postApiV2ChannelsVoiceAgentsAgentIdUsersUserIdDisplayRouteHandler,
+  )
+  .openapi(postApiV2ChannelsVoiceTicketsRoute, postApiV2ChannelsVoiceTicketsRouteHandler)
+  .openapi(getApiV2ChannelsWhatsappTemplatesRoute, getApiV2ChannelsWhatsappTemplatesRouteHandler)
+  .openapi(
+    putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRoute,
+    putApiV2ChannelsWhatsappTemplatesTemplateIdToggleRouteHandler,
+  )
+  .openapi(
+    getApiV2ChannelsWhatsappTemplatesLanguagesRoute,
+    getApiV2ChannelsWhatsappTemplatesLanguagesRouteHandler,
+  )
+  .openapi(
+    putApiV2ChannelsWhatsappTemplatesToggleManyRoute,
+    putApiV2ChannelsWhatsappTemplatesToggleManyRouteHandler,
+  )
+  .openapi(putApiV2ChatFileRedactionsTicketIdRoute, putApiV2ChatFileRedactionsTicketIdRouteHandler)
+  .openapi(putApiV2ChatRedactionsTicketIdRoute, putApiV2ChatRedactionsTicketIdRouteHandler)
+  .openapi(
+    putApiV2CommentRedactionsTicketCommentIdRoute,
+    putApiV2CommentRedactionsTicketCommentIdRouteHandler,
+  )
+  .openapi(getApiV2CountriesJsonRoute, getApiV2CountriesJsonRouteHandler)
+  .openapi(getApiV2CountriesIdJsonRoute, getApiV2CountriesIdJsonRouteHandler)
+  .openapi(getApiV2CustomObjectsRoute, getApiV2CustomObjectsRouteHandler)
+  .openapi(postApiV2CustomObjectsRoute, postApiV2CustomObjectsRouteHandler)
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRoute,
+    getApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyRoute,
+    patchApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesRoute,
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyAccessRulesRoute,
+    postApiV2CustomObjectsCustomObjectKeyAccessRulesRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+    patchApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyAccessRulesIdRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRoute,
+    getApiV2CustomObjectsCustomObjectKeyAccessRulesDefinitionsRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyFieldsRoute,
+    getApiV2CustomObjectsCustomObjectKeyFieldsRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyFieldsRoute,
+    postApiV2CustomObjectsCustomObjectKeyFieldsRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+    getApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+    patchApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyFieldsCustomObjectFieldKeyOrIdRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomObjectsCustomObjectKeyFieldsReorderRoute,
+    putApiV2CustomObjectsCustomObjectKeyFieldsReorderRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyJobsRoute,
+    postApiV2CustomObjectsCustomObjectKeyJobsRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRoute,
+    getApiV2CustomObjectsCustomObjectKeyLimitsFieldLimitRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRoute,
+    getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute,
+    getApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRoute,
+    patchApiV2CustomObjectsCustomObjectKeyPermissionPoliciesIdRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+    postApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+    patchApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+    patchApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsCustomObjectRecordIdRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRoute,
+    postApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute,
+    putApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDownloadRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsRecordIdAttachmentsIdDownloadRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsAutocompleteRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsCountRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsCountRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsSearchRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyRecordsSearchRoute,
+    postApiV2CustomObjectsCustomObjectKeyRecordsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRoute,
+    getApiV2CustomObjectsCustomObjectKeyRecordsShowByUniqueIdentifierRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRoute,
+    putApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRouteHandler,
+  )
+  .openapi(
+    patchApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRoute,
+    patchApiV2CustomObjectsCustomObjectKeyRecordsUpdateByUniqueIdentifierRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyTriggersRoute,
+    getApiV2CustomObjectsCustomObjectKeyTriggersRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomObjectsCustomObjectKeyTriggersRoute,
+    postApiV2CustomObjectsCustomObjectKeyTriggersRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+    getApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+    putApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyTriggersTriggerIdRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyTriggersActiveRoute,
+    getApiV2CustomObjectsCustomObjectKeyTriggersActiveRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRoute,
+    getApiV2CustomObjectsCustomObjectKeyTriggersDefinitionsRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRoute,
+    deleteApiV2CustomObjectsCustomObjectKeyTriggersDestroyManyRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsCustomObjectKeyTriggersSearchRoute,
+    getApiV2CustomObjectsCustomObjectKeyTriggersSearchRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRoute,
+    putApiV2CustomObjectsCustomObjectKeyTriggersUpdateManyRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsLimitsObjectLimitRoute,
+    getApiV2CustomObjectsLimitsObjectLimitRouteHandler,
+  )
+  .openapi(
+    getApiV2CustomObjectsLimitsRecordLimitRoute,
+    getApiV2CustomObjectsLimitsRecordLimitRouteHandler,
+  )
+  .openapi(getApiV2CustomRolesRoute, getApiV2CustomRolesRouteHandler)
+  .openapi(postApiV2CustomRolesRoute, postApiV2CustomRolesRouteHandler)
+  .openapi(getApiV2CustomRolesCustomRoleIdRoute, getApiV2CustomRolesCustomRoleIdRouteHandler)
+  .openapi(putApiV2CustomRolesCustomRoleIdRoute, putApiV2CustomRolesCustomRoleIdRouteHandler)
+  .openapi(deleteApiV2CustomRolesCustomRoleIdRoute, deleteApiV2CustomRolesCustomRoleIdRouteHandler)
+  .openapi(putApiV2CustomStatusDefaultRoute, putApiV2CustomStatusDefaultRouteHandler)
+  .openapi(getApiV2CustomStatusesRoute, getApiV2CustomStatusesRouteHandler)
+  .openapi(postApiV2CustomStatusesRoute, postApiV2CustomStatusesRouteHandler)
+  .openapi(
+    getApiV2CustomStatusesCustomStatusIdRoute,
+    getApiV2CustomStatusesCustomStatusIdRouteHandler,
+  )
+  .openapi(
+    putApiV2CustomStatusesCustomStatusIdRoute,
+    putApiV2CustomStatusesCustomStatusIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2CustomStatusesCustomStatusIdRoute,
+    deleteApiV2CustomStatusesCustomStatusIdRouteHandler,
+  )
+  .openapi(
+    postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRoute,
+    postApiV2CustomStatusesCustomStatusIdTicketFormStatusesRouteHandler,
+  )
+  .openapi(getApiV2CustomStatusesShowManyRoute, getApiV2CustomStatusesShowManyRouteHandler)
+  .openapi(getApiV2DeletedTicketsRoute, getApiV2DeletedTicketsRouteHandler)
+  .openapi(deleteApiV2DeletedTicketsTicketIdRoute, deleteApiV2DeletedTicketsTicketIdRouteHandler)
+  .openapi(
+    putApiV2DeletedTicketsTicketIdRestoreRoute,
+    putApiV2DeletedTicketsTicketIdRestoreRouteHandler,
+  )
+  .openapi(
+    deleteApiV2DeletedTicketsDestroyManyRoute,
+    deleteApiV2DeletedTicketsDestroyManyRouteHandler,
+  )
+  .openapi(putApiV2DeletedTicketsRestoreManyRoute, putApiV2DeletedTicketsRestoreManyRouteHandler)
+  .openapi(getApiV2DeletedUsersRoute, getApiV2DeletedUsersRouteHandler)
+  .openapi(getApiV2DeletedUsersDeletedUserIdRoute, getApiV2DeletedUsersDeletedUserIdRouteHandler)
+  .openapi(
+    deleteApiV2DeletedUsersDeletedUserIdRoute,
+    deleteApiV2DeletedUsersDeletedUserIdRouteHandler,
+  )
+  .openapi(getApiV2DeletedUsersCountRoute, getApiV2DeletedUsersCountRouteHandler)
+  .openapi(getApiV2DeletionSchedulesRoute, getApiV2DeletionSchedulesRouteHandler)
+  .openapi(postApiV2DeletionSchedulesRoute, postApiV2DeletionSchedulesRouteHandler)
+  .openapi(
+    getApiV2DeletionSchedulesDeletionScheduleIdRoute,
+    getApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  )
+  .openapi(
+    putApiV2DeletionSchedulesDeletionScheduleIdRoute,
+    putApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2DeletionSchedulesDeletionScheduleIdRoute,
+    deleteApiV2DeletionSchedulesDeletionScheduleIdRouteHandler,
+  )
+  .openapi(getApiV2DynamicContentItemsRoute, getApiV2DynamicContentItemsRouteHandler)
+  .openapi(postApiV2DynamicContentItemsRoute, postApiV2DynamicContentItemsRouteHandler)
+  .openapi(
+    getApiV2DynamicContentItemsDynamicContentItemIdRoute,
+    getApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  )
+  .openapi(
+    putApiV2DynamicContentItemsDynamicContentItemIdRoute,
+    putApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2DynamicContentItemsDynamicContentItemIdRoute,
+    deleteApiV2DynamicContentItemsDynamicContentItemIdRouteHandler,
+  )
+  .openapi(
+    getApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute,
+    getApiV2DynamicContentItemsDynamicContentItemIdVariantsRouteHandler,
+  )
+  .openapi(
+    postApiV2DynamicContentItemsDynamicContentItemIdVariantsRoute,
+    postApiV2DynamicContentItemsDynamicContentItemIdVariantsRouteHandler,
+  )
+  .openapi(
+    getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+    getApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  )
+  .openapi(
+    putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+    putApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRoute,
+    deleteApiV2DynamicContentItemsDynamicContentItemIdVariantsDynamicContentVariantIdRouteHandler,
+  )
+  .openapi(
+    postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyRoute,
+    postApiV2DynamicContentItemsDynamicContentItemIdVariantsCreateManyRouteHandler,
+  )
+  .openapi(
+    putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRoute,
+    putApiV2DynamicContentItemsDynamicContentItemIdVariantsUpdateManyRouteHandler,
+  )
+  .openapi(
+    getApiV2DynamicContentItemsShowManyRoute,
+    getApiV2DynamicContentItemsShowManyRouteHandler,
+  )
+  .openapi(getApiV2EmailNotificationsRoute, getApiV2EmailNotificationsRouteHandler)
+  .openapi(
+    getApiV2EmailNotificationsNotificationIdRoute,
+    getApiV2EmailNotificationsNotificationIdRouteHandler,
+  )
+  .openapi(getApiV2EmailNotificationsShowManyRoute, getApiV2EmailNotificationsShowManyRouteHandler)
+  .openapi(getApiV2EndUsersUserIdIdentitiesRoute, getApiV2EndUsersUserIdIdentitiesRouteHandler)
+  .openapi(postApiV2EndUsersUserIdIdentitiesRoute, postApiV2EndUsersUserIdIdentitiesRouteHandler)
+  .openapi(
+    getApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute,
+    getApiV2EndUsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRoute,
+    deleteApiV2EndUsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  )
+  .openapi(
+    putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute,
+    putApiV2EndUsersUserIdIdentitiesUserIdentityIdMakePrimaryRouteHandler,
+  )
+  .openapi(
+    putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute,
+    putApiV2EndUsersUserIdIdentitiesUserIdentityIdRequestVerificationRouteHandler,
+  )
+  .openapi(getApiV2GroupMembershipsRoute, getApiV2GroupMembershipsRouteHandler)
+  .openapi(postApiV2GroupMembershipsRoute, postApiV2GroupMembershipsRouteHandler)
+  .openapi(
+    getApiV2GroupMembershipsGroupMembershipIdRoute,
+    getApiV2GroupMembershipsGroupMembershipIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2GroupMembershipsGroupMembershipIdRoute,
+    deleteApiV2GroupMembershipsGroupMembershipIdRouteHandler,
+  )
+  .openapi(getApiV2GroupMembershipsAssignableRoute, getApiV2GroupMembershipsAssignableRouteHandler)
+  .openapi(
+    postApiV2GroupMembershipsCreateManyRoute,
+    postApiV2GroupMembershipsCreateManyRouteHandler,
+  )
+  .openapi(
+    deleteApiV2GroupMembershipsDestroyManyRoute,
+    deleteApiV2GroupMembershipsDestroyManyRouteHandler,
+  )
+  .openapi(getApiV2GroupSlasPoliciesRoute, getApiV2GroupSlasPoliciesRouteHandler)
+  .openapi(postApiV2GroupSlasPoliciesRoute, postApiV2GroupSlasPoliciesRouteHandler)
+  .openapi(
+    getApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+    getApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  )
+  .openapi(
+    putApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+    putApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRoute,
+    deleteApiV2GroupSlasPoliciesGroupSlaPolicyIdRouteHandler,
+  )
+  .openapi(
+    getApiV2GroupSlasPoliciesDefinitionsRoute,
+    getApiV2GroupSlasPoliciesDefinitionsRouteHandler,
+  )
+  .openapi(putApiV2GroupSlasPoliciesReorderRoute, putApiV2GroupSlasPoliciesReorderRouteHandler)
+  .openapi(getApiV2GroupsRoute, getApiV2GroupsRouteHandler)
+  .openapi(postApiV2GroupsRoute, postApiV2GroupsRouteHandler)
+  .openapi(getApiV2GroupsGroupIdRoute, getApiV2GroupsGroupIdRouteHandler)
+  .openapi(putApiV2GroupsGroupIdRoute, putApiV2GroupsGroupIdRouteHandler)
+  .openapi(deleteApiV2GroupsGroupIdRoute, deleteApiV2GroupsGroupIdRouteHandler)
+  .openapi(getApiV2GroupsGroupIdMembershipsRoute, getApiV2GroupsGroupIdMembershipsRouteHandler)
+  .openapi(
+    getApiV2GroupsGroupIdMembershipsAssignableRoute,
+    getApiV2GroupsGroupIdMembershipsAssignableRouteHandler,
+  )
+  .openapi(getApiV2GroupsGroupIdUsersRoute, getApiV2GroupsGroupIdUsersRouteHandler)
+  .openapi(getApiV2GroupsGroupIdUsersCountRoute, getApiV2GroupsGroupIdUsersCountRouteHandler)
+  .openapi(getApiV2GroupsAssignableRoute, getApiV2GroupsAssignableRouteHandler)
+  .openapi(getApiV2GroupsAutocompleteRoute, getApiV2GroupsAutocompleteRouteHandler)
+  .openapi(getApiV2GroupsAvailableAgentsRoute, getApiV2GroupsAvailableAgentsRouteHandler)
+  .openapi(getApiV2GroupsCountRoute, getApiV2GroupsCountRouteHandler)
+  .openapi(getApiV2GroupsDefaultRoute, getApiV2GroupsDefaultRouteHandler)
+  .openapi(postApiV2ImportsTicketsRoute, postApiV2ImportsTicketsRouteHandler)
+  .openapi(postApiV2ImportsTicketsCreateManyRoute, postApiV2ImportsTicketsCreateManyRouteHandler)
+  .openapi(
+    getApiV2IncrementalIncrementalResourceSampleRoute,
+    getApiV2IncrementalIncrementalResourceSampleRouteHandler,
+  )
+  .openapi(
+    getApiV2IncrementalCustomObjectsCustomObjectKeyCursorRoute,
+    getApiV2IncrementalCustomObjectsCustomObjectKeyCursorRouteHandler,
+  )
+  .openapi(getApiV2IncrementalOrganizationsRoute, getApiV2IncrementalOrganizationsRouteHandler)
+  .openapi(
+    getApiV2IncrementalRoutingAttributeValuesRoute,
+    getApiV2IncrementalRoutingAttributeValuesRouteHandler,
+  )
+  .openapi(
+    getApiV2IncrementalRoutingAttributesRoute,
+    getApiV2IncrementalRoutingAttributesRouteHandler,
+  )
+  .openapi(
+    getApiV2IncrementalRoutingInstanceValuesRoute,
+    getApiV2IncrementalRoutingInstanceValuesRouteHandler,
+  )
+  .openapi(getApiV2IncrementalTicketEventsRoute, getApiV2IncrementalTicketEventsRouteHandler)
+  .openapi(
+    getApiV2IncrementalTicketMetricEventsRoute,
+    getApiV2IncrementalTicketMetricEventsRouteHandler,
+  )
+  .openapi(getApiV2IncrementalTicketsRoute, getApiV2IncrementalTicketsRouteHandler)
+  .openapi(getApiV2IncrementalTicketsCursorRoute, getApiV2IncrementalTicketsCursorRouteHandler)
+  .openapi(getApiV2IncrementalUsersRoute, getApiV2IncrementalUsersRouteHandler)
+  .openapi(getApiV2IncrementalUsersCursorRoute, getApiV2IncrementalUsersCursorRouteHandler)
+  .openapi(
+    getApiV2ItAssetManagementAssetTypesRoute,
+    getApiV2ItAssetManagementAssetTypesRouteHandler,
+  )
+  .openapi(
+    postApiV2ItAssetManagementAssetTypesRoute,
+    postApiV2ItAssetManagementAssetTypesRouteHandler,
+  )
+  .openapi(
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+    patchApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ItAssetManagementAssetTypesAssetTypeIdRoute,
+    deleteApiV2ItAssetManagementAssetTypesAssetTypeIdRouteHandler,
+  )
+  .openapi(
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsRoute,
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsRouteHandler,
+  )
+  .openapi(
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsAssetTypeFieldIdRoute,
+    getApiV2ItAssetManagementAssetTypesAssetTypeIdFieldsAssetTypeFieldIdRouteHandler,
+  )
+  .openapi(getApiV2ItAssetManagementAssetsRoute, getApiV2ItAssetManagementAssetsRouteHandler)
+  .openapi(postApiV2ItAssetManagementAssetsRoute, postApiV2ItAssetManagementAssetsRouteHandler)
+  .openapi(
+    getApiV2ItAssetManagementAssetsAssetIdRoute,
+    getApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2ItAssetManagementAssetsAssetIdRoute,
+    patchApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ItAssetManagementAssetsAssetIdRoute,
+    deleteApiV2ItAssetManagementAssetsAssetIdRouteHandler,
+  )
+  .openapi(
+    postApiV2ItAssetManagementAssetsJobsRoute,
+    postApiV2ItAssetManagementAssetsJobsRouteHandler,
+  )
+  .openapi(
+    getApiV2ItAssetManagementAssetsSearchRoute,
+    getApiV2ItAssetManagementAssetsSearchRouteHandler,
+  )
+  .openapi(
+    postApiV2ItAssetManagementAssetsSearchRoute,
+    postApiV2ItAssetManagementAssetsSearchRouteHandler,
+  )
+  .openapi(getApiV2ItAssetManagementFieldsRoute, getApiV2ItAssetManagementFieldsRouteHandler)
+  .openapi(postApiV2ItAssetManagementFieldsRoute, postApiV2ItAssetManagementFieldsRouteHandler)
+  .openapi(getApiV2ItAssetManagementFieldsIdRoute, getApiV2ItAssetManagementFieldsIdRouteHandler)
+  .openapi(
+    patchApiV2ItAssetManagementFieldsIdRoute,
+    patchApiV2ItAssetManagementFieldsIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ItAssetManagementFieldsIdRoute,
+    deleteApiV2ItAssetManagementFieldsIdRouteHandler,
+  )
+  .openapi(getApiV2ItAssetManagementLocationsRoute, getApiV2ItAssetManagementLocationsRouteHandler)
+  .openapi(
+    postApiV2ItAssetManagementLocationsRoute,
+    postApiV2ItAssetManagementLocationsRouteHandler,
+  )
+  .openapi(
+    getApiV2ItAssetManagementLocationsLocationIdRoute,
+    getApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2ItAssetManagementLocationsLocationIdRoute,
+    patchApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ItAssetManagementLocationsLocationIdRoute,
+    deleteApiV2ItAssetManagementLocationsLocationIdRouteHandler,
+  )
+  .openapi(getApiV2ItAssetManagementStatusesRoute, getApiV2ItAssetManagementStatusesRouteHandler)
+  .openapi(postApiV2ItAssetManagementStatusesRoute, postApiV2ItAssetManagementStatusesRouteHandler)
+  .openapi(
+    getApiV2ItAssetManagementStatusesStatusIdRoute,
+    getApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2ItAssetManagementStatusesStatusIdRoute,
+    patchApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ItAssetManagementStatusesStatusIdRoute,
+    deleteApiV2ItAssetManagementStatusesStatusIdRouteHandler,
+  )
+  .openapi(getApiV2JobStatusesRoute, getApiV2JobStatusesRouteHandler)
+  .openapi(getApiV2JobStatusesJobStatusIdRoute, getApiV2JobStatusesJobStatusIdRouteHandler)
+  .openapi(getApiV2JobStatusesShowManyRoute, getApiV2JobStatusesShowManyRouteHandler)
+  .openapi(getApiV2LocalesRoute, getApiV2LocalesRouteHandler)
+  .openapi(getApiV2LocalesLocaleIdRoute, getApiV2LocalesLocaleIdRouteHandler)
+  .openapi(getApiV2LocalesAgentRoute, getApiV2LocalesAgentRouteHandler)
+  .openapi(getApiV2LocalesCurrentRoute, getApiV2LocalesCurrentRouteHandler)
+  .openapi(getApiV2LocalesDetectBestLocaleRoute, getApiV2LocalesDetectBestLocaleRouteHandler)
+  .openapi(getApiV2LocalesPublicRoute, getApiV2LocalesPublicRouteHandler)
+  .openapi(getApiV2MacrosRoute, getApiV2MacrosRouteHandler)
+  .openapi(postApiV2MacrosRoute, postApiV2MacrosRouteHandler)
+  .openapi(getApiV2MacrosMacroIdRoute, getApiV2MacrosMacroIdRouteHandler)
+  .openapi(putApiV2MacrosMacroIdRoute, putApiV2MacrosMacroIdRouteHandler)
+  .openapi(deleteApiV2MacrosMacroIdRoute, deleteApiV2MacrosMacroIdRouteHandler)
+  .openapi(getApiV2MacrosMacroIdApplyRoute, getApiV2MacrosMacroIdApplyRouteHandler)
+  .openapi(getApiV2MacrosMacroIdAttachmentsRoute, getApiV2MacrosMacroIdAttachmentsRouteHandler)
+  .openapi(postApiV2MacrosMacroIdAttachmentsRoute, postApiV2MacrosMacroIdAttachmentsRouteHandler)
+  .openapi(getApiV2MacrosActionsRoute, getApiV2MacrosActionsRouteHandler)
+  .openapi(getApiV2MacrosActiveRoute, getApiV2MacrosActiveRouteHandler)
+  .openapi(postApiV2MacrosAttachmentsRoute, postApiV2MacrosAttachmentsRouteHandler)
+  .openapi(
+    getApiV2MacrosAttachmentsAttachmentIdRoute,
+    getApiV2MacrosAttachmentsAttachmentIdRouteHandler,
+  )
+  .openapi(
+    getApiV2MacrosAttachmentsAttachmentIdContentRoute,
+    getApiV2MacrosAttachmentsAttachmentIdContentRouteHandler,
+  )
+  .openapi(getApiV2MacrosCategoriesRoute, getApiV2MacrosCategoriesRouteHandler)
+  .openapi(getApiV2MacrosDefinitionsRoute, getApiV2MacrosDefinitionsRouteHandler)
+  .openapi(deleteApiV2MacrosDestroyManyRoute, deleteApiV2MacrosDestroyManyRouteHandler)
+  .openapi(getApiV2MacrosGroupsRoute, getApiV2MacrosGroupsRouteHandler)
+  .openapi(getApiV2MacrosMostUsedRoute, getApiV2MacrosMostUsedRouteHandler)
+  .openapi(getApiV2MacrosNewRoute, getApiV2MacrosNewRouteHandler)
+  .openapi(getApiV2MacrosSearchRoute, getApiV2MacrosSearchRouteHandler)
+  .openapi(putApiV2MacrosUpdateManyRoute, putApiV2MacrosUpdateManyRouteHandler)
+  .openapi(getApiV2OauthClientsRoute, getApiV2OauthClientsRouteHandler)
+  .openapi(postApiV2OauthClientsRoute, postApiV2OauthClientsRouteHandler)
+  .openapi(getApiV2OauthClientsOauthClientIdRoute, getApiV2OauthClientsOauthClientIdRouteHandler)
+  .openapi(putApiV2OauthClientsOauthClientIdRoute, putApiV2OauthClientsOauthClientIdRouteHandler)
+  .openapi(
+    deleteApiV2OauthClientsOauthClientIdRoute,
+    deleteApiV2OauthClientsOauthClientIdRouteHandler,
+  )
+  .openapi(
+    putApiV2OauthClientsOauthClientIdGenerateSecretRoute,
+    putApiV2OauthClientsOauthClientIdGenerateSecretRouteHandler,
+  )
+  .openapi(getApiV2OauthGlobalClientsRoute, getApiV2OauthGlobalClientsRouteHandler)
+  .openapi(
+    getApiV2OauthGlobalClientsGlobalClientIdRoute,
+    getApiV2OauthGlobalClientsGlobalClientIdRouteHandler,
+  )
+  .openapi(
+    getApiV2OauthGlobalClientsTokenSummaryRoute,
+    getApiV2OauthGlobalClientsTokenSummaryRouteHandler,
+  )
+  .openapi(getApiV2OauthTokensRoute, getApiV2OauthTokensRouteHandler)
+  .openapi(getApiV2OauthTokensOauthTokenIdRoute, getApiV2OauthTokensOauthTokenIdRouteHandler)
+  .openapi(deleteApiV2OauthTokensOauthTokenIdRoute, deleteApiV2OauthTokensOauthTokenIdRouteHandler)
+  .openapi(getApiV2OauthTokensCurrentRoute, getApiV2OauthTokensCurrentRouteHandler)
+  .openapi(deleteApiV2OauthTokensCurrentRoute, deleteApiV2OauthTokensCurrentRouteHandler)
+  .openapi(postApiV2OauthTokensDeleteManyRoute, postApiV2OauthTokensDeleteManyRouteHandler)
+  .openapi(getApiV2OrganizationFieldsRoute, getApiV2OrganizationFieldsRouteHandler)
+  .openapi(postApiV2OrganizationFieldsRoute, postApiV2OrganizationFieldsRouteHandler)
+  .openapi(
+    getApiV2OrganizationFieldsOrganizationFieldIdRoute,
+    getApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  )
+  .openapi(
+    putApiV2OrganizationFieldsOrganizationFieldIdRoute,
+    putApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationFieldsOrganizationFieldIdRoute,
+    deleteApiV2OrganizationFieldsOrganizationFieldIdRouteHandler,
+  )
+  .openapi(putApiV2OrganizationFieldsReorderRoute, putApiV2OrganizationFieldsReorderRouteHandler)
+  .openapi(getApiV2OrganizationMembershipsRoute, getApiV2OrganizationMembershipsRouteHandler)
+  .openapi(postApiV2OrganizationMembershipsRoute, postApiV2OrganizationMembershipsRouteHandler)
+  .openapi(
+    getApiV2OrganizationMembershipsOrganizationMembershipIdRoute,
+    getApiV2OrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationMembershipsOrganizationMembershipIdRoute,
+    deleteApiV2OrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  )
+  .openapi(
+    postApiV2OrganizationMembershipsCreateManyRoute,
+    postApiV2OrganizationMembershipsCreateManyRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationMembershipsDestroyManyRoute,
+    deleteApiV2OrganizationMembershipsDestroyManyRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationMergesOrganizationMergeIdRoute,
+    getApiV2OrganizationMergesOrganizationMergeIdRouteHandler,
+  )
+  .openapi(getApiV2OrganizationSubscriptionsRoute, getApiV2OrganizationSubscriptionsRouteHandler)
+  .openapi(postApiV2OrganizationSubscriptionsRoute, postApiV2OrganizationSubscriptionsRouteHandler)
+  .openapi(
+    getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute,
+    getApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRoute,
+    deleteApiV2OrganizationSubscriptionsOrganizationSubscriptionIdRouteHandler,
+  )
+  .openapi(getApiV2OrganizationsRoute, getApiV2OrganizationsRouteHandler)
+  .openapi(postApiV2OrganizationsRoute, postApiV2OrganizationsRouteHandler)
+  .openapi(
+    getApiV2OrganizationsOrganizationIdRoute,
+    getApiV2OrganizationsOrganizationIdRouteHandler,
+  )
+  .openapi(
+    putApiV2OrganizationsOrganizationIdRoute,
+    putApiV2OrganizationsOrganizationIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationsOrganizationIdRoute,
+    deleteApiV2OrganizationsOrganizationIdRouteHandler,
+  )
+  .openapi(
+    postApiV2OrganizationsOrganizationIdMergeRoute,
+    postApiV2OrganizationsOrganizationIdMergeRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdMergesRoute,
+    getApiV2OrganizationsOrganizationIdMergesRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdOrganizationMembershipsRoute,
+    getApiV2OrganizationsOrganizationIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdRelatedRoute,
+    getApiV2OrganizationsOrganizationIdRelatedRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdRequestsRoute,
+    getApiV2OrganizationsOrganizationIdRequestsRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdSubscriptionsRoute,
+    getApiV2OrganizationsOrganizationIdSubscriptionsRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdTagsRoute,
+    getApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  )
+  .openapi(
+    postApiV2OrganizationsOrganizationIdTagsRoute,
+    postApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  )
+  .openapi(
+    putApiV2OrganizationsOrganizationIdTagsRoute,
+    putApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationsOrganizationIdTagsRoute,
+    deleteApiV2OrganizationsOrganizationIdTagsRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdTicketsRoute,
+    getApiV2OrganizationsOrganizationIdTicketsRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdTicketsCountRoute,
+    getApiV2OrganizationsOrganizationIdTicketsCountRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdUsersRoute,
+    getApiV2OrganizationsOrganizationIdUsersRouteHandler,
+  )
+  .openapi(
+    getApiV2OrganizationsOrganizationIdUsersCountRoute,
+    getApiV2OrganizationsOrganizationIdUsersCountRouteHandler,
+  )
+  .openapi(getApiV2OrganizationsAutocompleteRoute, getApiV2OrganizationsAutocompleteRouteHandler)
+  .openapi(getApiV2OrganizationsCountRoute, getApiV2OrganizationsCountRouteHandler)
+  .openapi(postApiV2OrganizationsCreateManyRoute, postApiV2OrganizationsCreateManyRouteHandler)
+  .openapi(
+    postApiV2OrganizationsCreateOrUpdateRoute,
+    postApiV2OrganizationsCreateOrUpdateRouteHandler,
+  )
+  .openapi(
+    deleteApiV2OrganizationsDestroyManyRoute,
+    deleteApiV2OrganizationsDestroyManyRouteHandler,
+  )
+  .openapi(getApiV2OrganizationsSearchRoute, getApiV2OrganizationsSearchRouteHandler)
+  .openapi(getApiV2OrganizationsShowManyRoute, getApiV2OrganizationsShowManyRouteHandler)
+  .openapi(putApiV2OrganizationsUpdateManyRoute, putApiV2OrganizationsUpdateManyRouteHandler)
+  .openapi(getApiV2ProblemsRoute, getApiV2ProblemsRouteHandler)
+  .openapi(postApiV2ProblemsAutocompleteRoute, postApiV2ProblemsAutocompleteRouteHandler)
+  .openapi(
+    postApiV2PushNotificationDevicesDestroyManyRoute,
+    postApiV2PushNotificationDevicesDestroyManyRouteHandler,
+  )
+  .openapi(getApiV2QueuesRoute, getApiV2QueuesRouteHandler)
+  .openapi(postApiV2QueuesRoute, postApiV2QueuesRouteHandler)
+  .openapi(getApiV2QueuesQueueIdRoute, getApiV2QueuesQueueIdRouteHandler)
+  .openapi(putApiV2QueuesQueueIdRoute, putApiV2QueuesQueueIdRouteHandler)
+  .openapi(deleteApiV2QueuesQueueIdRoute, deleteApiV2QueuesQueueIdRouteHandler)
+  .openapi(getApiV2QueuesDefinitionsRoute, getApiV2QueuesDefinitionsRouteHandler)
+  .openapi(patchApiV2QueuesOrderRoute, patchApiV2QueuesOrderRouteHandler)
+  .openapi(getApiV2RecipientAddressesRoute, getApiV2RecipientAddressesRouteHandler)
+  .openapi(postApiV2RecipientAddressesRoute, postApiV2RecipientAddressesRouteHandler)
+  .openapi(
+    getApiV2RecipientAddressesSupportAddressIdRoute,
+    getApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  )
+  .openapi(
+    putApiV2RecipientAddressesSupportAddressIdRoute,
+    putApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2RecipientAddressesSupportAddressIdRoute,
+    deleteApiV2RecipientAddressesSupportAddressIdRouteHandler,
+  )
+  .openapi(
+    putApiV2RecipientAddressesSupportAddressIdVerifyRoute,
+    putApiV2RecipientAddressesSupportAddressIdVerifyRouteHandler,
+  )
+  .openapi(
+    getApiV2RelationshipsDefinitionsTargetTypeRoute,
+    getApiV2RelationshipsDefinitionsTargetTypeRouteHandler,
+  )
+  .openapi(getApiV2RemoteAuthenticationsRoute, getApiV2RemoteAuthenticationsRouteHandler)
+  .openapi(getApiV2RequestsRoute, getApiV2RequestsRouteHandler)
+  .openapi(postApiV2RequestsRoute, postApiV2RequestsRouteHandler)
+  .openapi(getApiV2RequestsRequestIdRoute, getApiV2RequestsRequestIdRouteHandler)
+  .openapi(putApiV2RequestsRequestIdRoute, putApiV2RequestsRequestIdRouteHandler)
+  .openapi(getApiV2RequestsRequestIdCommentsRoute, getApiV2RequestsRequestIdCommentsRouteHandler)
+  .openapi(
+    getApiV2RequestsRequestIdCommentsTicketCommentIdRoute,
+    getApiV2RequestsRequestIdCommentsTicketCommentIdRouteHandler,
+  )
+  .openapi(getApiV2RequestsCcdRoute, getApiV2RequestsCcdRouteHandler)
+  .openapi(getApiV2RequestsOpenRoute, getApiV2RequestsOpenRouteHandler)
+  .openapi(getApiV2RequestsSearchRoute, getApiV2RequestsSearchRouteHandler)
+  .openapi(getApiV2RequestsSolvedRoute, getApiV2RequestsSolvedRouteHandler)
+  .openapi(getApiV2ResourceCollectionsRoute, getApiV2ResourceCollectionsRouteHandler)
+  .openapi(postApiV2ResourceCollectionsRoute, postApiV2ResourceCollectionsRouteHandler)
+  .openapi(
+    getApiV2ResourceCollectionsResourceCollectionIdRoute,
+    getApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  )
+  .openapi(
+    putApiV2ResourceCollectionsResourceCollectionIdRoute,
+    putApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2ResourceCollectionsResourceCollectionIdRoute,
+    deleteApiV2ResourceCollectionsResourceCollectionIdRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingAgentsUserIdInstanceValuesRoute,
+    getApiV2RoutingAgentsUserIdInstanceValuesRouteHandler,
+  )
+  .openapi(
+    postApiV2RoutingAgentsUserIdInstanceValuesRoute,
+    postApiV2RoutingAgentsUserIdInstanceValuesRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingAgentsInstanceValuesRoute,
+    getApiV2RoutingAgentsInstanceValuesRouteHandler,
+  )
+  .openapi(
+    postApiV2RoutingAgentsInstanceValuesJobsRoute,
+    postApiV2RoutingAgentsInstanceValuesJobsRouteHandler,
+  )
+  .openapi(getApiV2RoutingAttributesRoute, getApiV2RoutingAttributesRouteHandler)
+  .openapi(postApiV2RoutingAttributesRoute, postApiV2RoutingAttributesRouteHandler)
+  .openapi(
+    getApiV2RoutingAttributesAttributeIdRoute,
+    getApiV2RoutingAttributesAttributeIdRouteHandler,
+  )
+  .openapi(
+    putApiV2RoutingAttributesAttributeIdRoute,
+    putApiV2RoutingAttributesAttributeIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2RoutingAttributesAttributeIdRoute,
+    deleteApiV2RoutingAttributesAttributeIdRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingAttributesAttributeIdValuesRoute,
+    getApiV2RoutingAttributesAttributeIdValuesRouteHandler,
+  )
+  .openapi(
+    postApiV2RoutingAttributesAttributeIdValuesRoute,
+    postApiV2RoutingAttributesAttributeIdValuesRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+    getApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  )
+  .openapi(
+    putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+    putApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+    patchApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRoute,
+    deleteApiV2RoutingAttributesAttributeIdValuesAttributeValueIdRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingAttributesDefinitionsRoute,
+    getApiV2RoutingAttributesDefinitionsRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingRequirementsFulfilledRoute,
+    getApiV2RoutingRequirementsFulfilledRouteHandler,
+  )
+  .openapi(
+    getApiV2RoutingTicketsTicketIdInstanceValuesRoute,
+    getApiV2RoutingTicketsTicketIdInstanceValuesRouteHandler,
+  )
+  .openapi(
+    postApiV2RoutingTicketsTicketIdInstanceValuesRoute,
+    postApiV2RoutingTicketsTicketIdInstanceValuesRouteHandler,
+  )
+  .openapi(getApiV2SatisfactionRatingsRoute, getApiV2SatisfactionRatingsRouteHandler)
+  .openapi(
+    getApiV2SatisfactionRatingsSatisfactionRatingIdRoute,
+    getApiV2SatisfactionRatingsSatisfactionRatingIdRouteHandler,
+  )
+  .openapi(getApiV2SatisfactionRatingsCountRoute, getApiV2SatisfactionRatingsCountRouteHandler)
+  .openapi(getApiV2SatisfactionReasonsRoute, getApiV2SatisfactionReasonsRouteHandler)
+  .openapi(
+    getApiV2SatisfactionReasonsSatisfactionReasonIdRoute,
+    getApiV2SatisfactionReasonsSatisfactionReasonIdRouteHandler,
+  )
+  .openapi(getApiV2SavedSearchesRoute, getApiV2SavedSearchesRouteHandler)
+  .openapi(postApiV2SavedSearchesRoute, postApiV2SavedSearchesRouteHandler)
+  .openapi(putApiV2SavedSearchesIdRoute, putApiV2SavedSearchesIdRouteHandler)
+  .openapi(deleteApiV2SavedSearchesIdRoute, deleteApiV2SavedSearchesIdRouteHandler)
+  .openapi(getApiV2SearchRoute, getApiV2SearchRouteHandler)
+  .openapi(getApiV2SearchCountRoute, getApiV2SearchCountRouteHandler)
+  .openapi(getApiV2SearchExportRoute, getApiV2SearchExportRouteHandler)
+  .openapi(getApiV2SecuritySettingsRoute, getApiV2SecuritySettingsRouteHandler)
+  .openapi(getApiV2SessionsRoute, getApiV2SessionsRouteHandler)
+  .openapi(getApiV2SharingAgreementsRoute, getApiV2SharingAgreementsRouteHandler)
+  .openapi(postApiV2SharingAgreementsRoute, postApiV2SharingAgreementsRouteHandler)
+  .openapi(
+    getApiV2SharingAgreementsSharingAgreementIdRoute,
+    getApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  )
+  .openapi(
+    putApiV2SharingAgreementsSharingAgreementIdRoute,
+    putApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2SharingAgreementsSharingAgreementIdRoute,
+    deleteApiV2SharingAgreementsSharingAgreementIdRouteHandler,
+  )
+  .openapi(getApiV2SkipsRoute, getApiV2SkipsRouteHandler)
+  .openapi(postApiV2SkipsRoute, postApiV2SkipsRouteHandler)
+  .openapi(getApiV2SlasPoliciesRoute, getApiV2SlasPoliciesRouteHandler)
+  .openapi(postApiV2SlasPoliciesRoute, postApiV2SlasPoliciesRouteHandler)
+  .openapi(getApiV2SlasPoliciesSlaPolicyIdRoute, getApiV2SlasPoliciesSlaPolicyIdRouteHandler)
+  .openapi(putApiV2SlasPoliciesSlaPolicyIdRoute, putApiV2SlasPoliciesSlaPolicyIdRouteHandler)
+  .openapi(deleteApiV2SlasPoliciesSlaPolicyIdRoute, deleteApiV2SlasPoliciesSlaPolicyIdRouteHandler)
+  .openapi(getApiV2SlasPoliciesDefinitionsRoute, getApiV2SlasPoliciesDefinitionsRouteHandler)
+  .openapi(putApiV2SlasPoliciesReorderRoute, putApiV2SlasPoliciesReorderRouteHandler)
+  .openapi(getApiV2SuspendedTicketsRoute, getApiV2SuspendedTicketsRouteHandler)
+  .openapi(getApiV2SuspendedTicketsIdRoute, getApiV2SuspendedTicketsIdRouteHandler)
+  .openapi(deleteApiV2SuspendedTicketsIdRoute, deleteApiV2SuspendedTicketsIdRouteHandler)
+  .openapi(putApiV2SuspendedTicketsIdRecoverRoute, putApiV2SuspendedTicketsIdRecoverRouteHandler)
+  .openapi(
+    postApiV2SuspendedTicketsAttachmentsRoute,
+    postApiV2SuspendedTicketsAttachmentsRouteHandler,
+  )
+  .openapi(
+    putApiV2SuspendedTicketsBulkRecoverRoute,
+    putApiV2SuspendedTicketsBulkRecoverRouteHandler,
+  )
+  .openapi(
+    deleteApiV2SuspendedTicketsDestroyManyRoute,
+    deleteApiV2SuspendedTicketsDestroyManyRouteHandler,
+  )
+  .openapi(postApiV2SuspendedTicketsExportRoute, postApiV2SuspendedTicketsExportRouteHandler)
+  .openapi(
+    putApiV2SuspendedTicketsRecoverManyRoute,
+    putApiV2SuspendedTicketsRecoverManyRouteHandler,
+  )
+  .openapi(getApiV2TagsRoute, getApiV2TagsRouteHandler)
+  .openapi(getApiV2TagsCountRoute, getApiV2TagsCountRouteHandler)
+  .openapi(getApiV2TargetFailuresRoute, getApiV2TargetFailuresRouteHandler)
+  .openapi(
+    getApiV2TargetFailuresTargetFailureIdRoute,
+    getApiV2TargetFailuresTargetFailureIdRouteHandler,
+  )
+  .openapi(getApiV2TargetsRoute, getApiV2TargetsRouteHandler)
+  .openapi(postApiV2TargetsRoute, postApiV2TargetsRouteHandler)
+  .openapi(getApiV2TargetsTargetIdRoute, getApiV2TargetsTargetIdRouteHandler)
+  .openapi(putApiV2TargetsTargetIdRoute, putApiV2TargetsTargetIdRouteHandler)
+  .openapi(deleteApiV2TargetsTargetIdRoute, deleteApiV2TargetsTargetIdRouteHandler)
+  .openapi(getApiV2TaskListTemplatesRoute, getApiV2TaskListTemplatesRouteHandler)
+  .openapi(postApiV2TaskListTemplatesRoute, postApiV2TaskListTemplatesRouteHandler)
+  .openapi(
+    getApiV2TaskListTemplatesTaskListTemplateIdRoute,
+    getApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV2TaskListTemplatesTaskListTemplateIdRoute,
+    putApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TaskListTemplatesTaskListTemplateIdRoute,
+    deleteApiV2TaskListTemplatesTaskListTemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV2TaskListTemplatesTaskListTemplateIdTasksRoute,
+    getApiV2TaskListTemplatesTaskListTemplateIdTasksRouteHandler,
+  )
+  .openapi(getApiV2TaskListsTaskListIdRoute, getApiV2TaskListsTaskListIdRouteHandler)
+  .openapi(putApiV2TaskListsTaskListIdRoute, putApiV2TaskListsTaskListIdRouteHandler)
+  .openapi(deleteApiV2TaskListsTaskListIdRoute, deleteApiV2TaskListsTaskListIdRouteHandler)
+  .openapi(
+    getApiV2TaskListsTaskListIdTaskItemsRoute,
+    getApiV2TaskListsTaskListIdTaskItemsRouteHandler,
+  )
+  .openapi(
+    postApiV2TaskListsTaskListIdTaskItemsRoute,
+    postApiV2TaskListsTaskListIdTaskItemsRouteHandler,
+  )
+  .openapi(
+    getApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+    getApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  )
+  .openapi(
+    putApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+    putApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TaskListsTaskListIdTaskItemsTaskItemIdRoute,
+    deleteApiV2TaskListsTaskListIdTaskItemsTaskItemIdRouteHandler,
+  )
+  .openapi(getApiV2TicketAuditsRoute, getApiV2TicketAuditsRouteHandler)
+  .openapi(getApiV2TicketContentPinsRoute, getApiV2TicketContentPinsRouteHandler)
+  .openapi(postApiV2TicketContentPinsRoute, postApiV2TicketContentPinsRouteHandler)
+  .openapi(
+    deleteApiV2TicketContentPinsContentPinIdRoute,
+    deleteApiV2TicketContentPinsContentPinIdRouteHandler,
+  )
+  .openapi(getApiV2TicketFieldsRoute, getApiV2TicketFieldsRouteHandler)
+  .openapi(postApiV2TicketFieldsRoute, postApiV2TicketFieldsRouteHandler)
+  .openapi(getApiV2TicketFieldsTicketFieldIdRoute, getApiV2TicketFieldsTicketFieldIdRouteHandler)
+  .openapi(putApiV2TicketFieldsTicketFieldIdRoute, putApiV2TicketFieldsTicketFieldIdRouteHandler)
+  .openapi(
+    deleteApiV2TicketFieldsTicketFieldIdRoute,
+    deleteApiV2TicketFieldsTicketFieldIdRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketFieldsTicketFieldIdOptionsRoute,
+    getApiV2TicketFieldsTicketFieldIdOptionsRouteHandler,
+  )
+  .openapi(
+    postApiV2TicketFieldsTicketFieldIdOptionsRoute,
+    postApiV2TicketFieldsTicketFieldIdOptionsRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute,
+    getApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRoute,
+    deleteApiV2TicketFieldsTicketFieldIdOptionsTicketFieldOptionIdRouteHandler,
+  )
+  .openapi(getApiV2TicketFieldsCountRoute, getApiV2TicketFieldsCountRouteHandler)
+  .openapi(putApiV2TicketFieldsReorderRoute, putApiV2TicketFieldsReorderRouteHandler)
+  .openapi(getApiV2TicketFieldsShowManyRoute, getApiV2TicketFieldsShowManyRouteHandler)
+  .openapi(getApiV2TicketFormStatusesRoute, getApiV2TicketFormStatusesRouteHandler)
+  .openapi(getApiV2TicketFormStatusesShowManyRoute, getApiV2TicketFormStatusesShowManyRouteHandler)
+  .openapi(getApiV2TicketFormsRoute, getApiV2TicketFormsRouteHandler)
+  .openapi(postApiV2TicketFormsRoute, postApiV2TicketFormsRouteHandler)
+  .openapi(getApiV2TicketFormsTicketFormIdRoute, getApiV2TicketFormsTicketFormIdRouteHandler)
+  .openapi(putApiV2TicketFormsTicketFormIdRoute, putApiV2TicketFormsTicketFormIdRouteHandler)
+  .openapi(deleteApiV2TicketFormsTicketFormIdRoute, deleteApiV2TicketFormsTicketFormIdRouteHandler)
+  .openapi(
+    postApiV2TicketFormsTicketFormIdCloneRoute,
+    postApiV2TicketFormsTicketFormIdCloneRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+    getApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  )
+  .openapi(
+    postApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+    postApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  )
+  .openapi(
+    putApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+    putApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRoute,
+    deleteApiV2TicketFormsTicketFormIdTicketFormStatusesRouteHandler,
+  )
+  .openapi(
+    putApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRoute,
+    putApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRoute,
+    deleteApiV2TicketFormsTicketFormIdTicketFormStatusesTicketFormStatusIdRouteHandler,
+  )
+  .openapi(putApiV2TicketFormsReorderRoute, putApiV2TicketFormsReorderRouteHandler)
+  .openapi(getApiV2TicketFormsShowManyRoute, getApiV2TicketFormsShowManyRouteHandler)
+  .openapi(getApiV2TicketMetricsRoute, getApiV2TicketMetricsRouteHandler)
+  .openapi(
+    getApiV2TicketMetricsTicketMetricIdRoute,
+    getApiV2TicketMetricsTicketMetricIdRouteHandler,
+  )
+  .openapi(getApiV2TicketsRoute, getApiV2TicketsRouteHandler)
+  .openapi(postApiV2TicketsRoute, postApiV2TicketsRouteHandler)
+  .openapi(getApiV2TicketsTicketIdRoute, getApiV2TicketsTicketIdRouteHandler)
+  .openapi(putApiV2TicketsTicketIdRoute, putApiV2TicketsTicketIdRouteHandler)
+  .openapi(deleteApiV2TicketsTicketIdRoute, deleteApiV2TicketsTicketIdRouteHandler)
+  .openapi(getApiV2TicketsTicketIdAuditsRoute, getApiV2TicketsTicketIdAuditsRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdAuditsTicketAuditIdRoute,
+    getApiV2TicketsTicketIdAuditsTicketAuditIdRouteHandler,
+  )
+  .openapi(
+    putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRoute,
+    putApiV2TicketsTicketIdAuditsTicketAuditIdMakePrivateRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdAuditsCountRoute, getApiV2TicketsTicketIdAuditsCountRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdCollaboratorsRoute,
+    getApiV2TicketsTicketIdCollaboratorsRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdCommentsRoute, getApiV2TicketsTicketIdCommentsRouteHandler)
+  .openapi(
+    putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdRedactRoute,
+    putApiV2TicketsTicketIdCommentsCommentIdAttachmentsAttachmentIdRedactRouteHandler,
+  )
+  .openapi(
+    putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRoute,
+    putApiV2TicketsTicketIdCommentsTicketCommentIdMakePrivateRouteHandler,
+  )
+  .openapi(
+    putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRoute,
+    putApiV2TicketsTicketIdCommentsTicketCommentIdRedactRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketsTicketIdCommentsCountRoute,
+    getApiV2TicketsTicketIdCommentsCountRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketsTicketIdConversationLogRoute,
+    getApiV2TicketsTicketIdConversationLogRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdEmailCcsRoute, getApiV2TicketsTicketIdEmailCcsRouteHandler)
+  .openapi(getApiV2TicketsTicketIdFollowersRoute, getApiV2TicketsTicketIdFollowersRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdGroupSlasPolicyMetricsRoute,
+    getApiV2TicketsTicketIdGroupSlasPolicyMetricsRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdIncidentsRoute, getApiV2TicketsTicketIdIncidentsRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdMacrosMacroIdApplyRoute,
+    getApiV2TicketsTicketIdMacrosMacroIdApplyRouteHandler,
+  )
+  .openapi(putApiV2TicketsTicketIdMarkAsSpamRoute, putApiV2TicketsTicketIdMarkAsSpamRouteHandler)
+  .openapi(postApiV2TicketsTicketIdMergeRoute, postApiV2TicketsTicketIdMergeRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdMetricEventsRoute,
+    getApiV2TicketsTicketIdMetricEventsRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdMetricsRoute, getApiV2TicketsTicketIdMetricsRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdParentTicketTasksRoute,
+    getApiV2TicketsTicketIdParentTicketTasksRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdRelatedRoute, getApiV2TicketsTicketIdRelatedRouteHandler)
+  .openapi(
+    postApiV2TicketsTicketIdSatisfactionRatingRoute,
+    postApiV2TicketsTicketIdSatisfactionRatingRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdSkipsRoute, getApiV2TicketsTicketIdSkipsRouteHandler)
+  .openapi(
+    getApiV2TicketsTicketIdSlasPolicyMetricsRoute,
+    getApiV2TicketsTicketIdSlasPolicyMetricsRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdTagsRoute, getApiV2TicketsTicketIdTagsRouteHandler)
+  .openapi(postApiV2TicketsTicketIdTagsRoute, postApiV2TicketsTicketIdTagsRouteHandler)
+  .openapi(putApiV2TicketsTicketIdTagsRoute, putApiV2TicketsTicketIdTagsRouteHandler)
+  .openapi(deleteApiV2TicketsTicketIdTagsRoute, deleteApiV2TicketsTicketIdTagsRouteHandler)
+  .openapi(
+    postApiV2TicketsTicketIdTaskItemsTaskItemIdSubticketRoute,
+    postApiV2TicketsTicketIdTaskItemsTaskItemIdSubticketRouteHandler,
+  )
+  .openapi(
+    getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute,
+    getApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRouteHandler,
+  )
+  .openapi(
+    postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRoute,
+    postApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLinkIdRoute,
+    deleteApiV2TicketsTicketIdTaskItemsTaskItemIdTaskLinksTaskObjectLinkIdRouteHandler,
+  )
+  .openapi(getApiV2TicketsTicketIdTaskListsRoute, getApiV2TicketsTicketIdTaskListsRouteHandler)
+  .openapi(postApiV2TicketsTicketIdTaskListsRoute, postApiV2TicketsTicketIdTaskListsRouteHandler)
+  .openapi(getApiV2TicketsAutocompleteRoute, getApiV2TicketsAutocompleteRouteHandler)
+  .openapi(getApiV2TicketsCountRoute, getApiV2TicketsCountRouteHandler)
+  .openapi(postApiV2TicketsCreateManyRoute, postApiV2TicketsCreateManyRouteHandler)
+  .openapi(deleteApiV2TicketsDestroyManyRoute, deleteApiV2TicketsDestroyManyRouteHandler)
+  .openapi(putApiV2TicketsMarkManyAsSpamRoute, putApiV2TicketsMarkManyAsSpamRouteHandler)
+  .openapi(
+    getApiV2TicketsMessagingConversationsConversationIdTicketRoute,
+    getApiV2TicketsMessagingConversationsConversationIdTicketRouteHandler,
+  )
+  .openapi(getApiV2TicketsRecentRoute, getApiV2TicketsRecentRouteHandler)
+  .openapi(getApiV2TicketsShowManyRoute, getApiV2TicketsShowManyRouteHandler)
+  .openapi(putApiV2TicketsUpdateManyRoute, putApiV2TicketsUpdateManyRouteHandler)
+  .openapi(getApiV2TriggerCategoriesRoute, getApiV2TriggerCategoriesRouteHandler)
+  .openapi(postApiV2TriggerCategoriesRoute, postApiV2TriggerCategoriesRouteHandler)
+  .openapi(
+    getApiV2TriggerCategoriesTriggerCategoryIdRoute,
+    getApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  )
+  .openapi(
+    patchApiV2TriggerCategoriesTriggerCategoryIdRoute,
+    patchApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2TriggerCategoriesTriggerCategoryIdRoute,
+    deleteApiV2TriggerCategoriesTriggerCategoryIdRouteHandler,
+  )
+  .openapi(postApiV2TriggerCategoriesJobsRoute, postApiV2TriggerCategoriesJobsRouteHandler)
+  .openapi(getApiV2TriggersRoute, getApiV2TriggersRouteHandler)
+  .openapi(postApiV2TriggersRoute, postApiV2TriggersRouteHandler)
+  .openapi(getApiV2TriggersTriggerIdRoute, getApiV2TriggersTriggerIdRouteHandler)
+  .openapi(putApiV2TriggersTriggerIdRoute, putApiV2TriggersTriggerIdRouteHandler)
+  .openapi(deleteApiV2TriggersTriggerIdRoute, deleteApiV2TriggersTriggerIdRouteHandler)
+  .openapi(getApiV2TriggersTriggerIdRevisionsRoute, getApiV2TriggersTriggerIdRevisionsRouteHandler)
+  .openapi(
+    getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRoute,
+    getApiV2TriggersTriggerIdRevisionsTriggerRevisionIdRouteHandler,
+  )
+  .openapi(getApiV2TriggersActiveRoute, getApiV2TriggersActiveRouteHandler)
+  .openapi(getApiV2TriggersDefinitionsRoute, getApiV2TriggersDefinitionsRouteHandler)
+  .openapi(deleteApiV2TriggersDestroyManyRoute, deleteApiV2TriggersDestroyManyRouteHandler)
+  .openapi(getApiV2TriggersLimitsRoute, getApiV2TriggersLimitsRouteHandler)
+  .openapi(putApiV2TriggersReorderRoute, putApiV2TriggersReorderRouteHandler)
+  .openapi(getApiV2TriggersSearchRoute, getApiV2TriggersSearchRouteHandler)
+  .openapi(putApiV2TriggersUpdateManyRoute, putApiV2TriggersUpdateManyRouteHandler)
+  .openapi(postApiV2TriggersValidateRoute, postApiV2TriggersValidateRouteHandler)
+  .openapi(postApiV2UploadsRoute, postApiV2UploadsRouteHandler)
+  .openapi(deleteApiV2UploadsTokenRoute, deleteApiV2UploadsTokenRouteHandler)
+  .openapi(getApiV2UserFieldsRoute, getApiV2UserFieldsRouteHandler)
+  .openapi(postApiV2UserFieldsRoute, postApiV2UserFieldsRouteHandler)
+  .openapi(getApiV2UserFieldsUserFieldIdRoute, getApiV2UserFieldsUserFieldIdRouteHandler)
+  .openapi(putApiV2UserFieldsUserFieldIdRoute, putApiV2UserFieldsUserFieldIdRouteHandler)
+  .openapi(deleteApiV2UserFieldsUserFieldIdRoute, deleteApiV2UserFieldsUserFieldIdRouteHandler)
+  .openapi(
+    getApiV2UserFieldsUserFieldIdOptionsRoute,
+    getApiV2UserFieldsUserFieldIdOptionsRouteHandler,
+  )
+  .openapi(
+    postApiV2UserFieldsUserFieldIdOptionsRoute,
+    postApiV2UserFieldsUserFieldIdOptionsRouteHandler,
+  )
+  .openapi(
+    getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute,
+    getApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRoute,
+    deleteApiV2UserFieldsUserFieldIdOptionsUserFieldOptionIdRouteHandler,
+  )
+  .openapi(putApiV2UserFieldsReorderRoute, putApiV2UserFieldsReorderRouteHandler)
+  .openapi(getApiV2UserFieldsShowManyRoute, getApiV2UserFieldsShowManyRouteHandler)
+  .openapi(getApiV2UsersRoute, getApiV2UsersRouteHandler)
+  .openapi(postApiV2UsersRoute, postApiV2UsersRouteHandler)
+  .openapi(getApiV2UsersUserIdRoute, getApiV2UsersUserIdRouteHandler)
+  .openapi(putApiV2UsersUserIdRoute, putApiV2UsersUserIdRouteHandler)
+  .openapi(deleteApiV2UsersUserIdRoute, deleteApiV2UsersUserIdRouteHandler)
+  .openapi(getApiV2UsersUserIdBrandAgentsRoute, getApiV2UsersUserIdBrandAgentsRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdBrandAgentsBrandAgentIdRoute,
+    getApiV2UsersUserIdBrandAgentsBrandAgentIdRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdComplianceDeletionStatusesRoute,
+    getApiV2UsersUserIdComplianceDeletionStatusesRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdEntitlementsFullRoute,
+    getApiV2UsersUserIdEntitlementsFullRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdGroupMembershipsRoute,
+    getApiV2UsersUserIdGroupMembershipsRouteHandler,
+  )
+  .openapi(
+    postApiV2UsersUserIdGroupMembershipsRoute,
+    postApiV2UsersUserIdGroupMembershipsRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute,
+    getApiV2UsersUserIdGroupMembershipsGroupMembershipIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRoute,
+    deleteApiV2UsersUserIdGroupMembershipsGroupMembershipIdRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRoute,
+    putApiV2UsersUserIdGroupMembershipsGroupMembershipIdMakeDefaultRouteHandler,
+  )
+  .openapi(getApiV2UsersUserIdGroupsRoute, getApiV2UsersUserIdGroupsRouteHandler)
+  .openapi(getApiV2UsersUserIdGroupsCountRoute, getApiV2UsersUserIdGroupsCountRouteHandler)
+  .openapi(getApiV2UsersUserIdIdentitiesRoute, getApiV2UsersUserIdIdentitiesRouteHandler)
+  .openapi(postApiV2UsersUserIdIdentitiesRoute, postApiV2UsersUserIdIdentitiesRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+    getApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+    putApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2UsersUserIdIdentitiesUserIdentityIdRoute,
+    deleteApiV2UsersUserIdIdentitiesUserIdentityIdRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRoute,
+    putApiV2UsersUserIdIdentitiesUserIdentityIdMakePrimaryRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRoute,
+    putApiV2UsersUserIdIdentitiesUserIdentityIdRequestVerificationRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRoute,
+    putApiV2UsersUserIdIdentitiesUserIdentityIdVerifyRouteHandler,
+  )
+  .openapi(putApiV2UsersUserIdMergeRoute, putApiV2UsersUserIdMergeRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdOrganizationMembershipsRoute,
+    getApiV2UsersUserIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    postApiV2UsersUserIdOrganizationMembershipsRoute,
+    postApiV2UsersUserIdOrganizationMembershipsRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute,
+    getApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRoute,
+    deleteApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdMakeDefaultRoute,
+    putApiV2UsersUserIdOrganizationMembershipsOrganizationMembershipIdMakeDefaultRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdOrganizationSubscriptionsRoute,
+    getApiV2UsersUserIdOrganizationSubscriptionsRouteHandler,
+  )
+  .openapi(getApiV2UsersUserIdOrganizationsRoute, getApiV2UsersUserIdOrganizationsRouteHandler)
+  .openapi(
+    deleteApiV2UsersUserIdOrganizationsOrganizationIdRoute,
+    deleteApiV2UsersUserIdOrganizationsOrganizationIdRouteHandler,
+  )
+  .openapi(
+    putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRoute,
+    putApiV2UsersUserIdOrganizationsOrganizationIdMakeDefaultRouteHandler,
+  )
+  .openapi(
+    getApiV2UsersUserIdOrganizationsCountRoute,
+    getApiV2UsersUserIdOrganizationsCountRouteHandler,
+  )
+  .openapi(postApiV2UsersUserIdPasswordRoute, postApiV2UsersUserIdPasswordRouteHandler)
+  .openapi(putApiV2UsersUserIdPasswordRoute, putApiV2UsersUserIdPasswordRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdPasswordRequirementsRoute,
+    getApiV2UsersUserIdPasswordRequirementsRouteHandler,
+  )
+  .openapi(getApiV2UsersUserIdRelatedRoute, getApiV2UsersUserIdRelatedRouteHandler)
+  .openapi(getApiV2UsersUserIdRequestsRoute, getApiV2UsersUserIdRequestsRouteHandler)
+  .openapi(getApiV2UsersUserIdSessionsRoute, getApiV2UsersUserIdSessionsRouteHandler)
+  .openapi(deleteApiV2UsersUserIdSessionsRoute, deleteApiV2UsersUserIdSessionsRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdSessionsSessionIdRoute,
+    getApiV2UsersUserIdSessionsSessionIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV2UsersUserIdSessionsSessionIdRoute,
+    deleteApiV2UsersUserIdSessionsSessionIdRouteHandler,
+  )
+  .openapi(getApiV2UsersUserIdSkipsRoute, getApiV2UsersUserIdSkipsRouteHandler)
+  .openapi(getApiV2UsersUserIdSuspensionRoute, getApiV2UsersUserIdSuspensionRouteHandler)
+  .openapi(postApiV2UsersUserIdSuspensionRoute, postApiV2UsersUserIdSuspensionRouteHandler)
+  .openapi(putApiV2UsersUserIdSuspensionRoute, putApiV2UsersUserIdSuspensionRouteHandler)
+  .openapi(deleteApiV2UsersUserIdSuspensionRoute, deleteApiV2UsersUserIdSuspensionRouteHandler)
+  .openapi(getApiV2UsersUserIdTagsRoute, getApiV2UsersUserIdTagsRouteHandler)
+  .openapi(postApiV2UsersUserIdTagsRoute, postApiV2UsersUserIdTagsRouteHandler)
+  .openapi(putApiV2UsersUserIdTagsRoute, putApiV2UsersUserIdTagsRouteHandler)
+  .openapi(deleteApiV2UsersUserIdTagsRoute, deleteApiV2UsersUserIdTagsRouteHandler)
+  .openapi(getApiV2UsersUserIdTicketsAssignedRoute, getApiV2UsersUserIdTicketsAssignedRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdTicketsAssignedCountRoute,
+    getApiV2UsersUserIdTicketsAssignedCountRouteHandler,
+  )
+  .openapi(getApiV2UsersUserIdTicketsCcdRoute, getApiV2UsersUserIdTicketsCcdRouteHandler)
+  .openapi(getApiV2UsersUserIdTicketsCcdCountRoute, getApiV2UsersUserIdTicketsCcdCountRouteHandler)
+  .openapi(getApiV2UsersUserIdTicketsFollowedRoute, getApiV2UsersUserIdTicketsFollowedRouteHandler)
+  .openapi(
+    getApiV2UsersUserIdTicketsRequestedRoute,
+    getApiV2UsersUserIdTicketsRequestedRouteHandler,
+  )
+  .openapi(getApiV2UsersAutocompleteRoute, getApiV2UsersAutocompleteRouteHandler)
+  .openapi(postApiV2UsersAutocompleteRoute, postApiV2UsersAutocompleteRouteHandler)
+  .openapi(getApiV2UsersCountRoute, getApiV2UsersCountRouteHandler)
+  .openapi(postApiV2UsersCreateManyRoute, postApiV2UsersCreateManyRouteHandler)
+  .openapi(postApiV2UsersCreateOrUpdateRoute, postApiV2UsersCreateOrUpdateRouteHandler)
+  .openapi(postApiV2UsersCreateOrUpdateManyRoute, postApiV2UsersCreateOrUpdateManyRouteHandler)
+  .openapi(deleteApiV2UsersDestroyManyRoute, deleteApiV2UsersDestroyManyRouteHandler)
+  .openapi(postApiV2UsersLogoutManyRoute, postApiV2UsersLogoutManyRouteHandler)
+  .openapi(getApiV2UsersMeRoute, getApiV2UsersMeRouteHandler)
+  .openapi(deleteApiV2UsersMeLogoutRoute, deleteApiV2UsersMeLogoutRouteHandler)
+  .openapi(getApiV2UsersMeOauthClientsRoute, getApiV2UsersMeOauthClientsRouteHandler)
+  .openapi(getApiV2UsersMeSessionRoute, getApiV2UsersMeSessionRouteHandler)
+  .openapi(getApiV2UsersMeSessionRenewRoute, getApiV2UsersMeSessionRenewRouteHandler)
+  .openapi(getApiV2UsersMeSettingsRoute, getApiV2UsersMeSettingsRouteHandler)
+  .openapi(putApiV2UsersMeSettingsRoute, putApiV2UsersMeSettingsRouteHandler)
+  .openapi(postApiV2UsersRequestCreateRoute, postApiV2UsersRequestCreateRouteHandler)
+  .openapi(getApiV2UsersSearchRoute, getApiV2UsersSearchRouteHandler)
+  .openapi(getApiV2UsersShowManyRoute, getApiV2UsersShowManyRouteHandler)
+  .openapi(putApiV2UsersUpdateManyRoute, putApiV2UsersUpdateManyRouteHandler)
+  .openapi(getApiV2ViewsRoute, getApiV2ViewsRouteHandler)
+  .openapi(postApiV2ViewsRoute, postApiV2ViewsRouteHandler)
+  .openapi(getApiV2ViewsViewIdRoute, getApiV2ViewsViewIdRouteHandler)
+  .openapi(putApiV2ViewsViewIdRoute, putApiV2ViewsViewIdRouteHandler)
+  .openapi(deleteApiV2ViewsViewIdRoute, deleteApiV2ViewsViewIdRouteHandler)
+  .openapi(getApiV2ViewsViewIdCountRoute, getApiV2ViewsViewIdCountRouteHandler)
+  .openapi(getApiV2ViewsViewIdExecuteRoute, getApiV2ViewsViewIdExecuteRouteHandler)
+  .openapi(getApiV2ViewsViewIdExportRoute, getApiV2ViewsViewIdExportRouteHandler)
+  .openapi(getApiV2ViewsViewIdTicketsRoute, getApiV2ViewsViewIdTicketsRouteHandler)
+  .openapi(getApiV2ViewsActiveRoute, getApiV2ViewsActiveRouteHandler)
+  .openapi(getApiV2ViewsCompactRoute, getApiV2ViewsCompactRouteHandler)
+  .openapi(getApiV2ViewsCountRoute, getApiV2ViewsCountRouteHandler)
+  .openapi(getApiV2ViewsCountManyRoute, getApiV2ViewsCountManyRouteHandler)
+  .openapi(getApiV2ViewsDefinitionsRoute, getApiV2ViewsDefinitionsRouteHandler)
+  .openapi(deleteApiV2ViewsDestroyManyRoute, deleteApiV2ViewsDestroyManyRouteHandler)
+  .openapi(postApiV2ViewsPreviewRoute, postApiV2ViewsPreviewRouteHandler)
+  .openapi(postApiV2ViewsPreviewCountRoute, postApiV2ViewsPreviewCountRouteHandler)
+  .openapi(getApiV2ViewsSearchRoute, getApiV2ViewsSearchRouteHandler)
+  .openapi(getApiV2ViewsShowManyRoute, getApiV2ViewsShowManyRouteHandler)
+  .openapi(putApiV2ViewsUpdateManyRoute, putApiV2ViewsUpdateManyRouteHandler)
+  .openapi(getApiV2WorkspacesRoute, getApiV2WorkspacesRouteHandler)
+  .openapi(postApiV2WorkspacesRoute, postApiV2WorkspacesRouteHandler)
+  .openapi(getApiV2WorkspacesWorkspaceIdRoute, getApiV2WorkspacesWorkspaceIdRouteHandler)
+  .openapi(putApiV2WorkspacesWorkspaceIdRoute, putApiV2WorkspacesWorkspaceIdRouteHandler)
+  .openapi(deleteApiV2WorkspacesWorkspaceIdRoute, deleteApiV2WorkspacesWorkspaceIdRouteHandler)
+  .openapi(deleteApiV2WorkspacesDestroyManyRoute, deleteApiV2WorkspacesDestroyManyRouteHandler)
+  .openapi(putApiV2WorkspacesReorderRoute, putApiV2WorkspacesReorderRouteHandler)
+  .openapi(postOauthTokensRoute, postOauthTokensRouteHandler)
 
 export default app

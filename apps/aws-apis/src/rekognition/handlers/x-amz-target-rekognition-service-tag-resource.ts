@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRekognitionServiceTagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRekognitionServiceTagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRekognitionServiceTagResourceHandler = app.openapi(
-  postXAmzTargetRekognitionServiceTagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRekognitionServiceTagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetRekognitionServiceTagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

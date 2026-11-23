@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTemplatesDescCachedUploadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTemplatesDescCachedUploadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const templatesDescCachedUploadHandler = app.openapi(
-  postTemplatesDescCachedUploadRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postTemplatesDescCachedUploadRouteHandler: RouteHandler<
+  typeof postTemplatesDescCachedUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

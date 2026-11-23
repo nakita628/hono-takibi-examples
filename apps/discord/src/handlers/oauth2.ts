@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOauth2ApplicationsMeRoute,
   getOauth2KeysRoute,
   getOauth2MeRoute,
   getOauth2UserinfoRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauth2MeRouteHandler: RouteHandler<typeof getOauth2MeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauth2Handler = app
-  .openapi(getOauth2MeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2ApplicationsMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2KeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauth2UserinfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOauth2ApplicationsMeRouteHandler: RouteHandler<
+  typeof getOauth2ApplicationsMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2KeysRouteHandler: RouteHandler<typeof getOauth2KeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauth2UserinfoRouteHandler: RouteHandler<typeof getOauth2UserinfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

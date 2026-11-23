@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionImportKeyPairRoute, postActionImportKeyPairRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionImportKeyPairRoute, postActionImportKeyPairRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionImportKeyPairRouteHandler: RouteHandler<
+  typeof getActionImportKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionImportKeyPairHandler = app
-  .openapi(getActionImportKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionImportKeyPairRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionImportKeyPairRouteHandler: RouteHandler<
+  typeof postActionImportKeyPairRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

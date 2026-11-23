@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAccountsPaymentMethodsRoute,
   getAccountsRoute,
   postAccountsPasswordRoute,
@@ -10,30 +10,44 @@ import {
   putAccountsUpdatePasswordRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsSignInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsUpdatePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountsRouteHandler: RouteHandler<typeof postAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsRouteHandler: RouteHandler<typeof putAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsPasswordRouteHandler: RouteHandler<
+  typeof postAccountsPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsPaymentMethodsRouteHandler: RouteHandler<
+  typeof getAccountsPaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsSettingsRouteHandler: RouteHandler<
+  typeof postAccountsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsSignInRouteHandler: RouteHandler<typeof postAccountsSignInRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsUpdatePasswordRouteHandler: RouteHandler<
+  typeof putAccountsUpdatePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

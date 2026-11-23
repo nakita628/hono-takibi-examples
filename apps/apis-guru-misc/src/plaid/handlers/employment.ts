@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmploymentVerificationGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmploymentVerificationGetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const employmentHandler = app.openapi(postEmploymentVerificationGetRoute, (c) => {
+export const postEmploymentVerificationGetRouteHandler: RouteHandler<
+  typeof postEmploymentVerificationGetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

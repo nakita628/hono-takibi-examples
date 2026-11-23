@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getParentsSha1CountCursorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getParentsSha1CountCursorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const parentsHandler = app.openapi(getParentsSha1CountCursorRoute, (c) => {
+export const getParentsSha1CountCursorRouteHandler: RouteHandler<
+  typeof getParentsSha1CountCursorRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

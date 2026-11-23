@@ -4902,11 +4902,9 @@ export const getWikiRestApiAuditRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     403: {
       description: 'Returned if the calling user does not have permission to view the audit\nlog.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:audit-log:confluence'] }],
@@ -4932,11 +4930,10 @@ export const postWikiRestApiAuditRoute = createRoute({
       description: 'Returned if the record is created in the audit log.',
       content: { 'application/json': { schema: AuditRecordSchema } },
     },
-    400: { description: 'Returned if the `remoteAddress` property is not specified.', content: {} },
+    400: { description: 'Returned if the `remoteAddress` property is not specified.' },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
   },
   security: [
@@ -5019,7 +5016,6 @@ export const getWikiRestApiAuditExportRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to view the audit\nlog.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:audit-log:confluence'] }],
@@ -5040,7 +5036,6 @@ export const getWikiRestApiAuditRetentionRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to view the audit\nlog.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:audit-log:confluence'] }],
@@ -5068,7 +5063,6 @@ export const putWikiRestApiAuditRetentionRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to view the audit\nlog.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:audit-log:confluence'] }],
@@ -5214,7 +5208,6 @@ export const getWikiRestApiAuditSinceRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to view the audit\nlog.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:audit-log:confluence'] }],
@@ -5272,12 +5265,10 @@ export const postWikiRestApiContentArchiveRoute = createRoute({
     400: {
       description:
         'Returned if:\n- there is an archival job already running for the tenant.\n- the number of pages to archive is larger than the limit of 300.\n- any of the content IDs specified in the array do not resolve to pages.\n- any of the specified pages are already archived.\n- the request is coming from a free edition tenant.\n- the request is coming from a non premium edition tenant with more than 1 page ID\n  in the archive request.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -5335,9 +5326,8 @@ export const putWikiRestApiContentBlueprintInstanceDraftIdRoute = createRoute({
     },
     400: {
       description: 'Returned if a title is not specified or a page with the\ntitle already exists.',
-      content: {},
     },
-    409: { description: 'Returned if the version is not set to 1.', content: {} },
+    409: { description: 'Returned if the version is not set to 1.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -5394,9 +5384,8 @@ export const postWikiRestApiContentBlueprintInstanceDraftIdRoute = createRoute({
     },
     400: {
       description: 'Returned if a title is not specified or a page with the\ntitle already exists.',
-      content: {},
     },
-    409: { description: 'Returned if the version is not set to 1.', content: {} },
+    409: { description: 'Returned if the version is not set to 1.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -5478,11 +5467,10 @@ export const getWikiRestApiContentSearchRoute = createRoute({
       description: 'Returned if the requested list of content is returned.',
       content: { 'application/json': { schema: ContentArraySchema } },
     },
-    400: { description: 'Returned if the CQL is invalid or missing.', content: {} },
+    400: { description: 'Returned if the CQL is invalid or missing.' },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['search:confluence'] }],
@@ -5520,21 +5508,17 @@ export const deleteWikiRestApiContentIdPageTreeRoute = createRoute({
     400: {
       description:
         "Returned if the content id is invalid or id does not represents a 'CURRENT' page.",
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     403: {
       description: 'Returned if the calling user can not delete the content with specified id.',
-      content: {},
     },
     404: {
       description:
         "Returned if;\n\n- There is no content with the given ID.\n- The requesting user does not have permission to trash the content or any of it's descendant pages.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -5598,17 +5582,12 @@ export const putWikiRestApiContentPageIdMovePositionTargetIdRoute = createRoute(
     400: {
       description:
         'Returned if;\n\n- A page already exists in the target space with the same name.\n  User is advised to rename page before moving.\n- The move would create a parent-child loop (page becomes a descendant and ancestor of itself)\n- The page has permission restrictions that the user does not have permission to create in the target space.\n  User is advised to remove restrictions before moving.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- User does not have permission to remove page from current space\n- User does not have permission to create a page in target space',
-      content: {},
     },
-    404: {
-      description: 'Returned if;\n\n- The id or targetId refer to non-existent pages',
-      content: {},
-    },
+    404: { description: 'Returned if;\n\n- The id or targetId refer to non-existent pages' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -5696,12 +5675,10 @@ export const putWikiRestApiContentIdChildAttachmentRoute = createRoute({
     403: {
       description:
         'Returned if;\n\n- Attachments are disabled.\n- The calling user does not have permission to add attachments to the\ncontent.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- The requested content is not found.\n- The user does not have permission to view it.\n- The attachment exceeds the maximum configured attachment size.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-file'] }],
@@ -5788,17 +5765,14 @@ export const postWikiRestApiContentIdChildAttachmentRoute = createRoute({
     },
     400: {
       description: 'Returned if the content already has an attachment with the same filename.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- Attachments are disabled in Confluence.\n- The calling user does not have permission to add attachments to the\ncontent.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- The requested content is not found.\n- The user does not have permission to view it\n- The attachment exceeds the maximum configured attachment size.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-file'] }],
@@ -5851,18 +5825,15 @@ export const putWikiRestApiContentIdChildAttachmentAttachmentIdRoute = createRou
     400: {
       description:
         'Returned if;\n\n- The attachment id is invalid.\n- The attachment version number is invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The calling user is not permitted to update or move the attachment.\n- The attachment is being moved to an invalid content type.',
-      content: {},
     },
-    404: { description: 'Returned if no attachment is found for the attachment ID.', content: {} },
+    404: { description: 'Returned if no attachment is found for the attachment ID.' },
     409: {
       description:
         'Returned if the version of the supplied attachment does not match\nthe version of the attachment stored in the database.',
-      content: {},
     },
   },
   security: [
@@ -5946,8 +5917,8 @@ export const postWikiRestApiContentIdChildAttachmentAttachmentIdDataRoute = crea
       description: 'Returned if the attachment is updated.',
       content: { 'application/json': { schema: ContentSchema } },
     },
-    400: { description: 'Returned if the attachment id is invalid.', content: {} },
-    404: { description: 'Returned if no attachment is found for the attachment ID.', content: {} },
+    400: { description: 'Returned if the attachment id is invalid.' },
+    404: { description: 'Returned if no attachment is found for the attachment ID.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-file'] }],
 })
@@ -6098,7 +6069,6 @@ export const getWikiRestApiContentIdDescendantRoute = createRoute({
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   deprecated: true,
@@ -6211,12 +6181,10 @@ export const getWikiRestApiContentIdDescendantTypeRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- Any of the required request params are missing.\n- The request is invalid such as negative start param, a format besides int32 for limit etc.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   deprecated: true,
@@ -6286,12 +6254,10 @@ export const getWikiRestApiContentIdHistoryVersionMacroIdMacroIdRoute = createRo
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- The macro does not exist in the specified version.\n- There is no macro matching the given macro ID or hash.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -6405,12 +6371,10 @@ export const getWikiRestApiContentIdHistoryVersionMacroIdMacroIdConvertToRoute =
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- The macro does not exist in the specified version.\n- There is no macro matching the given macro ID or hash.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -6535,12 +6499,10 @@ export const getWikiRestApiContentIdHistoryVersionMacroIdMacroIdConvertAsyncToRo
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- The macro does not exist in the specified version.\n- There is no macro matching the given macro ID or hash.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -6584,16 +6546,11 @@ export const postWikiRestApiContentIdLabelRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The body contains labels with invalid characters or too many characters.\n- The body contains too many labels.\n- The target content would contain too many labels after the operation.\n- The calling user does not have permission to edit labels.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the calling user can view but not edit the content.',
-      content: {},
-    },
+    403: { description: 'Returned if the calling user can view but not edit the content.' },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -6636,18 +6593,11 @@ export const deleteWikiRestApiContentIdLabelRoute = createRoute({
     }),
   },
   responses: {
-    204: {
-      description: 'Returned if the label is removed. The response body will be empty.',
-      content: {},
-    },
-    403: {
-      description: 'Returned if the calling user can view but not edit the content.',
-      content: {},
-    },
+    204: { description: 'Returned if the label is removed. The response body will be empty.' },
+    403: { description: 'Returned if the calling user can view but not edit the content.' },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -6688,19 +6638,12 @@ export const deleteWikiRestApiContentIdLabelLabelRoute = createRoute({
     }),
   },
   responses: {
-    204: {
-      description: 'Returned if the label is removed. The response body will be empty.',
-      content: {},
-    },
-    400: { description: 'Returned if the label name has a "/" character.', content: {} },
-    403: {
-      description: 'Returned if the calling user can view but not edit the content.',
-      content: {},
-    },
+    204: { description: 'Returned if the label is removed. The response body will be empty.' },
+    400: { description: 'Returned if the label name has a "/" character.' },
+    403: { description: 'Returned if the calling user can view but not edit the content.' },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -6782,7 +6725,6 @@ export const getWikiRestApiContentIdNotificationChildCreatedRoute = createRoute(
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -6864,7 +6806,6 @@ export const getWikiRestApiContentIdNotificationCreatedRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -6897,17 +6838,12 @@ export const postWikiRestApiContentIdPagehierarchyCopyRoute = createRoute({
     },
     400: {
       description: 'Returned if the title prefix is invalid (e.g. is empty, creates a conflict)',
-      content: {},
     },
     403: {
       description:
         'Returned if the user does not have permission to create content at source and destination',
-      content: {},
     },
-    404: {
-      description: 'Returned if original page or destination page does not exist.',
-      content: {},
-    },
+    404: { description: 'Returned if original page or destination page does not exist.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -6941,22 +6877,18 @@ export const postWikiRestApiContentIdCopyRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- destination or any of its fields are not specified.\n- destination.type is invalid.\n- sub-expansions limit exceeds.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     403: {
       description:
         'Returned if the user does not have permission to create content at destination.',
-      content: {},
     },
     404: {
       description:
         "Returned if;\n\n- the original page doesn't exist.\n- the destination page doesn’t exist.\n- the destination space doesn’t exist.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -6998,18 +6930,13 @@ export const postWikiRestApiContentIdPermissionCheckRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- If any of the required fields are missing.\n- If specified `subject` or `operation` is invalid.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have permission perform the check.',
-      content: {},
-    },
-    404: { description: 'Returned if there is no content with the given ID.', content: {} },
+    403: { description: 'Returned if the user does not have permission perform the check.' },
+    404: { description: 'Returned if there is no content with the given ID.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.permission'] }],
 })
@@ -7137,7 +7064,6 @@ export const getWikiRestApiContentIdRestrictionRoute = createRoute({
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -7272,12 +7198,10 @@ export const putWikiRestApiContentIdRestrictionRoute = createRoute({
     400: {
       description:
         "Returned if:\n\n- The request is empty, repeats an operation, uses an unsupported operation,\n  or specifies invalid users or groups.\n- The resulting restrictions for a supplied operation are nonempty and do not\n  include the calling user in the `user` list. Membership in a restricted group\n  does not satisfy this check. Callers with super-admin permissions are exempt.\n- An attempt is made to remove an editor's read restriction while retaining\n  their update restriction and keeping the content view restricted.",
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to update restrictions\nfor the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -7401,12 +7325,10 @@ export const postWikiRestApiContentIdRestrictionRoute = createRoute({
     400: {
       description:
         'Returned if:\n\n- The request is empty, repeats an operation, uses an unsupported operation,\n  or specifies invalid users or groups.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to add restrictions to\nthe content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -7489,16 +7411,14 @@ export const deleteWikiRestApiContentIdRestrictionRoute = createRoute({
       description: 'Returned if the restrictions are removed.',
       content: { 'application/json': { schema: ContentRestrictionArraySchema } },
     },
-    400: { description: 'Returned if any of the above validation rules are violated', content: {} },
+    400: { description: 'Returned if any of the above validation rules are violated' },
     403: {
       description:
         'Returned if the calling user does not have permission to alter the\nrestrictions on the content.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -7747,16 +7667,13 @@ export const getWikiRestApiContentIdRestrictionByOperationOperationKeyByGroupIdG
       200: {
         description:
           'Returns true if the content restriction applies to the group. The response\nwill not return a response body.',
-        content: {},
       },
       403: {
         description: 'Returned if the calling user does not have permission to view the\ncontent.',
-        content: {},
       },
       404: {
         description:
           'Returned if\n- There is no content with the given ID.\n- An invalid operation or group is specified.\n- Given groupId is blank or has invalid characters',
-        content: {},
       },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -7812,18 +7729,15 @@ export const putWikiRestApiContentIdRestrictionByOperationOperationKeyByGroupIdG
       200: {
         description:
           'Returned if the group is added to the content restriction by Group Id. The response\nbody will be empty.',
-        content: {},
       },
-      400: { description: 'Returned if;\n- Group Id is not valid', content: {} },
+      400: { description: 'Returned if;\n- Group Id is not valid' },
       403: {
         description:
           'Returned if the calling user does not have permission to update the\ncontent.',
-        content: {},
       },
       404: {
         description:
           'Returned if;\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- An invalid operation or group id is specified.',
-        content: {},
       },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -7879,21 +7793,17 @@ export const deleteWikiRestApiContentIdRestrictionByOperationOperationKeyByGroup
       200: {
         description:
           'Returned if the group is removed from the content restriction. The response\nbody will be empty.',
-        content: {},
       },
       400: {
         description:
           "The group's ID is blank, or removing its read restriction would leave it with an update restriction while the content remains view restricted.",
-        content: {},
       },
       403: {
         description: 'Returned if the calling user does not have permission to view the content.',
-        content: {},
       },
       404: {
         description:
           'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- The restriction to be deleted does not exist.',
-        content: {},
       },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -7942,12 +7852,10 @@ export const getWikiRestApiContentIdRestrictionByOperationOperationKeyUserRoute 
     200: {
       description:
         'Return true if the content restriction applies to the user. The response\nbody will be empty.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- An invalid operation or user is specified.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -7996,13 +7904,11 @@ export const putWikiRestApiContentIdRestrictionByOperationOperationKeyUserRoute 
     200: {
       description:
         'Returned if the user is added to the content restriction. The response\nbody will be empty.',
-      content: {},
     },
-    400: { description: 'Returned if;\n\n- Provided restrictions are invalid', content: {} },
+    400: { description: 'Returned if;\n\n- Provided restrictions are invalid' },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- An invalid operation or group is specified.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -8051,17 +7957,14 @@ export const deleteWikiRestApiContentIdRestrictionByOperationOperationKeyUserRou
     200: {
       description:
         'Returned if the user is removed from the content restriction. The response\nbody will be empty.',
-      content: {},
     },
     400: {
       description:
         "Removing the user's read restriction would leave them with an update restriction while the content remains view restricted.",
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- The calling user does not have permission to view the content.\n- An invalid operation or group is specified.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -8335,11 +8238,9 @@ export const postWikiRestApiContentIdVersionRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- There is no content with the given ID.\n- There is no version with the given version number.\n- The version number is the current version.',
-      content: {},
     },
     403: {
       description: "Returned if the calling user doesn't have permission to edit the\ncontent.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -8389,15 +8290,13 @@ export const deleteWikiRestApiContentIdVersionVersionNumberRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the version is deleted.', content: {} },
+    204: { description: 'Returned if the version is deleted.' },
     400: {
       description:
         'Returned if;\n\n- The content or version cannot be found.\n- The current version is specified.',
-      content: {},
     },
     403: {
       description: "Returned if the calling user doesn't have permission to edit the\ncontent.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -8515,12 +8414,8 @@ export const postWikiRestApiContentbodyConvertAsyncToRoute = createRoute({
     400: {
       description:
         'Returned\n- if the content body or conversion context is invalid or null\n- if the value is improperly formed\n- any conversion type other than export_view',
-      content: {},
     },
-    404: {
-      description: 'Returned if content cannot be found with the provided context.',
-      content: {},
-    },
+    404: { description: 'Returned if content cannot be found with the provided context.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
 })
@@ -8555,20 +8450,17 @@ export const getWikiRestApiContentbodyConvertAsyncIdRoute = createRoute({
         'Returned if successfully found an async conversion task associated with the id.',
       content: { 'application/json': { schema: AsyncContentBodySchema } },
     },
-    400: { description: 'Returned if the async id is invalid.', content: {} },
+    400: { description: 'Returned if the async id is invalid.' },
     401: {
       description:
         'Returned if the request was not made by an anonymous user and user is not authenticated.',
-      content: {},
     },
     403: {
       description:
         'Returned if the requesting user is not the user who made the conversion request.',
-      content: {},
     },
     404: {
       description: 'Returned if async macro conversion task cannot be found with the provided id.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
@@ -8605,7 +8497,7 @@ export const getWikiRestApiContentbodyConvertAsyncBulkTasksRoute = createRoute({
       description: 'Returned if asynchronous conversion tasks are successfully found.',
       content: { 'application/json': { schema: AsyncContentBodyArraySchema } },
     },
-    400: { description: 'Returned if there are more than 50 results requested.', content: {} },
+    400: { description: 'Returned if there are more than 50 results requested.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
 })
@@ -8631,7 +8523,7 @@ export const postWikiRestApiContentbodyConvertAsyncBulkTasksRoute = createRoute(
         'Returned if asynchronous tasks are created to convert content bodies. If a conversion task fails to be created, a “FAILED_TO_QUEUE” string will be returned instead of an asyncId.',
       content: { 'application/json': { schema: AsyncIdArraySchema } },
     },
-    400: { description: 'Returned if there are more than 10 conversions requested.', content: {} },
+    400: { description: 'Returned if there are more than 10 conversions requested.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.all'] }],
 })
@@ -8729,17 +8621,14 @@ export const getWikiRestApiLabelRoute = createRoute({
     400: {
       description:
         'Returned if no label name is provide or\nif content type provided in the query is invalid.',
-      content: {},
     },
     403: {
       description:
         'Returned if the calling user does not have permission to view\nany content including label info.',
-      content: {},
     },
     404: {
       description:
         'Returned if the lable name is invalid or if no label is found for a given label.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -8819,10 +8708,7 @@ export const getWikiRestApiGroupRoute = createRoute({
       description: 'Returned if the requested groups are returned.',
       content: { 'application/json': { schema: GroupArrayWithLinksSchema } },
     },
-    403: {
-      description: 'Returned if the calling user does not have permission to view\ngroups.',
-      content: {},
-    },
+    403: { description: 'Returned if the calling user does not have permission to view\ngroups.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-groups'] }],
 })
@@ -8847,12 +8733,9 @@ export const postWikiRestApiGroupRoute = createRoute({
       description: 'Returned if the group was created successfully.',
       content: { 'application/json': { schema: GroupSchema } },
     },
-    400: { description: 'Returned if the name is missing or invalid.', content: {} },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
-    403: { description: 'Returned if the user is not a site admin.', content: {} },
+    400: { description: 'Returned if the name is missing or invalid.' },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
+    403: { description: 'Returned if the user is not a site admin.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-groups'] }],
 })
@@ -8885,11 +8768,8 @@ export const getWikiRestApiGroupByIdRoute = createRoute({
       description: 'Returned if the requested group is returned.',
       content: { 'application/json': { schema: GroupSchema } },
     },
-    403: {
-      description: 'Returned if the calling user does not have permission to view\ngroups.',
-      content: {},
-    },
-    404: { description: 'Returned if the group does not exist.', content: {} },
+    403: { description: 'Returned if the calling user does not have permission to view\ngroups.' },
+    404: { description: 'Returned if the group does not exist.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-groups'] }],
 })
@@ -8918,14 +8798,11 @@ export const deleteWikiRestApiGroupByIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the group was removed successfully.', content: {} },
-    400: { description: 'Returned if the id is missing or invalid.', content: {} },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
-    403: { description: 'Returned if the user is not a site admin.', content: {} },
-    404: { description: 'If no user group by the given id exists.', content: {} },
+    204: { description: 'Returned if the group was removed successfully.' },
+    400: { description: 'Returned if the id is missing or invalid.' },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
+    403: { description: 'Returned if the user is not a site admin.' },
+    404: { description: 'If no user group by the given id exists.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-groups'] }],
 })
@@ -9014,10 +8891,7 @@ export const getWikiRestApiGroupPickerRoute = createRoute({
       description: 'Returns a full JSON representation of group collection.',
       content: { 'application/json': { schema: GroupArrayWithLinksSchema } },
     },
-    403: {
-      description: 'Returned if the calling user does not have permission to view\ngroups.',
-      content: {},
-    },
+    403: { description: 'Returned if the calling user does not have permission to view\ngroups.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-groups'] }],
 })
@@ -9138,11 +9012,8 @@ export const getWikiRestApiGroupGroupIdMembersByGroupIdRoute = createRoute({
       description: 'Returned if the requested users are returned.',
       content: { 'application/json': { schema: UserArraySchema } },
     },
-    400: { description: 'Returned if given limit is greater than 200', content: {} },
-    403: {
-      description: 'Returned if the calling user does not have permission to view users.',
-      content: {},
-    },
+    400: { description: 'Returned if given limit is greater than 200' },
+    403: { description: 'Returned if the calling user does not have permission to view users.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-groups'] }],
 })
@@ -9176,17 +9047,11 @@ export const postWikiRestApiGroupUserByGroupIdRoute = createRoute({
     },
   },
   responses: {
-    201: { description: 'Returned if the group was created successfully.', content: {} },
-    400: {
-      description: 'Returned if the groupId or accountId are missing or invalid.',
-      content: {},
-    },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
-    403: { description: 'Returned if the user is not a site admin.', content: {} },
-    404: { description: 'If no user group by the give name exists.', content: {} },
+    201: { description: 'Returned if the group was created successfully.' },
+    400: { description: 'Returned if the groupId or accountId are missing or invalid.' },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
+    403: { description: 'Returned if the user is not a site admin.' },
+    404: { description: 'If no user group by the give name exists.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-groups'] }],
 })
@@ -9229,21 +9094,16 @@ export const deleteWikiRestApiGroupUserByGroupIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the group was removed successfully.', content: {} },
-    400: { description: 'Returned if the name is missing or invalid.', content: {} },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
+    204: { description: 'Returned if the group was removed successfully.' },
+    400: { description: 'Returned if the name is missing or invalid.' },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
     403: {
       description:
         'Returned if the user is not a site admin.\nNote: A 204 is returned if the user is not part of the\ngroup.',
-      content: {},
     },
     404: {
       description:
         'If no user group by the give name exists or if no user exists\nfor the given accountId.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-groups'] }],
@@ -9321,10 +9181,7 @@ export const getWikiRestApiLongtaskRoute = createRoute({
       description: 'Returned if the requested tasks are returned.',
       content: { 'application/json': { schema: LongTaskStatusArraySchema } },
     },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:content.metadata:confluence'] }],
 })
@@ -9357,14 +9214,10 @@ export const getWikiRestApiLongtaskIdRoute = createRoute({
       description: 'Returned if the requested task is returned.',
       content: { 'application/json': { schema: LongTaskStatusWithLinksSchema } },
     },
-    401: {
-      description: 'Returned if the calling user is not logged in to Confluence.',
-      content: {},
-    },
+    401: { description: 'Returned if the calling user is not logged in to Confluence.' },
     404: {
       description:
         'Returned if;\n\n- There is no task with the given ID.\n- The calling user does not have permission to view the task.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-space.summary'] }],
@@ -9573,12 +9426,11 @@ export const getWikiRestApiRelationRelationNameFromSourceTypeSourceKeyToTargetTy
         description: 'Returned if the requested relationships are returned.',
         content: { 'application/json': { schema: RelationArraySchema } },
       },
-      400: { description: 'Returned if the request is invalid.', content: {} },
+      400: { description: 'Returned if the request is invalid.' },
       403: {
         description: 'Returned if the user does not have permission to view the\nrelationships.',
-        content: {},
       },
-      404: { description: 'Returned if the target entity does not exist.', content: {} },
+      404: { description: 'Returned if the target entity does not exist.' },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
   })
@@ -9757,17 +9609,15 @@ export const getWikiRestApiRelationRelationNameFromSourceTypeSourceKeyToTargetTy
         description: 'Returned if the relationship exists.',
         content: { 'application/json': { schema: RelationSchema } },
       },
-      400: { description: 'Returned if the request is invalid.', content: {} },
+      400: { description: 'Returned if the request is invalid.' },
       401: {
         description:
           'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-        content: {},
       },
       403: {
         description: 'Returned if the user does not have permission to view the\nrelationship.',
-        content: {},
       },
-      404: { description: 'Returned if the relationship does not exist.', content: {} },
+      404: { description: 'Returned if the relationship does not exist.' },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
   })
@@ -9920,20 +9770,13 @@ export const putWikiRestApiRelationRelationNameFromSourceTypeSourceKeyToTargetTy
         description: 'Returned if the relationship is created.',
         content: { 'application/json': { schema: RelationSchema } },
       },
-      400: { description: 'Returned if the request is invalid.', content: {} },
+      400: { description: 'Returned if the request is invalid.' },
       401: {
         description:
           'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-        content: {},
       },
-      403: {
-        description: 'Returned if the user does not have permission to use Confluence.',
-        content: {},
-      },
-      404: {
-        description: 'Returned if the user, space or content could not be found.',
-        content: {},
-      },
+      403: { description: 'Returned if the user does not have permission to use Confluence.' },
+      404: { description: 'Returned if the user, space or content could not be found.' },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
   })
@@ -10083,22 +9926,16 @@ export const deleteWikiRestApiRelationRelationNameFromSourceTypeSourceKeyToTarge
     responses: {
       204: {
         description: "Returned if the relationship is deleted or the relationship didn't\nexist.",
-        content: {},
       },
-      400: { description: 'Returned if the request is invalid.', content: {} },
+      400: { description: 'Returned if the request is invalid.' },
       401: {
         description:
           'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-        content: {},
       },
       403: {
         description: 'Returned if the user does not have permission to delete the\nrelationship.',
-        content: {},
       },
-      404: {
-        description: 'Returned if the user, space or content could not be found.',
-        content: {},
-      },
+      404: { description: 'Returned if the user, space or content could not be found.' },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
   })
@@ -10306,12 +10143,11 @@ export const getWikiRestApiRelationRelationNameToTargetTypeTargetKeyFromSourceTy
         description: 'Returned if the requested relationships are returned.',
         content: { 'application/json': { schema: RelationArraySchema } },
       },
-      400: { description: 'Returned if the request is invalid.', content: {} },
+      400: { description: 'Returned if the request is invalid.' },
       403: {
         description: 'Returned if the user does not have permission to view the\nrelationship',
-        content: {},
       },
-      404: { description: 'Returned if the target entity does not exist.', content: {} },
+      404: { description: 'Returned if the target entity does not exist.' },
     },
     security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
   })
@@ -10537,10 +10373,9 @@ export const getWikiRestApiSearchRoute = createRoute({
       description: 'Returned if the requested results are returned.',
       content: { 'application/json': { schema: SearchPageResponseSearchResultSchema } },
     },
-    400: { description: 'Returned if the CQL query cannot be parsed.', content: {} },
+    400: { description: 'Returned if the CQL query cannot be parsed.' },
     403: {
       description: 'Returned if the calling user does not have permission to access\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['search:confluence'] }],
@@ -10659,10 +10494,9 @@ export const getWikiRestApiSearchUserRoute = createRoute({
       description: 'Returned if the requested results are returned.',
       content: { 'application/json': { schema: SearchPageResponseSearchResultSchema } },
     },
-    400: { description: 'Returned if the CQL query cannot be parsed.', content: {} },
+    400: { description: 'Returned if the CQL query cannot be parsed.' },
     403: {
       description: 'Returned if the calling user does not have permission to access\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:content-details:confluence'] }],
@@ -10698,8 +10532,8 @@ export const getWikiRestApiSettingsLookandfeelRoute = createRoute({
       description: 'Returned if the requested look and feel settings are returned.',
       content: { 'application/json': { schema: LookAndFeelSettingsSchema } },
     },
-    400: { description: 'Returned if `spaceKey` is invalid.', content: {} },
-    404: { description: 'Returned if there is no space with the given `spaceKey`.', content: {} },
+    400: { description: 'Returned if `spaceKey` is invalid.' },
+    404: { description: 'Returned if there is no space with the given `spaceKey`.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
 })
@@ -10726,18 +10560,15 @@ export const putWikiRestApiSettingsLookandfeelRoute = createRoute({
     },
     400: {
       description: 'Returned if;\n\n- `spaceKey` is invalid.\n- `lookAndFeelType` is invalid.',
-      content: {},
     },
     403: {
       description:
         "Returned if the calling user doesn't have permission to edit the\nlook and feel settings.",
-      content: {},
     },
-    404: { description: 'Returned if there is no space with the given `spaceKey`.', content: {} },
+    404: { description: 'Returned if there is no space with the given `spaceKey`.' },
     409: {
       description:
         "Returned if `lookAndFeelType` is set to 'custom' or 'theme',\nand a theme is not currently set for the space.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
@@ -10782,14 +10613,12 @@ export const postWikiRestApiSettingsLookandfeelCustomRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The `spaceKey` is invalid\n- The request body contains invalid data.',
-      content: {},
     },
     403: {
       description:
         "Returned if the calling user doesn't have permission to edit the\nlook and feel settings.",
-      content: {},
     },
-    404: { description: 'Returned if there is no space with the given `spaceKey`.', content: {} },
+    404: { description: 'Returned if there is no space with the given `spaceKey`.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
 })
@@ -10820,14 +10649,13 @@ export const deleteWikiRestApiSettingsLookandfeelCustomRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the look and feel settings have been reset.', content: {} },
-    400: { description: 'Returned if `spaceKey` is invalid.', content: {} },
+    204: { description: 'Returned if the look and feel settings have been reset.' },
+    400: { description: 'Returned if `spaceKey` is invalid.' },
     403: {
       description:
         "Returned if the calling user doesn't have permission to reset the\nlook and feel.",
-      content: {},
     },
-    404: { description: 'Returned if there is no space with the given `spaceKey`.', content: {} },
+    404: { description: 'Returned if there is no space with the given `spaceKey`.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
 })
@@ -10849,7 +10677,6 @@ export const getWikiRestApiSettingsSystemInfoRoute = createRoute({
     403: {
       description:
         'Returned when the user does not have permission to view the system\ninformation.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
@@ -10935,7 +10762,6 @@ export const getWikiRestApiSettingsThemeSelectedRoute = createRoute({
     404: {
       description:
         'Returned if Confluence does not have a global theme assigned, i.e.\nthe default theme is used.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
@@ -10969,7 +10795,7 @@ export const getWikiRestApiSettingsThemeThemeKeyRoute = createRoute({
       description: 'Returned if the requested theme is returned.',
       content: { 'application/json': { schema: ThemeSchema } },
     },
-    404: { description: 'Returned if there is no theme with the given key.', content: {} },
+    404: { description: 'Returned if there is no theme with the given key.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['manage:confluence-configuration'] }],
 })
@@ -10997,17 +10823,12 @@ export const postWikiRestApiSpaceRoute = createRoute({
     400: {
       description:
         'Returned if any of the following is true:\n\n- The request is invalid.\n- The space already exists.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the callig user does not have permission to create a space.',
-      content: {},
-    },
+    403: { description: 'Returned if the callig user does not have permission to create a space.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
 })
@@ -11035,17 +10856,12 @@ export const postWikiRestApiSpacePrivateRoute = createRoute({
     400: {
       description:
         'Returned if any of the following is true:\n\n- The request is invalid.\n- The space already exists.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have permission to create a space.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have permission to create a space.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
 })
@@ -11086,12 +10902,10 @@ export const putWikiRestApiSpaceSpaceKeyRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if any of the following is true:\n\n- There is no space with the given key\n- The calling user does not have permission to update the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
@@ -11128,12 +10942,10 @@ export const deleteWikiRestApiSpaceSpaceKeyRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if any of the following is true:\n\n- There is no space with the given key.\n- The calling user does not have permission to delete the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
@@ -11175,18 +10987,15 @@ export const postWikiRestApiSpaceSpaceKeyPermissionRoute = createRoute({
     400: {
       description:
         "Used for various errors. Such as:\n- Permission already exists for the given user or group.\n- 'read space' permission doesn't exist for the given user or group.\n- No group found with the given groupName or groupId",
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: { description: "Returned if the user isn't authorized.", content: {} },
+    403: { description: "Returned if the user isn't authorized." },
     404: {
       description:
         'Returned if any of the following is true:\n- There is no space with the given key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [
@@ -11224,22 +11033,19 @@ export const postWikiRestApiSpaceSpaceKeyPermissionCustomContentRoute = createRo
     },
   },
   responses: {
-    200: { description: 'Returned if the requested content is returned.', content: {} },
+    200: { description: 'Returned if the requested content is returned.' },
     400: {
       description:
         "Used for various errors. Such as:\n- Permission already exists for the given user or group.\n- 'read space' permission doesn't exist for the given user or group.\n- No group found with the given groupName or groupId",
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: { description: "Returned if the user isn't authorized.", content: {} },
+    403: { description: "Returned if the user isn't authorized." },
     404: {
       description:
         'Returned if any of the following is true:\n- There is no space with the given key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [
@@ -11291,22 +11097,19 @@ export const deleteWikiRestApiSpaceSpaceKeyPermissionIdRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Permission successfully removed.', content: {} },
+    204: { description: 'Permission successfully removed.' },
     400: {
       description:
         'Used for various errors. Such as:\n- All of the admin permissions cannot be removed from a space.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: { description: "Returned if the user isn't authorized.", content: {} },
+    403: { description: "Returned if the user isn't authorized." },
     404: {
       description:
         'Returned if any of the following is true:\n- There is no permission with the given id.\n- There is no space with the given key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:space.permission:confluence'] }],
@@ -11343,12 +11146,10 @@ export const getWikiRestApiSpaceSpaceKeySettingsRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no space with the given key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-space.summary'] }],
@@ -11390,12 +11191,10 @@ export const putWikiRestApiSpaceSpaceKeySettingsRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
     404: {
       description:
         'Returned if;\n\n- There is no space with the given key.\n- The calling user does not have permission to update the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
@@ -11638,7 +11437,6 @@ export const getWikiRestApiSpaceSpaceKeyThemeRoute = createRoute({
     404: {
       description:
         'Returned if any of the following is true:\n\n- There is no space with the given key.\n- The space does not have a theme assigned to it.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-space.summary'] }],
@@ -11673,8 +11471,8 @@ export const putWikiRestApiSpaceSpaceKeyThemeRoute = createRoute({
       description: 'Returned if the theme was set for the space.',
       content: { 'application/json': { schema: ThemeSchema } },
     },
-    403: { description: 'Returned if the theme key is invalid.', content: {} },
-    404: { description: 'Returned if there is no space with the given key.', content: {} },
+    403: { description: 'Returned if the theme key is invalid.' },
+    404: { description: 'Returned if there is no space with the given key.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
 })
@@ -11703,8 +11501,8 @@ export const deleteWikiRestApiSpaceSpaceKeyThemeRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the theme was reset for the space.', content: {} },
-    404: { description: 'Returned if there is no space with the given key.', content: {} },
+    204: { description: 'Returned if the theme was reset for the space.' },
+    404: { description: 'Returned if there is no space with the given key.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
 })
@@ -11763,7 +11561,7 @@ export const getWikiRestApiSpaceSpaceKeyWatchRoute = createRoute({
       description: 'Returned if watchers list is returned.',
       content: { 'application/json': { schema: SpaceWatchArraySchema } },
     },
-    404: { description: 'Returned if there is no space with the given key', content: {} },
+    404: { description: 'Returned if there is no space with the given key' },
   },
   security: [
     { basicAuth: [] },
@@ -11860,7 +11658,6 @@ export const getWikiRestApiSpaceSpaceKeyLabelRoute = createRoute({
     404: {
       description:
         'Returned if;\n- There is no space with the given space key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-space.summary'] }],
@@ -11902,16 +11699,11 @@ export const postWikiRestApiSpaceSpaceKeyLabelRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The body contains labels with invalid characters or too many characters.\n- The body contains too many labels.\n- The target content would contain too many labels after the operation.\n- The calling user does not have permission to edit labels.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the calling user can view but not edit the content.',
-      content: {},
-    },
+    403: { description: 'Returned if the calling user can view but not edit the content.' },
     404: {
       description:
         'Returned if;\n- There is no space with the given space key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
@@ -11964,12 +11756,11 @@ export const deleteWikiRestApiSpaceSpaceKeyLabelRoute = createRoute({
     }),
   },
   responses: {
-    204: { description: 'Returned if the label was successfully deleted.', content: {} },
-    400: { description: 'Returned if;\n- The user does not provide a label name', content: {} },
+    204: { description: 'Returned if the label was successfully deleted.' },
+    400: { description: 'Returned if;\n- The user does not provide a label name' },
     404: {
       description:
         'Returned if;\n- There is no space with the given space key.\n- The calling user does not have permission to view the space.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-space'] }],
@@ -11995,12 +11786,11 @@ export const putWikiRestApiTemplateRoute = createRoute({
       description: 'Returned if the template is updated.',
       content: { 'application/json': { schema: ContentTemplateSchema } },
     },
-    400: { description: 'Returned if template name is null or an empty string.', content: {} },
-    403: { description: 'Returned if the calling user does not have permission.', content: {} },
+    400: { description: 'Returned if template name is null or an empty string.' },
+    403: { description: 'Returned if the calling user does not have permission.' },
     404: {
       description:
         "Returned if the calling user does not have permission to update the\ntemplate or if the template doesn't exist.",
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -12027,10 +11817,9 @@ export const postWikiRestApiTemplateRoute = createRoute({
       description: 'Returned if the template is created.',
       content: { 'application/json': { schema: ContentTemplateSchema } },
     },
-    400: { description: 'Returned if template name is null or an empty string.', content: {} },
+    400: { description: 'Returned if template name is null or an empty string.' },
     403: {
       description: 'Returned if the calling user does not have permission to create the\ntemplate.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
@@ -12113,7 +11902,6 @@ export const getWikiRestApiTemplateBlueprintRoute = createRoute({
     403: {
       description:
         'Returned if the calling user does not have permission to view\nblueprint templates.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -12196,7 +11984,6 @@ export const getWikiRestApiTemplatePageRoute = createRoute({
     403: {
       description:
         'Returned if the calling user does not have permission to view the\ncontent templates.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -12234,7 +12021,6 @@ export const getWikiRestApiTemplateContentTemplateIdRoute = createRoute({
     403: {
       description:
         'Returned if;\n\n- There is no template with the given ID.\n- The calling user does not have permission to view the template.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
@@ -12264,10 +12050,7 @@ export const deleteWikiRestApiTemplateContentTemplateIdRoute = createRoute({
     }),
   },
   responses: {
-    204: {
-      description: 'Returned if the template has been successfully been deleted.',
-      content: {},
-    },
+    204: { description: 'Returned if the template has been successfully been deleted.' },
     403: {
       description:
         'Returned if;\n\n- There is no template with the given ID.\n- The calling user does not have permission to delete the template.',
@@ -12337,16 +12120,9 @@ export const getWikiRestApiUserRoute = createRoute({
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the calling user does not have permission to view users.',
-      content: {},
-    },
-    404: {
-      description: 'Returned if a user with the given accountId does not exist.',
-      content: {},
-    },
+    403: { description: 'Returned if the calling user does not have permission to view users.' },
+    404: { description: 'Returned if a user with the given accountId does not exist.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-user'] }],
 })
@@ -12393,7 +12169,6 @@ export const getWikiRestApiUserAnonymousRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to use\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-user'] }],
@@ -12447,7 +12222,6 @@ export const getWikiRestApiUserCurrentRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to use\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-user'] }],
@@ -12527,7 +12301,6 @@ export const getWikiRestApiUserMemberofRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to use\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-user'] }],
@@ -12592,7 +12365,6 @@ export const getWikiRestApiUserBulkRoute = createRoute({
     },
     403: {
       description: 'Returned if the calling user does not have permission to use\nConfluence.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-user'] }],
@@ -12635,9 +12407,8 @@ export const getWikiRestApiUserWatchContentContentIdRoute = createRoute({
     403: {
       description:
         'Returned if;\n\n- The calling user does not have permission to view the\ncontent.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No content exists for the specified `contentId`.',
-      content: {},
     },
-    404: { description: 'Returned if no `contentId` is specified.', content: {} },
+    404: { description: 'Returned if no `contentId` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
 })
@@ -12674,14 +12445,12 @@ export const postWikiRestApiUserWatchContentContentIdRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully created. No response body is\nreturned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- The calling user does not have permission to view the\ncontent.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No content exists for the specified `contentId`.',
-      content: {},
     },
-    404: { description: 'Returned if no `contentId` is specified.', content: {} },
+    404: { description: 'Returned if no `contentId` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -12733,14 +12502,12 @@ export const deleteWikiRestApiUserWatchContentContentIdRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully deleted. No response body is\nreturned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- The calling user does not have permission to view the\ncontent.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No content exists for the specified `contentId`.',
-      content: {},
     },
-    404: { description: 'Returned if no `contentId` is specified.', content: {} },
+    404: { description: 'Returned if no `contentId` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -12782,9 +12549,8 @@ export const getWikiRestApiUserWatchLabelLabelNameRoute = createRoute({
     403: {
       description:
         'Returned if;\n\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator.\n- No label exists for the specified `labelName`.',
-      content: {},
     },
-    404: { description: 'Returned if no `labelName` is specified.', content: {} },
+    404: { description: 'Returned if no `labelName` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
 })
@@ -12836,14 +12602,12 @@ export const postWikiRestApiUserWatchLabelLabelNameRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully created. No response body is\nreturned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator.\n- No label exists for the specified `labelName`.',
-      content: {},
     },
-    404: { description: 'Returned if no `labelName` is specified.', content: {} },
+    404: { description: 'Returned if no `labelName` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -12880,14 +12644,12 @@ export const deleteWikiRestApiUserWatchLabelLabelNameRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully deleted. No response body is\nreturned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator.\n- No label exists for the specified `labelName`.',
-      content: {},
     },
-    404: { description: 'Returned if no `labelName` is specified.', content: {} },
+    404: { description: 'Returned if no `labelName` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -12929,9 +12691,8 @@ export const getWikiRestApiUserWatchSpaceSpaceKeyRoute = createRoute({
     403: {
       description:
         'Returned if;\n\n- The calling user does not have permission to view the\nspace.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No space exists for the specified `spaceKey`.',
-      content: {},
     },
-    404: { description: 'Returned if no `spaceKey` is specified.', content: {} },
+    404: { description: 'Returned if no `spaceKey` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:confluence-content.summary'] }],
 })
@@ -12983,14 +12744,12 @@ export const postWikiRestApiUserWatchSpaceSpaceKeyRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully created. No response body is\nreturned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- The calling user does not have permission to view the\nspace.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No space exists for the specified `spaceKey`.',
-      content: {},
     },
-    404: { description: 'Returned if no `spaceKey` is specified.', content: {} },
+    404: { description: 'Returned if no `spaceKey` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -13027,14 +12786,12 @@ export const deleteWikiRestApiUserWatchSpaceSpaceKeyRoute = createRoute({
     204: {
       description:
         'Returned if the watcher was successfully deleted. No response body is returned.',
-      content: {},
     },
     403: {
       description:
         'Returned if;\n\n- The `X-Atlassian-Token: no-check` header is not specified.\n- The calling user does not have permission to view the space.\n- A user is specified via a query parameter and the calling user is\nnot a Confluence administrator or space administrator.\n- No space exists for the specified `spaceKey`.',
-      content: {},
     },
-    404: { description: 'Returned if no `spaceKey` is specified.', content: {} },
+    404: { description: 'Returned if no `spaceKey` is specified.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:confluence-content'] }],
 })
@@ -13068,20 +12825,13 @@ export const getWikiRestApiUserEmailRoute = createRoute({
       description: "Returned if the requested user's email is returned.",
       content: { 'application/json': { schema: AccountIdEmailRecordSchema } },
     },
-    400: {
-      description: 'Returned if the calling app is not approved to use this API.',
-      content: {},
-    },
+    400: { description: 'Returned if the calling app is not approved to use this API.' },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    404: {
-      description: 'Returned if a user with the given accountId does not exist.',
-      content: {},
-    },
-    501: { description: 'Indicates that the API is not currently enabled.', content: {} },
+    404: { description: 'Returned if a user with the given accountId does not exist.' },
+    501: { description: 'Indicates that the API is not currently enabled.' },
   },
 })
 
@@ -13123,16 +12873,12 @@ export const getWikiRestApiUserEmailBulkRoute = createRoute({
       description: 'Returned if the request is successful.',
       content: { 'application/json': { schema: AccountIdEmailRecordArraySchema } },
     },
-    400: {
-      description: 'Returned if the calling app is not approved to use this API.',
-      content: {},
-    },
+    400: { description: 'Returned if the calling app is not approved to use this API.' },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing\nfrom the request.',
-      content: {},
     },
-    501: { description: 'Indicates that the API is not currently enabled.', content: {} },
+    501: { description: 'Indicates that the API is not currently enabled.' },
   },
 })
 
@@ -13166,7 +12912,7 @@ export const postWikiRestAtlassianConnect1AppModuleDynamicRoute = createRoute({
   operationId: 'registerModules',
   request: { body: { content: { '*/*': { schema: ConnectModulesSchema } }, required: true } },
   responses: {
-    200: { description: 'Returned if the request is successful.', content: {} },
+    200: { description: 'Returned if the request is successful.' },
     400: {
       description:
         'Returned if:\n* any of the provided modules is invalid. For example, required properties are missing.\n* any of the modules conflict with registered dynamic modules or modules defined in the app descriptor. For example, there are duplicate keys.\n\nDetails of the issues encountered are included in the error message.',
@@ -13214,7 +12960,7 @@ export const deleteWikiRestAtlassianConnect1AppModuleDynamicRoute = createRoute(
     }),
   },
   responses: {
-    204: { description: 'Returned if the request is successful.', content: {} },
+    204: { description: 'Returned if the request is successful.' },
     401: {
       description: 'Returned if the call is not from a Connect app.',
       content: { '*/*': { schema: DynamicModulesErrorMessageSchema } },
@@ -13277,10 +13023,9 @@ export const getWikiRestApiAnalyticsContentContentIdViewsRoute = createRoute({
       },
     },
     400: { description: 'Returned if client input is invalid.' },
-    401: { description: 'Returned if the authentication credentials are incorrect.', content: {} },
+    401: { description: 'Returned if the authentication credentials are incorrect.' },
     403: {
       description: 'Returned if the authentication credentials are missing\nfrom the request.',
-      content: {},
     },
     404: { description: 'Returned if;\n- There is no content with the given ID.' },
   },
@@ -13342,10 +13087,9 @@ export const getWikiRestApiAnalyticsContentContentIdViewersRoute = createRoute({
       },
     },
     400: { description: 'Returned if client input is invalid.' },
-    401: { description: 'Returned if the authentication credentials are incorrect.', content: {} },
+    401: { description: 'Returned if the authentication credentials are incorrect.' },
     403: {
       description: 'Returned if the authentication credentials are missing\nfrom the request.',
-      content: {},
     },
     404: { description: 'Returned if;\n- There is no content with the given ID.' },
   },
@@ -13427,18 +13171,13 @@ export const getWikiRestApiUserUserIdPropertyRoute = createRoute({
     },
     400: {
       description: 'Returned if request has malformed syntax or userId is not a valid user id.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing from the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have the correct permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if there is no user with the given user ID.', content: {} },
+    403: { description: 'Returned if the user does not have the correct permissions.' },
+    404: { description: 'Returned if there is no user with the given user ID.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:user.property:confluence'] }],
 })
@@ -13486,21 +13225,15 @@ export const getWikiRestApiUserUserIdPropertyKeyRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The key is too long.\n- Request has malformed syntax or userId is not a valid user id.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing from the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have the correct permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the correct permissions.' },
     404: {
       description:
         'Returned if;\n\n- There is no user with the given user ID\n- There is no user property with the given key',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['read:user.property:confluence'] }],
@@ -13552,21 +13285,15 @@ export const putWikiRestApiUserUserIdPropertyKeyRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The key is too long.\n- The value is empty.\n- The value is too long.\n- Request has malformed syntax or userId is not a valid user id.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing from the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have the correct permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the correct permissions.' },
     404: {
       description:
         'Returned if;\n\n- There is no user property with the given key.\n- There is no user with the given user id.',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:user.property:confluence'] }],
@@ -13618,19 +13345,14 @@ export const postWikiRestApiUserUserIdPropertyKeyRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The key is too long.\n- The value is empty.\n- The value is too long.\n- Request has malformed syntax or userId is not a valid user id.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing from the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have the correct permissions.',
-      content: {},
-    },
-    404: { description: 'Returned if there is no user with the given user id.', content: {} },
-    409: { description: 'Returned if the key already exists for the user.', content: {} },
+    403: { description: 'Returned if the user does not have the correct permissions.' },
+    404: { description: 'Returned if there is no user with the given user id.' },
+    409: { description: 'Returned if the key already exists for the user.' },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:user.property:confluence'] }],
 })
@@ -13676,21 +13398,15 @@ export const deleteWikiRestApiUserUserIdPropertyKeyRoute = createRoute({
     400: {
       description:
         'Returned if;\n\n- The key is too long.\n- Request has malformed syntax or userId is not a valid user id.',
-      content: {},
     },
     401: {
       description:
         'Returned if the authentication credentials are incorrect or missing from the request.',
-      content: {},
     },
-    403: {
-      description: 'Returned if the user does not have the correct permissions.',
-      content: {},
-    },
+    403: { description: 'Returned if the user does not have the correct permissions.' },
     404: {
       description:
         'Returned if;\n\n- There is no user property with the given key\n- There is no user with the given user id',
-      content: {},
     },
   },
   security: [{ basicAuth: [] }, { oAuthDefinitions: ['write:user.property:confluence'] }],

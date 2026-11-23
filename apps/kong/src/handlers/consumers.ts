@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConsumersConsumerUsernameOrIdPluginsPluginIdRoute,
   deleteConsumersConsumerUsernameOrIdRoute,
   getConsumersConsumerUsernameOrIdPluginsPluginIdRoute,
@@ -14,42 +14,70 @@ import {
   putConsumersConsumerUsernameOrIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConsumersRouteHandler: RouteHandler<typeof getConsumersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const consumersHandler = app
-  .openapi(getConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsumersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConsumersConsumerUsernameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumersConsumerUsernameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConsumersConsumerUsernameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumersConsumerUsernameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumersConsumerUsernameOrIdPluginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsumersConsumerUsernameOrIdPluginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConsumersConsumerUsernameOrIdPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumersConsumerUsernameOrIdPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConsumersConsumerUsernameOrIdPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumersConsumerUsernameOrIdPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConsumersRouteHandler: RouteHandler<typeof postConsumersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConsumersConsumerUsernameOrIdRouteHandler: RouteHandler<
+  typeof deleteConsumersConsumerUsernameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumersConsumerUsernameOrIdRouteHandler: RouteHandler<
+  typeof getConsumersConsumerUsernameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConsumersConsumerUsernameOrIdRouteHandler: RouteHandler<
+  typeof patchConsumersConsumerUsernameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumersConsumerUsernameOrIdRouteHandler: RouteHandler<
+  typeof putConsumersConsumerUsernameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumersConsumerUsernameOrIdPluginsRouteHandler: RouteHandler<
+  typeof getConsumersConsumerUsernameOrIdPluginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConsumersConsumerUsernameOrIdPluginsRouteHandler: RouteHandler<
+  typeof postConsumersConsumerUsernameOrIdPluginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConsumersConsumerUsernameOrIdPluginsPluginIdRouteHandler: RouteHandler<
+  typeof deleteConsumersConsumerUsernameOrIdPluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumersConsumerUsernameOrIdPluginsPluginIdRouteHandler: RouteHandler<
+  typeof getConsumersConsumerUsernameOrIdPluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConsumersConsumerUsernameOrIdPluginsPluginIdRouteHandler: RouteHandler<
+  typeof patchConsumersConsumerUsernameOrIdPluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumersConsumerUsernameOrIdPluginsPluginIdRouteHandler: RouteHandler<
+  typeof putConsumersConsumerUsernameOrIdPluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { hackathonsHandler, swaggerDocHandler, swaggerDocJsonHandler } from './handlers'
+import {
+  getHackathonsComingJsonRoute,
+  getHackathonsIdJsonRoute,
+  getSwaggerDocJsonRoute,
+  getSwaggerDocNameJsonRoute,
+} from './routes'
+import {
+  getHackathonsComingJsonRouteHandler,
+  getHackathonsIdJsonRouteHandler,
+  getSwaggerDocJsonRouteHandler,
+  getSwaggerDocNameJsonRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', hackathonsHandler)
-  .route('/', swaggerDocJsonHandler)
-  .route('/', swaggerDocHandler)
+  .openapi(getHackathonsComingJsonRoute, getHackathonsComingJsonRouteHandler)
+  .openapi(getHackathonsIdJsonRoute, getHackathonsIdJsonRouteHandler)
+  .openapi(getSwaggerDocJsonRoute, getSwaggerDocJsonRouteHandler)
+  .openapi(getSwaggerDocNameJsonRoute, getSwaggerDocNameJsonRouteHandler)
 
 export default app

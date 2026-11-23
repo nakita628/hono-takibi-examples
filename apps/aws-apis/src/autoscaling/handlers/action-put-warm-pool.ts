@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionPutWarmPoolRoute, postActionPutWarmPoolRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionPutWarmPoolRoute, postActionPutWarmPoolRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionPutWarmPoolRouteHandler: RouteHandler<
+  typeof getActionPutWarmPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionPutWarmPoolHandler = app
-  .openapi(getActionPutWarmPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionPutWarmPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionPutWarmPoolRouteHandler: RouteHandler<
+  typeof postActionPutWarmPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

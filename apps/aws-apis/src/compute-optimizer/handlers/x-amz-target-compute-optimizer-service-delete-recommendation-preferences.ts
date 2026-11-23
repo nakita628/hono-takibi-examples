@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesHandler = app.openapi(
-  postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRouteHandler: RouteHandler<
+  typeof postXAmzTargetComputeOptimizerServiceDeleteRecommendationPreferencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEtfsFamilyRoute,
   getEtfsListRoute,
   getEtfsRoute,
@@ -11,33 +11,46 @@ import {
   getEtfsWorldSummaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEtfsRouteHandler: RouteHandler<typeof getEtfsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const etfsHandler = app
-  .openapi(getEtfsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsFamilyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsWorldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsWorldCompositionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsWorldPerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsWorldRiskRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEtfsWorldSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEtfsFamilyRouteHandler: RouteHandler<typeof getEtfsFamilyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsListRouteHandler: RouteHandler<typeof getEtfsListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsTypeRouteHandler: RouteHandler<typeof getEtfsTypeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsWorldRouteHandler: RouteHandler<typeof getEtfsWorldRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsWorldCompositionRouteHandler: RouteHandler<
+  typeof getEtfsWorldCompositionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsWorldPerformanceRouteHandler: RouteHandler<
+  typeof getEtfsWorldPerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsWorldRiskRouteHandler: RouteHandler<typeof getEtfsWorldRiskRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEtfsWorldSummaryRouteHandler: RouteHandler<
+  typeof getEtfsWorldSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

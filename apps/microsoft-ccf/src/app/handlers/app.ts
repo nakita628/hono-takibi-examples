@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppLogPrivateAllRoute,
   deleteAppLogPrivateRoute,
   deleteAppLogPublicAllRoute,
@@ -49,147 +49,274 @@ import {
   postAppMultiAuthRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppApiRouteHandler: RouteHandler<typeof getAppApiRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appHandler = app
-  .openapi(getAppApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppCoseSignaturesConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppCustomAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogBlockingPrivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogBlockingPrivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogBlockingPrivateReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogCoseSignedContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppLogPrivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateAdminOnlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppLogPrivateAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateAnonymousRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateAnonymousV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateCommittedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateHistoricalHandleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateHistoricalSparseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPrivateHistoricalReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateInstallCommittedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateOptionalCommitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivatePrefixCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateRawTextIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPrivateUninstallCommittedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppLogPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppLogPublicAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicCoseEndorsementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicCoseReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicCoseSignatureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicHistoricalRangeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicHistoricalReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicTrustedKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogPublicVerifyCoseReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogRequestQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppLogSignedStatementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppLogTransparentStatementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppMultiAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppReceiptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppReceiptCoseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppTxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAppCommitRouteHandler: RouteHandler<typeof getAppCommitRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppCoseSignaturesConfigRouteHandler: RouteHandler<
+  typeof getAppCoseSignaturesConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppCustomAuthRouteHandler: RouteHandler<typeof getAppCustomAuthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogBlockingPrivateRouteHandler: RouteHandler<
+  typeof getAppLogBlockingPrivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogBlockingPrivateRouteHandler: RouteHandler<
+  typeof postAppLogBlockingPrivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogBlockingPrivateReceiptRouteHandler: RouteHandler<
+  typeof postAppLogBlockingPrivateReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogCoseSignedContentRouteHandler: RouteHandler<
+  typeof postAppLogCoseSignedContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppLogPrivateRouteHandler: RouteHandler<
+  typeof deleteAppLogPrivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateRouteHandler: RouteHandler<typeof getAppLogPrivateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateRouteHandler: RouteHandler<typeof postAppLogPrivateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateAdminOnlyRouteHandler: RouteHandler<
+  typeof postAppLogPrivateAdminOnlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppLogPrivateAllRouteHandler: RouteHandler<
+  typeof deleteAppLogPrivateAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateAnonymousRouteHandler: RouteHandler<
+  typeof postAppLogPrivateAnonymousRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateAnonymousV2RouteHandler: RouteHandler<
+  typeof postAppLogPrivateAnonymousV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateBackupRouteHandler: RouteHandler<
+  typeof getAppLogPrivateBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateCommittedRouteHandler: RouteHandler<
+  typeof getAppLogPrivateCommittedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateCountRouteHandler: RouteHandler<
+  typeof getAppLogPrivateCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateHistoricalRouteHandler: RouteHandler<
+  typeof getAppLogPrivateHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateHistoricalHandleRouteHandler: RouteHandler<
+  typeof getAppLogPrivateHistoricalHandleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateHistoricalSparseRouteHandler: RouteHandler<
+  typeof getAppLogPrivateHistoricalSparseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPrivateHistoricalReceiptRouteHandler: RouteHandler<
+  typeof getAppLogPrivateHistoricalReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateInstallCommittedIndexRouteHandler: RouteHandler<
+  typeof postAppLogPrivateInstallCommittedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateOptionalCommitRouteHandler: RouteHandler<
+  typeof postAppLogPrivateOptionalCommitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivatePrefixCertRouteHandler: RouteHandler<
+  typeof postAppLogPrivatePrefixCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateRawTextIdRouteHandler: RouteHandler<
+  typeof postAppLogPrivateRawTextIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPrivateUninstallCommittedIndexRouteHandler: RouteHandler<
+  typeof postAppLogPrivateUninstallCommittedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppLogPublicRouteHandler: RouteHandler<typeof deleteAppLogPublicRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicRouteHandler: RouteHandler<typeof getAppLogPublicRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogPublicRouteHandler: RouteHandler<typeof postAppLogPublicRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAppLogPublicAllRouteHandler: RouteHandler<
+  typeof deleteAppLogPublicAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicBackupRouteHandler: RouteHandler<
+  typeof getAppLogPublicBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicCoseEndorsementsRouteHandler: RouteHandler<
+  typeof getAppLogPublicCoseEndorsementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicCoseReceiptRouteHandler: RouteHandler<
+  typeof getAppLogPublicCoseReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicCoseSignatureRouteHandler: RouteHandler<
+  typeof getAppLogPublicCoseSignatureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicCountRouteHandler: RouteHandler<
+  typeof getAppLogPublicCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicHistoricalRangeRouteHandler: RouteHandler<
+  typeof getAppLogPublicHistoricalRangeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicHistoricalReceiptRouteHandler: RouteHandler<
+  typeof getAppLogPublicHistoricalReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicTrustedKeysRouteHandler: RouteHandler<
+  typeof getAppLogPublicTrustedKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogPublicVerifyCoseReceiptRouteHandler: RouteHandler<
+  typeof getAppLogPublicVerifyCoseReceiptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogRequestQueryRouteHandler: RouteHandler<
+  typeof getAppLogRequestQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppLogSignedStatementRouteHandler: RouteHandler<
+  typeof postAppLogSignedStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppLogTransparentStatementRouteHandler: RouteHandler<
+  typeof getAppLogTransparentStatementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAppMultiAuthRouteHandler: RouteHandler<typeof postAppMultiAuthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppReceiptRouteHandler: RouteHandler<typeof getAppReceiptRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppReceiptCoseRouteHandler: RouteHandler<typeof getAppReceiptCoseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppTxRouteHandler: RouteHandler<typeof getAppTxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

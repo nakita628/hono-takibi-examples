@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/applicationcostprofiler/2020-09-10/openapi.yaml',
   output: './src/applicationcostprofiler/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/applicationcostprofiler/types.ts' },
   client: { output: './src/applicationcostprofiler/client.ts', baseUrl: '/' },
   rpc: { output: './src/applicationcostprofiler/rpc.ts', parseResponse: true },

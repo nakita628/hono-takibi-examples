@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSimbaApiServiceV20180301DeleteFileCacheHandler = app.openapi(
-  postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSimbaAPIServiceV20180301DeleteFileCacheRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1842,12 +1842,12 @@ export async function getReposOwnerRepoGitCommitsSha(
 
 export async function getReposOwnerRepoGitCommitsShaDiffType(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(args, options),
+    client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(args, options),
   )
 }
 
@@ -3139,12 +3139,12 @@ export async function patchReposOwnerRepoPullsIndex(
 
 export async function getReposOwnerRepoPullsIndexDiffType(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(args, options),
+    client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(args, options),
   )
 }
 

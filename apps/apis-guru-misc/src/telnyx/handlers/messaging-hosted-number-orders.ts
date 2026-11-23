@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMessagingHostedNumberOrdersIdRoute,
   getMessagingHostedNumberOrdersRoute,
   postMessagingHostedNumberOrdersIdActionsFileUploadRoute,
   postMessagingHostedNumberOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMessagingHostedNumberOrdersRouteHandler: RouteHandler<
+  typeof getMessagingHostedNumberOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const messagingHostedNumberOrdersHandler = app
-  .openapi(getMessagingHostedNumberOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagingHostedNumberOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagingHostedNumberOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagingHostedNumberOrdersIdActionsFileUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMessagingHostedNumberOrdersRouteHandler: RouteHandler<
+  typeof postMessagingHostedNumberOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagingHostedNumberOrdersIdRouteHandler: RouteHandler<
+  typeof getMessagingHostedNumberOrdersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagingHostedNumberOrdersIdActionsFileUploadRouteHandler: RouteHandler<
+  typeof postMessagingHostedNumberOrdersIdActionsFileUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

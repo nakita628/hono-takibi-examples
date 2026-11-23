@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOrganizationsOrgIdGroupsGroupIdRoute,
   getOrganizationsOrgIdGroupsGroupIdRoute,
   getOrganizationsOrgIdGroupsRoute,
@@ -8,24 +8,38 @@ import {
   postOrganizationsOrgIdUsageExportJobRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrganizationsOrgIdGroupsRouteHandler: RouteHandler<
+  typeof getOrganizationsOrgIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const organizationsHandler = app
-  .openapi(getOrganizationsOrgIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrgIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrgIdGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationsOrgIdGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationsOrgIdUsageExportJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationsOrgIdUsageExportJobUsageExportJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrganizationsOrgIdGroupsRouteHandler: RouteHandler<
+  typeof postOrganizationsOrgIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrgIdGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getOrganizationsOrgIdGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationsOrgIdGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationsOrgIdGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationsOrgIdUsageExportJobRouteHandler: RouteHandler<
+  typeof postOrganizationsOrgIdUsageExportJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationsOrgIdUsageExportJobUsageExportJobIdRouteHandler: RouteHandler<
+  typeof getOrganizationsOrgIdUsageExportJobUsageExportJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

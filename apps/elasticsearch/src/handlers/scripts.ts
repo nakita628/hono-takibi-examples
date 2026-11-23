@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScriptsIdRoute,
   getScriptsIdRoute,
   getScriptsPainlessExecuteRoute,
@@ -10,30 +10,42 @@ import {
   putScriptsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScriptsIdRouteHandler: RouteHandler<typeof getScriptsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scriptsHandler = app
-  .openapi(getScriptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putScriptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScriptsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putScriptsIdContextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsIdContextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsPainlessExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsPainlessExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putScriptsIdRouteHandler: RouteHandler<typeof putScriptsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScriptsIdRouteHandler: RouteHandler<typeof postScriptsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScriptsIdRouteHandler: RouteHandler<typeof deleteScriptsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putScriptsIdContextRouteHandler: RouteHandler<
+  typeof putScriptsIdContextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScriptsIdContextRouteHandler: RouteHandler<
+  typeof postScriptsIdContextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsPainlessExecuteRouteHandler: RouteHandler<
+  typeof getScriptsPainlessExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScriptsPainlessExecuteRouteHandler: RouteHandler<
+  typeof postScriptsPainlessExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

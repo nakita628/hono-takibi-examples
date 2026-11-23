@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { trcerHandler } from './handlers'
+import { postTrcerCertificateRoute } from './routes'
+import { postTrcerCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', trcerHandler)
+export const api = app.openapi(postTrcerCertificateRoute, postTrcerCertificateRouteHandler)
 
 export default app

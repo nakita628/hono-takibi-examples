@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSubaccountsSubaccountIdRoute,
   getSubaccountsRoute,
   getSubaccountsSubaccountIdRoute,
@@ -8,24 +8,34 @@ import {
   putSubaccountsSubaccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSubaccountsRouteHandler: RouteHandler<typeof getSubaccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const subaccountsHandler = app
-  .openapi(getSubaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSubaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSubaccountsSubaccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSubaccountsSubaccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubaccountsSubaccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSubaccountsSubaccountIdRegenApiKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSubaccountsRouteHandler: RouteHandler<typeof postSubaccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSubaccountsSubaccountIdRouteHandler: RouteHandler<
+  typeof deleteSubaccountsSubaccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSubaccountsSubaccountIdRouteHandler: RouteHandler<
+  typeof getSubaccountsSubaccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubaccountsSubaccountIdRouteHandler: RouteHandler<
+  typeof putSubaccountsSubaccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSubaccountsSubaccountIdRegenApiKeyRouteHandler: RouteHandler<
+  typeof putSubaccountsSubaccountIdRegenApiKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

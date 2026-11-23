@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSksClusterKubeconfigIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSksClusterKubeconfigIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sksClusterKubeconfigHandler = app.openapi(postSksClusterKubeconfigIdRoute, (c) => {
+export const postSksClusterKubeconfigIdRouteHandler: RouteHandler<
+  typeof postSksClusterKubeconfigIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

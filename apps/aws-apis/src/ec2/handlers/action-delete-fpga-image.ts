@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDeleteFpgaImageRoute, postActionDeleteFpgaImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionDeleteFpgaImageRoute, postActionDeleteFpgaImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteFpgaImageRouteHandler: RouteHandler<
+  typeof getActionDeleteFpgaImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteFpgaImageHandler = app
-  .openapi(getActionDeleteFpgaImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteFpgaImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteFpgaImageRouteHandler: RouteHandler<
+  typeof postActionDeleteFpgaImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

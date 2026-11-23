@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFormMetadataUrlPathPlaceholderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFormMetadataUrlPathPlaceholderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const formMetadataUrlPathPlaceholderHandler = app.openapi(
-  getFormMetadataUrlPathPlaceholderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getFormMetadataUrlPathPlaceholderRouteHandler: RouteHandler<
+  typeof getFormMetadataUrlPathPlaceholderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIntegrationsIntegrationIdRoute,
   getIntegrationsIndexRoute,
   getIntegrationsIntegrationIdActivateRoute,
@@ -8,24 +8,38 @@ import {
   postIntegrationsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsIndexRouteHandler: RouteHandler<
+  typeof getIntegrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationsIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIntegrationsIntegrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsIntegrationIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegrationsIndexRouteHandler: RouteHandler<
+  typeof postIntegrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof deleteIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof getIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIntegrationsIntegrationIdRouteHandler: RouteHandler<
+  typeof patchIntegrationsIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsIntegrationIdActivateRouteHandler: RouteHandler<
+  typeof getIntegrationsIntegrationIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

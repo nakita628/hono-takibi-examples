@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEventsYearKeysRoute, getEventsYearRoute, getEventsYearSimpleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getEventsYearKeysRoute,
+  getEventsYearRoute,
+  getEventsYearSimpleRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getEventsYearRouteHandler: RouteHandler<typeof getEventsYearRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventsHandler = app
-  .openapi(getEventsYearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsYearKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventsYearSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEventsYearKeysRouteHandler: RouteHandler<typeof getEventsYearKeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventsYearSimpleRouteHandler: RouteHandler<
+  typeof getEventsYearSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSamlMetadataRoute, postSamlAcsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSamlMetadataRoute, postSamlAcsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSamlMetadataRouteHandler: RouteHandler<typeof getSamlMetadataRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const samlHandler = app
-  .openapi(getSamlMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSamlAcsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSamlAcsRouteHandler: RouteHandler<typeof postSamlAcsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

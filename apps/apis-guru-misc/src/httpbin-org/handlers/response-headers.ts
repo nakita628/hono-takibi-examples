@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getResponseHeadersRoute, postResponseHeadersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getResponseHeadersRoute, postResponseHeadersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getResponseHeadersRouteHandler: RouteHandler<typeof getResponseHeadersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const responseHeadersHandler = app
-  .openapi(getResponseHeadersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResponseHeadersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postResponseHeadersRouteHandler: RouteHandler<
+  typeof postResponseHeadersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSchemasFullNameRoute,
   getSchemasFullNameRoute,
   getSchemasRoute,
@@ -7,21 +7,28 @@ import {
   postSchemasRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSchemasRouteHandler: RouteHandler<typeof postSchemasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const schemasHandler = app
-  .openapi(postSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSchemasFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSchemasFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSchemasFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSchemasRouteHandler: RouteHandler<typeof getSchemasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSchemasFullNameRouteHandler: RouteHandler<typeof getSchemasFullNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSchemasFullNameRouteHandler: RouteHandler<
+  typeof patchSchemasFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSchemasFullNameRouteHandler: RouteHandler<
+  typeof deleteSchemasFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

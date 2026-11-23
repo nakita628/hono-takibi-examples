@@ -296,29 +296,29 @@ export function createCatalog<
 }
 
 export function getFontFontstackStartEndQueryKey(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
 ) {
-  return ['font', '/font/:fontstack/:start-:end', args] as const
+  return ['font', '/font/:fontstack/:start-{end}', args] as const
 }
 
 export function getFontFontstackStartEndQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+        Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+          Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
         >
       >
     >,
@@ -329,7 +329,7 @@ export function getFontFontstackStartEndQueryOptions<
     queryKey: getFontFontstackStartEndQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.font[':fontstack'][':start-:end'].$get(args, {
+        client.font[':fontstack'][':start-{end}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -342,20 +342,20 @@ export function createFontFontstackStartEnd<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+        Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: () => InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
   options?: () => {
     query?: Omit<
       CreateQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-:end']['$get']>>
+              Awaited<ReturnType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>>
             >
           >
         >,
@@ -2450,29 +2450,29 @@ export function createStyleStyleId<
 }
 
 export function getStyleStyleIdZXYFormatQueryKey(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
 ) {
-  return ['style', '/style/:style_id/:z/:x/:y.:format', args] as const
+  return ['style', '/style/:style_id/:z/:x/:y.{format}', args] as const
 }
 
 export function getStyleStyleIdZXYFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>>
         >
       >
     >,
@@ -2483,7 +2483,7 @@ export function getStyleStyleIdZXYFormatQueryOptions<
     queryKey: getStyleStyleIdZXYFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.style[':style_id'][':z'][':x'][':y.:format'].$get(args, {
+        client.style[':style_id'][':z'][':x'][':y.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2496,14 +2496,14 @@ export function createStyleStyleIdZXYFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']
+    (typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -2512,7 +2512,7 @@ export function createStyleStyleIdZXYFormat<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>
+                ReturnType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>
               >
             >
           >
@@ -2538,10 +2538,10 @@ export function createStyleStyleIdZXYFormat<
 
 export function getStyleStyleIdStaticCameraSizeFormatQueryKey(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
 ) {
-  return ['style', '/style/:style_id/static/:camera/:size.:format', args] as const
+  return ['style', '/style/:style_id/static/:camera/:size.{format}', args] as const
 }
 
 export function getStyleStyleIdStaticCameraSizeFormatQueryOptions<
@@ -2550,7 +2550,7 @@ export function getStyleStyleIdStaticCameraSizeFormatQueryOptions<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+            (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
           >
         >
       >
@@ -2559,7 +2559,7 @@ export function getStyleStyleIdStaticCameraSizeFormatQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2569,7 +2569,7 @@ export function getStyleStyleIdStaticCameraSizeFormatQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+              (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
             >
           >
         >
@@ -2582,7 +2582,7 @@ export function getStyleStyleIdStaticCameraSizeFormatQueryOptions<
     queryKey: getStyleStyleIdStaticCameraSizeFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.style[':style_id'].static[':camera'][':size.:format'].$get(args, {
+        client.style[':style_id'].static[':camera'][':size.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -2597,7 +2597,7 @@ export function createStyleStyleIdStaticCameraSizeFormat<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+            (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
           >
         >
       >
@@ -2606,7 +2606,7 @@ export function createStyleStyleIdStaticCameraSizeFormat<
   TError = DefaultError,
 >(
   args: () => InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
   options?: () => {
     query?: Omit<
@@ -2616,7 +2616,7 @@ export function createStyleStyleIdStaticCameraSizeFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+                  (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
                 >
               >
             >
@@ -2642,7 +2642,7 @@ export function createStyleStyleIdStaticCameraSizeFormat<
 }
 
 export function getPostStyleStyleIdStaticCameraSizeFormatMutationKey() {
-  return ['style', '/style/:style_id/static/:camera/:size.:format', 'POST'] as const
+  return ['style', '/style/:style_id/static/:camera/:size.{format}', 'POST'] as const
 }
 
 export function getPostStyleStyleIdStaticCameraSizeFormatMutationOptions<
@@ -2655,7 +2655,7 @@ export function getPostStyleStyleIdStaticCameraSizeFormatMutationOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+              (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
             >
           >
         >
@@ -2663,18 +2663,18 @@ export function getPostStyleStyleIdStaticCameraSizeFormatMutationOptions<
     >,
     TError,
     InferRequestType<
-      (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+      (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostStyleStyleIdStaticCameraSizeFormatMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+        (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
       >,
     ) {
       return parseResponse(
-        client.style[':style_id'].static[':camera'][':size.:format'].$post(args, options),
+        client.style[':style_id'].static[':camera'][':size.{format}'].$post(args, options),
       )
     },
   })
@@ -2692,7 +2692,7 @@ export function createPostStyleStyleIdStaticCameraSizeFormat<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+                  (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
                 >
               >
             >
@@ -2700,7 +2700,7 @@ export function createPostStyleStyleIdStaticCameraSizeFormat<
         >,
         TError,
         InferRequestType<
-          (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+          (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
         >,
         TOnMutateResult
       >,

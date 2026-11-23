@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUByExternalExternalIdJsonRoute,
   getUByExternalProviderExternalIdJsonRoute,
   getUUsernameEmailsJsonRoute,
@@ -10,30 +10,50 @@ import {
   putUUsernamePreferencesUsernameJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUByExternalExternalIdJsonRouteHandler: RouteHandler<
+  typeof getUByExternalExternalIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const uHandler = app
-  .openapi(getUByExternalExternalIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUByExternalProviderExternalIdJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUUsernameJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUUsernameJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUUsernameEmailsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUUsernamePreferencesAvatarPickJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUUsernamePreferencesEmailJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUUsernamePreferencesUsernameJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUByExternalProviderExternalIdJsonRouteHandler: RouteHandler<
+  typeof getUByExternalProviderExternalIdJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUUsernameJsonRouteHandler: RouteHandler<typeof getUUsernameJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putUUsernameJsonRouteHandler: RouteHandler<typeof putUUsernameJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getUUsernameEmailsJsonRouteHandler: RouteHandler<
+  typeof getUUsernameEmailsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUUsernamePreferencesAvatarPickJsonRouteHandler: RouteHandler<
+  typeof putUUsernamePreferencesAvatarPickJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUUsernamePreferencesEmailJsonRouteHandler: RouteHandler<
+  typeof putUUsernamePreferencesEmailJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUUsernamePreferencesUsernameJsonRouteHandler: RouteHandler<
+  typeof putUUsernamePreferencesUsernameJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

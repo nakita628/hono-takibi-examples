@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCommissionsRoute, postCommissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCommissionsRoute, postCommissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommissionsRouteHandler: RouteHandler<typeof getCommissionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const commissionsHandler = app
-  .openapi(getCommissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCommissionsRouteHandler: RouteHandler<typeof postCommissionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

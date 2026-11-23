@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasExternalIntegrationIntegrationIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasExternalIntegrationIntegrationIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasExternalIntegrationHandler = app.openapi(
-  getDbaasExternalIntegrationIntegrationIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getDbaasExternalIntegrationIntegrationIdRouteHandler: RouteHandler<
+  typeof getDbaasExternalIntegrationIntegrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

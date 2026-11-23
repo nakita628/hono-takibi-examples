@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChannelsChannelIdCategoriesCategoryRoute,
   deleteChannelsChannelIdModeratorsRoute,
   deleteChannelsChannelIdModeratorsUserIdRoute,
@@ -45,135 +45,256 @@ import {
   putChannelsChannelIdVideosVideoIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChannelsRouteHandler: RouteHandler<typeof getChannelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const channelsHandler = app
-  .openapi(getChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChannelsChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdCategoriesCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdCategoriesCategoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChannelsChannelIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdModeratorsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdModeratorsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdModeratorsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdPrivacyUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdPrivacyUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdPrivacyUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdPrivacyUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdTagsWordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdTagsWordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdTagsWordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChannelsChannelIdVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelsChannelIdVideosVideoIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelsChannelIdVideosVideoIdCreditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdLikesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdPicturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelsChannelIdVideosVideoIdPicturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdPrivacyUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChannelsChannelIdVideosVideoIdPrivacyUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChannelsChannelIdVideosVideoIdTexttracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChannelsChannelIdVideosVideoIdTexttracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postChannelsRouteHandler: RouteHandler<typeof postChannelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChannelsChannelIdRouteHandler: RouteHandler<
+  typeof patchChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdCategoriesRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdCategoriesRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdCategoriesCategoryRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdCategoriesCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdCategoriesCategoryRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdCategoriesCategoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdModeratorsRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdModeratorsRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChannelsChannelIdModeratorsRouteHandler: RouteHandler<
+  typeof patchChannelsChannelIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdModeratorsRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdModeratorsUserIdRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdModeratorsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdModeratorsUserIdRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdModeratorsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdModeratorsUserIdRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdModeratorsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdPrivacyUsersRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdPrivacyUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdPrivacyUsersRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdPrivacyUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdPrivacyUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdPrivacyUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdPrivacyUsersUserIdRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdPrivacyUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdTagsRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdTagsRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdTagsWordRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdTagsWordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdTagsWordRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdTagsWordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdTagsWordRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdTagsWordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdUsersRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdVideosRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdVideosRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChannelsChannelIdVideosVideoIdRouteHandler: RouteHandler<
+  typeof deleteChannelsChannelIdVideosVideoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdVideosVideoIdRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdVideosVideoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdCommentsRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelsChannelIdVideosVideoIdCommentsRouteHandler: RouteHandler<
+  typeof postChannelsChannelIdVideosVideoIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdCreditsRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelsChannelIdVideosVideoIdCreditsRouteHandler: RouteHandler<
+  typeof postChannelsChannelIdVideosVideoIdCreditsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdLikesRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdLikesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdPicturesRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdPicturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelsChannelIdVideosVideoIdPicturesRouteHandler: RouteHandler<
+  typeof postChannelsChannelIdVideosVideoIdPicturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdPrivacyUsersRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdPrivacyUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChannelsChannelIdVideosVideoIdPrivacyUsersRouteHandler: RouteHandler<
+  typeof putChannelsChannelIdVideosVideoIdPrivacyUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChannelsChannelIdVideosVideoIdTexttracksRouteHandler: RouteHandler<
+  typeof getChannelsChannelIdVideosVideoIdTexttracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChannelsChannelIdVideosVideoIdTexttracksRouteHandler: RouteHandler<
+  typeof postChannelsChannelIdVideosVideoIdTexttracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

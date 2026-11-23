@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDb20120810ExportTableToPointInTimeHandler = app.openapi(
-  postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDB20120810ExportTableToPointInTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

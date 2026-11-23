@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAllocationAllocIDRoute,
   getAllocationAllocIDServicesRoute,
   postAllocationAllocIDStopRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAllocationAllocIDRouteHandler: RouteHandler<
+  typeof getAllocationAllocIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const allocationHandler = app
-  .openapi(getAllocationAllocIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAllocationAllocIDServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAllocationAllocIDStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAllocationAllocIDServicesRouteHandler: RouteHandler<
+  typeof getAllocationAllocIDServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAllocationAllocIDStopRouteHandler: RouteHandler<
+  typeof postAllocationAllocIDStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

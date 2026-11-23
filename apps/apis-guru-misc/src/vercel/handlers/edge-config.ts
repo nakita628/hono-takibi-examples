@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEdgeConfigEdgeConfigIdRoute,
   deleteEdgeConfigEdgeConfigIdTokensRoute,
   getEdgeConfigEdgeConfigIdItemEdgeConfigItemKeyRoute,
@@ -14,42 +14,70 @@ import {
   putEdgeConfigEdgeConfigIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEdgeConfigRouteHandler: RouteHandler<typeof getEdgeConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const edgeConfigHandler = app
-  .openapi(getEdgeConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEdgeConfigEdgeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeConfigEdgeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEdgeConfigEdgeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeConfigEdgeConfigIdItemEdgeConfigItemKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeConfigEdgeConfigIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEdgeConfigEdgeConfigIdItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeConfigEdgeConfigIdTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeConfigEdgeConfigIdTokenTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEdgeConfigEdgeConfigIdTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeConfigEdgeConfigIdTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEdgeConfigRouteHandler: RouteHandler<typeof postEdgeConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEdgeConfigEdgeConfigIdRouteHandler: RouteHandler<
+  typeof deleteEdgeConfigEdgeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeConfigEdgeConfigIdRouteHandler: RouteHandler<
+  typeof getEdgeConfigEdgeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEdgeConfigEdgeConfigIdRouteHandler: RouteHandler<
+  typeof putEdgeConfigEdgeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeConfigEdgeConfigIdItemEdgeConfigItemKeyRouteHandler: RouteHandler<
+  typeof getEdgeConfigEdgeConfigIdItemEdgeConfigItemKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeConfigEdgeConfigIdItemsRouteHandler: RouteHandler<
+  typeof getEdgeConfigEdgeConfigIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEdgeConfigEdgeConfigIdItemsRouteHandler: RouteHandler<
+  typeof patchEdgeConfigEdgeConfigIdItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEdgeConfigEdgeConfigIdTokenRouteHandler: RouteHandler<
+  typeof postEdgeConfigEdgeConfigIdTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeConfigEdgeConfigIdTokenTokenRouteHandler: RouteHandler<
+  typeof getEdgeConfigEdgeConfigIdTokenTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEdgeConfigEdgeConfigIdTokensRouteHandler: RouteHandler<
+  typeof deleteEdgeConfigEdgeConfigIdTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeConfigEdgeConfigIdTokensRouteHandler: RouteHandler<
+  typeof getEdgeConfigEdgeConfigIdTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -15025,6 +15025,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { federationSettingsId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { federationSettingsId: string } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -15151,6 +15157,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/federationSettings/:federationSettingsId/connectedOrgConfigs/:orgId': {
       $delete:
+        | {
+            input: { param: { federationSettingsId: string; orgId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { federationSettingsId: string; orgId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -15434,6 +15448,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/federationSettings/:federationSettingsId/connectedOrgConfigs/:orgId/roleMappings/:id': {
       $delete:
+        | {
+            input: { param: { federationSettingsId: string; id: string; orgId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { federationSettingsId: string; id: string; orgId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -15763,6 +15785,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { federationSettingsId: string; identityProviderId: string } } & {
               query: { envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { federationSettingsId: string; identityProviderId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -15949,6 +15979,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/federationSettings/:federationSettingsId/identityProviders/:identityProviderId/jwks': {
       $delete:
+        | {
+            input: { param: { federationSettingsId: string; identityProviderId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { federationSettingsId: string; identityProviderId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -16256,6 +16294,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -16433,6 +16479,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: OrganizationInvitation
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { pretty?: boolean | undefined; envelope?: boolean | undefined }
+            } & { json: GroupInvitationRequest }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { groupId: string } } & {
@@ -16665,6 +16719,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/accessList/:entryValue': {
       $delete:
+        | {
+            input: { param: { groupId: string; entryValue: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; entryValue: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -17262,6 +17324,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; apiKeyId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; apiKeyId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -17695,6 +17765,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/alertConfigs/:alertConfigId': {
       $delete:
+        | {
+            input: { param: { groupId: string; alertConfigId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; alertConfigId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -18437,6 +18515,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; apiUserId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; apiUserId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -18581,6 +18667,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: { param: { groupId: string; apiUserId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: UserAccessRoleAssignment[] }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; apiUserId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -18992,6 +19086,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; cloudProvider: 'AWS'; endpointId: string } } & {
               query: { pretty?: boolean | undefined; envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; cloudProvider: 'AWS'; endpointId: string } } & {
+              query: { pretty?: boolean | undefined; envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -19268,6 +19370,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; exportBucketId: string } } & {
               query: { envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; exportBucketId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -19430,6 +19540,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/backupCompliancePolicy': {
       $delete:
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -19737,6 +19855,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/cloudProviderAccess/:cloudProvider/:roleId': {
       $delete:
+        | {
+            input: {
+              param: { groupId: string; cloudProvider: 'AWS' | 'AZURE' | 'GCP'; roleId: string }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: { groupId: string; cloudProvider: 'AWS' | 'AZURE' | 'GCP'; roleId: string }
@@ -20306,6 +20432,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: {
+                envelope?: boolean | undefined
+                pretty?: boolean | undefined
+                retainBackups?: boolean | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: {
@@ -21313,6 +21451,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             } & { json: AutoEmbeddingInferenceScopeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: AutoEmbeddingInferenceScopeUpdateRequest }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -21531,6 +21677,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/autoEmbeddingInference:reset': {
       $post:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -22013,6 +22167,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string; restoreJobId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string; restoreJobId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -22488,6 +22650,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/backup/snapshots/:snapshotId': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -23077,6 +23247,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/backup/snapshots/shardedCluster/:snapshotId': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -24291,6 +24469,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string; indexId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string; indexId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -24868,6 +25054,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             } & { json: DatabaseRollingIndexRequest }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: DatabaseRollingIndexRequest }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -25077,6 +25271,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/onlineArchives/:archiveId': {
       $delete:
+        | {
+            input: { param: { groupId: string; archiveId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; archiveId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -25684,6 +25886,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string; simulationId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string; simulationId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -26188,6 +26398,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               param: { groupId: string; clusterName: string; connectionStringId: string }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: { groupId: string; clusterName: string; connectionStringId: string }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -26569,6 +26787,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/querySampling/:namespace': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string; namespace: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string; namespace: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -27343,6 +27569,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -27609,6 +27843,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName/search/deployment': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -28163,6 +28413,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 indexName: string
               }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                groupId: string
+                clusterName: string
+                collectionName: string
+                databaseName: string
+                indexName: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -28473,6 +28737,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string; indexId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string; indexId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -28750,6 +29022,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: ShardKeyAnalysisRequest }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -29963,6 +30243,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string; snapshotId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -30290,6 +30578,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             } & { json: EmployeeAccessGrantView }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: EmployeeAccessGrantView }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -30346,6 +30642,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName:pinFeatureCompatibilityVersion': {
       $post:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: PinFCVView }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -30410,6 +30714,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -30466,6 +30778,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/clusters/:clusterName:unpinFeatureCompatibilityVersion': {
       $post:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -31161,6 +31481,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; containerId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; containerId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -31540,6 +31868,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; roleName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; roleName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -31875,6 +32211,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; tenantName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; tenantName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -32109,6 +32453,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/dataFederation/:tenantName/limits/:limitName': {
       $delete:
+        | {
+            input: {
+              param: {
+                groupId: string
+                tenantName: string
+                limitName:
+                  | 'bytesProcessed.query'
+                  | 'bytesProcessed.daily'
+                  | 'bytesProcessed.weekly'
+                  | 'bytesProcessed.monthly'
+              }
+            } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: {
@@ -32654,6 +33014,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/databaseUsers/:databaseName/:username': {
       $delete:
+        | {
+            input: { param: { groupId: string; databaseName: string; username: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; databaseName: string; username: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -33453,6 +33821,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               param: { groupId: string; cloudProvider: 'AZURE' | 'AWS'; endpointId: string }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: { groupId: string; cloudProvider: 'AZURE' | 'AWS'; endpointId: string }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -33937,6 +34313,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/flexClusters/:name': {
       $delete:
+        | {
+            input: { param: { groupId: string; name: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; name: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -35576,6 +35960,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 groupId: string
               }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                integrationType:
+                  | 'PAGER_DUTY'
+                  | 'SLACK'
+                  | 'DATADOG'
+                  | 'NEW_RELIC'
+                  | 'OPS_GENIE'
+                  | 'VICTOR_OPS'
+                  | 'WEBHOOK'
+                  | 'HIP_CHAT'
+                  | 'PROMETHEUS'
+                  | 'MICROSOFT_TEAMS'
+                groupId: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -36460,6 +36865,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; invitationId: string } } & {
               query: { envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; invitationId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -36726,6 +37139,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/limits/:limitName': {
       $delete:
+        | {
+            input: {
+              param: {
+                limitName:
+                  | 'atlas.project.security.databaseAccess.users'
+                  | 'atlas.project.deployment.clusters'
+                  | 'atlas.project.deployment.serverlessMTMs'
+                  | 'atlas.project.security.databaseAccess.customRoles'
+                  | 'atlas.project.security.networkAccess.entries'
+                  | 'atlas.project.security.networkAccess.crossRegionEntries'
+                  | 'atlas.project.deployment.nodesPerPrivateLinkRegion'
+                  | 'dataFederation.bytesProcessed.query'
+                  | 'dataFederation.bytesProcessed.daily'
+                  | 'dataFederation.bytesProcessed.weekly'
+                  | 'dataFederation.bytesProcessed.monthly'
+                  | 'atlas.project.deployment.privateServiceConnectionsPerRegionGroup'
+                  | 'atlas.project.deployment.privateServiceConnectionsSubnetMask'
+                groupId: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: {
@@ -37424,6 +37861,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; liveMigrationId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; liveMigrationId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -37770,6 +38215,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; id: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; id: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -37934,6 +38387,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -38030,6 +38489,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined }
             } & { json: GroupMaintenanceWindow | GroupMaintenanceWindowPreviewUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined }
+            } & { json: GroupMaintenanceWindow | GroupMaintenanceWindowPreviewUpdateRequest }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -38080,6 +38547,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -38118,6 +38591,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/maintenanceWindow/defer': {
       $post:
+        | {
+            input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { groupId: string } } & { query: { envelope?: boolean | undefined } }
             output: ApiError
@@ -38214,6 +38693,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -38254,6 +38741,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/managedSlowMs/enable': {
       $post:
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -38429,6 +38924,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/mcpConfigs/:mcpConfigId': {
       $delete:
+        | {
+            input: { param: { groupId: string; mcpConfigId: string } } & {
+              query: { cascading?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; mcpConfigId: string } } & {
               query: { cascading?: boolean | undefined }
@@ -38772,6 +39275,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { groupId: string; mcpConfigId: string; secretId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; mcpConfigId: string; secretId: string } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -39064,6 +39573,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/metricIntegrations/:metricIntegrationId': {
       $delete:
+        | {
+            input: { param: { groupId: string; metricIntegrationId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; metricIntegrationId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -39531,6 +40048,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/mongosTopologies/:clusterName': {
       $delete:
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; clusterName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -40121,6 +40646,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 endpointServiceId: string
               }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                groupId: string
+                cloudProvider: 'AWS' | 'AZURE' | 'GCP'
+                endpointServiceId: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -40404,6 +40941,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/privateEndpoint/:cloudProvider/endpointService/:endpointServiceId/endpoint/:endpointId': {
       $delete:
+        | {
+            input: {
+              param: {
+                groupId: string
+                cloudProvider: 'AWS' | 'AZURE' | 'GCP'
+                endpointId: string
+                endpointServiceId: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: {
@@ -40928,6 +41478,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; instanceName: string; endpointId: string } } & {
               query: { envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; instanceName: string; endpointId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -41358,6 +41916,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/privateNetworkSettings/endpointIds/:endpointId': {
       $delete:
+        | {
+            input: { param: { groupId: string; endpointId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; endpointId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -44183,6 +44749,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -44281,6 +44855,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             } & { json: PushBasedLogExportProject }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: PushBasedLogExportProject }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -44326,6 +44908,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: CreatePushBasedLogExportProjectRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -44697,6 +45287,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clusterName: string } } & {
               query: { enable: boolean; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string; clusterName: string } } & {
+              query: { enable: boolean; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -44950,6 +45548,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/serviceAccounts/:clientId': {
       $delete:
+        | {
+            input: { param: { clientId: string; groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { clientId: string; groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -45305,6 +45911,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; clientId: string; ipAddress: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; clientId: string; ipAddress: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -45413,6 +46027,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/serviceAccounts/:clientId/secrets/:secretId': {
       $delete:
+        | {
+            input: { param: { clientId: string; secretId: string; groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { clientId: string; secretId: string; groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -45760,6 +46382,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/standbyLinks/:standbyLinkId': {
       $delete:
+        | {
+            input: { param: { groupId: string; standbyLinkId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; standbyLinkId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -46242,6 +46872,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; tenantName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; tenantName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -46655,6 +47293,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; tenantName: string; connectionName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; tenantName: string; connectionName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -46986,6 +47632,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 failoverConnectionId: string
               }
             } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: {
+              param: {
+                groupId: string
+                tenantName: string
+                connectionName: string
+                failoverConnectionId: string
+              }
+            } & { query: { envelope?: boolean | undefined; pretty?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -47288,6 +47947,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; tenantName: string; processorName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; tenantName: string; processorName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -47446,6 +48113,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; tenantName: string; processorName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { groupId: string; tenantName: string; processorName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -47486,6 +48161,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/streams/:tenantName/processor/:processorName:startWith': {
       $post:
+        | {
+            input: { param: { groupId: string; tenantName: string; processorName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: StreamsStartStreamProcessorWith }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { groupId: string; tenantName: string; processorName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -47538,6 +48221,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/streams/:tenantName/processor/:processorName:stop': {
       $post:
+        | {
+            input: { param: { groupId: string; tenantName: string; processorName: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { groupId: string; tenantName: string; processorName: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -48077,6 +48768,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; connectionId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; connectionId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -48323,6 +49022,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; id: string } } & {
               query: { envelope?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; id: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -48367,6 +49074,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; id: string } } & {
               query: { envelope?: boolean | undefined }
             } & { json: VPCPeeringActionChallenge }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string; id: string } } & {
+              query: { envelope?: boolean | undefined }
+            } & { json: VPCPeeringActionChallenge }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -48407,6 +49122,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/streams/vpcPeeringConnections/:id:reject': {
       $post:
+        | {
+            input: { param: { groupId: string; id: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
         | {
             input: { param: { groupId: string; id: string } } & {
               query: { envelope?: boolean | undefined }
@@ -48628,6 +49351,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             } & { json: StreamsWorkspacePrivateEndpointRequest }
+            output: {}
+            outputFormat: string
+            status: 202
+          }
+        | {
+            input: { param: { groupId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            } & { json: StreamsWorkspacePrivateEndpointRequest }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -48684,6 +49415,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/streamsWorkspacePrivateEndpoints/:endpointId': {
       $delete:
+        | {
+            input: { param: { groupId: string; endpointId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; endpointId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -48960,6 +49699,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/groups/:groupId/teams/:teamId': {
       $delete:
+        | {
+            input: { param: { groupId: string; teamId: string } } & {
+              query: { envelope?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { groupId: string; teamId: string } } & {
               query: { envelope?: boolean | undefined }
@@ -49659,6 +50406,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { groupId: string; userId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupId: string; userId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -50326,6 +51081,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId': {
       $delete:
+        | {
+            input: { param: { orgId: string } } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string } } & { query: { envelope?: boolean | undefined } }
             output: ApiError
@@ -51020,6 +51781,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { orgId: string; apiUserId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; apiUserId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -51367,6 +52136,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/apiKeys/:apiUserId/accessList/:ipAddress': {
       $delete:
+        | {
+            input: { param: { orgId: string; apiUserId: string; ipAddress: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string; apiUserId: string; ipAddress: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -52394,6 +53171,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { orgId: string; invitationId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; invitationId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -53311,6 +54096,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { orgId: string } } & { query: { envelope?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string } } & { query: { envelope?: boolean | undefined } }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -53587,6 +54378,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/logIntegrations/:logIntegrationId': {
       $delete:
+        | {
+            input: { param: { orgId: string; logIntegrationId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string; logIntegrationId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -54081,6 +54880,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { orgId: string; mcpConfigId: string } } & {
               query: { cascading?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; mcpConfigId: string } } & {
+              query: { cascading?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -54420,6 +55227,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { orgId: string; mcpConfigId: string; secretId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; mcpConfigId: string; secretId: string } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -54692,6 +55505,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/resourcePolicies/:resourcePolicyId': {
       $delete:
+        | {
+            input: { param: { orgId: string; resourcePolicyId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { orgId: string; resourcePolicyId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -55059,6 +55880,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { orgId: string; sandboxConfigId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; sandboxConfigId: string } }
             output: ApiError
             outputFormat: 'json'
             status: 401
@@ -55328,6 +56155,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/serviceAccounts/:clientId': {
       $delete:
+        | {
+            input: { param: { clientId: string; orgId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { clientId: string; orgId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -55683,6 +56518,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { orgId: string; clientId: string; ipAddress: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { orgId: string; clientId: string; ipAddress: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
             output: ApiError
             outputFormat: 'json'
             status: 400
@@ -55873,6 +56716,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/serviceAccounts/:clientId/secrets/:secretId': {
       $delete:
+        | {
+            input: { param: { clientId: string; secretId: string; orgId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { clientId: string; secretId: string; orgId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -56193,6 +57044,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/teams/:teamId': {
       $delete:
+        | {
+            input: { param: { orgId: string; teamId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string; teamId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -56607,6 +57466,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/teams/:teamId/users/:userId': {
       $delete:
+        | {
+            input: { param: { orgId: string; teamId: string; userId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string; teamId: string; userId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
@@ -57060,6 +57927,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/api/atlas/v2/orgs/:orgId/users/:userId': {
       $delete:
+        | {
+            input: { param: { orgId: string; userId: string } } & {
+              query: { envelope?: boolean | undefined; pretty?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: { param: { orgId: string; userId: string } } & {
               query: { envelope?: boolean | undefined; pretty?: boolean | undefined }

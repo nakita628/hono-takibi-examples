@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getUtilsConvertLegacyIdIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getUtilsConvertLegacyIdIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const utilsHandler = app.openapi(getUtilsConvertLegacyIdIdRoute, (c) => {
+export const getUtilsConvertLegacyIdIdRouteHandler: RouteHandler<
+  typeof getUtilsConvertLegacyIdIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

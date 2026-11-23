@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/pdfbroker.io/v1/openapi.yaml',
   output: './src/pdfbroker-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/pdfbroker-io/types.ts' },
   client: { output: './src/pdfbroker-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/pdfbroker-io/rpc.ts', parseResponse: true },

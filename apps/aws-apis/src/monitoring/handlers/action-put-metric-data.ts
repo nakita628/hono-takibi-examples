@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionPutMetricDataRoute, postActionPutMetricDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionPutMetricDataRoute, postActionPutMetricDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionPutMetricDataRouteHandler: RouteHandler<
+  typeof getActionPutMetricDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionPutMetricDataHandler = app
-  .openapi(getActionPutMetricDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionPutMetricDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionPutMetricDataRouteHandler: RouteHandler<
+  typeof postActionPutMetricDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

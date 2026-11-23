@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnalyticsLiveStreamsLiveStreamIdRoute,
   getAnalyticsSessionsSessionIdEventsRoute,
   getAnalyticsVideosVideoIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnalyticsLiveStreamsLiveStreamIdRouteHandler: RouteHandler<
+  typeof getAnalyticsLiveStreamsLiveStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analyticsHandler = app
-  .openapi(getAnalyticsLiveStreamsLiveStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsSessionsSessionIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalyticsVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnalyticsSessionsSessionIdEventsRouteHandler: RouteHandler<
+  typeof getAnalyticsSessionsSessionIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalyticsVideosVideoIdRouteHandler: RouteHandler<
+  typeof getAnalyticsVideosVideoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

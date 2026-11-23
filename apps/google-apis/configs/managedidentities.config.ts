@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/managedidentities/v1alpha1/openapi.yaml',
   output: './src/managedidentities/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/managedidentities/types.ts' },
   client: { output: './src/managedidentities/client.ts', baseUrl: '/' },
   rpc: { output: './src/managedidentities/rpc.ts', parseResponse: true },

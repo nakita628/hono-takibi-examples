@@ -1,111 +1,317 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwswaf20190729AssociateWebAclHandler,
-  xAmzTargetAwswaf20190729CheckCapacityHandler,
-  xAmzTargetAwswaf20190729CreateApiKeyHandler,
-  xAmzTargetAwswaf20190729CreateIpSetHandler,
-  xAmzTargetAwswaf20190729CreateRegexPatternSetHandler,
-  xAmzTargetAwswaf20190729CreateRuleGroupHandler,
-  xAmzTargetAwswaf20190729CreateWebAclHandler,
-  xAmzTargetAwswaf20190729DeleteFirewallManagerRuleGroupsHandler,
-  xAmzTargetAwswaf20190729DeleteIpSetHandler,
-  xAmzTargetAwswaf20190729DeleteLoggingConfigurationHandler,
-  xAmzTargetAwswaf20190729DeletePermissionPolicyHandler,
-  xAmzTargetAwswaf20190729DeleteRegexPatternSetHandler,
-  xAmzTargetAwswaf20190729DeleteRuleGroupHandler,
-  xAmzTargetAwswaf20190729DeleteWebAclHandler,
-  xAmzTargetAwswaf20190729DescribeManagedRuleGroupHandler,
-  xAmzTargetAwswaf20190729DisassociateWebAclHandler,
-  xAmzTargetAwswaf20190729GenerateMobileSdkReleaseUrlHandler,
-  xAmzTargetAwswaf20190729GetDecryptedApiKeyHandler,
-  xAmzTargetAwswaf20190729GetIpSetHandler,
-  xAmzTargetAwswaf20190729GetLoggingConfigurationHandler,
-  xAmzTargetAwswaf20190729GetManagedRuleSetHandler,
-  xAmzTargetAwswaf20190729GetMobileSdkReleaseHandler,
-  xAmzTargetAwswaf20190729GetPermissionPolicyHandler,
-  xAmzTargetAwswaf20190729GetRateBasedStatementManagedKeysHandler,
-  xAmzTargetAwswaf20190729GetRegexPatternSetHandler,
-  xAmzTargetAwswaf20190729GetRuleGroupHandler,
-  xAmzTargetAwswaf20190729GetSampledRequestsHandler,
-  xAmzTargetAwswaf20190729GetWebAclForResourceHandler,
-  xAmzTargetAwswaf20190729GetWebAclHandler,
-  xAmzTargetAwswaf20190729ListApiKeysHandler,
-  xAmzTargetAwswaf20190729ListAvailableManagedRuleGroupsHandler,
-  xAmzTargetAwswaf20190729ListAvailableManagedRuleGroupVersionsHandler,
-  xAmzTargetAwswaf20190729ListIpSetsHandler,
-  xAmzTargetAwswaf20190729ListLoggingConfigurationsHandler,
-  xAmzTargetAwswaf20190729ListManagedRuleSetsHandler,
-  xAmzTargetAwswaf20190729ListMobileSdkReleasesHandler,
-  xAmzTargetAwswaf20190729ListRegexPatternSetsHandler,
-  xAmzTargetAwswaf20190729ListResourcesForWebAclHandler,
-  xAmzTargetAwswaf20190729ListRuleGroupsHandler,
-  xAmzTargetAwswaf20190729ListTagsForResourceHandler,
-  xAmzTargetAwswaf20190729ListWebAcLsHandler,
-  xAmzTargetAwswaf20190729PutLoggingConfigurationHandler,
-  xAmzTargetAwswaf20190729PutManagedRuleSetVersionsHandler,
-  xAmzTargetAwswaf20190729PutPermissionPolicyHandler,
-  xAmzTargetAwswaf20190729TagResourceHandler,
-  xAmzTargetAwswaf20190729UntagResourceHandler,
-  xAmzTargetAwswaf20190729UpdateIpSetHandler,
-  xAmzTargetAwswaf20190729UpdateManagedRuleSetVersionExpiryDateHandler,
-  xAmzTargetAwswaf20190729UpdateRegexPatternSetHandler,
-  xAmzTargetAwswaf20190729UpdateRuleGroupHandler,
-  xAmzTargetAwswaf20190729UpdateWebAclHandler,
+  postXAmzTargetAWSWAF20190729AssociateWebACLRoute,
+  postXAmzTargetAWSWAF20190729CheckCapacityRoute,
+  postXAmzTargetAWSWAF20190729CreateAPIKeyRoute,
+  postXAmzTargetAWSWAF20190729CreateIPSetRoute,
+  postXAmzTargetAWSWAF20190729CreateRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20190729CreateRuleGroupRoute,
+  postXAmzTargetAWSWAF20190729CreateWebACLRoute,
+  postXAmzTargetAWSWAF20190729DeleteFirewallManagerRuleGroupsRoute,
+  postXAmzTargetAWSWAF20190729DeleteIPSetRoute,
+  postXAmzTargetAWSWAF20190729DeleteLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20190729DeletePermissionPolicyRoute,
+  postXAmzTargetAWSWAF20190729DeleteRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20190729DeleteRuleGroupRoute,
+  postXAmzTargetAWSWAF20190729DeleteWebACLRoute,
+  postXAmzTargetAWSWAF20190729DescribeManagedRuleGroupRoute,
+  postXAmzTargetAWSWAF20190729DisassociateWebACLRoute,
+  postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute,
+  postXAmzTargetAWSWAF20190729GetDecryptedAPIKeyRoute,
+  postXAmzTargetAWSWAF20190729GetIPSetRoute,
+  postXAmzTargetAWSWAF20190729GetLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20190729GetManagedRuleSetRoute,
+  postXAmzTargetAWSWAF20190729GetMobileSdkReleaseRoute,
+  postXAmzTargetAWSWAF20190729GetPermissionPolicyRoute,
+  postXAmzTargetAWSWAF20190729GetRateBasedStatementManagedKeysRoute,
+  postXAmzTargetAWSWAF20190729GetRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20190729GetRuleGroupRoute,
+  postXAmzTargetAWSWAF20190729GetSampledRequestsRoute,
+  postXAmzTargetAWSWAF20190729GetWebACLForResourceRoute,
+  postXAmzTargetAWSWAF20190729GetWebACLRoute,
+  postXAmzTargetAWSWAF20190729ListAPIKeysRoute,
+  postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupsRoute,
+  postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupVersionsRoute,
+  postXAmzTargetAWSWAF20190729ListIPSetsRoute,
+  postXAmzTargetAWSWAF20190729ListLoggingConfigurationsRoute,
+  postXAmzTargetAWSWAF20190729ListManagedRuleSetsRoute,
+  postXAmzTargetAWSWAF20190729ListMobileSdkReleasesRoute,
+  postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute,
+  postXAmzTargetAWSWAF20190729ListResourcesForWebACLRoute,
+  postXAmzTargetAWSWAF20190729ListRuleGroupsRoute,
+  postXAmzTargetAWSWAF20190729ListTagsForResourceRoute,
+  postXAmzTargetAWSWAF20190729ListWebACLsRoute,
+  postXAmzTargetAWSWAF20190729PutLoggingConfigurationRoute,
+  postXAmzTargetAWSWAF20190729PutManagedRuleSetVersionsRoute,
+  postXAmzTargetAWSWAF20190729PutPermissionPolicyRoute,
+  postXAmzTargetAWSWAF20190729TagResourceRoute,
+  postXAmzTargetAWSWAF20190729UntagResourceRoute,
+  postXAmzTargetAWSWAF20190729UpdateIPSetRoute,
+  postXAmzTargetAWSWAF20190729UpdateManagedRuleSetVersionExpiryDateRoute,
+  postXAmzTargetAWSWAF20190729UpdateRegexPatternSetRoute,
+  postXAmzTargetAWSWAF20190729UpdateRuleGroupRoute,
+  postXAmzTargetAWSWAF20190729UpdateWebACLRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSWAF20190729AssociateWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729CheckCapacityRouteHandler,
+  postXAmzTargetAWSWAF20190729CreateAPIKeyRouteHandler,
+  postXAmzTargetAWSWAF20190729CreateIPSetRouteHandler,
+  postXAmzTargetAWSWAF20190729CreateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20190729CreateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20190729CreateWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteFirewallManagerRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteIPSetRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20190729DeletePermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20190729DeleteWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729DescribeManagedRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20190729DisassociateWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRouteHandler,
+  postXAmzTargetAWSWAF20190729GetDecryptedAPIKeyRouteHandler,
+  postXAmzTargetAWSWAF20190729GetIPSetRouteHandler,
+  postXAmzTargetAWSWAF20190729GetLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20190729GetManagedRuleSetRouteHandler,
+  postXAmzTargetAWSWAF20190729GetMobileSdkReleaseRouteHandler,
+  postXAmzTargetAWSWAF20190729GetPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20190729GetRateBasedStatementManagedKeysRouteHandler,
+  postXAmzTargetAWSWAF20190729GetRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20190729GetRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20190729GetSampledRequestsRouteHandler,
+  postXAmzTargetAWSWAF20190729GetWebACLForResourceRouteHandler,
+  postXAmzTargetAWSWAF20190729GetWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729ListAPIKeysRouteHandler,
+  postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupVersionsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListIPSetsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListLoggingConfigurationsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListManagedRuleSetsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListMobileSdkReleasesRouteHandler,
+  postXAmzTargetAWSWAF20190729ListRegexPatternSetsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListResourcesForWebACLRouteHandler,
+  postXAmzTargetAWSWAF20190729ListRuleGroupsRouteHandler,
+  postXAmzTargetAWSWAF20190729ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSWAF20190729ListWebACLsRouteHandler,
+  postXAmzTargetAWSWAF20190729PutLoggingConfigurationRouteHandler,
+  postXAmzTargetAWSWAF20190729PutManagedRuleSetVersionsRouteHandler,
+  postXAmzTargetAWSWAF20190729PutPermissionPolicyRouteHandler,
+  postXAmzTargetAWSWAF20190729TagResourceRouteHandler,
+  postXAmzTargetAWSWAF20190729UntagResourceRouteHandler,
+  postXAmzTargetAWSWAF20190729UpdateIPSetRouteHandler,
+  postXAmzTargetAWSWAF20190729UpdateManagedRuleSetVersionExpiryDateRouteHandler,
+  postXAmzTargetAWSWAF20190729UpdateRegexPatternSetRouteHandler,
+  postXAmzTargetAWSWAF20190729UpdateRuleGroupRouteHandler,
+  postXAmzTargetAWSWAF20190729UpdateWebACLRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwswaf20190729AssociateWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729CheckCapacityHandler)
-  .route('/', xAmzTargetAwswaf20190729CreateApiKeyHandler)
-  .route('/', xAmzTargetAwswaf20190729CreateIpSetHandler)
-  .route('/', xAmzTargetAwswaf20190729CreateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20190729CreateRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20190729CreateWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteFirewallManagerRuleGroupsHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteIpSetHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20190729DeletePermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20190729DeleteWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729DescribeManagedRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20190729DisassociateWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729GenerateMobileSdkReleaseUrlHandler)
-  .route('/', xAmzTargetAwswaf20190729GetDecryptedApiKeyHandler)
-  .route('/', xAmzTargetAwswaf20190729GetIpSetHandler)
-  .route('/', xAmzTargetAwswaf20190729GetLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20190729GetManagedRuleSetHandler)
-  .route('/', xAmzTargetAwswaf20190729GetMobileSdkReleaseHandler)
-  .route('/', xAmzTargetAwswaf20190729GetPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20190729GetRateBasedStatementManagedKeysHandler)
-  .route('/', xAmzTargetAwswaf20190729GetRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20190729GetRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20190729GetSampledRequestsHandler)
-  .route('/', xAmzTargetAwswaf20190729GetWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729GetWebAclForResourceHandler)
-  .route('/', xAmzTargetAwswaf20190729ListApiKeysHandler)
-  .route('/', xAmzTargetAwswaf20190729ListAvailableManagedRuleGroupVersionsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListAvailableManagedRuleGroupsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListIpSetsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListLoggingConfigurationsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListManagedRuleSetsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListMobileSdkReleasesHandler)
-  .route('/', xAmzTargetAwswaf20190729ListRegexPatternSetsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListResourcesForWebAclHandler)
-  .route('/', xAmzTargetAwswaf20190729ListRuleGroupsHandler)
-  .route('/', xAmzTargetAwswaf20190729ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwswaf20190729ListWebAcLsHandler)
-  .route('/', xAmzTargetAwswaf20190729PutLoggingConfigurationHandler)
-  .route('/', xAmzTargetAwswaf20190729PutManagedRuleSetVersionsHandler)
-  .route('/', xAmzTargetAwswaf20190729PutPermissionPolicyHandler)
-  .route('/', xAmzTargetAwswaf20190729TagResourceHandler)
-  .route('/', xAmzTargetAwswaf20190729UntagResourceHandler)
-  .route('/', xAmzTargetAwswaf20190729UpdateIpSetHandler)
-  .route('/', xAmzTargetAwswaf20190729UpdateManagedRuleSetVersionExpiryDateHandler)
-  .route('/', xAmzTargetAwswaf20190729UpdateRegexPatternSetHandler)
-  .route('/', xAmzTargetAwswaf20190729UpdateRuleGroupHandler)
-  .route('/', xAmzTargetAwswaf20190729UpdateWebAclHandler)
+  .openapi(
+    postXAmzTargetAWSWAF20190729AssociateWebACLRoute,
+    postXAmzTargetAWSWAF20190729AssociateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CheckCapacityRoute,
+    postXAmzTargetAWSWAF20190729CheckCapacityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CreateAPIKeyRoute,
+    postXAmzTargetAWSWAF20190729CreateAPIKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CreateIPSetRoute,
+    postXAmzTargetAWSWAF20190729CreateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CreateRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20190729CreateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CreateRuleGroupRoute,
+    postXAmzTargetAWSWAF20190729CreateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729CreateWebACLRoute,
+    postXAmzTargetAWSWAF20190729CreateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteFirewallManagerRuleGroupsRoute,
+    postXAmzTargetAWSWAF20190729DeleteFirewallManagerRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteIPSetRoute,
+    postXAmzTargetAWSWAF20190729DeleteIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20190729DeleteLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeletePermissionPolicyRoute,
+    postXAmzTargetAWSWAF20190729DeletePermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20190729DeleteRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteRuleGroupRoute,
+    postXAmzTargetAWSWAF20190729DeleteRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DeleteWebACLRoute,
+    postXAmzTargetAWSWAF20190729DeleteWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DescribeManagedRuleGroupRoute,
+    postXAmzTargetAWSWAF20190729DescribeManagedRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729DisassociateWebACLRoute,
+    postXAmzTargetAWSWAF20190729DisassociateWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute,
+    postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetDecryptedAPIKeyRoute,
+    postXAmzTargetAWSWAF20190729GetDecryptedAPIKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetIPSetRoute,
+    postXAmzTargetAWSWAF20190729GetIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20190729GetLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetManagedRuleSetRoute,
+    postXAmzTargetAWSWAF20190729GetManagedRuleSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetMobileSdkReleaseRoute,
+    postXAmzTargetAWSWAF20190729GetMobileSdkReleaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetPermissionPolicyRoute,
+    postXAmzTargetAWSWAF20190729GetPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetRateBasedStatementManagedKeysRoute,
+    postXAmzTargetAWSWAF20190729GetRateBasedStatementManagedKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20190729GetRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetRuleGroupRoute,
+    postXAmzTargetAWSWAF20190729GetRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetSampledRequestsRoute,
+    postXAmzTargetAWSWAF20190729GetSampledRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetWebACLRoute,
+    postXAmzTargetAWSWAF20190729GetWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729GetWebACLForResourceRoute,
+    postXAmzTargetAWSWAF20190729GetWebACLForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListAPIKeysRoute,
+    postXAmzTargetAWSWAF20190729ListAPIKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupVersionsRoute,
+    postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupsRoute,
+    postXAmzTargetAWSWAF20190729ListAvailableManagedRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListIPSetsRoute,
+    postXAmzTargetAWSWAF20190729ListIPSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListLoggingConfigurationsRoute,
+    postXAmzTargetAWSWAF20190729ListLoggingConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListManagedRuleSetsRoute,
+    postXAmzTargetAWSWAF20190729ListManagedRuleSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListMobileSdkReleasesRoute,
+    postXAmzTargetAWSWAF20190729ListMobileSdkReleasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListRegexPatternSetsRoute,
+    postXAmzTargetAWSWAF20190729ListRegexPatternSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListResourcesForWebACLRoute,
+    postXAmzTargetAWSWAF20190729ListResourcesForWebACLRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListRuleGroupsRoute,
+    postXAmzTargetAWSWAF20190729ListRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListTagsForResourceRoute,
+    postXAmzTargetAWSWAF20190729ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729ListWebACLsRoute,
+    postXAmzTargetAWSWAF20190729ListWebACLsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729PutLoggingConfigurationRoute,
+    postXAmzTargetAWSWAF20190729PutLoggingConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729PutManagedRuleSetVersionsRoute,
+    postXAmzTargetAWSWAF20190729PutManagedRuleSetVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729PutPermissionPolicyRoute,
+    postXAmzTargetAWSWAF20190729PutPermissionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729TagResourceRoute,
+    postXAmzTargetAWSWAF20190729TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UntagResourceRoute,
+    postXAmzTargetAWSWAF20190729UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UpdateIPSetRoute,
+    postXAmzTargetAWSWAF20190729UpdateIPSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UpdateManagedRuleSetVersionExpiryDateRoute,
+    postXAmzTargetAWSWAF20190729UpdateManagedRuleSetVersionExpiryDateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UpdateRegexPatternSetRoute,
+    postXAmzTargetAWSWAF20190729UpdateRegexPatternSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UpdateRuleGroupRoute,
+    postXAmzTargetAWSWAF20190729UpdateRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSWAF20190729UpdateWebACLRoute,
+    postXAmzTargetAWSWAF20190729UpdateWebACLRouteHandler,
+  )
 
 export default app

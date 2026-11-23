@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putAttemptedDeliveryQueryResolvedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putAttemptedDeliveryQueryResolvedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const attemptedDeliveryQueryResolvedHandler = app.openapi(
-  putAttemptedDeliveryQueryResolvedRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const putAttemptedDeliveryQueryResolvedRouteHandler: RouteHandler<
+  typeof putAttemptedDeliveryQueryResolvedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

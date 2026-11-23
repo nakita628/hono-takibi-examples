@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV2AveragesRoute,
   getV2CitiesRoute,
   getV2CountriesCountryIdRoute,
@@ -26,78 +26,126 @@ import {
   getV2SummaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2AveragesRouteHandler: RouteHandler<typeof getV2AveragesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2AveragesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CountriesCountryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LatestLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesMobileGeneralizedTilesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesMobileGeneralizedZXYPbfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesMobileTilesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesMobileZXYPbfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesTilesJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesViewerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsTilesZXYPbfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2LocationsLocationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ManufacturersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2MeasurementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ProjectsProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SourcesReadmeSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2SummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2CitiesRouteHandler: RouteHandler<typeof getV2CitiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CountriesRouteHandler: RouteHandler<typeof getV2CountriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CountriesCountryIdRouteHandler: RouteHandler<
+  typeof getV2CountriesCountryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LatestRouteHandler: RouteHandler<typeof getV2LatestRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LatestLocationIdRouteHandler: RouteHandler<
+  typeof getV2LatestLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsRouteHandler: RouteHandler<typeof getV2LocationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesMobileGeneralizedTilesJsonRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesMobileGeneralizedTilesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesMobileGeneralizedZXYPbfRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesMobileGeneralizedZXYPbfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesMobileTilesJsonRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesMobileTilesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesMobileZXYPbfRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesMobileZXYPbfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesTilesJsonRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesTilesJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesViewerRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesViewerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsTilesZXYPbfRouteHandler: RouteHandler<
+  typeof getV2LocationsTilesZXYPbfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2LocationsLocationIdRouteHandler: RouteHandler<
+  typeof getV2LocationsLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ManufacturersRouteHandler: RouteHandler<typeof getV2ManufacturersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2MeasurementsRouteHandler: RouteHandler<typeof getV2MeasurementsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ModelsRouteHandler: RouteHandler<typeof getV2ModelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ParametersRouteHandler: RouteHandler<typeof getV2ParametersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsRouteHandler: RouteHandler<typeof getV2ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2ProjectsProjectIdRouteHandler: RouteHandler<
+  typeof getV2ProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SourcesRouteHandler: RouteHandler<typeof getV2SourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SourcesReadmeSlugRouteHandler: RouteHandler<
+  typeof getV2SourcesReadmeSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2SummaryRouteHandler: RouteHandler<typeof getV2SummaryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

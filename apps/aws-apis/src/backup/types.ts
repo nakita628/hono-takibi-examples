@@ -1,9 +1,4 @@
 type CancelLegalHoldOutput = { [x: string]: unknown }
-type InvalidParameterValueException = { [x: string]: unknown }
-type InvalidResourceStateException = { [x: string]: unknown }
-type MissingParameterValueException = { [x: string]: unknown }
-type ServiceUnavailableException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
 type TagValue = string
 type CreateBackupPlanOutput = {
   BackupPlanId?: {} | undefined
@@ -12,8 +7,6 @@ type CreateBackupPlanOutput = {
   VersionId?: {} | undefined
   AdvancedBackupSettings?: {} | undefined
 }
-type LimitExceededException = { [x: string]: unknown }
-type AlreadyExistsException = { [x: string]: unknown }
 type ListBackupPlansOutput = { NextToken?: {} | undefined; BackupPlansList?: {} | undefined }
 type CreateBackupSelectionOutput = {
   SelectionId?: {} | undefined
@@ -29,7 +22,6 @@ type CreateBackupVaultOutput = {
   BackupVaultArn?: {} | undefined
   CreationDate?: {} | undefined
 }
-type InvalidRequestException = { [x: string]: unknown }
 type DescribeBackupVaultOutput = {
   BackupVaultName?: {} | undefined
   BackupVaultArn?: {} | undefined
@@ -144,7 +136,6 @@ type BackupVaultEvent =
   | 'BACKUP_PLAN_MODIFIED'
   | 'S3_BACKUP_OBJECT_FAILED'
   | 'S3_RESTORE_OBJECT_FAILED'
-type ConflictException = { [x: string]: unknown }
 type DescribeFrameworkOutput = {
   FrameworkName?: {} | undefined
   FrameworkArn?: {} | undefined
@@ -271,7 +262,6 @@ type DescribeBackupJobOutput = {
   ChildJobsInState?: {} | undefined
   ResourceName?: {} | undefined
 }
-type DependencyFailureException = { [x: string]: unknown }
 type RecoveryPointCreator = {
   BackupPlanId?: {} | undefined
   BackupPlanArn?: {} | undefined
@@ -444,7781 +434,1619 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/legal-holds/:legalHoldId#cancelDescription': {
-      $delete:
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CancelLegalHoldOutput
-            outputFormat: 'json'
-            status: 201
+      $delete: {
+        input: { param: { legalHoldId: string } } & {
+          query: { cancelDescription: string; retainRecordInDays?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidResourceStateException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: { cancelDescription: string; retainRecordInDays?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: CancelLegalHoldOutput
+        outputFormat: 'json'
+        status: 201
+      }
     }
   } & {
     '/backup/plans/': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: CreateBackupPlanOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
+        } & {
+          json: {
+            BackupPlan: {
+              BackupPlanName?: {} | undefined
+              Rules?: {} | undefined
+              AdvancedBackupSettings?: {} | undefined
             }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+            BackupPlanTags?: { [x: string]: TagValue } | undefined
+            CreatorRequestId?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBackupPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            includeDeleted?: boolean | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-                BackupPlanTags?: { [x: string]: TagValue } | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                includeDeleted?: boolean | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupPlansOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                includeDeleted?: boolean | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                includeDeleted?: boolean | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                includeDeleted?: boolean | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                includeDeleted?: boolean | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBackupPlansOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/plans/:backupPlanId/selections/': {
-      $put:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: CreateBackupSelectionOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { backupPlanId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
+        } & {
+          json: {
+            BackupSelection: {
+              SelectionName?: {} | undefined
+              IamRoleArn?: {} | undefined
+              Resources?: {} | undefined
+              ListOfTags?: {} | undefined
+              NotResources?: {} | undefined
+              Conditions?:
+                | {
+                    StringEquals?: {} | undefined
+                    StringNotEquals?: {} | undefined
+                    StringLike?: {} | undefined
+                    StringNotLike?: {} | undefined
+                  }
+                | undefined
             }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
+            CreatorRequestId?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBackupSelectionOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { backupPlanId: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupSelection: {
-                  SelectionName?: {} | undefined
-                  IamRoleArn?: {} | undefined
-                  Resources?: {} | undefined
-                  ListOfTags?: {} | undefined
-                  NotResources?: {} | undefined
-                  Conditions?:
-                    | {
-                        StringEquals?: {} | undefined
-                        StringNotEquals?: {} | undefined
-                        StringLike?: {} | undefined
-                        StringNotLike?: {} | undefined
-                      }
-                    | undefined
-                }
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupSelectionsOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBackupSelectionsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName': {
-      $put:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: CreateBackupVaultOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            BackupVaultTags?: { [x: string]: TagValue } | undefined
+            EncryptionKeyArn?: string | undefined
+            CreatorRequestId?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateBackupVaultOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultTags?: { [x: string]: TagValue } | undefined
-                EncryptionKeyArn?: string | undefined
-                CreatorRequestId?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 484
-          }
-      $delete:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBackupVaultOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: DescribeBackupVaultOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/audit/frameworks': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateFrameworkOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            FrameworkName: string
+            FrameworkDescription?: string | undefined
+            FrameworkControls: FrameworkControl[]
+            IdempotencyToken?: string | undefined
+            FrameworkTags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateFrameworkOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { query: { MaxResults?: number | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkName: string
-                FrameworkDescription?: string | undefined
-                FrameworkControls: FrameworkControl[]
-                IdempotencyToken?: string | undefined
-                FrameworkTags?: { [x: string]: String } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListFrameworksOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListFrameworksOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/legal-holds/': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Title: string
-                Description: string
-                IdempotencyToken?: string | undefined
-                RecoveryPointSelection?:
-                  | {
-                      VaultNames?: {} | undefined
-                      ResourceIdentifiers?: {} | undefined
-                      DateRange?: DateRange | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateLegalHoldOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Title: string
-                Description: string
-                IdempotencyToken?: string | undefined
-                RecoveryPointSelection?:
-                  | {
-                      VaultNames?: {} | undefined
-                      ResourceIdentifiers?: {} | undefined
-                      DateRange?: DateRange | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            Title: string
+            Description: string
+            IdempotencyToken?: string | undefined
+            RecoveryPointSelection?:
+              | {
+                  VaultNames?: {} | undefined
+                  ResourceIdentifiers?: {} | undefined
+                  DateRange?: DateRange | undefined
+                }
+              | undefined
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Title: string
-                Description: string
-                IdempotencyToken?: string | undefined
-                RecoveryPointSelection?:
-                  | {
-                      VaultNames?: {} | undefined
-                      ResourceIdentifiers?: {} | undefined
-                      DateRange?: DateRange | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateLegalHoldOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Title: string
-                Description: string
-                IdempotencyToken?: string | undefined
-                RecoveryPointSelection?:
-                  | {
-                      VaultNames?: {} | undefined
-                      ResourceIdentifiers?: {} | undefined
-                      DateRange?: DateRange | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Title: string
-                Description: string
-                IdempotencyToken?: string | undefined
-                RecoveryPointSelection?:
-                  | {
-                      VaultNames?: {} | undefined
-                      ResourceIdentifiers?: {} | undefined
-                      DateRange?: DateRange | undefined
-                    }
-                  | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLegalHoldsOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListLegalHoldsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/audit/report-plans': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: CreateReportPlanOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
+        } & {
+          json: {
+            ReportPlanName: string
+            ReportPlanDescription?: string | undefined
+            ReportDeliveryChannel: {
+              S3BucketName?: {} | undefined
+              S3KeyPrefix?: {} | undefined
+              Formats?: {} | undefined
             }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
+            ReportSetting: {
+              ReportTemplate?: {} | undefined
+              FrameworkArns?: {} | undefined
+              NumberOfFrameworks?: {} | undefined
+              Accounts?: {} | undefined
+              OrganizationUnits?: {} | undefined
+              Regions?: {} | undefined
             }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 481
+            ReportPlanTags?: { [x: string]: String } | undefined
+            IdempotencyToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
+        }
+        output: CreateReportPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { query: { MaxResults?: number | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanName: string
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel: {
-                  S3BucketName?: {} | undefined
-                  S3KeyPrefix?: {} | undefined
-                  Formats?: {} | undefined
-                }
-                ReportSetting: {
-                  ReportTemplate?: {} | undefined
-                  FrameworkArns?: {} | undefined
-                  NumberOfFrameworks?: {} | undefined
-                  Accounts?: {} | undefined
-                  OrganizationUnits?: {} | undefined
-                  Regions?: {} | undefined
-                }
-                ReportPlanTags?: { [x: string]: String } | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListReportPlansOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: number | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListReportPlansOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/plans/:backupPlanId': {
-      $delete:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteBackupPlanOutput
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { backupPlanId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteBackupPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { backupPlanId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+        } & {
+          json: {
+            BackupPlan: {
+              BackupPlanName?: {} | undefined
+              Rules?: {} | undefined
+              AdvancedBackupSettings?: {} | undefined
             }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 484
-          }
-      $post:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-              }
-            }
-            output: UpdateBackupPlanOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupPlan: {
-                  BackupPlanName?: {} | undefined
-                  Rules?: {} | undefined
-                  AdvancedBackupSettings?: {} | undefined
-                }
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: UpdateBackupPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/plans/:backupPlanId/selections/:selectionId': {
-      $delete:
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { backupPlanId: string; selectionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { backupPlanId: string; selectionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBackupSelectionOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string; selectionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBackupSelectionOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/access-policy': {
-      $delete:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetBackupVaultAccessPolicyOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBackupVaultAccessPolicyOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Policy?: string | undefined } }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Policy?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Policy?: string | undefined } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Policy?: string | undefined } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Policy?: string | undefined } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { Policy?: string | undefined } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/vault-lock': {
-      $delete:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $put: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          json: {
+            MinRetentionDays?: number | undefined
+            MaxRetentionDays?: number | undefined
+            ChangeableForDays?: number | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-      $put:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MinRetentionDays?: number | undefined
-                MaxRetentionDays?: number | undefined
-                ChangeableForDays?: number | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/notification-configuration': {
-      $delete:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: GetBackupVaultNotificationsOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { backupVaultName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $get:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBackupVaultNotificationsOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { SNSTopicArn: string; BackupVaultEvents: BackupVaultEvent[] } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/audit/frameworks/:frameworkName': {
-      $delete:
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { frameworkName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { frameworkName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeFrameworkOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { frameworkName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            FrameworkDescription?: string | undefined
+            FrameworkControls?: FrameworkControl[] | undefined
+            IdempotencyToken?: string | undefined
           }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeFrameworkOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: UpdateFrameworkOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { frameworkName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                FrameworkDescription?: string | undefined
-                FrameworkControls?: FrameworkControl[] | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: UpdateFrameworkOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/recovery-points/:recoveryPointArn': {
-      $delete:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeRecoveryPointOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            Lifecycle?:
+              | { MoveToColdStorageAfterDays?: {} | undefined; DeleteAfterDays?: {} | undefined }
+              | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidResourceStateException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 485
-          }
-      $get:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeRecoveryPointOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $post:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: UpdateRecoveryPointLifecycleOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateRecoveryPointLifecycleOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/audit/report-plans/:reportPlanName': {
-      $delete:
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { reportPlanName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $get: {
+        input: { param: { reportPlanName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DescribeReportPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { reportPlanName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          json: {
+            ReportPlanDescription?: string | undefined
+            ReportDeliveryChannel?:
+              | {
+                  S3BucketName?: {} | undefined
+                  S3KeyPrefix?: {} | undefined
+                  Formats?: {} | undefined
+                }
+              | undefined
+            ReportSetting?:
+              | {
+                  ReportTemplate?: {} | undefined
+                  FrameworkArns?: {} | undefined
+                  NumberOfFrameworks?: {} | undefined
+                  Accounts?: {} | undefined
+                  OrganizationUnits?: {} | undefined
+                  Regions?: {} | undefined
+                }
+              | undefined
+            IdempotencyToken?: string | undefined
           }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 484
-          }
-      $get:
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeReportPlanOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-      $put:
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: UpdateReportPlanOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ReportPlanDescription?: string | undefined
-                ReportDeliveryChannel?:
-                  | {
-                      S3BucketName?: {} | undefined
-                      S3KeyPrefix?: {} | undefined
-                      Formats?: {} | undefined
-                    }
-                  | undefined
-                ReportSetting?:
-                  | {
-                      ReportTemplate?: {} | undefined
-                      FrameworkArns?: {} | undefined
-                      NumberOfFrameworks?: {} | undefined
-                      Accounts?: {} | undefined
-                      OrganizationUnits?: {} | undefined
-                      Regions?: {} | undefined
-                    }
-                  | undefined
-                IdempotencyToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateReportPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-jobs/:backupJobId': {
-      $get:
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeBackupJobOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupJobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DescribeBackupJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { backupJobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DependencyFailureException
-            outputFormat: 'json'
-            status: 484
-          }
-      $post:
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/copy-jobs/:copyJobId': {
-      $get:
-        | {
-            input: { param: { copyJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeCopyJobOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { copyJobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { copyJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { copyJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { copyJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { copyJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: DescribeCopyJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/global-settings': {
-      $get:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeGlobalSettingsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DescribeGlobalSettingsOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { GlobalSettings?: { [x: string]: GlobalSettingsValue } | undefined } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/resources/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeProtectedResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: DescribeProtectedResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/account-settings': {
-      $get:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeRegionSettingsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DescribeRegionSettingsOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ResourceTypeOptInPreference?: { [x: string]: IsEnabled } | undefined
-                ResourceTypeManagementPreference?: { [x: string]: IsEnabled } | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+        } & {
+          json: {
+            ResourceTypeOptInPreference?: { [x: string]: IsEnabled } | undefined
+            ResourceTypeManagementPreference?: { [x: string]: IsEnabled } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ResourceTypeOptInPreference?: { [x: string]: IsEnabled } | undefined
-                ResourceTypeManagementPreference?: { [x: string]: IsEnabled } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ResourceTypeOptInPreference?: { [x: string]: IsEnabled } | undefined
-                ResourceTypeManagementPreference?: { [x: string]: IsEnabled } | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ResourceTypeOptInPreference?: { [x: string]: IsEnabled } | undefined
-                ResourceTypeManagementPreference?: { [x: string]: IsEnabled } | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/audit/report-jobs/:reportJobId': {
-      $get:
-        | {
-            input: { param: { reportJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeReportJobOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { reportJobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { reportJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { reportJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { reportJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: DescribeReportJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/restore-jobs/:restoreJobId': {
-      $get:
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeRestoreJobOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { restoreJobId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { restoreJobId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DependencyFailureException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeRestoreJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/recovery-points/:recoveryPointArn/disassociate': {
-      $post:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidResourceStateException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/recovery-points/:recoveryPointArn/parentAssociation': {
-      $delete:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/backup/plans/:backupPlanId/toTemplate/': {
-      $get:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ExportBackupPlanTemplateOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupPlanId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ExportBackupPlanTemplateOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/plans/:backupPlanId/': {
-      $get:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: { versionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBackupPlanOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupPlanId: string } } & {
+          query: { versionId?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: { versionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: { versionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: { versionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: { versionId?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBackupPlanOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/template/json/toPlan': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: GetBackupPlanFromJSONOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { BackupPlanTemplateJson: string } }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { BackupPlanTemplateJson: string } }
+        output: GetBackupPlanFromJSONOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/template/plans/:templateId/toPlan': {
-      $get:
-        | {
-            input: { param: { templateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBackupPlanFromTemplateOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { templateId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { templateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { templateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { templateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { templateId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetBackupPlanFromTemplateOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/legal-holds/:legalHoldId/': {
-      $get:
-        | {
-            input: { param: { legalHoldId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLegalHoldOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { legalHoldId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetLegalHoldOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/recovery-points/:recoveryPointArn/restore-metadata': {
-      $get:
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetRecoveryPointRestoreMetadataOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string; recoveryPointArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: GetRecoveryPointRestoreMetadataOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/supported-resource-types': {
-      $get:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSupportedResourceTypesOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetSupportedResourceTypesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-jobs/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?:
-                  | 'CREATED'
-                  | 'PENDING'
-                  | 'RUNNING'
-                  | 'ABORTING'
-                  | 'ABORTED'
-                  | 'COMPLETED'
-                  | 'FAILED'
-                  | 'EXPIRED'
-                  | 'PARTIAL'
-                  | undefined
-                backupVaultName?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                accountId?: string | undefined
-                completeAfter?: string | undefined
-                completeBefore?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupJobsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            resourceArn?: string | undefined
+            state?:
+              | 'CREATED'
+              | 'PENDING'
+              | 'RUNNING'
+              | 'ABORTING'
+              | 'ABORTED'
+              | 'COMPLETED'
+              | 'FAILED'
+              | 'EXPIRED'
+              | 'PARTIAL'
+              | undefined
+            backupVaultName?: string | undefined
+            createdBefore?: string | undefined
+            createdAfter?: string | undefined
+            resourceType?: string | undefined
+            accountId?: string | undefined
+            completeAfter?: string | undefined
+            completeBefore?: string | undefined
+            parentJobId?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?:
-                  | 'CREATED'
-                  | 'PENDING'
-                  | 'RUNNING'
-                  | 'ABORTING'
-                  | 'ABORTED'
-                  | 'COMPLETED'
-                  | 'FAILED'
-                  | 'EXPIRED'
-                  | 'PARTIAL'
-                  | undefined
-                backupVaultName?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                accountId?: string | undefined
-                completeAfter?: string | undefined
-                completeBefore?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?:
-                  | 'CREATED'
-                  | 'PENDING'
-                  | 'RUNNING'
-                  | 'ABORTING'
-                  | 'ABORTED'
-                  | 'COMPLETED'
-                  | 'FAILED'
-                  | 'EXPIRED'
-                  | 'PARTIAL'
-                  | undefined
-                backupVaultName?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                accountId?: string | undefined
-                completeAfter?: string | undefined
-                completeBefore?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListBackupJobsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/template/plans': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupPlanTemplatesOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBackupPlanTemplatesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup/plans/:backupPlanId/versions/': {
-      $get:
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupPlanVersionsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupPlanId: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupPlanId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBackupPlanVersionsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBackupVaultsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListBackupVaultsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/copy-jobs/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?: 'CREATED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'PARTIAL' | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                destinationVaultArn?: string | undefined
-                accountId?: string | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListCopyJobsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            resourceArn?: string | undefined
+            state?: 'CREATED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'PARTIAL' | undefined
+            createdBefore?: string | undefined
+            createdAfter?: string | undefined
+            resourceType?: string | undefined
+            destinationVaultArn?: string | undefined
+            accountId?: string | undefined
+            completeBefore?: string | undefined
+            completeAfter?: string | undefined
+            parentJobId?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?: 'CREATED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'PARTIAL' | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                destinationVaultArn?: string | undefined
-                accountId?: string | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                state?: 'CREATED' | 'RUNNING' | 'COMPLETED' | 'FAILED' | 'PARTIAL' | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                resourceType?: string | undefined
-                destinationVaultArn?: string | undefined
-                accountId?: string | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                parentJobId?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListCopyJobsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/resources/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListProtectedResourcesOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListProtectedResourcesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-vaults/:backupVaultName/recovery-points/': {
-      $get:
-        | {
-            input: { param: { backupVaultName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                resourceType?: string | undefined
-                backupPlanId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                parentRecoveryPointArn?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListRecoveryPointsByBackupVaultOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { backupVaultName: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            resourceArn?: string | undefined
+            resourceType?: string | undefined
+            backupPlanId?: string | undefined
+            createdBefore?: string | undefined
+            createdAfter?: string | undefined
+            parentRecoveryPointArn?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                resourceType?: string | undefined
-                backupPlanId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                parentRecoveryPointArn?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                resourceType?: string | undefined
-                backupPlanId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                parentRecoveryPointArn?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                resourceType?: string | undefined
-                backupPlanId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                parentRecoveryPointArn?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { backupVaultName: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                resourceArn?: string | undefined
-                resourceType?: string | undefined
-                backupPlanId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                parentRecoveryPointArn?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListRecoveryPointsByBackupVaultOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/legal-holds/:legalHoldId/recovery-points': {
-      $get:
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListRecoveryPointsByLegalHoldOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { legalHoldId: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { legalHoldId: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListRecoveryPointsByLegalHoldOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/resources/:resourceArn/recovery-points/': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListRecoveryPointsByResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListRecoveryPointsByResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/audit/report-jobs': {
-      $get:
-        | {
-            input: {
-              query: {
-                ReportPlanName?: string | undefined
-                CreationBefore?: string | undefined
-                CreationAfter?: string | undefined
-                Status?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListReportJobsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ReportPlanName?: string | undefined
+            CreationBefore?: string | undefined
+            CreationAfter?: string | undefined
+            Status?: string | undefined
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ReportPlanName?: string | undefined
-                CreationBefore?: string | undefined
-                CreationAfter?: string | undefined
-                Status?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ReportPlanName?: string | undefined
-                CreationBefore?: string | undefined
-                CreationAfter?: string | undefined
-                Status?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                ReportPlanName?: string | undefined
-                CreationBefore?: string | undefined
-                CreationAfter?: string | undefined
-                Status?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: ListReportJobsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/restore-jobs/': {
-      $get:
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                accountId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListRestoreJobsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            accountId?: string | undefined
+            createdBefore?: string | undefined
+            createdAfter?: string | undefined
+            status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
+            completeBefore?: string | undefined
+            completeAfter?: string | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                accountId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                accountId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                accountId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                accountId?: string | undefined
-                createdBefore?: string | undefined
-                createdAfter?: string | undefined
-                status?: 'PENDING' | 'RUNNING' | 'COMPLETED' | 'ABORTED' | 'FAILED' | undefined
-                completeBefore?: string | undefined
-                completeAfter?: string | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListRestoreJobsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn/': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          query: {
+            nextToken?: string | undefined
+            maxResults?: number | undefined
+            MaxResults?: string | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              query: {
-                nextToken?: string | undefined
-                maxResults?: number | undefined
-                MaxResults?: string | undefined
-                NextToken?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListTagsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/backup-jobs': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: StartBackupJobOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            BackupVaultName: string
+            ResourceArn: string
+            IamRoleArn: string
+            IdempotencyToken?: string | undefined
+            StartWindowMinutes?: number | undefined
+            CompleteWindowMinutes?: number | undefined
+            Lifecycle?:
+              | { MoveToColdStorageAfterDays?: {} | undefined; DeleteAfterDays?: {} | undefined }
+              | undefined
+            RecoveryPointTags?: { [x: string]: TagValue } | undefined
+            BackupOptions?: { [x: string]: BackupOptionValue } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                BackupVaultName: string
-                ResourceArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                StartWindowMinutes?: number | undefined
-                CompleteWindowMinutes?: number | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-                RecoveryPointTags?: { [x: string]: TagValue } | undefined
-                BackupOptions?: { [x: string]: BackupOptionValue } | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: StartBackupJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/copy-jobs': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: StartCopyJobOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            RecoveryPointArn: string
+            SourceBackupVaultName: string
+            DestinationBackupVaultArn: string
+            IamRoleArn: string
+            IdempotencyToken?: string | undefined
+            Lifecycle?:
+              | { MoveToColdStorageAfterDays?: {} | undefined; DeleteAfterDays?: {} | undefined }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                SourceBackupVaultName: string
-                DestinationBackupVaultArn: string
-                IamRoleArn: string
-                IdempotencyToken?: string | undefined
-                Lifecycle?:
-                  | {
-                      MoveToColdStorageAfterDays?: {} | undefined
-                      DeleteAfterDays?: {} | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InvalidRequestException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: StartCopyJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/audit/report-jobs/:reportPlanName': {
-      $post:
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { IdempotencyToken?: string | undefined } }
-            output: StartReportJobOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { reportPlanName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { IdempotencyToken?: string | undefined } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { IdempotencyToken?: string | undefined } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { IdempotencyToken?: string | undefined } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { reportPlanName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { IdempotencyToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { IdempotencyToken?: string | undefined } }
+        output: StartReportJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/restore-jobs': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                Metadata: { [x: string]: MetadataValue }
-                IamRoleArn?: string | undefined
-                IdempotencyToken?: string | undefined
-                ResourceType?: string | undefined
-              }
-            }
-            output: StartRestoreJobOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                Metadata: { [x: string]: MetadataValue }
-                IamRoleArn?: string | undefined
-                IdempotencyToken?: string | undefined
-                ResourceType?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            RecoveryPointArn: string
+            Metadata: { [x: string]: MetadataValue }
+            IamRoleArn?: string | undefined
+            IdempotencyToken?: string | undefined
+            ResourceType?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                Metadata: { [x: string]: MetadataValue }
-                IamRoleArn?: string | undefined
-                IdempotencyToken?: string | undefined
-                ResourceType?: string | undefined
-              }
-            }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                Metadata: { [x: string]: MetadataValue }
-                IamRoleArn?: string | undefined
-                IdempotencyToken?: string | undefined
-                ResourceType?: string | undefined
-              }
-            }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                RecoveryPointArn: string
-                Metadata: { [x: string]: MetadataValue }
-                IamRoleArn?: string | undefined
-                IdempotencyToken?: string | undefined
-                ResourceType?: string | undefined
-              }
-            }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: StartRestoreJobOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: LimitExceededException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { Tags: { [x: string]: TagValue } } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/untag/:resourceArn': {
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TagKeyList: String[] } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TagKeyList: String[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TagKeyList: String[] } }
-            output: InvalidParameterValueException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TagKeyList: String[] } }
-            output: MissingParameterValueException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TagKeyList: String[] } }
-            output: ServiceUnavailableException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { TagKeyList: String[] } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   },
   '/'

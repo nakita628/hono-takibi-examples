@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCaCertificatesCaCertificateIdRoute,
   getCaCertificatesCaCertificateIdRoute,
   getCaCertificatesRoute,
@@ -8,24 +8,38 @@ import {
   putCaCertificatesCaCertificateIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCaCertificatesRouteHandler: RouteHandler<typeof getCaCertificatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const caCertificatesHandler = app
-  .openapi(getCaCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCaCertificatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCaCertificatesCaCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCaCertificatesCaCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCaCertificatesCaCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCaCertificatesCaCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCaCertificatesRouteHandler: RouteHandler<typeof postCaCertificatesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCaCertificatesCaCertificateIdRouteHandler: RouteHandler<
+  typeof deleteCaCertificatesCaCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCaCertificatesCaCertificateIdRouteHandler: RouteHandler<
+  typeof getCaCertificatesCaCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCaCertificatesCaCertificateIdRouteHandler: RouteHandler<
+  typeof patchCaCertificatesCaCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCaCertificatesCaCertificateIdRouteHandler: RouteHandler<
+  typeof putCaCertificatesCaCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

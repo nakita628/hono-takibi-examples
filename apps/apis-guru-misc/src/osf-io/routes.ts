@@ -1807,7 +1807,7 @@ export const postCollectionsIndexRoute = createRoute({
       required: true,
     },
   },
-  responses: { 201: { description: 'Created', content: {} } },
+  responses: { 201: { description: 'Created' } },
 })
 
 export const getCollectionsCollectionIdIndexRoute = createRoute({
@@ -2077,7 +2077,7 @@ export const getCollectionsCollectionIdCollectedMetadataIndexRoute = createRoute
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postCollectionsCollectionIdCollectedMetadataIndexRoute = createRoute({
@@ -2141,7 +2141,7 @@ export const getCollectionsCollectionIdCollectedMetadataCgmIdRoute = createRoute
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postCollectionsCollectionIdCollectedMetadataCgmIdRoute = createRoute({
@@ -2254,7 +2254,7 @@ export const getCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjec
           }),
       }),
     },
-    responses: { 200: { description: 'OK', content: {} } },
+    responses: { 200: { description: 'OK' } },
   })
 
 export const postCollectionsCollectionIdCollectedMetadataCgmIdRelationshipsSubjectsIndexRoute =
@@ -2345,7 +2345,7 @@ export const getCollectionsCollectionIdCollectedMetadataCgmIdSubjectsIndexRoute 
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCollectionsCollectionIdLinkedNodesRoute = createRoute({
@@ -2371,7 +2371,7 @@ export const getCollectionsCollectionIdLinkedNodesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = createRoute({
@@ -2397,7 +2397,7 @@ export const getCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = crea
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = createRoute({
@@ -2424,7 +2424,7 @@ export const postCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = cre
     }),
     body: CollectionsLinkedNodesRelationshipsBodyRequestBody,
   },
-  responses: { 201: { description: 'Created', content: {} } },
+  responses: { 201: { description: 'Created' } },
 })
 
 export const deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = createRoute({
@@ -2451,7 +2451,7 @@ export const deleteCollectionsCollectionIdLinkedNodesRelationshipsIndexRoute = c
     }),
     body: CollectionsLinkedNodesRelationshipsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCollectionsCollectionIdLinkedPreprintsIndexRoute = createRoute({
@@ -2477,7 +2477,7 @@ export const getCollectionsCollectionIdLinkedPreprintsIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCollectionsCollectionIdLinkedRegistrationsIndexRoute = createRoute({
@@ -2503,7 +2503,7 @@ export const getCollectionsCollectionIdLinkedRegistrationsIndexRoute = createRou
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute = createRoute({
@@ -2529,7 +2529,7 @@ export const getCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRout
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const postCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute = createRoute({
@@ -2556,7 +2556,7 @@ export const postCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRou
     }),
     body: CollectionsLinkedRegistrationsRelationshipsBodyRequestBody,
   },
-  responses: { 201: { description: 'Created', content: {} } },
+  responses: { 201: { description: 'Created' } },
 })
 
 export const deleteCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexRoute = createRoute({
@@ -2583,7 +2583,7 @@ export const deleteCollectionsCollectionIdLinkedRegistrationsRelationshipsIndexR
     }),
     body: CollectionsLinkedRegistrationsRelationshipsBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getCommentsCommentIdIndexRoute = createRoute({
@@ -3571,7 +3571,7 @@ export const patchDraftRegistrationsDraftIdIndexRoute = createRoute({
       required: true,
     },
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getDraftRegistrationsDraftIdContributorsIndexRoute = createRoute({
@@ -3597,7 +3597,7 @@ export const getDraftRegistrationsDraftIdContributorsIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Success', content: {} } },
+  responses: { 200: { description: 'Success' } },
 })
 
 export const postDraftRegistrationsDraftIdContributorsIndexRoute = createRoute({
@@ -3624,7 +3624,7 @@ export const postDraftRegistrationsDraftIdContributorsIndexRoute = createRoute({
     }),
     body: NodesContributorsCreateBodyRequestBody,
   },
-  responses: { 201: { description: 'Success', content: {} } },
+  responses: { 201: { description: 'Success' } },
 })
 
 export const getDraftRegistrationsDraftIdContributorsUserIdIndexRoute = createRoute({
@@ -3660,7 +3660,7 @@ export const getDraftRegistrationsDraftIdContributorsUserIdIndexRoute = createRo
         }),
     }),
   },
-  responses: { 200: { description: 'Success', content: {} } },
+  responses: { 200: { description: 'Success' } },
 })
 
 export const getDraftRegistrationsDraftIdInstitutionsIndexRoute = createRoute({
@@ -5205,7 +5205,7 @@ export const getInstitutionsInstitutionIdRegistrationsIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getInstitutionsInstitutionIdUsersIndexRoute = createRoute({
@@ -15268,7 +15268,7 @@ export const postPreprintsPreprintIdContributorsIndexRoute = createRoute({
       required: true,
     },
   },
-  responses: { 201: { description: 'Success', content: {} } },
+  responses: { 201: { description: 'Success' } },
 })
 
 export const getPreprintsPreprintIdContributorsUserIdIndexRoute = createRoute({
@@ -15305,7 +15305,7 @@ export const getPreprintsPreprintIdContributorsUserIdIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getRegistrationsIndexRoute = createRoute({
@@ -23897,7 +23897,7 @@ export const getUsersUserIdRegistrationsIndexRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {} } },
+  responses: { 200: { description: 'OK' } },
 })
 
 export const getViewOnlyLinksLinkIdIndexRoute = createRoute({

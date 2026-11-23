@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/gmch/3.0.0/openapi.yaml',
   output: './src/gmch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gmch/types.ts' },
   client: { output: './src/gmch/client.ts', baseUrl: '/' },
   rpc: { output: './src/gmch/rpc.ts', parseResponse: true },

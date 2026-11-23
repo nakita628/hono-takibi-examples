@@ -159,53 +159,54 @@ const AutoDeploySchema = z
   })
   .openapi('AutoDeploy')
 
-const ServiceTypeSchema = z
-  .enum(['static_site', 'web_service', 'private_service', 'background_worker', 'cron_job'])
-  .openapi('ServiceType')
-
-const ImageSchema = z
-  .object({
-    ownerId: z
-      .string()
-      .openapi({
-        description:
-          'The ID of the owner for this image. This should match the owner of the service as well as the owner of any specified registry credential.',
-      }),
-    registryCredentialId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'Optional reference to the registry credential passed to the image repository to retrieve this image.',
-      }),
-    imagePath: z
-      .string()
-      .openapi({
-        description: 'Path to the image used for this server (e.g docker.io/library/nginx:latest).',
-      }),
+const ServicePOSTAutoDeployTriggerSchema = z
+  .enum(['commit', 'off', 'checksPass'])
+  .openapi({
+    description:
+      "Controls autodeploy behavior.\n\n- `commit`: Deploy each time a commit is pushed to the service's linked branch.\n- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.\n- `off`: Disable autodeploys.\n",
   })
-  .openapi({ required: ['imagePath', 'ownerId'] })
-  .openapi('Image')
+  .openapi('ServicePOSTAutoDeployTrigger')
 
 const BuildFilterSchema = z
   .object({ paths: z.array(z.string()), ignoredPaths: z.array(z.string()) })
   .openapi({ required: ['paths', 'ignoredPaths'] })
   .openapi('BuildFilter')
 
-const HeaderInputSchema = z
+const NotifySettingSchema = z.enum(['default', 'notify', 'ignore']).openapi('NotifySetting')
+
+const RegistryCredentialSummarySchema = z
+  .object({ id: z.string(), name: z.string() })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('RegistryCredentialSummary')
+
+const SuspenderTypeSchema = z
+  .enum([
+    'admin',
+    'billing',
+    'user',
+    'parent_service',
+    'stuck_crashlooping',
+    'hipaa_enablement',
+    'unknown',
+  ])
+  .openapi('SuspenderType')
+
+const ServiceTypeSchema = z
+  .enum(['static_site', 'web_service', 'private_service', 'background_worker', 'cron_job'])
+  .openapi('ServiceType')
+
+const CidrBlockAndDescriptionSchema = z
   .object({
-    path: z
-      .string()
-      .openapi({
-        description:
-          'The request path to add the header to. Wildcards will cause headers to be applied to all matching paths.',
-        example: '/static/*',
-      }),
-    name: z.string().openapi({ description: 'Header name', example: 'Cache-Control' }),
-    value: z.string().openapi({ description: 'Header value', example: 'public, max-age=604800' }),
+    cidrBlock: z.string(),
+    description: z.string().openapi({ description: 'User-provided description of the CIDR block' }),
   })
-  .openapi({ required: ['path', 'name', 'value'] })
-  .openapi('HeaderInput')
+  .openapi({ required: ['cidrBlock', 'description'] })
+  .openapi('CidrBlockAndDescription')
+
+const ResourceSchema = z
+  .object({ id: z.string(), name: z.string() })
+  .openapi({ required: ['id', 'name'] })
+  .openapi('Resource')
 
 const PullRequestPreviewsEnabledSchema = z
   .enum(['yes', 'no'])
@@ -227,59 +228,47 @@ const PreviewsSchema = z
   .openapi({ required: [] })
   .openapi('Previews')
 
-const RouteTypeSchema = z.enum(['redirect', 'rewrite']).openapi('RouteType')
-
-const RoutePostSchema = z
-  .object({
-    type: RouteTypeSchema,
-    source: z.string().openapi({ example: '/:bar/foo' }),
-    destination: z.string().openapi({ example: '/foo/:bar' }),
-    priority: z
-      .int()
-      .exactOptional()
-      .openapi({
-        description:
-          'Redirect and Rewrite Rules are applied in priority order starting at 0. Defaults to last in the priority list.',
-      }),
-  })
-  .openapi({ required: ['type', 'source', 'destination'] })
-  .openapi('RoutePost')
+const BuildPlanSchema = z.enum(['starter', 'performance']).default('starter').openapi('BuildPlan')
 
 const RenderSubdomainPolicySchema = z
   .enum(['enabled', 'disabled'])
   .openapi({ description: 'Controls whether render.com subdomains are available for the service' })
   .openapi('RenderSubdomainPolicy')
 
-const CidrBlockAndDescriptionSchema = z
+const StaticSiteDetailsSchema = z
   .object({
-    cidrBlock: z.string(),
-    description: z.string().openapi({ description: 'User-provided description of the CIDR block' }),
-  })
-  .openapi({ required: ['cidrBlock', 'description'] })
-  .openapi('CidrBlockAndDescription')
-
-const StaticSiteDetailsPOSTSchema = z
-  .object({
-    buildCommand: z.string().exactOptional(),
-    headers: z.array(HeaderInputSchema).exactOptional(),
-    publishPath: z.string().exactOptional().openapi({ description: 'Defaults to "public"' }),
+    buildCommand: z.string(),
+    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
+    parentServer: ResourceSchema.exactOptional(),
+    publishPath: z.string(),
     pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
     previews: PreviewsSchema.exactOptional(),
-    routes: z.array(RoutePostSchema).exactOptional(),
+    url: z.string(),
+    buildPlan: BuildPlanSchema,
     renderSubdomainPolicy: RenderSubdomainPolicySchema.exactOptional(),
-    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
   })
-  .openapi({ required: [] })
-  .openapi('StaticSiteDetailsPOST')
+  .openapi({ required: ['buildCommand', 'publishPath', 'url', 'buildPlan'] })
+  .openapi('StaticSiteDetails')
 
-const ServiceDiskSchema = z
+const CacheSchema = z
   .object({
-    name: z.string(),
-    mountPath: z.string(),
-    sizeGB: z.int().min(1).exactOptional().openapi({ description: 'Defaults to 1' }),
+    profile: z.enum(['no-cache', 'origin-controlled', 'origin-controlled-all']).default('no-cache'),
   })
-  .openapi({ required: ['name', 'mountPath'] })
-  .openapi('ServiceDisk')
+  .openapi({ required: ['profile'] })
+  .openapi('Cache')
+
+const WebServiceDetailsDiskSchema = z
+  .object({
+    id: z
+      .string()
+      .regex(/^dsk-[0-9a-z]{20}$/)
+      .openapi({ example: 'dsk-cph1rs3idesc73a2b2mg' }),
+    name: z.string(),
+    sizeGB: z.int(),
+    mountPath: z.string(),
+  })
+  .openapi({ required: ['id', 'name', 'sizeGB', 'mountPath'] })
+  .openapi('WebServiceDetailsDisk')
 
 const ServiceEnvSchema = z
   .enum(['docker', 'elixir', 'go', 'node', 'python', 'ruby', 'rust', 'image'])
@@ -289,35 +278,47 @@ const ServiceEnvSchema = z
   })
   .openapi('ServiceEnv')
 
-const ServiceRuntimeSchema = z
-  .enum(['docker', 'elixir', 'go', 'node', 'python', 'ruby', 'rust', 'image'])
-  .openapi({ description: 'Runtime' })
-  .openapi('ServiceRuntime')
+const RegistryCredentialRegistrySchema = z
+  .enum(['GITHUB', 'GITLAB', 'DOCKER', 'GOOGLE_ARTIFACT', 'AWS_ECR'])
+  .openapi({ description: 'The registry to use this credential with' })
+  .openapi('RegistryCredentialRegistry')
 
-const DockerDetailsPOSTSchema = z
+const RegistryCredentialSchema = z
   .object({
-    dockerCommand: z.string().exactOptional(),
-    dockerContext: z.string().exactOptional(),
-    dockerfilePath: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Defaults to "./Dockerfile"' }),
-    registryCredentialId: z.string().exactOptional(),
+    id: z.string().openapi({ description: 'Unique identifier for this credential' }),
+    name: z.string().openapi({ description: 'Descriptive name for this credential' }),
+    registry: RegistryCredentialRegistrySchema,
+    username: z.string().openapi({ description: 'The username associated with the credential' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'Last updated time for the credential' }),
   })
-  .openapi({ required: [] })
-  .openapi('DockerDetailsPOST')
+  .openapi({ required: ['id', 'name', 'username', 'registry', 'updatedAt'] })
+  .openapi('RegistryCredential')
 
-const NativeEnvironmentDetailsPOSTSchema = z
-  .object({ buildCommand: z.string(), startCommand: z.string() })
-  .openapi({
-    required: ['buildCommand', 'startCommand'],
-    description: 'Fields for native environment (runtime) services',
+const DockerDetailsSchema = z
+  .object({
+    dockerCommand: z.string(),
+    dockerContext: z.string(),
+    dockerfilePath: z.string(),
+    preDeployCommand: z.string().exactOptional(),
+    registryCredential: RegistryCredentialSchema.exactOptional(),
   })
-  .openapi('NativeEnvironmentDetailsPOST')
+  .openapi({ required: ['dockerCommand', 'dockerContext', 'dockerfilePath'] })
+  .openapi('DockerDetails')
 
-const EnvSpecificDetailsPOSTSchema = z
-  .xor([DockerDetailsPOSTSchema, NativeEnvironmentDetailsPOSTSchema])
-  .openapi('EnvSpecificDetailsPOST')
+const NativeEnvironmentDetailsSchema = z
+  .object({
+    buildCommand: z.string(),
+    startCommand: z.string(),
+    preDeployCommand: z.string().exactOptional(),
+  })
+  .openapi({ required: ['buildCommand', 'startCommand'] })
+  .openapi('NativeEnvironmentDetails')
+
+const EnvSpecificDetailsSchema = z
+  .xor([DockerDetailsSchema, NativeEnvironmentDetailsSchema])
+  .openapi('EnvSpecificDetails')
 
 const MaintenanceModeSchema = z
   .object({
@@ -331,6 +332,11 @@ const MaintenanceModeSchema = z
   })
   .openapi({ required: ['enabled', 'uri'] })
   .openapi('MaintenanceMode')
+
+const ServerPortSchema = z
+  .object({ port: z.int().openapi({ example: 10000 }), protocol: z.enum(['TCP', 'UDP']) })
+  .openapi({ required: ['port', 'protocol'] })
+  .openapi('ServerPort')
 
 const PlanSchema = z
   .enum([
@@ -377,6 +383,19 @@ const RegionSchema = z
   .openapi({ description: 'Defaults to "oregon"' })
   .openapi('Region')
 
+const ServiceRuntimeSchema = z
+  .enum(['docker', 'elixir', 'go', 'node', 'python', 'ruby', 'rust', 'image'])
+  .openapi({ description: 'Runtime' })
+  .openapi('ServiceRuntime')
+
+const SshAddressSchema = z
+  .string()
+  .openapi({
+    description:
+      'The SSH address for the service. Only present for services that have SSH enabled.',
+  })
+  .openapi('SshAddress')
+
 const MaxShutdownDelaySecondsSchema = z
   .int()
   .min(1)
@@ -387,447 +406,6 @@ const MaxShutdownDelaySecondsSchema = z
       'The maximum amount of time (in seconds) that Render waits for your application process to exit gracefully after sending it a SIGTERM signal.',
   })
   .openapi('MaxShutdownDelaySeconds')
-
-const WebServiceDetailsPOSTSchema = z
-  .object({
-    buildSourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
-      }),
-    autoscaling: z
-      .object({
-        enabled: z.boolean().default(false),
-        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
-        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
-        criteria: z
-          .object({
-            cpu: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-            memory: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-          })
-          .openapi({ required: ['cpu', 'memory'] }),
-      })
-      .exactOptional()
-      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
-    disk: ServiceDiskSchema.exactOptional(),
-    env: ServiceEnvSchema.exactOptional(),
-    runtime: ServiceRuntimeSchema.exactOptional().openapi({
-      'x-go-type-skip-optional-pointer': true,
-      description:
-        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
-    }),
-    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
-    healthCheckPath: z.string().exactOptional(),
-    maintenanceMode: MaintenanceModeSchema.exactOptional(),
-    numInstances: z.int().min(1).exactOptional().openapi({ description: 'Defaults to 1' }),
-    plan: PlanSchema.default('0.5c-512mb')
-      .exactOptional()
-      .openapi({
-        description:
-          'The compute plan to use. If omitted, defaults to `0.5c-512mb` when creating a new service.',
-      }),
-    preDeployCommand: z.string().exactOptional(),
-    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
-    previews: PreviewsSchema.exactOptional(),
-    region: RegionSchema.exactOptional(),
-    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
-    renderSubdomainPolicy: RenderSubdomainPolicySchema.exactOptional(),
-    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('WebServiceDetailsPOST')
-
-const PaidPlanSchema = z
-  .enum([
-    'starter',
-    'standard',
-    'pro',
-    'pro_plus',
-    'pro_max',
-    'pro_ultra',
-    '0.5c-512mb',
-    '1c-2g',
-    '2c-4g',
-    '2c-8g',
-    '2c-16g',
-    '4c-8g',
-    '4c-16g',
-    '4c-32g',
-    '8c-16g',
-    '8c-32g',
-    '8c-64g',
-    '12c-24g',
-    '12c-48g',
-    '12c-96g',
-  ])
-  .default('0.5c-512mb')
-  .openapi({ description: 'Defaults to `0.5c-512mb` when creating a new service.' })
-  .openapi('PaidPlan')
-
-const PrivateServiceDetailsPOSTSchema = z
-  .object({
-    buildSourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
-      }),
-    autoscaling: z
-      .object({
-        enabled: z.boolean().default(false),
-        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
-        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
-        criteria: z
-          .object({
-            cpu: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-            memory: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-          })
-          .openapi({ required: ['cpu', 'memory'] }),
-      })
-      .exactOptional()
-      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
-    disk: ServiceDiskSchema.exactOptional(),
-    env: ServiceEnvSchema.exactOptional(),
-    runtime: ServiceRuntimeSchema.exactOptional().openapi({
-      'x-go-type-skip-optional-pointer': true,
-      description:
-        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
-    }),
-    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
-    numInstances: z
-      .int()
-      .min(1)
-      .default(1)
-      .exactOptional()
-      .openapi({ description: 'Defaults to 1' }),
-    plan: PaidPlanSchema.exactOptional(),
-    preDeployCommand: z.string().exactOptional(),
-    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
-    previews: PreviewsSchema.exactOptional(),
-    region: RegionSchema.exactOptional(),
-    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('PrivateServiceDetailsPOST')
-
-const BackgroundWorkerDetailsPOSTSchema = z
-  .object({
-    buildSourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
-      }),
-    autoscaling: z
-      .object({
-        enabled: z.boolean().default(false),
-        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
-        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
-        criteria: z
-          .object({
-            cpu: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-            memory: z
-              .object({
-                enabled: z.boolean().default(false),
-                percentage: z
-                  .int()
-                  .openapi({
-                    description:
-                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
-                  }),
-              })
-              .openapi({ required: ['enabled', 'percentage'] }),
-          })
-          .openapi({ required: ['cpu', 'memory'] }),
-      })
-      .exactOptional()
-      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
-    disk: ServiceDiskSchema.exactOptional(),
-    env: ServiceEnvSchema.exactOptional(),
-    runtime: ServiceRuntimeSchema.exactOptional().openapi({
-      'x-go-type-skip-optional-pointer': true,
-      description:
-        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
-    }),
-    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
-    numInstances: z
-      .int()
-      .min(1)
-      .default(1)
-      .exactOptional()
-      .openapi({ description: 'Defaults to 1' }),
-    plan: PaidPlanSchema.exactOptional(),
-    preDeployCommand: z.string().exactOptional(),
-    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
-    previews: PreviewsSchema.exactOptional(),
-    region: RegionSchema.exactOptional(),
-    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('BackgroundWorkerDetailsPOST')
-
-const RegistryCredentialRegistrySchema = z
-  .enum(['GITHUB', 'GITLAB', 'DOCKER', 'GOOGLE_ARTIFACT', 'AWS_ECR'])
-  .openapi({ description: 'The registry to use this credential with' })
-  .openapi('RegistryCredentialRegistry')
-
-const RegistryCredentialSchema = z
-  .object({
-    id: z.string().openapi({ description: 'Unique identifier for this credential' }),
-    name: z.string().openapi({ description: 'Descriptive name for this credential' }),
-    registry: RegistryCredentialRegistrySchema,
-    username: z.string().openapi({ description: 'The username associated with the credential' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'Last updated time for the credential' }),
-  })
-  .openapi({ required: ['id', 'name', 'username', 'registry', 'updatedAt'] })
-  .openapi('RegistryCredential')
-
-const DockerDetailsSchema = z
-  .object({
-    dockerCommand: z.string(),
-    dockerContext: z.string(),
-    dockerfilePath: z.string(),
-    preDeployCommand: z.string().exactOptional(),
-    registryCredential: RegistryCredentialSchema.exactOptional(),
-  })
-  .openapi({ required: ['dockerCommand', 'dockerContext', 'dockerfilePath'] })
-  .openapi('DockerDetails')
-
-const NativeEnvironmentDetailsSchema = z
-  .object({
-    buildCommand: z.string(),
-    startCommand: z.string(),
-    preDeployCommand: z.string().exactOptional(),
-  })
-  .openapi({ required: ['buildCommand', 'startCommand'] })
-  .openapi('NativeEnvironmentDetails')
-
-const EnvSpecificDetailsSchema = z
-  .xor([DockerDetailsSchema, NativeEnvironmentDetailsSchema])
-  .openapi('EnvSpecificDetails')
-
-const CronJobDetailsPOSTSchema = z
-  .object({
-    buildSourceId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
-      }),
-    env: ServiceEnvSchema.exactOptional(),
-    runtime: ServiceRuntimeSchema.exactOptional().openapi({
-      'x-go-type-skip-optional-pointer': true,
-      description:
-        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
-    }),
-    envSpecificDetails: EnvSpecificDetailsSchema.exactOptional(),
-    plan: PaidPlanSchema.exactOptional(),
-    region: RegionSchema.exactOptional(),
-    schedule: z.string(),
-  })
-  .openapi({ required: ['schedule'] })
-  .openapi('CronJobDetailsPOST')
-
-const ServicePOSTSchema = z
-  .object({
-    type: ServiceTypeSchema,
-    name: z
-      .string()
-      .openapi({ description: "The service's name. Must be unique within the workspace." }),
-    ownerId: z
-      .string()
-      .openapi({
-        description:
-          "The ID of the workspace the service belongs to. Obtain your workspace's ID from its Settings page in the Render Dashboard.",
-      }),
-    repo: z
-      .string()
-      .exactOptional()
-      .openapi({
-        example: 'https://github.com/render-examples/flask-hello-world',
-        description:
-          "The service's repository URL. Do not specify a branch in this string (use the `branch` parameter instead).",
-      }),
-    autoDeploy: AutoDeploySchema.exactOptional(),
-    autoDeployTrigger: z
-      .enum(['commit', 'off', 'checksPass'])
-      .exactOptional()
-      .openapi({
-        description:
-          "Controls autodeploy behavior.\n\n- `commit`: Deploy each time a commit is pushed to the service's linked branch.\n- `checksPass`: Deploy each time a commit is pushed to the linked branch, but only after the commit's CI checks pass.\n- `off`: Disable autodeploys.\n",
-      }),
-    branch: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The repo branch to pull, build, and deploy. If omitted, uses the repository's default branch.",
-      }),
-    image: ImageSchema.exactOptional(),
-    buildFilter: BuildFilterSchema.exactOptional(),
-    rootDir: z.string().exactOptional(),
-    envVars: z
-      .array(
-        z.xor([
-          z.object({ key: z.string(), value: z.string() }).openapi({ required: ['key', 'value'] }),
-          z
-            .object({
-              key: z.string(),
-              generateValue: z
-                .boolean()
-                .openapi({
-                  description:
-                    'If true, Render generates a strong random value for this environment variable on creation. Cannot be combined with `value`.',
-                }),
-            })
-            .openapi({ required: ['key', 'generateValue'] }),
-        ]),
-      )
-      .exactOptional(),
-    secretFiles: z
-      .array(
-        z
-          .object({ name: z.string(), content: z.string() })
-          .openapi({ required: ['name', 'content'] }),
-      )
-      .exactOptional(),
-    environmentId: z
-      .string()
-      .exactOptional()
-      .openapi({
-        description:
-          "The ID of the environment the service belongs to, if any. Obtain an environment's ID from its Settings page in the Render Dashboard.",
-      }),
-    serviceDetails: z
-      .xor([
-        StaticSiteDetailsPOSTSchema,
-        WebServiceDetailsPOSTSchema,
-        PrivateServiceDetailsPOSTSchema,
-        BackgroundWorkerDetailsPOSTSchema,
-        CronJobDetailsPOSTSchema,
-      ])
-      .exactOptional(),
-  })
-  .openapi({ required: ['type', 'name', 'ownerId'] })
-  .openapi('ServicePOST')
-
-const NotifySettingSchema = z.enum(['default', 'notify', 'ignore']).openapi('NotifySetting')
-
-const RegistryCredentialSummarySchema = z
-  .object({ id: z.string(), name: z.string() })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('RegistryCredentialSummary')
-
-const SuspenderTypeSchema = z
-  .enum([
-    'admin',
-    'billing',
-    'user',
-    'parent_service',
-    'stuck_crashlooping',
-    'hipaa_enablement',
-    'unknown',
-  ])
-  .openapi('SuspenderType')
-
-const ResourceSchema = z
-  .object({ id: z.string(), name: z.string() })
-  .openapi({ required: ['id', 'name'] })
-  .openapi('Resource')
-
-const BuildPlanSchema = z.enum(['starter', 'performance']).default('starter').openapi('BuildPlan')
-
-const StaticSiteDetailsSchema = z
-  .object({
-    buildCommand: z.string(),
-    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
-    parentServer: ResourceSchema.exactOptional(),
-    publishPath: z.string(),
-    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
-    previews: PreviewsSchema.exactOptional(),
-    url: z.string(),
-    buildPlan: BuildPlanSchema,
-    renderSubdomainPolicy: RenderSubdomainPolicySchema.exactOptional(),
-  })
-  .openapi({ required: ['buildCommand', 'publishPath', 'url', 'buildPlan'] })
-  .openapi('StaticSiteDetails')
-
-const CacheSchema = z
-  .object({
-    profile: z.enum(['no-cache', 'origin-controlled', 'origin-controlled-all']).default('no-cache'),
-  })
-  .openapi({ required: ['profile'] })
-  .openapi('Cache')
-
-const ServerPortSchema = z
-  .object({ port: z.int().openapi({ example: 10000 }), protocol: z.enum(['TCP', 'UDP']) })
-  .openapi({ required: ['port', 'protocol'] })
-  .openapi('ServerPort')
-
-const SshAddressSchema = z
-  .string()
-  .openapi({
-    description:
-      'The SSH address for the service. Only present for services that have SSH enabled.',
-  })
-  .openapi('SshAddress')
 
 const WebServiceDetailsSchema = z
   .object({
@@ -866,18 +444,7 @@ const WebServiceDetailsSchema = z
       .exactOptional()
       .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
     cache: CacheSchema.exactOptional(),
-    disk: z
-      .object({
-        id: z
-          .string()
-          .regex(/^dsk-[0-9a-z]{20}$/)
-          .openapi({ example: 'dsk-cph1rs3idesc73a2b2mg' }),
-        name: z.string(),
-        sizeGB: z.int(),
-        mountPath: z.string(),
-      })
-      .exactOptional()
-      .openapi({ required: ['id', 'name', 'sizeGB', 'mountPath'] }),
+    disk: WebServiceDetailsDiskSchema.exactOptional(),
     env: ServiceEnvSchema,
     envSpecificDetails: EnvSpecificDetailsSchema,
     healthCheckPath: z.string(),
@@ -954,7 +521,7 @@ const PrivateServiceDetailsSchema = z
       })
       .exactOptional()
       .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
-    disk: z.lazy(() => WebServiceDetailsSchema).exactOptional(),
+    disk: WebServiceDetailsDiskSchema.exactOptional(),
     env: ServiceEnvSchema,
     envSpecificDetails: EnvSpecificDetailsSchema,
     numInstances: z
@@ -1026,7 +593,7 @@ const BackgroundWorkerDetailsSchema = z
       })
       .exactOptional()
       .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
-    disk: z.lazy(() => WebServiceDetailsSchema).exactOptional(),
+    disk: WebServiceDetailsDiskSchema.exactOptional(),
     env: ServiceEnvSchema,
     envSpecificDetails: EnvSpecificDetailsSchema,
     numInstances: z
@@ -1085,7 +652,7 @@ const ServiceSchema = z
           'The ID of the Build Source the service builds and deploys from, if any. A git-backed Build Source must be in the same region as the service.',
       }),
     autoDeploy: AutoDeploySchema,
-    autoDeployTrigger: z.lazy(() => ServicePOSTSchema).exactOptional(),
+    autoDeployTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional(),
     branch: z.string().exactOptional(),
     buildFilter: BuildFilterSchema.exactOptional(),
     createdAt: z.iso.datetime({ offset: true }),
@@ -1435,6 +1002,30 @@ const DedicatedIPPATCHSchema = z
   })
   .openapi('DedicatedIPPATCH')
 
+const ImageSchema = z
+  .object({
+    ownerId: z
+      .string()
+      .openapi({
+        description:
+          'The ID of the owner for this image. This should match the owner of the service as well as the owner of any specified registry credential.',
+      }),
+    registryCredentialId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'Optional reference to the registry credential passed to the image repository to retrieve this image.',
+      }),
+    imagePath: z
+      .string()
+      .openapi({
+        description: 'Path to the image used for this server (e.g docker.io/library/nginx:latest).',
+      }),
+  })
+  .openapi({ required: ['imagePath', 'ownerId'] })
+  .openapi('Image')
+
 const DockerDetailsPATCHSchema = z
   .object({
     dockerCommand: z.string().exactOptional(),
@@ -1459,6 +1050,40 @@ const NativeEnvironmentDetailsPATCHSchema = z
 const EnvSpecificDetailsPATCHSchema = z
   .xor([DockerDetailsPATCHSchema, NativeEnvironmentDetailsPATCHSchema])
   .openapi('EnvSpecificDetailsPATCH')
+
+const DockerDetailsPOSTSchema = z
+  .object({
+    dockerCommand: z.string().exactOptional(),
+    dockerContext: z.string().exactOptional(),
+    dockerfilePath: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Defaults to "./Dockerfile"' }),
+    registryCredentialId: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('DockerDetailsPOST')
+
+const NativeEnvironmentDetailsPOSTSchema = z
+  .object({ buildCommand: z.string(), startCommand: z.string() })
+  .openapi({
+    required: ['buildCommand', 'startCommand'],
+    description: 'Fields for native environment (runtime) services',
+  })
+  .openapi('NativeEnvironmentDetailsPOST')
+
+const EnvSpecificDetailsPOSTSchema = z
+  .xor([DockerDetailsPOSTSchema, NativeEnvironmentDetailsPOSTSchema])
+  .openapi('EnvSpecificDetailsPOST')
+
+const ServiceDiskSchema = z
+  .object({
+    name: z.string(),
+    mountPath: z.string(),
+    sizeGB: z.int().min(1).exactOptional().openapi({ description: 'Defaults to 1' }),
+  })
+  .openapi({ required: ['name', 'mountPath'] })
+  .openapi('ServiceDisk')
 
 const DiskWithCursorSchema = z
   .object({
@@ -1509,6 +1134,385 @@ const ServiceWithCursorSchema = z
   .openapi('ServiceWithCursor')
 
 const ServiceListSchema = z.array(ServiceWithCursorSchema).openapi('ServiceList')
+
+const HeaderInputSchema = z
+  .object({
+    path: z
+      .string()
+      .openapi({
+        description:
+          'The request path to add the header to. Wildcards will cause headers to be applied to all matching paths.',
+        example: '/static/*',
+      }),
+    name: z.string().openapi({ description: 'Header name', example: 'Cache-Control' }),
+    value: z.string().openapi({ description: 'Header value', example: 'public, max-age=604800' }),
+  })
+  .openapi({ required: ['path', 'name', 'value'] })
+  .openapi('HeaderInput')
+
+const RouteTypeSchema = z.enum(['redirect', 'rewrite']).openapi('RouteType')
+
+const RoutePostSchema = z
+  .object({
+    type: RouteTypeSchema,
+    source: z.string().openapi({ example: '/:bar/foo' }),
+    destination: z.string().openapi({ example: '/foo/:bar' }),
+    priority: z
+      .int()
+      .exactOptional()
+      .openapi({
+        description:
+          'Redirect and Rewrite Rules are applied in priority order starting at 0. Defaults to last in the priority list.',
+      }),
+  })
+  .openapi({ required: ['type', 'source', 'destination'] })
+  .openapi('RoutePost')
+
+const StaticSiteDetailsPOSTSchema = z
+  .object({
+    buildCommand: z.string().exactOptional(),
+    headers: z.array(HeaderInputSchema).exactOptional(),
+    publishPath: z.string().exactOptional().openapi({ description: 'Defaults to "public"' }),
+    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
+    previews: PreviewsSchema.exactOptional(),
+    routes: z.array(RoutePostSchema).exactOptional(),
+    renderSubdomainPolicy: RenderSubdomainPolicySchema.exactOptional(),
+    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('StaticSiteDetailsPOST')
+
+const WebServiceDetailsPOSTSchema = z
+  .object({
+    buildSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
+      }),
+    autoscaling: z
+      .object({
+        enabled: z.boolean().default(false),
+        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
+        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
+        criteria: z
+          .object({
+            cpu: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+            memory: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+          })
+          .openapi({ required: ['cpu', 'memory'] }),
+      })
+      .exactOptional()
+      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
+    disk: ServiceDiskSchema.exactOptional(),
+    env: ServiceEnvSchema.exactOptional(),
+    runtime: ServiceRuntimeSchema.exactOptional().openapi({
+      'x-go-type-skip-optional-pointer': true,
+      description:
+        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
+    }),
+    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
+    healthCheckPath: z.string().exactOptional(),
+    maintenanceMode: MaintenanceModeSchema.exactOptional(),
+    numInstances: z.int().min(1).exactOptional().openapi({ description: 'Defaults to 1' }),
+    plan: PlanSchema.default('0.5c-512mb')
+      .exactOptional()
+      .openapi({
+        description:
+          'The compute plan to use. If omitted, defaults to `0.5c-512mb` when creating a new service.',
+      }),
+    preDeployCommand: z.string().exactOptional(),
+    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
+    previews: PreviewsSchema.exactOptional(),
+    region: RegionSchema.exactOptional(),
+    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
+    renderSubdomainPolicy: RenderSubdomainPolicySchema.exactOptional(),
+    ipAllowList: z.array(CidrBlockAndDescriptionSchema).exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('WebServiceDetailsPOST')
+
+const PaidPlanSchema = z
+  .enum([
+    'starter',
+    'standard',
+    'pro',
+    'pro_plus',
+    'pro_max',
+    'pro_ultra',
+    '0.5c-512mb',
+    '1c-2g',
+    '2c-4g',
+    '2c-8g',
+    '2c-16g',
+    '4c-8g',
+    '4c-16g',
+    '4c-32g',
+    '8c-16g',
+    '8c-32g',
+    '8c-64g',
+    '12c-24g',
+    '12c-48g',
+    '12c-96g',
+  ])
+  .default('0.5c-512mb')
+  .openapi({ description: 'Defaults to `0.5c-512mb` when creating a new service.' })
+  .openapi('PaidPlan')
+
+const PrivateServiceDetailsPOSTSchema = z
+  .object({
+    buildSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
+      }),
+    autoscaling: z
+      .object({
+        enabled: z.boolean().default(false),
+        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
+        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
+        criteria: z
+          .object({
+            cpu: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+            memory: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+          })
+          .openapi({ required: ['cpu', 'memory'] }),
+      })
+      .exactOptional()
+      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
+    disk: ServiceDiskSchema.exactOptional(),
+    env: ServiceEnvSchema.exactOptional(),
+    runtime: ServiceRuntimeSchema.exactOptional().openapi({
+      'x-go-type-skip-optional-pointer': true,
+      description:
+        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
+    }),
+    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
+    numInstances: z
+      .int()
+      .min(1)
+      .default(1)
+      .exactOptional()
+      .openapi({ description: 'Defaults to 1' }),
+    plan: PaidPlanSchema.exactOptional(),
+    preDeployCommand: z.string().exactOptional(),
+    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
+    previews: PreviewsSchema.exactOptional(),
+    region: RegionSchema.exactOptional(),
+    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PrivateServiceDetailsPOST')
+
+const BackgroundWorkerDetailsPOSTSchema = z
+  .object({
+    buildSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
+      }),
+    autoscaling: z
+      .object({
+        enabled: z.boolean().default(false),
+        min: z.int().openapi({ description: 'The minimum number of instances for the service' }),
+        max: z.int().openapi({ description: 'The maximum number of instances for the service' }),
+        criteria: z
+          .object({
+            cpu: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+            memory: z
+              .object({
+                enabled: z.boolean().default(false),
+                percentage: z
+                  .int()
+                  .openapi({
+                    description:
+                      'Determines when your service will be scaled. If the average resource utilization is significantly above/below the target, we will increase/decrease the number of instances.\n',
+                  }),
+              })
+              .openapi({ required: ['enabled', 'percentage'] }),
+          })
+          .openapi({ required: ['cpu', 'memory'] }),
+      })
+      .exactOptional()
+      .openapi({ required: ['enabled', 'min', 'max', 'criteria'] }),
+    disk: ServiceDiskSchema.exactOptional(),
+    env: ServiceEnvSchema.exactOptional(),
+    runtime: ServiceRuntimeSchema.exactOptional().openapi({
+      'x-go-type-skip-optional-pointer': true,
+      description:
+        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
+    }),
+    envSpecificDetails: EnvSpecificDetailsPOSTSchema.exactOptional(),
+    numInstances: z
+      .int()
+      .min(1)
+      .default(1)
+      .exactOptional()
+      .openapi({ description: 'Defaults to 1' }),
+    plan: PaidPlanSchema.exactOptional(),
+    preDeployCommand: z.string().exactOptional(),
+    pullRequestPreviewsEnabled: PullRequestPreviewsEnabledSchema.exactOptional(),
+    previews: PreviewsSchema.exactOptional(),
+    region: RegionSchema.exactOptional(),
+    maxShutdownDelaySeconds: MaxShutdownDelaySecondsSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('BackgroundWorkerDetailsPOST')
+
+const CronJobDetailsPOSTSchema = z
+  .object({
+    buildSourceId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          'The ID of the Build Source to build and deploy from. Provides all source and build configuration: omit `repo`, `branch`, `image`, `buildFilter`, `runtime`, and build-related `envSpecificDetails` fields when set. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
+      }),
+    env: ServiceEnvSchema.exactOptional(),
+    runtime: ServiceRuntimeSchema.exactOptional().openapi({
+      'x-go-type-skip-optional-pointer': true,
+      description:
+        'Required unless `buildSourceId` is set, since the build source provides its own runtime.',
+    }),
+    envSpecificDetails: EnvSpecificDetailsSchema.exactOptional(),
+    plan: PaidPlanSchema.exactOptional(),
+    region: RegionSchema.exactOptional(),
+    schedule: z.string(),
+  })
+  .openapi({ required: ['schedule'] })
+  .openapi('CronJobDetailsPOST')
+
+const ServicePOSTSchema = z
+  .object({
+    type: ServiceTypeSchema,
+    name: z
+      .string()
+      .openapi({ description: "The service's name. Must be unique within the workspace." }),
+    ownerId: z
+      .string()
+      .openapi({
+        description:
+          "The ID of the workspace the service belongs to. Obtain your workspace's ID from its Settings page in the Render Dashboard.",
+      }),
+    repo: z
+      .string()
+      .exactOptional()
+      .openapi({
+        example: 'https://github.com/render-examples/flask-hello-world',
+        description:
+          "The service's repository URL. Do not specify a branch in this string (use the `branch` parameter instead).",
+      }),
+    autoDeploy: AutoDeploySchema.exactOptional(),
+    autoDeployTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional(),
+    branch: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The repo branch to pull, build, and deploy. If omitted, uses the repository's default branch.",
+      }),
+    image: ImageSchema.exactOptional(),
+    buildFilter: BuildFilterSchema.exactOptional(),
+    rootDir: z.string().exactOptional(),
+    envVars: z
+      .array(
+        z.xor([
+          z.object({ key: z.string(), value: z.string() }).openapi({ required: ['key', 'value'] }),
+          z
+            .object({
+              key: z.string(),
+              generateValue: z
+                .boolean()
+                .openapi({
+                  description:
+                    'If true, Render generates a strong random value for this environment variable on creation. Cannot be combined with `value`.',
+                }),
+            })
+            .openapi({ required: ['key', 'generateValue'] }),
+        ]),
+      )
+      .exactOptional(),
+    secretFiles: z
+      .array(
+        z
+          .object({ name: z.string(), content: z.string() })
+          .openapi({ required: ['name', 'content'] }),
+      )
+      .exactOptional(),
+    environmentId: z
+      .string()
+      .exactOptional()
+      .openapi({
+        description:
+          "The ID of the environment the service belongs to, if any. Obtain an environment's ID from its Settings page in the Render Dashboard.",
+      }),
+    serviceDetails: z
+      .xor([
+        StaticSiteDetailsPOSTSchema,
+        WebServiceDetailsPOSTSchema,
+        PrivateServiceDetailsPOSTSchema,
+        BackgroundWorkerDetailsPOSTSchema,
+        CronJobDetailsPOSTSchema,
+      ])
+      .exactOptional(),
+  })
+  .openapi({ required: ['type', 'name', 'ownerId'] })
+  .openapi('ServicePOST')
 
 const StaticSiteDetailsPATCHSchema = z
   .object({
@@ -1586,7 +1590,7 @@ const ServicePATCHSchema = z
           'The ID of the Build Source to link this service to. Cannot be combined with build-configuration changes or other `serviceDetails` fields, except `startCommand`. Linking to a Build Source with a native runtime requires a start command, either in this request or already set on the service. Linking to a Build Source with a Docker or image runtime rejects a start command. A git-backed Build Source must be in the same region as the service; otherwise the request is rejected with 400 and `code: build_source_region_mismatch`.',
       }),
     autoDeploy: AutoDeploySchema.exactOptional(),
-    autoDeployTrigger: z.lazy(() => ServicePOSTSchema).exactOptional(),
+    autoDeployTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional(),
     repo: z.string().exactOptional(),
     branch: z.string().exactOptional(),
     image: ImageSchema.exactOptional(),
@@ -2070,114 +2074,32 @@ const KeyValueWithCursorSchema = z
   .openapi({ required: ['keyValue', 'cursor'] })
   .openapi('KeyValueWithCursor')
 
-const RedisPlanSchema = z
-  .enum([
-    'free',
-    'starter',
-    'standard',
-    'pro',
-    'pro_plus',
-    'custom',
-    '256mb',
-    '1g',
-    '5g',
-    '10g',
-    '20g',
-    '40g',
-  ])
-  .openapi({
-    'x-enum-varnames': [
-      'RedisPlanFree',
-      'RedisPlanStarter',
-      'RedisPlanStandard',
-      'RedisPlanPro',
-      'RedisPlanPro_plus',
-      'RedisPlanCustom',
-      'RedisPlan256mb',
-      'RedisPlan1g',
-      'RedisPlan5g',
-      'RedisPlan10g',
-      'RedisPlan20g',
-      'RedisPlan40g',
-    ],
-  })
-  .openapi('RedisPlan')
-
-const RedisOptionsSchema = z
+const RedisDetailMaintenanceSchema = z
   .object({
-    maxmemoryPolicy: z.string().exactOptional(),
-    persistenceMode: PersistenceModeSchema.exactOptional(),
-  })
-  .openapi({ description: 'Options for a Redis instance', required: [] })
-  .openapi('RedisOptions')
-
-const RedisDetailSchema = z
-  .object({
-    id: z.string().openapi({ description: 'The ID of the Redis instance' }),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The creation time of the Redis instance' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .openapi({ description: 'The last updated time of the Redis instance' }),
-    status: DatabaseStatusSchema,
-    region: RegionSchema,
-    plan: RedisPlanSchema,
-    name: z.string().openapi({ description: 'The name of the Redis instance' }),
-    owner: OwnerSchema,
-    options: RedisOptionsSchema,
-    ipAllowList: z
-      .array(CidrBlockAndDescriptionSchema)
-      .openapi({ description: 'The IP allow list for the Redis instance' }),
-    environmentId: z
+    id: z
       .string()
+      .regex(/^mrn-[0-9a-z]{20}$/)
+      .openapi({ example: 'mrn-cph1rs3idesc73a2b2mg' }),
+    type: z.string(),
+    scheduledAt: z.iso.datetime({ offset: true }),
+    pendingMaintenanceBy: z.iso
+      .datetime({ offset: true })
       .exactOptional()
-      .openapi({ description: 'The ID of the environment the Redis instance is associated with' }),
-    version: z.string().openapi({ description: 'The version of Redis' }),
-    maintenance: z
-      .object({
-        id: z
-          .string()
-          .regex(/^mrn-[0-9a-z]{20}$/)
-          .openapi({ example: 'mrn-cph1rs3idesc73a2b2mg' }),
-        type: z.string(),
-        scheduledAt: z.iso.datetime({ offset: true }),
-        pendingMaintenanceBy: z.iso
-          .datetime({ offset: true })
-          .exactOptional()
-          .openapi({
-            description:
-              'If present, the maintenance run cannot be scheduled for later than this date-time.',
-          }),
-        state: z.enum([
-          'scheduled',
-          'in_progress',
-          'user_fix_required',
-          'cancelled',
-          'succeeded',
-          'failed',
-        ]),
-      })
-      .exactOptional()
-      .openapi({ required: ['id', 'type', 'scheduledAt', 'state'] }),
+      .openapi({
+        description:
+          'If present, the maintenance run cannot be scheduled for later than this date-time.',
+      }),
+    state: z.enum([
+      'scheduled',
+      'in_progress',
+      'user_fix_required',
+      'cancelled',
+      'succeeded',
+      'failed',
+    ]),
   })
-  .openapi({
-    description: 'A Redis instance',
-    required: [
-      'id',
-      'createdAt',
-      'updatedAt',
-      'status',
-      'region',
-      'plan',
-      'name',
-      'owner',
-      'options',
-      'ipAllowList',
-      'version',
-    ],
-  })
-  .openapi('RedisDetail')
+  .openapi({ required: ['id', 'type', 'scheduledAt', 'state'] })
+  .openapi('RedisDetailMaintenance')
 
 const KeyValueDetailSchema = z
   .object({
@@ -2204,7 +2126,7 @@ const KeyValueDetailSchema = z
         description: 'The ID of the environment the Key Value instance is associated with',
       }),
     version: z.string().openapi({ description: 'The version of Key Value' }),
-    maintenance: z.lazy(() => RedisDetailSchema).exactOptional(),
+    maintenance: RedisDetailMaintenanceSchema.exactOptional(),
   })
   .openapi({
     description: 'A Key Value instance',
@@ -2245,6 +2167,39 @@ const KeyValueConnectionInfoSchema = z
   })
   .openapi('KeyValueConnectionInfo')
 
+const RedisPlanSchema = z
+  .enum([
+    'free',
+    'starter',
+    'standard',
+    'pro',
+    'pro_plus',
+    'custom',
+    '256mb',
+    '1g',
+    '5g',
+    '10g',
+    '20g',
+    '40g',
+  ])
+  .openapi({
+    'x-enum-varnames': [
+      'RedisPlanFree',
+      'RedisPlanStarter',
+      'RedisPlanStandard',
+      'RedisPlanPro',
+      'RedisPlanPro_plus',
+      'RedisPlanCustom',
+      'RedisPlan256mb',
+      'RedisPlan1g',
+      'RedisPlan5g',
+      'RedisPlan10g',
+      'RedisPlan20g',
+      'RedisPlan40g',
+    ],
+  })
+  .openapi('RedisPlan')
+
 const RedisPOSTInputSchema = z
   .object({
     name: z.string().openapi({ description: 'The name of the Redis instance' }),
@@ -2272,6 +2227,14 @@ const RedisPATCHInputSchema = z
   })
   .openapi({ description: 'Input type for updating a Redis instance', required: [] })
   .openapi('RedisPATCHInput')
+
+const RedisOptionsSchema = z
+  .object({
+    maxmemoryPolicy: z.string().exactOptional(),
+    persistenceMode: PersistenceModeSchema.exactOptional(),
+  })
+  .openapi({ description: 'Options for a Redis instance', required: [] })
+  .openapi('RedisOptions')
 
 const RedisSchema = z
   .object({
@@ -2323,6 +2286,49 @@ const RedisWithCursorSchema = z
   .object({ redis: RedisSchema, cursor: CursorSchema })
   .openapi({ required: ['redis', 'cursor'] })
   .openapi('RedisWithCursor')
+
+const RedisDetailSchema = z
+  .object({
+    id: z.string().openapi({ description: 'The ID of the Redis instance' }),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The creation time of the Redis instance' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .openapi({ description: 'The last updated time of the Redis instance' }),
+    status: DatabaseStatusSchema,
+    region: RegionSchema,
+    plan: RedisPlanSchema,
+    name: z.string().openapi({ description: 'The name of the Redis instance' }),
+    owner: OwnerSchema,
+    options: RedisOptionsSchema,
+    ipAllowList: z
+      .array(CidrBlockAndDescriptionSchema)
+      .openapi({ description: 'The IP allow list for the Redis instance' }),
+    environmentId: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'The ID of the environment the Redis instance is associated with' }),
+    version: z.string().openapi({ description: 'The version of Redis' }),
+    maintenance: RedisDetailMaintenanceSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'A Redis instance',
+    required: [
+      'id',
+      'createdAt',
+      'updatedAt',
+      'status',
+      'region',
+      'plan',
+      'name',
+      'owner',
+      'options',
+      'ipAllowList',
+      'version',
+    ],
+  })
+  .openapi('RedisDetail')
 
 const RedisConnectionInfoSchema = z
   .object({
@@ -2573,6 +2579,62 @@ const SecretFileWithCursorSchema = z
   .openapi({ required: ['secretFile', 'cursor'] })
   .openapi('SecretFileWithCursor')
 
+const PostgresPOSTInputPlanSchema = z
+  .enum([
+    'free',
+    'starter',
+    'standard',
+    'pro',
+    'pro_plus',
+    'custom',
+    'basic_256mb',
+    'basic_1gb',
+    'basic_4gb',
+    'pro_4gb',
+    'pro_8gb',
+    'pro_16gb',
+    'pro_32gb',
+    'pro_64gb',
+    'pro_128gb',
+    'pro_192gb',
+    'pro_256gb',
+    'pro_384gb',
+    'pro_512gb',
+    'accelerated_16gb',
+    'accelerated_32gb',
+    'accelerated_64gb',
+    'accelerated_128gb',
+    'accelerated_256gb',
+    'accelerated_384gb',
+    'accelerated_512gb',
+    'accelerated_768gb',
+    'accelerated_1024gb',
+    '0.1c-256mb',
+    '0.5c-1g',
+    '1c-2g',
+    '1c-4g',
+    '2c-4g',
+    '2c-8g',
+    '2c-16g',
+    '4c-16g',
+    '4c-32g',
+    '8c-32g',
+    '8c-64g',
+    '16c-64g',
+    '16c-128g',
+    '32c-128g',
+    '32c-256g',
+    '48c-192g',
+    '48c-384g',
+    '64c-256g',
+    '64c-512g',
+    '96c-384g',
+    '96c-768g',
+    '128c-512g',
+    '128c-1024g',
+  ])
+  .openapi('PostgresPOSTInputPlan')
+
 const ReadReplicaInputSchema = z
   .object({
     name: z.string().openapi({ description: 'The display name of the replica instance.' }),
@@ -2614,59 +2676,7 @@ const PostgresPOSTInputSchema = z
     ownerId: z
       .string()
       .openapi({ description: 'The ID of the workspace to create the database for' }),
-    plan: z.enum([
-      'free',
-      'starter',
-      'standard',
-      'pro',
-      'pro_plus',
-      'custom',
-      'basic_256mb',
-      'basic_1gb',
-      'basic_4gb',
-      'pro_4gb',
-      'pro_8gb',
-      'pro_16gb',
-      'pro_32gb',
-      'pro_64gb',
-      'pro_128gb',
-      'pro_192gb',
-      'pro_256gb',
-      'pro_384gb',
-      'pro_512gb',
-      'accelerated_16gb',
-      'accelerated_32gb',
-      'accelerated_64gb',
-      'accelerated_128gb',
-      'accelerated_256gb',
-      'accelerated_384gb',
-      'accelerated_512gb',
-      'accelerated_768gb',
-      'accelerated_1024gb',
-      '0.1c-256mb',
-      '0.5c-1g',
-      '1c-2g',
-      '1c-4g',
-      '2c-4g',
-      '2c-8g',
-      '2c-16g',
-      '4c-16g',
-      '4c-32g',
-      '8c-32g',
-      '8c-64g',
-      '16c-64g',
-      '16c-128g',
-      '32c-128g',
-      '32c-256g',
-      '48c-192g',
-      '48c-384g',
-      '64c-256g',
-      '64c-512g',
-      '96c-384g',
-      '96c-768g',
-      '128c-512g',
-      '128c-1024g',
-    ]),
+    plan: PostgresPOSTInputPlanSchema,
     diskSizeGB: z
       .int()
       .exactOptional()
@@ -2695,7 +2705,7 @@ const PostgresPOSTInputSchema = z
 const PostgresPATCHInputSchema = z
   .object({
     name: z.string().exactOptional(),
-    plan: z.lazy(() => PostgresPOSTInputSchema).exactOptional(),
+    plan: PostgresPOSTInputPlanSchema.exactOptional(),
     diskSizeGB: z
       .int()
       .exactOptional()
@@ -2776,7 +2786,7 @@ const PostgresSchema = z
     highAvailabilityEnabled: z.boolean(),
     name: z.string(),
     owner: OwnerSchema,
-    plan: z.lazy(() => PostgresPOSTInputSchema),
+    plan: PostgresPOSTInputPlanSchema,
     diskSizeGB: z.int().exactOptional(),
     primaryPostgresID: z.string().exactOptional(),
     region: RegionSchema,
@@ -2847,10 +2857,10 @@ const PostgresDetailSchema = z
     databaseUser: z.string(),
     environmentId: z.string().exactOptional(),
     highAvailabilityEnabled: z.boolean(),
-    maintenance: z.lazy(() => RedisDetailSchema).exactOptional(),
+    maintenance: RedisDetailMaintenanceSchema.exactOptional(),
     name: z.string(),
     owner: OwnerSchema,
-    plan: z.lazy(() => PostgresPOSTInputSchema),
+    plan: PostgresPOSTInputPlanSchema,
     diskSizeGB: z.int().exactOptional(),
     primaryPostgresID: z.string().exactOptional(),
     region: RegionSchema,
@@ -4551,22 +4561,16 @@ const ServiceEventWithCursorSchema = z
                     description:
                       'Why auto-deploy was disabled (manual_deploy, rollback, or setting_change)',
                   }),
-                fromTrigger: z
-                  .lazy(() => ServicePOSTSchema)
-                  .exactOptional()
-                  .openapi({
-                    description: 'The auto-deploy trigger value immediately before it was disabled',
-                  }),
+                fromTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional().openapi({
+                  description: 'The auto-deploy trigger value immediately before it was disabled',
+                }),
               })
               .openapi({ title: 'Auto Deploy Disabled', required: ['reason'] }),
             z
               .object({
-                newTrigger: z
-                  .lazy(() => ServicePOSTSchema)
-                  .exactOptional()
-                  .openapi({
-                    description: 'The auto-deploy trigger value after it was re-enabled',
-                  }),
+                newTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional().openapi({
+                  description: 'The auto-deploy trigger value after it was re-enabled',
+                }),
               })
               .openapi({ title: 'Auto Deploy Enabled', required: [] }),
           ])
@@ -11221,23 +11225,17 @@ export const getEventsEventIdRoute = createRoute({
                             description:
                               'Why auto-deploy was disabled (manual_deploy, rollback, or setting_change)',
                           }),
-                        fromTrigger: z
-                          .lazy(() => ServicePOSTSchema)
-                          .exactOptional()
-                          .openapi({
-                            description:
-                              'The auto-deploy trigger value immediately before it was disabled',
-                          }),
+                        fromTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional().openapi({
+                          description:
+                            'The auto-deploy trigger value immediately before it was disabled',
+                        }),
                       })
                       .openapi({ title: 'Auto Deploy Disabled', required: ['reason'] }),
                     z
                       .object({
-                        newTrigger: z
-                          .lazy(() => ServicePOSTSchema)
-                          .exactOptional()
-                          .openapi({
-                            description: 'The auto-deploy trigger value after it was re-enabled',
-                          }),
+                        newTrigger: ServicePOSTAutoDeployTriggerSchema.exactOptional().openapi({
+                          description: 'The auto-deploy trigger value after it was re-enabled',
+                        }),
                       })
                       .openapi({ title: 'Auto Deploy Enabled', required: [] }),
                   ])

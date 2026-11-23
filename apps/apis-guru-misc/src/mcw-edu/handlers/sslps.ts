@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSslpsMappedChrStartStopMapKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSslpsMappedChrStartStopMapKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sslpsHandler = app.openapi(getSslpsMappedChrStartStopMapKeyRoute, (c) => {
+export const getSslpsMappedChrStartStopMapKeyRouteHandler: RouteHandler<
+  typeof getSslpsMappedChrStartStopMapKeyRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

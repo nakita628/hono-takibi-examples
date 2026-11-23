@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFindingAggregatorDeleteFindingAggregatorArnRoute,
   getFindingAggregatorGetFindingAggregatorArnRoute,
   getFindingAggregatorListRoute,
@@ -7,21 +7,32 @@ import {
   postFindingAggregatorCreateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postFindingAggregatorCreateRouteHandler: RouteHandler<
+  typeof postFindingAggregatorCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const findingAggregatorHandler = app
-  .openapi(postFindingAggregatorCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFindingAggregatorDeleteFindingAggregatorArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFindingAggregatorGetFindingAggregatorArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFindingAggregatorListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFindingAggregatorUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteFindingAggregatorDeleteFindingAggregatorArnRouteHandler: RouteHandler<
+  typeof deleteFindingAggregatorDeleteFindingAggregatorArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFindingAggregatorGetFindingAggregatorArnRouteHandler: RouteHandler<
+  typeof getFindingAggregatorGetFindingAggregatorArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFindingAggregatorListRouteHandler: RouteHandler<
+  typeof getFindingAggregatorListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFindingAggregatorUpdateRouteHandler: RouteHandler<
+  typeof patchFindingAggregatorUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

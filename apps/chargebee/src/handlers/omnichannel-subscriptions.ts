@@ -1,26 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRoute,
   getOmnichannelSubscriptionsOmnichannelSubscriptionIdRoute,
   getOmnichannelSubscriptionsRoute,
   postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRouteHandler: RouteHandler<
+  typeof postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const omnichannelSubscriptionsHandler = app
-  .openapi(postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOmnichannelSubscriptionsOmnichannelSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getOmnichannelSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOmnichannelSubscriptionsOmnichannelSubscriptionIdRouteHandler: RouteHandler<
+  typeof getOmnichannelSubscriptionsOmnichannelSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRouteHandler: RouteHandler<
+  typeof getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOmnichannelSubscriptionsRouteHandler: RouteHandler<
+  typeof getOmnichannelSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

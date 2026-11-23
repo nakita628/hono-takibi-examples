@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEpochsLatestParametersRoute,
   getEpochsLatestRoute,
   getEpochsNumberBlocksPoolIdRoute,
@@ -12,36 +12,58 @@ import {
   getEpochsNumberStakesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEpochsLatestRouteHandler: RouteHandler<typeof getEpochsLatestRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const epochsHandler = app
-  .openapi(getEpochsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsLatestParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberNextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberPreviousRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberStakesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberStakesPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberBlocksPoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEpochsNumberParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEpochsLatestParametersRouteHandler: RouteHandler<
+  typeof getEpochsLatestParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberRouteHandler: RouteHandler<typeof getEpochsNumberRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberNextRouteHandler: RouteHandler<
+  typeof getEpochsNumberNextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberPreviousRouteHandler: RouteHandler<
+  typeof getEpochsNumberPreviousRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberStakesRouteHandler: RouteHandler<
+  typeof getEpochsNumberStakesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberStakesPoolIdRouteHandler: RouteHandler<
+  typeof getEpochsNumberStakesPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberBlocksRouteHandler: RouteHandler<
+  typeof getEpochsNumberBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberBlocksPoolIdRouteHandler: RouteHandler<
+  typeof getEpochsNumberBlocksPoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEpochsNumberParametersRouteHandler: RouteHandler<
+  typeof getEpochsNumberParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

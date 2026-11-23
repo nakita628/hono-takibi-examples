@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSigusdExchangeAmountInfoRoute,
   getSigusdExchangeIndexRoute,
   getSigusdPriceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSigusdExchangeIndexRouteHandler: RouteHandler<
+  typeof getSigusdExchangeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sigusdHandler = app
-  .openapi(getSigusdExchangeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSigusdExchangeAmountInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSigusdPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSigusdExchangeAmountInfoRouteHandler: RouteHandler<
+  typeof getSigusdExchangeAmountInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSigusdPriceRouteHandler: RouteHandler<typeof getSigusdPriceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

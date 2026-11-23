@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/telnyx.com/2.0.0/openapi.yaml',
   output: './src/telnyx/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/telnyx/types.ts' },
   client: { output: './src/telnyx/client.ts', baseUrl: '/' },
   rpc: { output: './src/telnyx/rpc.ts', parseResponse: true },

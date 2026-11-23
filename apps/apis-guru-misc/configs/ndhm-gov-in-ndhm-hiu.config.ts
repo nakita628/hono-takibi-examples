@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ndhm.gov.in/ndhm-hiu/0.5/openapi.yaml',
   output: './src/ndhm-gov-in-ndhm-hiu/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ndhm-gov-in-ndhm-hiu/types.ts' },
   client: { output: './src/ndhm-gov-in-ndhm-hiu/client.ts', baseUrl: '/' },
   rpc: { output: './src/ndhm-gov-in-ndhm-hiu/rpc.ts', parseResponse: true },

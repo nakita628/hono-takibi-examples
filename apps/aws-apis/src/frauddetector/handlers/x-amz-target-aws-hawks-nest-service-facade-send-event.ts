@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsHawksNestServiceFacadeSendEventHandler = app.openapi(
-  postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSHawksNestServiceFacadeSendEventRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

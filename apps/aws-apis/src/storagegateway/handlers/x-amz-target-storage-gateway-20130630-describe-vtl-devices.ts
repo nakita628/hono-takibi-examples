@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630DescribeVTLDevicesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630DescribeVTLDevicesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630DescribeVtlDevicesHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630DescribeVTLDevicesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630DescribeVTLDevicesRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630DescribeVTLDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/wolframalpha.com/v0.1/openapi.yaml',
   output: './src/wolframalpha/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/wolframalpha/types.ts' },
   client: { output: './src/wolframalpha/client.ts', baseUrl: '/' },
   rpc: { output: './src/wolframalpha/rpc.ts', parseResponse: true },

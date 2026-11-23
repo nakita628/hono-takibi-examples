@@ -10,18 +10,18 @@ export function getSectionFormatKey() {
 }
 
 export function getGetSectionFormatKey(
-  args: InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: InferRequestType<(typeof client)[':section.{format}']['$get']>,
 ) {
-  return [':section.:format', '/:section.:format', args] as const
+  return [':section.{format}', '/:section.{format}', args] as const
 }
 
 export function useGetSectionFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: InferRequestType<(typeof client)[':section.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
         >
       >,
       TError
@@ -38,25 +38,25 @@ export function useGetSectionFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':section.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client[':section.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetSectionFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)[':section.:format']['$get']>,
+  args: InferRequestType<(typeof client)[':section.{format}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
         >
       >,
       TError
@@ -73,13 +73,13 @@ export function useImmutableGetSectionFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.:format']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)[':section.{format}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':section.:format'].$get(args, clientOptions)),
+      async () => parseResponse(client[':section.{format}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

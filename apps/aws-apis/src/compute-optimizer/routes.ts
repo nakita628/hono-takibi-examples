@@ -341,9 +341,9 @@ const GetRecommendationErrorsSchema = z
   .openapi('GetRecommendationErrors')
 
 type GetECSServiceRecommendationsResponseType = {
-  nextToken?: z.infer<typeof NextTokenSchema> & unknown
-  ecsServiceRecommendations?: z.infer<typeof ECSServiceRecommendationsSchema> & unknown
-  errors?: z.infer<typeof GetRecommendationErrorsSchema> & unknown
+  nextToken?: z.infer<typeof NextTokenSchema>
+  ecsServiceRecommendations?: z.infer<typeof ECSServiceRecommendationsSchema>
+  errors?: z.infer<typeof GetRecommendationErrorsSchema>
 }
 
 const DeleteRecommendationPreferencesResponseSchema = z

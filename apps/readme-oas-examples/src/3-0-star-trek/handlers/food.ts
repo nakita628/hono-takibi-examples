@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFoodRoute, getFoodSearchRoute, postFoodSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFoodRoute, getFoodSearchRoute, postFoodSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFoodRouteHandler: RouteHandler<typeof getFoodRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const foodHandler = app
-  .openapi(getFoodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFoodSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFoodSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFoodSearchRouteHandler: RouteHandler<typeof getFoodSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFoodSearchRouteHandler: RouteHandler<typeof postFoodSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

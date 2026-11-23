@@ -1,413 +1,1034 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsGlueBatchCreatePartitionHandler,
-  xAmzTargetAwsGlueBatchDeleteConnectionHandler,
-  xAmzTargetAwsGlueBatchDeletePartitionHandler,
-  xAmzTargetAwsGlueBatchDeleteTableHandler,
-  xAmzTargetAwsGlueBatchDeleteTableVersionHandler,
-  xAmzTargetAwsGlueBatchGetBlueprintsHandler,
-  xAmzTargetAwsGlueBatchGetCrawlersHandler,
-  xAmzTargetAwsGlueBatchGetCustomEntityTypesHandler,
-  xAmzTargetAwsGlueBatchGetDataQualityResultHandler,
-  xAmzTargetAwsGlueBatchGetDevEndpointsHandler,
-  xAmzTargetAwsGlueBatchGetJobsHandler,
-  xAmzTargetAwsGlueBatchGetPartitionHandler,
-  xAmzTargetAwsGlueBatchGetTriggersHandler,
-  xAmzTargetAwsGlueBatchGetWorkflowsHandler,
-  xAmzTargetAwsGlueBatchStopJobRunHandler,
-  xAmzTargetAwsGlueBatchUpdatePartitionHandler,
-  xAmzTargetAwsGlueCancelDataQualityRuleRecommendationRunHandler,
-  xAmzTargetAwsGlueCancelDataQualityRulesetEvaluationRunHandler,
-  xAmzTargetAwsGlueCancelMlTaskRunHandler,
-  xAmzTargetAwsGlueCancelStatementHandler,
-  xAmzTargetAwsGlueCheckSchemaVersionValidityHandler,
-  xAmzTargetAwsGlueCreateBlueprintHandler,
-  xAmzTargetAwsGlueCreateClassifierHandler,
-  xAmzTargetAwsGlueCreateConnectionHandler,
-  xAmzTargetAwsGlueCreateCrawlerHandler,
-  xAmzTargetAwsGlueCreateCustomEntityTypeHandler,
-  xAmzTargetAwsGlueCreateDatabaseHandler,
-  xAmzTargetAwsGlueCreateDataQualityRulesetHandler,
-  xAmzTargetAwsGlueCreateDevEndpointHandler,
-  xAmzTargetAwsGlueCreateJobHandler,
-  xAmzTargetAwsGlueCreateMlTransformHandler,
-  xAmzTargetAwsGlueCreatePartitionHandler,
-  xAmzTargetAwsGlueCreatePartitionIndexHandler,
-  xAmzTargetAwsGlueCreateRegistryHandler,
-  xAmzTargetAwsGlueCreateSchemaHandler,
-  xAmzTargetAwsGlueCreateScriptHandler,
-  xAmzTargetAwsGlueCreateSecurityConfigurationHandler,
-  xAmzTargetAwsGlueCreateSessionHandler,
-  xAmzTargetAwsGlueCreateTableHandler,
-  xAmzTargetAwsGlueCreateTriggerHandler,
-  xAmzTargetAwsGlueCreateUserDefinedFunctionHandler,
-  xAmzTargetAwsGlueCreateWorkflowHandler,
-  xAmzTargetAwsGlueDeleteBlueprintHandler,
-  xAmzTargetAwsGlueDeleteClassifierHandler,
-  xAmzTargetAwsGlueDeleteColumnStatisticsForPartitionHandler,
-  xAmzTargetAwsGlueDeleteColumnStatisticsForTableHandler,
-  xAmzTargetAwsGlueDeleteConnectionHandler,
-  xAmzTargetAwsGlueDeleteCrawlerHandler,
-  xAmzTargetAwsGlueDeleteCustomEntityTypeHandler,
-  xAmzTargetAwsGlueDeleteDatabaseHandler,
-  xAmzTargetAwsGlueDeleteDataQualityRulesetHandler,
-  xAmzTargetAwsGlueDeleteDevEndpointHandler,
-  xAmzTargetAwsGlueDeleteJobHandler,
-  xAmzTargetAwsGlueDeleteMlTransformHandler,
-  xAmzTargetAwsGlueDeletePartitionHandler,
-  xAmzTargetAwsGlueDeletePartitionIndexHandler,
-  xAmzTargetAwsGlueDeleteRegistryHandler,
-  xAmzTargetAwsGlueDeleteResourcePolicyHandler,
-  xAmzTargetAwsGlueDeleteSchemaHandler,
-  xAmzTargetAwsGlueDeleteSchemaVersionsHandler,
-  xAmzTargetAwsGlueDeleteSecurityConfigurationHandler,
-  xAmzTargetAwsGlueDeleteSessionHandler,
-  xAmzTargetAwsGlueDeleteTableHandler,
-  xAmzTargetAwsGlueDeleteTableVersionHandler,
-  xAmzTargetAwsGlueDeleteTriggerHandler,
-  xAmzTargetAwsGlueDeleteUserDefinedFunctionHandler,
-  xAmzTargetAwsGlueDeleteWorkflowHandler,
-  xAmzTargetAwsGlueGetBlueprintHandler,
-  xAmzTargetAwsGlueGetBlueprintRunHandler,
-  xAmzTargetAwsGlueGetBlueprintRunsHandler,
-  xAmzTargetAwsGlueGetCatalogImportStatusHandler,
-  xAmzTargetAwsGlueGetClassifierHandler,
-  xAmzTargetAwsGlueGetClassifiersHandler,
-  xAmzTargetAwsGlueGetColumnStatisticsForPartitionHandler,
-  xAmzTargetAwsGlueGetColumnStatisticsForTableHandler,
-  xAmzTargetAwsGlueGetConnectionHandler,
-  xAmzTargetAwsGlueGetConnectionsHandler,
-  xAmzTargetAwsGlueGetCrawlerHandler,
-  xAmzTargetAwsGlueGetCrawlerMetricsHandler,
-  xAmzTargetAwsGlueGetCrawlersHandler,
-  xAmzTargetAwsGlueGetCustomEntityTypeHandler,
-  xAmzTargetAwsGlueGetDatabaseHandler,
-  xAmzTargetAwsGlueGetDatabasesHandler,
-  xAmzTargetAwsGlueGetDataCatalogEncryptionSettingsHandler,
-  xAmzTargetAwsGlueGetDataflowGraphHandler,
-  xAmzTargetAwsGlueGetDataQualityResultHandler,
-  xAmzTargetAwsGlueGetDataQualityRuleRecommendationRunHandler,
-  xAmzTargetAwsGlueGetDataQualityRulesetEvaluationRunHandler,
-  xAmzTargetAwsGlueGetDataQualityRulesetHandler,
-  xAmzTargetAwsGlueGetDevEndpointHandler,
-  xAmzTargetAwsGlueGetDevEndpointsHandler,
-  xAmzTargetAwsGlueGetJobBookmarkHandler,
-  xAmzTargetAwsGlueGetJobHandler,
-  xAmzTargetAwsGlueGetJobRunHandler,
-  xAmzTargetAwsGlueGetJobRunsHandler,
-  xAmzTargetAwsGlueGetJobsHandler,
-  xAmzTargetAwsGlueGetMappingHandler,
-  xAmzTargetAwsGlueGetMlTaskRunHandler,
-  xAmzTargetAwsGlueGetMlTaskRunsHandler,
-  xAmzTargetAwsGlueGetMlTransformHandler,
-  xAmzTargetAwsGlueGetMlTransformsHandler,
-  xAmzTargetAwsGlueGetPartitionHandler,
-  xAmzTargetAwsGlueGetPartitionIndexesHandler,
-  xAmzTargetAwsGlueGetPartitionsHandler,
-  xAmzTargetAwsGlueGetPlanHandler,
-  xAmzTargetAwsGlueGetRegistryHandler,
-  xAmzTargetAwsGlueGetResourcePoliciesHandler,
-  xAmzTargetAwsGlueGetResourcePolicyHandler,
-  xAmzTargetAwsGlueGetSchemaByDefinitionHandler,
-  xAmzTargetAwsGlueGetSchemaHandler,
-  xAmzTargetAwsGlueGetSchemaVersionHandler,
-  xAmzTargetAwsGlueGetSchemaVersionsDiffHandler,
-  xAmzTargetAwsGlueGetSecurityConfigurationHandler,
-  xAmzTargetAwsGlueGetSecurityConfigurationsHandler,
-  xAmzTargetAwsGlueGetSessionHandler,
-  xAmzTargetAwsGlueGetStatementHandler,
-  xAmzTargetAwsGlueGetTableHandler,
-  xAmzTargetAwsGlueGetTablesHandler,
-  xAmzTargetAwsGlueGetTableVersionHandler,
-  xAmzTargetAwsGlueGetTableVersionsHandler,
-  xAmzTargetAwsGlueGetTagsHandler,
-  xAmzTargetAwsGlueGetTriggerHandler,
-  xAmzTargetAwsGlueGetTriggersHandler,
-  xAmzTargetAwsGlueGetUnfilteredPartitionMetadataHandler,
-  xAmzTargetAwsGlueGetUnfilteredPartitionsMetadataHandler,
-  xAmzTargetAwsGlueGetUnfilteredTableMetadataHandler,
-  xAmzTargetAwsGlueGetUserDefinedFunctionHandler,
-  xAmzTargetAwsGlueGetUserDefinedFunctionsHandler,
-  xAmzTargetAwsGlueGetWorkflowHandler,
-  xAmzTargetAwsGlueGetWorkflowRunHandler,
-  xAmzTargetAwsGlueGetWorkflowRunPropertiesHandler,
-  xAmzTargetAwsGlueGetWorkflowRunsHandler,
-  xAmzTargetAwsGlueImportCatalogToGlueHandler,
-  xAmzTargetAwsGlueListBlueprintsHandler,
-  xAmzTargetAwsGlueListCrawlersHandler,
-  xAmzTargetAwsGlueListCrawlsHandler,
-  xAmzTargetAwsGlueListCustomEntityTypesHandler,
-  xAmzTargetAwsGlueListDataQualityResultsHandler,
-  xAmzTargetAwsGlueListDataQualityRuleRecommendationRunsHandler,
-  xAmzTargetAwsGlueListDataQualityRulesetEvaluationRunsHandler,
-  xAmzTargetAwsGlueListDataQualityRulesetsHandler,
-  xAmzTargetAwsGlueListDevEndpointsHandler,
-  xAmzTargetAwsGlueListJobsHandler,
-  xAmzTargetAwsGlueListMlTransformsHandler,
-  xAmzTargetAwsGlueListRegistriesHandler,
-  xAmzTargetAwsGlueListSchemasHandler,
-  xAmzTargetAwsGlueListSchemaVersionsHandler,
-  xAmzTargetAwsGlueListSessionsHandler,
-  xAmzTargetAwsGlueListStatementsHandler,
-  xAmzTargetAwsGlueListTriggersHandler,
-  xAmzTargetAwsGlueListWorkflowsHandler,
-  xAmzTargetAwsGluePutDataCatalogEncryptionSettingsHandler,
-  xAmzTargetAwsGluePutResourcePolicyHandler,
-  xAmzTargetAwsGluePutSchemaVersionMetadataHandler,
-  xAmzTargetAwsGluePutWorkflowRunPropertiesHandler,
-  xAmzTargetAwsGlueQuerySchemaVersionMetadataHandler,
-  xAmzTargetAwsGlueRegisterSchemaVersionHandler,
-  xAmzTargetAwsGlueRemoveSchemaVersionMetadataHandler,
-  xAmzTargetAwsGlueResetJobBookmarkHandler,
-  xAmzTargetAwsGlueResumeWorkflowRunHandler,
-  xAmzTargetAwsGlueRunStatementHandler,
-  xAmzTargetAwsGlueSearchTablesHandler,
-  xAmzTargetAwsGlueStartBlueprintRunHandler,
-  xAmzTargetAwsGlueStartCrawlerHandler,
-  xAmzTargetAwsGlueStartCrawlerScheduleHandler,
-  xAmzTargetAwsGlueStartDataQualityRuleRecommendationRunHandler,
-  xAmzTargetAwsGlueStartDataQualityRulesetEvaluationRunHandler,
-  xAmzTargetAwsGlueStartExportLabelsTaskRunHandler,
-  xAmzTargetAwsGlueStartImportLabelsTaskRunHandler,
-  xAmzTargetAwsGlueStartJobRunHandler,
-  xAmzTargetAwsGlueStartMlEvaluationTaskRunHandler,
-  xAmzTargetAwsGlueStartMlLabelingSetGenerationTaskRunHandler,
-  xAmzTargetAwsGlueStartTriggerHandler,
-  xAmzTargetAwsGlueStartWorkflowRunHandler,
-  xAmzTargetAwsGlueStopCrawlerHandler,
-  xAmzTargetAwsGlueStopCrawlerScheduleHandler,
-  xAmzTargetAwsGlueStopSessionHandler,
-  xAmzTargetAwsGlueStopTriggerHandler,
-  xAmzTargetAwsGlueStopWorkflowRunHandler,
-  xAmzTargetAwsGlueTagResourceHandler,
-  xAmzTargetAwsGlueUntagResourceHandler,
-  xAmzTargetAwsGlueUpdateBlueprintHandler,
-  xAmzTargetAwsGlueUpdateClassifierHandler,
-  xAmzTargetAwsGlueUpdateColumnStatisticsForPartitionHandler,
-  xAmzTargetAwsGlueUpdateColumnStatisticsForTableHandler,
-  xAmzTargetAwsGlueUpdateConnectionHandler,
-  xAmzTargetAwsGlueUpdateCrawlerHandler,
-  xAmzTargetAwsGlueUpdateCrawlerScheduleHandler,
-  xAmzTargetAwsGlueUpdateDatabaseHandler,
-  xAmzTargetAwsGlueUpdateDataQualityRulesetHandler,
-  xAmzTargetAwsGlueUpdateDevEndpointHandler,
-  xAmzTargetAwsGlueUpdateJobFromSourceControlHandler,
-  xAmzTargetAwsGlueUpdateJobHandler,
-  xAmzTargetAwsGlueUpdateMlTransformHandler,
-  xAmzTargetAwsGlueUpdatePartitionHandler,
-  xAmzTargetAwsGlueUpdateRegistryHandler,
-  xAmzTargetAwsGlueUpdateSchemaHandler,
-  xAmzTargetAwsGlueUpdateSourceControlFromJobHandler,
-  xAmzTargetAwsGlueUpdateTableHandler,
-  xAmzTargetAwsGlueUpdateTriggerHandler,
-  xAmzTargetAwsGlueUpdateUserDefinedFunctionHandler,
-  xAmzTargetAwsGlueUpdateWorkflowHandler,
+  postXAmzTargetAWSGlueBatchCreatePartitionRoute,
+  postXAmzTargetAWSGlueBatchDeleteConnectionRoute,
+  postXAmzTargetAWSGlueBatchDeletePartitionRoute,
+  postXAmzTargetAWSGlueBatchDeleteTableRoute,
+  postXAmzTargetAWSGlueBatchDeleteTableVersionRoute,
+  postXAmzTargetAWSGlueBatchGetBlueprintsRoute,
+  postXAmzTargetAWSGlueBatchGetCrawlersRoute,
+  postXAmzTargetAWSGlueBatchGetCustomEntityTypesRoute,
+  postXAmzTargetAWSGlueBatchGetDataQualityResultRoute,
+  postXAmzTargetAWSGlueBatchGetDevEndpointsRoute,
+  postXAmzTargetAWSGlueBatchGetJobsRoute,
+  postXAmzTargetAWSGlueBatchGetPartitionRoute,
+  postXAmzTargetAWSGlueBatchGetTriggersRoute,
+  postXAmzTargetAWSGlueBatchGetWorkflowsRoute,
+  postXAmzTargetAWSGlueBatchStopJobRunRoute,
+  postXAmzTargetAWSGlueBatchUpdatePartitionRoute,
+  postXAmzTargetAWSGlueCancelDataQualityRuleRecommendationRunRoute,
+  postXAmzTargetAWSGlueCancelDataQualityRulesetEvaluationRunRoute,
+  postXAmzTargetAWSGlueCancelMLTaskRunRoute,
+  postXAmzTargetAWSGlueCancelStatementRoute,
+  postXAmzTargetAWSGlueCheckSchemaVersionValidityRoute,
+  postXAmzTargetAWSGlueCreateBlueprintRoute,
+  postXAmzTargetAWSGlueCreateClassifierRoute,
+  postXAmzTargetAWSGlueCreateConnectionRoute,
+  postXAmzTargetAWSGlueCreateCrawlerRoute,
+  postXAmzTargetAWSGlueCreateCustomEntityTypeRoute,
+  postXAmzTargetAWSGlueCreateDatabaseRoute,
+  postXAmzTargetAWSGlueCreateDataQualityRulesetRoute,
+  postXAmzTargetAWSGlueCreateDevEndpointRoute,
+  postXAmzTargetAWSGlueCreateJobRoute,
+  postXAmzTargetAWSGlueCreateMLTransformRoute,
+  postXAmzTargetAWSGlueCreatePartitionIndexRoute,
+  postXAmzTargetAWSGlueCreatePartitionRoute,
+  postXAmzTargetAWSGlueCreateRegistryRoute,
+  postXAmzTargetAWSGlueCreateSchemaRoute,
+  postXAmzTargetAWSGlueCreateScriptRoute,
+  postXAmzTargetAWSGlueCreateSecurityConfigurationRoute,
+  postXAmzTargetAWSGlueCreateSessionRoute,
+  postXAmzTargetAWSGlueCreateTableRoute,
+  postXAmzTargetAWSGlueCreateTriggerRoute,
+  postXAmzTargetAWSGlueCreateUserDefinedFunctionRoute,
+  postXAmzTargetAWSGlueCreateWorkflowRoute,
+  postXAmzTargetAWSGlueDeleteBlueprintRoute,
+  postXAmzTargetAWSGlueDeleteClassifierRoute,
+  postXAmzTargetAWSGlueDeleteColumnStatisticsForPartitionRoute,
+  postXAmzTargetAWSGlueDeleteColumnStatisticsForTableRoute,
+  postXAmzTargetAWSGlueDeleteConnectionRoute,
+  postXAmzTargetAWSGlueDeleteCrawlerRoute,
+  postXAmzTargetAWSGlueDeleteCustomEntityTypeRoute,
+  postXAmzTargetAWSGlueDeleteDatabaseRoute,
+  postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute,
+  postXAmzTargetAWSGlueDeleteDevEndpointRoute,
+  postXAmzTargetAWSGlueDeleteJobRoute,
+  postXAmzTargetAWSGlueDeleteMLTransformRoute,
+  postXAmzTargetAWSGlueDeletePartitionIndexRoute,
+  postXAmzTargetAWSGlueDeletePartitionRoute,
+  postXAmzTargetAWSGlueDeleteRegistryRoute,
+  postXAmzTargetAWSGlueDeleteResourcePolicyRoute,
+  postXAmzTargetAWSGlueDeleteSchemaRoute,
+  postXAmzTargetAWSGlueDeleteSchemaVersionsRoute,
+  postXAmzTargetAWSGlueDeleteSecurityConfigurationRoute,
+  postXAmzTargetAWSGlueDeleteSessionRoute,
+  postXAmzTargetAWSGlueDeleteTableRoute,
+  postXAmzTargetAWSGlueDeleteTableVersionRoute,
+  postXAmzTargetAWSGlueDeleteTriggerRoute,
+  postXAmzTargetAWSGlueDeleteUserDefinedFunctionRoute,
+  postXAmzTargetAWSGlueDeleteWorkflowRoute,
+  postXAmzTargetAWSGlueGetBlueprintRoute,
+  postXAmzTargetAWSGlueGetBlueprintRunRoute,
+  postXAmzTargetAWSGlueGetBlueprintRunsRoute,
+  postXAmzTargetAWSGlueGetCatalogImportStatusRoute,
+  postXAmzTargetAWSGlueGetClassifierRoute,
+  postXAmzTargetAWSGlueGetClassifiersRoute,
+  postXAmzTargetAWSGlueGetColumnStatisticsForPartitionRoute,
+  postXAmzTargetAWSGlueGetColumnStatisticsForTableRoute,
+  postXAmzTargetAWSGlueGetConnectionRoute,
+  postXAmzTargetAWSGlueGetConnectionsRoute,
+  postXAmzTargetAWSGlueGetCrawlerMetricsRoute,
+  postXAmzTargetAWSGlueGetCrawlerRoute,
+  postXAmzTargetAWSGlueGetCrawlersRoute,
+  postXAmzTargetAWSGlueGetCustomEntityTypeRoute,
+  postXAmzTargetAWSGlueGetDatabaseRoute,
+  postXAmzTargetAWSGlueGetDatabasesRoute,
+  postXAmzTargetAWSGlueGetDataCatalogEncryptionSettingsRoute,
+  postXAmzTargetAWSGlueGetDataflowGraphRoute,
+  postXAmzTargetAWSGlueGetDataQualityResultRoute,
+  postXAmzTargetAWSGlueGetDataQualityRuleRecommendationRunRoute,
+  postXAmzTargetAWSGlueGetDataQualityRulesetEvaluationRunRoute,
+  postXAmzTargetAWSGlueGetDataQualityRulesetRoute,
+  postXAmzTargetAWSGlueGetDevEndpointRoute,
+  postXAmzTargetAWSGlueGetDevEndpointsRoute,
+  postXAmzTargetAWSGlueGetJobBookmarkRoute,
+  postXAmzTargetAWSGlueGetJobRoute,
+  postXAmzTargetAWSGlueGetJobRunRoute,
+  postXAmzTargetAWSGlueGetJobRunsRoute,
+  postXAmzTargetAWSGlueGetJobsRoute,
+  postXAmzTargetAWSGlueGetMappingRoute,
+  postXAmzTargetAWSGlueGetMLTaskRunRoute,
+  postXAmzTargetAWSGlueGetMLTaskRunsRoute,
+  postXAmzTargetAWSGlueGetMLTransformRoute,
+  postXAmzTargetAWSGlueGetMLTransformsRoute,
+  postXAmzTargetAWSGlueGetPartitionIndexesRoute,
+  postXAmzTargetAWSGlueGetPartitionRoute,
+  postXAmzTargetAWSGlueGetPartitionsRoute,
+  postXAmzTargetAWSGlueGetPlanRoute,
+  postXAmzTargetAWSGlueGetRegistryRoute,
+  postXAmzTargetAWSGlueGetResourcePoliciesRoute,
+  postXAmzTargetAWSGlueGetResourcePolicyRoute,
+  postXAmzTargetAWSGlueGetSchemaByDefinitionRoute,
+  postXAmzTargetAWSGlueGetSchemaRoute,
+  postXAmzTargetAWSGlueGetSchemaVersionRoute,
+  postXAmzTargetAWSGlueGetSchemaVersionsDiffRoute,
+  postXAmzTargetAWSGlueGetSecurityConfigurationRoute,
+  postXAmzTargetAWSGlueGetSecurityConfigurationsRoute,
+  postXAmzTargetAWSGlueGetSessionRoute,
+  postXAmzTargetAWSGlueGetStatementRoute,
+  postXAmzTargetAWSGlueGetTableRoute,
+  postXAmzTargetAWSGlueGetTablesRoute,
+  postXAmzTargetAWSGlueGetTableVersionRoute,
+  postXAmzTargetAWSGlueGetTableVersionsRoute,
+  postXAmzTargetAWSGlueGetTagsRoute,
+  postXAmzTargetAWSGlueGetTriggerRoute,
+  postXAmzTargetAWSGlueGetTriggersRoute,
+  postXAmzTargetAWSGlueGetUnfilteredPartitionMetadataRoute,
+  postXAmzTargetAWSGlueGetUnfilteredPartitionsMetadataRoute,
+  postXAmzTargetAWSGlueGetUnfilteredTableMetadataRoute,
+  postXAmzTargetAWSGlueGetUserDefinedFunctionRoute,
+  postXAmzTargetAWSGlueGetUserDefinedFunctionsRoute,
+  postXAmzTargetAWSGlueGetWorkflowRoute,
+  postXAmzTargetAWSGlueGetWorkflowRunPropertiesRoute,
+  postXAmzTargetAWSGlueGetWorkflowRunRoute,
+  postXAmzTargetAWSGlueGetWorkflowRunsRoute,
+  postXAmzTargetAWSGlueImportCatalogToGlueRoute,
+  postXAmzTargetAWSGlueListBlueprintsRoute,
+  postXAmzTargetAWSGlueListCrawlersRoute,
+  postXAmzTargetAWSGlueListCrawlsRoute,
+  postXAmzTargetAWSGlueListCustomEntityTypesRoute,
+  postXAmzTargetAWSGlueListDataQualityResultsRoute,
+  postXAmzTargetAWSGlueListDataQualityRuleRecommendationRunsRoute,
+  postXAmzTargetAWSGlueListDataQualityRulesetEvaluationRunsRoute,
+  postXAmzTargetAWSGlueListDataQualityRulesetsRoute,
+  postXAmzTargetAWSGlueListDevEndpointsRoute,
+  postXAmzTargetAWSGlueListJobsRoute,
+  postXAmzTargetAWSGlueListMLTransformsRoute,
+  postXAmzTargetAWSGlueListRegistriesRoute,
+  postXAmzTargetAWSGlueListSchemasRoute,
+  postXAmzTargetAWSGlueListSchemaVersionsRoute,
+  postXAmzTargetAWSGlueListSessionsRoute,
+  postXAmzTargetAWSGlueListStatementsRoute,
+  postXAmzTargetAWSGlueListTriggersRoute,
+  postXAmzTargetAWSGlueListWorkflowsRoute,
+  postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute,
+  postXAmzTargetAWSGluePutResourcePolicyRoute,
+  postXAmzTargetAWSGluePutSchemaVersionMetadataRoute,
+  postXAmzTargetAWSGluePutWorkflowRunPropertiesRoute,
+  postXAmzTargetAWSGlueQuerySchemaVersionMetadataRoute,
+  postXAmzTargetAWSGlueRegisterSchemaVersionRoute,
+  postXAmzTargetAWSGlueRemoveSchemaVersionMetadataRoute,
+  postXAmzTargetAWSGlueResetJobBookmarkRoute,
+  postXAmzTargetAWSGlueResumeWorkflowRunRoute,
+  postXAmzTargetAWSGlueRunStatementRoute,
+  postXAmzTargetAWSGlueSearchTablesRoute,
+  postXAmzTargetAWSGlueStartBlueprintRunRoute,
+  postXAmzTargetAWSGlueStartCrawlerRoute,
+  postXAmzTargetAWSGlueStartCrawlerScheduleRoute,
+  postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute,
+  postXAmzTargetAWSGlueStartDataQualityRulesetEvaluationRunRoute,
+  postXAmzTargetAWSGlueStartExportLabelsTaskRunRoute,
+  postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute,
+  postXAmzTargetAWSGlueStartJobRunRoute,
+  postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute,
+  postXAmzTargetAWSGlueStartMLLabelingSetGenerationTaskRunRoute,
+  postXAmzTargetAWSGlueStartTriggerRoute,
+  postXAmzTargetAWSGlueStartWorkflowRunRoute,
+  postXAmzTargetAWSGlueStopCrawlerRoute,
+  postXAmzTargetAWSGlueStopCrawlerScheduleRoute,
+  postXAmzTargetAWSGlueStopSessionRoute,
+  postXAmzTargetAWSGlueStopTriggerRoute,
+  postXAmzTargetAWSGlueStopWorkflowRunRoute,
+  postXAmzTargetAWSGlueTagResourceRoute,
+  postXAmzTargetAWSGlueUntagResourceRoute,
+  postXAmzTargetAWSGlueUpdateBlueprintRoute,
+  postXAmzTargetAWSGlueUpdateClassifierRoute,
+  postXAmzTargetAWSGlueUpdateColumnStatisticsForPartitionRoute,
+  postXAmzTargetAWSGlueUpdateColumnStatisticsForTableRoute,
+  postXAmzTargetAWSGlueUpdateConnectionRoute,
+  postXAmzTargetAWSGlueUpdateCrawlerRoute,
+  postXAmzTargetAWSGlueUpdateCrawlerScheduleRoute,
+  postXAmzTargetAWSGlueUpdateDatabaseRoute,
+  postXAmzTargetAWSGlueUpdateDataQualityRulesetRoute,
+  postXAmzTargetAWSGlueUpdateDevEndpointRoute,
+  postXAmzTargetAWSGlueUpdateJobFromSourceControlRoute,
+  postXAmzTargetAWSGlueUpdateJobRoute,
+  postXAmzTargetAWSGlueUpdateMLTransformRoute,
+  postXAmzTargetAWSGlueUpdatePartitionRoute,
+  postXAmzTargetAWSGlueUpdateRegistryRoute,
+  postXAmzTargetAWSGlueUpdateSchemaRoute,
+  postXAmzTargetAWSGlueUpdateSourceControlFromJobRoute,
+  postXAmzTargetAWSGlueUpdateTableRoute,
+  postXAmzTargetAWSGlueUpdateTriggerRoute,
+  postXAmzTargetAWSGlueUpdateUserDefinedFunctionRoute,
+  postXAmzTargetAWSGlueUpdateWorkflowRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSGlueBatchCreatePartitionRouteHandler,
+  postXAmzTargetAWSGlueBatchDeleteConnectionRouteHandler,
+  postXAmzTargetAWSGlueBatchDeletePartitionRouteHandler,
+  postXAmzTargetAWSGlueBatchDeleteTableRouteHandler,
+  postXAmzTargetAWSGlueBatchDeleteTableVersionRouteHandler,
+  postXAmzTargetAWSGlueBatchGetBlueprintsRouteHandler,
+  postXAmzTargetAWSGlueBatchGetCrawlersRouteHandler,
+  postXAmzTargetAWSGlueBatchGetCustomEntityTypesRouteHandler,
+  postXAmzTargetAWSGlueBatchGetDataQualityResultRouteHandler,
+  postXAmzTargetAWSGlueBatchGetDevEndpointsRouteHandler,
+  postXAmzTargetAWSGlueBatchGetJobsRouteHandler,
+  postXAmzTargetAWSGlueBatchGetPartitionRouteHandler,
+  postXAmzTargetAWSGlueBatchGetTriggersRouteHandler,
+  postXAmzTargetAWSGlueBatchGetWorkflowsRouteHandler,
+  postXAmzTargetAWSGlueBatchStopJobRunRouteHandler,
+  postXAmzTargetAWSGlueBatchUpdatePartitionRouteHandler,
+  postXAmzTargetAWSGlueCancelDataQualityRuleRecommendationRunRouteHandler,
+  postXAmzTargetAWSGlueCancelDataQualityRulesetEvaluationRunRouteHandler,
+  postXAmzTargetAWSGlueCancelMLTaskRunRouteHandler,
+  postXAmzTargetAWSGlueCancelStatementRouteHandler,
+  postXAmzTargetAWSGlueCheckSchemaVersionValidityRouteHandler,
+  postXAmzTargetAWSGlueCreateBlueprintRouteHandler,
+  postXAmzTargetAWSGlueCreateClassifierRouteHandler,
+  postXAmzTargetAWSGlueCreateConnectionRouteHandler,
+  postXAmzTargetAWSGlueCreateCrawlerRouteHandler,
+  postXAmzTargetAWSGlueCreateCustomEntityTypeRouteHandler,
+  postXAmzTargetAWSGlueCreateDatabaseRouteHandler,
+  postXAmzTargetAWSGlueCreateDataQualityRulesetRouteHandler,
+  postXAmzTargetAWSGlueCreateDevEndpointRouteHandler,
+  postXAmzTargetAWSGlueCreateJobRouteHandler,
+  postXAmzTargetAWSGlueCreateMLTransformRouteHandler,
+  postXAmzTargetAWSGlueCreatePartitionIndexRouteHandler,
+  postXAmzTargetAWSGlueCreatePartitionRouteHandler,
+  postXAmzTargetAWSGlueCreateRegistryRouteHandler,
+  postXAmzTargetAWSGlueCreateSchemaRouteHandler,
+  postXAmzTargetAWSGlueCreateScriptRouteHandler,
+  postXAmzTargetAWSGlueCreateSecurityConfigurationRouteHandler,
+  postXAmzTargetAWSGlueCreateSessionRouteHandler,
+  postXAmzTargetAWSGlueCreateTableRouteHandler,
+  postXAmzTargetAWSGlueCreateTriggerRouteHandler,
+  postXAmzTargetAWSGlueCreateUserDefinedFunctionRouteHandler,
+  postXAmzTargetAWSGlueCreateWorkflowRouteHandler,
+  postXAmzTargetAWSGlueDeleteBlueprintRouteHandler,
+  postXAmzTargetAWSGlueDeleteClassifierRouteHandler,
+  postXAmzTargetAWSGlueDeleteColumnStatisticsForPartitionRouteHandler,
+  postXAmzTargetAWSGlueDeleteColumnStatisticsForTableRouteHandler,
+  postXAmzTargetAWSGlueDeleteConnectionRouteHandler,
+  postXAmzTargetAWSGlueDeleteCrawlerRouteHandler,
+  postXAmzTargetAWSGlueDeleteCustomEntityTypeRouteHandler,
+  postXAmzTargetAWSGlueDeleteDatabaseRouteHandler,
+  postXAmzTargetAWSGlueDeleteDataQualityRulesetRouteHandler,
+  postXAmzTargetAWSGlueDeleteDevEndpointRouteHandler,
+  postXAmzTargetAWSGlueDeleteJobRouteHandler,
+  postXAmzTargetAWSGlueDeleteMLTransformRouteHandler,
+  postXAmzTargetAWSGlueDeletePartitionIndexRouteHandler,
+  postXAmzTargetAWSGlueDeletePartitionRouteHandler,
+  postXAmzTargetAWSGlueDeleteRegistryRouteHandler,
+  postXAmzTargetAWSGlueDeleteResourcePolicyRouteHandler,
+  postXAmzTargetAWSGlueDeleteSchemaRouteHandler,
+  postXAmzTargetAWSGlueDeleteSchemaVersionsRouteHandler,
+  postXAmzTargetAWSGlueDeleteSecurityConfigurationRouteHandler,
+  postXAmzTargetAWSGlueDeleteSessionRouteHandler,
+  postXAmzTargetAWSGlueDeleteTableRouteHandler,
+  postXAmzTargetAWSGlueDeleteTableVersionRouteHandler,
+  postXAmzTargetAWSGlueDeleteTriggerRouteHandler,
+  postXAmzTargetAWSGlueDeleteUserDefinedFunctionRouteHandler,
+  postXAmzTargetAWSGlueDeleteWorkflowRouteHandler,
+  postXAmzTargetAWSGlueGetBlueprintRouteHandler,
+  postXAmzTargetAWSGlueGetBlueprintRunRouteHandler,
+  postXAmzTargetAWSGlueGetBlueprintRunsRouteHandler,
+  postXAmzTargetAWSGlueGetCatalogImportStatusRouteHandler,
+  postXAmzTargetAWSGlueGetClassifierRouteHandler,
+  postXAmzTargetAWSGlueGetClassifiersRouteHandler,
+  postXAmzTargetAWSGlueGetColumnStatisticsForPartitionRouteHandler,
+  postXAmzTargetAWSGlueGetColumnStatisticsForTableRouteHandler,
+  postXAmzTargetAWSGlueGetConnectionRouteHandler,
+  postXAmzTargetAWSGlueGetConnectionsRouteHandler,
+  postXAmzTargetAWSGlueGetCrawlerMetricsRouteHandler,
+  postXAmzTargetAWSGlueGetCrawlerRouteHandler,
+  postXAmzTargetAWSGlueGetCrawlersRouteHandler,
+  postXAmzTargetAWSGlueGetCustomEntityTypeRouteHandler,
+  postXAmzTargetAWSGlueGetDatabaseRouteHandler,
+  postXAmzTargetAWSGlueGetDatabasesRouteHandler,
+  postXAmzTargetAWSGlueGetDataCatalogEncryptionSettingsRouteHandler,
+  postXAmzTargetAWSGlueGetDataflowGraphRouteHandler,
+  postXAmzTargetAWSGlueGetDataQualityResultRouteHandler,
+  postXAmzTargetAWSGlueGetDataQualityRuleRecommendationRunRouteHandler,
+  postXAmzTargetAWSGlueGetDataQualityRulesetEvaluationRunRouteHandler,
+  postXAmzTargetAWSGlueGetDataQualityRulesetRouteHandler,
+  postXAmzTargetAWSGlueGetDevEndpointRouteHandler,
+  postXAmzTargetAWSGlueGetDevEndpointsRouteHandler,
+  postXAmzTargetAWSGlueGetJobBookmarkRouteHandler,
+  postXAmzTargetAWSGlueGetJobRouteHandler,
+  postXAmzTargetAWSGlueGetJobRunRouteHandler,
+  postXAmzTargetAWSGlueGetJobRunsRouteHandler,
+  postXAmzTargetAWSGlueGetJobsRouteHandler,
+  postXAmzTargetAWSGlueGetMappingRouteHandler,
+  postXAmzTargetAWSGlueGetMLTaskRunRouteHandler,
+  postXAmzTargetAWSGlueGetMLTaskRunsRouteHandler,
+  postXAmzTargetAWSGlueGetMLTransformRouteHandler,
+  postXAmzTargetAWSGlueGetMLTransformsRouteHandler,
+  postXAmzTargetAWSGlueGetPartitionIndexesRouteHandler,
+  postXAmzTargetAWSGlueGetPartitionRouteHandler,
+  postXAmzTargetAWSGlueGetPartitionsRouteHandler,
+  postXAmzTargetAWSGlueGetPlanRouteHandler,
+  postXAmzTargetAWSGlueGetRegistryRouteHandler,
+  postXAmzTargetAWSGlueGetResourcePoliciesRouteHandler,
+  postXAmzTargetAWSGlueGetResourcePolicyRouteHandler,
+  postXAmzTargetAWSGlueGetSchemaByDefinitionRouteHandler,
+  postXAmzTargetAWSGlueGetSchemaRouteHandler,
+  postXAmzTargetAWSGlueGetSchemaVersionRouteHandler,
+  postXAmzTargetAWSGlueGetSchemaVersionsDiffRouteHandler,
+  postXAmzTargetAWSGlueGetSecurityConfigurationRouteHandler,
+  postXAmzTargetAWSGlueGetSecurityConfigurationsRouteHandler,
+  postXAmzTargetAWSGlueGetSessionRouteHandler,
+  postXAmzTargetAWSGlueGetStatementRouteHandler,
+  postXAmzTargetAWSGlueGetTableRouteHandler,
+  postXAmzTargetAWSGlueGetTablesRouteHandler,
+  postXAmzTargetAWSGlueGetTableVersionRouteHandler,
+  postXAmzTargetAWSGlueGetTableVersionsRouteHandler,
+  postXAmzTargetAWSGlueGetTagsRouteHandler,
+  postXAmzTargetAWSGlueGetTriggerRouteHandler,
+  postXAmzTargetAWSGlueGetTriggersRouteHandler,
+  postXAmzTargetAWSGlueGetUnfilteredPartitionMetadataRouteHandler,
+  postXAmzTargetAWSGlueGetUnfilteredPartitionsMetadataRouteHandler,
+  postXAmzTargetAWSGlueGetUnfilteredTableMetadataRouteHandler,
+  postXAmzTargetAWSGlueGetUserDefinedFunctionRouteHandler,
+  postXAmzTargetAWSGlueGetUserDefinedFunctionsRouteHandler,
+  postXAmzTargetAWSGlueGetWorkflowRouteHandler,
+  postXAmzTargetAWSGlueGetWorkflowRunPropertiesRouteHandler,
+  postXAmzTargetAWSGlueGetWorkflowRunRouteHandler,
+  postXAmzTargetAWSGlueGetWorkflowRunsRouteHandler,
+  postXAmzTargetAWSGlueImportCatalogToGlueRouteHandler,
+  postXAmzTargetAWSGlueListBlueprintsRouteHandler,
+  postXAmzTargetAWSGlueListCrawlersRouteHandler,
+  postXAmzTargetAWSGlueListCrawlsRouteHandler,
+  postXAmzTargetAWSGlueListCustomEntityTypesRouteHandler,
+  postXAmzTargetAWSGlueListDataQualityResultsRouteHandler,
+  postXAmzTargetAWSGlueListDataQualityRuleRecommendationRunsRouteHandler,
+  postXAmzTargetAWSGlueListDataQualityRulesetEvaluationRunsRouteHandler,
+  postXAmzTargetAWSGlueListDataQualityRulesetsRouteHandler,
+  postXAmzTargetAWSGlueListDevEndpointsRouteHandler,
+  postXAmzTargetAWSGlueListJobsRouteHandler,
+  postXAmzTargetAWSGlueListMLTransformsRouteHandler,
+  postXAmzTargetAWSGlueListRegistriesRouteHandler,
+  postXAmzTargetAWSGlueListSchemasRouteHandler,
+  postXAmzTargetAWSGlueListSchemaVersionsRouteHandler,
+  postXAmzTargetAWSGlueListSessionsRouteHandler,
+  postXAmzTargetAWSGlueListStatementsRouteHandler,
+  postXAmzTargetAWSGlueListTriggersRouteHandler,
+  postXAmzTargetAWSGlueListWorkflowsRouteHandler,
+  postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRouteHandler,
+  postXAmzTargetAWSGluePutResourcePolicyRouteHandler,
+  postXAmzTargetAWSGluePutSchemaVersionMetadataRouteHandler,
+  postXAmzTargetAWSGluePutWorkflowRunPropertiesRouteHandler,
+  postXAmzTargetAWSGlueQuerySchemaVersionMetadataRouteHandler,
+  postXAmzTargetAWSGlueRegisterSchemaVersionRouteHandler,
+  postXAmzTargetAWSGlueRemoveSchemaVersionMetadataRouteHandler,
+  postXAmzTargetAWSGlueResetJobBookmarkRouteHandler,
+  postXAmzTargetAWSGlueResumeWorkflowRunRouteHandler,
+  postXAmzTargetAWSGlueRunStatementRouteHandler,
+  postXAmzTargetAWSGlueSearchTablesRouteHandler,
+  postXAmzTargetAWSGlueStartBlueprintRunRouteHandler,
+  postXAmzTargetAWSGlueStartCrawlerRouteHandler,
+  postXAmzTargetAWSGlueStartCrawlerScheduleRouteHandler,
+  postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRouteHandler,
+  postXAmzTargetAWSGlueStartDataQualityRulesetEvaluationRunRouteHandler,
+  postXAmzTargetAWSGlueStartExportLabelsTaskRunRouteHandler,
+  postXAmzTargetAWSGlueStartImportLabelsTaskRunRouteHandler,
+  postXAmzTargetAWSGlueStartJobRunRouteHandler,
+  postXAmzTargetAWSGlueStartMLEvaluationTaskRunRouteHandler,
+  postXAmzTargetAWSGlueStartMLLabelingSetGenerationTaskRunRouteHandler,
+  postXAmzTargetAWSGlueStartTriggerRouteHandler,
+  postXAmzTargetAWSGlueStartWorkflowRunRouteHandler,
+  postXAmzTargetAWSGlueStopCrawlerRouteHandler,
+  postXAmzTargetAWSGlueStopCrawlerScheduleRouteHandler,
+  postXAmzTargetAWSGlueStopSessionRouteHandler,
+  postXAmzTargetAWSGlueStopTriggerRouteHandler,
+  postXAmzTargetAWSGlueStopWorkflowRunRouteHandler,
+  postXAmzTargetAWSGlueTagResourceRouteHandler,
+  postXAmzTargetAWSGlueUntagResourceRouteHandler,
+  postXAmzTargetAWSGlueUpdateBlueprintRouteHandler,
+  postXAmzTargetAWSGlueUpdateClassifierRouteHandler,
+  postXAmzTargetAWSGlueUpdateColumnStatisticsForPartitionRouteHandler,
+  postXAmzTargetAWSGlueUpdateColumnStatisticsForTableRouteHandler,
+  postXAmzTargetAWSGlueUpdateConnectionRouteHandler,
+  postXAmzTargetAWSGlueUpdateCrawlerRouteHandler,
+  postXAmzTargetAWSGlueUpdateCrawlerScheduleRouteHandler,
+  postXAmzTargetAWSGlueUpdateDatabaseRouteHandler,
+  postXAmzTargetAWSGlueUpdateDataQualityRulesetRouteHandler,
+  postXAmzTargetAWSGlueUpdateDevEndpointRouteHandler,
+  postXAmzTargetAWSGlueUpdateJobFromSourceControlRouteHandler,
+  postXAmzTargetAWSGlueUpdateJobRouteHandler,
+  postXAmzTargetAWSGlueUpdateMLTransformRouteHandler,
+  postXAmzTargetAWSGlueUpdatePartitionRouteHandler,
+  postXAmzTargetAWSGlueUpdateRegistryRouteHandler,
+  postXAmzTargetAWSGlueUpdateSchemaRouteHandler,
+  postXAmzTargetAWSGlueUpdateSourceControlFromJobRouteHandler,
+  postXAmzTargetAWSGlueUpdateTableRouteHandler,
+  postXAmzTargetAWSGlueUpdateTriggerRouteHandler,
+  postXAmzTargetAWSGlueUpdateUserDefinedFunctionRouteHandler,
+  postXAmzTargetAWSGlueUpdateWorkflowRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsGlueBatchCreatePartitionHandler)
-  .route('/', xAmzTargetAwsGlueBatchDeleteConnectionHandler)
-  .route('/', xAmzTargetAwsGlueBatchDeletePartitionHandler)
-  .route('/', xAmzTargetAwsGlueBatchDeleteTableHandler)
-  .route('/', xAmzTargetAwsGlueBatchDeleteTableVersionHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetBlueprintsHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetCrawlersHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetCustomEntityTypesHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetDataQualityResultHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetDevEndpointsHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetJobsHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetPartitionHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetTriggersHandler)
-  .route('/', xAmzTargetAwsGlueBatchGetWorkflowsHandler)
-  .route('/', xAmzTargetAwsGlueBatchStopJobRunHandler)
-  .route('/', xAmzTargetAwsGlueBatchUpdatePartitionHandler)
-  .route('/', xAmzTargetAwsGlueCancelDataQualityRuleRecommendationRunHandler)
-  .route('/', xAmzTargetAwsGlueCancelDataQualityRulesetEvaluationRunHandler)
-  .route('/', xAmzTargetAwsGlueCancelMlTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueCancelStatementHandler)
-  .route('/', xAmzTargetAwsGlueCheckSchemaVersionValidityHandler)
-  .route('/', xAmzTargetAwsGlueCreateBlueprintHandler)
-  .route('/', xAmzTargetAwsGlueCreateClassifierHandler)
-  .route('/', xAmzTargetAwsGlueCreateConnectionHandler)
-  .route('/', xAmzTargetAwsGlueCreateCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueCreateCustomEntityTypeHandler)
-  .route('/', xAmzTargetAwsGlueCreateDataQualityRulesetHandler)
-  .route('/', xAmzTargetAwsGlueCreateDatabaseHandler)
-  .route('/', xAmzTargetAwsGlueCreateDevEndpointHandler)
-  .route('/', xAmzTargetAwsGlueCreateJobHandler)
-  .route('/', xAmzTargetAwsGlueCreateMlTransformHandler)
-  .route('/', xAmzTargetAwsGlueCreatePartitionHandler)
-  .route('/', xAmzTargetAwsGlueCreatePartitionIndexHandler)
-  .route('/', xAmzTargetAwsGlueCreateRegistryHandler)
-  .route('/', xAmzTargetAwsGlueCreateSchemaHandler)
-  .route('/', xAmzTargetAwsGlueCreateScriptHandler)
-  .route('/', xAmzTargetAwsGlueCreateSecurityConfigurationHandler)
-  .route('/', xAmzTargetAwsGlueCreateSessionHandler)
-  .route('/', xAmzTargetAwsGlueCreateTableHandler)
-  .route('/', xAmzTargetAwsGlueCreateTriggerHandler)
-  .route('/', xAmzTargetAwsGlueCreateUserDefinedFunctionHandler)
-  .route('/', xAmzTargetAwsGlueCreateWorkflowHandler)
-  .route('/', xAmzTargetAwsGlueDeleteBlueprintHandler)
-  .route('/', xAmzTargetAwsGlueDeleteClassifierHandler)
-  .route('/', xAmzTargetAwsGlueDeleteColumnStatisticsForPartitionHandler)
-  .route('/', xAmzTargetAwsGlueDeleteColumnStatisticsForTableHandler)
-  .route('/', xAmzTargetAwsGlueDeleteConnectionHandler)
-  .route('/', xAmzTargetAwsGlueDeleteCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueDeleteCustomEntityTypeHandler)
-  .route('/', xAmzTargetAwsGlueDeleteDataQualityRulesetHandler)
-  .route('/', xAmzTargetAwsGlueDeleteDatabaseHandler)
-  .route('/', xAmzTargetAwsGlueDeleteDevEndpointHandler)
-  .route('/', xAmzTargetAwsGlueDeleteJobHandler)
-  .route('/', xAmzTargetAwsGlueDeleteMlTransformHandler)
-  .route('/', xAmzTargetAwsGlueDeletePartitionHandler)
-  .route('/', xAmzTargetAwsGlueDeletePartitionIndexHandler)
-  .route('/', xAmzTargetAwsGlueDeleteRegistryHandler)
-  .route('/', xAmzTargetAwsGlueDeleteResourcePolicyHandler)
-  .route('/', xAmzTargetAwsGlueDeleteSchemaHandler)
-  .route('/', xAmzTargetAwsGlueDeleteSchemaVersionsHandler)
-  .route('/', xAmzTargetAwsGlueDeleteSecurityConfigurationHandler)
-  .route('/', xAmzTargetAwsGlueDeleteSessionHandler)
-  .route('/', xAmzTargetAwsGlueDeleteTableHandler)
-  .route('/', xAmzTargetAwsGlueDeleteTableVersionHandler)
-  .route('/', xAmzTargetAwsGlueDeleteTriggerHandler)
-  .route('/', xAmzTargetAwsGlueDeleteUserDefinedFunctionHandler)
-  .route('/', xAmzTargetAwsGlueDeleteWorkflowHandler)
-  .route('/', xAmzTargetAwsGlueGetBlueprintHandler)
-  .route('/', xAmzTargetAwsGlueGetBlueprintRunHandler)
-  .route('/', xAmzTargetAwsGlueGetBlueprintRunsHandler)
-  .route('/', xAmzTargetAwsGlueGetCatalogImportStatusHandler)
-  .route('/', xAmzTargetAwsGlueGetClassifierHandler)
-  .route('/', xAmzTargetAwsGlueGetClassifiersHandler)
-  .route('/', xAmzTargetAwsGlueGetColumnStatisticsForPartitionHandler)
-  .route('/', xAmzTargetAwsGlueGetColumnStatisticsForTableHandler)
-  .route('/', xAmzTargetAwsGlueGetConnectionHandler)
-  .route('/', xAmzTargetAwsGlueGetConnectionsHandler)
-  .route('/', xAmzTargetAwsGlueGetCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueGetCrawlerMetricsHandler)
-  .route('/', xAmzTargetAwsGlueGetCrawlersHandler)
-  .route('/', xAmzTargetAwsGlueGetCustomEntityTypeHandler)
-  .route('/', xAmzTargetAwsGlueGetDataCatalogEncryptionSettingsHandler)
-  .route('/', xAmzTargetAwsGlueGetDataQualityResultHandler)
-  .route('/', xAmzTargetAwsGlueGetDataQualityRuleRecommendationRunHandler)
-  .route('/', xAmzTargetAwsGlueGetDataQualityRulesetHandler)
-  .route('/', xAmzTargetAwsGlueGetDataQualityRulesetEvaluationRunHandler)
-  .route('/', xAmzTargetAwsGlueGetDatabaseHandler)
-  .route('/', xAmzTargetAwsGlueGetDatabasesHandler)
-  .route('/', xAmzTargetAwsGlueGetDataflowGraphHandler)
-  .route('/', xAmzTargetAwsGlueGetDevEndpointHandler)
-  .route('/', xAmzTargetAwsGlueGetDevEndpointsHandler)
-  .route('/', xAmzTargetAwsGlueGetJobHandler)
-  .route('/', xAmzTargetAwsGlueGetJobBookmarkHandler)
-  .route('/', xAmzTargetAwsGlueGetJobRunHandler)
-  .route('/', xAmzTargetAwsGlueGetJobRunsHandler)
-  .route('/', xAmzTargetAwsGlueGetJobsHandler)
-  .route('/', xAmzTargetAwsGlueGetMlTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueGetMlTaskRunsHandler)
-  .route('/', xAmzTargetAwsGlueGetMlTransformHandler)
-  .route('/', xAmzTargetAwsGlueGetMlTransformsHandler)
-  .route('/', xAmzTargetAwsGlueGetMappingHandler)
-  .route('/', xAmzTargetAwsGlueGetPartitionHandler)
-  .route('/', xAmzTargetAwsGlueGetPartitionIndexesHandler)
-  .route('/', xAmzTargetAwsGlueGetPartitionsHandler)
-  .route('/', xAmzTargetAwsGlueGetPlanHandler)
-  .route('/', xAmzTargetAwsGlueGetRegistryHandler)
-  .route('/', xAmzTargetAwsGlueGetResourcePoliciesHandler)
-  .route('/', xAmzTargetAwsGlueGetResourcePolicyHandler)
-  .route('/', xAmzTargetAwsGlueGetSchemaHandler)
-  .route('/', xAmzTargetAwsGlueGetSchemaByDefinitionHandler)
-  .route('/', xAmzTargetAwsGlueGetSchemaVersionHandler)
-  .route('/', xAmzTargetAwsGlueGetSchemaVersionsDiffHandler)
-  .route('/', xAmzTargetAwsGlueGetSecurityConfigurationHandler)
-  .route('/', xAmzTargetAwsGlueGetSecurityConfigurationsHandler)
-  .route('/', xAmzTargetAwsGlueGetSessionHandler)
-  .route('/', xAmzTargetAwsGlueGetStatementHandler)
-  .route('/', xAmzTargetAwsGlueGetTableHandler)
-  .route('/', xAmzTargetAwsGlueGetTableVersionHandler)
-  .route('/', xAmzTargetAwsGlueGetTableVersionsHandler)
-  .route('/', xAmzTargetAwsGlueGetTablesHandler)
-  .route('/', xAmzTargetAwsGlueGetTagsHandler)
-  .route('/', xAmzTargetAwsGlueGetTriggerHandler)
-  .route('/', xAmzTargetAwsGlueGetTriggersHandler)
-  .route('/', xAmzTargetAwsGlueGetUnfilteredPartitionMetadataHandler)
-  .route('/', xAmzTargetAwsGlueGetUnfilteredPartitionsMetadataHandler)
-  .route('/', xAmzTargetAwsGlueGetUnfilteredTableMetadataHandler)
-  .route('/', xAmzTargetAwsGlueGetUserDefinedFunctionHandler)
-  .route('/', xAmzTargetAwsGlueGetUserDefinedFunctionsHandler)
-  .route('/', xAmzTargetAwsGlueGetWorkflowHandler)
-  .route('/', xAmzTargetAwsGlueGetWorkflowRunHandler)
-  .route('/', xAmzTargetAwsGlueGetWorkflowRunPropertiesHandler)
-  .route('/', xAmzTargetAwsGlueGetWorkflowRunsHandler)
-  .route('/', xAmzTargetAwsGlueImportCatalogToGlueHandler)
-  .route('/', xAmzTargetAwsGlueListBlueprintsHandler)
-  .route('/', xAmzTargetAwsGlueListCrawlersHandler)
-  .route('/', xAmzTargetAwsGlueListCrawlsHandler)
-  .route('/', xAmzTargetAwsGlueListCustomEntityTypesHandler)
-  .route('/', xAmzTargetAwsGlueListDataQualityResultsHandler)
-  .route('/', xAmzTargetAwsGlueListDataQualityRuleRecommendationRunsHandler)
-  .route('/', xAmzTargetAwsGlueListDataQualityRulesetEvaluationRunsHandler)
-  .route('/', xAmzTargetAwsGlueListDataQualityRulesetsHandler)
-  .route('/', xAmzTargetAwsGlueListDevEndpointsHandler)
-  .route('/', xAmzTargetAwsGlueListJobsHandler)
-  .route('/', xAmzTargetAwsGlueListMlTransformsHandler)
-  .route('/', xAmzTargetAwsGlueListRegistriesHandler)
-  .route('/', xAmzTargetAwsGlueListSchemaVersionsHandler)
-  .route('/', xAmzTargetAwsGlueListSchemasHandler)
-  .route('/', xAmzTargetAwsGlueListSessionsHandler)
-  .route('/', xAmzTargetAwsGlueListStatementsHandler)
-  .route('/', xAmzTargetAwsGlueListTriggersHandler)
-  .route('/', xAmzTargetAwsGlueListWorkflowsHandler)
-  .route('/', xAmzTargetAwsGluePutDataCatalogEncryptionSettingsHandler)
-  .route('/', xAmzTargetAwsGluePutResourcePolicyHandler)
-  .route('/', xAmzTargetAwsGluePutSchemaVersionMetadataHandler)
-  .route('/', xAmzTargetAwsGluePutWorkflowRunPropertiesHandler)
-  .route('/', xAmzTargetAwsGlueQuerySchemaVersionMetadataHandler)
-  .route('/', xAmzTargetAwsGlueRegisterSchemaVersionHandler)
-  .route('/', xAmzTargetAwsGlueRemoveSchemaVersionMetadataHandler)
-  .route('/', xAmzTargetAwsGlueResetJobBookmarkHandler)
-  .route('/', xAmzTargetAwsGlueResumeWorkflowRunHandler)
-  .route('/', xAmzTargetAwsGlueRunStatementHandler)
-  .route('/', xAmzTargetAwsGlueSearchTablesHandler)
-  .route('/', xAmzTargetAwsGlueStartBlueprintRunHandler)
-  .route('/', xAmzTargetAwsGlueStartCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueStartCrawlerScheduleHandler)
-  .route('/', xAmzTargetAwsGlueStartDataQualityRuleRecommendationRunHandler)
-  .route('/', xAmzTargetAwsGlueStartDataQualityRulesetEvaluationRunHandler)
-  .route('/', xAmzTargetAwsGlueStartExportLabelsTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueStartImportLabelsTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueStartJobRunHandler)
-  .route('/', xAmzTargetAwsGlueStartMlEvaluationTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueStartMlLabelingSetGenerationTaskRunHandler)
-  .route('/', xAmzTargetAwsGlueStartTriggerHandler)
-  .route('/', xAmzTargetAwsGlueStartWorkflowRunHandler)
-  .route('/', xAmzTargetAwsGlueStopCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueStopCrawlerScheduleHandler)
-  .route('/', xAmzTargetAwsGlueStopSessionHandler)
-  .route('/', xAmzTargetAwsGlueStopTriggerHandler)
-  .route('/', xAmzTargetAwsGlueStopWorkflowRunHandler)
-  .route('/', xAmzTargetAwsGlueTagResourceHandler)
-  .route('/', xAmzTargetAwsGlueUntagResourceHandler)
-  .route('/', xAmzTargetAwsGlueUpdateBlueprintHandler)
-  .route('/', xAmzTargetAwsGlueUpdateClassifierHandler)
-  .route('/', xAmzTargetAwsGlueUpdateColumnStatisticsForPartitionHandler)
-  .route('/', xAmzTargetAwsGlueUpdateColumnStatisticsForTableHandler)
-  .route('/', xAmzTargetAwsGlueUpdateConnectionHandler)
-  .route('/', xAmzTargetAwsGlueUpdateCrawlerHandler)
-  .route('/', xAmzTargetAwsGlueUpdateCrawlerScheduleHandler)
-  .route('/', xAmzTargetAwsGlueUpdateDataQualityRulesetHandler)
-  .route('/', xAmzTargetAwsGlueUpdateDatabaseHandler)
-  .route('/', xAmzTargetAwsGlueUpdateDevEndpointHandler)
-  .route('/', xAmzTargetAwsGlueUpdateJobHandler)
-  .route('/', xAmzTargetAwsGlueUpdateJobFromSourceControlHandler)
-  .route('/', xAmzTargetAwsGlueUpdateMlTransformHandler)
-  .route('/', xAmzTargetAwsGlueUpdatePartitionHandler)
-  .route('/', xAmzTargetAwsGlueUpdateRegistryHandler)
-  .route('/', xAmzTargetAwsGlueUpdateSchemaHandler)
-  .route('/', xAmzTargetAwsGlueUpdateSourceControlFromJobHandler)
-  .route('/', xAmzTargetAwsGlueUpdateTableHandler)
-  .route('/', xAmzTargetAwsGlueUpdateTriggerHandler)
-  .route('/', xAmzTargetAwsGlueUpdateUserDefinedFunctionHandler)
-  .route('/', xAmzTargetAwsGlueUpdateWorkflowHandler)
+  .openapi(
+    postXAmzTargetAWSGlueBatchCreatePartitionRoute,
+    postXAmzTargetAWSGlueBatchCreatePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchDeleteConnectionRoute,
+    postXAmzTargetAWSGlueBatchDeleteConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchDeletePartitionRoute,
+    postXAmzTargetAWSGlueBatchDeletePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchDeleteTableRoute,
+    postXAmzTargetAWSGlueBatchDeleteTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchDeleteTableVersionRoute,
+    postXAmzTargetAWSGlueBatchDeleteTableVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetBlueprintsRoute,
+    postXAmzTargetAWSGlueBatchGetBlueprintsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetCrawlersRoute,
+    postXAmzTargetAWSGlueBatchGetCrawlersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetCustomEntityTypesRoute,
+    postXAmzTargetAWSGlueBatchGetCustomEntityTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetDataQualityResultRoute,
+    postXAmzTargetAWSGlueBatchGetDataQualityResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetDevEndpointsRoute,
+    postXAmzTargetAWSGlueBatchGetDevEndpointsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueBatchGetJobsRoute, postXAmzTargetAWSGlueBatchGetJobsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetPartitionRoute,
+    postXAmzTargetAWSGlueBatchGetPartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetTriggersRoute,
+    postXAmzTargetAWSGlueBatchGetTriggersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchGetWorkflowsRoute,
+    postXAmzTargetAWSGlueBatchGetWorkflowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchStopJobRunRoute,
+    postXAmzTargetAWSGlueBatchStopJobRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueBatchUpdatePartitionRoute,
+    postXAmzTargetAWSGlueBatchUpdatePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCancelDataQualityRuleRecommendationRunRoute,
+    postXAmzTargetAWSGlueCancelDataQualityRuleRecommendationRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCancelDataQualityRulesetEvaluationRunRoute,
+    postXAmzTargetAWSGlueCancelDataQualityRulesetEvaluationRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCancelMLTaskRunRoute,
+    postXAmzTargetAWSGlueCancelMLTaskRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCancelStatementRoute,
+    postXAmzTargetAWSGlueCancelStatementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCheckSchemaVersionValidityRoute,
+    postXAmzTargetAWSGlueCheckSchemaVersionValidityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateBlueprintRoute,
+    postXAmzTargetAWSGlueCreateBlueprintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateClassifierRoute,
+    postXAmzTargetAWSGlueCreateClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateConnectionRoute,
+    postXAmzTargetAWSGlueCreateConnectionRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueCreateCrawlerRoute, postXAmzTargetAWSGlueCreateCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueCreateCustomEntityTypeRoute,
+    postXAmzTargetAWSGlueCreateCustomEntityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateDataQualityRulesetRoute,
+    postXAmzTargetAWSGlueCreateDataQualityRulesetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateDatabaseRoute,
+    postXAmzTargetAWSGlueCreateDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateDevEndpointRoute,
+    postXAmzTargetAWSGlueCreateDevEndpointRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueCreateJobRoute, postXAmzTargetAWSGlueCreateJobRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueCreateMLTransformRoute,
+    postXAmzTargetAWSGlueCreateMLTransformRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreatePartitionRoute,
+    postXAmzTargetAWSGlueCreatePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreatePartitionIndexRoute,
+    postXAmzTargetAWSGlueCreatePartitionIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateRegistryRoute,
+    postXAmzTargetAWSGlueCreateRegistryRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueCreateSchemaRoute, postXAmzTargetAWSGlueCreateSchemaRouteHandler)
+  .openapi(postXAmzTargetAWSGlueCreateScriptRoute, postXAmzTargetAWSGlueCreateScriptRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueCreateSecurityConfigurationRoute,
+    postXAmzTargetAWSGlueCreateSecurityConfigurationRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueCreateSessionRoute, postXAmzTargetAWSGlueCreateSessionRouteHandler)
+  .openapi(postXAmzTargetAWSGlueCreateTableRoute, postXAmzTargetAWSGlueCreateTableRouteHandler)
+  .openapi(postXAmzTargetAWSGlueCreateTriggerRoute, postXAmzTargetAWSGlueCreateTriggerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueCreateUserDefinedFunctionRoute,
+    postXAmzTargetAWSGlueCreateUserDefinedFunctionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueCreateWorkflowRoute,
+    postXAmzTargetAWSGlueCreateWorkflowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteBlueprintRoute,
+    postXAmzTargetAWSGlueDeleteBlueprintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteClassifierRoute,
+    postXAmzTargetAWSGlueDeleteClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteColumnStatisticsForPartitionRoute,
+    postXAmzTargetAWSGlueDeleteColumnStatisticsForPartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteColumnStatisticsForTableRoute,
+    postXAmzTargetAWSGlueDeleteColumnStatisticsForTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteConnectionRoute,
+    postXAmzTargetAWSGlueDeleteConnectionRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueDeleteCrawlerRoute, postXAmzTargetAWSGlueDeleteCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueDeleteCustomEntityTypeRoute,
+    postXAmzTargetAWSGlueDeleteCustomEntityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteDataQualityRulesetRoute,
+    postXAmzTargetAWSGlueDeleteDataQualityRulesetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteDatabaseRoute,
+    postXAmzTargetAWSGlueDeleteDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteDevEndpointRoute,
+    postXAmzTargetAWSGlueDeleteDevEndpointRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueDeleteJobRoute, postXAmzTargetAWSGlueDeleteJobRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueDeleteMLTransformRoute,
+    postXAmzTargetAWSGlueDeleteMLTransformRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeletePartitionRoute,
+    postXAmzTargetAWSGlueDeletePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeletePartitionIndexRoute,
+    postXAmzTargetAWSGlueDeletePartitionIndexRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteRegistryRoute,
+    postXAmzTargetAWSGlueDeleteRegistryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteResourcePolicyRoute,
+    postXAmzTargetAWSGlueDeleteResourcePolicyRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueDeleteSchemaRoute, postXAmzTargetAWSGlueDeleteSchemaRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueDeleteSchemaVersionsRoute,
+    postXAmzTargetAWSGlueDeleteSchemaVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteSecurityConfigurationRoute,
+    postXAmzTargetAWSGlueDeleteSecurityConfigurationRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueDeleteSessionRoute, postXAmzTargetAWSGlueDeleteSessionRouteHandler)
+  .openapi(postXAmzTargetAWSGlueDeleteTableRoute, postXAmzTargetAWSGlueDeleteTableRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueDeleteTableVersionRoute,
+    postXAmzTargetAWSGlueDeleteTableVersionRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueDeleteTriggerRoute, postXAmzTargetAWSGlueDeleteTriggerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueDeleteUserDefinedFunctionRoute,
+    postXAmzTargetAWSGlueDeleteUserDefinedFunctionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueDeleteWorkflowRoute,
+    postXAmzTargetAWSGlueDeleteWorkflowRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetBlueprintRoute, postXAmzTargetAWSGlueGetBlueprintRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetBlueprintRunRoute,
+    postXAmzTargetAWSGlueGetBlueprintRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetBlueprintRunsRoute,
+    postXAmzTargetAWSGlueGetBlueprintRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetCatalogImportStatusRoute,
+    postXAmzTargetAWSGlueGetCatalogImportStatusRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetClassifierRoute, postXAmzTargetAWSGlueGetClassifierRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetClassifiersRoute,
+    postXAmzTargetAWSGlueGetClassifiersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetColumnStatisticsForPartitionRoute,
+    postXAmzTargetAWSGlueGetColumnStatisticsForPartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetColumnStatisticsForTableRoute,
+    postXAmzTargetAWSGlueGetColumnStatisticsForTableRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetConnectionRoute, postXAmzTargetAWSGlueGetConnectionRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetConnectionsRoute,
+    postXAmzTargetAWSGlueGetConnectionsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetCrawlerRoute, postXAmzTargetAWSGlueGetCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetCrawlerMetricsRoute,
+    postXAmzTargetAWSGlueGetCrawlerMetricsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetCrawlersRoute, postXAmzTargetAWSGlueGetCrawlersRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetCustomEntityTypeRoute,
+    postXAmzTargetAWSGlueGetCustomEntityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDataCatalogEncryptionSettingsRoute,
+    postXAmzTargetAWSGlueGetDataCatalogEncryptionSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDataQualityResultRoute,
+    postXAmzTargetAWSGlueGetDataQualityResultRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDataQualityRuleRecommendationRunRoute,
+    postXAmzTargetAWSGlueGetDataQualityRuleRecommendationRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDataQualityRulesetRoute,
+    postXAmzTargetAWSGlueGetDataQualityRulesetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDataQualityRulesetEvaluationRunRoute,
+    postXAmzTargetAWSGlueGetDataQualityRulesetEvaluationRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetDatabaseRoute, postXAmzTargetAWSGlueGetDatabaseRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetDatabasesRoute, postXAmzTargetAWSGlueGetDatabasesRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetDataflowGraphRoute,
+    postXAmzTargetAWSGlueGetDataflowGraphRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDevEndpointRoute,
+    postXAmzTargetAWSGlueGetDevEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetDevEndpointsRoute,
+    postXAmzTargetAWSGlueGetDevEndpointsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetJobRoute, postXAmzTargetAWSGlueGetJobRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetJobBookmarkRoute,
+    postXAmzTargetAWSGlueGetJobBookmarkRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetJobRunRoute, postXAmzTargetAWSGlueGetJobRunRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetJobRunsRoute, postXAmzTargetAWSGlueGetJobRunsRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetJobsRoute, postXAmzTargetAWSGlueGetJobsRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetMLTaskRunRoute, postXAmzTargetAWSGlueGetMLTaskRunRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetMLTaskRunsRoute, postXAmzTargetAWSGlueGetMLTaskRunsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetMLTransformRoute,
+    postXAmzTargetAWSGlueGetMLTransformRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetMLTransformsRoute,
+    postXAmzTargetAWSGlueGetMLTransformsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetMappingRoute, postXAmzTargetAWSGlueGetMappingRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetPartitionRoute, postXAmzTargetAWSGlueGetPartitionRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetPartitionIndexesRoute,
+    postXAmzTargetAWSGlueGetPartitionIndexesRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetPartitionsRoute, postXAmzTargetAWSGlueGetPartitionsRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetPlanRoute, postXAmzTargetAWSGlueGetPlanRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetRegistryRoute, postXAmzTargetAWSGlueGetRegistryRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetResourcePoliciesRoute,
+    postXAmzTargetAWSGlueGetResourcePoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetResourcePolicyRoute,
+    postXAmzTargetAWSGlueGetResourcePolicyRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetSchemaRoute, postXAmzTargetAWSGlueGetSchemaRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetSchemaByDefinitionRoute,
+    postXAmzTargetAWSGlueGetSchemaByDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetSchemaVersionRoute,
+    postXAmzTargetAWSGlueGetSchemaVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetSchemaVersionsDiffRoute,
+    postXAmzTargetAWSGlueGetSchemaVersionsDiffRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetSecurityConfigurationRoute,
+    postXAmzTargetAWSGlueGetSecurityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetSecurityConfigurationsRoute,
+    postXAmzTargetAWSGlueGetSecurityConfigurationsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetSessionRoute, postXAmzTargetAWSGlueGetSessionRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetStatementRoute, postXAmzTargetAWSGlueGetStatementRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetTableRoute, postXAmzTargetAWSGlueGetTableRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetTableVersionRoute,
+    postXAmzTargetAWSGlueGetTableVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetTableVersionsRoute,
+    postXAmzTargetAWSGlueGetTableVersionsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetTablesRoute, postXAmzTargetAWSGlueGetTablesRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetTagsRoute, postXAmzTargetAWSGlueGetTagsRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetTriggerRoute, postXAmzTargetAWSGlueGetTriggerRouteHandler)
+  .openapi(postXAmzTargetAWSGlueGetTriggersRoute, postXAmzTargetAWSGlueGetTriggersRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetUnfilteredPartitionMetadataRoute,
+    postXAmzTargetAWSGlueGetUnfilteredPartitionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetUnfilteredPartitionsMetadataRoute,
+    postXAmzTargetAWSGlueGetUnfilteredPartitionsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetUnfilteredTableMetadataRoute,
+    postXAmzTargetAWSGlueGetUnfilteredTableMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetUserDefinedFunctionRoute,
+    postXAmzTargetAWSGlueGetUserDefinedFunctionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetUserDefinedFunctionsRoute,
+    postXAmzTargetAWSGlueGetUserDefinedFunctionsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueGetWorkflowRoute, postXAmzTargetAWSGlueGetWorkflowRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueGetWorkflowRunRoute,
+    postXAmzTargetAWSGlueGetWorkflowRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetWorkflowRunPropertiesRoute,
+    postXAmzTargetAWSGlueGetWorkflowRunPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueGetWorkflowRunsRoute,
+    postXAmzTargetAWSGlueGetWorkflowRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueImportCatalogToGlueRoute,
+    postXAmzTargetAWSGlueImportCatalogToGlueRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListBlueprintsRoute,
+    postXAmzTargetAWSGlueListBlueprintsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueListCrawlersRoute, postXAmzTargetAWSGlueListCrawlersRouteHandler)
+  .openapi(postXAmzTargetAWSGlueListCrawlsRoute, postXAmzTargetAWSGlueListCrawlsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueListCustomEntityTypesRoute,
+    postXAmzTargetAWSGlueListCustomEntityTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListDataQualityResultsRoute,
+    postXAmzTargetAWSGlueListDataQualityResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListDataQualityRuleRecommendationRunsRoute,
+    postXAmzTargetAWSGlueListDataQualityRuleRecommendationRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListDataQualityRulesetEvaluationRunsRoute,
+    postXAmzTargetAWSGlueListDataQualityRulesetEvaluationRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListDataQualityRulesetsRoute,
+    postXAmzTargetAWSGlueListDataQualityRulesetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListDevEndpointsRoute,
+    postXAmzTargetAWSGlueListDevEndpointsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueListJobsRoute, postXAmzTargetAWSGlueListJobsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueListMLTransformsRoute,
+    postXAmzTargetAWSGlueListMLTransformsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListRegistriesRoute,
+    postXAmzTargetAWSGlueListRegistriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueListSchemaVersionsRoute,
+    postXAmzTargetAWSGlueListSchemaVersionsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueListSchemasRoute, postXAmzTargetAWSGlueListSchemasRouteHandler)
+  .openapi(postXAmzTargetAWSGlueListSessionsRoute, postXAmzTargetAWSGlueListSessionsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueListStatementsRoute,
+    postXAmzTargetAWSGlueListStatementsRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueListTriggersRoute, postXAmzTargetAWSGlueListTriggersRouteHandler)
+  .openapi(postXAmzTargetAWSGlueListWorkflowsRoute, postXAmzTargetAWSGlueListWorkflowsRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute,
+    postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGluePutResourcePolicyRoute,
+    postXAmzTargetAWSGluePutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGluePutSchemaVersionMetadataRoute,
+    postXAmzTargetAWSGluePutSchemaVersionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGluePutWorkflowRunPropertiesRoute,
+    postXAmzTargetAWSGluePutWorkflowRunPropertiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueQuerySchemaVersionMetadataRoute,
+    postXAmzTargetAWSGlueQuerySchemaVersionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueRegisterSchemaVersionRoute,
+    postXAmzTargetAWSGlueRegisterSchemaVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueRemoveSchemaVersionMetadataRoute,
+    postXAmzTargetAWSGlueRemoveSchemaVersionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueResetJobBookmarkRoute,
+    postXAmzTargetAWSGlueResetJobBookmarkRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueResumeWorkflowRunRoute,
+    postXAmzTargetAWSGlueResumeWorkflowRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueRunStatementRoute, postXAmzTargetAWSGlueRunStatementRouteHandler)
+  .openapi(postXAmzTargetAWSGlueSearchTablesRoute, postXAmzTargetAWSGlueSearchTablesRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStartBlueprintRunRoute,
+    postXAmzTargetAWSGlueStartBlueprintRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueStartCrawlerRoute, postXAmzTargetAWSGlueStartCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStartCrawlerScheduleRoute,
+    postXAmzTargetAWSGlueStartCrawlerScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRoute,
+    postXAmzTargetAWSGlueStartDataQualityRuleRecommendationRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueStartDataQualityRulesetEvaluationRunRoute,
+    postXAmzTargetAWSGlueStartDataQualityRulesetEvaluationRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueStartExportLabelsTaskRunRoute,
+    postXAmzTargetAWSGlueStartExportLabelsTaskRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueStartImportLabelsTaskRunRoute,
+    postXAmzTargetAWSGlueStartImportLabelsTaskRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueStartJobRunRoute, postXAmzTargetAWSGlueStartJobRunRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStartMLEvaluationTaskRunRoute,
+    postXAmzTargetAWSGlueStartMLEvaluationTaskRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueStartMLLabelingSetGenerationTaskRunRoute,
+    postXAmzTargetAWSGlueStartMLLabelingSetGenerationTaskRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueStartTriggerRoute, postXAmzTargetAWSGlueStartTriggerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStartWorkflowRunRoute,
+    postXAmzTargetAWSGlueStartWorkflowRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueStopCrawlerRoute, postXAmzTargetAWSGlueStopCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStopCrawlerScheduleRoute,
+    postXAmzTargetAWSGlueStopCrawlerScheduleRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueStopSessionRoute, postXAmzTargetAWSGlueStopSessionRouteHandler)
+  .openapi(postXAmzTargetAWSGlueStopTriggerRoute, postXAmzTargetAWSGlueStopTriggerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueStopWorkflowRunRoute,
+    postXAmzTargetAWSGlueStopWorkflowRunRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueTagResourceRoute, postXAmzTargetAWSGlueTagResourceRouteHandler)
+  .openapi(postXAmzTargetAWSGlueUntagResourceRoute, postXAmzTargetAWSGlueUntagResourceRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueUpdateBlueprintRoute,
+    postXAmzTargetAWSGlueUpdateBlueprintRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateClassifierRoute,
+    postXAmzTargetAWSGlueUpdateClassifierRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateColumnStatisticsForPartitionRoute,
+    postXAmzTargetAWSGlueUpdateColumnStatisticsForPartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateColumnStatisticsForTableRoute,
+    postXAmzTargetAWSGlueUpdateColumnStatisticsForTableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateConnectionRoute,
+    postXAmzTargetAWSGlueUpdateConnectionRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueUpdateCrawlerRoute, postXAmzTargetAWSGlueUpdateCrawlerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueUpdateCrawlerScheduleRoute,
+    postXAmzTargetAWSGlueUpdateCrawlerScheduleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateDataQualityRulesetRoute,
+    postXAmzTargetAWSGlueUpdateDataQualityRulesetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateDatabaseRoute,
+    postXAmzTargetAWSGlueUpdateDatabaseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateDevEndpointRoute,
+    postXAmzTargetAWSGlueUpdateDevEndpointRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueUpdateJobRoute, postXAmzTargetAWSGlueUpdateJobRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueUpdateJobFromSourceControlRoute,
+    postXAmzTargetAWSGlueUpdateJobFromSourceControlRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateMLTransformRoute,
+    postXAmzTargetAWSGlueUpdateMLTransformRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdatePartitionRoute,
+    postXAmzTargetAWSGlueUpdatePartitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateRegistryRoute,
+    postXAmzTargetAWSGlueUpdateRegistryRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueUpdateSchemaRoute, postXAmzTargetAWSGlueUpdateSchemaRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueUpdateSourceControlFromJobRoute,
+    postXAmzTargetAWSGlueUpdateSourceControlFromJobRouteHandler,
+  )
+  .openapi(postXAmzTargetAWSGlueUpdateTableRoute, postXAmzTargetAWSGlueUpdateTableRouteHandler)
+  .openapi(postXAmzTargetAWSGlueUpdateTriggerRoute, postXAmzTargetAWSGlueUpdateTriggerRouteHandler)
+  .openapi(
+    postXAmzTargetAWSGlueUpdateUserDefinedFunctionRoute,
+    postXAmzTargetAWSGlueUpdateUserDefinedFunctionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSGlueUpdateWorkflowRoute,
+    postXAmzTargetAWSGlueUpdateWorkflowRouteHandler,
+  )
 
 export default app

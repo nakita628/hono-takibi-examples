@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceDeleteBGPPeerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceDeleteBGPPeerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceDeleteBgpPeerHandler = app.openapi(
-  postXAmzTargetOvertureServiceDeleteBGPPeerRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceDeleteBGPPeerRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceDeleteBGPPeerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

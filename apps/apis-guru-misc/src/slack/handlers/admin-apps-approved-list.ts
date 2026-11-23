@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAdminAppsApprovedListRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAdminAppsApprovedListRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminAppsApprovedListHandler = app.openapi(getAdminAppsApprovedListRoute, (c) => {
+export const getAdminAppsApprovedListRouteHandler: RouteHandler<
+  typeof getAdminAppsApprovedListRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

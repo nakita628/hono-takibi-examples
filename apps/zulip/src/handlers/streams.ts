@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStreamsStreamIdRoute,
   getStreamsRoute,
   getStreamsStreamIdEmailAddressRoute,
@@ -9,27 +9,42 @@ import {
   postStreamsStreamIdDeleteTopicRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStreamsStreamIdMembersRouteHandler: RouteHandler<
+  typeof getStreamsStreamIdMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const streamsHandler = app
-  .openapi(getStreamsStreamIdMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStreamsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStreamsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchStreamsStreamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStreamsStreamIdEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStreamsStreamIdDeleteTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStreamsRouteHandler: RouteHandler<typeof getStreamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStreamsStreamIdRouteHandler: RouteHandler<typeof getStreamsStreamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStreamsStreamIdRouteHandler: RouteHandler<
+  typeof deleteStreamsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchStreamsStreamIdRouteHandler: RouteHandler<
+  typeof patchStreamsStreamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStreamsStreamIdEmailAddressRouteHandler: RouteHandler<
+  typeof getStreamsStreamIdEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStreamsStreamIdDeleteTopicRouteHandler: RouteHandler<
+  typeof postStreamsStreamIdDeleteTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

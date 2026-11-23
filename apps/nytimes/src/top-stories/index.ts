@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { sectionFormatHandler } from './handlers'
+import { getSectionFormatRoute } from './routes'
+import { getSectionFormatRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', sectionFormatHandler)
+export const api = app.openapi(getSectionFormatRoute, getSectionFormatRouteHandler)
 
 export default app

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCreateWorldGenerationJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCreateWorldGenerationJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createWorldGenerationJobHandler = app.openapi(
-  postCreateWorldGenerationJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postCreateWorldGenerationJobRouteHandler: RouteHandler<
+  typeof postCreateWorldGenerationJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

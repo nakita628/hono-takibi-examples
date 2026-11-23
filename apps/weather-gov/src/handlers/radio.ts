@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRadioCallSignBroadcastRoute, getRadioCallSignRoute, getRadioRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getRadioCallSignBroadcastRoute,
+  getRadioCallSignRoute,
+  getRadioRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getRadioRouteHandler: RouteHandler<typeof getRadioRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const radioHandler = app
-  .openapi(getRadioRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadioCallSignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRadioCallSignBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRadioCallSignRouteHandler: RouteHandler<typeof getRadioCallSignRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRadioCallSignBroadcastRouteHandler: RouteHandler<
+  typeof getRadioCallSignBroadcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

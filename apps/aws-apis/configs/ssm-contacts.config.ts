@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/ssm-contacts/2021-05-03/openapi.yaml',
   output: './src/ssm-contacts/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ssm-contacts/types.ts' },
   client: { output: './src/ssm-contacts/client.ts', baseUrl: '/' },
   rpc: { output: './src/ssm-contacts/rpc.ts', parseResponse: true },

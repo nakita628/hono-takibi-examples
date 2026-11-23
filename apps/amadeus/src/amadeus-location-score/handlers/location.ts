@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLocationAnalyticsCategoryRatedAreasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLocationAnalyticsCategoryRatedAreasRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const locationHandler = app.openapi(getLocationAnalyticsCategoryRatedAreasRoute, (c) => {
+export const getLocationAnalyticsCategoryRatedAreasRouteHandler: RouteHandler<
+  typeof getLocationAnalyticsCategoryRatedAreasRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

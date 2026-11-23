@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSessionTokenCreateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSessionTokenCreateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sessionHandler = app.openapi(postSessionTokenCreateRoute, (c) => {
+export const postSessionTokenCreateRouteHandler: RouteHandler<
+  typeof postSessionTokenCreateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

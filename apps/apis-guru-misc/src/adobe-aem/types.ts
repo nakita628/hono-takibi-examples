@@ -432,7 +432,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: string; outputFormat: 'text'; status: 404 }
     }
   } & {
-    '/etc/packages/:group/:name-:version.zip': {
+    '/etc/packages/:group/:name-{version}.zip': {
       $get: {
         input: { param: { group: string; name: string; version: string } }
         output: File
@@ -441,7 +441,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/etc/packages/:group/:name-:version.zip/jcr:content/vlt:definition/filter.tidy.2.json': {
+    '/etc/packages/:group/:name-{version}.zip/jcr:content/vlt:definition/filter.tidy.2.json': {
       $get: {
         input: { param: { group: string; name: string; version: string } }
         output: string
@@ -450,7 +450,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/etc/replication/agents.:runmode.-1.json': {
+    '/etc/replication/agents.{runmode}.-1.json': {
       $get: {
         input: { param: { runmode: string } }
         output: string
@@ -459,7 +459,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/etc/replication/agents.:runmode/:name': {
+    '/etc/replication/agents.{runmode}/:name': {
       $delete: {
         input: { param: { runmode: string; name: string } }
         output: {}

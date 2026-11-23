@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTopicsPrivateMessagesSentUsernameJsonRoute,
   getTopicsPrivateMessagesUsernameJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTopicsPrivateMessagesSentUsernameJsonRouteHandler: RouteHandler<
+  typeof getTopicsPrivateMessagesSentUsernameJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const topicsHandler = app
-  .openapi(getTopicsPrivateMessagesSentUsernameJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTopicsPrivateMessagesUsernameJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTopicsPrivateMessagesUsernameJsonRouteHandler: RouteHandler<
+  typeof getTopicsPrivateMessagesUsernameJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putForgotUsernameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putForgotUsernameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const forgotUsernameHandler = app.openapi(putForgotUsernameRoute, (c) => {
+export const putForgotUsernameRouteHandler: RouteHandler<typeof putForgotUsernameRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

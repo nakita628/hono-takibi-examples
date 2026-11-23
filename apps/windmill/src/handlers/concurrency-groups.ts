@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConcurrencyGroupsPruneConcurrencyIdRoute,
   getConcurrencyGroupsIdKeyRoute,
   getConcurrencyGroupsListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConcurrencyGroupsListRouteHandler: RouteHandler<
+  typeof getConcurrencyGroupsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const concurrencyGroupsHandler = app
-  .openapi(getConcurrencyGroupsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConcurrencyGroupsPruneConcurrencyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConcurrencyGroupsIdKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteConcurrencyGroupsPruneConcurrencyIdRouteHandler: RouteHandler<
+  typeof deleteConcurrencyGroupsPruneConcurrencyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConcurrencyGroupsIdKeyRouteHandler: RouteHandler<
+  typeof getConcurrencyGroupsIdKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

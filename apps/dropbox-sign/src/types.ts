@@ -2392,12 +2392,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 400
           }
-      $delete: {
-        input: { json: FaxLineDeleteRequest }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $delete:
+        | { input: { json: FaxLineDeleteRequest }; output: {}; outputFormat: string; status: 200 }
+        | {
+            input: { json: FaxLineDeleteRequest }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/fax_line/list': {
@@ -2567,12 +2569,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/signature_request/cancel/:signature_request_id': {
-      $post: {
-        input: { param: { signature_request_id: string } }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { signature_request_id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { signature_request_id: string } }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/signature_request/create_embedded': {
@@ -2842,12 +2851,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/signature_request/remove/:signature_request_id': {
-      $post: {
-        input: { param: { signature_request_id: string } }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { signature_request_id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { signature_request_id: string } }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/signature_request/send': {
@@ -3133,12 +3149,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/template/delete/:template_id': {
-      $post: {
-        input: { param: { template_id: string } }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { template_id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { template_id: string } }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/template/files/:template_id': {

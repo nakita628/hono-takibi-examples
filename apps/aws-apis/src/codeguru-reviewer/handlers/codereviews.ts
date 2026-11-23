@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCodereviewsCodeReviewArnRecommendationsRoute,
   getCodereviewsCodeReviewArnRoute,
   postCodereviewsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCodereviewsRouteHandler: RouteHandler<typeof postCodereviewsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const codereviewsHandler = app
-  .openapi(postCodereviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCodereviewsCodeReviewArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCodereviewsCodeReviewArnRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCodereviewsCodeReviewArnRouteHandler: RouteHandler<
+  typeof getCodereviewsCodeReviewArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCodereviewsCodeReviewArnRecommendationsRouteHandler: RouteHandler<
+  typeof getCodereviewsCodeReviewArnRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

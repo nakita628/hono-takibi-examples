@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLiffV1AppsLiffIdRoute,
   getLiffV1AppsRoute,
   postLiffV1AppsRoute,
   putLiffV1AppsLiffIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLiffV1AppsRouteHandler: RouteHandler<typeof postLiffV1AppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const liffHandler = app
-  .openapi(postLiffV1AppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLiffV1AppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLiffV1AppsLiffIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLiffV1AppsLiffIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLiffV1AppsRouteHandler: RouteHandler<typeof getLiffV1AppsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLiffV1AppsLiffIdRouteHandler: RouteHandler<
+  typeof putLiffV1AppsLiffIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLiffV1AppsLiffIdRouteHandler: RouteHandler<
+  typeof deleteLiffV1AppsLiffIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

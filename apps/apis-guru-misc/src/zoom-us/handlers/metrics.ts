@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetricsClientFeedbackFeedbackIdRoute,
   getMetricsClientFeedbackRoute,
   getMetricsClientSatisfactionRoute,
@@ -26,78 +26,142 @@ import {
   getMetricsZoomroomsZoomroomIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetricsClientFeedbackRouteHandler: RouteHandler<
+  typeof getMetricsClientFeedbackRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metricsHandler = app
-  .openapi(getMetricsClientFeedbackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsClientFeedbackFeedbackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsClientSatisfactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsCrcRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsImRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsIssuesZoomroomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsIssuesZoomroomsZoomroomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdParticipantsQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdParticipantsSatisfactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdParticipantsSharingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsMeetingsMeetingIdParticipantsParticipantIdQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdParticipantsQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdParticipantsSatisfactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdParticipantsSharingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsWebinarsWebinarIdParticipantsParticipantIdQosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsZoomroomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsZoomroomsIssuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetricsZoomroomsZoomroomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetricsClientFeedbackFeedbackIdRouteHandler: RouteHandler<
+  typeof getMetricsClientFeedbackFeedbackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsClientSatisfactionRouteHandler: RouteHandler<
+  typeof getMetricsClientSatisfactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsCrcRouteHandler: RouteHandler<typeof getMetricsCrcRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsImRouteHandler: RouteHandler<typeof getMetricsImRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsIssuesZoomroomsRouteHandler: RouteHandler<
+  typeof getMetricsIssuesZoomroomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsIssuesZoomroomsZoomroomIdRouteHandler: RouteHandler<
+  typeof getMetricsIssuesZoomroomsZoomroomIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsRouteHandler: RouteHandler<typeof getMetricsMeetingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdParticipantsRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdParticipantsQosRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdParticipantsQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdParticipantsSatisfactionRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdParticipantsSatisfactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdParticipantsSharingRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdParticipantsSharingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsMeetingsMeetingIdParticipantsParticipantIdQosRouteHandler: RouteHandler<
+  typeof getMetricsMeetingsMeetingIdParticipantsParticipantIdQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsRouteHandler: RouteHandler<typeof getMetricsWebinarsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdParticipantsRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdParticipantsQosRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdParticipantsQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdParticipantsSatisfactionRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdParticipantsSatisfactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdParticipantsSharingRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdParticipantsSharingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsWebinarsWebinarIdParticipantsParticipantIdQosRouteHandler: RouteHandler<
+  typeof getMetricsWebinarsWebinarIdParticipantsParticipantIdQosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsZoomroomsRouteHandler: RouteHandler<
+  typeof getMetricsZoomroomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsZoomroomsIssuesRouteHandler: RouteHandler<
+  typeof getMetricsZoomroomsIssuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetricsZoomroomsZoomroomIdRouteHandler: RouteHandler<
+  typeof getMetricsZoomroomsZoomroomIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

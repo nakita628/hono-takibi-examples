@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatRotoBallerArticlesByDateDateRoute,
   getFormatRotoBallerArticlesByPlayerIDPlayeridRoute,
   getFormatRotoBallerArticlesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatRotoBallerArticlesRouteHandler: RouteHandler<
+  typeof getFormatRotoBallerArticlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatRotoBallerArticlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatRotoBallerArticlesByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatRotoBallerArticlesByPlayerIDPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatRotoBallerArticlesByDateDateRouteHandler: RouteHandler<
+  typeof getFormatRotoBallerArticlesByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatRotoBallerArticlesByPlayerIDPlayeridRouteHandler: RouteHandler<
+  typeof getFormatRotoBallerArticlesByPlayerIDPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

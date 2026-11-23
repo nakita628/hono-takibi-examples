@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIndexPhpAvatarGuestGuestNameSizeDarkRoute,
   getIndexPhpAvatarGuestGuestNameSizeRoute,
   getIndexPhpAvatarUserIdSizeDarkRoute,
@@ -17,51 +17,92 @@ import {
   postIndexPhpLoginV2Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIndexPhpAvatarUserIdSizeDarkRouteHandler: RouteHandler<
+  typeof getIndexPhpAvatarUserIdSizeDarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const indexPhpHandler = app
-  .openapi(getIndexPhpAvatarUserIdSizeDarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAvatarUserIdSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpCsrftokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpLoginV2PollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpLoginV2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAvatarGuestGuestNameSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpAvatarGuestGuestNameSizeDarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpLoginConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpOcmProviderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpCorePreviewPngRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpCorePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpCoreMimeiconRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIndexPhpCoreReferencesPreviewReferenceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpCoreWipeCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIndexPhpCoreWipeSuccessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIndexPhpAvatarUserIdSizeRouteHandler: RouteHandler<
+  typeof getIndexPhpAvatarUserIdSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpCsrftokenRouteHandler: RouteHandler<
+  typeof getIndexPhpCsrftokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpLoginV2PollRouteHandler: RouteHandler<
+  typeof postIndexPhpLoginV2PollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpLoginV2RouteHandler: RouteHandler<
+  typeof postIndexPhpLoginV2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAvatarGuestGuestNameSizeRouteHandler: RouteHandler<
+  typeof getIndexPhpAvatarGuestGuestNameSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpAvatarGuestGuestNameSizeDarkRouteHandler: RouteHandler<
+  typeof getIndexPhpAvatarGuestGuestNameSizeDarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpLoginConfirmRouteHandler: RouteHandler<
+  typeof postIndexPhpLoginConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpOcmProviderRouteHandler: RouteHandler<
+  typeof getIndexPhpOcmProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpCorePreviewPngRouteHandler: RouteHandler<
+  typeof getIndexPhpCorePreviewPngRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpCorePreviewRouteHandler: RouteHandler<
+  typeof getIndexPhpCorePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpCoreMimeiconRouteHandler: RouteHandler<
+  typeof getIndexPhpCoreMimeiconRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIndexPhpCoreReferencesPreviewReferenceIdRouteHandler: RouteHandler<
+  typeof getIndexPhpCoreReferencesPreviewReferenceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpCoreWipeCheckRouteHandler: RouteHandler<
+  typeof postIndexPhpCoreWipeCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIndexPhpCoreWipeSuccessRouteHandler: RouteHandler<
+  typeof postIndexPhpCoreWipeSuccessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,92 +1,233 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetSwbExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetHandler,
-  xAmzTargetSwbExternalServiceAttachManagedPolicyToPermissionSetHandler,
-  xAmzTargetSwbExternalServiceCreateAccountAssignmentHandler,
-  xAmzTargetSwbExternalServiceCreateInstanceAccessControlAttributeConfigurationHandler,
-  xAmzTargetSwbExternalServiceCreatePermissionSetHandler,
-  xAmzTargetSwbExternalServiceDeleteAccountAssignmentHandler,
-  xAmzTargetSwbExternalServiceDeleteInlinePolicyFromPermissionSetHandler,
-  xAmzTargetSwbExternalServiceDeleteInstanceAccessControlAttributeConfigurationHandler,
-  xAmzTargetSwbExternalServiceDeletePermissionsBoundaryFromPermissionSetHandler,
-  xAmzTargetSwbExternalServiceDeletePermissionSetHandler,
-  xAmzTargetSwbExternalServiceDescribeAccountAssignmentCreationStatusHandler,
-  xAmzTargetSwbExternalServiceDescribeAccountAssignmentDeletionStatusHandler,
-  xAmzTargetSwbExternalServiceDescribeInstanceAccessControlAttributeConfigurationHandler,
-  xAmzTargetSwbExternalServiceDescribePermissionSetHandler,
-  xAmzTargetSwbExternalServiceDescribePermissionSetProvisioningStatusHandler,
-  xAmzTargetSwbExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetHandler,
-  xAmzTargetSwbExternalServiceDetachManagedPolicyFromPermissionSetHandler,
-  xAmzTargetSwbExternalServiceGetInlinePolicyForPermissionSetHandler,
-  xAmzTargetSwbExternalServiceGetPermissionsBoundaryForPermissionSetHandler,
-  xAmzTargetSwbExternalServiceListAccountAssignmentCreationStatusHandler,
-  xAmzTargetSwbExternalServiceListAccountAssignmentDeletionStatusHandler,
-  xAmzTargetSwbExternalServiceListAccountAssignmentsHandler,
-  xAmzTargetSwbExternalServiceListAccountsForProvisionedPermissionSetHandler,
-  xAmzTargetSwbExternalServiceListCustomerManagedPolicyReferencesInPermissionSetHandler,
-  xAmzTargetSwbExternalServiceListInstancesHandler,
-  xAmzTargetSwbExternalServiceListManagedPoliciesInPermissionSetHandler,
-  xAmzTargetSwbExternalServiceListPermissionSetProvisioningStatusHandler,
-  xAmzTargetSwbExternalServiceListPermissionSetsHandler,
-  xAmzTargetSwbExternalServiceListPermissionSetsProvisionedToAccountHandler,
-  xAmzTargetSwbExternalServiceListTagsForResourceHandler,
-  xAmzTargetSwbExternalServiceProvisionPermissionSetHandler,
-  xAmzTargetSwbExternalServicePutInlinePolicyToPermissionSetHandler,
-  xAmzTargetSwbExternalServicePutPermissionsBoundaryToPermissionSetHandler,
-  xAmzTargetSwbExternalServiceTagResourceHandler,
-  xAmzTargetSwbExternalServiceUntagResourceHandler,
-  xAmzTargetSwbExternalServiceUpdateInstanceAccessControlAttributeConfigurationHandler,
-  xAmzTargetSwbExternalServiceUpdatePermissionSetHandler,
+  postXAmzTargetSWBExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceAttachManagedPolicyToPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceCreateAccountAssignmentRoute,
+  postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute,
+  postXAmzTargetSWBExternalServiceCreatePermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDeleteAccountAssignmentRoute,
+  postXAmzTargetSWBExternalServiceDeleteInlinePolicyFromPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDeleteInstanceAccessControlAttributeConfigurationRoute,
+  postXAmzTargetSWBExternalServiceDeletePermissionsBoundaryFromPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDeletePermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute,
+  postXAmzTargetSWBExternalServiceDescribeAccountAssignmentDeletionStatusRoute,
+  postXAmzTargetSWBExternalServiceDescribeInstanceAccessControlAttributeConfigurationRoute,
+  postXAmzTargetSWBExternalServiceDescribePermissionSetProvisioningStatusRoute,
+  postXAmzTargetSWBExternalServiceDescribePermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceDetachManagedPolicyFromPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceGetInlinePolicyForPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceGetPermissionsBoundaryForPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentCreationStatusRoute,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentDeletionStatusRoute,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentsRoute,
+  postXAmzTargetSWBExternalServiceListAccountsForProvisionedPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceListInstancesRoute,
+  postXAmzTargetSWBExternalServiceListManagedPoliciesInPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceListPermissionSetProvisioningStatusRoute,
+  postXAmzTargetSWBExternalServiceListPermissionSetsProvisionedToAccountRoute,
+  postXAmzTargetSWBExternalServiceListPermissionSetsRoute,
+  postXAmzTargetSWBExternalServiceListTagsForResourceRoute,
+  postXAmzTargetSWBExternalServiceProvisionPermissionSetRoute,
+  postXAmzTargetSWBExternalServicePutInlinePolicyToPermissionSetRoute,
+  postXAmzTargetSWBExternalServicePutPermissionsBoundaryToPermissionSetRoute,
+  postXAmzTargetSWBExternalServiceTagResourceRoute,
+  postXAmzTargetSWBExternalServiceUntagResourceRoute,
+  postXAmzTargetSWBExternalServiceUpdateInstanceAccessControlAttributeConfigurationRoute,
+  postXAmzTargetSWBExternalServiceUpdatePermissionSetRoute,
+} from './routes'
+import {
+  postXAmzTargetSWBExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceAttachManagedPolicyToPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceCreateAccountAssignmentRouteHandler,
+  postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRouteHandler,
+  postXAmzTargetSWBExternalServiceCreatePermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDeleteAccountAssignmentRouteHandler,
+  postXAmzTargetSWBExternalServiceDeleteInlinePolicyFromPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDeleteInstanceAccessControlAttributeConfigurationRouteHandler,
+  postXAmzTargetSWBExternalServiceDeletePermissionsBoundaryFromPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDeletePermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceDescribeAccountAssignmentDeletionStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceDescribeInstanceAccessControlAttributeConfigurationRouteHandler,
+  postXAmzTargetSWBExternalServiceDescribePermissionSetProvisioningStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceDescribePermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceDetachManagedPolicyFromPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceGetInlinePolicyForPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceGetPermissionsBoundaryForPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentCreationStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentDeletionStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceListAccountAssignmentsRouteHandler,
+  postXAmzTargetSWBExternalServiceListAccountsForProvisionedPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceListInstancesRouteHandler,
+  postXAmzTargetSWBExternalServiceListManagedPoliciesInPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceListPermissionSetProvisioningStatusRouteHandler,
+  postXAmzTargetSWBExternalServiceListPermissionSetsProvisionedToAccountRouteHandler,
+  postXAmzTargetSWBExternalServiceListPermissionSetsRouteHandler,
+  postXAmzTargetSWBExternalServiceListTagsForResourceRouteHandler,
+  postXAmzTargetSWBExternalServiceProvisionPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServicePutInlinePolicyToPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServicePutPermissionsBoundaryToPermissionSetRouteHandler,
+  postXAmzTargetSWBExternalServiceTagResourceRouteHandler,
+  postXAmzTargetSWBExternalServiceUntagResourceRouteHandler,
+  postXAmzTargetSWBExternalServiceUpdateInstanceAccessControlAttributeConfigurationRouteHandler,
+  postXAmzTargetSWBExternalServiceUpdatePermissionSetRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route(
-    '/',
-    xAmzTargetSwbExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetHandler,
+  .openapi(
+    postXAmzTargetSWBExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceAttachCustomerManagedPolicyReferenceToPermissionSetRouteHandler,
   )
-  .route('/', xAmzTargetSwbExternalServiceAttachManagedPolicyToPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceCreateAccountAssignmentHandler)
-  .route('/', xAmzTargetSwbExternalServiceCreateInstanceAccessControlAttributeConfigurationHandler)
-  .route('/', xAmzTargetSwbExternalServiceCreatePermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceDeleteAccountAssignmentHandler)
-  .route('/', xAmzTargetSwbExternalServiceDeleteInlinePolicyFromPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceDeleteInstanceAccessControlAttributeConfigurationHandler)
-  .route('/', xAmzTargetSwbExternalServiceDeletePermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceDeletePermissionsBoundaryFromPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceDescribeAccountAssignmentCreationStatusHandler)
-  .route('/', xAmzTargetSwbExternalServiceDescribeAccountAssignmentDeletionStatusHandler)
-  .route(
-    '/',
-    xAmzTargetSwbExternalServiceDescribeInstanceAccessControlAttributeConfigurationHandler,
+  .openapi(
+    postXAmzTargetSWBExternalServiceAttachManagedPolicyToPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceAttachManagedPolicyToPermissionSetRouteHandler,
   )
-  .route('/', xAmzTargetSwbExternalServiceDescribePermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceDescribePermissionSetProvisioningStatusHandler)
-  .route(
-    '/',
-    xAmzTargetSwbExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetHandler,
+  .openapi(
+    postXAmzTargetSWBExternalServiceCreateAccountAssignmentRoute,
+    postXAmzTargetSWBExternalServiceCreateAccountAssignmentRouteHandler,
   )
-  .route('/', xAmzTargetSwbExternalServiceDetachManagedPolicyFromPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceGetInlinePolicyForPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceGetPermissionsBoundaryForPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceListAccountAssignmentCreationStatusHandler)
-  .route('/', xAmzTargetSwbExternalServiceListAccountAssignmentDeletionStatusHandler)
-  .route('/', xAmzTargetSwbExternalServiceListAccountAssignmentsHandler)
-  .route('/', xAmzTargetSwbExternalServiceListAccountsForProvisionedPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceListCustomerManagedPolicyReferencesInPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceListInstancesHandler)
-  .route('/', xAmzTargetSwbExternalServiceListManagedPoliciesInPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceListPermissionSetProvisioningStatusHandler)
-  .route('/', xAmzTargetSwbExternalServiceListPermissionSetsHandler)
-  .route('/', xAmzTargetSwbExternalServiceListPermissionSetsProvisionedToAccountHandler)
-  .route('/', xAmzTargetSwbExternalServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetSwbExternalServiceProvisionPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServicePutInlinePolicyToPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServicePutPermissionsBoundaryToPermissionSetHandler)
-  .route('/', xAmzTargetSwbExternalServiceTagResourceHandler)
-  .route('/', xAmzTargetSwbExternalServiceUntagResourceHandler)
-  .route('/', xAmzTargetSwbExternalServiceUpdateInstanceAccessControlAttributeConfigurationHandler)
-  .route('/', xAmzTargetSwbExternalServiceUpdatePermissionSetHandler)
+  .openapi(
+    postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRoute,
+    postXAmzTargetSWBExternalServiceCreateInstanceAccessControlAttributeConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceCreatePermissionSetRoute,
+    postXAmzTargetSWBExternalServiceCreatePermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDeleteAccountAssignmentRoute,
+    postXAmzTargetSWBExternalServiceDeleteAccountAssignmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDeleteInlinePolicyFromPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDeleteInlinePolicyFromPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDeleteInstanceAccessControlAttributeConfigurationRoute,
+    postXAmzTargetSWBExternalServiceDeleteInstanceAccessControlAttributeConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDeletePermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDeletePermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDeletePermissionsBoundaryFromPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDeletePermissionsBoundaryFromPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRoute,
+    postXAmzTargetSWBExternalServiceDescribeAccountAssignmentCreationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDescribeAccountAssignmentDeletionStatusRoute,
+    postXAmzTargetSWBExternalServiceDescribeAccountAssignmentDeletionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDescribeInstanceAccessControlAttributeConfigurationRoute,
+    postXAmzTargetSWBExternalServiceDescribeInstanceAccessControlAttributeConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDescribePermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDescribePermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDescribePermissionSetProvisioningStatusRoute,
+    postXAmzTargetSWBExternalServiceDescribePermissionSetProvisioningStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDetachCustomerManagedPolicyReferenceFromPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceDetachManagedPolicyFromPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceDetachManagedPolicyFromPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceGetInlinePolicyForPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceGetInlinePolicyForPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceGetPermissionsBoundaryForPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceGetPermissionsBoundaryForPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListAccountAssignmentCreationStatusRoute,
+    postXAmzTargetSWBExternalServiceListAccountAssignmentCreationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListAccountAssignmentDeletionStatusRoute,
+    postXAmzTargetSWBExternalServiceListAccountAssignmentDeletionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListAccountAssignmentsRoute,
+    postXAmzTargetSWBExternalServiceListAccountAssignmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListAccountsForProvisionedPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceListAccountsForProvisionedPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceListCustomerManagedPolicyReferencesInPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListInstancesRoute,
+    postXAmzTargetSWBExternalServiceListInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListManagedPoliciesInPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceListManagedPoliciesInPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListPermissionSetProvisioningStatusRoute,
+    postXAmzTargetSWBExternalServiceListPermissionSetProvisioningStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListPermissionSetsRoute,
+    postXAmzTargetSWBExternalServiceListPermissionSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListPermissionSetsProvisionedToAccountRoute,
+    postXAmzTargetSWBExternalServiceListPermissionSetsProvisionedToAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceListTagsForResourceRoute,
+    postXAmzTargetSWBExternalServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceProvisionPermissionSetRoute,
+    postXAmzTargetSWBExternalServiceProvisionPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServicePutInlinePolicyToPermissionSetRoute,
+    postXAmzTargetSWBExternalServicePutInlinePolicyToPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServicePutPermissionsBoundaryToPermissionSetRoute,
+    postXAmzTargetSWBExternalServicePutPermissionsBoundaryToPermissionSetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceTagResourceRoute,
+    postXAmzTargetSWBExternalServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceUntagResourceRoute,
+    postXAmzTargetSWBExternalServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceUpdateInstanceAccessControlAttributeConfigurationRoute,
+    postXAmzTargetSWBExternalServiceUpdateInstanceAccessControlAttributeConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetSWBExternalServiceUpdatePermissionSetRoute,
+    postXAmzTargetSWBExternalServiceUpdatePermissionSetRouteHandler,
+  )
 
 export default app

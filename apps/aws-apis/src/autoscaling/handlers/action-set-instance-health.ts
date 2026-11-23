@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSetInstanceHealthRoute, postActionSetInstanceHealthRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSetInstanceHealthRoute, postActionSetInstanceHealthRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetInstanceHealthRouteHandler: RouteHandler<
+  typeof getActionSetInstanceHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetInstanceHealthHandler = app
-  .openapi(getActionSetInstanceHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetInstanceHealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetInstanceHealthRouteHandler: RouteHandler<
+  typeof postActionSetInstanceHealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

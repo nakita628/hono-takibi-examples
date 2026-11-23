@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetACMPrivateCAIssueCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetACMPrivateCAIssueCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAcmPrivateCaIssueCertificateHandler = app.openapi(
-  postXAmzTargetACMPrivateCAIssueCertificateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetACMPrivateCAIssueCertificateRouteHandler: RouteHandler<
+  typeof postXAmzTargetACMPrivateCAIssueCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

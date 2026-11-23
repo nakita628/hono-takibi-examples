@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/kgsearch/v1/openapi.yaml',
   output: './src/kgsearch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/kgsearch/types.ts' },
   client: { output: './src/kgsearch/client.ts', baseUrl: '/' },
   rpc: { output: './src/kgsearch/rpc.ts', parseResponse: true },

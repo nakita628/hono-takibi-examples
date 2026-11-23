@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchRoadDistanceConfirmCarbonOffsetRoute,
   patchRoadDistanceConfirmPaymentRoute,
   patchRoadDistanceConfirmPlantingRoute,
@@ -7,21 +7,32 @@ import {
   postRoadDistanceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRoadDistanceRouteHandler: RouteHandler<typeof postRoadDistanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const roadDistanceHandler = app
-  .openapi(postRoadDistanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoadDistanceConfirmCarbonOffsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoadDistanceConfirmPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoadDistanceConfirmPlantingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRoadDistanceConfirmTransactionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchRoadDistanceConfirmCarbonOffsetRouteHandler: RouteHandler<
+  typeof patchRoadDistanceConfirmCarbonOffsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoadDistanceConfirmPaymentRouteHandler: RouteHandler<
+  typeof patchRoadDistanceConfirmPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoadDistanceConfirmPlantingRouteHandler: RouteHandler<
+  typeof patchRoadDistanceConfirmPlantingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRoadDistanceConfirmTransactionRouteHandler: RouteHandler<
+  typeof patchRoadDistanceConfirmTransactionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

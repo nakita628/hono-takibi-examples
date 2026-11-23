@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWebsocketRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWebsocketRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const websocketHandler = app.openapi(getWebsocketRoute, (c) => {
+export const getWebsocketRouteHandler: RouteHandler<typeof getWebsocketRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

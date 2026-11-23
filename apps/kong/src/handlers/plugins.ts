@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePluginsPluginIdRoute,
   getPluginsPluginIdRoute,
   getPluginsRoute,
@@ -8,24 +8,34 @@ import {
   putPluginsPluginIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPluginsRouteHandler: RouteHandler<typeof getPluginsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pluginsHandler = app
-  .openapi(getPluginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPluginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPluginsPluginIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPluginsRouteHandler: RouteHandler<typeof postPluginsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePluginsPluginIdRouteHandler: RouteHandler<
+  typeof deletePluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPluginsPluginIdRouteHandler: RouteHandler<typeof getPluginsPluginIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPluginsPluginIdRouteHandler: RouteHandler<
+  typeof patchPluginsPluginIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPluginsPluginIdRouteHandler: RouteHandler<typeof putPluginsPluginIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

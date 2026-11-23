@@ -1690,7 +1690,7 @@ export const postFoldersFolderIdRenameRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'successful rename', content: {} },
+    200: { description: 'successful rename' },
     401: {
       description: 'authentication failed',
       content: {

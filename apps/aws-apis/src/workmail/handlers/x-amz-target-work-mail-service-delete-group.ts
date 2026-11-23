@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceDeleteGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceDeleteGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceDeleteGroupHandler = app.openapi(
-  postXAmzTargetWorkMailServiceDeleteGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceDeleteGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceDeleteGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAws242ServiceCatalogServiceDeleteConstraintHandler = app.openapi(
-  postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWS242ServiceCatalogServiceDeleteConstraintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

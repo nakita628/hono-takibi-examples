@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIruPostureProvidersIdRoute,
   getIruPostureProvidersIdRoute,
   getIruPostureProvidersRoute,
@@ -7,21 +7,32 @@ import {
   putIruPostureProvidersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteIruPostureProvidersIdRouteHandler: RouteHandler<
+  typeof deleteIruPostureProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const iruPostureProvidersHandler = app
-  .openapi(deleteIruPostureProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIruPostureProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIruPostureProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putIruPostureProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIruPostureProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIruPostureProvidersIdRouteHandler: RouteHandler<
+  typeof getIruPostureProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIruPostureProvidersIdRouteHandler: RouteHandler<
+  typeof patchIruPostureProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putIruPostureProvidersIdRouteHandler: RouteHandler<
+  typeof putIruPostureProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIruPostureProvidersRouteHandler: RouteHandler<
+  typeof getIruPostureProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

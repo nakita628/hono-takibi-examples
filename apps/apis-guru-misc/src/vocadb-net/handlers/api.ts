@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiAlbumsCommentsCommentIdRoute,
   deleteApiAlbumsIdReviewsReviewIdRoute,
   deleteApiAlbumsIdRoute,
@@ -131,393 +131,736 @@ import {
   postApiVenuesIdReportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiActivityEntriesRouteHandler: RouteHandler<
+  typeof getApiActivityEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiActivityEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAlbumsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAlbumsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAlbumsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiAlbumsIdReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiAlbumsIdReviewsReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdTracksFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiAlbumsIdUserCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiArtistsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiArtistsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiArtistsNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiArtistsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiArtistsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiArtistsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiArtistsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCommentsEntryTypeCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCommentsEntryTypeCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiCommentsEntryTypeCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiCommentsEntryTypeCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDiscussionsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDiscussionsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDiscussionsFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDiscussionsFoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDiscussionsFoldersFolderIdTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDiscussionsFoldersFolderIdTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDiscussionsTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDiscussionsTopicsTopicIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDiscussionsTopicsTopicIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDiscussionsTopicsTopicIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDiscussionsTopicsTopicIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEntriesNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiEntryTypesEntryTypeSubTypeTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPvsForSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiReleaseEventSeriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventSeriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventSeriesIdForEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventsNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventsEventIdAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventsEventIdPublishedSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiReleaseEventsEventIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiReleaseEventsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReleaseEventsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiResourcesCultureCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiSongListsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongListsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongListsFeaturedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongListsFeaturedNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiSongListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongListsListIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongListsListIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongListsListIdSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsByPvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiSongsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsHighlightedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsLyricsLyricsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsTopRatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiSongsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongsIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsIdDerivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiSongsIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSongsIdRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsByNameNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsCategoryNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiTagsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTagsCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsTopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsTagIdChildrenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiTagsTagIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTagsTagIdCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiTagsTagIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersCurrentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersCurrentAlbumCollectionStatusesAlbumIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersCurrentAlbumsAlbumIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersCurrentFollowedArtistsArtistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiUsersCurrentFollowedTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersCurrentFollowedTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersCurrentRatedSongsSongIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersCurrentRefreshEntryEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersCurrentSongTagsSongIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersNamesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiUsersProfileCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersProfileCommentsCommentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdAlbumCollectionStatusesAlbumIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdFollowedArtistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdFollowedArtistsArtistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiUsersIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdProfileCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersIdProfileCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdRatedSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdRatedSongsSongIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiUsersIdSettingsSettingNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiUsersIdSongListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiVenuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiVenuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiVenuesIdReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiAlbumsRouteHandler: RouteHandler<typeof getApiAlbumsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAlbumsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiAlbumsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAlbumsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiAlbumsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsNamesRouteHandler: RouteHandler<typeof getApiAlbumsNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsNewRouteHandler: RouteHandler<typeof getApiAlbumsNewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsTopRouteHandler: RouteHandler<typeof getApiAlbumsTopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAlbumsIdRouteHandler: RouteHandler<typeof deleteApiAlbumsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdRouteHandler: RouteHandler<typeof getApiAlbumsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdCommentsRouteHandler: RouteHandler<
+  typeof getApiAlbumsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAlbumsIdCommentsRouteHandler: RouteHandler<
+  typeof postApiAlbumsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdReviewsRouteHandler: RouteHandler<
+  typeof getApiAlbumsIdReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiAlbumsIdReviewsRouteHandler: RouteHandler<
+  typeof postApiAlbumsIdReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiAlbumsIdReviewsReviewIdRouteHandler: RouteHandler<
+  typeof deleteApiAlbumsIdReviewsReviewIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdTracksRouteHandler: RouteHandler<
+  typeof getApiAlbumsIdTracksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdTracksFieldsRouteHandler: RouteHandler<
+  typeof getApiAlbumsIdTracksFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiAlbumsIdUserCollectionsRouteHandler: RouteHandler<
+  typeof getApiAlbumsIdUserCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiArtistsRouteHandler: RouteHandler<typeof getApiArtistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiArtistsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiArtistsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiArtistsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiArtistsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiArtistsNamesRouteHandler: RouteHandler<typeof getApiArtistsNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiArtistsIdRouteHandler: RouteHandler<typeof deleteApiArtistsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiArtistsIdRouteHandler: RouteHandler<typeof getApiArtistsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiArtistsIdCommentsRouteHandler: RouteHandler<
+  typeof getApiArtistsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiArtistsIdCommentsRouteHandler: RouteHandler<
+  typeof postApiArtistsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCommentsRouteHandler: RouteHandler<typeof getApiCommentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiCommentsEntryTypeCommentsRouteHandler: RouteHandler<
+  typeof getApiCommentsEntryTypeCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCommentsEntryTypeCommentsRouteHandler: RouteHandler<
+  typeof postApiCommentsEntryTypeCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiCommentsEntryTypeCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiCommentsEntryTypeCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiCommentsEntryTypeCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiCommentsEntryTypeCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDiscussionsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiDiscussionsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDiscussionsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiDiscussionsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDiscussionsFoldersRouteHandler: RouteHandler<
+  typeof getApiDiscussionsFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDiscussionsFoldersRouteHandler: RouteHandler<
+  typeof postApiDiscussionsFoldersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDiscussionsFoldersFolderIdTopicsRouteHandler: RouteHandler<
+  typeof getApiDiscussionsFoldersFolderIdTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDiscussionsFoldersFolderIdTopicsRouteHandler: RouteHandler<
+  typeof postApiDiscussionsFoldersFolderIdTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDiscussionsTopicsRouteHandler: RouteHandler<
+  typeof getApiDiscussionsTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDiscussionsTopicsTopicIdRouteHandler: RouteHandler<
+  typeof deleteApiDiscussionsTopicsTopicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDiscussionsTopicsTopicIdRouteHandler: RouteHandler<
+  typeof getApiDiscussionsTopicsTopicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDiscussionsTopicsTopicIdRouteHandler: RouteHandler<
+  typeof postApiDiscussionsTopicsTopicIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDiscussionsTopicsTopicIdCommentsRouteHandler: RouteHandler<
+  typeof postApiDiscussionsTopicsTopicIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEntriesRouteHandler: RouteHandler<typeof getApiEntriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEntriesNamesRouteHandler: RouteHandler<typeof getApiEntriesNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiEntryTypesEntryTypeSubTypeTagRouteHandler: RouteHandler<
+  typeof getApiEntryTypesEntryTypeSubTypeTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPvsForSongsRouteHandler: RouteHandler<typeof getApiPvsForSongsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventSeriesRouteHandler: RouteHandler<
+  typeof getApiReleaseEventSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiReleaseEventSeriesIdRouteHandler: RouteHandler<
+  typeof deleteApiReleaseEventSeriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventSeriesIdRouteHandler: RouteHandler<
+  typeof getApiReleaseEventSeriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventSeriesIdForEditRouteHandler: RouteHandler<
+  typeof getApiReleaseEventSeriesIdForEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventsRouteHandler: RouteHandler<
+  typeof getApiReleaseEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventsNamesRouteHandler: RouteHandler<
+  typeof getApiReleaseEventsNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventsEventIdAlbumsRouteHandler: RouteHandler<
+  typeof getApiReleaseEventsEventIdAlbumsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventsEventIdPublishedSongsRouteHandler: RouteHandler<
+  typeof getApiReleaseEventsEventIdPublishedSongsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiReleaseEventsEventIdReportsRouteHandler: RouteHandler<
+  typeof postApiReleaseEventsEventIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiReleaseEventsIdRouteHandler: RouteHandler<
+  typeof deleteApiReleaseEventsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReleaseEventsIdRouteHandler: RouteHandler<
+  typeof getApiReleaseEventsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiResourcesCultureCodeRouteHandler: RouteHandler<
+  typeof getApiResourcesCultureCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongListsRouteHandler: RouteHandler<typeof postApiSongListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiSongListsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiSongListsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongListsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiSongListsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongListsFeaturedRouteHandler: RouteHandler<
+  typeof getApiSongListsFeaturedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongListsFeaturedNamesRouteHandler: RouteHandler<
+  typeof getApiSongListsFeaturedNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiSongListsIdRouteHandler: RouteHandler<
+  typeof deleteApiSongListsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongListsListIdCommentsRouteHandler: RouteHandler<
+  typeof getApiSongListsListIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongListsListIdCommentsRouteHandler: RouteHandler<
+  typeof postApiSongListsListIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongListsListIdSongsRouteHandler: RouteHandler<
+  typeof getApiSongListsListIdSongsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsRouteHandler: RouteHandler<typeof getApiSongsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsByPvRouteHandler: RouteHandler<typeof getApiSongsByPvRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiSongsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiSongsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiSongsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsHighlightedRouteHandler: RouteHandler<
+  typeof getApiSongsHighlightedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsLyricsLyricsIdRouteHandler: RouteHandler<
+  typeof getApiSongsLyricsLyricsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsNamesRouteHandler: RouteHandler<typeof getApiSongsNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsTopRatedRouteHandler: RouteHandler<
+  typeof getApiSongsTopRatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiSongsIdRouteHandler: RouteHandler<typeof deleteApiSongsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsIdRouteHandler: RouteHandler<typeof getApiSongsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsIdCommentsRouteHandler: RouteHandler<
+  typeof getApiSongsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongsIdCommentsRouteHandler: RouteHandler<
+  typeof postApiSongsIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsIdDerivedRouteHandler: RouteHandler<
+  typeof getApiSongsIdDerivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsIdRatingsRouteHandler: RouteHandler<
+  typeof getApiSongsIdRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiSongsIdRatingsRouteHandler: RouteHandler<
+  typeof postApiSongsIdRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSongsIdRelatedRouteHandler: RouteHandler<
+  typeof getApiSongsIdRelatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsRouteHandler: RouteHandler<typeof getApiTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTagsRouteHandler: RouteHandler<typeof postApiTagsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsByNameNameRouteHandler: RouteHandler<
+  typeof getApiTagsByNameNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsCategoryNamesRouteHandler: RouteHandler<
+  typeof getApiTagsCategoryNamesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiTagsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiTagsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTagsCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiTagsCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsNamesRouteHandler: RouteHandler<typeof getApiTagsNamesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsTopRouteHandler: RouteHandler<typeof getApiTagsTopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiTagsIdRouteHandler: RouteHandler<typeof deleteApiTagsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsIdRouteHandler: RouteHandler<typeof getApiTagsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsTagIdChildrenRouteHandler: RouteHandler<
+  typeof getApiTagsTagIdChildrenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiTagsTagIdCommentsRouteHandler: RouteHandler<
+  typeof getApiTagsTagIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTagsTagIdCommentsRouteHandler: RouteHandler<
+  typeof postApiTagsTagIdCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiTagsTagIdReportsRouteHandler: RouteHandler<
+  typeof postApiTagsTagIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersRouteHandler: RouteHandler<typeof getApiUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersCurrentRouteHandler: RouteHandler<typeof getApiUsersCurrentRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersCurrentAlbumCollectionStatusesAlbumIdRouteHandler: RouteHandler<
+  typeof getApiUsersCurrentAlbumCollectionStatusesAlbumIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersCurrentAlbumsAlbumIdRouteHandler: RouteHandler<
+  typeof postApiUsersCurrentAlbumsAlbumIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersCurrentFollowedArtistsArtistIdRouteHandler: RouteHandler<
+  typeof getApiUsersCurrentFollowedArtistsArtistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiUsersCurrentFollowedTagsTagIdRouteHandler: RouteHandler<
+  typeof deleteApiUsersCurrentFollowedTagsTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersCurrentFollowedTagsTagIdRouteHandler: RouteHandler<
+  typeof postApiUsersCurrentFollowedTagsTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersCurrentRatedSongsSongIdRouteHandler: RouteHandler<
+  typeof getApiUsersCurrentRatedSongsSongIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersCurrentRefreshEntryEditRouteHandler: RouteHandler<
+  typeof postApiUsersCurrentRefreshEntryEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersCurrentSongTagsSongIdRouteHandler: RouteHandler<
+  typeof postApiUsersCurrentSongTagsSongIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersMessagesMessageIdRouteHandler: RouteHandler<
+  typeof getApiUsersMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersNamesRouteHandler: RouteHandler<typeof getApiUsersNamesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiUsersProfileCommentsCommentIdRouteHandler: RouteHandler<
+  typeof deleteApiUsersProfileCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersProfileCommentsCommentIdRouteHandler: RouteHandler<
+  typeof postApiUsersProfileCommentsCommentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdRouteHandler: RouteHandler<typeof getApiUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdAlbumCollectionStatusesAlbumIdRouteHandler: RouteHandler<
+  typeof getApiUsersIdAlbumCollectionStatusesAlbumIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdAlbumsRouteHandler: RouteHandler<
+  typeof getApiUsersIdAlbumsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdEventsRouteHandler: RouteHandler<
+  typeof getApiUsersIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdFollowedArtistsRouteHandler: RouteHandler<
+  typeof getApiUsersIdFollowedArtistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdFollowedArtistsArtistIdRouteHandler: RouteHandler<
+  typeof getApiUsersIdFollowedArtistsArtistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiUsersIdMessagesRouteHandler: RouteHandler<
+  typeof deleteApiUsersIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdMessagesRouteHandler: RouteHandler<
+  typeof getApiUsersIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersIdMessagesRouteHandler: RouteHandler<
+  typeof postApiUsersIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdProfileCommentsRouteHandler: RouteHandler<
+  typeof getApiUsersIdProfileCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersIdProfileCommentsRouteHandler: RouteHandler<
+  typeof postApiUsersIdProfileCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdRatedSongsRouteHandler: RouteHandler<
+  typeof getApiUsersIdRatedSongsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdRatedSongsSongIdRouteHandler: RouteHandler<
+  typeof getApiUsersIdRatedSongsSongIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersIdReportsRouteHandler: RouteHandler<
+  typeof postApiUsersIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiUsersIdSettingsSettingNameRouteHandler: RouteHandler<
+  typeof postApiUsersIdSettingsSettingNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiUsersIdSongListsRouteHandler: RouteHandler<
+  typeof getApiUsersIdSongListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiVenuesRouteHandler: RouteHandler<typeof getApiVenuesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiVenuesIdRouteHandler: RouteHandler<typeof deleteApiVenuesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiVenuesIdReportsRouteHandler: RouteHandler<
+  typeof postApiVenuesIdReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

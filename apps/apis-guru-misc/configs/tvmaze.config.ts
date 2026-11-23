@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/tvmaze.com/1.0/openapi.yaml',
   output: './src/tvmaze/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tvmaze/types.ts' },
   client: { output: './src/tvmaze/client.ts', baseUrl: '/' },
   rpc: { output: './src/tvmaze/rpc.ts', parseResponse: true },

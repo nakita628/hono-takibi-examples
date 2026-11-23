@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/icicilombard/3.0.0/openapi.yaml',
   output: './src/icicilombard/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/icicilombard/types.ts' },
   client: { output: './src/icicilombard/client.ts', baseUrl: '/' },
   rpc: { output: './src/icicilombard/rpc.ts', parseResponse: true },

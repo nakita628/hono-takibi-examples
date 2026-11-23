@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchMappingWithDuplicateSchemasRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchMappingWithDuplicateSchemasRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mappingWithDuplicateSchemasHandler = app.openapi(
-  patchMappingWithDuplicateSchemasRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const patchMappingWithDuplicateSchemasRouteHandler: RouteHandler<
+  typeof patchMappingWithDuplicateSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

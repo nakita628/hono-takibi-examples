@@ -37,6 +37,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | {
+                      DOB: string
+                      FullName: string
+                      RROLL: string
+                      RROLL_CODE: string
+                      year: string
+                    }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -207,6 +228,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/svcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | {
+                      DOB: string
+                      FullName: string
+                      RROLL: string
+                      RROLL_CODE: string
+                      year: string
+                    }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {

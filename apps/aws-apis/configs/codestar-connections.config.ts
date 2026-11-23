@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/codestar-connections/2019-12-01/openapi.yaml',
   output: './src/codestar-connections/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codestar-connections/types.ts' },
   client: { output: './src/codestar-connections/client.ts', baseUrl: '/' },
   rpc: { output: './src/codestar-connections/rpc.ts', parseResponse: true },

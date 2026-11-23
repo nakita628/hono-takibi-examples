@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFormFieldSetsIdRoute,
   getFormFieldSetsIdRoute,
   getFormFieldSetsRoute,
@@ -7,21 +7,32 @@ import {
   postFormFieldSetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormFieldSetsRouteHandler: RouteHandler<typeof getFormFieldSetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const formFieldSetsHandler = app
-  .openapi(getFormFieldSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFormFieldSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFormFieldSetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormFieldSetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFormFieldSetsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFormFieldSetsRouteHandler: RouteHandler<typeof postFormFieldSetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFormFieldSetsIdRouteHandler: RouteHandler<
+  typeof deleteFormFieldSetsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormFieldSetsIdRouteHandler: RouteHandler<typeof getFormFieldSetsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFormFieldSetsIdRouteHandler: RouteHandler<
+  typeof patchFormFieldSetsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

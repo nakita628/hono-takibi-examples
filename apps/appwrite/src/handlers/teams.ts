@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTeamsTeamIdMembershipsMembershipIdRoute,
   deleteTeamsTeamIdRoute,
   getTeamsRoute,
@@ -15,45 +15,72 @@ import {
   putTeamsTeamIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamsRouteHandler: RouteHandler<typeof getTeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamsHandler = app
-  .openapi(getTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTeamsTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsTeamIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTeamsTeamIdMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsTeamIdMembershipsMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTeamsTeamIdMembershipsMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTeamsTeamIdMembershipsMembershipIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTeamsTeamIdMembershipsMembershipIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsTeamIdPrefsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTeamsTeamIdPrefsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTeamsRouteHandler: RouteHandler<typeof postTeamsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsTeamIdRouteHandler: RouteHandler<typeof getTeamsTeamIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTeamsTeamIdRouteHandler: RouteHandler<typeof putTeamsTeamIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTeamsTeamIdRouteHandler: RouteHandler<typeof deleteTeamsTeamIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsTeamIdMembershipsRouteHandler: RouteHandler<
+  typeof getTeamsTeamIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTeamsTeamIdMembershipsRouteHandler: RouteHandler<
+  typeof postTeamsTeamIdMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsTeamIdMembershipsMembershipIdRouteHandler: RouteHandler<
+  typeof getTeamsTeamIdMembershipsMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTeamsTeamIdMembershipsMembershipIdRouteHandler: RouteHandler<
+  typeof patchTeamsTeamIdMembershipsMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTeamsTeamIdMembershipsMembershipIdRouteHandler: RouteHandler<
+  typeof deleteTeamsTeamIdMembershipsMembershipIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTeamsTeamIdMembershipsMembershipIdStatusRouteHandler: RouteHandler<
+  typeof patchTeamsTeamIdMembershipsMembershipIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsTeamIdPrefsRouteHandler: RouteHandler<
+  typeof getTeamsTeamIdPrefsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTeamsTeamIdPrefsRouteHandler: RouteHandler<
+  typeof putTeamsTeamIdPrefsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

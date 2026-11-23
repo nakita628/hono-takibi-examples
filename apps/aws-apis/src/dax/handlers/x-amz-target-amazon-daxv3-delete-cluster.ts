@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDAXV3DeleteClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDAXV3DeleteClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDaxv3DeleteClusterHandler = app.openapi(
-  postXAmzTargetAmazonDAXV3DeleteClusterRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDAXV3DeleteClusterRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDAXV3DeleteClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

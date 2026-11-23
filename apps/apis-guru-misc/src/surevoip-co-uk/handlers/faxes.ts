@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFaxesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFaxesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const faxesHandler = app.openapi(getFaxesRoute, (c) => {
+export const getFaxesRouteHandler: RouteHandler<typeof getFaxesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

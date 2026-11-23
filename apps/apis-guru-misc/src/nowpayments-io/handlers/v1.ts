@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1SubscriptionsSubIdRoute,
   getV1EstimateRoute,
   getV1MinAmountRoute,
@@ -18,54 +18,92 @@ import {
   postV1PayoutWithdrawalsIdVerifyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1EstimateRouteHandler: RouteHandler<typeof getV1EstimateRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1EstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MinAmountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PaymentIdUpdateMerchantEstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PaymentPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1PayoutWithdrawalsIdVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubPartnerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubPartnerBalanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubPartnerTransferIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubPartnerTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubscriptionsPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubscriptionsPlansPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1SubscriptionsPlansPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1SubscriptionsSubIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1SubscriptionsSubIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1MinAmountRouteHandler: RouteHandler<typeof getV1MinAmountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentIndexRouteHandler: RouteHandler<typeof getV1PaymentIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PaymentIdUpdateMerchantEstimateRouteHandler: RouteHandler<
+  typeof postV1PaymentIdUpdateMerchantEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PaymentPaymentIdRouteHandler: RouteHandler<
+  typeof getV1PaymentPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1PayoutWithdrawalsIdVerifyRouteHandler: RouteHandler<
+  typeof postV1PayoutWithdrawalsIdVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubPartnerRouteHandler: RouteHandler<typeof getV1SubPartnerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubPartnerBalanceIdRouteHandler: RouteHandler<
+  typeof getV1SubPartnerBalanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubPartnerTransferIdRouteHandler: RouteHandler<
+  typeof getV1SubPartnerTransferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubPartnerTransfersRouteHandler: RouteHandler<
+  typeof getV1SubPartnerTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubscriptionsRouteHandler: RouteHandler<typeof getV1SubscriptionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubscriptionsPlansRouteHandler: RouteHandler<
+  typeof getV1SubscriptionsPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubscriptionsPlansPlanIdRouteHandler: RouteHandler<
+  typeof getV1SubscriptionsPlansPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1SubscriptionsPlansPlanIdRouteHandler: RouteHandler<
+  typeof patchV1SubscriptionsPlansPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1SubscriptionsSubIdRouteHandler: RouteHandler<
+  typeof deleteV1SubscriptionsSubIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1SubscriptionsSubIdRouteHandler: RouteHandler<
+  typeof getV1SubscriptionsSubIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

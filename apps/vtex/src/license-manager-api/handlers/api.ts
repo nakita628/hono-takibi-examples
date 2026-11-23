@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiLicenseManagerUsersUserIdRolesRoleIdRoute,
   getApiLicenseManagerSitePvtLoginsListPagedRoute,
   getApiLicenseManagerSitePvtRolesListPagedRoute,
@@ -14,42 +14,74 @@ import {
   putApiVlmAppkeysIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiLicenseManagerSitePvtLoginsListPagedRouteHandler: RouteHandler<
+  typeof getApiLicenseManagerSitePvtLoginsListPagedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiLicenseManagerSitePvtLoginsListPagedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLicenseManagerSitePvtRolesListPagedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLicenseManagerUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLicenseManagerUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLicenseManagerUsersUserIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiLicenseManagerUsersUserIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiLicenseManagerUsersUserIdRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiVlmAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiVlmAccountStoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiVlmAppkeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiVlmAppkeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiVlmAppkeysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiLicenseManagerSitePvtRolesListPagedRouteHandler: RouteHandler<
+  typeof getApiLicenseManagerSitePvtRolesListPagedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLicenseManagerUsersRouteHandler: RouteHandler<
+  typeof postApiLicenseManagerUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLicenseManagerUsersUserIdRouteHandler: RouteHandler<
+  typeof getApiLicenseManagerUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLicenseManagerUsersUserIdRolesRouteHandler: RouteHandler<
+  typeof getApiLicenseManagerUsersUserIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiLicenseManagerUsersUserIdRolesRouteHandler: RouteHandler<
+  typeof putApiLicenseManagerUsersUserIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiLicenseManagerUsersUserIdRolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteApiLicenseManagerUsersUserIdRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiVlmAccountRouteHandler: RouteHandler<typeof getApiVlmAccountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiVlmAccountStoresRouteHandler: RouteHandler<
+  typeof getApiVlmAccountStoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiVlmAppkeysRouteHandler: RouteHandler<typeof getApiVlmAppkeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiVlmAppkeysRouteHandler: RouteHandler<typeof postApiVlmAppkeysRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiVlmAppkeysIdRouteHandler: RouteHandler<typeof putApiVlmAppkeysIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

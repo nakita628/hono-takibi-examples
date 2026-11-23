@@ -15,6 +15,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { param: { param1: string; param2: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { param1: string; param2: string } }
             output: User
             outputFormat: 'json'
             status: 200
@@ -27,6 +33,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: User
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { param1: string; param2: string } } & {
+              query: { param3?: string | undefined; param4?: string | undefined }
+            } & { header: { param5: string; param6?: string | undefined } } & { json: User }
+            output: {}
+            outputFormat: string
+            status: 400
           }
         | {
             input: { param: { param1: string; param2: string } } & {
@@ -47,6 +61,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/requestBody': {
       $post:
         | { input: { json: User }; output: User; outputFormat: 'json'; status: 200 }
+        | { input: { json: User }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: User }; output: User; outputFormat: 'json'; status: 200 }
       $patch: { input: { json: User }; output: User; outputFormat: 'json'; status: 200 }
       $put: { input: { json: User }; output: User; outputFormat: 'json'; status: 200 }
@@ -59,7 +74,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/requestBody-multi-media-types': {
-      $post: { input: {}; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 400 }
     }
   } & {
     '/requestBody-form-data-example': {

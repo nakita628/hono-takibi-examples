@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBehaviorsIdRoute,
   getBehaviorsFoldersPathRoute,
   getBehaviorsIdRoute,
@@ -9,27 +9,38 @@ import {
   postBehaviorsWebhookTestRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBehaviorsRouteHandler: RouteHandler<typeof getBehaviorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const behaviorsHandler = app
-  .openapi(getBehaviorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBehaviorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBehaviorsFoldersPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBehaviorsWebhookTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBehaviorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBehaviorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBehaviorsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBehaviorsRouteHandler: RouteHandler<typeof postBehaviorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBehaviorsFoldersPathRouteHandler: RouteHandler<
+  typeof getBehaviorsFoldersPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBehaviorsWebhookTestRouteHandler: RouteHandler<
+  typeof postBehaviorsWebhookTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBehaviorsIdRouteHandler: RouteHandler<typeof deleteBehaviorsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBehaviorsIdRouteHandler: RouteHandler<typeof getBehaviorsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBehaviorsIdRouteHandler: RouteHandler<typeof patchBehaviorsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

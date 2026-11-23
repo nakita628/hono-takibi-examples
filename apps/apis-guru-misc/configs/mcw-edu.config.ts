@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mcw.edu/1.1/openapi.yaml',
   output: './src/mcw-edu/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mcw-edu/types.ts' },
   client: { output: './src/mcw-edu/client.ts', baseUrl: '/' },
   rpc: { output: './src/mcw-edu/rpc.ts', parseResponse: true },

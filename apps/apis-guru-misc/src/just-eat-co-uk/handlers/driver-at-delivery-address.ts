@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putDriverAtDeliveryAddressRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putDriverAtDeliveryAddressRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const driverAtDeliveryAddressHandler = app.openapi(putDriverAtDeliveryAddressRoute, (c) => {
+export const putDriverAtDeliveryAddressRouteHandler: RouteHandler<
+  typeof putDriverAtDeliveryAddressRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBBucketAclEntityRoute,
   deleteBBucketDefaultObjectAclEntityRoute,
   deleteBBucketNotificationConfigsNotificationRoute,
@@ -47,144 +47,248 @@ import {
   putBBucketRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBRouteHandler: RouteHandler<typeof getBRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bHandler = app
-  .openapi(getBRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBBucketAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketDefaultObjectAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketDefaultObjectAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketDefaultObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketDefaultObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBBucketDefaultObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketDefaultObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketIamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketIamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketIamTestPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketLockRetentionPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketNotificationConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketNotificationConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketNotificationConfigsNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketNotificationConfigsNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketORoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketORoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketOWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketOObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketOObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBBucketOObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketOObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketOObjectAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBBucketOObjectAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBBucketOObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketOObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBBucketOObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketOObjectAclEntityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketOObjectIamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBBucketOObjectIamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBBucketOObjectIamTestPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBDestinationBucketODestinationObjectComposeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBSourceBucketOSourceObjectCopyToBDestinationBucketODestinationObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postBSourceBucketOSourceObjectRewriteToBDestinationBucketODestinationObjectRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postBRouteHandler: RouteHandler<typeof postBRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketRouteHandler: RouteHandler<typeof deleteBBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketRouteHandler: RouteHandler<typeof getBBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBBucketRouteHandler: RouteHandler<typeof patchBBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketRouteHandler: RouteHandler<typeof putBBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketAclRouteHandler: RouteHandler<typeof getBBucketAclRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketAclRouteHandler: RouteHandler<typeof postBBucketAclRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketAclEntityRouteHandler: RouteHandler<
+  typeof deleteBBucketAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketAclEntityRouteHandler: RouteHandler<
+  typeof getBBucketAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBBucketAclEntityRouteHandler: RouteHandler<
+  typeof patchBBucketAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketAclEntityRouteHandler: RouteHandler<
+  typeof putBBucketAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketDefaultObjectAclRouteHandler: RouteHandler<
+  typeof getBBucketDefaultObjectAclRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketDefaultObjectAclRouteHandler: RouteHandler<
+  typeof postBBucketDefaultObjectAclRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketDefaultObjectAclEntityRouteHandler: RouteHandler<
+  typeof deleteBBucketDefaultObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketDefaultObjectAclEntityRouteHandler: RouteHandler<
+  typeof getBBucketDefaultObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBBucketDefaultObjectAclEntityRouteHandler: RouteHandler<
+  typeof patchBBucketDefaultObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketDefaultObjectAclEntityRouteHandler: RouteHandler<
+  typeof putBBucketDefaultObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketIamRouteHandler: RouteHandler<typeof getBBucketIamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketIamRouteHandler: RouteHandler<typeof putBBucketIamRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketIamTestPermissionsRouteHandler: RouteHandler<
+  typeof getBBucketIamTestPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketLockRetentionPolicyRouteHandler: RouteHandler<
+  typeof postBBucketLockRetentionPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketNotificationConfigsRouteHandler: RouteHandler<
+  typeof getBBucketNotificationConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketNotificationConfigsRouteHandler: RouteHandler<
+  typeof postBBucketNotificationConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketNotificationConfigsNotificationRouteHandler: RouteHandler<
+  typeof deleteBBucketNotificationConfigsNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketNotificationConfigsNotificationRouteHandler: RouteHandler<
+  typeof getBBucketNotificationConfigsNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketORouteHandler: RouteHandler<typeof getBBucketORoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketORouteHandler: RouteHandler<typeof postBBucketORoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketOWatchRouteHandler: RouteHandler<typeof postBBucketOWatchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketOObjectRouteHandler: RouteHandler<
+  typeof deleteBBucketOObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketOObjectRouteHandler: RouteHandler<typeof getBBucketOObjectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBBucketOObjectRouteHandler: RouteHandler<
+  typeof patchBBucketOObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketOObjectRouteHandler: RouteHandler<typeof putBBucketOObjectRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketOObjectAclRouteHandler: RouteHandler<
+  typeof getBBucketOObjectAclRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBBucketOObjectAclRouteHandler: RouteHandler<
+  typeof postBBucketOObjectAclRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBBucketOObjectAclEntityRouteHandler: RouteHandler<
+  typeof deleteBBucketOObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketOObjectAclEntityRouteHandler: RouteHandler<
+  typeof getBBucketOObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchBBucketOObjectAclEntityRouteHandler: RouteHandler<
+  typeof patchBBucketOObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketOObjectAclEntityRouteHandler: RouteHandler<
+  typeof putBBucketOObjectAclEntityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketOObjectIamRouteHandler: RouteHandler<
+  typeof getBBucketOObjectIamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBBucketOObjectIamRouteHandler: RouteHandler<
+  typeof putBBucketOObjectIamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBBucketOObjectIamTestPermissionsRouteHandler: RouteHandler<
+  typeof getBBucketOObjectIamTestPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBDestinationBucketODestinationObjectComposeRouteHandler: RouteHandler<
+  typeof postBDestinationBucketODestinationObjectComposeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBSourceBucketOSourceObjectCopyToBDestinationBucketODestinationObjectRouteHandler: RouteHandler<
+  typeof postBSourceBucketOSourceObjectCopyToBDestinationBucketODestinationObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBSourceBucketOSourceObjectRewriteToBDestinationBucketODestinationObjectRouteHandler: RouteHandler<
+  typeof postBSourceBucketOSourceObjectRewriteToBDestinationBucketODestinationObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

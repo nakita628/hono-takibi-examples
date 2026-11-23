@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/elastictranscoder/2012-09-25/openapi.yaml',
   output: './src/elastictranscoder/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/elastictranscoder/types.ts' },
   client: { output: './src/elastictranscoder/client.ts', baseUrl: '/' },

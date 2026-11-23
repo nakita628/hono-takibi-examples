@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Commerce/Payment%20Links/Rollouts/310885/2026-09/paymentLinks.json',
   output: './src/commerce-payment-links/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/commerce-payment-links/types.ts' },
   client: { output: './src/commerce-payment-links/client.ts', baseUrl: '/' },
   rpc: { output: './src/commerce-payment-links/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerDeleteModelBiasJobDefinitionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerDeleteModelBiasJobDefinitionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerDeleteModelBiasJobDefinitionHandler = app.openapi(
-  postXAmzTargetSageMakerDeleteModelBiasJobDefinitionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerDeleteModelBiasJobDefinitionRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerDeleteModelBiasJobDefinitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

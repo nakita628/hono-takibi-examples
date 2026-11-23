@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRequestsGrantRequestsUuidIndexRoute,
   deleteRequestsGrantRequestsUuidRevokeIndexRoute,
   deleteRequestsRuleBindingsUuidIndexRoute,
@@ -31,93 +31,176 @@ import {
   putRequestsRulesUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRequestsGrantRequestsIndexRouteHandler: RouteHandler<
+  typeof getRequestsGrantRequestsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const requestsHandler = app
-  .openapi(getRequestsGrantRequestsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRequestsGrantRequestsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsGrantRequestsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRequestsGrantRequestsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRequestsGrantRequestsUuidFulfillIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRequestsGrantRequestsUuidRevokeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRequestsGrantRequestsAgentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsGrantRequestsPendingReviewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRequestsRuleBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRequestsRuleBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRequestsRuleBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRequestsRuleBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleBindingsUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleChildBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRequestsRuleChildBindingsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleChildBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRequestsRuleChildBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRequestsRuleChildBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRequestsRuleChildBindingsUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRuleChildBindingsUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRequestsRulesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRulesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRequestsRulesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRequestsRulesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRequestsRulesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRequestsRulesUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRequestsGrantRequestsIndexRouteHandler: RouteHandler<
+  typeof postRequestsGrantRequestsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsGrantRequestsUuidIndexRouteHandler: RouteHandler<
+  typeof getRequestsGrantRequestsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRequestsGrantRequestsUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRequestsGrantRequestsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRequestsGrantRequestsUuidFulfillIndexRouteHandler: RouteHandler<
+  typeof patchRequestsGrantRequestsUuidFulfillIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRequestsGrantRequestsUuidRevokeIndexRouteHandler: RouteHandler<
+  typeof deleteRequestsGrantRequestsUuidRevokeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRequestsGrantRequestsAgentIndexRouteHandler: RouteHandler<
+  typeof postRequestsGrantRequestsAgentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsGrantRequestsPendingReviewIndexRouteHandler: RouteHandler<
+  typeof getRequestsGrantRequestsPendingReviewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleBindingsIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRequestsRuleBindingsIndexRouteHandler: RouteHandler<
+  typeof postRequestsRuleBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRequestsRuleBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof putRequestsRuleBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRequestsRuleBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof patchRequestsRuleBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRequestsRuleBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRequestsRuleBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleBindingsUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleBindingsUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleChildBindingsIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleChildBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRequestsRuleChildBindingsIndexRouteHandler: RouteHandler<
+  typeof postRequestsRuleChildBindingsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleChildBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleChildBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRequestsRuleChildBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof putRequestsRuleChildBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRequestsRuleChildBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof patchRequestsRuleChildBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRequestsRuleChildBindingsUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRequestsRuleChildBindingsUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRuleChildBindingsUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRequestsRuleChildBindingsUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRulesIndexRouteHandler: RouteHandler<
+  typeof getRequestsRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRequestsRulesIndexRouteHandler: RouteHandler<
+  typeof postRequestsRulesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRulesUuidIndexRouteHandler: RouteHandler<
+  typeof getRequestsRulesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRequestsRulesUuidIndexRouteHandler: RouteHandler<
+  typeof putRequestsRulesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRequestsRulesUuidIndexRouteHandler: RouteHandler<
+  typeof patchRequestsRulesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRequestsRulesUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRequestsRulesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRequestsRulesUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRequestsRulesUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

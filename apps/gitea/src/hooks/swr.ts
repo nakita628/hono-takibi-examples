@@ -15033,15 +15033,15 @@ export function useImmutableGetReposOwnerRepoGitCommitsSha<TError = unknown>(
 
 export function getGetReposOwnerRepoGitCommitsShaDiffTypeKey(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/git/commits/:sha.:diffType', args] as const
+  return ['repos', '/repos/:owner/:repo/git/commits/:sha.{diffType}', args] as const
 }
 
 export function useGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -15050,7 +15050,7 @@ export function useGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
               >
             >
           >
@@ -15077,7 +15077,7 @@ export function useGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
               >
             >
           >
@@ -15088,7 +15088,7 @@ export function useGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(args, clientOptions),
+          client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -15097,7 +15097,7 @@ export function useGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
 
 export function useImmutableGetReposOwnerRepoGitCommitsShaDiffType<TError = unknown>(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -15106,7 +15106,7 @@ export function useImmutableGetReposOwnerRepoGitCommitsShaDiffType<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
               >
             >
           >
@@ -15133,7 +15133,7 @@ export function useImmutableGetReposOwnerRepoGitCommitsShaDiffType<TError = unkn
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['git']['commits'][':sha.{diffType}']['$get']
               >
             >
           >
@@ -15144,7 +15144,7 @@ export function useImmutableGetReposOwnerRepoGitCommitsShaDiffType<TError = unkn
       swrKey,
       async () =>
         parseResponse(
-          client.repos[':owner'][':repo'].git.commits[':sha.:diffType'].$get(args, clientOptions),
+          client.repos[':owner'][':repo'].git.commits[':sha.{diffType}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -24953,15 +24953,15 @@ export function usePatchReposOwnerRepoPullsIndex<TError = unknown>(options?: {
 
 export function getGetReposOwnerRepoPullsIndexDiffTypeKey(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
 ) {
-  return ['repos', '/repos/:owner/:repo/pulls/:index.:diffType', args] as const
+  return ['repos', '/repos/:owner/:repo/pulls/:index.{diffType}', args] as const
 }
 
 export function useGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -24970,7 +24970,7 @@ export function useGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
               >
             >
           >
@@ -24997,7 +24997,7 @@ export function useGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
               >
             >
           >
@@ -25008,7 +25008,7 @@ export function useGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(args, clientOptions),
+          client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -25017,7 +25017,7 @@ export function useGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
 
 export function useImmutableGetReposOwnerRepoPullsIndexDiffType<TError = unknown>(
   args: InferRequestType<
-    (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+    (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -25026,7 +25026,7 @@ export function useImmutableGetReposOwnerRepoPullsIndexDiffType<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
               >
             >
           >
@@ -25053,7 +25053,7 @@ export function useImmutableGetReposOwnerRepoPullsIndexDiffType<TError = unknown
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repos)[':owner'][':repo']['pulls'][':index.:diffType']['$get']
+                (typeof client.repos)[':owner'][':repo']['pulls'][':index.{diffType}']['$get']
               >
             >
           >
@@ -25064,7 +25064,7 @@ export function useImmutableGetReposOwnerRepoPullsIndexDiffType<TError = unknown
       swrKey,
       async () =>
         parseResponse(
-          client.repos[':owner'][':repo'].pulls[':index.:diffType'].$get(args, clientOptions),
+          client.repos[':owner'][':repo'].pulls[':index.{diffType}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),

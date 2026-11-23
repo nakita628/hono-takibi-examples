@@ -31,6 +31,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | { FullName: string; UID: string; final_doc_reg_no: string }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -176,6 +191,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 txnId: string
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | { FullName: string; regno: string; sro_id: string; yr: string }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
             output: {
               error?:
                 | 'missing_parameter'
@@ -310,6 +340,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/rmcer/certificate': {
       $post:
+        | {
+            input: {
+              json: {
+                certificateParameters?:
+                  | { FullName: string; regno: string; sro_id: string; yr: string }
+                  | undefined
+                consentArtifact?: ConsentArtifactSchema | undefined
+                format: 'pdf'
+                txnId: string
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: {
               json: {

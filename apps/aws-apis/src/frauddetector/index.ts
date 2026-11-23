@@ -1,155 +1,449 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsHawksNestServiceFacadeBatchCreateVariableHandler,
-  xAmzTargetAwsHawksNestServiceFacadeBatchGetVariableHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCancelBatchImportJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCancelBatchPredictionJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateBatchImportJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateBatchPredictionJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateDetectorVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateListHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateModelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateModelVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateRuleHandler,
-  xAmzTargetAwsHawksNestServiceFacadeCreateVariableHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteBatchImportJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteBatchPredictionJobHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteDetectorHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteDetectorVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteEntityTypeHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteEventHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteEventsByEventTypeHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteEventTypeHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteExternalModelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteLabelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteListHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteModelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteModelVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteOutcomeHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteRuleHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDeleteVariableHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDescribeDetectorHandler,
-  xAmzTargetAwsHawksNestServiceFacadeDescribeModelVersionsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetBatchImportJobsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetBatchPredictionJobsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetDetectorsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetDetectorVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetEntityTypesHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetEventHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetEventPredictionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetEventPredictionMetadataHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetEventTypesHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetExternalModelsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetKmsEncryptionKeyHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetLabelsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetListElementsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetListsMetadataHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetModelsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetModelVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetOutcomesHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetRulesHandler,
-  xAmzTargetAwsHawksNestServiceFacadeGetVariablesHandler,
-  xAmzTargetAwsHawksNestServiceFacadeListEventPredictionsHandler,
-  xAmzTargetAwsHawksNestServiceFacadeListTagsForResourceHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutDetectorHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutEntityTypeHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutEventTypeHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutExternalModelHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutKmsEncryptionKeyHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutLabelHandler,
-  xAmzTargetAwsHawksNestServiceFacadePutOutcomeHandler,
-  xAmzTargetAwsHawksNestServiceFacadeSendEventHandler,
-  xAmzTargetAwsHawksNestServiceFacadeTagResourceHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUntagResourceHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionMetadataHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionStatusHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateEventLabelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateListHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateModelHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateModelVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateModelVersionStatusHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateRuleMetadataHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateRuleVersionHandler,
-  xAmzTargetAwsHawksNestServiceFacadeUpdateVariableHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeBatchCreateVariableRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeBatchGetVariableRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCancelBatchImportJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCancelBatchPredictionJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateBatchImportJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateBatchPredictionJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateDetectorVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateListRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateModelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateModelVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateRuleRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateVariableRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchImportJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchPredictionJobRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEntityTypeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventsByEventTypeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventTypeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteExternalModelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteLabelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteListRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteModelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteModelVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteOutcomeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteRuleRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteVariableRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDescribeDetectorRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeDescribeModelVersionsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetBatchImportJobsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetBatchPredictionJobsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDetectorsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDetectorVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEntityTypesRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionMetadataRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventTypesRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetExternalModelsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetKMSEncryptionKeyRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetLabelsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetListElementsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetListsMetadataRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetModelsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetModelVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetOutcomesRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetRulesRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeGetVariablesRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeListEventPredictionsRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeListTagsForResourceRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutDetectorRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutEntityTypeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutEventTypeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutLabelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadePutOutcomeRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeTagResourceRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUntagResourceRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionMetadataRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionStatusRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateEventLabelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateListRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionStatusRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleMetadataRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleVersionRoute,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateVariableRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSHawksNestServiceFacadeBatchCreateVariableRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeBatchGetVariableRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCancelBatchImportJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCancelBatchPredictionJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateBatchImportJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateBatchPredictionJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateDetectorVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateListRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateModelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateModelVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateRuleRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeCreateVariableRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchImportJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchPredictionJobRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEntityTypeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventsByEventTypeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteEventTypeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteExternalModelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteLabelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteListRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteModelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteModelVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteOutcomeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteRuleRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDeleteVariableRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDescribeDetectorRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeDescribeModelVersionsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetBatchImportJobsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetBatchPredictionJobsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDetectorsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetDetectorVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEntityTypesRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionMetadataRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetEventTypesRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetExternalModelsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetKMSEncryptionKeyRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetLabelsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetListElementsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetListsMetadataRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetModelsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetModelVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetOutcomesRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetRulesRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeGetVariablesRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeListEventPredictionsRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeListTagsForResourceRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutDetectorRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutEntityTypeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutEventTypeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutLabelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadePutOutcomeRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeSendEventRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeTagResourceRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUntagResourceRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionMetadataRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionStatusRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateEventLabelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateListRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionStatusRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleMetadataRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleVersionRouteHandler,
+  postXAmzTargetAWSHawksNestServiceFacadeUpdateVariableRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeBatchCreateVariableHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeBatchGetVariableHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCancelBatchImportJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCancelBatchPredictionJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateBatchImportJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateBatchPredictionJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateDetectorVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateListHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateModelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateModelVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateRuleHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeCreateVariableHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteBatchImportJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteBatchPredictionJobHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteDetectorHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteDetectorVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteEntityTypeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteEventHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteEventTypeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteEventsByEventTypeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteExternalModelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteLabelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteListHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteModelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteModelVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteOutcomeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteRuleHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDeleteVariableHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDescribeDetectorHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeDescribeModelVersionsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetBatchImportJobsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetBatchPredictionJobsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetDetectorVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetDetectorsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetEntityTypesHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetEventHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetEventPredictionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetEventPredictionMetadataHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetEventTypesHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetExternalModelsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetKmsEncryptionKeyHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetLabelsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetListElementsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetListsMetadataHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetModelVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetModelsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetOutcomesHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetRulesHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeGetVariablesHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeListEventPredictionsHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutDetectorHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutEntityTypeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutEventTypeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutExternalModelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutKmsEncryptionKeyHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutLabelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadePutOutcomeHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeSendEventHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeTagResourceHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUntagResourceHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionMetadataHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateDetectorVersionStatusHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateEventLabelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateListHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateModelHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateModelVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateModelVersionStatusHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateRuleMetadataHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateRuleVersionHandler)
-  .route('/', xAmzTargetAwsHawksNestServiceFacadeUpdateVariableHandler)
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeBatchCreateVariableRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeBatchCreateVariableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeBatchGetVariableRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeBatchGetVariableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCancelBatchImportJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCancelBatchImportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCancelBatchPredictionJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCancelBatchPredictionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateBatchImportJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateBatchImportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateBatchPredictionJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateBatchPredictionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateDetectorVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateDetectorVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateListRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateModelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateModelVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateModelVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateRuleRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeCreateVariableRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeCreateVariableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchImportJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchImportJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchPredictionJobRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteBatchPredictionJobRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteDetectorVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEntityTypeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEntityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventTypeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventsByEventTypeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteEventsByEventTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteExternalModelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteExternalModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteLabelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteListRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteModelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteModelVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteModelVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteOutcomeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteOutcomeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteRuleRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteVariableRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDeleteVariableRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDescribeDetectorRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDescribeDetectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeDescribeModelVersionsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeDescribeModelVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetBatchImportJobsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetBatchImportJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetBatchPredictionJobsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetBatchPredictionJobsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetDeleteEventsByEventTypeStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetDetectorVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetDetectorVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetDetectorsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetDetectorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetEntityTypesRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetEntityTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionMetadataRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventPredictionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventTypesRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetEventTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetExternalModelsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetExternalModelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetKMSEncryptionKeyRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetKMSEncryptionKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetLabelsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetListElementsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetListElementsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetListsMetadataRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetListsMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetModelVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetModelVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetModelsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetModelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetOutcomesRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetOutcomesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetRulesRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeGetVariablesRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeGetVariablesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeListEventPredictionsRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeListEventPredictionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeListTagsForResourceRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutDetectorRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutDetectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutEntityTypeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutEntityTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutEventTypeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutEventTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutKMSEncryptionKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutLabelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadePutOutcomeRoute,
+    postXAmzTargetAWSHawksNestServiceFacadePutOutcomeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeSendEventRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeSendEventRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeTagResourceRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUntagResourceRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionMetadataRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionStatusRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateDetectorVersionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateEventLabelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateEventLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateListRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionStatusRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateModelVersionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleMetadataRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleVersionRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateRuleVersionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateVariableRoute,
+    postXAmzTargetAWSHawksNestServiceFacadeUpdateVariableRouteHandler,
+  )
 
 export default app

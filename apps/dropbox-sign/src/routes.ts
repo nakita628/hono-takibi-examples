@@ -20116,7 +20116,6 @@ export const deleteFaxLineRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: {},
       headers: z.object({
         'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
         'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
@@ -21208,7 +21207,6 @@ export const postSignatureRequestCancelSignatureRequestIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: {},
       headers: z.object({
         'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
         'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
@@ -25250,7 +25248,6 @@ export const postSignatureRequestRemoveSignatureRequestIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: {},
       headers: z.object({
         'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
         'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,
@@ -28520,7 +28517,6 @@ export const postTemplateDeleteTemplateIdRoute = createRoute({
   responses: {
     200: {
       description: 'successful operation',
-      content: {},
       headers: z.object({
         'X-RateLimit-Limit': XRateLimitLimitHeaderSchema,
         'X-RateLimit-Remaining': XRateLimitRemainingHeaderSchema,

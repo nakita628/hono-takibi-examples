@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLogIndexRoute, getLogPkRoute, postLogIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLogIndexRoute, getLogPkRoute, postLogIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLogIndexRouteHandler: RouteHandler<typeof getLogIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const logHandler = app
-  .openapi(getLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLogIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLogPkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLogIndexRouteHandler: RouteHandler<typeof postLogIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLogPkRouteHandler: RouteHandler<typeof getLogPkRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

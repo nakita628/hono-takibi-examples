@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCloudHsmFrontendServiceListHapgsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCloudHsmFrontendServiceListHapgsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCloudHsmFrontendServiceListHapgsHandler = app.openapi(
-  postXAmzTargetCloudHsmFrontendServiceListHapgsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCloudHsmFrontendServiceListHapgsRouteHandler: RouteHandler<
+  typeof postXAmzTargetCloudHsmFrontendServiceListHapgsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

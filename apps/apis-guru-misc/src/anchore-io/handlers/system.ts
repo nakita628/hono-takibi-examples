@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSystemFeedsFeedGroupRoute,
   deleteSystemFeedsFeedRoute,
   deleteSystemServicesServicenameHostidRoute,
@@ -16,48 +16,80 @@ import {
   putSystemFeedsFeedRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemRouteHandler: RouteHandler<typeof getSystemRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemHandler = app
-  .openapi(getSystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemErrorCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemFeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemFeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSystemFeedsFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemFeedsFeedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSystemFeedsFeedGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemFeedsFeedGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemPolicySpecRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemServicesServicenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSystemServicesServicenameHostidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemServicesServicenameHostidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSystemWebhooksWebhookTypeTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSystemErrorCodesRouteHandler: RouteHandler<
+  typeof getSystemErrorCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemFeedsRouteHandler: RouteHandler<typeof getSystemFeedsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemFeedsRouteHandler: RouteHandler<typeof postSystemFeedsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSystemFeedsFeedRouteHandler: RouteHandler<
+  typeof deleteSystemFeedsFeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSystemFeedsFeedRouteHandler: RouteHandler<typeof putSystemFeedsFeedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSystemFeedsFeedGroupRouteHandler: RouteHandler<
+  typeof deleteSystemFeedsFeedGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSystemFeedsFeedGroupRouteHandler: RouteHandler<
+  typeof putSystemFeedsFeedGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemPolicySpecRouteHandler: RouteHandler<
+  typeof getSystemPolicySpecRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemServicesRouteHandler: RouteHandler<typeof getSystemServicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemServicesServicenameRouteHandler: RouteHandler<
+  typeof getSystemServicesServicenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSystemServicesServicenameHostidRouteHandler: RouteHandler<
+  typeof deleteSystemServicesServicenameHostidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemServicesServicenameHostidRouteHandler: RouteHandler<
+  typeof getSystemServicesServicenameHostidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSystemWebhooksWebhookTypeTestRouteHandler: RouteHandler<
+  typeof postSystemWebhooksWebhookTypeTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,16 +1,14 @@
 import { z } from '@hono/zod-openapi'
 
-type TopType = { cat?: { subcategories?: TopType[] } }
+type TopCatType = { subcategories?: TopCatType[] }
 
-const TopSchema: z.ZodType<TopType> = z
+const TopCatSchema: z.ZodType<TopCatType> = z
   .lazy(() =>
-    z
-      .object({
-        cat: z
-          .object({ subcategories: z.array(z.lazy(() => TopSchema)).exactOptional() })
-          .exactOptional()
-          .openapi({ required: [] }),
-      })
-      .openapi({ required: [] }),
+    z.object({ subcategories: z.array(TopCatSchema).exactOptional() }).openapi({ required: [] }),
   )
+  .openapi('TopCat')
+
+const TopSchema = z
+  .object({ cat: TopCatSchema.exactOptional() })
+  .openapi({ required: [] })
   .openapi('Top')

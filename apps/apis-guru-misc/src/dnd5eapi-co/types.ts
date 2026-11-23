@@ -334,6 +334,32 @@ type MagicSchool = {
   url?: string | undefined
   desc?: string | undefined
 }
+type MonsterAllOf3ActionsItems = {
+  action_options?: Choice | undefined
+  actions?:
+    | {
+        action_name?: string | undefined
+        count?: number | undefined
+        type?: 'melee' | 'ranged' | 'ability' | 'magic' | undefined
+      }[]
+    | undefined
+  attack_bonus?: number | undefined
+  attacks?:
+    | {
+        damage?: { [x: string]: unknown } | undefined
+        dc?: DC | undefined
+        name?: string | undefined
+      }[]
+    | undefined
+  damage?:
+    | { damage_dice?: string | undefined; damage_type?: APIReference | undefined }[]
+    | undefined
+  dc?: DC | undefined
+  desc?: string | undefined
+  multiattack_type?: string | undefined
+  name?: string | undefined
+  options?: Choice | undefined
+}
 type Monster = {
   index?: string | undefined
   name?: string | undefined
@@ -345,34 +371,7 @@ type Monster = {
   intelligence?: number | undefined
   strength?: number | undefined
   wisdom?: number | undefined
-  actions?:
-    | {
-        action_options?: Choice | undefined
-        actions?:
-          | {
-              action_name?: string | undefined
-              count?: number | undefined
-              type?: 'melee' | 'ranged' | 'ability' | 'magic' | undefined
-            }[]
-          | undefined
-        attack_bonus?: number | undefined
-        attacks?:
-          | {
-              damage?: { [x: string]: unknown } | undefined
-              dc?: DC | undefined
-              name?: string | undefined
-            }[]
-          | undefined
-        damage?:
-          | { damage_dice?: string | undefined; damage_type?: APIReference | undefined }[]
-          | undefined
-        dc?: DC | undefined
-        desc?: string | undefined
-        multiattack_type?: string | undefined
-        name?: string | undefined
-        options?: Choice | undefined
-      }[]
-    | undefined
+  actions?: MonsterAllOf3ActionsItems[] | undefined
   alignments?:
     | 'chaotic neutral'
     | 'chaotic evil'
@@ -421,65 +420,11 @@ type Monster = {
   hit_points_roll?: string | undefined
   image?: string | undefined
   languages?: string | undefined
-  legendary_actions?:
-    | {
-        action_options?: Choice | undefined
-        actions?:
-          | {
-              action_name?: string | undefined
-              count?: number | undefined
-              type?: 'melee' | 'ranged' | 'ability' | 'magic' | undefined
-            }[]
-          | undefined
-        attack_bonus?: number | undefined
-        attacks?:
-          | {
-              damage?: { [x: string]: unknown } | undefined
-              dc?: DC | undefined
-              name?: string | undefined
-            }[]
-          | undefined
-        damage?:
-          | { damage_dice?: string | undefined; damage_type?: APIReference | undefined }[]
-          | undefined
-        dc?: DC | undefined
-        desc?: string | undefined
-        multiattack_type?: string | undefined
-        name?: string | undefined
-        options?: Choice | undefined
-      }[]
-    | undefined
+  legendary_actions?: MonsterAllOf3ActionsItems[] | undefined
   proficiencies?:
     | { proficiency?: APIReference | undefined; value?: number | undefined }[]
     | undefined
-  reactions?:
-    | {
-        action_options?: Choice | undefined
-        actions?:
-          | {
-              action_name?: string | undefined
-              count?: number | undefined
-              type?: 'melee' | 'ranged' | 'ability' | 'magic' | undefined
-            }[]
-          | undefined
-        attack_bonus?: number | undefined
-        attacks?:
-          | {
-              damage?: { [x: string]: unknown } | undefined
-              dc?: DC | undefined
-              name?: string | undefined
-            }[]
-          | undefined
-        damage?:
-          | { damage_dice?: string | undefined; damage_type?: APIReference | undefined }[]
-          | undefined
-        dc?: DC | undefined
-        desc?: string | undefined
-        multiattack_type?: string | undefined
-        name?: string | undefined
-        options?: Choice | undefined
-      }[]
-    | undefined
+  reactions?: MonsterAllOf3ActionsItems[] | undefined
   senses?:
     | {
         blindsight?: string | undefined

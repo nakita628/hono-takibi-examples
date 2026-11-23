@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDetectStackSetDriftRoute, postActionDetectStackSetDriftRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDetectStackSetDriftRoute,
+  postActionDetectStackSetDriftRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDetectStackSetDriftRouteHandler: RouteHandler<
+  typeof getActionDetectStackSetDriftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDetectStackSetDriftHandler = app
-  .openapi(getActionDetectStackSetDriftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDetectStackSetDriftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDetectStackSetDriftRouteHandler: RouteHandler<
+  typeof postActionDetectStackSetDriftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

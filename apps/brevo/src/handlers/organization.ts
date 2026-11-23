@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOrganizationActivitiesRoute,
   getOrganizationInvitedUsersRoute,
   getOrganizationUserEmailPermissionsRoute,
@@ -9,27 +9,44 @@ import {
   putOrganizationUserInvitationRevokeEmailRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrganizationActivitiesRouteHandler: RouteHandler<
+  typeof getOrganizationActivitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const organizationHandler = app
-  .openapi(getOrganizationActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationInvitedUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrganizationUserInvitationRevokeEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationUserInvitationSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOrganizationUserInvitationActionEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationUserUpdatePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationUserEmailPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOrganizationInvitedUsersRouteHandler: RouteHandler<
+  typeof getOrganizationInvitedUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOrganizationUserInvitationRevokeEmailRouteHandler: RouteHandler<
+  typeof putOrganizationUserInvitationRevokeEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationUserInvitationSendRouteHandler: RouteHandler<
+  typeof postOrganizationUserInvitationSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOrganizationUserInvitationActionEmailRouteHandler: RouteHandler<
+  typeof putOrganizationUserInvitationActionEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationUserUpdatePermissionsRouteHandler: RouteHandler<
+  typeof postOrganizationUserUpdatePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationUserEmailPermissionsRouteHandler: RouteHandler<
+  typeof getOrganizationUserEmailPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

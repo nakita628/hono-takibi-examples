@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDocumentsDocumentIdProgressRoute,
   getDocumentsDocumentIdRoute,
   getDocumentsDocumentIdSimilarsRoute,
@@ -10,30 +10,48 @@ import {
   postDocumentsDocumentIdUseAsRegularRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDocumentsRouteHandler: RouteHandler<typeof getDocumentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const documentsHandler = app
-  .openapi(getDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsSubjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsDocumentIdProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsDocumentIdRegeneratePreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsDocumentIdSimilarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsDocumentIdUseAsDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsDocumentIdUseAsRegularRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDocumentsSubjectsRouteHandler: RouteHandler<
+  typeof getDocumentsSubjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsDocumentIdRouteHandler: RouteHandler<
+  typeof getDocumentsDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsDocumentIdProgressRouteHandler: RouteHandler<
+  typeof getDocumentsDocumentIdProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsDocumentIdRegeneratePreviewRouteHandler: RouteHandler<
+  typeof postDocumentsDocumentIdRegeneratePreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsDocumentIdSimilarsRouteHandler: RouteHandler<
+  typeof getDocumentsDocumentIdSimilarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsDocumentIdUseAsDraftRouteHandler: RouteHandler<
+  typeof postDocumentsDocumentIdUseAsDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsDocumentIdUseAsRegularRouteHandler: RouteHandler<
+  typeof postDocumentsDocumentIdUseAsRegularRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

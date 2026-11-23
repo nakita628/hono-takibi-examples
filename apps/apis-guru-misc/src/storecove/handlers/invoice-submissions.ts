@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInvoiceSubmissionsGuidEvidenceRoute,
   postInvoiceSubmissionsPreflightRoute,
   postInvoiceSubmissionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInvoiceSubmissionsRouteHandler: RouteHandler<
+  typeof postInvoiceSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const invoiceSubmissionsHandler = app
-  .openapi(postInvoiceSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInvoiceSubmissionsPreflightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInvoiceSubmissionsGuidEvidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInvoiceSubmissionsPreflightRouteHandler: RouteHandler<
+  typeof postInvoiceSubmissionsPreflightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInvoiceSubmissionsGuidEvidenceRouteHandler: RouteHandler<
+  typeof getInvoiceSubmissionsGuidEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

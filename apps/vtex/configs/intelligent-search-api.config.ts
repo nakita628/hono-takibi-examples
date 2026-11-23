@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Intelligent-Search-API/0.1.12/openapi.yaml',
   output: './src/intelligent-search-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/intelligent-search-api/types.ts' },
   client: { output: './src/intelligent-search-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/intelligent-search-api/rpc.ts', parseResponse: true },

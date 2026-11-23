@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postOcsV2PhpCloudSharesIdAcceptRoute,
   postOcsV2PhpCloudSharesIdDeclineRoute,
   postOcsV2PhpCloudSharesIdMoveRoute,
@@ -10,30 +10,50 @@ import {
   postOcsV2PhpCloudSharesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOcsV2PhpCloudSharesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(postOcsV2PhpCloudSharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdReshareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdUnshareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudSharesIdMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOcsV2PhpCloudSharesIdReshareRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdReshareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdPermissionsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdAcceptRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdDeclineRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdUnshareRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdUnshareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdRevokeRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudSharesIdMoveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudSharesIdMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

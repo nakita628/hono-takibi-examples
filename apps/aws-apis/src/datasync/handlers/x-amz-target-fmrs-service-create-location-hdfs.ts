@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetFmrsServiceCreateLocationHdfsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetFmrsServiceCreateLocationHdfsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetFmrsServiceCreateLocationHdfsHandler = app.openapi(
-  postXAmzTargetFmrsServiceCreateLocationHdfsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetFmrsServiceCreateLocationHdfsRouteHandler: RouteHandler<
+  typeof postXAmzTargetFmrsServiceCreateLocationHdfsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

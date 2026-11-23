@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiV2AgreementsEnduserIdIndexRoute,
   deleteApiV2PaymentsCreditorsIdIndexRoute,
   deleteApiV2PaymentsIdIndexRoute,
@@ -30,90 +30,170 @@ import {
   putApiV2AgreementsEnduserIdAcceptIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV2AccountsPremiumIdTransactionsIndexRouteHandler: RouteHandler<
+  typeof getApiV2AccountsPremiumIdTransactionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV2AccountsPremiumIdTransactionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AccountsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AccountsIdBalancesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AccountsIdDetailsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AccountsIdTransactionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AgreementsEnduserIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2AgreementsEnduserIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV2AgreementsEnduserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AgreementsEnduserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiV2AgreementsEnduserIdAcceptIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2InstitutionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2InstitutionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2PaymentsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsAccountIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsCreditorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2PaymentsCreditorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV2PaymentsCreditorsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsCreditorsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsFieldsInstitutionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV2PaymentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PaymentsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2RequisitionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2RequisitionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV2RequisitionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2RequisitionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2TokenNewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV2TokenRefreshIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV2AccountsIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2AccountsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AccountsIdBalancesIndexRouteHandler: RouteHandler<
+  typeof getApiV2AccountsIdBalancesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AccountsIdDetailsIndexRouteHandler: RouteHandler<
+  typeof getApiV2AccountsIdDetailsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AccountsIdTransactionsIndexRouteHandler: RouteHandler<
+  typeof getApiV2AccountsIdTransactionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgreementsEnduserIndexRouteHandler: RouteHandler<
+  typeof getApiV2AgreementsEnduserIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2AgreementsEnduserIndexRouteHandler: RouteHandler<
+  typeof postApiV2AgreementsEnduserIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2AgreementsEnduserIdIndexRouteHandler: RouteHandler<
+  typeof deleteApiV2AgreementsEnduserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AgreementsEnduserIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2AgreementsEnduserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV2AgreementsEnduserIdAcceptIndexRouteHandler: RouteHandler<
+  typeof putApiV2AgreementsEnduserIdAcceptIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2InstitutionsIndexRouteHandler: RouteHandler<
+  typeof getApiV2InstitutionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2InstitutionsIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2InstitutionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2PaymentsIndexRouteHandler: RouteHandler<
+  typeof postApiV2PaymentsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsAccountIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsAccountIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsCreditorsIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsCreditorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2PaymentsCreditorsIndexRouteHandler: RouteHandler<
+  typeof postApiV2PaymentsCreditorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2PaymentsCreditorsIdIndexRouteHandler: RouteHandler<
+  typeof deleteApiV2PaymentsCreditorsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsCreditorsIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsCreditorsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsFieldsInstitutionIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsFieldsInstitutionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2PaymentsIdIndexRouteHandler: RouteHandler<
+  typeof deleteApiV2PaymentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PaymentsIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PaymentsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RequisitionsIndexRouteHandler: RouteHandler<
+  typeof getApiV2RequisitionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2RequisitionsIndexRouteHandler: RouteHandler<
+  typeof postApiV2RequisitionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV2RequisitionsIdIndexRouteHandler: RouteHandler<
+  typeof deleteApiV2RequisitionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RequisitionsIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2RequisitionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TokenNewIndexRouteHandler: RouteHandler<
+  typeof postApiV2TokenNewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV2TokenRefreshIndexRouteHandler: RouteHandler<
+  typeof postApiV2TokenRefreshIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

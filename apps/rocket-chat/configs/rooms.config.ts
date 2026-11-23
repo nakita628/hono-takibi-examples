@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/rooms.yaml',
   output: './src/rooms/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rooms/types.ts' },
   client: { output: './src/rooms/client.ts', baseUrl: '/' },
   rpc: { output: './src/rooms/rpc.ts', parseResponse: true },

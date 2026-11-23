@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLobbiesLobbyIdMembersMeRoute,
   deleteLobbiesLobbyIdMembersUserIdRoute,
   deleteLobbiesLobbyIdRoute,
@@ -17,51 +17,88 @@ import {
   putLobbiesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putLobbiesRouteHandler: RouteHandler<typeof putLobbiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const lobbiesHandler = app
-  .openapi(putLobbiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLobbiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLobbiesLobbyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLobbiesLobbyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLobbiesLobbyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchLobbiesLobbyIdChannelLinkingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLobbiesLobbyIdMembersMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLobbiesLobbyIdMembersMeInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLobbiesLobbyIdMembersBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLobbiesLobbyIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLobbiesLobbyIdMembersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLobbiesLobbyIdMembersUserIdInvitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLobbiesLobbyIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLobbiesLobbyIdMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLobbiesLobbyIdMessagesMessageIdModerationMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLobbiesRouteHandler: RouteHandler<typeof postLobbiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLobbiesLobbyIdRouteHandler: RouteHandler<typeof getLobbiesLobbyIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLobbiesLobbyIdRouteHandler: RouteHandler<
+  typeof deleteLobbiesLobbyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLobbiesLobbyIdRouteHandler: RouteHandler<
+  typeof patchLobbiesLobbyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchLobbiesLobbyIdChannelLinkingRouteHandler: RouteHandler<
+  typeof patchLobbiesLobbyIdChannelLinkingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLobbiesLobbyIdMembersMeRouteHandler: RouteHandler<
+  typeof deleteLobbiesLobbyIdMembersMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLobbiesLobbyIdMembersMeInvitesRouteHandler: RouteHandler<
+  typeof postLobbiesLobbyIdMembersMeInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLobbiesLobbyIdMembersBulkRouteHandler: RouteHandler<
+  typeof postLobbiesLobbyIdMembersBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLobbiesLobbyIdMembersUserIdRouteHandler: RouteHandler<
+  typeof putLobbiesLobbyIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLobbiesLobbyIdMembersUserIdRouteHandler: RouteHandler<
+  typeof deleteLobbiesLobbyIdMembersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLobbiesLobbyIdMembersUserIdInvitesRouteHandler: RouteHandler<
+  typeof postLobbiesLobbyIdMembersUserIdInvitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLobbiesLobbyIdMessagesRouteHandler: RouteHandler<
+  typeof getLobbiesLobbyIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLobbiesLobbyIdMessagesRouteHandler: RouteHandler<
+  typeof postLobbiesLobbyIdMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLobbiesLobbyIdMessagesMessageIdModerationMetadataRouteHandler: RouteHandler<
+  typeof putLobbiesLobbyIdMessagesMessageIdModerationMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

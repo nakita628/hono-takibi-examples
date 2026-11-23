@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAutomatedDiscoveryConfigurationRoute,
   putAutomatedDiscoveryConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAutomatedDiscoveryConfigurationRouteHandler: RouteHandler<
+  typeof getAutomatedDiscoveryConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const automatedDiscoveryHandler = app
-  .openapi(getAutomatedDiscoveryConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAutomatedDiscoveryConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAutomatedDiscoveryConfigurationRouteHandler: RouteHandler<
+  typeof putAutomatedDiscoveryConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

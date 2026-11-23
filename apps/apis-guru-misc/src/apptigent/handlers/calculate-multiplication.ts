@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCalculateMultiplicationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCalculateMultiplicationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const calculateMultiplicationHandler = app.openapi(postCalculateMultiplicationRoute, (c) => {
+export const postCalculateMultiplicationRouteHandler: RouteHandler<
+  typeof postCalculateMultiplicationRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

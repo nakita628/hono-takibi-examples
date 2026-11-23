@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAwsProton20200720DeleteEnvironmentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAwsProton20200720DeleteEnvironmentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsProton20200720DeleteEnvironmentHandler = app.openapi(
-  postXAmzTargetAwsProton20200720DeleteEnvironmentRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAwsProton20200720DeleteEnvironmentRouteHandler: RouteHandler<
+  typeof postXAmzTargetAwsProton20200720DeleteEnvironmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

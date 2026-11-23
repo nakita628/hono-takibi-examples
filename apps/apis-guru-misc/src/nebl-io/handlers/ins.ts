@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInsAddrAddressBalanceRoute,
   getInsAddrAddressRoute,
   getInsAddrAddressTotalReceivedRoute,
@@ -16,48 +16,74 @@ import {
   postInsTxSendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInsAddrAddressRouteHandler: RouteHandler<typeof getInsAddrAddressRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const insHandler = app
-  .openapi(getInsAddrAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsAddrAddressBalanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsAddrAddressTotalReceivedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsAddrAddressTotalSentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsAddrAddressUnconfirmedBalanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsAddrAddressUtxoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsBlockIndexBlockindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsBlockBlockhashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsRawtxTxidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInsTxSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsTxTxidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsTxsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInsAddrAddressBalanceRouteHandler: RouteHandler<
+  typeof getInsAddrAddressBalanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsAddrAddressTotalReceivedRouteHandler: RouteHandler<
+  typeof getInsAddrAddressTotalReceivedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsAddrAddressTotalSentRouteHandler: RouteHandler<
+  typeof getInsAddrAddressTotalSentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsAddrAddressUnconfirmedBalanceRouteHandler: RouteHandler<
+  typeof getInsAddrAddressUnconfirmedBalanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsAddrAddressUtxoRouteHandler: RouteHandler<
+  typeof getInsAddrAddressUtxoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsBlockIndexBlockindexRouteHandler: RouteHandler<
+  typeof getInsBlockIndexBlockindexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsBlockBlockhashRouteHandler: RouteHandler<
+  typeof getInsBlockBlockhashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsRawtxTxidRouteHandler: RouteHandler<typeof getInsRawtxTxidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsStatusRouteHandler: RouteHandler<typeof getInsStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsSyncRouteHandler: RouteHandler<typeof getInsSyncRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInsTxSendRouteHandler: RouteHandler<typeof postInsTxSendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsTxTxidRouteHandler: RouteHandler<typeof getInsTxTxidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsTxsRouteHandler: RouteHandler<typeof getInsTxsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

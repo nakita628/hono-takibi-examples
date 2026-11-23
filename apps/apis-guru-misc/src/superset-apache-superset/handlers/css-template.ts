@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCssTemplateIndexRoute,
   deleteCssTemplatePkRoute,
   getCssTemplateIndexRoute,
@@ -10,30 +10,50 @@ import {
   putCssTemplatePkRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteCssTemplateIndexRouteHandler: RouteHandler<
+  typeof deleteCssTemplateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cssTemplateHandler = app
-  .openapi(deleteCssTemplateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCssTemplateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCssTemplateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCssTemplateInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCssTemplateRelatedColumnNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCssTemplatePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCssTemplatePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCssTemplatePkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCssTemplateIndexRouteHandler: RouteHandler<
+  typeof getCssTemplateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCssTemplateIndexRouteHandler: RouteHandler<
+  typeof postCssTemplateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCssTemplateInfoRouteHandler: RouteHandler<typeof getCssTemplateInfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCssTemplateRelatedColumnNameRouteHandler: RouteHandler<
+  typeof getCssTemplateRelatedColumnNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCssTemplatePkRouteHandler: RouteHandler<
+  typeof deleteCssTemplatePkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCssTemplatePkRouteHandler: RouteHandler<typeof getCssTemplatePkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putCssTemplatePkRouteHandler: RouteHandler<typeof putCssTemplatePkRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

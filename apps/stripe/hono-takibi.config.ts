@@ -4,7 +4,7 @@ export default defineConfig({
   // Stripe OpenAPI specification: https://github.com/stripe/openapi
   input: 'https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

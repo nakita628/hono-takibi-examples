@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWirelessDetailRecordsReportsIdRoute,
   getWirelessDetailRecordsReportsIdRoute,
   getWirelessDetailRecordsReportsRoute,
   postWirelessDetailRecordsReportsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWirelessDetailRecordsReportsRouteHandler: RouteHandler<
+  typeof getWirelessDetailRecordsReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wirelessHandler = app
-  .openapi(getWirelessDetailRecordsReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWirelessDetailRecordsReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWirelessDetailRecordsReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWirelessDetailRecordsReportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWirelessDetailRecordsReportsRouteHandler: RouteHandler<
+  typeof postWirelessDetailRecordsReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWirelessDetailRecordsReportsIdRouteHandler: RouteHandler<
+  typeof deleteWirelessDetailRecordsReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWirelessDetailRecordsReportsIdRouteHandler: RouteHandler<
+  typeof getWirelessDetailRecordsReportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

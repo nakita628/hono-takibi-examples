@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3NameRoute,
   getV3EffectiveTagsRoute,
   getV3FoldersRoute,
@@ -30,90 +30,142 @@ import {
   postV3TagValuesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3EffectiveTagsRouteHandler: RouteHandler<typeof getV3EffectiveTagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3EffectiveTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3FoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3FoldersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3FoldersSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LiensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3LiensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3OrganizationsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ProjectsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TagBindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3TagBindingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3TagKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TagKeysNamespacedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TagValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3TagValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3TagValuesNamespacedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV3NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3NameMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3NameUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3ParentTagHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ParentTagHoldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3ResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3FoldersRouteHandler: RouteHandler<typeof getV3FoldersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3FoldersRouteHandler: RouteHandler<typeof postV3FoldersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3FoldersSearchRouteHandler: RouteHandler<typeof getV3FoldersSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LiensRouteHandler: RouteHandler<typeof getV3LiensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3LiensRouteHandler: RouteHandler<typeof postV3LiensRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3OrganizationsSearchRouteHandler: RouteHandler<
+  typeof getV3OrganizationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ProjectsRouteHandler: RouteHandler<typeof getV3ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ProjectsRouteHandler: RouteHandler<typeof postV3ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ProjectsSearchRouteHandler: RouteHandler<
+  typeof getV3ProjectsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TagBindingsRouteHandler: RouteHandler<typeof getV3TagBindingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3TagBindingsRouteHandler: RouteHandler<typeof postV3TagBindingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TagKeysRouteHandler: RouteHandler<typeof getV3TagKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3TagKeysRouteHandler: RouteHandler<typeof postV3TagKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TagKeysNamespacedRouteHandler: RouteHandler<
+  typeof getV3TagKeysNamespacedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TagValuesRouteHandler: RouteHandler<typeof getV3TagValuesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3TagValuesRouteHandler: RouteHandler<typeof postV3TagValuesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3TagValuesNamespacedRouteHandler: RouteHandler<
+  typeof getV3TagValuesNamespacedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3NameRouteHandler: RouteHandler<typeof deleteV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3NameRouteHandler: RouteHandler<typeof getV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV3NameRouteHandler: RouteHandler<typeof patchV3NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3NameMoveRouteHandler: RouteHandler<typeof postV3NameMoveRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3NameUndeleteRouteHandler: RouteHandler<typeof postV3NameUndeleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3ParentTagHoldsRouteHandler: RouteHandler<
+  typeof getV3ParentTagHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ParentTagHoldsRouteHandler: RouteHandler<
+  typeof postV3ParentTagHoldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof postV3ResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postV3ResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3ResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postV3ResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

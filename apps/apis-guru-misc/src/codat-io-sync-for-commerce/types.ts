@@ -1,28 +1,34 @@
 type VisibleAccounts = { visibleAccounts?: (string[] | null) | undefined }
-type SyncToLatestArgs = { syncTo?: unknown | undefined }
+type CompanyId = string
+type CompanyCreated = string
+type SyncToLatestArgs = { syncTo?: CompanyCreated | undefined }
+type ConnectionDataConnectionError = {
+  errorMessage?: string | undefined
+  erroredOnUtc?: CompanyCreated | undefined
+  statusCode?: string | undefined
+  statusText?: string | undefined
+}
+type ConnectionId = string
+type ConnectionIntegrationId = string
+type BrandingSourceId = string
+type ConnectionSourceType = 'Accounting' | 'Banking' | 'Commerce' | 'Other' | 'Unknown'
+type ConnectionDataConnectionStatus = 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
 type Connection = {
   additionalProperties?: unknown | undefined
   connectionInfo?: { [x: string]: string } | undefined
-  created: unknown
-  dataConnectionErrors?:
-    | {
-        errorMessage?: string | undefined
-        erroredOnUtc?: unknown | undefined
-        statusCode?: string | undefined
-        statusText?: string | undefined
-      }[]
-    | undefined
-  id: string
-  integrationId: string
+  created: CompanyCreated
+  dataConnectionErrors?: ConnectionDataConnectionError[] | undefined
+  id: ConnectionId
+  integrationId: ConnectionIntegrationId
   integrationKey: string
-  lastSync?: unknown | undefined
+  lastSync?: CompanyCreated | undefined
   linkUrl: string
   platformName: string
-  sourceId: unknown
-  sourceType: 'Accounting' | 'Banking' | 'Commerce' | 'Other' | 'Unknown'
-  status: 'PendingAuth' | 'Linked' | 'Unlinked' | 'Deauthorized'
+  sourceId: BrandingSourceId
+  sourceType: ConnectionSourceType
+  status: ConnectionDataConnectionStatus
 }
-type DateRange = { finish?: unknown | undefined; start?: unknown | undefined }
+type DateRange = { finish?: CompanyCreated | undefined; start?: CompanyCreated | undefined }
 type SyncSummary = {
   commerceSyncId?: string | undefined
   companyId?: string | undefined
@@ -33,7 +39,7 @@ type SyncSummary = {
   syncExceptionMessage?: (string | null) | undefined
   syncStatus?: (string | null) | undefined
   syncStatusCode?: number | undefined
-  syncUtc?: unknown | undefined
+  syncUtc?: CompanyCreated | undefined
 }
 type AccountOption = {
   classification?: (string | null) | undefined
@@ -124,79 +130,81 @@ type Configuration = {
   payments?: Payments | undefined
   sales?: Sales | undefined
 }
+type IntegrationFeatureState = 'Release' | 'Beta' | 'Deprecated' | 'NotSupported' | 'NotImplemented'
+type IntegrationFeatureType =
+  | 'Get'
+  | 'Post'
+  | 'Categorization'
+  | 'Delete'
+  | 'Put'
+  | 'GetAsPdf'
+  | 'DownloadAttachment'
+  | 'GetAttachment'
+  | 'GetAttachments'
+  | 'UploadAttachment'
+type IntegrationSupportedFeature = {
+  featureState: IntegrationFeatureState
+  featureType: IntegrationFeatureType
+}
+type IntegrationDataTypeFeature = {
+  dataType?:
+    | 'accountTransactions'
+    | 'balanceSheet'
+    | 'bankAccounts'
+    | 'bankTransactions'
+    | 'billCreditNotes'
+    | 'billPayments'
+    | 'bills'
+    | 'cashFlowStatement'
+    | 'chartOfAccounts'
+    | 'company'
+    | 'creditNotes'
+    | 'customers'
+    | 'directCosts'
+    | 'directIncomes'
+    | 'invoices'
+    | 'items'
+    | 'journalEntries'
+    | 'journals'
+    | 'paymentMethods'
+    | 'payments'
+    | 'profitAndLoss'
+    | 'purchaseOrders'
+    | 'salesOrders'
+    | 'suppliers'
+    | 'taxRates'
+    | 'trackingCategories'
+    | 'transfers'
+    | 'banking-accountBalances'
+    | 'banking-accounts'
+    | 'banking-transactionCategories'
+    | 'banking-transactions'
+    | 'commerce-companyInfo'
+    | 'commerce-customers'
+    | 'commerce-disputes'
+    | 'commerce-locations'
+    | 'commerce-orders'
+    | 'commerce-paymentMethods'
+    | 'commerce-payments'
+    | 'commerce-productCategories'
+    | 'commerce-products'
+    | 'commerce-taxComponents'
+    | 'commerce-transactions'
+    | undefined
+  supportedFeatures: IntegrationSupportedFeature[]
+}
 type Integration = {
   dataProvidedBy?: string | undefined
-  datatypeFeatures?:
-    | {
-        dataType?:
-          | 'accountTransactions'
-          | 'balanceSheet'
-          | 'bankAccounts'
-          | 'bankTransactions'
-          | 'billCreditNotes'
-          | 'billPayments'
-          | 'bills'
-          | 'cashFlowStatement'
-          | 'chartOfAccounts'
-          | 'company'
-          | 'creditNotes'
-          | 'customers'
-          | 'directCosts'
-          | 'directIncomes'
-          | 'invoices'
-          | 'items'
-          | 'journalEntries'
-          | 'journals'
-          | 'paymentMethods'
-          | 'payments'
-          | 'profitAndLoss'
-          | 'purchaseOrders'
-          | 'salesOrders'
-          | 'suppliers'
-          | 'taxRates'
-          | 'trackingCategories'
-          | 'transfers'
-          | 'banking-accountBalances'
-          | 'banking-accounts'
-          | 'banking-transactionCategories'
-          | 'banking-transactions'
-          | 'commerce-companyInfo'
-          | 'commerce-customers'
-          | 'commerce-disputes'
-          | 'commerce-locations'
-          | 'commerce-orders'
-          | 'commerce-paymentMethods'
-          | 'commerce-payments'
-          | 'commerce-productCategories'
-          | 'commerce-products'
-          | 'commerce-taxComponents'
-          | 'commerce-transactions'
-          | undefined
-        supportedFeatures: {
-          featureState: 'Release' | 'Beta' | 'Deprecated' | 'NotSupported' | 'NotImplemented'
-          featureType:
-            | 'Get'
-            | 'Post'
-            | 'Categorization'
-            | 'Delete'
-            | 'Put'
-            | 'GetAsPdf'
-            | 'DownloadAttachment'
-            | 'GetAttachment'
-            | 'GetAttachments'
-            | 'UploadAttachment'
-        }[]
-      }[]
-    | undefined
+  datatypeFeatures?: IntegrationDataTypeFeature[] | undefined
   enabled: boolean
-  integrationId?: unknown | undefined
+  integrationId?: ConnectionIntegrationId | undefined
   isBeta?: boolean | undefined
   isOfflineConnector?: boolean | undefined
   key: string
   logoUrl: string
   name: string
-  sourceId?: unknown | undefined
-  sourceType?: unknown | undefined
+  sourceId?: BrandingSourceId | undefined
+  sourceType?: ConnectionSourceType | undefined
 }
 type HalRef = { href?: string | undefined }
 type Links = {
@@ -227,16 +235,16 @@ type Branding = {
         square?: { [x: string]: unknown } | undefined
       }
     | undefined
-  sourceId?: string | undefined
+  sourceId?: BrandingSourceId | undefined
 }
 type SyncFlowUrl = { url?: string | undefined }
 type Company = {
-  created?: string | undefined
+  created?: CompanyCreated | undefined
   createdByUserName?: string | undefined
   dataConnections?: Connection[] | undefined
   description?: string | undefined
-  id: string
-  lastSync?: unknown | undefined
+  id: CompanyId
+  lastSync?: CompanyCreated | undefined
   name: string
   platform?: string | undefined
   redirect: string
@@ -273,7 +281,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/companies/:companyId/sync/commerce/latest': {
       $post: {
-        input: { param: { companyId: unknown } } & { json: SyncToLatestArgs }
+        input: { param: { companyId: CompanyId } } & { json: SyncToLatestArgs }
         output: SyncSummary
         outputFormat: 'json'
         status: 200
@@ -282,13 +290,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/config/companies/:companyId/sync/commerce': {
       $get: {
-        input: { param: { companyId: unknown } }
+        input: { param: { companyId: CompanyId } }
         output: Configuration
         outputFormat: 'json'
         status: 200
       }
       $post: {
-        input: { param: { companyId: unknown } }
+        input: { param: { companyId: CompanyId } }
         output: Configuration
         outputFormat: 'json'
         status: 200
@@ -353,7 +361,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/meta/companies/:companyId/connections': {
       $get: {
-        input: { param: { companyId: unknown } } & {
+        input: { param: { companyId: CompanyId } } & {
           query: {
             page: number
             pageSize?: number | undefined
@@ -366,7 +374,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         status: 200
       }
       $post: {
-        input: { param: { companyId: unknown } } & { json: string }
+        input: { param: { companyId: CompanyId } } & { json: string }
         output: Connection
         outputFormat: 'json'
         status: 200
@@ -375,7 +383,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/meta/companies/:companyId/connections/:connectionId': {
       $patch: {
-        input: { param: { companyId: unknown; connectionId: unknown } } & { json: UpdateConnection }
+        input: { param: { companyId: CompanyId; connectionId: ConnectionId } } & {
+          json: UpdateConnection
+        }
         output: Connection
         outputFormat: 'json'
         status: 200
@@ -384,7 +394,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/meta/companies/:companyId/sync/commerce/historic': {
       $post: {
-        input: { param: { companyId: unknown } } & { json: DateRange }
+        input: { param: { companyId: CompanyId } } & { json: DateRange }
         output: SyncSummary
         outputFormat: 'json'
         status: 200
@@ -393,7 +403,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/meta/companies/:companyId/sync/commerce/status': {
       $get: {
-        input: { param: { companyId: unknown } }
+        input: { param: { companyId: CompanyId } }
         output: {}
         outputFormat: string
         status: 200

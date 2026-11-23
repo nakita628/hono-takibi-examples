@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postSimulationsAccountStatementsRoute,
   postSimulationsAccountTransfersAccountTransferIdCompleteRoute,
   postSimulationsAchTransfersAchTransferIdReturnRoute,
@@ -23,69 +23,128 @@ import {
   postSimulationsWireTransfersWireTransferIdSubmitRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSimulationsAccountStatementsRouteHandler: RouteHandler<
+  typeof postSimulationsAccountStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const simulationsHandler = app
-  .openapi(postSimulationsAccountStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsAccountTransfersAccountTransferIdCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsAchTransfersAchTransferIdReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsAchTransfersAchTransferIdSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCardAuthorizationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCardDisputesCardDisputeIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCardRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCardSettlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCheckDepositsCheckDepositIdRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCheckDepositsCheckDepositIdReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCheckDepositsCheckDepositIdSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCheckTransfersCheckTransferIdDepositRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsCheckTransfersCheckTransferIdMailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsDigitalWalletTokenRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsInboundAchTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsInboundRealTimePaymentsTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsInboundWireDrawdownRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsInboundWireTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsWireTransfersWireTransferIdReverseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimulationsWireTransfersWireTransferIdSubmitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSimulationsAccountTransfersAccountTransferIdCompleteRouteHandler: RouteHandler<
+  typeof postSimulationsAccountTransfersAccountTransferIdCompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsAchTransfersAchTransferIdReturnRouteHandler: RouteHandler<
+  typeof postSimulationsAchTransfersAchTransferIdReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsAchTransfersAchTransferIdSubmitRouteHandler: RouteHandler<
+  typeof postSimulationsAchTransfersAchTransferIdSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCardAuthorizationsRouteHandler: RouteHandler<
+  typeof postSimulationsCardAuthorizationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCardDisputesCardDisputeIdActionRouteHandler: RouteHandler<
+  typeof postSimulationsCardDisputesCardDisputeIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCardRefundsRouteHandler: RouteHandler<
+  typeof postSimulationsCardRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCardSettlementsRouteHandler: RouteHandler<
+  typeof postSimulationsCardSettlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCheckDepositsCheckDepositIdRejectRouteHandler: RouteHandler<
+  typeof postSimulationsCheckDepositsCheckDepositIdRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCheckDepositsCheckDepositIdReturnRouteHandler: RouteHandler<
+  typeof postSimulationsCheckDepositsCheckDepositIdReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCheckDepositsCheckDepositIdSubmitRouteHandler: RouteHandler<
+  typeof postSimulationsCheckDepositsCheckDepositIdSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCheckTransfersCheckTransferIdDepositRouteHandler: RouteHandler<
+  typeof postSimulationsCheckTransfersCheckTransferIdDepositRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsCheckTransfersCheckTransferIdMailRouteHandler: RouteHandler<
+  typeof postSimulationsCheckTransfersCheckTransferIdMailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsDigitalWalletTokenRequestsRouteHandler: RouteHandler<
+  typeof postSimulationsDigitalWalletTokenRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsDocumentsRouteHandler: RouteHandler<
+  typeof postSimulationsDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsInboundAchTransfersRouteHandler: RouteHandler<
+  typeof postSimulationsInboundAchTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsInboundRealTimePaymentsTransfersRouteHandler: RouteHandler<
+  typeof postSimulationsInboundRealTimePaymentsTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsInboundWireDrawdownRequestsRouteHandler: RouteHandler<
+  typeof postSimulationsInboundWireDrawdownRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsInboundWireTransfersRouteHandler: RouteHandler<
+  typeof postSimulationsInboundWireTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsWireTransfersWireTransferIdReverseRouteHandler: RouteHandler<
+  typeof postSimulationsWireTransfersWireTransferIdReverseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSimulationsWireTransfersWireTransferIdSubmitRouteHandler: RouteHandler<
+  typeof postSimulationsWireTransfersWireTransferIdSubmitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20190729GenerateMobileSdkReleaseUrlHandler = app.openapi(
-  postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20190729GenerateMobileSdkReleaseUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

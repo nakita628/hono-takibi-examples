@@ -22,10 +22,14 @@ export function getApiKey() {
 
 export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
 ) {
-  return ['api', '/api/iconsets/v3/categories?platform=:platform&language=:language', args] as const
+  return [
+    'api',
+    '/api/iconsets/v3/categories?platform={platform}&language={language}',
+    args,
+  ] as const
 }
 
 export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryOptions<
@@ -34,7 +38,7 @@ export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryO
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -43,7 +47,7 @@ export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryO
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -53,7 +57,7 @@ export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryO
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+              (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
             >
           >
         >
@@ -66,7 +70,7 @@ export function getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryO
     queryKey: getApiIconsetsV3CategoriesPlatformPlatformLanguageLanguageQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.iconsets.v3['categories?platform=:platform&language=:language'].$get(args, {
+        client.api.iconsets.v3['categories?platform={platform}&language={language}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -81,7 +85,7 @@ export function useApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -90,7 +94,7 @@ export function useApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -100,7 +104,7 @@ export function useApiIconsetsV3CategoriesPlatformPlatformLanguageLanguage<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -135,7 +139,7 @@ export function useSuspenseApiIconsetsV3CategoriesPlatformPlatformLanguageLangua
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -144,7 +148,7 @@ export function useSuspenseApiIconsetsV3CategoriesPlatformPlatformLanguageLangua
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -154,7 +158,7 @@ export function useSuspenseApiIconsetsV3CategoriesPlatformPlatformLanguageLangua
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['categories?platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['categories?platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -185,12 +189,12 @@ export function useSuspenseApiIconsetsV3CategoriesPlatformPlatformLanguageLangua
 
 export function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageQueryKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language',
+    '/api/iconsets/v3/category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}',
     args,
   ] as const
 }
@@ -201,7 +205,7 @@ export function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -210,7 +214,7 @@ export function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -220,7 +224,7 @@ export function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+              (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
             >
           >
         >
@@ -239,7 +243,7 @@ export function getApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
     queryFn({ signal }) {
       return parseResponse(
         client.api.iconsets.v3[
-          'category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language'
+          'category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -252,7 +256,7 @@ export function useApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -261,7 +265,7 @@ export function useApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -271,7 +275,7 @@ export function useApiIconsetsV3CategoryCategoryCategorySubcategorySubcategoryAm
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -308,7 +312,7 @@ export function useSuspenseApiIconsetsV3CategoryCategoryCategorySubcategorySubca
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -317,7 +321,7 @@ export function useSuspenseApiIconsetsV3CategoryCategoryCategorySubcategorySubca
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -327,7 +331,7 @@ export function useSuspenseApiIconsetsV3CategoryCategoryCategorySubcategorySubca
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['category?category=:category&subcategory=:subcategory&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['category?category={category}&subcategory={subcategory}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -360,12 +364,12 @@ export function useSuspenseApiIconsetsV3CategoryCategoryCategorySubcategorySubca
 
 export function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageQueryKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language',
+    '/api/iconsets/v3/latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}',
     args,
   ] as const
 }
@@ -376,7 +380,7 @@ export function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -385,7 +389,7 @@ export function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -395,7 +399,7 @@ export function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+              (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
             >
           >
         >
@@ -414,7 +418,7 @@ export function getApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
     queryFn({ signal }) {
       return parseResponse(
         client.api.iconsets.v3[
-          'latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language'
+          'latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -427,7 +431,7 @@ export function useApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -436,7 +440,7 @@ export function useApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -446,7 +450,7 @@ export function useApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPlatformPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -483,7 +487,7 @@ export function useSuspenseApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+            (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
           >
         >
       >
@@ -492,7 +496,7 @@ export function useSuspenseApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+    (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -502,7 +506,7 @@ export function useSuspenseApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['latest?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language']['$get']
+                  (typeof client.api.iconsets.v3)['latest?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}']['$get']
                 >
               >
             >
@@ -535,12 +539,12 @@ export function useSuspenseApiIconsetsV3LatestTermTermAmountAmountOffsetOffsetPl
 
 export function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountQueryKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v3/search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount',
+    '/api/iconsets/v3/search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}',
     args,
   ] as const
 }
@@ -551,7 +555,7 @@ export function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -560,7 +564,7 @@ export function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -570,7 +574,7 @@ export function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+              (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
             >
           >
         >
@@ -589,7 +593,7 @@ export function getApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
     queryFn({ signal }) {
       return parseResponse(
         client.api.iconsets.v3[
-          'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+          'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -602,7 +606,7 @@ export function useApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -611,7 +615,7 @@ export function useApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -621,7 +625,7 @@ export function useApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPlatformPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                  (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
                 >
               >
             >
@@ -658,7 +662,7 @@ export function useSuspenseApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -667,7 +671,7 @@ export function useSuspenseApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -677,7 +681,7 @@ export function useSuspenseApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v3)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                  (typeof client.api.iconsets.v3)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
                 >
               >
             >
@@ -709,29 +713,29 @@ export function useSuspenseApiIconsetsV3SearchTermTermAmountAmountOffsetOffsetPl
 }
 
 export function getApiIconsetsV3TotalSinceSinceQueryKey(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
 ) {
-  return ['api', '/api/iconsets/v3/total?since=:since', args] as const
+  return ['api', '/api/iconsets/v3/total?since={since}', args] as const
 }
 
 export function getApiIconsetsV3TotalSinceSinceQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+          Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
         >
       >
     >,
@@ -742,7 +746,7 @@ export function getApiIconsetsV3TotalSinceSinceQueryOptions<
     queryKey: getApiIconsetsV3TotalSinceSinceQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.api.iconsets.v3['total?since=:since'].$get(args, {
+        client.api.iconsets.v3['total?since={since}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -755,20 +759,20 @@ export function useApiIconsetsV3TotalSinceSince<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+              Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
             >
           >
         >,
@@ -796,20 +800,20 @@ export function useSuspenseApiIconsetsV3TotalSinceSince<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+        Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>,
+  args: InferRequestType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since=:since']['$get']>>
+              Awaited<ReturnType<(typeof client.api.iconsets.v3)['total?since={since}']['$get']>>
             >
           >
         >,
@@ -835,12 +839,12 @@ export function useSuspenseApiIconsetsV3TotalSinceSince<
 
 export function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPlatformLanguageLanguageExactAmountExactAmountQueryKey(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
 ) {
   return [
     'api',
-    '/api/iconsets/v4/search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount',
+    '/api/iconsets/v4/search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}',
     args,
   ] as const
 }
@@ -851,7 +855,7 @@ export function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -860,7 +864,7 @@ export function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -870,7 +874,7 @@ export function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+              (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
             >
           >
         >
@@ -889,7 +893,7 @@ export function getApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
     queryFn({ signal }) {
       return parseResponse(
         client.api.iconsets.v4[
-          'search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount'
+          'search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -902,7 +906,7 @@ export function useApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -911,7 +915,7 @@ export function useApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -921,7 +925,7 @@ export function useApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPlatformPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                  (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
                 >
               >
             >
@@ -958,7 +962,7 @@ export function useSuspenseApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPl
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+            (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
           >
         >
       >
@@ -967,7 +971,7 @@ export function useSuspenseApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPl
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+    (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -977,7 +981,7 @@ export function useSuspenseApiIconsetsV4SearchTermTermAmountAmountOffsetOffsetPl
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.api.iconsets.v4)['search?term=:term&amount=:amount&offset=:offset&platform=:platform&language=:language&exact_amount=:exact_amount']['$get']
+                  (typeof client.api.iconsets.v4)['search?term={term}&amount={amount}&offset={offset}&platform={platform}&language={language}&exact_amount={exact_amount}']['$get']
                 >
               >
             >

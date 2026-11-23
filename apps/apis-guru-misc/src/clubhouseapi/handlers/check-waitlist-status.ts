@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCheckWaitlistStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCheckWaitlistStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checkWaitlistStatusHandler = app.openapi(postCheckWaitlistStatusRoute, (c) => {
+export const postCheckWaitlistStatusRouteHandler: RouteHandler<
+  typeof postCheckWaitlistStatusRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

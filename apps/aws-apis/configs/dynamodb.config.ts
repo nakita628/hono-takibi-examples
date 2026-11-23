@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/dynamodb/2012-08-10/openapi.yaml',
   output: './src/dynamodb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dynamodb/types.ts' },
   client: { output: './src/dynamodb/client.ts', baseUrl: '/' },
   rpc: { output: './src/dynamodb/rpc.ts', parseResponse: true },

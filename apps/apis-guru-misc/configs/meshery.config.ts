@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/meshery.local/0.4.27/openapi.yaml',
   output: './src/meshery/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/meshery/types.ts' },
   client: { output: './src/meshery/client.ts', baseUrl: '/' },
   rpc: { output: './src/meshery/rpc.ts', parseResponse: true },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGlobalpageloadRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGlobalpageloadRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const globalpageloadHandler = app.openapi(getGlobalpageloadRoute, (c) => {
+export const getGlobalpageloadRouteHandler: RouteHandler<typeof getGlobalpageloadRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

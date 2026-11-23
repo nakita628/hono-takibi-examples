@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBaggageBaggagetripandcontactSearchIDRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBaggageBaggagetripandcontactSearchIDRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const baggageHandler = app.openapi(getBaggageBaggagetripandcontactSearchIDRoute, (c) => {
+export const getBaggageBaggagetripandcontactSearchIDRouteHandler: RouteHandler<
+  typeof getBaggageBaggagetripandcontactSearchIDRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

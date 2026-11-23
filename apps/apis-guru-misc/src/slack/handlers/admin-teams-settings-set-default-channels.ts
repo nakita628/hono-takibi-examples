@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminTeamsSettingsSetDefaultChannelsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminTeamsSettingsSetDefaultChannelsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminTeamsSettingsSetDefaultChannelsHandler = app.openapi(
-  postAdminTeamsSettingsSetDefaultChannelsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postAdminTeamsSettingsSetDefaultChannelsRouteHandler: RouteHandler<
+  typeof postAdminTeamsSettingsSetDefaultChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

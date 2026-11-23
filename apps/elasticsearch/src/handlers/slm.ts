@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSlmPolicyPolicyIdRoute,
   getSlmPolicyPolicyIdRoute,
   getSlmPolicyRoute,
@@ -12,36 +12,52 @@ import {
   putSlmPolicyPolicyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSlmPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof getSlmPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const slmHandler = app
-  .openapi(getSlmPolicyPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSlmPolicyPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSlmPolicyPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSlmPolicyPolicyIdExecuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSlmExecuteRetentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlmPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlmStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlmStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSlmStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSlmStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSlmPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof putSlmPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSlmPolicyPolicyIdRouteHandler: RouteHandler<
+  typeof deleteSlmPolicyPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSlmPolicyPolicyIdExecuteRouteHandler: RouteHandler<
+  typeof putSlmPolicyPolicyIdExecuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSlmExecuteRetentionRouteHandler: RouteHandler<
+  typeof postSlmExecuteRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlmPolicyRouteHandler: RouteHandler<typeof getSlmPolicyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlmStatsRouteHandler: RouteHandler<typeof getSlmStatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlmStatusRouteHandler: RouteHandler<typeof getSlmStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSlmStartRouteHandler: RouteHandler<typeof postSlmStartRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSlmStopRouteHandler: RouteHandler<typeof postSlmStopRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

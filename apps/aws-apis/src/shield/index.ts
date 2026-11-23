@@ -1,81 +1,227 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsShield20160616AssociateDrtLogBucketHandler,
-  xAmzTargetAwsShield20160616AssociateDrtRoleHandler,
-  xAmzTargetAwsShield20160616AssociateHealthCheckHandler,
-  xAmzTargetAwsShield20160616AssociateProactiveEngagementDetailsHandler,
-  xAmzTargetAwsShield20160616CreateProtectionGroupHandler,
-  xAmzTargetAwsShield20160616CreateProtectionHandler,
-  xAmzTargetAwsShield20160616CreateSubscriptionHandler,
-  xAmzTargetAwsShield20160616DeleteProtectionGroupHandler,
-  xAmzTargetAwsShield20160616DeleteProtectionHandler,
-  xAmzTargetAwsShield20160616DeleteSubscriptionHandler,
-  xAmzTargetAwsShield20160616DescribeAttackHandler,
-  xAmzTargetAwsShield20160616DescribeAttackStatisticsHandler,
-  xAmzTargetAwsShield20160616DescribeDrtAccessHandler,
-  xAmzTargetAwsShield20160616DescribeEmergencyContactSettingsHandler,
-  xAmzTargetAwsShield20160616DescribeProtectionGroupHandler,
-  xAmzTargetAwsShield20160616DescribeProtectionHandler,
-  xAmzTargetAwsShield20160616DescribeSubscriptionHandler,
-  xAmzTargetAwsShield20160616DisableApplicationLayerAutomaticResponseHandler,
-  xAmzTargetAwsShield20160616DisableProactiveEngagementHandler,
-  xAmzTargetAwsShield20160616DisassociateDrtLogBucketHandler,
-  xAmzTargetAwsShield20160616DisassociateDrtRoleHandler,
-  xAmzTargetAwsShield20160616DisassociateHealthCheckHandler,
-  xAmzTargetAwsShield20160616EnableApplicationLayerAutomaticResponseHandler,
-  xAmzTargetAwsShield20160616EnableProactiveEngagementHandler,
-  xAmzTargetAwsShield20160616GetSubscriptionStateHandler,
-  xAmzTargetAwsShield20160616ListAttacksHandler,
-  xAmzTargetAwsShield20160616ListProtectionGroupsHandler,
-  xAmzTargetAwsShield20160616ListProtectionsHandler,
-  xAmzTargetAwsShield20160616ListResourcesInProtectionGroupHandler,
-  xAmzTargetAwsShield20160616ListTagsForResourceHandler,
-  xAmzTargetAwsShield20160616TagResourceHandler,
-  xAmzTargetAwsShield20160616UntagResourceHandler,
-  xAmzTargetAwsShield20160616UpdateApplicationLayerAutomaticResponseHandler,
-  xAmzTargetAwsShield20160616UpdateEmergencyContactSettingsHandler,
-  xAmzTargetAwsShield20160616UpdateProtectionGroupHandler,
-  xAmzTargetAwsShield20160616UpdateSubscriptionHandler,
+  postXAmzTargetAWSShield20160616AssociateDRTLogBucketRoute,
+  postXAmzTargetAWSShield20160616AssociateDRTRoleRoute,
+  postXAmzTargetAWSShield20160616AssociateHealthCheckRoute,
+  postXAmzTargetAWSShield20160616AssociateProactiveEngagementDetailsRoute,
+  postXAmzTargetAWSShield20160616CreateProtectionGroupRoute,
+  postXAmzTargetAWSShield20160616CreateProtectionRoute,
+  postXAmzTargetAWSShield20160616CreateSubscriptionRoute,
+  postXAmzTargetAWSShield20160616DeleteProtectionGroupRoute,
+  postXAmzTargetAWSShield20160616DeleteProtectionRoute,
+  postXAmzTargetAWSShield20160616DeleteSubscriptionRoute,
+  postXAmzTargetAWSShield20160616DescribeAttackRoute,
+  postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute,
+  postXAmzTargetAWSShield20160616DescribeDRTAccessRoute,
+  postXAmzTargetAWSShield20160616DescribeEmergencyContactSettingsRoute,
+  postXAmzTargetAWSShield20160616DescribeProtectionGroupRoute,
+  postXAmzTargetAWSShield20160616DescribeProtectionRoute,
+  postXAmzTargetAWSShield20160616DescribeSubscriptionRoute,
+  postXAmzTargetAWSShield20160616DisableApplicationLayerAutomaticResponseRoute,
+  postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute,
+  postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute,
+  postXAmzTargetAWSShield20160616DisassociateDRTRoleRoute,
+  postXAmzTargetAWSShield20160616DisassociateHealthCheckRoute,
+  postXAmzTargetAWSShield20160616EnableApplicationLayerAutomaticResponseRoute,
+  postXAmzTargetAWSShield20160616EnableProactiveEngagementRoute,
+  postXAmzTargetAWSShield20160616GetSubscriptionStateRoute,
+  postXAmzTargetAWSShield20160616ListAttacksRoute,
+  postXAmzTargetAWSShield20160616ListProtectionGroupsRoute,
+  postXAmzTargetAWSShield20160616ListProtectionsRoute,
+  postXAmzTargetAWSShield20160616ListResourcesInProtectionGroupRoute,
+  postXAmzTargetAWSShield20160616ListTagsForResourceRoute,
+  postXAmzTargetAWSShield20160616TagResourceRoute,
+  postXAmzTargetAWSShield20160616UntagResourceRoute,
+  postXAmzTargetAWSShield20160616UpdateApplicationLayerAutomaticResponseRoute,
+  postXAmzTargetAWSShield20160616UpdateEmergencyContactSettingsRoute,
+  postXAmzTargetAWSShield20160616UpdateProtectionGroupRoute,
+  postXAmzTargetAWSShield20160616UpdateSubscriptionRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSShield20160616AssociateDRTLogBucketRouteHandler,
+  postXAmzTargetAWSShield20160616AssociateDRTRoleRouteHandler,
+  postXAmzTargetAWSShield20160616AssociateHealthCheckRouteHandler,
+  postXAmzTargetAWSShield20160616AssociateProactiveEngagementDetailsRouteHandler,
+  postXAmzTargetAWSShield20160616CreateProtectionGroupRouteHandler,
+  postXAmzTargetAWSShield20160616CreateProtectionRouteHandler,
+  postXAmzTargetAWSShield20160616CreateSubscriptionRouteHandler,
+  postXAmzTargetAWSShield20160616DeleteProtectionGroupRouteHandler,
+  postXAmzTargetAWSShield20160616DeleteProtectionRouteHandler,
+  postXAmzTargetAWSShield20160616DeleteSubscriptionRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeAttackRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeAttackStatisticsRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeDRTAccessRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeEmergencyContactSettingsRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeProtectionGroupRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeProtectionRouteHandler,
+  postXAmzTargetAWSShield20160616DescribeSubscriptionRouteHandler,
+  postXAmzTargetAWSShield20160616DisableApplicationLayerAutomaticResponseRouteHandler,
+  postXAmzTargetAWSShield20160616DisableProactiveEngagementRouteHandler,
+  postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRouteHandler,
+  postXAmzTargetAWSShield20160616DisassociateDRTRoleRouteHandler,
+  postXAmzTargetAWSShield20160616DisassociateHealthCheckRouteHandler,
+  postXAmzTargetAWSShield20160616EnableApplicationLayerAutomaticResponseRouteHandler,
+  postXAmzTargetAWSShield20160616EnableProactiveEngagementRouteHandler,
+  postXAmzTargetAWSShield20160616GetSubscriptionStateRouteHandler,
+  postXAmzTargetAWSShield20160616ListAttacksRouteHandler,
+  postXAmzTargetAWSShield20160616ListProtectionGroupsRouteHandler,
+  postXAmzTargetAWSShield20160616ListProtectionsRouteHandler,
+  postXAmzTargetAWSShield20160616ListResourcesInProtectionGroupRouteHandler,
+  postXAmzTargetAWSShield20160616ListTagsForResourceRouteHandler,
+  postXAmzTargetAWSShield20160616TagResourceRouteHandler,
+  postXAmzTargetAWSShield20160616UntagResourceRouteHandler,
+  postXAmzTargetAWSShield20160616UpdateApplicationLayerAutomaticResponseRouteHandler,
+  postXAmzTargetAWSShield20160616UpdateEmergencyContactSettingsRouteHandler,
+  postXAmzTargetAWSShield20160616UpdateProtectionGroupRouteHandler,
+  postXAmzTargetAWSShield20160616UpdateSubscriptionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsShield20160616AssociateDrtLogBucketHandler)
-  .route('/', xAmzTargetAwsShield20160616AssociateDrtRoleHandler)
-  .route('/', xAmzTargetAwsShield20160616AssociateHealthCheckHandler)
-  .route('/', xAmzTargetAwsShield20160616AssociateProactiveEngagementDetailsHandler)
-  .route('/', xAmzTargetAwsShield20160616CreateProtectionHandler)
-  .route('/', xAmzTargetAwsShield20160616CreateProtectionGroupHandler)
-  .route('/', xAmzTargetAwsShield20160616CreateSubscriptionHandler)
-  .route('/', xAmzTargetAwsShield20160616DeleteProtectionHandler)
-  .route('/', xAmzTargetAwsShield20160616DeleteProtectionGroupHandler)
-  .route('/', xAmzTargetAwsShield20160616DeleteSubscriptionHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeAttackHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeAttackStatisticsHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeDrtAccessHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeEmergencyContactSettingsHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeProtectionHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeProtectionGroupHandler)
-  .route('/', xAmzTargetAwsShield20160616DescribeSubscriptionHandler)
-  .route('/', xAmzTargetAwsShield20160616DisableApplicationLayerAutomaticResponseHandler)
-  .route('/', xAmzTargetAwsShield20160616DisableProactiveEngagementHandler)
-  .route('/', xAmzTargetAwsShield20160616DisassociateDrtLogBucketHandler)
-  .route('/', xAmzTargetAwsShield20160616DisassociateDrtRoleHandler)
-  .route('/', xAmzTargetAwsShield20160616DisassociateHealthCheckHandler)
-  .route('/', xAmzTargetAwsShield20160616EnableApplicationLayerAutomaticResponseHandler)
-  .route('/', xAmzTargetAwsShield20160616EnableProactiveEngagementHandler)
-  .route('/', xAmzTargetAwsShield20160616GetSubscriptionStateHandler)
-  .route('/', xAmzTargetAwsShield20160616ListAttacksHandler)
-  .route('/', xAmzTargetAwsShield20160616ListProtectionGroupsHandler)
-  .route('/', xAmzTargetAwsShield20160616ListProtectionsHandler)
-  .route('/', xAmzTargetAwsShield20160616ListResourcesInProtectionGroupHandler)
-  .route('/', xAmzTargetAwsShield20160616ListTagsForResourceHandler)
-  .route('/', xAmzTargetAwsShield20160616TagResourceHandler)
-  .route('/', xAmzTargetAwsShield20160616UntagResourceHandler)
-  .route('/', xAmzTargetAwsShield20160616UpdateApplicationLayerAutomaticResponseHandler)
-  .route('/', xAmzTargetAwsShield20160616UpdateEmergencyContactSettingsHandler)
-  .route('/', xAmzTargetAwsShield20160616UpdateProtectionGroupHandler)
-  .route('/', xAmzTargetAwsShield20160616UpdateSubscriptionHandler)
+  .openapi(
+    postXAmzTargetAWSShield20160616AssociateDRTLogBucketRoute,
+    postXAmzTargetAWSShield20160616AssociateDRTLogBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616AssociateDRTRoleRoute,
+    postXAmzTargetAWSShield20160616AssociateDRTRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616AssociateHealthCheckRoute,
+    postXAmzTargetAWSShield20160616AssociateHealthCheckRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616AssociateProactiveEngagementDetailsRoute,
+    postXAmzTargetAWSShield20160616AssociateProactiveEngagementDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616CreateProtectionRoute,
+    postXAmzTargetAWSShield20160616CreateProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616CreateProtectionGroupRoute,
+    postXAmzTargetAWSShield20160616CreateProtectionGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616CreateSubscriptionRoute,
+    postXAmzTargetAWSShield20160616CreateSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DeleteProtectionRoute,
+    postXAmzTargetAWSShield20160616DeleteProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DeleteProtectionGroupRoute,
+    postXAmzTargetAWSShield20160616DeleteProtectionGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DeleteSubscriptionRoute,
+    postXAmzTargetAWSShield20160616DeleteSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeAttackRoute,
+    postXAmzTargetAWSShield20160616DescribeAttackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeAttackStatisticsRoute,
+    postXAmzTargetAWSShield20160616DescribeAttackStatisticsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeDRTAccessRoute,
+    postXAmzTargetAWSShield20160616DescribeDRTAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeEmergencyContactSettingsRoute,
+    postXAmzTargetAWSShield20160616DescribeEmergencyContactSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeProtectionRoute,
+    postXAmzTargetAWSShield20160616DescribeProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeProtectionGroupRoute,
+    postXAmzTargetAWSShield20160616DescribeProtectionGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DescribeSubscriptionRoute,
+    postXAmzTargetAWSShield20160616DescribeSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DisableApplicationLayerAutomaticResponseRoute,
+    postXAmzTargetAWSShield20160616DisableApplicationLayerAutomaticResponseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DisableProactiveEngagementRoute,
+    postXAmzTargetAWSShield20160616DisableProactiveEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRoute,
+    postXAmzTargetAWSShield20160616DisassociateDRTLogBucketRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DisassociateDRTRoleRoute,
+    postXAmzTargetAWSShield20160616DisassociateDRTRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616DisassociateHealthCheckRoute,
+    postXAmzTargetAWSShield20160616DisassociateHealthCheckRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616EnableApplicationLayerAutomaticResponseRoute,
+    postXAmzTargetAWSShield20160616EnableApplicationLayerAutomaticResponseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616EnableProactiveEngagementRoute,
+    postXAmzTargetAWSShield20160616EnableProactiveEngagementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616GetSubscriptionStateRoute,
+    postXAmzTargetAWSShield20160616GetSubscriptionStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616ListAttacksRoute,
+    postXAmzTargetAWSShield20160616ListAttacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616ListProtectionGroupsRoute,
+    postXAmzTargetAWSShield20160616ListProtectionGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616ListProtectionsRoute,
+    postXAmzTargetAWSShield20160616ListProtectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616ListResourcesInProtectionGroupRoute,
+    postXAmzTargetAWSShield20160616ListResourcesInProtectionGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616ListTagsForResourceRoute,
+    postXAmzTargetAWSShield20160616ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616TagResourceRoute,
+    postXAmzTargetAWSShield20160616TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616UntagResourceRoute,
+    postXAmzTargetAWSShield20160616UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616UpdateApplicationLayerAutomaticResponseRoute,
+    postXAmzTargetAWSShield20160616UpdateApplicationLayerAutomaticResponseRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616UpdateEmergencyContactSettingsRoute,
+    postXAmzTargetAWSShield20160616UpdateEmergencyContactSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616UpdateProtectionGroupRoute,
+    postXAmzTargetAWSShield20160616UpdateProtectionGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSShield20160616UpdateSubscriptionRoute,
+    postXAmzTargetAWSShield20160616UpdateSubscriptionRouteHandler,
+  )
 
 export default app

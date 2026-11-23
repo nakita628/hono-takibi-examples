@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBuildProjectNameRepositoryNameArchitectureNameBuilddepinfoRoute,
   getBuildProjectNameRepositoryNameArchitectureNamePackageNameBuildinfoRoute,
   getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute,
@@ -20,63 +20,108 @@ import {
   putBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBuildRouteHandler: RouteHandler<typeof getBuildRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const buildHandler = app
-  .openapi(getBuildRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBuildProjectNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameResultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameBuildconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNameBuilddepinfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNameRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameBuildinfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameJobstatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameLogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameReasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameViewFileinfoRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getBuildProjectNameRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBuildProjectNameRouteHandler: RouteHandler<
+  typeof postBuildProjectNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameResultRouteHandler: RouteHandler<
+  typeof getBuildProjectNameResultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameBuildconfigRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameBuildconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNameBuilddepinfoRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNameBuilddepinfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNameRepositoryRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNameRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameBuildinfoRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameBuildinfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameHistoryRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameJobstatusRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameJobstatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameLogRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameLogRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameReasonRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameReasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameStatusRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRouteHandler: RouteHandler<
+  typeof putBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameViewFileinfoRouteHandler: RouteHandler<
+  typeof getBuildProjectNameRepositoryNameArchitectureNamePackageNameFileNameViewFileinfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

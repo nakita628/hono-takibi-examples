@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  hypernymsHandler,
-  hyponymsHandler,
-  inflectionsHandler,
-  lmHandler,
-  sensesHandler,
-  valuesHandler,
+  getHypernymsRoute,
+  getHyponymsRoute,
+  getInflectionsRoute,
+  getLmFamilyRoute,
+  getSensesRoute,
+  getValuesRoute,
+} from './routes'
+import {
+  getHypernymsRouteHandler,
+  getHyponymsRouteHandler,
+  getInflectionsRouteHandler,
+  getLmFamilyRouteHandler,
+  getSensesRouteHandler,
+  getValuesRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', hypernymsHandler)
-  .route('/', hyponymsHandler)
-  .route('/', inflectionsHandler)
-  .route('/', lmHandler)
-  .route('/', sensesHandler)
-  .route('/', valuesHandler)
+  .openapi(getHypernymsRoute, getHypernymsRouteHandler)
+  .openapi(getHyponymsRoute, getHyponymsRouteHandler)
+  .openapi(getInflectionsRoute, getInflectionsRouteHandler)
+  .openapi(getLmFamilyRoute, getLmFamilyRouteHandler)
+  .openapi(getSensesRoute, getSensesRouteHandler)
+  .openapi(getValuesRoute, getValuesRouteHandler)
 
 export default app

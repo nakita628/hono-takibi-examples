@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInstancePoolIdFieldRoute,
   deleteInstancePoolIdRoute,
   getInstancePoolIdRoute,
@@ -10,30 +10,48 @@ import {
   putInstancePoolIdScaleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putInstancePoolIdScaleRouteHandler: RouteHandler<
+  typeof putInstancePoolIdScaleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const instancePoolHandler = app
-  .openapi(putInstancePoolIdScaleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInstancePoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstancePoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInstancePoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstancePoolIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInstancePoolIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putInstancePoolIdEvictRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInstancePoolRouteHandler: RouteHandler<typeof getInstancePoolRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postInstancePoolRouteHandler: RouteHandler<typeof postInstancePoolRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstancePoolIdRouteHandler: RouteHandler<
+  typeof deleteInstancePoolIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInstancePoolIdRouteHandler: RouteHandler<typeof getInstancePoolIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstancePoolIdRouteHandler: RouteHandler<typeof putInstancePoolIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInstancePoolIdFieldRouteHandler: RouteHandler<
+  typeof deleteInstancePoolIdFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putInstancePoolIdEvictRouteHandler: RouteHandler<
+  typeof putInstancePoolIdEvictRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

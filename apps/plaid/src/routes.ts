@@ -4174,7 +4174,7 @@ const CraReportProductSchema = z
   .openapi('CraReportProduct')
 
 type LinkTokenCreateRequestCraReportParameterType = {
-  scope: z.infer<typeof CraReportScopeSchema> & unknown
+  scope: z.infer<typeof CraReportScopeSchema>
   decision_stage: z.infer<typeof CraReportDecisionStageSchema>
   client_report_id?: string | null
   days_requested?: number | null
@@ -18471,10 +18471,9 @@ type CraReportCreateRequestType = {
   secret?: z.infer<typeof APISecretSchema>
   user_id: z.infer<typeof NewUserIDSchema>
   products: z.infer<typeof CraReportProductSchema>[]
-  scope: z.infer<typeof CraReportScopeSchema> & unknown
+  scope: z.infer<typeof CraReportScopeSchema>
   decision_stage: z.infer<typeof CraReportDecisionStageSchema>
-  consumer_report_permissible_purpose: z.infer<typeof ConsumerReportPermissiblePurposeSchema> &
-    unknown
+  consumer_report_permissible_purpose: z.infer<typeof ConsumerReportPermissiblePurposeSchema>
   client_report_id?: string | null
   days_requested?: number | null
   days_required?: number | null
@@ -22765,13 +22764,12 @@ const CraReportGetResponseProductSchema: z.ZodType<CraReportGetResponseProductTy
   .openapi('CraReportGetResponseProduct')
 
 type CraReportGetReportType = {
-  report_id: (z.infer<typeof CraReportIdSchema> & unknown) | null
+  report_id: z.infer<typeof CraReportIdSchema> | null
   client_report_id: string | null
   retrieved_time: string
   scope: z.infer<typeof CraReportScopeSchema>
   decision_stage: z.infer<typeof CraReportDecisionStageSchema>
-  consumer_report_permissible_purpose: z.infer<typeof ConsumerReportPermissiblePurposeSchema> &
-    unknown
+  consumer_report_permissible_purpose: z.infer<typeof ConsumerReportPermissiblePurposeSchema>
   products: z.infer<typeof CraReportGetResponseProductSchema>[]
 }
 

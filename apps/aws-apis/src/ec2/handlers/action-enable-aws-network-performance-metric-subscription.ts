@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
   postActionEnableAwsNetworkPerformanceMetricSubscriptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler: RouteHandler<
+  typeof getActionEnableAwsNetworkPerformanceMetricSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionEnableAwsNetworkPerformanceMetricSubscriptionHandler = app
-  .openapi(getActionEnableAwsNetworkPerformanceMetricSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionEnableAwsNetworkPerformanceMetricSubscriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionEnableAwsNetworkPerformanceMetricSubscriptionRouteHandler: RouteHandler<
+  typeof postActionEnableAwsNetworkPerformanceMetricSubscriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

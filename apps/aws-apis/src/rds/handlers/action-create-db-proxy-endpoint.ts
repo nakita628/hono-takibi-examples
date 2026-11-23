@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateDBProxyEndpointRoute,
   postActionCreateDBProxyEndpointRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateDBProxyEndpointRouteHandler: RouteHandler<
+  typeof getActionCreateDBProxyEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateDbProxyEndpointHandler = app
-  .openapi(getActionCreateDBProxyEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateDBProxyEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateDBProxyEndpointRouteHandler: RouteHandler<
+  typeof postActionCreateDBProxyEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

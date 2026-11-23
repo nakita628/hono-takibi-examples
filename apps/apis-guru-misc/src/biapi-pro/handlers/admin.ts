@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminJwtRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminJwtRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminHandler = app.openapi(postAdminJwtRoute, (c) => {
+export const postAdminJwtRouteHandler: RouteHandler<typeof postAdminJwtRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

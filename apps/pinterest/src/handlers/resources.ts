@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getResourcesAdAccountCountriesRoute,
   getResourcesDeliveryMetricsRoute,
   getResourcesLeadFormQuestionsRoute,
@@ -8,24 +8,38 @@ import {
   getResourcesTargetingTargetingTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getResourcesAdAccountCountriesRouteHandler: RouteHandler<
+  typeof getResourcesAdAccountCountriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const resourcesHandler = app
-  .openapi(getResourcesAdAccountCountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesDeliveryMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesLeadFormQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesMetricsReadyStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesTargetingInterestsInterestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesTargetingTargetingTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getResourcesDeliveryMetricsRouteHandler: RouteHandler<
+  typeof getResourcesDeliveryMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesLeadFormQuestionsRouteHandler: RouteHandler<
+  typeof getResourcesLeadFormQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesMetricsReadyStateRouteHandler: RouteHandler<
+  typeof getResourcesMetricsReadyStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesTargetingInterestsInterestIdRouteHandler: RouteHandler<
+  typeof getResourcesTargetingInterestsInterestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesTargetingTargetingTypeRouteHandler: RouteHandler<
+  typeof getResourcesTargetingTargetingTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

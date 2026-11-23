@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceAssumeImpersonationRoleHandler = app.openapi(
-  postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceAssumeImpersonationRoleRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceAssumeImpersonationRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

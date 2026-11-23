@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/docusign.net/v2.1/openapi.yaml',
   output: './src/docusign-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/docusign-net/types.ts' },
   client: { output: './src/docusign-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/docusign-net/rpc.ts', parseResponse: true },

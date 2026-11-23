@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionModifyIpamResourceDiscoveryRoute,
   postActionModifyIpamResourceDiscoveryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyIpamResourceDiscoveryRouteHandler: RouteHandler<
+  typeof getActionModifyIpamResourceDiscoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyIpamResourceDiscoveryHandler = app
-  .openapi(getActionModifyIpamResourceDiscoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyIpamResourceDiscoveryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyIpamResourceDiscoveryRouteHandler: RouteHandler<
+  typeof postActionModifyIpamResourceDiscoveryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

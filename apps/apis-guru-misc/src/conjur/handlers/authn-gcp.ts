@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAuthnGcpAccountStatusRoute, postAuthnGcpAccountAuthenticateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAuthnGcpAccountStatusRoute, postAuthnGcpAccountAuthenticateRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthnGcpAccountAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthnGcpAccountAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authnGcpHandler = app
-  .openapi(postAuthnGcpAccountAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthnGcpAccountStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAuthnGcpAccountStatusRouteHandler: RouteHandler<
+  typeof getAuthnGcpAccountStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

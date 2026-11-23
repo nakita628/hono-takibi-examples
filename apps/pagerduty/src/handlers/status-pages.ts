@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStatusPagesIdPostsPostIdPostmortemRoute,
   deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute,
   deleteStatusPagesIdPostsPostIdRoute,
@@ -28,84 +28,156 @@ import {
   putStatusPagesIdPostsPostIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStatusPagesRouteHandler: RouteHandler<typeof getStatusPagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const statusPagesHandler = app
-  .openapi(getStatusPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdImpactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdImpactsImpactIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdServicesServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdSeveritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdSeveritiesSeverityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdStatusesStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStatusPagesIdPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdPostsPostIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStatusPagesIdPostsPostIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStatusPagesIdPostsPostIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdPostsPostIdPostUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStatusPagesIdPostsPostIdPostUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdPostsPostIdPostmortemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStatusPagesIdPostsPostIdPostmortemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStatusPagesIdPostsPostIdPostmortemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStatusPagesIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStatusPagesIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStatusPagesIdSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStatusPagesIdImpactsRouteHandler: RouteHandler<
+  typeof getStatusPagesIdImpactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdImpactsImpactIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdImpactsImpactIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdServicesRouteHandler: RouteHandler<
+  typeof getStatusPagesIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdServicesServiceIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdServicesServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdSeveritiesRouteHandler: RouteHandler<
+  typeof getStatusPagesIdSeveritiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdSeveritiesSeverityIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdSeveritiesSeverityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdStatusesRouteHandler: RouteHandler<
+  typeof getStatusPagesIdStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdStatusesStatusIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdStatusesStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdPostsRouteHandler: RouteHandler<
+  typeof getStatusPagesIdPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStatusPagesIdPostsRouteHandler: RouteHandler<
+  typeof postStatusPagesIdPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdPostsPostIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdPostsPostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStatusPagesIdPostsPostIdRouteHandler: RouteHandler<
+  typeof putStatusPagesIdPostsPostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStatusPagesIdPostsPostIdRouteHandler: RouteHandler<
+  typeof deleteStatusPagesIdPostsPostIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdPostsPostIdPostUpdatesRouteHandler: RouteHandler<
+  typeof getStatusPagesIdPostsPostIdPostUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStatusPagesIdPostsPostIdPostUpdatesRouteHandler: RouteHandler<
+  typeof postStatusPagesIdPostsPostIdPostUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler: RouteHandler<
+  typeof putStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRouteHandler: RouteHandler<
+  typeof deleteStatusPagesIdPostsPostIdPostUpdatesPostUpdateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdPostsPostIdPostmortemRouteHandler: RouteHandler<
+  typeof getStatusPagesIdPostsPostIdPostmortemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStatusPagesIdPostsPostIdPostmortemRouteHandler: RouteHandler<
+  typeof putStatusPagesIdPostsPostIdPostmortemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStatusPagesIdPostsPostIdPostmortemRouteHandler: RouteHandler<
+  typeof deleteStatusPagesIdPostsPostIdPostmortemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdSubscriptionsRouteHandler: RouteHandler<
+  typeof getStatusPagesIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStatusPagesIdSubscriptionsRouteHandler: RouteHandler<
+  typeof postStatusPagesIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStatusPagesIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getStatusPagesIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStatusPagesIdSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof deleteStatusPagesIdSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

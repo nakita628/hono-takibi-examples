@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/dfareporting/v3.4/openapi.yaml',
   output: './src/dfareporting/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dfareporting/types.ts' },
   client: { output: './src/dfareporting/client.ts', baseUrl: '/' },
   rpc: { output: './src/dfareporting/rpc.ts', parseResponse: true },

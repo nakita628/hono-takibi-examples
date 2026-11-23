@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCmsDomains202609DomainIdRoute, getCmsDomains202609Route } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCmsDomains202609DomainIdRoute, getCmsDomains202609Route } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCmsDomains202609RouteHandler: RouteHandler<
+  typeof getCmsDomains202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cmsHandler = app
-  .openapi(getCmsDomains202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsDomains202609DomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCmsDomains202609DomainIdRouteHandler: RouteHandler<
+  typeof getCmsDomains202609DomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

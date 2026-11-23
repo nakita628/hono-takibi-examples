@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHoldingsAssetClassificationListRoute,
   getHoldingsHoldingTypeListRoute,
   getHoldingsRoute,
   getHoldingsSecuritiesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHoldingsRouteHandler: RouteHandler<typeof getHoldingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const holdingsHandler = app
-  .openapi(getHoldingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHoldingsAssetClassificationListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHoldingsHoldingTypeListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHoldingsSecuritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHoldingsAssetClassificationListRouteHandler: RouteHandler<
+  typeof getHoldingsAssetClassificationListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHoldingsHoldingTypeListRouteHandler: RouteHandler<
+  typeof getHoldingsHoldingTypeListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHoldingsSecuritiesRouteHandler: RouteHandler<
+  typeof getHoldingsSecuritiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonAthenaGetSessionStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonAthenaGetSessionStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonAthenaGetSessionStatusHandler = app.openapi(
-  postXAmzTargetAmazonAthenaGetSessionStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonAthenaGetSessionStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonAthenaGetSessionStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

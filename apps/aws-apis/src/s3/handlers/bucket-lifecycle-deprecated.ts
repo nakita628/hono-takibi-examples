@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketLifecycleDeprecatedRoute, putBucketLifecycleDeprecatedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getBucketLifecycleDeprecatedRoute,
+  putBucketLifecycleDeprecatedRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getBucketLifecycleDeprecatedRouteHandler: RouteHandler<
+  typeof getBucketLifecycleDeprecatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketLifecycleDeprecatedHandler = app
-  .openapi(getBucketLifecycleDeprecatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketLifecycleDeprecatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBucketLifecycleDeprecatedRouteHandler: RouteHandler<
+  typeof putBucketLifecycleDeprecatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

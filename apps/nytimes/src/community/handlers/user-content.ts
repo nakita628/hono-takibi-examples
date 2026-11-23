@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUserContentByDateJsonRoute,
   getUserContentRecentJsonRoute,
   getUserContentUrlJsonRoute,
   getUserContentUserJsonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserContentByDateJsonRouteHandler: RouteHandler<
+  typeof getUserContentByDateJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userContentHandler = app
-  .openapi(getUserContentByDateJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserContentRecentJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserContentUrlJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserContentUserJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserContentRecentJsonRouteHandler: RouteHandler<
+  typeof getUserContentRecentJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserContentUrlJsonRouteHandler: RouteHandler<
+  typeof getUserContentUrlJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserContentUserJsonRouteHandler: RouteHandler<
+  typeof getUserContentUserJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

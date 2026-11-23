@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postStartIncidentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postStartIncidentRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const startIncidentHandler = app.openapi(postStartIncidentRoute, (c) => {
+export const postStartIncidentRouteHandler: RouteHandler<typeof postStartIncidentRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

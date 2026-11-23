@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBucketPublicAccessBlockRoute,
   getBucketPublicAccessBlockRoute,
   putBucketPublicAccessBlockRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketPublicAccessBlockRouteHandler: RouteHandler<
+  typeof deleteBucketPublicAccessBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketPublicAccessBlockHandler = app
-  .openapi(deleteBucketPublicAccessBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketPublicAccessBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketPublicAccessBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketPublicAccessBlockRouteHandler: RouteHandler<
+  typeof getBucketPublicAccessBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketPublicAccessBlockRouteHandler: RouteHandler<
+  typeof putBucketPublicAccessBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

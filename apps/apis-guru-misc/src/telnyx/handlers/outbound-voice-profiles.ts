@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOutboundVoiceProfilesIdRoute,
   getOutboundVoiceProfilesIdRoute,
   getOutboundVoiceProfilesRoute,
@@ -7,21 +7,32 @@ import {
   postOutboundVoiceProfilesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOutboundVoiceProfilesRouteHandler: RouteHandler<
+  typeof getOutboundVoiceProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const outboundVoiceProfilesHandler = app
-  .openapi(getOutboundVoiceProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOutboundVoiceProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOutboundVoiceProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOutboundVoiceProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOutboundVoiceProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOutboundVoiceProfilesRouteHandler: RouteHandler<
+  typeof postOutboundVoiceProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOutboundVoiceProfilesIdRouteHandler: RouteHandler<
+  typeof deleteOutboundVoiceProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOutboundVoiceProfilesIdRouteHandler: RouteHandler<
+  typeof getOutboundVoiceProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOutboundVoiceProfilesIdRouteHandler: RouteHandler<
+  typeof patchOutboundVoiceProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

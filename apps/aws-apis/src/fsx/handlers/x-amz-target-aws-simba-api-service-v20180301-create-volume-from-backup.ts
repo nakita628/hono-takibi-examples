@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsSimbaApiServiceV20180301CreateVolumeFromBackupHandler = app.openapi(
-  postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSSimbaAPIServiceV20180301CreateVolumeFromBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAuditCaseIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAuditCaseIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const auditCaseHandler = app.openapi(getAuditCaseIndexRoute, (c) => {
+export const getAuditCaseIndexRouteHandler: RouteHandler<typeof getAuditCaseIndexRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

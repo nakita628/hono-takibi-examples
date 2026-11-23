@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWordsJsonRandomWordRoute,
   getWordsJsonRandomWordsRoute,
   getWordsJsonReverseDictionaryRoute,
@@ -7,21 +7,32 @@ import {
   getWordsJsonWordOfTheDayRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWordsJsonRandomWordRouteHandler: RouteHandler<
+  typeof getWordsJsonRandomWordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wordsJsonHandler = app
-  .openapi(getWordsJsonRandomWordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordsJsonRandomWordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordsJsonReverseDictionaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordsJsonSearchQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWordsJsonWordOfTheDayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWordsJsonRandomWordsRouteHandler: RouteHandler<
+  typeof getWordsJsonRandomWordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordsJsonReverseDictionaryRouteHandler: RouteHandler<
+  typeof getWordsJsonReverseDictionaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordsJsonSearchQueryRouteHandler: RouteHandler<
+  typeof getWordsJsonSearchQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWordsJsonWordOfTheDayRouteHandler: RouteHandler<
+  typeof getWordsJsonWordOfTheDayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

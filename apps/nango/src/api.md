@@ -7999,28 +7999,12 @@ Create a new connect session
 |---|---|---|---|---|
 |body|body|[ConnectSessionInput](#schemaconnectsessioninput)|true|none|
 |» tags|body|[Tags](#schematags)|false|Connection tags (key/value strings). Keys are normalized to lowercase.|
-|» end_user|body|object|false|**Deprecated.** Deprecated, use tags instead|
-|» » id|body|string|true|**Deprecated.** Uniquely identifies the end user.|
-|» » email|body|string|false|**Deprecated.**|
-|» » display_name|body|string|false|**Deprecated.**|
-|» » tags|body|object|false|**Deprecated.** Tags associated with the end user. Only accepts strings values, up to 64 keys.|
-|» » » **additionalProperties**|body|string|false|none|
-|» organization|body|object|false|**Deprecated.** Deprecated, use tags instead|
-|» » id|body|string|true|Uniquely identifies the organization the end user belongs to|
-|» » display_name|body|string|false|none|
+|» end_user|body|[ConnectSessionInputEndUser](#schemaconnectsessioninputenduser)|false|**Deprecated.** Deprecated, use tags instead|
+|» organization|body|[ConnectSessionInputOrganization](#schemaconnectsessioninputorganization)|false|**Deprecated.** Deprecated, use tags instead|
 |» allowed_integrations|body|[string]|false|Filters which integrations the end user can interact with|
-|» integrations_config_defaults|body|object|false|none|
-|» » **additionalProperties**|body|object|false|the unique name of an integration|
-|» » » user_scopes|body|string|false|User scopes (for Slack only)|
-|» » » authorization_params|body|object|false|Query params passed to the OAuth flow (for OAuth2 only)|
-|» » » connection_config|body|object|false|none|
-|» » » » oauth_scopes_override|body|string|false|Override oauth scopes|
-|» » » » oauth_client_id_override|body|string|false|Set to empty string to allow end-users to provide their own OAuth client ID in Connect UI|
-|» » » » oauth_client_secret_override|body|string|false|Set to empty string to allow end-users to provide their own OAuth client secret in Connect UI|
-|» overrides|body|object|false|none|
-|» » **additionalProperties**|body|object|false|The unique name of an integration|
-|» » » docs_connect|body|string|false|Override the url of the docs we point to in the connect flow|
-|» webhook_url_override|body|string|false|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
+|» integrations_config_defaults|body|[ConnectSessionInputIntegrationsConfigDefaults](#schemaconnectsessioninputintegrationsconfigdefaults)|false|none|
+|» overrides|body|[ConnectSessionInputOverrides](#schemaconnectsessioninputoverrides)|false|none|
+|» webhook_url_override|body|[ConnectSessionInputWebhookUrlOverride](#schemaconnectsessioninputwebhookurloverride)|false|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
 
 > Example responses
 
@@ -8218,27 +8202,11 @@ The connection keeps its connection ID. When the user authorizes, the connection
 |» connection_id|body|string|true|none|
 |» integration_id|body|string|true|none|
 |» tags|body|[Tags](#schematags)|false|Connection tags (key/value strings). Keys are normalized to lowercase.|
-|» end_user|body|object|false|**Deprecated.** Deprecated, use tags instead|
-|» » id|body|string|true|**Deprecated.** Uniquely identifies the end user.|
-|» » email|body|string|false|**Deprecated.**|
-|» » display_name|body|string|false|**Deprecated.**|
-|» » tags|body|object|false|**Deprecated.** Tags associated with the end user. Only accepts strings values, up to 64 keys.|
-|» » » **additionalProperties**|body|string|false|none|
-|» organization|body|object|false|**Deprecated.** Deprecated, use tags instead|
-|» » id|body|string|true|Uniquely identifies the organization the end user belongs to|
-|» » display_name|body|string|false|none|
-|» integrations_config_defaults|body|object|false|none|
-|» » **additionalProperties**|body|object|false|the unique name of an integration|
-|» » » user_scopes|body|string|false|User scopes (for Slack only)|
-|» » » authorization_params|body|object|false|Query params passed to the OAuth flow (for OAuth2 only)|
-|» » » connection_config|body|object|false|none|
-|» » » » oauth_scopes_override|body|string|false|Override oauth scopes|
-|» » » » oauth_client_id_override|body|string|false|Set to empty string to allow end-users to provide their own OAuth client ID in Connect UI|
-|» » » » oauth_client_secret_override|body|string|false|Set to empty string to allow end-users to provide their own OAuth client secret in Connect UI|
-|» overrides|body|object|false|none|
-|» » **additionalProperties**|body|object|false|The unique name of an integration|
-|» » » docs_connect|body|string|false|Override the url of the docs we point to in the connect flow|
-|» webhook_url_override|body|string|false|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
+|» end_user|body|[ConnectSessionInputEndUser](#schemaconnectsessioninputenduser)|false|**Deprecated.** Deprecated, use tags instead|
+|» organization|body|[ConnectSessionInputOrganization](#schemaconnectsessioninputorganization)|false|**Deprecated.** Deprecated, use tags instead|
+|» integrations_config_defaults|body|[ConnectSessionInputIntegrationsConfigDefaults](#schemaconnectsessioninputintegrationsconfigdefaults)|false|none|
+|» overrides|body|[ConnectSessionInputOverrides](#schemaconnectsessioninputoverrides)|false|none|
+|» webhook_url_override|body|[ConnectSessionInputWebhookUrlOverride](#schemaconnectsessioninputwebhookurloverride)|false|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
 
 > Example responses
 
@@ -10081,12 +10049,12 @@ A listed function (sync, deprecated action, on-event, or tool) merged with its a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |tags|[Tags](#schematags)|false|none|Connection tags (key/value strings). Keys are normalized to lowercase.|
-|end_user|object|false|none|**Deprecated.** Deprecated, use tags instead|
-|organization|object|false|none|**Deprecated.** Deprecated, use tags instead|
+|end_user|[ConnectSessionInputEndUser](#schemaconnectsessioninputenduser)|false|none|**Deprecated.** Deprecated, use tags instead|
+|organization|[ConnectSessionInputOrganization](#schemaconnectsessioninputorganization)|false|none|**Deprecated.** Deprecated, use tags instead|
 |allowed_integrations|[string]|false|none|Filters which integrations the end user can interact with|
-|integrations_config_defaults|object|false|none|none|
-|overrides|object|false|none|none|
-|webhook_url_override|string|false|none|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
+|integrations_config_defaults|[ConnectSessionInputIntegrationsConfigDefaults](#schemaconnectsessioninputintegrationsconfigdefaults)|false|none|none|
+|overrides|[ConnectSessionInputOverrides](#schemaconnectsessioninputoverrides)|false|none|none|
+|webhook_url_override|[ConnectSessionInputWebhookUrlOverride](#schemaconnectsessioninputwebhookurloverride)|false|none|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
 
 <h2 id="tocS_ConnectSessionReconnectInput">ConnectSessionReconnectInput</h2>
 <!-- backwards compatibility -->
@@ -10155,11 +10123,11 @@ A listed function (sync, deprecated action, on-event, or tool) merged with its a
 |connection_id|string|true|none|none|
 |integration_id|string|true|none|none|
 |tags|[Tags](#schematags)|false|none|Connection tags (key/value strings). Keys are normalized to lowercase.|
-|end_user|object|false|none|**Deprecated.** Deprecated, use tags instead|
-|organization|object|false|none|**Deprecated.** Deprecated, use tags instead|
-|integrations_config_defaults|object|false|none|none|
-|overrides|object|false|none|none|
-|webhook_url_override|string|false|none|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
+|end_user|[ConnectSessionInputEndUser](#schemaconnectsessioninputenduser)|false|none|**Deprecated.** Deprecated, use tags instead|
+|organization|[ConnectSessionInputOrganization](#schemaconnectsessioninputorganization)|false|none|**Deprecated.** Deprecated, use tags instead|
+|integrations_config_defaults|[ConnectSessionInputIntegrationsConfigDefaults](#schemaconnectsessioninputintegrationsconfigdefaults)|false|none|none|
+|overrides|[ConnectSessionInputOverrides](#schemaconnectsessioninputoverrides)|false|none|none|
+|webhook_url_override|[ConnectSessionInputWebhookUrlOverride](#schemaconnectsessioninputwebhookurloverride)|false|none|Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).|
 
 <h2 id="tocS_ConnectSession">ConnectSession</h2>
 <!-- backwards compatibility -->
@@ -11280,3 +11248,129 @@ Integration credentials schema accepted in create/update request bodies. Only `t
 |type|CUSTOM|
 |type|MCP_OAUTH2_GENERIC|
 |type|MCP_OAUTH2|
+
+<h2 id="tocS_ConnectSessionInputEndUser">ConnectSessionInputEndUser</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectsessioninputenduser"></a>
+<a id="schema_ConnectSessionInputEndUser"></a>
+<a id="tocSconnectsessioninputenduser"></a>
+<a id="tocsconnectsessioninputenduser"></a>
+
+```json
+{
+  "id": "string",
+  "email": "string",
+  "display_name": "string",
+  "tags": {
+    "property1": "string",
+    "property2": "string"
+  }
+}
+```
+
+Deprecated, use tags instead
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|**Deprecated.** Uniquely identifies the end user.|
+|email|string|false|none|**Deprecated.**|
+|display_name|string|false|none|**Deprecated.**|
+|tags|object|false|none|**Deprecated.** Tags associated with the end user. Only accepts strings values, up to 64 keys.|
+
+<h2 id="tocS_ConnectSessionInputOrganization">ConnectSessionInputOrganization</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectsessioninputorganization"></a>
+<a id="schema_ConnectSessionInputOrganization"></a>
+<a id="tocSconnectsessioninputorganization"></a>
+<a id="tocsconnectsessioninputorganization"></a>
+
+```json
+{
+  "id": "string",
+  "display_name": "string"
+}
+```
+
+Deprecated, use tags instead
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Uniquely identifies the organization the end user belongs to|
+|display_name|string|false|none|none|
+
+<h2 id="tocS_ConnectSessionInputIntegrationsConfigDefaults">ConnectSessionInputIntegrationsConfigDefaults</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectsessioninputintegrationsconfigdefaults"></a>
+<a id="schema_ConnectSessionInputIntegrationsConfigDefaults"></a>
+<a id="tocSconnectsessioninputintegrationsconfigdefaults"></a>
+<a id="tocsconnectsessioninputintegrationsconfigdefaults"></a>
+
+```json
+{
+  "property1": {
+    "user_scopes": "string",
+    "authorization_params": {},
+    "connection_config": {
+      "oauth_scopes_override": "string",
+      "oauth_client_id_override": "string",
+      "oauth_client_secret_override": "string"
+    }
+  },
+  "property2": {
+    "user_scopes": "string",
+    "authorization_params": {},
+    "connection_config": {
+      "oauth_scopes_override": "string",
+      "oauth_client_id_override": "string",
+      "oauth_client_secret_override": "string"
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|object|false|none|the unique name of an integration|
+
+<h2 id="tocS_ConnectSessionInputOverrides">ConnectSessionInputOverrides</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectsessioninputoverrides"></a>
+<a id="schema_ConnectSessionInputOverrides"></a>
+<a id="tocSconnectsessioninputoverrides"></a>
+<a id="tocsconnectsessioninputoverrides"></a>
+
+```json
+{
+  "property1": {
+    "docs_connect": "string"
+  },
+  "property2": {
+    "docs_connect": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|object|false|none|The unique name of an integration|
+
+<h2 id="tocS_ConnectSessionInputWebhookUrlOverride">ConnectSessionInputWebhookUrlOverride</h2>
+<!-- backwards compatibility -->
+<a id="schemaconnectsessioninputwebhookurloverride"></a>
+<a id="schema_ConnectSessionInputWebhookUrlOverride"></a>
+<a id="tocSconnectsessioninputwebhookurloverride"></a>
+<a id="tocsconnectsessioninputwebhookurloverride"></a>
+
+```json
+"string"
+```
+
+Override the environment's webhook URLs for the connection created by this session. When set, that connection's webhooks are sent only to this URL (the environment's primary and secondary URLs are bypassed).

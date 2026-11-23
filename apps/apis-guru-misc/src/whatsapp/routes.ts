@@ -2707,7 +2707,7 @@ export const getMediaMediaIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: '', content: {} } },
+  responses: { 200: { description: '' } },
 })
 
 export const deleteMediaMediaIdRoute = createRoute({

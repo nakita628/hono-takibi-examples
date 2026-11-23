@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteAlertsAlertIdRoute, getAlertsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteAlertsAlertIdRoute, getAlertsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlertsRouteHandler: RouteHandler<typeof getAlertsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alertsHandler = app
-  .openapi(getAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAlertsAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAlertsAlertIdRouteHandler: RouteHandler<
+  typeof deleteAlertsAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

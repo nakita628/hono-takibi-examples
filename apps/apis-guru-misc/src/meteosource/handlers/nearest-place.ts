@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNearestPlaceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNearestPlaceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const nearestPlaceHandler = app.openapi(getNearestPlaceRoute, (c) => {
+export const getNearestPlaceRouteHandler: RouteHandler<typeof getNearestPlaceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

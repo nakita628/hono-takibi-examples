@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getProjectPortfolioSettingsProjectPortfolioSettingGidRoute,
   putProjectPortfolioSettingsProjectPortfolioSettingGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectPortfolioSettingsProjectPortfolioSettingGidRouteHandler: RouteHandler<
+  typeof getProjectPortfolioSettingsProjectPortfolioSettingGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectPortfolioSettingsHandler = app
-  .openapi(getProjectPortfolioSettingsProjectPortfolioSettingGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectPortfolioSettingsProjectPortfolioSettingGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putProjectPortfolioSettingsProjectPortfolioSettingGidRouteHandler: RouteHandler<
+  typeof putProjectPortfolioSettingsProjectPortfolioSettingGidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

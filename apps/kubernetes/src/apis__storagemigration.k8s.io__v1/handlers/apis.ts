@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute,
   deleteApisStoragemigrationK8sIoV1StorageversionmigrationsRoute,
   getApisStoragemigrationK8sIoV1IndexRoute,
@@ -15,45 +15,80 @@ import {
   putApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisStoragemigrationK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisStoragemigrationK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisStoragemigrationK8sIoV1StorageversionmigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisStoragemigrationK8sIoV1StorageversionmigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisStoragemigrationK8sIoV1StorageversionmigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApisStoragemigrationK8sIoV1StorageversionmigrationsRouteHandler: RouteHandler<
+  typeof deleteApisStoragemigrationK8sIoV1StorageversionmigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisStoragemigrationK8sIoV1StorageversionmigrationsRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1StorageversionmigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisStoragemigrationK8sIoV1StorageversionmigrationsRouteHandler: RouteHandler<
+  typeof postApisStoragemigrationK8sIoV1StorageversionmigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisStoragemigrationK8sIoV1StorageversionmigrationsNameRouteHandler: RouteHandler<
+  typeof deleteApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisStoragemigrationK8sIoV1StorageversionmigrationsNameRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameRouteHandler: RouteHandler<
+  typeof patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisStoragemigrationK8sIoV1StorageversionmigrationsNameRouteHandler: RouteHandler<
+  typeof putApisStoragemigrationK8sIoV1StorageversionmigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRouteHandler: RouteHandler<
+  typeof patchApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRouteHandler: RouteHandler<
+  typeof putApisStoragemigrationK8sIoV1StorageversionmigrationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsNameRouteHandler: RouteHandler<
+  typeof getApisStoragemigrationK8sIoV1WatchStorageversionmigrationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

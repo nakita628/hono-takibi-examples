@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDmSv20160101CreateReplicationSubnetGroupHandler = app.openapi(
-  postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

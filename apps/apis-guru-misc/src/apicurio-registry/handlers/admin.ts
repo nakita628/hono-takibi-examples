@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminConfigPropertiesPropertyNameRoute,
   deleteAdminLoggersLoggerRoute,
   deleteAdminRoleMappingsPrincipalIdRoute,
@@ -24,72 +24,124 @@ import {
   putAdminRulesRuleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminArtifactTypesRouteHandler: RouteHandler<
+  typeof getAdminArtifactTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminArtifactTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminConfigPropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminConfigPropertiesPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminConfigPropertiesPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminConfigPropertiesPropertyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminLoggersLoggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminLoggersLoggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminLoggersLoggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminRoleMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminRoleMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminRoleMappingsPrincipalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminRoleMappingsPrincipalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminRoleMappingsPrincipalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminRulesRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminRulesRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminRulesRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAdminConfigPropertiesRouteHandler: RouteHandler<
+  typeof getAdminConfigPropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminConfigPropertiesPropertyNameRouteHandler: RouteHandler<
+  typeof deleteAdminConfigPropertiesPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminConfigPropertiesPropertyNameRouteHandler: RouteHandler<
+  typeof getAdminConfigPropertiesPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminConfigPropertiesPropertyNameRouteHandler: RouteHandler<
+  typeof putAdminConfigPropertiesPropertyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminExportRouteHandler: RouteHandler<typeof getAdminExportRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminImportRouteHandler: RouteHandler<typeof postAdminImportRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminLoggersRouteHandler: RouteHandler<typeof getAdminLoggersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminLoggersLoggerRouteHandler: RouteHandler<
+  typeof deleteAdminLoggersLoggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminLoggersLoggerRouteHandler: RouteHandler<
+  typeof getAdminLoggersLoggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminLoggersLoggerRouteHandler: RouteHandler<
+  typeof putAdminLoggersLoggerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminRoleMappingsRouteHandler: RouteHandler<
+  typeof getAdminRoleMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminRoleMappingsRouteHandler: RouteHandler<
+  typeof postAdminRoleMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminRoleMappingsPrincipalIdRouteHandler: RouteHandler<
+  typeof deleteAdminRoleMappingsPrincipalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminRoleMappingsPrincipalIdRouteHandler: RouteHandler<
+  typeof getAdminRoleMappingsPrincipalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminRoleMappingsPrincipalIdRouteHandler: RouteHandler<
+  typeof putAdminRoleMappingsPrincipalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminRulesRouteHandler: RouteHandler<typeof deleteAdminRulesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminRulesRouteHandler: RouteHandler<typeof getAdminRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminRulesRouteHandler: RouteHandler<typeof postAdminRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminRulesRuleRouteHandler: RouteHandler<
+  typeof deleteAdminRulesRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminRulesRuleRouteHandler: RouteHandler<typeof getAdminRulesRuleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminRulesRuleRouteHandler: RouteHandler<typeof putAdminRulesRuleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -8369,12 +8369,12 @@ export function usePostRepositoriesWorkspaceRepoSlugIssuesExport<TError = unknow
 
 export function getGetRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTaskIdZipKey(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
 ) {
   return [
     'repositories',
-    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-:task_id.zip',
+    '/repositories/:workspace/:repo_slug/issues/export/:repo_name-issues-{task_id}.zip',
     args,
   ] as const
 }
@@ -8383,7 +8383,7 @@ export function useGetRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTas
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8392,7 +8392,7 @@ export function useGetRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTas
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
               >
             >
           >
@@ -8419,7 +8419,7 @@ export function useGetRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTas
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
               >
             >
           >
@@ -8431,7 +8431,7 @@ export function useGetRepositoriesWorkspaceRepoSlugIssuesExportRepoNameIssuesTas
       async () =>
         parseResponse(
           client.repositories[':workspace'][':repo_slug'].issues.export[
-            ':repo_name-issues-:task_id.zip'
+            ':repo_name-issues-{task_id}.zip'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -8443,7 +8443,7 @@ export function useImmutableGetRepositoriesWorkspaceRepoSlugIssuesExportRepoName
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+    (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8452,7 +8452,7 @@ export function useImmutableGetRepositoriesWorkspaceRepoSlugIssuesExportRepoName
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
               >
             >
           >
@@ -8479,7 +8479,7 @@ export function useImmutableGetRepositoriesWorkspaceRepoSlugIssuesExportRepoName
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-:task_id.zip']['$get']
+                (typeof client.repositories)[':workspace'][':repo_slug']['issues']['export'][':repo_name-issues-{task_id}.zip']['$get']
               >
             >
           >
@@ -8491,7 +8491,7 @@ export function useImmutableGetRepositoriesWorkspaceRepoSlugIssuesExportRepoName
       async () =>
         parseResponse(
           client.repositories[':workspace'][':repo_slug'].issues.export[
-            ':repo_name-issues-:task_id.zip'
+            ':repo_name-issues-{task_id}.zip'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,

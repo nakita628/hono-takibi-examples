@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getHearingCongressChamberJacketNumberRoute,
   getHearingCongressChamberRoute,
   getHearingCongressRoute,
   getHearingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHearingRouteHandler: RouteHandler<typeof getHearingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const hearingHandler = app
-  .openapi(getHearingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHearingCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHearingCongressChamberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHearingCongressChamberJacketNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHearingCongressRouteHandler: RouteHandler<typeof getHearingCongressRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getHearingCongressChamberRouteHandler: RouteHandler<
+  typeof getHearingCongressChamberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getHearingCongressChamberJacketNumberRouteHandler: RouteHandler<
+  typeof getHearingCongressChamberJacketNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

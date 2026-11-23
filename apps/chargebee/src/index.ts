@@ -1,187 +1,2162 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  addressesHandler,
-  alertsHandler,
-  attachedItemsHandler,
-  batchHandler,
-  businessEntitiesHandler,
-  businessRulesetsHandler,
-  businessRulesHandler,
-  cardsHandler,
-  collectionsPaymentPromisesHandler,
-  commentsHandler,
-  configurationsHandler,
-  couponCodesHandler,
-  couponSetsHandler,
-  couponsHandler,
-  creditNotesHandler,
-  creditUnitsHandler,
-  csvTaxRulesHandler,
-  currenciesHandler,
-  customersHandler,
-  customFieldConfigsHandler,
-  differentialPricesHandler,
-  disputesHandler,
-  einvoicesHandler,
-  entitlementsHandler,
-  estimatesHandler,
-  eventsHandler,
-  exportsHandler,
-  featuresHandler,
-  fullExportsHandler,
-  gatewayRequestLogsHandler,
-  gatewayWebhookLogsHandler,
-  giftsHandler,
-  grantBlocksHandler,
-  hostedPagesHandler,
-  inAppSubscriptionsHandler,
-  invoicesHandler,
-  itemFamiliesHandler,
-  itemPricesHandler,
-  itemsHandler,
-  ledgerAccountBalancesHandler,
-  ledgerOperationsHandler,
-  meteredFeaturesHandler,
-  metersHandler,
-  nonSubscriptionsHandler,
-  offerEventsHandler,
-  offerFulfillmentsHandler,
-  omnichannelOneTimeOrdersHandler,
-  omnichannelSubscriptionItemsHandler,
-  omnichannelSubscriptionsHandler,
-  ordersHandler,
-  organizationDetailsHandler,
-  paymentIntentsHandler,
-  paymentScheduleSchemesHandler,
-  paymentSchedulesHandler,
-  paymentSourcesHandler,
-  paymentVouchersHandler,
-  pc2MigrationItemFamiliesHandler,
-  pc2MigrationItemPricesHandler,
-  pc2MigrationItemsHandler,
-  pc2MigrationsHandler,
-  personalizedOffersHandler,
-  portalSessionsHandler,
-  priceRampsHandler,
-  priceVariantsHandler,
-  pricingPageSessionsHandler,
-  productsHandler,
-  promotionalCreditsHandler,
-  promotionalGrantsHandler,
-  purchasesHandler,
-  quotesHandler,
-  rampsHandler,
-  recordedPurchasesHandler,
-  resourceMigrationsHandler,
-  retrySegmentsHandler,
-  rulesHandler,
-  siteMigrationDetailsHandler,
-  sitePcMetaRecordsHandler,
-  subscriptionsHandler,
-  timeMachinesHandler,
-  tokensHandler,
-  transactionsHandler,
-  unbilledChargesHandler,
-  usageEventsHandler,
-  usageFilesHandler,
-  usagesHandler,
-  variantsHandler,
-  vaultedPaymentMethodsHandler,
-  virtualBankAccountsHandler,
-  webhookEndpointsHandler,
+  getAddressesRoute,
+  getAlertsAlertIdAlertStatusesRoute,
+  getAlertsAlertIdRoute,
+  getAlertsRoute,
+  getAttachedItemsAttachedItemIdRoute,
+  getBusinessEntitiesBusinessEntityIdRoute,
+  getBusinessEntitiesRoute,
+  getBusinessEntitiesTransfersRoute,
+  getBusinessRulesBusinessRuleIdDraftRoute,
+  getBusinessRulesBusinessRuleIdRoute,
+  getBusinessRulesetsBusinessRulesetIdRoute,
+  getBusinessRulesetsBusinessRulesetIdRulesRoute,
+  getBusinessRulesetsRoute,
+  getBusinessRulesRoute,
+  getCardsCustomerIdRoute,
+  getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute,
+  getCollectionsPaymentPromisesRoute,
+  getCommentsCommentIdRoute,
+  getCommentsRoute,
+  getConfigurationsRoute,
+  getCouponCodesCouponCodeCodeRoute,
+  getCouponCodesRoute,
+  getCouponsCouponIdRoute,
+  getCouponSetsCouponSetIdRoute,
+  getCouponSetsRoute,
+  getCouponsRoute,
+  getCreditNotesCreditNoteIdDownloadEinvoiceRoute,
+  getCreditNotesCreditNoteIdRoute,
+  getCreditNotesRoute,
+  getCreditUnitsRoute,
+  getCurrenciesListRoute,
+  getCurrenciesSiteCurrencyIdRoute,
+  getCustomersCustomerIdContactsRoute,
+  getCustomersCustomerIdCustomerEntitlementsRoute,
+  getCustomersCustomerIdEmailLogsRoute,
+  getCustomersCustomerIdHierarchyDetailRoute,
+  getCustomersCustomerIdHierarchyRoute,
+  getCustomersCustomerIdPaymentVouchersRoute,
+  getCustomersCustomerIdRoute,
+  getCustomersCustomerIdUpcomingInvoicesEstimateRoute,
+  getCustomersRoute,
+  getCustomFieldConfigsRetrieveRoute,
+  getCustomFieldConfigsRoute,
+  getDifferentialPricesDifferentialPriceIdRoute,
+  getDifferentialPricesRoute,
+  getDisputesDisputeIdRoute,
+  getDisputesRoute,
+  getEinvoicesEinvoiceIdRoute,
+  getEinvoicesRoute,
+  getEntitlementsRoute,
+  getEventsEventIdRoute,
+  getEventsRoute,
+  getExportsExportIdRoute,
+  getFeaturesFeatureIdItemEntitlementsRoute,
+  getFeaturesFeatureIdRoute,
+  getFeaturesRoute,
+  getFullExportsStatusRoute,
+  getGatewayRequestLogsGatewayRequestLogLogIdRoute,
+  getGatewayRequestLogsRoute,
+  getGatewayWebhookLogsGatewayWebhookLogWebhookIdRoute,
+  getGatewayWebhookLogsRoute,
+  getGiftsGiftIdRoute,
+  getGiftsRoute,
+  getGrantBlocksRoute,
+  getHostedPagesHostedPageIdRoute,
+  getHostedPagesRoute,
+  getInvoicesInvoiceIdDownloadEinvoiceRoute,
+  getInvoicesInvoiceIdPaymentSchedulesRoute,
+  getInvoicesInvoiceIdPaymentsRoute,
+  getInvoicesInvoiceIdPaymentVouchersRoute,
+  getInvoicesInvoiceIdRoute,
+  getInvoicesPaymentReferenceNumbersRoute,
+  getInvoicesRoute,
+  getItemFamiliesItemFamilyIdRoute,
+  getItemFamiliesRoute,
+  getItemPricesItemPriceIdApplicableItemPricesRoute,
+  getItemPricesItemPriceIdApplicableItemsRoute,
+  getItemPricesItemPriceIdRoute,
+  getItemPricesRoute,
+  getItemsItemIdAttachedItemsRoute,
+  getItemsItemIdItemEntitlementsRoute,
+  getItemsItemIdRoute,
+  getItemsRoute,
+  getLedgerAccountBalancesRoute,
+  getLedgerOperationsLedgerOperationIdRoute,
+  getLedgerOperationsRoute,
+  getMetersRoute,
+  getOfferFulfillmentsOfferFulfillmentIdRoute,
+  getOmnichannelOneTimeOrdersOmnichannelOneTimeOrderIdRoute,
+  getOmnichannelOneTimeOrdersRoute,
+  getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute,
+  getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRoute,
+  getOmnichannelSubscriptionsOmnichannelSubscriptionIdRoute,
+  getOmnichannelSubscriptionsRoute,
+  getOrdersOrderIdRoute,
+  getOrdersRoute,
+  getOrganizationDetailsOrganizationDetailIdRoute,
+  getOrganizationDetailsRoute,
+  getPaymentIntentsPaymentIntentIdRoute,
+  getPaymentScheduleSchemesPaymentScheduleSchemeIdRoute,
+  getPaymentScheduleSchemesRoute,
+  getPaymentSchedulesRoute,
+  getPaymentSourcesCustPaymentSourceIdGatewayPaymentMethodTokensRoute,
+  getPaymentSourcesCustPaymentSourceIdRoute,
+  getPaymentSourcesRoute,
+  getPaymentVouchersPaymentVoucherIdRoute,
+  getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute,
+  getPc2MigrationItemFamiliesRoute,
+  getPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
+  getPc2MigrationItemPricesRoute,
+  getPc2MigrationItemsApplicableItemsRoute,
+  getPc2MigrationItemsPc2MigrationItemIdRoute,
+  getPc2MigrationItemsRoute,
+  getPc2MigrationsPc2MigrationIdRoute,
+  getPortalSessionsPortalSessionIdRoute,
+  getPriceRampsPriceRampIdRoute,
+  getPriceRampsRoute,
+  getPriceVariantsPriceVariantIdRoute,
+  getPriceVariantsRoute,
+  getProductsProductIdRoute,
+  getProductsProductIdVariantsRoute,
+  getProductsRoute,
+  getPromotionalCreditsAccountCreditIdRoute,
+  getPromotionalCreditsRoute,
+  getQuotesQuoteIdQuoteEntitlementsRoute,
+  getQuotesQuoteIdQuoteLineGroupsRoute,
+  getQuotesQuoteIdRoute,
+  getQuotesRoute,
+  getRampsRampIdRoute,
+  getRampsRoute,
+  getRecordedPurchasesRecordedPurchaseIdRoute,
+  getResourceMigrationsRetrieveLatestRoute,
+  getRetrySegmentsRetrySegmentIdRoute,
+  getRulesRuleIdRoute,
+  getSiteMigrationDetailsRoute,
+  getSitePcMetaRecordsRoute,
+  getSubscriptionsRoute,
+  getSubscriptionsSubscriptionIdAlertStatusesRoute,
+  getSubscriptionsSubscriptionIdApplicableAlertsRoute,
+  getSubscriptionsSubscriptionIdContractTermsRoute,
+  getSubscriptionsSubscriptionIdDiscountsRoute,
+  getSubscriptionsSubscriptionIdEntitlementOverridesRoute,
+  getSubscriptionsSubscriptionIdRenewalEstimateRoute,
+  getSubscriptionsSubscriptionIdRetrieveAdvanceInvoiceScheduleRoute,
+  getSubscriptionsSubscriptionIdRetrieveWithScheduledChangesRoute,
+  getSubscriptionsSubscriptionIdRoute,
+  getSubscriptionsSubscriptionIdScheduledChangesRoute,
+  getSubscriptionsSubscriptionIdSubscriptionEntitlementsRoute,
+  getSubscriptionsSubscriptionIdUsageChargesRoute,
+  getSubscriptionsSubscriptionIdUsagesRoute,
+  getSubscriptionsSubscriptionIdUsageSummaryRoute,
+  getTimeMachinesTimeMachineNameRoute,
+  getTokensCbTokenIdRoute,
+  getTransactionsRoute,
+  getTransactionsTransactionIdRoute,
+  getUnbilledChargesRoute,
+  getUsageFilesUsageFileIdProcessingStatusRoute,
+  getUsagesRoute,
+  getVariantsProductVariantIdRoute,
+  getVaultedPaymentMethodsVaultedPaymentMethodIdRoute,
+  getVirtualBankAccountsRoute,
+  getVirtualBankAccountsVirtualBankAccountIdRoute,
+  getWebhookEndpointsRoute,
+  getWebhookEndpointsWebhookEndpointIdRoute,
+  postAddressesRoute,
+  postAlertsAlertIdDeleteRoute,
+  postAlertsAlertIdRoute,
+  postAlertsRoute,
+  postAttachedItemsAttachedItemIdDeleteRoute,
+  postAttachedItemsAttachedItemIdRoute,
+  postBatchUsageEventsRoute,
+  postBusinessEntitiesBusinessEntityIdRoute,
+  postBusinessEntitiesRoute,
+  postBusinessEntitiesTransfersRoute,
+  postBusinessRulesApplyRulesRoute,
+  postBusinessRulesBusinessRuleIdActivateRoute,
+  postBusinessRulesBusinessRuleIdDeactivateRoute,
+  postBusinessRulesBusinessRuleIdDeleteDraftRoute,
+  postBusinessRulesBusinessRuleIdDeleteRoute,
+  postBusinessRulesBusinessRuleIdDraftRoute,
+  postBusinessRulesBusinessRuleIdReleaseRoute,
+  postBusinessRulesetsBusinessRulesetIdActivateRoute,
+  postBusinessRulesetsBusinessRulesetIdAddRulesRoute,
+  postBusinessRulesetsBusinessRulesetIdDeactivateRoute,
+  postBusinessRulesetsBusinessRulesetIdDeleteRoute,
+  postBusinessRulesetsBusinessRulesetIdRemoveRulesRoute,
+  postBusinessRulesetsBusinessRulesetIdRoute,
+  postBusinessRulesetsRoute,
+  postBusinessRulesRoute,
+  postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRoute,
+  postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute,
+  postCollectionsPaymentPromisesRoute,
+  postCommentsCommentIdDeleteRoute,
+  postCommentsRoute,
+  postCouponCodesCouponCodeCodeArchiveRoute,
+  postCouponsCopyRoute,
+  postCouponsCouponIdDeleteRoute,
+  postCouponsCouponIdUnarchiveRoute,
+  postCouponsCouponIdUpdateForItemsRoute,
+  postCouponsCreateForItemsRoute,
+  postCouponSetsCouponSetIdAddCouponCodesRoute,
+  postCouponSetsCouponSetIdDeleteRoute,
+  postCouponSetsCouponSetIdDeleteUnusedCouponCodesRoute,
+  postCouponSetsCouponSetIdUpdateRoute,
+  postCouponSetsRoute,
+  postCreditNotesCreditNoteIdDeleteRoute,
+  postCreditNotesCreditNoteIdPdfRoute,
+  postCreditNotesCreditNoteIdRecordRefundRoute,
+  postCreditNotesCreditNoteIdRefundRoute,
+  postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRoute,
+  postCreditNotesCreditNoteIdResendEinvoiceRoute,
+  postCreditNotesCreditNoteIdSendEinvoiceRoute,
+  postCreditNotesCreditNoteIdSendEmailRoute,
+  postCreditNotesCreditNoteIdUpdateRoute,
+  postCreditNotesCreditNoteIdVoidRoute,
+  postCreditNotesImportCreditNoteRoute,
+  postCreditNotesRoute,
+  postCreditUnitsCreditUnitIdArchiveCommandRoute,
+  postCreditUnitsCreditUnitIdReactivateCommandRoute,
+  postCreditUnitsCreditUnitIdRoute,
+  postCreditUnitsRoute,
+  postCsvTaxRulesRoute,
+  postCurrenciesRoute,
+  postCurrenciesSiteCurrencyIdAddScheduleRoute,
+  postCurrenciesSiteCurrencyIdRemoveScheduleRoute,
+  postCurrenciesSiteCurrencyIdRoute,
+  postCustomersCustomerIdAddContactRoute,
+  postCustomersCustomerIdAssignPaymentRoleRoute,
+  postCustomersCustomerIdChangeBillingDateRoute,
+  postCustomersCustomerIdClearPersonalDataRoute,
+  postCustomersCustomerIdCollectPaymentRoute,
+  postCustomersCustomerIdCopyCardRoute,
+  postCustomersCustomerIdCreateSubscriptionForItemsEstimateRoute,
+  postCustomersCustomerIdCreateSubscriptionQuoteForItemsRoute,
+  postCustomersCustomerIdCreditCardRoute,
+  postCustomersCustomerIdDeleteCardRoute,
+  postCustomersCustomerIdDeleteContactRoute,
+  postCustomersCustomerIdDeleteRelationshipRoute,
+  postCustomersCustomerIdDeleteRoute,
+  postCustomersCustomerIdImportForItemsRoute,
+  postCustomersCustomerIdRecordExcessPaymentRoute,
+  postCustomersCustomerIdRelationshipsRoute,
+  postCustomersCustomerIdRoute,
+  postCustomersCustomerIdSendPaymentRequestRoute,
+  postCustomersCustomerIdSubscriptionForItemsRoute,
+  postCustomersCustomerIdSwitchGatewayRoute,
+  postCustomersCustomerIdUpdateBillingInfoRoute,
+  postCustomersCustomerIdUpdateContactRoute,
+  postCustomersCustomerIdUpdateHierarchySettingsRoute,
+  postCustomersCustomerIdUpdatePaymentMethodRoute,
+  postCustomersMergeRoute,
+  postCustomersMoveRoute,
+  postCustomersRoute,
+  postDifferentialPricesDifferentialPriceIdDeleteRoute,
+  postDifferentialPricesDifferentialPriceIdRoute,
+  postEntitlementsRoute,
+  postEstimatesCreateInvoiceForItemsRoute,
+  postEstimatesCreateSubscriptionForItemsRoute,
+  postEstimatesGiftSubscriptionForItemsRoute,
+  postEstimatesPaymentSchedulesRoute,
+  postEstimatesUpdateSubscriptionForItemsRoute,
+  postExportsAttachedItemsRoute,
+  postExportsCouponsRoute,
+  postExportsCreditNotesRoute,
+  postExportsCustomersRoute,
+  postExportsDeferredRevenueRoute,
+  postExportsDifferentialPricesRoute,
+  postExportsInvoicesRoute,
+  postExportsItemFamiliesRoute,
+  postExportsItemPricesRoute,
+  postExportsItemsRoute,
+  postExportsOrdersRoute,
+  postExportsPriceVariantsRoute,
+  postExportsRampsRoute,
+  postExportsRevenueRecognitionRoute,
+  postExportsSubscriptionsRoute,
+  postExportsTransactionsRoute,
+  postFeaturesFeatureIdActivateCommandRoute,
+  postFeaturesFeatureIdArchiveCommandRoute,
+  postFeaturesFeatureIdDeleteRoute,
+  postFeaturesFeatureIdItemEntitlementsRoute,
+  postFeaturesFeatureIdReactivateCommandRoute,
+  postFeaturesFeatureIdRoute,
+  postFeaturesRoute,
+  postGiftsCreateForItemsRoute,
+  postGiftsGiftIdCancelRoute,
+  postGiftsGiftIdClaimRoute,
+  postGiftsGiftIdUpdateGiftRoute,
+  postHostedPagesAcceptQuoteRoute,
+  postHostedPagesCheckoutExistingForItemsRoute,
+  postHostedPagesCheckoutGiftForItemsRoute,
+  postHostedPagesCheckoutNewForItemsRoute,
+  postHostedPagesCheckoutOneTimeForItemsRoute,
+  postHostedPagesClaimGiftRoute,
+  postHostedPagesCollectNowRoute,
+  postHostedPagesEventsRoute,
+  postHostedPagesExtendSubscriptionRoute,
+  postHostedPagesHostedPageIdAcknowledgeRoute,
+  postHostedPagesManagePaymentSourcesRoute,
+  postHostedPagesPreCancelRoute,
+  postHostedPagesRetrieveAgreementPdfRoute,
+  postHostedPagesViewVoucherRoute,
+  postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRoute,
+  postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRoute,
+  postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRoute,
+  postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRoute,
+  postInvoicesCreateForChargeItemsAndChargesRoute,
+  postInvoicesImportInvoiceRoute,
+  postInvoicesInvoiceIdAddChargeItemRoute,
+  postInvoicesInvoiceIdAddChargeRoute,
+  postInvoicesInvoiceIdApplyCreditsRoute,
+  postInvoicesInvoiceIdApplyPaymentScheduleSchemeRoute,
+  postInvoicesInvoiceIdApplyPaymentsRoute,
+  postInvoicesInvoiceIdCloseRoute,
+  postInvoicesInvoiceIdCollectPaymentRoute,
+  postInvoicesInvoiceIdDeleteLineItemsRoute,
+  postInvoicesInvoiceIdDeleteRoute,
+  postInvoicesInvoiceIdPauseDunningRoute,
+  postInvoicesInvoiceIdPdfRoute,
+  postInvoicesInvoiceIdRecordPaymentRoute,
+  postInvoicesInvoiceIdRecordRefundRoute,
+  postInvoicesInvoiceIdRecordTaxWithheldRoute,
+  postInvoicesInvoiceIdRefundRoute,
+  postInvoicesInvoiceIdRemoveCreditNoteRoute,
+  postInvoicesInvoiceIdRemovePaymentRoute,
+  postInvoicesInvoiceIdRemovePaymentScheduleSchemeRoute,
+  postInvoicesInvoiceIdRemoveTaxWithheldRoute,
+  postInvoicesInvoiceIdResendEinvoiceRoute,
+  postInvoicesInvoiceIdResumeDunningRoute,
+  postInvoicesInvoiceIdSendEinvoiceRoute,
+  postInvoicesInvoiceIdSendEmailRoute,
+  postInvoicesInvoiceIdStopDunningRoute,
+  postInvoicesInvoiceIdSyncUsagesRoute,
+  postInvoicesInvoiceIdUpdateDetailsRoute,
+  postInvoicesInvoiceIdVoidBeforeCaptureRoute,
+  postInvoicesInvoiceIdVoidRoute,
+  postInvoicesInvoiceIdWriteOffRoute,
+  postItemFamiliesItemFamilyIdDeleteRoute,
+  postItemFamiliesItemFamilyIdRoute,
+  postItemFamiliesRoute,
+  postItemPricesItemPriceIdDeleteRoute,
+  postItemPricesItemPriceIdDifferentialPricesRoute,
+  postItemPricesItemPriceIdRoute,
+  postItemPricesRoute,
+  postItemsItemIdAttachedItemsRoute,
+  postItemsItemIdDeleteRoute,
+  postItemsItemIdItemEntitlementsRoute,
+  postItemsItemIdRoute,
+  postItemsRoute,
+  postLedgerAccountBalancesUpdateOverdraftLimitRoute,
+  postLedgerOperationsAllocateRoute,
+  postLedgerOperationsAuthorizeRoute,
+  postLedgerOperationsCaptureAuthorizationRoute,
+  postLedgerOperationsCaptureRoute,
+  postLedgerOperationsReleaseAuthorizationRoute,
+  postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute,
+  postMeteredFeaturesMeteredFeatureIdDeleteRoute,
+  postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute,
+  postMeteredFeaturesRoute,
+  postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute,
+  postOfferEventsRoute,
+  postOfferFulfillmentsOfferFulfillmentIdRoute,
+  postOfferFulfillmentsRoute,
+  postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRoute,
+  postOrdersImportOrderRoute,
+  postOrdersOrderIdAssignOrderNumberRoute,
+  postOrdersOrderIdCancelRoute,
+  postOrdersOrderIdCreateRefundableCreditNoteRoute,
+  postOrdersOrderIdDeleteRoute,
+  postOrdersOrderIdReopenRoute,
+  postOrdersOrderIdResendRoute,
+  postOrdersOrderIdRoute,
+  postOrdersRoute,
+  postOrganizationDetailsRoute,
+  postPaymentIntentsPaymentIntentIdRoute,
+  postPaymentIntentsRoute,
+  postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRoute,
+  postPaymentScheduleSchemesRoute,
+  postPaymentSourcesCreateBankAccountRoute,
+  postPaymentSourcesCreateCardRoute,
+  postPaymentSourcesCreateUsingPaymentIntentRoute,
+  postPaymentSourcesCreateUsingPermanentTokenRoute,
+  postPaymentSourcesCreateUsingTempTokenRoute,
+  postPaymentSourcesCreateUsingTokenRoute,
+  postPaymentSourcesCreateVoucherPaymentSourceRoute,
+  postPaymentSourcesCustPaymentSourceIdDeleteLocalRoute,
+  postPaymentSourcesCustPaymentSourceIdDeleteRoute,
+  postPaymentSourcesCustPaymentSourceIdExportPaymentSourceRoute,
+  postPaymentSourcesCustPaymentSourceIdSwitchGatewayAccountRoute,
+  postPaymentSourcesCustPaymentSourceIdUpdateBankAccountRoute,
+  postPaymentSourcesCustPaymentSourceIdUpdateCardRoute,
+  postPaymentSourcesCustPaymentSourceIdVerifyBankAccountRoute,
+  postPaymentVouchersRoute,
+  postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRoute,
+  postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute,
+  postPc2MigrationItemFamiliesRoute,
+  postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRoute,
+  postPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
+  postPc2MigrationItemsPc2MigrationItemIdDeleteRoute,
+  postPc2MigrationItemsPc2MigrationItemIdRoute,
+  postPc2MigrationItemsRoute,
+  postPc2MigrationsPc2MigrationIdContactSupportRoute,
+  postPc2MigrationsPc2MigrationIdInitiateRoute,
+  postPc2MigrationsRoute,
+  postPersonalizedOffersRoute,
+  postPortalSessionsPortalSessionIdActivateRoute,
+  postPortalSessionsPortalSessionIdLogoutRoute,
+  postPortalSessionsRoute,
+  postPriceRampsPriceRampIdDeleteRoute,
+  postPriceRampsPriceRampIdRoute,
+  postPriceRampsRoute,
+  postPriceVariantsPriceVariantIdDeleteRoute,
+  postPriceVariantsPriceVariantIdRoute,
+  postPriceVariantsRoute,
+  postPricingPageSessionsCreateForExistingSubscriptionRoute,
+  postPricingPageSessionsCreateForNewSubscriptionRoute,
+  postProductsProductIdDeleteRoute,
+  postProductsProductIdRoute,
+  postProductsProductIdUpdateOptionsRoute,
+  postProductsProductIdVariantsRoute,
+  postProductsRoute,
+  postPromotionalCreditsAddRoute,
+  postPromotionalCreditsDeductRoute,
+  postPromotionalCreditsSetRoute,
+  postPromotionalGrantsRoute,
+  postPurchasesEstimateRoute,
+  postPurchasesRoute,
+  postQuotesCreateForChargeItemsAndChargesRoute,
+  postQuotesQuoteIdConvertRoute,
+  postQuotesQuoteIdDeleteRoute,
+  postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRoute,
+  postQuotesQuoteIdEditForChargeItemsAndChargesRoute,
+  postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRoute,
+  postQuotesQuoteIdExtendExpiryDateRoute,
+  postQuotesQuoteIdPdfRoute,
+  postQuotesQuoteIdUpdateStatusRoute,
+  postQuotesUpdateSubscriptionQuoteForItemsRoute,
+  postRampsRampIdDeleteRoute,
+  postRampsRampIdUpdateRoute,
+  postRecordedPurchasesRoute,
+  postSubscriptionsSubscriptionIdAddChargeAtTermEndRoute,
+  postSubscriptionsSubscriptionIdAdvanceInvoiceEstimateRoute,
+  postSubscriptionsSubscriptionIdCancelForItemsRoute,
+  postSubscriptionsSubscriptionIdCancelSubscriptionForItemsEstimateRoute,
+  postSubscriptionsSubscriptionIdChangeTermEndEstimateRoute,
+  postSubscriptionsSubscriptionIdChangeTermEndRoute,
+  postSubscriptionsSubscriptionIdChargeFutureRenewalsRoute,
+  postSubscriptionsSubscriptionIdCreateRampRoute,
+  postSubscriptionsSubscriptionIdDeleteRoute,
+  postSubscriptionsSubscriptionIdDeleteUsageRoute,
+  postSubscriptionsSubscriptionIdEditAdvanceInvoiceScheduleRoute,
+  postSubscriptionsSubscriptionIdEntitlementOverridesRoute,
+  postSubscriptionsSubscriptionIdImportContractTermRoute,
+  postSubscriptionsSubscriptionIdImportUnbilledChargesRoute,
+  postSubscriptionsSubscriptionIdMoveRoute,
+  postSubscriptionsSubscriptionIdOverrideBillingProfileRoute,
+  postSubscriptionsSubscriptionIdPauseRoute,
+  postSubscriptionsSubscriptionIdPauseSubscriptionEstimateRoute,
+  postSubscriptionsSubscriptionIdReactivateRoute,
+  postSubscriptionsSubscriptionIdRegenerateInvoiceEstimateRoute,
+  postSubscriptionsSubscriptionIdRegenerateInvoiceRoute,
+  postSubscriptionsSubscriptionIdRemoveAdvanceInvoiceScheduleRoute,
+  postSubscriptionsSubscriptionIdRemoveCouponsRoute,
+  postSubscriptionsSubscriptionIdRemoveScheduledCancellationRoute,
+  postSubscriptionsSubscriptionIdRemoveScheduledChangesRoute,
+  postSubscriptionsSubscriptionIdRemoveScheduledPauseRoute,
+  postSubscriptionsSubscriptionIdRemoveScheduledResumptionRoute,
+  postSubscriptionsSubscriptionIdResumeRoute,
+  postSubscriptionsSubscriptionIdResumeSubscriptionEstimateRoute,
+  postSubscriptionsSubscriptionIdSubscriptionEntitlementsSetAvailabilityRoute,
+  postSubscriptionsSubscriptionIdUpdateForItemsRoute,
+  postSubscriptionsSubscriptionIdUpdateScheduledChangesRoute,
+  postSubscriptionsSubscriptionIdUsagesRoute,
+  postTimeMachinesTimeMachineNameStartAfreshRoute,
+  postTimeMachinesTimeMachineNameTravelForwardRoute,
+  postTokensCreateForCardRoute,
+  postTokensCreateUsingTempTokenRoute,
+  postTransactionsCreateAuthorizationRoute,
+  postTransactionsTransactionIdDeleteOfflineTransactionRoute,
+  postTransactionsTransactionIdReconcileRoute,
+  postTransactionsTransactionIdRecordRefundRoute,
+  postTransactionsTransactionIdRefundRoute,
+  postTransactionsTransactionIdVoidRoute,
+  postUnbilledChargesInvoiceNowEstimateRoute,
+  postUnbilledChargesInvoiceUnbilledChargesRoute,
+  postUnbilledChargesRoute,
+  postUnbilledChargesUnbilledChargeIdDeleteRoute,
+  postUsageEventsRoute,
+  postUsageFilesUploadUrlRoute,
+  postUsagesPdfRoute,
+  postVariantsProductVariantIdDeleteRoute,
+  postVariantsProductVariantIdRoute,
+  postVirtualBankAccountsCreateUsingPermanentTokenRoute,
+  postVirtualBankAccountsRoute,
+  postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRoute,
+  postVirtualBankAccountsVirtualBankAccountIdDeleteRoute,
+  postWebhookEndpointsRoute,
+  postWebhookEndpointsWebhookEndpointIdDeleteRoute,
+  postWebhookEndpointsWebhookEndpointIdRoute,
+} from './routes'
+import {
+  getAddressesRouteHandler,
+  getAlertsAlertIdAlertStatusesRouteHandler,
+  getAlertsAlertIdRouteHandler,
+  getAlertsRouteHandler,
+  getAttachedItemsAttachedItemIdRouteHandler,
+  getBusinessEntitiesBusinessEntityIdRouteHandler,
+  getBusinessEntitiesRouteHandler,
+  getBusinessEntitiesTransfersRouteHandler,
+  getBusinessRulesBusinessRuleIdDraftRouteHandler,
+  getBusinessRulesBusinessRuleIdRouteHandler,
+  getBusinessRulesetsBusinessRulesetIdRouteHandler,
+  getBusinessRulesetsBusinessRulesetIdRulesRouteHandler,
+  getBusinessRulesetsRouteHandler,
+  getBusinessRulesRouteHandler,
+  getCardsCustomerIdRouteHandler,
+  getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler,
+  getCollectionsPaymentPromisesRouteHandler,
+  getCommentsCommentIdRouteHandler,
+  getCommentsRouteHandler,
+  getConfigurationsRouteHandler,
+  getCouponCodesCouponCodeCodeRouteHandler,
+  getCouponCodesRouteHandler,
+  getCouponsCouponIdRouteHandler,
+  getCouponSetsCouponSetIdRouteHandler,
+  getCouponSetsRouteHandler,
+  getCouponsRouteHandler,
+  getCreditNotesCreditNoteIdDownloadEinvoiceRouteHandler,
+  getCreditNotesCreditNoteIdRouteHandler,
+  getCreditNotesRouteHandler,
+  getCreditUnitsRouteHandler,
+  getCurrenciesListRouteHandler,
+  getCurrenciesSiteCurrencyIdRouteHandler,
+  getCustomersCustomerIdContactsRouteHandler,
+  getCustomersCustomerIdCustomerEntitlementsRouteHandler,
+  getCustomersCustomerIdEmailLogsRouteHandler,
+  getCustomersCustomerIdHierarchyDetailRouteHandler,
+  getCustomersCustomerIdHierarchyRouteHandler,
+  getCustomersCustomerIdPaymentVouchersRouteHandler,
+  getCustomersCustomerIdRouteHandler,
+  getCustomersCustomerIdUpcomingInvoicesEstimateRouteHandler,
+  getCustomersRouteHandler,
+  getCustomFieldConfigsRetrieveRouteHandler,
+  getCustomFieldConfigsRouteHandler,
+  getDifferentialPricesDifferentialPriceIdRouteHandler,
+  getDifferentialPricesRouteHandler,
+  getDisputesDisputeIdRouteHandler,
+  getDisputesRouteHandler,
+  getEinvoicesEinvoiceIdRouteHandler,
+  getEinvoicesRouteHandler,
+  getEntitlementsRouteHandler,
+  getEventsEventIdRouteHandler,
+  getEventsRouteHandler,
+  getExportsExportIdRouteHandler,
+  getFeaturesFeatureIdItemEntitlementsRouteHandler,
+  getFeaturesFeatureIdRouteHandler,
+  getFeaturesRouteHandler,
+  getFullExportsStatusRouteHandler,
+  getGatewayRequestLogsGatewayRequestLogLogIdRouteHandler,
+  getGatewayRequestLogsRouteHandler,
+  getGatewayWebhookLogsGatewayWebhookLogWebhookIdRouteHandler,
+  getGatewayWebhookLogsRouteHandler,
+  getGiftsGiftIdRouteHandler,
+  getGiftsRouteHandler,
+  getGrantBlocksRouteHandler,
+  getHostedPagesHostedPageIdRouteHandler,
+  getHostedPagesRouteHandler,
+  getInvoicesInvoiceIdDownloadEinvoiceRouteHandler,
+  getInvoicesInvoiceIdPaymentSchedulesRouteHandler,
+  getInvoicesInvoiceIdPaymentsRouteHandler,
+  getInvoicesInvoiceIdPaymentVouchersRouteHandler,
+  getInvoicesInvoiceIdRouteHandler,
+  getInvoicesPaymentReferenceNumbersRouteHandler,
+  getInvoicesRouteHandler,
+  getItemFamiliesItemFamilyIdRouteHandler,
+  getItemFamiliesRouteHandler,
+  getItemPricesItemPriceIdApplicableItemPricesRouteHandler,
+  getItemPricesItemPriceIdApplicableItemsRouteHandler,
+  getItemPricesItemPriceIdRouteHandler,
+  getItemPricesRouteHandler,
+  getItemsItemIdAttachedItemsRouteHandler,
+  getItemsItemIdItemEntitlementsRouteHandler,
+  getItemsItemIdRouteHandler,
+  getItemsRouteHandler,
+  getLedgerAccountBalancesRouteHandler,
+  getLedgerOperationsLedgerOperationIdRouteHandler,
+  getLedgerOperationsRouteHandler,
+  getMetersRouteHandler,
+  getOfferFulfillmentsOfferFulfillmentIdRouteHandler,
+  getOmnichannelOneTimeOrdersOmnichannelOneTimeOrderIdRouteHandler,
+  getOmnichannelOneTimeOrdersRouteHandler,
+  getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRouteHandler,
+  getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRouteHandler,
+  getOmnichannelSubscriptionsOmnichannelSubscriptionIdRouteHandler,
+  getOmnichannelSubscriptionsRouteHandler,
+  getOrdersOrderIdRouteHandler,
+  getOrdersRouteHandler,
+  getOrganizationDetailsOrganizationDetailIdRouteHandler,
+  getOrganizationDetailsRouteHandler,
+  getPaymentIntentsPaymentIntentIdRouteHandler,
+  getPaymentScheduleSchemesPaymentScheduleSchemeIdRouteHandler,
+  getPaymentScheduleSchemesRouteHandler,
+  getPaymentSchedulesRouteHandler,
+  getPaymentSourcesCustPaymentSourceIdGatewayPaymentMethodTokensRouteHandler,
+  getPaymentSourcesCustPaymentSourceIdRouteHandler,
+  getPaymentSourcesRouteHandler,
+  getPaymentVouchersPaymentVoucherIdRouteHandler,
+  getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler,
+  getPc2MigrationItemFamiliesRouteHandler,
+  getPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler,
+  getPc2MigrationItemPricesRouteHandler,
+  getPc2MigrationItemsApplicableItemsRouteHandler,
+  getPc2MigrationItemsPc2MigrationItemIdRouteHandler,
+  getPc2MigrationItemsRouteHandler,
+  getPc2MigrationsPc2MigrationIdRouteHandler,
+  getPortalSessionsPortalSessionIdRouteHandler,
+  getPriceRampsPriceRampIdRouteHandler,
+  getPriceRampsRouteHandler,
+  getPriceVariantsPriceVariantIdRouteHandler,
+  getPriceVariantsRouteHandler,
+  getProductsProductIdRouteHandler,
+  getProductsProductIdVariantsRouteHandler,
+  getProductsRouteHandler,
+  getPromotionalCreditsAccountCreditIdRouteHandler,
+  getPromotionalCreditsRouteHandler,
+  getQuotesQuoteIdQuoteEntitlementsRouteHandler,
+  getQuotesQuoteIdQuoteLineGroupsRouteHandler,
+  getQuotesQuoteIdRouteHandler,
+  getQuotesRouteHandler,
+  getRampsRampIdRouteHandler,
+  getRampsRouteHandler,
+  getRecordedPurchasesRecordedPurchaseIdRouteHandler,
+  getResourceMigrationsRetrieveLatestRouteHandler,
+  getRetrySegmentsRetrySegmentIdRouteHandler,
+  getRulesRuleIdRouteHandler,
+  getSiteMigrationDetailsRouteHandler,
+  getSitePcMetaRecordsRouteHandler,
+  getSubscriptionsRouteHandler,
+  getSubscriptionsSubscriptionIdAlertStatusesRouteHandler,
+  getSubscriptionsSubscriptionIdApplicableAlertsRouteHandler,
+  getSubscriptionsSubscriptionIdContractTermsRouteHandler,
+  getSubscriptionsSubscriptionIdDiscountsRouteHandler,
+  getSubscriptionsSubscriptionIdEntitlementOverridesRouteHandler,
+  getSubscriptionsSubscriptionIdRenewalEstimateRouteHandler,
+  getSubscriptionsSubscriptionIdRetrieveAdvanceInvoiceScheduleRouteHandler,
+  getSubscriptionsSubscriptionIdRetrieveWithScheduledChangesRouteHandler,
+  getSubscriptionsSubscriptionIdRouteHandler,
+  getSubscriptionsSubscriptionIdScheduledChangesRouteHandler,
+  getSubscriptionsSubscriptionIdSubscriptionEntitlementsRouteHandler,
+  getSubscriptionsSubscriptionIdUsageChargesRouteHandler,
+  getSubscriptionsSubscriptionIdUsagesRouteHandler,
+  getSubscriptionsSubscriptionIdUsageSummaryRouteHandler,
+  getTimeMachinesTimeMachineNameRouteHandler,
+  getTokensCbTokenIdRouteHandler,
+  getTransactionsRouteHandler,
+  getTransactionsTransactionIdRouteHandler,
+  getUnbilledChargesRouteHandler,
+  getUsageFilesUsageFileIdProcessingStatusRouteHandler,
+  getUsagesRouteHandler,
+  getVariantsProductVariantIdRouteHandler,
+  getVaultedPaymentMethodsVaultedPaymentMethodIdRouteHandler,
+  getVirtualBankAccountsRouteHandler,
+  getVirtualBankAccountsVirtualBankAccountIdRouteHandler,
+  getWebhookEndpointsRouteHandler,
+  getWebhookEndpointsWebhookEndpointIdRouteHandler,
+  postAddressesRouteHandler,
+  postAlertsAlertIdDeleteRouteHandler,
+  postAlertsAlertIdRouteHandler,
+  postAlertsRouteHandler,
+  postAttachedItemsAttachedItemIdDeleteRouteHandler,
+  postAttachedItemsAttachedItemIdRouteHandler,
+  postBatchUsageEventsRouteHandler,
+  postBusinessEntitiesBusinessEntityIdRouteHandler,
+  postBusinessEntitiesRouteHandler,
+  postBusinessEntitiesTransfersRouteHandler,
+  postBusinessRulesApplyRulesRouteHandler,
+  postBusinessRulesBusinessRuleIdActivateRouteHandler,
+  postBusinessRulesBusinessRuleIdDeactivateRouteHandler,
+  postBusinessRulesBusinessRuleIdDeleteDraftRouteHandler,
+  postBusinessRulesBusinessRuleIdDeleteRouteHandler,
+  postBusinessRulesBusinessRuleIdDraftRouteHandler,
+  postBusinessRulesBusinessRuleIdReleaseRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdActivateRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdAddRulesRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdDeactivateRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdDeleteRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdRemoveRulesRouteHandler,
+  postBusinessRulesetsBusinessRulesetIdRouteHandler,
+  postBusinessRulesetsRouteHandler,
+  postBusinessRulesRouteHandler,
+  postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRouteHandler,
+  postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler,
+  postCollectionsPaymentPromisesRouteHandler,
+  postCommentsCommentIdDeleteRouteHandler,
+  postCommentsRouteHandler,
+  postCouponCodesCouponCodeCodeArchiveRouteHandler,
+  postCouponsCopyRouteHandler,
+  postCouponsCouponIdDeleteRouteHandler,
+  postCouponsCouponIdUnarchiveRouteHandler,
+  postCouponsCouponIdUpdateForItemsRouteHandler,
+  postCouponsCreateForItemsRouteHandler,
+  postCouponSetsCouponSetIdAddCouponCodesRouteHandler,
+  postCouponSetsCouponSetIdDeleteRouteHandler,
+  postCouponSetsCouponSetIdDeleteUnusedCouponCodesRouteHandler,
+  postCouponSetsCouponSetIdUpdateRouteHandler,
+  postCouponSetsRouteHandler,
+  postCreditNotesCreditNoteIdDeleteRouteHandler,
+  postCreditNotesCreditNoteIdPdfRouteHandler,
+  postCreditNotesCreditNoteIdRecordRefundRouteHandler,
+  postCreditNotesCreditNoteIdRefundRouteHandler,
+  postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRouteHandler,
+  postCreditNotesCreditNoteIdResendEinvoiceRouteHandler,
+  postCreditNotesCreditNoteIdSendEinvoiceRouteHandler,
+  postCreditNotesCreditNoteIdSendEmailRouteHandler,
+  postCreditNotesCreditNoteIdUpdateRouteHandler,
+  postCreditNotesCreditNoteIdVoidRouteHandler,
+  postCreditNotesImportCreditNoteRouteHandler,
+  postCreditNotesRouteHandler,
+  postCreditUnitsCreditUnitIdArchiveCommandRouteHandler,
+  postCreditUnitsCreditUnitIdReactivateCommandRouteHandler,
+  postCreditUnitsCreditUnitIdRouteHandler,
+  postCreditUnitsRouteHandler,
+  postCsvTaxRulesRouteHandler,
+  postCurrenciesRouteHandler,
+  postCurrenciesSiteCurrencyIdAddScheduleRouteHandler,
+  postCurrenciesSiteCurrencyIdRemoveScheduleRouteHandler,
+  postCurrenciesSiteCurrencyIdRouteHandler,
+  postCustomersCustomerIdAddContactRouteHandler,
+  postCustomersCustomerIdAssignPaymentRoleRouteHandler,
+  postCustomersCustomerIdChangeBillingDateRouteHandler,
+  postCustomersCustomerIdClearPersonalDataRouteHandler,
+  postCustomersCustomerIdCollectPaymentRouteHandler,
+  postCustomersCustomerIdCopyCardRouteHandler,
+  postCustomersCustomerIdCreateSubscriptionForItemsEstimateRouteHandler,
+  postCustomersCustomerIdCreateSubscriptionQuoteForItemsRouteHandler,
+  postCustomersCustomerIdCreditCardRouteHandler,
+  postCustomersCustomerIdDeleteCardRouteHandler,
+  postCustomersCustomerIdDeleteContactRouteHandler,
+  postCustomersCustomerIdDeleteRelationshipRouteHandler,
+  postCustomersCustomerIdDeleteRouteHandler,
+  postCustomersCustomerIdImportForItemsRouteHandler,
+  postCustomersCustomerIdRecordExcessPaymentRouteHandler,
+  postCustomersCustomerIdRelationshipsRouteHandler,
+  postCustomersCustomerIdRouteHandler,
+  postCustomersCustomerIdSendPaymentRequestRouteHandler,
+  postCustomersCustomerIdSubscriptionForItemsRouteHandler,
+  postCustomersCustomerIdSwitchGatewayRouteHandler,
+  postCustomersCustomerIdUpdateBillingInfoRouteHandler,
+  postCustomersCustomerIdUpdateContactRouteHandler,
+  postCustomersCustomerIdUpdateHierarchySettingsRouteHandler,
+  postCustomersCustomerIdUpdatePaymentMethodRouteHandler,
+  postCustomersMergeRouteHandler,
+  postCustomersMoveRouteHandler,
+  postCustomersRouteHandler,
+  postDifferentialPricesDifferentialPriceIdDeleteRouteHandler,
+  postDifferentialPricesDifferentialPriceIdRouteHandler,
+  postEntitlementsRouteHandler,
+  postEstimatesCreateInvoiceForItemsRouteHandler,
+  postEstimatesCreateSubscriptionForItemsRouteHandler,
+  postEstimatesGiftSubscriptionForItemsRouteHandler,
+  postEstimatesPaymentSchedulesRouteHandler,
+  postEstimatesUpdateSubscriptionForItemsRouteHandler,
+  postExportsAttachedItemsRouteHandler,
+  postExportsCouponsRouteHandler,
+  postExportsCreditNotesRouteHandler,
+  postExportsCustomersRouteHandler,
+  postExportsDeferredRevenueRouteHandler,
+  postExportsDifferentialPricesRouteHandler,
+  postExportsInvoicesRouteHandler,
+  postExportsItemFamiliesRouteHandler,
+  postExportsItemPricesRouteHandler,
+  postExportsItemsRouteHandler,
+  postExportsOrdersRouteHandler,
+  postExportsPriceVariantsRouteHandler,
+  postExportsRampsRouteHandler,
+  postExportsRevenueRecognitionRouteHandler,
+  postExportsSubscriptionsRouteHandler,
+  postExportsTransactionsRouteHandler,
+  postFeaturesFeatureIdActivateCommandRouteHandler,
+  postFeaturesFeatureIdArchiveCommandRouteHandler,
+  postFeaturesFeatureIdDeleteRouteHandler,
+  postFeaturesFeatureIdItemEntitlementsRouteHandler,
+  postFeaturesFeatureIdReactivateCommandRouteHandler,
+  postFeaturesFeatureIdRouteHandler,
+  postFeaturesRouteHandler,
+  postGiftsCreateForItemsRouteHandler,
+  postGiftsGiftIdCancelRouteHandler,
+  postGiftsGiftIdClaimRouteHandler,
+  postGiftsGiftIdUpdateGiftRouteHandler,
+  postHostedPagesAcceptQuoteRouteHandler,
+  postHostedPagesCheckoutExistingForItemsRouteHandler,
+  postHostedPagesCheckoutGiftForItemsRouteHandler,
+  postHostedPagesCheckoutNewForItemsRouteHandler,
+  postHostedPagesCheckoutOneTimeForItemsRouteHandler,
+  postHostedPagesClaimGiftRouteHandler,
+  postHostedPagesCollectNowRouteHandler,
+  postHostedPagesEventsRouteHandler,
+  postHostedPagesExtendSubscriptionRouteHandler,
+  postHostedPagesHostedPageIdAcknowledgeRouteHandler,
+  postHostedPagesManagePaymentSourcesRouteHandler,
+  postHostedPagesPreCancelRouteHandler,
+  postHostedPagesRetrieveAgreementPdfRouteHandler,
+  postHostedPagesViewVoucherRouteHandler,
+  postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRouteHandler,
+  postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRouteHandler,
+  postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRouteHandler,
+  postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRouteHandler,
+  postInvoicesCreateForChargeItemsAndChargesRouteHandler,
+  postInvoicesImportInvoiceRouteHandler,
+  postInvoicesInvoiceIdAddChargeItemRouteHandler,
+  postInvoicesInvoiceIdAddChargeRouteHandler,
+  postInvoicesInvoiceIdApplyCreditsRouteHandler,
+  postInvoicesInvoiceIdApplyPaymentScheduleSchemeRouteHandler,
+  postInvoicesInvoiceIdApplyPaymentsRouteHandler,
+  postInvoicesInvoiceIdCloseRouteHandler,
+  postInvoicesInvoiceIdCollectPaymentRouteHandler,
+  postInvoicesInvoiceIdDeleteLineItemsRouteHandler,
+  postInvoicesInvoiceIdDeleteRouteHandler,
+  postInvoicesInvoiceIdPauseDunningRouteHandler,
+  postInvoicesInvoiceIdPdfRouteHandler,
+  postInvoicesInvoiceIdRecordPaymentRouteHandler,
+  postInvoicesInvoiceIdRecordRefundRouteHandler,
+  postInvoicesInvoiceIdRecordTaxWithheldRouteHandler,
+  postInvoicesInvoiceIdRefundRouteHandler,
+  postInvoicesInvoiceIdRemoveCreditNoteRouteHandler,
+  postInvoicesInvoiceIdRemovePaymentRouteHandler,
+  postInvoicesInvoiceIdRemovePaymentScheduleSchemeRouteHandler,
+  postInvoicesInvoiceIdRemoveTaxWithheldRouteHandler,
+  postInvoicesInvoiceIdResendEinvoiceRouteHandler,
+  postInvoicesInvoiceIdResumeDunningRouteHandler,
+  postInvoicesInvoiceIdSendEinvoiceRouteHandler,
+  postInvoicesInvoiceIdSendEmailRouteHandler,
+  postInvoicesInvoiceIdStopDunningRouteHandler,
+  postInvoicesInvoiceIdSyncUsagesRouteHandler,
+  postInvoicesInvoiceIdUpdateDetailsRouteHandler,
+  postInvoicesInvoiceIdVoidBeforeCaptureRouteHandler,
+  postInvoicesInvoiceIdVoidRouteHandler,
+  postInvoicesInvoiceIdWriteOffRouteHandler,
+  postItemFamiliesItemFamilyIdDeleteRouteHandler,
+  postItemFamiliesItemFamilyIdRouteHandler,
+  postItemFamiliesRouteHandler,
+  postItemPricesItemPriceIdDeleteRouteHandler,
+  postItemPricesItemPriceIdDifferentialPricesRouteHandler,
+  postItemPricesItemPriceIdRouteHandler,
+  postItemPricesRouteHandler,
+  postItemsItemIdAttachedItemsRouteHandler,
+  postItemsItemIdDeleteRouteHandler,
+  postItemsItemIdItemEntitlementsRouteHandler,
+  postItemsItemIdRouteHandler,
+  postItemsRouteHandler,
+  postLedgerAccountBalancesUpdateOverdraftLimitRouteHandler,
+  postLedgerOperationsAllocateRouteHandler,
+  postLedgerOperationsAuthorizeRouteHandler,
+  postLedgerOperationsCaptureAuthorizationRouteHandler,
+  postLedgerOperationsCaptureRouteHandler,
+  postLedgerOperationsReleaseAuthorizationRouteHandler,
+  postMeteredFeaturesMeteredFeatureIdArchiveCommandRouteHandler,
+  postMeteredFeaturesMeteredFeatureIdDeleteRouteHandler,
+  postMeteredFeaturesMeteredFeatureIdReactivateCommandRouteHandler,
+  postMeteredFeaturesRouteHandler,
+  postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRouteHandler,
+  postOfferEventsRouteHandler,
+  postOfferFulfillmentsOfferFulfillmentIdRouteHandler,
+  postOfferFulfillmentsRouteHandler,
+  postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRouteHandler,
+  postOrdersImportOrderRouteHandler,
+  postOrdersOrderIdAssignOrderNumberRouteHandler,
+  postOrdersOrderIdCancelRouteHandler,
+  postOrdersOrderIdCreateRefundableCreditNoteRouteHandler,
+  postOrdersOrderIdDeleteRouteHandler,
+  postOrdersOrderIdReopenRouteHandler,
+  postOrdersOrderIdResendRouteHandler,
+  postOrdersOrderIdRouteHandler,
+  postOrdersRouteHandler,
+  postOrganizationDetailsRouteHandler,
+  postPaymentIntentsPaymentIntentIdRouteHandler,
+  postPaymentIntentsRouteHandler,
+  postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRouteHandler,
+  postPaymentScheduleSchemesRouteHandler,
+  postPaymentSourcesCreateBankAccountRouteHandler,
+  postPaymentSourcesCreateCardRouteHandler,
+  postPaymentSourcesCreateUsingPaymentIntentRouteHandler,
+  postPaymentSourcesCreateUsingPermanentTokenRouteHandler,
+  postPaymentSourcesCreateUsingTempTokenRouteHandler,
+  postPaymentSourcesCreateUsingTokenRouteHandler,
+  postPaymentSourcesCreateVoucherPaymentSourceRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdDeleteLocalRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdDeleteRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdExportPaymentSourceRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdSwitchGatewayAccountRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdUpdateBankAccountRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdUpdateCardRouteHandler,
+  postPaymentSourcesCustPaymentSourceIdVerifyBankAccountRouteHandler,
+  postPaymentVouchersRouteHandler,
+  postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRouteHandler,
+  postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler,
+  postPc2MigrationItemFamiliesRouteHandler,
+  postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRouteHandler,
+  postPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler,
+  postPc2MigrationItemsPc2MigrationItemIdDeleteRouteHandler,
+  postPc2MigrationItemsPc2MigrationItemIdRouteHandler,
+  postPc2MigrationItemsRouteHandler,
+  postPc2MigrationsPc2MigrationIdContactSupportRouteHandler,
+  postPc2MigrationsPc2MigrationIdInitiateRouteHandler,
+  postPc2MigrationsRouteHandler,
+  postPersonalizedOffersRouteHandler,
+  postPortalSessionsPortalSessionIdActivateRouteHandler,
+  postPortalSessionsPortalSessionIdLogoutRouteHandler,
+  postPortalSessionsRouteHandler,
+  postPriceRampsPriceRampIdDeleteRouteHandler,
+  postPriceRampsPriceRampIdRouteHandler,
+  postPriceRampsRouteHandler,
+  postPriceVariantsPriceVariantIdDeleteRouteHandler,
+  postPriceVariantsPriceVariantIdRouteHandler,
+  postPriceVariantsRouteHandler,
+  postPricingPageSessionsCreateForExistingSubscriptionRouteHandler,
+  postPricingPageSessionsCreateForNewSubscriptionRouteHandler,
+  postProductsProductIdDeleteRouteHandler,
+  postProductsProductIdRouteHandler,
+  postProductsProductIdUpdateOptionsRouteHandler,
+  postProductsProductIdVariantsRouteHandler,
+  postProductsRouteHandler,
+  postPromotionalCreditsAddRouteHandler,
+  postPromotionalCreditsDeductRouteHandler,
+  postPromotionalCreditsSetRouteHandler,
+  postPromotionalGrantsRouteHandler,
+  postPurchasesEstimateRouteHandler,
+  postPurchasesRouteHandler,
+  postQuotesCreateForChargeItemsAndChargesRouteHandler,
+  postQuotesQuoteIdConvertRouteHandler,
+  postQuotesQuoteIdDeleteRouteHandler,
+  postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRouteHandler,
+  postQuotesQuoteIdEditForChargeItemsAndChargesRouteHandler,
+  postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRouteHandler,
+  postQuotesQuoteIdExtendExpiryDateRouteHandler,
+  postQuotesQuoteIdPdfRouteHandler,
+  postQuotesQuoteIdUpdateStatusRouteHandler,
+  postQuotesUpdateSubscriptionQuoteForItemsRouteHandler,
+  postRampsRampIdDeleteRouteHandler,
+  postRampsRampIdUpdateRouteHandler,
+  postRecordedPurchasesRouteHandler,
+  postSubscriptionsSubscriptionIdAddChargeAtTermEndRouteHandler,
+  postSubscriptionsSubscriptionIdAdvanceInvoiceEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdCancelForItemsRouteHandler,
+  postSubscriptionsSubscriptionIdCancelSubscriptionForItemsEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdChangeTermEndEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdChangeTermEndRouteHandler,
+  postSubscriptionsSubscriptionIdChargeFutureRenewalsRouteHandler,
+  postSubscriptionsSubscriptionIdCreateRampRouteHandler,
+  postSubscriptionsSubscriptionIdDeleteRouteHandler,
+  postSubscriptionsSubscriptionIdDeleteUsageRouteHandler,
+  postSubscriptionsSubscriptionIdEditAdvanceInvoiceScheduleRouteHandler,
+  postSubscriptionsSubscriptionIdEntitlementOverridesRouteHandler,
+  postSubscriptionsSubscriptionIdImportContractTermRouteHandler,
+  postSubscriptionsSubscriptionIdImportUnbilledChargesRouteHandler,
+  postSubscriptionsSubscriptionIdMoveRouteHandler,
+  postSubscriptionsSubscriptionIdOverrideBillingProfileRouteHandler,
+  postSubscriptionsSubscriptionIdPauseRouteHandler,
+  postSubscriptionsSubscriptionIdPauseSubscriptionEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdReactivateRouteHandler,
+  postSubscriptionsSubscriptionIdRegenerateInvoiceEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdRegenerateInvoiceRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveAdvanceInvoiceScheduleRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveCouponsRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveScheduledCancellationRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveScheduledChangesRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveScheduledPauseRouteHandler,
+  postSubscriptionsSubscriptionIdRemoveScheduledResumptionRouteHandler,
+  postSubscriptionsSubscriptionIdResumeRouteHandler,
+  postSubscriptionsSubscriptionIdResumeSubscriptionEstimateRouteHandler,
+  postSubscriptionsSubscriptionIdSubscriptionEntitlementsSetAvailabilityRouteHandler,
+  postSubscriptionsSubscriptionIdUpdateForItemsRouteHandler,
+  postSubscriptionsSubscriptionIdUpdateScheduledChangesRouteHandler,
+  postSubscriptionsSubscriptionIdUsagesRouteHandler,
+  postTimeMachinesTimeMachineNameStartAfreshRouteHandler,
+  postTimeMachinesTimeMachineNameTravelForwardRouteHandler,
+  postTokensCreateForCardRouteHandler,
+  postTokensCreateUsingTempTokenRouteHandler,
+  postTransactionsCreateAuthorizationRouteHandler,
+  postTransactionsTransactionIdDeleteOfflineTransactionRouteHandler,
+  postTransactionsTransactionIdReconcileRouteHandler,
+  postTransactionsTransactionIdRecordRefundRouteHandler,
+  postTransactionsTransactionIdRefundRouteHandler,
+  postTransactionsTransactionIdVoidRouteHandler,
+  postUnbilledChargesInvoiceNowEstimateRouteHandler,
+  postUnbilledChargesInvoiceUnbilledChargesRouteHandler,
+  postUnbilledChargesRouteHandler,
+  postUnbilledChargesUnbilledChargeIdDeleteRouteHandler,
+  postUsageEventsRouteHandler,
+  postUsageFilesUploadUrlRouteHandler,
+  postUsagesPdfRouteHandler,
+  postVariantsProductVariantIdDeleteRouteHandler,
+  postVariantsProductVariantIdRouteHandler,
+  postVirtualBankAccountsCreateUsingPermanentTokenRouteHandler,
+  postVirtualBankAccountsRouteHandler,
+  postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRouteHandler,
+  postVirtualBankAccountsVirtualBankAccountIdDeleteRouteHandler,
+  postWebhookEndpointsRouteHandler,
+  postWebhookEndpointsWebhookEndpointIdDeleteRouteHandler,
+  postWebhookEndpointsWebhookEndpointIdRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', subscriptionsHandler)
-  .route('/', customersHandler)
-  .route('/', tokensHandler)
-  .route('/', paymentSourcesHandler)
-  .route('/', vaultedPaymentMethodsHandler)
-  .route('/', virtualBankAccountsHandler)
-  .route('/', cardsHandler)
-  .route('/', promotionalCreditsHandler)
-  .route('/', gatewayRequestLogsHandler)
-  .route('/', gatewayWebhookLogsHandler)
-  .route('/', invoicesHandler)
-  .route('/', paymentSchedulesHandler)
-  .route('/', creditNotesHandler)
-  .route('/', unbilledChargesHandler)
-  .route('/', ordersHandler)
-  .route('/', giftsHandler)
-  .route('/', transactionsHandler)
-  .route('/', disputesHandler)
-  .route('/', hostedPagesHandler)
-  .route('/', estimatesHandler)
-  .route('/', quotesHandler)
-  .route('/', couponsHandler)
-  .route('/', couponSetsHandler)
-  .route('/', couponCodesHandler)
-  .route('/', addressesHandler)
-  .route('/', usagesHandler)
-  .route('/', eventsHandler)
-  .route('/', commentsHandler)
-  .route('/', portalSessionsHandler)
-  .route('/', siteMigrationDetailsHandler)
-  .route('/', resourceMigrationsHandler)
-  .route('/', timeMachinesHandler)
-  .route('/', exportsHandler)
-  .route('/', fullExportsHandler)
-  .route('/', paymentIntentsHandler)
-  .route('/', customFieldConfigsHandler)
-  .route('/', itemFamiliesHandler)
-  .route('/', productsHandler)
-  .route('/', variantsHandler)
-  .route('/', itemsHandler)
-  .route('/', priceVariantsHandler)
-  .route('/', itemPricesHandler)
-  .route('/', attachedItemsHandler)
-  .route('/', differentialPricesHandler)
-  .route('/', priceRampsHandler)
-  .route('/', configurationsHandler)
-  .route('/', featuresHandler)
-  .route('/', creditUnitsHandler)
-  .route('/', entitlementsHandler)
-  .route('/', inAppSubscriptionsHandler)
-  .route('/', nonSubscriptionsHandler)
-  .route('/', businessEntitiesHandler)
-  .route('/', purchasesHandler)
-  .route('/', paymentVouchersHandler)
-  .route('/', csvTaxRulesHandler)
-  .route('/', organizationDetailsHandler)
-  .route('/', currenciesHandler)
-  .route('/', rampsHandler)
-  .route('/', paymentScheduleSchemesHandler)
-  .route('/', pc2MigrationsHandler)
-  .route('/', pc2MigrationItemFamiliesHandler)
-  .route('/', pc2MigrationItemsHandler)
-  .route('/', pc2MigrationItemPricesHandler)
-  .route('/', pricingPageSessionsHandler)
-  .route('/', sitePcMetaRecordsHandler)
-  .route('/', omnichannelSubscriptionsHandler)
-  .route('/', omnichannelSubscriptionItemsHandler)
-  .route('/', recordedPurchasesHandler)
-  .route('/', omnichannelOneTimeOrdersHandler)
-  .route('/', rulesHandler)
-  .route('/', retrySegmentsHandler)
-  .route('/', metersHandler)
-  .route('/', usageEventsHandler)
-  .route('/', batchHandler)
-  .route('/', meteredFeaturesHandler)
-  .route('/', usageFilesHandler)
-  .route('/', einvoicesHandler)
-  .route('/', personalizedOffersHandler)
-  .route('/', offerFulfillmentsHandler)
-  .route('/', offerEventsHandler)
-  .route('/', webhookEndpointsHandler)
-  .route('/', businessRulesHandler)
-  .route('/', businessRulesetsHandler)
-  .route('/', alertsHandler)
-  .route('/', collectionsPaymentPromisesHandler)
-  .route('/', ledgerAccountBalancesHandler)
-  .route('/', ledgerOperationsHandler)
-  .route('/', grantBlocksHandler)
-  .route('/', promotionalGrantsHandler)
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveAdvanceInvoiceScheduleRoute,
+    postSubscriptionsSubscriptionIdRemoveAdvanceInvoiceScheduleRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdUpdateForItemsRoute,
+    postSubscriptionsSubscriptionIdUpdateForItemsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveCouponsRoute,
+    postSubscriptionsSubscriptionIdRemoveCouponsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdResumeRoute,
+    postSubscriptionsSubscriptionIdResumeRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdCancelForItemsRoute,
+    postSubscriptionsSubscriptionIdCancelForItemsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRegenerateInvoiceRoute,
+    postSubscriptionsSubscriptionIdRegenerateInvoiceRouteHandler,
+  )
+  .openapi(getSubscriptionsRoute, getSubscriptionsRouteHandler)
+  .openapi(
+    postSubscriptionsSubscriptionIdMoveRoute,
+    postSubscriptionsSubscriptionIdMoveRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdImportForItemsRoute,
+    postCustomersCustomerIdImportForItemsRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdRetrieveAdvanceInvoiceScheduleRoute,
+    getSubscriptionsSubscriptionIdRetrieveAdvanceInvoiceScheduleRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveScheduledCancellationRoute,
+    postSubscriptionsSubscriptionIdRemoveScheduledCancellationRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdRetrieveWithScheduledChangesRoute,
+    getSubscriptionsSubscriptionIdRetrieveWithScheduledChangesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdReactivateRoute,
+    postSubscriptionsSubscriptionIdReactivateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdChargeFutureRenewalsRoute,
+    postSubscriptionsSubscriptionIdChargeFutureRenewalsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdAddChargeAtTermEndRoute,
+    postSubscriptionsSubscriptionIdAddChargeAtTermEndRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveScheduledChangesRoute,
+    postSubscriptionsSubscriptionIdRemoveScheduledChangesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdChangeTermEndRoute,
+    postSubscriptionsSubscriptionIdChangeTermEndRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdDeleteRoute,
+    postSubscriptionsSubscriptionIdDeleteRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdSubscriptionForItemsRoute,
+    postCustomersCustomerIdSubscriptionForItemsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdImportUnbilledChargesRoute,
+    postSubscriptionsSubscriptionIdImportUnbilledChargesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveScheduledResumptionRoute,
+    postSubscriptionsSubscriptionIdRemoveScheduledResumptionRouteHandler,
+  )
+  .openapi(getSubscriptionsSubscriptionIdRoute, getSubscriptionsSubscriptionIdRouteHandler)
+  .openapi(
+    postSubscriptionsSubscriptionIdImportContractTermRoute,
+    postSubscriptionsSubscriptionIdImportContractTermRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdOverrideBillingProfileRoute,
+    postSubscriptionsSubscriptionIdOverrideBillingProfileRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRemoveScheduledPauseRoute,
+    postSubscriptionsSubscriptionIdRemoveScheduledPauseRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdEditAdvanceInvoiceScheduleRoute,
+    postSubscriptionsSubscriptionIdEditAdvanceInvoiceScheduleRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdDiscountsRoute,
+    getSubscriptionsSubscriptionIdDiscountsRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdContractTermsRoute,
+    getSubscriptionsSubscriptionIdContractTermsRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdPauseRoute,
+    postSubscriptionsSubscriptionIdPauseRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdScheduledChangesRoute,
+    getSubscriptionsSubscriptionIdScheduledChangesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdUpdateScheduledChangesRoute,
+    postSubscriptionsSubscriptionIdUpdateScheduledChangesRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdRelationshipsRoute,
+    postCustomersCustomerIdRelationshipsRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdDeleteRelationshipRoute,
+    postCustomersCustomerIdDeleteRelationshipRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdDeleteContactRoute,
+    postCustomersCustomerIdDeleteContactRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdAssignPaymentRoleRoute,
+    postCustomersCustomerIdAssignPaymentRoleRouteHandler,
+  )
+  .openapi(postCustomersMoveRoute, postCustomersMoveRouteHandler)
+  .openapi(
+    postCustomersCustomerIdUpdatePaymentMethodRoute,
+    postCustomersCustomerIdUpdatePaymentMethodRouteHandler,
+  )
+  .openapi(getCustomersRoute, getCustomersRouteHandler)
+  .openapi(postCustomersRoute, postCustomersRouteHandler)
+  .openapi(getCustomersCustomerIdContactsRoute, getCustomersCustomerIdContactsRouteHandler)
+  .openapi(
+    postCustomersCustomerIdClearPersonalDataRoute,
+    postCustomersCustomerIdClearPersonalDataRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdRecordExcessPaymentRoute,
+    postCustomersCustomerIdRecordExcessPaymentRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdSendPaymentRequestRoute,
+    postCustomersCustomerIdSendPaymentRequestRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdUpdateHierarchySettingsRoute,
+    postCustomersCustomerIdUpdateHierarchySettingsRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdUpdateBillingInfoRoute,
+    postCustomersCustomerIdUpdateBillingInfoRouteHandler,
+  )
+  .openapi(postCustomersCustomerIdDeleteRoute, postCustomersCustomerIdDeleteRouteHandler)
+  .openapi(getCustomersCustomerIdHierarchyRoute, getCustomersCustomerIdHierarchyRouteHandler)
+  .openapi(getCustomersCustomerIdRoute, getCustomersCustomerIdRouteHandler)
+  .openapi(postCustomersCustomerIdRoute, postCustomersCustomerIdRouteHandler)
+  .openapi(
+    getCustomersCustomerIdHierarchyDetailRoute,
+    getCustomersCustomerIdHierarchyDetailRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdChangeBillingDateRoute,
+    postCustomersCustomerIdChangeBillingDateRouteHandler,
+  )
+  .openapi(postCustomersCustomerIdAddContactRoute, postCustomersCustomerIdAddContactRouteHandler)
+  .openapi(postCustomersMergeRoute, postCustomersMergeRouteHandler)
+  .openapi(
+    postCustomersCustomerIdCollectPaymentRoute,
+    postCustomersCustomerIdCollectPaymentRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdUpdateContactRoute,
+    postCustomersCustomerIdUpdateContactRouteHandler,
+  )
+  .openapi(postTokensCreateUsingTempTokenRoute, postTokensCreateUsingTempTokenRouteHandler)
+  .openapi(postTokensCreateForCardRoute, postTokensCreateForCardRouteHandler)
+  .openapi(getTokensCbTokenIdRoute, getTokensCbTokenIdRouteHandler)
+  .openapi(
+    postPaymentSourcesCreateUsingPermanentTokenRoute,
+    postPaymentSourcesCreateUsingPermanentTokenRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdDeleteRoute,
+    postPaymentSourcesCustPaymentSourceIdDeleteRouteHandler,
+  )
+  .openapi(postPaymentSourcesCreateCardRoute, postPaymentSourcesCreateCardRouteHandler)
+  .openapi(
+    getPaymentSourcesCustPaymentSourceIdGatewayPaymentMethodTokensRoute,
+    getPaymentSourcesCustPaymentSourceIdGatewayPaymentMethodTokensRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdVerifyBankAccountRoute,
+    postPaymentSourcesCustPaymentSourceIdVerifyBankAccountRouteHandler,
+  )
+  .openapi(getPaymentSourcesRoute, getPaymentSourcesRouteHandler)
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdExportPaymentSourceRoute,
+    postPaymentSourcesCustPaymentSourceIdExportPaymentSourceRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCreateUsingPaymentIntentRoute,
+    postPaymentSourcesCreateUsingPaymentIntentRouteHandler,
+  )
+  .openapi(
+    getPaymentSourcesCustPaymentSourceIdRoute,
+    getPaymentSourcesCustPaymentSourceIdRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCreateVoucherPaymentSourceRoute,
+    postPaymentSourcesCreateVoucherPaymentSourceRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCreateUsingTempTokenRoute,
+    postPaymentSourcesCreateUsingTempTokenRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdUpdateCardRoute,
+    postPaymentSourcesCustPaymentSourceIdUpdateCardRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdSwitchGatewayAccountRoute,
+    postPaymentSourcesCustPaymentSourceIdSwitchGatewayAccountRouteHandler,
+  )
+  .openapi(postPaymentSourcesCreateUsingTokenRoute, postPaymentSourcesCreateUsingTokenRouteHandler)
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdDeleteLocalRoute,
+    postPaymentSourcesCustPaymentSourceIdDeleteLocalRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCreateBankAccountRoute,
+    postPaymentSourcesCreateBankAccountRouteHandler,
+  )
+  .openapi(
+    postPaymentSourcesCustPaymentSourceIdUpdateBankAccountRoute,
+    postPaymentSourcesCustPaymentSourceIdUpdateBankAccountRouteHandler,
+  )
+  .openapi(
+    getVaultedPaymentMethodsVaultedPaymentMethodIdRoute,
+    getVaultedPaymentMethodsVaultedPaymentMethodIdRouteHandler,
+  )
+  .openapi(
+    postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRoute,
+    postVirtualBankAccountsVirtualBankAccountIdDeleteLocalRouteHandler,
+  )
+  .openapi(
+    postVirtualBankAccountsVirtualBankAccountIdDeleteRoute,
+    postVirtualBankAccountsVirtualBankAccountIdDeleteRouteHandler,
+  )
+  .openapi(getVirtualBankAccountsRoute, getVirtualBankAccountsRouteHandler)
+  .openapi(postVirtualBankAccountsRoute, postVirtualBankAccountsRouteHandler)
+  .openapi(
+    getVirtualBankAccountsVirtualBankAccountIdRoute,
+    getVirtualBankAccountsVirtualBankAccountIdRouteHandler,
+  )
+  .openapi(
+    postVirtualBankAccountsCreateUsingPermanentTokenRoute,
+    postVirtualBankAccountsCreateUsingPermanentTokenRouteHandler,
+  )
+  .openapi(postCustomersCustomerIdCopyCardRoute, postCustomersCustomerIdCopyCardRouteHandler)
+  .openapi(getCardsCustomerIdRoute, getCardsCustomerIdRouteHandler)
+  .openapi(
+    postCustomersCustomerIdSwitchGatewayRoute,
+    postCustomersCustomerIdSwitchGatewayRouteHandler,
+  )
+  .openapi(postCustomersCustomerIdDeleteCardRoute, postCustomersCustomerIdDeleteCardRouteHandler)
+  .openapi(postCustomersCustomerIdCreditCardRoute, postCustomersCustomerIdCreditCardRouteHandler)
+  .openapi(
+    getPromotionalCreditsAccountCreditIdRoute,
+    getPromotionalCreditsAccountCreditIdRouteHandler,
+  )
+  .openapi(getPromotionalCreditsRoute, getPromotionalCreditsRouteHandler)
+  .openapi(postPromotionalCreditsDeductRoute, postPromotionalCreditsDeductRouteHandler)
+  .openapi(postPromotionalCreditsSetRoute, postPromotionalCreditsSetRouteHandler)
+  .openapi(postPromotionalCreditsAddRoute, postPromotionalCreditsAddRouteHandler)
+  .openapi(getCustomersCustomerIdEmailLogsRoute, getCustomersCustomerIdEmailLogsRouteHandler)
+  .openapi(
+    getGatewayRequestLogsGatewayRequestLogLogIdRoute,
+    getGatewayRequestLogsGatewayRequestLogLogIdRouteHandler,
+  )
+  .openapi(getGatewayRequestLogsRoute, getGatewayRequestLogsRouteHandler)
+  .openapi(
+    getGatewayWebhookLogsGatewayWebhookLogWebhookIdRoute,
+    getGatewayWebhookLogsGatewayWebhookLogWebhookIdRouteHandler,
+  )
+  .openapi(getGatewayWebhookLogsRoute, getGatewayWebhookLogsRouteHandler)
+  .openapi(
+    postInvoicesInvoiceIdDeleteLineItemsRoute,
+    postInvoicesInvoiceIdDeleteLineItemsRouteHandler,
+  )
+  .openapi(
+    postInvoicesInvoiceIdRemoveCreditNoteRoute,
+    postInvoicesInvoiceIdRemoveCreditNoteRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdRemovePaymentRoute, postInvoicesInvoiceIdRemovePaymentRouteHandler)
+  .openapi(postInvoicesInvoiceIdStopDunningRoute, postInvoicesInvoiceIdStopDunningRouteHandler)
+  .openapi(postInvoicesInvoiceIdApplyPaymentsRoute, postInvoicesInvoiceIdApplyPaymentsRouteHandler)
+  .openapi(
+    postInvoicesInvoiceIdApplyPaymentScheduleSchemeRoute,
+    postInvoicesInvoiceIdApplyPaymentScheduleSchemeRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdVoidRoute, postInvoicesInvoiceIdVoidRouteHandler)
+  .openapi(postInvoicesInvoiceIdAddChargeRoute, postInvoicesInvoiceIdAddChargeRouteHandler)
+  .openapi(postInvoicesInvoiceIdSendEinvoiceRoute, postInvoicesInvoiceIdSendEinvoiceRouteHandler)
+  .openapi(
+    getInvoicesInvoiceIdPaymentSchedulesRoute,
+    getInvoicesInvoiceIdPaymentSchedulesRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdWriteOffRoute, postInvoicesInvoiceIdWriteOffRouteHandler)
+  .openapi(postInvoicesInvoiceIdAddChargeItemRoute, postInvoicesInvoiceIdAddChargeItemRouteHandler)
+  .openapi(postInvoicesInvoiceIdPauseDunningRoute, postInvoicesInvoiceIdPauseDunningRouteHandler)
+  .openapi(getInvoicesRoute, getInvoicesRouteHandler)
+  .openapi(
+    postInvoicesInvoiceIdVoidBeforeCaptureRoute,
+    postInvoicesInvoiceIdVoidBeforeCaptureRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdCloseRoute, postInvoicesInvoiceIdCloseRouteHandler)
+  .openapi(postInvoicesInvoiceIdApplyCreditsRoute, postInvoicesInvoiceIdApplyCreditsRouteHandler)
+  .openapi(postInvoicesInvoiceIdSendEmailRoute, postInvoicesInvoiceIdSendEmailRouteHandler)
+  .openapi(getInvoicesInvoiceIdRoute, getInvoicesInvoiceIdRouteHandler)
+  .openapi(
+    postInvoicesCreateForChargeItemsAndChargesRoute,
+    postInvoicesCreateForChargeItemsAndChargesRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdUpdateDetailsRoute, postInvoicesInvoiceIdUpdateDetailsRouteHandler)
+  .openapi(postInvoicesInvoiceIdRecordPaymentRoute, postInvoicesInvoiceIdRecordPaymentRouteHandler)
+  .openapi(postInvoicesInvoiceIdDeleteRoute, postInvoicesInvoiceIdDeleteRouteHandler)
+  .openapi(postInvoicesImportInvoiceRoute, postInvoicesImportInvoiceRouteHandler)
+  .openapi(postInvoicesInvoiceIdResumeDunningRoute, postInvoicesInvoiceIdResumeDunningRouteHandler)
+  .openapi(
+    postInvoicesInvoiceIdRecordTaxWithheldRoute,
+    postInvoicesInvoiceIdRecordTaxWithheldRouteHandler,
+  )
+  .openapi(
+    postInvoicesInvoiceIdResendEinvoiceRoute,
+    postInvoicesInvoiceIdResendEinvoiceRouteHandler,
+  )
+  .openapi(
+    postInvoicesInvoiceIdRemoveTaxWithheldRoute,
+    postInvoicesInvoiceIdRemoveTaxWithheldRouteHandler,
+  )
+  .openapi(getInvoicesPaymentReferenceNumbersRoute, getInvoicesPaymentReferenceNumbersRouteHandler)
+  .openapi(
+    postInvoicesInvoiceIdRemovePaymentScheduleSchemeRoute,
+    postInvoicesInvoiceIdRemovePaymentScheduleSchemeRouteHandler,
+  )
+  .openapi(
+    postInvoicesInvoiceIdCollectPaymentRoute,
+    postInvoicesInvoiceIdCollectPaymentRouteHandler,
+  )
+  .openapi(postInvoicesInvoiceIdSyncUsagesRoute, postInvoicesInvoiceIdSyncUsagesRouteHandler)
+  .openapi(postInvoicesInvoiceIdRefundRoute, postInvoicesInvoiceIdRefundRouteHandler)
+  .openapi(postInvoicesInvoiceIdRecordRefundRoute, postInvoicesInvoiceIdRecordRefundRouteHandler)
+  .openapi(postInvoicesInvoiceIdPdfRoute, postInvoicesInvoiceIdPdfRouteHandler)
+  .openapi(
+    getInvoicesInvoiceIdDownloadEinvoiceRoute,
+    getInvoicesInvoiceIdDownloadEinvoiceRouteHandler,
+  )
+  .openapi(getPaymentSchedulesRoute, getPaymentSchedulesRouteHandler)
+  .openapi(
+    postCreditNotesCreditNoteIdRecordRefundRoute,
+    postCreditNotesCreditNoteIdRecordRefundRouteHandler,
+  )
+  .openapi(postCreditNotesImportCreditNoteRoute, postCreditNotesImportCreditNoteRouteHandler)
+  .openapi(postCreditNotesCreditNoteIdDeleteRoute, postCreditNotesCreditNoteIdDeleteRouteHandler)
+  .openapi(postCreditNotesCreditNoteIdPdfRoute, postCreditNotesCreditNoteIdPdfRouteHandler)
+  .openapi(
+    postCreditNotesCreditNoteIdSendEinvoiceRoute,
+    postCreditNotesCreditNoteIdSendEinvoiceRouteHandler,
+  )
+  .openapi(postCreditNotesCreditNoteIdVoidRoute, postCreditNotesCreditNoteIdVoidRouteHandler)
+  .openapi(postCreditNotesCreditNoteIdRefundRoute, postCreditNotesCreditNoteIdRefundRouteHandler)
+  .openapi(getCreditNotesRoute, getCreditNotesRouteHandler)
+  .openapi(postCreditNotesRoute, postCreditNotesRouteHandler)
+  .openapi(postCreditNotesCreditNoteIdUpdateRoute, postCreditNotesCreditNoteIdUpdateRouteHandler)
+  .openapi(
+    getCreditNotesCreditNoteIdDownloadEinvoiceRoute,
+    getCreditNotesCreditNoteIdDownloadEinvoiceRouteHandler,
+  )
+  .openapi(
+    postCreditNotesCreditNoteIdResendEinvoiceRoute,
+    postCreditNotesCreditNoteIdResendEinvoiceRouteHandler,
+  )
+  .openapi(
+    postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRoute,
+    postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRouteHandler,
+  )
+  .openapi(getCreditNotesCreditNoteIdRoute, getCreditNotesCreditNoteIdRouteHandler)
+  .openapi(
+    postCreditNotesCreditNoteIdSendEmailRoute,
+    postCreditNotesCreditNoteIdSendEmailRouteHandler,
+  )
+  .openapi(
+    postUnbilledChargesUnbilledChargeIdDeleteRoute,
+    postUnbilledChargesUnbilledChargeIdDeleteRouteHandler,
+  )
+  .openapi(
+    postUnbilledChargesInvoiceNowEstimateRoute,
+    postUnbilledChargesInvoiceNowEstimateRouteHandler,
+  )
+  .openapi(
+    postUnbilledChargesInvoiceUnbilledChargesRoute,
+    postUnbilledChargesInvoiceUnbilledChargesRouteHandler,
+  )
+  .openapi(getUnbilledChargesRoute, getUnbilledChargesRouteHandler)
+  .openapi(postUnbilledChargesRoute, postUnbilledChargesRouteHandler)
+  .openapi(getOrdersRoute, getOrdersRouteHandler)
+  .openapi(postOrdersRoute, postOrdersRouteHandler)
+  .openapi(postOrdersImportOrderRoute, postOrdersImportOrderRouteHandler)
+  .openapi(postOrdersOrderIdAssignOrderNumberRoute, postOrdersOrderIdAssignOrderNumberRouteHandler)
+  .openapi(postOrdersOrderIdResendRoute, postOrdersOrderIdResendRouteHandler)
+  .openapi(postOrdersOrderIdReopenRoute, postOrdersOrderIdReopenRouteHandler)
+  .openapi(postOrdersOrderIdCancelRoute, postOrdersOrderIdCancelRouteHandler)
+  .openapi(getOrdersOrderIdRoute, getOrdersOrderIdRouteHandler)
+  .openapi(postOrdersOrderIdRoute, postOrdersOrderIdRouteHandler)
+  .openapi(postOrdersOrderIdDeleteRoute, postOrdersOrderIdDeleteRouteHandler)
+  .openapi(
+    postOrdersOrderIdCreateRefundableCreditNoteRoute,
+    postOrdersOrderIdCreateRefundableCreditNoteRouteHandler,
+  )
+  .openapi(postGiftsCreateForItemsRoute, postGiftsCreateForItemsRouteHandler)
+  .openapi(postGiftsGiftIdCancelRoute, postGiftsGiftIdCancelRouteHandler)
+  .openapi(postGiftsGiftIdUpdateGiftRoute, postGiftsGiftIdUpdateGiftRouteHandler)
+  .openapi(getGiftsRoute, getGiftsRouteHandler)
+  .openapi(getGiftsGiftIdRoute, getGiftsGiftIdRouteHandler)
+  .openapi(postGiftsGiftIdClaimRoute, postGiftsGiftIdClaimRouteHandler)
+  .openapi(getTransactionsRoute, getTransactionsRouteHandler)
+  .openapi(
+    postTransactionsTransactionIdReconcileRoute,
+    postTransactionsTransactionIdReconcileRouteHandler,
+  )
+  .openapi(getTransactionsTransactionIdRoute, getTransactionsTransactionIdRouteHandler)
+  .openapi(
+    postTransactionsTransactionIdRefundRoute,
+    postTransactionsTransactionIdRefundRouteHandler,
+  )
+  .openapi(
+    postTransactionsTransactionIdRecordRefundRoute,
+    postTransactionsTransactionIdRecordRefundRouteHandler,
+  )
+  .openapi(postTransactionsTransactionIdVoidRoute, postTransactionsTransactionIdVoidRouteHandler)
+  .openapi(
+    postTransactionsCreateAuthorizationRoute,
+    postTransactionsCreateAuthorizationRouteHandler,
+  )
+  .openapi(getInvoicesInvoiceIdPaymentsRoute, getInvoicesInvoiceIdPaymentsRouteHandler)
+  .openapi(
+    postTransactionsTransactionIdDeleteOfflineTransactionRoute,
+    postTransactionsTransactionIdDeleteOfflineTransactionRouteHandler,
+  )
+  .openapi(getDisputesDisputeIdRoute, getDisputesDisputeIdRouteHandler)
+  .openapi(getDisputesRoute, getDisputesRouteHandler)
+  .openapi(
+    postHostedPagesCheckoutOneTimeForItemsRoute,
+    postHostedPagesCheckoutOneTimeForItemsRouteHandler,
+  )
+  .openapi(postHostedPagesExtendSubscriptionRoute, postHostedPagesExtendSubscriptionRouteHandler)
+  .openapi(postHostedPagesEventsRoute, postHostedPagesEventsRouteHandler)
+  .openapi(
+    postHostedPagesCheckoutGiftForItemsRoute,
+    postHostedPagesCheckoutGiftForItemsRouteHandler,
+  )
+  .openapi(getHostedPagesRoute, getHostedPagesRouteHandler)
+  .openapi(postHostedPagesViewVoucherRoute, postHostedPagesViewVoucherRouteHandler)
+  .openapi(postHostedPagesCollectNowRoute, postHostedPagesCollectNowRouteHandler)
+  .openapi(postHostedPagesAcceptQuoteRoute, postHostedPagesAcceptQuoteRouteHandler)
+  .openapi(postHostedPagesCheckoutNewForItemsRoute, postHostedPagesCheckoutNewForItemsRouteHandler)
+  .openapi(postHostedPagesClaimGiftRoute, postHostedPagesClaimGiftRouteHandler)
+  .openapi(
+    postHostedPagesCheckoutExistingForItemsRoute,
+    postHostedPagesCheckoutExistingForItemsRouteHandler,
+  )
+  .openapi(postHostedPagesPreCancelRoute, postHostedPagesPreCancelRouteHandler)
+  .openapi(
+    postHostedPagesHostedPageIdAcknowledgeRoute,
+    postHostedPagesHostedPageIdAcknowledgeRouteHandler,
+  )
+  .openapi(
+    postHostedPagesRetrieveAgreementPdfRoute,
+    postHostedPagesRetrieveAgreementPdfRouteHandler,
+  )
+  .openapi(getHostedPagesHostedPageIdRoute, getHostedPagesHostedPageIdRouteHandler)
+  .openapi(
+    postHostedPagesManagePaymentSourcesRoute,
+    postHostedPagesManagePaymentSourcesRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdRenewalEstimateRoute,
+    getSubscriptionsSubscriptionIdRenewalEstimateRouteHandler,
+  )
+  .openapi(
+    postEstimatesCreateSubscriptionForItemsRoute,
+    postEstimatesCreateSubscriptionForItemsRouteHandler,
+  )
+  .openapi(postEstimatesPaymentSchedulesRoute, postEstimatesPaymentSchedulesRouteHandler)
+  .openapi(
+    postSubscriptionsSubscriptionIdCancelSubscriptionForItemsEstimateRoute,
+    postSubscriptionsSubscriptionIdCancelSubscriptionForItemsEstimateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdResumeSubscriptionEstimateRoute,
+    postSubscriptionsSubscriptionIdResumeSubscriptionEstimateRouteHandler,
+  )
+  .openapi(postEstimatesCreateInvoiceForItemsRoute, postEstimatesCreateInvoiceForItemsRouteHandler)
+  .openapi(
+    postEstimatesGiftSubscriptionForItemsRoute,
+    postEstimatesGiftSubscriptionForItemsRouteHandler,
+  )
+  .openapi(
+    postEstimatesUpdateSubscriptionForItemsRoute,
+    postEstimatesUpdateSubscriptionForItemsRouteHandler,
+  )
+  .openapi(
+    getCustomersCustomerIdUpcomingInvoicesEstimateRoute,
+    getCustomersCustomerIdUpcomingInvoicesEstimateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdRegenerateInvoiceEstimateRoute,
+    postSubscriptionsSubscriptionIdRegenerateInvoiceEstimateRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdCreateSubscriptionForItemsEstimateRoute,
+    postCustomersCustomerIdCreateSubscriptionForItemsEstimateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdChangeTermEndEstimateRoute,
+    postSubscriptionsSubscriptionIdChangeTermEndEstimateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdPauseSubscriptionEstimateRoute,
+    postSubscriptionsSubscriptionIdPauseSubscriptionEstimateRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdAdvanceInvoiceEstimateRoute,
+    postSubscriptionsSubscriptionIdAdvanceInvoiceEstimateRouteHandler,
+  )
+  .openapi(
+    postCustomersCustomerIdCreateSubscriptionQuoteForItemsRoute,
+    postCustomersCustomerIdCreateSubscriptionQuoteForItemsRouteHandler,
+  )
+  .openapi(getQuotesQuoteIdRoute, getQuotesQuoteIdRouteHandler)
+  .openapi(postQuotesQuoteIdUpdateStatusRoute, postQuotesQuoteIdUpdateStatusRouteHandler)
+  .openapi(postQuotesQuoteIdExtendExpiryDateRoute, postQuotesQuoteIdExtendExpiryDateRouteHandler)
+  .openapi(
+    postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRoute,
+    postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRouteHandler,
+  )
+  .openapi(getQuotesRoute, getQuotesRouteHandler)
+  .openapi(postQuotesQuoteIdConvertRoute, postQuotesQuoteIdConvertRouteHandler)
+  .openapi(postQuotesQuoteIdDeleteRoute, postQuotesQuoteIdDeleteRouteHandler)
+  .openapi(
+    postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRoute,
+    postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRouteHandler,
+  )
+  .openapi(
+    postQuotesUpdateSubscriptionQuoteForItemsRoute,
+    postQuotesUpdateSubscriptionQuoteForItemsRouteHandler,
+  )
+  .openapi(getQuotesQuoteIdQuoteLineGroupsRoute, getQuotesQuoteIdQuoteLineGroupsRouteHandler)
+  .openapi(
+    postQuotesQuoteIdEditForChargeItemsAndChargesRoute,
+    postQuotesQuoteIdEditForChargeItemsAndChargesRouteHandler,
+  )
+  .openapi(postQuotesQuoteIdPdfRoute, postQuotesQuoteIdPdfRouteHandler)
+  .openapi(
+    postQuotesCreateForChargeItemsAndChargesRoute,
+    postQuotesCreateForChargeItemsAndChargesRouteHandler,
+  )
+  .openapi(getQuotesQuoteIdQuoteEntitlementsRoute, getQuotesQuoteIdQuoteEntitlementsRouteHandler)
+  .openapi(getCouponsRoute, getCouponsRouteHandler)
+  .openapi(postCouponsCouponIdUpdateForItemsRoute, postCouponsCouponIdUpdateForItemsRouteHandler)
+  .openapi(postCouponsCouponIdUnarchiveRoute, postCouponsCouponIdUnarchiveRouteHandler)
+  .openapi(postCouponsCouponIdDeleteRoute, postCouponsCouponIdDeleteRouteHandler)
+  .openapi(postCouponsCopyRoute, postCouponsCopyRouteHandler)
+  .openapi(getCouponsCouponIdRoute, getCouponsCouponIdRouteHandler)
+  .openapi(postCouponsCreateForItemsRoute, postCouponsCreateForItemsRouteHandler)
+  .openapi(getCouponSetsRoute, getCouponSetsRouteHandler)
+  .openapi(postCouponSetsRoute, postCouponSetsRouteHandler)
+  .openapi(postCouponSetsCouponSetIdUpdateRoute, postCouponSetsCouponSetIdUpdateRouteHandler)
+  .openapi(getCouponSetsCouponSetIdRoute, getCouponSetsCouponSetIdRouteHandler)
+  .openapi(
+    postCouponSetsCouponSetIdAddCouponCodesRoute,
+    postCouponSetsCouponSetIdAddCouponCodesRouteHandler,
+  )
+  .openapi(
+    postCouponSetsCouponSetIdDeleteUnusedCouponCodesRoute,
+    postCouponSetsCouponSetIdDeleteUnusedCouponCodesRouteHandler,
+  )
+  .openapi(postCouponSetsCouponSetIdDeleteRoute, postCouponSetsCouponSetIdDeleteRouteHandler)
+  .openapi(getCouponCodesRoute, getCouponCodesRouteHandler)
+  .openapi(getCouponCodesCouponCodeCodeRoute, getCouponCodesCouponCodeCodeRouteHandler)
+  .openapi(
+    postCouponCodesCouponCodeCodeArchiveRoute,
+    postCouponCodesCouponCodeCodeArchiveRouteHandler,
+  )
+  .openapi(getAddressesRoute, getAddressesRouteHandler)
+  .openapi(postAddressesRoute, postAddressesRouteHandler)
+  .openapi(postUsagesPdfRoute, postUsagesPdfRouteHandler)
+  .openapi(
+    getSubscriptionsSubscriptionIdUsagesRoute,
+    getSubscriptionsSubscriptionIdUsagesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdUsagesRoute,
+    postSubscriptionsSubscriptionIdUsagesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdDeleteUsageRoute,
+    postSubscriptionsSubscriptionIdDeleteUsageRouteHandler,
+  )
+  .openapi(getUsagesRoute, getUsagesRouteHandler)
+  .openapi(getEventsRoute, getEventsRouteHandler)
+  .openapi(getEventsEventIdRoute, getEventsEventIdRouteHandler)
+  .openapi(postCommentsCommentIdDeleteRoute, postCommentsCommentIdDeleteRouteHandler)
+  .openapi(getCommentsCommentIdRoute, getCommentsCommentIdRouteHandler)
+  .openapi(getCommentsRoute, getCommentsRouteHandler)
+  .openapi(postCommentsRoute, postCommentsRouteHandler)
+  .openapi(postPortalSessionsRoute, postPortalSessionsRouteHandler)
+  .openapi(
+    postPortalSessionsPortalSessionIdActivateRoute,
+    postPortalSessionsPortalSessionIdActivateRouteHandler,
+  )
+  .openapi(
+    postPortalSessionsPortalSessionIdLogoutRoute,
+    postPortalSessionsPortalSessionIdLogoutRouteHandler,
+  )
+  .openapi(getPortalSessionsPortalSessionIdRoute, getPortalSessionsPortalSessionIdRouteHandler)
+  .openapi(getSiteMigrationDetailsRoute, getSiteMigrationDetailsRouteHandler)
+  .openapi(
+    getResourceMigrationsRetrieveLatestRoute,
+    getResourceMigrationsRetrieveLatestRouteHandler,
+  )
+  .openapi(getTimeMachinesTimeMachineNameRoute, getTimeMachinesTimeMachineNameRouteHandler)
+  .openapi(
+    postTimeMachinesTimeMachineNameTravelForwardRoute,
+    postTimeMachinesTimeMachineNameTravelForwardRouteHandler,
+  )
+  .openapi(
+    postTimeMachinesTimeMachineNameStartAfreshRoute,
+    postTimeMachinesTimeMachineNameStartAfreshRouteHandler,
+  )
+  .openapi(postExportsCustomersRoute, postExportsCustomersRouteHandler)
+  .openapi(postExportsAttachedItemsRoute, postExportsAttachedItemsRouteHandler)
+  .openapi(postExportsTransactionsRoute, postExportsTransactionsRouteHandler)
+  .openapi(postExportsRampsRoute, postExportsRampsRouteHandler)
+  .openapi(postExportsDifferentialPricesRoute, postExportsDifferentialPricesRouteHandler)
+  .openapi(postExportsItemFamiliesRoute, postExportsItemFamiliesRouteHandler)
+  .openapi(postExportsInvoicesRoute, postExportsInvoicesRouteHandler)
+  .openapi(getExportsExportIdRoute, getExportsExportIdRouteHandler)
+  .openapi(postExportsPriceVariantsRoute, postExportsPriceVariantsRouteHandler)
+  .openapi(postExportsItemsRoute, postExportsItemsRouteHandler)
+  .openapi(postExportsDeferredRevenueRoute, postExportsDeferredRevenueRouteHandler)
+  .openapi(postExportsRevenueRecognitionRoute, postExportsRevenueRecognitionRouteHandler)
+  .openapi(postExportsCreditNotesRoute, postExportsCreditNotesRouteHandler)
+  .openapi(postExportsCouponsRoute, postExportsCouponsRouteHandler)
+  .openapi(postExportsOrdersRoute, postExportsOrdersRouteHandler)
+  .openapi(postExportsItemPricesRoute, postExportsItemPricesRouteHandler)
+  .openapi(postExportsSubscriptionsRoute, postExportsSubscriptionsRouteHandler)
+  .openapi(getFullExportsStatusRoute, getFullExportsStatusRouteHandler)
+  .openapi(getPaymentIntentsPaymentIntentIdRoute, getPaymentIntentsPaymentIntentIdRouteHandler)
+  .openapi(postPaymentIntentsPaymentIntentIdRoute, postPaymentIntentsPaymentIntentIdRouteHandler)
+  .openapi(postPaymentIntentsRoute, postPaymentIntentsRouteHandler)
+  .openapi(getCustomFieldConfigsRetrieveRoute, getCustomFieldConfigsRetrieveRouteHandler)
+  .openapi(getCustomFieldConfigsRoute, getCustomFieldConfigsRouteHandler)
+  .openapi(postItemFamiliesItemFamilyIdDeleteRoute, postItemFamiliesItemFamilyIdDeleteRouteHandler)
+  .openapi(getItemFamiliesRoute, getItemFamiliesRouteHandler)
+  .openapi(postItemFamiliesRoute, postItemFamiliesRouteHandler)
+  .openapi(getItemFamiliesItemFamilyIdRoute, getItemFamiliesItemFamilyIdRouteHandler)
+  .openapi(postItemFamiliesItemFamilyIdRoute, postItemFamiliesItemFamilyIdRouteHandler)
+  .openapi(getProductsProductIdRoute, getProductsProductIdRouteHandler)
+  .openapi(postProductsProductIdRoute, postProductsProductIdRouteHandler)
+  .openapi(postProductsProductIdDeleteRoute, postProductsProductIdDeleteRouteHandler)
+  .openapi(postProductsProductIdUpdateOptionsRoute, postProductsProductIdUpdateOptionsRouteHandler)
+  .openapi(getProductsRoute, getProductsRouteHandler)
+  .openapi(postProductsRoute, postProductsRouteHandler)
+  .openapi(getProductsProductIdVariantsRoute, getProductsProductIdVariantsRouteHandler)
+  .openapi(postProductsProductIdVariantsRoute, postProductsProductIdVariantsRouteHandler)
+  .openapi(getVariantsProductVariantIdRoute, getVariantsProductVariantIdRouteHandler)
+  .openapi(postVariantsProductVariantIdRoute, postVariantsProductVariantIdRouteHandler)
+  .openapi(postVariantsProductVariantIdDeleteRoute, postVariantsProductVariantIdDeleteRouteHandler)
+  .openapi(getItemsRoute, getItemsRouteHandler)
+  .openapi(postItemsRoute, postItemsRouteHandler)
+  .openapi(postItemsItemIdDeleteRoute, postItemsItemIdDeleteRouteHandler)
+  .openapi(getItemsItemIdRoute, getItemsItemIdRouteHandler)
+  .openapi(postItemsItemIdRoute, postItemsItemIdRouteHandler)
+  .openapi(
+    postPriceVariantsPriceVariantIdDeleteRoute,
+    postPriceVariantsPriceVariantIdDeleteRouteHandler,
+  )
+  .openapi(getPriceVariantsRoute, getPriceVariantsRouteHandler)
+  .openapi(postPriceVariantsRoute, postPriceVariantsRouteHandler)
+  .openapi(getPriceVariantsPriceVariantIdRoute, getPriceVariantsPriceVariantIdRouteHandler)
+  .openapi(postPriceVariantsPriceVariantIdRoute, postPriceVariantsPriceVariantIdRouteHandler)
+  .openapi(getItemPricesItemPriceIdRoute, getItemPricesItemPriceIdRouteHandler)
+  .openapi(postItemPricesItemPriceIdRoute, postItemPricesItemPriceIdRouteHandler)
+  .openapi(postItemPricesItemPriceIdDeleteRoute, postItemPricesItemPriceIdDeleteRouteHandler)
+  .openapi(
+    getItemPricesItemPriceIdApplicableItemPricesRoute,
+    getItemPricesItemPriceIdApplicableItemPricesRouteHandler,
+  )
+  .openapi(
+    getItemPricesItemPriceIdApplicableItemsRoute,
+    getItemPricesItemPriceIdApplicableItemsRouteHandler,
+  )
+  .openapi(getItemPricesRoute, getItemPricesRouteHandler)
+  .openapi(postItemPricesRoute, postItemPricesRouteHandler)
+  .openapi(getAttachedItemsAttachedItemIdRoute, getAttachedItemsAttachedItemIdRouteHandler)
+  .openapi(postAttachedItemsAttachedItemIdRoute, postAttachedItemsAttachedItemIdRouteHandler)
+  .openapi(getItemsItemIdAttachedItemsRoute, getItemsItemIdAttachedItemsRouteHandler)
+  .openapi(postItemsItemIdAttachedItemsRoute, postItemsItemIdAttachedItemsRouteHandler)
+  .openapi(
+    postAttachedItemsAttachedItemIdDeleteRoute,
+    postAttachedItemsAttachedItemIdDeleteRouteHandler,
+  )
+  .openapi(
+    postDifferentialPricesDifferentialPriceIdDeleteRoute,
+    postDifferentialPricesDifferentialPriceIdDeleteRouteHandler,
+  )
+  .openapi(
+    postItemPricesItemPriceIdDifferentialPricesRoute,
+    postItemPricesItemPriceIdDifferentialPricesRouteHandler,
+  )
+  .openapi(getDifferentialPricesRoute, getDifferentialPricesRouteHandler)
+  .openapi(
+    getDifferentialPricesDifferentialPriceIdRoute,
+    getDifferentialPricesDifferentialPriceIdRouteHandler,
+  )
+  .openapi(
+    postDifferentialPricesDifferentialPriceIdRoute,
+    postDifferentialPricesDifferentialPriceIdRouteHandler,
+  )
+  .openapi(getPriceRampsRoute, getPriceRampsRouteHandler)
+  .openapi(postPriceRampsRoute, postPriceRampsRouteHandler)
+  .openapi(postPriceRampsPriceRampIdDeleteRoute, postPriceRampsPriceRampIdDeleteRouteHandler)
+  .openapi(getPriceRampsPriceRampIdRoute, getPriceRampsPriceRampIdRouteHandler)
+  .openapi(postPriceRampsPriceRampIdRoute, postPriceRampsPriceRampIdRouteHandler)
+  .openapi(getConfigurationsRoute, getConfigurationsRouteHandler)
+  .openapi(getFeaturesRoute, getFeaturesRouteHandler)
+  .openapi(postFeaturesRoute, postFeaturesRouteHandler)
+  .openapi(postFeaturesFeatureIdDeleteRoute, postFeaturesFeatureIdDeleteRouteHandler)
+  .openapi(getFeaturesFeatureIdRoute, getFeaturesFeatureIdRouteHandler)
+  .openapi(postFeaturesFeatureIdRoute, postFeaturesFeatureIdRouteHandler)
+  .openapi(
+    postFeaturesFeatureIdArchiveCommandRoute,
+    postFeaturesFeatureIdArchiveCommandRouteHandler,
+  )
+  .openapi(
+    postFeaturesFeatureIdActivateCommandRoute,
+    postFeaturesFeatureIdActivateCommandRouteHandler,
+  )
+  .openapi(
+    postFeaturesFeatureIdReactivateCommandRoute,
+    postFeaturesFeatureIdReactivateCommandRouteHandler,
+  )
+  .openapi(getCreditUnitsRoute, getCreditUnitsRouteHandler)
+  .openapi(postCreditUnitsRoute, postCreditUnitsRouteHandler)
+  .openapi(
+    postCreditUnitsCreditUnitIdArchiveCommandRoute,
+    postCreditUnitsCreditUnitIdArchiveCommandRouteHandler,
+  )
+  .openapi(postCreditUnitsCreditUnitIdRoute, postCreditUnitsCreditUnitIdRouteHandler)
+  .openapi(
+    postCreditUnitsCreditUnitIdReactivateCommandRoute,
+    postCreditUnitsCreditUnitIdReactivateCommandRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdSubscriptionEntitlementsSetAvailabilityRoute,
+    postSubscriptionsSubscriptionIdSubscriptionEntitlementsSetAvailabilityRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdSubscriptionEntitlementsRoute,
+    getSubscriptionsSubscriptionIdSubscriptionEntitlementsRouteHandler,
+  )
+  .openapi(
+    getCustomersCustomerIdCustomerEntitlementsRoute,
+    getCustomersCustomerIdCustomerEntitlementsRouteHandler,
+  )
+  .openapi(
+    getFeaturesFeatureIdItemEntitlementsRoute,
+    getFeaturesFeatureIdItemEntitlementsRouteHandler,
+  )
+  .openapi(
+    postFeaturesFeatureIdItemEntitlementsRoute,
+    postFeaturesFeatureIdItemEntitlementsRouteHandler,
+  )
+  .openapi(getItemsItemIdItemEntitlementsRoute, getItemsItemIdItemEntitlementsRouteHandler)
+  .openapi(postItemsItemIdItemEntitlementsRoute, postItemsItemIdItemEntitlementsRouteHandler)
+  .openapi(getEntitlementsRoute, getEntitlementsRouteHandler)
+  .openapi(postEntitlementsRoute, postEntitlementsRouteHandler)
+  .openapi(
+    postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRoute,
+    postInAppSubscriptionsInAppSubscriptionAppIdRetrieveRouteHandler,
+  )
+  .openapi(
+    postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRoute,
+    postInAppSubscriptionsInAppSubscriptionAppIdImportReceiptRouteHandler,
+  )
+  .openapi(
+    postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRoute,
+    postInAppSubscriptionsInAppSubscriptionAppIdImportSubscriptionRouteHandler,
+  )
+  .openapi(
+    postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRoute,
+    postInAppSubscriptionsInAppSubscriptionAppIdProcessPurchaseCommandRouteHandler,
+  )
+  .openapi(
+    postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRoute,
+    postNonSubscriptionsNonSubscriptionAppIdOneTimePurchaseRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdEntitlementOverridesRoute,
+    getSubscriptionsSubscriptionIdEntitlementOverridesRouteHandler,
+  )
+  .openapi(
+    postSubscriptionsSubscriptionIdEntitlementOverridesRoute,
+    postSubscriptionsSubscriptionIdEntitlementOverridesRouteHandler,
+  )
+  .openapi(
+    getBusinessEntitiesBusinessEntityIdRoute,
+    getBusinessEntitiesBusinessEntityIdRouteHandler,
+  )
+  .openapi(
+    postBusinessEntitiesBusinessEntityIdRoute,
+    postBusinessEntitiesBusinessEntityIdRouteHandler,
+  )
+  .openapi(getBusinessEntitiesRoute, getBusinessEntitiesRouteHandler)
+  .openapi(postBusinessEntitiesRoute, postBusinessEntitiesRouteHandler)
+  .openapi(getBusinessEntitiesTransfersRoute, getBusinessEntitiesTransfersRouteHandler)
+  .openapi(postBusinessEntitiesTransfersRoute, postBusinessEntitiesTransfersRouteHandler)
+  .openapi(postPurchasesRoute, postPurchasesRouteHandler)
+  .openapi(postPurchasesEstimateRoute, postPurchasesEstimateRouteHandler)
+  .openapi(
+    getCustomersCustomerIdPaymentVouchersRoute,
+    getCustomersCustomerIdPaymentVouchersRouteHandler,
+  )
+  .openapi(
+    getInvoicesInvoiceIdPaymentVouchersRoute,
+    getInvoicesInvoiceIdPaymentVouchersRouteHandler,
+  )
+  .openapi(getPaymentVouchersPaymentVoucherIdRoute, getPaymentVouchersPaymentVoucherIdRouteHandler)
+  .openapi(postPaymentVouchersRoute, postPaymentVouchersRouteHandler)
+  .openapi(postCsvTaxRulesRoute, postCsvTaxRulesRouteHandler)
+  .openapi(getOrganizationDetailsRoute, getOrganizationDetailsRouteHandler)
+  .openapi(postOrganizationDetailsRoute, postOrganizationDetailsRouteHandler)
+  .openapi(
+    getOrganizationDetailsOrganizationDetailIdRoute,
+    getOrganizationDetailsOrganizationDetailIdRouteHandler,
+  )
+  .openapi(
+    postCurrenciesSiteCurrencyIdAddScheduleRoute,
+    postCurrenciesSiteCurrencyIdAddScheduleRouteHandler,
+  )
+  .openapi(postCurrenciesRoute, postCurrenciesRouteHandler)
+  .openapi(getCurrenciesSiteCurrencyIdRoute, getCurrenciesSiteCurrencyIdRouteHandler)
+  .openapi(postCurrenciesSiteCurrencyIdRoute, postCurrenciesSiteCurrencyIdRouteHandler)
+  .openapi(
+    postCurrenciesSiteCurrencyIdRemoveScheduleRoute,
+    postCurrenciesSiteCurrencyIdRemoveScheduleRouteHandler,
+  )
+  .openapi(getCurrenciesListRoute, getCurrenciesListRouteHandler)
+  .openapi(getRampsRampIdRoute, getRampsRampIdRouteHandler)
+  .openapi(
+    postSubscriptionsSubscriptionIdCreateRampRoute,
+    postSubscriptionsSubscriptionIdCreateRampRouteHandler,
+  )
+  .openapi(getRampsRoute, getRampsRouteHandler)
+  .openapi(postRampsRampIdUpdateRoute, postRampsRampIdUpdateRouteHandler)
+  .openapi(postRampsRampIdDeleteRoute, postRampsRampIdDeleteRouteHandler)
+  .openapi(
+    getPaymentScheduleSchemesPaymentScheduleSchemeIdRoute,
+    getPaymentScheduleSchemesPaymentScheduleSchemeIdRouteHandler,
+  )
+  .openapi(getPaymentScheduleSchemesRoute, getPaymentScheduleSchemesRouteHandler)
+  .openapi(postPaymentScheduleSchemesRoute, postPaymentScheduleSchemesRouteHandler)
+  .openapi(
+    postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRoute,
+    postPaymentScheduleSchemesPaymentScheduleSchemeIdDeleteRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationsPc2MigrationIdContactSupportRoute,
+    postPc2MigrationsPc2MigrationIdContactSupportRouteHandler,
+  )
+  .openapi(getPc2MigrationsPc2MigrationIdRoute, getPc2MigrationsPc2MigrationIdRouteHandler)
+  .openapi(postPc2MigrationsRoute, postPc2MigrationsRouteHandler)
+  .openapi(
+    postPc2MigrationsPc2MigrationIdInitiateRoute,
+    postPc2MigrationsPc2MigrationIdInitiateRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRoute,
+    postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRouteHandler,
+  )
+  .openapi(
+    getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute,
+    getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute,
+    postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler,
+  )
+  .openapi(getPc2MigrationItemFamiliesRoute, getPc2MigrationItemFamiliesRouteHandler)
+  .openapi(postPc2MigrationItemFamiliesRoute, postPc2MigrationItemFamiliesRouteHandler)
+  .openapi(
+    getPc2MigrationItemsPc2MigrationItemIdRoute,
+    getPc2MigrationItemsPc2MigrationItemIdRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationItemsPc2MigrationItemIdRoute,
+    postPc2MigrationItemsPc2MigrationItemIdRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationItemsPc2MigrationItemIdDeleteRoute,
+    postPc2MigrationItemsPc2MigrationItemIdDeleteRouteHandler,
+  )
+  .openapi(getPc2MigrationItemsRoute, getPc2MigrationItemsRouteHandler)
+  .openapi(postPc2MigrationItemsRoute, postPc2MigrationItemsRouteHandler)
+  .openapi(
+    getPc2MigrationItemsApplicableItemsRoute,
+    getPc2MigrationItemsApplicableItemsRouteHandler,
+  )
+  .openapi(getPc2MigrationItemPricesRoute, getPc2MigrationItemPricesRouteHandler)
+  .openapi(
+    postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRoute,
+    postPc2MigrationItemPricesPc2MigrationItemPriceIdDeleteRouteHandler,
+  )
+  .openapi(
+    getPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
+    getPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler,
+  )
+  .openapi(
+    postPc2MigrationItemPricesPc2MigrationItemPriceIdRoute,
+    postPc2MigrationItemPricesPc2MigrationItemPriceIdRouteHandler,
+  )
+  .openapi(
+    postPricingPageSessionsCreateForExistingSubscriptionRoute,
+    postPricingPageSessionsCreateForExistingSubscriptionRouteHandler,
+  )
+  .openapi(
+    postPricingPageSessionsCreateForNewSubscriptionRoute,
+    postPricingPageSessionsCreateForNewSubscriptionRouteHandler,
+  )
+  .openapi(getSitePcMetaRecordsRoute, getSitePcMetaRecordsRouteHandler)
+  .openapi(
+    postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRoute,
+    postOmnichannelSubscriptionsOmnichannelSubscriptionIdMoveRouteHandler,
+  )
+  .openapi(
+    getOmnichannelSubscriptionsOmnichannelSubscriptionIdRoute,
+    getOmnichannelSubscriptionsOmnichannelSubscriptionIdRouteHandler,
+  )
+  .openapi(
+    getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRoute,
+    getOmnichannelSubscriptionsOmnichannelSubscriptionIdOmnichannelTransactionsRouteHandler,
+  )
+  .openapi(getOmnichannelSubscriptionsRoute, getOmnichannelSubscriptionsRouteHandler)
+  .openapi(
+    getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRoute,
+    getOmnichannelSubscriptionItemsOmnichannelSubscriptionItemIdScheduledChangesRouteHandler,
+  )
+  .openapi(
+    getRecordedPurchasesRecordedPurchaseIdRoute,
+    getRecordedPurchasesRecordedPurchaseIdRouteHandler,
+  )
+  .openapi(postRecordedPurchasesRoute, postRecordedPurchasesRouteHandler)
+  .openapi(getOmnichannelOneTimeOrdersRoute, getOmnichannelOneTimeOrdersRouteHandler)
+  .openapi(
+    getOmnichannelOneTimeOrdersOmnichannelOneTimeOrderIdRoute,
+    getOmnichannelOneTimeOrdersOmnichannelOneTimeOrderIdRouteHandler,
+  )
+  .openapi(getRulesRuleIdRoute, getRulesRuleIdRouteHandler)
+  .openapi(getRetrySegmentsRetrySegmentIdRoute, getRetrySegmentsRetrySegmentIdRouteHandler)
+  .openapi(getMetersRoute, getMetersRouteHandler)
+  .openapi(postUsageEventsRoute, postUsageEventsRouteHandler)
+  .openapi(postBatchUsageEventsRoute, postBatchUsageEventsRouteHandler)
+  .openapi(
+    postMeteredFeaturesMeteredFeatureIdReactivateCommandRoute,
+    postMeteredFeaturesMeteredFeatureIdReactivateCommandRouteHandler,
+  )
+  .openapi(
+    postMeteredFeaturesMeteredFeatureIdDeleteRoute,
+    postMeteredFeaturesMeteredFeatureIdDeleteRouteHandler,
+  )
+  .openapi(postMeteredFeaturesRoute, postMeteredFeaturesRouteHandler)
+  .openapi(
+    postMeteredFeaturesMeteredFeatureIdArchiveCommandRoute,
+    postMeteredFeaturesMeteredFeatureIdArchiveCommandRouteHandler,
+  )
+  .openapi(
+    getUsageFilesUsageFileIdProcessingStatusRoute,
+    getUsageFilesUsageFileIdProcessingStatusRouteHandler,
+  )
+  .openapi(postUsageFilesUploadUrlRoute, postUsageFilesUploadUrlRouteHandler)
+  .openapi(getEinvoicesRoute, getEinvoicesRouteHandler)
+  .openapi(getEinvoicesEinvoiceIdRoute, getEinvoicesEinvoiceIdRouteHandler)
+  .openapi(postPersonalizedOffersRoute, postPersonalizedOffersRouteHandler)
+  .openapi(postOfferFulfillmentsRoute, postOfferFulfillmentsRouteHandler)
+  .openapi(
+    getOfferFulfillmentsOfferFulfillmentIdRoute,
+    getOfferFulfillmentsOfferFulfillmentIdRouteHandler,
+  )
+  .openapi(
+    postOfferFulfillmentsOfferFulfillmentIdRoute,
+    postOfferFulfillmentsOfferFulfillmentIdRouteHandler,
+  )
+  .openapi(postOfferEventsRoute, postOfferEventsRouteHandler)
+  .openapi(
+    postWebhookEndpointsWebhookEndpointIdDeleteRoute,
+    postWebhookEndpointsWebhookEndpointIdDeleteRouteHandler,
+  )
+  .openapi(
+    getWebhookEndpointsWebhookEndpointIdRoute,
+    getWebhookEndpointsWebhookEndpointIdRouteHandler,
+  )
+  .openapi(
+    postWebhookEndpointsWebhookEndpointIdRoute,
+    postWebhookEndpointsWebhookEndpointIdRouteHandler,
+  )
+  .openapi(getWebhookEndpointsRoute, getWebhookEndpointsRouteHandler)
+  .openapi(postWebhookEndpointsRoute, postWebhookEndpointsRouteHandler)
+  .openapi(postBusinessRulesApplyRulesRoute, postBusinessRulesApplyRulesRouteHandler)
+  .openapi(
+    postBusinessRulesBusinessRuleIdDeleteDraftRoute,
+    postBusinessRulesBusinessRuleIdDeleteDraftRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesBusinessRuleIdReleaseRoute,
+    postBusinessRulesBusinessRuleIdReleaseRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesBusinessRuleIdActivateRoute,
+    postBusinessRulesBusinessRuleIdActivateRouteHandler,
+  )
+  .openapi(
+    getBusinessRulesBusinessRuleIdDraftRoute,
+    getBusinessRulesBusinessRuleIdDraftRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesBusinessRuleIdDraftRoute,
+    postBusinessRulesBusinessRuleIdDraftRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesBusinessRuleIdDeleteRoute,
+    postBusinessRulesBusinessRuleIdDeleteRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesBusinessRuleIdDeactivateRoute,
+    postBusinessRulesBusinessRuleIdDeactivateRouteHandler,
+  )
+  .openapi(getBusinessRulesBusinessRuleIdRoute, getBusinessRulesBusinessRuleIdRouteHandler)
+  .openapi(getBusinessRulesRoute, getBusinessRulesRouteHandler)
+  .openapi(postBusinessRulesRoute, postBusinessRulesRouteHandler)
+  .openapi(
+    getBusinessRulesetsBusinessRulesetIdRoute,
+    getBusinessRulesetsBusinessRulesetIdRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdRoute,
+    postBusinessRulesetsBusinessRulesetIdRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdRemoveRulesRoute,
+    postBusinessRulesetsBusinessRulesetIdRemoveRulesRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdDeleteRoute,
+    postBusinessRulesetsBusinessRulesetIdDeleteRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdDeactivateRoute,
+    postBusinessRulesetsBusinessRulesetIdDeactivateRouteHandler,
+  )
+  .openapi(
+    getBusinessRulesetsBusinessRulesetIdRulesRoute,
+    getBusinessRulesetsBusinessRulesetIdRulesRouteHandler,
+  )
+  .openapi(getBusinessRulesetsRoute, getBusinessRulesetsRouteHandler)
+  .openapi(postBusinessRulesetsRoute, postBusinessRulesetsRouteHandler)
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdActivateRoute,
+    postBusinessRulesetsBusinessRulesetIdActivateRouteHandler,
+  )
+  .openapi(
+    postBusinessRulesetsBusinessRulesetIdAddRulesRoute,
+    postBusinessRulesetsBusinessRulesetIdAddRulesRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdUsageSummaryRoute,
+    getSubscriptionsSubscriptionIdUsageSummaryRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdUsageChargesRoute,
+    getSubscriptionsSubscriptionIdUsageChargesRouteHandler,
+  )
+  .openapi(
+    getSubscriptionsSubscriptionIdApplicableAlertsRoute,
+    getSubscriptionsSubscriptionIdApplicableAlertsRouteHandler,
+  )
+  .openapi(getAlertsAlertIdRoute, getAlertsAlertIdRouteHandler)
+  .openapi(postAlertsAlertIdRoute, postAlertsAlertIdRouteHandler)
+  .openapi(postAlertsAlertIdDeleteRoute, postAlertsAlertIdDeleteRouteHandler)
+  .openapi(getAlertsRoute, getAlertsRouteHandler)
+  .openapi(postAlertsRoute, postAlertsRouteHandler)
+  .openapi(
+    getSubscriptionsSubscriptionIdAlertStatusesRoute,
+    getSubscriptionsSubscriptionIdAlertStatusesRouteHandler,
+  )
+  .openapi(getAlertsAlertIdAlertStatusesRoute, getAlertsAlertIdAlertStatusesRouteHandler)
+  .openapi(getCollectionsPaymentPromisesRoute, getCollectionsPaymentPromisesRouteHandler)
+  .openapi(postCollectionsPaymentPromisesRoute, postCollectionsPaymentPromisesRouteHandler)
+  .openapi(
+    postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRoute,
+    postCollectionsPaymentPromisesCollectionsPaymentPromiseIdCancelRouteHandler,
+  )
+  .openapi(
+    getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute,
+    getCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler,
+  )
+  .openapi(
+    postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRoute,
+    postCollectionsPaymentPromisesCollectionsPaymentPromiseIdRouteHandler,
+  )
+  .openapi(
+    postLedgerAccountBalancesUpdateOverdraftLimitRoute,
+    postLedgerAccountBalancesUpdateOverdraftLimitRouteHandler,
+  )
+  .openapi(getLedgerAccountBalancesRoute, getLedgerAccountBalancesRouteHandler)
+  .openapi(
+    postLedgerOperationsReleaseAuthorizationRoute,
+    postLedgerOperationsReleaseAuthorizationRouteHandler,
+  )
+  .openapi(postLedgerOperationsCaptureRoute, postLedgerOperationsCaptureRouteHandler)
+  .openapi(postLedgerOperationsAllocateRoute, postLedgerOperationsAllocateRouteHandler)
+  .openapi(postLedgerOperationsAuthorizeRoute, postLedgerOperationsAuthorizeRouteHandler)
+  .openapi(getLedgerOperationsRoute, getLedgerOperationsRouteHandler)
+  .openapi(
+    postLedgerOperationsCaptureAuthorizationRoute,
+    postLedgerOperationsCaptureAuthorizationRouteHandler,
+  )
+  .openapi(
+    getLedgerOperationsLedgerOperationIdRoute,
+    getLedgerOperationsLedgerOperationIdRouteHandler,
+  )
+  .openapi(getGrantBlocksRoute, getGrantBlocksRouteHandler)
+  .openapi(postPromotionalGrantsRoute, postPromotionalGrantsRouteHandler)
 
 export default app

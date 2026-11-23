@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ClustersClusterDatabasesDatabaseRoute,
   deleteV1ClustersClusterDatabasesDatabaseTablesTablePartitionsPartitionRoute,
   deleteV1ClustersClusterDatabasesDatabaseTablesTableRoute,
@@ -16,48 +16,84 @@ import {
   postV1ClustersClusterDatabasesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1ClustersRouteHandler: RouteHandler<typeof getV1ClustersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1ClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterDatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ClustersClusterDatabasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ClustersClusterDatabasesDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterDatabasesDatabaseTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ClustersClusterDatabasesDatabaseTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ClustersClusterDatabasesDatabaseTablesTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterDatabasesDatabaseTablesTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1ClustersClusterDatabasesDatabaseTablesTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ClustersClusterDatabasesDatabaseTablesTablePartitionsPartitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ClustersClusterDatabasesDatabaseTablesTableRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1OpenapiJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1ClustersClusterDatabasesRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ClustersClusterDatabasesRouteHandler: RouteHandler<
+  typeof postV1ClustersClusterDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ClustersClusterDatabasesDatabaseRouteHandler: RouteHandler<
+  typeof deleteV1ClustersClusterDatabasesDatabaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterDatabasesDatabaseTablesRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterDatabasesDatabaseTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ClustersClusterDatabasesDatabaseTablesRouteHandler: RouteHandler<
+  typeof postV1ClustersClusterDatabasesDatabaseTablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ClustersClusterDatabasesDatabaseTablesTableRouteHandler: RouteHandler<
+  typeof deleteV1ClustersClusterDatabasesDatabaseTablesTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterDatabasesDatabaseTablesTableRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterDatabasesDatabaseTablesTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1ClustersClusterDatabasesDatabaseTablesTableRouteHandler: RouteHandler<
+  typeof patchV1ClustersClusterDatabasesDatabaseTablesTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRouteHandler: RouteHandler<
+  typeof getV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRouteHandler: RouteHandler<
+  typeof postV1ClustersClusterDatabasesDatabaseTablesTablePartitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ClustersClusterDatabasesDatabaseTablesTablePartitionsPartitionRouteHandler: RouteHandler<
+  typeof deleteV1ClustersClusterDatabasesDatabaseTablesTablePartitionsPartitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ClustersClusterDatabasesDatabaseTablesTableRecordsRouteHandler: RouteHandler<
+  typeof postV1ClustersClusterDatabasesDatabaseTablesTableRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1OpenapiJsonRouteHandler: RouteHandler<typeof getV1OpenapiJsonRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

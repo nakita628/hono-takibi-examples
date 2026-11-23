@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEditMessageReplyMarkupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEditMessageReplyMarkupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const editMessageReplyMarkupHandler = app.openapi(postEditMessageReplyMarkupRoute, (c) => {
+export const postEditMessageReplyMarkupRouteHandler: RouteHandler<
+  typeof postEditMessageReplyMarkupRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

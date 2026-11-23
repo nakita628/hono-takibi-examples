@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOntologySharedSubjectObjectRoute,
   getOntologySubsetIdRoute,
   getOntologyTermIdGraphRoute,
@@ -8,24 +8,38 @@ import {
   getOntologyTermIdSubsetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOntologySharedSubjectObjectRouteHandler: RouteHandler<
+  typeof getOntologySharedSubjectObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ontologyHandler = app
-  .openapi(getOntologySharedSubjectObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOntologySubsetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOntologyTermIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOntologyTermIdGraphRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOntologyTermIdSubgraphRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOntologyTermIdSubsetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOntologySubsetIdRouteHandler: RouteHandler<
+  typeof getOntologySubsetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOntologyTermIdRouteHandler: RouteHandler<typeof getOntologyTermIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getOntologyTermIdGraphRouteHandler: RouteHandler<
+  typeof getOntologyTermIdGraphRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOntologyTermIdSubgraphRouteHandler: RouteHandler<
+  typeof getOntologyTermIdSubgraphRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOntologyTermIdSubsetsRouteHandler: RouteHandler<
+  typeof getOntologyTermIdSubsetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

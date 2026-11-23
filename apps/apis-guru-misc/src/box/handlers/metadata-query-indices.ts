@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMetadataQueryIndicesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMetadataQueryIndicesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const metadataQueryIndicesHandler = app.openapi(getMetadataQueryIndicesRoute, (c) => {
+export const getMetadataQueryIndicesRouteHandler: RouteHandler<
+  typeof getMetadataQueryIndicesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSatelliteRoute, getSatelliteSatelliteIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSatelliteRoute, getSatelliteSatelliteIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSatelliteSatelliteIdRouteHandler: RouteHandler<
+  typeof getSatelliteSatelliteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const satelliteHandler = app
-  .openapi(getSatelliteSatelliteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSatelliteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSatelliteRouteHandler: RouteHandler<typeof getSatelliteRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

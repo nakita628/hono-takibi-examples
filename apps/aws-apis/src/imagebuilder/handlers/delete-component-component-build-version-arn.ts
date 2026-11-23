@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDeleteComponentComponentBuildVersionArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDeleteComponentComponentBuildVersionArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteComponentComponentBuildVersionArnHandler = app.openapi(
-  deleteDeleteComponentComponentBuildVersionArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteDeleteComponentComponentBuildVersionArnRouteHandler: RouteHandler<
+  typeof deleteDeleteComponentComponentBuildVersionArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

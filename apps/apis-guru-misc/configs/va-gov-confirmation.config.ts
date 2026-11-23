@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/va.gov/confirmation/0.0.1/openapi.yaml',
   output: './src/va-gov-confirmation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/va-gov-confirmation/types.ts' },
   client: { output: './src/va-gov-confirmation/client.ts', baseUrl: '/' },
   rpc: { output: './src/va-gov-confirmation/rpc.ts', parseResponse: true },

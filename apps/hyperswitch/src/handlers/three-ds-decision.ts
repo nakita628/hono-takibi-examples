@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postThreeDsDecisionExecuteRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postThreeDsDecisionExecuteRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const threeDsDecisionHandler = app.openapi(postThreeDsDecisionExecuteRoute, (c) => {
+export const postThreeDsDecisionExecuteRouteHandler: RouteHandler<
+  typeof postThreeDsDecisionExecuteRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

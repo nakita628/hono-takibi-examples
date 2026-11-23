@@ -1,39 +1,101 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCertificateManagerAddTagsToCertificateHandler,
-  xAmzTargetCertificateManagerDeleteCertificateHandler,
-  xAmzTargetCertificateManagerDescribeCertificateHandler,
-  xAmzTargetCertificateManagerExportCertificateHandler,
-  xAmzTargetCertificateManagerGetAccountConfigurationHandler,
-  xAmzTargetCertificateManagerGetCertificateHandler,
-  xAmzTargetCertificateManagerImportCertificateHandler,
-  xAmzTargetCertificateManagerListCertificatesHandler,
-  xAmzTargetCertificateManagerListTagsForCertificateHandler,
-  xAmzTargetCertificateManagerPutAccountConfigurationHandler,
-  xAmzTargetCertificateManagerRemoveTagsFromCertificateHandler,
-  xAmzTargetCertificateManagerRenewCertificateHandler,
-  xAmzTargetCertificateManagerRequestCertificateHandler,
-  xAmzTargetCertificateManagerResendValidationEmailHandler,
-  xAmzTargetCertificateManagerUpdateCertificateOptionsHandler,
+  postXAmzTargetCertificateManagerAddTagsToCertificateRoute,
+  postXAmzTargetCertificateManagerDeleteCertificateRoute,
+  postXAmzTargetCertificateManagerDescribeCertificateRoute,
+  postXAmzTargetCertificateManagerExportCertificateRoute,
+  postXAmzTargetCertificateManagerGetAccountConfigurationRoute,
+  postXAmzTargetCertificateManagerGetCertificateRoute,
+  postXAmzTargetCertificateManagerImportCertificateRoute,
+  postXAmzTargetCertificateManagerListCertificatesRoute,
+  postXAmzTargetCertificateManagerListTagsForCertificateRoute,
+  postXAmzTargetCertificateManagerPutAccountConfigurationRoute,
+  postXAmzTargetCertificateManagerRemoveTagsFromCertificateRoute,
+  postXAmzTargetCertificateManagerRenewCertificateRoute,
+  postXAmzTargetCertificateManagerRequestCertificateRoute,
+  postXAmzTargetCertificateManagerResendValidationEmailRoute,
+  postXAmzTargetCertificateManagerUpdateCertificateOptionsRoute,
+} from './routes'
+import {
+  postXAmzTargetCertificateManagerAddTagsToCertificateRouteHandler,
+  postXAmzTargetCertificateManagerDeleteCertificateRouteHandler,
+  postXAmzTargetCertificateManagerDescribeCertificateRouteHandler,
+  postXAmzTargetCertificateManagerExportCertificateRouteHandler,
+  postXAmzTargetCertificateManagerGetAccountConfigurationRouteHandler,
+  postXAmzTargetCertificateManagerGetCertificateRouteHandler,
+  postXAmzTargetCertificateManagerImportCertificateRouteHandler,
+  postXAmzTargetCertificateManagerListCertificatesRouteHandler,
+  postXAmzTargetCertificateManagerListTagsForCertificateRouteHandler,
+  postXAmzTargetCertificateManagerPutAccountConfigurationRouteHandler,
+  postXAmzTargetCertificateManagerRemoveTagsFromCertificateRouteHandler,
+  postXAmzTargetCertificateManagerRenewCertificateRouteHandler,
+  postXAmzTargetCertificateManagerRequestCertificateRouteHandler,
+  postXAmzTargetCertificateManagerResendValidationEmailRouteHandler,
+  postXAmzTargetCertificateManagerUpdateCertificateOptionsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCertificateManagerAddTagsToCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerDeleteCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerDescribeCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerExportCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerGetAccountConfigurationHandler)
-  .route('/', xAmzTargetCertificateManagerGetCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerImportCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerListCertificatesHandler)
-  .route('/', xAmzTargetCertificateManagerListTagsForCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerPutAccountConfigurationHandler)
-  .route('/', xAmzTargetCertificateManagerRemoveTagsFromCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerRenewCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerRequestCertificateHandler)
-  .route('/', xAmzTargetCertificateManagerResendValidationEmailHandler)
-  .route('/', xAmzTargetCertificateManagerUpdateCertificateOptionsHandler)
+  .openapi(
+    postXAmzTargetCertificateManagerAddTagsToCertificateRoute,
+    postXAmzTargetCertificateManagerAddTagsToCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerDeleteCertificateRoute,
+    postXAmzTargetCertificateManagerDeleteCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerDescribeCertificateRoute,
+    postXAmzTargetCertificateManagerDescribeCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerExportCertificateRoute,
+    postXAmzTargetCertificateManagerExportCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerGetAccountConfigurationRoute,
+    postXAmzTargetCertificateManagerGetAccountConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerGetCertificateRoute,
+    postXAmzTargetCertificateManagerGetCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerImportCertificateRoute,
+    postXAmzTargetCertificateManagerImportCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerListCertificatesRoute,
+    postXAmzTargetCertificateManagerListCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerListTagsForCertificateRoute,
+    postXAmzTargetCertificateManagerListTagsForCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerPutAccountConfigurationRoute,
+    postXAmzTargetCertificateManagerPutAccountConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerRemoveTagsFromCertificateRoute,
+    postXAmzTargetCertificateManagerRemoveTagsFromCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerRenewCertificateRoute,
+    postXAmzTargetCertificateManagerRenewCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerRequestCertificateRoute,
+    postXAmzTargetCertificateManagerRequestCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerResendValidationEmailRoute,
+    postXAmzTargetCertificateManagerResendValidationEmailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCertificateManagerUpdateCertificateOptionsRoute,
+    postXAmzTargetCertificateManagerUpdateCertificateOptionsRouteHandler,
+  )
 
 export default app

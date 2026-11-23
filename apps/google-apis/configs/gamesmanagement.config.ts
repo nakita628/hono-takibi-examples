@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/gamesManagement/v1management/openapi.yaml',
   output: './src/gamesmanagement/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gamesmanagement/types.ts' },
   client: { output: './src/gamesmanagement/client.ts', baseUrl: '/' },
   rpc: { output: './src/gamesmanagement/rpc.ts', parseResponse: true },

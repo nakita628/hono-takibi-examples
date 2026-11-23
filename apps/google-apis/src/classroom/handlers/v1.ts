@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1CoursesCourseIdAliasesAliasRoute,
   deleteV1CoursesCourseIdAnnouncementsIdRoute,
   deleteV1CoursesCourseIdCourseWorkIdRoute,
@@ -63,192 +63,360 @@ import {
   putV1CoursesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1CoursesRouteHandler: RouteHandler<typeof getV1CoursesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1CoursesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdAliasesAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdAnnouncementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdAnnouncementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdAnnouncementsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdAnnouncementsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesCourseIdAnnouncementsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdAnnouncementsIdModifyAssigneesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdCourseWorkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdModifyAttachmentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReclaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReturnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdTurnInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdCourseWorkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesCourseIdCourseWorkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdCourseWorkIdModifyAssigneesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkMaterialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdCourseWorkMaterialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdCourseWorkMaterialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdCourseWorkMaterialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesCourseIdCourseWorkMaterialsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdStudentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdStudentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdStudentsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdStudentsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdTeachersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdTeachersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdTeachersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdTeachersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CoursesCourseIdTopicsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesCourseIdTopicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesCourseIdTopicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesCourseIdTopicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CoursesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CoursesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1CoursesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1CoursesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1InvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1InvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1InvitationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1InvitationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1InvitationsIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1RegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1RegistrationsRegistrationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserProfilesStudentIdGuardianInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UserProfilesStudentIdGuardianInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserProfilesStudentIdGuardianInvitationsInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1UserProfilesStudentIdGuardianInvitationsInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserProfilesStudentIdGuardiansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1UserProfilesStudentIdGuardiansGuardianIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserProfilesStudentIdGuardiansGuardianIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1UserProfilesUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1CoursesRouteHandler: RouteHandler<typeof postV1CoursesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdAliasesRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdAliasesRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdAliasesAliasRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdAliasesAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdAnnouncementsRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdAnnouncementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdAnnouncementsRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdAnnouncementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdAnnouncementsIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdAnnouncementsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdAnnouncementsIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdAnnouncementsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesCourseIdAnnouncementsIdRouteHandler: RouteHandler<
+  typeof patchV1CoursesCourseIdAnnouncementsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdAnnouncementsIdModifyAssigneesRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdAnnouncementsIdModifyAssigneesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRouteHandler: RouteHandler<
+  typeof patchV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdModifyAttachmentsRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdModifyAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReclaimRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReclaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReturnRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdReturnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdTurnInRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkCourseWorkIdStudentSubmissionsIdTurnInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdCourseWorkIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdCourseWorkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesCourseIdCourseWorkIdRouteHandler: RouteHandler<
+  typeof patchV1CoursesCourseIdCourseWorkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkIdModifyAssigneesRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkIdModifyAssigneesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkMaterialsRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkMaterialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdCourseWorkMaterialsRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdCourseWorkMaterialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdCourseWorkMaterialsIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdCourseWorkMaterialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdCourseWorkMaterialsIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdCourseWorkMaterialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesCourseIdCourseWorkMaterialsIdRouteHandler: RouteHandler<
+  typeof patchV1CoursesCourseIdCourseWorkMaterialsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdStudentsRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdStudentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdStudentsRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdStudentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdStudentsUserIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdStudentsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdStudentsUserIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdStudentsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdTeachersRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdTeachersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdTeachersRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdTeachersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdTeachersUserIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdTeachersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdTeachersUserIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdTeachersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdTopicsRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CoursesCourseIdTopicsRouteHandler: RouteHandler<
+  typeof postV1CoursesCourseIdTopicsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesCourseIdTopicsIdRouteHandler: RouteHandler<
+  typeof deleteV1CoursesCourseIdTopicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesCourseIdTopicsIdRouteHandler: RouteHandler<
+  typeof getV1CoursesCourseIdTopicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesCourseIdTopicsIdRouteHandler: RouteHandler<
+  typeof patchV1CoursesCourseIdTopicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CoursesIdRouteHandler: RouteHandler<typeof deleteV1CoursesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CoursesIdRouteHandler: RouteHandler<typeof getV1CoursesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1CoursesIdRouteHandler: RouteHandler<typeof patchV1CoursesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1CoursesIdRouteHandler: RouteHandler<typeof putV1CoursesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1InvitationsRouteHandler: RouteHandler<typeof getV1InvitationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1InvitationsRouteHandler: RouteHandler<typeof postV1InvitationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1InvitationsIdRouteHandler: RouteHandler<
+  typeof deleteV1InvitationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1InvitationsIdRouteHandler: RouteHandler<typeof getV1InvitationsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1InvitationsIdAcceptRouteHandler: RouteHandler<
+  typeof postV1InvitationsIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1RegistrationsRouteHandler: RouteHandler<
+  typeof postV1RegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1RegistrationsRegistrationIdRouteHandler: RouteHandler<
+  typeof deleteV1RegistrationsRegistrationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserProfilesStudentIdGuardianInvitationsRouteHandler: RouteHandler<
+  typeof getV1UserProfilesStudentIdGuardianInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UserProfilesStudentIdGuardianInvitationsRouteHandler: RouteHandler<
+  typeof postV1UserProfilesStudentIdGuardianInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserProfilesStudentIdGuardianInvitationsInvitationIdRouteHandler: RouteHandler<
+  typeof getV1UserProfilesStudentIdGuardianInvitationsInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1UserProfilesStudentIdGuardianInvitationsInvitationIdRouteHandler: RouteHandler<
+  typeof patchV1UserProfilesStudentIdGuardianInvitationsInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserProfilesStudentIdGuardiansRouteHandler: RouteHandler<
+  typeof getV1UserProfilesStudentIdGuardiansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1UserProfilesStudentIdGuardiansGuardianIdRouteHandler: RouteHandler<
+  typeof deleteV1UserProfilesStudentIdGuardiansGuardianIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserProfilesStudentIdGuardiansGuardianIdRouteHandler: RouteHandler<
+  typeof getV1UserProfilesStudentIdGuardiansGuardianIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1UserProfilesUserIdRouteHandler: RouteHandler<
+  typeof getV1UserProfilesUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

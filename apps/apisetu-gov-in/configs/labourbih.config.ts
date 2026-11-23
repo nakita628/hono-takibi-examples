@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/labourbih/3.0.0/openapi.yaml',
   output: './src/labourbih/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/labourbih/types.ts' },
   client: { output: './src/labourbih/client.ts', baseUrl: '/' },
   rpc: { output: './src/labourbih/rpc.ts', parseResponse: true },

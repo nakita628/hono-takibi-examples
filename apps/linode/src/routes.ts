@@ -23007,7 +23007,6 @@ export const getApiVersionAccountUsersUsernameGrantsRoute = createRoute({
     204: {
       description:
         "This is an unrestricted user. These users don't use grants. They can access everything on the account and perform all actions.",
-      content: {},
     },
     default: {
       description:
@@ -139238,7 +139237,6 @@ export const getApiVersionProfileGrantsRoute = createRoute({
     204: {
       description:
         'This is an unrestricted User, who has no grants. This User can access everything on the Account.',
-      content: {},
     },
     default: {
       description:

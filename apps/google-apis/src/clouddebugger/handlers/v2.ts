@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute,
   getV2ControllerDebuggeesDebuggeeIdBreakpointsRoute,
   getV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute,
@@ -10,30 +10,50 @@ import {
   putV2ControllerDebuggeesDebuggeeIdBreakpointsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV2ControllerDebuggeesRegisterRouteHandler: RouteHandler<
+  typeof postV2ControllerDebuggeesRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(postV2ControllerDebuggeesRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2ControllerDebuggeesDebuggeeIdBreakpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV2ControllerDebuggeesDebuggeeIdBreakpointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DebuggerDebuggeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DebuggerDebuggeesDebuggeeIdBreakpointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2DebuggerDebuggeesDebuggeeIdBreakpointsSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV2ControllerDebuggeesDebuggeeIdBreakpointsRouteHandler: RouteHandler<
+  typeof getV2ControllerDebuggeesDebuggeeIdBreakpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV2ControllerDebuggeesDebuggeeIdBreakpointsIdRouteHandler: RouteHandler<
+  typeof putV2ControllerDebuggeesDebuggeeIdBreakpointsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DebuggerDebuggeesRouteHandler: RouteHandler<
+  typeof getV2DebuggerDebuggeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DebuggerDebuggeesDebuggeeIdBreakpointsRouteHandler: RouteHandler<
+  typeof getV2DebuggerDebuggeesDebuggeeIdBreakpointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2DebuggerDebuggeesDebuggeeIdBreakpointsSetRouteHandler: RouteHandler<
+  typeof postV2DebuggerDebuggeesDebuggeeIdBreakpointsSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRouteHandler: RouteHandler<
+  typeof deleteV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRouteHandler: RouteHandler<
+  typeof getV2DebuggerDebuggeesDebuggeeIdBreakpointsBreakpointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

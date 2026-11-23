@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gettyimages.com/3/openapi.yaml',
   output: './src/gettyimages/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gettyimages/types.ts' },
   client: { output: './src/gettyimages/client.ts', baseUrl: '/' },
   rpc: { output: './src/gettyimages/rpc.ts', parseResponse: true },

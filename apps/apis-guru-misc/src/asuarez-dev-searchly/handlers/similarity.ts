@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSimilarityBySongRoute, postSimilarityByContentRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSimilarityBySongRoute, postSimilarityByContentRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSimilarityByContentRouteHandler: RouteHandler<
+  typeof postSimilarityByContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const similarityHandler = app
-  .openapi(postSimilarityByContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimilarityBySongRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSimilarityBySongRouteHandler: RouteHandler<
+  typeof getSimilarityBySongRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

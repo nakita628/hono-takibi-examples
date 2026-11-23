@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityHandler = app.openapi(
-  postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

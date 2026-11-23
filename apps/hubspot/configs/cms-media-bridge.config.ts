@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Media%20Bridge/Rollouts/787/2026-09/mediaBridge.json',
   output: './src/cms-media-bridge/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cms-media-bridge/types.ts' },
   client: { output: './src/cms-media-bridge/client.ts', baseUrl: '/' },
   rpc: { output: './src/cms-media-bridge/rpc.ts', parseResponse: true },

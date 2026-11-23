@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Recurrence-(v1-/1.0/openapi.yaml',
   output: './src/recurrence-v1/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/recurrence-v1/types.ts' },
   client: { output: './src/recurrence-v1/client.ts', baseUrl: '/' },
   rpc: { output: './src/recurrence-v1/rpc.ts', parseResponse: true },

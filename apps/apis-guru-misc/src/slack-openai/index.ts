@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { aiAlphaSearchMessagesHandler } from './handlers'
+import { postAiAlphaSearchMessagesRoute } from './routes'
+import { postAiAlphaSearchMessagesRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', aiAlphaSearchMessagesHandler)
+export const api = app.openapi(
+  postAiAlphaSearchMessagesRoute,
+  postAiAlphaSearchMessagesRouteHandler,
+)
 
 export default app

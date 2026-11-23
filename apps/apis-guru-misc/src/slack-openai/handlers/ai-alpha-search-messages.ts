@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAiAlphaSearchMessagesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAiAlphaSearchMessagesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const aiAlphaSearchMessagesHandler = app.openapi(postAiAlphaSearchMessagesRoute, (c) => {
+export const postAiAlphaSearchMessagesRouteHandler: RouteHandler<
+  typeof postAiAlphaSearchMessagesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUserMeNotificationSettingsOrgOrgIdProjectProjectIdRoute,
   getUserMeNotificationSettingsOrgOrgIdRoute,
   getUserMeRoute,
@@ -8,24 +8,34 @@ import {
   putUserMeNotificationSettingsOrgOrgIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserMeRouteHandler: RouteHandler<typeof getUserMeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHandler = app
-  .openapi(getUserMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserMeNotificationSettingsOrgOrgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserMeNotificationSettingsOrgOrgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserMeNotificationSettingsOrgOrgIdProjectProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserMeNotificationSettingsOrgOrgIdProjectProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUserMeNotificationSettingsOrgOrgIdRouteHandler: RouteHandler<
+  typeof getUserMeNotificationSettingsOrgOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserMeNotificationSettingsOrgOrgIdRouteHandler: RouteHandler<
+  typeof putUserMeNotificationSettingsOrgOrgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserMeNotificationSettingsOrgOrgIdProjectProjectIdRouteHandler: RouteHandler<
+  typeof getUserMeNotificationSettingsOrgOrgIdProjectProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserMeNotificationSettingsOrgOrgIdProjectProjectIdRouteHandler: RouteHandler<
+  typeof putUserMeNotificationSettingsOrgOrgIdProjectProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserUserIdRouteHandler: RouteHandler<typeof getUserUserIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

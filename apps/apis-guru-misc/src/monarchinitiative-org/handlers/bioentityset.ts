@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBioentitysetAssociationsRoute,
   getBioentitysetDescriptorCountsRoute,
   getBioentitysetGraphRoute,
@@ -10,30 +10,50 @@ import {
   getBioentitysetSlimmerPhenotypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBioentitysetAssociationsRouteHandler: RouteHandler<
+  typeof getBioentitysetAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bioentitysetHandler = app
-  .openapi(getBioentitysetAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetDescriptorCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetGraphRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetHomologsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetOverrepresentationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetSlimmerAnatomyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetSlimmerFunctionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitysetSlimmerPhenotypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBioentitysetDescriptorCountsRouteHandler: RouteHandler<
+  typeof getBioentitysetDescriptorCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetGraphRouteHandler: RouteHandler<
+  typeof getBioentitysetGraphRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetHomologsIndexRouteHandler: RouteHandler<
+  typeof getBioentitysetHomologsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetOverrepresentationRouteHandler: RouteHandler<
+  typeof getBioentitysetOverrepresentationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetSlimmerAnatomyRouteHandler: RouteHandler<
+  typeof getBioentitysetSlimmerAnatomyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetSlimmerFunctionRouteHandler: RouteHandler<
+  typeof getBioentitysetSlimmerFunctionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitysetSlimmerPhenotypeRouteHandler: RouteHandler<
+  typeof getBioentitysetSlimmerPhenotypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

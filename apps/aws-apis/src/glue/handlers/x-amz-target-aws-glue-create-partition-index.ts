@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueCreatePartitionIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueCreatePartitionIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueCreatePartitionIndexHandler = app.openapi(
-  postXAmzTargetAWSGlueCreatePartitionIndexRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueCreatePartitionIndexRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueCreatePartitionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

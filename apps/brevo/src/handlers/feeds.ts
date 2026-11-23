@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFeedsUuidRoute,
   getFeedsRoute,
   getFeedsUuidRoute,
@@ -7,21 +7,22 @@ import {
   putFeedsUuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeedsRouteHandler: RouteHandler<typeof getFeedsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const feedsHandler = app
-  .openapi(getFeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeedsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFeedsUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeedsUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFeedsUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFeedsRouteHandler: RouteHandler<typeof postFeedsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFeedsUuidRouteHandler: RouteHandler<typeof deleteFeedsUuidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeedsUuidRouteHandler: RouteHandler<typeof getFeedsUuidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFeedsUuidRouteHandler: RouteHandler<typeof putFeedsUuidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

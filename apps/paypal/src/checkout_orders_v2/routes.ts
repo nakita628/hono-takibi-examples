@@ -425,12 +425,12 @@ const LineItemSchema = ItemWithoutCategoryTaxOrAmountSchema.and(
   .openapi('LineItem')
 
 type Level_3CardProcessingDataType = {
-  shipping_amount?: z.infer<typeof MoneySchema> & unknown
-  duty_amount?: z.infer<typeof MoneySchema> & unknown
-  discount_amount?: z.infer<typeof MoneySchema> & unknown
+  shipping_amount?: z.infer<typeof MoneySchema>
+  duty_amount?: z.infer<typeof MoneySchema>
+  discount_amount?: z.infer<typeof MoneySchema>
   shipping_address?: z.infer<typeof AddressPortableSchema> & unknown
   ships_from_postal_code?: string
-  line_items?: (z.infer<typeof LineItemSchema> & unknown)[]
+  line_items?: z.infer<typeof LineItemSchema>[]
 }
 
 const Level_2CardProcessingDataSchema = z
@@ -618,8 +618,8 @@ const RiskSupplementaryDataSchema = z
   .openapi('RiskSupplementaryData')
 
 type SupplementaryDataType = {
-  card?: z.infer<typeof CardSupplementaryDataSchema> & unknown
-  risk?: z.infer<typeof RiskSupplementaryDataSchema> & unknown
+  card?: z.infer<typeof CardSupplementaryDataSchema>
+  risk?: z.infer<typeof RiskSupplementaryDataSchema>
 }
 
 const DiscountWithBreakdownSchema = MoneySchema.and(z.looseObject({}))
@@ -1250,16 +1250,16 @@ const SupplementaryDataSchema: z.ZodType<SupplementaryDataType> = z
 
 type PurchaseUnitRequestType = {
   reference_id?: string
-  amount: z.infer<typeof AmountWithBreakdownSchema> & unknown
-  payee?: z.infer<typeof PayeeSchema> & unknown
+  amount: z.infer<typeof AmountWithBreakdownSchema>
+  payee?: z.infer<typeof PayeeSchema>
   payment_instruction?: z.infer<typeof PaymentInstructionSchema>
   description?: string
   custom_id?: string
   invoice_id?: string
   soft_descriptor?: string
-  items?: (z.infer<typeof ItemRequestSchema> & unknown)[]
-  shipping?: z.infer<typeof ShippingDetailSchema> & unknown
-  supplementary_data?: z.infer<typeof SupplementaryDataSchema> & unknown
+  items?: z.infer<typeof ItemRequestSchema>[]
+  shipping?: z.infer<typeof ShippingDetailSchema>
+  supplementary_data?: z.infer<typeof SupplementaryDataSchema>
 }
 
 const InstrumentIdSchema = z
@@ -3796,20 +3796,20 @@ const CryptoRequestSchema = z
 type PaymentSourceType = {
   card?: z.infer<typeof CardRequestSchema>
   token?: z.infer<typeof TokenSchema>
-  paypal?: z.infer<typeof PaypalWalletSchema> & unknown
-  bancontact?: z.infer<typeof BancontactRequestSchema> & unknown
-  blik?: z.infer<typeof BlikRequestSchema> & unknown
-  eps?: z.infer<typeof EpsRequestSchema> & unknown
-  giropay?: z.infer<typeof GiropayRequestSchema> & unknown
-  ideal?: z.infer<typeof IdealRequestSchema> & unknown
-  mybank?: z.infer<typeof MybankRequestSchema> & unknown
-  p24?: z.infer<typeof P24RequestSchema> & unknown
-  sofort?: z.infer<typeof SofortRequestSchema> & unknown
-  trustly?: z.infer<typeof TrustlyRequestSchema> & unknown
-  apple_pay?: z.infer<typeof ApplePayRequestSchema> & unknown
-  google_pay?: z.infer<typeof GooglePayRequestSchema> & unknown
-  venmo?: z.infer<typeof VenmoWalletRequestSchema> & unknown
-  crypto?: z.infer<typeof CryptoRequestSchema> & unknown
+  paypal?: z.infer<typeof PaypalWalletSchema>
+  bancontact?: z.infer<typeof BancontactRequestSchema>
+  blik?: z.infer<typeof BlikRequestSchema>
+  eps?: z.infer<typeof EpsRequestSchema>
+  giropay?: z.infer<typeof GiropayRequestSchema>
+  ideal?: z.infer<typeof IdealRequestSchema>
+  mybank?: z.infer<typeof MybankRequestSchema>
+  p24?: z.infer<typeof P24RequestSchema>
+  sofort?: z.infer<typeof SofortRequestSchema>
+  trustly?: z.infer<typeof TrustlyRequestSchema>
+  apple_pay?: z.infer<typeof ApplePayRequestSchema>
+  google_pay?: z.infer<typeof GooglePayRequestSchema>
+  venmo?: z.infer<typeof VenmoWalletRequestSchema>
+  crypto?: z.infer<typeof CryptoRequestSchema>
 }
 
 const CheckoutPaymentIntentSchema = z
@@ -4280,10 +4280,10 @@ const OrderApplicationContextSchema = z
 
 type OrderRequestType = {
   intent: z.infer<typeof CheckoutPaymentIntentSchema>
-  payer?: z.infer<typeof PayerSchema> & unknown
-  purchase_units: (z.infer<typeof PurchaseUnitRequestSchema> & unknown)[]
+  payer?: z.infer<typeof PayerSchema>
+  purchase_units: z.infer<typeof PurchaseUnitRequestSchema>[]
   payment_source?: z.infer<typeof PaymentSourceSchema>
-  application_context?: z.infer<typeof OrderApplicationContextSchema> & unknown
+  application_context?: z.infer<typeof OrderApplicationContextSchema>
 }
 
 const LiabilityShiftSchema = z
@@ -4896,11 +4896,11 @@ const ApplePayAttributesResponseSchema = z
 type ApplePayType = {
   id?: string
   token?: string
-  name?: z.infer<typeof FullNameSchema> & unknown
-  email_address?: z.infer<typeof EmailAddressSchema> & unknown
+  name?: z.infer<typeof FullNameSchema>
+  email_address?: z.infer<typeof EmailAddressSchema>
   phone_number?: z.infer<typeof PhoneSchema> & unknown
-  card?: z.infer<typeof ApplePayCardResponseSchema> & unknown
-  attributes?: z.infer<typeof ApplePayAttributesResponseSchema> & unknown
+  card?: z.infer<typeof ApplePayCardResponseSchema>
+  attributes?: z.infer<typeof ApplePayAttributesResponseSchema>
   stored_credential?: z.infer<typeof CardStoredCredentialSchema>
 }
 
@@ -7166,17 +7166,17 @@ const PaymentCollectionSchema = z
 type PurchaseUnitType = {
   reference_id?: string
   amount?: z.infer<typeof AmountWithBreakdownSchema>
-  payee?: z.infer<typeof PayeeSchema> & unknown
+  payee?: z.infer<typeof PayeeSchema>
   payment_instruction?: z.infer<typeof PaymentInstructionSchema>
   description?: string
   custom_id?: string
   invoice_id?: string
   id?: string
   soft_descriptor?: string
-  items?: (z.infer<typeof ItemSchema> & unknown)[]
-  shipping?: z.infer<typeof ShippingWithTrackingDetailsSchema> & unknown
-  supplementary_data?: z.infer<typeof SupplementaryDataSchema> & unknown
-  payments?: z.infer<typeof PaymentCollectionSchema> & unknown
+  items?: z.infer<typeof ItemSchema>[]
+  shipping?: z.infer<typeof ShippingWithTrackingDetailsSchema>
+  supplementary_data?: z.infer<typeof SupplementaryDataSchema>
+  payments?: z.infer<typeof PaymentCollectionSchema>
 }
 
 const PaymentSourceResponseSchema: z.ZodType<PaymentSourceResponseType> = z
@@ -7296,14 +7296,14 @@ const OrderStatusSchema = z
   .openapi({ title: 'Order Status', description: 'The order status.' })
   .openapi('OrderStatus')
 
-type OrderType = (z.infer<typeof ActivityTimestampsSchema> & unknown) & {
+type OrderType = z.infer<typeof ActivityTimestampsSchema> & {
   id?: string
   payment_source?: z.infer<typeof PaymentSourceResponseSchema>
   intent?: z.infer<typeof CheckoutPaymentIntentSchema>
-  payer?: z.infer<typeof PayerSchema> & unknown
-  purchase_units?: (z.infer<typeof PurchaseUnitSchema> & unknown)[]
-  status?: z.infer<typeof OrderStatusSchema> & unknown
-  links?: (z.infer<typeof LinkDescription_2Schema> & unknown)[]
+  payer?: z.infer<typeof PayerSchema>
+  purchase_units?: z.infer<typeof PurchaseUnitSchema>[]
+  status?: z.infer<typeof OrderStatusSchema>
+  links?: z.infer<typeof LinkDescription_2Schema>[]
 }
 
 const OrderConfirmApplicationContextSchema = z
@@ -7353,16 +7353,16 @@ type ConfirmOrderRequestType = {
   application_context?: z.infer<typeof OrderConfirmApplicationContextSchema>
 }
 
-type OrderAuthorizeRequestType = { payment_source?: z.infer<typeof PaymentSourceSchema> & unknown }
+type OrderAuthorizeRequestType = { payment_source?: z.infer<typeof PaymentSourceSchema> }
 
-type OrderAuthorizeResponseType = (z.infer<typeof ActivityTimestampsSchema> & unknown) & {
+type OrderAuthorizeResponseType = z.infer<typeof ActivityTimestampsSchema> & {
   id?: string
   payment_source?: z.infer<typeof PaymentSourceResponseSchema> & unknown
   intent?: z.infer<typeof CheckoutPaymentIntentSchema>
   payer?: z.infer<typeof PayerSchema>
-  purchase_units?: (z.infer<typeof PurchaseUnitSchema> & unknown)[]
-  status?: z.infer<typeof OrderStatusSchema> & unknown
-  links?: (z.infer<typeof LinkDescription_2Schema> & unknown)[]
+  purchase_units?: z.infer<typeof PurchaseUnitSchema>[]
+  status?: z.infer<typeof OrderStatusSchema>
+  links?: z.infer<typeof LinkDescription_2Schema>[]
 }
 
 type OrderCaptureRequestType = { payment_source?: z.infer<typeof PaymentSourceSchema> & unknown }
@@ -7371,7 +7371,7 @@ type OrderUpdateCallbackRequestType = {
   id?: string
   shipping_address?: z.infer<typeof AddressPortableSchema> & unknown
   shipping_option?: z.infer<typeof ShippingOptionSchema> & unknown
-  purchase_units: (z.infer<typeof PurchaseUnitRequestSchema> & unknown)[]
+  purchase_units: z.infer<typeof PurchaseUnitRequestSchema>[]
 }
 
 const GuidSchema = z

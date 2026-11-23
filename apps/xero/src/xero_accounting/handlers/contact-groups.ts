@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteContactGroupsContactGroupIDContactsContactIDRoute,
   deleteContactGroupsContactGroupIDContactsRoute,
   getContactGroupsContactGroupIDRoute,
@@ -9,27 +9,44 @@ import {
   putContactGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getContactGroupsRouteHandler: RouteHandler<typeof getContactGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const contactGroupsHandler = app
-  .openapi(getContactGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getContactGroupsContactGroupIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postContactGroupsContactGroupIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putContactGroupsContactGroupIDContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactGroupsContactGroupIDContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteContactGroupsContactGroupIDContactsContactIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putContactGroupsRouteHandler: RouteHandler<typeof putContactGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getContactGroupsContactGroupIDRouteHandler: RouteHandler<
+  typeof getContactGroupsContactGroupIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postContactGroupsContactGroupIDRouteHandler: RouteHandler<
+  typeof postContactGroupsContactGroupIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putContactGroupsContactGroupIDContactsRouteHandler: RouteHandler<
+  typeof putContactGroupsContactGroupIDContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactGroupsContactGroupIDContactsRouteHandler: RouteHandler<
+  typeof deleteContactGroupsContactGroupIDContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteContactGroupsContactGroupIDContactsContactIDRouteHandler: RouteHandler<
+  typeof deleteContactGroupsContactGroupIDContactsContactIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

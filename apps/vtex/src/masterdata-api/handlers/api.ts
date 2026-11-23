@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiDataentitiesAcronymDocumentsIdRoute,
   deleteApiDataentitiesAcronymDocumentsIdScoreFieldNameRoute,
   getApiDataentitiesAcronymDocumentsIdFieldAttachmentsFileNameRoute,
@@ -22,66 +22,122 @@ import {
   putApiDataentitiesAcronymDocumentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiDataentitiesRouteHandler: RouteHandler<typeof getApiDataentitiesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiDataentitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiDataentitiesAcronymDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDataentitiesAcronymDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDataentitiesAcronymDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDataentitiesAcronymDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiDataentitiesAcronymDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDataentitiesAcronymDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDataentitiesAcronymDocumentsIdClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDataentitiesAcronymDocumentsIdScoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiDataentitiesAcronymDocumentsIdScoreFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDataentitiesAcronymDocumentsIdScoreFieldNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymDocumentsIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymDocumentsIdVersionsVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiDataentitiesAcronymDocumentsIdVersionsVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiDataentitiesAcronymDocumentsIdFieldAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymDocumentsIdFieldAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymScrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiDataentitiesAcronymSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiDataentitiesAcronymRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiDataentitiesAcronymDocumentsRouteHandler: RouteHandler<
+  typeof patchApiDataentitiesAcronymDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDataentitiesAcronymDocumentsRouteHandler: RouteHandler<
+  typeof postApiDataentitiesAcronymDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDataentitiesAcronymDocumentsRouteHandler: RouteHandler<
+  typeof putApiDataentitiesAcronymDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDataentitiesAcronymDocumentsIdRouteHandler: RouteHandler<
+  typeof deleteApiDataentitiesAcronymDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymDocumentsIdRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiDataentitiesAcronymDocumentsIdRouteHandler: RouteHandler<
+  typeof patchApiDataentitiesAcronymDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDataentitiesAcronymDocumentsIdRouteHandler: RouteHandler<
+  typeof putApiDataentitiesAcronymDocumentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDataentitiesAcronymDocumentsIdClustersRouteHandler: RouteHandler<
+  typeof postApiDataentitiesAcronymDocumentsIdClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDataentitiesAcronymDocumentsIdScoreRouteHandler: RouteHandler<
+  typeof putApiDataentitiesAcronymDocumentsIdScoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiDataentitiesAcronymDocumentsIdScoreFieldNameRouteHandler: RouteHandler<
+  typeof deleteApiDataentitiesAcronymDocumentsIdScoreFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDataentitiesAcronymDocumentsIdScoreFieldNameRouteHandler: RouteHandler<
+  typeof putApiDataentitiesAcronymDocumentsIdScoreFieldNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymDocumentsIdVersionsRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymDocumentsIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymDocumentsIdVersionsVersionIdRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymDocumentsIdVersionsVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiDataentitiesAcronymDocumentsIdVersionsVersionIdRouteHandler: RouteHandler<
+  typeof putApiDataentitiesAcronymDocumentsIdVersionsVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiDataentitiesAcronymDocumentsIdFieldAttachmentsRouteHandler: RouteHandler<
+  typeof postApiDataentitiesAcronymDocumentsIdFieldAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymDocumentsIdFieldAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymDocumentsIdFieldAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymScrollRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymScrollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiDataentitiesAcronymSearchRouteHandler: RouteHandler<
+  typeof getApiDataentitiesAcronymSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

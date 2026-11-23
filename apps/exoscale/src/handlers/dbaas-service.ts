@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDbaasServiceNameRoute, getDbaasServiceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDbaasServiceNameRoute, getDbaasServiceRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDbaasServiceRouteHandler: RouteHandler<typeof getDbaasServiceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dbaasServiceHandler = app
-  .openapi(getDbaasServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDbaasServiceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDbaasServiceNameRouteHandler: RouteHandler<
+  typeof deleteDbaasServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

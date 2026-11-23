@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTaxonomiesIndexRoute, getTaxonomiesTaxonomyIdIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTaxonomiesIndexRoute, getTaxonomiesTaxonomyIdIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTaxonomiesIndexRouteHandler: RouteHandler<typeof getTaxonomiesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const taxonomiesHandler = app
-  .openapi(getTaxonomiesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTaxonomiesTaxonomyIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTaxonomiesTaxonomyIdIndexRouteHandler: RouteHandler<
+  typeof getTaxonomiesTaxonomyIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

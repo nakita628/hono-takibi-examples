@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteInfoMessagesMessageIdRoute,
   getInfoClientRoute,
   getInfoDatabaseRoute,
@@ -14,42 +14,54 @@ import {
   getInfoVersionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInfoClientRouteHandler: RouteHandler<typeof getInfoClientRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const infoHandler = app
-  .openapi(getInfoClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoSystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoDatabaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoFtlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoHostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoSensorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteInfoMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoMessagesCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInfoLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInfoSystemRouteHandler: RouteHandler<typeof getInfoSystemRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoDatabaseRouteHandler: RouteHandler<typeof getInfoDatabaseRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoFtlRouteHandler: RouteHandler<typeof getInfoFtlRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoHostRouteHandler: RouteHandler<typeof getInfoHostRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoSensorsRouteHandler: RouteHandler<typeof getInfoSensorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoVersionRouteHandler: RouteHandler<typeof getInfoVersionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoMessagesRouteHandler: RouteHandler<typeof getInfoMessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteInfoMessagesMessageIdRouteHandler: RouteHandler<
+  typeof deleteInfoMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoMessagesCountRouteHandler: RouteHandler<
+  typeof getInfoMessagesCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoMetricsRouteHandler: RouteHandler<typeof getInfoMetricsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInfoLoginRouteHandler: RouteHandler<typeof getInfoLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPortabilityChecksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPortabilityChecksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const portabilityChecksHandler = app.openapi(postPortabilityChecksRoute, (c) => {
+export const postPortabilityChecksRouteHandler: RouteHandler<
+  typeof postPortabilityChecksRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1132,7 +1132,7 @@ export const deleteCommercePriceBooks202609PriceBooksPriceBookIdRoute = createRo
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['cpq.price_books.write'] }],
 })
 
@@ -1471,7 +1471,7 @@ export const postCommercePriceBooks202609PriceBooksPriceBookIdItemsBatchArchiveR
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: {
@@ -1764,7 +1764,7 @@ export const deleteCommercePriceBooks202609PriceBooksPriceBookIdItemsPriceBookIt
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['cpq.price_books.write'] }],
   })
 

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnterpriseConnectionsEnterpriseConnectionIdRoute,
   getEnterpriseConnectionsEnterpriseConnectionIdRoute,
   getEnterpriseConnectionsEnterpriseConnectionIdTestRunsRoute,
@@ -9,27 +9,44 @@ import {
   postEnterpriseConnectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEnterpriseConnectionsRouteHandler: RouteHandler<
+  typeof getEnterpriseConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const enterpriseConnectionsHandler = app
-  .openapi(getEnterpriseConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterpriseConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseConnectionsEnterpriseConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEnterpriseConnectionsEnterpriseConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnterpriseConnectionsEnterpriseConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnterpriseConnectionsEnterpriseConnectionIdTestRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnterpriseConnectionsEnterpriseConnectionIdTestRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEnterpriseConnectionsRouteHandler: RouteHandler<
+  typeof postEnterpriseConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseConnectionsEnterpriseConnectionIdRouteHandler: RouteHandler<
+  typeof getEnterpriseConnectionsEnterpriseConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEnterpriseConnectionsEnterpriseConnectionIdRouteHandler: RouteHandler<
+  typeof patchEnterpriseConnectionsEnterpriseConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnterpriseConnectionsEnterpriseConnectionIdRouteHandler: RouteHandler<
+  typeof deleteEnterpriseConnectionsEnterpriseConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnterpriseConnectionsEnterpriseConnectionIdTestRunsRouteHandler: RouteHandler<
+  typeof getEnterpriseConnectionsEnterpriseConnectionIdTestRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEnterpriseConnectionsEnterpriseConnectionIdTestRunsRouteHandler: RouteHandler<
+  typeof postEnterpriseConnectionsEnterpriseConnectionIdTestRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

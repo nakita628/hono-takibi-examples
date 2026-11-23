@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteServerLicenseRoute,
   getServerAboutRoute,
   getServerApkLinksRoute,
@@ -16,48 +16,80 @@ import {
   putServerLicenseRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getServerAboutRouteHandler: RouteHandler<typeof getServerAboutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const serverHandler = app
-  .openapi(getServerAboutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerApkLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteServerLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putServerLicenseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerMediaTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerVersionCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getServerVersionHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getServerApkLinksRouteHandler: RouteHandler<typeof getServerApkLinksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerConfigRouteHandler: RouteHandler<typeof getServerConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerFeaturesRouteHandler: RouteHandler<typeof getServerFeaturesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteServerLicenseRouteHandler: RouteHandler<
+  typeof deleteServerLicenseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerLicenseRouteHandler: RouteHandler<typeof getServerLicenseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putServerLicenseRouteHandler: RouteHandler<typeof putServerLicenseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerMediaTypesRouteHandler: RouteHandler<
+  typeof getServerMediaTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerPingRouteHandler: RouteHandler<typeof getServerPingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerStatisticsRouteHandler: RouteHandler<
+  typeof getServerStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerStorageRouteHandler: RouteHandler<typeof getServerStorageRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerVersionRouteHandler: RouteHandler<typeof getServerVersionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerVersionCheckRouteHandler: RouteHandler<
+  typeof getServerVersionCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getServerVersionHistoryRouteHandler: RouteHandler<
+  typeof getServerVersionHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

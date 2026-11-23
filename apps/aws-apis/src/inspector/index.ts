@@ -1,83 +1,233 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetInspectorServiceAddAttributesToFindingsHandler,
-  xAmzTargetInspectorServiceCreateAssessmentTargetHandler,
-  xAmzTargetInspectorServiceCreateAssessmentTemplateHandler,
-  xAmzTargetInspectorServiceCreateExclusionsPreviewHandler,
-  xAmzTargetInspectorServiceCreateResourceGroupHandler,
-  xAmzTargetInspectorServiceDeleteAssessmentRunHandler,
-  xAmzTargetInspectorServiceDeleteAssessmentTargetHandler,
-  xAmzTargetInspectorServiceDeleteAssessmentTemplateHandler,
-  xAmzTargetInspectorServiceDescribeAssessmentRunsHandler,
-  xAmzTargetInspectorServiceDescribeAssessmentTargetsHandler,
-  xAmzTargetInspectorServiceDescribeAssessmentTemplatesHandler,
-  xAmzTargetInspectorServiceDescribeCrossAccountAccessRoleHandler,
-  xAmzTargetInspectorServiceDescribeExclusionsHandler,
-  xAmzTargetInspectorServiceDescribeFindingsHandler,
-  xAmzTargetInspectorServiceDescribeResourceGroupsHandler,
-  xAmzTargetInspectorServiceDescribeRulesPackagesHandler,
-  xAmzTargetInspectorServiceGetAssessmentReportHandler,
-  xAmzTargetInspectorServiceGetExclusionsPreviewHandler,
-  xAmzTargetInspectorServiceGetTelemetryMetadataHandler,
-  xAmzTargetInspectorServiceListAssessmentRunAgentsHandler,
-  xAmzTargetInspectorServiceListAssessmentRunsHandler,
-  xAmzTargetInspectorServiceListAssessmentTargetsHandler,
-  xAmzTargetInspectorServiceListAssessmentTemplatesHandler,
-  xAmzTargetInspectorServiceListEventSubscriptionsHandler,
-  xAmzTargetInspectorServiceListExclusionsHandler,
-  xAmzTargetInspectorServiceListFindingsHandler,
-  xAmzTargetInspectorServiceListRulesPackagesHandler,
-  xAmzTargetInspectorServiceListTagsForResourceHandler,
-  xAmzTargetInspectorServicePreviewAgentsHandler,
-  xAmzTargetInspectorServiceRegisterCrossAccountAccessRoleHandler,
-  xAmzTargetInspectorServiceRemoveAttributesFromFindingsHandler,
-  xAmzTargetInspectorServiceSetTagsForResourceHandler,
-  xAmzTargetInspectorServiceStartAssessmentRunHandler,
-  xAmzTargetInspectorServiceStopAssessmentRunHandler,
-  xAmzTargetInspectorServiceSubscribeToEventHandler,
-  xAmzTargetInspectorServiceUnsubscribeFromEventHandler,
-  xAmzTargetInspectorServiceUpdateAssessmentTargetHandler,
+  postXAmzTargetInspectorServiceAddAttributesToFindingsRoute,
+  postXAmzTargetInspectorServiceCreateAssessmentTargetRoute,
+  postXAmzTargetInspectorServiceCreateAssessmentTemplateRoute,
+  postXAmzTargetInspectorServiceCreateExclusionsPreviewRoute,
+  postXAmzTargetInspectorServiceCreateResourceGroupRoute,
+  postXAmzTargetInspectorServiceDeleteAssessmentRunRoute,
+  postXAmzTargetInspectorServiceDeleteAssessmentTargetRoute,
+  postXAmzTargetInspectorServiceDeleteAssessmentTemplateRoute,
+  postXAmzTargetInspectorServiceDescribeAssessmentRunsRoute,
+  postXAmzTargetInspectorServiceDescribeAssessmentTargetsRoute,
+  postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute,
+  postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute,
+  postXAmzTargetInspectorServiceDescribeExclusionsRoute,
+  postXAmzTargetInspectorServiceDescribeFindingsRoute,
+  postXAmzTargetInspectorServiceDescribeResourceGroupsRoute,
+  postXAmzTargetInspectorServiceDescribeRulesPackagesRoute,
+  postXAmzTargetInspectorServiceGetAssessmentReportRoute,
+  postXAmzTargetInspectorServiceGetExclusionsPreviewRoute,
+  postXAmzTargetInspectorServiceGetTelemetryMetadataRoute,
+  postXAmzTargetInspectorServiceListAssessmentRunAgentsRoute,
+  postXAmzTargetInspectorServiceListAssessmentRunsRoute,
+  postXAmzTargetInspectorServiceListAssessmentTargetsRoute,
+  postXAmzTargetInspectorServiceListAssessmentTemplatesRoute,
+  postXAmzTargetInspectorServiceListEventSubscriptionsRoute,
+  postXAmzTargetInspectorServiceListExclusionsRoute,
+  postXAmzTargetInspectorServiceListFindingsRoute,
+  postXAmzTargetInspectorServiceListRulesPackagesRoute,
+  postXAmzTargetInspectorServiceListTagsForResourceRoute,
+  postXAmzTargetInspectorServicePreviewAgentsRoute,
+  postXAmzTargetInspectorServiceRegisterCrossAccountAccessRoleRoute,
+  postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute,
+  postXAmzTargetInspectorServiceSetTagsForResourceRoute,
+  postXAmzTargetInspectorServiceStartAssessmentRunRoute,
+  postXAmzTargetInspectorServiceStopAssessmentRunRoute,
+  postXAmzTargetInspectorServiceSubscribeToEventRoute,
+  postXAmzTargetInspectorServiceUnsubscribeFromEventRoute,
+  postXAmzTargetInspectorServiceUpdateAssessmentTargetRoute,
+} from './routes'
+import {
+  postXAmzTargetInspectorServiceAddAttributesToFindingsRouteHandler,
+  postXAmzTargetInspectorServiceCreateAssessmentTargetRouteHandler,
+  postXAmzTargetInspectorServiceCreateAssessmentTemplateRouteHandler,
+  postXAmzTargetInspectorServiceCreateExclusionsPreviewRouteHandler,
+  postXAmzTargetInspectorServiceCreateResourceGroupRouteHandler,
+  postXAmzTargetInspectorServiceDeleteAssessmentRunRouteHandler,
+  postXAmzTargetInspectorServiceDeleteAssessmentTargetRouteHandler,
+  postXAmzTargetInspectorServiceDeleteAssessmentTemplateRouteHandler,
+  postXAmzTargetInspectorServiceDescribeAssessmentRunsRouteHandler,
+  postXAmzTargetInspectorServiceDescribeAssessmentTargetsRouteHandler,
+  postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRouteHandler,
+  postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRouteHandler,
+  postXAmzTargetInspectorServiceDescribeExclusionsRouteHandler,
+  postXAmzTargetInspectorServiceDescribeFindingsRouteHandler,
+  postXAmzTargetInspectorServiceDescribeResourceGroupsRouteHandler,
+  postXAmzTargetInspectorServiceDescribeRulesPackagesRouteHandler,
+  postXAmzTargetInspectorServiceGetAssessmentReportRouteHandler,
+  postXAmzTargetInspectorServiceGetExclusionsPreviewRouteHandler,
+  postXAmzTargetInspectorServiceGetTelemetryMetadataRouteHandler,
+  postXAmzTargetInspectorServiceListAssessmentRunAgentsRouteHandler,
+  postXAmzTargetInspectorServiceListAssessmentRunsRouteHandler,
+  postXAmzTargetInspectorServiceListAssessmentTargetsRouteHandler,
+  postXAmzTargetInspectorServiceListAssessmentTemplatesRouteHandler,
+  postXAmzTargetInspectorServiceListEventSubscriptionsRouteHandler,
+  postXAmzTargetInspectorServiceListExclusionsRouteHandler,
+  postXAmzTargetInspectorServiceListFindingsRouteHandler,
+  postXAmzTargetInspectorServiceListRulesPackagesRouteHandler,
+  postXAmzTargetInspectorServiceListTagsForResourceRouteHandler,
+  postXAmzTargetInspectorServicePreviewAgentsRouteHandler,
+  postXAmzTargetInspectorServiceRegisterCrossAccountAccessRoleRouteHandler,
+  postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRouteHandler,
+  postXAmzTargetInspectorServiceSetTagsForResourceRouteHandler,
+  postXAmzTargetInspectorServiceStartAssessmentRunRouteHandler,
+  postXAmzTargetInspectorServiceStopAssessmentRunRouteHandler,
+  postXAmzTargetInspectorServiceSubscribeToEventRouteHandler,
+  postXAmzTargetInspectorServiceUnsubscribeFromEventRouteHandler,
+  postXAmzTargetInspectorServiceUpdateAssessmentTargetRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetInspectorServiceAddAttributesToFindingsHandler)
-  .route('/', xAmzTargetInspectorServiceCreateAssessmentTargetHandler)
-  .route('/', xAmzTargetInspectorServiceCreateAssessmentTemplateHandler)
-  .route('/', xAmzTargetInspectorServiceCreateExclusionsPreviewHandler)
-  .route('/', xAmzTargetInspectorServiceCreateResourceGroupHandler)
-  .route('/', xAmzTargetInspectorServiceDeleteAssessmentRunHandler)
-  .route('/', xAmzTargetInspectorServiceDeleteAssessmentTargetHandler)
-  .route('/', xAmzTargetInspectorServiceDeleteAssessmentTemplateHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeAssessmentRunsHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeAssessmentTargetsHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeAssessmentTemplatesHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeCrossAccountAccessRoleHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeExclusionsHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeFindingsHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeResourceGroupsHandler)
-  .route('/', xAmzTargetInspectorServiceDescribeRulesPackagesHandler)
-  .route('/', xAmzTargetInspectorServiceGetAssessmentReportHandler)
-  .route('/', xAmzTargetInspectorServiceGetExclusionsPreviewHandler)
-  .route('/', xAmzTargetInspectorServiceGetTelemetryMetadataHandler)
-  .route('/', xAmzTargetInspectorServiceListAssessmentRunAgentsHandler)
-  .route('/', xAmzTargetInspectorServiceListAssessmentRunsHandler)
-  .route('/', xAmzTargetInspectorServiceListAssessmentTargetsHandler)
-  .route('/', xAmzTargetInspectorServiceListAssessmentTemplatesHandler)
-  .route('/', xAmzTargetInspectorServiceListEventSubscriptionsHandler)
-  .route('/', xAmzTargetInspectorServiceListExclusionsHandler)
-  .route('/', xAmzTargetInspectorServiceListFindingsHandler)
-  .route('/', xAmzTargetInspectorServiceListRulesPackagesHandler)
-  .route('/', xAmzTargetInspectorServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetInspectorServicePreviewAgentsHandler)
-  .route('/', xAmzTargetInspectorServiceRegisterCrossAccountAccessRoleHandler)
-  .route('/', xAmzTargetInspectorServiceRemoveAttributesFromFindingsHandler)
-  .route('/', xAmzTargetInspectorServiceSetTagsForResourceHandler)
-  .route('/', xAmzTargetInspectorServiceStartAssessmentRunHandler)
-  .route('/', xAmzTargetInspectorServiceStopAssessmentRunHandler)
-  .route('/', xAmzTargetInspectorServiceSubscribeToEventHandler)
-  .route('/', xAmzTargetInspectorServiceUnsubscribeFromEventHandler)
-  .route('/', xAmzTargetInspectorServiceUpdateAssessmentTargetHandler)
+  .openapi(
+    postXAmzTargetInspectorServiceAddAttributesToFindingsRoute,
+    postXAmzTargetInspectorServiceAddAttributesToFindingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceCreateAssessmentTargetRoute,
+    postXAmzTargetInspectorServiceCreateAssessmentTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceCreateAssessmentTemplateRoute,
+    postXAmzTargetInspectorServiceCreateAssessmentTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceCreateExclusionsPreviewRoute,
+    postXAmzTargetInspectorServiceCreateExclusionsPreviewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceCreateResourceGroupRoute,
+    postXAmzTargetInspectorServiceCreateResourceGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDeleteAssessmentRunRoute,
+    postXAmzTargetInspectorServiceDeleteAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDeleteAssessmentTargetRoute,
+    postXAmzTargetInspectorServiceDeleteAssessmentTargetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDeleteAssessmentTemplateRoute,
+    postXAmzTargetInspectorServiceDeleteAssessmentTemplateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeAssessmentRunsRoute,
+    postXAmzTargetInspectorServiceDescribeAssessmentRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeAssessmentTargetsRoute,
+    postXAmzTargetInspectorServiceDescribeAssessmentTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute,
+    postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRoute,
+    postXAmzTargetInspectorServiceDescribeCrossAccountAccessRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeExclusionsRoute,
+    postXAmzTargetInspectorServiceDescribeExclusionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeFindingsRoute,
+    postXAmzTargetInspectorServiceDescribeFindingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeResourceGroupsRoute,
+    postXAmzTargetInspectorServiceDescribeResourceGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceDescribeRulesPackagesRoute,
+    postXAmzTargetInspectorServiceDescribeRulesPackagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceGetAssessmentReportRoute,
+    postXAmzTargetInspectorServiceGetAssessmentReportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceGetExclusionsPreviewRoute,
+    postXAmzTargetInspectorServiceGetExclusionsPreviewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceGetTelemetryMetadataRoute,
+    postXAmzTargetInspectorServiceGetTelemetryMetadataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListAssessmentRunAgentsRoute,
+    postXAmzTargetInspectorServiceListAssessmentRunAgentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListAssessmentRunsRoute,
+    postXAmzTargetInspectorServiceListAssessmentRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListAssessmentTargetsRoute,
+    postXAmzTargetInspectorServiceListAssessmentTargetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListAssessmentTemplatesRoute,
+    postXAmzTargetInspectorServiceListAssessmentTemplatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListEventSubscriptionsRoute,
+    postXAmzTargetInspectorServiceListEventSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListExclusionsRoute,
+    postXAmzTargetInspectorServiceListExclusionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListFindingsRoute,
+    postXAmzTargetInspectorServiceListFindingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListRulesPackagesRoute,
+    postXAmzTargetInspectorServiceListRulesPackagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceListTagsForResourceRoute,
+    postXAmzTargetInspectorServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServicePreviewAgentsRoute,
+    postXAmzTargetInspectorServicePreviewAgentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceRegisterCrossAccountAccessRoleRoute,
+    postXAmzTargetInspectorServiceRegisterCrossAccountAccessRoleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRoute,
+    postXAmzTargetInspectorServiceRemoveAttributesFromFindingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceSetTagsForResourceRoute,
+    postXAmzTargetInspectorServiceSetTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceStartAssessmentRunRoute,
+    postXAmzTargetInspectorServiceStartAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceStopAssessmentRunRoute,
+    postXAmzTargetInspectorServiceStopAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceSubscribeToEventRoute,
+    postXAmzTargetInspectorServiceSubscribeToEventRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceUnsubscribeFromEventRoute,
+    postXAmzTargetInspectorServiceUnsubscribeFromEventRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetInspectorServiceUpdateAssessmentTargetRoute,
+    postXAmzTargetInspectorServiceUpdateAssessmentTargetRouteHandler,
+  )
 
 export default app

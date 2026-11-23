@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePostReturnAddressesReturnAddressIdRoute,
   getPostDirectMailCampaignsRoute,
   getPostDirectMailLocationsSearchCountryQQueryRoute,
@@ -20,60 +20,110 @@ import {
   putPostReturnAddressesReturnAddressIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPostDirectMailCampaignsRouteHandler: RouteHandler<
+  typeof getPostDirectMailCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const postHandler = app
-  .openapi(getPostDirectMailCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostDirectMailCampaignsPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostDirectMailCampaignsSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostDirectMailLocationsSearchCountryQQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostLettersDetectAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostLettersHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostLettersHistoryExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostLettersPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostLettersSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostPostcardsExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostPostcardsHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostPostcardsPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostPostcardsSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostReturnAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPostReturnAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePostReturnAddressesReturnAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPostReturnAddressesReturnAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPostReturnAddressesReturnAddressIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPostDirectMailCampaignsPriceRouteHandler: RouteHandler<
+  typeof postPostDirectMailCampaignsPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostDirectMailCampaignsSendRouteHandler: RouteHandler<
+  typeof postPostDirectMailCampaignsSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostDirectMailLocationsSearchCountryQQueryRouteHandler: RouteHandler<
+  typeof getPostDirectMailLocationsSearchCountryQQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostLettersDetectAddressRouteHandler: RouteHandler<
+  typeof postPostLettersDetectAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostLettersHistoryRouteHandler: RouteHandler<
+  typeof getPostLettersHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostLettersHistoryExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getPostLettersHistoryExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostLettersPriceRouteHandler: RouteHandler<
+  typeof postPostLettersPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostLettersSendRouteHandler: RouteHandler<
+  typeof postPostLettersSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostPostcardsExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getPostPostcardsExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostPostcardsHistoryRouteHandler: RouteHandler<
+  typeof getPostPostcardsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostPostcardsPriceRouteHandler: RouteHandler<
+  typeof postPostPostcardsPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostPostcardsSendRouteHandler: RouteHandler<
+  typeof postPostPostcardsSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostReturnAddressesRouteHandler: RouteHandler<
+  typeof getPostReturnAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPostReturnAddressesRouteHandler: RouteHandler<
+  typeof postPostReturnAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePostReturnAddressesReturnAddressIdRouteHandler: RouteHandler<
+  typeof deletePostReturnAddressesReturnAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPostReturnAddressesReturnAddressIdRouteHandler: RouteHandler<
+  typeof getPostReturnAddressesReturnAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPostReturnAddressesReturnAddressIdRouteHandler: RouteHandler<
+  typeof putPostReturnAddressesReturnAddressIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMigrationDeprecationsRoute,
   getMigrationReindexIndexStatusRoute,
   getMigrationSystemFeaturesRoute,
@@ -8,24 +8,38 @@ import {
   postMigrationSystemFeaturesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMigrationReindexIndexCancelRouteHandler: RouteHandler<
+  typeof postMigrationReindexIndexCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const migrationHandler = app
-  .openapi(postMigrationReindexIndexCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMigrationReindexIndexStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMigrationReindexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMigrationDeprecationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMigrationSystemFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMigrationSystemFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMigrationReindexIndexStatusRouteHandler: RouteHandler<
+  typeof getMigrationReindexIndexStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMigrationReindexRouteHandler: RouteHandler<
+  typeof postMigrationReindexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMigrationDeprecationsRouteHandler: RouteHandler<
+  typeof getMigrationDeprecationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMigrationSystemFeaturesRouteHandler: RouteHandler<
+  typeof getMigrationSystemFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMigrationSystemFeaturesRouteHandler: RouteHandler<
+  typeof postMigrationSystemFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

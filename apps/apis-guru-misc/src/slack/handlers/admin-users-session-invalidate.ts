@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminUsersSessionInvalidateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminUsersSessionInvalidateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminUsersSessionInvalidateHandler = app.openapi(
-  postAdminUsersSessionInvalidateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postAdminUsersSessionInvalidateRouteHandler: RouteHandler<
+  typeof postAdminUsersSessionInvalidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

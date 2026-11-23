@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCrxPackmgrInstallstatusJspRoute,
   getCrxPackmgrServiceScriptHtmlRoute,
   getCrxServerCrxDefaultJcrRoot1JsonRoute,
@@ -9,27 +9,44 @@ import {
   postCrxPackmgrUpdateJspRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCrxExplorerUiSetpasswordJspRouteHandler: RouteHandler<
+  typeof postCrxExplorerUiSetpasswordJspRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crxHandler = app
-  .openapi(postCrxExplorerUiSetpasswordJspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrxPackmgrInstallstatusJspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrxPackmgrServiceJspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrxPackmgrServiceJsonPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrxPackmgrServiceScriptHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrxPackmgrUpdateJspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrxServerCrxDefaultJcrRoot1JsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCrxPackmgrInstallstatusJspRouteHandler: RouteHandler<
+  typeof getCrxPackmgrInstallstatusJspRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrxPackmgrServiceJspRouteHandler: RouteHandler<
+  typeof postCrxPackmgrServiceJspRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrxPackmgrServiceJsonPathRouteHandler: RouteHandler<
+  typeof postCrxPackmgrServiceJsonPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrxPackmgrServiceScriptHtmlRouteHandler: RouteHandler<
+  typeof getCrxPackmgrServiceScriptHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrxPackmgrUpdateJspRouteHandler: RouteHandler<
+  typeof postCrxPackmgrUpdateJspRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrxServerCrxDefaultJcrRoot1JsonRouteHandler: RouteHandler<
+  typeof getCrxServerCrxDefaultJcrRoot1JsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

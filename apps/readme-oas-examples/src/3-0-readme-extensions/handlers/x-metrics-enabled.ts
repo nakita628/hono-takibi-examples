@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchXMetricsEnabledRoute, postXMetricsEnabledRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchXMetricsEnabledRoute, postXMetricsEnabledRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postXMetricsEnabledRouteHandler: RouteHandler<
+  typeof postXMetricsEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const xMetricsEnabledHandler = app
-  .openapi(postXMetricsEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchXMetricsEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchXMetricsEnabledRouteHandler: RouteHandler<
+  typeof patchXMetricsEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

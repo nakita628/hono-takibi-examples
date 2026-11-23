@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postParticipantAttachmentXAmzBearerRoute,
   postParticipantCompleteAttachmentUploadXAmzBearerRoute,
   postParticipantConnectionXAmzBearerRoute,
@@ -10,30 +10,50 @@ import {
   postParticipantTranscriptXAmzBearerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postParticipantCompleteAttachmentUploadXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantCompleteAttachmentUploadXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const participantHandler = app
-  .openapi(postParticipantCompleteAttachmentUploadXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantConnectionXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantDisconnectXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantAttachmentXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantTranscriptXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantEventXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantMessageXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postParticipantStartAttachmentUploadXAmzBearerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postParticipantConnectionXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantConnectionXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantDisconnectXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantDisconnectXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantAttachmentXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantAttachmentXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantTranscriptXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantTranscriptXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantEventXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantEventXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantMessageXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantMessageXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postParticipantStartAttachmentUploadXAmzBearerRouteHandler: RouteHandler<
+  typeof postParticipantStartAttachmentUploadXAmzBearerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

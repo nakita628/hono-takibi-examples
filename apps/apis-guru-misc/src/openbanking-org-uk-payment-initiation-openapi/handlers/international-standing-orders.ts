@@ -1,22 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInternationalStandingOrdersInternationalStandingOrderPaymentIdPaymentDetailsRoute,
   getInternationalStandingOrdersInternationalStandingOrderPaymentIdRoute,
   postInternationalStandingOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInternationalStandingOrdersRouteHandler: RouteHandler<
+  typeof postInternationalStandingOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const internationalStandingOrdersHandler = app
-  .openapi(postInternationalStandingOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInternationalStandingOrdersInternationalStandingOrderPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getInternationalStandingOrdersInternationalStandingOrderPaymentIdPaymentDetailsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getInternationalStandingOrdersInternationalStandingOrderPaymentIdRouteHandler: RouteHandler<
+  typeof getInternationalStandingOrdersInternationalStandingOrderPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInternationalStandingOrdersInternationalStandingOrderPaymentIdPaymentDetailsRouteHandler: RouteHandler<
+  typeof getInternationalStandingOrdersInternationalStandingOrderPaymentIdPaymentDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

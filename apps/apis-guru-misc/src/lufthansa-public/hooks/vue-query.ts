@@ -30,18 +30,18 @@ export function getReferencesKey() {
 export function getCargoGetRouteOriginDestinationFromDateProductCodeQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+      (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['cargo', '/cargo/getRoute/:origin-:destination/:fromDate/:productCode', keyArgs] as const
+  return ['cargo', '/cargo/getRoute/:origin-{destination}/:fromDate/:productCode', keyArgs] as const
 }
 
 export function getCargoGetRouteOriginDestinationFromDateProductCodeQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+      (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -50,7 +50,7 @@ export function getCargoGetRouteOriginDestinationFromDateProductCodeQueryOptions
     queryKey: computed(() => getCargoGetRouteOriginDestinationFromDateProductCodeQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.cargo.getRoute[':origin-:destination'][':fromDate'][':productCode'].$get(
+        client.cargo.getRoute[':origin-{destination}'][':fromDate'][':productCode'].$get(
           toValue(args),
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -65,7 +65,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+            (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
           >
         >
       >
@@ -75,7 +75,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+      (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
     >
   >,
   options?: {
@@ -87,7 +87,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
                   >
                 >
               >
@@ -100,7 +100,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+                    (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
                   >
                 >
               >
@@ -123,7 +123,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.cargo.getRoute)[':origin-:destination'][':fromDate'][':productCode']['$get']
+              (typeof client.cargo.getRoute)[':origin-{destination}'][':fromDate'][':productCode']['$get']
             >
           >
         >
@@ -138,7 +138,7 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
       queryKey: computed(() => getCargoGetRouteOriginDestinationFromDateProductCodeQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.cargo.getRoute[':origin-:destination'][':fromDate'][':productCode'].$get(
+          client.cargo.getRoute[':origin-{destination}'][':fromDate'][':productCode'].$get(
             toValue(args),
             { ...clientOptions, init: { ...clientOptions?.init, signal } },
           ),
@@ -151,16 +151,16 @@ export function useCargoGetRouteOriginDestinationFromDateProductCode<
 
 export function getCargoShipmentTrackingAWBPrefixAWBNumberQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['cargo', '/cargo/shipmentTracking/:aWBPrefix-:aWBNumber', keyArgs] as const
+  return ['cargo', '/cargo/shipmentTracking/:aWBPrefix-{aWBNumber}', keyArgs] as const
 }
 
 export function getCargoShipmentTrackingAWBPrefixAWBNumberQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -168,7 +168,7 @@ export function getCargoShipmentTrackingAWBPrefixAWBNumberQueryOptions(
     queryKey: computed(() => getCargoShipmentTrackingAWBPrefixAWBNumberQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.cargo.shipmentTracking[':aWBPrefix-:aWBNumber'].$get(toValue(args), {
+        client.cargo.shipmentTracking[':aWBPrefix-{aWBNumber}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -181,14 +181,16 @@ export function useCargoShipmentTrackingAWBPrefixAWBNumber<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+    InferRequestType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -199,7 +201,7 @@ export function useCargoShipmentTrackingAWBPrefixAWBNumber<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']
+                    (typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']
                   >
                 >
               >
@@ -212,7 +214,7 @@ export function useCargoShipmentTrackingAWBPrefixAWBNumber<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']
+                    (typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']
                   >
                 >
               >
@@ -234,7 +236,7 @@ export function useCargoShipmentTrackingAWBPrefixAWBNumber<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-:aWBNumber']['$get']>
+            ReturnType<(typeof client.cargo.shipmentTracking)[':aWBPrefix-{aWBNumber}']['$get']>
           >
         >
       >
@@ -248,7 +250,7 @@ export function useCargoShipmentTrackingAWBPrefixAWBNumber<
       queryKey: computed(() => getCargoShipmentTrackingAWBPrefixAWBNumberQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.cargo.shipmentTracking[':aWBPrefix-:aWBNumber'].$get(toValue(args), {
+          client.cargo.shipmentTracking[':aWBPrefix-{aWBNumber}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1305,16 +1307,16 @@ export function useReferencesAirlinesAirlineCode<
 
 export function getReferencesAirportsNearestLatitudeLongitudeQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.references.airports.nearest)[':latitude,:longitude']['$get']>
+    InferRequestType<(typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']>
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['references', '/references/airports/nearest/:latitude,:longitude', keyArgs] as const
+  return ['references', '/references/airports/nearest/:latitude,{longitude}', keyArgs] as const
 }
 
 export function getReferencesAirportsNearestLatitudeLongitudeQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.references.airports.nearest)[':latitude,:longitude']['$get']>
+    InferRequestType<(typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1322,7 +1324,7 @@ export function getReferencesAirportsNearestLatitudeLongitudeQueryOptions(
     queryKey: computed(() => getReferencesAirportsNearestLatitudeLongitudeQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.references.airports.nearest[':latitude,:longitude'].$get(toValue(args), {
+        client.references.airports.nearest[':latitude,{longitude}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1336,7 +1338,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.references.airports.nearest)[':latitude,:longitude']['$get']>
+          ReturnType<(typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']>
         >
       >
     >
@@ -1344,7 +1346,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.references.airports.nearest)[':latitude,:longitude']['$get']>
+    InferRequestType<(typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1355,7 +1357,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
                   >
                 >
               >
@@ -1368,7 +1370,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.references.airports.nearest)[':latitude,:longitude']['$get']
+                    (typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']
                   >
                 >
               >
@@ -1390,7 +1392,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.references.airports.nearest)[':latitude,:longitude']['$get']>
+            ReturnType<(typeof client.references.airports.nearest)[':latitude,{longitude}']['$get']>
           >
         >
       >
@@ -1404,7 +1406,7 @@ export function useReferencesAirportsNearestLatitudeLongitude<
       queryKey: computed(() => getReferencesAirportsNearestLatitudeLongitudeQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.references.airports.nearest[':latitude,:longitude'].$get(toValue(args), {
+          client.references.airports.nearest[':latitude,{longitude}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

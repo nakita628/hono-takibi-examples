@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/elmah.io/v3/openapi.yaml',
   output: './src/elmah-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elmah-io/types.ts' },
   client: { output: './src/elmah-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/elmah-io/rpc.ts', parseResponse: true },

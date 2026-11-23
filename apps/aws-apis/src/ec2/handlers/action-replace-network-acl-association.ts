@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionReplaceNetworkAclAssociationRoute,
   postActionReplaceNetworkAclAssociationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionReplaceNetworkAclAssociationRouteHandler: RouteHandler<
+  typeof getActionReplaceNetworkAclAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionReplaceNetworkAclAssociationHandler = app
-  .openapi(getActionReplaceNetworkAclAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionReplaceNetworkAclAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionReplaceNetworkAclAssociationRouteHandler: RouteHandler<
+  typeof postActionReplaceNetworkAclAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

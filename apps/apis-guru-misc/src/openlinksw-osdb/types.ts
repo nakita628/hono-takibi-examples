@@ -106,12 +106,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/v1/actions/:serviceId/:actionId/exec': {
-      $post: {
-        input: { param: { serviceId: string; actionId: string } } & { json: ExecBody }
-        output: ErrorModel
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { serviceId: string; actionId: string } } & { json: ExecBody }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { serviceId: string; actionId: string } } & { json: ExecBody }
+            output: ErrorModel
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/v1/actions/:serviceId/:actionId/help': {

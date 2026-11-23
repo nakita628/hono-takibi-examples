@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amentum.space/space_radiation/1.1.2/openapi.yaml',
   output: './src/amentum-space-space-radiation/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/amentum-space-space-radiation/types.ts' },
   client: { output: './src/amentum-space-space-radiation/client.ts', baseUrl: '/' },
   rpc: { output: './src/amentum-space-space-radiation/rpc.ts', parseResponse: true },

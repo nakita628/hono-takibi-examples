@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSlackRoute, postSlackRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSlackRoute, postSlackRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSlackRouteHandler: RouteHandler<typeof getSlackRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const slackHandler = app
-  .openapi(getSlackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSlackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSlackRouteHandler: RouteHandler<typeof postSlackRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

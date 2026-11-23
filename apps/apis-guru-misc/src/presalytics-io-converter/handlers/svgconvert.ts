@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSvgconvertRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSvgconvertRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const svgconvertHandler = app.openapi(postSvgconvertRoute, (c) => {
+export const postSvgconvertRouteHandler: RouteHandler<typeof postSvgconvertRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

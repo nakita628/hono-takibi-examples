@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRequestViewCollectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRequestViewCollectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const requestViewCollectionHandler = app.openapi(getRequestViewCollectionRoute, (c) => {
+export const getRequestViewCollectionRouteHandler: RouteHandler<
+  typeof getRequestViewCollectionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

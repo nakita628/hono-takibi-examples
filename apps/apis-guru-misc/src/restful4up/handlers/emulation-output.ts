@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmulationOutputRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmulationOutputRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const emulationOutputHandler = app.openapi(postEmulationOutputRoute, (c) => {
+export const postEmulationOutputRouteHandler: RouteHandler<
+  typeof postEmulationOutputRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSandboxSandboxIdRoute,
   getSandboxSandboxIdRoute,
   postSandboxRoute,
   putSandboxRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSandboxRouteHandler: RouteHandler<typeof postSandboxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sandboxHandler = app
-  .openapi(postSandboxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSandboxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSandboxSandboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSandboxSandboxIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSandboxRouteHandler: RouteHandler<typeof putSandboxRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSandboxSandboxIdRouteHandler: RouteHandler<
+  typeof deleteSandboxSandboxIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSandboxSandboxIdRouteHandler: RouteHandler<
+  typeof getSandboxSandboxIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

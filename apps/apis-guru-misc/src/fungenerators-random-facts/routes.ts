@@ -27,10 +27,7 @@ export const getFactRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -87,10 +84,7 @@ export const putFactRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -114,10 +108,7 @@ export const deleteFactRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -150,10 +141,7 @@ export const getFactCategoriesRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -179,10 +167,7 @@ export const getFactFodRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -191,10 +176,7 @@ export const getFactFodCategoriesRoute = createRoute({
   path: '/fact/fod/categories',
   tags: ['Fact of the day'],
   description: 'Get the list of supported fact of the day categories.',
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -227,8 +209,8 @@ export const getFactNumbersRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: '200 Success response', content: {} },
-    401: { description: '401 Unauthorized response', content: {} },
+    200: { description: '200 Success response' },
+    401: { description: '401 Unauthorized response' },
   },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
@@ -268,10 +250,7 @@ export const getFactOnthisdayBornRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -310,10 +289,7 @@ export const getFactOnthisdayDiedRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -352,10 +328,7 @@ export const getFactOnthisdayEventRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -392,10 +365,7 @@ export const getFactRandomRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })
 
@@ -445,9 +415,6 @@ export const getFactSearchRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: '200  response', content: {} },
-    401: { description: '401  response', content: {} },
-  },
+  responses: { 200: { description: '200  response' }, 401: { description: '401  response' } },
   security: [{ 'X-Fungenerators-Api-Secret': [] }],
 })

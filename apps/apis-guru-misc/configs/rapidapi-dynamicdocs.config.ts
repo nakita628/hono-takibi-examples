@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rapidapi.com/dynamicdocs/1.0/openapi.yaml',
   output: './src/rapidapi-dynamicdocs/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rapidapi-dynamicdocs/types.ts' },
   client: { output: './src/rapidapi-dynamicdocs/client.ts', baseUrl: '/' },
   rpc: { output: './src/rapidapi-dynamicdocs/rpc.ts', parseResponse: true },

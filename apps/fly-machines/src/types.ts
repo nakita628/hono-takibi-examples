@@ -340,12 +340,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { json: CreateAppRequest }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | { input: { json: CreateAppRequest }; output: {}; outputFormat: string; status: 201 }
+        | {
+            input: { json: CreateAppRequest }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name': {
@@ -353,7 +355,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { app_name: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 202
       }
       $get: {
         input: { param: { app_name: string } }
@@ -501,14 +503,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { app_name: string; machine_id: string; key: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
-      $post: {
-        input: { param: { app_name: string; machine_id: string; key: string } }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { app_name: string; machine_id: string; key: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { app_name: string; machine_id: string; key: string } }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name/machines/:machine_id/ps': {
@@ -532,23 +541,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/apps/:app_name/machines/:machine_id/restart': {
-      $post: {
-        input: { param: { app_name: string; machine_id: string } } & {
-          query: { timeout?: string | undefined }
-        }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { app_name: string; machine_id: string } } & {
+              query: { timeout?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { app_name: string; machine_id: string } } & {
+              query: { timeout?: string | undefined }
+            }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name/machines/:machine_id/signal': {
-      $post: {
-        input: { param: { app_name: string; machine_id: string } } & { json: SignalRequest }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { app_name: string; machine_id: string } } & { json: SignalRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { app_name: string; machine_id: string } } & { json: SignalRequest }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name/machines/:machine_id/start': {
@@ -561,12 +586,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/apps/:app_name/machines/:machine_id/stop': {
-      $post: {
-        input: { param: { app_name: string; machine_id: string } } & { json: StopRequest }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+      $post:
+        | {
+            input: { param: { app_name: string; machine_id: string } } & { json: StopRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { app_name: string; machine_id: string } } & { json: StopRequest }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name/machines/:machine_id/uncordon': {
@@ -588,18 +620,31 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/apps/:app_name/machines/:machine_id/wait': {
-      $get: {
-        input: { param: { app_name: string; machine_id: string } } & {
-          query: {
-            instance_id?: string | undefined
-            timeout?: number | undefined
-            state?: 'started' | 'stopped' | 'destroyed' | undefined
+      $get:
+        | {
+            input: { param: { app_name: string; machine_id: string } } & {
+              query: {
+                instance_id?: string | undefined
+                timeout?: number | undefined
+                state?: 'started' | 'stopped' | 'destroyed' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: ErrorResponse
-        outputFormat: 'json'
-        status: 400
-      }
+        | {
+            input: { param: { app_name: string; machine_id: string } } & {
+              query: {
+                instance_id?: string | undefined
+                timeout?: number | undefined
+                state?: 'started' | 'stopped' | 'destroyed' | undefined
+              }
+            }
+            output: ErrorResponse
+            outputFormat: 'json'
+            status: 400
+          }
     }
   } & {
     '/apps/:app_name/volumes': {

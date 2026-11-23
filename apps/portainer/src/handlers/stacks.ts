@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStacksIdRoute,
   deleteStacksNameNameRoute,
   getStacksIdFileRoute,
@@ -24,72 +24,122 @@ import {
   putStacksIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStacksRouteHandler: RouteHandler<typeof getStacksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stacksHandler = app
-  .openapi(getStacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStacksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStacksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStacksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStacksIdAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStacksIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksIdGitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStacksIdGitRedeployRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksIdMigrateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateKubernetesRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateKubernetesStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateKubernetesUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateStandaloneFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateStandaloneRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateStandaloneStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateSwarmFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateSwarmRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksCreateSwarmStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStacksNameNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStacksWebhooksWebhookIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteStacksIdRouteHandler: RouteHandler<typeof deleteStacksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStacksIdRouteHandler: RouteHandler<typeof getStacksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStacksIdRouteHandler: RouteHandler<typeof putStacksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStacksIdAssociateRouteHandler: RouteHandler<
+  typeof putStacksIdAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStacksIdFileRouteHandler: RouteHandler<typeof getStacksIdFileRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksIdGitRouteHandler: RouteHandler<typeof postStacksIdGitRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStacksIdGitRedeployRouteHandler: RouteHandler<
+  typeof putStacksIdGitRedeployRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksIdMigrateRouteHandler: RouteHandler<
+  typeof postStacksIdMigrateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksIdStartRouteHandler: RouteHandler<typeof postStacksIdStartRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksIdStopRouteHandler: RouteHandler<typeof postStacksIdStopRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateKubernetesRepositoryRouteHandler: RouteHandler<
+  typeof postStacksCreateKubernetesRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateKubernetesStringRouteHandler: RouteHandler<
+  typeof postStacksCreateKubernetesStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateKubernetesUrlRouteHandler: RouteHandler<
+  typeof postStacksCreateKubernetesUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateStandaloneFileRouteHandler: RouteHandler<
+  typeof postStacksCreateStandaloneFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateStandaloneRepositoryRouteHandler: RouteHandler<
+  typeof postStacksCreateStandaloneRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateStandaloneStringRouteHandler: RouteHandler<
+  typeof postStacksCreateStandaloneStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateSwarmFileRouteHandler: RouteHandler<
+  typeof postStacksCreateSwarmFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateSwarmRepositoryRouteHandler: RouteHandler<
+  typeof postStacksCreateSwarmRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksCreateSwarmStringRouteHandler: RouteHandler<
+  typeof postStacksCreateSwarmStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStacksNameNameRouteHandler: RouteHandler<
+  typeof deleteStacksNameNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postStacksWebhooksWebhookIDRouteHandler: RouteHandler<
+  typeof postStacksWebhooksWebhookIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRatingProductIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRatingProductIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ratingHandler = app.openapi(getRatingProductIdRoute, (c) => {
+export const getRatingProductIdRouteHandler: RouteHandler<typeof getRatingProductIdRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

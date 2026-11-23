@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSpencerFrontendServicePutImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSpencerFrontendServicePutImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSpencerFrontendServicePutImageHandler = app.openapi(
-  postXAmzTargetSpencerFrontendServicePutImageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSpencerFrontendServicePutImageRouteHandler: RouteHandler<
+  typeof postXAmzTargetSpencerFrontendServicePutImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

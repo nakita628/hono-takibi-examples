@@ -112,21 +112,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/meta/network-origins/2026-09/ip-ranges/webhook-subscriptions/:appId/:subscription-id': {
-      $delete: {
-        input: { param: { appId: string; 'subscription-id': bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: string; 'subscription-id': bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: string; 'subscription-id': bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/meta/network-origins/2026-09/ip-ranges/webhook-subscriptions/:appId/:subscription-id/test': {
-      $post: {
-        input: { param: { appId: string; 'subscription-id': bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { appId: string; 'subscription-id': bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: string; 'subscription-id': bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

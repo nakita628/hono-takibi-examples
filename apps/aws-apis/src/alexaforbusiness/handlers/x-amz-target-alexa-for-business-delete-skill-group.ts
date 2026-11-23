@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAlexaForBusinessDeleteSkillGroupHandler = app.openapi(
-  postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAlexaForBusinessDeleteSkillGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAlexaForBusinessDeleteSkillGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

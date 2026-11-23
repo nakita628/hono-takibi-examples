@@ -2338,7 +2338,7 @@ export const putMarketingMarketingEvents202609AssociationsExternalAccountIdExter
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
   })
 
@@ -2399,7 +2399,7 @@ export const deleteMarketingMarketingEvents202609AssociationsExternalAccountIdEx
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
   })
 
@@ -2482,7 +2482,7 @@ export const putMarketingMarketingEvents202609AssociationsMarketingEventIdListsL
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
   })
 
@@ -2528,7 +2528,7 @@ export const deleteMarketingMarketingEvents202609AssociationsMarketingEventIdLis
           }),
       }),
     },
-    responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+    responses: { 204: { description: 'No content' }, default: ErrorResponse },
     security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
   })
 
@@ -3027,7 +3027,7 @@ export const deleteMarketingMarketingEvents202609EventsExternalEventIdRoute = cr
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
 })
 
@@ -3996,7 +3996,7 @@ export const deleteMarketingMarketingEvents202609ObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.objects.marketing_events.write'] }],
 })
 

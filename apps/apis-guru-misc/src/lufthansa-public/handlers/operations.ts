@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOperationsFlightstatusArrivalsAirportCodeFromDateTimeRoute,
   getOperationsFlightstatusDeparturesAirportCodeFromDateTimeRoute,
   getOperationsFlightstatusFlightNumberDateRoute,
@@ -7,21 +7,32 @@ import {
   getOperationsSchedulesOriginDestinationFromDateTimeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOperationsFlightstatusArrivalsAirportCodeFromDateTimeRouteHandler: RouteHandler<
+  typeof getOperationsFlightstatusArrivalsAirportCodeFromDateTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const operationsHandler = app
-  .openapi(getOperationsFlightstatusArrivalsAirportCodeFromDateTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperationsFlightstatusDeparturesAirportCodeFromDateTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperationsFlightstatusRouteOriginDestinationDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperationsFlightstatusFlightNumberDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOperationsSchedulesOriginDestinationFromDateTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOperationsFlightstatusDeparturesAirportCodeFromDateTimeRouteHandler: RouteHandler<
+  typeof getOperationsFlightstatusDeparturesAirportCodeFromDateTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperationsFlightstatusRouteOriginDestinationDateRouteHandler: RouteHandler<
+  typeof getOperationsFlightstatusRouteOriginDestinationDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperationsFlightstatusFlightNumberDateRouteHandler: RouteHandler<
+  typeof getOperationsFlightstatusFlightNumberDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOperationsSchedulesOriginDestinationFromDateTimeRouteHandler: RouteHandler<
+  typeof getOperationsSchedulesOriginDestinationFromDateTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

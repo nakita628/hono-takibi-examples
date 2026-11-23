@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteIntegrationsCommerceExternalBusinessIdRoute,
   getIntegrationsCommerceExternalBusinessIdRoute,
   getIntegrationsIdRoute,
@@ -9,27 +9,42 @@ import {
   postIntegrationsLogsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getIntegrationsRouteHandler: RouteHandler<typeof getIntegrationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(getIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsCommerceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsCommerceExternalBusinessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchIntegrationsCommerceExternalBusinessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteIntegrationsCommerceExternalBusinessIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegrationsCommerceRouteHandler: RouteHandler<
+  typeof postIntegrationsCommerceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsCommerceExternalBusinessIdRouteHandler: RouteHandler<
+  typeof getIntegrationsCommerceExternalBusinessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchIntegrationsCommerceExternalBusinessIdRouteHandler: RouteHandler<
+  typeof patchIntegrationsCommerceExternalBusinessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteIntegrationsCommerceExternalBusinessIdRouteHandler: RouteHandler<
+  typeof deleteIntegrationsCommerceExternalBusinessIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsLogsRouteHandler: RouteHandler<
+  typeof postIntegrationsLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsIdRouteHandler: RouteHandler<typeof getIntegrationsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateCacheParameterGroupRoute,
   postActionCreateCacheParameterGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateCacheParameterGroupRouteHandler: RouteHandler<
+  typeof getActionCreateCacheParameterGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateCacheParameterGroupHandler = app
-  .openapi(getActionCreateCacheParameterGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateCacheParameterGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateCacheParameterGroupRouteHandler: RouteHandler<
+  typeof postActionCreateCacheParameterGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

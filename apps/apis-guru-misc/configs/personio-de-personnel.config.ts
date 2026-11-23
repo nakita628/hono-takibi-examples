@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/personio.de/personnel/1.0/openapi.yaml',
   output: './src/personio-de-personnel/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/personio-de-personnel/types.ts' },
   client: { output: './src/personio-de-personnel/client.ts', baseUrl: '/' },
   rpc: { output: './src/personio-de-personnel/rpc.ts', parseResponse: true },

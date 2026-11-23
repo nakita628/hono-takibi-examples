@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDatapointsBatchRoute,
   deleteDatapointsIdRoute,
   getDatapointsAggregatedListRoute,
@@ -18,54 +18,92 @@ import {
   putDatapointsIdNotesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDatapointsRouteHandler: RouteHandler<typeof getDatapointsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const datapointsHandler = app
-  .openapi(getDatapointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatapointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsAggregatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsAggregatedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatapointsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatapointsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatapointsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDatapointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDatapointsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsIdAggregatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsIdAggregatedListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatapointsIdFavouriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDatapointsIdHitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDatapointsIdNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDatapointsRouteHandler: RouteHandler<typeof postDatapointsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsAggregatedRouteHandler: RouteHandler<
+  typeof getDatapointsAggregatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsAggregatedListRouteHandler: RouteHandler<
+  typeof getDatapointsAggregatedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatapointsBatchRouteHandler: RouteHandler<
+  typeof deleteDatapointsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatapointsBatchRouteHandler: RouteHandler<
+  typeof postDatapointsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatapointsBatchRouteHandler: RouteHandler<typeof putDatapointsBatchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsCountRouteHandler: RouteHandler<typeof getDatapointsCountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDatapointsIdRouteHandler: RouteHandler<typeof deleteDatapointsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsIdRouteHandler: RouteHandler<typeof getDatapointsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDatapointsIdRouteHandler: RouteHandler<typeof postDatapointsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsIdAggregatedRouteHandler: RouteHandler<
+  typeof getDatapointsIdAggregatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsIdAggregatedListRouteHandler: RouteHandler<
+  typeof getDatapointsIdAggregatedListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatapointsIdFavouriteRouteHandler: RouteHandler<
+  typeof putDatapointsIdFavouriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDatapointsIdHitsRouteHandler: RouteHandler<
+  typeof getDatapointsIdHitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDatapointsIdNotesRouteHandler: RouteHandler<
+  typeof putDatapointsIdNotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAppendTextRoute, postAppendTextRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAppendTextRoute, postAppendTextRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAppendTextRouteHandler: RouteHandler<typeof getAppendTextRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appendTextHandler = app
-  .openapi(getAppendTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAppendTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAppendTextRouteHandler: RouteHandler<typeof postAppendTextRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

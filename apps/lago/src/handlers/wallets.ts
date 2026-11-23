@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWalletsLagoIdMetadataKeyRoute,
   deleteWalletsLagoIdMetadataRoute,
   deleteWalletsLagoIdRoute,
@@ -12,36 +12,58 @@ import {
   putWalletsLagoIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWalletsRouteHandler: RouteHandler<typeof postWalletsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const walletsHandler = app
-  .openapi(postWalletsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWalletsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putWalletsLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWalletsLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWalletsLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWalletsLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWalletsLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWalletsLagoIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWalletsLagoIdMetadataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWalletsLagoIdWalletTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWalletsRouteHandler: RouteHandler<typeof getWalletsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putWalletsLagoIdRouteHandler: RouteHandler<typeof putWalletsLagoIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getWalletsLagoIdRouteHandler: RouteHandler<typeof getWalletsLagoIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWalletsLagoIdRouteHandler: RouteHandler<
+  typeof deleteWalletsLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWalletsLagoIdMetadataRouteHandler: RouteHandler<
+  typeof postWalletsLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWalletsLagoIdMetadataRouteHandler: RouteHandler<
+  typeof patchWalletsLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWalletsLagoIdMetadataRouteHandler: RouteHandler<
+  typeof deleteWalletsLagoIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWalletsLagoIdMetadataKeyRouteHandler: RouteHandler<
+  typeof deleteWalletsLagoIdMetadataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWalletsLagoIdWalletTransactionsRouteHandler: RouteHandler<
+  typeof getWalletsLagoIdWalletTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

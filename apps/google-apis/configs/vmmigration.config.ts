@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/vmmigration/v1alpha1/openapi.yaml',
   output: './src/vmmigration/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/vmmigration/types.ts' },
   client: { output: './src/vmmigration/client.ts', baseUrl: '/' },
   rpc: { output: './src/vmmigration/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAwsProton20200720DeleteServiceTemplateVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAwsProton20200720DeleteServiceTemplateVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsProton20200720DeleteServiceTemplateVersionHandler = app.openapi(
-  postXAmzTargetAwsProton20200720DeleteServiceTemplateVersionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAwsProton20200720DeleteServiceTemplateVersionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAwsProton20200720DeleteServiceTemplateVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

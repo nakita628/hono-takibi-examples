@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGameLiftValidateMatchmakingRuleSetHandler = app.openapi(
-  postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGameLiftValidateMatchmakingRuleSetRouteHandler: RouteHandler<
+  typeof postXAmzTargetGameLiftValidateMatchmakingRuleSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

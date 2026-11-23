@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGreengrassDefinitionConnectorsConnectorDefinitionIdRoute,
   deleteGreengrassDefinitionCoresCoreDefinitionIdRoute,
   deleteGreengrassDefinitionDevicesDeviceDefinitionIdRoute,
@@ -91,294 +91,536 @@ import {
   putGreengrassThingsThingNameRuntimeconfigRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putGreengrassGroupsGroupIdRoleRouteHandler: RouteHandler<
+  typeof putGreengrassGroupsGroupIdRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const greengrassHandler = app
-  .openapi(putGreengrassGroupsGroupIdRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassGroupsGroupIdRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassServiceroleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassServiceroleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassServiceroleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionConnectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionCoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionCoresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionCoresCoreDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionCoresCoreDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassGroupsGroupIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassGroupsGroupIdCertificateauthoritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdCertificateauthoritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassGroupsGroupIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionLoggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionResourcesResourceDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionResourcesResourceDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionConnectorsConnectorDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionConnectorsConnectorDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionConnectorsConnectorDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionCoresCoreDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionCoresCoreDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionCoresCoreDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionDevicesDeviceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionDevicesDeviceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionDevicesDeviceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionFunctionsFunctionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionFunctionsFunctionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionFunctionsFunctionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionLoggersLoggerDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionLoggersLoggerDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionLoggersLoggerDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionResourcesResourceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionResourcesResourceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionResourcesResourceDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassBulkDeploymentsBulkDeploymentIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassThingsThingNameConnectivityInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassThingsThingNameConnectivityInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsConnectorDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getGreengrassDefinitionCoresCoreDefinitionIdVersionsCoreDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGreengrassGroupsGroupIdDeploymentsDeploymentIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsDeviceDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsFunctionDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGreengrassGroupsGroupIdCertificateauthoritiesCertificateAuthorityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassGroupsGroupIdVersionsGroupVersionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsLoggerDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getGreengrassDefinitionResourcesResourceDefinitionIdVersionsResourceDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsSubscriptionDefinitionVersionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getGreengrassThingsThingNameRuntimeconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassThingsThingNameRuntimeconfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassBulkDeploymentsBulkDeploymentIdDetailedReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGreengrassBulkDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassBulkDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGreengrassGroupsGroupIdDeploymentsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putGreengrassBulkDeploymentsBulkDeploymentIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteGreengrassGroupsGroupIdRoleRouteHandler: RouteHandler<
+  typeof deleteGreengrassGroupsGroupIdRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdRoleRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassServiceroleRouteHandler: RouteHandler<
+  typeof putGreengrassServiceroleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassServiceroleRouteHandler: RouteHandler<
+  typeof deleteGreengrassServiceroleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassServiceroleRouteHandler: RouteHandler<
+  typeof getGreengrassServiceroleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionConnectorsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionConnectorsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionConnectorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionCoresRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionCoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionCoresRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionCoresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionCoresCoreDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionCoresCoreDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionCoresCoreDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionCoresCoreDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassGroupsGroupIdDeploymentsRouteHandler: RouteHandler<
+  typeof postGreengrassGroupsGroupIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdDeploymentsRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionDevicesRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionDevicesRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionFunctionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionFunctionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionFunctionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassGroupsRouteHandler: RouteHandler<
+  typeof postGreengrassGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassGroupsGroupIdCertificateauthoritiesRouteHandler: RouteHandler<
+  typeof postGreengrassGroupsGroupIdCertificateauthoritiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdCertificateauthoritiesRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdCertificateauthoritiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassGroupsGroupIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassGroupsGroupIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionLoggersRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionLoggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionLoggersRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionLoggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionResourcesRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionResourcesRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionResourcesResourceDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionResourcesResourceDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionResourcesResourceDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionResourcesResourceDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassUpdatesRouteHandler: RouteHandler<
+  typeof postGreengrassUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionSubscriptionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionSubscriptionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof postGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionConnectorsConnectorDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionConnectorsConnectorDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionConnectorsConnectorDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionConnectorsConnectorDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionConnectorsConnectorDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionConnectorsConnectorDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionCoresCoreDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionCoresCoreDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionCoresCoreDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionCoresCoreDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionCoresCoreDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionCoresCoreDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionDevicesDeviceDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionDevicesDeviceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionDevicesDeviceDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionDevicesDeviceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionDevicesDeviceDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionDevicesDeviceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionFunctionsFunctionDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionFunctionsFunctionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionFunctionsFunctionDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionFunctionsFunctionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionFunctionsFunctionDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionFunctionsFunctionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassGroupsGroupIdRouteHandler: RouteHandler<
+  typeof putGreengrassGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionLoggersLoggerDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionLoggersLoggerDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionLoggersLoggerDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionLoggersLoggerDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionLoggersLoggerDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionLoggersLoggerDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionResourcesResourceDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionResourcesResourceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionResourcesResourceDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionResourcesResourceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionResourcesResourceDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionResourcesResourceDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRouteHandler: RouteHandler<
+  typeof deleteGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRouteHandler: RouteHandler<
+  typeof putGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassBulkDeploymentsBulkDeploymentIdStatusRouteHandler: RouteHandler<
+  typeof getGreengrassBulkDeploymentsBulkDeploymentIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassThingsThingNameConnectivityInfoRouteHandler: RouteHandler<
+  typeof getGreengrassThingsThingNameConnectivityInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassThingsThingNameConnectivityInfoRouteHandler: RouteHandler<
+  typeof putGreengrassThingsThingNameConnectivityInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsConnectorDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionConnectorsConnectorDefinitionIdVersionsConnectorDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionCoresCoreDefinitionIdVersionsCoreDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionCoresCoreDefinitionIdVersionsCoreDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdDeploymentsDeploymentIdStatusRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdDeploymentsDeploymentIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsDeviceDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionDevicesDeviceDefinitionIdVersionsDeviceDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsFunctionDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionFunctionsFunctionDefinitionIdVersionsFunctionDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdCertificateauthoritiesCertificateAuthorityIdRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdCertificateauthoritiesCertificateAuthorityIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRouteHandler: RouteHandler<
+  typeof putGreengrassGroupsGroupIdCertificateauthoritiesConfigurationExpiryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassGroupsGroupIdVersionsGroupVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassGroupsGroupIdVersionsGroupVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsLoggerDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionLoggersLoggerDefinitionIdVersionsLoggerDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionResourcesResourceDefinitionIdVersionsResourceDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionResourcesResourceDefinitionIdVersionsResourceDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsSubscriptionDefinitionVersionIdRouteHandler: RouteHandler<
+  typeof getGreengrassDefinitionSubscriptionsSubscriptionDefinitionIdVersionsSubscriptionDefinitionVersionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassThingsThingNameRuntimeconfigRouteHandler: RouteHandler<
+  typeof getGreengrassThingsThingNameRuntimeconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassThingsThingNameRuntimeconfigRouteHandler: RouteHandler<
+  typeof putGreengrassThingsThingNameRuntimeconfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassBulkDeploymentsBulkDeploymentIdDetailedReportsRouteHandler: RouteHandler<
+  typeof getGreengrassBulkDeploymentsBulkDeploymentIdDetailedReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGreengrassBulkDeploymentsRouteHandler: RouteHandler<
+  typeof getGreengrassBulkDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassBulkDeploymentsRouteHandler: RouteHandler<
+  typeof postGreengrassBulkDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGreengrassGroupsGroupIdDeploymentsResetRouteHandler: RouteHandler<
+  typeof postGreengrassGroupsGroupIdDeploymentsResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putGreengrassBulkDeploymentsBulkDeploymentIdStopRouteHandler: RouteHandler<
+  typeof putGreengrassBulkDeploymentsBulkDeploymentIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

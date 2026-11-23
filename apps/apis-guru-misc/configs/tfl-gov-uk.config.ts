@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/tfl.gov.uk/v1/openapi.yaml',
   output: './src/tfl-gov-uk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tfl-gov-uk/types.ts' },
   client: { output: './src/tfl-gov-uk/client.ts', baseUrl: '/' },
   rpc: { output: './src/tfl-gov-uk/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountDomainwhitelistWhitelistIdRoute,
   deleteAccountGuestsGuestIdRoute,
   deleteAccountIpblacklistBlacklistIdRoute,
@@ -21,63 +21,110 @@ import {
   putAccountGuestsGuestIdTypePermissionsPatchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountRouteHandler: RouteHandler<typeof getAccountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountHandler = app
-  .openapi(getAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountDomainwhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountDomainwhitelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountDomainwhitelistWhitelistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountGuestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountGuestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountGuestsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountGuestsGuestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountGuestsGuestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountGuestsGuestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountGuestsGuestIdPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountGuestsGuestIdPermissionsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountGuestsGuestIdTypePermissionsPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountGuestsGuestIdTypePermissionsPatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountIpblacklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountIpblacklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountIpblacklistBlacklistIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountRouteHandler: RouteHandler<typeof postAccountRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountDomainwhitelistRouteHandler: RouteHandler<
+  typeof getAccountDomainwhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountDomainwhitelistRouteHandler: RouteHandler<
+  typeof postAccountDomainwhitelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountDomainwhitelistWhitelistIdRouteHandler: RouteHandler<
+  typeof deleteAccountDomainwhitelistWhitelistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountGuestsRouteHandler: RouteHandler<typeof getAccountGuestsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountGuestsRouteHandler: RouteHandler<typeof postAccountGuestsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountGuestsCountRouteHandler: RouteHandler<
+  typeof getAccountGuestsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountGuestsGuestIdRouteHandler: RouteHandler<
+  typeof deleteAccountGuestsGuestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountGuestsGuestIdRouteHandler: RouteHandler<
+  typeof getAccountGuestsGuestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountGuestsGuestIdRouteHandler: RouteHandler<
+  typeof postAccountGuestsGuestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountGuestsGuestIdPermissionsRouteHandler: RouteHandler<
+  typeof getAccountGuestsGuestIdPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountGuestsGuestIdPermissionsCountRouteHandler: RouteHandler<
+  typeof getAccountGuestsGuestIdPermissionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountGuestsGuestIdTypePermissionsPatchRouteHandler: RouteHandler<
+  typeof postAccountGuestsGuestIdTypePermissionsPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountGuestsGuestIdTypePermissionsPatchRouteHandler: RouteHandler<
+  typeof putAccountGuestsGuestIdTypePermissionsPatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountIpblacklistRouteHandler: RouteHandler<
+  typeof getAccountIpblacklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountIpblacklistRouteHandler: RouteHandler<
+  typeof postAccountIpblacklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountIpblacklistBlacklistIdRouteHandler: RouteHandler<
+  typeof deleteAccountIpblacklistBlacklistIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountPlanRouteHandler: RouteHandler<typeof getAccountPlanRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

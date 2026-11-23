@@ -2011,7 +2011,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { personId: bigint } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
       $get: {
         input: { param: { personId: bigint } }

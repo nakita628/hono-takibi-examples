@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKeysKeyIdOrNameRoute,
   getKeysKeyIdOrNameRoute,
   getKeysRoute,
@@ -8,24 +8,34 @@ import {
   putKeysKeyIdOrNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKeysRouteHandler: RouteHandler<typeof getKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const keysHandler = app
-  .openapi(getKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKeysKeyIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchKeysKeyIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKeysKeyIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postKeysRouteHandler: RouteHandler<typeof postKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKeysKeyIdOrNameRouteHandler: RouteHandler<
+  typeof deleteKeysKeyIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyIdOrNameRouteHandler: RouteHandler<typeof getKeysKeyIdOrNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchKeysKeyIdOrNameRouteHandler: RouteHandler<
+  typeof patchKeysKeyIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKeysKeyIdOrNameRouteHandler: RouteHandler<typeof putKeysKeyIdOrNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

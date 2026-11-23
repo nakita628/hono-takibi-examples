@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/cloudhsm/2014-05-30/openapi.yaml',
   output: './src/cloudhsm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudhsm/types.ts' },
   client: { output: './src/cloudhsm/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudhsm/rpc.ts', parseResponse: true },

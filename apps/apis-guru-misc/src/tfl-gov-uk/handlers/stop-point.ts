@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStopPointIdArrivalDeparturesRoute,
   getStopPointIdArrivalsRoute,
   getStopPointIdCanReachOnLineLineIdRoute,
@@ -25,75 +25,136 @@ import {
   getStopPointTypeTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStopPointRouteHandler: RouteHandler<typeof getStopPointRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stopPointHandler = app
-  .openapi(getStopPointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointMetaCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointMetaModesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointMetaStopTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointModeModesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointModeModesDisruptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointSearchQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointServiceTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointSmsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointTypeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointTypeTypesPagePageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdsDisruptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdArrivalDeparturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdArrivalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdCanReachOnLineLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdCrowdingLineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdDirectionToToStopPointIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdRouteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointIdPlaceTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointStopPointIdCarParksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStopPointStopPointIdTaxiRanksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStopPointMetaCategoriesRouteHandler: RouteHandler<
+  typeof getStopPointMetaCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointMetaModesRouteHandler: RouteHandler<
+  typeof getStopPointMetaModesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointMetaStopTypesRouteHandler: RouteHandler<
+  typeof getStopPointMetaStopTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointModeModesRouteHandler: RouteHandler<
+  typeof getStopPointModeModesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointModeModesDisruptionRouteHandler: RouteHandler<
+  typeof getStopPointModeModesDisruptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointSearchRouteHandler: RouteHandler<typeof getStopPointSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointSearchQueryRouteHandler: RouteHandler<
+  typeof getStopPointSearchQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointServiceTypesRouteHandler: RouteHandler<
+  typeof getStopPointServiceTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointSmsIdRouteHandler: RouteHandler<typeof getStopPointSmsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointTypeTypesRouteHandler: RouteHandler<
+  typeof getStopPointTypeTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointTypeTypesPagePageRouteHandler: RouteHandler<
+  typeof getStopPointTypeTypesPagePageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdsRouteHandler: RouteHandler<typeof getStopPointIdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdsDisruptionRouteHandler: RouteHandler<
+  typeof getStopPointIdsDisruptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdArrivalDeparturesRouteHandler: RouteHandler<
+  typeof getStopPointIdArrivalDeparturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdArrivalsRouteHandler: RouteHandler<
+  typeof getStopPointIdArrivalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdCanReachOnLineLineIdRouteHandler: RouteHandler<
+  typeof getStopPointIdCanReachOnLineLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdCrowdingLineRouteHandler: RouteHandler<
+  typeof getStopPointIdCrowdingLineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdDirectionToToStopPointIdRouteHandler: RouteHandler<
+  typeof getStopPointIdDirectionToToStopPointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdRouteRouteHandler: RouteHandler<
+  typeof getStopPointIdRouteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointIdPlaceTypesRouteHandler: RouteHandler<
+  typeof getStopPointIdPlaceTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointStopPointIdCarParksRouteHandler: RouteHandler<
+  typeof getStopPointStopPointIdCarParksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStopPointStopPointIdTaxiRanksRouteHandler: RouteHandler<
+  typeof getStopPointStopPointIdTaxiRanksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

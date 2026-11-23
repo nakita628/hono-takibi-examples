@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBulkLookupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBulkLookupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bulkLookupHandler = app.openapi(getBulkLookupRoute, (c) => {
+export const getBulkLookupRouteHandler: RouteHandler<typeof getBulkLookupRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

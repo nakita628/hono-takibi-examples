@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDefaultAuthorizerRoute,
   getDefaultAuthorizerRoute,
   postDefaultAuthorizerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDefaultAuthorizerRouteHandler: RouteHandler<
+  typeof deleteDefaultAuthorizerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const defaultAuthorizerHandler = app
-  .openapi(deleteDefaultAuthorizerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDefaultAuthorizerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDefaultAuthorizerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDefaultAuthorizerRouteHandler: RouteHandler<
+  typeof getDefaultAuthorizerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDefaultAuthorizerRouteHandler: RouteHandler<
+  typeof postDefaultAuthorizerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

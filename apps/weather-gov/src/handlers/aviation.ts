@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAviationCwsusCwsuIdCwasDateSequenceRoute,
   getAviationCwsusCwsuIdCwasRoute,
   getAviationCwsusCwsuIdRoute,
@@ -9,27 +9,44 @@ import {
   getAviationSigmetsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAviationCwsusCwsuIdRouteHandler: RouteHandler<
+  typeof getAviationCwsusCwsuIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const aviationHandler = app
-  .openapi(getAviationCwsusCwsuIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationCwsusCwsuIdCwasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationCwsusCwsuIdCwasDateSequenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationSigmetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationSigmetsAtsuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationSigmetsAtsuDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAviationSigmetsAtsuDateTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAviationCwsusCwsuIdCwasRouteHandler: RouteHandler<
+  typeof getAviationCwsusCwsuIdCwasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAviationCwsusCwsuIdCwasDateSequenceRouteHandler: RouteHandler<
+  typeof getAviationCwsusCwsuIdCwasDateSequenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAviationSigmetsRouteHandler: RouteHandler<typeof getAviationSigmetsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAviationSigmetsAtsuRouteHandler: RouteHandler<
+  typeof getAviationSigmetsAtsuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAviationSigmetsAtsuDateRouteHandler: RouteHandler<
+  typeof getAviationSigmetsAtsuDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAviationSigmetsAtsuDateTimeRouteHandler: RouteHandler<
+  typeof getAviationSigmetsAtsuDateTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

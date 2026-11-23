@@ -41,11 +41,6 @@ type CustomConnectorProfileCredentials = {
   custom?: { customAuthenticationType: {}; credentialsMap?: {} | undefined } | undefined
 }
 type CreateConnectorProfileResponse = { connectorProfileArn?: {} | undefined }
-type ValidationException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
-type ServiceQuotaExceededException = { [x: string]: unknown }
-type ConnectorAuthenticationException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
 type S3InputFormatConfig = { s3InputFileType?: {} | undefined }
 type SAPODataSourceProperties = { objectPath?: {} | undefined }
 type CustomConnectorSourceProperties = { entityName: {}; customProperties?: {} | undefined }
@@ -211,8 +206,6 @@ type Task = {
 }
 type TagValue = string
 type CreateFlowResponse = { flowArn?: {} | undefined; flowStatus?: {} | undefined }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ConnectorServerException = { [x: string]: unknown }
 type DeleteConnectorProfileResponse = { [x: string]: unknown }
 type DeleteFlowResponse = { [x: string]: unknown }
 type SAPODataMetadata = { [x: string]: unknown }
@@ -434,15 +427,12 @@ type ListFlowsResponse = { flows?: {} | undefined; nextToken?: {} | undefined }
 type ListTagsForResourceResponse = { tags?: {} | undefined }
 type TagResourceResponse = { [x: string]: unknown }
 type RegisterConnectorResponse = { connectorArn?: {} | undefined }
-type AccessDeniedException = { [x: string]: unknown }
-type ThrottlingException = { [x: string]: unknown }
 type StartFlowResponse = {
   flowArn?: {} | undefined
   flowStatus?: {} | undefined
   executionId?: {} | undefined
 }
 type StopFlowResponse = { flowArn?: {} | undefined; flowStatus?: {} | undefined }
-type UnsupportedOperationException = { [x: string]: unknown }
 type UnregisterConnectorResponse = { [x: string]: unknown }
 type TagKey = string
 type UntagResourceResponse = { [x: string]: unknown }
@@ -453,6161 +443,1085 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/create-connector-profile': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: CreateConnectorProfileResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
+        } & {
+          json: {
+            connectorProfileName: string
+            kmsArn?: string | undefined
+            connectorType:
+              | 'Salesforce'
+              | 'Singular'
+              | 'Slack'
+              | 'Redshift'
+              | 'S3'
+              | 'Marketo'
+              | 'Googleanalytics'
+              | 'Zendesk'
+              | 'Servicenow'
+              | 'Datadog'
+              | 'Trendmicro'
+              | 'Snowflake'
+              | 'Dynatrace'
+              | 'Infornexus'
+              | 'Amplitude'
+              | 'Veeva'
+              | 'EventBridge'
+              | 'LookoutMetrics'
+              | 'Upsolver'
+              | 'Honeycode'
+              | 'CustomerProfiles'
+              | 'SAPOData'
+              | 'CustomConnector'
+              | 'Pardot'
+            connectorLabel?: string | undefined
+            connectionMode: 'Public' | 'Private'
+            connectorProfileConfig: {
+              connectorProfileProperties?:
+                | {
+                    Amplitude?: {} | undefined
+                    Datadog?: { instanceUrl: {} } | undefined
+                    Dynatrace?: { instanceUrl: {} } | undefined
+                    GoogleAnalytics?: {} | undefined
+                    Honeycode?: {} | undefined
+                    InforNexus?: { instanceUrl: {} } | undefined
+                    Marketo?: { instanceUrl: {} } | undefined
+                    Redshift?:
+                      | {
+                          databaseUrl?: {} | undefined
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          roleArn: {}
+                          dataApiRoleArn?: {} | undefined
+                          isRedshiftServerless?: {} | undefined
+                          clusterIdentifier?: {} | undefined
+                          workgroupName?: {} | undefined
+                          databaseName?: {} | undefined
+                        }
+                      | undefined
+                    Salesforce?:
+                      | {
+                          instanceUrl?: {} | undefined
+                          isSandboxEnvironment?: {} | undefined
+                          usePrivateLinkForMetadataAndAuthorization?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { instanceUrl: {} } | undefined
+                    Singular?: {} | undefined
+                    Slack?: { instanceUrl: {} } | undefined
+                    Snowflake?:
+                      | {
+                          warehouse: {}
+                          stage: {}
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          privateLinkServiceName?: {} | undefined
+                          accountName?: {} | undefined
+                          region?: {} | undefined
+                        }
+                      | undefined
+                    Trendmicro?: {} | undefined
+                    Veeva?: { instanceUrl: {} } | undefined
+                    Zendesk?: { instanceUrl: {} } | undefined
+                    SAPOData?: SAPODataConnectorProfileProperties | undefined
+                    CustomConnector?:
+                      | {
+                          profileProperties?: {} | undefined
+                          oAuth2Properties?: OAuth2Properties | undefined
+                        }
+                      | undefined
+                    Pardot?:
+                      | {
+                          instanceUrl?: {} | undefined
+                          isSandboxEnvironment?: {} | undefined
+                          businessUnitId?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
+              connectorProfileCredentials?:
+                | {
+                    Amplitude?: { apiKey: {}; secretKey: {} } | undefined
+                    Datadog?: { apiKey: {}; applicationKey: {} } | undefined
+                    Dynatrace?: { apiToken: {} } | undefined
+                    GoogleAnalytics?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Honeycode?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?: ConnectorOAuthRequest | undefined
+                        }
+                      | undefined
+                    InforNexus?:
+                      | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
+                      | undefined
+                    Marketo?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Redshift?: { username?: {} | undefined; password?: {} | undefined } | undefined
+                    Salesforce?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                          clientCredentialsArn?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { username: {}; password: {} } | undefined
+                    Singular?: { apiKey: {} } | undefined
+                    Slack?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Snowflake?: { username: {}; password: {} } | undefined
+                    Trendmicro?: { apiSecretKey: {} } | undefined
+                    Veeva?: { username: {}; password: {} } | undefined
+                    Zendesk?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    SAPOData?: SAPODataConnectorProfileCredentials | undefined
+                    CustomConnector?: CustomConnectorProfileCredentials | undefined
+                    Pardot?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?: ConnectorOAuthRequest | undefined
+                          clientCredentialsArn?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                kmsArn?: string | undefined
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: CreateConnectorProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/create-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: CreateFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
+        } & {
+          json: {
+            flowName: string
+            description?: string | undefined
+            kmsArn?: string | undefined
+            triggerConfig: {
+              triggerType?: {} | undefined
+              triggerProperties?:
+                | {
+                    Scheduled?:
+                      | {
+                          scheduleExpression: {}
+                          dataPullMode?: {} | undefined
+                          scheduleStartTime?: {} | undefined
+                          scheduleEndTime?: {} | undefined
+                          timezone?: {} | undefined
+                          scheduleOffset?: {} | undefined
+                          firstExecutionFrom?: {} | undefined
+                          flowErrorDeactivationThreshold?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
+            sourceFlowConfig: {
+              connectorType?: {} | undefined
+              apiVersion?: {} | undefined
+              connectorProfileName?: {} | undefined
+              sourceConnectorProperties?:
+                | {
+                    Amplitude?: { object: {} } | undefined
+                    Datadog?: { object: {} } | undefined
+                    Dynatrace?: { object: {} } | undefined
+                    GoogleAnalytics?: { object: {} } | undefined
+                    InforNexus?: { object: {} } | undefined
+                    Marketo?: { object: {} } | undefined
+                    S3?:
+                      | {
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          s3InputFormatConfig?: S3InputFormatConfig | undefined
+                        }
+                      | undefined
+                    Salesforce?:
+                      | {
+                          object: {}
+                          enableDynamicFieldUpdate?: {} | undefined
+                          includeDeletedRecords?: {} | undefined
+                          dataTransferApi?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { object: {} } | undefined
+                    Singular?: { object: {} } | undefined
+                    Slack?: { object: {} } | undefined
+                    Trendmicro?: { object: {} } | undefined
+                    Veeva?:
+                      | {
+                          object: {}
+                          documentType?: {} | undefined
+                          includeSourceFiles?: {} | undefined
+                          includeRenditions?: {} | undefined
+                          includeAllVersions?: {} | undefined
+                        }
+                      | undefined
+                    Zendesk?: { object: {} } | undefined
+                    SAPOData?: SAPODataSourceProperties | undefined
+                    CustomConnector?: CustomConnectorSourceProperties | undefined
+                    Pardot?: { object: {} } | undefined
+                  }
+                | undefined
+              incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
             }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
+            destinationFlowConfigList: DestinationFlowConfig[]
+            tasks: Task[]
+            tags?: { [x: string]: TagValue } | undefined
+            metadataCatalogConfig?:
+              | { glueDataCatalog?: { roleArn: {}; databaseName: {}; tablePrefix: {} } | undefined }
+              | undefined
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                kmsArn?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                tags?: { [x: string]: TagValue } | undefined
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/delete-connector-profile': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorProfileName: string; forceDelete?: boolean | undefined } }
-            output: DeleteConnectorProfileResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorProfileName: string; forceDelete?: boolean | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorProfileName: string; forceDelete?: boolean | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorProfileName: string; forceDelete?: boolean | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { connectorProfileName: string; forceDelete?: boolean | undefined } }
+        output: DeleteConnectorProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/delete-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; forceDelete?: boolean | undefined } }
-            output: DeleteFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; forceDelete?: boolean | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; forceDelete?: boolean | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; forceDelete?: boolean | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { flowName: string; forceDelete?: boolean | undefined } }
+        output: DeleteFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-connector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-              }
-            }
-            output: DescribeConnectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorType:
+              | 'Salesforce'
+              | 'Singular'
+              | 'Slack'
+              | 'Redshift'
+              | 'S3'
+              | 'Marketo'
+              | 'Googleanalytics'
+              | 'Zendesk'
+              | 'Servicenow'
+              | 'Datadog'
+              | 'Trendmicro'
+              | 'Snowflake'
+              | 'Dynatrace'
+              | 'Infornexus'
+              | 'Amplitude'
+              | 'Veeva'
+              | 'EventBridge'
+              | 'LookoutMetrics'
+              | 'Upsolver'
+              | 'Honeycode'
+              | 'CustomerProfiles'
+              | 'SAPOData'
+              | 'CustomConnector'
+              | 'Pardot'
+            connectorLabel?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorType:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                connectorLabel?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: DescribeConnectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-connector-entity': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: DescribeConnectorEntityResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorEntityName: string
+            connectorType?:
+              | 'Salesforce'
+              | 'Singular'
+              | 'Slack'
+              | 'Redshift'
+              | 'S3'
+              | 'Marketo'
+              | 'Googleanalytics'
+              | 'Zendesk'
+              | 'Servicenow'
+              | 'Datadog'
+              | 'Trendmicro'
+              | 'Snowflake'
+              | 'Dynatrace'
+              | 'Infornexus'
+              | 'Amplitude'
+              | 'Veeva'
+              | 'EventBridge'
+              | 'LookoutMetrics'
+              | 'Upsolver'
+              | 'Honeycode'
+              | 'CustomerProfiles'
+              | 'SAPOData'
+              | 'CustomConnector'
+              | 'Pardot'
+              | undefined
+            connectorProfileName?: string | undefined
+            apiVersion?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorEntityName: string
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorProfileName?: string | undefined
-                apiVersion?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeConnectorEntityResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-connector-profiles': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileNames?: ConnectorProfileName[] | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorLabel?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: DescribeConnectorProfilesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileNames?: ConnectorProfileName[] | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorLabel?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorProfileNames?: ConnectorProfileName[] | undefined
+            connectorType?:
+              | 'Salesforce'
+              | 'Singular'
+              | 'Slack'
+              | 'Redshift'
+              | 'S3'
+              | 'Marketo'
+              | 'Googleanalytics'
+              | 'Zendesk'
+              | 'Servicenow'
+              | 'Datadog'
+              | 'Trendmicro'
+              | 'Snowflake'
+              | 'Dynatrace'
+              | 'Infornexus'
+              | 'Amplitude'
+              | 'Veeva'
+              | 'EventBridge'
+              | 'LookoutMetrics'
+              | 'Upsolver'
+              | 'Honeycode'
+              | 'CustomerProfiles'
+              | 'SAPOData'
+              | 'CustomConnector'
+              | 'Pardot'
+              | undefined
+            connectorLabel?: string | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileNames?: ConnectorProfileName[] | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                connectorLabel?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeConnectorProfilesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-connectors': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorTypes?: ConnectorType[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: DescribeConnectorsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorTypes?: ConnectorType[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorTypes?: ConnectorType[] | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorTypes?: ConnectorType[] | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: DescribeConnectorsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: DescribeFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { flowName: string } }
+        output: DescribeFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/describe-flow-execution-records': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: DescribeFlowExecutionRecordsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            flowName: string
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: DescribeFlowExecutionRecordsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/list-connector-entities': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ListConnectorEntitiesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorProfileName?: string | undefined
+            connectorType?:
+              | 'Salesforce'
+              | 'Singular'
+              | 'Slack'
+              | 'Redshift'
+              | 'S3'
+              | 'Marketo'
+              | 'Googleanalytics'
+              | 'Zendesk'
+              | 'Servicenow'
+              | 'Datadog'
+              | 'Trendmicro'
+              | 'Snowflake'
+              | 'Dynatrace'
+              | 'Infornexus'
+              | 'Amplitude'
+              | 'Veeva'
+              | 'EventBridge'
+              | 'LookoutMetrics'
+              | 'Upsolver'
+              | 'Honeycode'
+              | 'CustomerProfiles'
+              | 'SAPOData'
+              | 'CustomConnector'
+              | 'Pardot'
+              | undefined
+            entitiesPath?: string | undefined
+            apiVersion?: string | undefined
+            maxResults?: number | undefined
+            nextToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName?: string | undefined
-                connectorType?:
-                  | 'Salesforce'
-                  | 'Singular'
-                  | 'Slack'
-                  | 'Redshift'
-                  | 'S3'
-                  | 'Marketo'
-                  | 'Googleanalytics'
-                  | 'Zendesk'
-                  | 'Servicenow'
-                  | 'Datadog'
-                  | 'Trendmicro'
-                  | 'Snowflake'
-                  | 'Dynatrace'
-                  | 'Infornexus'
-                  | 'Amplitude'
-                  | 'Veeva'
-                  | 'EventBridge'
-                  | 'LookoutMetrics'
-                  | 'Upsolver'
-                  | 'Honeycode'
-                  | 'CustomerProfiles'
-                  | 'SAPOData'
-                  | 'CustomConnector'
-                  | 'Pardot'
-                  | undefined
-                entitiesPath?: string | undefined
-                apiVersion?: string | undefined
-                maxResults?: number | undefined
-                nextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListConnectorEntitiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/list-connectors': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ListConnectorsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
+        output: ListConnectorsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/list-flows': {
-      $post:
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ListFlowsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { maxResults?: string | undefined; nextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { maxResults?: string | undefined; nextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { maxResults?: number | undefined; nextToken?: string | undefined } }
+        output: ListFlowsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/register-connector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: RegisterConnectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorLabel?: string | undefined
+            description?: string | undefined
+            connectorProvisioningType?: 'LAMBDA' | undefined
+            connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel?: string | undefined
-                description?: string | undefined
-                connectorProvisioningType?: 'LAMBDA' | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 488
-          }
+        }
+        output: RegisterConnectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/start-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; clientToken?: string | undefined } }
-            output: StartFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; clientToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; clientToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; clientToken?: string | undefined } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string; clientToken?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { flowName: string; clientToken?: string | undefined } }
+        output: StartFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/stop-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: StopFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: UnsupportedOperationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { flowName: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
+        } & { json: { flowName: string } }
+        output: StopFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/unregister-connector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorLabel: string; forceDelete?: boolean | undefined } }
-            output: UnregisterConnectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorLabel: string; forceDelete?: boolean | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorLabel: string; forceDelete?: boolean | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { connectorLabel: string; forceDelete?: boolean | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { connectorLabel: string; forceDelete?: boolean | undefined } }
+        output: UnregisterConnectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/update-connector-profile': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: UpdateConnectorProfileResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
+        } & {
+          json: {
+            connectorProfileName: string
+            connectionMode: 'Public' | 'Private'
+            connectorProfileConfig: {
+              connectorProfileProperties?:
+                | {
+                    Amplitude?: {} | undefined
+                    Datadog?: { instanceUrl: {} } | undefined
+                    Dynatrace?: { instanceUrl: {} } | undefined
+                    GoogleAnalytics?: {} | undefined
+                    Honeycode?: {} | undefined
+                    InforNexus?: { instanceUrl: {} } | undefined
+                    Marketo?: { instanceUrl: {} } | undefined
+                    Redshift?:
+                      | {
+                          databaseUrl?: {} | undefined
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          roleArn: {}
+                          dataApiRoleArn?: {} | undefined
+                          isRedshiftServerless?: {} | undefined
+                          clusterIdentifier?: {} | undefined
+                          workgroupName?: {} | undefined
+                          databaseName?: {} | undefined
+                        }
+                      | undefined
+                    Salesforce?:
+                      | {
+                          instanceUrl?: {} | undefined
+                          isSandboxEnvironment?: {} | undefined
+                          usePrivateLinkForMetadataAndAuthorization?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { instanceUrl: {} } | undefined
+                    Singular?: {} | undefined
+                    Slack?: { instanceUrl: {} } | undefined
+                    Snowflake?:
+                      | {
+                          warehouse: {}
+                          stage: {}
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          privateLinkServiceName?: {} | undefined
+                          accountName?: {} | undefined
+                          region?: {} | undefined
+                        }
+                      | undefined
+                    Trendmicro?: {} | undefined
+                    Veeva?: { instanceUrl: {} } | undefined
+                    Zendesk?: { instanceUrl: {} } | undefined
+                    SAPOData?: SAPODataConnectorProfileProperties | undefined
+                    CustomConnector?:
+                      | {
+                          profileProperties?: {} | undefined
+                          oAuth2Properties?: OAuth2Properties | undefined
+                        }
+                      | undefined
+                    Pardot?:
+                      | {
+                          instanceUrl?: {} | undefined
+                          isSandboxEnvironment?: {} | undefined
+                          businessUnitId?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
+              connectorProfileCredentials?:
+                | {
+                    Amplitude?: { apiKey: {}; secretKey: {} } | undefined
+                    Datadog?: { apiKey: {}; applicationKey: {} } | undefined
+                    Dynatrace?: { apiToken: {} } | undefined
+                    GoogleAnalytics?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Honeycode?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?: ConnectorOAuthRequest | undefined
+                        }
+                      | undefined
+                    InforNexus?:
+                      | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
+                      | undefined
+                    Marketo?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Redshift?: { username?: {} | undefined; password?: {} | undefined } | undefined
+                    Salesforce?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                          clientCredentialsArn?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { username: {}; password: {} } | undefined
+                    Singular?: { apiKey: {} } | undefined
+                    Slack?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    Snowflake?: { username: {}; password: {} } | undefined
+                    Trendmicro?: { apiSecretKey: {} } | undefined
+                    Veeva?: { username: {}; password: {} } | undefined
+                    Zendesk?:
+                      | {
+                          clientId: {}
+                          clientSecret: {}
+                          accessToken?: {} | undefined
+                          oAuthRequest?:
+                            | { authCode?: {} | undefined; redirectUri?: {} | undefined }
+                            | undefined
+                        }
+                      | undefined
+                    SAPOData?: SAPODataConnectorProfileCredentials | undefined
+                    CustomConnector?: CustomConnectorProfileCredentials | undefined
+                    Pardot?:
+                      | {
+                          accessToken?: {} | undefined
+                          refreshToken?: {} | undefined
+                          oAuthRequest?: ConnectorOAuthRequest | undefined
+                          clientCredentialsArn?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorProfileName: string
-                connectionMode: 'Public' | 'Private'
-                connectorProfileConfig: {
-                  connectorProfileProperties?:
-                    | {
-                        Amplitude?: {} | undefined
-                        Datadog?: { instanceUrl: {} } | undefined
-                        Dynatrace?: { instanceUrl: {} } | undefined
-                        GoogleAnalytics?: {} | undefined
-                        Honeycode?: {} | undefined
-                        InforNexus?: { instanceUrl: {} } | undefined
-                        Marketo?: { instanceUrl: {} } | undefined
-                        Redshift?:
-                          | {
-                              databaseUrl?: {} | undefined
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              roleArn: {}
-                              dataApiRoleArn?: {} | undefined
-                              isRedshiftServerless?: {} | undefined
-                              clusterIdentifier?: {} | undefined
-                              workgroupName?: {} | undefined
-                              databaseName?: {} | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              usePrivateLinkForMetadataAndAuthorization?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { instanceUrl: {} } | undefined
-                        Singular?: {} | undefined
-                        Slack?: { instanceUrl: {} } | undefined
-                        Snowflake?:
-                          | {
-                              warehouse: {}
-                              stage: {}
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              privateLinkServiceName?: {} | undefined
-                              accountName?: {} | undefined
-                              region?: {} | undefined
-                            }
-                          | undefined
-                        Trendmicro?: {} | undefined
-                        Veeva?: { instanceUrl: {} } | undefined
-                        Zendesk?: { instanceUrl: {} } | undefined
-                        SAPOData?: SAPODataConnectorProfileProperties | undefined
-                        CustomConnector?:
-                          | {
-                              profileProperties?: {} | undefined
-                              oAuth2Properties?: OAuth2Properties | undefined
-                            }
-                          | undefined
-                        Pardot?:
-                          | {
-                              instanceUrl?: {} | undefined
-                              isSandboxEnvironment?: {} | undefined
-                              businessUnitId?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                  connectorProfileCredentials?:
-                    | {
-                        Amplitude?: { apiKey: {}; secretKey: {} } | undefined
-                        Datadog?: { apiKey: {}; applicationKey: {} } | undefined
-                        Dynatrace?: { apiToken: {} } | undefined
-                        GoogleAnalytics?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Honeycode?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                            }
-                          | undefined
-                        InforNexus?:
-                          | { accessKeyId: {}; userId: {}; secretAccessKey: {}; datakey: {} }
-                          | undefined
-                        Marketo?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Redshift?:
-                          | { username?: {} | undefined; password?: {} | undefined }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { username: {}; password: {} } | undefined
-                        Singular?: { apiKey: {} } | undefined
-                        Slack?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        Snowflake?: { username: {}; password: {} } | undefined
-                        Trendmicro?: { apiSecretKey: {} } | undefined
-                        Veeva?: { username: {}; password: {} } | undefined
-                        Zendesk?:
-                          | {
-                              clientId: {}
-                              clientSecret: {}
-                              accessToken?: {} | undefined
-                              oAuthRequest?:
-                                | { authCode?: {} | undefined; redirectUri?: {} | undefined }
-                                | undefined
-                            }
-                          | undefined
-                        SAPOData?: SAPODataConnectorProfileCredentials | undefined
-                        CustomConnector?: CustomConnectorProfileCredentials | undefined
-                        Pardot?:
-                          | {
-                              accessToken?: {} | undefined
-                              refreshToken?: {} | undefined
-                              oAuthRequest?: ConnectorOAuthRequest | undefined
-                              clientCredentialsArn?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                clientToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateConnectorProfileResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/update-connector-registration': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: UpdateConnectorRegistrationResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            connectorLabel: string
+            description?: string | undefined
+            connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 487
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                connectorLabel: string
-                description?: string | undefined
-                connectorProvisioningConfig?: { lambda?: { lambdaArn: {} } | undefined } | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 488
-          }
+        }
+        output: UpdateConnectorRegistrationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/update-flow': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: UpdateFlowResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
+        } & {
+          json: {
+            flowName: string
+            description?: string | undefined
+            triggerConfig: {
+              triggerType?: {} | undefined
+              triggerProperties?:
+                | {
+                    Scheduled?:
+                      | {
+                          scheduleExpression: {}
+                          dataPullMode?: {} | undefined
+                          scheduleStartTime?: {} | undefined
+                          scheduleEndTime?: {} | undefined
+                          timezone?: {} | undefined
+                          scheduleOffset?: {} | undefined
+                          firstExecutionFrom?: {} | undefined
+                          flowErrorDeactivationThreshold?: {} | undefined
+                        }
+                      | undefined
+                  }
+                | undefined
             }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
+            sourceFlowConfig: {
+              connectorType?: {} | undefined
+              apiVersion?: {} | undefined
+              connectorProfileName?: {} | undefined
+              sourceConnectorProperties?:
+                | {
+                    Amplitude?: { object: {} } | undefined
+                    Datadog?: { object: {} } | undefined
+                    Dynatrace?: { object: {} } | undefined
+                    GoogleAnalytics?: { object: {} } | undefined
+                    InforNexus?: { object: {} } | undefined
+                    Marketo?: { object: {} } | undefined
+                    S3?:
+                      | {
+                          bucketName: {}
+                          bucketPrefix?: {} | undefined
+                          s3InputFormatConfig?: S3InputFormatConfig | undefined
+                        }
+                      | undefined
+                    Salesforce?:
+                      | {
+                          object: {}
+                          enableDynamicFieldUpdate?: {} | undefined
+                          includeDeletedRecords?: {} | undefined
+                          dataTransferApi?: {} | undefined
+                        }
+                      | undefined
+                    ServiceNow?: { object: {} } | undefined
+                    Singular?: { object: {} } | undefined
+                    Slack?: { object: {} } | undefined
+                    Trendmicro?: { object: {} } | undefined
+                    Veeva?:
+                      | {
+                          object: {}
+                          documentType?: {} | undefined
+                          includeSourceFiles?: {} | undefined
+                          includeRenditions?: {} | undefined
+                          includeAllVersions?: {} | undefined
+                        }
+                      | undefined
+                    Zendesk?: { object: {} } | undefined
+                    SAPOData?: SAPODataSourceProperties | undefined
+                    CustomConnector?: CustomConnectorSourceProperties | undefined
+                    Pardot?: { object: {} } | undefined
+                  }
+                | undefined
+              incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
             }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+            destinationFlowConfigList: DestinationFlowConfig[]
+            tasks: Task[]
+            metadataCatalogConfig?:
+              | { glueDataCatalog?: { roleArn: {}; databaseName: {}; tablePrefix: {} } | undefined }
+              | undefined
+            clientToken?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorAuthenticationException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: ConnectorServerException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                flowName: string
-                description?: string | undefined
-                triggerConfig: {
-                  triggerType?: {} | undefined
-                  triggerProperties?:
-                    | {
-                        Scheduled?:
-                          | {
-                              scheduleExpression: {}
-                              dataPullMode?: {} | undefined
-                              scheduleStartTime?: {} | undefined
-                              scheduleEndTime?: {} | undefined
-                              timezone?: {} | undefined
-                              scheduleOffset?: {} | undefined
-                              firstExecutionFrom?: {} | undefined
-                              flowErrorDeactivationThreshold?: {} | undefined
-                            }
-                          | undefined
-                      }
-                    | undefined
-                }
-                sourceFlowConfig: {
-                  connectorType?: {} | undefined
-                  apiVersion?: {} | undefined
-                  connectorProfileName?: {} | undefined
-                  sourceConnectorProperties?:
-                    | {
-                        Amplitude?: { object: {} } | undefined
-                        Datadog?: { object: {} } | undefined
-                        Dynatrace?: { object: {} } | undefined
-                        GoogleAnalytics?: { object: {} } | undefined
-                        InforNexus?: { object: {} } | undefined
-                        Marketo?: { object: {} } | undefined
-                        S3?:
-                          | {
-                              bucketName: {}
-                              bucketPrefix?: {} | undefined
-                              s3InputFormatConfig?: S3InputFormatConfig | undefined
-                            }
-                          | undefined
-                        Salesforce?:
-                          | {
-                              object: {}
-                              enableDynamicFieldUpdate?: {} | undefined
-                              includeDeletedRecords?: {} | undefined
-                              dataTransferApi?: {} | undefined
-                            }
-                          | undefined
-                        ServiceNow?: { object: {} } | undefined
-                        Singular?: { object: {} } | undefined
-                        Slack?: { object: {} } | undefined
-                        Trendmicro?: { object: {} } | undefined
-                        Veeva?:
-                          | {
-                              object: {}
-                              documentType?: {} | undefined
-                              includeSourceFiles?: {} | undefined
-                              includeRenditions?: {} | undefined
-                              includeAllVersions?: {} | undefined
-                            }
-                          | undefined
-                        Zendesk?: { object: {} } | undefined
-                        SAPOData?: SAPODataSourceProperties | undefined
-                        CustomConnector?: CustomConnectorSourceProperties | undefined
-                        Pardot?: { object: {} } | undefined
-                      }
-                    | undefined
-                  incrementalPullConfig?: { datetimeTypeFieldName?: {} | undefined } | undefined
-                }
-                destinationFlowConfigList: DestinationFlowConfig[]
-                tasks: Task[]
-                metadataCatalogConfig?:
-                  | {
-                      glueDataCatalog?:
-                        | { roleArn: {}; databaseName: {}; tablePrefix: {} }
-                        | undefined
-                    }
-                  | undefined
-                clientToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: UpdateFlowResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

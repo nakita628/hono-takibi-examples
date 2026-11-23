@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/hpayushboard/3.0.0/openapi.yaml',
   output: './src/hpayushboard/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/hpayushboard/types.ts' },
   client: { output: './src/hpayushboard/client.ts', baseUrl: '/' },
   rpc: { output: './src/hpayushboard/rpc.ts', parseResponse: true },

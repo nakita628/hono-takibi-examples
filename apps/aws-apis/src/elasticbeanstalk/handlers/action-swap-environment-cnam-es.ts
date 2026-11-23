@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSwapEnvironmentCNAMEsRoute,
   postActionSwapEnvironmentCNAMEsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSwapEnvironmentCNAMEsRouteHandler: RouteHandler<
+  typeof getActionSwapEnvironmentCNAMEsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSwapEnvironmentCnamEsHandler = app
-  .openapi(getActionSwapEnvironmentCNAMEsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSwapEnvironmentCNAMEsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSwapEnvironmentCNAMEsRouteHandler: RouteHandler<
+  typeof postActionSwapEnvironmentCNAMEsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

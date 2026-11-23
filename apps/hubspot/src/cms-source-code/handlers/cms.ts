@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCmsSourceCode202609EnvironmentContentPathRoute,
   getCmsSourceCode202609EnvironmentContentPathRoute,
   getCmsSourceCode202609EnvironmentMetadataPathRoute,
@@ -10,30 +10,50 @@ import {
   putCmsSourceCode202609EnvironmentContentPathRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCmsSourceCode202609ExtractAsyncRouteHandler: RouteHandler<
+  typeof postCmsSourceCode202609ExtractAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cmsHandler = app
-  .openapi(postCmsSourceCode202609ExtractAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsSourceCode202609ExtractAsyncTasksTaskIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsSourceCode202609EnvironmentContentPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCmsSourceCode202609EnvironmentContentPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsSourceCode202609EnvironmentContentPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCmsSourceCode202609EnvironmentContentPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCmsSourceCode202609EnvironmentMetadataPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCmsSourceCode202609EnvironmentValidatePathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCmsSourceCode202609ExtractAsyncTasksTaskIdStatusRouteHandler: RouteHandler<
+  typeof getCmsSourceCode202609ExtractAsyncTasksTaskIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsSourceCode202609EnvironmentContentPathRouteHandler: RouteHandler<
+  typeof getCmsSourceCode202609EnvironmentContentPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCmsSourceCode202609EnvironmentContentPathRouteHandler: RouteHandler<
+  typeof putCmsSourceCode202609EnvironmentContentPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsSourceCode202609EnvironmentContentPathRouteHandler: RouteHandler<
+  typeof postCmsSourceCode202609EnvironmentContentPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCmsSourceCode202609EnvironmentContentPathRouteHandler: RouteHandler<
+  typeof deleteCmsSourceCode202609EnvironmentContentPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCmsSourceCode202609EnvironmentMetadataPathRouteHandler: RouteHandler<
+  typeof getCmsSourceCode202609EnvironmentMetadataPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCmsSourceCode202609EnvironmentValidatePathRouteHandler: RouteHandler<
+  typeof postCmsSourceCode202609EnvironmentValidatePathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

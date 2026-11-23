@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1PackageNameDecodeIntegrityTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1PackageNameDecodeIntegrityTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1Handler = app.openapi(postV1PackageNameDecodeIntegrityTokenRoute, (c) => {
+export const postV1PackageNameDecodeIntegrityTokenRouteHandler: RouteHandler<
+  typeof postV1PackageNameDecodeIntegrityTokenRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

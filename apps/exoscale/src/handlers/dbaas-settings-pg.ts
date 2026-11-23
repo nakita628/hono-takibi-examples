@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsPgRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsPgRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsPgHandler = app.openapi(getDbaasSettingsPgRoute, (c) => {
+export const getDbaasSettingsPgRouteHandler: RouteHandler<typeof getDbaasSettingsPgRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminEmojiRemoveRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminEmojiRemoveRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminEmojiRemoveHandler = app.openapi(postAdminEmojiRemoveRoute, (c) => {
+export const postAdminEmojiRemoveRouteHandler: RouteHandler<
+  typeof postAdminEmojiRemoveRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

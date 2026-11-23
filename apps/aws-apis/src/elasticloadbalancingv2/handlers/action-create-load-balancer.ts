@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCreateLoadBalancerRoute, postActionCreateLoadBalancerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionCreateLoadBalancerRoute, postActionCreateLoadBalancerRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateLoadBalancerRouteHandler: RouteHandler<
+  typeof getActionCreateLoadBalancerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateLoadBalancerHandler = app
-  .openapi(getActionCreateLoadBalancerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateLoadBalancerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateLoadBalancerRouteHandler: RouteHandler<
+  typeof postActionCreateLoadBalancerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

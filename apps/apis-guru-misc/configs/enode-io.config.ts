@@ -3,8 +3,8 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/enode.io/1.3.10/openapi.yaml',
   output: './src/enode-io/routes.ts',
-  template: {},
-  // No type output: enum values that are objects are written as `[object Object]` and the run aborts (nakita628/hono-takibi#504).
+  template: { routeHandler: true },
+  type: { output: './src/enode-io/types.ts' },
   client: { output: './src/enode-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/enode-io/rpc.ts', parseResponse: true },
   swr: { output: './src/enode-io/hooks/swr.ts' },

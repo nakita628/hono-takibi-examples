@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketsNamespaceRepoResolvePathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBucketsNamespaceRepoResolvePathRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bucketsHandler = app.openapi(getBucketsNamespaceRepoResolvePathRoute, (c) => {
+export const getBucketsNamespaceRepoResolvePathRouteHandler: RouteHandler<
+  typeof getBucketsNamespaceRepoResolvePathRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

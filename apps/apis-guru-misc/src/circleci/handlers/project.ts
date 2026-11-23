@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectUsernameProjectBuildCacheRoute,
   deleteProjectUsernameProjectCheckoutKeyFingerprintRoute,
   deleteProjectUsernameProjectEnvvarNameRoute,
@@ -20,60 +20,110 @@ import {
   postProjectUsernameProjectTreeBranchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectUsernameProjectRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectHandler = app
-  .openapi(getProjectUsernameProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectUsernameProjectBuildCacheRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectCheckoutKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectCheckoutKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectUsernameProjectCheckoutKeyFingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectCheckoutKeyFingerprintRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectEnvvarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectEnvvarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectUsernameProjectEnvvarNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectEnvvarNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectSshKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectTreeBranchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectBuildNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectBuildNumArtifactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectBuildNumCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectUsernameProjectBuildNumRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectUsernameProjectBuildNumTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectUsernameProjectRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectUsernameProjectBuildCacheRouteHandler: RouteHandler<
+  typeof deleteProjectUsernameProjectBuildCacheRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectCheckoutKeyRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectCheckoutKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectCheckoutKeyRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectCheckoutKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectUsernameProjectCheckoutKeyFingerprintRouteHandler: RouteHandler<
+  typeof deleteProjectUsernameProjectCheckoutKeyFingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectCheckoutKeyFingerprintRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectCheckoutKeyFingerprintRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectEnvvarRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectEnvvarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectEnvvarRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectEnvvarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectUsernameProjectEnvvarNameRouteHandler: RouteHandler<
+  typeof deleteProjectUsernameProjectEnvvarNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectEnvvarNameRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectEnvvarNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectSshKeyRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectSshKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectTreeBranchRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectTreeBranchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectBuildNumRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectBuildNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectBuildNumArtifactsRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectBuildNumArtifactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectBuildNumCancelRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectBuildNumCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProjectUsernameProjectBuildNumRetryRouteHandler: RouteHandler<
+  typeof postProjectUsernameProjectBuildNumRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectUsernameProjectBuildNumTestsRouteHandler: RouteHandler<
+  typeof getProjectUsernameProjectBuildNumTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

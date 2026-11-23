@@ -1,30 +1,49 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
+const AddressAdministrativeAreaLevel1Schema = z
+  .string()
+  .openapi({
+    description: 'Name of administrative area, such as the state or province.',
+    example: 'RJ',
+  })
+  .openapi('AddressAdministrativeAreaLevel1')
+
+const AddressCountryCodeSchema = z
+  .string()
+  .openapi({ description: 'Two letter country code.', example: 'BR' })
+  .openapi('AddressCountryCode')
+
+const AddressCountryNameSchema = z
+  .string()
+  .openapi({ description: 'Name of the address country.', example: 'Brasil' })
+  .openapi('AddressCountryName')
+
+const AddressLocalitySchema = z
+  .string()
+  .openapi({ description: 'Name of address locality, such as the city.', example: 'Locality' })
+  .openapi('AddressLocality')
+
+const AddressLocalityAreaLevel1Schema = z
+  .string()
+  .openapi({
+    description: 'Name of the address locality area, such as the neighborhood or district.',
+    example: 'Locality area',
+  })
+  .openapi('AddressLocalityAreaLevel1')
+
+const AddressPostalCodeSchema = z
+  .string()
+  .openapi({ description: 'Address postal code.', example: '20200-000' })
+  .openapi('AddressPostalCode')
+
 const AddressSchema = z
   .object({
-    administrativeAreaLevel1: z
-      .string()
-      .openapi({
-        description: 'Name of administrative area, such as the state or province.',
-        example: 'RJ',
-      }),
-    countryCode: z
-      .string()
-      .exactOptional()
-      .openapi({ description: 'Two letter country code.', example: 'BR' }),
-    countryName: z
-      .string()
-      .openapi({ description: 'Name of the address country.', example: 'Brasil' }),
-    locality: z
-      .string()
-      .openapi({ description: 'Name of address locality, such as the city.', example: 'Locality' }),
-    localityAreaLevel1: z
-      .string()
-      .openapi({
-        description: 'Name of the address locality area, such as the neighborhood or district.',
-        example: 'Locality area',
-      }),
-    postalCode: z.string().openapi({ description: 'Address postal code.', example: '20200-000' }),
+    administrativeAreaLevel1: AddressAdministrativeAreaLevel1Schema,
+    countryCode: AddressCountryCodeSchema.exactOptional(),
+    countryName: AddressCountryNameSchema,
+    locality: AddressLocalitySchema,
+    localityAreaLevel1: AddressLocalityAreaLevel1Schema,
+    postalCode: AddressPostalCodeSchema,
     route: z.string().openapi({ description: 'Address route or street name.', example: '51' }),
     streetNumber: z.string().openapi({ description: 'Address street number.', example: '999' }),
   })
@@ -42,21 +61,44 @@ const AddressSchema = z
   })
   .openapi('Address')
 
+const ProfileBirthDateSchema = z
+  .string()
+  .openapi({ description: "Client's birth date in ISO 8601 format.", example: '1925-11-17' })
+  .openapi('ProfileBirthDate')
+
+const ProfileDocumentSchema = z
+  .string()
+  .openapi({ description: "Client's document.", example: '12345678900' })
+  .openapi('ProfileDocument')
+
+const ProfileDocumentTypeSchema = z
+  .string()
+  .openapi({ description: 'Type of document informed in `document`.', example: 'CPF' })
+  .openapi('ProfileDocumentType')
+
+const ProfileEmailSchema = z
+  .string()
+  .openapi({ description: "Client's email address.", example: 'john.doe@example.com' })
+  .openapi('ProfileEmail')
+
+const ProfileFirstNameSchema = z
+  .string()
+  .openapi({ description: "Client's first name.", example: 'John' })
+  .openapi('ProfileFirstName')
+
+const ProfileLastNameSchema = z
+  .string()
+  .openapi({ description: "Client's last name.", example: 'Doe' })
+  .openapi('ProfileLastName')
+
 const ProfileSchema = z
   .object({
-    birthDate: z
-      .string()
-      .exactOptional()
-      .openapi({ description: "Client's birth date in ISO 8601 format.", example: '1925-11-17' }),
-    document: z.string().openapi({ description: "Client's document.", example: '12345678900' }),
-    documentType: z
-      .string()
-      .openapi({ description: 'Type of document informed in `document`.', example: 'CPF' }),
-    email: z
-      .string()
-      .openapi({ description: "Client's email address.", example: 'john.doe@example.com' }),
-    firstName: z.string().openapi({ description: "Client's first name.", example: 'John' }),
-    lastName: z.string().openapi({ description: "Client's last name.", example: 'Doe' }),
+    birthDate: ProfileBirthDateSchema.exactOptional(),
+    document: ProfileDocumentSchema,
+    documentType: ProfileDocumentTypeSchema,
+    email: ProfileEmailSchema,
+    firstName: ProfileFirstNameSchema,
+    lastName: ProfileLastNameSchema,
   })
   .openapi({
     required: ['firstName', 'lastName', 'email', 'document', 'documentType'],
@@ -458,12 +500,12 @@ export const patchApiStorageProfileSystemProfilesProfileIdRoute = createRoute({
         'application/json': {
           schema: z
             .object({
-              birthDate: z.lazy(() => ProfileSchema).exactOptional(),
-              document: z.lazy(() => ProfileSchema).exactOptional(),
-              documentType: z.lazy(() => ProfileSchema).exactOptional(),
-              email: z.lazy(() => ProfileSchema).exactOptional(),
-              firstName: z.lazy(() => ProfileSchema).exactOptional(),
-              lastName: z.lazy(() => ProfileSchema).exactOptional(),
+              birthDate: ProfileBirthDateSchema.exactOptional(),
+              document: ProfileDocumentSchema.exactOptional(),
+              documentType: ProfileDocumentTypeSchema.exactOptional(),
+              email: ProfileEmailSchema.exactOptional(),
+              firstName: ProfileFirstNameSchema.exactOptional(),
+              lastName: ProfileLastNameSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },
@@ -717,14 +759,14 @@ export const patchApiStorageProfileSystemProfilesProfileIdAddressesAddressIdRout
         'application/json': {
           schema: z
             .object({
-              administrativeAreaLevel1: z.lazy(() => AddressSchema).exactOptional(),
-              countryCode: z.lazy(() => AddressSchema).exactOptional(),
-              countryName: z.lazy(() => AddressSchema).exactOptional(),
-              locality: z.lazy(() => AddressSchema).exactOptional(),
-              localityAreaLevel1: z.lazy(() => AddressSchema).exactOptional(),
-              postalCode: z.lazy(() => AddressSchema).exactOptional(),
-              route: z.lazy(() => AddressSchema).exactOptional(),
-              streetNumber: z.lazy(() => AddressSchema).exactOptional(),
+              administrativeAreaLevel1: AddressAdministrativeAreaLevel1Schema.exactOptional(),
+              countryCode: AddressCountryCodeSchema.exactOptional(),
+              countryName: AddressCountryNameSchema.exactOptional(),
+              locality: AddressLocalitySchema.exactOptional(),
+              localityAreaLevel1: AddressLocalityAreaLevel1Schema.exactOptional(),
+              postalCode: AddressPostalCodeSchema.exactOptional(),
+              route: AddressCountryNameSchema.exactOptional(),
+              streetNumber: AddressCountryNameSchema.exactOptional(),
             })
             .openapi({ required: [] }),
         },

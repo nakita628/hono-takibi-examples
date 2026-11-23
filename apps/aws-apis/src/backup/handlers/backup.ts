@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBackupPlansBackupPlanIdRoute,
   deleteBackupPlansBackupPlanIdSelectionsSelectionIdRoute,
   getBackupPlansBackupPlanIdIndexRoute,
@@ -16,48 +16,86 @@ import {
   putBackupPlansIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putBackupPlansIndexRouteHandler: RouteHandler<
+  typeof putBackupPlansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const backupHandler = app
-  .openapi(putBackupPlansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBackupPlansBackupPlanIdSelectionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansBackupPlanIdSelectionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBackupPlansBackupPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackupPlansBackupPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBackupPlansBackupPlanIdSelectionsSelectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansBackupPlanIdSelectionsSelectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansBackupPlanIdToTemplateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansBackupPlanIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackupTemplateJsonToPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupTemplatePlansTemplateIdToPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupTemplatePlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupPlansBackupPlanIdVersionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBackupPlansIndexRouteHandler: RouteHandler<
+  typeof getBackupPlansIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBackupPlansBackupPlanIdSelectionsIndexRouteHandler: RouteHandler<
+  typeof putBackupPlansBackupPlanIdSelectionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupPlansBackupPlanIdSelectionsIndexRouteHandler: RouteHandler<
+  typeof getBackupPlansBackupPlanIdSelectionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBackupPlansBackupPlanIdRouteHandler: RouteHandler<
+  typeof deleteBackupPlansBackupPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackupPlansBackupPlanIdRouteHandler: RouteHandler<
+  typeof postBackupPlansBackupPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBackupPlansBackupPlanIdSelectionsSelectionIdRouteHandler: RouteHandler<
+  typeof deleteBackupPlansBackupPlanIdSelectionsSelectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupPlansBackupPlanIdSelectionsSelectionIdRouteHandler: RouteHandler<
+  typeof getBackupPlansBackupPlanIdSelectionsSelectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupPlansBackupPlanIdToTemplateIndexRouteHandler: RouteHandler<
+  typeof getBackupPlansBackupPlanIdToTemplateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupPlansBackupPlanIdIndexRouteHandler: RouteHandler<
+  typeof getBackupPlansBackupPlanIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackupTemplateJsonToPlanRouteHandler: RouteHandler<
+  typeof postBackupTemplateJsonToPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupTemplatePlansTemplateIdToPlanRouteHandler: RouteHandler<
+  typeof getBackupTemplatePlansTemplateIdToPlanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupTemplatePlansRouteHandler: RouteHandler<
+  typeof getBackupTemplatePlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupPlansBackupPlanIdVersionsIndexRouteHandler: RouteHandler<
+  typeof getBackupPlansBackupPlanIdVersionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

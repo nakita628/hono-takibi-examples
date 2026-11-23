@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSnapshotRepositoryRoute,
   deleteSnapshotRepositorySnapshotRoute,
   getSnapshotRepositoryRoute,
@@ -21,63 +21,114 @@ import {
   putSnapshotRepositorySnapshotRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSnapshotRepositorySnapshotMountRouteHandler: RouteHandler<
+  typeof postSnapshotRepositorySnapshotMountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snapshotHandler = app
-  .openapi(postSnapshotRepositorySnapshotMountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositoryCleanupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnapshotRepositorySnapshotCloneTargetSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotRepositorySnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnapshotRepositorySnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositorySnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnapshotRepositorySnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnapshotRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnapshotRepositoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositoryAnalyzeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositoryVerifyIntegrityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositorySnapshotRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotRepositoryStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotRepositorySnapshotStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnapshotRepositoryVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSnapshotRepositoryCleanupRouteHandler: RouteHandler<
+  typeof postSnapshotRepositoryCleanupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnapshotRepositorySnapshotCloneTargetSnapshotRouteHandler: RouteHandler<
+  typeof putSnapshotRepositorySnapshotCloneTargetSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotRepositorySnapshotRouteHandler: RouteHandler<
+  typeof getSnapshotRepositorySnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnapshotRepositorySnapshotRouteHandler: RouteHandler<
+  typeof putSnapshotRepositorySnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositorySnapshotRouteHandler: RouteHandler<
+  typeof postSnapshotRepositorySnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnapshotRepositorySnapshotRouteHandler: RouteHandler<
+  typeof deleteSnapshotRepositorySnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotRepositoryRouteHandler: RouteHandler<
+  typeof getSnapshotRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnapshotRepositoryRouteHandler: RouteHandler<
+  typeof putSnapshotRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositoryRouteHandler: RouteHandler<
+  typeof postSnapshotRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnapshotRepositoryRouteHandler: RouteHandler<
+  typeof deleteSnapshotRepositoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotRouteHandler: RouteHandler<typeof getSnapshotRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositoryAnalyzeRouteHandler: RouteHandler<
+  typeof postSnapshotRepositoryAnalyzeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositoryVerifyIntegrityRouteHandler: RouteHandler<
+  typeof postSnapshotRepositoryVerifyIntegrityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositorySnapshotRestoreRouteHandler: RouteHandler<
+  typeof postSnapshotRepositorySnapshotRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotStatusRouteHandler: RouteHandler<typeof getSnapshotStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotRepositoryStatusRouteHandler: RouteHandler<
+  typeof getSnapshotRepositoryStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotRepositorySnapshotStatusRouteHandler: RouteHandler<
+  typeof getSnapshotRepositorySnapshotStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotRepositoryVerifyRouteHandler: RouteHandler<
+  typeof postSnapshotRepositoryVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1109,20 +1109,20 @@ export function useImmutableGetCrxServerCrxDefaultJcrRoot1Json<TError = unknown>
 }
 
 export function getGetEtcPackagesGroupNameVersionZipKey(
-  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>,
+  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>,
 ) {
-  return ['etc', '/etc/packages/:group/:name-:version.zip', args] as const
+  return ['etc', '/etc/packages/:group/:name-{version}.zip', args] as const
 }
 
 export function useGetEtcPackagesGroupNameVersionZip<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>,
+  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+              ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
             >
           >
         >
@@ -1147,7 +1147,7 @@ export function useGetEtcPackagesGroupNameVersionZip<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+              ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
             >
           >
         >
@@ -1157,7 +1157,7 @@ export function useGetEtcPackagesGroupNameVersionZip<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.etc.packages[':group'][':name-:version.zip'].$get(args, clientOptions),
+          client.etc.packages[':group'][':name-{version}.zip'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1165,14 +1165,14 @@ export function useGetEtcPackagesGroupNameVersionZip<TError = unknown>(
 }
 
 export function useImmutableGetEtcPackagesGroupNameVersionZip<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>,
+  args: InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+              ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
             >
           >
         >
@@ -1197,7 +1197,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZip<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+              ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
             >
           >
         >
@@ -1207,7 +1207,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZip<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.etc.packages[':group'][':name-:version.zip'].$get(args, clientOptions),
+          client.etc.packages[':group'][':name-{version}.zip'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1216,12 +1216,12 @@ export function useImmutableGetEtcPackagesGroupNameVersionZip<TError = unknown>(
 
 export function getGetEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTidy2JsonKey(
   args: InferRequestType<
-    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
   >,
 ) {
   return [
     'etc',
-    '/etc/packages/:group/:name-:version.zip/jcr:content/vlt:definition/filter.tidy.2.json',
+    '/etc/packages/:group/:name-{version}.zip/jcr:content/vlt:definition/filter.tidy.2.json',
     args,
   ] as const
 }
@@ -1230,7 +1230,7 @@ export function useGetEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilte
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1239,7 +1239,7 @@ export function useGetEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilte
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
               >
             >
           >
@@ -1266,7 +1266,7 @@ export function useGetEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilte
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
               >
             >
           >
@@ -1277,7 +1277,7 @@ export function useGetEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilte
       swrKey,
       async () =>
         parseResponse(
-          client.etc.packages[':group'][':name-:version.zip']['jcr:content']['vlt:definition'][
+          client.etc.packages[':group'][':name-{version}.zip']['jcr:content']['vlt:definition'][
             'filter.tidy.2.json'
           ].$get(args, clientOptions),
         ),
@@ -1290,7 +1290,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZipJcrContentVltDefini
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -1299,7 +1299,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZipJcrContentVltDefini
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
               >
             >
           >
@@ -1326,7 +1326,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZipJcrContentVltDefini
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
               >
             >
           >
@@ -1337,7 +1337,7 @@ export function useImmutableGetEtcPackagesGroupNameVersionZipJcrContentVltDefini
       swrKey,
       async () =>
         parseResponse(
-          client.etc.packages[':group'][':name-:version.zip']['jcr:content']['vlt:definition'][
+          client.etc.packages[':group'][':name-{version}.zip']['jcr:content']['vlt:definition'][
             'filter.tidy.2.json'
           ].$get(args, clientOptions),
         ),
@@ -1347,19 +1347,19 @@ export function useImmutableGetEtcPackagesGroupNameVersionZipJcrContentVltDefini
 }
 
 export function getGetEtcReplicationAgentsRunmode1JsonKey(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>,
 ) {
-  return ['etc', '/etc/replication/agents.:runmode.-1.json', args] as const
+  return ['etc', '/etc/replication/agents.{runmode}.-1.json', args] as const
 }
 
 export function useGetEtcReplicationAgentsRunmode1Json<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+            Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
           >
         >
       >,
@@ -1382,7 +1382,7 @@ export function useGetEtcReplicationAgentsRunmode1Json<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+            Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
           >
         >
       >,
@@ -1390,20 +1390,20 @@ export function useGetEtcReplicationAgentsRunmode1Json<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.etc.replication['agents.:runmode.-1.json'].$get(args, clientOptions)),
+        parseResponse(client.etc.replication['agents.{runmode}.-1.json'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEtcReplicationAgentsRunmode1Json<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+            Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
           >
         >
       >,
@@ -1426,7 +1426,7 @@ export function useImmutableGetEtcReplicationAgentsRunmode1Json<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+            Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
           >
         >
       >,
@@ -1434,26 +1434,28 @@ export function useImmutableGetEtcReplicationAgentsRunmode1Json<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.etc.replication['agents.:runmode.-1.json'].$get(args, clientOptions)),
+        parseResponse(client.etc.replication['agents.{runmode}.-1.json'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEtcReplicationAgentsRunmodeNameKey(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>,
 ) {
-  return ['etc', '/etc/replication/agents.:runmode/:name', args] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', args] as const
 }
 
 export function useGetEtcReplicationAgentsRunmodeName<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
+            >
           >
         >
       >,
@@ -1476,7 +1478,9 @@ export function useGetEtcReplicationAgentsRunmodeName<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
+            >
           >
         >
       >,
@@ -1484,20 +1488,24 @@ export function useGetEtcReplicationAgentsRunmodeName<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.etc.replication['agents.:runmode'][':name'].$get(args, clientOptions)),
+        parseResponse(
+          client.etc.replication['agents.{runmode}'][':name'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEtcReplicationAgentsRunmodeName<TError = unknown>(
-  args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>,
+  args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
+            >
           >
         >
       >,
@@ -1520,7 +1528,9 @@ export function useImmutableGetEtcReplicationAgentsRunmodeName<TError = unknown>
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
+            >
           >
         >
       >,
@@ -1528,14 +1538,16 @@ export function useImmutableGetEtcReplicationAgentsRunmodeName<TError = unknown>
     >(
       swrKey,
       async () =>
-        parseResponse(client.etc.replication['agents.:runmode'][':name'].$get(args, clientOptions)),
+        parseResponse(
+          client.etc.replication['agents.{runmode}'][':name'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostEtcReplicationAgentsRunmodeNameKey() {
-  return ['etc', '/etc/replication/agents.:runmode/:name', 'POST'] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', 'POST'] as const
 }
 
 export function usePostEtcReplicationAgentsRunmodeName<TError = unknown>(options?: {
@@ -1543,13 +1555,13 @@ export function usePostEtcReplicationAgentsRunmodeName<TError = unknown>(options
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>>
+          Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1566,18 +1578,20 @@ export function usePostEtcReplicationAgentsRunmodeName<TError = unknown>(options
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.etc.replication)['agents.:runmode'][':name']['$post']
+            (typeof client.etc.replication)['agents.{runmode}'][':name']['$post']
           >
         },
       ) =>
-        parseResponse(client.etc.replication['agents.:runmode'][':name'].$post(arg, clientOptions)),
+        parseResponse(
+          client.etc.replication['agents.{runmode}'][':name'].$post(arg, clientOptions),
+        ),
       restMutationOptions,
     ),
   }
 }
 
 export function getDeleteEtcReplicationAgentsRunmodeNameKey() {
-  return ['etc', '/etc/replication/agents.:runmode/:name', 'DELETE'] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', 'DELETE'] as const
 }
 
 export function useDeleteEtcReplicationAgentsRunmodeName<TError = unknown>(options?: {
@@ -1586,14 +1600,14 @@ export function useDeleteEtcReplicationAgentsRunmodeName<TError = unknown>(optio
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>
+            ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>
           >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1610,12 +1624,12 @@ export function useDeleteEtcReplicationAgentsRunmodeName<TError = unknown>(optio
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.etc.replication)['agents.:runmode'][':name']['$delete']
+            (typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']
           >
         },
       ) =>
         parseResponse(
-          client.etc.replication['agents.:runmode'][':name'].$delete(arg, clientOptions),
+          client.etc.replication['agents.{runmode}'][':name'].$delete(arg, clientOptions),
         ),
       restMutationOptions,
     ),

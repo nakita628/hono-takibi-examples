@@ -1745,6 +1745,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 'WWW-Authenticate'?: string | undefined
               }
             } & { json: ApproveTransfersRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              header: {
+                'Idempotency-Key'?: string | undefined
+                'WWW-Authenticate'?: string | undefined
+              }
+            } & { json: ApproveTransfersRequest }
             output: ServiceError
             outputFormat: 'json'
             status: 401
@@ -1786,6 +1797,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/transfers/cancel': {
       $post:
+        | {
+            input: { header: { 'Idempotency-Key'?: string | undefined } } & {
+              json: CancelTransfersRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { header: { 'Idempotency-Key'?: string | undefined } } & {
               json: CancelTransfersRequest

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIntermediatePathAuthorizableIdKeystoreStoreP12Route,
   getIntermediatePathAuthorizableIdKsJsonRoute,
   postIntermediatePathAuthorizableIdKsHtmlRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIntermediatePathAuthorizableIdKsHtmlRouteHandler: RouteHandler<
+  typeof postIntermediatePathAuthorizableIdKsHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const intermediatePathHandler = app
-  .openapi(postIntermediatePathAuthorizableIdKsHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntermediatePathAuthorizableIdKsJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntermediatePathAuthorizableIdKeystoreStoreP12Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIntermediatePathAuthorizableIdKsJsonRouteHandler: RouteHandler<
+  typeof getIntermediatePathAuthorizableIdKsJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntermediatePathAuthorizableIdKeystoreStoreP12RouteHandler: RouteHandler<
+  typeof getIntermediatePathAuthorizableIdKeystoreStoreP12Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

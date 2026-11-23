@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSlidesChildObjectsIdRoute,
   getSlidesColorMapsIdRoute,
   getSlidesDetailsIdRoute,
@@ -18,54 +18,94 @@ import {
   putSlidesOpenOfficeXmlIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSlidesChildObjectsIdRouteHandler: RouteHandler<
+  typeof getSlidesChildObjectsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const slidesHandler = app
-  .openapi(getSlidesChildObjectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesColorMapsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesDetailsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGraphicTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGraphicTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGraphicTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGraphicsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGroupElementTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGroupElementTypesTypeIdTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGroupElementTypesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesGroupElementsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSlidesOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesSlideMastersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesSvgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSlidesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSlidesColorMapsIdRouteHandler: RouteHandler<
+  typeof getSlidesColorMapsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesDetailsIdRouteHandler: RouteHandler<typeof getSlidesDetailsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGraphicTypesRouteHandler: RouteHandler<
+  typeof getSlidesGraphicTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGraphicTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSlidesGraphicTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGraphicTypesIdRouteHandler: RouteHandler<
+  typeof getSlidesGraphicTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGraphicsIdRouteHandler: RouteHandler<
+  typeof getSlidesGraphicsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGroupElementTypesRouteHandler: RouteHandler<
+  typeof getSlidesGroupElementTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGroupElementTypesTypeIdTypeIdRouteHandler: RouteHandler<
+  typeof getSlidesGroupElementTypesTypeIdTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGroupElementTypesIdRouteHandler: RouteHandler<
+  typeof getSlidesGroupElementTypesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesGroupElementsIdRouteHandler: RouteHandler<
+  typeof getSlidesGroupElementsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof getSlidesOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSlidesOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof putSlidesOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesSlideMastersIdRouteHandler: RouteHandler<
+  typeof getSlidesSlideMastersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesSvgIdRouteHandler: RouteHandler<typeof getSlidesSvgIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSlidesIdRouteHandler: RouteHandler<typeof getSlidesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

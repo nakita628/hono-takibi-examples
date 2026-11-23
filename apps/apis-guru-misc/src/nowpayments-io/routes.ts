@@ -1270,7 +1270,7 @@ export const postV1PayoutWithdrawalsIdVerifyRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: '200', content: {} } },
+  responses: { 200: { description: '200' } },
 })
 
 export const getV1SubPartnerRoute = createRoute({

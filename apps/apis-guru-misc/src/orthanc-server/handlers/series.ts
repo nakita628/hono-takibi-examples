@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSeriesIdAttachmentsNameRoute,
   deleteSeriesIdMetadataNameRoute,
   deleteSeriesIdRoute,
@@ -40,120 +40,224 @@ import {
   putSeriesIdMetadataNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSeriesRouteHandler: RouteHandler<typeof getSeriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const seriesHandler = app
-  .openapi(getSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSeriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdAnonymizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSeriesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSeriesIdAttachmentsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdAttachmentsNameCompressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameCompressedDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameCompressedMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameCompressedSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameIsCompressedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdAttachmentsNameSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdAttachmentsNameUncompressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdAttachmentsNameVerifyMd5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdInstancesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSeriesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSeriesIdMetadataNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdModifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdModuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdNumpyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdOrderedSlicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdPatientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSeriesIdReconstructRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdSharedTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSeriesIdStudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSeriesIdRouteHandler: RouteHandler<typeof deleteSeriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdRouteHandler: RouteHandler<typeof getSeriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdAnonymizeRouteHandler: RouteHandler<
+  typeof postSeriesIdAnonymizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdArchiveRouteHandler: RouteHandler<typeof getSeriesIdArchiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdArchiveRouteHandler: RouteHandler<
+  typeof postSeriesIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSeriesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof deleteSeriesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSeriesIdAttachmentsNameRouteHandler: RouteHandler<
+  typeof putSeriesIdAttachmentsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdAttachmentsNameCompressRouteHandler: RouteHandler<
+  typeof postSeriesIdAttachmentsNameCompressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameCompressedDataRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameCompressedDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameCompressedMd5RouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameCompressedMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameCompressedSizeRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameCompressedSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameDataRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameInfoRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameIsCompressedRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameIsCompressedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameMd5RouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdAttachmentsNameSizeRouteHandler: RouteHandler<
+  typeof getSeriesIdAttachmentsNameSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdAttachmentsNameUncompressRouteHandler: RouteHandler<
+  typeof postSeriesIdAttachmentsNameUncompressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdAttachmentsNameVerifyMd5RouteHandler: RouteHandler<
+  typeof postSeriesIdAttachmentsNameVerifyMd5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdInstancesRouteHandler: RouteHandler<
+  typeof getSeriesIdInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdInstancesTagsRouteHandler: RouteHandler<
+  typeof getSeriesIdInstancesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdMediaRouteHandler: RouteHandler<typeof getSeriesIdMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdMediaRouteHandler: RouteHandler<typeof postSeriesIdMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdMetadataRouteHandler: RouteHandler<
+  typeof getSeriesIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSeriesIdMetadataNameRouteHandler: RouteHandler<
+  typeof deleteSeriesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdMetadataNameRouteHandler: RouteHandler<
+  typeof getSeriesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSeriesIdMetadataNameRouteHandler: RouteHandler<
+  typeof putSeriesIdMetadataNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdModifyRouteHandler: RouteHandler<typeof postSeriesIdModifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdModuleRouteHandler: RouteHandler<typeof getSeriesIdModuleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdNumpyRouteHandler: RouteHandler<typeof getSeriesIdNumpyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdOrderedSlicesRouteHandler: RouteHandler<
+  typeof getSeriesIdOrderedSlicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdPatientRouteHandler: RouteHandler<typeof getSeriesIdPatientRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSeriesIdReconstructRouteHandler: RouteHandler<
+  typeof postSeriesIdReconstructRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdSharedTagsRouteHandler: RouteHandler<
+  typeof getSeriesIdSharedTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdStatisticsRouteHandler: RouteHandler<
+  typeof getSeriesIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSeriesIdStudyRouteHandler: RouteHandler<typeof getSeriesIdStudyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

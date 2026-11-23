@@ -15270,7 +15270,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 402 }
         | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 408 }
         | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 429 }
-        | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 499 }
         | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 500 }
         | { input: { json: OnchainDataQuery }; output: Error; outputFormat: 'json'; status: 504 }
     }

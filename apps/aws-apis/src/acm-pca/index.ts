@@ -1,55 +1,146 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAcmPrivateCaCreateCertificateAuthorityAuditReportHandler,
-  xAmzTargetAcmPrivateCaCreateCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaCreatePermissionHandler,
-  xAmzTargetAcmPrivateCaDeleteCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaDeletePermissionHandler,
-  xAmzTargetAcmPrivateCaDeletePolicyHandler,
-  xAmzTargetAcmPrivateCaDescribeCertificateAuthorityAuditReportHandler,
-  xAmzTargetAcmPrivateCaDescribeCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaGetCertificateAuthorityCertificateHandler,
-  xAmzTargetAcmPrivateCaGetCertificateAuthorityCsrHandler,
-  xAmzTargetAcmPrivateCaGetCertificateHandler,
-  xAmzTargetAcmPrivateCaGetPolicyHandler,
-  xAmzTargetAcmPrivateCaImportCertificateAuthorityCertificateHandler,
-  xAmzTargetAcmPrivateCaIssueCertificateHandler,
-  xAmzTargetAcmPrivateCaListCertificateAuthoritiesHandler,
-  xAmzTargetAcmPrivateCaListPermissionsHandler,
-  xAmzTargetAcmPrivateCaListTagsHandler,
-  xAmzTargetAcmPrivateCaPutPolicyHandler,
-  xAmzTargetAcmPrivateCaRestoreCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaRevokeCertificateHandler,
-  xAmzTargetAcmPrivateCaTagCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaUntagCertificateAuthorityHandler,
-  xAmzTargetAcmPrivateCaUpdateCertificateAuthorityHandler,
+  postXAmzTargetACMPrivateCACreateCertificateAuthorityAuditReportRoute,
+  postXAmzTargetACMPrivateCACreateCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCACreatePermissionRoute,
+  postXAmzTargetACMPrivateCADeleteCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCADeletePermissionRoute,
+  postXAmzTargetACMPrivateCADeletePolicyRoute,
+  postXAmzTargetACMPrivateCADescribeCertificateAuthorityAuditReportRoute,
+  postXAmzTargetACMPrivateCADescribeCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCAGetCertificateAuthorityCertificateRoute,
+  postXAmzTargetACMPrivateCAGetCertificateAuthorityCsrRoute,
+  postXAmzTargetACMPrivateCAGetCertificateRoute,
+  postXAmzTargetACMPrivateCAGetPolicyRoute,
+  postXAmzTargetACMPrivateCAImportCertificateAuthorityCertificateRoute,
+  postXAmzTargetACMPrivateCAIssueCertificateRoute,
+  postXAmzTargetACMPrivateCAListCertificateAuthoritiesRoute,
+  postXAmzTargetACMPrivateCAListPermissionsRoute,
+  postXAmzTargetACMPrivateCAListTagsRoute,
+  postXAmzTargetACMPrivateCAPutPolicyRoute,
+  postXAmzTargetACMPrivateCARestoreCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCARevokeCertificateRoute,
+  postXAmzTargetACMPrivateCATagCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCAUntagCertificateAuthorityRoute,
+  postXAmzTargetACMPrivateCAUpdateCertificateAuthorityRoute,
+} from './routes'
+import {
+  postXAmzTargetACMPrivateCACreateCertificateAuthorityAuditReportRouteHandler,
+  postXAmzTargetACMPrivateCACreateCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCACreatePermissionRouteHandler,
+  postXAmzTargetACMPrivateCADeleteCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCADeletePermissionRouteHandler,
+  postXAmzTargetACMPrivateCADeletePolicyRouteHandler,
+  postXAmzTargetACMPrivateCADescribeCertificateAuthorityAuditReportRouteHandler,
+  postXAmzTargetACMPrivateCADescribeCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCAGetCertificateAuthorityCertificateRouteHandler,
+  postXAmzTargetACMPrivateCAGetCertificateAuthorityCsrRouteHandler,
+  postXAmzTargetACMPrivateCAGetCertificateRouteHandler,
+  postXAmzTargetACMPrivateCAGetPolicyRouteHandler,
+  postXAmzTargetACMPrivateCAImportCertificateAuthorityCertificateRouteHandler,
+  postXAmzTargetACMPrivateCAIssueCertificateRouteHandler,
+  postXAmzTargetACMPrivateCAListCertificateAuthoritiesRouteHandler,
+  postXAmzTargetACMPrivateCAListPermissionsRouteHandler,
+  postXAmzTargetACMPrivateCAListTagsRouteHandler,
+  postXAmzTargetACMPrivateCAPutPolicyRouteHandler,
+  postXAmzTargetACMPrivateCARestoreCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCARevokeCertificateRouteHandler,
+  postXAmzTargetACMPrivateCATagCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCAUntagCertificateAuthorityRouteHandler,
+  postXAmzTargetACMPrivateCAUpdateCertificateAuthorityRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAcmPrivateCaCreateCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaCreateCertificateAuthorityAuditReportHandler)
-  .route('/', xAmzTargetAcmPrivateCaCreatePermissionHandler)
-  .route('/', xAmzTargetAcmPrivateCaDeleteCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaDeletePermissionHandler)
-  .route('/', xAmzTargetAcmPrivateCaDeletePolicyHandler)
-  .route('/', xAmzTargetAcmPrivateCaDescribeCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaDescribeCertificateAuthorityAuditReportHandler)
-  .route('/', xAmzTargetAcmPrivateCaGetCertificateHandler)
-  .route('/', xAmzTargetAcmPrivateCaGetCertificateAuthorityCertificateHandler)
-  .route('/', xAmzTargetAcmPrivateCaGetCertificateAuthorityCsrHandler)
-  .route('/', xAmzTargetAcmPrivateCaGetPolicyHandler)
-  .route('/', xAmzTargetAcmPrivateCaImportCertificateAuthorityCertificateHandler)
-  .route('/', xAmzTargetAcmPrivateCaIssueCertificateHandler)
-  .route('/', xAmzTargetAcmPrivateCaListCertificateAuthoritiesHandler)
-  .route('/', xAmzTargetAcmPrivateCaListPermissionsHandler)
-  .route('/', xAmzTargetAcmPrivateCaListTagsHandler)
-  .route('/', xAmzTargetAcmPrivateCaPutPolicyHandler)
-  .route('/', xAmzTargetAcmPrivateCaRestoreCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaRevokeCertificateHandler)
-  .route('/', xAmzTargetAcmPrivateCaTagCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaUntagCertificateAuthorityHandler)
-  .route('/', xAmzTargetAcmPrivateCaUpdateCertificateAuthorityHandler)
+  .openapi(
+    postXAmzTargetACMPrivateCACreateCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCACreateCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCACreateCertificateAuthorityAuditReportRoute,
+    postXAmzTargetACMPrivateCACreateCertificateAuthorityAuditReportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCACreatePermissionRoute,
+    postXAmzTargetACMPrivateCACreatePermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCADeleteCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCADeleteCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCADeletePermissionRoute,
+    postXAmzTargetACMPrivateCADeletePermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCADeletePolicyRoute,
+    postXAmzTargetACMPrivateCADeletePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCADescribeCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCADescribeCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCADescribeCertificateAuthorityAuditReportRoute,
+    postXAmzTargetACMPrivateCADescribeCertificateAuthorityAuditReportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAGetCertificateRoute,
+    postXAmzTargetACMPrivateCAGetCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAGetCertificateAuthorityCertificateRoute,
+    postXAmzTargetACMPrivateCAGetCertificateAuthorityCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAGetCertificateAuthorityCsrRoute,
+    postXAmzTargetACMPrivateCAGetCertificateAuthorityCsrRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAGetPolicyRoute,
+    postXAmzTargetACMPrivateCAGetPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAImportCertificateAuthorityCertificateRoute,
+    postXAmzTargetACMPrivateCAImportCertificateAuthorityCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAIssueCertificateRoute,
+    postXAmzTargetACMPrivateCAIssueCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAListCertificateAuthoritiesRoute,
+    postXAmzTargetACMPrivateCAListCertificateAuthoritiesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAListPermissionsRoute,
+    postXAmzTargetACMPrivateCAListPermissionsRouteHandler,
+  )
+  .openapi(postXAmzTargetACMPrivateCAListTagsRoute, postXAmzTargetACMPrivateCAListTagsRouteHandler)
+  .openapi(
+    postXAmzTargetACMPrivateCAPutPolicyRoute,
+    postXAmzTargetACMPrivateCAPutPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCARestoreCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCARestoreCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCARevokeCertificateRoute,
+    postXAmzTargetACMPrivateCARevokeCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCATagCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCATagCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAUntagCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCAUntagCertificateAuthorityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetACMPrivateCAUpdateCertificateAuthorityRoute,
+    postXAmzTargetACMPrivateCAUpdateCertificateAuthorityRouteHandler,
+  )
 
 export default app

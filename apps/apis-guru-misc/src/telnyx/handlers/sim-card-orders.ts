@@ -1,15 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSimCardOrdersIdRoute, getSimCardOrdersRoute, postSimCardOrdersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getSimCardOrdersIdRoute,
+  getSimCardOrdersRoute,
+  postSimCardOrdersRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getSimCardOrdersRouteHandler: RouteHandler<typeof getSimCardOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const simCardOrdersHandler = app
-  .openapi(getSimCardOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSimCardOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSimCardOrdersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSimCardOrdersRouteHandler: RouteHandler<typeof postSimCardOrdersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSimCardOrdersIdRouteHandler: RouteHandler<typeof getSimCardOrdersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

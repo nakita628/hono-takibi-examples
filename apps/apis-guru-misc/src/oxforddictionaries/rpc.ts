@@ -49,12 +49,12 @@ export async function getEntriesSourceLangWordIdAntonyms(
 
 export async function getEntriesSourceLangWordIdRegionsRegion(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.entries[':source_lang'][':word_id']['regions=:region'].$get(args, options),
+    client.entries[':source_lang'][':word_id']['regions={region}'].$get(args, options),
   )
 }
 
@@ -89,13 +89,13 @@ export async function getEntriesSourceLangWordIdFilters(
 
 export async function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguage(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
     client.entries[':source_translation_language'][':word_id'][
-      'translations=:target_translation_language'
+      'translations={target_translation_language}'
     ].$get(args, options),
   )
 }
@@ -180,12 +180,12 @@ export async function getSearchSourceLang(
 
 export async function getSearchSourceSearchLanguageTranslationsTargetSearchLanguage(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.search[':source_search_language']['translations=:target_search_language'].$get(
+    client.search[':source_search_language']['translations={target_search_language}'].$get(
       args,
       options,
     ),

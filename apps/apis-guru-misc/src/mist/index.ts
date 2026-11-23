@@ -1,8 +1,3395 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiHandler, webhookExampleHandler } from './handlers'
+import {
+  deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRoute,
+  deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacRoute,
+  deleteApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+  deleteApiV1LoginOauthProviderRoute,
+  deleteApiV1MspsMspIdAdminsAdminIdRoute,
+  deleteApiV1MspsMspIdInvitesInviteIdRoute,
+  deleteApiV1MspsMspIdLogoRoute,
+  deleteApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+  deleteApiV1MspsMspIdRoute,
+  deleteApiV1MspsMspIdSsorolesSsoroleIdRoute,
+  deleteApiV1MspsMspIdSsosSsoIdRoute,
+  deleteApiV1OrgsOrgIdAdminsAdminIdRoute,
+  deleteApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+  deleteApiV1OrgsOrgIdApitokensApitokenIdRoute,
+  deleteApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+  deleteApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+  deleteApiV1OrgsOrgIdAssetsAssetIdRoute,
+  deleteApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+  deleteApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+  deleteApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+  deleteApiV1OrgsOrgIdGuestsGuestMacRoute,
+  deleteApiV1OrgsOrgIdInvitesInviteIdRoute,
+  deleteApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+  deleteApiV1OrgsOrgIdMxedgesMxedgeIdRoute,
+  deleteApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+  deleteApiV1OrgsOrgIdNacrulesNacruleIdRoute,
+  deleteApiV1OrgsOrgIdNactagsNactagIdRoute,
+  deleteApiV1OrgsOrgIdNetworksNetworkIdRoute,
+  deleteApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+  deleteApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+  deleteApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+  deleteApiV1OrgsOrgIdPsksPskIdRoute,
+  deleteApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+  deleteApiV1OrgsOrgIdRoute,
+  deleteApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+  deleteApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+  deleteApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+  deleteApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+  deleteApiV1OrgsOrgIdServicesServiceIdRoute,
+  deleteApiV1OrgsOrgIdSettingAppNameLinkAccountsRoute,
+  deleteApiV1OrgsOrgIdSettingAppNameLinkRoute,
+  deleteApiV1OrgsOrgIdSettingBlacklistRoute,
+  deleteApiV1OrgsOrgIdSettingJuniperLinkedAccountRoute,
+  deleteApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+  deleteApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+  deleteApiV1OrgsOrgIdSsorolesSsoroleIdRoute,
+  deleteApiV1OrgsOrgIdSsosSsoIdRoute,
+  deleteApiV1OrgsOrgIdSubscriptionsRoute,
+  deleteApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+  deleteApiV1OrgsOrgIdVpnsVpnIdRoute,
+  deleteApiV1OrgsOrgIdWebhooksWebhookIdRoute,
+  deleteApiV1OrgsOrgIdWlansWlanIdPortalImageRoute,
+  deleteApiV1OrgsOrgIdWlansWlanIdRoute,
+  deleteApiV1OrgsOrgIdWxrulesWxrulesIdRoute,
+  deleteApiV1OrgsOrgIdWxtagsWxtagIdRoute,
+  deleteApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+  deleteApiV1SelfApitokensApitokenIdRoute,
+  deleteApiV1SelfRoute,
+  deleteApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+  deleteApiV1SitesSiteIdAssetsAssetIdRoute,
+  deleteApiV1SitesSiteIdBeaconsBeaconIdRoute,
+  deleteApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+  deleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRoute,
+  deleteApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRoute,
+  deleteApiV1SitesSiteIdDevicesDeviceIdRoute,
+  deleteApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+  deleteApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+  deleteApiV1SitesSiteIdGuestsGuestMacRoute,
+  deleteApiV1SitesSiteIdLocationMlDeviceDeviceIdRoute,
+  deleteApiV1SitesSiteIdLocationMlMapMapIdRoute,
+  deleteApiV1SitesSiteIdMapsMapIdAutoOrientRoute,
+  deleteApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+  deleteApiV1SitesSiteIdMapsMapIdImageRoute,
+  deleteApiV1SitesSiteIdMapsMapIdRoute,
+  deleteApiV1SitesSiteIdMxedgesMxedgeIdRoute,
+  deleteApiV1SitesSiteIdPcapsCaptureRoute,
+  deleteApiV1SitesSiteIdPsksPskIdRoute,
+  deleteApiV1SitesSiteIdRfdiagsRfdiagIdRoute,
+  deleteApiV1SitesSiteIdRoute,
+  deleteApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+  deleteApiV1SitesSiteIdSettingBlacklistRoute,
+  deleteApiV1SitesSiteIdSettingWatchedStationRoute,
+  deleteApiV1SitesSiteIdSettingWhitelistRoute,
+  deleteApiV1SitesSiteIdSubscriptionsRoute,
+  deleteApiV1SitesSiteIdUisettingsUisettingIdRoute,
+  deleteApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+  deleteApiV1SitesSiteIdWebhooksWebhookIdRoute,
+  deleteApiV1SitesSiteIdWlansWlanIdRoute,
+  deleteApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+  deleteApiV1SitesSiteIdWxtagsWxtagIdRoute,
+  deleteApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+  deleteApiV1SitesSiteIdZonesZoneIdRoute,
+  getApiV1ConstAlarmDefsRoute,
+  getApiV1ConstApChannelsRoute,
+  getApiV1ConstApLedStatusRoute,
+  getApiV1ConstApplicationsRoute,
+  getApiV1ConstCallEventsRoute,
+  getApiV1ConstClientEventsRoute,
+  getApiV1ConstCountriesRoute,
+  getApiV1ConstDefaultGatewayConfigRoute,
+  getApiV1ConstDeviceEventsRoute,
+  getApiV1ConstDeviceModelsRoute,
+  getApiV1ConstInsightMetricsRoute,
+  getApiV1ConstLanguagesRoute,
+  getApiV1ConstMxedgeEventsRoute,
+  getApiV1ConstMxedgeModelsRoute,
+  getApiV1ConstSystemEventsRoute,
+  getApiV1ConstTrafficTypesRoute,
+  getApiV1InstallerOrgsOrgIdAlarmtemplatesRoute,
+  getApiV1InstallerOrgsOrgIdDeviceprofilesRoute,
+  getApiV1InstallerOrgsOrgIdDevicesRoute,
+  getApiV1InstallerOrgsOrgIdRftemplatesRoute,
+  getApiV1InstallerOrgsOrgIdSecpoliciesRoute,
+  getApiV1InstallerOrgsOrgIdSitegroupsRoute,
+  getApiV1InstallerOrgsOrgIdSitesRoute,
+  getApiV1InstallerOrgsOrgIdSitesSiteNameMapsRoute,
+  getApiV1InstallerSitesSiteNameOptimizeRoute,
+  getApiV1LoginOauthProviderRoute,
+  getApiV1MspsMspIdAdminsAdminIdRoute,
+  getApiV1MspsMspIdAdminsRoute,
+  getApiV1MspsMspIdInsightsMetricRoute,
+  getApiV1MspsMspIdInventoryDeviceMacRoute,
+  getApiV1MspsMspIdLicensesRoute,
+  getApiV1MspsMspIdLogsCountRoute,
+  getApiV1MspsMspIdLogsRoute,
+  getApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+  getApiV1MspsMspIdOrggroupsRoute,
+  getApiV1MspsMspIdOrgsOrgIdRoute,
+  getApiV1MspsMspIdOrgsRoute,
+  getApiV1MspsMspIdOrgsSearchRoute,
+  getApiV1MspsMspIdRoute,
+  getApiV1MspsMspIdSearchRoute,
+  getApiV1MspsMspIdSsorolesRoute,
+  getApiV1MspsMspIdSsosRoute,
+  getApiV1MspsMspIdSsosSsoIdFailuresRoute,
+  getApiV1MspsMspIdSsosSsoIdMetadataRoute,
+  getApiV1MspsMspIdSsosSsoIdMetadataXmlRoute,
+  getApiV1MspsMspIdStatsLicensesRoute,
+  getApiV1MspsMspIdStatsOrgsRoute,
+  getApiV1MspsMspIdTicketsCountRoute,
+  getApiV1MspsMspIdTicketsRoute,
+  getApiV1OrgsOrgId128routersRegisterCmdRoute,
+  getApiV1OrgsOrgIdAdminsRoute,
+  getApiV1OrgsOrgIdAlarmsCountRoute,
+  getApiV1OrgsOrgIdAlarmsSearchRoute,
+  getApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+  getApiV1OrgsOrgIdAlarmtemplatesRoute,
+  getApiV1OrgsOrgIdApitokensApitokenIdRoute,
+  getApiV1OrgsOrgIdApitokensRoute,
+  getApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+  getApiV1OrgsOrgIdAptemplatesRoute,
+  getApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+  getApiV1OrgsOrgIdAssetfiltersRoute,
+  getApiV1OrgsOrgIdAssetsAssetIdRoute,
+  getApiV1OrgsOrgIdAssetsRoute,
+  getApiV1OrgsOrgIdCallEventsCountRoute,
+  getApiV1OrgsOrgIdCallEventsSearchRoute,
+  getApiV1OrgsOrgIdCertRoute,
+  getApiV1OrgsOrgIdClientsCountRoute,
+  getApiV1OrgsOrgIdClientsEventsSearchRoute,
+  getApiV1OrgsOrgIdClientsSearchRoute,
+  getApiV1OrgsOrgIdClientsSessionsCountRoute,
+  getApiV1OrgsOrgIdClientsSessionsSearchRoute,
+  getApiV1OrgsOrgIdCrlRoute,
+  getApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+  getApiV1OrgsOrgIdDeviceprofilesRoute,
+  getApiV1OrgsOrgIdDevicesCountRoute,
+  getApiV1OrgsOrgIdDevicesEventsCountRoute,
+  getApiV1OrgsOrgIdDevicesEventsSearchRoute,
+  getApiV1OrgsOrgIdDevicesLastConfigCountRoute,
+  getApiV1OrgsOrgIdDevicesLastConfigSearchRoute,
+  getApiV1OrgsOrgIdDevicesRadioMacsRoute,
+  getApiV1OrgsOrgIdDevicesRoute,
+  getApiV1OrgsOrgIdDevicesSearchRoute,
+  getApiV1OrgsOrgIdDevicesUpgradeRoute,
+  getApiV1OrgsOrgIdDevicesUpgradeUpgradeIdRoute,
+  getApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+  getApiV1OrgsOrgIdEvpnTopologiesRoute,
+  getApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+  getApiV1OrgsOrgIdGatewaytemplatesRoute,
+  getApiV1OrgsOrgIdGuestsCountRoute,
+  getApiV1OrgsOrgIdGuestsGuestMacRoute,
+  getApiV1OrgsOrgIdGuestsRoute,
+  getApiV1OrgsOrgIdGuestsSearchRoute,
+  getApiV1OrgsOrgIdInsightsMetricRoute,
+  getApiV1OrgsOrgIdInsightsSitesSleRoute,
+  getApiV1OrgsOrgIdInventoryRoute,
+  getApiV1OrgsOrgIdJsiDevicesOutboundSshCmdRoute,
+  getApiV1OrgsOrgIdJsiDevicesRoute,
+  getApiV1OrgsOrgIdJsiInventoryRoute,
+  getApiV1OrgsOrgIdJunosRegisterCmdRoute,
+  getApiV1OrgsOrgIdLicensesRoute,
+  getApiV1OrgsOrgIdLicensesUsagesRoute,
+  getApiV1OrgsOrgIdLogsCountRoute,
+  getApiV1OrgsOrgIdLogsRoute,
+  getApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+  getApiV1OrgsOrgIdMxclustersRoute,
+  getApiV1OrgsOrgIdMxedgesMxedgeIdRoute,
+  getApiV1OrgsOrgIdMxedgesRoute,
+  getApiV1OrgsOrgIdMxedgesUpgradeRoute,
+  getApiV1OrgsOrgIdMxedgesUpgradeUpgradeIdRoute,
+  getApiV1OrgsOrgIdMxedgesVersionRoute,
+  getApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+  getApiV1OrgsOrgIdMxtunnelsRoute,
+  getApiV1OrgsOrgIdNacrulesNacruleIdRoute,
+  getApiV1OrgsOrgIdNacrulesRoute,
+  getApiV1OrgsOrgIdNactagsNactagIdRoute,
+  getApiV1OrgsOrgIdNactagsRoute,
+  getApiV1OrgsOrgIdNetworksNetworkIdRoute,
+  getApiV1OrgsOrgIdNetworksRoute,
+  getApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+  getApiV1OrgsOrgIdNetworktemplatesRoute,
+  getApiV1OrgsOrgIdOcdevicesOutboundSshCmdRoute,
+  getApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+  getApiV1OrgsOrgIdOtherdevicesRoute,
+  getApiV1OrgsOrgIdPmaDashboardsRoute,
+  getApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+  getApiV1OrgsOrgIdPskportalsRoute,
+  getApiV1OrgsOrgIdPsksPskIdRoute,
+  getApiV1OrgsOrgIdPsksRoute,
+  getApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+  getApiV1OrgsOrgIdRftemplatesRoute,
+  getApiV1OrgsOrgIdRoute,
+  getApiV1OrgsOrgIdSdkinvitesRoute,
+  getApiV1OrgsOrgIdSdkinvitesSdkinviteIdQrcodeRoute,
+  getApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+  getApiV1OrgsOrgIdSdktemplatesRoute,
+  getApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+  getApiV1OrgsOrgIdSecpoliciesRoute,
+  getApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+  getApiV1OrgsOrgIdServicepoliciesRoute,
+  getApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+  getApiV1OrgsOrgIdServicesRoute,
+  getApiV1OrgsOrgIdServicesServiceIdRoute,
+  getApiV1OrgsOrgIdSettingAppNameLinkAccountsRoute,
+  getApiV1OrgsOrgIdSettingAppNameLinkRoute,
+  getApiV1OrgsOrgIdSettingRoute,
+  getApiV1OrgsOrgIdSitegroupsRoute,
+  getApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+  getApiV1OrgsOrgIdSitesCountRoute,
+  getApiV1OrgsOrgIdSitesRoute,
+  getApiV1OrgsOrgIdSitesSearchRoute,
+  getApiV1OrgsOrgIdSitetemplatesRoute,
+  getApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+  getApiV1OrgsOrgIdSsorolesRoute,
+  getApiV1OrgsOrgIdSsorolesSsoroleIdRoute,
+  getApiV1OrgsOrgIdSsosRoute,
+  getApiV1OrgsOrgIdSsosSsoIdFailuresRoute,
+  getApiV1OrgsOrgIdSsosSsoIdMetadataRoute,
+  getApiV1OrgsOrgIdSsosSsoIdMetadataXmlRoute,
+  getApiV1OrgsOrgIdSsosSsoIdRoute,
+  getApiV1OrgsOrgIdSsrUpgradeRoute,
+  getApiV1OrgsOrgIdSsrVersionsRoute,
+  getApiV1OrgsOrgIdStatsAssetsCountRoute,
+  getApiV1OrgsOrgIdStatsAssetsRoute,
+  getApiV1OrgsOrgIdStatsAssetsSearchRoute,
+  getApiV1OrgsOrgIdStatsBgpPeersCountRoute,
+  getApiV1OrgsOrgIdStatsBgpPeersSearchRoute,
+  getApiV1OrgsOrgIdStatsDevicesRoute,
+  getApiV1OrgsOrgIdStatsMxedgesMxedgeIdRoute,
+  getApiV1OrgsOrgIdStatsMxedgesRoute,
+  getApiV1OrgsOrgIdStatsOtherdevicesDeviceMacRoute,
+  getApiV1OrgsOrgIdStatsPortsSearchRoute,
+  getApiV1OrgsOrgIdStatsRoute,
+  getApiV1OrgsOrgIdStatsSwitchPortsCountRoute,
+  getApiV1OrgsOrgIdStatsTunnelsCountRoute,
+  getApiV1OrgsOrgIdStatsTunnelsSearchRoute,
+  getApiV1OrgsOrgIdStatsVpnPeersCountRoute,
+  getApiV1OrgsOrgIdStatsVpnPeersSearchRoute,
+  getApiV1OrgsOrgIdTemplatesRoute,
+  getApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+  getApiV1OrgsOrgIdTicketsCountRoute,
+  getApiV1OrgsOrgIdTicketsRoute,
+  getApiV1OrgsOrgIdTicketsTicketIdRoute,
+  getApiV1OrgsOrgIdTroubleshootRoute,
+  getApiV1OrgsOrgIdVpnsRoute,
+  getApiV1OrgsOrgIdVpnsVpnIdRoute,
+  getApiV1OrgsOrgIdWebhooksRoute,
+  getApiV1OrgsOrgIdWebhooksWebhookIdRoute,
+  getApiV1OrgsOrgIdWiredClientsCountRoute,
+  getApiV1OrgsOrgIdWiredClientsSearchRoute,
+  getApiV1OrgsOrgIdWlansDerivedRoute,
+  getApiV1OrgsOrgIdWlansRoute,
+  getApiV1OrgsOrgIdWlansWlanIdRoute,
+  getApiV1OrgsOrgIdWxrulesDerivedRoute,
+  getApiV1OrgsOrgIdWxrulesRoute,
+  getApiV1OrgsOrgIdWxrulesWxrulesIdRoute,
+  getApiV1OrgsOrgIdWxtagsAppsRoute,
+  getApiV1OrgsOrgIdWxtagsRoute,
+  getApiV1OrgsOrgIdWxtagsWxtagIdClientsRoute,
+  getApiV1OrgsOrgIdWxtagsWxtagIdRoute,
+  getApiV1OrgsOrgIdWxtunnelsRoute,
+  getApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+  getApiV1SelfApitokensRoute,
+  getApiV1SelfLogsRoute,
+  getApiV1SelfOauthProviderRoute,
+  getApiV1SelfRoute,
+  getApiV1SelfSubscriptionsRoute,
+  getApiV1SelfTwoFactorTokenRoute,
+  getApiV1SelfUpdateVerifyTokenRoute,
+  getApiV1SitesSiteIdAlarmsCountRoute,
+  getApiV1SitesSiteIdAlarmsSearchRoute,
+  getApiV1SitesSiteIdAnomalyClientClientMacMetricRoute,
+  getApiV1SitesSiteIdAnomalyDeviceDeviceMacMetricRoute,
+  getApiV1SitesSiteIdAnomalyMetricRoute,
+  getApiV1SitesSiteIdAppsRoute,
+  getApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+  getApiV1SitesSiteIdAssetfiltersRoute,
+  getApiV1SitesSiteIdAssetsAssetIdRoute,
+  getApiV1SitesSiteIdAssetsRoute,
+  getApiV1SitesSiteIdBeaconsBeaconIdRoute,
+  getApiV1SitesSiteIdBeaconsRoute,
+  getApiV1SitesSiteIdCallEventsCountRoute,
+  getApiV1SitesSiteIdCallEventsSearchRoute,
+  getApiV1SitesSiteIdClientsClientMacEventsRoute,
+  getApiV1SitesSiteIdClientsCountRoute,
+  getApiV1SitesSiteIdClientsEventsCountRoute,
+  getApiV1SitesSiteIdClientsEventsSearchRoute,
+  getApiV1SitesSiteIdClientsSearchRoute,
+  getApiV1SitesSiteIdClientsSessionsCountRoute,
+  getApiV1SitesSiteIdClientsSessionsSearchRoute,
+  getApiV1SitesSiteIdDevicesApChannelsRoute,
+  getApiV1SitesSiteIdDevicesConfigHistoryCountRoute,
+  getApiV1SitesSiteIdDevicesConfigHistorySearchRoute,
+  getApiV1SitesSiteIdDevicesCountRoute,
+  getApiV1SitesSiteIdDevicesDeviceIdConfigCmdRoute,
+  getApiV1SitesSiteIdDevicesDeviceIdIotRoute,
+  getApiV1SitesSiteIdDevicesDeviceIdRoute,
+  getApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+  getApiV1SitesSiteIdDevicesEventsCountRoute,
+  getApiV1SitesSiteIdDevicesEventsSearchRoute,
+  getApiV1SitesSiteIdDevicesExportRoute,
+  getApiV1SitesSiteIdDevicesLastConfigCountRoute,
+  getApiV1SitesSiteIdDevicesLastConfigSearchRoute,
+  getApiV1SitesSiteIdDevicesRoute,
+  getApiV1SitesSiteIdDevicesSearchRoute,
+  getApiV1SitesSiteIdDevicesUpgradeRoute,
+  getApiV1SitesSiteIdDevicesUpgradeUpgradeIdRoute,
+  getApiV1SitesSiteIdDevicesVersionsRoute,
+  getApiV1SitesSiteIdEventsFastRoamRoute,
+  getApiV1SitesSiteIdEventsInterferenceRoute,
+  getApiV1SitesSiteIdEventsSystemCountRoute,
+  getApiV1SitesSiteIdEventsSystemSearchRoute,
+  getApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+  getApiV1SitesSiteIdEvpnTopologiesRoute,
+  getApiV1SitesSiteIdGuestsCountRoute,
+  getApiV1SitesSiteIdGuestsGuestMacRoute,
+  getApiV1SitesSiteIdGuestsRoute,
+  getApiV1SitesSiteIdGuestsSearchRoute,
+  getApiV1SitesSiteIdInsightsClientClientMacMetricRoute,
+  getApiV1SitesSiteIdInsightsDeviceDeviceMacMetricRoute,
+  getApiV1SitesSiteIdInsightsMetricRoute,
+  getApiV1SitesSiteIdInsightsRoguesClientsRoute,
+  getApiV1SitesSiteIdInsightsRoguesRoute,
+  getApiV1SitesSiteIdLicensesUsagesRoute,
+  getApiV1SitesSiteIdLocationCoverageRoute,
+  getApiV1SitesSiteIdLocationMlCurrentRoute,
+  getApiV1SitesSiteIdLocationMlDefaultsRoute,
+  getApiV1SitesSiteIdLocationMlUpdatesRoute,
+  getApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+  getApiV1SitesSiteIdMapsMapIdRoute,
+  getApiV1SitesSiteIdMapsRoute,
+  getApiV1SitesSiteIdMxedgesMxedgeIdRoute,
+  getApiV1SitesSiteIdMxedgesRoute,
+  getApiV1SitesSiteIdOtherdevicesRoute,
+  getApiV1SitesSiteIdPcapsCaptureRoute,
+  getApiV1SitesSiteIdPcapsRoute,
+  getApiV1SitesSiteIdPsksPskIdRoute,
+  getApiV1SitesSiteIdPsksRoute,
+  getApiV1SitesSiteIdRfdiagsRfdiagIdDownloadRoute,
+  getApiV1SitesSiteIdRfdiagsRfdiagIdRoute,
+  getApiV1SitesSiteIdRfdiagsRoute,
+  getApiV1SitesSiteIdRoguesEventsCountRoute,
+  getApiV1SitesSiteIdRoguesEventsSearchRoute,
+  getApiV1SitesSiteIdRoguesRogueBssidRoute,
+  getApiV1SitesSiteIdRoute,
+  getApiV1SitesSiteIdRrmCurrentDevicesDeviceIdBandBandRoute,
+  getApiV1SitesSiteIdRrmCurrentRoute,
+  getApiV1SitesSiteIdRrmEventsRoute,
+  getApiV1SitesSiteIdRssizonesRoute,
+  getApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+  getApiV1SitesSiteIdSettingRoute,
+  getApiV1SitesSiteIdSkyatpEventsCountRoute,
+  getApiV1SitesSiteIdSkyatpEventsSearchRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifierClassifierSummaryRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifiersRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricHistogramRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApplicationsRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApsRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedChassisRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedClientsRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedGatewaysRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedInterfacesRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedSwitchesRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedUsersRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactSummaryRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricSummaryRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricsRoute,
+  getApiV1SitesSiteIdSsrUpgradeUpgradeIdRoute,
+  getApiV1SitesSiteIdStatsAppsCountRoute,
+  getApiV1SitesSiteIdStatsAssetsAssetIdRoute,
+  getApiV1SitesSiteIdStatsAssetsCountRoute,
+  getApiV1SitesSiteIdStatsAssetsRoute,
+  getApiV1SitesSiteIdStatsAssetsSearchRoute,
+  getApiV1SitesSiteIdStatsBeaconsRoute,
+  getApiV1SitesSiteIdStatsBgpPeersCountRoute,
+  getApiV1SitesSiteIdStatsBgpPeersSearchRoute,
+  getApiV1SitesSiteIdStatsCallsCountRoute,
+  getApiV1SitesSiteIdStatsCallsSearchRoute,
+  getApiV1SitesSiteIdStatsClientsClientMacRoute,
+  getApiV1SitesSiteIdStatsClientsRoute,
+  getApiV1SitesSiteIdStatsDevicesDeviceIdClientsRoute,
+  getApiV1SitesSiteIdStatsDevicesDeviceIdRoute,
+  getApiV1SitesSiteIdStatsDevicesRoute,
+  getApiV1SitesSiteIdStatsDiscoveredAssetsRoute,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesCountRoute,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesMetricsRoute,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesSearchRoute,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchMetricsSearchRoute,
+  getApiV1SitesSiteIdStatsFilteredAssetsRoute,
+  getApiV1SitesSiteIdStatsGatewaysMetricsRoute,
+  getApiV1SitesSiteIdStatsMapsMapIdClientsRoute,
+  getApiV1SitesSiteIdStatsMapsMapIdDiscoveredAssetsRoute,
+  getApiV1SitesSiteIdStatsMapsMapIdSdkclientsRoute,
+  getApiV1SitesSiteIdStatsMapsMapIdUnconnectedClientsRoute,
+  getApiV1SitesSiteIdStatsMxedgesMxedgeIdRoute,
+  getApiV1SitesSiteIdStatsMxedgesRoute,
+  getApiV1SitesSiteIdStatsPortsCountRoute,
+  getApiV1SitesSiteIdStatsPortsSearchRoute,
+  getApiV1SitesSiteIdStatsRoute,
+  getApiV1SitesSiteIdStatsSdkclientsSdkclientIdRoute,
+  getApiV1SitesSiteIdStatsSwitchesMetricsRoute,
+  getApiV1SitesSiteIdStatsSwitchPortsCountRoute,
+  getApiV1SitesSiteIdStatsSwitchPortsSearchRoute,
+  getApiV1SitesSiteIdStatsWxrulesRoute,
+  getApiV1SitesSiteIdStatsZonesRoute,
+  getApiV1SitesSiteIdStatsZoneTypeZoneIdRoute,
+  getApiV1SitesSiteIdSyntheticTestRoute,
+  getApiV1SitesSiteIdUisettingsDerivedRoute,
+  getApiV1SitesSiteIdUisettingsRoute,
+  getApiV1SitesSiteIdUisettingsUisettingIdRoute,
+  getApiV1SitesSiteIdVbeaconsRoute,
+  getApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+  getApiV1SitesSiteIdWebhooksRoute,
+  getApiV1SitesSiteIdWebhooksWebhookIdRoute,
+  getApiV1SitesSiteIdWiredClientsCountRoute,
+  getApiV1SitesSiteIdWiredClientsSearchRoute,
+  getApiV1SitesSiteIdWlansDerivedRoute,
+  getApiV1SitesSiteIdWlansRoute,
+  getApiV1SitesSiteIdWlansWlanIdRoute,
+  getApiV1SitesSiteIdWxrulesDerivedRoute,
+  getApiV1SitesSiteIdWxrulesRoute,
+  getApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+  getApiV1SitesSiteIdWxtagsAppsRoute,
+  getApiV1SitesSiteIdWxtagsRoute,
+  getApiV1SitesSiteIdWxtagsWxtagIdClientsRoute,
+  getApiV1SitesSiteIdWxtagsWxtagIdRoute,
+  getApiV1SitesSiteIdWxtunnelsRoute,
+  getApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+  getApiV1SitesSiteIdZonesRoute,
+  getApiV1SitesSiteIdZonesZoneIdRoute,
+  getApiV1SitesSiteIdZoneTypeCountRoute,
+  getApiV1SitesSiteIdZoneTypeVisitsSearchRoute,
+  getApiV1UtilsTestTelstraRoute,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRoute,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacLocateRoute,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacUnlocateRoute,
+  postApiV1InstallerOrgsOrgIdDevicesRoute,
+  postApiV1InstallerOrgsOrgIdSitesSiteNameMapsImportRoute,
+  postApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+  postApiV1InviteVerifyTokenRoute,
+  postApiV1LoginLookupRoute,
+  postApiV1LoginOauthProviderRoute,
+  postApiV1LoginRoute,
+  postApiV1LoginTwoFactorRoute,
+  postApiV1LogoutRoute,
+  postApiV1MobileVerifySecretRoute,
+  postApiV1MspsMspIdClaimRoute,
+  postApiV1MspsMspIdInvitesRoute,
+  postApiV1MspsMspIdLogoRoute,
+  postApiV1MspsMspIdOrggroupsRoute,
+  postApiV1MspsMspIdOrgsRoute,
+  postApiV1MspsMspIdSsorolesRoute,
+  postApiV1MspsMspIdSsosRoute,
+  postApiV1MspsRoute,
+  postApiV1OrgsOrgIdAlarmsAckAllRoute,
+  postApiV1OrgsOrgIdAlarmsAckRoute,
+  postApiV1OrgsOrgIdAlarmsAlarmIdAckRoute,
+  postApiV1OrgsOrgIdAlarmsUnackAllRoute,
+  postApiV1OrgsOrgIdAlarmsUnackRoute,
+  postApiV1OrgsOrgIdAlarmtemplatesRoute,
+  postApiV1OrgsOrgIdAlarmtemplatesSuppressRoute,
+  postApiV1OrgsOrgIdApitokensRoute,
+  postApiV1OrgsOrgIdAptemplatesRoute,
+  postApiV1OrgsOrgIdAssetfiltersRoute,
+  postApiV1OrgsOrgIdAssetsImportRoute,
+  postApiV1OrgsOrgIdAssetsRoute,
+  postApiV1OrgsOrgIdCertRegenerateRoute,
+  postApiV1OrgsOrgIdClaimRoute,
+  postApiV1OrgsOrgIdCloneRoute,
+  postApiV1OrgsOrgIdCrlTruncateRoute,
+  postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdAssignRoute,
+  postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdUnassignRoute,
+  postApiV1OrgsOrgIdDeviceprofilesRoute,
+  postApiV1OrgsOrgIdDevicesUpgradeRoute,
+  postApiV1OrgsOrgIdEvpnTopologiesRoute,
+  postApiV1OrgsOrgIdGatewaytemplatesRoute,
+  postApiV1OrgsOrgIdInventoryReevaluateAutoAssignmentRoute,
+  postApiV1OrgsOrgIdInventoryReplaceRoute,
+  postApiV1OrgsOrgIdInventoryRoute,
+  postApiV1OrgsOrgIdInvitesRoute,
+  postApiV1OrgsOrgIdJsiDevicesDeviceMacShellRoute,
+  postApiV1OrgsOrgIdJsiDevicesDeviceMacUpgradeRoute,
+  postApiV1OrgsOrgIdMapsImportRoute,
+  postApiV1OrgsOrgIdMxclustersRoute,
+  postApiV1OrgsOrgIdMxedgesAssignRoute,
+  postApiV1OrgsOrgIdMxedgesClaimRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdRestartRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdServicesNameActionRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdServicesTuntermBouncePortRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdSupportRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdUnregisterRoute,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdUpgradeRoute,
+  postApiV1OrgsOrgIdMxedgesRoute,
+  postApiV1OrgsOrgIdMxedgesUnassignRoute,
+  postApiV1OrgsOrgIdMxedgesUpgradeRoute,
+  postApiV1OrgsOrgIdMxtunnelsRoute,
+  postApiV1OrgsOrgIdNacrulesRoute,
+  postApiV1OrgsOrgIdNactagsRoute,
+  postApiV1OrgsOrgIdNetworksRoute,
+  postApiV1OrgsOrgIdNetworktemplatesRoute,
+  postApiV1OrgsOrgIdPskportalsRoute,
+  postApiV1OrgsOrgIdPsksImportRoute,
+  postApiV1OrgsOrgIdPsksPskIdDeleteOldPassphraseRoute,
+  postApiV1OrgsOrgIdPsksRoute,
+  postApiV1OrgsOrgIdRftemplatesRoute,
+  postApiV1OrgsOrgIdSdkinvitesRoute,
+  postApiV1OrgsOrgIdSdkinvitesSdkinviteIdEmailRoute,
+  postApiV1OrgsOrgIdSdkinvitesSdkinviteIdSmsRoute,
+  postApiV1OrgsOrgIdSdktemplatesRoute,
+  postApiV1OrgsOrgIdSecpoliciesRoute,
+  postApiV1OrgsOrgIdServicepoliciesRoute,
+  postApiV1OrgsOrgIdServicesRoute,
+  postApiV1OrgsOrgIdSettingBlacklistRoute,
+  postApiV1OrgsOrgIdSettingCradlepointSetupRoute,
+  postApiV1OrgsOrgIdSettingCradlepointSyncRoute,
+  postApiV1OrgsOrgIdSettingJuniperLinkAccountsRoute,
+  postApiV1OrgsOrgIdSettingPcapBucketSetupRoute,
+  postApiV1OrgsOrgIdSettingPcapBucketVerifyRoute,
+  postApiV1OrgsOrgIdSettingZscalerSetupRoute,
+  postApiV1OrgsOrgIdSitegroupsRoute,
+  postApiV1OrgsOrgIdSitesRoute,
+  postApiV1OrgsOrgIdSitesSiteNameMapsImportRoute,
+  postApiV1OrgsOrgIdSitetemplatesRoute,
+  postApiV1OrgsOrgIdSsorolesRoute,
+  postApiV1OrgsOrgIdSsosRoute,
+  postApiV1OrgsOrgIdSsrUpgradeRoute,
+  postApiV1OrgsOrgIdSsrUpgradeUpgradeIdCancelRoute,
+  postApiV1OrgsOrgIdSubscriptionsRoute,
+  postApiV1OrgsOrgIdTemplatesRoute,
+  postApiV1OrgsOrgIdTemplatesTemplateIdCloneRoute,
+  postApiV1OrgsOrgIdTicketsRoute,
+  postApiV1OrgsOrgIdTicketsTicketIdCommentsRoute,
+  postApiV1OrgsOrgIdVpnsRoute,
+  postApiV1OrgsOrgIdWebhooksRoute,
+  postApiV1OrgsOrgIdWlansRoute,
+  postApiV1OrgsOrgIdWlansWlanIdPortalImageRoute,
+  postApiV1OrgsOrgIdWxrulesRoute,
+  postApiV1OrgsOrgIdWxtagsRoute,
+  postApiV1OrgsOrgIdWxtunnelsRoute,
+  postApiV1OrgsRoute,
+  postApiV1RecoverRoute,
+  postApiV1RecoverVerifyTokenRoute,
+  postApiV1RegisterRoute,
+  postApiV1RegisterVerifyTokenRoute,
+  postApiV1SelfApitokensRoute,
+  postApiV1SelfOauthProviderRoute,
+  postApiV1SelfTwoFactorVerifyRoute,
+  postApiV1SelfUpdateRoute,
+  postApiV1SitesSiteIdAlarmsAckAllRoute,
+  postApiV1SitesSiteIdAlarmsAckRoute,
+  postApiV1SitesSiteIdAlarmsAlarmIdAckRoute,
+  postApiV1SitesSiteIdAlarmsAlarmIdUnackRoute,
+  postApiV1SitesSiteIdAlarmsUnackAllRoute,
+  postApiV1SitesSiteIdAlarmsUnackRoute,
+  postApiV1SitesSiteIdAssetfiltersRoute,
+  postApiV1SitesSiteIdAssetsImportRoute,
+  postApiV1SitesSiteIdAssetsRoute,
+  postApiV1SitesSiteIdBeaconsRoute,
+  postApiV1SitesSiteIdClientsClientMacDisconnectRoute,
+  postApiV1SitesSiteIdClientsClientMacUnauthorizeRoute,
+  postApiV1SitesSiteIdClientsDisconnectRoute,
+  postApiV1SitesSiteIdClientsUnauthorizeRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdArpRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdBouncePortRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdCableTestRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdCheckRadiusServerRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdClearArpRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdClearBgpRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdClearBpduErrorRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdClearMacsRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdLocateRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdPingRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdPollStatsRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdReleaseDhcpRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdRequestZtpPasswordRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdResolveDnsRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdRestartRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdServicePingRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdShowRouteRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdShowSessionRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdSnapshotRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdSupportRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdSyntheticTestRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdTracerouteRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdUnlocateRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdUpgradeRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+  postApiV1SitesSiteIdDevicesDeviceIdVcVcPortRoute,
+  postApiV1SitesSiteIdDevicesImportRoute,
+  postApiV1SitesSiteIdDevicesReprovisionRoute,
+  postApiV1SitesSiteIdDevicesResetRadioConfigRoute,
+  postApiV1SitesSiteIdDevicesRestartRoute,
+  postApiV1SitesSiteIdDevicesRoute,
+  postApiV1SitesSiteIdDevicesUpgradeRoute,
+  postApiV1SitesSiteIdDevicesUpgradeUpgradeIdCancelRoute,
+  postApiV1SitesSiteIdDevicesZeriozeRoute,
+  postApiV1SitesSiteIdEvpnTopologiesRoute,
+  postApiV1SitesSiteIdLocationMlResetMapMapIdRoute,
+  postApiV1SitesSiteIdMapsImportRoute,
+  postApiV1SitesSiteIdMapsMapIdAutoOrientRoute,
+  postApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+  postApiV1SitesSiteIdMapsMapIdClearAutoOrientRoute,
+  postApiV1SitesSiteIdMapsMapIdClearAutoplacementRoute,
+  postApiV1SitesSiteIdMapsMapIdImageRoute,
+  postApiV1SitesSiteIdMapsMapIdReplaceRoute,
+  postApiV1SitesSiteIdMapsMapIdRevertAutoOrientRoute,
+  postApiV1SitesSiteIdMapsMapIdRevertAutoplacementRoute,
+  postApiV1SitesSiteIdMapsMapIdSetMapRoute,
+  postApiV1SitesSiteIdMapsMapIdWayfindingImportRoute,
+  postApiV1SitesSiteIdMapsRoute,
+  postApiV1SitesSiteIdMxedgesMxedgeIdSupportRoute,
+  postApiV1SitesSiteIdMxedgesRoute,
+  postApiV1SitesSiteIdMxtunnelsMxtunnelIdPreemptApsRoute,
+  postApiV1SitesSiteIdPcapsCaptureRoute,
+  postApiV1SitesSiteIdPsksImportRoute,
+  postApiV1SitesSiteIdPsksRoute,
+  postApiV1SitesSiteIdRfdiagsRfdiagIdStopRoute,
+  postApiV1SitesSiteIdRfdiagsRoute,
+  postApiV1SitesSiteIdRoguesRogueBssidDeauthClientsRoute,
+  postApiV1SitesSiteIdRrmOptimizeRoute,
+  postApiV1SitesSiteIdRssizonesRoute,
+  postApiV1SitesSiteIdSettingBlacklistRoute,
+  postApiV1SitesSiteIdSettingWatchedStationRoute,
+  postApiV1SitesSiteIdSettingWhitelistRoute,
+  postApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+  postApiV1SitesSiteIdSsrDeviceIdUpgradeRoute,
+  postApiV1SitesSiteIdSubscriptionsRoute,
+  postApiV1SitesSiteIdSyntheticTestRoute,
+  postApiV1SitesSiteIdUisettingsRoute,
+  postApiV1SitesSiteIdUisettingsUisettingIdRoute,
+  postApiV1SitesSiteIdVbeaconsRoute,
+  postApiV1SitesSiteIdWebhooksRoute,
+  postApiV1SitesSiteIdWebhooksWebhookIdPingRoute,
+  postApiV1SitesSiteIdWlansRoute,
+  postApiV1SitesSiteIdWlansWlanIdPortalImageRoute,
+  postApiV1SitesSiteIdWxrulesRoute,
+  postApiV1SitesSiteIdWxtagsRoute,
+  postApiV1SitesSiteIdWxtunnelsRoute,
+  postApiV1SitesSiteIdZonesRoute,
+  postApiV1UtilsTestTwilioRoute,
+  postWebhookExampleAlarmRoute,
+  postWebhookExampleAssetRawRoute,
+  postWebhookExampleAuditRoute,
+  postWebhookExampleClientJoinRoute,
+  postWebhookExampleClientSessionsRoute,
+  postWebhookExampleDeviceEventsRoute,
+  postWebhookExampleDeviceUpdownsRoute,
+  postWebhookExampleDiscoveredRawRssiRoute,
+  postWebhookExampleLocationRoute,
+  postWebhookExampleOccupancyAlertsRoute,
+  postWebhookExamplePingRoute,
+  postWebhookExampleSdkclientScanDataRoute,
+  postWebhookExampleZoneRoute,
+  putApiV1InstallerOrgsOrgIdDevicesDeviceMacRoute,
+  putApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+  putApiV1InstallerOrgsOrgIdSitesSiteNameRoute,
+  putApiV1MspsMspIdAdminsAdminIdRoute,
+  putApiV1MspsMspIdInvitesInviteIdRoute,
+  putApiV1MspsMspIdLicensesRoute,
+  putApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+  putApiV1MspsMspIdOrgsRoute,
+  putApiV1MspsMspIdRoute,
+  putApiV1MspsMspIdSsorolesSsoroleIdRoute,
+  putApiV1MspsMspIdSsosSsoIdRoute,
+  putApiV1OrgsOrgIdAdminsAdminIdRoute,
+  putApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+  putApiV1OrgsOrgIdApitokensApitokenIdRoute,
+  putApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+  putApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+  putApiV1OrgsOrgIdAssetsAssetIdRoute,
+  putApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+  putApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+  putApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+  putApiV1OrgsOrgIdGuestsGuestMacRoute,
+  putApiV1OrgsOrgIdInventoryRoute,
+  putApiV1OrgsOrgIdInvitesInviteIdRoute,
+  putApiV1OrgsOrgIdLicensesRoute,
+  putApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+  putApiV1OrgsOrgIdMxedgesMxedgeIdRoute,
+  putApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+  putApiV1OrgsOrgIdNacrulesNacruleIdRoute,
+  putApiV1OrgsOrgIdNactagsNactagIdRoute,
+  putApiV1OrgsOrgIdNetworksNetworkIdRoute,
+  putApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+  putApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+  putApiV1OrgsOrgIdOtherdevicesRoute,
+  putApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+  putApiV1OrgsOrgIdPsksPskIdRoute,
+  putApiV1OrgsOrgIdPsksRoute,
+  putApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+  putApiV1OrgsOrgIdRoute,
+  putApiV1OrgsOrgIdSdkclientsSdkclientIdRoute,
+  putApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+  putApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+  putApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+  putApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+  putApiV1OrgsOrgIdServicesServiceIdRoute,
+  putApiV1OrgsOrgIdSettingRoute,
+  putApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+  putApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+  putApiV1OrgsOrgIdSsorolesSsoroleIdRoute,
+  putApiV1OrgsOrgIdSsosSsoIdRoute,
+  putApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+  putApiV1OrgsOrgIdTicketsTicketIdRoute,
+  putApiV1OrgsOrgIdVpnsVpnIdRoute,
+  putApiV1OrgsOrgIdWebhooksWebhookIdRoute,
+  putApiV1OrgsOrgIdWlansWlanIdPortalTemplateRoute,
+  putApiV1OrgsOrgIdWlansWlanIdRoute,
+  putApiV1OrgsOrgIdWxrulesWxrulesIdRoute,
+  putApiV1OrgsOrgIdWxtagsWxtagIdRoute,
+  putApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+  putApiV1SelfRoute,
+  putApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+  putApiV1SitesSiteIdAssetsAssetIdRoute,
+  putApiV1SitesSiteIdBeaconsBeaconIdRoute,
+  putApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+  putApiV1SitesSiteIdDevicesDeviceIdIotRoute,
+  putApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRoute,
+  putApiV1SitesSiteIdDevicesDeviceIdRoute,
+  putApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+  putApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+  putApiV1SitesSiteIdGuestsGuestMacRoute,
+  putApiV1SitesSiteIdLocationMlDeviceDeviceIdRoute,
+  putApiV1SitesSiteIdLocationMlMapMapIdRoute,
+  putApiV1SitesSiteIdMapsMapIdRoute,
+  putApiV1SitesSiteIdMxedgesMxedgeIdRoute,
+  putApiV1SitesSiteIdPsksPskIdRoute,
+  putApiV1SitesSiteIdPsksRoute,
+  putApiV1SitesSiteIdRfdiagsRfdiagIdRoute,
+  putApiV1SitesSiteIdRoute,
+  putApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+  putApiV1SitesSiteIdSettingRoute,
+  putApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+  putApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+  putApiV1SitesSiteIdWebhooksWebhookIdRoute,
+  putApiV1SitesSiteIdWlansWlanIdPortalTemplateRoute,
+  putApiV1SitesSiteIdWlansWlanIdRoute,
+  putApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+  putApiV1SitesSiteIdWxtagsWxtagIdRoute,
+  putApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+  putApiV1SitesSiteIdZonesZoneIdRoute,
+} from './routes'
+import {
+  deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRouteHandler,
+  deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacRouteHandler,
+  deleteApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  deleteApiV1LoginOauthProviderRouteHandler,
+  deleteApiV1MspsMspIdAdminsAdminIdRouteHandler,
+  deleteApiV1MspsMspIdInvitesInviteIdRouteHandler,
+  deleteApiV1MspsMspIdLogoRouteHandler,
+  deleteApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  deleteApiV1MspsMspIdRouteHandler,
+  deleteApiV1MspsMspIdSsorolesSsoroleIdRouteHandler,
+  deleteApiV1MspsMspIdSsosSsoIdRouteHandler,
+  deleteApiV1OrgsOrgIdAdminsAdminIdRouteHandler,
+  deleteApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  deleteApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  deleteApiV1OrgsOrgIdAssetsAssetIdRouteHandler,
+  deleteApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  deleteApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  deleteApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdGuestsGuestMacRouteHandler,
+  deleteApiV1OrgsOrgIdInvitesInviteIdRouteHandler,
+  deleteApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  deleteApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler,
+  deleteApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  deleteApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler,
+  deleteApiV1OrgsOrgIdNactagsNactagIdRouteHandler,
+  deleteApiV1OrgsOrgIdNetworksNetworkIdRouteHandler,
+  deleteApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  deleteApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  deleteApiV1OrgsOrgIdPsksPskIdRouteHandler,
+  deleteApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdRouteHandler,
+  deleteApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  deleteApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  deleteApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  deleteApiV1OrgsOrgIdServicesServiceIdRouteHandler,
+  deleteApiV1OrgsOrgIdSettingAppNameLinkAccountsRouteHandler,
+  deleteApiV1OrgsOrgIdSettingAppNameLinkRouteHandler,
+  deleteApiV1OrgsOrgIdSettingBlacklistRouteHandler,
+  deleteApiV1OrgsOrgIdSettingJuniperLinkedAccountRouteHandler,
+  deleteApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  deleteApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler,
+  deleteApiV1OrgsOrgIdSsosSsoIdRouteHandler,
+  deleteApiV1OrgsOrgIdSubscriptionsRouteHandler,
+  deleteApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  deleteApiV1OrgsOrgIdVpnsVpnIdRouteHandler,
+  deleteApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler,
+  deleteApiV1OrgsOrgIdWlansWlanIdPortalImageRouteHandler,
+  deleteApiV1OrgsOrgIdWlansWlanIdRouteHandler,
+  deleteApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler,
+  deleteApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler,
+  deleteApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  deleteApiV1SelfApitokensApitokenIdRouteHandler,
+  deleteApiV1SelfRouteHandler,
+  deleteApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  deleteApiV1SitesSiteIdAssetsAssetIdRouteHandler,
+  deleteApiV1SitesSiteIdBeaconsBeaconIdRouteHandler,
+  deleteApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  deleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRouteHandler,
+  deleteApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRouteHandler,
+  deleteApiV1SitesSiteIdDevicesDeviceIdRouteHandler,
+  deleteApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  deleteApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  deleteApiV1SitesSiteIdGuestsGuestMacRouteHandler,
+  deleteApiV1SitesSiteIdLocationMlDeviceDeviceIdRouteHandler,
+  deleteApiV1SitesSiteIdLocationMlMapMapIdRouteHandler,
+  deleteApiV1SitesSiteIdMapsMapIdAutoOrientRouteHandler,
+  deleteApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  deleteApiV1SitesSiteIdMapsMapIdImageRouteHandler,
+  deleteApiV1SitesSiteIdMapsMapIdRouteHandler,
+  deleteApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler,
+  deleteApiV1SitesSiteIdPcapsCaptureRouteHandler,
+  deleteApiV1SitesSiteIdPsksPskIdRouteHandler,
+  deleteApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler,
+  deleteApiV1SitesSiteIdRouteHandler,
+  deleteApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  deleteApiV1SitesSiteIdSettingBlacklistRouteHandler,
+  deleteApiV1SitesSiteIdSettingWatchedStationRouteHandler,
+  deleteApiV1SitesSiteIdSettingWhitelistRouteHandler,
+  deleteApiV1SitesSiteIdSubscriptionsRouteHandler,
+  deleteApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  deleteApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  deleteApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  deleteApiV1SitesSiteIdWlansWlanIdRouteHandler,
+  deleteApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  deleteApiV1SitesSiteIdWxtagsWxtagIdRouteHandler,
+  deleteApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  deleteApiV1SitesSiteIdZonesZoneIdRouteHandler,
+  getApiV1ConstAlarmDefsRouteHandler,
+  getApiV1ConstApChannelsRouteHandler,
+  getApiV1ConstApLedStatusRouteHandler,
+  getApiV1ConstApplicationsRouteHandler,
+  getApiV1ConstCallEventsRouteHandler,
+  getApiV1ConstClientEventsRouteHandler,
+  getApiV1ConstCountriesRouteHandler,
+  getApiV1ConstDefaultGatewayConfigRouteHandler,
+  getApiV1ConstDeviceEventsRouteHandler,
+  getApiV1ConstDeviceModelsRouteHandler,
+  getApiV1ConstInsightMetricsRouteHandler,
+  getApiV1ConstLanguagesRouteHandler,
+  getApiV1ConstMxedgeEventsRouteHandler,
+  getApiV1ConstMxedgeModelsRouteHandler,
+  getApiV1ConstSystemEventsRouteHandler,
+  getApiV1ConstTrafficTypesRouteHandler,
+  getApiV1InstallerOrgsOrgIdAlarmtemplatesRouteHandler,
+  getApiV1InstallerOrgsOrgIdDeviceprofilesRouteHandler,
+  getApiV1InstallerOrgsOrgIdDevicesRouteHandler,
+  getApiV1InstallerOrgsOrgIdRftemplatesRouteHandler,
+  getApiV1InstallerOrgsOrgIdSecpoliciesRouteHandler,
+  getApiV1InstallerOrgsOrgIdSitegroupsRouteHandler,
+  getApiV1InstallerOrgsOrgIdSitesRouteHandler,
+  getApiV1InstallerOrgsOrgIdSitesSiteNameMapsRouteHandler,
+  getApiV1InstallerSitesSiteNameOptimizeRouteHandler,
+  getApiV1LoginOauthProviderRouteHandler,
+  getApiV1MspsMspIdAdminsAdminIdRouteHandler,
+  getApiV1MspsMspIdAdminsRouteHandler,
+  getApiV1MspsMspIdInsightsMetricRouteHandler,
+  getApiV1MspsMspIdInventoryDeviceMacRouteHandler,
+  getApiV1MspsMspIdLicensesRouteHandler,
+  getApiV1MspsMspIdLogsCountRouteHandler,
+  getApiV1MspsMspIdLogsRouteHandler,
+  getApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  getApiV1MspsMspIdOrggroupsRouteHandler,
+  getApiV1MspsMspIdOrgsOrgIdRouteHandler,
+  getApiV1MspsMspIdOrgsRouteHandler,
+  getApiV1MspsMspIdOrgsSearchRouteHandler,
+  getApiV1MspsMspIdRouteHandler,
+  getApiV1MspsMspIdSearchRouteHandler,
+  getApiV1MspsMspIdSsorolesRouteHandler,
+  getApiV1MspsMspIdSsosRouteHandler,
+  getApiV1MspsMspIdSsosSsoIdFailuresRouteHandler,
+  getApiV1MspsMspIdSsosSsoIdMetadataRouteHandler,
+  getApiV1MspsMspIdSsosSsoIdMetadataXmlRouteHandler,
+  getApiV1MspsMspIdStatsLicensesRouteHandler,
+  getApiV1MspsMspIdStatsOrgsRouteHandler,
+  getApiV1MspsMspIdTicketsCountRouteHandler,
+  getApiV1MspsMspIdTicketsRouteHandler,
+  getApiV1OrgsOrgId128routersRegisterCmdRouteHandler,
+  getApiV1OrgsOrgIdAdminsRouteHandler,
+  getApiV1OrgsOrgIdAlarmsCountRouteHandler,
+  getApiV1OrgsOrgIdAlarmsSearchRouteHandler,
+  getApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  getApiV1OrgsOrgIdAlarmtemplatesRouteHandler,
+  getApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  getApiV1OrgsOrgIdApitokensRouteHandler,
+  getApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  getApiV1OrgsOrgIdAptemplatesRouteHandler,
+  getApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  getApiV1OrgsOrgIdAssetfiltersRouteHandler,
+  getApiV1OrgsOrgIdAssetsAssetIdRouteHandler,
+  getApiV1OrgsOrgIdAssetsRouteHandler,
+  getApiV1OrgsOrgIdCallEventsCountRouteHandler,
+  getApiV1OrgsOrgIdCallEventsSearchRouteHandler,
+  getApiV1OrgsOrgIdCertRouteHandler,
+  getApiV1OrgsOrgIdClientsCountRouteHandler,
+  getApiV1OrgsOrgIdClientsEventsSearchRouteHandler,
+  getApiV1OrgsOrgIdClientsSearchRouteHandler,
+  getApiV1OrgsOrgIdClientsSessionsCountRouteHandler,
+  getApiV1OrgsOrgIdClientsSessionsSearchRouteHandler,
+  getApiV1OrgsOrgIdCrlRouteHandler,
+  getApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  getApiV1OrgsOrgIdDeviceprofilesRouteHandler,
+  getApiV1OrgsOrgIdDevicesCountRouteHandler,
+  getApiV1OrgsOrgIdDevicesEventsCountRouteHandler,
+  getApiV1OrgsOrgIdDevicesEventsSearchRouteHandler,
+  getApiV1OrgsOrgIdDevicesLastConfigCountRouteHandler,
+  getApiV1OrgsOrgIdDevicesLastConfigSearchRouteHandler,
+  getApiV1OrgsOrgIdDevicesRadioMacsRouteHandler,
+  getApiV1OrgsOrgIdDevicesRouteHandler,
+  getApiV1OrgsOrgIdDevicesSearchRouteHandler,
+  getApiV1OrgsOrgIdDevicesUpgradeRouteHandler,
+  getApiV1OrgsOrgIdDevicesUpgradeUpgradeIdRouteHandler,
+  getApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  getApiV1OrgsOrgIdEvpnTopologiesRouteHandler,
+  getApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  getApiV1OrgsOrgIdGatewaytemplatesRouteHandler,
+  getApiV1OrgsOrgIdGuestsCountRouteHandler,
+  getApiV1OrgsOrgIdGuestsGuestMacRouteHandler,
+  getApiV1OrgsOrgIdGuestsRouteHandler,
+  getApiV1OrgsOrgIdGuestsSearchRouteHandler,
+  getApiV1OrgsOrgIdInsightsMetricRouteHandler,
+  getApiV1OrgsOrgIdInsightsSitesSleRouteHandler,
+  getApiV1OrgsOrgIdInventoryRouteHandler,
+  getApiV1OrgsOrgIdJsiDevicesOutboundSshCmdRouteHandler,
+  getApiV1OrgsOrgIdJsiDevicesRouteHandler,
+  getApiV1OrgsOrgIdJsiInventoryRouteHandler,
+  getApiV1OrgsOrgIdJunosRegisterCmdRouteHandler,
+  getApiV1OrgsOrgIdLicensesRouteHandler,
+  getApiV1OrgsOrgIdLicensesUsagesRouteHandler,
+  getApiV1OrgsOrgIdLogsCountRouteHandler,
+  getApiV1OrgsOrgIdLogsRouteHandler,
+  getApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  getApiV1OrgsOrgIdMxclustersRouteHandler,
+  getApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler,
+  getApiV1OrgsOrgIdMxedgesRouteHandler,
+  getApiV1OrgsOrgIdMxedgesUpgradeRouteHandler,
+  getApiV1OrgsOrgIdMxedgesUpgradeUpgradeIdRouteHandler,
+  getApiV1OrgsOrgIdMxedgesVersionRouteHandler,
+  getApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  getApiV1OrgsOrgIdMxtunnelsRouteHandler,
+  getApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler,
+  getApiV1OrgsOrgIdNacrulesRouteHandler,
+  getApiV1OrgsOrgIdNactagsNactagIdRouteHandler,
+  getApiV1OrgsOrgIdNactagsRouteHandler,
+  getApiV1OrgsOrgIdNetworksNetworkIdRouteHandler,
+  getApiV1OrgsOrgIdNetworksRouteHandler,
+  getApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  getApiV1OrgsOrgIdNetworktemplatesRouteHandler,
+  getApiV1OrgsOrgIdOcdevicesOutboundSshCmdRouteHandler,
+  getApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  getApiV1OrgsOrgIdOtherdevicesRouteHandler,
+  getApiV1OrgsOrgIdPmaDashboardsRouteHandler,
+  getApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  getApiV1OrgsOrgIdPskportalsRouteHandler,
+  getApiV1OrgsOrgIdPsksPskIdRouteHandler,
+  getApiV1OrgsOrgIdPsksRouteHandler,
+  getApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  getApiV1OrgsOrgIdRftemplatesRouteHandler,
+  getApiV1OrgsOrgIdRouteHandler,
+  getApiV1OrgsOrgIdSdkinvitesRouteHandler,
+  getApiV1OrgsOrgIdSdkinvitesSdkinviteIdQrcodeRouteHandler,
+  getApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  getApiV1OrgsOrgIdSdktemplatesRouteHandler,
+  getApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  getApiV1OrgsOrgIdSecpoliciesRouteHandler,
+  getApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  getApiV1OrgsOrgIdServicepoliciesRouteHandler,
+  getApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  getApiV1OrgsOrgIdServicesRouteHandler,
+  getApiV1OrgsOrgIdServicesServiceIdRouteHandler,
+  getApiV1OrgsOrgIdSettingAppNameLinkAccountsRouteHandler,
+  getApiV1OrgsOrgIdSettingAppNameLinkRouteHandler,
+  getApiV1OrgsOrgIdSettingRouteHandler,
+  getApiV1OrgsOrgIdSitegroupsRouteHandler,
+  getApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  getApiV1OrgsOrgIdSitesCountRouteHandler,
+  getApiV1OrgsOrgIdSitesRouteHandler,
+  getApiV1OrgsOrgIdSitesSearchRouteHandler,
+  getApiV1OrgsOrgIdSitetemplatesRouteHandler,
+  getApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  getApiV1OrgsOrgIdSsorolesRouteHandler,
+  getApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler,
+  getApiV1OrgsOrgIdSsosRouteHandler,
+  getApiV1OrgsOrgIdSsosSsoIdFailuresRouteHandler,
+  getApiV1OrgsOrgIdSsosSsoIdMetadataRouteHandler,
+  getApiV1OrgsOrgIdSsosSsoIdMetadataXmlRouteHandler,
+  getApiV1OrgsOrgIdSsosSsoIdRouteHandler,
+  getApiV1OrgsOrgIdSsrUpgradeRouteHandler,
+  getApiV1OrgsOrgIdSsrVersionsRouteHandler,
+  getApiV1OrgsOrgIdStatsAssetsCountRouteHandler,
+  getApiV1OrgsOrgIdStatsAssetsRouteHandler,
+  getApiV1OrgsOrgIdStatsAssetsSearchRouteHandler,
+  getApiV1OrgsOrgIdStatsBgpPeersCountRouteHandler,
+  getApiV1OrgsOrgIdStatsBgpPeersSearchRouteHandler,
+  getApiV1OrgsOrgIdStatsDevicesRouteHandler,
+  getApiV1OrgsOrgIdStatsMxedgesMxedgeIdRouteHandler,
+  getApiV1OrgsOrgIdStatsMxedgesRouteHandler,
+  getApiV1OrgsOrgIdStatsOtherdevicesDeviceMacRouteHandler,
+  getApiV1OrgsOrgIdStatsPortsSearchRouteHandler,
+  getApiV1OrgsOrgIdStatsRouteHandler,
+  getApiV1OrgsOrgIdStatsSwitchPortsCountRouteHandler,
+  getApiV1OrgsOrgIdStatsTunnelsCountRouteHandler,
+  getApiV1OrgsOrgIdStatsTunnelsSearchRouteHandler,
+  getApiV1OrgsOrgIdStatsVpnPeersCountRouteHandler,
+  getApiV1OrgsOrgIdStatsVpnPeersSearchRouteHandler,
+  getApiV1OrgsOrgIdTemplatesRouteHandler,
+  getApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  getApiV1OrgsOrgIdTicketsCountRouteHandler,
+  getApiV1OrgsOrgIdTicketsRouteHandler,
+  getApiV1OrgsOrgIdTicketsTicketIdRouteHandler,
+  getApiV1OrgsOrgIdTroubleshootRouteHandler,
+  getApiV1OrgsOrgIdVpnsRouteHandler,
+  getApiV1OrgsOrgIdVpnsVpnIdRouteHandler,
+  getApiV1OrgsOrgIdWebhooksRouteHandler,
+  getApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler,
+  getApiV1OrgsOrgIdWiredClientsCountRouteHandler,
+  getApiV1OrgsOrgIdWiredClientsSearchRouteHandler,
+  getApiV1OrgsOrgIdWlansDerivedRouteHandler,
+  getApiV1OrgsOrgIdWlansRouteHandler,
+  getApiV1OrgsOrgIdWlansWlanIdRouteHandler,
+  getApiV1OrgsOrgIdWxrulesDerivedRouteHandler,
+  getApiV1OrgsOrgIdWxrulesRouteHandler,
+  getApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler,
+  getApiV1OrgsOrgIdWxtagsAppsRouteHandler,
+  getApiV1OrgsOrgIdWxtagsRouteHandler,
+  getApiV1OrgsOrgIdWxtagsWxtagIdClientsRouteHandler,
+  getApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler,
+  getApiV1OrgsOrgIdWxtunnelsRouteHandler,
+  getApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  getApiV1SelfApitokensRouteHandler,
+  getApiV1SelfLogsRouteHandler,
+  getApiV1SelfOauthProviderRouteHandler,
+  getApiV1SelfRouteHandler,
+  getApiV1SelfSubscriptionsRouteHandler,
+  getApiV1SelfTwoFactorTokenRouteHandler,
+  getApiV1SelfUpdateVerifyTokenRouteHandler,
+  getApiV1SitesSiteIdAlarmsCountRouteHandler,
+  getApiV1SitesSiteIdAlarmsSearchRouteHandler,
+  getApiV1SitesSiteIdAnomalyClientClientMacMetricRouteHandler,
+  getApiV1SitesSiteIdAnomalyDeviceDeviceMacMetricRouteHandler,
+  getApiV1SitesSiteIdAnomalyMetricRouteHandler,
+  getApiV1SitesSiteIdAppsRouteHandler,
+  getApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  getApiV1SitesSiteIdAssetfiltersRouteHandler,
+  getApiV1SitesSiteIdAssetsAssetIdRouteHandler,
+  getApiV1SitesSiteIdAssetsRouteHandler,
+  getApiV1SitesSiteIdBeaconsBeaconIdRouteHandler,
+  getApiV1SitesSiteIdBeaconsRouteHandler,
+  getApiV1SitesSiteIdCallEventsCountRouteHandler,
+  getApiV1SitesSiteIdCallEventsSearchRouteHandler,
+  getApiV1SitesSiteIdClientsClientMacEventsRouteHandler,
+  getApiV1SitesSiteIdClientsCountRouteHandler,
+  getApiV1SitesSiteIdClientsEventsCountRouteHandler,
+  getApiV1SitesSiteIdClientsEventsSearchRouteHandler,
+  getApiV1SitesSiteIdClientsSearchRouteHandler,
+  getApiV1SitesSiteIdClientsSessionsCountRouteHandler,
+  getApiV1SitesSiteIdClientsSessionsSearchRouteHandler,
+  getApiV1SitesSiteIdDevicesApChannelsRouteHandler,
+  getApiV1SitesSiteIdDevicesConfigHistoryCountRouteHandler,
+  getApiV1SitesSiteIdDevicesConfigHistorySearchRouteHandler,
+  getApiV1SitesSiteIdDevicesCountRouteHandler,
+  getApiV1SitesSiteIdDevicesDeviceIdConfigCmdRouteHandler,
+  getApiV1SitesSiteIdDevicesDeviceIdIotRouteHandler,
+  getApiV1SitesSiteIdDevicesDeviceIdRouteHandler,
+  getApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  getApiV1SitesSiteIdDevicesEventsCountRouteHandler,
+  getApiV1SitesSiteIdDevicesEventsSearchRouteHandler,
+  getApiV1SitesSiteIdDevicesExportRouteHandler,
+  getApiV1SitesSiteIdDevicesLastConfigCountRouteHandler,
+  getApiV1SitesSiteIdDevicesLastConfigSearchRouteHandler,
+  getApiV1SitesSiteIdDevicesRouteHandler,
+  getApiV1SitesSiteIdDevicesSearchRouteHandler,
+  getApiV1SitesSiteIdDevicesUpgradeRouteHandler,
+  getApiV1SitesSiteIdDevicesUpgradeUpgradeIdRouteHandler,
+  getApiV1SitesSiteIdDevicesVersionsRouteHandler,
+  getApiV1SitesSiteIdEventsFastRoamRouteHandler,
+  getApiV1SitesSiteIdEventsInterferenceRouteHandler,
+  getApiV1SitesSiteIdEventsSystemCountRouteHandler,
+  getApiV1SitesSiteIdEventsSystemSearchRouteHandler,
+  getApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  getApiV1SitesSiteIdEvpnTopologiesRouteHandler,
+  getApiV1SitesSiteIdGuestsCountRouteHandler,
+  getApiV1SitesSiteIdGuestsGuestMacRouteHandler,
+  getApiV1SitesSiteIdGuestsRouteHandler,
+  getApiV1SitesSiteIdGuestsSearchRouteHandler,
+  getApiV1SitesSiteIdInsightsClientClientMacMetricRouteHandler,
+  getApiV1SitesSiteIdInsightsDeviceDeviceMacMetricRouteHandler,
+  getApiV1SitesSiteIdInsightsMetricRouteHandler,
+  getApiV1SitesSiteIdInsightsRoguesClientsRouteHandler,
+  getApiV1SitesSiteIdInsightsRoguesRouteHandler,
+  getApiV1SitesSiteIdLicensesUsagesRouteHandler,
+  getApiV1SitesSiteIdLocationCoverageRouteHandler,
+  getApiV1SitesSiteIdLocationMlCurrentRouteHandler,
+  getApiV1SitesSiteIdLocationMlDefaultsRouteHandler,
+  getApiV1SitesSiteIdLocationMlUpdatesRouteHandler,
+  getApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  getApiV1SitesSiteIdMapsMapIdRouteHandler,
+  getApiV1SitesSiteIdMapsRouteHandler,
+  getApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler,
+  getApiV1SitesSiteIdMxedgesRouteHandler,
+  getApiV1SitesSiteIdOtherdevicesRouteHandler,
+  getApiV1SitesSiteIdPcapsCaptureRouteHandler,
+  getApiV1SitesSiteIdPcapsRouteHandler,
+  getApiV1SitesSiteIdPsksPskIdRouteHandler,
+  getApiV1SitesSiteIdPsksRouteHandler,
+  getApiV1SitesSiteIdRfdiagsRfdiagIdDownloadRouteHandler,
+  getApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler,
+  getApiV1SitesSiteIdRfdiagsRouteHandler,
+  getApiV1SitesSiteIdRoguesEventsCountRouteHandler,
+  getApiV1SitesSiteIdRoguesEventsSearchRouteHandler,
+  getApiV1SitesSiteIdRoguesRogueBssidRouteHandler,
+  getApiV1SitesSiteIdRouteHandler,
+  getApiV1SitesSiteIdRrmCurrentDevicesDeviceIdBandBandRouteHandler,
+  getApiV1SitesSiteIdRrmCurrentRouteHandler,
+  getApiV1SitesSiteIdRrmEventsRouteHandler,
+  getApiV1SitesSiteIdRssizonesRouteHandler,
+  getApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  getApiV1SitesSiteIdSettingRouteHandler,
+  getApiV1SitesSiteIdSkyatpEventsCountRouteHandler,
+  getApiV1SitesSiteIdSkyatpEventsSearchRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifierClassifierSummaryRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifiersRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricHistogramRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApplicationsRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApsRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedChassisRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedClientsRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedGatewaysRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedInterfacesRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedSwitchesRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedUsersRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactSummaryRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricSummaryRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  getApiV1SitesSiteIdSleScopeScopeIdMetricsRouteHandler,
+  getApiV1SitesSiteIdSsrUpgradeUpgradeIdRouteHandler,
+  getApiV1SitesSiteIdStatsAppsCountRouteHandler,
+  getApiV1SitesSiteIdStatsAssetsAssetIdRouteHandler,
+  getApiV1SitesSiteIdStatsAssetsCountRouteHandler,
+  getApiV1SitesSiteIdStatsAssetsRouteHandler,
+  getApiV1SitesSiteIdStatsAssetsSearchRouteHandler,
+  getApiV1SitesSiteIdStatsBeaconsRouteHandler,
+  getApiV1SitesSiteIdStatsBgpPeersCountRouteHandler,
+  getApiV1SitesSiteIdStatsBgpPeersSearchRouteHandler,
+  getApiV1SitesSiteIdStatsCallsCountRouteHandler,
+  getApiV1SitesSiteIdStatsCallsSearchRouteHandler,
+  getApiV1SitesSiteIdStatsClientsClientMacRouteHandler,
+  getApiV1SitesSiteIdStatsClientsRouteHandler,
+  getApiV1SitesSiteIdStatsDevicesDeviceIdClientsRouteHandler,
+  getApiV1SitesSiteIdStatsDevicesDeviceIdRouteHandler,
+  getApiV1SitesSiteIdStatsDevicesRouteHandler,
+  getApiV1SitesSiteIdStatsDiscoveredAssetsRouteHandler,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesCountRouteHandler,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesMetricsRouteHandler,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchesSearchRouteHandler,
+  getApiV1SitesSiteIdStatsDiscoveredSwitchMetricsSearchRouteHandler,
+  getApiV1SitesSiteIdStatsFilteredAssetsRouteHandler,
+  getApiV1SitesSiteIdStatsGatewaysMetricsRouteHandler,
+  getApiV1SitesSiteIdStatsMapsMapIdClientsRouteHandler,
+  getApiV1SitesSiteIdStatsMapsMapIdDiscoveredAssetsRouteHandler,
+  getApiV1SitesSiteIdStatsMapsMapIdSdkclientsRouteHandler,
+  getApiV1SitesSiteIdStatsMapsMapIdUnconnectedClientsRouteHandler,
+  getApiV1SitesSiteIdStatsMxedgesMxedgeIdRouteHandler,
+  getApiV1SitesSiteIdStatsMxedgesRouteHandler,
+  getApiV1SitesSiteIdStatsPortsCountRouteHandler,
+  getApiV1SitesSiteIdStatsPortsSearchRouteHandler,
+  getApiV1SitesSiteIdStatsRouteHandler,
+  getApiV1SitesSiteIdStatsSdkclientsSdkclientIdRouteHandler,
+  getApiV1SitesSiteIdStatsSwitchesMetricsRouteHandler,
+  getApiV1SitesSiteIdStatsSwitchPortsCountRouteHandler,
+  getApiV1SitesSiteIdStatsSwitchPortsSearchRouteHandler,
+  getApiV1SitesSiteIdStatsWxrulesRouteHandler,
+  getApiV1SitesSiteIdStatsZonesRouteHandler,
+  getApiV1SitesSiteIdStatsZoneTypeZoneIdRouteHandler,
+  getApiV1SitesSiteIdSyntheticTestRouteHandler,
+  getApiV1SitesSiteIdUisettingsDerivedRouteHandler,
+  getApiV1SitesSiteIdUisettingsRouteHandler,
+  getApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  getApiV1SitesSiteIdVbeaconsRouteHandler,
+  getApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  getApiV1SitesSiteIdWebhooksRouteHandler,
+  getApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  getApiV1SitesSiteIdWiredClientsCountRouteHandler,
+  getApiV1SitesSiteIdWiredClientsSearchRouteHandler,
+  getApiV1SitesSiteIdWlansDerivedRouteHandler,
+  getApiV1SitesSiteIdWlansRouteHandler,
+  getApiV1SitesSiteIdWlansWlanIdRouteHandler,
+  getApiV1SitesSiteIdWxrulesDerivedRouteHandler,
+  getApiV1SitesSiteIdWxrulesRouteHandler,
+  getApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  getApiV1SitesSiteIdWxtagsAppsRouteHandler,
+  getApiV1SitesSiteIdWxtagsRouteHandler,
+  getApiV1SitesSiteIdWxtagsWxtagIdClientsRouteHandler,
+  getApiV1SitesSiteIdWxtagsWxtagIdRouteHandler,
+  getApiV1SitesSiteIdWxtunnelsRouteHandler,
+  getApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  getApiV1SitesSiteIdZonesRouteHandler,
+  getApiV1SitesSiteIdZonesZoneIdRouteHandler,
+  getApiV1SitesSiteIdZoneTypeCountRouteHandler,
+  getApiV1SitesSiteIdZoneTypeVisitsSearchRouteHandler,
+  getApiV1UtilsTestTelstraRouteHandler,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRouteHandler,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacLocateRouteHandler,
+  postApiV1InstallerOrgsOrgIdDevicesDeviceMacUnlocateRouteHandler,
+  postApiV1InstallerOrgsOrgIdDevicesRouteHandler,
+  postApiV1InstallerOrgsOrgIdSitesSiteNameMapsImportRouteHandler,
+  postApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  postApiV1InviteVerifyTokenRouteHandler,
+  postApiV1LoginLookupRouteHandler,
+  postApiV1LoginOauthProviderRouteHandler,
+  postApiV1LoginRouteHandler,
+  postApiV1LoginTwoFactorRouteHandler,
+  postApiV1LogoutRouteHandler,
+  postApiV1MobileVerifySecretRouteHandler,
+  postApiV1MspsMspIdClaimRouteHandler,
+  postApiV1MspsMspIdInvitesRouteHandler,
+  postApiV1MspsMspIdLogoRouteHandler,
+  postApiV1MspsMspIdOrggroupsRouteHandler,
+  postApiV1MspsMspIdOrgsRouteHandler,
+  postApiV1MspsMspIdSsorolesRouteHandler,
+  postApiV1MspsMspIdSsosRouteHandler,
+  postApiV1MspsRouteHandler,
+  postApiV1OrgsOrgIdAlarmsAckAllRouteHandler,
+  postApiV1OrgsOrgIdAlarmsAckRouteHandler,
+  postApiV1OrgsOrgIdAlarmsAlarmIdAckRouteHandler,
+  postApiV1OrgsOrgIdAlarmsUnackAllRouteHandler,
+  postApiV1OrgsOrgIdAlarmsUnackRouteHandler,
+  postApiV1OrgsOrgIdAlarmtemplatesRouteHandler,
+  postApiV1OrgsOrgIdAlarmtemplatesSuppressRouteHandler,
+  postApiV1OrgsOrgIdApitokensRouteHandler,
+  postApiV1OrgsOrgIdAptemplatesRouteHandler,
+  postApiV1OrgsOrgIdAssetfiltersRouteHandler,
+  postApiV1OrgsOrgIdAssetsImportRouteHandler,
+  postApiV1OrgsOrgIdAssetsRouteHandler,
+  postApiV1OrgsOrgIdCertRegenerateRouteHandler,
+  postApiV1OrgsOrgIdClaimRouteHandler,
+  postApiV1OrgsOrgIdCloneRouteHandler,
+  postApiV1OrgsOrgIdCrlTruncateRouteHandler,
+  postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdAssignRouteHandler,
+  postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdUnassignRouteHandler,
+  postApiV1OrgsOrgIdDeviceprofilesRouteHandler,
+  postApiV1OrgsOrgIdDevicesUpgradeRouteHandler,
+  postApiV1OrgsOrgIdEvpnTopologiesRouteHandler,
+  postApiV1OrgsOrgIdGatewaytemplatesRouteHandler,
+  postApiV1OrgsOrgIdInventoryReevaluateAutoAssignmentRouteHandler,
+  postApiV1OrgsOrgIdInventoryReplaceRouteHandler,
+  postApiV1OrgsOrgIdInventoryRouteHandler,
+  postApiV1OrgsOrgIdInvitesRouteHandler,
+  postApiV1OrgsOrgIdJsiDevicesDeviceMacShellRouteHandler,
+  postApiV1OrgsOrgIdJsiDevicesDeviceMacUpgradeRouteHandler,
+  postApiV1OrgsOrgIdMapsImportRouteHandler,
+  postApiV1OrgsOrgIdMxclustersRouteHandler,
+  postApiV1OrgsOrgIdMxedgesAssignRouteHandler,
+  postApiV1OrgsOrgIdMxedgesClaimRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdRestartRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdServicesNameActionRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdServicesTuntermBouncePortRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdSupportRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdUnregisterRouteHandler,
+  postApiV1OrgsOrgIdMxedgesMxedgeIdUpgradeRouteHandler,
+  postApiV1OrgsOrgIdMxedgesRouteHandler,
+  postApiV1OrgsOrgIdMxedgesUnassignRouteHandler,
+  postApiV1OrgsOrgIdMxedgesUpgradeRouteHandler,
+  postApiV1OrgsOrgIdMxtunnelsRouteHandler,
+  postApiV1OrgsOrgIdNacrulesRouteHandler,
+  postApiV1OrgsOrgIdNactagsRouteHandler,
+  postApiV1OrgsOrgIdNetworksRouteHandler,
+  postApiV1OrgsOrgIdNetworktemplatesRouteHandler,
+  postApiV1OrgsOrgIdPskportalsRouteHandler,
+  postApiV1OrgsOrgIdPsksImportRouteHandler,
+  postApiV1OrgsOrgIdPsksPskIdDeleteOldPassphraseRouteHandler,
+  postApiV1OrgsOrgIdPsksRouteHandler,
+  postApiV1OrgsOrgIdRftemplatesRouteHandler,
+  postApiV1OrgsOrgIdSdkinvitesRouteHandler,
+  postApiV1OrgsOrgIdSdkinvitesSdkinviteIdEmailRouteHandler,
+  postApiV1OrgsOrgIdSdkinvitesSdkinviteIdSmsRouteHandler,
+  postApiV1OrgsOrgIdSdktemplatesRouteHandler,
+  postApiV1OrgsOrgIdSecpoliciesRouteHandler,
+  postApiV1OrgsOrgIdServicepoliciesRouteHandler,
+  postApiV1OrgsOrgIdServicesRouteHandler,
+  postApiV1OrgsOrgIdSettingBlacklistRouteHandler,
+  postApiV1OrgsOrgIdSettingCradlepointSetupRouteHandler,
+  postApiV1OrgsOrgIdSettingCradlepointSyncRouteHandler,
+  postApiV1OrgsOrgIdSettingJuniperLinkAccountsRouteHandler,
+  postApiV1OrgsOrgIdSettingPcapBucketSetupRouteHandler,
+  postApiV1OrgsOrgIdSettingPcapBucketVerifyRouteHandler,
+  postApiV1OrgsOrgIdSettingZscalerSetupRouteHandler,
+  postApiV1OrgsOrgIdSitegroupsRouteHandler,
+  postApiV1OrgsOrgIdSitesRouteHandler,
+  postApiV1OrgsOrgIdSitesSiteNameMapsImportRouteHandler,
+  postApiV1OrgsOrgIdSitetemplatesRouteHandler,
+  postApiV1OrgsOrgIdSsorolesRouteHandler,
+  postApiV1OrgsOrgIdSsosRouteHandler,
+  postApiV1OrgsOrgIdSsrUpgradeRouteHandler,
+  postApiV1OrgsOrgIdSsrUpgradeUpgradeIdCancelRouteHandler,
+  postApiV1OrgsOrgIdSubscriptionsRouteHandler,
+  postApiV1OrgsOrgIdTemplatesRouteHandler,
+  postApiV1OrgsOrgIdTemplatesTemplateIdCloneRouteHandler,
+  postApiV1OrgsOrgIdTicketsRouteHandler,
+  postApiV1OrgsOrgIdTicketsTicketIdCommentsRouteHandler,
+  postApiV1OrgsOrgIdVpnsRouteHandler,
+  postApiV1OrgsOrgIdWebhooksRouteHandler,
+  postApiV1OrgsOrgIdWlansRouteHandler,
+  postApiV1OrgsOrgIdWlansWlanIdPortalImageRouteHandler,
+  postApiV1OrgsOrgIdWxrulesRouteHandler,
+  postApiV1OrgsOrgIdWxtagsRouteHandler,
+  postApiV1OrgsOrgIdWxtunnelsRouteHandler,
+  postApiV1OrgsRouteHandler,
+  postApiV1RecoverRouteHandler,
+  postApiV1RecoverVerifyTokenRouteHandler,
+  postApiV1RegisterRouteHandler,
+  postApiV1RegisterVerifyTokenRouteHandler,
+  postApiV1SelfApitokensRouteHandler,
+  postApiV1SelfOauthProviderRouteHandler,
+  postApiV1SelfTwoFactorVerifyRouteHandler,
+  postApiV1SelfUpdateRouteHandler,
+  postApiV1SitesSiteIdAlarmsAckAllRouteHandler,
+  postApiV1SitesSiteIdAlarmsAckRouteHandler,
+  postApiV1SitesSiteIdAlarmsAlarmIdAckRouteHandler,
+  postApiV1SitesSiteIdAlarmsAlarmIdUnackRouteHandler,
+  postApiV1SitesSiteIdAlarmsUnackAllRouteHandler,
+  postApiV1SitesSiteIdAlarmsUnackRouteHandler,
+  postApiV1SitesSiteIdAssetfiltersRouteHandler,
+  postApiV1SitesSiteIdAssetsImportRouteHandler,
+  postApiV1SitesSiteIdAssetsRouteHandler,
+  postApiV1SitesSiteIdBeaconsRouteHandler,
+  postApiV1SitesSiteIdClientsClientMacDisconnectRouteHandler,
+  postApiV1SitesSiteIdClientsClientMacUnauthorizeRouteHandler,
+  postApiV1SitesSiteIdClientsDisconnectRouteHandler,
+  postApiV1SitesSiteIdClientsUnauthorizeRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdArpRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdBouncePortRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdCableTestRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdCheckRadiusServerRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdClearArpRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdClearBgpRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdClearBpduErrorRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdClearMacsRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdLocateRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdPingRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdPollStatsRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdReleaseDhcpRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdRequestZtpPasswordRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdResolveDnsRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdRestartRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdServicePingRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdShowRouteRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdShowSessionRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdSnapshotRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdSupportRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdSyntheticTestRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdTracerouteRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdUnlocateRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdUpgradeRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  postApiV1SitesSiteIdDevicesDeviceIdVcVcPortRouteHandler,
+  postApiV1SitesSiteIdDevicesImportRouteHandler,
+  postApiV1SitesSiteIdDevicesReprovisionRouteHandler,
+  postApiV1SitesSiteIdDevicesResetRadioConfigRouteHandler,
+  postApiV1SitesSiteIdDevicesRestartRouteHandler,
+  postApiV1SitesSiteIdDevicesRouteHandler,
+  postApiV1SitesSiteIdDevicesUpgradeRouteHandler,
+  postApiV1SitesSiteIdDevicesUpgradeUpgradeIdCancelRouteHandler,
+  postApiV1SitesSiteIdDevicesZeriozeRouteHandler,
+  postApiV1SitesSiteIdEvpnTopologiesRouteHandler,
+  postApiV1SitesSiteIdLocationMlResetMapMapIdRouteHandler,
+  postApiV1SitesSiteIdMapsImportRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdAutoOrientRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdClearAutoOrientRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdClearAutoplacementRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdImageRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdReplaceRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdRevertAutoOrientRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdRevertAutoplacementRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdSetMapRouteHandler,
+  postApiV1SitesSiteIdMapsMapIdWayfindingImportRouteHandler,
+  postApiV1SitesSiteIdMapsRouteHandler,
+  postApiV1SitesSiteIdMxedgesMxedgeIdSupportRouteHandler,
+  postApiV1SitesSiteIdMxedgesRouteHandler,
+  postApiV1SitesSiteIdMxtunnelsMxtunnelIdPreemptApsRouteHandler,
+  postApiV1SitesSiteIdPcapsCaptureRouteHandler,
+  postApiV1SitesSiteIdPsksImportRouteHandler,
+  postApiV1SitesSiteIdPsksRouteHandler,
+  postApiV1SitesSiteIdRfdiagsRfdiagIdStopRouteHandler,
+  postApiV1SitesSiteIdRfdiagsRouteHandler,
+  postApiV1SitesSiteIdRoguesRogueBssidDeauthClientsRouteHandler,
+  postApiV1SitesSiteIdRrmOptimizeRouteHandler,
+  postApiV1SitesSiteIdRssizonesRouteHandler,
+  postApiV1SitesSiteIdSettingBlacklistRouteHandler,
+  postApiV1SitesSiteIdSettingWatchedStationRouteHandler,
+  postApiV1SitesSiteIdSettingWhitelistRouteHandler,
+  postApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  postApiV1SitesSiteIdSsrDeviceIdUpgradeRouteHandler,
+  postApiV1SitesSiteIdSubscriptionsRouteHandler,
+  postApiV1SitesSiteIdSyntheticTestRouteHandler,
+  postApiV1SitesSiteIdUisettingsRouteHandler,
+  postApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  postApiV1SitesSiteIdVbeaconsRouteHandler,
+  postApiV1SitesSiteIdWebhooksRouteHandler,
+  postApiV1SitesSiteIdWebhooksWebhookIdPingRouteHandler,
+  postApiV1SitesSiteIdWlansRouteHandler,
+  postApiV1SitesSiteIdWlansWlanIdPortalImageRouteHandler,
+  postApiV1SitesSiteIdWxrulesRouteHandler,
+  postApiV1SitesSiteIdWxtagsRouteHandler,
+  postApiV1SitesSiteIdWxtunnelsRouteHandler,
+  postApiV1SitesSiteIdZonesRouteHandler,
+  postApiV1UtilsTestTwilioRouteHandler,
+  postWebhookExampleAlarmRouteHandler,
+  postWebhookExampleAssetRawRouteHandler,
+  postWebhookExampleAuditRouteHandler,
+  postWebhookExampleClientJoinRouteHandler,
+  postWebhookExampleClientSessionsRouteHandler,
+  postWebhookExampleDeviceEventsRouteHandler,
+  postWebhookExampleDeviceUpdownsRouteHandler,
+  postWebhookExampleDiscoveredRawRssiRouteHandler,
+  postWebhookExampleLocationRouteHandler,
+  postWebhookExampleOccupancyAlertsRouteHandler,
+  postWebhookExamplePingRouteHandler,
+  postWebhookExampleSdkclientScanDataRouteHandler,
+  postWebhookExampleZoneRouteHandler,
+  putApiV1InstallerOrgsOrgIdDevicesDeviceMacRouteHandler,
+  putApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  putApiV1InstallerOrgsOrgIdSitesSiteNameRouteHandler,
+  putApiV1MspsMspIdAdminsAdminIdRouteHandler,
+  putApiV1MspsMspIdInvitesInviteIdRouteHandler,
+  putApiV1MspsMspIdLicensesRouteHandler,
+  putApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  putApiV1MspsMspIdOrgsRouteHandler,
+  putApiV1MspsMspIdRouteHandler,
+  putApiV1MspsMspIdSsorolesSsoroleIdRouteHandler,
+  putApiV1MspsMspIdSsosSsoIdRouteHandler,
+  putApiV1OrgsOrgIdAdminsAdminIdRouteHandler,
+  putApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  putApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  putApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  putApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  putApiV1OrgsOrgIdAssetsAssetIdRouteHandler,
+  putApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  putApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  putApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  putApiV1OrgsOrgIdGuestsGuestMacRouteHandler,
+  putApiV1OrgsOrgIdInventoryRouteHandler,
+  putApiV1OrgsOrgIdInvitesInviteIdRouteHandler,
+  putApiV1OrgsOrgIdLicensesRouteHandler,
+  putApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  putApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler,
+  putApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  putApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler,
+  putApiV1OrgsOrgIdNactagsNactagIdRouteHandler,
+  putApiV1OrgsOrgIdNetworksNetworkIdRouteHandler,
+  putApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  putApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  putApiV1OrgsOrgIdOtherdevicesRouteHandler,
+  putApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  putApiV1OrgsOrgIdPsksPskIdRouteHandler,
+  putApiV1OrgsOrgIdPsksRouteHandler,
+  putApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  putApiV1OrgsOrgIdRouteHandler,
+  putApiV1OrgsOrgIdSdkclientsSdkclientIdRouteHandler,
+  putApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  putApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  putApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  putApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  putApiV1OrgsOrgIdServicesServiceIdRouteHandler,
+  putApiV1OrgsOrgIdSettingRouteHandler,
+  putApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  putApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  putApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler,
+  putApiV1OrgsOrgIdSsosSsoIdRouteHandler,
+  putApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  putApiV1OrgsOrgIdTicketsTicketIdRouteHandler,
+  putApiV1OrgsOrgIdVpnsVpnIdRouteHandler,
+  putApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler,
+  putApiV1OrgsOrgIdWlansWlanIdPortalTemplateRouteHandler,
+  putApiV1OrgsOrgIdWlansWlanIdRouteHandler,
+  putApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler,
+  putApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler,
+  putApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  putApiV1SelfRouteHandler,
+  putApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  putApiV1SitesSiteIdAssetsAssetIdRouteHandler,
+  putApiV1SitesSiteIdBeaconsBeaconIdRouteHandler,
+  putApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  putApiV1SitesSiteIdDevicesDeviceIdIotRouteHandler,
+  putApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRouteHandler,
+  putApiV1SitesSiteIdDevicesDeviceIdRouteHandler,
+  putApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  putApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  putApiV1SitesSiteIdGuestsGuestMacRouteHandler,
+  putApiV1SitesSiteIdLocationMlDeviceDeviceIdRouteHandler,
+  putApiV1SitesSiteIdLocationMlMapMapIdRouteHandler,
+  putApiV1SitesSiteIdMapsMapIdRouteHandler,
+  putApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler,
+  putApiV1SitesSiteIdPsksPskIdRouteHandler,
+  putApiV1SitesSiteIdPsksRouteHandler,
+  putApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler,
+  putApiV1SitesSiteIdRouteHandler,
+  putApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  putApiV1SitesSiteIdSettingRouteHandler,
+  putApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  putApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  putApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  putApiV1SitesSiteIdWlansWlanIdPortalTemplateRouteHandler,
+  putApiV1SitesSiteIdWlansWlanIdRouteHandler,
+  putApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  putApiV1SitesSiteIdWxtagsWxtagIdRouteHandler,
+  putApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  putApiV1SitesSiteIdZonesZoneIdRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', apiHandler).route('/', webhookExampleHandler)
+export const api = app
+  .openapi(getApiV1ConstAlarmDefsRoute, getApiV1ConstAlarmDefsRouteHandler)
+  .openapi(getApiV1ConstApChannelsRoute, getApiV1ConstApChannelsRouteHandler)
+  .openapi(getApiV1ConstApLedStatusRoute, getApiV1ConstApLedStatusRouteHandler)
+  .openapi(getApiV1ConstApplicationsRoute, getApiV1ConstApplicationsRouteHandler)
+  .openapi(getApiV1ConstCallEventsRoute, getApiV1ConstCallEventsRouteHandler)
+  .openapi(getApiV1ConstClientEventsRoute, getApiV1ConstClientEventsRouteHandler)
+  .openapi(getApiV1ConstCountriesRoute, getApiV1ConstCountriesRouteHandler)
+  .openapi(getApiV1ConstDefaultGatewayConfigRoute, getApiV1ConstDefaultGatewayConfigRouteHandler)
+  .openapi(getApiV1ConstDeviceEventsRoute, getApiV1ConstDeviceEventsRouteHandler)
+  .openapi(getApiV1ConstDeviceModelsRoute, getApiV1ConstDeviceModelsRouteHandler)
+  .openapi(getApiV1ConstInsightMetricsRoute, getApiV1ConstInsightMetricsRouteHandler)
+  .openapi(getApiV1ConstLanguagesRoute, getApiV1ConstLanguagesRouteHandler)
+  .openapi(getApiV1ConstMxedgeEventsRoute, getApiV1ConstMxedgeEventsRouteHandler)
+  .openapi(getApiV1ConstMxedgeModelsRoute, getApiV1ConstMxedgeModelsRouteHandler)
+  .openapi(getApiV1ConstSystemEventsRoute, getApiV1ConstSystemEventsRouteHandler)
+  .openapi(getApiV1ConstTrafficTypesRoute, getApiV1ConstTrafficTypesRouteHandler)
+  .openapi(
+    getApiV1InstallerOrgsOrgIdAlarmtemplatesRoute,
+    getApiV1InstallerOrgsOrgIdAlarmtemplatesRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerOrgsOrgIdDeviceprofilesRoute,
+    getApiV1InstallerOrgsOrgIdDeviceprofilesRouteHandler,
+  )
+  .openapi(getApiV1InstallerOrgsOrgIdDevicesRoute, getApiV1InstallerOrgsOrgIdDevicesRouteHandler)
+  .openapi(postApiV1InstallerOrgsOrgIdDevicesRoute, postApiV1InstallerOrgsOrgIdDevicesRouteHandler)
+  .openapi(
+    deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacRoute,
+    deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacRouteHandler,
+  )
+  .openapi(
+    putApiV1InstallerOrgsOrgIdDevicesDeviceMacRoute,
+    putApiV1InstallerOrgsOrgIdDevicesDeviceMacRouteHandler,
+  )
+  .openapi(
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacLocateRoute,
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacLocateRouteHandler,
+  )
+  .openapi(
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacUnlocateRoute,
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacUnlocateRouteHandler,
+  )
+  .openapi(
+    deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRoute,
+    deleteApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRouteHandler,
+  )
+  .openapi(
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRoute,
+    postApiV1InstallerOrgsOrgIdDevicesDeviceMacImageNameRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerOrgsOrgIdRftemplatesRoute,
+    getApiV1InstallerOrgsOrgIdRftemplatesRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerOrgsOrgIdSecpoliciesRoute,
+    getApiV1InstallerOrgsOrgIdSecpoliciesRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerOrgsOrgIdSitegroupsRoute,
+    getApiV1InstallerOrgsOrgIdSitegroupsRouteHandler,
+  )
+  .openapi(getApiV1InstallerOrgsOrgIdSitesRoute, getApiV1InstallerOrgsOrgIdSitesRouteHandler)
+  .openapi(
+    putApiV1InstallerOrgsOrgIdSitesSiteNameRoute,
+    putApiV1InstallerOrgsOrgIdSitesSiteNameRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerOrgsOrgIdSitesSiteNameMapsRoute,
+    getApiV1InstallerOrgsOrgIdSitesSiteNameMapsRouteHandler,
+  )
+  .openapi(
+    postApiV1InstallerOrgsOrgIdSitesSiteNameMapsImportRoute,
+    postApiV1InstallerOrgsOrgIdSitesSiteNameMapsImportRouteHandler,
+  )
+  .openapi(
+    deleteApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+    deleteApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  )
+  .openapi(
+    postApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+    postApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  )
+  .openapi(
+    putApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRoute,
+    putApiV1InstallerOrgsOrgIdSitesSiteNameMapsMapIdRouteHandler,
+  )
+  .openapi(
+    getApiV1InstallerSitesSiteNameOptimizeRoute,
+    getApiV1InstallerSitesSiteNameOptimizeRouteHandler,
+  )
+  .openapi(postApiV1InviteVerifyTokenRoute, postApiV1InviteVerifyTokenRouteHandler)
+  .openapi(postApiV1LoginRoute, postApiV1LoginRouteHandler)
+  .openapi(postApiV1LoginLookupRoute, postApiV1LoginLookupRouteHandler)
+  .openapi(deleteApiV1LoginOauthProviderRoute, deleteApiV1LoginOauthProviderRouteHandler)
+  .openapi(getApiV1LoginOauthProviderRoute, getApiV1LoginOauthProviderRouteHandler)
+  .openapi(postApiV1LoginOauthProviderRoute, postApiV1LoginOauthProviderRouteHandler)
+  .openapi(postApiV1LoginTwoFactorRoute, postApiV1LoginTwoFactorRouteHandler)
+  .openapi(postApiV1LogoutRoute, postApiV1LogoutRouteHandler)
+  .openapi(postApiV1MobileVerifySecretRoute, postApiV1MobileVerifySecretRouteHandler)
+  .openapi(postApiV1MspsRoute, postApiV1MspsRouteHandler)
+  .openapi(deleteApiV1MspsMspIdRoute, deleteApiV1MspsMspIdRouteHandler)
+  .openapi(getApiV1MspsMspIdRoute, getApiV1MspsMspIdRouteHandler)
+  .openapi(putApiV1MspsMspIdRoute, putApiV1MspsMspIdRouteHandler)
+  .openapi(getApiV1MspsMspIdAdminsRoute, getApiV1MspsMspIdAdminsRouteHandler)
+  .openapi(deleteApiV1MspsMspIdAdminsAdminIdRoute, deleteApiV1MspsMspIdAdminsAdminIdRouteHandler)
+  .openapi(getApiV1MspsMspIdAdminsAdminIdRoute, getApiV1MspsMspIdAdminsAdminIdRouteHandler)
+  .openapi(putApiV1MspsMspIdAdminsAdminIdRoute, putApiV1MspsMspIdAdminsAdminIdRouteHandler)
+  .openapi(postApiV1MspsMspIdClaimRoute, postApiV1MspsMspIdClaimRouteHandler)
+  .openapi(getApiV1MspsMspIdInsightsMetricRoute, getApiV1MspsMspIdInsightsMetricRouteHandler)
+  .openapi(
+    getApiV1MspsMspIdInventoryDeviceMacRoute,
+    getApiV1MspsMspIdInventoryDeviceMacRouteHandler,
+  )
+  .openapi(postApiV1MspsMspIdInvitesRoute, postApiV1MspsMspIdInvitesRouteHandler)
+  .openapi(
+    deleteApiV1MspsMspIdInvitesInviteIdRoute,
+    deleteApiV1MspsMspIdInvitesInviteIdRouteHandler,
+  )
+  .openapi(putApiV1MspsMspIdInvitesInviteIdRoute, putApiV1MspsMspIdInvitesInviteIdRouteHandler)
+  .openapi(getApiV1MspsMspIdLicensesRoute, getApiV1MspsMspIdLicensesRouteHandler)
+  .openapi(putApiV1MspsMspIdLicensesRoute, putApiV1MspsMspIdLicensesRouteHandler)
+  .openapi(deleteApiV1MspsMspIdLogoRoute, deleteApiV1MspsMspIdLogoRouteHandler)
+  .openapi(postApiV1MspsMspIdLogoRoute, postApiV1MspsMspIdLogoRouteHandler)
+  .openapi(getApiV1MspsMspIdLogsRoute, getApiV1MspsMspIdLogsRouteHandler)
+  .openapi(getApiV1MspsMspIdLogsCountRoute, getApiV1MspsMspIdLogsCountRouteHandler)
+  .openapi(getApiV1MspsMspIdOrggroupsRoute, getApiV1MspsMspIdOrggroupsRouteHandler)
+  .openapi(postApiV1MspsMspIdOrggroupsRoute, postApiV1MspsMspIdOrggroupsRouteHandler)
+  .openapi(
+    deleteApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+    deleteApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  )
+  .openapi(
+    getApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+    getApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  )
+  .openapi(
+    putApiV1MspsMspIdOrggroupsOrggroupIdRoute,
+    putApiV1MspsMspIdOrggroupsOrggroupIdRouteHandler,
+  )
+  .openapi(getApiV1MspsMspIdOrgsRoute, getApiV1MspsMspIdOrgsRouteHandler)
+  .openapi(postApiV1MspsMspIdOrgsRoute, postApiV1MspsMspIdOrgsRouteHandler)
+  .openapi(putApiV1MspsMspIdOrgsRoute, putApiV1MspsMspIdOrgsRouteHandler)
+  .openapi(getApiV1MspsMspIdOrgsSearchRoute, getApiV1MspsMspIdOrgsSearchRouteHandler)
+  .openapi(getApiV1MspsMspIdOrgsOrgIdRoute, getApiV1MspsMspIdOrgsOrgIdRouteHandler)
+  .openapi(getApiV1MspsMspIdSearchRoute, getApiV1MspsMspIdSearchRouteHandler)
+  .openapi(getApiV1MspsMspIdSsorolesRoute, getApiV1MspsMspIdSsorolesRouteHandler)
+  .openapi(postApiV1MspsMspIdSsorolesRoute, postApiV1MspsMspIdSsorolesRouteHandler)
+  .openapi(
+    deleteApiV1MspsMspIdSsorolesSsoroleIdRoute,
+    deleteApiV1MspsMspIdSsorolesSsoroleIdRouteHandler,
+  )
+  .openapi(putApiV1MspsMspIdSsorolesSsoroleIdRoute, putApiV1MspsMspIdSsorolesSsoroleIdRouteHandler)
+  .openapi(getApiV1MspsMspIdSsosRoute, getApiV1MspsMspIdSsosRouteHandler)
+  .openapi(postApiV1MspsMspIdSsosRoute, postApiV1MspsMspIdSsosRouteHandler)
+  .openapi(deleteApiV1MspsMspIdSsosSsoIdRoute, deleteApiV1MspsMspIdSsosSsoIdRouteHandler)
+  .openapi(putApiV1MspsMspIdSsosSsoIdRoute, putApiV1MspsMspIdSsosSsoIdRouteHandler)
+  .openapi(getApiV1MspsMspIdSsosSsoIdFailuresRoute, getApiV1MspsMspIdSsosSsoIdFailuresRouteHandler)
+  .openapi(getApiV1MspsMspIdSsosSsoIdMetadataRoute, getApiV1MspsMspIdSsosSsoIdMetadataRouteHandler)
+  .openapi(
+    getApiV1MspsMspIdSsosSsoIdMetadataXmlRoute,
+    getApiV1MspsMspIdSsosSsoIdMetadataXmlRouteHandler,
+  )
+  .openapi(getApiV1MspsMspIdStatsLicensesRoute, getApiV1MspsMspIdStatsLicensesRouteHandler)
+  .openapi(getApiV1MspsMspIdStatsOrgsRoute, getApiV1MspsMspIdStatsOrgsRouteHandler)
+  .openapi(getApiV1MspsMspIdTicketsRoute, getApiV1MspsMspIdTicketsRouteHandler)
+  .openapi(getApiV1MspsMspIdTicketsCountRoute, getApiV1MspsMspIdTicketsCountRouteHandler)
+  .openapi(postApiV1OrgsRoute, postApiV1OrgsRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdRoute, deleteApiV1OrgsOrgIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdRoute, getApiV1OrgsOrgIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdRoute, putApiV1OrgsOrgIdRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgId128routersRegisterCmdRoute,
+    getApiV1OrgsOrgId128routersRegisterCmdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdAdminsRoute, getApiV1OrgsOrgIdAdminsRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdAdminsAdminIdRoute, deleteApiV1OrgsOrgIdAdminsAdminIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdAdminsAdminIdRoute, putApiV1OrgsOrgIdAdminsAdminIdRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmsAckRoute, postApiV1OrgsOrgIdAlarmsAckRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmsAckAllRoute, postApiV1OrgsOrgIdAlarmsAckAllRouteHandler)
+  .openapi(getApiV1OrgsOrgIdAlarmsCountRoute, getApiV1OrgsOrgIdAlarmsCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdAlarmsSearchRoute, getApiV1OrgsOrgIdAlarmsSearchRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmsUnackRoute, postApiV1OrgsOrgIdAlarmsUnackRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmsUnackAllRoute, postApiV1OrgsOrgIdAlarmsUnackAllRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmsAlarmIdAckRoute, postApiV1OrgsOrgIdAlarmsAlarmIdAckRouteHandler)
+  .openapi(getApiV1OrgsOrgIdAlarmtemplatesRoute, getApiV1OrgsOrgIdAlarmtemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAlarmtemplatesRoute, postApiV1OrgsOrgIdAlarmtemplatesRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdAlarmtemplatesSuppressRoute,
+    postApiV1OrgsOrgIdAlarmtemplatesSuppressRouteHandler,
+  )
+  .openapi(
+    deleteApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+    deleteApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+    getApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRoute,
+    putApiV1OrgsOrgIdAlarmtemplatesAlarmtemplateIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdApitokensRoute, getApiV1OrgsOrgIdApitokensRouteHandler)
+  .openapi(postApiV1OrgsOrgIdApitokensRoute, postApiV1OrgsOrgIdApitokensRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdApitokensApitokenIdRoute,
+    deleteApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdApitokensApitokenIdRoute,
+    getApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdApitokensApitokenIdRoute,
+    putApiV1OrgsOrgIdApitokensApitokenIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdAptemplatesRoute, getApiV1OrgsOrgIdAptemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAptemplatesRoute, postApiV1OrgsOrgIdAptemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+    deleteApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+    getApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdAptemplatesAptemplateIdRoute,
+    putApiV1OrgsOrgIdAptemplatesAptemplateIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdAssetfiltersRoute, getApiV1OrgsOrgIdAssetfiltersRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAssetfiltersRoute, postApiV1OrgsOrgIdAssetfiltersRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+    deleteApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+    getApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdAssetfiltersAssetfilterIdRoute,
+    putApiV1OrgsOrgIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdAssetsRoute, getApiV1OrgsOrgIdAssetsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAssetsRoute, postApiV1OrgsOrgIdAssetsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdAssetsImportRoute, postApiV1OrgsOrgIdAssetsImportRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdAssetsAssetIdRoute, deleteApiV1OrgsOrgIdAssetsAssetIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdAssetsAssetIdRoute, getApiV1OrgsOrgIdAssetsAssetIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdAssetsAssetIdRoute, putApiV1OrgsOrgIdAssetsAssetIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdCallEventsCountRoute, getApiV1OrgsOrgIdCallEventsCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdCallEventsSearchRoute, getApiV1OrgsOrgIdCallEventsSearchRouteHandler)
+  .openapi(getApiV1OrgsOrgIdCertRoute, getApiV1OrgsOrgIdCertRouteHandler)
+  .openapi(postApiV1OrgsOrgIdCertRegenerateRoute, postApiV1OrgsOrgIdCertRegenerateRouteHandler)
+  .openapi(postApiV1OrgsOrgIdClaimRoute, postApiV1OrgsOrgIdClaimRouteHandler)
+  .openapi(getApiV1OrgsOrgIdClientsCountRoute, getApiV1OrgsOrgIdClientsCountRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdClientsEventsSearchRoute,
+    getApiV1OrgsOrgIdClientsEventsSearchRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdClientsSearchRoute, getApiV1OrgsOrgIdClientsSearchRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdClientsSessionsCountRoute,
+    getApiV1OrgsOrgIdClientsSessionsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdClientsSessionsSearchRoute,
+    getApiV1OrgsOrgIdClientsSessionsSearchRouteHandler,
+  )
+  .openapi(postApiV1OrgsOrgIdCloneRoute, postApiV1OrgsOrgIdCloneRouteHandler)
+  .openapi(getApiV1OrgsOrgIdCrlRoute, getApiV1OrgsOrgIdCrlRouteHandler)
+  .openapi(postApiV1OrgsOrgIdCrlTruncateRoute, postApiV1OrgsOrgIdCrlTruncateRouteHandler)
+  .openapi(getApiV1OrgsOrgIdDeviceprofilesRoute, getApiV1OrgsOrgIdDeviceprofilesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdDeviceprofilesRoute, postApiV1OrgsOrgIdDeviceprofilesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+    deleteApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+    getApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRoute,
+    putApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdAssignRoute,
+    postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdAssignRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdUnassignRoute,
+    postApiV1OrgsOrgIdDeviceprofilesDeviceprofileIdUnassignRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdDevicesRoute, getApiV1OrgsOrgIdDevicesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdDevicesCountRoute, getApiV1OrgsOrgIdDevicesCountRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdDevicesEventsCountRoute,
+    getApiV1OrgsOrgIdDevicesEventsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdDevicesEventsSearchRoute,
+    getApiV1OrgsOrgIdDevicesEventsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdDevicesLastConfigCountRoute,
+    getApiV1OrgsOrgIdDevicesLastConfigCountRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdDevicesLastConfigSearchRoute,
+    getApiV1OrgsOrgIdDevicesLastConfigSearchRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdDevicesRadioMacsRoute, getApiV1OrgsOrgIdDevicesRadioMacsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdDevicesSearchRoute, getApiV1OrgsOrgIdDevicesSearchRouteHandler)
+  .openapi(getApiV1OrgsOrgIdDevicesUpgradeRoute, getApiV1OrgsOrgIdDevicesUpgradeRouteHandler)
+  .openapi(postApiV1OrgsOrgIdDevicesUpgradeRoute, postApiV1OrgsOrgIdDevicesUpgradeRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdDevicesUpgradeUpgradeIdRoute,
+    getApiV1OrgsOrgIdDevicesUpgradeUpgradeIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdEvpnTopologiesRoute, getApiV1OrgsOrgIdEvpnTopologiesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdEvpnTopologiesRoute, postApiV1OrgsOrgIdEvpnTopologiesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+    deleteApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+    getApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRoute,
+    putApiV1OrgsOrgIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdGatewaytemplatesRoute, getApiV1OrgsOrgIdGatewaytemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdGatewaytemplatesRoute, postApiV1OrgsOrgIdGatewaytemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+    deleteApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+    getApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRoute,
+    putApiV1OrgsOrgIdGatewaytemplatesGatewaytemplateIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdGuestsRoute, getApiV1OrgsOrgIdGuestsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdGuestsCountRoute, getApiV1OrgsOrgIdGuestsCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdGuestsSearchRoute, getApiV1OrgsOrgIdGuestsSearchRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdGuestsGuestMacRoute, deleteApiV1OrgsOrgIdGuestsGuestMacRouteHandler)
+  .openapi(getApiV1OrgsOrgIdGuestsGuestMacRoute, getApiV1OrgsOrgIdGuestsGuestMacRouteHandler)
+  .openapi(putApiV1OrgsOrgIdGuestsGuestMacRoute, putApiV1OrgsOrgIdGuestsGuestMacRouteHandler)
+  .openapi(getApiV1OrgsOrgIdInsightsSitesSleRoute, getApiV1OrgsOrgIdInsightsSitesSleRouteHandler)
+  .openapi(getApiV1OrgsOrgIdInsightsMetricRoute, getApiV1OrgsOrgIdInsightsMetricRouteHandler)
+  .openapi(getApiV1OrgsOrgIdInventoryRoute, getApiV1OrgsOrgIdInventoryRouteHandler)
+  .openapi(postApiV1OrgsOrgIdInventoryRoute, postApiV1OrgsOrgIdInventoryRouteHandler)
+  .openapi(putApiV1OrgsOrgIdInventoryRoute, putApiV1OrgsOrgIdInventoryRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdInventoryReevaluateAutoAssignmentRoute,
+    postApiV1OrgsOrgIdInventoryReevaluateAutoAssignmentRouteHandler,
+  )
+  .openapi(postApiV1OrgsOrgIdInventoryReplaceRoute, postApiV1OrgsOrgIdInventoryReplaceRouteHandler)
+  .openapi(postApiV1OrgsOrgIdInvitesRoute, postApiV1OrgsOrgIdInvitesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdInvitesInviteIdRoute,
+    deleteApiV1OrgsOrgIdInvitesInviteIdRouteHandler,
+  )
+  .openapi(putApiV1OrgsOrgIdInvitesInviteIdRoute, putApiV1OrgsOrgIdInvitesInviteIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdJsiDevicesRoute, getApiV1OrgsOrgIdJsiDevicesRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdJsiDevicesOutboundSshCmdRoute,
+    getApiV1OrgsOrgIdJsiDevicesOutboundSshCmdRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdJsiDevicesDeviceMacShellRoute,
+    postApiV1OrgsOrgIdJsiDevicesDeviceMacShellRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdJsiDevicesDeviceMacUpgradeRoute,
+    postApiV1OrgsOrgIdJsiDevicesDeviceMacUpgradeRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdJsiInventoryRoute, getApiV1OrgsOrgIdJsiInventoryRouteHandler)
+  .openapi(getApiV1OrgsOrgIdJunosRegisterCmdRoute, getApiV1OrgsOrgIdJunosRegisterCmdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdLicensesRoute, getApiV1OrgsOrgIdLicensesRouteHandler)
+  .openapi(putApiV1OrgsOrgIdLicensesRoute, putApiV1OrgsOrgIdLicensesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdLicensesUsagesRoute, getApiV1OrgsOrgIdLicensesUsagesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdLogsRoute, getApiV1OrgsOrgIdLogsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdLogsCountRoute, getApiV1OrgsOrgIdLogsCountRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMapsImportRoute, postApiV1OrgsOrgIdMapsImportRouteHandler)
+  .openapi(getApiV1OrgsOrgIdMxclustersRoute, getApiV1OrgsOrgIdMxclustersRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxclustersRoute, postApiV1OrgsOrgIdMxclustersRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+    deleteApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+    getApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdMxclustersMxclusterIdRoute,
+    putApiV1OrgsOrgIdMxclustersMxclusterIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdMxedgesRoute, getApiV1OrgsOrgIdMxedgesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxedgesRoute, postApiV1OrgsOrgIdMxedgesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxedgesAssignRoute, postApiV1OrgsOrgIdMxedgesAssignRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxedgesClaimRoute, postApiV1OrgsOrgIdMxedgesClaimRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxedgesUnassignRoute, postApiV1OrgsOrgIdMxedgesUnassignRouteHandler)
+  .openapi(getApiV1OrgsOrgIdMxedgesUpgradeRoute, getApiV1OrgsOrgIdMxedgesUpgradeRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxedgesUpgradeRoute, postApiV1OrgsOrgIdMxedgesUpgradeRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdMxedgesUpgradeUpgradeIdRoute,
+    getApiV1OrgsOrgIdMxedgesUpgradeUpgradeIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdMxedgesVersionRoute, getApiV1OrgsOrgIdMxedgesVersionRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdMxedgesMxedgeIdRoute,
+    deleteApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdMxedgesMxedgeIdRoute, getApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdMxedgesMxedgeIdRoute, putApiV1OrgsOrgIdMxedgesMxedgeIdRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdRestartRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdRestartRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdServicesTuntermBouncePortRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdServicesTuntermBouncePortRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdServicesNameActionRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdServicesNameActionRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdSupportRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdSupportRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdUnregisterRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdUnregisterRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdMxedgesMxedgeIdUpgradeRoute,
+    postApiV1OrgsOrgIdMxedgesMxedgeIdUpgradeRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdMxtunnelsRoute, getApiV1OrgsOrgIdMxtunnelsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdMxtunnelsRoute, postApiV1OrgsOrgIdMxtunnelsRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+    deleteApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+    getApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdMxtunnelsMxtunnelIdRoute,
+    putApiV1OrgsOrgIdMxtunnelsMxtunnelIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdNacrulesRoute, getApiV1OrgsOrgIdNacrulesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdNacrulesRoute, postApiV1OrgsOrgIdNacrulesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdNacrulesNacruleIdRoute,
+    deleteApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdNacrulesNacruleIdRoute, getApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdNacrulesNacruleIdRoute, putApiV1OrgsOrgIdNacrulesNacruleIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdNactagsRoute, getApiV1OrgsOrgIdNactagsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdNactagsRoute, postApiV1OrgsOrgIdNactagsRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdNactagsNactagIdRoute,
+    deleteApiV1OrgsOrgIdNactagsNactagIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdNactagsNactagIdRoute, getApiV1OrgsOrgIdNactagsNactagIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdNactagsNactagIdRoute, putApiV1OrgsOrgIdNactagsNactagIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdNetworksRoute, getApiV1OrgsOrgIdNetworksRouteHandler)
+  .openapi(postApiV1OrgsOrgIdNetworksRoute, postApiV1OrgsOrgIdNetworksRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdNetworksNetworkIdRoute,
+    deleteApiV1OrgsOrgIdNetworksNetworkIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdNetworksNetworkIdRoute, getApiV1OrgsOrgIdNetworksNetworkIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdNetworksNetworkIdRoute, putApiV1OrgsOrgIdNetworksNetworkIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdNetworktemplatesRoute, getApiV1OrgsOrgIdNetworktemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdNetworktemplatesRoute, postApiV1OrgsOrgIdNetworktemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+    deleteApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+    getApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRoute,
+    putApiV1OrgsOrgIdNetworktemplatesNetworktemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdOcdevicesOutboundSshCmdRoute,
+    getApiV1OrgsOrgIdOcdevicesOutboundSshCmdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdOtherdevicesRoute, getApiV1OrgsOrgIdOtherdevicesRouteHandler)
+  .openapi(putApiV1OrgsOrgIdOtherdevicesRoute, putApiV1OrgsOrgIdOtherdevicesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+    deleteApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+    getApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdOtherdevicesDeviceMacRoute,
+    putApiV1OrgsOrgIdOtherdevicesDeviceMacRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdPmaDashboardsRoute, getApiV1OrgsOrgIdPmaDashboardsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdPskportalsRoute, getApiV1OrgsOrgIdPskportalsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdPskportalsRoute, postApiV1OrgsOrgIdPskportalsRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+    deleteApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+    getApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdPskportalsPskportalIdRoute,
+    putApiV1OrgsOrgIdPskportalsPskportalIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdPsksRoute, getApiV1OrgsOrgIdPsksRouteHandler)
+  .openapi(postApiV1OrgsOrgIdPsksRoute, postApiV1OrgsOrgIdPsksRouteHandler)
+  .openapi(putApiV1OrgsOrgIdPsksRoute, putApiV1OrgsOrgIdPsksRouteHandler)
+  .openapi(postApiV1OrgsOrgIdPsksImportRoute, postApiV1OrgsOrgIdPsksImportRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdPsksPskIdRoute, deleteApiV1OrgsOrgIdPsksPskIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdPsksPskIdRoute, getApiV1OrgsOrgIdPsksPskIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdPsksPskIdRoute, putApiV1OrgsOrgIdPsksPskIdRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdPsksPskIdDeleteOldPassphraseRoute,
+    postApiV1OrgsOrgIdPsksPskIdDeleteOldPassphraseRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdRftemplatesRoute, getApiV1OrgsOrgIdRftemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdRftemplatesRoute, postApiV1OrgsOrgIdRftemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+    deleteApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+    getApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdRftemplatesRftemplateIdRoute,
+    putApiV1OrgsOrgIdRftemplatesRftemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSdkclientsSdkclientIdRoute,
+    putApiV1OrgsOrgIdSdkclientsSdkclientIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSdkinvitesRoute, getApiV1OrgsOrgIdSdkinvitesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSdkinvitesRoute, postApiV1OrgsOrgIdSdkinvitesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+    deleteApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+    getApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSdkinvitesSdkinviteIdRoute,
+    putApiV1OrgsOrgIdSdkinvitesSdkinviteIdRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSdkinvitesSdkinviteIdEmailRoute,
+    postApiV1OrgsOrgIdSdkinvitesSdkinviteIdEmailRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSdkinvitesSdkinviteIdQrcodeRoute,
+    getApiV1OrgsOrgIdSdkinvitesSdkinviteIdQrcodeRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSdkinvitesSdkinviteIdSmsRoute,
+    postApiV1OrgsOrgIdSdkinvitesSdkinviteIdSmsRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSdktemplatesRoute, getApiV1OrgsOrgIdSdktemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSdktemplatesRoute, postApiV1OrgsOrgIdSdktemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+    deleteApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+    getApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSdktemplatesSdktemplateIdRoute,
+    putApiV1OrgsOrgIdSdktemplatesSdktemplateIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSecpoliciesRoute, getApiV1OrgsOrgIdSecpoliciesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSecpoliciesRoute, postApiV1OrgsOrgIdSecpoliciesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+    deleteApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+    getApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSecpoliciesSecpolicyIdRoute,
+    putApiV1OrgsOrgIdSecpoliciesSecpolicyIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdServicepoliciesRoute, getApiV1OrgsOrgIdServicepoliciesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdServicepoliciesRoute, postApiV1OrgsOrgIdServicepoliciesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+    deleteApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+    getApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdServicepoliciesServicepolicyIdRoute,
+    putApiV1OrgsOrgIdServicepoliciesServicepolicyIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdServicesRoute, getApiV1OrgsOrgIdServicesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdServicesRoute, postApiV1OrgsOrgIdServicesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdServicesServiceIdRoute,
+    deleteApiV1OrgsOrgIdServicesServiceIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdServicesServiceIdRoute, getApiV1OrgsOrgIdServicesServiceIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdServicesServiceIdRoute, putApiV1OrgsOrgIdServicesServiceIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSettingRoute, getApiV1OrgsOrgIdSettingRouteHandler)
+  .openapi(putApiV1OrgsOrgIdSettingRoute, putApiV1OrgsOrgIdSettingRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSettingBlacklistRoute,
+    deleteApiV1OrgsOrgIdSettingBlacklistRouteHandler,
+  )
+  .openapi(postApiV1OrgsOrgIdSettingBlacklistRoute, postApiV1OrgsOrgIdSettingBlacklistRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdSettingCradlepointSetupRoute,
+    postApiV1OrgsOrgIdSettingCradlepointSetupRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSettingCradlepointSyncRoute,
+    postApiV1OrgsOrgIdSettingCradlepointSyncRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSettingJuniperLinkAccountsRoute,
+    postApiV1OrgsOrgIdSettingJuniperLinkAccountsRouteHandler,
+  )
+  .openapi(
+    deleteApiV1OrgsOrgIdSettingJuniperLinkedAccountRoute,
+    deleteApiV1OrgsOrgIdSettingJuniperLinkedAccountRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSettingPcapBucketSetupRoute,
+    postApiV1OrgsOrgIdSettingPcapBucketSetupRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSettingPcapBucketVerifyRoute,
+    postApiV1OrgsOrgIdSettingPcapBucketVerifyRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdSettingZscalerSetupRoute,
+    postApiV1OrgsOrgIdSettingZscalerSetupRouteHandler,
+  )
+  .openapi(
+    deleteApiV1OrgsOrgIdSettingAppNameLinkRoute,
+    deleteApiV1OrgsOrgIdSettingAppNameLinkRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSettingAppNameLinkRoute,
+    getApiV1OrgsOrgIdSettingAppNameLinkRouteHandler,
+  )
+  .openapi(
+    deleteApiV1OrgsOrgIdSettingAppNameLinkAccountsRoute,
+    deleteApiV1OrgsOrgIdSettingAppNameLinkAccountsRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSettingAppNameLinkAccountsRoute,
+    getApiV1OrgsOrgIdSettingAppNameLinkAccountsRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSitegroupsRoute, getApiV1OrgsOrgIdSitegroupsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSitegroupsRoute, postApiV1OrgsOrgIdSitegroupsRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+    deleteApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+    getApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSitegroupsSitegroupIdRoute,
+    putApiV1OrgsOrgIdSitegroupsSitegroupIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSitesRoute, getApiV1OrgsOrgIdSitesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSitesRoute, postApiV1OrgsOrgIdSitesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSitesCountRoute, getApiV1OrgsOrgIdSitesCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSitesSearchRoute, getApiV1OrgsOrgIdSitesSearchRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdSitesSiteNameMapsImportRoute,
+    postApiV1OrgsOrgIdSitesSiteNameMapsImportRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSitetemplatesRoute, getApiV1OrgsOrgIdSitetemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSitetemplatesRoute, postApiV1OrgsOrgIdSitetemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+    deleteApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+    getApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdSitetemplatesSitetemplateIdRoute,
+    putApiV1OrgsOrgIdSitetemplatesSitetemplateIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSsorolesRoute, getApiV1OrgsOrgIdSsorolesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSsorolesRoute, postApiV1OrgsOrgIdSsorolesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdSsorolesSsoroleIdRoute,
+    deleteApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSsorolesSsoroleIdRoute, getApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdSsorolesSsoroleIdRoute, putApiV1OrgsOrgIdSsorolesSsoroleIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSsosRoute, getApiV1OrgsOrgIdSsosRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSsosRoute, postApiV1OrgsOrgIdSsosRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdSsosSsoIdRoute, deleteApiV1OrgsOrgIdSsosSsoIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSsosSsoIdRoute, getApiV1OrgsOrgIdSsosSsoIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdSsosSsoIdRoute, putApiV1OrgsOrgIdSsosSsoIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSsosSsoIdFailuresRoute, getApiV1OrgsOrgIdSsosSsoIdFailuresRouteHandler)
+  .openapi(getApiV1OrgsOrgIdSsosSsoIdMetadataRoute, getApiV1OrgsOrgIdSsosSsoIdMetadataRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdSsosSsoIdMetadataXmlRoute,
+    getApiV1OrgsOrgIdSsosSsoIdMetadataXmlRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSsrUpgradeRoute, getApiV1OrgsOrgIdSsrUpgradeRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSsrUpgradeRoute, postApiV1OrgsOrgIdSsrUpgradeRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdSsrUpgradeUpgradeIdCancelRoute,
+    postApiV1OrgsOrgIdSsrUpgradeUpgradeIdCancelRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdSsrVersionsRoute, getApiV1OrgsOrgIdSsrVersionsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdStatsRoute, getApiV1OrgsOrgIdStatsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdStatsAssetsRoute, getApiV1OrgsOrgIdStatsAssetsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdStatsAssetsCountRoute, getApiV1OrgsOrgIdStatsAssetsCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdStatsAssetsSearchRoute, getApiV1OrgsOrgIdStatsAssetsSearchRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdStatsBgpPeersCountRoute,
+    getApiV1OrgsOrgIdStatsBgpPeersCountRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdStatsBgpPeersSearchRoute,
+    getApiV1OrgsOrgIdStatsBgpPeersSearchRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdStatsDevicesRoute, getApiV1OrgsOrgIdStatsDevicesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdStatsMxedgesRoute, getApiV1OrgsOrgIdStatsMxedgesRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdStatsMxedgesMxedgeIdRoute,
+    getApiV1OrgsOrgIdStatsMxedgesMxedgeIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdStatsOtherdevicesDeviceMacRoute,
+    getApiV1OrgsOrgIdStatsOtherdevicesDeviceMacRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdStatsPortsSearchRoute, getApiV1OrgsOrgIdStatsPortsSearchRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdStatsSwitchPortsCountRoute,
+    getApiV1OrgsOrgIdStatsSwitchPortsCountRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdStatsTunnelsCountRoute, getApiV1OrgsOrgIdStatsTunnelsCountRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdStatsTunnelsSearchRoute,
+    getApiV1OrgsOrgIdStatsTunnelsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdStatsVpnPeersCountRoute,
+    getApiV1OrgsOrgIdStatsVpnPeersCountRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdStatsVpnPeersSearchRoute,
+    getApiV1OrgsOrgIdStatsVpnPeersSearchRouteHandler,
+  )
+  .openapi(deleteApiV1OrgsOrgIdSubscriptionsRoute, deleteApiV1OrgsOrgIdSubscriptionsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdSubscriptionsRoute, postApiV1OrgsOrgIdSubscriptionsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdTemplatesRoute, getApiV1OrgsOrgIdTemplatesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdTemplatesRoute, postApiV1OrgsOrgIdTemplatesRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+    deleteApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+    getApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdTemplatesTemplateIdRoute,
+    putApiV1OrgsOrgIdTemplatesTemplateIdRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdTemplatesTemplateIdCloneRoute,
+    postApiV1OrgsOrgIdTemplatesTemplateIdCloneRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdTicketsRoute, getApiV1OrgsOrgIdTicketsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdTicketsRoute, postApiV1OrgsOrgIdTicketsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdTicketsCountRoute, getApiV1OrgsOrgIdTicketsCountRouteHandler)
+  .openapi(getApiV1OrgsOrgIdTicketsTicketIdRoute, getApiV1OrgsOrgIdTicketsTicketIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdTicketsTicketIdRoute, putApiV1OrgsOrgIdTicketsTicketIdRouteHandler)
+  .openapi(
+    postApiV1OrgsOrgIdTicketsTicketIdCommentsRoute,
+    postApiV1OrgsOrgIdTicketsTicketIdCommentsRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdTroubleshootRoute, getApiV1OrgsOrgIdTroubleshootRouteHandler)
+  .openapi(getApiV1OrgsOrgIdVpnsRoute, getApiV1OrgsOrgIdVpnsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdVpnsRoute, postApiV1OrgsOrgIdVpnsRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdVpnsVpnIdRoute, deleteApiV1OrgsOrgIdVpnsVpnIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdVpnsVpnIdRoute, getApiV1OrgsOrgIdVpnsVpnIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdVpnsVpnIdRoute, putApiV1OrgsOrgIdVpnsVpnIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWebhooksRoute, getApiV1OrgsOrgIdWebhooksRouteHandler)
+  .openapi(postApiV1OrgsOrgIdWebhooksRoute, postApiV1OrgsOrgIdWebhooksRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdWebhooksWebhookIdRoute,
+    deleteApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdWebhooksWebhookIdRoute, getApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdWebhooksWebhookIdRoute, putApiV1OrgsOrgIdWebhooksWebhookIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWiredClientsCountRoute, getApiV1OrgsOrgIdWiredClientsCountRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdWiredClientsSearchRoute,
+    getApiV1OrgsOrgIdWiredClientsSearchRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdWlansRoute, getApiV1OrgsOrgIdWlansRouteHandler)
+  .openapi(postApiV1OrgsOrgIdWlansRoute, postApiV1OrgsOrgIdWlansRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWlansDerivedRoute, getApiV1OrgsOrgIdWlansDerivedRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdWlansWlanIdRoute, deleteApiV1OrgsOrgIdWlansWlanIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWlansWlanIdRoute, getApiV1OrgsOrgIdWlansWlanIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdWlansWlanIdRoute, putApiV1OrgsOrgIdWlansWlanIdRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdWlansWlanIdPortalImageRoute,
+    deleteApiV1OrgsOrgIdWlansWlanIdPortalImageRouteHandler,
+  )
+  .openapi(
+    postApiV1OrgsOrgIdWlansWlanIdPortalImageRoute,
+    postApiV1OrgsOrgIdWlansWlanIdPortalImageRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdWlansWlanIdPortalTemplateRoute,
+    putApiV1OrgsOrgIdWlansWlanIdPortalTemplateRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdWxrulesRoute, getApiV1OrgsOrgIdWxrulesRouteHandler)
+  .openapi(postApiV1OrgsOrgIdWxrulesRoute, postApiV1OrgsOrgIdWxrulesRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWxrulesDerivedRoute, getApiV1OrgsOrgIdWxrulesDerivedRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdWxrulesWxrulesIdRoute,
+    deleteApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdWxrulesWxrulesIdRoute, getApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdWxrulesWxrulesIdRoute, putApiV1OrgsOrgIdWxrulesWxrulesIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWxtagsRoute, getApiV1OrgsOrgIdWxtagsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdWxtagsRoute, postApiV1OrgsOrgIdWxtagsRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWxtagsAppsRoute, getApiV1OrgsOrgIdWxtagsAppsRouteHandler)
+  .openapi(deleteApiV1OrgsOrgIdWxtagsWxtagIdRoute, deleteApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler)
+  .openapi(getApiV1OrgsOrgIdWxtagsWxtagIdRoute, getApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler)
+  .openapi(putApiV1OrgsOrgIdWxtagsWxtagIdRoute, putApiV1OrgsOrgIdWxtagsWxtagIdRouteHandler)
+  .openapi(
+    getApiV1OrgsOrgIdWxtagsWxtagIdClientsRoute,
+    getApiV1OrgsOrgIdWxtagsWxtagIdClientsRouteHandler,
+  )
+  .openapi(getApiV1OrgsOrgIdWxtunnelsRoute, getApiV1OrgsOrgIdWxtunnelsRouteHandler)
+  .openapi(postApiV1OrgsOrgIdWxtunnelsRoute, postApiV1OrgsOrgIdWxtunnelsRouteHandler)
+  .openapi(
+    deleteApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+    deleteApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(
+    getApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+    getApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(
+    putApiV1OrgsOrgIdWxtunnelsWxtunnelIdRoute,
+    putApiV1OrgsOrgIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(postApiV1RecoverRoute, postApiV1RecoverRouteHandler)
+  .openapi(postApiV1RecoverVerifyTokenRoute, postApiV1RecoverVerifyTokenRouteHandler)
+  .openapi(postApiV1RegisterRoute, postApiV1RegisterRouteHandler)
+  .openapi(postApiV1RegisterVerifyTokenRoute, postApiV1RegisterVerifyTokenRouteHandler)
+  .openapi(deleteApiV1SelfRoute, deleteApiV1SelfRouteHandler)
+  .openapi(getApiV1SelfRoute, getApiV1SelfRouteHandler)
+  .openapi(putApiV1SelfRoute, putApiV1SelfRouteHandler)
+  .openapi(getApiV1SelfApitokensRoute, getApiV1SelfApitokensRouteHandler)
+  .openapi(postApiV1SelfApitokensRoute, postApiV1SelfApitokensRouteHandler)
+  .openapi(deleteApiV1SelfApitokensApitokenIdRoute, deleteApiV1SelfApitokensApitokenIdRouteHandler)
+  .openapi(getApiV1SelfLogsRoute, getApiV1SelfLogsRouteHandler)
+  .openapi(getApiV1SelfOauthProviderRoute, getApiV1SelfOauthProviderRouteHandler)
+  .openapi(postApiV1SelfOauthProviderRoute, postApiV1SelfOauthProviderRouteHandler)
+  .openapi(getApiV1SelfSubscriptionsRoute, getApiV1SelfSubscriptionsRouteHandler)
+  .openapi(getApiV1SelfTwoFactorTokenRoute, getApiV1SelfTwoFactorTokenRouteHandler)
+  .openapi(postApiV1SelfTwoFactorVerifyRoute, postApiV1SelfTwoFactorVerifyRouteHandler)
+  .openapi(postApiV1SelfUpdateRoute, postApiV1SelfUpdateRouteHandler)
+  .openapi(getApiV1SelfUpdateVerifyTokenRoute, getApiV1SelfUpdateVerifyTokenRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdRoute, deleteApiV1SitesSiteIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdRoute, getApiV1SitesSiteIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdRoute, putApiV1SitesSiteIdRouteHandler)
+  .openapi(postApiV1SitesSiteIdAlarmsAckRoute, postApiV1SitesSiteIdAlarmsAckRouteHandler)
+  .openapi(postApiV1SitesSiteIdAlarmsAckAllRoute, postApiV1SitesSiteIdAlarmsAckAllRouteHandler)
+  .openapi(getApiV1SitesSiteIdAlarmsCountRoute, getApiV1SitesSiteIdAlarmsCountRouteHandler)
+  .openapi(getApiV1SitesSiteIdAlarmsSearchRoute, getApiV1SitesSiteIdAlarmsSearchRouteHandler)
+  .openapi(postApiV1SitesSiteIdAlarmsUnackRoute, postApiV1SitesSiteIdAlarmsUnackRouteHandler)
+  .openapi(postApiV1SitesSiteIdAlarmsUnackAllRoute, postApiV1SitesSiteIdAlarmsUnackAllRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdAlarmsAlarmIdAckRoute,
+    postApiV1SitesSiteIdAlarmsAlarmIdAckRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdAlarmsAlarmIdUnackRoute,
+    postApiV1SitesSiteIdAlarmsAlarmIdUnackRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdAnomalyClientClientMacMetricRoute,
+    getApiV1SitesSiteIdAnomalyClientClientMacMetricRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdAnomalyDeviceDeviceMacMetricRoute,
+    getApiV1SitesSiteIdAnomalyDeviceDeviceMacMetricRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdAnomalyMetricRoute, getApiV1SitesSiteIdAnomalyMetricRouteHandler)
+  .openapi(getApiV1SitesSiteIdAppsRoute, getApiV1SitesSiteIdAppsRouteHandler)
+  .openapi(getApiV1SitesSiteIdAssetfiltersRoute, getApiV1SitesSiteIdAssetfiltersRouteHandler)
+  .openapi(postApiV1SitesSiteIdAssetfiltersRoute, postApiV1SitesSiteIdAssetfiltersRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+    deleteApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+    getApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdAssetfiltersAssetfilterIdRoute,
+    putApiV1SitesSiteIdAssetfiltersAssetfilterIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdAssetsRoute, getApiV1SitesSiteIdAssetsRouteHandler)
+  .openapi(postApiV1SitesSiteIdAssetsRoute, postApiV1SitesSiteIdAssetsRouteHandler)
+  .openapi(postApiV1SitesSiteIdAssetsImportRoute, postApiV1SitesSiteIdAssetsImportRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdAssetsAssetIdRoute,
+    deleteApiV1SitesSiteIdAssetsAssetIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdAssetsAssetIdRoute, getApiV1SitesSiteIdAssetsAssetIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdAssetsAssetIdRoute, putApiV1SitesSiteIdAssetsAssetIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdBeaconsRoute, getApiV1SitesSiteIdBeaconsRouteHandler)
+  .openapi(postApiV1SitesSiteIdBeaconsRoute, postApiV1SitesSiteIdBeaconsRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdBeaconsBeaconIdRoute,
+    deleteApiV1SitesSiteIdBeaconsBeaconIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdBeaconsBeaconIdRoute, getApiV1SitesSiteIdBeaconsBeaconIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdBeaconsBeaconIdRoute, putApiV1SitesSiteIdBeaconsBeaconIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdCallEventsCountRoute, getApiV1SitesSiteIdCallEventsCountRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdCallEventsSearchRoute,
+    getApiV1SitesSiteIdCallEventsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdClientsCountRoute, getApiV1SitesSiteIdClientsCountRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdClientsDisconnectRoute,
+    postApiV1SitesSiteIdClientsDisconnectRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdClientsEventsCountRoute,
+    getApiV1SitesSiteIdClientsEventsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdClientsEventsSearchRoute,
+    getApiV1SitesSiteIdClientsEventsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdClientsSearchRoute, getApiV1SitesSiteIdClientsSearchRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdClientsSessionsCountRoute,
+    getApiV1SitesSiteIdClientsSessionsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdClientsSessionsSearchRoute,
+    getApiV1SitesSiteIdClientsSessionsSearchRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdClientsUnauthorizeRoute,
+    postApiV1SitesSiteIdClientsUnauthorizeRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdClientsClientMacDisconnectRoute,
+    postApiV1SitesSiteIdClientsClientMacDisconnectRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdClientsClientMacEventsRoute,
+    getApiV1SitesSiteIdClientsClientMacEventsRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdClientsClientMacUnauthorizeRoute,
+    postApiV1SitesSiteIdClientsClientMacUnauthorizeRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdDevicesRoute, getApiV1SitesSiteIdDevicesRouteHandler)
+  .openapi(postApiV1SitesSiteIdDevicesRoute, postApiV1SitesSiteIdDevicesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdDevicesApChannelsRoute,
+    getApiV1SitesSiteIdDevicesApChannelsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesConfigHistoryCountRoute,
+    getApiV1SitesSiteIdDevicesConfigHistoryCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesConfigHistorySearchRoute,
+    getApiV1SitesSiteIdDevicesConfigHistorySearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdDevicesCountRoute, getApiV1SitesSiteIdDevicesCountRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdDevicesEventsCountRoute,
+    getApiV1SitesSiteIdDevicesEventsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesEventsSearchRoute,
+    getApiV1SitesSiteIdDevicesEventsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdDevicesExportRoute, getApiV1SitesSiteIdDevicesExportRouteHandler)
+  .openapi(postApiV1SitesSiteIdDevicesImportRoute, postApiV1SitesSiteIdDevicesImportRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdDevicesLastConfigCountRoute,
+    getApiV1SitesSiteIdDevicesLastConfigCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesLastConfigSearchRoute,
+    getApiV1SitesSiteIdDevicesLastConfigSearchRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesReprovisionRoute,
+    postApiV1SitesSiteIdDevicesReprovisionRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesResetRadioConfigRoute,
+    postApiV1SitesSiteIdDevicesResetRadioConfigRouteHandler,
+  )
+  .openapi(postApiV1SitesSiteIdDevicesRestartRoute, postApiV1SitesSiteIdDevicesRestartRouteHandler)
+  .openapi(getApiV1SitesSiteIdDevicesSearchRoute, getApiV1SitesSiteIdDevicesSearchRouteHandler)
+  .openapi(getApiV1SitesSiteIdDevicesUpgradeRoute, getApiV1SitesSiteIdDevicesUpgradeRouteHandler)
+  .openapi(postApiV1SitesSiteIdDevicesUpgradeRoute, postApiV1SitesSiteIdDevicesUpgradeRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdDevicesUpgradeUpgradeIdRoute,
+    getApiV1SitesSiteIdDevicesUpgradeUpgradeIdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesUpgradeUpgradeIdCancelRoute,
+    postApiV1SitesSiteIdDevicesUpgradeUpgradeIdCancelRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdDevicesVersionsRoute, getApiV1SitesSiteIdDevicesVersionsRouteHandler)
+  .openapi(postApiV1SitesSiteIdDevicesZeriozeRoute, postApiV1SitesSiteIdDevicesZeriozeRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdDevicesDeviceIdRoute,
+    deleteApiV1SitesSiteIdDevicesDeviceIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdDevicesDeviceIdRoute, getApiV1SitesSiteIdDevicesDeviceIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdDevicesDeviceIdRoute, putApiV1SitesSiteIdDevicesDeviceIdRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdArpRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdArpRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdBouncePortRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdBouncePortRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdCableTestRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdCableTestRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdCheckRadiusServerRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdCheckRadiusServerRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdClearArpRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdClearArpRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdClearBgpRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdClearBgpRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdClearBpduErrorRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdClearBpduErrorRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdClearMacsRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdClearMacsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesDeviceIdConfigCmdRoute,
+    getApiV1SitesSiteIdDevicesDeviceIdConfigCmdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+    deleteApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdDevicesDeviceIdHaRoute,
+    putApiV1SitesSiteIdDevicesDeviceIdHaRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRoute,
+    deleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdImageImageNumberRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesDeviceIdIotRoute,
+    getApiV1SitesSiteIdDevicesDeviceIdIotRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdDevicesDeviceIdIotRoute,
+    putApiV1SitesSiteIdDevicesDeviceIdIotRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRoute,
+    deleteApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRoute,
+    putApiV1SitesSiteIdDevicesDeviceIdLocalPortConfigRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdLocateRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdLocateRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdPingRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdPingRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdPollStatsRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdPollStatsRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdReleaseDhcpRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdReleaseDhcpRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdRequestZtpPasswordRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdRequestZtpPasswordRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdResolveDnsRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdResolveDnsRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdRestartRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdRestartRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdServicePingRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdServicePingRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdShowRouteRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdShowRouteRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdShowSessionRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdShowSessionRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdSnapshotRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdSnapshotRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdSupportRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdSupportRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdSyntheticTestRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdSyntheticTestRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdTracerouteRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdTracerouteRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdUnlocateRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdUnlocateRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdUpgradeRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdUpgradeRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+    deleteApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+    getApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdDevicesDeviceIdVcRoute,
+    putApiV1SitesSiteIdDevicesDeviceIdVcRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdDevicesDeviceIdVcVcPortRoute,
+    postApiV1SitesSiteIdDevicesDeviceIdVcVcPortRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdEventsFastRoamRoute, getApiV1SitesSiteIdEventsFastRoamRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdEventsInterferenceRoute,
+    getApiV1SitesSiteIdEventsInterferenceRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdEventsSystemCountRoute,
+    getApiV1SitesSiteIdEventsSystemCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdEventsSystemSearchRoute,
+    getApiV1SitesSiteIdEventsSystemSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdEvpnTopologiesRoute, getApiV1SitesSiteIdEvpnTopologiesRouteHandler)
+  .openapi(postApiV1SitesSiteIdEvpnTopologiesRoute, postApiV1SitesSiteIdEvpnTopologiesRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+    deleteApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+    getApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRoute,
+    putApiV1SitesSiteIdEvpnTopologiesEvpnTopologyIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdGuestsRoute, getApiV1SitesSiteIdGuestsRouteHandler)
+  .openapi(getApiV1SitesSiteIdGuestsCountRoute, getApiV1SitesSiteIdGuestsCountRouteHandler)
+  .openapi(getApiV1SitesSiteIdGuestsSearchRoute, getApiV1SitesSiteIdGuestsSearchRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdGuestsGuestMacRoute,
+    deleteApiV1SitesSiteIdGuestsGuestMacRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdGuestsGuestMacRoute, getApiV1SitesSiteIdGuestsGuestMacRouteHandler)
+  .openapi(putApiV1SitesSiteIdGuestsGuestMacRoute, putApiV1SitesSiteIdGuestsGuestMacRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdInsightsClientClientMacMetricRoute,
+    getApiV1SitesSiteIdInsightsClientClientMacMetricRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdInsightsDeviceDeviceMacMetricRoute,
+    getApiV1SitesSiteIdInsightsDeviceDeviceMacMetricRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdInsightsRoguesRoute, getApiV1SitesSiteIdInsightsRoguesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdInsightsRoguesClientsRoute,
+    getApiV1SitesSiteIdInsightsRoguesClientsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdInsightsMetricRoute, getApiV1SitesSiteIdInsightsMetricRouteHandler)
+  .openapi(getApiV1SitesSiteIdLicensesUsagesRoute, getApiV1SitesSiteIdLicensesUsagesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdLocationCoverageRoute,
+    getApiV1SitesSiteIdLocationCoverageRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdLocationMlCurrentRoute,
+    getApiV1SitesSiteIdLocationMlCurrentRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdLocationMlDefaultsRoute,
+    getApiV1SitesSiteIdLocationMlDefaultsRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdLocationMlDeviceDeviceIdRoute,
+    deleteApiV1SitesSiteIdLocationMlDeviceDeviceIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdLocationMlDeviceDeviceIdRoute,
+    putApiV1SitesSiteIdLocationMlDeviceDeviceIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdLocationMlMapMapIdRoute,
+    deleteApiV1SitesSiteIdLocationMlMapMapIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdLocationMlMapMapIdRoute,
+    putApiV1SitesSiteIdLocationMlMapMapIdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdLocationMlResetMapMapIdRoute,
+    postApiV1SitesSiteIdLocationMlResetMapMapIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdLocationMlUpdatesRoute,
+    getApiV1SitesSiteIdLocationMlUpdatesRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdMapsRoute, getApiV1SitesSiteIdMapsRouteHandler)
+  .openapi(postApiV1SitesSiteIdMapsRoute, postApiV1SitesSiteIdMapsRouteHandler)
+  .openapi(postApiV1SitesSiteIdMapsImportRoute, postApiV1SitesSiteIdMapsImportRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdMapsMapIdRoute, deleteApiV1SitesSiteIdMapsMapIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdMapsMapIdRoute, getApiV1SitesSiteIdMapsMapIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdMapsMapIdRoute, putApiV1SitesSiteIdMapsMapIdRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdMapsMapIdAutoOrientRoute,
+    deleteApiV1SitesSiteIdMapsMapIdAutoOrientRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdAutoOrientRoute,
+    postApiV1SitesSiteIdMapsMapIdAutoOrientRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+    deleteApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+    getApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdAutoPlacementRoute,
+    postApiV1SitesSiteIdMapsMapIdAutoPlacementRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdClearAutoOrientRoute,
+    postApiV1SitesSiteIdMapsMapIdClearAutoOrientRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdClearAutoplacementRoute,
+    postApiV1SitesSiteIdMapsMapIdClearAutoplacementRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdMapsMapIdImageRoute,
+    deleteApiV1SitesSiteIdMapsMapIdImageRouteHandler,
+  )
+  .openapi(postApiV1SitesSiteIdMapsMapIdImageRoute, postApiV1SitesSiteIdMapsMapIdImageRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdReplaceRoute,
+    postApiV1SitesSiteIdMapsMapIdReplaceRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdRevertAutoOrientRoute,
+    postApiV1SitesSiteIdMapsMapIdRevertAutoOrientRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdRevertAutoplacementRoute,
+    postApiV1SitesSiteIdMapsMapIdRevertAutoplacementRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdSetMapRoute,
+    postApiV1SitesSiteIdMapsMapIdSetMapRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMapsMapIdWayfindingImportRoute,
+    postApiV1SitesSiteIdMapsMapIdWayfindingImportRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdMxedgesRoute, getApiV1SitesSiteIdMxedgesRouteHandler)
+  .openapi(postApiV1SitesSiteIdMxedgesRoute, postApiV1SitesSiteIdMxedgesRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdMxedgesMxedgeIdRoute,
+    deleteApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdMxedgesMxedgeIdRoute, getApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdMxedgesMxedgeIdRoute, putApiV1SitesSiteIdMxedgesMxedgeIdRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdMxedgesMxedgeIdSupportRoute,
+    postApiV1SitesSiteIdMxedgesMxedgeIdSupportRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdMxtunnelsMxtunnelIdPreemptApsRoute,
+    postApiV1SitesSiteIdMxtunnelsMxtunnelIdPreemptApsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdOtherdevicesRoute, getApiV1SitesSiteIdOtherdevicesRouteHandler)
+  .openapi(getApiV1SitesSiteIdPcapsRoute, getApiV1SitesSiteIdPcapsRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdPcapsCaptureRoute, deleteApiV1SitesSiteIdPcapsCaptureRouteHandler)
+  .openapi(getApiV1SitesSiteIdPcapsCaptureRoute, getApiV1SitesSiteIdPcapsCaptureRouteHandler)
+  .openapi(postApiV1SitesSiteIdPcapsCaptureRoute, postApiV1SitesSiteIdPcapsCaptureRouteHandler)
+  .openapi(getApiV1SitesSiteIdPsksRoute, getApiV1SitesSiteIdPsksRouteHandler)
+  .openapi(postApiV1SitesSiteIdPsksRoute, postApiV1SitesSiteIdPsksRouteHandler)
+  .openapi(putApiV1SitesSiteIdPsksRoute, putApiV1SitesSiteIdPsksRouteHandler)
+  .openapi(postApiV1SitesSiteIdPsksImportRoute, postApiV1SitesSiteIdPsksImportRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdPsksPskIdRoute, deleteApiV1SitesSiteIdPsksPskIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdPsksPskIdRoute, getApiV1SitesSiteIdPsksPskIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdPsksPskIdRoute, putApiV1SitesSiteIdPsksPskIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdRfdiagsRoute, getApiV1SitesSiteIdRfdiagsRouteHandler)
+  .openapi(postApiV1SitesSiteIdRfdiagsRoute, postApiV1SitesSiteIdRfdiagsRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdRfdiagsRfdiagIdRoute,
+    deleteApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdRfdiagsRfdiagIdRoute, getApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdRfdiagsRfdiagIdRoute, putApiV1SitesSiteIdRfdiagsRfdiagIdRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdRfdiagsRfdiagIdDownloadRoute,
+    getApiV1SitesSiteIdRfdiagsRfdiagIdDownloadRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdRfdiagsRfdiagIdStopRoute,
+    postApiV1SitesSiteIdRfdiagsRfdiagIdStopRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdRoguesEventsCountRoute,
+    getApiV1SitesSiteIdRoguesEventsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdRoguesEventsSearchRoute,
+    getApiV1SitesSiteIdRoguesEventsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdRoguesRogueBssidRoute,
+    getApiV1SitesSiteIdRoguesRogueBssidRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdRoguesRogueBssidDeauthClientsRoute,
+    postApiV1SitesSiteIdRoguesRogueBssidDeauthClientsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdRrmCurrentRoute, getApiV1SitesSiteIdRrmCurrentRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdRrmCurrentDevicesDeviceIdBandBandRoute,
+    getApiV1SitesSiteIdRrmCurrentDevicesDeviceIdBandBandRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdRrmEventsRoute, getApiV1SitesSiteIdRrmEventsRouteHandler)
+  .openapi(postApiV1SitesSiteIdRrmOptimizeRoute, postApiV1SitesSiteIdRrmOptimizeRouteHandler)
+  .openapi(getApiV1SitesSiteIdRssizonesRoute, getApiV1SitesSiteIdRssizonesRouteHandler)
+  .openapi(postApiV1SitesSiteIdRssizonesRoute, postApiV1SitesSiteIdRssizonesRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+    deleteApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+    getApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdRssizonesRssizoneIdRoute,
+    putApiV1SitesSiteIdRssizonesRssizoneIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdSettingRoute, getApiV1SitesSiteIdSettingRouteHandler)
+  .openapi(putApiV1SitesSiteIdSettingRoute, putApiV1SitesSiteIdSettingRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdSettingBlacklistRoute,
+    deleteApiV1SitesSiteIdSettingBlacklistRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdSettingBlacklistRoute,
+    postApiV1SitesSiteIdSettingBlacklistRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdSettingWatchedStationRoute,
+    deleteApiV1SitesSiteIdSettingWatchedStationRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdSettingWatchedStationRoute,
+    postApiV1SitesSiteIdSettingWatchedStationRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdSettingWhitelistRoute,
+    deleteApiV1SitesSiteIdSettingWhitelistRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdSettingWhitelistRoute,
+    postApiV1SitesSiteIdSettingWhitelistRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSkyatpEventsCountRoute,
+    getApiV1SitesSiteIdSkyatpEventsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSkyatpEventsSearchRoute,
+    getApiV1SitesSiteIdSkyatpEventsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifierClassifierSummaryRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifierClassifierSummaryRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifiersRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricClassifiersRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricHistogramRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricHistogramRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactSummaryRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactSummaryRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApplicationsRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApplicationsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApsRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedApsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedChassisRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedChassisRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedClientsRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedClientsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedGatewaysRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedGatewaysRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedInterfacesRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedInterfacesRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedSwitchesRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedSwitchesRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedUsersRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricImpactedUsersRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricSummaryRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricSummaryRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+    postApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRoute,
+    putApiV1SitesSiteIdSleScopeScopeIdMetricMetricThresholdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSleScopeScopeIdMetricsRoute,
+    getApiV1SitesSiteIdSleScopeScopeIdMetricsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdSsrUpgradeUpgradeIdRoute,
+    getApiV1SitesSiteIdSsrUpgradeUpgradeIdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdSsrDeviceIdUpgradeRoute,
+    postApiV1SitesSiteIdSsrDeviceIdUpgradeRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsRoute, getApiV1SitesSiteIdStatsRouteHandler)
+  .openapi(getApiV1SitesSiteIdStatsAppsCountRoute, getApiV1SitesSiteIdStatsAppsCountRouteHandler)
+  .openapi(getApiV1SitesSiteIdStatsAssetsRoute, getApiV1SitesSiteIdStatsAssetsRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsAssetsAssetIdRoute,
+    getApiV1SitesSiteIdStatsAssetsAssetIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsAssetsCountRoute,
+    getApiV1SitesSiteIdStatsAssetsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsAssetsSearchRoute,
+    getApiV1SitesSiteIdStatsAssetsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsBeaconsRoute, getApiV1SitesSiteIdStatsBeaconsRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsBgpPeersCountRoute,
+    getApiV1SitesSiteIdStatsBgpPeersCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsBgpPeersSearchRoute,
+    getApiV1SitesSiteIdStatsBgpPeersSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsCallsCountRoute, getApiV1SitesSiteIdStatsCallsCountRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsCallsSearchRoute,
+    getApiV1SitesSiteIdStatsCallsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsClientsRoute, getApiV1SitesSiteIdStatsClientsRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsClientsClientMacRoute,
+    getApiV1SitesSiteIdStatsClientsClientMacRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsDevicesRoute, getApiV1SitesSiteIdStatsDevicesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsDevicesDeviceIdRoute,
+    getApiV1SitesSiteIdStatsDevicesDeviceIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDevicesDeviceIdClientsRoute,
+    getApiV1SitesSiteIdStatsDevicesDeviceIdClientsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDiscoveredAssetsRoute,
+    getApiV1SitesSiteIdStatsDiscoveredAssetsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDiscoveredSwitchMetricsSearchRoute,
+    getApiV1SitesSiteIdStatsDiscoveredSwitchMetricsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesCountRoute,
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesMetricsRoute,
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesMetricsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesSearchRoute,
+    getApiV1SitesSiteIdStatsDiscoveredSwitchesSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsFilteredAssetsRoute,
+    getApiV1SitesSiteIdStatsFilteredAssetsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsGatewaysMetricsRoute,
+    getApiV1SitesSiteIdStatsGatewaysMetricsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsMapsMapIdClientsRoute,
+    getApiV1SitesSiteIdStatsMapsMapIdClientsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsMapsMapIdDiscoveredAssetsRoute,
+    getApiV1SitesSiteIdStatsMapsMapIdDiscoveredAssetsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsMapsMapIdSdkclientsRoute,
+    getApiV1SitesSiteIdStatsMapsMapIdSdkclientsRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsMapsMapIdUnconnectedClientsRoute,
+    getApiV1SitesSiteIdStatsMapsMapIdUnconnectedClientsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsMxedgesRoute, getApiV1SitesSiteIdStatsMxedgesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsMxedgesMxedgeIdRoute,
+    getApiV1SitesSiteIdStatsMxedgesMxedgeIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsPortsCountRoute, getApiV1SitesSiteIdStatsPortsCountRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsPortsSearchRoute,
+    getApiV1SitesSiteIdStatsPortsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsSdkclientsSdkclientIdRoute,
+    getApiV1SitesSiteIdStatsSdkclientsSdkclientIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsSwitchPortsCountRoute,
+    getApiV1SitesSiteIdStatsSwitchPortsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsSwitchPortsSearchRoute,
+    getApiV1SitesSiteIdStatsSwitchPortsSearchRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdStatsSwitchesMetricsRoute,
+    getApiV1SitesSiteIdStatsSwitchesMetricsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdStatsWxrulesRoute, getApiV1SitesSiteIdStatsWxrulesRouteHandler)
+  .openapi(getApiV1SitesSiteIdStatsZonesRoute, getApiV1SitesSiteIdStatsZonesRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdStatsZoneTypeZoneIdRoute,
+    getApiV1SitesSiteIdStatsZoneTypeZoneIdRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdSubscriptionsRoute,
+    deleteApiV1SitesSiteIdSubscriptionsRouteHandler,
+  )
+  .openapi(postApiV1SitesSiteIdSubscriptionsRoute, postApiV1SitesSiteIdSubscriptionsRouteHandler)
+  .openapi(getApiV1SitesSiteIdSyntheticTestRoute, getApiV1SitesSiteIdSyntheticTestRouteHandler)
+  .openapi(postApiV1SitesSiteIdSyntheticTestRoute, postApiV1SitesSiteIdSyntheticTestRouteHandler)
+  .openapi(getApiV1SitesSiteIdUisettingsRoute, getApiV1SitesSiteIdUisettingsRouteHandler)
+  .openapi(postApiV1SitesSiteIdUisettingsRoute, postApiV1SitesSiteIdUisettingsRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdUisettingsDerivedRoute,
+    getApiV1SitesSiteIdUisettingsDerivedRouteHandler,
+  )
+  .openapi(
+    deleteApiV1SitesSiteIdUisettingsUisettingIdRoute,
+    deleteApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdUisettingsUisettingIdRoute,
+    getApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdUisettingsUisettingIdRoute,
+    postApiV1SitesSiteIdUisettingsUisettingIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdVbeaconsRoute, getApiV1SitesSiteIdVbeaconsRouteHandler)
+  .openapi(postApiV1SitesSiteIdVbeaconsRoute, postApiV1SitesSiteIdVbeaconsRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+    deleteApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+    getApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdVbeaconsVbeaconIdRoute,
+    putApiV1SitesSiteIdVbeaconsVbeaconIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWebhooksRoute, getApiV1SitesSiteIdWebhooksRouteHandler)
+  .openapi(postApiV1SitesSiteIdWebhooksRoute, postApiV1SitesSiteIdWebhooksRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdWebhooksWebhookIdRoute,
+    deleteApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdWebhooksWebhookIdRoute,
+    getApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdWebhooksWebhookIdRoute,
+    putApiV1SitesSiteIdWebhooksWebhookIdRouteHandler,
+  )
+  .openapi(
+    postApiV1SitesSiteIdWebhooksWebhookIdPingRoute,
+    postApiV1SitesSiteIdWebhooksWebhookIdPingRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdWiredClientsCountRoute,
+    getApiV1SitesSiteIdWiredClientsCountRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdWiredClientsSearchRoute,
+    getApiV1SitesSiteIdWiredClientsSearchRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWlansRoute, getApiV1SitesSiteIdWlansRouteHandler)
+  .openapi(postApiV1SitesSiteIdWlansRoute, postApiV1SitesSiteIdWlansRouteHandler)
+  .openapi(getApiV1SitesSiteIdWlansDerivedRoute, getApiV1SitesSiteIdWlansDerivedRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdWlansWlanIdRoute, deleteApiV1SitesSiteIdWlansWlanIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdWlansWlanIdRoute, getApiV1SitesSiteIdWlansWlanIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdWlansWlanIdRoute, putApiV1SitesSiteIdWlansWlanIdRouteHandler)
+  .openapi(
+    postApiV1SitesSiteIdWlansWlanIdPortalImageRoute,
+    postApiV1SitesSiteIdWlansWlanIdPortalImageRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdWlansWlanIdPortalTemplateRoute,
+    putApiV1SitesSiteIdWlansWlanIdPortalTemplateRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWxrulesRoute, getApiV1SitesSiteIdWxrulesRouteHandler)
+  .openapi(postApiV1SitesSiteIdWxrulesRoute, postApiV1SitesSiteIdWxrulesRouteHandler)
+  .openapi(getApiV1SitesSiteIdWxrulesDerivedRoute, getApiV1SitesSiteIdWxrulesDerivedRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+    deleteApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+    getApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdWxrulesWxrulesIdRoute,
+    putApiV1SitesSiteIdWxrulesWxrulesIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWxtagsRoute, getApiV1SitesSiteIdWxtagsRouteHandler)
+  .openapi(postApiV1SitesSiteIdWxtagsRoute, postApiV1SitesSiteIdWxtagsRouteHandler)
+  .openapi(getApiV1SitesSiteIdWxtagsAppsRoute, getApiV1SitesSiteIdWxtagsAppsRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdWxtagsWxtagIdRoute,
+    deleteApiV1SitesSiteIdWxtagsWxtagIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWxtagsWxtagIdRoute, getApiV1SitesSiteIdWxtagsWxtagIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdWxtagsWxtagIdRoute, putApiV1SitesSiteIdWxtagsWxtagIdRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdWxtagsWxtagIdClientsRoute,
+    getApiV1SitesSiteIdWxtagsWxtagIdClientsRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdWxtunnelsRoute, getApiV1SitesSiteIdWxtunnelsRouteHandler)
+  .openapi(postApiV1SitesSiteIdWxtunnelsRoute, postApiV1SitesSiteIdWxtunnelsRouteHandler)
+  .openapi(
+    deleteApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+    deleteApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(
+    getApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+    getApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(
+    putApiV1SitesSiteIdWxtunnelsWxtunnelIdRoute,
+    putApiV1SitesSiteIdWxtunnelsWxtunnelIdRouteHandler,
+  )
+  .openapi(getApiV1SitesSiteIdZonesRoute, getApiV1SitesSiteIdZonesRouteHandler)
+  .openapi(postApiV1SitesSiteIdZonesRoute, postApiV1SitesSiteIdZonesRouteHandler)
+  .openapi(deleteApiV1SitesSiteIdZonesZoneIdRoute, deleteApiV1SitesSiteIdZonesZoneIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdZonesZoneIdRoute, getApiV1SitesSiteIdZonesZoneIdRouteHandler)
+  .openapi(putApiV1SitesSiteIdZonesZoneIdRoute, putApiV1SitesSiteIdZonesZoneIdRouteHandler)
+  .openapi(getApiV1SitesSiteIdZoneTypeCountRoute, getApiV1SitesSiteIdZoneTypeCountRouteHandler)
+  .openapi(
+    getApiV1SitesSiteIdZoneTypeVisitsSearchRoute,
+    getApiV1SitesSiteIdZoneTypeVisitsSearchRouteHandler,
+  )
+  .openapi(getApiV1UtilsTestTelstraRoute, getApiV1UtilsTestTelstraRouteHandler)
+  .openapi(postApiV1UtilsTestTwilioRoute, postApiV1UtilsTestTwilioRouteHandler)
+  .openapi(postWebhookExampleAlarmRoute, postWebhookExampleAlarmRouteHandler)
+  .openapi(postWebhookExampleAssetRawRoute, postWebhookExampleAssetRawRouteHandler)
+  .openapi(postWebhookExampleAuditRoute, postWebhookExampleAuditRouteHandler)
+  .openapi(postWebhookExampleClientJoinRoute, postWebhookExampleClientJoinRouteHandler)
+  .openapi(postWebhookExampleClientSessionsRoute, postWebhookExampleClientSessionsRouteHandler)
+  .openapi(postWebhookExampleDeviceEventsRoute, postWebhookExampleDeviceEventsRouteHandler)
+  .openapi(postWebhookExampleDeviceUpdownsRoute, postWebhookExampleDeviceUpdownsRouteHandler)
+  .openapi(
+    postWebhookExampleDiscoveredRawRssiRoute,
+    postWebhookExampleDiscoveredRawRssiRouteHandler,
+  )
+  .openapi(postWebhookExampleLocationRoute, postWebhookExampleLocationRouteHandler)
+  .openapi(postWebhookExampleOccupancyAlertsRoute, postWebhookExampleOccupancyAlertsRouteHandler)
+  .openapi(postWebhookExamplePingRoute, postWebhookExamplePingRouteHandler)
+  .openapi(
+    postWebhookExampleSdkclientScanDataRoute,
+    postWebhookExampleSdkclientScanDataRouteHandler,
+  )
+  .openapi(postWebhookExampleZoneRoute, postWebhookExampleZoneRouteHandler)
 
 export default app

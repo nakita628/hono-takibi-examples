@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute,
   deleteApisFlowcontrolApiserverK8sIoV1FlowschemasRoute,
   deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute,
@@ -27,81 +27,152 @@ import {
   putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisFlowcontrolApiserverK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisFlowcontrolApiserverK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisFlowcontrolApiserverK8sIoV1FlowschemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1FlowschemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisFlowcontrolApiserverK8sIoV1FlowschemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteApisFlowcontrolApiserverK8sIoV1FlowschemasRouteHandler: RouteHandler<
+  typeof deleteApisFlowcontrolApiserverK8sIoV1FlowschemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1FlowschemasRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1FlowschemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisFlowcontrolApiserverK8sIoV1FlowschemasRouteHandler: RouteHandler<
+  typeof postApisFlowcontrolApiserverK8sIoV1FlowschemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisFlowcontrolApiserverK8sIoV1FlowschemasNameRouteHandler: RouteHandler<
+  typeof deleteApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1FlowschemasNameRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameRouteHandler: RouteHandler<
+  typeof patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisFlowcontrolApiserverK8sIoV1FlowschemasNameRouteHandler: RouteHandler<
+  typeof putApisFlowcontrolApiserverK8sIoV1FlowschemasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRouteHandler: RouteHandler<
+  typeof patchApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRouteHandler: RouteHandler<
+  typeof putApisFlowcontrolApiserverK8sIoV1FlowschemasNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRouteHandler: RouteHandler<
+  typeof deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRouteHandler: RouteHandler<
+  typeof postApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRouteHandler: RouteHandler<
+  typeof deleteApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRouteHandler: RouteHandler<
+  typeof patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRouteHandler: RouteHandler<
+  typeof putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRouteHandler: RouteHandler<
+  typeof patchApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRouteHandler: RouteHandler<
+  typeof putApisFlowcontrolApiserverK8sIoV1PrioritylevelconfigurationsNameStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasNameRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1WatchFlowschemasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsNameRouteHandler: RouteHandler<
+  typeof getApisFlowcontrolApiserverK8sIoV1WatchPrioritylevelconfigurationsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

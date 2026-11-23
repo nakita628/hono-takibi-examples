@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFulfillmentPolicyFulfillmentPolicyIdRoute,
   getFulfillmentPolicyFulfillmentPolicyIdRoute,
   getFulfillmentPolicyGetByPolicyNameRoute,
@@ -8,24 +8,38 @@ import {
   putFulfillmentPolicyFulfillmentPolicyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFulfillmentPolicyRouteHandler: RouteHandler<
+  typeof getFulfillmentPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fulfillmentPolicyHandler = app
-  .openapi(getFulfillmentPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFulfillmentPolicyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFulfillmentPolicyGetByPolicyNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFulfillmentPolicyFulfillmentPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFulfillmentPolicyFulfillmentPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFulfillmentPolicyFulfillmentPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFulfillmentPolicyIndexRouteHandler: RouteHandler<
+  typeof postFulfillmentPolicyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFulfillmentPolicyGetByPolicyNameRouteHandler: RouteHandler<
+  typeof getFulfillmentPolicyGetByPolicyNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFulfillmentPolicyFulfillmentPolicyIdRouteHandler: RouteHandler<
+  typeof deleteFulfillmentPolicyFulfillmentPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFulfillmentPolicyFulfillmentPolicyIdRouteHandler: RouteHandler<
+  typeof getFulfillmentPolicyFulfillmentPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFulfillmentPolicyFulfillmentPolicyIdRouteHandler: RouteHandler<
+  typeof putFulfillmentPolicyFulfillmentPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -71,7 +71,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: {}; outputFormat: string; status: 200 }
     }
   } & {
-    '/api/projects/:id:.format': {
+    '/api/projects/:id{.format}': {
       $get:
         | {
             input: { param: { id: bigint; '.format': string } } & {
@@ -99,7 +99,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/api/projects:.format': {
+    '/api/projects{.format}': {
       $get:
         | {
             input: { param: { '.format': string } } & {

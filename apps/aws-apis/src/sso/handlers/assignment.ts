@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAssignmentAccountsXAmzSsoBearerTokenRoute,
   getAssignmentRolesXAmzSsoBearerTokenAccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAssignmentRolesXAmzSsoBearerTokenAccountIdRouteHandler: RouteHandler<
+  typeof getAssignmentRolesXAmzSsoBearerTokenAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const assignmentHandler = app
-  .openapi(getAssignmentRolesXAmzSsoBearerTokenAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAssignmentAccountsXAmzSsoBearerTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAssignmentAccountsXAmzSsoBearerTokenRouteHandler: RouteHandler<
+  typeof getAssignmentAccountsXAmzSsoBearerTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

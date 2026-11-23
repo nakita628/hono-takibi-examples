@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/readme.io/2.0.0/openapi.yaml',
   output: './src/readme-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/readme-io/types.ts' },
   client: { output: './src/readme-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/readme-io/rpc.ts', parseResponse: true },

@@ -277,7 +277,7 @@ export const getUserRoute = createRoute({
   path: '/user',
   tags: ['Users'],
   summary: 'Get info about the current user',
-  responses: { 200: { description: 'success', content: {} }, 401: { description: 'unauthorized' } },
+  responses: { 200: { description: 'success' }, 401: { description: 'unauthorized' } },
   security: [{ bearer: [] }],
 })
 
@@ -286,7 +286,7 @@ export const getWorkspacesRoute = createRoute({
   path: '/workspaces',
   tags: ['Workspaces'],
   summary: 'Get all workspaces for the current user',
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -318,7 +318,7 @@ export const getWorkspacesWorkspaceSlugRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -647,7 +647,7 @@ export const getWorkspaceSlugActivitiesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -669,9 +669,9 @@ export const postWorkspaceSlugActivitiesRoute = createRoute({
     body: { content: { 'application/json': { schema: ActivityAndIdentitySchema } } },
   },
   responses: {
-    201: { description: 'success', content: {} },
+    201: { description: 'success' },
     403: { description: 'forbidden' },
-    422: { description: 'unprocessable', content: {} },
+    422: { description: 'unprocessable' },
   },
   security: [{ bearer: [] }],
 })
@@ -693,7 +693,7 @@ export const getWorkspaceSlugActivitiesIdRoute = createRoute({
         .openapi({ param: { in: 'path', name: 'id', required: true, schema: { type: 'string' } } }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -711,7 +711,7 @@ export const getWorkspaceSlugActivityTypesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1103,7 +1103,7 @@ export const getWorkspaceSlugMembersRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1125,10 +1125,10 @@ export const postWorkspaceSlugMembersRoute = createRoute({
     body: { content: { 'application/json': { schema: MemberAndIdentitySchema } } },
   },
   responses: {
-    200: { description: 'success', content: {} },
-    201: { description: 'created', content: {} },
+    200: { description: 'success' },
+    201: { description: 'created' },
     403: { description: 'forbidden' },
-    422: { description: 'unprocessable', content: {} },
+    422: { description: 'unprocessable' },
   },
   security: [{ bearer: [] }],
 })
@@ -1193,10 +1193,7 @@ export const getWorkspaceSlugMembersFindRoute = createRoute({
         }),
     }),
   },
-  responses: {
-    200: { description: 'success', content: {} },
-    404: { description: 'Not found', content: {} },
-  },
+  responses: { 200: { description: 'success' }, 404: { description: 'Not found' } },
   security: [{ bearer: [] }],
 })
 
@@ -1219,7 +1216,7 @@ export const getWorkspaceSlugMembersMemberSlugRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1354,7 +1351,7 @@ export const getWorkspaceSlugMembersMemberSlugActivitiesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1379,9 +1376,9 @@ export const postWorkspaceSlugMembersMemberSlugActivitiesRoute = createRoute({
     body: { content: { 'application/json': { schema: CustomOrPostActivitySchema } } },
   },
   responses: {
-    201: { description: 'success', content: {} },
+    201: { description: 'success' },
     403: { description: 'forbidden' },
-    422: { description: 'unprocessable entity', content: {} },
+    422: { description: 'unprocessable entity' },
   },
   security: [{ bearer: [] }],
 })
@@ -1412,7 +1409,7 @@ export const putWorkspaceSlugMembersMemberSlugActivitiesIdRoute = createRoute({
   responses: {
     204: { description: 'activity updated' },
     403: { description: 'forbidden' },
-    422: { description: 'unprocessable entity', content: {} },
+    422: { description: 'unprocessable entity' },
   },
   security: [{ bearer: [] }],
 })
@@ -1464,9 +1461,9 @@ export const postWorkspaceSlugMembersMemberSlugIdentitiesRoute = createRoute({
     body: { content: { 'application/json': { schema: IdentitySchema } } },
   },
   responses: {
-    201: { description: 'success', content: {} },
+    201: { description: 'success' },
     403: { description: 'forbidden' },
-    422: { description: 'identity is invalid', content: {} },
+    422: { description: 'identity is invalid' },
   },
   security: [{ bearer: [] }],
 })
@@ -1494,7 +1491,7 @@ export const deleteWorkspaceSlugMembersMemberSlugIdentitiesRoute = createRoute({
   responses: {
     204: { description: 'identity deleted' },
     403: { description: 'forbidden' },
-    422: { description: 'identity is invalid or not attached to member', content: {} },
+    422: { description: 'identity is invalid or not attached to member' },
   },
   security: [{ bearer: [] }],
 })
@@ -1526,7 +1523,7 @@ export const getWorkspaceSlugMembersMemberSlugNotesRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1550,10 +1547,7 @@ export const postWorkspaceSlugMembersMemberSlugNotesRoute = createRoute({
     }),
     body: { content: { 'application/json': { schema: NoteSchema } } },
   },
-  responses: {
-    201: { description: 'note created', content: {} },
-    403: { description: 'forbidden' },
-  },
+  responses: { 201: { description: 'note created' }, 403: { description: 'forbidden' } },
   security: [{ bearer: [] }],
 })
 
@@ -1648,7 +1642,7 @@ export const getWorkspaceSlugOrganizationsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1676,7 +1670,7 @@ export const getWorkspaceSlugOrganizationsOrganizationIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1792,7 +1786,7 @@ export const getWorkspaceSlugOrganizationsOrganizationIdActivitiesRoute = create
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1839,7 +1833,7 @@ export const getWorkspaceSlugOrganizationsOrganizationIdMembersRoute = createRou
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1926,7 +1920,7 @@ export const getWorkspaceSlugReportsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1944,7 +1938,7 @@ export const getWorkspaceSlugWebhooksRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 
@@ -1984,7 +1978,7 @@ export const getWorkspaceSlugWebhooksIdRoute = createRoute({
         .openapi({ param: { in: 'path', name: 'id', required: true, schema: { type: 'string' } } }),
     }),
   },
-  responses: { 200: { description: 'success', content: {} } },
+  responses: { 200: { description: 'success' } },
   security: [{ bearer: [] }],
 })
 

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQueryImagesByPackageRoute,
   getQueryImagesByVulnerabilityRoute,
   getQueryVulnerabilitiesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueryImagesByPackageRouteHandler: RouteHandler<
+  typeof getQueryImagesByPackageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queryHandler = app
-  .openapi(getQueryImagesByPackageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryImagesByVulnerabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryVulnerabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQueryImagesByVulnerabilityRouteHandler: RouteHandler<
+  typeof getQueryImagesByVulnerabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryVulnerabilitiesRouteHandler: RouteHandler<
+  typeof getQueryVulnerabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

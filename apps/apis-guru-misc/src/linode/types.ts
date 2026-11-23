@@ -46,9 +46,13 @@ type Account = {
 }
 type ErrorObject = { field?: string | undefined; reason?: string | undefined }
 type CreditCard = { card_number: string; cvv: string; expiry_month: number; expiry_year: number }
+type PaginationEnvelopePage = number
+type PaginationEnvelopePages = number
+type PaginationEnvelopeResults = number
+type EntityTransferEntities = { linodes?: number[] | undefined }
 type EntityTransfer = {
   created?: string | undefined
-  entities?: { linodes?: number[] | undefined } | undefined
+  entities?: EntityTransferEntities | undefined
   expiry?: string | undefined
   is_sender?: boolean | undefined
   status?: 'accepted' | 'cancelled' | 'completed' | 'failed' | 'pending' | 'stale' | undefined
@@ -315,11 +319,12 @@ type GooglePayData = {
   last_four?: string | undefined
 }
 type PayPalData = { email?: string | undefined; paypal_id?: string | undefined }
+type PaymentMethodIsDefault = boolean
 type PaymentMethod = {
   created?: string | undefined
   data?: CreditCardData | GooglePayData | PayPalData | undefined
   id?: number | undefined
-  is_default?: boolean | undefined
+  is_default?: PaymentMethodIsDefault | undefined
   type?: 'credit_card' | 'google_pay' | 'paypal' | undefined
 }
 type Payment = { date?: string | undefined; id?: number | undefined; usd?: number | undefined }
@@ -331,9 +336,10 @@ type PaymentRequest = {
 type WarningObject = { details?: string | undefined; title?: string | undefined }
 type PayPal = { cancel_url: string; redirect_url: string; usd: string }
 type PayPalExecute = { payer_id: string; payment_id: string }
+type ServiceTransferEntities = { linodes?: number[] | undefined }
 type ServiceTransfer = {
   created?: string | undefined
-  entities?: { linodes?: number[] | undefined } | undefined
+  entities?: ServiceTransferEntities | undefined
   expiry?: string | undefined
   is_sender?: boolean | undefined
   status?: 'accepted' | 'cancelled' | 'completed' | 'failed' | 'pending' | 'stale' | undefined
@@ -395,66 +401,80 @@ type DatabaseEngine = {
   id?: string | undefined
   version?: string | undefined
 }
+type DatabaseAllowList = string[]
+type DatabaseClusterSize = 1 | 3
+type DatabaseCreated = string
+type DatabaseEncrypted = boolean
+type DatabaseHosts = {
+  primary?: (string | null) | undefined
+  secondary?: (string | null) | undefined
+}
+type DatabaseId = number
+type DatabaseLabel = string
+type DatabaseRegion = string
+type DatabaseStatus =
+  | 'provisioning'
+  | 'active'
+  | 'suspending'
+  | 'suspended'
+  | 'resuming'
+  | 'restoring'
+  | 'failed'
+  | 'degraded'
+  | 'updating'
+  | 'backing_up'
+type DatabaseType2 = string
+type DatabaseUpdated = string
+type DatabaseUpdates = {
+  day_of_week?: number | undefined
+  duration?: number | undefined
+  frequency?: 'weekly' | 'monthly' | undefined
+  hour_of_day?: number | undefined
+  week_of_month?: (number | null) | undefined
+}
 type Database = {
-  allow_list?: string[] | undefined
-  cluster_size?: 1 | 3 | undefined
-  created?: string | undefined
-  encrypted?: boolean | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  created?: DatabaseCreated | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine?: 'mongodb' | 'mysql' | 'postgresql' | undefined
-  hosts?:
-    | { primary?: (string | null) | undefined; secondary?: (string | null) | undefined }
-    | undefined
-  id?: number | undefined
+  hosts?: DatabaseHosts | undefined
+  id?: DatabaseId | undefined
   instance_uri?: string | undefined
-  label?: string | undefined
-  region?: string | undefined
-  status?:
-    | 'provisioning'
-    | 'active'
-    | 'suspending'
-    | 'suspended'
-    | 'resuming'
-    | 'restoring'
-    | 'failed'
-    | 'degraded'
-    | 'updating'
-    | 'backing_up'
-    | undefined
-  type?: string | undefined
-  updated?: string | undefined
-  updates?:
-    | {
-        day_of_week?: number | undefined
-        duration?: number | undefined
-        frequency?: 'weekly' | 'monthly' | undefined
-        hour_of_day?: number | undefined
-        week_of_month?: (number | null) | undefined
-      }
-    | undefined
+  label?: DatabaseLabel | undefined
+  region?: DatabaseRegion | undefined
+  status?: DatabaseStatus | undefined
+  type?: DatabaseType2 | undefined
+  updated?: DatabaseUpdated | undefined
+  updates?: DatabaseUpdates | undefined
   version?: string | undefined
 }
+type DatabaseMongoDBCompressionType = 'none' | 'snappy' | 'zlip'
+type DatabaseMongoDBReplicaSet = string | null
+type DatabaseMongoDBSslConnection = boolean
+type DatabaseMongoDBStorageEngine = 'mmapv1' | 'wiredtiger'
 type DatabaseMongoDB = {
-  allow_list?: unknown | undefined
-  cluster_size?: unknown | undefined
-  compression_type?: 'none' | 'snappy' | 'zlip' | undefined
-  created?: unknown | undefined
-  encrypted?: unknown | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  compression_type?: DatabaseMongoDBCompressionType | undefined
+  created?: DatabaseCreated | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine?: string | undefined
   hosts?:
     | { primary?: (string | null) | undefined; secondary?: (string | null) | undefined }
     | undefined
-  id?: unknown | undefined
-  label?: unknown | undefined
+  id?: DatabaseId | undefined
+  label?: DatabaseLabel | undefined
   peers?: string[] | undefined
   port?: number | undefined
-  region?: unknown | undefined
-  replica_set?: (string | null) | undefined
-  ssl_connection?: boolean | undefined
-  status?: unknown | undefined
-  storage_engine?: 'mmapv1' | 'wiredtiger' | undefined
-  type?: unknown | undefined
-  updated?: unknown | undefined
-  updates?: unknown | undefined
+  region?: DatabaseRegion | undefined
+  replica_set?: DatabaseMongoDBReplicaSet | undefined
+  ssl_connection?: DatabaseMongoDBSslConnection | undefined
+  status?: DatabaseStatus | undefined
+  storage_engine?: DatabaseMongoDBStorageEngine | undefined
+  type?: DatabaseType2 | undefined
+  updated?: DatabaseUpdated | undefined
+  updates?: DatabaseUpdates | undefined
   version?: string | undefined
 }
 type DatabaseBackup = {
@@ -466,69 +486,79 @@ type DatabaseBackup = {
 type DatabaseBackupSnapshot = { label: string; target?: 'primary' | 'secondary' | undefined }
 type DatabaseCredentials = { password?: string | undefined; username?: string | undefined }
 type DatabaseSSL = { ca_certificate?: string | undefined }
+type DatabaseMySQLReplicationType = 'none' | 'asynch' | 'semi_synch'
+type DatabaseMySQLSslConnection = boolean
 type DatabaseMySQL = {
-  allow_list?: unknown | undefined
-  cluster_size?: unknown | undefined
-  created?: unknown | undefined
-  encrypted?: unknown | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  created?: DatabaseCreated | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine?: string | undefined
-  hosts?: unknown | undefined
-  id?: unknown | undefined
-  label?: unknown | undefined
+  hosts?: DatabaseHosts | undefined
+  id?: DatabaseId | undefined
+  label?: DatabaseLabel | undefined
   port?: number | undefined
-  region?: unknown | undefined
-  replication_type?: 'none' | 'asynch' | 'semi_synch' | undefined
-  ssl_connection?: boolean | undefined
-  status?: unknown | undefined
-  type?: unknown | undefined
-  updated?: unknown | undefined
-  updates?: unknown | undefined
+  region?: DatabaseRegion | undefined
+  replication_type?: DatabaseMySQLReplicationType | undefined
+  ssl_connection?: DatabaseMySQLSslConnection | undefined
+  status?: DatabaseStatus | undefined
+  type?: DatabaseType2 | undefined
+  updated?: DatabaseUpdated | undefined
+  updates?: DatabaseUpdates | undefined
   version?: string | undefined
 }
 type DatabaseMySQLRequest = {
-  allow_list?: unknown | undefined
-  cluster_size?: unknown | undefined
-  encrypted?: unknown | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine: string
-  label: unknown
-  region: unknown
-  replication_type?: unknown | undefined
-  ssl_connection?: unknown | undefined
-  type: unknown
+  label: DatabaseLabel
+  region: DatabaseRegion
+  replication_type?: DatabaseMySQLReplicationType | undefined
+  ssl_connection?: DatabaseMySQLSslConnection | undefined
+  type: DatabaseType2
 }
+type DatabasePostgreSQLReplicationCommitType =
+  | 'on'
+  | 'local'
+  | 'remote_write'
+  | 'remote_apply'
+  | 'off'
+type DatabasePostgreSQLReplicationType = 'none' | 'asynch' | 'semi_synch'
+type DatabasePostgreSQLSslConnection = boolean
 type DatabasePostgreSQL = {
-  allow_list?: unknown | undefined
-  cluster_size?: unknown | undefined
-  created?: unknown | undefined
-  encrypted?: unknown | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  created?: DatabaseCreated | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine?: string | undefined
   hosts?:
     | { primary?: (string | null) | undefined; secondary?: (string | null) | undefined }
     | undefined
-  id?: unknown | undefined
-  label?: unknown | undefined
+  id?: DatabaseId | undefined
+  label?: DatabaseLabel | undefined
   port?: number | undefined
-  region?: unknown | undefined
-  replication_commit_type?: 'on' | 'local' | 'remote_write' | 'remote_apply' | 'off' | undefined
-  replication_type?: 'none' | 'asynch' | 'semi_synch' | undefined
-  ssl_connection?: boolean | undefined
-  status?: unknown | undefined
-  type?: unknown | undefined
-  updated?: unknown | undefined
-  updates?: unknown | undefined
+  region?: DatabaseRegion | undefined
+  replication_commit_type?: DatabasePostgreSQLReplicationCommitType | undefined
+  replication_type?: DatabasePostgreSQLReplicationType | undefined
+  ssl_connection?: DatabasePostgreSQLSslConnection | undefined
+  status?: DatabaseStatus | undefined
+  type?: DatabaseType2 | undefined
+  updated?: DatabaseUpdated | undefined
+  updates?: DatabaseUpdates | undefined
   version?: string | undefined
 }
 type DatabasePostgreSQLRequest = {
-  allow_list?: unknown | undefined
-  cluster_size?: unknown | undefined
-  encrypted?: unknown | undefined
+  allow_list?: DatabaseAllowList | undefined
+  cluster_size?: DatabaseClusterSize | undefined
+  encrypted?: DatabaseEncrypted | undefined
   engine: string
-  label: unknown
-  region: unknown
-  replication_commit_type?: unknown | undefined
-  replication_type?: unknown | undefined
-  ssl_connection?: unknown | undefined
-  type: unknown
+  label: DatabaseLabel
+  region: DatabaseRegion
+  replication_commit_type?: DatabasePostgreSQLReplicationCommitType | undefined
+  replication_type?: DatabasePostgreSQLReplicationType | undefined
+  ssl_connection?: DatabasePostgreSQLSslConnection | undefined
+  type: DatabaseType2
 }
 type DatabaseTypeEngine = {
   price?: { hourly?: number | undefined; monthly?: number | undefined } | undefined
@@ -566,20 +596,29 @@ type Domain = {
   ttl_sec?: number | undefined
   type?: 'master' | 'slave' | undefined
 }
+type DomainRecordName = string
+type DomainRecordPort = number
+type DomainRecordPriority = number
+type DomainRecordProtocol = string | null
+type DomainRecordService = string | null
+type DomainRecordTag = 'issue' | 'issuewild' | 'iodef'
+type DomainRecordTarget = string
+type DomainRecordTtlSec = number
+type DomainRecordWeight = number
 type DomainRecord = {
   created?: string | undefined
   id?: number | undefined
-  name?: string | undefined
-  port?: number | undefined
-  priority?: number | undefined
-  protocol?: (string | null) | undefined
-  service?: (string | null) | undefined
-  tag?: 'issue' | 'issuewild' | 'iodef' | undefined
-  target?: string | undefined
-  ttl_sec?: number | undefined
+  name?: DomainRecordName | undefined
+  port?: DomainRecordPort | undefined
+  priority?: DomainRecordPriority | undefined
+  protocol?: DomainRecordProtocol | undefined
+  service?: DomainRecordService | undefined
+  tag?: DomainRecordTag | undefined
+  target?: DomainRecordTarget | undefined
+  ttl_sec?: DomainRecordTtlSec | undefined
   type?: 'A' | 'AAAA' | 'NS' | 'MX' | 'CNAME' | 'TXT' | 'SRV' | 'PTR' | 'CAA' | undefined
   updated?: string | undefined
-  weight?: number | undefined
+  weight?: DomainRecordWeight | undefined
 }
 type Image = {
   created?: string | undefined
@@ -597,6 +636,9 @@ type Image = {
   updated?: string | undefined
   vendor?: string | undefined
 }
+type LinodeGroup = string
+type LinodeLabel = string
+type LinodeTags = string[]
 type Linode = {
   alerts?:
     | {
@@ -644,14 +686,14 @@ type Linode = {
       }
     | undefined
   created?: string | undefined
-  group?: string | undefined
+  group?: LinodeGroup | undefined
   host_uuid?: string | undefined
   hypervisor?: 'kvm' | undefined
   id?: number | undefined
   image?: {} | undefined
   ipv4?: string[] | undefined
   ipv6?: (string | null) | undefined
-  label?: string | undefined
+  label?: LinodeLabel | undefined
   region?: string | undefined
   specs?:
     | {
@@ -675,23 +717,34 @@ type Linode = {
     | 'restoring'
     | 'stopped'
     | undefined
-  tags?: string[] | undefined
+  tags?: LinodeTags | undefined
   type?: string | undefined
   updated?: string | undefined
   watchdog_enabled?: boolean | undefined
 }
+type DiskRequestAuthorizedKeys = string[]
+type DiskRequestAuthorizedUsers = string[]
+type DiskRequestImage = string
+type DiskRequestRootPass = string
+type DiskRequestStackscriptData = { [x: string]: unknown }
+type DiskRequestStackscriptId = number
 type LinodeConfigInterface = {
   ipam_address?: (string | null) | undefined
   label?: (string | null) | undefined
   purpose?: 'public' | 'vlan' | undefined
 }
 type LinodeConfigInterfaces = LinodeConfigInterface[]
+type DiskFilesystem = 'raw' | 'swap' | 'ext3' | 'ext4' | 'initrd'
 type Backup = {
   available?: boolean | undefined
   configs?: string[] | undefined
   created?: string | undefined
   disks?:
-    | { filesystem?: unknown | undefined; label?: string | undefined; size?: number | undefined }[]
+    | {
+        filesystem?: DiskFilesystem | undefined
+        label?: string | undefined
+        size?: number | undefined
+      }[]
     | undefined
   finished?: string | undefined
   id?: number | undefined
@@ -740,15 +793,17 @@ type LinodeConfig = {
   run_level?: 'default' | 'single' | 'binbash' | undefined
   virt_mode?: 'paravirt' | 'fullvirt' | undefined
 }
+type DiskLabel = string
 type Disk = {
   created?: string | undefined
-  filesystem?: 'raw' | 'swap' | 'ext3' | 'ext4' | 'initrd' | undefined
+  filesystem?: DiskFilesystem | undefined
   id?: number | undefined
-  label?: string | undefined
+  label?: DiskLabel | undefined
   size?: number | undefined
   status?: 'ready' | 'not ready' | 'deleting' | undefined
   updated?: string | undefined
 }
+type FirewallLabel = string
 type FirewallRuleConfig = {
   action?: 'ACCEPT' | 'DROP' | undefined
   addresses?: { ipv4?: string[] | undefined; ipv6?: string[] | undefined } | undefined
@@ -757,20 +812,20 @@ type FirewallRuleConfig = {
   ports?: string | undefined
   protocol?: 'TCP' | 'UDP' | 'ICMP' | 'IPENCAP' | undefined
 }
+type FirewallRules = {
+  inbound?: FirewallRuleConfig[] | undefined
+  inbound_policy?: 'ACCEPT' | 'DROP' | undefined
+  outbound?: FirewallRuleConfig[] | undefined
+  outbound_policy?: 'ACCEPT' | 'DROP' | undefined
+}
+type FirewallTags = string[]
 type Firewall = {
   created?: string | undefined
   id?: number | undefined
-  label?: string | undefined
-  rules?:
-    | {
-        inbound?: FirewallRuleConfig[] | undefined
-        inbound_policy?: 'ACCEPT' | 'DROP' | undefined
-        outbound?: FirewallRuleConfig[] | undefined
-        outbound_policy?: 'ACCEPT' | 'DROP' | undefined
-      }
-    | undefined
+  label?: FirewallLabel | undefined
+  rules?: FirewallRules | undefined
   status?: 'enabled' | 'disabled' | 'deleted' | undefined
-  tags?: string[] | undefined
+  tags?: FirewallTags | undefined
   updated?: string | undefined
 }
 type IPAddressPrivate = {
@@ -823,14 +878,16 @@ type IPAddressV6Slaac = {
   subnet_mask?: string | undefined
   type?: string | undefined
 }
+type NodeBalancerClientConnThrottle = number
+type NodeBalancerLabel = string
 type NodeBalancer = {
-  client_conn_throttle?: number | undefined
+  client_conn_throttle?: NodeBalancerClientConnThrottle | undefined
   created?: string | undefined
   hostname?: string | undefined
   id?: number | undefined
   ipv4?: string | undefined
   ipv6?: (string | null) | undefined
-  label?: string | undefined
+  label?: NodeBalancerLabel | undefined
   region?: string | undefined
   tags?: string[] | undefined
   transfer?:
@@ -872,16 +929,19 @@ type LinodeStats = {
     | undefined
   title?: string | undefined
 }
+type VolumeLabel = string
+type RegionId = string
+type VolumeSize = number
 type Volume = {
   created?: string | undefined
   filesystem_path?: string | undefined
   hardware_type?: 'hdd' | 'nvme' | undefined
   id?: number | undefined
-  label?: string | undefined
+  label?: VolumeLabel | undefined
   linode_id?: (number | null) | undefined
   linode_label?: (string | null) | undefined
-  region?: unknown | undefined
-  size?: number | undefined
+  region?: RegionId | undefined
+  size?: VolumeSize | undefined
   status?: 'creating' | 'active' | 'resizing' | undefined
   tags?: string[] | undefined
   updated?: string | undefined
@@ -942,24 +1002,37 @@ type LinodeType = {
   transfer?: number | undefined
   vcpus?: number | undefined
 }
+type LKEClusterCreated = string
+type LKEClusterK8sVersion = string
+type LKEClusterLabel = string
+type LKEClusterRegion = string
+type LKEClusterTags = string[]
+type LKEClusterUpdated = string
 type LKECluster = {
   control_plane?: { high_availability?: boolean | undefined } | undefined
-  created?: string | undefined
+  created?: LKEClusterCreated | undefined
   id?: number | undefined
-  k8s_version?: string | undefined
-  label?: string | undefined
-  region?: string | undefined
-  tags?: string[] | undefined
-  updated?: string | undefined
+  k8s_version?: LKEClusterK8sVersion | undefined
+  label?: LKEClusterLabel | undefined
+  region?: LKEClusterRegion | undefined
+  tags?: LKEClusterTags | undefined
+  updated?: LKEClusterUpdated | undefined
 }
+type LKENodePoolRequestBodyAutoscaler = {
+  enabled?: boolean | undefined
+  max?: number | undefined
+  min?: number | undefined
+}
+type LKENodePoolCount = number
+type LKENodePoolDisksItems = { size?: number | undefined; type?: 'raw' | 'ext4' | undefined }
+type LKENodePoolTags = string[]
+type LKENodePoolType = string
 type LKENodePoolRequestBody = {
-  autoscaler?:
-    | { enabled?: boolean | undefined; max?: number | undefined; min?: number | undefined }
-    | undefined
-  count?: unknown | undefined
-  disks?: unknown[] | undefined
-  tags?: unknown | undefined
-  type?: unknown | undefined
+  autoscaler?: LKENodePoolRequestBodyAutoscaler | undefined
+  count?: LKENodePoolCount | undefined
+  disks?: LKENodePoolDisksItems[] | undefined
+  tags?: LKENodePoolTags | undefined
+  type?: LKENodePoolType | undefined
 }
 type LKENodeStatus = {
   id?: string | undefined
@@ -970,12 +1043,12 @@ type LKENodePool = {
   autoscaler?:
     | { enabled?: boolean | undefined; max?: number | undefined; min?: number | undefined }
     | undefined
-  count?: number | undefined
-  disks?: { size?: number | undefined; type?: 'raw' | 'ext4' | undefined }[] | undefined
+  count?: LKENodePoolCount | undefined
+  disks?: LKENodePoolDisksItems[] | undefined
   id?: number | undefined
   nodes?: LKENodeStatus[] | undefined
-  tags?: string[] | undefined
-  type?: string | undefined
+  tags?: LKENodePoolTags | undefined
+  type?: LKENodePoolType | undefined
 }
 type LKEVersion = { id?: string | undefined }
 type LongviewClient = {
@@ -1063,16 +1136,15 @@ type StatsDataAvailable = {
   swap?: StatsData[] | undefined
 }
 type StatsDataUnavailable = string[]
+type FirewallDevicesEntity = {
+  id?: number | undefined
+  label?: string | undefined
+  type?: 'linode' | undefined
+  url?: string | undefined
+}
 type FirewallDevices = {
   created?: string | undefined
-  entity?:
-    | {
-        id?: number | undefined
-        label?: string | undefined
-        type?: 'linode' | undefined
-        url?: string | undefined
-      }
-    | undefined
+  entity?: FirewallDevicesEntity | undefined
   id?: number | undefined
   updated?: string | undefined
 }
@@ -1100,37 +1172,56 @@ type Vlans = {
   linodes?: number[] | undefined
   region?: string | undefined
 }
+type NodeBalancerConfigAlgorithm = 'roundrobin' | 'leastconn' | 'source'
+type NodeBalancerConfigCheck = 'none' | 'connection' | 'http' | 'http_body'
+type NodeBalancerConfigCheckAttempts = number
+type NodeBalancerConfigCheckBody = string
+type NodeBalancerConfigCheckInterval = number
+type NodeBalancerConfigCheckPassive = boolean
+type NodeBalancerConfigCheckPath = string
+type NodeBalancerConfigCheckTimeout = number
+type NodeBalancerConfigCipherSuite = 'recommended' | 'legacy'
+type NodeBalancerNodeAddress = string
+type NodeBalancerNodeLabel = string
+type NodeBalancerNodeMode = 'accept' | 'reject' | 'drain' | 'backup'
+type NodeBalancerNodeWeight = number
 type NodeBalancerNode = {
-  address?: string | undefined
+  address?: NodeBalancerNodeAddress | undefined
   config_id?: number | undefined
   id?: number | undefined
-  label?: string | undefined
-  mode?: 'accept' | 'reject' | 'drain' | 'backup' | undefined
+  label?: NodeBalancerNodeLabel | undefined
+  mode?: NodeBalancerNodeMode | undefined
   nodebalancer_id?: number | undefined
   status?: 'unknown' | 'UP' | 'DOWN' | undefined
-  weight?: number | undefined
+  weight?: NodeBalancerNodeWeight | undefined
 }
+type NodeBalancerConfigPort = number
+type NodeBalancerConfigProtocol = 'http' | 'https' | 'tcp'
+type NodeBalancerConfigProxyProtocol = 'none' | 'v1' | 'v2'
+type NodeBalancerConfigSslCert = string | null
+type NodeBalancerConfigSslKey = string | null
+type NodeBalancerConfigStickiness = 'none' | 'table' | 'http_cookie'
 type NodeBalancerConfig = {
-  algorithm?: 'roundrobin' | 'leastconn' | 'source' | undefined
-  check?: 'none' | 'connection' | 'http' | 'http_body' | undefined
-  check_attempts?: number | undefined
-  check_body?: string | undefined
-  check_interval?: number | undefined
-  check_passive?: boolean | undefined
-  check_path?: string | undefined
-  check_timeout?: number | undefined
-  cipher_suite?: 'recommended' | 'legacy' | undefined
+  algorithm?: NodeBalancerConfigAlgorithm | undefined
+  check?: NodeBalancerConfigCheck | undefined
+  check_attempts?: NodeBalancerConfigCheckAttempts | undefined
+  check_body?: NodeBalancerConfigCheckBody | undefined
+  check_interval?: NodeBalancerConfigCheckInterval | undefined
+  check_passive?: NodeBalancerConfigCheckPassive | undefined
+  check_path?: NodeBalancerConfigCheckPath | undefined
+  check_timeout?: NodeBalancerConfigCheckTimeout | undefined
+  cipher_suite?: NodeBalancerConfigCipherSuite | undefined
   id?: number | undefined
   nodebalancer_id?: number | undefined
   nodes_status?: { down?: number | undefined; up?: number | undefined } | undefined
-  port?: number | undefined
-  protocol?: 'http' | 'https' | 'tcp' | undefined
-  proxy_protocol?: 'none' | 'v1' | 'v2' | undefined
-  ssl_cert?: (string | null) | undefined
+  port?: NodeBalancerConfigPort | undefined
+  protocol?: NodeBalancerConfigProtocol | undefined
+  proxy_protocol?: NodeBalancerConfigProxyProtocol | undefined
+  ssl_cert?: NodeBalancerConfigSslCert | undefined
   ssl_commonname?: string | undefined
   ssl_fingerprint?: string | undefined
-  ssl_key?: (string | null) | undefined
-  stickiness?: 'none' | 'table' | 'http_cookie' | undefined
+  ssl_key?: NodeBalancerConfigSslKey | undefined
+  stickiness?: NodeBalancerConfigStickiness | undefined
 }
 type NodeBalancerStats = {
   data?:
@@ -1222,38 +1313,47 @@ type TrustedDevice = {
   last_remote_addr?: string | undefined
   user_agent?: string | undefined
 }
+type SecurityQuestionId = number
+type SecurityQuestionQuestion = string
+type SecurityQuestionResponse = string
 type SecurityQuestionsGet = {
   security_questions?:
-    | { id?: unknown | undefined; question?: unknown | undefined; response?: unknown | undefined }[]
+    | {
+        id?: SecurityQuestionId | undefined
+        question?: SecurityQuestionQuestion | undefined
+        response?: SecurityQuestionResponse | undefined
+      }[]
     | undefined
 }
 type SecurityQuestionsPost = {
   security_questions?:
     | {
-        question_id?: unknown | undefined
-        response?: unknown | undefined
-        security_question?: unknown | undefined
+        question_id?: SecurityQuestionId | undefined
+        response?: SecurityQuestionResponse | undefined
+        security_question?: SecurityQuestionQuestion | undefined
       }[]
     | undefined
 }
+type SSHKeyLabel = string
 type SSHKey = {
   created?: string | undefined
   id?: number | undefined
-  label?: string | undefined
+  label?: SSHKeyLabel | undefined
   ssh_key?: string | undefined
 }
+type PersonalAccessTokenLabel = string
 type PersonalAccessToken = {
   created?: string | undefined
   expiry?: string | undefined
   id?: number | undefined
-  label?: string | undefined
+  label?: PersonalAccessTokenLabel | undefined
   scopes?: string | undefined
   token?: string | undefined
 }
 type Region = {
   capabilities?: string[] | undefined
   country?: string | undefined
-  id?: string | undefined
+  id?: RegionId | undefined
   label?: string | undefined
   resolvers?: { ipv4?: string | undefined; ipv6?: string | undefined } | undefined
   status?: 'ok' | 'outage' | undefined
@@ -1369,9 +1469,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: EntityTransfer[] | undefined
             }
             outputFormat: 'json'
@@ -1385,13 +1485,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { entities: unknown } }
+            input: { json: { entities: EntityTransferEntities } }
             output: EntityTransfer
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { entities: unknown } }
+            input: { json: { entities: EntityTransferEntities } }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -1449,9 +1549,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Event[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1518,9 +1618,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Invoice[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1557,9 +1657,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: InvoiceItem[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1580,9 +1680,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: Login[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1617,9 +1717,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: Maintenance[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1638,9 +1738,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: Notification[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1659,9 +1759,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: OAuthClient[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1800,9 +1900,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: PaymentMethod[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1815,13 +1915,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { data: CreditCard; is_default: unknown; type: 'credit_card' } }
+            input: {
+              json: { data: CreditCard; is_default: PaymentMethodIsDefault; type: 'credit_card' }
+            }
             output: { [x: string]: unknown }
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { data: CreditCard; is_default: unknown; type: 'credit_card' } }
+            input: {
+              json: { data: CreditCard; is_default: PaymentMethodIsDefault; type: 'credit_card' }
+            }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -1879,9 +1983,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Payment[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -1918,12 +2022,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { json: PayPal }
-            output: { warnings?: WarningObject[] | undefined }
-            outputFormat: 'json'
-            status: 299
-          }
-        | {
-            input: { json: PayPal }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -1943,12 +2041,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: { warnings?: WarningObject[] | undefined }
             outputFormat: 'json'
             status: 202
-          }
-        | {
-            input: { json: PayPalExecute }
-            output: { warnings?: WarningObject[] | undefined }
-            outputFormat: 'json'
-            status: 299
           }
         | {
             input: { json: PayPalExecute }
@@ -1996,9 +2088,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: ServiceTransfer[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -2011,13 +2103,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { json: { entities: unknown } }
+            input: { json: { entities: ServiceTransferEntities } }
             output: ServiceTransfer
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { json: { entities: unknown } }
+            input: { json: { entities: ServiceTransferEntities } }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -2121,9 +2213,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: User[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -2242,9 +2334,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseEngine[] | undefined
             }
             outputFormat: 'json'
@@ -2283,9 +2375,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: Database[] | undefined
             }
             outputFormat: 'json'
@@ -2304,9 +2396,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseMongoDB[] | undefined
             }
             outputFormat: 'json'
@@ -2351,9 +2443,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: DatabaseMongoDB
@@ -2363,9 +2455,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -2381,9 +2473,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: { page?: number | undefined; page_size?: number | undefined }
             }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseBackup[] | undefined
             }
             outputFormat: 'json'
@@ -2526,9 +2618,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseMySQL[] | undefined
             }
             outputFormat: 'json'
@@ -2586,9 +2678,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: DatabaseMySQL
@@ -2598,9 +2690,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -2616,9 +2708,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: { page?: number | undefined; page_size?: number | undefined }
             }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseBackup[] | undefined
             }
             outputFormat: 'json'
@@ -2761,9 +2853,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabasePostgreSQL[] | undefined
             }
             outputFormat: 'json'
@@ -2821,9 +2913,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: DatabasePostgreSQL
@@ -2833,9 +2925,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { instanceId: number } } & {
               json: {
-                allow_list?: unknown | undefined
-                label?: unknown | undefined
-                updates?: unknown | undefined
+                allow_list?: DatabaseAllowList | undefined
+                label?: DatabaseLabel | undefined
+                updates?: DatabaseUpdates | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -2851,9 +2943,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               query: { page?: number | undefined; page_size?: number | undefined }
             }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseBackup[] | undefined
             }
             outputFormat: 'json'
@@ -2996,9 +3088,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
-              page?: number | undefined
-              pages?: number | undefined
-              results?: number | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
               data?: DatabaseType[] | undefined
             }
             outputFormat: 'json'
@@ -3038,9 +3130,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Domain[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -3181,9 +3273,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {
           data?: DomainRecord[] | undefined
-          page?: unknown | undefined
-          pages?: unknown | undefined
-          results?: unknown | undefined
+          page?: PaginationEnvelopePage | undefined
+          pages?: PaginationEnvelopePages | undefined
+          results?: PaginationEnvelopeResults | undefined
         }
         outputFormat: 'json'
         status: 200
@@ -3194,14 +3286,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 created?: string | undefined
                 id?: number | undefined
-                name?: string | undefined
-                port?: number | undefined
-                priority?: number | undefined
-                protocol?: (string | null) | undefined
-                service?: (string | null) | undefined
-                tag?: 'issue' | 'issuewild' | 'iodef' | undefined
-                target?: string | undefined
-                ttl_sec?: number | undefined
+                name?: DomainRecordName | undefined
+                port?: DomainRecordPort | undefined
+                priority?: DomainRecordPriority | undefined
+                protocol?: DomainRecordProtocol | undefined
+                service?: DomainRecordService | undefined
+                tag?: DomainRecordTag | undefined
+                target?: DomainRecordTarget | undefined
+                ttl_sec?: DomainRecordTtlSec | undefined
                 type?:
                   | 'A'
                   | 'AAAA'
@@ -3214,7 +3306,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'CAA'
                   | undefined
                 updated?: string | undefined
-                weight?: number | undefined
+                weight?: DomainRecordWeight | undefined
               }
             }
             output: DomainRecord
@@ -3226,14 +3318,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 created?: string | undefined
                 id?: number | undefined
-                name?: string | undefined
-                port?: number | undefined
-                priority?: number | undefined
-                protocol?: (string | null) | undefined
-                service?: (string | null) | undefined
-                tag?: 'issue' | 'issuewild' | 'iodef' | undefined
-                target?: string | undefined
-                ttl_sec?: number | undefined
+                name?: DomainRecordName | undefined
+                port?: DomainRecordPort | undefined
+                priority?: DomainRecordPriority | undefined
+                protocol?: DomainRecordProtocol | undefined
+                service?: DomainRecordService | undefined
+                tag?: DomainRecordTag | undefined
+                target?: DomainRecordTarget | undefined
+                ttl_sec?: DomainRecordTtlSec | undefined
                 type?:
                   | 'A'
                   | 'AAAA'
@@ -3246,7 +3338,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                   | 'CAA'
                   | undefined
                 updated?: string | undefined
-                weight?: number | undefined
+                weight?: DomainRecordWeight | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -3286,15 +3378,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domainId: number; recordId: number } } & {
               json: {
-                name?: unknown | undefined
-                port?: unknown | undefined
-                priority?: unknown | undefined
-                protocol?: unknown | undefined
-                service?: unknown | undefined
-                tag?: unknown | undefined
-                target?: unknown | undefined
-                ttl_sec?: unknown | undefined
-                weight?: unknown | undefined
+                name?: DomainRecordName | undefined
+                port?: DomainRecordPort | undefined
+                priority?: DomainRecordPriority | undefined
+                protocol?: DomainRecordProtocol | undefined
+                service?: DomainRecordService | undefined
+                tag?: DomainRecordTag | undefined
+                target?: DomainRecordTarget | undefined
+                ttl_sec?: DomainRecordTtlSec | undefined
+                weight?: DomainRecordWeight | undefined
               }
             }
             output: DomainRecord
@@ -3304,15 +3396,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { domainId: number; recordId: number } } & {
               json: {
-                name?: unknown | undefined
-                port?: unknown | undefined
-                priority?: unknown | undefined
-                protocol?: unknown | undefined
-                service?: unknown | undefined
-                tag?: unknown | undefined
-                target?: unknown | undefined
-                ttl_sec?: unknown | undefined
-                weight?: unknown | undefined
+                name?: DomainRecordName | undefined
+                port?: DomainRecordPort | undefined
+                priority?: DomainRecordPriority | undefined
+                protocol?: DomainRecordProtocol | undefined
+                service?: DomainRecordService | undefined
+                tag?: DomainRecordTag | undefined
+                target?: DomainRecordTarget | undefined
+                ttl_sec?: DomainRecordTtlSec | undefined
+                weight?: DomainRecordWeight | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -3343,9 +3435,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Image[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -3447,9 +3539,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Linode[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -3464,22 +3556,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                authorized_keys?: unknown | undefined
-                authorized_users?: unknown | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
                 booted?: boolean | undefined
-                image?: unknown | undefined
-                root_pass?: unknown | undefined
-                stackscript_data?: unknown | undefined
-                stackscript_id?: unknown | undefined
+                image?: DiskRequestImage | undefined
+                root_pass?: DiskRequestRootPass | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
                 backup_id?: number | undefined
                 backups_enabled?: boolean | undefined
-                group?: unknown | undefined
+                group?: LinodeGroup | undefined
                 interfaces?: LinodeConfigInterfaces | undefined
-                label?: unknown | undefined
+                label?: LinodeLabel | undefined
                 private_ip?: boolean | undefined
                 region?: string | undefined
                 swap_size?: number | undefined
-                tags?: unknown | undefined
+                tags?: LinodeTags | undefined
                 type?: string | undefined
               }
             }
@@ -3490,22 +3582,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                authorized_keys?: unknown | undefined
-                authorized_users?: unknown | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
                 booted?: boolean | undefined
-                image?: unknown | undefined
-                root_pass?: unknown | undefined
-                stackscript_data?: unknown | undefined
-                stackscript_id?: unknown | undefined
+                image?: DiskRequestImage | undefined
+                root_pass?: DiskRequestRootPass | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
                 backup_id?: number | undefined
                 backups_enabled?: boolean | undefined
-                group?: unknown | undefined
+                group?: LinodeGroup | undefined
                 interfaces?: LinodeConfigInterfaces | undefined
-                label?: unknown | undefined
+                label?: LinodeLabel | undefined
                 private_ip?: boolean | undefined
                 region?: string | undefined
                 swap_size?: number | undefined
-                tags?: unknown | undefined
+                tags?: LinodeTags | undefined
                 type?: string | undefined
               }
             }
@@ -3569,7 +3661,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     created?: string | undefined
                     disks?:
                       | {
-                          filesystem?: unknown | undefined
+                          filesystem?: DiskFilesystem | undefined
                           label?: string | undefined
                           size?: number | undefined
                         }[]
@@ -3749,9 +3841,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         }
         output: {
           data?: LinodeConfig[] | undefined
-          page?: unknown | undefined
-          pages?: unknown | undefined
-          results?: unknown | undefined
+          page?: PaginationEnvelopePage | undefined
+          pages?: PaginationEnvelopePages | undefined
+          results?: PaginationEnvelopeResults | undefined
         }
         outputFormat: 'json'
         status: 200
@@ -3865,9 +3957,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: Disk[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -3884,15 +3976,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { linodeId: number } } & {
               json: {
-                authorized_keys?: string[] | undefined
-                authorized_users?: string[] | undefined
-                filesystem?: unknown | undefined
-                image?: string | undefined
-                label?: unknown | undefined
-                root_pass?: string | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
+                filesystem?: DiskFilesystem | undefined
+                image?: DiskRequestImage | undefined
+                label?: DiskLabel | undefined
+                root_pass?: DiskRequestRootPass | undefined
                 size?: number | undefined
-                stackscript_data?: { [x: string]: unknown } | undefined
-                stackscript_id?: number | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
               }
             }
             output: Disk
@@ -3902,15 +3994,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { linodeId: number } } & {
               json: {
-                authorized_keys?: string[] | undefined
-                authorized_users?: string[] | undefined
-                filesystem?: unknown | undefined
-                image?: string | undefined
-                label?: unknown | undefined
-                root_pass?: string | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
+                filesystem?: DiskFilesystem | undefined
+                image?: DiskRequestImage | undefined
+                label?: DiskLabel | undefined
+                root_pass?: DiskRequestRootPass | undefined
                 size?: number | undefined
-                stackscript_data?: { [x: string]: unknown } | undefined
-                stackscript_id?: number | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -4017,9 +4109,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: Firewall[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4170,9 +4262,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { linodeId: number } }
         output: {
           data?: NodeBalancer[] | undefined
-          page?: unknown | undefined
-          pages?: unknown | undefined
-          results?: unknown | undefined
+          page?: PaginationEnvelopePage | undefined
+          pages?: PaginationEnvelopePages | undefined
+          results?: PaginationEnvelopeResults | undefined
         }
         outputFormat: 'json'
         status: 200
@@ -4216,13 +4308,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { linodeId: number } } & {
               json: {
-                authorized_keys?: unknown | undefined
-                authorized_users?: unknown | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
                 booted?: boolean | undefined
-                image?: unknown | undefined
-                root_pass?: unknown | undefined
-                stackscript_data?: unknown | undefined
-                stackscript_id?: unknown | undefined
+                image?: DiskRequestImage | undefined
+                root_pass?: DiskRequestRootPass | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
               }
             }
             output: Linode
@@ -4232,13 +4324,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { linodeId: number } } & {
               json: {
-                authorized_keys?: unknown | undefined
-                authorized_users?: unknown | undefined
+                authorized_keys?: DiskRequestAuthorizedKeys | undefined
+                authorized_users?: DiskRequestAuthorizedUsers | undefined
                 booted?: boolean | undefined
-                image?: unknown | undefined
-                root_pass?: unknown | undefined
-                stackscript_data?: unknown | undefined
-                stackscript_id?: unknown | undefined
+                image?: DiskRequestImage | undefined
+                root_pass?: DiskRequestRootPass | undefined
+                stackscript_data?: DiskRequestStackscriptData | undefined
+                stackscript_id?: DiskRequestStackscriptId | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -4383,9 +4475,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: Volume[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4406,9 +4498,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Kernel[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4443,9 +4535,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: StackScript[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4555,9 +4647,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: LinodeType[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4592,9 +4684,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: LKECluster[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4610,11 +4702,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 control_plane?: { high_availability?: boolean | undefined } | undefined
-                k8s_version: unknown
-                label: unknown
+                k8s_version: LKEClusterK8sVersion
+                label: LKEClusterLabel
                 node_pools: LKENodePoolRequestBody[]
-                region: unknown
-                tags?: unknown | undefined
+                region: LKEClusterRegion
+                tags?: LKEClusterTags | undefined
               }
             }
             output: LKECluster
@@ -4625,11 +4717,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 control_plane?: { high_availability?: boolean | undefined } | undefined
-                k8s_version: unknown
-                label: unknown
+                k8s_version: LKEClusterK8sVersion
+                label: LKEClusterLabel
                 node_pools: LKENodePoolRequestBody[]
-                region: unknown
-                tags?: unknown | undefined
+                region: LKEClusterRegion
+                tags?: LKEClusterTags | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -4670,17 +4762,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           json: {
             control_plane?: { high_availability?: boolean | undefined } | undefined
             k8s_version?: string | undefined
-            label?: unknown | undefined
+            label?: LKEClusterLabel | undefined
             tags?: string[] | undefined
           }
         }
         output: {
-          created?: unknown | undefined
-          k8s_version?: unknown | undefined
-          label?: unknown | undefined
-          region?: unknown | undefined
+          created?: LKEClusterCreated | undefined
+          k8s_version?: LKEClusterK8sVersion | undefined
+          label?: LKEClusterLabel | undefined
+          region?: LKEClusterRegion | undefined
           tags?: string[] | undefined
-          updated?: unknown | undefined
+          updated?: LKEClusterUpdated | undefined
         }
         outputFormat: 'json'
         status: 200
@@ -4693,9 +4785,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { clusterId: number } }
             output: {
               data?: { endpoint?: string | undefined }[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4808,9 +4900,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { clusterId: number } }
             output: {
               data?: LKENodePool[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -4825,17 +4917,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { clusterId: number } } & {
               json: {
-                autoscaler?:
-                  | {
-                      enabled?: boolean | undefined
-                      max?: number | undefined
-                      min?: number | undefined
-                    }
-                  | undefined
-                count?: unknown | undefined
-                disks?: unknown[] | undefined
-                tags?: unknown | undefined
-                type?: unknown | undefined
+                autoscaler?: LKENodePoolRequestBodyAutoscaler | undefined
+                count?: LKENodePoolCount | undefined
+                disks?: LKENodePoolDisksItems[] | undefined
+                tags?: LKENodePoolTags | undefined
+                type?: LKENodePoolType | undefined
               }
             }
             output: LKENodePool
@@ -4845,17 +4931,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { clusterId: number } } & {
               json: {
-                autoscaler?:
-                  | {
-                      enabled?: boolean | undefined
-                      max?: number | undefined
-                      min?: number | undefined
-                    }
-                  | undefined
-                count?: unknown | undefined
-                disks?: unknown[] | undefined
-                tags?: unknown | undefined
-                type?: unknown | undefined
+                autoscaler?: LKENodePoolRequestBodyAutoscaler | undefined
+                count?: LKENodePoolCount | undefined
+                disks?: LKENodePoolDisksItems[] | undefined
+                tags?: LKENodePoolTags | undefined
+                type?: LKENodePoolType | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -4886,7 +4966,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
       $put: {
         input: { param: { clusterId: number; poolId: number } } & {
-          json: { autoscaler?: unknown | undefined; count?: unknown | undefined }
+          json: {
+            autoscaler?: LKENodePoolRequestBodyAutoscaler | undefined
+            count?: LKENodePoolCount | undefined
+          }
         }
         output: LKENodePool
         outputFormat: 'json'
@@ -4968,9 +5051,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: LKEVersion[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5005,9 +5088,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: LongviewClient[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5105,9 +5188,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: LongviewSubscription[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5142,9 +5225,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: ManagedContact[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5218,9 +5301,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: ManagedCredential[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5344,9 +5427,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: ManagedIssue[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5381,9 +5464,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: ManagedLinodeSettings[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5431,9 +5514,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: ManagedService[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5587,9 +5670,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Firewall[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5606,17 +5689,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 created?: string | undefined
                 id?: number | undefined
-                label?: string | undefined
-                rules?:
-                  | {
-                      inbound?: FirewallRuleConfig[] | undefined
-                      inbound_policy?: 'ACCEPT' | 'DROP' | undefined
-                      outbound?: FirewallRuleConfig[] | undefined
-                      outbound_policy?: 'ACCEPT' | 'DROP' | undefined
-                    }
-                  | undefined
+                label?: FirewallLabel | undefined
+                rules?: FirewallRules | undefined
                 status?: 'enabled' | 'disabled' | 'deleted' | undefined
-                tags?: string[] | undefined
+                tags?: FirewallTags | undefined
                 updated?: string | undefined
               }
             }
@@ -5629,17 +5705,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               json: {
                 created?: string | undefined
                 id?: number | undefined
-                label?: string | undefined
-                rules?:
-                  | {
-                      inbound?: FirewallRuleConfig[] | undefined
-                      inbound_policy?: 'ACCEPT' | 'DROP' | undefined
-                      outbound?: FirewallRuleConfig[] | undefined
-                      outbound_policy?: 'ACCEPT' | 'DROP' | undefined
-                    }
-                  | undefined
+                label?: FirewallLabel | undefined
+                rules?: FirewallRules | undefined
                 status?: 'enabled' | 'disabled' | 'deleted' | undefined
-                tags?: string[] | undefined
+                tags?: FirewallTags | undefined
                 updated?: string | undefined
               }
             }
@@ -5680,9 +5749,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { firewallId: number } } & {
               json: {
-                label?: unknown | undefined
+                label?: FirewallLabel | undefined
                 status?: 'enabled' | 'disabled' | undefined
-                tags?: unknown | undefined
+                tags?: FirewallTags | undefined
               }
             }
             output: Firewall
@@ -5692,9 +5761,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { firewallId: number } } & {
               json: {
-                label?: unknown | undefined
+                label?: FirewallLabel | undefined
                 status?: 'enabled' | 'disabled' | undefined
-                tags?: unknown | undefined
+                tags?: FirewallTags | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -5711,9 +5780,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: FirewallDevices[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5728,13 +5797,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $post:
         | {
-            input: { param: { firewallId: number } } & { json: {} }
+            input: { param: { firewallId: number } } & {
+              json: {
+                id?: number | undefined
+                label?: string | undefined
+                type?: 'linode' | undefined
+                url?: string | undefined
+              }
+            }
             output: FirewallDevices
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { firewallId: number } } & { json: {} }
+            input: { param: { firewallId: number } } & {
+              json: {
+                id?: number | undefined
+                label?: string | undefined
+                type?: 'linode' | undefined
+                url?: string | undefined
+              }
+            }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -5774,7 +5857,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | {
             input: { param: { firewallId: number } }
-            output: unknown
+            output: FirewallRules
             outputFormat: 'json'
             status: 200
           }
@@ -5786,13 +5869,27 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { firewallId: number } } & { json: {} }
-            output: unknown
+            input: { param: { firewallId: number } } & {
+              json: {
+                inbound?: FirewallRuleConfig[] | undefined
+                inbound_policy?: 'ACCEPT' | 'DROP' | undefined
+                outbound?: FirewallRuleConfig[] | undefined
+                outbound_policy?: 'ACCEPT' | 'DROP' | undefined
+              }
+            }
+            output: FirewallRules
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { firewallId: number } } & { json: {} }
+            input: { param: { firewallId: number } } & {
+              json: {
+                inbound?: FirewallRuleConfig[] | undefined
+                inbound_policy?: 'ACCEPT' | 'DROP' | undefined
+                outbound?: FirewallRuleConfig[] | undefined
+                outbound_policy?: 'ACCEPT' | 'DROP' | undefined
+              }
+            }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -5805,9 +5902,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: IPAddress[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5932,9 +6029,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: IPv6Pool[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -5953,9 +6050,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: IPv6Range[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6028,9 +6125,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Vlans[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6049,9 +6146,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: NodeBalancer[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6066,28 +6163,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_conn_throttle?: unknown | undefined
+                client_conn_throttle?: NodeBalancerClientConnThrottle | undefined
                 configs?:
                   | {
-                      algorithm?: unknown | undefined
-                      check?: unknown | undefined
-                      check_attempts?: unknown | undefined
-                      check_body?: unknown | undefined
-                      check_interval?: unknown | undefined
-                      check_passive?: unknown | undefined
-                      check_path?: unknown | undefined
-                      check_timeout?: unknown | undefined
-                      cipher_suite?: unknown | undefined
+                      algorithm?: NodeBalancerConfigAlgorithm | undefined
+                      check?: NodeBalancerConfigCheck | undefined
+                      check_attempts?: NodeBalancerConfigCheckAttempts | undefined
+                      check_body?: NodeBalancerConfigCheckBody | undefined
+                      check_interval?: NodeBalancerConfigCheckInterval | undefined
+                      check_passive?: NodeBalancerConfigCheckPassive | undefined
+                      check_path?: NodeBalancerConfigCheckPath | undefined
+                      check_timeout?: NodeBalancerConfigCheckTimeout | undefined
+                      cipher_suite?: NodeBalancerConfigCipherSuite | undefined
                       nodes?: NodeBalancerNode[] | undefined
-                      port?: unknown | undefined
-                      protocol?: unknown | undefined
-                      proxy_protocol?: unknown | undefined
-                      ssl_cert?: unknown | undefined
-                      ssl_key?: unknown | undefined
-                      stickiness?: unknown | undefined
+                      port?: NodeBalancerConfigPort | undefined
+                      protocol?: NodeBalancerConfigProtocol | undefined
+                      proxy_protocol?: NodeBalancerConfigProxyProtocol | undefined
+                      ssl_cert?: NodeBalancerConfigSslCert | undefined
+                      ssl_key?: NodeBalancerConfigSslKey | undefined
+                      stickiness?: NodeBalancerConfigStickiness | undefined
                     }[]
                   | undefined
-                label?: unknown | undefined
+                label?: NodeBalancerLabel | undefined
                 region: string
               }
             }
@@ -6098,28 +6195,28 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: {
               json: {
-                client_conn_throttle?: unknown | undefined
+                client_conn_throttle?: NodeBalancerClientConnThrottle | undefined
                 configs?:
                   | {
-                      algorithm?: unknown | undefined
-                      check?: unknown | undefined
-                      check_attempts?: unknown | undefined
-                      check_body?: unknown | undefined
-                      check_interval?: unknown | undefined
-                      check_passive?: unknown | undefined
-                      check_path?: unknown | undefined
-                      check_timeout?: unknown | undefined
-                      cipher_suite?: unknown | undefined
+                      algorithm?: NodeBalancerConfigAlgorithm | undefined
+                      check?: NodeBalancerConfigCheck | undefined
+                      check_attempts?: NodeBalancerConfigCheckAttempts | undefined
+                      check_body?: NodeBalancerConfigCheckBody | undefined
+                      check_interval?: NodeBalancerConfigCheckInterval | undefined
+                      check_passive?: NodeBalancerConfigCheckPassive | undefined
+                      check_path?: NodeBalancerConfigCheckPath | undefined
+                      check_timeout?: NodeBalancerConfigCheckTimeout | undefined
+                      cipher_suite?: NodeBalancerConfigCipherSuite | undefined
                       nodes?: NodeBalancerNode[] | undefined
-                      port?: unknown | undefined
-                      protocol?: unknown | undefined
-                      proxy_protocol?: unknown | undefined
-                      ssl_cert?: unknown | undefined
-                      ssl_key?: unknown | undefined
-                      stickiness?: unknown | undefined
+                      port?: NodeBalancerConfigPort | undefined
+                      protocol?: NodeBalancerConfigProtocol | undefined
+                      proxy_protocol?: NodeBalancerConfigProxyProtocol | undefined
+                      ssl_cert?: NodeBalancerConfigSslCert | undefined
+                      ssl_key?: NodeBalancerConfigSslKey | undefined
+                      stickiness?: NodeBalancerConfigStickiness | undefined
                     }[]
                   | undefined
-                label?: unknown | undefined
+                label?: NodeBalancerLabel | undefined
                 region: string
               }
             }
@@ -6179,9 +6276,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: NodeBalancerConfig[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6263,9 +6360,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: NodeBalancerNode[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6282,14 +6379,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { nodeBalancerId: number; configId: number } } & {
               json: {
-                address?: string | undefined
+                address?: NodeBalancerNodeAddress | undefined
                 config_id?: number | undefined
                 id?: number | undefined
-                label?: string | undefined
-                mode?: 'accept' | 'reject' | 'drain' | 'backup' | undefined
+                label?: NodeBalancerNodeLabel | undefined
+                mode?: NodeBalancerNodeMode | undefined
                 nodebalancer_id?: number | undefined
                 status?: 'unknown' | 'UP' | 'DOWN' | undefined
-                weight?: number | undefined
+                weight?: NodeBalancerNodeWeight | undefined
               }
             }
             output: NodeBalancerNode
@@ -6299,14 +6396,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { nodeBalancerId: number; configId: number } } & {
               json: {
-                address?: string | undefined
+                address?: NodeBalancerNodeAddress | undefined
                 config_id?: number | undefined
                 id?: number | undefined
-                label?: string | undefined
-                mode?: 'accept' | 'reject' | 'drain' | 'backup' | undefined
+                label?: NodeBalancerNodeLabel | undefined
+                mode?: NodeBalancerNodeMode | undefined
                 nodebalancer_id?: number | undefined
                 status?: 'unknown' | 'UP' | 'DOWN' | undefined
-                weight?: number | undefined
+                weight?: NodeBalancerNodeWeight | undefined
               }
             }
             output: { errors?: ErrorObject[] | undefined }
@@ -6366,32 +6463,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { nodeBalancerId: number; configId: number } } & {
               json: {
-                algorithm?: 'roundrobin' | 'leastconn' | 'source' | undefined
-                check?: 'none' | 'connection' | 'http' | 'http_body' | undefined
-                check_attempts?: number | undefined
-                check_body?: string | undefined
-                check_interval?: number | undefined
-                check_passive?: boolean | undefined
-                check_path?: string | undefined
-                check_timeout?: number | undefined
-                cipher_suite?: 'recommended' | 'legacy' | undefined
+                algorithm?: NodeBalancerConfigAlgorithm | undefined
+                check?: NodeBalancerConfigCheck | undefined
+                check_attempts?: NodeBalancerConfigCheckAttempts | undefined
+                check_body?: NodeBalancerConfigCheckBody | undefined
+                check_interval?: NodeBalancerConfigCheckInterval | undefined
+                check_passive?: NodeBalancerConfigCheckPassive | undefined
+                check_path?: NodeBalancerConfigCheckPath | undefined
+                check_timeout?: NodeBalancerConfigCheckTimeout | undefined
+                cipher_suite?: NodeBalancerConfigCipherSuite | undefined
                 id?: number | undefined
                 nodebalancer_id?: number | undefined
                 nodes_status?: { down?: number | undefined; up?: number | undefined } | undefined
-                port?: number | undefined
-                protocol?: 'http' | 'https' | 'tcp' | undefined
-                proxy_protocol?: 'none' | 'v1' | 'v2' | undefined
-                ssl_cert?: (string | null) | undefined
+                port?: NodeBalancerConfigPort | undefined
+                protocol?: NodeBalancerConfigProtocol | undefined
+                proxy_protocol?: NodeBalancerConfigProxyProtocol | undefined
+                ssl_cert?: NodeBalancerConfigSslCert | undefined
                 ssl_commonname?: string | undefined
                 ssl_fingerprint?: string | undefined
-                ssl_key?: (string | null) | undefined
-                stickiness?: 'none' | 'table' | 'http_cookie' | undefined
+                ssl_key?: NodeBalancerConfigSslKey | undefined
+                stickiness?: NodeBalancerConfigStickiness | undefined
                 nodes: {
-                  address?: unknown | undefined
+                  address?: NodeBalancerNodeAddress | undefined
                   id?: number | undefined
-                  label?: unknown | undefined
-                  mode?: unknown | undefined
-                  weight?: unknown | undefined
+                  label?: NodeBalancerNodeLabel | undefined
+                  mode?: NodeBalancerNodeMode | undefined
+                  weight?: NodeBalancerNodeWeight | undefined
                 }[]
               }
             }
@@ -6402,32 +6499,32 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | {
             input: { param: { nodeBalancerId: number; configId: number } } & {
               json: {
-                algorithm?: 'roundrobin' | 'leastconn' | 'source' | undefined
-                check?: 'none' | 'connection' | 'http' | 'http_body' | undefined
-                check_attempts?: number | undefined
-                check_body?: string | undefined
-                check_interval?: number | undefined
-                check_passive?: boolean | undefined
-                check_path?: string | undefined
-                check_timeout?: number | undefined
-                cipher_suite?: 'recommended' | 'legacy' | undefined
+                algorithm?: NodeBalancerConfigAlgorithm | undefined
+                check?: NodeBalancerConfigCheck | undefined
+                check_attempts?: NodeBalancerConfigCheckAttempts | undefined
+                check_body?: NodeBalancerConfigCheckBody | undefined
+                check_interval?: NodeBalancerConfigCheckInterval | undefined
+                check_passive?: NodeBalancerConfigCheckPassive | undefined
+                check_path?: NodeBalancerConfigCheckPath | undefined
+                check_timeout?: NodeBalancerConfigCheckTimeout | undefined
+                cipher_suite?: NodeBalancerConfigCipherSuite | undefined
                 id?: number | undefined
                 nodebalancer_id?: number | undefined
                 nodes_status?: { down?: number | undefined; up?: number | undefined } | undefined
-                port?: number | undefined
-                protocol?: 'http' | 'https' | 'tcp' | undefined
-                proxy_protocol?: 'none' | 'v1' | 'v2' | undefined
-                ssl_cert?: (string | null) | undefined
+                port?: NodeBalancerConfigPort | undefined
+                protocol?: NodeBalancerConfigProtocol | undefined
+                proxy_protocol?: NodeBalancerConfigProxyProtocol | undefined
+                ssl_cert?: NodeBalancerConfigSslCert | undefined
                 ssl_commonname?: string | undefined
                 ssl_fingerprint?: string | undefined
-                ssl_key?: (string | null) | undefined
-                stickiness?: 'none' | 'table' | 'http_cookie' | undefined
+                ssl_key?: NodeBalancerConfigSslKey | undefined
+                stickiness?: NodeBalancerConfigStickiness | undefined
                 nodes: {
-                  address?: unknown | undefined
+                  address?: NodeBalancerNodeAddress | undefined
                   id?: number | undefined
-                  label?: unknown | undefined
-                  mode?: unknown | undefined
-                  weight?: unknown | undefined
+                  label?: NodeBalancerNodeLabel | undefined
+                  mode?: NodeBalancerNodeMode | undefined
+                  weight?: NodeBalancerNodeWeight | undefined
                 }[]
               }
             }
@@ -6459,9 +6556,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: ObjectStorageBucket[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6517,9 +6614,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { clusterId: string } }
             output: {
               data?: ObjectStorageBucket[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6820,9 +6917,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: ObjectStorageCluster[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6857,9 +6954,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: ObjectStorageKey[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -6963,9 +7060,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: AuthorizedApp[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7013,9 +7110,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: TrustedDevice[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7075,9 +7172,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: Login[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7200,9 +7297,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: SSHKey[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7252,13 +7349,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
       $put:
         | {
-            input: { param: { sshKeyId: number } } & { json: { label?: unknown | undefined } }
+            input: { param: { sshKeyId: number } } & { json: { label?: SSHKeyLabel | undefined } }
             output: SSHKey
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { sshKeyId: number } } & { json: { label?: unknown | undefined } }
+            input: { param: { sshKeyId: number } } & { json: { label?: SSHKeyLabel | undefined } }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -7314,9 +7411,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: PersonalAccessToken[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7332,7 +7429,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 expiry?: string | undefined
-                label?: unknown | undefined
+                label?: PersonalAccessTokenLabel | undefined
                 scopes?: string | undefined
               }
             }
@@ -7344,7 +7441,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: {
                 expiry?: string | undefined
-                label?: unknown | undefined
+                label?: PersonalAccessTokenLabel | undefined
                 scopes?: string | undefined
               }
             }
@@ -7402,9 +7499,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {}
             output: {
               data?: Region[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7439,9 +7536,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: SupportTicket[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7523,9 +7620,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             }
             output: {
               data?: SupportTicketReply[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7559,9 +7656,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Tag[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7629,9 +7726,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                     type?: string | undefined
                   }[]
                 | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7652,9 +7749,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { query: { page?: number | undefined; page_size?: number | undefined } }
             output: {
               data?: Volume[] | undefined
-              page?: unknown | undefined
-              pages?: unknown | undefined
-              results?: unknown | undefined
+              page?: PaginationEnvelopePage | undefined
+              pages?: PaginationEnvelopePages | undefined
+              results?: PaginationEnvelopeResults | undefined
             }
             outputFormat: 'json'
             status: 200
@@ -7737,10 +7834,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 filesystem_path?: string | undefined
                 hardware_type?: 'hdd' | 'nvme' | undefined
                 id?: number | undefined
-                label?: string | undefined
+                label?: VolumeLabel | undefined
                 linode_id?: { [x: string]: unknown } | undefined
                 linode_label?: (string | null) | undefined
-                region?: unknown | undefined
+                region?: RegionId | undefined
                 size?: { [x: string]: unknown } | undefined
                 status?: 'creating' | 'active' | 'resizing' | undefined
                 tags?: string[] | undefined
@@ -7758,10 +7855,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 filesystem_path?: string | undefined
                 hardware_type?: 'hdd' | 'nvme' | undefined
                 id?: number | undefined
-                label?: string | undefined
+                label?: VolumeLabel | undefined
                 linode_id?: { [x: string]: unknown } | undefined
                 linode_label?: (string | null) | undefined
-                region?: unknown | undefined
+                region?: RegionId | undefined
                 size?: { [x: string]: unknown } | undefined
                 status?: 'creating' | 'active' | 'resizing' | undefined
                 tags?: string[] | undefined
@@ -7805,13 +7902,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/volumes/:volumeId/clone': {
       $post:
         | {
-            input: { param: { volumeId: number } } & { json: { label: unknown } }
+            input: { param: { volumeId: number } } & { json: { label: VolumeLabel } }
             output: Volume
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { volumeId: number } } & { json: { label: unknown } }
+            input: { param: { volumeId: number } } & { json: { label: VolumeLabel } }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200
@@ -7837,13 +7934,13 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     '/volumes/:volumeId/resize': {
       $post:
         | {
-            input: { param: { volumeId: number } } & { json: { size: unknown } }
+            input: { param: { volumeId: number } } & { json: { size: VolumeSize } }
             output: Volume
             outputFormat: 'json'
             status: 200
           }
         | {
-            input: { param: { volumeId: number } } & { json: { size: unknown } }
+            input: { param: { volumeId: number } } & { json: { size: VolumeSize } }
             output: { errors?: ErrorObject[] | undefined }
             outputFormat: 'json'
             status: 200

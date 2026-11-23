@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkMailServiceListMobileDeviceAccessOverridesHandler = app.openapi(
-  postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkMailServiceListMobileDeviceAccessOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -403,6 +403,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { playlist_id: number } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { playlist_id: number } }
             output: Error
             outputFormat: 'text'
             status: 400
@@ -414,6 +420,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $post:
+        | {
+            input: { param: { playlist_id: number } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { playlist_id: number } }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
         | {
             input: { param: { playlist_id: number } }
             output: Error
@@ -442,6 +460,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/likes/tracks/:track_id': {
       $delete:
+        | { input: { param: { track_id: number } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { track_id: number } }
             output: Error
@@ -455,6 +474,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $post:
+        | { input: { param: { track_id: number } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { track_id: number } }
             output: Error
@@ -697,6 +717,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/me/followings/:user_id': {
       $delete:
+        | { input: { param: { user_id: number } }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { param: { user_id: number } }
             output: Error
@@ -730,6 +751,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 404
           }
       $put:
+        | { input: { param: { user_id: number } }; output: {}; outputFormat: string; status: 200 }
         | { input: { param: { user_id: number } }; output: User; outputFormat: 'text'; status: 201 }
         | {
             input: { param: { user_id: number } }
@@ -827,6 +849,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/oauth2/token': {
       $post:
+        | {
+            input: { json: AuthorizationCode | RefreshToken | Password } & {
+              form: AuthorizationCode | RefreshToken | Password
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { json: AuthorizationCode | RefreshToken | Password } & {
               form: AuthorizationCode | RefreshToken | Password

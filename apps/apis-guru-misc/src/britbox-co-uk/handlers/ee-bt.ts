@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEeBtEligibilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEeBtEligibilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const eeBtHandler = app.openapi(getEeBtEligibilityRoute, (c) => {
+export const getEeBtEligibilityRouteHandler: RouteHandler<typeof getEeBtEligibilityRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

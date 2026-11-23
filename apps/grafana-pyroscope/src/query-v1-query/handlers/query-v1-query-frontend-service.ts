@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postQueryV1QueryFrontendServiceQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postQueryV1QueryFrontendServiceQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const queryV1QueryFrontendServiceHandler = app.openapi(
-  postQueryV1QueryFrontendServiceQueryRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postQueryV1QueryFrontendServiceQueryRouteHandler: RouteHandler<
+  typeof postQueryV1QueryFrontendServiceQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

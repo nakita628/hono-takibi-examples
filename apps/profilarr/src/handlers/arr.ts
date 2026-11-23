@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getArrRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getArrRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const arrHandler = app.openapi(getArrRoute, (c) => {
+export const getArrRouteHandler: RouteHandler<typeof getArrRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

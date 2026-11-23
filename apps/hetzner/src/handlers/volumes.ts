@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVolumesIdRoute,
   getVolumesActionsIdRoute,
   getVolumesActionsRoute,
@@ -15,45 +15,70 @@ import {
   putVolumesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVolumesRouteHandler: RouteHandler<typeof getVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const volumesHandler = app
-  .openapi(getVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesActionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVolumesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVolumesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesIdActionsAttachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesIdActionsChangeProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesIdActionsDetachRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesIdActionsResizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesIdActionsActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVolumesRouteHandler: RouteHandler<typeof postVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesActionsRouteHandler: RouteHandler<typeof getVolumesActionsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesActionsIdRouteHandler: RouteHandler<
+  typeof getVolumesActionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesIdRouteHandler: RouteHandler<typeof getVolumesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVolumesIdRouteHandler: RouteHandler<typeof putVolumesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVolumesIdRouteHandler: RouteHandler<typeof deleteVolumesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesIdActionsRouteHandler: RouteHandler<
+  typeof getVolumesIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumesIdActionsAttachRouteHandler: RouteHandler<
+  typeof postVolumesIdActionsAttachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumesIdActionsChangeProtectionRouteHandler: RouteHandler<
+  typeof postVolumesIdActionsChangeProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumesIdActionsDetachRouteHandler: RouteHandler<
+  typeof postVolumesIdActionsDetachRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumesIdActionsResizeRouteHandler: RouteHandler<
+  typeof postVolumesIdActionsResizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesIdActionsActionIdRouteHandler: RouteHandler<
+  typeof getVolumesIdActionsActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

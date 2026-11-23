@@ -1,19 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSurveysRoute,
   getSurveysSurveyIdInterviewsRoute,
   getSurveysSurveyIdMetadataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSurveysRouteHandler: RouteHandler<typeof getSurveysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const surveysHandler = app
-  .openapi(getSurveysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSurveysSurveyIdInterviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSurveysSurveyIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSurveysSurveyIdInterviewsRouteHandler: RouteHandler<
+  typeof getSurveysSurveyIdInterviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSurveysSurveyIdMetadataRouteHandler: RouteHandler<
+  typeof getSurveysSurveyIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

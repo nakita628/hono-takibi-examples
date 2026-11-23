@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/codeartifact/2018-09-22/openapi.yaml',
   output: './src/codeartifact/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/codeartifact/types.ts' },
   client: { output: './src/codeartifact/client.ts', baseUrl: '/' },
   rpc: { output: './src/codeartifact/rpc.ts', parseResponse: true },

@@ -227,6 +227,7 @@ type ServiceType =
   | 'cron_job'
 type ServiceRuntime = 'docker' | 'elixir' | 'go' | 'node' | 'python' | 'ruby' | 'rust' | 'image'
 type AutoDeploy = 'yes' | 'no'
+type ServicePOSTAutoDeployTrigger = 'commit' | 'off' | 'checksPass'
 type BuildFilter = { paths: string[]; ignoredPaths: string[] }
 type NotifySetting = 'default' | 'notify' | 'ignore'
 type RegistryCredentialSummary = { id: string; name: string }
@@ -255,6 +256,7 @@ type StaticSiteDetails = {
   renderSubdomainPolicy?: RenderSubdomainPolicy | undefined
 }
 type Cache = { profile: 'no-cache' | 'origin-controlled' | 'origin-controlled-all' }
+type WebServiceDetailsDisk = { id: string; name: string; sizeGB: number; mountPath: string }
 type ServiceEnv = 'docker' | 'elixir' | 'go' | 'node' | 'python' | 'ruby' | 'rust' | 'image'
 type DockerDetails = {
   dockerCommand: string
@@ -316,7 +318,7 @@ type WebServiceDetails = {
       }
     | undefined
   cache?: Cache | undefined
-  disk?: { id: string; name: string; sizeGB: number; mountPath: string } | undefined
+  disk?: WebServiceDetailsDisk | undefined
   env: ServiceEnv
   envSpecificDetails: EnvSpecificDetails
   healthCheckPath: string
@@ -348,7 +350,7 @@ type PrivateServiceDetails = {
         }
       }
     | undefined
-  disk?: unknown | undefined
+  disk?: WebServiceDetailsDisk | undefined
   env: ServiceEnv
   envSpecificDetails: EnvSpecificDetails
   numInstances: number
@@ -376,7 +378,7 @@ type BackgroundWorkerDetails = {
         }
       }
     | undefined
-  disk?: unknown | undefined
+  disk?: WebServiceDetailsDisk | undefined
   env: ServiceEnv
   envSpecificDetails: EnvSpecificDetails
   numInstances: number
@@ -404,7 +406,7 @@ type Service = {
   id: string
   buildSourceId?: string | undefined
   autoDeploy: AutoDeploy
-  autoDeployTrigger?: unknown | undefined
+  autoDeployTrigger?: ServicePOSTAutoDeployTrigger | undefined
   branch?: string | undefined
   buildFilter?: BuildFilter | undefined
   createdAt: string
@@ -574,7 +576,7 @@ type ServicePOST = {
   ownerId: string
   repo?: string | undefined
   autoDeploy?: AutoDeploy | undefined
-  autoDeployTrigger?: 'commit' | 'off' | 'checksPass' | undefined
+  autoDeployTrigger?: ServicePOSTAutoDeployTrigger | undefined
   branch?: string | undefined
   image?: Image | undefined
   buildFilter?: BuildFilter | undefined
@@ -651,7 +653,7 @@ type CronJobDetailsPATCH = {
 type ServicePATCH = {
   buildSourceId?: string | undefined
   autoDeploy?: AutoDeploy | undefined
-  autoDeployTrigger?: unknown | undefined
+  autoDeployTrigger?: ServicePOSTAutoDeployTrigger | undefined
   repo?: string | undefined
   branch?: string | undefined
   image?: Image | undefined
@@ -1037,8 +1039,8 @@ type ServiceEventWithCursor = {
             system: boolean
           }
         }
-      | { reason: string; fromTrigger?: unknown | undefined }
-      | { newTrigger?: unknown | undefined }
+      | { reason: string; fromTrigger?: ServicePOSTAutoDeployTrigger | undefined }
+      | { newTrigger?: ServicePOSTAutoDeployTrigger | undefined }
   }
   cursor: Cursor
 }
@@ -1152,6 +1154,13 @@ type KeyValuePOSTInput = {
   persistenceMode?: PersistenceMode | undefined
   ipAllowList?: CidrBlockAndDescription[] | undefined
 }
+type RedisDetailMaintenance = {
+  id: string
+  type: string
+  scheduledAt: string
+  pendingMaintenanceBy?: string | undefined
+  state: 'scheduled' | 'in_progress' | 'user_fix_required' | 'cancelled' | 'succeeded' | 'failed'
+}
 type KeyValueDetail = {
   id: string
   createdAt: string
@@ -1165,7 +1174,7 @@ type KeyValueDetail = {
   ipAllowList: CidrBlockAndDescription[]
   environmentId?: string | undefined
   version: string
-  maintenance?: unknown | undefined
+  maintenance?: RedisDetailMaintenance | undefined
 }
 type KeyValuePATCHInput = {
   name?: string | undefined
@@ -1235,21 +1244,7 @@ type RedisDetail = {
   ipAllowList: CidrBlockAndDescription[]
   environmentId?: string | undefined
   version: string
-  maintenance?:
-    | {
-        id: string
-        type: string
-        scheduledAt: string
-        pendingMaintenanceBy?: string | undefined
-        state:
-          | 'scheduled'
-          | 'in_progress'
-          | 'user_fix_required'
-          | 'cancelled'
-          | 'succeeded'
-          | 'failed'
-      }
-    | undefined
+  maintenance?: RedisDetailMaintenance | undefined
 }
 type RedisPATCHInput = {
   name?: string | undefined
@@ -1263,6 +1258,58 @@ type RedisConnectionInfo = {
   externalConnectionString: string
   redisCLICommand: string
 }
+type PostgresPOSTInputPlan =
+  | 'free'
+  | 'starter'
+  | 'standard'
+  | 'pro'
+  | 'pro_plus'
+  | 'custom'
+  | 'basic_256mb'
+  | 'basic_1gb'
+  | 'basic_4gb'
+  | 'pro_4gb'
+  | 'pro_8gb'
+  | 'pro_16gb'
+  | 'pro_32gb'
+  | 'pro_64gb'
+  | 'pro_128gb'
+  | 'pro_192gb'
+  | 'pro_256gb'
+  | 'pro_384gb'
+  | 'pro_512gb'
+  | 'accelerated_16gb'
+  | 'accelerated_32gb'
+  | 'accelerated_64gb'
+  | 'accelerated_128gb'
+  | 'accelerated_256gb'
+  | 'accelerated_384gb'
+  | 'accelerated_512gb'
+  | 'accelerated_768gb'
+  | 'accelerated_1024gb'
+  | '0.1c-256mb'
+  | '0.5c-1g'
+  | '1c-2g'
+  | '1c-4g'
+  | '2c-4g'
+  | '2c-8g'
+  | '2c-16g'
+  | '4c-16g'
+  | '4c-32g'
+  | '8c-32g'
+  | '8c-64g'
+  | '16c-64g'
+  | '16c-128g'
+  | '32c-128g'
+  | '32c-256g'
+  | '48c-192g'
+  | '48c-384g'
+  | '64c-256g'
+  | '64c-512g'
+  | '96c-384g'
+  | '96c-768g'
+  | '128c-512g'
+  | '128c-1024g'
 type ReadReplica = { id: string; name: string }
 type ReadReplicas = ReadReplica[]
 type DatabaseRole = 'primary' | 'replica'
@@ -1279,7 +1326,7 @@ type Postgres = {
   highAvailabilityEnabled: boolean
   name: string
   owner: Owner
-  plan: Plan
+  plan: PostgresPOSTInputPlan
   diskSizeGB?: number | undefined
   primaryPostgresID?: string | undefined
   region: Region
@@ -1305,58 +1352,7 @@ type PostgresPOSTInput = {
   enableHighAvailability?: boolean | undefined
   environmentId?: string | undefined
   ownerId: string
-  plan:
-    | 'free'
-    | 'starter'
-    | 'standard'
-    | 'pro'
-    | 'pro_plus'
-    | 'custom'
-    | 'basic_256mb'
-    | 'basic_1gb'
-    | 'basic_4gb'
-    | 'pro_4gb'
-    | 'pro_8gb'
-    | 'pro_16gb'
-    | 'pro_32gb'
-    | 'pro_64gb'
-    | 'pro_128gb'
-    | 'pro_192gb'
-    | 'pro_256gb'
-    | 'pro_384gb'
-    | 'pro_512gb'
-    | 'accelerated_16gb'
-    | 'accelerated_32gb'
-    | 'accelerated_64gb'
-    | 'accelerated_128gb'
-    | 'accelerated_256gb'
-    | 'accelerated_384gb'
-    | 'accelerated_512gb'
-    | 'accelerated_768gb'
-    | 'accelerated_1024gb'
-    | '0.1c-256mb'
-    | '0.5c-1g'
-    | '1c-2g'
-    | '1c-4g'
-    | '2c-4g'
-    | '2c-8g'
-    | '2c-16g'
-    | '4c-16g'
-    | '4c-32g'
-    | '8c-32g'
-    | '8c-64g'
-    | '16c-64g'
-    | '16c-128g'
-    | '32c-128g'
-    | '32c-256g'
-    | '48c-192g'
-    | '48c-384g'
-    | '64c-256g'
-    | '64c-512g'
-    | '96c-384g'
-    | '96c-768g'
-    | '128c-512g'
-    | '128c-1024g'
+  plan: PostgresPOSTInputPlan
   diskSizeGB?: number | undefined
   enableDiskAutoscaling?: boolean | undefined
   connectionPool?: string | undefined
@@ -1376,10 +1372,10 @@ type PostgresDetail = {
   databaseUser: string
   environmentId?: string | undefined
   highAvailabilityEnabled: boolean
-  maintenance?: unknown | undefined
+  maintenance?: RedisDetailMaintenance | undefined
   name: string
   owner: Owner
-  plan: Plan
+  plan: PostgresPOSTInputPlan
   diskSizeGB?: number | undefined
   primaryPostgresID?: string | undefined
   region: Region
@@ -1394,7 +1390,7 @@ type PostgresDetail = {
 }
 type PostgresPATCHInput = {
   name?: string | undefined
-  plan?: Plan | undefined
+  plan?: PostgresPOSTInputPlan | undefined
   diskSizeGB?: number | undefined
   enableDiskAutoscaling?: boolean | undefined
   connectionPool?: string | undefined
@@ -8994,8 +8990,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                       system: boolean
                     }
                   }
-                | { reason: string; fromTrigger?: unknown | undefined }
-                | { newTrigger?: unknown | undefined }
+                | { reason: string; fromTrigger?: ServicePOSTAutoDeployTrigger | undefined }
+                | { newTrigger?: ServicePOSTAutoDeployTrigger | undefined }
                 | { [x: string]: unknown }
                 | { [x: string]: unknown }
                 | { [x: string]: unknown }

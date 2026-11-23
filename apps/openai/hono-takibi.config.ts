@@ -4,7 +4,7 @@ export default defineConfig({
   // OpenAI OpenAPI specification: https://github.com/openai/openai-openapi
   input: 'https://raw.githubusercontent.com/openai/openai-openapi/main/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

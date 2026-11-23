@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getTspRoute, patchTspRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getTspRoute, patchTspRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTspRouteHandler: RouteHandler<typeof getTspRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tspHandler = app
-  .openapi(getTspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchTspRouteHandler: RouteHandler<typeof patchTspRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

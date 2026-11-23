@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetFmrsServiceCreateLocationFsxWindowsHandler = app.openapi(
-  postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetFmrsServiceCreateLocationFsxWindowsRouteHandler: RouteHandler<
+  typeof postXAmzTargetFmrsServiceCreateLocationFsxWindowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

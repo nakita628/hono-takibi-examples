@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/health/2016-08-04/openapi.yaml',
   output: './src/health/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/health/types.ts' },
   client: { output: './src/health/client.ts', baseUrl: '/' },
   rpc: { output: './src/health/rpc.ts', parseResponse: true },

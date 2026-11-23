@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putCreateContainerRecipeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putCreateContainerRecipeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createContainerRecipeHandler = app.openapi(putCreateContainerRecipeRoute, (c) => {
+export const putCreateContainerRecipeRouteHandler: RouteHandler<
+  typeof putCreateContainerRecipeRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

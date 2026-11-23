@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteJournalInstructionJournalInstructionIdRoute,
   getJournalInstructionJournalInstructionIdRoute,
   putJournalInstructionJournalInstructionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof deleteJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const journalInstructionHandler = app
-  .openapi(deleteJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof getJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof putJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOrganizationOrgSlugOrIdRoute,
   deleteOrganizationOrgSlugOrIdUrlOrbAllowListAllowListEntryIdRoute,
   getOrganizationOrgSlugOrIdRoute,
@@ -9,27 +9,44 @@ import {
   postOrganizationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOrganizationRouteHandler: RouteHandler<typeof postOrganizationRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const organizationHandler = app
-  .openapi(postOrganizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationOrgSlugOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationOrgSlugOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationOrgSlugOrIdProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrganizationOrgSlugOrIdUrlOrbAllowListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrganizationOrgSlugOrIdUrlOrbAllowListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOrganizationOrgSlugOrIdUrlOrbAllowListAllowListEntryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOrganizationOrgSlugOrIdRouteHandler: RouteHandler<
+  typeof getOrganizationOrgSlugOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationOrgSlugOrIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationOrgSlugOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationOrgSlugOrIdProjectRouteHandler: RouteHandler<
+  typeof postOrganizationOrgSlugOrIdProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrganizationOrgSlugOrIdUrlOrbAllowListRouteHandler: RouteHandler<
+  typeof getOrganizationOrgSlugOrIdUrlOrbAllowListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrganizationOrgSlugOrIdUrlOrbAllowListRouteHandler: RouteHandler<
+  typeof postOrganizationOrgSlugOrIdUrlOrbAllowListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOrganizationOrgSlugOrIdUrlOrbAllowListAllowListEntryIdRouteHandler: RouteHandler<
+  typeof deleteOrganizationOrgSlugOrIdUrlOrbAllowListAllowListEntryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

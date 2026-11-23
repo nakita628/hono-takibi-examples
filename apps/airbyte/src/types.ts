@@ -12176,6 +12176,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/public/v1/sources/initiateOAuth': {
       $post:
+        | { input: { json: InitiateOauthRequest }; output: {}; outputFormat: string; status: 200 }
         | { input: { json: InitiateOauthRequest }; output: {}; outputFormat: string; status: 400 }
         | { input: { json: InitiateOauthRequest }; output: {}; outputFormat: string; status: 403 }
     }

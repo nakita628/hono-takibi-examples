@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWorkflowsUpdateStepRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWorkflowsUpdateStepRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const workflowsUpdateStepHandler = app.openapi(getWorkflowsUpdateStepRoute, (c) => {
+export const getWorkflowsUpdateStepRouteHandler: RouteHandler<
+  typeof getWorkflowsUpdateStepRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

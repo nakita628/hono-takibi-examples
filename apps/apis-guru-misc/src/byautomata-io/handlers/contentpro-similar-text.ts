@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postContentproSimilarTextRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postContentproSimilarTextRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const contentproSimilarTextHandler = app.openapi(postContentproSimilarTextRoute, (c) => {
+export const postContentproSimilarTextRouteHandler: RouteHandler<
+  typeof postContentproSimilarTextRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

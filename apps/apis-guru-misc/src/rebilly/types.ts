@@ -6055,7 +6055,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/files/:id/download:extension': {
+    '/files/:id/download{extension}': {
       $get:
         | {
             input: { param: { id: string; extension: '.png' | '.jpg' | '.gif' } } & {

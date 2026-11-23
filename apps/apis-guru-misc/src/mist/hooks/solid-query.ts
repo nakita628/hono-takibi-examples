@@ -43427,7 +43427,7 @@ export function createDeleteApiV1SitesSiteIdDevicesDeviceIdHa<
 }
 
 export function getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationKey() {
-  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image:image_number', 'POST'] as const
+  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image{image_number}', 'POST'] as const
 }
 
 export function getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationOptions<
@@ -43440,7 +43440,7 @@ export function getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationOp
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
             >
           >
         >
@@ -43448,18 +43448,18 @@ export function getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationOp
     >,
     TError,
     InferRequestType<
-      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+        (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
       >,
     ) {
       return parseResponse(
-        client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$post(
+        client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$post(
           args,
           options,
         ),
@@ -43481,7 +43481,7 @@ export function createPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+                    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
                   >
                 >
               >
@@ -43489,7 +43489,7 @@ export function createPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
           >,
           TError,
           InferRequestType<
-            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$post']
+            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$post']
           >,
           TOnMutateResult
         >
@@ -43515,7 +43515,7 @@ export function createPostApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
 }
 
 export function getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationKey() {
-  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image:image_number', 'DELETE'] as const
+  return ['api', '/api/v1/sites/:site_id/devices/:device_id/image{image_number}', 'DELETE'] as const
 }
 
 export function getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationOptions<
@@ -43528,7 +43528,7 @@ export function getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutation
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+              (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
             >
           >
         >
@@ -43536,18 +43536,18 @@ export function getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutation
     >,
     TError,
     InferRequestType<
-      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+      (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
     >,
     TOnMutateResult
   >({
     mutationKey: getDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumberMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+        (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
       >,
     ) {
       return parseResponse(
-        client.api.v1.sites[':site_id'].devices[':device_id']['image:image_number'].$delete(
+        client.api.v1.sites[':site_id'].devices[':device_id']['image{image_number}'].$delete(
           args,
           options,
         ),
@@ -43569,7 +43569,7 @@ export function createDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+                    (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
                   >
                 >
               >
@@ -43577,7 +43577,7 @@ export function createDeleteApiV1SitesSiteIdDevicesDeviceIdImageImageNumber<
           >,
           TError,
           InferRequestType<
-            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image:image_number']['$delete']
+            (typeof client.api.v1.sites)[':site_id']['devices'][':device_id']['image{image_number}']['$delete']
           >,
           TOnMutateResult
         >

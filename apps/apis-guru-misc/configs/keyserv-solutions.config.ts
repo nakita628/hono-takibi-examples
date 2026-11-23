@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/keyserv.solutions/1.4.5/openapi.yaml',
   output: './src/keyserv-solutions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/keyserv-solutions/types.ts' },
   client: { output: './src/keyserv-solutions/client.ts', baseUrl: '/' },
   rpc: { output: './src/keyserv-solutions/rpc.ts', parseResponse: true },

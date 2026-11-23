@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJournalS3ExportsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJournalS3ExportsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const journalS3ExportsHandler = app.openapi(getJournalS3ExportsRoute, (c) => {
+export const getJournalS3ExportsRouteHandler: RouteHandler<
+  typeof getJournalS3ExportsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

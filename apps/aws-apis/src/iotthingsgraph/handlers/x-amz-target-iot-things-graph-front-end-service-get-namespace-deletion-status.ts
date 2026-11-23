@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusHandler = app.openapi(
-  postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetIotThingsGraphFrontEndServiceGetNamespaceDeletionStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

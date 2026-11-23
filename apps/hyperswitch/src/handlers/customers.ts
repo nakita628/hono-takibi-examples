@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCustomersCustomerIdRoute,
   getCustomersCustomerIdMandatesRoute,
   getCustomersCustomerIdPaymentMethodsRoute,
@@ -10,30 +10,48 @@ import {
   postCustomersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCustomersCustomerIdMandatesRouteHandler: RouteHandler<
+  typeof getCustomersCustomerIdMandatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const customersHandler = app
-  .openapi(getCustomersCustomerIdMandatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCustomersCustomerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomersListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomersCustomerIdPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCustomersPaymentMethodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCustomersRouteHandler: RouteHandler<typeof postCustomersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomersCustomerIdRouteHandler: RouteHandler<
+  typeof getCustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCustomersCustomerIdRouteHandler: RouteHandler<
+  typeof postCustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCustomersCustomerIdRouteHandler: RouteHandler<
+  typeof deleteCustomersCustomerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomersListRouteHandler: RouteHandler<typeof getCustomersListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomersCustomerIdPaymentMethodsRouteHandler: RouteHandler<
+  typeof getCustomersCustomerIdPaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCustomersPaymentMethodsRouteHandler: RouteHandler<
+  typeof getCustomersPaymentMethodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

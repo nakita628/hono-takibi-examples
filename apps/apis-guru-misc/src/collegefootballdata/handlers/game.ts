@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGameBoxAdvancedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGameBoxAdvancedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const gameHandler = app.openapi(getGameBoxAdvancedRoute, (c) => {
+export const getGameBoxAdvancedRouteHandler: RouteHandler<typeof getGameBoxAdvancedRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postRealtimeCallsCallIdAcceptRoute,
   postRealtimeCallsCallIdHangupRoute,
   postRealtimeCallsCallIdReferRoute,
@@ -11,33 +11,56 @@ import {
   postRealtimeTranslationsClientSecretsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRealtimeCallsRouteHandler: RouteHandler<typeof postRealtimeCallsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const realtimeHandler = app
-  .openapi(postRealtimeCallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeCallsCallIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeCallsCallIdHangupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeCallsCallIdReferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeCallsCallIdRejectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeClientSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeTranscriptionSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRealtimeTranslationsClientSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRealtimeCallsCallIdAcceptRouteHandler: RouteHandler<
+  typeof postRealtimeCallsCallIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeCallsCallIdHangupRouteHandler: RouteHandler<
+  typeof postRealtimeCallsCallIdHangupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeCallsCallIdReferRouteHandler: RouteHandler<
+  typeof postRealtimeCallsCallIdReferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeCallsCallIdRejectRouteHandler: RouteHandler<
+  typeof postRealtimeCallsCallIdRejectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeClientSecretsRouteHandler: RouteHandler<
+  typeof postRealtimeClientSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeSessionsRouteHandler: RouteHandler<
+  typeof postRealtimeSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeTranscriptionSessionsRouteHandler: RouteHandler<
+  typeof postRealtimeTranscriptionSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRealtimeTranslationsClientSecretsRouteHandler: RouteHandler<
+  typeof postRealtimeTranslationsClientSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

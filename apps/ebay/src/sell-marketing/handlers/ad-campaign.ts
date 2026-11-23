@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdCampaignCampaignIdAdAdIdRoute,
   deleteAdCampaignCampaignIdRoute,
   getAdCampaignCampaignIdAdAdIdRoute,
@@ -44,132 +44,250 @@ import {
   putAdCampaignCampaignIdKeywordKeywordIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdCampaignRouteHandler: RouteHandler<typeof getAdCampaignRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adCampaignHandler = app
-  .openapi(getAdCampaignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignFindCampaignByAdReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignGetCampaignByNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdCampaignCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdAdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdAdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdCampaignCampaignIdAdAdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdAdAdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdAdAdIdUpdateBidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdAdGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdAdGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdAdGroupAdGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdCampaignCampaignIdAdGroupAdGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdAdGroupAdGroupIdSuggestBidsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdAdGroupAdGroupIdSuggestKeywordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkCreateAdsByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkCreateAdsByListingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkCreateKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkDeleteAdsByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkDeleteAdsByListingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkUpdateAdsBidByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkUpdateAdsBidByListingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkUpdateAdsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkUpdateAdsStatusByListingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdBulkUpdateKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdCreateAdsByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdDeleteAdsByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdEndRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdGetAdsByInventoryReferenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdKeywordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdKeywordKeywordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdCampaignCampaignIdKeywordKeywordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdCampaignCampaignIdSuggestItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdUpdateAdRateStrategyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdUpdateCampaignBudgetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdCampaignCampaignIdUpdateCampaignIdentificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdCampaignRouteHandler: RouteHandler<typeof postAdCampaignRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignFindCampaignByAdReferenceRouteHandler: RouteHandler<
+  typeof getAdCampaignFindCampaignByAdReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignGetCampaignByNameRouteHandler: RouteHandler<
+  typeof getAdCampaignGetCampaignByNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdCampaignCampaignIdRouteHandler: RouteHandler<
+  typeof deleteAdCampaignCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdAdRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdAdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdAdRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdAdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdCampaignCampaignIdAdAdIdRouteHandler: RouteHandler<
+  typeof deleteAdCampaignCampaignIdAdAdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdAdAdIdRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdAdAdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdAdAdIdUpdateBidRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdAdAdIdUpdateBidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdAdGroupRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdAdGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdAdGroupRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdAdGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdAdGroupAdGroupIdRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdAdGroupAdGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdCampaignCampaignIdAdGroupAdGroupIdRouteHandler: RouteHandler<
+  typeof putAdCampaignCampaignIdAdGroupAdGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdAdGroupAdGroupIdSuggestBidsRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdAdGroupAdGroupIdSuggestBidsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdAdGroupAdGroupIdSuggestKeywordsRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdAdGroupAdGroupIdSuggestKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkCreateAdsByInventoryReferenceRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkCreateAdsByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkCreateAdsByListingIdRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkCreateAdsByListingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkCreateKeywordRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkCreateKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkDeleteAdsByInventoryReferenceRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkDeleteAdsByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkDeleteAdsByListingIdRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkDeleteAdsByListingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkUpdateAdsBidByInventoryReferenceRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkUpdateAdsBidByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkUpdateAdsBidByListingIdRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkUpdateAdsBidByListingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkUpdateAdsStatusRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkUpdateAdsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkUpdateAdsStatusByListingIdRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkUpdateAdsStatusByListingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdBulkUpdateKeywordRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdBulkUpdateKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdCloneRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdCreateAdsByInventoryReferenceRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdCreateAdsByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdDeleteAdsByInventoryReferenceRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdDeleteAdsByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdEndRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdEndRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdGetAdsByInventoryReferenceRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdGetAdsByInventoryReferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdKeywordRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdKeywordRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdKeywordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdKeywordKeywordIdRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdKeywordKeywordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdCampaignCampaignIdKeywordKeywordIdRouteHandler: RouteHandler<
+  typeof putAdCampaignCampaignIdKeywordKeywordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdPauseRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdResumeRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdCampaignCampaignIdSuggestItemsRouteHandler: RouteHandler<
+  typeof getAdCampaignCampaignIdSuggestItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdUpdateAdRateStrategyRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdUpdateAdRateStrategyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdUpdateCampaignBudgetRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdUpdateCampaignBudgetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdCampaignCampaignIdUpdateCampaignIdentificationRouteHandler: RouteHandler<
+  typeof postAdCampaignCampaignIdUpdateCampaignIdentificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

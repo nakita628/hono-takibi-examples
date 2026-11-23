@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConsumerV1AppointmentsIdRoute,
   deleteConsumerV1CustomersIdRoute,
   getConsumerV1AppointmentsBookingfieldsRoute,
@@ -40,120 +40,230 @@ import {
   putConsumerV1CustomersIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConsumerV1AppointmentsRouteHandler: RouteHandler<
+  typeof getConsumerV1AppointmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const consumerHandler = app
-  .openapi(getConsumerV1AppointmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsumerV1AppointmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AppointmentsBookingfieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AppointmentsCustomfieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConsumerV1AppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdBookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdNoshowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdRescheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1AppointmentsIdReserveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AvailabilityServiceIdStartDateEndDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AvailabilityServiceIdStartDateEndDateDaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1AvailabilityServiceIdStartDateEndDateUnavailableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConsumerV1CustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersBookingfieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersCountriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersCustomfieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersStatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConsumerV1CustomersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1CustomersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConsumerV1CustomersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1LocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1LocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ResourcegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ResourcegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ResourcesIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicesIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConsumerV1ServicesIdResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConsumerV1AppointmentsRouteHandler: RouteHandler<
+  typeof postConsumerV1AppointmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AppointmentsBookingfieldsRouteHandler: RouteHandler<
+  typeof getConsumerV1AppointmentsBookingfieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AppointmentsCustomfieldsRouteHandler: RouteHandler<
+  typeof getConsumerV1AppointmentsCustomfieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConsumerV1AppointmentsIdRouteHandler: RouteHandler<
+  typeof deleteConsumerV1AppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AppointmentsIdRouteHandler: RouteHandler<
+  typeof getConsumerV1AppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdBookRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdBookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdCancelRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdConfirmRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdNoshowRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdNoshowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdRescheduleRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdRescheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1AppointmentsIdReserveRouteHandler: RouteHandler<
+  typeof putConsumerV1AppointmentsIdReserveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AvailabilityServiceIdStartDateEndDateRouteHandler: RouteHandler<
+  typeof getConsumerV1AvailabilityServiceIdStartDateEndDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AvailabilityServiceIdStartDateEndDateDaysRouteHandler: RouteHandler<
+  typeof getConsumerV1AvailabilityServiceIdStartDateEndDateDaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1AvailabilityServiceIdStartDateEndDateUnavailableRouteHandler: RouteHandler<
+  typeof getConsumerV1AvailabilityServiceIdStartDateEndDateUnavailableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConsumerV1CustomersRouteHandler: RouteHandler<
+  typeof postConsumerV1CustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersBookingfieldsRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersBookingfieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersCountriesRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersCountriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersCustomfieldsRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersCustomfieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersStatesRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersStatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConsumerV1CustomersIdRouteHandler: RouteHandler<
+  typeof deleteConsumerV1CustomersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1CustomersIdRouteHandler: RouteHandler<
+  typeof getConsumerV1CustomersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConsumerV1CustomersIdRouteHandler: RouteHandler<
+  typeof putConsumerV1CustomersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1LocationsRouteHandler: RouteHandler<
+  typeof getConsumerV1LocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1LocationsIdRouteHandler: RouteHandler<
+  typeof getConsumerV1LocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ResourcegroupsRouteHandler: RouteHandler<
+  typeof getConsumerV1ResourcegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ResourcegroupsIdRouteHandler: RouteHandler<
+  typeof getConsumerV1ResourcegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ResourcesRouteHandler: RouteHandler<
+  typeof getConsumerV1ResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ResourcesIdRouteHandler: RouteHandler<
+  typeof getConsumerV1ResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ResourcesIdServicesRouteHandler: RouteHandler<
+  typeof getConsumerV1ResourcesIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicegroupsRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicegroupsIdRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicesRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicesAllocationsIdRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicesIdRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicesIdAllocationsRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicesIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConsumerV1ServicesIdResourcesRouteHandler: RouteHandler<
+  typeof getConsumerV1ServicesIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

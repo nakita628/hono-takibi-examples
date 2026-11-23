@@ -11,21 +11,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/search': {
-      $get: {
-        input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
-        output: SearchResult[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
+            output: SearchResult[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   } & {
     '/searchperpackage': {
-      $get: {
-        input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
-        output: PackageSearchResult[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
+            output: PackageSearchResult[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { query: string; match_mode?: 'literal' | 'regexp' | undefined } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
     }
   },
   '/'

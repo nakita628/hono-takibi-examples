@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInformedDeliveryCampaignsRoute,
   getInformedDeliveryCampaignsUspsCampaignIdRoute,
   patchInformedDeliveryCampaignsUspsCampaignIdRoute,
   postInformedDeliveryCampaignsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getInformedDeliveryCampaignsRouteHandler: RouteHandler<
+  typeof getInformedDeliveryCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const informedDeliveryCampaignsHandler = app
-  .openapi(getInformedDeliveryCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postInformedDeliveryCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInformedDeliveryCampaignsUspsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchInformedDeliveryCampaignsUspsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postInformedDeliveryCampaignsRouteHandler: RouteHandler<
+  typeof postInformedDeliveryCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInformedDeliveryCampaignsUspsCampaignIdRouteHandler: RouteHandler<
+  typeof getInformedDeliveryCampaignsUspsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchInformedDeliveryCampaignsUspsCampaignIdRouteHandler: RouteHandler<
+  typeof patchInformedDeliveryCampaignsUspsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

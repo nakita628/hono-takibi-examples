@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPartnerSettingsNewRelicRoute,
   getPartnerSettingsRoute,
   patchPartnerSettingsNewRelicRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPartnerSettingsRouteHandler: RouteHandler<typeof getPartnerSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const partnerSettingsHandler = app
-  .openapi(getPartnerSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPartnerSettingsNewRelicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPartnerSettingsNewRelicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPartnerSettingsNewRelicRouteHandler: RouteHandler<
+  typeof getPartnerSettingsNewRelicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPartnerSettingsNewRelicRouteHandler: RouteHandler<
+  typeof patchPartnerSettingsNewRelicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

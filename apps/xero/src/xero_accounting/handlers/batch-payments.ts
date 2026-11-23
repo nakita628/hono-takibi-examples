@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBatchPaymentsBatchPaymentIDHistoryRoute,
   getBatchPaymentsBatchPaymentIDRoute,
   getBatchPaymentsRoute,
@@ -9,27 +9,44 @@ import {
   putBatchPaymentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBatchPaymentsRouteHandler: RouteHandler<typeof getBatchPaymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const batchPaymentsHandler = app
-  .openapi(getBatchPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBatchPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBatchPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBatchPaymentsBatchPaymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBatchPaymentsBatchPaymentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBatchPaymentsBatchPaymentIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBatchPaymentsBatchPaymentIDHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putBatchPaymentsRouteHandler: RouteHandler<typeof putBatchPaymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBatchPaymentsRouteHandler: RouteHandler<typeof postBatchPaymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBatchPaymentsBatchPaymentIDRouteHandler: RouteHandler<
+  typeof getBatchPaymentsBatchPaymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBatchPaymentsBatchPaymentIDRouteHandler: RouteHandler<
+  typeof postBatchPaymentsBatchPaymentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBatchPaymentsBatchPaymentIDHistoryRouteHandler: RouteHandler<
+  typeof getBatchPaymentsBatchPaymentIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBatchPaymentsBatchPaymentIDHistoryRouteHandler: RouteHandler<
+  typeof putBatchPaymentsBatchPaymentIDHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

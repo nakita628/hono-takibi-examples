@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationHandler = app.openapi(
-  postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRouteHandler: RouteHandler<
+  typeof postXAmzTargetOvertureServiceDeleteDirectConnectGatewayAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

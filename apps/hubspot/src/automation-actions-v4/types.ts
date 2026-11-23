@@ -505,12 +505,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { appId: number; definitionId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { appId: number; definitionId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; definitionId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { appId: number; definitionId: string } } & {
@@ -613,22 +620,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: {
-          param: {
-            appId: number
-            definitionId: string
-            functionType:
-              | 'POST_ACTION_EXECUTION'
-              | 'POST_FETCH_OPTIONS'
-              | 'PRE_ACTION_EXECUTION'
-              | 'PRE_FETCH_OPTIONS'
+      $delete:
+        | {
+            input: {
+              param: {
+                appId: number
+                definitionId: string
+                functionType:
+                  | 'POST_ACTION_EXECUTION'
+                  | 'POST_FETCH_OPTIONS'
+                  | 'PRE_ACTION_EXECUTION'
+                  | 'PRE_FETCH_OPTIONS'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                appId: number
+                definitionId: string
+                functionType:
+                  | 'POST_ACTION_EXECUTION'
+                  | 'POST_FETCH_OPTIONS'
+                  | 'PRE_ACTION_EXECUTION'
+                  | 'PRE_FETCH_OPTIONS'
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/automation/actions/2026-09/:appId/:definitionId/functions/:functionType/:functionId': {
@@ -702,23 +726,41 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: {
-          param: {
-            appId: number
-            definitionId: string
-            functionId: string
-            functionType:
-              | 'POST_ACTION_EXECUTION'
-              | 'POST_FETCH_OPTIONS'
-              | 'PRE_ACTION_EXECUTION'
-              | 'PRE_FETCH_OPTIONS'
+      $delete:
+        | {
+            input: {
+              param: {
+                appId: number
+                definitionId: string
+                functionId: string
+                functionType:
+                  | 'POST_ACTION_EXECUTION'
+                  | 'POST_FETCH_OPTIONS'
+                  | 'PRE_ACTION_EXECUTION'
+                  | 'PRE_FETCH_OPTIONS'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+        | {
+            input: {
+              param: {
+                appId: number
+                definitionId: string
+                functionId: string
+                functionType:
+                  | 'POST_ACTION_EXECUTION'
+                  | 'POST_FETCH_OPTIONS'
+                  | 'PRE_ACTION_EXECUTION'
+                  | 'PRE_FETCH_OPTIONS'
+              }
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/automation/actions/2026-09/:appId/:definitionId/requires-object': {
@@ -735,14 +777,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $post: {
-        input: { param: { appId: number; definitionId: string } } & {
-          json: PublicActionDefinitionRequiresObjectRequest
-        }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { appId: number; definitionId: string } } & {
+              json: PublicActionDefinitionRequiresObjectRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { appId: number; definitionId: string } } & {
+              json: PublicActionDefinitionRequiresObjectRequest
+            }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/automation/actions/2026-09/:appId/:definitionId/revisions': {
@@ -782,21 +833,35 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/automation/actions/callbacks/2026-09/complete': {
-      $post: {
-        input: { json: BatchInputCallbackCompletionBatchRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchInputCallbackCompletionBatchRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchInputCallbackCompletionBatchRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/automation/actions/callbacks/2026-09/:callbackId/complete': {
-      $post: {
-        input: { param: { callbackId: string } } & { json: CallbackCompletionRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { callbackId: string } } & { json: CallbackCompletionRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { callbackId: string } } & { json: CallbackCompletionRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

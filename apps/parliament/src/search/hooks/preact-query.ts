@@ -127,7 +127,7 @@ export function getQueryQueryOptions<
   })
 }
 
-export function useQuery<
+export function useGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
@@ -153,7 +153,7 @@ export function useQuery<
   )
 }
 
-export function useSuspenseQuery<
+export function useSuspenseGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
@@ -180,26 +180,26 @@ export function useSuspenseQuery<
 }
 
 export function getQueryExtensionQueryKey(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
 ) {
-  return ['query.:extension', '/query.:extension', args] as const
+  return ['query.{extension}', '/query.{extension}', args] as const
 }
 
 export function getQueryExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
       >
     >,
     TError,
@@ -209,7 +209,7 @@ export function getQueryExtensionQueryOptions<
     queryKey: getQueryExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['query.:extension'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['query.{extension}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -218,18 +218,18 @@ export function getQueryExtensionQueryOptions<
 export function useQueryExtension<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
           >
         >,
         TError,
@@ -252,18 +252,18 @@ export function useQueryExtension<
 export function useSuspenseQueryExtension<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
           >
         >,
         TError,

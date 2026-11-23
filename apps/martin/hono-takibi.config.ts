@@ -4,7 +4,7 @@ export default defineConfig({
   // The document moved from martin/openapi.json to crates/martin/openapi.json.
   input: 'https://raw.githubusercontent.com/maplibre/martin/main/crates/martin/openapi.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

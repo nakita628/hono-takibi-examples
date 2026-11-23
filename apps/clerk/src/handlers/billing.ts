@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRoute,
   postBillingSubscriptionItemsSubscriptionItemIdDiscountsRoute,
   postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRoute,
   postBillingSubscriptionItemsSubscriptionItemIdPriceTransitionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRouteHandler: RouteHandler<
+  typeof postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billingHandler = app
-  .openapi(postBillingSubscriptionItemsSubscriptionItemIdExtendFreeTrialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingSubscriptionItemsSubscriptionItemIdPriceTransitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingSubscriptionItemsSubscriptionItemIdDiscountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBillingSubscriptionItemsSubscriptionItemIdPriceTransitionRouteHandler: RouteHandler<
+  typeof postBillingSubscriptionItemsSubscriptionItemIdPriceTransitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingSubscriptionItemsSubscriptionItemIdDiscountsRouteHandler: RouteHandler<
+  typeof postBillingSubscriptionItemsSubscriptionItemIdDiscountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRouteHandler: RouteHandler<
+  typeof deleteBillingSubscriptionItemsSubscriptionItemIdDiscountsDiscountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

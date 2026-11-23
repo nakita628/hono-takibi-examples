@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteGalaxiesDeleteGalaxyIdRoute,
   getGalaxiesRoute,
   getGalaxiesViewGalaxyIdRoute,
@@ -10,30 +10,46 @@ import {
   postGalaxiesUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGalaxiesRouteHandler: RouteHandler<typeof getGalaxiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const galaxiesHandler = app
-  .openapi(getGalaxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGalaxiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGalaxiesViewGalaxyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGalaxiesUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteGalaxiesDeleteGalaxyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGalaxiesImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGalaxiesExportGalaxyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postGalaxiesRouteHandler: RouteHandler<typeof postGalaxiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGalaxiesViewGalaxyIdRouteHandler: RouteHandler<
+  typeof getGalaxiesViewGalaxyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGalaxiesUpdateRouteHandler: RouteHandler<typeof postGalaxiesUpdateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteGalaxiesDeleteGalaxyIdRouteHandler: RouteHandler<
+  typeof deleteGalaxiesDeleteGalaxyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGalaxiesImportRouteHandler: RouteHandler<typeof postGalaxiesImportRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postGalaxiesExportGalaxyIdRouteHandler: RouteHandler<
+  typeof postGalaxiesExportGalaxyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocalRouteHandler: RouteHandler<
+  typeof postGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

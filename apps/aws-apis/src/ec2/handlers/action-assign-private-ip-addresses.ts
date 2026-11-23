@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionAssignPrivateIpAddressesRoute,
   postActionAssignPrivateIpAddressesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionAssignPrivateIpAddressesRouteHandler: RouteHandler<
+  typeof getActionAssignPrivateIpAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionAssignPrivateIpAddressesHandler = app
-  .openapi(getActionAssignPrivateIpAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionAssignPrivateIpAddressesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionAssignPrivateIpAddressesRouteHandler: RouteHandler<
+  typeof postActionAssignPrivateIpAddressesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

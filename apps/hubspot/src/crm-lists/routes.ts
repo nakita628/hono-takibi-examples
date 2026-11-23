@@ -6174,7 +6174,7 @@ export const putCrmLists202609FoldersMoveListRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -6211,7 +6211,7 @@ export const deleteCrmLists202609FoldersFolderIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -6673,7 +6673,7 @@ export const deleteCrmLists202609ListIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -6809,7 +6809,7 @@ export const deleteCrmLists202609ListIdMembershipsRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -6961,7 +6961,7 @@ export const putCrmLists202609ListIdMembershipsAddFromSourceListIdRoute = create
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -7150,7 +7150,7 @@ export const putCrmLists202609ListIdRestoreRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },
@@ -7277,7 +7277,7 @@ export const deleteCrmLists202609ListIdScheduleConversionRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['crm.lists.write', 'crm.segments.read'] },
     { oauth2: ['cms.membership.access_groups.write', 'crm.lists.read'] },

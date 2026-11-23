@@ -902,12 +902,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { attachment: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { attachment: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { attachment: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { attachment: string } } & {
@@ -928,12 +935,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/attachments:batchDelete': {
-      $post: {
-        input: { json: BatchDeleteAttachmentsRequest }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchDeleteAttachmentsRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: BatchDeleteAttachmentsRequest }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/attachments:upload': {
@@ -985,7 +999,11 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: { json: SignInRequest }; output: Status; outputFormat: 'json'; status: 200 }
     }
   } & {
-    '/api/auth/signout': { $post: { input: {}; output: Status; outputFormat: 'json'; status: 200 } }
+    '/api/auth/signout': {
+      $post:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
+        | { input: {}; output: Status; outputFormat: 'json'; status: 200 }
+    }
   } & {
     '/api/identity-providers': {
       $get:
@@ -1024,12 +1042,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { 'identity-provider': string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { 'identity-provider': string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { 'identity-provider': string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { 'identity-provider': string } } & {
@@ -1062,12 +1087,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/instance/settings/notification:testEmail': {
-      $post: {
-        input: { json: TestInstanceEmailSettingRequest }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: TestInstanceEmailSettingRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { json: TestInstanceEmailSettingRequest }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/instance/settings:batchGet': {
@@ -1208,12 +1240,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | { input: { param: { memo: string } }; output: Memo; outputFormat: 'json'; status: 200 }
         | { input: { param: { memo: string } }; output: Status; outputFormat: 'json'; status: 200 }
-      $delete: {
-        input: { param: { memo: string } } & { query: { force?: boolean | undefined } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { memo: string } } & { query: { force?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { memo: string } } & { query: { force?: boolean | undefined } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { memo: string } } & { query: { updateMask?: string | undefined } } & {
@@ -1251,12 +1290,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $patch: {
-        input: { param: { memo: string } } & { json: SetMemoAttachmentsRequest }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $patch:
+        | {
+            input: { param: { memo: string } } & { json: SetMemoAttachmentsRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { memo: string } } & { json: SetMemoAttachmentsRequest }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/memos/:memo/reactions': {
@@ -1293,12 +1339,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/memos/:memo/reactions/:reaction': {
-      $delete: {
-        input: { param: { memo: string; reaction: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { memo: string; reaction: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { memo: string; reaction: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/memos/:memo/relations': {
@@ -1319,12 +1372,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $patch: {
-        input: { param: { memo: string } } & { json: SetMemoRelationsRequest }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $patch:
+        | {
+            input: { param: { memo: string } } & { json: SetMemoRelationsRequest }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { memo: string } } & { json: SetMemoRelationsRequest }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/memos/:memo/shares': {
@@ -1352,12 +1412,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/memos/:memo/shares/:share': {
-      $delete: {
-        input: { param: { memo: string; share: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { memo: string; share: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { memo: string; share: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/shares/:shareToken/memo': {
@@ -1409,12 +1476,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get:
         | { input: { param: { space: string } }; output: Space; outputFormat: 'json'; status: 200 }
         | { input: { param: { space: string } }; output: Status; outputFormat: 'json'; status: 200 }
-      $delete: {
-        input: { param: { space: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { space: string } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { space: string } }; output: Status; outputFormat: 'json'; status: 200 }
       $patch:
         | {
             input: { param: { space: string } } & { query: { updateMask?: string | undefined } } & {
@@ -1481,12 +1545,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { space: string; invitation: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { space: string; invitation: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { space: string; invitation: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/spaces/:space/invitations/:invitation:accept': {
@@ -1510,14 +1581,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/spaces/:space/invitations/:invitation:decline': {
-      $post: {
-        input: { param: { space: string; invitation: string } } & {
-          json: DeclineSpaceInvitationRequest
-        }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { space: string; invitation: string } } & {
+              json: DeclineSpaceInvitationRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { space: string; invitation: string } } & {
+              json: DeclineSpaceInvitationRequest
+            }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/spaces/:space/members': {
@@ -1554,12 +1634,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { space: string; member: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { space: string; member: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { space: string; member: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { space: string; member: string } } & {
@@ -1648,12 +1735,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { user: string } } & { query: { force?: boolean | undefined } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string } } & { query: { force?: boolean | undefined } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string } } & { query: { force?: boolean | undefined } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { user: string } } & {
@@ -1711,12 +1805,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { user: string; linkedIdentity: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string; linkedIdentity: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string; linkedIdentity: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/users/:user/notifications': {
@@ -1748,12 +1849,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/users/:user/notifications/:notification': {
-      $delete: {
-        input: { param: { user: string; notification: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string; notification: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string; notification: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { user: string; notification: string } } & {
@@ -1807,12 +1915,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/users/:user/personalAccessTokens/:personalAccessToken': {
-      $delete: {
-        input: { param: { user: string; personalAccessToken: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string; personalAccessToken: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string; personalAccessToken: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
     }
   } & {
     '/api/users/:user/settings': {
@@ -1967,12 +2082,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
-      $delete: {
-        input: { param: { user: string; view: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string; view: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string; view: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { user: string; view: string } } & {
@@ -2033,12 +2155,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/users/:user/webhooks/:webhook': {
-      $delete: {
-        input: { param: { user: string; webhook: string } }
-        output: Status
-        outputFormat: 'json'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { user: string; webhook: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { user: string; webhook: string } }
+            output: Status
+            outputFormat: 'json'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { user: string; webhook: string } } & {

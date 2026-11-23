@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTextractGetDocumentTextDetectionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTextractGetDocumentTextDetectionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTextractGetDocumentTextDetectionHandler = app.openapi(
-  postXAmzTargetTextractGetDocumentTextDetectionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTextractGetDocumentTextDetectionRouteHandler: RouteHandler<
+  typeof postXAmzTargetTextractGetDocumentTextDetectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

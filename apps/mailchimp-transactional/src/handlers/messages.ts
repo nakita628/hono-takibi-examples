@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postMessagesCancelScheduledRoute,
   postMessagesContentRoute,
   postMessagesInfoRoute,
@@ -15,45 +15,80 @@ import {
   postMessagesSendTemplateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMessagesSendRouteHandler: RouteHandler<typeof postMessagesSendRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const messagesHandler = app
-  .openapi(postMessagesSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSendTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSendMcTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSearchTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesParseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSendRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesListScheduledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesCancelScheduledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesRescheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesSendSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMessagesSendTemplateRouteHandler: RouteHandler<
+  typeof postMessagesSendTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesSendMcTemplateRouteHandler: RouteHandler<
+  typeof postMessagesSendMcTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesSearchRouteHandler: RouteHandler<typeof postMessagesSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesSearchTimeSeriesRouteHandler: RouteHandler<
+  typeof postMessagesSearchTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesInfoRouteHandler: RouteHandler<typeof postMessagesInfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesContentRouteHandler: RouteHandler<
+  typeof postMessagesContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesParseRouteHandler: RouteHandler<typeof postMessagesParseRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesSendRawRouteHandler: RouteHandler<
+  typeof postMessagesSendRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesListScheduledRouteHandler: RouteHandler<
+  typeof postMessagesListScheduledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesCancelScheduledRouteHandler: RouteHandler<
+  typeof postMessagesCancelScheduledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesRescheduleRouteHandler: RouteHandler<
+  typeof postMessagesRescheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesSendSmsRouteHandler: RouteHandler<
+  typeof postMessagesSendSmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

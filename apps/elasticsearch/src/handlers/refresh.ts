@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRefreshRoute, postRefreshRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRefreshRoute, postRefreshRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRefreshRouteHandler: RouteHandler<typeof getRefreshRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const refreshHandler = app
-  .openapi(getRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRefreshRouteHandler: RouteHandler<typeof postRefreshRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

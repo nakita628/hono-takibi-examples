@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteResourceControlsIdRoute,
   postResourceControlsRoute,
   putResourceControlsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postResourceControlsRouteHandler: RouteHandler<
+  typeof postResourceControlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const resourceControlsHandler = app
-  .openapi(postResourceControlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteResourceControlsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResourceControlsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteResourceControlsIdRouteHandler: RouteHandler<
+  typeof deleteResourceControlsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putResourceControlsIdRouteHandler: RouteHandler<
+  typeof putResourceControlsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

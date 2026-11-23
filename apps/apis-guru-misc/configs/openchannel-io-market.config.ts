@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openchannel.io/market/2.0.24/openapi.yaml',
   output: './src/openchannel-io-market/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openchannel-io-market/types.ts' },
   client: { output: './src/openchannel-io-market/client.ts', baseUrl: '/' },
   rpc: { output: './src/openchannel-io-market/rpc.ts', parseResponse: true },

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonDAXV3ListTagsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonDAXV3ListTagsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonDaxv3ListTagsHandler = app.openapi(
-  postXAmzTargetAmazonDAXV3ListTagsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonDAXV3ListTagsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonDAXV3ListTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

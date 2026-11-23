@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCreatePublicIpv4PoolRoute, postActionCreatePublicIpv4PoolRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionCreatePublicIpv4PoolRoute,
+  postActionCreatePublicIpv4PoolRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreatePublicIpv4PoolRouteHandler: RouteHandler<
+  typeof getActionCreatePublicIpv4PoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreatePublicIpv4PoolHandler = app
-  .openapi(getActionCreatePublicIpv4PoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreatePublicIpv4PoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreatePublicIpv4PoolRouteHandler: RouteHandler<
+  typeof postActionCreatePublicIpv4PoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

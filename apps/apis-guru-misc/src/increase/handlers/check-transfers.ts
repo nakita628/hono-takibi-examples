@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCheckTransfersCheckTransferIdRoute,
   getCheckTransfersRoute,
   postCheckTransfersCheckTransferIdApproveRoute,
@@ -8,24 +8,38 @@ import {
   postCheckTransfersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCheckTransfersRouteHandler: RouteHandler<typeof getCheckTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const checkTransfersHandler = app
-  .openapi(getCheckTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCheckTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCheckTransfersCheckTransferIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCheckTransfersCheckTransferIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCheckTransfersCheckTransferIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCheckTransfersCheckTransferIdStopPaymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCheckTransfersRouteHandler: RouteHandler<typeof postCheckTransfersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCheckTransfersCheckTransferIdRouteHandler: RouteHandler<
+  typeof getCheckTransfersCheckTransferIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCheckTransfersCheckTransferIdApproveRouteHandler: RouteHandler<
+  typeof postCheckTransfersCheckTransferIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCheckTransfersCheckTransferIdCancelRouteHandler: RouteHandler<
+  typeof postCheckTransfersCheckTransferIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCheckTransfersCheckTransferIdStopPaymentRouteHandler: RouteHandler<
+  typeof postCheckTransfersCheckTransferIdStopPaymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteMediaMediaIdRoute, getMediaMediaIdRoute, postMediaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteMediaMediaIdRoute, getMediaMediaIdRoute, postMediaRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMediaRouteHandler: RouteHandler<typeof postMediaRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mediaHandler = app
-  .openapi(postMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMediaMediaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMediaMediaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteMediaMediaIdRouteHandler: RouteHandler<typeof deleteMediaMediaIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMediaMediaIdRouteHandler: RouteHandler<typeof getMediaMediaIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

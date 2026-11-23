@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTasksTaskGidRoute,
   getTasksRoute,
   getTasksTaskGidDependenciesRoute,
@@ -30,90 +30,162 @@ import {
   putTasksTaskGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTasksTaskGidProjectsRouteHandler: RouteHandler<
+  typeof getTasksTaskGidProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tasksHandler = app
-  .openapi(getTasksTaskGidProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidStoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidStoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTasksTaskGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidSubtasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidSubtasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidSetParentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidAddDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRemoveDependenciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidDependentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidAddDependentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRemoveDependentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidAddProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRemoveProjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidAddTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRemoveTagRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidAddFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRemoveFollowersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidRollupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskGidTimeTrackingEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskGidTimeTrackingEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTasksTaskGidStoriesRouteHandler: RouteHandler<
+  typeof getTasksTaskGidStoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidStoriesRouteHandler: RouteHandler<
+  typeof postTasksTaskGidStoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidTagsRouteHandler: RouteHandler<
+  typeof getTasksTaskGidTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksRouteHandler: RouteHandler<typeof getTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksRouteHandler: RouteHandler<typeof postTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidRouteHandler: RouteHandler<typeof getTasksTaskGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTasksTaskGidRouteHandler: RouteHandler<typeof putTasksTaskGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskGidRouteHandler: RouteHandler<typeof deleteTasksTaskGidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidDuplicateRouteHandler: RouteHandler<
+  typeof postTasksTaskGidDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidSubtasksRouteHandler: RouteHandler<
+  typeof getTasksTaskGidSubtasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidSubtasksRouteHandler: RouteHandler<
+  typeof postTasksTaskGidSubtasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidSetParentRouteHandler: RouteHandler<
+  typeof postTasksTaskGidSetParentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidDependenciesRouteHandler: RouteHandler<
+  typeof getTasksTaskGidDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidAddDependenciesRouteHandler: RouteHandler<
+  typeof postTasksTaskGidAddDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRemoveDependenciesRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRemoveDependenciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidDependentsRouteHandler: RouteHandler<
+  typeof getTasksTaskGidDependentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidAddDependentsRouteHandler: RouteHandler<
+  typeof postTasksTaskGidAddDependentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRemoveDependentsRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRemoveDependentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidAddProjectRouteHandler: RouteHandler<
+  typeof postTasksTaskGidAddProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRemoveProjectRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRemoveProjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidAddTagRouteHandler: RouteHandler<
+  typeof postTasksTaskGidAddTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRemoveTagRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRemoveTagRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidAddFollowersRouteHandler: RouteHandler<
+  typeof postTasksTaskGidAddFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRemoveFollowersRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRemoveFollowersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidRollupRouteHandler: RouteHandler<
+  typeof postTasksTaskGidRollupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskGidTimeTrackingEntriesRouteHandler: RouteHandler<
+  typeof getTasksTaskGidTimeTrackingEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskGidTimeTrackingEntriesRouteHandler: RouteHandler<
+  typeof postTasksTaskGidTimeTrackingEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

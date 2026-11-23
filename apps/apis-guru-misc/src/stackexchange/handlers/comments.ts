@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCommentsIdsRoute,
   getCommentsRoute,
   postCommentsIdDeleteRoute,
   postCommentsIdEditRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCommentsRouteHandler: RouteHandler<typeof getCommentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const commentsHandler = app
-  .openapi(getCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCommentsIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommentsIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCommentsIdEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCommentsIdsRouteHandler: RouteHandler<typeof getCommentsIdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommentsIdDeleteRouteHandler: RouteHandler<
+  typeof postCommentsIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCommentsIdEditRouteHandler: RouteHandler<typeof postCommentsIdEditRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

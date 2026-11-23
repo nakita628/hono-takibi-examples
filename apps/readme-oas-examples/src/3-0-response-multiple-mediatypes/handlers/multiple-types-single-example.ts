@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMultipleTypesSingleExampleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMultipleTypesSingleExampleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const multipleTypesSingleExampleHandler = app.openapi(
-  postMultipleTypesSingleExampleRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postMultipleTypesSingleExampleRouteHandler: RouteHandler<
+  typeof postMultipleTypesSingleExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

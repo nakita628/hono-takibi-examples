@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPhenotypePhenominerChartSpeciesTypeKeyRefRgdIdTermStringRoute,
   getPhenotypePhenominerChartSpeciesTypeKeyTermStringRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPhenotypePhenominerChartSpeciesTypeKeyRefRgdIdTermStringRouteHandler: RouteHandler<
+  typeof getPhenotypePhenominerChartSpeciesTypeKeyRefRgdIdTermStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const phenotypeHandler = app
-  .openapi(getPhenotypePhenominerChartSpeciesTypeKeyRefRgdIdTermStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPhenotypePhenominerChartSpeciesTypeKeyTermStringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPhenotypePhenominerChartSpeciesTypeKeyTermStringRouteHandler: RouteHandler<
+  typeof getPhenotypePhenominerChartSpeciesTypeKeyTermStringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

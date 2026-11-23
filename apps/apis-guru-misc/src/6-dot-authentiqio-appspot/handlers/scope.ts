@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScopeJobRoute,
   getScopeJobRoute,
   headScopeJobRoute,
@@ -8,24 +8,26 @@ import {
   putScopeJobRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postScopeRouteHandler: RouteHandler<typeof postScopeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scopeHandler = app
-  .openapi(postScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScopeJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScopeJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headScopeJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScopeJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putScopeJobRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteScopeJobRouteHandler: RouteHandler<typeof deleteScopeJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScopeJobRouteHandler: RouteHandler<typeof getScopeJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headScopeJobRouteHandler: RouteHandler<typeof headScopeJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScopeJobRouteHandler: RouteHandler<typeof postScopeJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putScopeJobRouteHandler: RouteHandler<typeof putScopeJobRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

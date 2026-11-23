@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetUtcTimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetUtcTimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getUtcTimeHandler = app.openapi(getGetUtcTimeRoute, (c) => {
+export const getGetUtcTimeRouteHandler: RouteHandler<typeof getGetUtcTimeRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV4NameReplyRoute,
   deleteV4NameRoute,
   deleteV4ParentAnswersDeleteRoute,
@@ -52,156 +52,284 @@ import {
   putV4NameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV4AccountsRouteHandler: RouteHandler<typeof getV4AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v4Handler = app
-  .openapi(getV4AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4AccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4AttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4CategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4CategoriesBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ChainsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4GoogleLocationsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV4NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV4NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV4NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameLocalPostsReportInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameLocationsBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameLocationsBatchGetReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameLocationsReportInsightsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV4NameReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV4NameReplyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameClearAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameCompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameFetchVerificationOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameFindMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameGenerateAccountNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4NameGetGoogleUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4NameGoogleUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4NameRecommendGoogleLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4NameVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentAdminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentAnswersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV4ParentAnswersDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentAnswersUpsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentInsuranceNetworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentLocalPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentLocalPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentMediaCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentMediaStartUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV4ParentQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV4ParentVerificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV4AccountsRouteHandler: RouteHandler<typeof postV4AccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4AttributesRouteHandler: RouteHandler<typeof getV4AttributesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4CategoriesRouteHandler: RouteHandler<typeof getV4CategoriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4CategoriesBatchGetRouteHandler: RouteHandler<
+  typeof getV4CategoriesBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ChainsSearchRouteHandler: RouteHandler<typeof getV4ChainsSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4GoogleLocationsSearchRouteHandler: RouteHandler<
+  typeof postV4GoogleLocationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV4NameRouteHandler: RouteHandler<typeof deleteV4NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4NameRouteHandler: RouteHandler<typeof getV4NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV4NameRouteHandler: RouteHandler<typeof patchV4NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV4NameRouteHandler: RouteHandler<typeof putV4NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameLocalPostsReportInsightsRouteHandler: RouteHandler<
+  typeof postV4NameLocalPostsReportInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameLocationsBatchGetRouteHandler: RouteHandler<
+  typeof postV4NameLocationsBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameLocationsBatchGetReviewsRouteHandler: RouteHandler<
+  typeof postV4NameLocationsBatchGetReviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameLocationsReportInsightsRouteHandler: RouteHandler<
+  typeof postV4NameLocationsReportInsightsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV4NameReplyRouteHandler: RouteHandler<typeof deleteV4NameReplyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV4NameReplyRouteHandler: RouteHandler<typeof putV4NameReplyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameAcceptRouteHandler: RouteHandler<typeof postV4NameAcceptRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameAssociateRouteHandler: RouteHandler<
+  typeof postV4NameAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameClearAssociationRouteHandler: RouteHandler<
+  typeof postV4NameClearAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameCompleteRouteHandler: RouteHandler<typeof postV4NameCompleteRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameDeclineRouteHandler: RouteHandler<typeof postV4NameDeclineRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameFetchVerificationOptionsRouteHandler: RouteHandler<
+  typeof postV4NameFetchVerificationOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameFindMatchesRouteHandler: RouteHandler<
+  typeof postV4NameFindMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameGenerateAccountNumberRouteHandler: RouteHandler<
+  typeof postV4NameGenerateAccountNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4NameGetGoogleUpdatedRouteHandler: RouteHandler<
+  typeof getV4NameGetGoogleUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4NameGoogleUpdatedRouteHandler: RouteHandler<
+  typeof getV4NameGoogleUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4NameRecommendGoogleLocationsRouteHandler: RouteHandler<
+  typeof getV4NameRecommendGoogleLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameReportRouteHandler: RouteHandler<typeof postV4NameReportRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameTransferRouteHandler: RouteHandler<typeof postV4NameTransferRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4NameVerifyRouteHandler: RouteHandler<typeof postV4NameVerifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentAdminsRouteHandler: RouteHandler<typeof getV4ParentAdminsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentAdminsRouteHandler: RouteHandler<typeof postV4ParentAdminsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentAnswersRouteHandler: RouteHandler<typeof getV4ParentAnswersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV4ParentAnswersDeleteRouteHandler: RouteHandler<
+  typeof deleteV4ParentAnswersDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentAnswersUpsertRouteHandler: RouteHandler<
+  typeof postV4ParentAnswersUpsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentInsuranceNetworksRouteHandler: RouteHandler<
+  typeof getV4ParentInsuranceNetworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentInvitationsRouteHandler: RouteHandler<
+  typeof getV4ParentInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentLocalPostsRouteHandler: RouteHandler<
+  typeof getV4ParentLocalPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentLocalPostsRouteHandler: RouteHandler<
+  typeof postV4ParentLocalPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentLocationsRouteHandler: RouteHandler<
+  typeof getV4ParentLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentLocationsRouteHandler: RouteHandler<
+  typeof postV4ParentLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentMediaRouteHandler: RouteHandler<typeof getV4ParentMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentMediaRouteHandler: RouteHandler<typeof postV4ParentMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentMediaCustomersRouteHandler: RouteHandler<
+  typeof getV4ParentMediaCustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentMediaStartUploadRouteHandler: RouteHandler<
+  typeof postV4ParentMediaStartUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentQuestionsRouteHandler: RouteHandler<
+  typeof getV4ParentQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV4ParentQuestionsRouteHandler: RouteHandler<
+  typeof postV4ParentQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentReviewsRouteHandler: RouteHandler<typeof getV4ParentReviewsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV4ParentVerificationsRouteHandler: RouteHandler<
+  typeof getV4ParentVerificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

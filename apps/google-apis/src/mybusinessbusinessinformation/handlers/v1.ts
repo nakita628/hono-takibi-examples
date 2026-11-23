@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1AttributesRoute,
   getV1CategoriesBatchGetRoute,
@@ -15,45 +15,70 @@ import {
   postV1ParentLocationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1AttributesRouteHandler: RouteHandler<typeof getV1AttributesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1AttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CategoriesBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ChainsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1GoogleLocationsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameAssociateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameClearLocationAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameGetGoogleUpdatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1CategoriesRouteHandler: RouteHandler<typeof getV1CategoriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CategoriesBatchGetRouteHandler: RouteHandler<
+  typeof getV1CategoriesBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ChainsSearchRouteHandler: RouteHandler<typeof getV1ChainsSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1GoogleLocationsSearchRouteHandler: RouteHandler<
+  typeof postV1GoogleLocationsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameAssociateRouteHandler: RouteHandler<
+  typeof postV1NameAssociateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameClearLocationAssociationRouteHandler: RouteHandler<
+  typeof postV1NameClearLocationAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameGetGoogleUpdatedRouteHandler: RouteHandler<
+  typeof getV1NameGetGoogleUpdatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentLocationsRouteHandler: RouteHandler<
+  typeof getV1ParentLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentLocationsRouteHandler: RouteHandler<
+  typeof postV1ParentLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

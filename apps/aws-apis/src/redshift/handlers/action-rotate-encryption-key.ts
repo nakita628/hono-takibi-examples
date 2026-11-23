@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionRotateEncryptionKeyRoute, postActionRotateEncryptionKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionRotateEncryptionKeyRoute,
+  postActionRotateEncryptionKeyRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRotateEncryptionKeyRouteHandler: RouteHandler<
+  typeof getActionRotateEncryptionKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRotateEncryptionKeyHandler = app
-  .openapi(getActionRotateEncryptionKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRotateEncryptionKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRotateEncryptionKeyRouteHandler: RouteHandler<
+  typeof postActionRotateEncryptionKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

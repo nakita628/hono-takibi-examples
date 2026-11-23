@@ -1,47 +1,125 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsIdentityStoreCreateGroupHandler,
-  xAmzTargetAwsIdentityStoreCreateGroupMembershipHandler,
-  xAmzTargetAwsIdentityStoreCreateUserHandler,
-  xAmzTargetAwsIdentityStoreDeleteGroupHandler,
-  xAmzTargetAwsIdentityStoreDeleteGroupMembershipHandler,
-  xAmzTargetAwsIdentityStoreDeleteUserHandler,
-  xAmzTargetAwsIdentityStoreDescribeGroupHandler,
-  xAmzTargetAwsIdentityStoreDescribeGroupMembershipHandler,
-  xAmzTargetAwsIdentityStoreDescribeUserHandler,
-  xAmzTargetAwsIdentityStoreGetGroupIdHandler,
-  xAmzTargetAwsIdentityStoreGetGroupMembershipIdHandler,
-  xAmzTargetAwsIdentityStoreGetUserIdHandler,
-  xAmzTargetAwsIdentityStoreIsMemberInGroupsHandler,
-  xAmzTargetAwsIdentityStoreListGroupMembershipsForMemberHandler,
-  xAmzTargetAwsIdentityStoreListGroupMembershipsHandler,
-  xAmzTargetAwsIdentityStoreListGroupsHandler,
-  xAmzTargetAwsIdentityStoreListUsersHandler,
-  xAmzTargetAwsIdentityStoreUpdateGroupHandler,
-  xAmzTargetAwsIdentityStoreUpdateUserHandler,
+  postXAmzTargetAWSIdentityStoreCreateGroupMembershipRoute,
+  postXAmzTargetAWSIdentityStoreCreateGroupRoute,
+  postXAmzTargetAWSIdentityStoreCreateUserRoute,
+  postXAmzTargetAWSIdentityStoreDeleteGroupMembershipRoute,
+  postXAmzTargetAWSIdentityStoreDeleteGroupRoute,
+  postXAmzTargetAWSIdentityStoreDeleteUserRoute,
+  postXAmzTargetAWSIdentityStoreDescribeGroupMembershipRoute,
+  postXAmzTargetAWSIdentityStoreDescribeGroupRoute,
+  postXAmzTargetAWSIdentityStoreDescribeUserRoute,
+  postXAmzTargetAWSIdentityStoreGetGroupIdRoute,
+  postXAmzTargetAWSIdentityStoreGetGroupMembershipIdRoute,
+  postXAmzTargetAWSIdentityStoreGetUserIdRoute,
+  postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute,
+  postXAmzTargetAWSIdentityStoreListGroupMembershipsForMemberRoute,
+  postXAmzTargetAWSIdentityStoreListGroupMembershipsRoute,
+  postXAmzTargetAWSIdentityStoreListGroupsRoute,
+  postXAmzTargetAWSIdentityStoreListUsersRoute,
+  postXAmzTargetAWSIdentityStoreUpdateGroupRoute,
+  postXAmzTargetAWSIdentityStoreUpdateUserRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSIdentityStoreCreateGroupMembershipRouteHandler,
+  postXAmzTargetAWSIdentityStoreCreateGroupRouteHandler,
+  postXAmzTargetAWSIdentityStoreCreateUserRouteHandler,
+  postXAmzTargetAWSIdentityStoreDeleteGroupMembershipRouteHandler,
+  postXAmzTargetAWSIdentityStoreDeleteGroupRouteHandler,
+  postXAmzTargetAWSIdentityStoreDeleteUserRouteHandler,
+  postXAmzTargetAWSIdentityStoreDescribeGroupMembershipRouteHandler,
+  postXAmzTargetAWSIdentityStoreDescribeGroupRouteHandler,
+  postXAmzTargetAWSIdentityStoreDescribeUserRouteHandler,
+  postXAmzTargetAWSIdentityStoreGetGroupIdRouteHandler,
+  postXAmzTargetAWSIdentityStoreGetGroupMembershipIdRouteHandler,
+  postXAmzTargetAWSIdentityStoreGetUserIdRouteHandler,
+  postXAmzTargetAWSIdentityStoreIsMemberInGroupsRouteHandler,
+  postXAmzTargetAWSIdentityStoreListGroupMembershipsForMemberRouteHandler,
+  postXAmzTargetAWSIdentityStoreListGroupMembershipsRouteHandler,
+  postXAmzTargetAWSIdentityStoreListGroupsRouteHandler,
+  postXAmzTargetAWSIdentityStoreListUsersRouteHandler,
+  postXAmzTargetAWSIdentityStoreUpdateGroupRouteHandler,
+  postXAmzTargetAWSIdentityStoreUpdateUserRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsIdentityStoreCreateGroupHandler)
-  .route('/', xAmzTargetAwsIdentityStoreCreateGroupMembershipHandler)
-  .route('/', xAmzTargetAwsIdentityStoreCreateUserHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDeleteGroupHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDeleteGroupMembershipHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDeleteUserHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDescribeGroupHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDescribeGroupMembershipHandler)
-  .route('/', xAmzTargetAwsIdentityStoreDescribeUserHandler)
-  .route('/', xAmzTargetAwsIdentityStoreGetGroupIdHandler)
-  .route('/', xAmzTargetAwsIdentityStoreGetGroupMembershipIdHandler)
-  .route('/', xAmzTargetAwsIdentityStoreGetUserIdHandler)
-  .route('/', xAmzTargetAwsIdentityStoreIsMemberInGroupsHandler)
-  .route('/', xAmzTargetAwsIdentityStoreListGroupMembershipsHandler)
-  .route('/', xAmzTargetAwsIdentityStoreListGroupMembershipsForMemberHandler)
-  .route('/', xAmzTargetAwsIdentityStoreListGroupsHandler)
-  .route('/', xAmzTargetAwsIdentityStoreListUsersHandler)
-  .route('/', xAmzTargetAwsIdentityStoreUpdateGroupHandler)
-  .route('/', xAmzTargetAwsIdentityStoreUpdateUserHandler)
+  .openapi(
+    postXAmzTargetAWSIdentityStoreCreateGroupRoute,
+    postXAmzTargetAWSIdentityStoreCreateGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreCreateGroupMembershipRoute,
+    postXAmzTargetAWSIdentityStoreCreateGroupMembershipRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreCreateUserRoute,
+    postXAmzTargetAWSIdentityStoreCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDeleteGroupRoute,
+    postXAmzTargetAWSIdentityStoreDeleteGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDeleteGroupMembershipRoute,
+    postXAmzTargetAWSIdentityStoreDeleteGroupMembershipRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDeleteUserRoute,
+    postXAmzTargetAWSIdentityStoreDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDescribeGroupRoute,
+    postXAmzTargetAWSIdentityStoreDescribeGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDescribeGroupMembershipRoute,
+    postXAmzTargetAWSIdentityStoreDescribeGroupMembershipRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreDescribeUserRoute,
+    postXAmzTargetAWSIdentityStoreDescribeUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreGetGroupIdRoute,
+    postXAmzTargetAWSIdentityStoreGetGroupIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreGetGroupMembershipIdRoute,
+    postXAmzTargetAWSIdentityStoreGetGroupMembershipIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreGetUserIdRoute,
+    postXAmzTargetAWSIdentityStoreGetUserIdRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreIsMemberInGroupsRoute,
+    postXAmzTargetAWSIdentityStoreIsMemberInGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreListGroupMembershipsRoute,
+    postXAmzTargetAWSIdentityStoreListGroupMembershipsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreListGroupMembershipsForMemberRoute,
+    postXAmzTargetAWSIdentityStoreListGroupMembershipsForMemberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreListGroupsRoute,
+    postXAmzTargetAWSIdentityStoreListGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreListUsersRoute,
+    postXAmzTargetAWSIdentityStoreListUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreUpdateGroupRoute,
+    postXAmzTargetAWSIdentityStoreUpdateGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSIdentityStoreUpdateUserRoute,
+    postXAmzTargetAWSIdentityStoreUpdateUserRouteHandler,
+  )
 
 export default app

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getVideoVariantsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getVideoVariantsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const videoHandler = app.openapi(getVideoVariantsRoute, (c) => {
+export const getVideoVariantsRouteHandler: RouteHandler<typeof getVideoVariantsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

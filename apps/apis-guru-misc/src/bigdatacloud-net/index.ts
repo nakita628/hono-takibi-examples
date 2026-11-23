@@ -1,8 +1,14 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { dataHandler } from './handlers'
+import { getDataIpGeolocationFullRoute, getDataIpGeolocationWithConfidenceRoute } from './routes'
+import {
+  getDataIpGeolocationFullRouteHandler,
+  getDataIpGeolocationWithConfidenceRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', dataHandler)
+export const api = app
+  .openapi(getDataIpGeolocationFullRoute, getDataIpGeolocationFullRouteHandler)
+  .openapi(getDataIpGeolocationWithConfidenceRoute, getDataIpGeolocationWithConfidenceRouteHandler)
 
 export default app

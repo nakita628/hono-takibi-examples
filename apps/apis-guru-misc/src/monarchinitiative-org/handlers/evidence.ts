@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEvidenceGraphIdRoute, getEvidenceGraphIdTableRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEvidenceGraphIdRoute, getEvidenceGraphIdTableRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEvidenceGraphIdRouteHandler: RouteHandler<typeof getEvidenceGraphIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const evidenceHandler = app
-  .openapi(getEvidenceGraphIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEvidenceGraphIdTableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEvidenceGraphIdTableRouteHandler: RouteHandler<
+  typeof getEvidenceGraphIdTableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

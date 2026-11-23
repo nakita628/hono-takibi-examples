@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetDASHStreamingSessionURLRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetDASHStreamingSessionURLRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getDashStreamingSessionUrlHandler = app.openapi(
-  postGetDASHStreamingSessionURLRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGetDASHStreamingSessionURLRouteHandler: RouteHandler<
+  typeof postGetDASHStreamingSessionURLRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

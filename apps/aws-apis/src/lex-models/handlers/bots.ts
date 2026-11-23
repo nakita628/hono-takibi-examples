@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBotsBotNameAliasesAliasNameChannelsNameRoute,
   deleteBotsBotNameAliasesNameRoute,
   deleteBotsBotNameUtterancesUserIdRoute,
@@ -18,54 +18,94 @@ import {
   putBotsNameVersionsLATESTRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBotsNameVersionsRouteHandler: RouteHandler<
+  typeof postBotsNameVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const botsHandler = app
-  .openapi(postBotsNameVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotsBotNameAliasesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotNameAliasesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBotsBotNameAliasesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotsBotNameAliasesAliasNameChannelsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotNameAliasesAliasNameChannelsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotsNameVersionsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBotsBotNameUtterancesUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsNameVersionsVersionoraliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotNameAliasesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotNameAliasesAliasNameChannelsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsNameVersionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBotsBotnameUtterancesViewAggregationBotVersionsStatusTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBotsNameVersionsLATESTRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteBotsNameRouteHandler: RouteHandler<typeof deleteBotsNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBotsBotNameAliasesNameRouteHandler: RouteHandler<
+  typeof deleteBotsBotNameAliasesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsBotNameAliasesNameRouteHandler: RouteHandler<
+  typeof getBotsBotNameAliasesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBotsBotNameAliasesNameRouteHandler: RouteHandler<
+  typeof putBotsBotNameAliasesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBotsBotNameAliasesAliasNameChannelsNameRouteHandler: RouteHandler<
+  typeof deleteBotsBotNameAliasesAliasNameChannelsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsBotNameAliasesAliasNameChannelsNameRouteHandler: RouteHandler<
+  typeof getBotsBotNameAliasesAliasNameChannelsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBotsNameVersionsVersionRouteHandler: RouteHandler<
+  typeof deleteBotsNameVersionsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBotsBotNameUtterancesUserIdRouteHandler: RouteHandler<
+  typeof deleteBotsBotNameUtterancesUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsNameVersionsVersionoraliasRouteHandler: RouteHandler<
+  typeof getBotsNameVersionsVersionoraliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsBotNameAliasesIndexRouteHandler: RouteHandler<
+  typeof getBotsBotNameAliasesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsBotNameAliasesAliasNameChannelsIndexRouteHandler: RouteHandler<
+  typeof getBotsBotNameAliasesAliasNameChannelsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsNameVersionsIndexRouteHandler: RouteHandler<
+  typeof getBotsNameVersionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsIndexRouteHandler: RouteHandler<typeof getBotsIndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBotsBotnameUtterancesViewAggregationBotVersionsStatusTypeRouteHandler: RouteHandler<
+  typeof getBotsBotnameUtterancesViewAggregationBotVersionsStatusTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBotsNameVersionsLATESTRouteHandler: RouteHandler<
+  typeof putBotsNameVersionsLATESTRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

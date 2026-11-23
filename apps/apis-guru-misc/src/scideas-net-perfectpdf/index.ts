@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { perfectpdfHandler } from './handlers'
+import { postPerfectpdfApiRoute } from './routes'
+import { postPerfectpdfApiRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', perfectpdfHandler)
+export const api = app.openapi(postPerfectpdfApiRoute, postPerfectpdfApiRouteHandler)
 
 export default app

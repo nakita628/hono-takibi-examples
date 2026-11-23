@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  changeStatusHandler,
-  checkBalanceHandler,
-  issueHandler,
-  loadHandler,
-  mergeBalanceHandler,
-  voidTransactionHandler,
+  postChangeStatusRoute,
+  postCheckBalanceRoute,
+  postIssueRoute,
+  postLoadRoute,
+  postMergeBalanceRoute,
+  postVoidTransactionRoute,
+} from './routes'
+import {
+  postChangeStatusRouteHandler,
+  postCheckBalanceRouteHandler,
+  postIssueRouteHandler,
+  postLoadRouteHandler,
+  postMergeBalanceRouteHandler,
+  postVoidTransactionRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', changeStatusHandler)
-  .route('/', checkBalanceHandler)
-  .route('/', issueHandler)
-  .route('/', loadHandler)
-  .route('/', mergeBalanceHandler)
-  .route('/', voidTransactionHandler)
+  .openapi(postChangeStatusRoute, postChangeStatusRouteHandler)
+  .openapi(postCheckBalanceRoute, postCheckBalanceRouteHandler)
+  .openapi(postIssueRoute, postIssueRouteHandler)
+  .openapi(postLoadRoute, postLoadRouteHandler)
+  .openapi(postMergeBalanceRoute, postMergeBalanceRouteHandler)
+  .openapi(postVoidTransactionRoute, postVoidTransactionRouteHandler)
 
 export default app

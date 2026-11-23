@@ -17,52 +17,54 @@ export async function postGeomarksNew(
 }
 
 export async function getGeomarksGeomarkIdFileFormatExtension(
-  args: InferRequestType<(typeof client.geomarks)[':geomarkId.:fileFormatExtension']['$get']>,
+  args: InferRequestType<(typeof client.geomarks)[':geomarkId.{fileFormatExtension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.geomarks[':geomarkId.:fileFormatExtension'].$get(args, options))
+  return await parseResponse(
+    client.geomarks[':geomarkId.{fileFormatExtension}'].$get(args, options),
+  )
 }
 
 export async function getGeomarksGeomarkIdBoundingBoxFileFormatExtension(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['boundingBox.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['boundingBox.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.geomarks[':geomarkId']['boundingBox.:fileFormatExtension'].$get(args, options),
+    client.geomarks[':geomarkId']['boundingBox.{fileFormatExtension}'].$get(args, options),
   )
 }
 
 export async function getGeomarksGeomarkIdFeatureFileFormatExtension(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['feature.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['feature.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.geomarks[':geomarkId']['feature.:fileFormatExtension'].$get(args, options),
+    client.geomarks[':geomarkId']['feature.{fileFormatExtension}'].$get(args, options),
   )
 }
 
 export async function getGeomarksGeomarkIdPartsFileFormatExtension(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['parts.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['parts.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.geomarks[':geomarkId']['parts.:fileFormatExtension'].$get(args, options),
+    client.geomarks[':geomarkId']['parts.{fileFormatExtension}'].$get(args, options),
   )
 }
 
 export async function getGeomarksGeomarkIdPointFileFormatExtension(
   args: InferRequestType<
-    (typeof client.geomarks)[':geomarkId']['point.:fileFormatExtension']['$get']
+    (typeof client.geomarks)[':geomarkId']['point.{fileFormatExtension}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.geomarks[':geomarkId']['point.:fileFormatExtension'].$get(args, options),
+    client.geomarks[':geomarkId']['point.{fileFormatExtension}'].$get(args, options),
   )
 }

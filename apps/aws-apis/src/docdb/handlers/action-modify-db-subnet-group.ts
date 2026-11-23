@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionModifyDBSubnetGroupRoute, postActionModifyDBSubnetGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionModifyDBSubnetGroupRoute,
+  postActionModifyDBSubnetGroupRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionModifyDBSubnetGroupRouteHandler: RouteHandler<
+  typeof getActionModifyDBSubnetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionModifyDbSubnetGroupHandler = app
-  .openapi(getActionModifyDBSubnetGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionModifyDBSubnetGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionModifyDBSubnetGroupRouteHandler: RouteHandler<
+  typeof postActionModifyDBSubnetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

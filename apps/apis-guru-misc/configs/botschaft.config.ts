@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/botschaft.local/0.1.0/openapi.yaml',
   output: './src/botschaft/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/botschaft/types.ts' },
   client: { output: './src/botschaft/client.ts', baseUrl: '/' },
   rpc: { output: './src/botschaft/rpc.ts', parseResponse: true },

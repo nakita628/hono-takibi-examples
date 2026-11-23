@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/plus/v1/openapi.yaml',
   output: './src/plus/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/plus/types.ts' },
   client: { output: './src/plus/client.ts', baseUrl: '/' },
   rpc: { output: './src/plus/rpc.ts', parseResponse: true },

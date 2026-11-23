@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUserHierarchyStructureInstanceIdRoute,
   postUserHierarchyStructureInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserHierarchyStructureInstanceIdRouteHandler: RouteHandler<
+  typeof getUserHierarchyStructureInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHierarchyStructureHandler = app
-  .openapi(getUserHierarchyStructureInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserHierarchyStructureInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUserHierarchyStructureInstanceIdRouteHandler: RouteHandler<
+  typeof postUserHierarchyStructureInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

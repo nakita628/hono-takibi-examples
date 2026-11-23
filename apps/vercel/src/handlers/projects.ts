@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postProjectsIdOrNameTransferRequestRoute,
   putProjectsTransferRequestCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postProjectsIdOrNameTransferRequestRouteHandler: RouteHandler<
+  typeof postProjectsIdOrNameTransferRequestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(postProjectsIdOrNameTransferRequestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsTransferRequestCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putProjectsTransferRequestCodeRouteHandler: RouteHandler<
+  typeof putProjectsTransferRequestCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

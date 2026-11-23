@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getScenesDashboardIndexRoute,
   getScenesOrderListIndexRoute,
   getScenesRecurrenceListIndexRoute,
   getScenesTaskListIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScenesDashboardIndexRouteHandler: RouteHandler<
+  typeof getScenesDashboardIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scenesHandler = app
-  .openapi(getScenesDashboardIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScenesOrderListIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScenesRecurrenceListIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScenesTaskListIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScenesOrderListIndexRouteHandler: RouteHandler<
+  typeof getScenesOrderListIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScenesRecurrenceListIndexRouteHandler: RouteHandler<
+  typeof getScenesRecurrenceListIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScenesTaskListIndexRouteHandler: RouteHandler<
+  typeof getScenesTaskListIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

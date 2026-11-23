@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postProductOptionAssignJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postProductOptionAssignJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const productOptionAssignJsonHandler = app.openapi(postProductOptionAssignJsonRoute, (c) => {
+export const postProductOptionAssignJsonRouteHandler: RouteHandler<
+  typeof postProductOptionAssignJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

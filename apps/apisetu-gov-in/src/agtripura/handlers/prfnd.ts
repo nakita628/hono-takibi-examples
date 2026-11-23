@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPrfndCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPrfndCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const prfndHandler = app.openapi(postPrfndCertificateRoute, (c) => {
+export const postPrfndCertificateRouteHandler: RouteHandler<
+  typeof postPrfndCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

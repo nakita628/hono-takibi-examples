@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSnapshotsSecondSnapshotIdChangedblocksRoute,
   getSnapshotsSnapshotIdBlocksBlockIndexBlockTokenRoute,
   getSnapshotsSnapshotIdBlocksRoute,
@@ -8,27 +8,36 @@ import {
   putSnapshotsSnapshotIdBlocksBlockIndexXAmzDataLengthXAmzChecksumXAmzChecksumAlgorithmRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSnapshotsCompletionSnapshotIdXAmzChangedBlocksCountRouteHandler: RouteHandler<
+  typeof postSnapshotsCompletionSnapshotIdXAmzChangedBlocksCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snapshotsHandler = app
-  .openapi(postSnapshotsCompletionSnapshotIdXAmzChangedBlocksCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsSnapshotIdBlocksBlockIndexBlockTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsSecondSnapshotIdChangedblocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnapshotsSnapshotIdBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putSnapshotsSnapshotIdBlocksBlockIndexXAmzDataLengthXAmzChecksumXAmzChecksumAlgorithmRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSnapshotsSnapshotIdBlocksBlockIndexBlockTokenRouteHandler: RouteHandler<
+  typeof getSnapshotsSnapshotIdBlocksBlockIndexBlockTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsSecondSnapshotIdChangedblocksRouteHandler: RouteHandler<
+  typeof getSnapshotsSecondSnapshotIdChangedblocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnapshotsSnapshotIdBlocksRouteHandler: RouteHandler<
+  typeof getSnapshotsSnapshotIdBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnapshotsSnapshotIdBlocksBlockIndexXAmzDataLengthXAmzChecksumXAmzChecksumAlgorithmRouteHandler: RouteHandler<
+  typeof putSnapshotsSnapshotIdBlocksBlockIndexXAmzDataLengthXAmzChecksumXAmzChecksumAlgorithmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSnapshotsRouteHandler: RouteHandler<typeof postSnapshotsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

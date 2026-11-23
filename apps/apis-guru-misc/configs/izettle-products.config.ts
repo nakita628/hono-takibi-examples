@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/izettle.com/products/1.0.0/openapi.yaml',
   output: './src/izettle-products/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/izettle-products/types.ts' },
   client: { output: './src/izettle-products/client.ts', baseUrl: '/' },
   rpc: { output: './src/izettle-products/rpc.ts', parseResponse: true },

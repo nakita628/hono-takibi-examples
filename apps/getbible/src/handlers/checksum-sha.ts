@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getChecksumShaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getChecksumShaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checksumShaHandler = app.openapi(getChecksumShaRoute, (c) => {
+export const getChecksumShaRouteHandler: RouteHandler<typeof getChecksumShaRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

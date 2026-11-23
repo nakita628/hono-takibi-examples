@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSslRoute, putSslRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSslRoute, putSslRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSslRouteHandler: RouteHandler<typeof getSslRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sslHandler = app
-  .openapi(getSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSslRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSslRouteHandler: RouteHandler<typeof putSslRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

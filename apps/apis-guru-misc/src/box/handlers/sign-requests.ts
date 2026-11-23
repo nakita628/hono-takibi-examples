@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSignRequestsRoute,
   getSignRequestsSignRequestIdRoute,
   postSignRequestsRoute,
@@ -7,21 +7,30 @@ import {
   postSignRequestsSignRequestIdResendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSignRequestsRouteHandler: RouteHandler<typeof getSignRequestsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const signRequestsHandler = app
-  .openapi(getSignRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSignRequestsSignRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignRequestsSignRequestIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSignRequestsSignRequestIdResendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSignRequestsRouteHandler: RouteHandler<typeof postSignRequestsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSignRequestsSignRequestIdRouteHandler: RouteHandler<
+  typeof getSignRequestsSignRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSignRequestsSignRequestIdCancelRouteHandler: RouteHandler<
+  typeof postSignRequestsSignRequestIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSignRequestsSignRequestIdResendRouteHandler: RouteHandler<
+  typeof postSignRequestsSignRequestIdResendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

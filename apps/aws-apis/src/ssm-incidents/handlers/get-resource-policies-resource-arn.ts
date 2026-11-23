@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetResourcePoliciesResourceArnRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetResourcePoliciesResourceArnRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getResourcePoliciesResourceArnHandler = app.openapi(
-  postGetResourcePoliciesResourceArnRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGetResourcePoliciesResourceArnRouteHandler: RouteHandler<
+  typeof postGetResourcePoliciesResourceArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

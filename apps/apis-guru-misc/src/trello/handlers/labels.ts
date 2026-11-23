@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLabelsIdLabelRoute,
   getLabelsIdLabelBoardFieldRoute,
   getLabelsIdLabelBoardRoute,
@@ -10,30 +10,48 @@ import {
   putLabelsIdLabelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postLabelsRouteHandler: RouteHandler<typeof postLabelsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const labelsHandler = app
-  .openapi(postLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelsIdLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsIdLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLabelsIdLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsIdLabelBoardRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsIdLabelBoardFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLabelsIdLabelColorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLabelsIdLabelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteLabelsIdLabelRouteHandler: RouteHandler<
+  typeof deleteLabelsIdLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsIdLabelRouteHandler: RouteHandler<typeof getLabelsIdLabelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putLabelsIdLabelRouteHandler: RouteHandler<typeof putLabelsIdLabelRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsIdLabelBoardRouteHandler: RouteHandler<
+  typeof getLabelsIdLabelBoardRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsIdLabelBoardFieldRouteHandler: RouteHandler<
+  typeof getLabelsIdLabelBoardFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLabelsIdLabelColorRouteHandler: RouteHandler<
+  typeof putLabelsIdLabelColorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLabelsIdLabelNameRouteHandler: RouteHandler<
+  typeof putLabelsIdLabelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

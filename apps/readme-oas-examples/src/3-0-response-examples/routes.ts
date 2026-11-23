@@ -2,10 +2,12 @@ import { createRoute, z } from '@hono/zod-openapi'
 
 const UserResponseSchema = z
   .any()
-  .openapi({ example: { user: { email: 'test@example.com', name: 'Test user name' } } })
+  .openapi({ example: { $ref: '#/components/schemas/UserResponseExample' } })
   .openapi('UserResponse')
 
-const _400ResponseRefResponse = { description: 'Validation failed', content: {} }
+const UserResponseExampleSchema = z.any().openapi('UserResponseExample')
+
+const _400ResponseRefResponse = { description: 'Validation failed' }
 
 export const getExampleRoute = createRoute({
   method: 'get',
@@ -14,7 +16,6 @@ export const getExampleRoute = createRoute({
   responses: {
     200: {
       description: 'OK',
-      content: {},
       headers: z.object({
         TestHeader: z
           .string()
@@ -22,7 +23,7 @@ export const getExampleRoute = createRoute({
           .openapi({ description: 'A test example header', param: { required: false } }),
       }),
     },
-    204: { description: 'OK', content: {} },
+    204: { description: 'OK' },
   },
 })
 
@@ -31,9 +32,9 @@ export const getExamplesRoute = createRoute({
   path: '/examples',
   description: 'Showcase of responses with an `examples` property present.',
   responses: {
-    201: { description: 'OK', content: {} },
-    202: { description: 'OK', content: {} },
+    201: { description: 'OK' },
+    202: { description: 'OK' },
     400: _400ResponseRefResponse,
-    default: { description: 'OK', content: {} },
+    default: { description: 'OK' },
   },
 })

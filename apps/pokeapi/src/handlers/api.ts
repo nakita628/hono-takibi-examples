@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV2AbilityIdIndexRoute,
   getApiV2AbilityIndexRoute,
   getApiV2BerryFirmnessIdIndexRoute,
@@ -104,312 +104,614 @@ import {
   getApiV2VersionIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV2MetaIndexRouteHandler: RouteHandler<typeof getApiV2MetaIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV2MetaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AbilityIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2AbilityIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryFirmnessIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryFirmnessIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryFlavorIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2BerryFlavorIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2CharacteristicIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2CharacteristicIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ContestTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ContestTypeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ContestEffectIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ContestEffectIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EggGroupIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EggGroupIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterMethodIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterConditionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterConditionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterConditionValueIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EncounterConditionValueIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionChainIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionChainIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionTriggerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionTriggerIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionVariableIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2EvolutionVariableIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GenerationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GenerationIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GenderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GenderIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GrowthRateIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2GrowthRateIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemCategoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemCategoryIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemAttributeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemAttributeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemFlingEffectIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemFlingEffectIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemPocketIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2ItemPocketIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2CurrencyIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2CurrencyIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LanguageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LanguageIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LocationIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LocationIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LocationAreaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2LocationAreaIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MachineIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MachineIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveAilmentIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveAilmentIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveBattleStyleIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveBattleStyleIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveCategoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveCategoryIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveDamageClassIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveDamageClassIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveLearnMethodIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveLearnMethodIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveTargetIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2MoveTargetIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2NatureIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2NatureIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PalParkAreaIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PalParkAreaIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokedexIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokedexIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonColorIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonColorIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonFormIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonFormIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonHabitatIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonHabitatIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonShapeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonShapeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonSpeciesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonSpeciesIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokeathlonStatIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokeathlonStatIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2RegionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2RegionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2StatIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2StatIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2SuperContestEffectIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2SuperContestEffectIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2TypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2TypeIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2VersionIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2VersionIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2VersionGroupIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2VersionGroupIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV2PokemonPokemonIdEncountersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV2AbilityIndexRouteHandler: RouteHandler<
+  typeof getApiV2AbilityIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2AbilityIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2AbilityIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryIndexRouteHandler: RouteHandler<typeof getApiV2BerryIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2BerryIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryFirmnessIndexRouteHandler: RouteHandler<
+  typeof getApiV2BerryFirmnessIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryFirmnessIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2BerryFirmnessIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryFlavorIndexRouteHandler: RouteHandler<
+  typeof getApiV2BerryFlavorIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2BerryFlavorIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2BerryFlavorIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CharacteristicIndexRouteHandler: RouteHandler<
+  typeof getApiV2CharacteristicIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CharacteristicIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2CharacteristicIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContestTypeIndexRouteHandler: RouteHandler<
+  typeof getApiV2ContestTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContestTypeIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ContestTypeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContestEffectIndexRouteHandler: RouteHandler<
+  typeof getApiV2ContestEffectIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ContestEffectIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ContestEffectIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EggGroupIndexRouteHandler: RouteHandler<
+  typeof getApiV2EggGroupIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EggGroupIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EggGroupIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterMethodIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterMethodIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterMethodIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterConditionIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterConditionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterConditionIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterConditionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterConditionValueIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterConditionValueIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EncounterConditionValueIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EncounterConditionValueIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionChainIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionChainIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionChainIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionChainIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionTriggerIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionTriggerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionTriggerIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionTriggerIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionVariableIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionVariableIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2EvolutionVariableIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2EvolutionVariableIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GenerationIndexRouteHandler: RouteHandler<
+  typeof getApiV2GenerationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GenerationIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2GenerationIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GenderIndexRouteHandler: RouteHandler<
+  typeof getApiV2GenderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GenderIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2GenderIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GrowthRateIndexRouteHandler: RouteHandler<
+  typeof getApiV2GrowthRateIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2GrowthRateIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2GrowthRateIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemIndexRouteHandler: RouteHandler<typeof getApiV2ItemIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemCategoryIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemCategoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemCategoryIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemCategoryIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemAttributeIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemAttributeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemAttributeIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemAttributeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemFlingEffectIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemFlingEffectIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemFlingEffectIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemFlingEffectIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemPocketIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemPocketIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2ItemPocketIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2ItemPocketIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CurrencyIndexRouteHandler: RouteHandler<
+  typeof getApiV2CurrencyIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2CurrencyIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2CurrencyIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LanguageIndexRouteHandler: RouteHandler<
+  typeof getApiV2LanguageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LanguageIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2LanguageIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LocationIndexRouteHandler: RouteHandler<
+  typeof getApiV2LocationIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LocationIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2LocationIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LocationAreaIndexRouteHandler: RouteHandler<
+  typeof getApiV2LocationAreaIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2LocationAreaIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2LocationAreaIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MachineIndexRouteHandler: RouteHandler<
+  typeof getApiV2MachineIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MachineIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MachineIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveIndexRouteHandler: RouteHandler<typeof getApiV2MoveIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveAilmentIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveAilmentIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveAilmentIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveAilmentIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveBattleStyleIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveBattleStyleIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveBattleStyleIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveBattleStyleIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveCategoryIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveCategoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveCategoryIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveCategoryIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveDamageClassIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveDamageClassIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveDamageClassIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveDamageClassIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveLearnMethodIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveLearnMethodIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveLearnMethodIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveLearnMethodIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveTargetIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveTargetIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2MoveTargetIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2MoveTargetIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NatureIndexRouteHandler: RouteHandler<
+  typeof getApiV2NatureIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2NatureIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2NatureIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PalParkAreaIndexRouteHandler: RouteHandler<
+  typeof getApiV2PalParkAreaIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PalParkAreaIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PalParkAreaIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokedexIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokedexIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokedexIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokedexIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonColorIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonColorIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonColorIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonColorIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonFormIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonFormIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonFormIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonFormIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonHabitatIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonHabitatIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonHabitatIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonHabitatIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonShapeIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonShapeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonShapeIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonShapeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonSpeciesIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonSpeciesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonSpeciesIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokemonSpeciesIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokeathlonStatIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokeathlonStatIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokeathlonStatIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2PokeathlonStatIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RegionIndexRouteHandler: RouteHandler<
+  typeof getApiV2RegionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2RegionIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2RegionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatIndexRouteHandler: RouteHandler<typeof getApiV2StatIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2StatIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2StatIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SuperContestEffectIndexRouteHandler: RouteHandler<
+  typeof getApiV2SuperContestEffectIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2SuperContestEffectIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2SuperContestEffectIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TypeIndexRouteHandler: RouteHandler<typeof getApiV2TypeIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2TypeIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2TypeIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2VersionIndexRouteHandler: RouteHandler<
+  typeof getApiV2VersionIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2VersionIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2VersionIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2VersionGroupIndexRouteHandler: RouteHandler<
+  typeof getApiV2VersionGroupIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2VersionGroupIdIndexRouteHandler: RouteHandler<
+  typeof getApiV2VersionGroupIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV2PokemonPokemonIdEncountersRouteHandler: RouteHandler<
+  typeof getApiV2PokemonPokemonIdEncountersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

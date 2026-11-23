@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScriptsInstancesInstanceIdRoute,
   getScriptsInstancesInstanceIdRoute,
   getScriptsInstancesRoute,
@@ -13,39 +13,68 @@ import {
   putScriptsInstancesInstanceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScriptsInstancesRouteHandler: RouteHandler<
+  typeof getScriptsInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scriptsHandler = app
-  .openapi(getScriptsInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsInstancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScriptsInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putScriptsInstancesInstanceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putScriptsInstancesInstanceIdDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsInstancesInstanceIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScriptsInstancesInstanceIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsInventoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsInventoryParsedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsInventoryParsedScriptIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postScriptsInstancesRouteHandler: RouteHandler<
+  typeof postScriptsInstancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteScriptsInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof deleteScriptsInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof getScriptsInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putScriptsInstancesInstanceIdRouteHandler: RouteHandler<
+  typeof putScriptsInstancesInstanceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putScriptsInstancesInstanceIdDataRouteHandler: RouteHandler<
+  typeof putScriptsInstancesInstanceIdDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScriptsInstancesInstanceIdDisableRouteHandler: RouteHandler<
+  typeof postScriptsInstancesInstanceIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScriptsInstancesInstanceIdEnableRouteHandler: RouteHandler<
+  typeof postScriptsInstancesInstanceIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsInventoryRouteHandler: RouteHandler<
+  typeof getScriptsInventoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsInventoryParsedRouteHandler: RouteHandler<
+  typeof getScriptsInventoryParsedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsInventoryParsedScriptIdRouteHandler: RouteHandler<
+  typeof getScriptsInventoryParsedScriptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

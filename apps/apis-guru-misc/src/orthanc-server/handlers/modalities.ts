@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteModalitiesIdRoute,
   getModalitiesIdConfigurationRoute,
   getModalitiesIdRoute,
@@ -19,57 +19,98 @@ import {
   putModalitiesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getModalitiesRouteHandler: RouteHandler<typeof getModalitiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const modalitiesHandler = app
-  .openapi(getModalitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteModalitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModalitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putModalitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModalitiesIdConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdEchoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindInstanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindPatientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindStudyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdFindWorklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdStorageCommitmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdStoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postModalitiesIdStoreStraightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteModalitiesIdRouteHandler: RouteHandler<typeof deleteModalitiesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getModalitiesIdRouteHandler: RouteHandler<typeof getModalitiesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putModalitiesIdRouteHandler: RouteHandler<typeof putModalitiesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getModalitiesIdConfigurationRouteHandler: RouteHandler<
+  typeof getModalitiesIdConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdEchoRouteHandler: RouteHandler<
+  typeof postModalitiesIdEchoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindInstanceRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindPatientRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindPatientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindSeriesRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindStudyRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindStudyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdFindWorklistRouteHandler: RouteHandler<
+  typeof postModalitiesIdFindWorklistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdMoveRouteHandler: RouteHandler<
+  typeof postModalitiesIdMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdQueryRouteHandler: RouteHandler<
+  typeof postModalitiesIdQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdStorageCommitmentRouteHandler: RouteHandler<
+  typeof postModalitiesIdStorageCommitmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdStoreRouteHandler: RouteHandler<
+  typeof postModalitiesIdStoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postModalitiesIdStoreStraightRouteHandler: RouteHandler<
+  typeof postModalitiesIdStoreStraightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

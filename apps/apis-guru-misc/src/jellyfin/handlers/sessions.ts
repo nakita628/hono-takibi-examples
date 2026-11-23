@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSessionsSessionIdUserUserIdRoute,
   getSessionsRoute,
   postSessionsCapabilitiesFullRoute,
@@ -20,60 +20,108 @@ import {
   postSessionsViewingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSessionsRouteHandler: RouteHandler<typeof getSessionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sessionsHandler = app
-  .openapi(getSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsCapabilitiesFullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsPlayingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsPlayingPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsPlayingProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsPlayingStoppedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsViewingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdCommandCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdPlayingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdPlayingCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdSystemCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSessionsSessionIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSessionsSessionIdViewingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSessionsCapabilitiesRouteHandler: RouteHandler<
+  typeof postSessionsCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsCapabilitiesFullRouteHandler: RouteHandler<
+  typeof postSessionsCapabilitiesFullRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsLogoutRouteHandler: RouteHandler<typeof postSessionsLogoutRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsPlayingRouteHandler: RouteHandler<
+  typeof postSessionsPlayingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsPlayingPingRouteHandler: RouteHandler<
+  typeof postSessionsPlayingPingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsPlayingProgressRouteHandler: RouteHandler<
+  typeof postSessionsPlayingProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsPlayingStoppedRouteHandler: RouteHandler<
+  typeof postSessionsPlayingStoppedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsViewingRouteHandler: RouteHandler<
+  typeof postSessionsViewingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdCommandRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdCommandCommandRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdCommandCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdMessageRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdPlayingRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdPlayingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdPlayingCommandRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdPlayingCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdSystemCommandRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdSystemCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSessionsSessionIdUserUserIdRouteHandler: RouteHandler<
+  typeof deleteSessionsSessionIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdUserUserIdRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSessionsSessionIdViewingRouteHandler: RouteHandler<
+  typeof postSessionsSessionIdViewingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

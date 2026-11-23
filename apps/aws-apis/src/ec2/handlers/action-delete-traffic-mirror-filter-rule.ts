@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteTrafficMirrorFilterRuleRoute,
   postActionDeleteTrafficMirrorFilterRuleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteTrafficMirrorFilterRuleRouteHandler: RouteHandler<
+  typeof getActionDeleteTrafficMirrorFilterRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteTrafficMirrorFilterRuleHandler = app
-  .openapi(getActionDeleteTrafficMirrorFilterRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteTrafficMirrorFilterRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteTrafficMirrorFilterRuleRouteHandler: RouteHandler<
+  typeof postActionDeleteTrafficMirrorFilterRuleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

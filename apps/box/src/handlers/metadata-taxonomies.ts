@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute,
   deleteMetadataTaxonomiesNamespaceTaxonomyKeyRoute,
   getMetadataTaxonomiesNamespaceRoute,
@@ -16,48 +16,86 @@ import {
   postMetadataTaxonomiesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMetadataTaxonomiesRouteHandler: RouteHandler<
+  typeof postMetadataTaxonomiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metadataTaxonomiesHandler = app
-  .openapi(postMetadataTaxonomiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTaxonomiesNamespaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTaxonomiesNamespaceTaxonomyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMetadataTaxonomiesNamespaceTaxonomyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMetadataTaxonomiesNamespaceTaxonomyKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMetadataTaxonomiesNamespaceTaxonomyKeyLevelsLevelIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsAppendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsTrimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTaxonomiesNamespaceTaxonomyKeyNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetadataTaxonomiesNamespaceTaxonomyKeyNodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetadataTaxonomiesNamespaceRouteHandler: RouteHandler<
+  typeof getMetadataTaxonomiesNamespaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetadataTaxonomiesNamespaceTaxonomyKeyRouteHandler: RouteHandler<
+  typeof getMetadataTaxonomiesNamespaceTaxonomyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMetadataTaxonomiesNamespaceTaxonomyKeyRouteHandler: RouteHandler<
+  typeof patchMetadataTaxonomiesNamespaceTaxonomyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMetadataTaxonomiesNamespaceTaxonomyKeyRouteHandler: RouteHandler<
+  typeof deleteMetadataTaxonomiesNamespaceTaxonomyKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsRouteHandler: RouteHandler<
+  typeof postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMetadataTaxonomiesNamespaceTaxonomyKeyLevelsLevelIndexRouteHandler: RouteHandler<
+  typeof patchMetadataTaxonomiesNamespaceTaxonomyKeyLevelsLevelIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsAppendRouteHandler: RouteHandler<
+  typeof postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsAppendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsTrimRouteHandler: RouteHandler<
+  typeof postMetadataTaxonomiesNamespaceTaxonomyKeyLevelsTrimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetadataTaxonomiesNamespaceTaxonomyKeyNodesRouteHandler: RouteHandler<
+  typeof getMetadataTaxonomiesNamespaceTaxonomyKeyNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetadataTaxonomiesNamespaceTaxonomyKeyNodesRouteHandler: RouteHandler<
+  typeof postMetadataTaxonomiesNamespaceTaxonomyKeyNodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRouteHandler: RouteHandler<
+  typeof getMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRouteHandler: RouteHandler<
+  typeof patchMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRouteHandler: RouteHandler<
+  typeof deleteMetadataTaxonomiesNamespaceTaxonomyKeyNodesNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

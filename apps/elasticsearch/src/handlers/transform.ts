@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTransformTransformIdRoute,
   getTransformNodeStatsRoute,
   getTransformPreviewRoute,
@@ -19,57 +19,102 @@ import {
   putTransformTransformIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTransformTransformIdRouteHandler: RouteHandler<
+  typeof getTransformTransformIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transformHandler = app
-  .openapi(getTransformTransformIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTransformTransformIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTransformTransformIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransformNodeStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransformRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransformTransformIdStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransformTransformIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransformPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdScheduleNowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformSetUpgradeModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformTransformIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransformUpgradeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putTransformTransformIdRouteHandler: RouteHandler<
+  typeof putTransformTransformIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTransformTransformIdRouteHandler: RouteHandler<
+  typeof deleteTransformTransformIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransformNodeStatsRouteHandler: RouteHandler<
+  typeof getTransformNodeStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransformRouteHandler: RouteHandler<typeof getTransformRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransformTransformIdStatsRouteHandler: RouteHandler<
+  typeof getTransformTransformIdStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransformTransformIdPreviewRouteHandler: RouteHandler<
+  typeof getTransformTransformIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdPreviewRouteHandler: RouteHandler<
+  typeof postTransformTransformIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransformPreviewRouteHandler: RouteHandler<
+  typeof getTransformPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformPreviewRouteHandler: RouteHandler<
+  typeof postTransformPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdResetRouteHandler: RouteHandler<
+  typeof postTransformTransformIdResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdScheduleNowRouteHandler: RouteHandler<
+  typeof postTransformTransformIdScheduleNowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformSetUpgradeModeRouteHandler: RouteHandler<
+  typeof postTransformSetUpgradeModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdStartRouteHandler: RouteHandler<
+  typeof postTransformTransformIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdStopRouteHandler: RouteHandler<
+  typeof postTransformTransformIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformTransformIdUpdateRouteHandler: RouteHandler<
+  typeof postTransformTransformIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransformUpgradeRouteHandler: RouteHandler<
+  typeof postTransformUpgradeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

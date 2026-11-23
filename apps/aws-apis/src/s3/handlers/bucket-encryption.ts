@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBucketEncryptionRoute,
   getBucketEncryptionRoute,
   putBucketEncryptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketEncryptionRouteHandler: RouteHandler<
+  typeof deleteBucketEncryptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketEncryptionHandler = app
-  .openapi(deleteBucketEncryptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketEncryptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketEncryptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketEncryptionRouteHandler: RouteHandler<
+  typeof getBucketEncryptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketEncryptionRouteHandler: RouteHandler<
+  typeof putBucketEncryptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

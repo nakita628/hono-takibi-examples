@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDevicesIdRoute,
   getDevicesIdBandwidthRoute,
   getDevicesIdBgpNeighborsRoute,
@@ -23,69 +23,120 @@ import {
   putDevicesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteDevicesIdRouteHandler: RouteHandler<typeof deleteDevicesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const devicesHandler = app
-  .openapi(deleteDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDevicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesIdActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdBandwidthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdBgpNeighborsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdBgpSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesIdBgpSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdCustomdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdDiagnosticsScreenshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdDiagnosticsHealthRollupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdFirmwareSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDevicesIdIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdSshKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdTrafficRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdUsagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesIdUserdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDevicesInstanceIdIpsIdCustomdataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDevicesIdRouteHandler: RouteHandler<typeof getDevicesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDevicesIdRouteHandler: RouteHandler<typeof putDevicesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesIdActionsRouteHandler: RouteHandler<
+  typeof postDevicesIdActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdBandwidthRouteHandler: RouteHandler<
+  typeof getDevicesIdBandwidthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdBgpNeighborsRouteHandler: RouteHandler<
+  typeof getDevicesIdBgpNeighborsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdBgpSessionsRouteHandler: RouteHandler<
+  typeof getDevicesIdBgpSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesIdBgpSessionsRouteHandler: RouteHandler<
+  typeof postDevicesIdBgpSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdCustomdataRouteHandler: RouteHandler<
+  typeof getDevicesIdCustomdataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdDiagnosticsScreenshotRouteHandler: RouteHandler<
+  typeof getDevicesIdDiagnosticsScreenshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdDiagnosticsHealthRollupRouteHandler: RouteHandler<
+  typeof getDevicesIdDiagnosticsHealthRollupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdEventsRouteHandler: RouteHandler<typeof getDevicesIdEventsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdFirmwareSetsRouteHandler: RouteHandler<
+  typeof getDevicesIdFirmwareSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdIpsRouteHandler: RouteHandler<typeof getDevicesIdIpsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDevicesIdIpsRouteHandler: RouteHandler<typeof postDevicesIdIpsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdMetadataRouteHandler: RouteHandler<
+  typeof getDevicesIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdSshKeysRouteHandler: RouteHandler<
+  typeof getDevicesIdSshKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdTrafficRouteHandler: RouteHandler<
+  typeof getDevicesIdTrafficRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdUsagesRouteHandler: RouteHandler<typeof getDevicesIdUsagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesIdUserdataRouteHandler: RouteHandler<
+  typeof getDevicesIdUserdataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDevicesInstanceIdIpsIdCustomdataRouteHandler: RouteHandler<
+  typeof getDevicesInstanceIdIpsIdCustomdataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

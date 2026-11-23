@@ -1526,7 +1526,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/places/$:place': {
+    '/places/${place}': {
       $get:
         | {
             input: { param: { place: string } } & { query: { api_key?: ApiKeyParam | undefined } }

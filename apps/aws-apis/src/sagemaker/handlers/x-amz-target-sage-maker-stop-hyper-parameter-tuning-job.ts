@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerStopHyperParameterTuningJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerStopHyperParameterTuningJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerStopHyperParameterTuningJobHandler = app.openapi(
-  postXAmzTargetSageMakerStopHyperParameterTuningJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerStopHyperParameterTuningJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerStopHyperParameterTuningJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV3DeploymentsIdRoute,
   deleteV3MessagesLogIdIdRoute,
   deleteV3MessagesLogIdRoute,
@@ -24,72 +24,128 @@ import {
   postV3SourcemapsLogIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3DeploymentsRouteHandler: RouteHandler<typeof getV3DeploymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3DeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3DeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3DeploymentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3DeploymentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3HeartbeatsLogIdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3LogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3LogsIdDiagnoseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3LogsIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3LogsIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3MessagesLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3MessagesLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3MessagesLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3MessagesLogIdBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3MessagesLogIdFixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV3MessagesLogIdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3MessagesLogIdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3MessagesLogIdIdFixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3MessagesLogIdIdHideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV3SourcemapsLogIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3UptimechecksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV3DeploymentsRouteHandler: RouteHandler<typeof postV3DeploymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3DeploymentsIdRouteHandler: RouteHandler<
+  typeof deleteV3DeploymentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3DeploymentsIdRouteHandler: RouteHandler<typeof getV3DeploymentsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3HeartbeatsLogIdIdRouteHandler: RouteHandler<
+  typeof postV3HeartbeatsLogIdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsRouteHandler: RouteHandler<typeof getV3LogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3LogsRouteHandler: RouteHandler<typeof postV3LogsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsIdRouteHandler: RouteHandler<typeof getV3LogsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3LogsIdDiagnoseRouteHandler: RouteHandler<
+  typeof getV3LogsIdDiagnoseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3LogsIdDisableRouteHandler: RouteHandler<
+  typeof postV3LogsIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3LogsIdEnableRouteHandler: RouteHandler<typeof postV3LogsIdEnableRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3MessagesLogIdRouteHandler: RouteHandler<
+  typeof deleteV3MessagesLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3MessagesLogIdRouteHandler: RouteHandler<typeof getV3MessagesLogIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3MessagesLogIdRouteHandler: RouteHandler<
+  typeof postV3MessagesLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3MessagesLogIdBulkRouteHandler: RouteHandler<
+  typeof postV3MessagesLogIdBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3MessagesLogIdFixRouteHandler: RouteHandler<
+  typeof postV3MessagesLogIdFixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV3MessagesLogIdIdRouteHandler: RouteHandler<
+  typeof deleteV3MessagesLogIdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3MessagesLogIdIdRouteHandler: RouteHandler<
+  typeof getV3MessagesLogIdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3MessagesLogIdIdFixRouteHandler: RouteHandler<
+  typeof postV3MessagesLogIdIdFixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3MessagesLogIdIdHideRouteHandler: RouteHandler<
+  typeof postV3MessagesLogIdIdHideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV3SourcemapsLogIdRouteHandler: RouteHandler<
+  typeof postV3SourcemapsLogIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3UptimechecksRouteHandler: RouteHandler<typeof getV3UptimechecksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

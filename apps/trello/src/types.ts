@@ -2431,7 +2431,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/enterprises/$:id/enterpriseJoinRequest/bulk': {
+    '/enterprises/${id}/enterpriseJoinRequest/bulk': {
       $put:
         | {
             input: { param: { id: TrelloID } } & { query: { idOrganizations: Organization[] } }

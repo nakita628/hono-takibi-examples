@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/lawcollegeandaman/3.0.0/openapi.yaml',
   output: './src/lawcollegeandaman/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lawcollegeandaman/types.ts' },
   client: { output: './src/lawcollegeandaman/client.ts', baseUrl: '/' },
   rpc: { output: './src/lawcollegeandaman/rpc.ts', parseResponse: true },

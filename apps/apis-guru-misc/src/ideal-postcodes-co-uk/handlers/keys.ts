@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKeysKeyConfigsConfigRoute,
   deleteKeysKeyLicenseesLicenseeRoute,
   getKeysKeyConfigsConfigRoute,
@@ -16,48 +16,82 @@ import {
   putKeysKeyLicenseesLicenseeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKeysKeyRouteHandler: RouteHandler<typeof getKeysKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const keysHandler = app
-  .openapi(getKeysKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeysKeyConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKeysKeyConfigsConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyConfigsConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeysKeyConfigsConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyLicenseesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKeysKeyLicenseesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKeysKeyLicenseesLicenseeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyLicenseesLicenseeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKeysKeyLicenseesLicenseeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyLookupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKeysKeyUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getKeysKeyConfigsRouteHandler: RouteHandler<typeof getKeysKeyConfigsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKeysKeyConfigsRouteHandler: RouteHandler<typeof postKeysKeyConfigsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKeysKeyConfigsConfigRouteHandler: RouteHandler<
+  typeof deleteKeysKeyConfigsConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyConfigsConfigRouteHandler: RouteHandler<
+  typeof getKeysKeyConfigsConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKeysKeyConfigsConfigRouteHandler: RouteHandler<
+  typeof postKeysKeyConfigsConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyDetailsRouteHandler: RouteHandler<typeof getKeysKeyDetailsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyLicenseesRouteHandler: RouteHandler<
+  typeof getKeysKeyLicenseesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKeysKeyLicenseesRouteHandler: RouteHandler<
+  typeof postKeysKeyLicenseesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKeysKeyLicenseesLicenseeRouteHandler: RouteHandler<
+  typeof deleteKeysKeyLicenseesLicenseeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyLicenseesLicenseeRouteHandler: RouteHandler<
+  typeof getKeysKeyLicenseesLicenseeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKeysKeyLicenseesLicenseeRouteHandler: RouteHandler<
+  typeof putKeysKeyLicenseesLicenseeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyLookupsRouteHandler: RouteHandler<typeof getKeysKeyLookupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKeysKeyUsageRouteHandler: RouteHandler<typeof getKeysKeyUsageRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersAllProgressRoute,
   getUsersUserEmailBadgesRoute,
   getUsersUserEmailOfferingsOfferingIdProgressRoute,
@@ -15,45 +15,78 @@ import {
   putUsersUserEmailSuspendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postUsersRouteHandler: RouteHandler<typeof postUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(postUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersAllProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersUserEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserEmailBadgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserEmailInviteEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserEmailOfferingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserEmailOfferingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserEmailOfferingsOfferingIdProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserEmailPermissionsPermissionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserEmailProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersUserEmailSuspendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchUsersUserEmailTransferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUsersAllProgressRouteHandler: RouteHandler<
+  typeof getUsersAllProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserEmailRouteHandler: RouteHandler<typeof getUsersUserEmailRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersUserEmailRouteHandler: RouteHandler<
+  typeof patchUsersUserEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserEmailBadgesRouteHandler: RouteHandler<
+  typeof getUsersUserEmailBadgesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserEmailInviteEmailRouteHandler: RouteHandler<
+  typeof postUsersUserEmailInviteEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserEmailOfferingsRouteHandler: RouteHandler<
+  typeof getUsersUserEmailOfferingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserEmailOfferingsRouteHandler: RouteHandler<
+  typeof postUsersUserEmailOfferingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserEmailOfferingsOfferingIdProgressRouteHandler: RouteHandler<
+  typeof getUsersUserEmailOfferingsOfferingIdProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserEmailPermissionsPermissionNameRouteHandler: RouteHandler<
+  typeof postUsersUserEmailPermissionsPermissionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserEmailProgressRouteHandler: RouteHandler<
+  typeof getUsersUserEmailProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersUserEmailSuspendRouteHandler: RouteHandler<
+  typeof putUsersUserEmailSuspendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchUsersUserEmailTransferRouteHandler: RouteHandler<
+  typeof patchUsersUserEmailTransferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Promotions-/1.0/openapi.yaml',
   output: './src/promotions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/promotions/types.ts' },
   client: { output: './src/promotions/client.ts', baseUrl: '/' },
   rpc: { output: './src/promotions/rpc.ts', parseResponse: true },

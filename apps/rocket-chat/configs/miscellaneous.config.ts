@@ -6,7 +6,7 @@ export default defineConfig({
   input:
     'https://raw.githubusercontent.com/RocketChat/Rocket.Chat-Open-API/main/miscellaneous.yaml',
   output: './src/miscellaneous/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/miscellaneous/types.ts' },
   client: { output: './src/miscellaneous/client.ts', baseUrl: '/' },
   rpc: { output: './src/miscellaneous/rpc.ts', parseResponse: true },

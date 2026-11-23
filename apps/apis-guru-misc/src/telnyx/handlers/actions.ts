@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteActionsBulkTelephonyCredentialsRoute,
   patchActionsBulkTelephonyCredentialsRoute,
   postActionsActionTelephonyCredentialsRoute,
@@ -8,24 +8,38 @@ import {
   putActionsNetworkPreferencesSimCardsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteActionsBulkTelephonyCredentialsRouteHandler: RouteHandler<
+  typeof deleteActionsBulkTelephonyCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionsHandler = app
-  .openapi(deleteActionsBulkTelephonyCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchActionsBulkTelephonyCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionsBulkTelephonyCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putActionsNetworkPreferencesSimCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionsRegisterSimCardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionsActionTelephonyCredentialsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchActionsBulkTelephonyCredentialsRouteHandler: RouteHandler<
+  typeof patchActionsBulkTelephonyCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionsBulkTelephonyCredentialsRouteHandler: RouteHandler<
+  typeof postActionsBulkTelephonyCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putActionsNetworkPreferencesSimCardsRouteHandler: RouteHandler<
+  typeof putActionsNetworkPreferencesSimCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionsRegisterSimCardsRouteHandler: RouteHandler<
+  typeof postActionsRegisterSimCardsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postActionsActionTelephonyCredentialsRouteHandler: RouteHandler<
+  typeof postActionsActionTelephonyCredentialsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

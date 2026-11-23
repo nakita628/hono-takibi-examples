@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmotionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmotionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const emotionHandler = app.openapi(postEmotionRoute, (c) => {
+export const postEmotionRouteHandler: RouteHandler<typeof postEmotionRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

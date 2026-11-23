@@ -4154,7 +4154,25 @@ curl http://localhost:5052/eth/v2/beacon/blinded_blocks \
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -4269,13 +4287,27 @@ curl http://localhost:5052/eth/v2/beacon/blinded_blocks \
         },
         "execution_requests": {
           "deposits": [
-            {}
+            {
+              "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "amount": "1",
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+              "index": "1"
+            }
           ],
           "withdrawals": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "amount": "1"
+            }
           ],
           "consolidations": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+            }
           ]
         }
       }
@@ -4367,7 +4399,25 @@ MUST be published through `POST /eth/v2/beacon/blocks`.
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -4482,13 +4532,27 @@ MUST be published through `POST /eth/v2/beacon/blocks`.
       },
       "execution_requests": {
         "deposits": [
-          {}
+          {
+            "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "amount": "1",
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+            "index": "1"
+          }
         ],
         "withdrawals": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "amount": "1"
+          }
         ],
         "consolidations": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+          }
         ]
       }
     }
@@ -7043,7 +7107,25 @@ Use `GET /eth/v2/beacon/blocks/{block_id}` instead.
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -7158,13 +7240,27 @@ Use `GET /eth/v2/beacon/blocks/{block_id}` instead.
         },
         "execution_requests": {
           "deposits": [
-            {}
+            {
+              "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "amount": "1",
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+              "index": "1"
+            }
           ],
           "withdrawals": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "amount": "1"
+            }
           ],
           "consolidations": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+            }
           ]
         }
       }
@@ -10725,7 +10821,7 @@ for the returned data column sidecars in terms of ordering.
         "string"
       ],
       "kzg_proofs": [
-        {}
+        "string"
       ],
       "slot": "1",
       "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
@@ -155497,7 +155593,25 @@ for Gloas and later forks.
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -155592,6 +155706,21 @@ for Gloas and later forks.
           "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
         ],
         "execution_payload": {
+          "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "block_number": "1",
+          "gas_limit": "1",
+          "gas_used": "1",
+          "timestamp": "1",
+          "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "base_fee_per_gas": "1",
+          "blob_gas_used": "1",
+          "excess_blob_gas": "1",
+          "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
           "transactions": [
             "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
           ],
@@ -155606,13 +155735,27 @@ for Gloas and later forks.
         },
         "execution_requests": {
           "deposits": [
-            {}
+            {
+              "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "amount": "1",
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+              "index": "1"
+            }
           ],
           "withdrawals": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "amount": "1"
+            }
           ],
           "consolidations": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+            }
           ]
         }
       }
@@ -157054,7 +157197,7 @@ Level of validation that must be applied to a block before it is broadcast.
 |index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
 |balance|[Uint64](#schemauint64)|true|none|Current validator balance in gwei.|
 |status|[ValidatorStatus](#schemavalidatorstatus)|true|none|Possible statuses:<br>- **pending_initialized** - When the first deposit is processed, but not enough funds are available (or not yet the end of the first epoch) to get validator into the activation queue.<br>- **pending_queued** - When validator is waiting to get activated, and have enough funds etc. while in the queue, validator activation epoch keeps changing until it gets to the front and make it through (finalization is a requirement here too).<br>- **active_ongoing** - When validator must be attesting, and have not initiated any exit.<br>- **active_exiting** - When validator is still active, but filed a voluntary request to exit.<br>- **active_slashed** - When validator is still active, but have a slashed status and is scheduled to exit.<br>- **exited_unslashed** - When validator has reached regular exit epoch, not being slashed, and doesn't have to attest any more, but cannot withdraw yet.<br>- **exited_slashed** - When validator has reached regular exit epoch, but was slashed, have to wait for a longer withdrawal period.<br>- **withdrawal_possible** - After validator has exited, a while later is permitted to move funds, and is truly out of the system.<br>- **withdrawal_done** - (not possible in phase0, except slashing full balance) - actually having moved funds away<br><br>[Validator status specification](https://hackmd.io/ofFJ5gOmQpu1jjHilHbdQQ)<br>|
-|validator|object|true|none|The [`Validator`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#validator) object from the CL spec.|
+|validator|[ValidatorResponseValidator](#schemavalidatorresponsevalidator)|true|none|The [`Validator`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#validator) object from the CL spec.|
 
 #### Enumerated Values
 
@@ -157111,7 +157254,7 @@ Level of validation that must be applied to a block before it is broadcast.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
-|pubkey|string(hex)|true|none|Public key of validator.|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|Public key of validator.|
 |activation_epoch|[Uint64](#schemauint64)|true|none|Epoch when validator activated. 'FAR_FUTURE_EPOCH' if not activated|
 
 <h2 id="tocS_BuilderResponse">BuilderResponse</h2>
@@ -157242,7 +157385,7 @@ Group of validators assigned to attest at specific slot and that have the same c
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
 |validator_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry|
 |committee_index|[Uint64](#schemauint64)|true|none|The committee index|
 |committee_length|[Uint64](#schemauint64)|true|none|Number of validators in committee|
@@ -157269,7 +157412,7 @@ Group of validators assigned to attest at specific slot and that have the same c
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
 |validator_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
 |slot|[Uint64](#schemauint64)|true|none|The slot at which the validator must propose block.|
 
@@ -157292,7 +157435,7 @@ Group of validators assigned to attest at specific slot and that have the same c
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
 |validator_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
 |slot|[Uint64](#schemauint64)|true|none|The slot at which the validator must perform PTC duties.|
 
@@ -157317,7 +157460,7 @@ Group of validators assigned to attest at specific slot and that have the same c
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
 |validator_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
 |validator_sync_committee_indices|[[Uint64](#schemauint64)]|true|none|The indices of the validator in the sync committee.|
 
@@ -157459,9 +157602,9 @@ The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |peer_id|[PeerId](#schemapeerid)|true|none|Cryptographic hash of a peer’s public key. [Read more](https://docs.libp2p.io/concepts/peer-id/)|
-|enr|string|true|none|Ethereum node record. [Read more](https://eips.ethereum.org/EIPS/eip-778)|
-|p2p_addresses|[string]|true|none|none|
-|discovery_addresses|[string]|true|none|none|
+|enr|[NetworkIdentityEnr](#schemanetworkidentityenr)|true|none|Ethereum node record. [Read more](https://eips.ethereum.org/EIPS/eip-778)|
+|p2p_addresses|[[NetworkIdentityP2pAddressesItems](#schemanetworkidentityp2paddressesitems)]|true|none|none|
+|discovery_addresses|[[NetworkIdentityP2pAddressesItems](#schemanetworkidentityp2paddressesitems)]|true|none|none|
 |metadata|object|true|none|Based on eth2 [Metadata object](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/p2p-interface.md#metadata)|
 
 <h2 id="tocS_Peer">Peer</h2>
@@ -157486,8 +157629,8 @@ The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |peer_id|[PeerId](#schemapeerid)|true|none|Cryptographic hash of a peer’s public key. [Read more](https://docs.libp2p.io/concepts/peer-id/)|
-|enr|null \| string|true|none|none|
-|last_seen_p2p_address|string|true|none|Multiaddrs used in last peer connection.|
+|enr|null \| [NetworkIdentityEnr](#schemanetworkidentityenr)|true|none|none|
+|last_seen_p2p_address|[NetworkIdentityP2pAddressesItems](#schemanetworkidentityp2paddressesitems)|true|none|Multiaddrs used in last peer connection.|
 |state|[PeerConnectionState](#schemapeerconnectionstate)|true|none|none|
 |direction|[PeerConnectionDirection](#schemapeerconnectiondirection)|true|none|none|
 
@@ -157879,20 +158022,20 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_attestations|[object]|true|none|none|
-|current_epoch_attestations|[object]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_attestations|[[Phase0.BeaconStateCurrentEpochAttestationsItems](#schemaphase0.beaconstatecurrentepochattestationsitems)]|true|none|none|
+|current_epoch_attestations|[[Phase0.BeaconStateCurrentEpochAttestationsItems](#schemaphase0.beaconstatecurrentepochattestationsitems)]|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
@@ -157963,7 +158106,25 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -158122,7 +158283,25 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -158239,7 +158418,7 @@ The [`SignedBeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|message|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |signature|[Signature](#schemasignature)|true|none|none|
 
 <h2 id="tocS_Phase0.AttesterSlashing">Phase0.AttesterSlashing</h2>
@@ -158270,7 +158449,25 @@ The [`SignedBeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob
     },
     "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
   },
-  "attestation_2": {}
+  "attestation_2": {
+    "attesting_indices": [
+      "1"
+    ],
+    "data": {
+      "slot": "1",
+      "index": "0",
+      "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "source": {
+        "epoch": "1",
+        "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      },
+      "target": {
+        "epoch": "1",
+        "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      }
+    },
+    "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  }
 }
 ```
 
@@ -158280,8 +158477,8 @@ The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.3.0
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attestation_1|object|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.|
-|attestation_2|object|true|none|none|
+|attestation_1|[Phase0.AttesterSlashingAttestation1](#schemaphase0.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.|
+|attestation_2|[Phase0.AttesterSlashingAttestation1](#schemaphase0.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.|
 
 <h2 id="tocS_Phase0.ProposerSlashing">Phase0.ProposerSlashing</h2>
 <!-- backwards compatibility -->
@@ -158426,7 +158623,7 @@ The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|aggregation_bits|string(hex)|true|none|Attester aggregation bits.|
+|aggregation_bits|[Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits](#schemaphase0.beaconstatecurrentepochattestationsitemsaggregationbits)|true|none|Attester aggregation bits.|
 |data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
 |signature|[Signature](#schemasignature)|true|none|BLS aggregate signature.|
 
@@ -158531,7 +158728,25 @@ The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -158694,7 +158909,25 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -159338,9 +159571,9 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|header|object|true|none|none|
-|current_sync_committee|object|true|none|none|
-|current_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
+|header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|current_sync_committee_branch|[Deneb.LightClientBootstrapCurrentSyncCommitteeBranch](#schemadeneb.lightclientbootstrapcurrentsynccommitteebranch)|true|none|none|
 
 <h2 id="tocS_Altair.LightClientUpdate">Altair.LightClientUpdate</h2>
 <!-- backwards compatibility -->
@@ -159913,12 +160146,12 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|next_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee_branch|[Deneb.LightClientUpdateNextSyncCommitteeBranch](#schemadeneb.lightclientupdatenextsynccommitteebranch)|true|none|none|
+|finalized_header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Altair.LightClientFinalityUpdate">Altair.LightClientFinalityUpdate</h2>
@@ -159968,10 +160201,10 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|finalized_header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Altair.LightClientOptimisticUpdate">Altair.LightClientOptimisticUpdate</h2>
@@ -160004,8 +160237,8 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Altair.LightClientBootstrapHeader](#schemaaltair.lightclientbootstrapheader)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Altair.BeaconState">Altair.BeaconState</h2>
@@ -161144,26 +161377,26 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. New in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
 
 <h2 id="tocS_Altair.SyncCommitteeSignature">Altair.SyncCommitteeSignature</h2>
 <!-- backwards compatibility -->
@@ -161299,7 +161532,7 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 |slot|[Uint64](#schemauint64)|true|none|The slot at which the validator is providing a sync committee contribution.|
 |beacon_block_root|[Root](#schemaroot)|true|none|Block root for this contribution.|
 |subcommittee_index|[Uint64](#schemauint64)|true|none|The index of the subcommittee that the contribution pertains to.|
-|aggregation_bits|string(hex)|true|none|A bit is set if a signature from the validator at the corresponding index in the subcommittee is present in the aggregate `signature`.|
+|aggregation_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|A bit is set if a signature from the validator at the corresponding index in the subcommittee is present in the aggregate `signature`.|
 |signature|[Signature](#schemasignature)|true|none|Signature by the validator(s) over the block root of `slot`|
 
 <h2 id="tocS_Altair.SyncCommittee">Altair.SyncCommittee</h2>
@@ -161326,8 +161559,8 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|validators|[[Uint64](#schemauint64)]|true|none|all of the validator indices in the current sync committee|
-|validator_aggregates|[[[Uint64](#schemauint64)]]|true|none|none|
+|validators|[Altair.SyncCommitteeValidators](#schemaaltair.synccommitteevalidators)|true|none|all of the validator indices in the current sync committee|
+|validator_aggregates|[[Altair.SyncCommitteeValidators](#schemaaltair.synccommitteevalidators)]|true|none|none|
 
 <h2 id="tocS_ExecutionAddress">ExecutionAddress</h2>
 <!-- backwards compatibility -->
@@ -162494,27 +162727,27 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in Gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_execution_payload_header|object|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayloadheader) object from the CL Bellatrix spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_execution_payload_header|[Bellatrix.BeaconStateLatestExecutionPayloadHeader](#schemabellatrix.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayloadheader) object from the CL Bellatrix spec.|
 
 <h2 id="tocS_Bellatrix.BeaconBlock">Bellatrix.BeaconBlock</h2>
 <!-- backwards compatibility -->
@@ -162582,7 +162815,25 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -162763,7 +163014,25 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -162942,7 +163211,25 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -163121,7 +163408,25 @@ A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blo
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -164432,30 +164737,30 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_execution_payload_header|object|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_execution_payload_header|[Capella.BeaconStateLatestExecutionPayloadHeader](#schemacapella.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.|
 |next_withdrawal_index|[Uint64](#schemauint64)|true|none|none|
 |next_withdrawal_validator_index|[Uint64](#schemauint64)|true|none|none|
-|historical_summaries|[object]|true|none|Variable length list, maximum 16777216 items|
+|historical_summaries|[[Gloas.BeaconStateHistoricalSummariesItems](#schemagloas.beaconstatehistoricalsummariesitems)]|true|none|Variable length list, maximum 16777216 items|
 
 <h2 id="tocS_Capella.BeaconBlock">Capella.BeaconBlock</h2>
 <!-- backwards compatibility -->
@@ -164523,7 +164828,25 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -164722,7 +165045,25 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -164919,7 +165260,25 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.3.
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -165109,7 +165468,25 @@ A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blo
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -165265,7 +165642,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "current_sync_committee": {
     "pubkeys": [
@@ -165798,9 +166180,9 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|header|object|true|none|none|
-|current_sync_committee|object|true|none|none|
-|current_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
+|header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|current_sync_committee_branch|[Deneb.LightClientBootstrapCurrentSyncCommitteeBranch](#schemadeneb.lightclientbootstrapcurrentsynccommitteebranch)|true|none|none|
 
 <h2 id="tocS_Capella.LightClientUpdate">Capella.LightClientUpdate</h2>
 <!-- backwards compatibility -->
@@ -165836,7 +166218,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "next_sync_committee": {
     "pubkeys": [
@@ -166387,7 +166774,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "finality_branch": [
     "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
@@ -166409,12 +166801,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|next_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee_branch|[Deneb.LightClientUpdateNextSyncCommitteeBranch](#schemadeneb.lightclientupdatenextsynccommitteebranch)|true|none|none|
+|finalized_header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Capella.LightClientFinalityUpdate">Capella.LightClientFinalityUpdate</h2>
@@ -166451,7 +166843,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "finalized_header": {
     "beacon": {
@@ -166478,7 +166875,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "finality_branch": [
     "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
@@ -166500,10 +166902,10 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|finalized_header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Capella.LightClientOptimisticUpdate">Capella.LightClientOptimisticUpdate</h2>
@@ -166540,7 +166942,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
       "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
       "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
     },
-    "execution_branch": {}
+    "execution_branch": [
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    ]
   },
   "sync_aggregate": {
     "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
@@ -166554,8 +166961,8 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Capella.LightClientBootstrapHeader](#schemacapella.lightclientbootstrapheader)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Capella.SignedBLSToExecutionChange">Capella.SignedBLSToExecutionChange</h2>
@@ -167773,30 +168180,30 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_execution_payload_header|object|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_execution_payload_header|[Fulu.BeaconStateLatestExecutionPayloadHeader](#schemafulu.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
 |next_withdrawal_index|[Uint64](#schemauint64)|true|none|none|
 |next_withdrawal_validator_index|[Uint64](#schemauint64)|true|none|none|
-|historical_summaries|[object]|true|none|Variable length list, maximum 16777216 items|
+|historical_summaries|[[Gloas.BeaconStateHistoricalSummariesItems](#schemagloas.beaconstatehistoricalsummariesitems)]|true|none|Variable length list, maximum 16777216 items|
 
 <h2 id="tocS_Deneb.BeaconBlock">Deneb.BeaconBlock</h2>
 <!-- backwards compatibility -->
@@ -167864,7 +168271,25 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -167957,7 +168382,34 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
     "blob_kzg_commitments": [
       "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
     ],
-    "execution_payload": {}
+    "execution_payload": {
+      "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "block_number": "1",
+      "gas_limit": "1",
+      "gas_used": "1",
+      "timestamp": "1",
+      "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "base_fee_per_gas": "1",
+      "blob_gas_used": "1",
+      "excess_blob_gas": "1",
+      "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "transactions": [
+        "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+      ],
+      "withdrawals": [
+        {
+          "index": "1",
+          "validator_index": "1",
+          "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "amount": "1"
+        }
+      ]
+    }
   }
 }
 ```
@@ -168041,7 +168493,25 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -168134,11 +168604,38 @@ The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/spec
       "blob_kzg_commitments": [
         "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
       ],
-      "execution_payload": {}
+      "execution_payload": {
+        "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+        "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "block_number": "1",
+        "gas_limit": "1",
+        "gas_used": "1",
+        "timestamp": "1",
+        "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "base_fee_per_gas": "1",
+        "blob_gas_used": "1",
+        "excess_blob_gas": "1",
+        "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "transactions": [
+          "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+        ],
+        "withdrawals": [
+          {
+            "index": "1",
+            "validator_index": "1",
+            "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "amount": "1"
+          }
+        ]
+      }
     }
   },
   "kzg_proofs": [
-    {}
+    "string"
   ],
   "blobs": [
     "string"
@@ -168153,7 +168650,7 @@ The required object for block production according to the Deneb CL spec.
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |block|[Deneb.BeaconBlock](#schemadeneb.beaconblock)|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Deneb spec.|
-|kzg_proofs|[object]|true|none|none|
+|kzg_proofs|[Electra.SignedBlockContentsKzgProofs](#schemaelectra.signedblockcontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Deneb.SignedBeaconBlock">Deneb.SignedBeaconBlock</h2>
@@ -168223,7 +168720,25 @@ The required object for block production according to the Deneb CL spec.
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -168316,7 +168831,34 @@ The required object for block production according to the Deneb CL spec.
       "blob_kzg_commitments": [
         "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
       ],
-      "execution_payload": {}
+      "execution_payload": {
+        "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+        "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "block_number": "1",
+        "gas_limit": "1",
+        "gas_used": "1",
+        "timestamp": "1",
+        "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "base_fee_per_gas": "1",
+        "blob_gas_used": "1",
+        "excess_blob_gas": "1",
+        "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "transactions": [
+          "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+        ],
+        "withdrawals": [
+          {
+            "index": "1",
+            "validator_index": "1",
+            "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "amount": "1"
+          }
+        ]
+      }
     }
   },
   "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
@@ -168400,7 +168942,25 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -168493,13 +169053,40 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.
         "blob_kzg_commitments": [
           "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
         ],
-        "execution_payload": {}
+        "execution_payload": {
+          "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "block_number": "1",
+          "gas_limit": "1",
+          "gas_used": "1",
+          "timestamp": "1",
+          "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "base_fee_per_gas": "1",
+          "blob_gas_used": "1",
+          "excess_blob_gas": "1",
+          "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "transactions": [
+            "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+          ],
+          "withdrawals": [
+            {
+              "index": "1",
+              "validator_index": "1",
+              "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "amount": "1"
+            }
+          ]
+        }
       }
     },
     "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
   },
   "kzg_proofs": [
-    {}
+    "string"
   ],
   "blobs": [
     "string"
@@ -168514,7 +169101,7 @@ The required signed components of block production according to the Deneb CL spe
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |signed_block|[Deneb.SignedBeaconBlock](#schemadeneb.signedbeaconblock)|true|none|The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Deneb spec.|
-|kzg_proofs|[object]|true|none|none|
+|kzg_proofs|[Electra.SignedBlockContentsKzgProofs](#schemaelectra.signedblockcontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Deneb.BlindedBeaconBlock">Deneb.BlindedBeaconBlock</h2>
@@ -168583,7 +169170,25 @@ The required signed components of block production according to the Deneb CL spe
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -168778,7 +169383,25 @@ A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blo
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -169479,9 +170102,9 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|header|object|true|none|none|
-|current_sync_committee|object|true|none|none|
-|current_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
+|header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|current_sync_committee_branch|[Deneb.LightClientBootstrapCurrentSyncCommitteeBranch](#schemadeneb.lightclientbootstrapcurrentsynccommitteebranch)|true|none|none|
 
 <h2 id="tocS_Deneb.LightClientUpdate">Deneb.LightClientUpdate</h2>
 <!-- backwards compatibility -->
@@ -170104,12 +170727,12 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|next_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee_branch|[Deneb.LightClientUpdateNextSyncCommitteeBranch](#schemadeneb.lightclientupdatenextsynccommitteebranch)|true|none|none|
+|finalized_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Deneb.LightClientFinalityUpdate">Deneb.LightClientFinalityUpdate</h2>
@@ -170209,10 +170832,10 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finalized_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Deneb.LightClientFinalityUpdateFinalityBranch](#schemadeneb.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Deneb.LightClientOptimisticUpdate">Deneb.LightClientOptimisticUpdate</h2>
@@ -170270,8 +170893,8 @@ A variant of the [`SignedBeaconBlock`](https://github.com/ethereum/consensus-spe
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Blob">Blob</h2>
@@ -171504,30 +172127,30 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_execution_payload_header|object|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_execution_payload_header|[Fulu.BeaconStateLatestExecutionPayloadHeader](#schemafulu.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
 |next_withdrawal_index|[Uint64](#schemauint64)|true|none|none|
 |next_withdrawal_validator_index|[Uint64](#schemauint64)|true|none|none|
-|historical_summaries|[object]|true|none|Variable length list, maximum 16777216 items|
+|historical_summaries|[[Gloas.BeaconStateHistoricalSummariesItems](#schemagloas.beaconstatehistoricalsummariesitems)]|true|none|Variable length list, maximum 16777216 items|
 |deposit_requests_start_index|[Uint64](#schemauint64)|true|none|none|
 |deposit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
 |exit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
@@ -171605,7 +172228,25 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -171700,6 +172341,21 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
         "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
       ],
       "execution_payload": {
+        "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+        "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "block_number": "1",
+        "gas_limit": "1",
+        "gas_used": "1",
+        "timestamp": "1",
+        "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "base_fee_per_gas": "1",
+        "blob_gas_used": "1",
+        "excess_blob_gas": "1",
+        "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
         "transactions": [
           "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
         ],
@@ -171714,19 +172370,33 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
       },
       "execution_requests": {
         "deposits": [
-          {}
+          {
+            "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "amount": "1",
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+            "index": "1"
+          }
         ],
         "withdrawals": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "amount": "1"
+          }
         ],
         "consolidations": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+          }
         ]
       }
     }
   },
   "kzg_proofs": [
-    {}
+    "string"
   ],
   "blobs": [
     "string"
@@ -171740,8 +172410,8 @@ The required object for block production according to the Electra CL spec.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|block|object|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
-|kzg_proofs|[object]|true|none|none|
+|block|[Fulu.BlockContentsBlock](#schemafulu.blockcontentsblock)|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
+|kzg_proofs|[Electra.SignedBlockContentsKzgProofs](#schemaelectra.signedblockcontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Electra.SignedBeaconBlock">Electra.SignedBeaconBlock</h2>
@@ -171811,7 +172481,25 @@ The required object for block production according to the Electra CL spec.
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -171906,6 +172594,21 @@ The required object for block production according to the Electra CL spec.
         "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
       ],
       "execution_payload": {
+        "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+        "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "block_number": "1",
+        "gas_limit": "1",
+        "gas_used": "1",
+        "timestamp": "1",
+        "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "base_fee_per_gas": "1",
+        "blob_gas_used": "1",
+        "excess_blob_gas": "1",
+        "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
         "transactions": [
           "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
         ],
@@ -171920,13 +172623,27 @@ The required object for block production according to the Electra CL spec.
       },
       "execution_requests": {
         "deposits": [
-          {}
+          {
+            "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "amount": "1",
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+            "index": "1"
+          }
         ],
         "withdrawals": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "amount": "1"
+          }
         ],
         "consolidations": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+          }
         ]
       }
     }
@@ -171941,7 +172658,7 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|message|object|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
+|message|[Fulu.BlockContentsBlock](#schemafulu.blockcontentsblock)|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
 |signature|[Signature](#schemasignature)|true|none|none|
 
 <h2 id="tocS_Electra.SignedBlockContents">Electra.SignedBlockContents</h2>
@@ -172012,7 +172729,25 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -172107,6 +172842,21 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.
           "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
         ],
         "execution_payload": {
+          "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "block_number": "1",
+          "gas_limit": "1",
+          "gas_used": "1",
+          "timestamp": "1",
+          "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "base_fee_per_gas": "1",
+          "blob_gas_used": "1",
+          "excess_blob_gas": "1",
+          "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
           "transactions": [
             "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
           ],
@@ -172121,13 +172871,27 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.
         },
         "execution_requests": {
           "deposits": [
-            {}
+            {
+              "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "amount": "1",
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+              "index": "1"
+            }
           ],
           "withdrawals": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "amount": "1"
+            }
           ],
           "consolidations": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+            }
           ]
         }
       }
@@ -172135,7 +172899,7 @@ The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.
     "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
   },
   "kzg_proofs": [
-    {}
+    "string"
   ],
   "blobs": [
     "string"
@@ -172150,7 +172914,7 @@ The required signed components of block production according to the Electra CL s
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |signed_block|[Electra.SignedBeaconBlock](#schemaelectra.signedbeaconblock)|true|none|The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Electra spec.|
-|kzg_proofs|[object]|true|none|none|
+|kzg_proofs|[Electra.SignedBlockContentsKzgProofs](#schemaelectra.signedblockcontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Electra.BlindedBeaconBlock">Electra.BlindedBeaconBlock</h2>
@@ -172219,7 +172983,25 @@ The required signed components of block production according to the Electra CL s
           },
           "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
         },
-        "attestation_2": {}
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
       }
     ],
     "attestations": [
@@ -172334,13 +173116,27 @@ The required signed components of block production according to the Electra CL s
     },
     "execution_requests": {
       "deposits": [
-        {}
+        {
+          "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "amount": "1",
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+          "index": "1"
+        }
       ],
       "withdrawals": [
-        {}
+        {
+          "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "amount": "1"
+        }
       ],
       "consolidations": [
-        {}
+        {
+          "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+        }
       ]
     }
   }
@@ -172426,7 +173222,25 @@ A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blo
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -172541,13 +173355,27 @@ A variant of the [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blo
       },
       "execution_requests": {
         "deposits": [
-          {}
+          {
+            "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "amount": "1",
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+            "index": "1"
+          }
         ],
         "withdrawals": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "amount": "1"
+          }
         ],
         "consolidations": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+          }
         ]
       }
     }
@@ -172599,10 +173427,10 @@ The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/spec
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|aggregation_bits|string(hex)|true|none|Attester aggregation bits.|
+|aggregation_bits|[Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits](#schemaphase0.beaconstatecurrentepochattestationsitemsaggregationbits)|true|none|Attester aggregation bits.|
 |data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
 |signature|[Signature](#schemasignature)|true|none|BLS aggregate signature.|
-|committee_bits|string(hex)|true|none|Committee bits.|
+|committee_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Committee bits.|
 
 <h2 id="tocS_Electra.SingleAttestation">Electra.SingleAttestation</h2>
 <!-- backwards compatibility -->
@@ -172671,7 +173499,25 @@ The [`SingleAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.
     },
     "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
   },
-  "attestation_2": {}
+  "attestation_2": {
+    "attesting_indices": [
+      "1"
+    ],
+    "data": {
+      "slot": "1",
+      "index": "0",
+      "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "source": {
+        "epoch": "1",
+        "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      },
+      "target": {
+        "epoch": "1",
+        "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      }
+    },
+    "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  }
 }
 ```
 
@@ -172681,8 +173527,8 @@ The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.5.0
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attestation_1|object|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.|
-|attestation_2|object|true|none|none|
+|attestation_1|[Electra.AttesterSlashingAttestation1](#schemaelectra.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.|
+|attestation_2|[Electra.AttesterSlashingAttestation1](#schemaelectra.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.|
 
 <h2 id="tocS_Electra.SignedAggregateAndProof">Electra.SignedAggregateAndProof</h2>
 <!-- backwards compatibility -->
@@ -173303,8 +174149,8 @@ The [`SignedAggregateAndProof`](https://github.com/ethereum/consensus-specs/blob
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|header|object|true|none|none|
-|current_sync_committee|object|true|none|none|
+|header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
 |current_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
 
 <h2 id="tocS_Electra.LightClientUpdate">Electra.LightClientUpdate</h2>
@@ -173930,12 +174776,12 @@ The [`SignedAggregateAndProof`](https://github.com/ethereum/consensus-specs/blob
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|next_sync_committee|object|true|none|none|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
 |next_sync_committee_branch|[[Root](#schemaroot)]|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|finalized_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Electra.LightClientFinalityUpdateFinalityBranch](#schemaelectra.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Electra.LightClientFinalityUpdate">Electra.LightClientFinalityUpdate</h2>
@@ -174036,10 +174882,10 @@ The [`SignedAggregateAndProof`](https://github.com/ethereum/consensus-specs/blob
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|finalized_header|object|true|none|none|
-|finality_branch|[[Root](#schemaroot)]|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finalized_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|finality_branch|[Electra.LightClientFinalityUpdateFinalityBranch](#schemaelectra.lightclientfinalityupdatefinalitybranch)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Electra.LightClientOptimisticUpdate">Electra.LightClientOptimisticUpdate</h2>
@@ -174097,8 +174943,8 @@ The [`SignedAggregateAndProof`](https://github.com/ethereum/consensus-specs/blob
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|none|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Electra.LightClientBootstrapHeader](#schemaelectra.lightclientbootstrapheader)|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Electra.PendingDeposit">Electra.PendingDeposit</h2>
@@ -174124,7 +174970,7 @@ The [`PendingDeposit`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/s
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|BLS public key of validator.|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|BLS public key of validator.|
 |withdrawal_credentials|[Root](#schemaroot)|true|none|The withdrawal credentials.|
 |amount|[Uint64](#schemauint64)|true|none|The value to be deposited (gwei).|
 |signature|[Signature](#schemasignature)|true|none|none|
@@ -175493,30 +176339,30 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.6.0/spec
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed length of 8192 items|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items. Frozen in Capella, replaced by historical_summaries.|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Variable length list, maximum 1099511627776 items|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Variable length list, maximum 1099511627776 items|
 |balances|[[Uint64](#schemauint64)]|true|none|Validator balances in gwei. Variable length list, maximum 1099511627776 items|
-|randao_mixes|[string(hex)]|true|none|Fixed length of 65536 items|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed length of 65536 items|
 |slashings|[[Uint64](#schemauint64)]|true|none|Per-epoch sums of slashed effective balances. Fixed length of 8192 items|
-|previous_epoch_participation|[string]|true|none|none|
-|current_epoch_participation|[string]|true|none|none|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch|
+|previous_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|current_epoch_participation|[Fulu.BeaconStateCurrentEpochParticipation](#schemafulu.beaconstatecurrentepochparticipation)|true|none|none|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Per-validator inactivity scores. Introduced in Altair. Variable length list, maximum 1099511627776 items|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_execution_payload_header|object|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_execution_payload_header|[Fulu.BeaconStateLatestExecutionPayloadHeader](#schemafulu.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
 |next_withdrawal_index|[Uint64](#schemauint64)|true|none|none|
 |next_withdrawal_validator_index|[Uint64](#schemauint64)|true|none|none|
-|historical_summaries|[object]|true|none|Variable length list, maximum 16777216 items|
+|historical_summaries|[[Gloas.BeaconStateHistoricalSummariesItems](#schemagloas.beaconstatehistoricalsummariesitems)]|true|none|Variable length list, maximum 16777216 items|
 |deposit_requests_start_index|[Uint64](#schemauint64)|true|none|none|
 |deposit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
 |exit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
@@ -316900,30 +317746,30 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 |genesis_validators_root|[Root](#schemaroot)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |fork|[Fork](#schemafork)|true|none|The [`Fork`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#fork) object from the CL spec.|
-|latest_block_header|object|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|latest_block_header|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
 |block_roots|[[Root](#schemaroot)]|true|none|Fixed vector of 8192 roots.|
 |state_roots|[[Root](#schemaroot)]|true|none|Fixed vector of 8192 roots.|
 |historical_roots|[[Root](#schemaroot)]|true|none|Variable length list, maximum 16777216 items. Frozen in Capella, replaced by `historical_summaries`.|
-|eth1_data|object|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
-|eth1_data_votes|[object]|true|none|Variable length list, maximum 2048 items.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|eth1_data_votes|[[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)]|true|none|Variable length list, maximum 2048 items.|
 |eth1_deposit_index|[Uint64](#schemauint64)|true|none|none|
-|validators|[object]|true|none|Progressive list of validators.|
+|validators|[[ValidatorResponseValidator](#schemavalidatorresponsevalidator)]|true|none|Progressive list of validators.|
 |balances|[[Uint64](#schemauint64)]|true|none|Progressive list of validator balances in gwei.|
-|randao_mixes|[string(hex)]|true|none|Fixed vector of 65536 roots.|
+|randao_mixes|[[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)]|true|none|Fixed vector of 65536 roots.|
 |slashings|[[Uint64](#schemauint64)]|true|none|Fixed vector of 8192 per-epoch slashed effective balance totals.|
-|previous_epoch_participation|[string]|true|none|Progressive list of validator participation flags for the previous epoch.|
-|current_epoch_participation|[string]|true|none|Progressive list of validator participation flags for the current epoch.|
-|justification_bits|string(hex)|true|none|Bit set for every recent justified epoch.|
+|previous_epoch_participation|[[Gloas.BeaconStateCurrentEpochParticipationItems](#schemagloas.beaconstatecurrentepochparticipationitems)]|true|none|Progressive list of validator participation flags for the previous epoch.|
+|current_epoch_participation|[[Gloas.BeaconStateCurrentEpochParticipationItems](#schemagloas.beaconstatecurrentepochparticipationitems)]|true|none|Progressive list of validator participation flags for the current epoch.|
+|justification_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Bit set for every recent justified epoch.|
 |previous_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |current_justified_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The [`Checkpoint`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#checkpoint) object from the CL spec.|
 |inactivity_scores|[[Uint64](#schemauint64)]|true|none|Progressive list of per-validator inactivity scores.|
-|current_sync_committee|object|true|none|none|
-|next_sync_committee|object|true|none|none|
-|latest_block_hash|string(hex)|true|none|none|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
+|latest_block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
 |next_withdrawal_index|[Uint64](#schemauint64)|true|none|none|
 |next_withdrawal_validator_index|[Uint64](#schemauint64)|true|none|none|
-|historical_summaries|[object]|true|none|Variable length list, maximum 16777216 items.|
+|historical_summaries|[[Gloas.BeaconStateHistoricalSummariesItems](#schemagloas.beaconstatehistoricalsummariesitems)]|true|none|Variable length list, maximum 16777216 items.|
 |deposit_requests_start_index|[Uint64](#schemauint64)|true|none|none|
 |deposit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
 |exit_balance_to_consume|[Uint64](#schemauint64)|true|none|none|
@@ -316936,7 +317782,7 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 |proposer_lookahead|[[Uint64](#schemauint64)]|true|none|Fixed vector of proposer indices for the current and next epoch.|
 |builders|[[Gloas.Builder](#schemagloas.builder)]|true|none|Progressive list of builders.|
 |next_withdrawal_builder_index|[Uint64](#schemauint64)|true|none|none|
-|execution_payload_availability|string(hex)|true|none|Payload availability for the slots in SLOTS_PER_HISTORICAL_ROOT (8192).|
+|execution_payload_availability|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Payload availability for the slots in SLOTS_PER_HISTORICAL_ROOT (8192).|
 |builder_pending_payments|[Gloas.BuilderPendingPayments](#schemagloas.builderpendingpayments)|true|none|Fixed vector of pending builder payments covering two epochs.|
 |builder_pending_withdrawals|[Gloas.BuilderPendingWithdrawals](#schemagloas.builderpendingwithdrawals)|true|none|Progressive list of pending builder withdrawals.|
 |latest_execution_payload_bid|[Gloas.ExecutionPayloadBid](#schemagloas.executionpayloadbid)|true|none|The [`ExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionpayloadbid) object from the CL Gloas spec.|
@@ -317512,8 +318358,8 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|current_sync_committee|object|true|none|none|
+|header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|current_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
 |current_sync_committee_branch|[[Root](#schemaroot)]|true|none|Merkle proof consisting of [`floorlog2(CURRENT_SYNC_COMMITTEE_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
 
 <h2 id="tocS_Gloas.LightClientUpdate">Gloas.LightClientUpdate</h2>
@@ -318124,12 +318970,12 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|next_sync_committee|object|true|none|none|
+|attested_header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|next_sync_committee|[Gloas.BeaconStateNextSyncCommittee](#schemagloas.beaconstatenextsynccommittee)|true|none|none|
 |next_sync_committee_branch|[[Root](#schemaroot)]|true|none|Merkle proof consisting of [`floorlog2(NEXT_SYNC_COMMITTEE_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
-|finalized_header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|finality_branch|[[Root](#schemaroot)]|true|none|Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|finalized_header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|finality_branch|[Gloas.LightClientFinalityUpdateFinalityBranch](#schemagloas.lightclientfinalityupdatefinalitybranch)|true|none|Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Gloas.LightClientFinalityUpdate">Gloas.LightClientFinalityUpdate</h2>
@@ -318210,10 +319056,10 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|finalized_header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|finality_branch|[[Root](#schemaroot)]|true|none|Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|finalized_header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|finality_branch|[Gloas.LightClientFinalityUpdateFinalityBranch](#schemagloas.lightclientfinalityupdatefinalitybranch)|true|none|Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Gloas.LightClientOptimisticUpdate">Gloas.LightClientOptimisticUpdate</h2>
@@ -318260,8 +319106,8 @@ The [`BeaconState`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attested_header|object|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
-|sync_aggregate|object|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|attested_header|[Gloas.LightClientBootstrapHeader](#schemagloas.lightclientbootstrapheader)|true|none|The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
 |signature_slot|[Uint64](#schemauint64)|true|none|none|
 
 <h2 id="tocS_Gloas.BeaconBlock">Gloas.BeaconBlock</h2>
@@ -318722,8 +319568,8 @@ The [`Builder`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/s
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|pubkey|string(hex)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
-|version|string|true|none|Builder version.|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|version|[Gloas.BeaconStateCurrentEpochParticipationItems](#schemagloas.beaconstatecurrentepochparticipationitems)|true|none|Builder version.|
 |execution_address|[ExecutionAddress](#schemaexecutionaddress)|true|none|Execution-layer address that receives builder withdrawals.|
 |balance|[Uint64](#schemauint64)|true|none|Current builder balance in gwei.|
 |deposit_epoch|[Uint64](#schemauint64)|true|none|Epoch when the builder deposit was processed.|
@@ -319026,7 +319872,7 @@ as all required data is returned in a single response.
 |---|---|---|---|---|
 |block|[Gloas.BeaconBlock](#schemagloas.beaconblock)|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/phase0/beacon-chain.md#beaconblock) object from the CL Gloas spec.|
 |execution_payload_envelope|[Gloas.ExecutionPayloadEnvelope](#schemagloas.executionpayloadenvelope)|true|none|The [`ExecutionPayloadEnvelope`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionpayloadenvelope) object from the CL Gloas spec.|
-|kzg_proofs|[string(hex)]|true|none|none|
+|kzg_proofs|[Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs](#schemagloas.signedexecutionpayloadenvelopecontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Gloas.ExecutionPayloadBid">Gloas.ExecutionPayloadBid</h2>
@@ -319061,17 +319907,17 @@ The [`ExecutionPayloadBid`](https://github.com/ethereum/consensus-specs/blob/v1.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|parent_block_hash|string(hex)|true|none|none|
+|parent_block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
 |parent_block_root|[Root](#schemaroot)|true|none|none|
-|block_hash|string(hex)|true|none|none|
-|prev_randao|string(hex)|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
 |fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
 |gas_limit|[Uint64](#schemauint64)|true|none|none|
 |builder_index|[Uint64](#schemauint64)|true|none|none|
 |slot|[Uint64](#schemauint64)|true|none|none|
 |value|[Uint64](#schemauint64)|true|none|none|
 |execution_payment|[Uint64](#schemauint64)|true|none|none|
-|blob_kzg_commitments|[string(hex)]|true|none|none|
+|blob_kzg_commitments|[[Fulu.DataColumnSidecarsItemsKzgCommitmentsItems](#schemafulu.datacolumnsidecarsitemskzgcommitmentsitems)]|true|none|none|
 |execution_requests_root|[Root](#schemaroot)|true|none|none|
 
 <h2 id="tocS_Gloas.SignedExecutionPayloadBid">Gloas.SignedExecutionPayloadBid</h2>
@@ -319158,19 +320004,19 @@ The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.7.0
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|parent_hash|string(hex)|true|none|none|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
 |fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
-|state_root|string(hex)|true|none|none|
-|receipts_root|string(hex)|true|none|none|
-|logs_bloom|string(hex)|true|none|none|
-|prev_randao|string(hex)|true|none|none|
+|state_root|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|receipts_root|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
 |block_number|[Uint64](#schemauint64)|true|none|none|
 |gas_limit|[Uint64](#schemauint64)|true|none|none|
 |gas_used|[Uint64](#schemauint64)|true|none|none|
 |timestamp|[Uint64](#schemauint64)|true|none|none|
-|extra_data|string(hex)|true|none|Extra data on the execution (Ethereum 1) network.|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
 |base_fee_per_gas|string|true|none|none|
-|block_hash|string(hex)|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
 |transactions|[string(hex)]|true|none|Progressive list of transactions.|
 |withdrawals|[[Capella.Withdrawal](#schemacapella.withdrawal)]|true|none|Progressive list of withdrawals.|
 |blob_gas_used|[Uint64](#schemauint64)|true|none|none|
@@ -319269,7 +320115,7 @@ The [`ExecutionPayloadEnvelope`](https://github.com/ethereum/consensus-specs/blo
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |payload|[Gloas.ExecutionPayload](#schemagloas.executionpayload)|true|none|The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionpayload) object from the CL Gloas spec.|
-|execution_requests|object|true|none|The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionrequests) object from the CL Gloas spec.|
+|execution_requests|[Gloas.ExecutionPayloadEnvelopeExecutionRequests](#schemagloas.executionpayloadenvelopeexecutionrequests)|true|none|The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionrequests) object from the CL Gloas spec.|
 |builder_index|[Uint64](#schemauint64)|true|none|Index of the builder that created this execution payload|
 |beacon_block_root|[Root](#schemaroot)|true|none|Root of the beacon block for this payload|
 |parent_beacon_block_root|[Root](#schemaroot)|true|none|Root of the parent beacon block|
@@ -319474,7 +320320,7 @@ have the blobs cached (e.g. multi-BN setups, distributed validators, failover).
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |signed_execution_payload_envelope|[Gloas.SignedExecutionPayloadEnvelope](#schemagloas.signedexecutionpayloadenvelope)|true|none|The [`SignedExecutionPayloadEnvelope`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#signedexecutionpayloadenvelope) object from the CL Gloas spec.|
-|kzg_proofs|[string(hex)]|true|none|none|
+|kzg_proofs|[Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs](#schemagloas.signedexecutionpayloadenvelopecontentskzgproofs)|true|none|none|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Gloas.PayloadAttestationData">Gloas.PayloadAttestationData</h2>
@@ -320056,7 +320902,7 @@ The [`PayloadAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|aggregation_bits|string(hex)|true|none|Fixed vector of PTC_SIZE (512) bits.|
+|aggregation_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Fixed vector of PTC_SIZE (512) bits.|
 |data|[Gloas.PayloadAttestationData](#schemagloas.payloadattestationdata)|true|none|The [`PayloadAttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#payloadattestationdata) object from the CL Gloas spec.|
 |signature|[Signature](#schemasignature)|true|none|none|
 
@@ -320124,10 +320970,10 @@ The [`Attestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|aggregation_bits|string(hex)|true|none|Progressive bitlist of attester aggregation bits, limited to MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT (131072) bits.|
+|aggregation_bits|[Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits](#schemaphase0.beaconstatecurrentepochattestationsitemsaggregationbits)|true|none|Progressive bitlist of attester aggregation bits, limited to MAX_VALIDATORS_PER_COMMITTEE * MAX_COMMITTEES_PER_SLOT (131072) bits.|
 |data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
 |signature|[Signature](#schemasignature)|true|none|BLS aggregate signature.|
-|committee_bits|string(hex)|true|none|Committee bits, a fixed vector of MAX_COMMITTEES_PER_SLOT (64) bits.|
+|committee_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Committee bits, a fixed vector of MAX_COMMITTEES_PER_SLOT (64) bits.|
 
 <h2 id="tocS_Gloas.AttesterSlashing">Gloas.AttesterSlashing</h2>
 <!-- backwards compatibility -->
@@ -320185,8 +321031,8 @@ The [`AttesterSlashing`](https://github.com/ethereum/consensus-specs/blob/v1.7.0
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|attestation_1|object|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.|
-|attestation_2|object|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.|
+|attestation_1|[Gloas.AttesterSlashingAttestation1](#schemagloas.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.|
+|attestation_2|[Gloas.AttesterSlashingAttestation1](#schemagloas.attesterslashingattestation1)|true|none|The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.|
 
 <h2 id="tocS_Gloas.SignedAggregateAndProof">Gloas.SignedAggregateAndProof</h2>
 <!-- backwards compatibility -->
@@ -320357,7 +321203,25 @@ The [`SignedProposerPreferences`](https://github.com/ethereum/consensus-specs/bl
             },
             "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
           },
-          "attestation_2": {}
+          "attestation_2": {
+            "attesting_indices": [
+              "1"
+            ],
+            "data": {
+              "slot": "1",
+              "index": "0",
+              "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "source": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              },
+              "target": {
+                "epoch": "1",
+                "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+              }
+            },
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+          }
         }
       ],
       "attestations": [
@@ -320452,6 +321316,21 @@ The [`SignedProposerPreferences`](https://github.com/ethereum/consensus-specs/bl
         "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
       ],
       "execution_payload": {
+        "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+        "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+        "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "block_number": "1",
+        "gas_limit": "1",
+        "gas_used": "1",
+        "timestamp": "1",
+        "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "base_fee_per_gas": "1",
+        "blob_gas_used": "1",
+        "excess_blob_gas": "1",
+        "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
         "transactions": [
           "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
         ],
@@ -320466,13 +321345,27 @@ The [`SignedProposerPreferences`](https://github.com/ethereum/consensus-specs/bl
       },
       "execution_requests": {
         "deposits": [
-          {}
+          {
+            "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "amount": "1",
+            "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+            "index": "1"
+          }
         ],
         "withdrawals": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "amount": "1"
+          }
         ],
         "consolidations": [
-          {}
+          {
+            "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+            "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+            "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+          }
         ]
       }
     }
@@ -320492,8 +321385,8 @@ The required object for block production according to the Fulu CL spec.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|block|object|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
-|kzg_proofs|[string(hex)]|true|none|Cell proofs of the blobs as defined in EIP-7594|
+|block|[Fulu.BlockContentsBlock](#schemafulu.blockcontentsblock)|true|none|The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.|
+|kzg_proofs|[Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs](#schemagloas.signedexecutionpayloadenvelopecontentskzgproofs)|true|none|Cell proofs of the blobs as defined in EIP-7594|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Fulu.SignedBlockContents">Fulu.SignedBlockContents</h2>
@@ -320564,7 +321457,25 @@ The required object for block production according to the Fulu CL spec.
               },
               "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
             },
-            "attestation_2": {}
+            "attestation_2": {
+              "attesting_indices": [
+                "1"
+              ],
+              "data": {
+                "slot": "1",
+                "index": "0",
+                "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+                "source": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                },
+                "target": {
+                  "epoch": "1",
+                  "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+                }
+              },
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+            }
           }
         ],
         "attestations": [
@@ -320659,6 +321570,21 @@ The required object for block production according to the Fulu CL spec.
           "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
         ],
         "execution_payload": {
+          "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+          "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "block_number": "1",
+          "gas_limit": "1",
+          "gas_used": "1",
+          "timestamp": "1",
+          "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "base_fee_per_gas": "1",
+          "blob_gas_used": "1",
+          "excess_blob_gas": "1",
+          "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
           "transactions": [
             "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
           ],
@@ -320673,13 +321599,27 @@ The required object for block production according to the Fulu CL spec.
         },
         "execution_requests": {
           "deposits": [
-            {}
+            {
+              "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+              "amount": "1",
+              "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+              "index": "1"
+            }
           ],
           "withdrawals": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "amount": "1"
+            }
           ],
           "consolidations": [
-            {}
+            {
+              "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+              "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+              "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+            }
           ]
         }
       }
@@ -320702,7 +321642,7 @@ The required signed components of block production according to the Fulu CL spec
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |signed_block|[Electra.SignedBeaconBlock](#schemaelectra.signedbeaconblock)|true|none|The [`SignedBeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#signedbeaconblock) object envelope from the CL Electra spec.|
-|kzg_proofs|[string(hex)]|true|none|Cell proofs of the blobs as defined in EIP-7594|
+|kzg_proofs|[Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs](#schemagloas.signedexecutionpayloadenvelopecontentskzgproofs)|true|none|Cell proofs of the blobs as defined in EIP-7594|
 |blobs|[Blobs](#schemablobs)|true|none|none|
 
 <h2 id="tocS_Fulu.DataColumnSidecars">Fulu.DataColumnSidecars</h2>
@@ -320723,7 +321663,7 @@ The required signed components of block production according to the Fulu CL spec
       "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
     ],
     "kzg_proofs": [
-      {}
+      "string"
     ],
     "signed_block_header": {
       "message": {
@@ -320760,7 +321700,7 @@ The required signed components of block production according to the Fulu CL spec
       "string"
     ],
     "kzg_proofs": [
-      {}
+      "string"
     ],
     "slot": "1",
     "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
@@ -321676,7 +322616,7 @@ fork choice node attributes
 |finalized_epoch|[Uint64](#schemauint64)|true|none|none|
 |weight|[Uint64](#schemauint64)|true|none|none|
 |validity|string|true|none|none|
-|execution_block_hash|string(hex)|true|none|The `block_hash` from the `execution_payload` of the `BeaconBlock`|
+|execution_block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|The `block_hash` from the `execution_payload` of the `BeaconBlock`|
 |extra_data|[ExtraData](#schemaextradata)|false|none|Extra data that may differ between clients, or an empty object if none is provided.|
 
 #### Enumerated Values
@@ -321747,7 +322687,7 @@ A fork choice node, identified by its block root and payload status.
 |finalized_checkpoint|[Checkpoint](#schemacheckpoint)|true|none|The finalized checkpoint recorded for this fork choice node.|
 |weight|[Uint64](#schemauint64)|true|none|The raw stored weight of this fork choice node in Gwei.|
 |validity|string|true|none|The execution validity of the chain ending at `execution_block_hash`.|
-|execution_block_hash|string(hex)|true|none|For `full` nodes, the block's execution payload hash. For Gloas `pending` and `empty` nodes,<br>the bid's `parent_block_hash`.<br>|
+|execution_block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|For `full` nodes, the block's execution payload hash. For Gloas `pending` and `empty` nodes,<br>the bid's `parent_block_hash`.<br>|
 |payload_attester_count|[Uint64](#schemauint64)|true|none|Number of PTC positions with a recorded vote.|
 |payload_availability_yes_count|[Uint64](#schemauint64)|true|none|Number of PTC positions voting that the payload was received on time.|
 |payload_data_availability_yes_count|[Uint64](#schemauint64)|true|none|Number of PTC positions voting that the blob data is available.|
@@ -321853,3 +322793,3015 @@ Rewards info for attestations
 |---|---|---|---|---|
 |ideal_rewards|[object]|true|none|none|
 |total_rewards|[object]|true|none|none|
+
+<h2 id="tocS_Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0">Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.builderpreferencesentryproposerpubkeyallof0"></a>
+<a id="schema_Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0"></a>
+<a id="tocSgloas.builderpreferencesentryproposerpubkeyallof0"></a>
+<a id="tocsgloas.builderpreferencesentryproposerpubkeyallof0"></a>
+
+```json
+"0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+```
+
+The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._
+
+<h2 id="tocS_NetworkIdentityP2pAddressesItems">NetworkIdentityP2pAddressesItems</h2>
+<!-- backwards compatibility -->
+<a id="schemanetworkidentityp2paddressesitems"></a>
+<a id="schema_NetworkIdentityP2pAddressesItems"></a>
+<a id="tocSnetworkidentityp2paddressesitems"></a>
+<a id="tocsnetworkidentityp2paddressesitems"></a>
+
+```json
+"/ip4/7.7.7.7/tcp/4242/p2p/QmYyQSo1c1Ym7orWxLYvCrM2EmxFTANf8wXmmE7DWjhx5N"
+```
+
+Node's addresses on which eth2 RPC requests are served. [Read more](https://docs.libp2p.io/reference/glossary/#multiaddr)
+
+<h2 id="tocS_Gloas.BeaconStateJustificationBits">Gloas.BeaconStateJustificationBits</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatejustificationbits"></a>
+<a id="schema_Gloas.BeaconStateJustificationBits"></a>
+<a id="tocSgloas.beaconstatejustificationbits"></a>
+<a id="tocsgloas.beaconstatejustificationbits"></a>
+
+```json
+"0x01"
+```
+
+Bit set for every recent justified epoch.
+
+<h2 id="tocS_NetworkIdentityEnr">NetworkIdentityEnr</h2>
+<!-- backwards compatibility -->
+<a id="schemanetworkidentityenr"></a>
+<a id="schema_NetworkIdentityEnr"></a>
+<a id="tocSnetworkidentityenr"></a>
+<a id="tocsnetworkidentityenr"></a>
+
+```json
+"enr:-IS4QHCYrYZbAKWCBRlAy5zzaDZXJBGkcnh4MHcBFZntXNFrdvJjX04jRzjzCBOonrkTfj499SZuOh8R33Ls8RRcy5wBgmlkgnY0gmlwhH8AAAGJc2VjcDI1NmsxoQPKY0yuDUmstAHYpMa2_oxVtw0RW_QAdpzBQA8yWM0xOIN1ZHCCdl8"
+```
+
+Ethereum node record. [Read more](https://eips.ethereum.org/EIPS/eip-778)
+
+<h2 id="tocS_Gloas.BeaconStateLatestBlockHeader">Gloas.BeaconStateLatestBlockHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatelatestblockheader"></a>
+<a id="schema_Gloas.BeaconStateLatestBlockHeader"></a>
+<a id="tocSgloas.beaconstatelatestblockheader"></a>
+<a id="tocsgloas.beaconstatelatestblockheader"></a>
+
+```json
+{
+  "slot": "1",
+  "proposer_index": "1",
+  "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|slot|[Uint64](#schemauint64)|true|none|The slot to which this block corresponds.|
+|proposer_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
+|parent_root|[Root](#schemaroot)|true|none|The signing merkle root of the parent `BeaconBlock`.|
+|state_root|[Root](#schemaroot)|true|none|The tree hash merkle root of the `BeaconState` for the `BeaconBlock`.|
+|body_root|[Root](#schemaroot)|true|none|The tree hash merkle root of the `BeaconBlockBody` for the `BeaconBlock`|
+
+<h2 id="tocS_Gloas.BeaconStateEth1Data">Gloas.BeaconStateEth1Data</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstateeth1data"></a>
+<a id="schema_Gloas.BeaconStateEth1Data"></a>
+<a id="tocSgloas.beaconstateeth1data"></a>
+<a id="tocsgloas.beaconstateeth1data"></a>
+
+```json
+{
+  "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "deposit_count": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deposit_root|[Root](#schemaroot)|true|none|Root of the deposit tree.|
+|deposit_count|[Uint64](#schemauint64)|true|none|Total number of deposits.|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|Ethereum 1.x block hash.|
+
+<h2 id="tocS_ValidatorResponseValidator">ValidatorResponseValidator</h2>
+<!-- backwards compatibility -->
+<a id="schemavalidatorresponsevalidator"></a>
+<a id="schema_ValidatorResponseValidator"></a>
+<a id="tocSvalidatorresponsevalidator"></a>
+<a id="tocsvalidatorresponsevalidator"></a>
+
+```json
+{
+  "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+  "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "effective_balance": "1",
+  "slashed": false,
+  "activation_eligibility_epoch": "1",
+  "activation_epoch": "1",
+  "exit_epoch": "1",
+  "withdrawable_epoch": "1"
+}
+```
+
+The [`Validator`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#validator) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+|withdrawal_credentials|[Root](#schemaroot)|true|none|Root of withdrawal credentials|
+|effective_balance|[Uint64](#schemauint64)|true|none|Balance at stake in Gwei.|
+|slashed|boolean|true|none|Was validator slashed (not longer active).|
+|activation_eligibility_epoch|[Uint64](#schemauint64)|true|none|When criteria for activation were met.|
+|activation_epoch|[Uint64](#schemauint64)|true|none|Epoch when validator activated. 'FAR_FUTURE_EPOCH' if not activated|
+|exit_epoch|[Uint64](#schemauint64)|true|none|Epoch when validator exited. 'FAR_FUTURE_EPOCH' if not exited.|
+|withdrawable_epoch|[Uint64](#schemauint64)|true|none|When validator can withdraw or transfer funds. 'FAR_FUTURE_EPOCH' if not defined|
+
+<h2 id="tocS_Gloas.BeaconStateRandaoMixesItems">Gloas.BeaconStateRandaoMixesItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstaterandaomixesitems"></a>
+<a id="schema_Gloas.BeaconStateRandaoMixesItems"></a>
+<a id="tocSgloas.beaconstaterandaomixesitems"></a>
+<a id="tocsgloas.beaconstaterandaomixesitems"></a>
+
+```json
+"0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+```
+
+<h2 id="tocS_Phase0.BeaconStateCurrentEpochAttestationsItems">Phase0.BeaconStateCurrentEpochAttestationsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaphase0.beaconstatecurrentepochattestationsitems"></a>
+<a id="schema_Phase0.BeaconStateCurrentEpochAttestationsItems"></a>
+<a id="tocSphase0.beaconstatecurrentepochattestationsitems"></a>
+<a id="tocsphase0.beaconstatecurrentepochattestationsitems"></a>
+
+```json
+{
+  "aggregation_bits": "0x01",
+  "data": {
+    "slot": "1",
+    "index": "0",
+    "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "source": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    },
+    "target": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    }
+  },
+  "inclusion_delay": "1",
+  "proposer_index": "1"
+}
+```
+
+The [`PendingAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#pendingattestation) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|aggregation_bits|[Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits](#schemaphase0.beaconstatecurrentepochattestationsitemsaggregationbits)|true|none|Attester aggregation bits.|
+|data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
+|inclusion_delay|[Uint64](#schemauint64)|true|none|none|
+|proposer_index|[Uint64](#schemauint64)|true|none|none|
+
+<h2 id="tocS_Gloas.BeaconBlockAllOf1BodyDepositsItems">Gloas.BeaconBlockAllOf1BodyDepositsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconblockallof1bodydepositsitems"></a>
+<a id="schema_Gloas.BeaconBlockAllOf1BodyDepositsItems"></a>
+<a id="tocSgloas.beaconblockallof1bodydepositsitems"></a>
+<a id="tocsgloas.beaconblockallof1bodydepositsitems"></a>
+
+```json
+{
+  "proof": [
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  ],
+  "data": {
+    "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "amount": "1",
+    "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  }
+}
+```
+
+The [`Deposit`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#deposit) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|proof|[[Root](#schemaroot)]|true|none|Branch in the deposit tree.|
+|data|object|true|none|The [`DepositData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#depositdata) object from the CL spec.|
+
+<h2 id="tocS_Phase0.AttesterSlashingAttestation1">Phase0.AttesterSlashingAttestation1</h2>
+<!-- backwards compatibility -->
+<a id="schemaphase0.attesterslashingattestation1"></a>
+<a id="schema_Phase0.AttesterSlashingAttestation1"></a>
+<a id="tocSphase0.attesterslashingattestation1"></a>
+<a id="tocsphase0.attesterslashingattestation1"></a>
+
+```json
+{
+  "attesting_indices": [
+    "1"
+  ],
+  "data": {
+    "slot": "1",
+    "index": "0",
+    "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "source": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    },
+    "target": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    }
+  },
+  "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+}
+```
+
+The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#indexedattestation) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attesting_indices|[[Uint64](#schemauint64)]|true|none|Attesting validator indices|
+|data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
+|signature|[Signature](#schemasignature)|true|none|The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.|
+
+<h2 id="tocS_Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits">Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits</h2>
+<!-- backwards compatibility -->
+<a id="schemaphase0.beaconstatecurrentepochattestationsitemsaggregationbits"></a>
+<a id="schema_Phase0.BeaconStateCurrentEpochAttestationsItemsAggregationBits"></a>
+<a id="tocSphase0.beaconstatecurrentepochattestationsitemsaggregationbits"></a>
+<a id="tocsphase0.beaconstatecurrentepochattestationsitemsaggregationbits"></a>
+
+```json
+"0x01"
+```
+
+Attester aggregation bits.
+
+<h2 id="tocS_Gloas.BeaconBlockAllOf0">Gloas.BeaconBlockAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconblockallof0"></a>
+<a id="schema_Gloas.BeaconBlockAllOf0"></a>
+<a id="tocSgloas.beaconblockallof0"></a>
+<a id="tocsgloas.beaconblockallof0"></a>
+
+```json
+{
+  "slot": "1",
+  "proposer_index": "1",
+  "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|slot|[Uint64](#schemauint64)|true|none|The slot to which this block corresponds.|
+|proposer_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
+|parent_root|[Root](#schemaroot)|true|none|The signing Merkle root of the parent `BeaconBlock`.|
+|state_root|[Root](#schemaroot)|true|none|The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.|
+
+<h2 id="tocS_Gloas.LightClientFinalityUpdateSyncAggregate">Gloas.LightClientFinalityUpdateSyncAggregate</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.lightclientfinalityupdatesyncaggregate"></a>
+<a id="schema_Gloas.LightClientFinalityUpdateSyncAggregate"></a>
+<a id="tocSgloas.lightclientfinalityupdatesyncaggregate"></a>
+<a id="tocsgloas.lightclientfinalityupdatesyncaggregate"></a>
+
+```json
+{
+  "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+}
+```
+
+The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sync_committee_bits|[Gloas.BeaconStateJustificationBits](#schemagloas.beaconstatejustificationbits)|true|none|Aggregation bits of sync|
+|sync_committee_signature|[Signature](#schemasignature)|true|none|none|
+
+<h2 id="tocS_Gloas.BeaconStateNextSyncCommittee">Gloas.BeaconStateNextSyncCommittee</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatenextsynccommittee"></a>
+<a id="schema_Gloas.BeaconStateNextSyncCommittee"></a>
+<a id="tocSgloas.beaconstatenextsynccommittee"></a>
+<a id="tocsgloas.beaconstatenextsynccommittee"></a>
+
+```json
+{
+  "pubkeys": [
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+  ],
+  "aggregate_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pubkeys|[[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)]|true|none|none|
+|aggregate_pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|The validator's BLS public key, uniquely identifying them. _48-bytes, hex encoded with 0x prefix, case insensitive._|
+
+<h2 id="tocS_Deneb.LightClientBootstrapCurrentSyncCommitteeBranch">Deneb.LightClientBootstrapCurrentSyncCommitteeBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemadeneb.lightclientbootstrapcurrentsynccommitteebranch"></a>
+<a id="schema_Deneb.LightClientBootstrapCurrentSyncCommitteeBranch"></a>
+<a id="tocSdeneb.lightclientbootstrapcurrentsynccommitteebranch"></a>
+<a id="tocsdeneb.lightclientbootstrapcurrentsynccommitteebranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+<h2 id="tocS_Altair.LightClientBootstrapHeader">Altair.LightClientBootstrapHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemaaltair.lightclientbootstrapheader"></a>
+<a id="schema_Altair.LightClientBootstrapHeader"></a>
+<a id="tocSaltair.lightclientbootstrapheader"></a>
+<a id="tocsaltair.lightclientbootstrapheader"></a>
+
+```json
+{
+  "beacon": {
+    "slot": "1",
+    "proposer_index": "1",
+    "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|beacon|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+
+<h2 id="tocS_Deneb.LightClientUpdateNextSyncCommitteeBranch">Deneb.LightClientUpdateNextSyncCommitteeBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemadeneb.lightclientupdatenextsynccommitteebranch"></a>
+<a id="schema_Deneb.LightClientUpdateNextSyncCommitteeBranch"></a>
+<a id="tocSdeneb.lightclientupdatenextsynccommitteebranch"></a>
+<a id="tocsdeneb.lightclientupdatenextsynccommitteebranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+<h2 id="tocS_Deneb.LightClientFinalityUpdateFinalityBranch">Deneb.LightClientFinalityUpdateFinalityBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemadeneb.lightclientfinalityupdatefinalitybranch"></a>
+<a id="schema_Deneb.LightClientFinalityUpdateFinalityBranch"></a>
+<a id="tocSdeneb.lightclientfinalityupdatefinalitybranch"></a>
+<a id="tocsdeneb.lightclientfinalityupdatefinalitybranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+<h2 id="tocS_Fulu.BeaconStateCurrentEpochParticipation">Fulu.BeaconStateCurrentEpochParticipation</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.beaconstatecurrentepochparticipation"></a>
+<a id="schema_Fulu.BeaconStateCurrentEpochParticipation"></a>
+<a id="tocSfulu.beaconstatecurrentepochparticipation"></a>
+<a id="tocsfulu.beaconstatecurrentepochparticipation"></a>
+
+```json
+[
+  "0"
+]
+```
+
+<h2 id="tocS_Altair.SyncCommitteeValidators">Altair.SyncCommitteeValidators</h2>
+<!-- backwards compatibility -->
+<a id="schemaaltair.synccommitteevalidators"></a>
+<a id="schema_Altair.SyncCommitteeValidators"></a>
+<a id="tocSaltair.synccommitteevalidators"></a>
+<a id="tocsaltair.synccommitteevalidators"></a>
+
+```json
+[
+  "1"
+]
+```
+
+all of the validator indices in the current sync committee
+
+<h2 id="tocS_Bellatrix.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0">Bellatrix.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemabellatrix.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+<a id="schema_Bellatrix.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0"></a>
+<a id="tocSbellatrix.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+<a id="tocsbellatrix.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayload) object from the CL Bellatrix spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+
+<h2 id="tocS_Gloas.BeaconStateLatestBlockHash">Gloas.BeaconStateLatestBlockHash</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatelatestblockhash"></a>
+<a id="schema_Gloas.BeaconStateLatestBlockHash"></a>
+<a id="tocSgloas.beaconstatelatestblockhash"></a>
+<a id="tocsgloas.beaconstatelatestblockhash"></a>
+
+```json
+"0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+```
+
+<h2 id="tocS_Gloas.ExecutionPayloadLogsBloom">Gloas.ExecutionPayloadLogsBloom</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadlogsbloom"></a>
+<a id="schema_Gloas.ExecutionPayloadLogsBloom"></a>
+<a id="tocSgloas.executionpayloadlogsbloom"></a>
+<a id="tocsgloas.executionpayloadlogsbloom"></a>
+
+```json
+"0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+```
+
+<h2 id="tocS_Gloas.ExecutionPayloadExtraData">Gloas.ExecutionPayloadExtraData</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadextradata"></a>
+<a id="schema_Gloas.ExecutionPayloadExtraData"></a>
+<a id="tocSgloas.executionpayloadextradata"></a>
+<a id="tocsgloas.executionpayloadextradata"></a>
+
+```json
+"0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+```
+
+Extra data on the execution (Ethereum 1) network.
+
+<h2 id="tocS_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions">Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.beaconblockallof1bodyallof1executionpayloadallof1transactions"></a>
+<a id="schema_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions"></a>
+<a id="tocScapella.beaconblockallof1bodyallof1executionpayloadallof1transactions"></a>
+<a id="tocscapella.beaconblockallof1bodyallof1executionpayloadallof1transactions"></a>
+
+```json
+[
+  "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+]
+```
+
+<h2 id="tocS_Bellatrix.BeaconBlockAllOf1BodyAllOf0">Bellatrix.BeaconBlockAllOf1BodyAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemabellatrix.beaconblockallof1bodyallof0"></a>
+<a id="schema_Bellatrix.BeaconBlockAllOf1BodyAllOf0"></a>
+<a id="tocSbellatrix.beaconblockallof1bodyallof0"></a>
+<a id="tocsbellatrix.beaconblockallof1bodyallof0"></a>
+
+```json
+{
+  "randao_reveal": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+  "eth1_data": {
+    "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "deposit_count": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "graffiti": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "proposer_slashings": [
+    {
+      "signed_header_1": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "signed_header_2": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attester_slashings": [
+    {
+      "attestation_1": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "attestation_2": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attestations": [
+    {
+      "aggregation_bits": "0x01",
+      "data": {
+        "slot": "1",
+        "index": "0",
+        "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "source": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "target": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        }
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "deposits": [
+    {
+      "proof": [
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      ],
+      "data": {
+        "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "amount": "1",
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "voluntary_exits": [
+    {
+      "message": {
+        "epoch": "1",
+        "validator_index": "1"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "sync_aggregate": {
+    "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  }
+}
+```
+
+The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#beaconblockbody) object from the CL Bellatrix spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randao_reveal|[Signature](#schemasignature)|true|none|The RanDAO reveal value provided by the validator.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|graffiti|[Graffiti](#schemagraffiti)|true|none|none|
+|proposer_slashings|[[Phase0.ProposerSlashing](#schemaphase0.proposerslashing)]|true|none|none|
+|attester_slashings|[[Phase0.AttesterSlashing](#schemaphase0.attesterslashing)]|true|none|none|
+|attestations|[[Phase0.Attestation](#schemaphase0.attestation)]|true|none|none|
+|deposits|[[Gloas.BeaconBlockAllOf1BodyDepositsItems](#schemagloas.beaconblockallof1bodydepositsitems)]|true|none|none|
+|voluntary_exits|[[Phase0.SignedVoluntaryExit](#schemaphase0.signedvoluntaryexit)]|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+
+<h2 id="tocS_Bellatrix.BeaconStateLatestExecutionPayloadHeader">Bellatrix.BeaconStateLatestExecutionPayloadHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemabellatrix.beaconstatelatestexecutionpayloadheader"></a>
+<a id="schema_Bellatrix.BeaconStateLatestExecutionPayloadHeader"></a>
+<a id="tocSbellatrix.beaconstatelatestexecutionpayloadheader"></a>
+<a id="tocsbellatrix.beaconstatelatestexecutionpayloadheader"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/bellatrix/beacon-chain.md#executionpayloadheader) object from the CL Bellatrix spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|transactions_root|[Root](#schemaroot)|true|none|none|
+
+<h2 id="tocS_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0">Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+<a id="schema_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf0"></a>
+<a id="tocScapella.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+<a id="tocscapella.beaconblockallof1bodyallof1executionpayloadallof0"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayload) object from the CL Capella spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+
+<h2 id="tocS_Gloas.BeaconStateHistoricalSummariesItems">Gloas.BeaconStateHistoricalSummariesItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatehistoricalsummariesitems"></a>
+<a id="schema_Gloas.BeaconStateHistoricalSummariesItems"></a>
+<a id="tocSgloas.beaconstatehistoricalsummariesitems"></a>
+<a id="tocsgloas.beaconstatehistoricalsummariesitems"></a>
+
+```json
+{
+  "block_summary_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "state_summary_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`HistoricalSummary`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#historicalsummary) object from the CL Capella spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|block_summary_root|[Root](#schemaroot)|true|none|none|
+|state_summary_root|[Root](#schemaroot)|true|none|none|
+
+<h2 id="tocS_Capella.BeaconBlockAllOf1BodyAllOf0">Capella.BeaconBlockAllOf1BodyAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.beaconblockallof1bodyallof0"></a>
+<a id="schema_Capella.BeaconBlockAllOf1BodyAllOf0"></a>
+<a id="tocScapella.beaconblockallof1bodyallof0"></a>
+<a id="tocscapella.beaconblockallof1bodyallof0"></a>
+
+```json
+{
+  "randao_reveal": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+  "eth1_data": {
+    "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "deposit_count": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "graffiti": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "proposer_slashings": [
+    {
+      "signed_header_1": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "signed_header_2": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attester_slashings": [
+    {
+      "attestation_1": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "attestation_2": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attestations": [
+    {
+      "aggregation_bits": "0x01",
+      "data": {
+        "slot": "1",
+        "index": "0",
+        "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "source": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "target": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        }
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "deposits": [
+    {
+      "proof": [
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      ],
+      "data": {
+        "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "amount": "1",
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "voluntary_exits": [
+    {
+      "message": {
+        "epoch": "1",
+        "validator_index": "1"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "sync_aggregate": {
+    "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  },
+  "bls_to_execution_changes": [
+    {
+      "message": {
+        "validator_index": "1",
+        "from_bls_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "to_execution_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ]
+}
+```
+
+The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#beaconblockbody) object from the CL Capella spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randao_reveal|[Signature](#schemasignature)|true|none|The RanDAO reveal value provided by the validator.|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|graffiti|[Graffiti](#schemagraffiti)|true|none|none|
+|proposer_slashings|[[Phase0.ProposerSlashing](#schemaphase0.proposerslashing)]|true|none|none|
+|attester_slashings|[[Phase0.AttesterSlashing](#schemaphase0.attesterslashing)]|true|none|none|
+|attestations|[[Phase0.Attestation](#schemaphase0.attestation)]|true|none|none|
+|deposits|[[Gloas.BeaconBlockAllOf1BodyDepositsItems](#schemagloas.beaconblockallof1bodydepositsitems)]|true|none|none|
+|voluntary_exits|[[Phase0.SignedVoluntaryExit](#schemaphase0.signedvoluntaryexit)]|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|bls_to_execution_changes|[[Capella.SignedBLSToExecutionChange](#schemacapella.signedblstoexecutionchange)]|true|none|none|
+
+<h2 id="tocS_Capella.BeaconStateLatestExecutionPayloadHeader">Capella.BeaconStateLatestExecutionPayloadHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.beaconstatelatestexecutionpayloadheader"></a>
+<a id="schema_Capella.BeaconStateLatestExecutionPayloadHeader"></a>
+<a id="tocScapella.beaconstatelatestexecutionpayloadheader"></a>
+<a id="tocscapella.beaconstatelatestexecutionpayloadheader"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|transactions_root|[Root](#schemaroot)|true|none|none|
+|withdrawals_root|[Root](#schemaroot)|true|none|none|
+
+<h2 id="tocS_Electra.LightClientBootstrapHeaderExecutionBranch">Electra.LightClientBootstrapHeaderExecutionBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.lightclientbootstrapheaderexecutionbranch"></a>
+<a id="schema_Electra.LightClientBootstrapHeaderExecutionBranch"></a>
+<a id="tocSelectra.lightclientbootstrapheaderexecutionbranch"></a>
+<a id="tocselectra.lightclientbootstrapheaderexecutionbranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+<h2 id="tocS_Capella.LightClientBootstrapHeader">Capella.LightClientBootstrapHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.lightclientbootstrapheader"></a>
+<a id="schema_Capella.LightClientBootstrapHeader"></a>
+<a id="tocScapella.lightclientbootstrapheader"></a>
+<a id="tocscapella.lightclientbootstrapheader"></a>
+
+```json
+{
+  "beacon": {
+    "slot": "1",
+    "proposer_index": "1",
+    "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "execution": {
+    "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "block_number": "1",
+    "gas_limit": "1",
+    "gas_used": "1",
+    "timestamp": "1",
+    "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "base_fee_per_gas": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "execution_branch": [
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|beacon|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|execution|[Capella.BeaconStateLatestExecutionPayloadHeader](#schemacapella.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/capella/beacon-chain.md#executionpayloadheader) object from the CL Capella spec.|
+|execution_branch|[Electra.LightClientBootstrapHeaderExecutionBranch](#schemaelectra.lightclientbootstrapheaderexecutionbranch)|true|none|none|
+
+<h2 id="tocS_Fulu.BeaconStateLatestExecutionPayloadHeader">Fulu.BeaconStateLatestExecutionPayloadHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.beaconstatelatestexecutionpayloadheader"></a>
+<a id="schema_Fulu.BeaconStateLatestExecutionPayloadHeader"></a>
+<a id="tocSfulu.beaconstatelatestexecutionpayloadheader"></a>
+<a id="tocsfulu.beaconstatelatestexecutionpayloadheader"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "blob_gas_used": "1",
+  "excess_blob_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|blob_gas_used|[Uint64](#schemauint64)|true|none|none|
+|excess_blob_gas|[Uint64](#schemauint64)|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|transactions_root|[Root](#schemaroot)|true|none|none|
+|withdrawals_root|[Root](#schemaroot)|true|none|none|
+
+<h2 id="tocS_Deneb.BlindedBeaconBlockAllOf1BodyAllOf0">Deneb.BlindedBeaconBlockAllOf1BodyAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemadeneb.blindedbeaconblockallof1bodyallof0"></a>
+<a id="schema_Deneb.BlindedBeaconBlockAllOf1BodyAllOf0"></a>
+<a id="tocSdeneb.blindedbeaconblockallof1bodyallof0"></a>
+<a id="tocsdeneb.blindedbeaconblockallof1bodyallof0"></a>
+
+```json
+{
+  "randao_reveal": {},
+  "eth1_data": {
+    "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "deposit_count": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "graffiti": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "proposer_slashings": [
+    {
+      "signed_header_1": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "signed_header_2": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attester_slashings": [
+    {
+      "attestation_1": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "attestation_2": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attestations": [
+    {
+      "aggregation_bits": "0x01",
+      "data": {
+        "slot": "1",
+        "index": "0",
+        "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "source": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "target": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        }
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "deposits": [
+    {
+      "proof": [
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      ],
+      "data": {
+        "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "amount": "1",
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "voluntary_exits": [
+    {
+      "message": {
+        "epoch": "1",
+        "validator_index": "1"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "sync_aggregate": {
+    "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  },
+  "bls_to_execution_changes": [
+    {
+      "message": {
+        "validator_index": "1",
+        "from_bls_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "to_execution_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "blob_kzg_commitments": [
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+  ]
+}
+```
+
+The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#beaconblockbody) object from the CL Deneb spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randao_reveal|object|true|none|none|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|graffiti|[Graffiti](#schemagraffiti)|true|none|none|
+|proposer_slashings|[[Phase0.ProposerSlashing](#schemaphase0.proposerslashing)]|true|none|none|
+|attester_slashings|[[Phase0.AttesterSlashing](#schemaphase0.attesterslashing)]|true|none|none|
+|attestations|[[Phase0.Attestation](#schemaphase0.attestation)]|true|none|none|
+|deposits|[[Gloas.BeaconBlockAllOf1BodyDepositsItems](#schemagloas.beaconblockallof1bodydepositsitems)]|true|none|none|
+|voluntary_exits|[[Phase0.SignedVoluntaryExit](#schemaphase0.signedvoluntaryexit)]|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|bls_to_execution_changes|[[Capella.SignedBLSToExecutionChange](#schemacapella.signedblstoexecutionchange)]|true|none|none|
+|blob_kzg_commitments|[[Fulu.DataColumnSidecarsItemsKzgCommitmentsItems](#schemafulu.datacolumnsidecarsitemskzgcommitmentsitems)]|true|none|none|
+
+<h2 id="tocS_Fulu.BlockContentsBlockAllOf1BodyAllOf1ExecutionPayload">Fulu.BlockContentsBlockAllOf1BodyAllOf1ExecutionPayload</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.blockcontentsblockallof1bodyallof1executionpayload"></a>
+<a id="schema_Fulu.BlockContentsBlockAllOf1BodyAllOf1ExecutionPayload"></a>
+<a id="tocSfulu.blockcontentsblockallof1bodyallof1executionpayload"></a>
+<a id="tocsfulu.blockcontentsblockallof1bodyallof1executionpayload"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "blob_gas_used": "1",
+  "excess_blob_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "transactions": [
+    "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+  ],
+  "withdrawals": [
+    {
+      "index": "1",
+      "validator_index": "1",
+      "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "amount": "1"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|blob_gas_used|[Uint64](#schemauint64)|true|none|none|
+|excess_blob_gas|[Uint64](#schemauint64)|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|transactions|[Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Transactions](#schemacapella.beaconblockallof1bodyallof1executionpayloadallof1transactions)|true|none|none|
+|withdrawals|[Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals](#schemacapella.beaconblockallof1bodyallof1executionpayloadallof1withdrawals)|true|none|none|
+
+<h2 id="tocS_Electra.SignedBlockContentsKzgProofs">Electra.SignedBlockContentsKzgProofs</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.signedblockcontentskzgproofs"></a>
+<a id="schema_Electra.SignedBlockContentsKzgProofs"></a>
+<a id="tocSelectra.signedblockcontentskzgproofs"></a>
+<a id="tocselectra.signedblockcontentskzgproofs"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_Fulu.DataColumnSidecarsItemsKzgCommitmentsItems">Fulu.DataColumnSidecarsItemsKzgCommitmentsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.datacolumnsidecarsitemskzgcommitmentsitems"></a>
+<a id="schema_Fulu.DataColumnSidecarsItemsKzgCommitmentsItems"></a>
+<a id="tocSfulu.datacolumnsidecarsitemskzgcommitmentsitems"></a>
+<a id="tocsfulu.datacolumnsidecarsitemskzgcommitmentsitems"></a>
+
+```json
+"0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+```
+
+A G1 curve point. Same as BLS standard "is valid pubkey" check but also allows `0x00..00` for point-at-infinity
+
+<h2 id="tocS_Electra.LightClientBootstrapHeader">Electra.LightClientBootstrapHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.lightclientbootstrapheader"></a>
+<a id="schema_Electra.LightClientBootstrapHeader"></a>
+<a id="tocSelectra.lightclientbootstrapheader"></a>
+<a id="tocselectra.lightclientbootstrapheader"></a>
+
+```json
+{
+  "beacon": {
+    "slot": "1",
+    "proposer_index": "1",
+    "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "execution": {
+    "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "block_number": "1",
+    "gas_limit": "1",
+    "gas_used": "1",
+    "timestamp": "1",
+    "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "base_fee_per_gas": "1",
+    "blob_gas_used": "1",
+    "excess_blob_gas": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "transactions_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "withdrawals_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "execution_branch": [
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|beacon|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|execution|[Fulu.BeaconStateLatestExecutionPayloadHeader](#schemafulu.beaconstatelatestexecutionpayloadheader)|true|none|The [`ExecutionPayloadHeader`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayloadheader) object from the CL Deneb spec.|
+|execution_branch|[Electra.LightClientBootstrapHeaderExecutionBranch](#schemaelectra.lightclientbootstrapheaderexecutionbranch)|true|none|none|
+
+<h2 id="tocS_Fulu.BlockContentsBlock">Fulu.BlockContentsBlock</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.blockcontentsblock"></a>
+<a id="schema_Fulu.BlockContentsBlock"></a>
+<a id="tocSfulu.blockcontentsblock"></a>
+<a id="tocsfulu.blockcontentsblock"></a>
+
+```json
+{
+  "slot": "1",
+  "proposer_index": "1",
+  "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "body": {
+    "randao_reveal": {},
+    "eth1_data": {
+      "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "deposit_count": "1",
+      "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    },
+    "graffiti": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "proposer_slashings": [
+      {
+        "signed_header_1": {
+          "message": {
+            "slot": "1",
+            "proposer_index": "1",
+            "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        },
+        "signed_header_2": {
+          "message": {
+            "slot": "1",
+            "proposer_index": "1",
+            "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
+      }
+    ],
+    "attester_slashings": [
+      {
+        "attestation_1": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        },
+        "attestation_2": {
+          "attesting_indices": [
+            "1"
+          ],
+          "data": {
+            "slot": "1",
+            "index": "0",
+            "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+            "source": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            },
+            "target": {
+              "epoch": "1",
+              "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+            }
+          },
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
+      }
+    ],
+    "attestations": [
+      {
+        "aggregation_bits": "0x01",
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+        "committee_bits": "0x0000000000000001"
+      }
+    ],
+    "deposits": [
+      {
+        "proof": [
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        ],
+        "data": {
+          "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "amount": "1",
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+        }
+      }
+    ],
+    "voluntary_exits": [
+      {
+        "message": {
+          "epoch": "1",
+          "validator_index": "1"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    ],
+    "sync_aggregate": {
+      "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    },
+    "bls_to_execution_changes": [
+      {
+        "message": {
+          "validator_index": "1",
+          "from_bls_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "to_execution_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    ],
+    "blob_kzg_commitments": [
+      "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+    ],
+    "execution_payload": {
+      "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+      "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "block_number": "1",
+      "gas_limit": "1",
+      "gas_used": "1",
+      "timestamp": "1",
+      "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "base_fee_per_gas": "1",
+      "blob_gas_used": "1",
+      "excess_blob_gas": "1",
+      "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "transactions": [
+        "0x02f878831469668303f51d843b9ac9f9843b9aca0082520894c93269b73096998db66be0441e836d873535cb9c8894a19041886f000080c001a031cc29234036afbf9a1fb9476b463367cb1f957ac0b919b69bbc798436e604aaa018c4e9c3914eb27aadd0b91e10b18655739fcf8c1fc398763a9f1beecb8ddc86"
+      ],
+      "withdrawals": [
+        {
+          "index": "1",
+          "validator_index": "1",
+          "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "amount": "1"
+        }
+      ]
+    },
+    "execution_requests": {
+      "deposits": [
+        {
+          "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "amount": "1",
+          "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+          "index": "1"
+        }
+      ],
+      "withdrawals": [
+        {
+          "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "amount": "1"
+        }
+      ],
+      "consolidations": [
+        {
+          "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+          "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+          "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+        }
+      ]
+    }
+  }
+}
+```
+
+The [`BeaconBlock`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/phase0/beacon-chain.md#beaconblock) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|slot|[Uint64](#schemauint64)|true|none|The slot to which this block corresponds.|
+|proposer_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
+|parent_root|[Root](#schemaroot)|true|none|The signing Merkle root of the parent `BeaconBlock`.|
+|state_root|[Root](#schemaroot)|true|none|The tree hash Merkle root of the `BeaconState` for the `BeaconBlock`.|
+|body|object|true|none|none|
+
+<h2 id="tocS_Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofsItems">Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.signedexecutionpayloadenvelopecontentskzgproofsitems"></a>
+<a id="schema_Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofsItems"></a>
+<a id="tocSgloas.signedexecutionpayloadenvelopecontentskzgproofsitems"></a>
+<a id="tocsgloas.signedexecutionpayloadenvelopecontentskzgproofsitems"></a>
+
+```json
+"string"
+```
+
+A G1 curve point. Used for verifying that the `KZGCommitment` for a given `Blob` is correct.
+
+<h2 id="tocS_Gloas.ExecutionPayloadEnvelopeExecutionRequestsDepositsItems">Gloas.ExecutionPayloadEnvelopeExecutionRequestsDepositsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadenvelopeexecutionrequestsdepositsitems"></a>
+<a id="schema_Gloas.ExecutionPayloadEnvelopeExecutionRequestsDepositsItems"></a>
+<a id="tocSgloas.executionpayloadenvelopeexecutionrequestsdepositsitems"></a>
+<a id="tocsgloas.executionpayloadenvelopeexecutionrequestsdepositsitems"></a>
+
+```json
+{
+  "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+  "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "amount": "1",
+  "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+  "index": "1"
+}
+```
+
+The [`DepositRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#depositrequest) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|BLS public key of validator.|
+|withdrawal_credentials|[Root](#schemaroot)|true|none|The withdrawal credentials.|
+|amount|[Uint64](#schemauint64)|true|none|The value to be deposited (gwei).|
+|signature|[Signature](#schemasignature)|true|none|none|
+|index|[Uint64](#schemauint64)|true|none|The index of the deposit request.|
+
+<h2 id="tocS_Gloas.ExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems">Gloas.ExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadenvelopeexecutionrequestswithdrawalsitems"></a>
+<a id="schema_Gloas.ExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems"></a>
+<a id="tocSgloas.executionpayloadenvelopeexecutionrequestswithdrawalsitems"></a>
+<a id="tocsgloas.executionpayloadenvelopeexecutionrequestswithdrawalsitems"></a>
+
+```json
+{
+  "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+  "amount": "1"
+}
+```
+
+The [`WithdrawalRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#withdrawalrequest) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|source_address|[ExecutionAddress](#schemaexecutionaddress)|true|none|Execution address which sent the request.|
+|validator_pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|BLS public key of validator.|
+|amount|[Uint64](#schemauint64)|true|none|The value to be withdrawn (gwei).|
+
+<h2 id="tocS_Gloas.ExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems">Gloas.ExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadenvelopeexecutionrequestsconsolidationsitems"></a>
+<a id="schema_Gloas.ExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems"></a>
+<a id="tocSgloas.executionpayloadenvelopeexecutionrequestsconsolidationsitems"></a>
+<a id="tocsgloas.executionpayloadenvelopeexecutionrequestsconsolidationsitems"></a>
+
+```json
+{
+  "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+  "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+}
+```
+
+The [`ConsolidationRequest`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#consolidationrequest) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|source_address|[ExecutionAddress](#schemaexecutionaddress)|true|none|Execution address which sent the request.|
+|source_pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|BLS public key of validator to consolidate from.|
+|target_pubkey|[Gloas.BuilderPreferencesEntryProposerPubkeyAllOf0](#schemagloas.builderpreferencesentryproposerpubkeyallof0)|true|none|BLS public key of validator to consolidate to.|
+
+<h2 id="tocS_Electra.AttesterSlashingAttestation1">Electra.AttesterSlashingAttestation1</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.attesterslashingattestation1"></a>
+<a id="schema_Electra.AttesterSlashingAttestation1"></a>
+<a id="tocSelectra.attesterslashingattestation1"></a>
+<a id="tocselectra.attesterslashingattestation1"></a>
+
+```json
+{
+  "attesting_indices": [
+    "1"
+  ],
+  "data": {
+    "slot": "1",
+    "index": "0",
+    "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "source": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    },
+    "target": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    }
+  },
+  "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+}
+```
+
+The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#indexedattestation) object from the CL spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attesting_indices|[[Uint64](#schemauint64)]|true|none|Attesting validator indices|
+|data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
+|signature|[Signature](#schemasignature)|true|none|The BLS signature of the `IndexedAttestation`, created by the validator of the attestation.|
+
+<h2 id="tocS_Electra.LightClientFinalityUpdateFinalityBranch">Electra.LightClientFinalityUpdateFinalityBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.lightclientfinalityupdatefinalitybranch"></a>
+<a id="schema_Electra.LightClientFinalityUpdateFinalityBranch"></a>
+<a id="tocSelectra.lightclientfinalityupdatefinalitybranch"></a>
+<a id="tocselectra.lightclientfinalityupdatefinalitybranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+<h2 id="tocS_Gloas.BeaconStateCurrentEpochParticipationItems">Gloas.BeaconStateCurrentEpochParticipationItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.beaconstatecurrentepochparticipationitems"></a>
+<a id="schema_Gloas.BeaconStateCurrentEpochParticipationItems"></a>
+<a id="tocSgloas.beaconstatecurrentepochparticipationitems"></a>
+<a id="tocsgloas.beaconstatecurrentepochparticipationitems"></a>
+
+```json
+"0"
+```
+
+Unsigned 8 bit integer, max value 255
+
+<h2 id="tocS_Phase0.BeaconBlockAllOf0">Phase0.BeaconBlockAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaphase0.beaconblockallof0"></a>
+<a id="schema_Phase0.BeaconBlockAllOf0"></a>
+<a id="tocSphase0.beaconblockallof0"></a>
+<a id="tocsphase0.beaconblockallof0"></a>
+
+```json
+{
+  "slot": "1",
+  "proposer_index": "1",
+  "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|slot|[Uint64](#schemauint64)|true|none|The slot to which this block corresponds.|
+|proposer_index|[Uint64](#schemauint64)|true|none|Index of validator in validator registry.|
+|parent_root|[Root](#schemaroot)|true|none|The signing merkle root of the parent `BeaconBlock`.|
+|state_root|[Root](#schemaroot)|true|none|The tree hash merkle root of the `BeaconState` for the `BeaconBlock`.|
+
+<h2 id="tocS_Gloas.LightClientBootstrapHeader">Gloas.LightClientBootstrapHeader</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.lightclientbootstrapheader"></a>
+<a id="schema_Gloas.LightClientBootstrapHeader"></a>
+<a id="tocSgloas.lightclientbootstrapheader"></a>
+<a id="tocsgloas.lightclientbootstrapheader"></a>
+
+```json
+{
+  "beacon": {
+    "slot": "1",
+    "proposer_index": "1",
+    "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "execution_block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "execution_branch": [
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  ]
+}
+```
+
+The [`LightClientHeader`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#modified-lightclientheader) object from the CL Gloas spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|beacon|[Gloas.BeaconStateLatestBlockHeader](#schemagloas.beaconstatelatestblockheader)|true|none|The [`BeaconBlockHeader`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#beaconblockheader) object from the CL spec.|
+|execution_block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|execution_branch|[[Root](#schemaroot)]|true|none|Merkle proof consisting of [`floorlog2(EXECUTION_BLOCK_HASH_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots|
+
+<h2 id="tocS_Gloas.LightClientFinalityUpdateFinalityBranch">Gloas.LightClientFinalityUpdateFinalityBranch</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.lightclientfinalityupdatefinalitybranch"></a>
+<a id="schema_Gloas.LightClientFinalityUpdateFinalityBranch"></a>
+<a id="tocSgloas.lightclientfinalityupdatefinalitybranch"></a>
+<a id="tocsgloas.lightclientfinalityupdatefinalitybranch"></a>
+
+```json
+[
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+]
+```
+
+Merkle proof consisting of [`floorlog2(FINALIZED_ROOT_GINDEX_GLOAS)`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/light-client/sync-protocol.md#new-constants) roots
+
+<h2 id="tocS_Gloas.ExecutionPayloadEnvelopeExecutionRequests">Gloas.ExecutionPayloadEnvelopeExecutionRequests</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.executionpayloadenvelopeexecutionrequests"></a>
+<a id="schema_Gloas.ExecutionPayloadEnvelopeExecutionRequests"></a>
+<a id="tocSgloas.executionpayloadenvelopeexecutionrequests"></a>
+<a id="tocsgloas.executionpayloadenvelopeexecutionrequests"></a>
+
+```json
+{
+  "deposits": [
+    {
+      "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "amount": "1",
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+      "index": "1"
+    }
+  ],
+  "withdrawals": [
+    {
+      "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "amount": "1"
+    }
+  ],
+  "consolidations": [
+    {
+      "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+    }
+  ],
+  "builder_deposits": [
+    {
+      "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "amount": "1",
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "builder_exits": [
+    {
+      "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+    }
+  ]
+}
+```
+
+The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#executionrequests) object from the CL Gloas spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deposits|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsDepositsItems](#schemagloas.executionpayloadenvelopeexecutionrequestsdepositsitems)]|true|none|Progressive list of deposit requests.|
+|withdrawals|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems](#schemagloas.executionpayloadenvelopeexecutionrequestswithdrawalsitems)]|true|none|Progressive list of withdrawal requests.|
+|consolidations|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems](#schemagloas.executionpayloadenvelopeexecutionrequestsconsolidationsitems)]|true|none|Progressive list of consolidation requests.|
+|builder_deposits|[object]|true|none|Progressive list of builder deposit requests.|
+|builder_exits|[object]|true|none|Progressive list of builder exit requests.|
+
+<h2 id="tocS_Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs">Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.signedexecutionpayloadenvelopecontentskzgproofs"></a>
+<a id="schema_Gloas.SignedExecutionPayloadEnvelopeContentsKzgProofs"></a>
+<a id="tocSgloas.signedexecutionpayloadenvelopecontentskzgproofs"></a>
+<a id="tocsgloas.signedexecutionpayloadenvelopecontentskzgproofs"></a>
+
+```json
+[
+  "string"
+]
+```
+
+<h2 id="tocS_Gloas.AttesterSlashingAttestation1">Gloas.AttesterSlashingAttestation1</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.attesterslashingattestation1"></a>
+<a id="schema_Gloas.AttesterSlashingAttestation1"></a>
+<a id="tocSgloas.attesterslashingattestation1"></a>
+<a id="tocsgloas.attesterslashingattestation1"></a>
+
+```json
+{
+  "attesting_indices": [
+    "1"
+  ],
+  "data": {
+    "slot": "1",
+    "index": "0",
+    "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "source": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    },
+    "target": {
+      "epoch": "1",
+      "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+    }
+  },
+  "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+}
+```
+
+The [`IndexedAttestation`](https://github.com/ethereum/consensus-specs/blob/v1.7.0-beta.3/specs/gloas/beacon-chain.md#indexedattestation) object from the CL Gloas spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attesting_indices|[[Uint64](#schemauint64)]|true|none|Progressive list of attesting validator indices.|
+|data|[Phase0.AttestationData](#schemaphase0.attestationdata)|true|none|The [`AttestationData`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#attestationdata) object from the CL spec.|
+|signature|[Signature](#schemasignature)|true|none|The BLS signature of the indexed attestation.|
+
+<h2 id="tocS_Electra.BlindedBeaconBlockAllOf1BodyAllOf0">Electra.BlindedBeaconBlockAllOf1BodyAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.blindedbeaconblockallof1bodyallof0"></a>
+<a id="schema_Electra.BlindedBeaconBlockAllOf1BodyAllOf0"></a>
+<a id="tocSelectra.blindedbeaconblockallof1bodyallof0"></a>
+<a id="tocselectra.blindedbeaconblockallof1bodyallof0"></a>
+
+```json
+{
+  "randao_reveal": {},
+  "eth1_data": {
+    "deposit_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+    "deposit_count": "1",
+    "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+  },
+  "graffiti": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "proposer_slashings": [
+    {
+      "signed_header_1": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "signed_header_2": {
+        "message": {
+          "slot": "1",
+          "proposer_index": "1",
+          "parent_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "body_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attester_slashings": [
+    {
+      "attestation_1": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      },
+      "attestation_2": {
+        "attesting_indices": [
+          "1"
+        ],
+        "data": {
+          "slot": "1",
+          "index": "0",
+          "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+          "source": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          },
+          "target": {
+            "epoch": "1",
+            "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+          }
+        },
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "attestations": [
+    {
+      "aggregation_bits": "0x01",
+      "data": {
+        "slot": "1",
+        "index": "0",
+        "beacon_block_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "source": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        },
+        "target": {
+          "epoch": "1",
+          "root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+        }
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+      "committee_bits": "0x0000000000000001"
+    }
+  ],
+  "deposits": [
+    {
+      "proof": [
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+      ],
+      "data": {
+        "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+        "amount": "1",
+        "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+      }
+    }
+  ],
+  "voluntary_exits": [
+    {
+      "message": {
+        "epoch": "1",
+        "validator_index": "1"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "sync_aggregate": {
+    "sync_committee_bits": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+    "sync_committee_signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+  },
+  "bls_to_execution_changes": [
+    {
+      "message": {
+        "validator_index": "1",
+        "from_bls_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+        "to_execution_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09"
+      },
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505"
+    }
+  ],
+  "blob_kzg_commitments": [
+    "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+  ]
+}
+```
+
+The [`BeaconBlockBody`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#beaconblockbody) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|randao_reveal|object|true|none|none|
+|eth1_data|[Gloas.BeaconStateEth1Data](#schemagloas.beaconstateeth1data)|true|none|The [`Eth1Data`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/phase0/beacon-chain.md#eth1data) object from the CL spec.|
+|graffiti|[Graffiti](#schemagraffiti)|true|none|none|
+|proposer_slashings|[[Phase0.ProposerSlashing](#schemaphase0.proposerslashing)]|true|none|none|
+|attester_slashings|[[Electra.AttesterSlashing](#schemaelectra.attesterslashing)]|true|none|none|
+|attestations|[[Electra.Attestation](#schemaelectra.attestation)]|true|none|none|
+|deposits|[[Gloas.BeaconBlockAllOf1BodyDepositsItems](#schemagloas.beaconblockallof1bodydepositsitems)]|true|none|none|
+|voluntary_exits|[[Phase0.SignedVoluntaryExit](#schemaphase0.signedvoluntaryexit)]|true|none|none|
+|sync_aggregate|[Gloas.LightClientFinalityUpdateSyncAggregate](#schemagloas.lightclientfinalityupdatesyncaggregate)|true|none|The [`SyncAggregate`](https://github.com/ethereum/consensus-specs/blob/v1.3.0/specs/altair/beacon-chain.md#syncaggregate) object from the CL Altair spec.|
+|bls_to_execution_changes|[[Capella.SignedBLSToExecutionChange](#schemacapella.signedblstoexecutionchange)]|true|none|none|
+|blob_kzg_commitments|[[Fulu.DataColumnSidecarsItemsKzgCommitmentsItems](#schemafulu.datacolumnsidecarsitemskzgcommitmentsitems)]|true|none|none|
+
+<h2 id="tocS_Fulu.BeaconStateLatestExecutionPayloadHeaderAllOf0">Fulu.BeaconStateLatestExecutionPayloadHeaderAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemafulu.beaconstatelatestexecutionpayloadheaderallof0"></a>
+<a id="schema_Fulu.BeaconStateLatestExecutionPayloadHeaderAllOf0"></a>
+<a id="tocSfulu.beaconstatelatestexecutionpayloadheaderallof0"></a>
+<a id="tocsfulu.beaconstatelatestexecutionpayloadheaderallof0"></a>
+
+```json
+{
+  "parent_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "fee_recipient": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+  "state_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "receipts_root": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "logs_bloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "prev_randao": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "block_number": "1",
+  "gas_limit": "1",
+  "gas_used": "1",
+  "timestamp": "1",
+  "extra_data": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+  "base_fee_per_gas": "1",
+  "blob_gas_used": "1",
+  "excess_blob_gas": "1",
+  "block_hash": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2"
+}
+```
+
+The [`ExecutionPayload`](https://github.com/ethereum/consensus-specs/blob/v1.4.0/specs/deneb/beacon-chain.md#executionpayload) object from the CL Deneb spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|parent_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+|fee_recipient|[ExecutionAddress](#schemaexecutionaddress)|true|none|An address on the execution (Ethereum 1) network.|
+|state_root|[Root](#schemaroot)|true|none|none|
+|receipts_root|[Root](#schemaroot)|true|none|none|
+|logs_bloom|[Gloas.ExecutionPayloadLogsBloom](#schemagloas.executionpayloadlogsbloom)|true|none|none|
+|prev_randao|[Gloas.BeaconStateRandaoMixesItems](#schemagloas.beaconstaterandaomixesitems)|true|none|none|
+|block_number|[Uint64](#schemauint64)|true|none|none|
+|gas_limit|[Uint64](#schemauint64)|true|none|none|
+|gas_used|[Uint64](#schemauint64)|true|none|none|
+|timestamp|[Uint64](#schemauint64)|true|none|none|
+|extra_data|[Gloas.ExecutionPayloadExtraData](#schemagloas.executionpayloadextradata)|true|none|Extra data on the execution (Ethereum 1) network.|
+|base_fee_per_gas|string|true|none|none|
+|blob_gas_used|[Uint64](#schemauint64)|true|none|none|
+|excess_blob_gas|[Uint64](#schemauint64)|true|none|none|
+|block_hash|[Gloas.BeaconStateLatestBlockHash](#schemagloas.beaconstatelatestblockhash)|true|none|none|
+
+<h2 id="tocS_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals">Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals</h2>
+<!-- backwards compatibility -->
+<a id="schemacapella.beaconblockallof1bodyallof1executionpayloadallof1withdrawals"></a>
+<a id="schema_Capella.BeaconBlockAllOf1BodyAllOf1ExecutionPayloadAllOf1Withdrawals"></a>
+<a id="tocScapella.beaconblockallof1bodyallof1executionpayloadallof1withdrawals"></a>
+<a id="tocscapella.beaconblockallof1bodyallof1executionpayloadallof1withdrawals"></a>
+
+```json
+[
+  {
+    "index": "1",
+    "validator_index": "1",
+    "address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+    "amount": "1"
+  }
+]
+```
+
+<h2 id="tocS_Electra.BlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests">Electra.BlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests</h2>
+<!-- backwards compatibility -->
+<a id="schemaelectra.blindedbeaconblockallof1bodyallof1executionrequests"></a>
+<a id="schema_Electra.BlindedBeaconBlockAllOf1BodyAllOf1ExecutionRequests"></a>
+<a id="tocSelectra.blindedbeaconblockallof1bodyallof1executionrequests"></a>
+<a id="tocselectra.blindedbeaconblockallof1bodyallof1executionrequests"></a>
+
+```json
+{
+  "deposits": [
+    {
+      "pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "withdrawal_credentials": "0xcf8e0d4e9587369b2301d0790347320302cc0943d5a1884560367e8208d920f2",
+      "amount": "1",
+      "signature": "0x1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505cc411d61252fb6cb3fa0017b679f8bb2305b26a285fa2737f175668d0dff91cc1b66ac1fb663c9bc59509846d6ec05345bd908eda73e670af888da41af171505",
+      "index": "1"
+    }
+  ],
+  "withdrawals": [
+    {
+      "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "validator_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "amount": "1"
+    }
+  ],
+  "consolidations": [
+    {
+      "source_address": "0xAbcF8e0d4e9587369b2301D0790347320302cc09",
+      "source_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a",
+      "target_pubkey": "0x93247f2209abcacf57b75a51dafae777f9dd38bc7053d1af526f220a7489a6d3a2753e5f3e8b1cfe39b56f43611df74a"
+    }
+  ]
+}
+```
+
+The [`ExecutionRequests`](https://github.com/ethereum/consensus-specs/blob/v1.5.0/specs/electra/beacon-chain.md#executionrequests) object from the CL Electra spec.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|deposits|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsDepositsItems](#schemagloas.executionpayloadenvelopeexecutionrequestsdepositsitems)]|true|none|List of deposit requests.|
+|withdrawals|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsWithdrawalsItems](#schemagloas.executionpayloadenvelopeexecutionrequestswithdrawalsitems)]|true|none|List of withdrawal requests.|
+|consolidations|[[Gloas.ExecutionPayloadEnvelopeExecutionRequestsConsolidationsItems](#schemagloas.executionpayloadenvelopeexecutionrequestsconsolidationsitems)]|true|none|List of consolidation requests.|
+
+<h2 id="tocS_Gloas.DataColumnSidecarsItemsColumnItems">Gloas.DataColumnSidecarsItemsColumnItems</h2>
+<!-- backwards compatibility -->
+<a id="schemagloas.datacolumnsidecarsitemscolumnitems"></a>
+<a id="schema_Gloas.DataColumnSidecarsItemsColumnItems"></a>
+<a id="tocSgloas.datacolumnsidecarsitemscolumnitems"></a>
+<a id="tocsgloas.datacolumnsidecarsitemscolumnitems"></a>
+
+```json
+"string"
+```
+
+A data column is `FIELD_ELEMENTS_PER_CELL * size_of(BLSFieldElement) = 64 * 32 = 2048` bytes (`DATA`) representing a Cell as defined in Fulu
+
+<h2 id="tocS_SyncCommitteeRewardsItemsReward">SyncCommitteeRewardsItemsReward</h2>
+<!-- backwards compatibility -->
+<a id="schemasynccommitteerewardsitemsreward"></a>
+<a id="schema_SyncCommitteeRewardsItemsReward"></a>
+<a id="tocSsynccommitteerewardsitemsreward"></a>
+<a id="tocssynccommitteerewardsitemsreward"></a>
+
+```json
+"2000"
+```
+
+sync committee reward in gwei for the validator

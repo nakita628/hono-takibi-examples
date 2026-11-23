@@ -502,7 +502,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/email/history': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & {
-    '/email/history/export?filename=:filename': {
+    '/email/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -634,7 +634,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/fax/history/export?filename=:filename': {
+    '/fax/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -643,7 +643,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/fax/history?date_from=:date_from&date_to=:date_to&q=:q&order_by=:order_by': {
+    '/fax/history?date_from={date_from}&date_to={date_to}&q={q}&order_by={order_by}': {
       $get: {
         input: { param: { date_from: number; date_to: number; q: string; order_by: string } }
         output: {}
@@ -851,7 +851,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/lists/:list_id/export?filename=:filename': {
+    '/lists/:list_id/export?filename={filename}': {
       $get: {
         input: { param: { filename: string; list_id: string } }
         output: {}
@@ -904,7 +904,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/mms/cancel-all': { $put: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & {
-    '/mms/history/export?filename=:filename': {
+    '/mms/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -913,7 +913,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/mms/history?q=:q&order_by=:order_by&date_from=:date_from&date_to=:date_to': {
+    '/mms/history?q={q}&order_by={order_by}&date_from={date_from}&date_to={date_to}': {
       $get: {
         input: { param: { q: string; order_by: string; date_from: string; date_to: string } }
         output: {}
@@ -999,7 +999,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/numbers/search/:country?:search=1&:search_type=2': {
+    '/numbers/search/:country?{search}=1&{search_type}=2': {
       $get: {
         input: { param: { country: string; search: string; search_type: number } }
         output: {}
@@ -1048,7 +1048,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/post/direct-mail/locations/search/:country/?q=:query': {
+    '/post/direct-mail/locations/search/:country/?q={query}': {
       $get: {
         input: { param: { country: string; query: string } }
         output: {}
@@ -1068,7 +1068,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/post/letters/history': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & {
-    '/post/letters/history/export?filename=:filename': {
+    '/post/letters/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -1113,7 +1113,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/post/postcards/export?filename=:filename': {
+    '/post/postcards/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -1199,7 +1199,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/pricing/:country?currency=:currency': {
+    '/pricing/:country?currency={currency}': {
       $get: {
         input: { param: { country: string; currency: string } }
         output: {}
@@ -1227,7 +1227,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/recharge/packages?country=:country': {
+    '/recharge/packages?country={country}': {
       $get: { input: { param: { country: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
@@ -1365,7 +1365,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $get: { input: { param: { type: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
-    '/search/contacts-lists?q=:q': {
+    '/search/contacts-lists?q={q}': {
       $get: { input: { param: { q: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
@@ -1398,7 +1398,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sms-campaigns/:campaign_id/link-export?filename=:filename': {
+    '/sms-campaigns/:campaign_id/link-export?filename={filename}': {
       $get: {
         input: { param: { campaign_id: number; filename: string } }
         output: {}
@@ -1518,7 +1518,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sms/history/export?filename=:filename': {
+    '/sms/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -1527,7 +1527,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/sms/history?date_from=:date_from&date_to=:date_to': {
+    '/sms/history?date_from={date_from}&date_to={date_to}': {
       $get: {
         input: { param: { date_from: string; date_to: string } }
         output: {}
@@ -1741,7 +1741,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & { '/timezones': { $get: { input: {}; output: {}; outputFormat: string; status: 200 } } } & {
-    '/uploads?convert=:convert': {
+    '/uploads?convert={convert}': {
       $post: {
         input: { param: { convert: string } } & {
           json: { content: string; convert: string } | { convert: string; file: string }
@@ -1754,7 +1754,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/voice/cancel-all': { $put: { input: {}; output: {}; outputFormat: string; status: 200 } }
   } & {
-    '/voice/history/export?filename=:filename': {
+    '/voice/history/export?filename={filename}': {
       $get: {
         input: { param: { filename: string } }
         output: {}
@@ -1763,7 +1763,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/voice/history?date_from=:date_from&date_to=:date_to': {
+    '/voice/history?date_from={date_from}&date_to={date_to}': {
       $get: {
         input: { param: { date_from: string; date_to: string } }
         output: {}
@@ -1799,7 +1799,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post: { input: { json: { url: string } }; output: {}; outputFormat: string; status: 200 }
     }
   } & {
-    '/voice/receipts-read?date_before=:date_before': {
+    '/voice/receipts-read?date_before={date_before}': {
       $put: {
         input: { param: { date_before: number } }
         output: {}

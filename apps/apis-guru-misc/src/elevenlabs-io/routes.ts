@@ -745,7 +745,7 @@ export const getV1HistoryHistoryItemIdAudioRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -813,7 +813,7 @@ export const postV1TextToSpeechVoiceIdRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },
@@ -1483,7 +1483,7 @@ export const getV1VoicesVoiceIdSamplesSampleIdAudioRoute = createRoute({
     }),
   },
   responses: {
-    200: { description: 'Successful Response', content: {} },
+    200: { description: 'Successful Response' },
     422: {
       description: 'Validation Error',
       content: { 'application/json': { schema: HTTPValidationErrorSchema } },

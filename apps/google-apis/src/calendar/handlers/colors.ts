@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getColorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getColorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const colorsHandler = app.openapi(getColorsRoute, (c) => {
+export const getColorsRouteHandler: RouteHandler<typeof getColorsRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

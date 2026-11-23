@@ -15,11 +15,7 @@
 {
   "cat": {
     "subcategories": [
-      {
-        "subcategories": [
-          {}
-        ]
-      }
+      {}
     ]
   }
 }
@@ -29,4 +25,29 @@
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|cat|object|false|none|none|
+|cat|[topCat](#schematopcat)|false|none|none|
+
+<h2 id="tocS_topCat">topCat</h2>
+<!-- backwards compatibility -->
+<a id="schematopcat"></a>
+<a id="schema_topCat"></a>
+<a id="tocStopcat"></a>
+<a id="tocstopcat"></a>
+
+```json
+{
+  "subcategories": [
+    {
+      "subcategories": [
+        {}
+      ]
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|subcategories|[[topCat](#schematopcat)]|false|none|none|

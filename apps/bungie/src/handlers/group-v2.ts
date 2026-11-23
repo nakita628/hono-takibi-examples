@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGroupV2GetAvailableAvatarsIndexRoute,
   getGroupV2GetAvailableThemesIndexRoute,
   getGroupV2GetUserClanInviteSettingMTypeIndexRoute,
@@ -37,117 +37,212 @@ import {
   postGroupV2SearchIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGroupV2GetAvailableAvatarsIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GetAvailableAvatarsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const groupV2Handler = app
-  .openapi(getGroupV2GetAvailableAvatarsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GetAvailableThemesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GetUserClanInviteSettingMTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2RecommendedGroupTypeCreateDateRangeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2SearchIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2NameGroupNameGroupTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2NameV2IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdOptionalConversationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdEditIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdEditClanBannerIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdEditFounderOptionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdOptionalConversationsAddIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdOptionalConversationsEditConversationIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdMembersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdAdminsAndFounderIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postGroupV2GroupIdMembersMembershipTypeMembershipIdSetMembershipTypeMemberTypeIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postGroupV2GroupIdMembersMembershipTypeMembershipIdKickIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersMembershipTypeMembershipIdBanIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersMembershipTypeMembershipIdUnbanIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdBannedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdEditHistoryIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdAdminAbdicateFoundershipMembershipTypeFounderIdNewIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdMembersPendingIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2GroupIdMembersInvitedIndividualsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersApproveAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersDenyAllIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersApproveListIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersApproveMembershipTypeMembershipIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersDenyListIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2UserMembershipTypeMembershipIdFilterGroupTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2RecoverMembershipTypeMembershipIdGroupTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGroupV2UserPotentialMembershipTypeMembershipIdFilterGroupTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postGroupV2GroupIdMembersIndividualInviteMembershipTypeMembershipIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postGroupV2GroupIdMembersIndividualInviteCancelMembershipTypeMembershipIdIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getGroupV2GetAvailableThemesIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GetAvailableThemesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GetUserClanInviteSettingMTypeIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GetUserClanInviteSettingMTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2RecommendedGroupTypeCreateDateRangeIndexRouteHandler: RouteHandler<
+  typeof postGroupV2RecommendedGroupTypeCreateDateRangeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2SearchIndexRouteHandler: RouteHandler<
+  typeof postGroupV2SearchIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2NameGroupNameGroupTypeIndexRouteHandler: RouteHandler<
+  typeof getGroupV2NameGroupNameGroupTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2NameV2IndexRouteHandler: RouteHandler<
+  typeof postGroupV2NameV2IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdOptionalConversationsIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdOptionalConversationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdEditIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdEditIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdEditClanBannerIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdEditClanBannerIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdEditFounderOptionsIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdEditFounderOptionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdOptionalConversationsAddIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdOptionalConversationsAddIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdOptionalConversationsEditConversationIdIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdOptionalConversationsEditConversationIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdMembersIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdMembersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdAdminsAndFounderIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdAdminsAndFounderIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersMembershipTypeMembershipIdSetMembershipTypeMemberTypeIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersMembershipTypeMembershipIdSetMembershipTypeMemberTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersMembershipTypeMembershipIdKickIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersMembershipTypeMembershipIdKickIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersMembershipTypeMembershipIdBanIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersMembershipTypeMembershipIdBanIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersMembershipTypeMembershipIdUnbanIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersMembershipTypeMembershipIdUnbanIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdBannedIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdBannedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdEditHistoryIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdEditHistoryIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdAdminAbdicateFoundershipMembershipTypeFounderIdNewIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdAdminAbdicateFoundershipMembershipTypeFounderIdNewIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdMembersPendingIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdMembersPendingIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2GroupIdMembersInvitedIndividualsIndexRouteHandler: RouteHandler<
+  typeof getGroupV2GroupIdMembersInvitedIndividualsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersApproveAllIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersApproveAllIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersDenyAllIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersDenyAllIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersApproveListIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersApproveListIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersApproveMembershipTypeMembershipIdIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersApproveMembershipTypeMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersDenyListIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersDenyListIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2UserMembershipTypeMembershipIdFilterGroupTypeIndexRouteHandler: RouteHandler<
+  typeof getGroupV2UserMembershipTypeMembershipIdFilterGroupTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2RecoverMembershipTypeMembershipIdGroupTypeIndexRouteHandler: RouteHandler<
+  typeof getGroupV2RecoverMembershipTypeMembershipIdGroupTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGroupV2UserPotentialMembershipTypeMembershipIdFilterGroupTypeIndexRouteHandler: RouteHandler<
+  typeof getGroupV2UserPotentialMembershipTypeMembershipIdFilterGroupTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersIndividualInviteMembershipTypeMembershipIdIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersIndividualInviteMembershipTypeMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postGroupV2GroupIdMembersIndividualInviteCancelMembershipTypeMembershipIdIndexRouteHandler: RouteHandler<
+  typeof postGroupV2GroupIdMembersIndividualInviteCancelMembershipTypeMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

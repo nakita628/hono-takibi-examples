@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUserEqSetEqualizerRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUserEqSetEqualizerRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userEqHandler = app.openapi(postUserEqSetEqualizerRoute, (c) => {
+export const postUserEqSetEqualizerRouteHandler: RouteHandler<
+  typeof postUserEqSetEqualizerRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

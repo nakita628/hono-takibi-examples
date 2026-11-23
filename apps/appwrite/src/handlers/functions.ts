@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFunctionsFunctionIdDeploymentsDeploymentIdRoute,
   deleteFunctionsFunctionIdExecutionsExecutionIdRoute,
   deleteFunctionsFunctionIdRoute,
@@ -28,84 +28,154 @@ import {
   putFunctionsFunctionIdVariablesVariableIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFunctionsRouteHandler: RouteHandler<typeof getFunctionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const functionsHandler = app
-  .openapi(getFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsRuntimesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsSpecificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFunctionsFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFunctionsFunctionIdDeploymentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdDeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdDeploymentsDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdDeploymentsTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdDeploymentsVcsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFunctionsFunctionIdDeploymentsDeploymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdDeploymentsDeploymentIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFunctionsFunctionIdDeploymentsDeploymentIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFunctionsFunctionIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFunctionsFunctionIdVariablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFunctionsFunctionIdVariablesVariableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFunctionsFunctionIdVariablesVariableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFunctionsFunctionIdVariablesVariableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFunctionsRouteHandler: RouteHandler<typeof postFunctionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsRuntimesRouteHandler: RouteHandler<
+  typeof getFunctionsRuntimesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsSpecificationsRouteHandler: RouteHandler<
+  typeof getFunctionsSpecificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof putFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFunctionsFunctionIdRouteHandler: RouteHandler<
+  typeof deleteFunctionsFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFunctionsFunctionIdDeploymentRouteHandler: RouteHandler<
+  typeof patchFunctionsFunctionIdDeploymentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdDeploymentsRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdDeploymentsRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdDeploymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdDeploymentsDuplicateRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdDeploymentsDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdDeploymentsTemplateRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdDeploymentsTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdDeploymentsVcsRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdDeploymentsVcsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFunctionsFunctionIdDeploymentsDeploymentIdRouteHandler: RouteHandler<
+  typeof deleteFunctionsFunctionIdDeploymentsDeploymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdDeploymentsDeploymentIdDownloadRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdDeploymentsDeploymentIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFunctionsFunctionIdDeploymentsDeploymentIdStatusRouteHandler: RouteHandler<
+  typeof patchFunctionsFunctionIdDeploymentsDeploymentIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdExecutionsRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdExecutionsRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFunctionsFunctionIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof deleteFunctionsFunctionIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdVariablesRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFunctionsFunctionIdVariablesRouteHandler: RouteHandler<
+  typeof postFunctionsFunctionIdVariablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFunctionsFunctionIdVariablesVariableIdRouteHandler: RouteHandler<
+  typeof getFunctionsFunctionIdVariablesVariableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFunctionsFunctionIdVariablesVariableIdRouteHandler: RouteHandler<
+  typeof putFunctionsFunctionIdVariablesVariableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFunctionsFunctionIdVariablesVariableIdRouteHandler: RouteHandler<
+  typeof deleteFunctionsFunctionIdVariablesVariableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -812,6 +812,6 @@ export const deleteSettingsUsers202609UserIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['crm.objects.users.write'] }, { oauth2: ['settings.users.write'] }],
 })

@@ -347,7 +347,7 @@ const ActionHistoriesSchema = z
   .openapi('ActionHistories')
 
 type DescribeBudgetActionHistoriesResponseType = {
-  ActionHistories: z.infer<typeof ActionHistoriesSchema> & unknown
+  ActionHistories: z.infer<typeof ActionHistoriesSchema>
   NextToken?: z.infer<typeof GenericStringSchema>
 }
 

@@ -738,9 +738,9 @@ const ScheduleActionStartSettingsSchema = z
   .openapi('ScheduleActionStartSettings')
 
 type ScheduleActionType = {
-  ActionName: z.infer<typeof StringSchema> & unknown
-  ScheduleActionSettings: z.infer<typeof ScheduleActionSettingsSchema> & unknown
-  ScheduleActionStartSettings: z.infer<typeof ScheduleActionStartSettingsSchema> & unknown
+  ActionName: z.infer<typeof StringSchema>
+  ScheduleActionSettings: z.infer<typeof ScheduleActionSettingsSchema>
+  ScheduleActionStartSettings: z.infer<typeof ScheduleActionStartSettingsSchema>
 }
 
 const ScheduleActionSchema: z.ZodType<ScheduleActionType> = z
@@ -773,7 +773,7 @@ const ListOfScheduleActionSchema: z.ZodType<ListOfScheduleActionType> = z
   .openapi('ListOfScheduleAction')
 
 type BatchScheduleActionCreateResultType = {
-  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema> & unknown
+  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema>
 }
 
 const BatchScheduleActionCreateResultSchema: z.ZodType<BatchScheduleActionCreateResultType> = z
@@ -790,7 +790,7 @@ const BatchScheduleActionCreateResultSchema: z.ZodType<BatchScheduleActionCreate
   .openapi('BatchScheduleActionCreateResult')
 
 type BatchScheduleActionDeleteResultType = {
-  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema> & unknown
+  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema>
 }
 
 const BatchScheduleActionDeleteResultSchema: z.ZodType<BatchScheduleActionDeleteResultType> = z
@@ -807,8 +807,8 @@ const BatchScheduleActionDeleteResultSchema: z.ZodType<BatchScheduleActionDelete
   .openapi('BatchScheduleActionDeleteResult')
 
 type BatchUpdateScheduleResponseType = {
-  Creates?: z.infer<typeof BatchScheduleActionCreateResultSchema> & unknown
-  Deletes?: z.infer<typeof BatchScheduleActionDeleteResultSchema> & unknown
+  Creates?: z.infer<typeof BatchScheduleActionCreateResultSchema>
+  Deletes?: z.infer<typeof BatchScheduleActionDeleteResultSchema>
 }
 
 const CdiInputResolutionSchema = z
@@ -4551,9 +4551,9 @@ const ListOfOutputSchema = z
   .openapi('ListOfOutput')
 
 type OutputGroupType = {
-  Name?: z.infer<typeof StringMax32Schema> & unknown
-  OutputGroupSettings: z.infer<typeof OutputGroupSettingsSchema> & unknown
-  Outputs: z.infer<typeof ListOfOutputSchema> & unknown
+  Name?: z.infer<typeof StringMax32Schema>
+  OutputGroupSettings: z.infer<typeof OutputGroupSettingsSchema>
+  Outputs: z.infer<typeof ListOfOutputSchema>
 }
 
 const OutputGroupSchema: z.ZodType<OutputGroupType> = z
@@ -5656,18 +5656,18 @@ const ListOfVideoDescriptionSchema = z
   .openapi('ListOfVideoDescription')
 
 type EncoderSettingsType = {
-  AudioDescriptions: z.infer<typeof ListOfAudioDescriptionSchema> & unknown
-  AvailBlanking?: z.infer<typeof AvailBlankingSchema> & unknown
-  AvailConfiguration?: z.infer<typeof AvailConfigurationSchema> & unknown
-  BlackoutSlate?: z.infer<typeof BlackoutSlateSchema> & unknown
-  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionSchema> & unknown
-  FeatureActivations?: z.infer<typeof FeatureActivationsSchema> & unknown
-  GlobalConfiguration?: z.infer<typeof GlobalConfigurationSchema> & unknown
-  MotionGraphicsConfiguration?: z.infer<typeof MotionGraphicsConfigurationSchema> & unknown
-  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema> & unknown
-  OutputGroups: z.infer<typeof ListOfOutputGroupSchema> & unknown
-  TimecodeConfig: z.infer<typeof TimecodeConfigSchema> & unknown
-  VideoDescriptions: z.infer<typeof ListOfVideoDescriptionSchema> & unknown
+  AudioDescriptions: z.infer<typeof ListOfAudioDescriptionSchema>
+  AvailBlanking?: z.infer<typeof AvailBlankingSchema>
+  AvailConfiguration?: z.infer<typeof AvailConfigurationSchema>
+  BlackoutSlate?: z.infer<typeof BlackoutSlateSchema>
+  CaptionDescriptions?: z.infer<typeof ListOfCaptionDescriptionSchema>
+  FeatureActivations?: z.infer<typeof FeatureActivationsSchema>
+  GlobalConfiguration?: z.infer<typeof GlobalConfigurationSchema>
+  MotionGraphicsConfiguration?: z.infer<typeof MotionGraphicsConfigurationSchema>
+  NielsenConfiguration?: z.infer<typeof NielsenConfigurationSchema>
+  OutputGroups: z.infer<typeof ListOfOutputGroupSchema>
+  TimecodeConfig: z.infer<typeof TimecodeConfigSchema>
+  VideoDescriptions: z.infer<typeof ListOfVideoDescriptionSchema>
 }
 
 const EncoderSettingsSchema: z.ZodType<EncoderSettingsType> = z
@@ -6458,10 +6458,10 @@ const InputSettingsSchema = z
   .openapi('InputSettings')
 
 type InputAttachmentType = {
-  AutomaticInputFailoverSettings?: z.infer<typeof AutomaticInputFailoverSettingsSchema> & unknown
-  InputAttachmentName?: z.infer<typeof StringSchema> & unknown
-  InputId?: z.infer<typeof StringSchema> & unknown
-  InputSettings?: z.infer<typeof InputSettingsSchema> & unknown
+  AutomaticInputFailoverSettings?: z.infer<typeof AutomaticInputFailoverSettingsSchema>
+  InputAttachmentName?: z.infer<typeof StringSchema>
+  InputId?: z.infer<typeof StringSchema>
+  InputSettings?: z.infer<typeof InputSettingsSchema>
 }
 
 const InputAttachmentSchema: z.ZodType<InputAttachmentType> = z
@@ -6653,24 +6653,24 @@ const VpcOutputSettingsDescriptionSchema = z
   .openapi('VpcOutputSettingsDescription')
 
 type ChannelType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
 const ChannelSchema: z.ZodType<ChannelType> = z
@@ -6749,72 +6749,72 @@ const ChannelSchema: z.ZodType<ChannelType> = z
   .openapi({ description: 'Placeholder documentation for Channel', required: [] })
   .openapi('Channel')
 
-type CreateChannelResponseType = { Channel?: z.infer<typeof ChannelSchema> & unknown }
+type CreateChannelResponseType = { Channel?: z.infer<typeof ChannelSchema> }
 
 type DeleteChannelResponseType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
 type DescribeChannelResponseType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
 type DescribeScheduleResponseType = {
-  NextToken?: z.infer<typeof StringSchema> & unknown
-  ScheduleActions?: z.infer<typeof ListOfScheduleActionSchema> & unknown
+  NextToken?: z.infer<typeof StringSchema>
+  ScheduleActions?: z.infer<typeof ListOfScheduleActionSchema>
 }
 
 type ChannelSummaryType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
 const ChannelSummarySchema: z.ZodType<ChannelSummaryType> = z
@@ -6894,58 +6894,58 @@ const ListOfChannelSummarySchema: z.ZodType<ListOfChannelSummaryType> = z
   .openapi('ListOfChannelSummary')
 
 type ListChannelsResponseType = {
-  Channels?: z.infer<typeof ListOfChannelSummarySchema> & unknown
-  NextToken?: z.infer<typeof StringSchema> & unknown
+  Channels?: z.infer<typeof ListOfChannelSummarySchema>
+  NextToken?: z.infer<typeof StringSchema>
 }
 
 type StartChannelResponseType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
 type StopChannelResponseType = {
-  Arn?: z.infer<typeof StringSchema> & unknown
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  Id?: z.infer<typeof StringSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceStatusSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema> & unknown
-  PipelinesRunningCount?: z.infer<typeof IntegerSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  State?: z.infer<typeof ChannelStateSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema> & unknown
+  Arn?: z.infer<typeof StringSchema>
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EgressEndpoints?: z.infer<typeof ListOfChannelEgressEndpointSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  Id?: z.infer<typeof StringSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceStatusSchema>
+  Name?: z.infer<typeof StringSchema>
+  PipelineDetails?: z.infer<typeof ListOfPipelineDetailSchema>
+  PipelinesRunningCount?: z.infer<typeof IntegerSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  State?: z.infer<typeof ChannelStateSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsDescriptionSchema>
 }
 
-type UpdateChannelResponseType = { Channel?: z.infer<typeof ChannelSchema> & unknown }
+type UpdateChannelResponseType = { Channel?: z.infer<typeof ChannelSchema> }
 
-type UpdateChannelClassResponseType = { Channel?: z.infer<typeof ChannelSchema> & unknown }
+type UpdateChannelClassResponseType = { Channel?: z.infer<typeof ChannelSchema> }
 
 type BatchScheduleActionCreateRequestType = {
-  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema> & unknown
+  ScheduleActions: z.infer<typeof ListOfScheduleActionSchema>
 }
 
 const BatchScheduleActionCreateRequestSchema: z.ZodType<BatchScheduleActionCreateRequestType> = z
@@ -6973,8 +6973,8 @@ const BatchScheduleActionDeleteRequestSchema = z
   .openapi('BatchScheduleActionDeleteRequest')
 
 type BatchUpdateScheduleRequestType = {
-  Creates?: z.infer<typeof BatchScheduleActionCreateRequestSchema> & unknown
-  Deletes?: z.infer<typeof BatchScheduleActionDeleteRequestSchema> & unknown
+  Creates?: z.infer<typeof BatchScheduleActionCreateRequestSchema>
+  Deletes?: z.infer<typeof BatchScheduleActionDeleteRequestSchema>
 }
 
 const StringPattern010920300Schema = z
@@ -7025,20 +7025,20 @@ const VpcOutputSettingsSchema = z
   .openapi('VpcOutputSettings')
 
 type CreateChannelRequestType = {
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  ChannelClass?: z.infer<typeof ChannelClassSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceCreateSettingsSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  RequestId?: z.infer<typeof StringSchema> & unknown
-  Reserved?: z.infer<typeof StringSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
-  Tags?: z.infer<typeof TagsSchema> & unknown
-  Vpc?: z.infer<typeof VpcOutputSettingsSchema> & unknown
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  ChannelClass?: z.infer<typeof ChannelClassSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceCreateSettingsSchema>
+  Name?: z.infer<typeof StringSchema>
+  RequestId?: z.infer<typeof StringSchema>
+  Reserved?: z.infer<typeof StringSchema>
+  RoleArn?: z.infer<typeof StringSchema>
+  Tags?: z.infer<typeof TagsSchema>
+  Vpc?: z.infer<typeof VpcOutputSettingsSchema>
 }
 
 const MaintenanceUpdateSettingsSchema = z
@@ -7063,15 +7063,15 @@ const MaintenanceUpdateSettingsSchema = z
   .openapi('MaintenanceUpdateSettings')
 
 type UpdateChannelRequestType = {
-  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema> & unknown
-  Destinations?: z.infer<typeof ListOfOutputDestinationSchema> & unknown
-  EncoderSettings?: z.infer<typeof EncoderSettingsSchema> & unknown
-  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema> & unknown
-  InputSpecification?: z.infer<typeof InputSpecificationSchema> & unknown
-  LogLevel?: z.infer<typeof LogLevelSchema> & unknown
-  Maintenance?: z.infer<typeof MaintenanceUpdateSettingsSchema> & unknown
-  Name?: z.infer<typeof StringSchema> & unknown
-  RoleArn?: z.infer<typeof StringSchema> & unknown
+  CdiInputSpecification?: z.infer<typeof CdiInputSpecificationSchema>
+  Destinations?: z.infer<typeof ListOfOutputDestinationSchema>
+  EncoderSettings?: z.infer<typeof EncoderSettingsSchema>
+  InputAttachments?: z.infer<typeof ListOfInputAttachmentSchema>
+  InputSpecification?: z.infer<typeof InputSpecificationSchema>
+  LogLevel?: z.infer<typeof LogLevelSchema>
+  Maintenance?: z.infer<typeof MaintenanceUpdateSettingsSchema>
+  Name?: z.infer<typeof StringSchema>
+  RoleArn?: z.infer<typeof StringSchema>
 }
 
 const AcceptInputDeviceTransferResponseSchema = z

@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCreateAuthorIfNotExistsForRoute, postCreateAuthorIfNotExistsForRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getCreateAuthorIfNotExistsForRoute,
+  postCreateAuthorIfNotExistsForRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getCreateAuthorIfNotExistsForRouteHandler: RouteHandler<
+  typeof getCreateAuthorIfNotExistsForRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const createAuthorIfNotExistsForHandler = app
-  .openapi(getCreateAuthorIfNotExistsForRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreateAuthorIfNotExistsForRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCreateAuthorIfNotExistsForRouteHandler: RouteHandler<
+  typeof postCreateAuthorIfNotExistsForRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBioentityAnatomyIdGenesRoute,
   getBioentityAnatomyIdGenesTaxidRoute,
   getBioentityCaseIdDiseasesRoute,
@@ -85,255 +85,498 @@ import {
   getBioentityVariantIdPublicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBioentityAnatomyIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityAnatomyIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bioentityHandler = app
-  .openapi(getBioentityAnatomyIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityAnatomyIdGenesTaxidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityCaseIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityCaseIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityCaseIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityCaseIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityCaseIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdModelsTaxonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdPathwaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdTreatmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityDiseaseIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityFunctionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityFunctionIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityFunctionIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityFunctionIdTaxonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdAnatomyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdExpressionAnatomyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdFunctionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdHomologsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdInteractionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdOrthologDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdOrthologPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdPathwaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGeneIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGenotypeIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityGotermIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityModelIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPathwayIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPathwayIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPathwayIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdAnatomyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdGeneTaxidIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdPathwaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPhenotypeIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityPublicationIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitySubstanceIdParticipantInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitySubstanceIdRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentitySubstanceIdTreatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdCasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdDiseasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdGenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdPhenotypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityVariantIdPublicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityIdAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBioentityTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBioentityAnatomyIdGenesTaxidRouteHandler: RouteHandler<
+  typeof getBioentityAnatomyIdGenesTaxidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityCaseIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityCaseIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityCaseIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityCaseIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityCaseIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityCaseIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityCaseIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityCaseIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityCaseIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityCaseIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdModelsTaxonRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdModelsTaxonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdPathwaysRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdPathwaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdTreatmentRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdTreatmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityDiseaseIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityDiseaseIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityFunctionIdRouteHandler: RouteHandler<
+  typeof getBioentityFunctionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityFunctionIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityFunctionIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityFunctionIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityFunctionIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityFunctionIdTaxonsRouteHandler: RouteHandler<
+  typeof getBioentityFunctionIdTaxonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdAnatomyRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdAnatomyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdExpressionAnatomyRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdExpressionAnatomyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdFunctionRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdFunctionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdHomologsRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdHomologsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdInteractionsRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdInteractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdOrthologDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdOrthologDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdOrthologPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdOrthologPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdPathwaysRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdPathwaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGeneIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityGeneIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGenotypeIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityGenotypeIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityGotermIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityGotermIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityModelIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityModelIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityModelIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityModelIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityModelIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityModelIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityModelIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityModelIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPathwayIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityPathwayIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPathwayIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityPathwayIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPathwayIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityPathwayIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdAnatomyRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdAnatomyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdGeneTaxidIdsRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdGeneTaxidIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdPathwaysRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdPathwaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPhenotypeIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityPhenotypeIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityPublicationIdVariantsRouteHandler: RouteHandler<
+  typeof getBioentityPublicationIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitySubstanceIdParticipantInRouteHandler: RouteHandler<
+  typeof getBioentitySubstanceIdParticipantInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitySubstanceIdRolesRouteHandler: RouteHandler<
+  typeof getBioentitySubstanceIdRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentitySubstanceIdTreatsRouteHandler: RouteHandler<
+  typeof getBioentitySubstanceIdTreatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdCasesRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdCasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdDiseasesRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdDiseasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdGenesRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdGenotypesRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdGenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdModelsRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdPhenotypesRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdPhenotypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityVariantIdPublicationsRouteHandler: RouteHandler<
+  typeof getBioentityVariantIdPublicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityIdRouteHandler: RouteHandler<typeof getBioentityIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityIdAssociationsRouteHandler: RouteHandler<
+  typeof getBioentityIdAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBioentityTypeIdRouteHandler: RouteHandler<typeof getBioentityTypeIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

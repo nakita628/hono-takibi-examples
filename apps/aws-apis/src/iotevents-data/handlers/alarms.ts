@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAlarmsAlarmModelNameKeyValuesIndexRoute,
   getAlarmsAlarmModelNameRoute,
   postAlarmsAcknowledgeRoute,
@@ -9,27 +9,42 @@ import {
   postAlarmsSnoozeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAlarmsAcknowledgeRouteHandler: RouteHandler<
+  typeof postAlarmsAcknowledgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const alarmsHandler = app
-  .openapi(postAlarmsAcknowledgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlarmsDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlarmsEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlarmsResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAlarmsSnoozeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlarmsAlarmModelNameKeyValuesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlarmsAlarmModelNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAlarmsDisableRouteHandler: RouteHandler<typeof postAlarmsDisableRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlarmsEnableRouteHandler: RouteHandler<typeof postAlarmsEnableRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlarmsResetRouteHandler: RouteHandler<typeof postAlarmsResetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAlarmsSnoozeRouteHandler: RouteHandler<typeof postAlarmsSnoozeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlarmsAlarmModelNameKeyValuesIndexRouteHandler: RouteHandler<
+  typeof getAlarmsAlarmModelNameKeyValuesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlarmsAlarmModelNameRouteHandler: RouteHandler<
+  typeof getAlarmsAlarmModelNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

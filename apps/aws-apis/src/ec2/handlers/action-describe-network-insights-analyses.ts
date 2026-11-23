@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeNetworkInsightsAnalysesRoute,
   postActionDescribeNetworkInsightsAnalysesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeNetworkInsightsAnalysesRouteHandler: RouteHandler<
+  typeof getActionDescribeNetworkInsightsAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeNetworkInsightsAnalysesHandler = app
-  .openapi(getActionDescribeNetworkInsightsAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeNetworkInsightsAnalysesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeNetworkInsightsAnalysesRouteHandler: RouteHandler<
+  typeof postActionDescribeNetworkInsightsAnalysesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

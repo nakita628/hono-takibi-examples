@@ -66,12 +66,15 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   {
     '/integrators/timeline/2026-09/events': {
       $post:
+        | { input: { json: AppEventOccurrence }; output: {}; outputFormat: string; status: 200 }
         | {
             input: { json: AppEventOccurrence }
             output: AppEventOccurrence
             outputFormat: 'json'
             status: 201
           }
+        | { input: { json: AppEventOccurrence }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: AppEventOccurrence }; output: {}; outputFormat: string; status: 409 }
         | { input: { json: AppEventOccurrence }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
@@ -82,6 +85,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: BatchResponseAppEventOccurrence
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { json: BatchInputAppEventOccurrence }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { json: BatchInputAppEventOccurrence }
+            output: {}
+            outputFormat: string
+            status: 409
           }
         | {
             input: { json: BatchInputAppEventOccurrence }
@@ -98,6 +113,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: AppEventResolutionResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { json: ExternalAppEventResolutionRequest }
+            output: {}
+            outputFormat: string
+            status: 404
           }
         | {
             input: { json: ExternalAppEventResolutionRequest }

@@ -176,7 +176,7 @@ const FailedRemediationBatchesSchema: z.ZodType<FailedRemediationBatchesType> = 
   .openapi('FailedRemediationBatches')
 
 type PutRemediationConfigurationsResponseType = {
-  FailedBatches?: z.infer<typeof FailedRemediationBatchesSchema> & unknown
+  FailedBatches?: z.infer<typeof FailedRemediationBatchesSchema>
 }
 
 const VersionSchema = z.string().openapi('Version')

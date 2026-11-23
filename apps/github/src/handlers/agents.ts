@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAgentsReposOwnerRepoAutomationsAutomationIdRoute,
   deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute,
   getAgentsAutomationsRoute,
@@ -22,66 +22,120 @@ import {
   putAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAgentsAutomationsRouteHandler: RouteHandler<
+  typeof getAgentsAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const agentsHandler = app
-  .openapi(getAgentsAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsReposOwnerRepoAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAvailableToolsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAvailableTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsReposOwnerRepoAutomationsAutomationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAgentsReposOwnerRepoTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsReposOwnerRepoTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAgentsTasksTaskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAgentsReposOwnerRepoAutomationsRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsReposOwnerRepoAutomationsRouteHandler: RouteHandler<
+  typeof postAgentsReposOwnerRepoAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAvailableToolsRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAvailableToolsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAvailableTriggersRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAvailableTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAgentsReposOwnerRepoAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof patchAgentsReposOwnerRepoAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsReposOwnerRepoAutomationsAutomationIdRouteHandler: RouteHandler<
+  typeof deleteAgentsReposOwnerRepoAutomationsAutomationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAutomationIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoAutomationsAutomationIdTasksRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsReposOwnerRepoAutomationsAutomationIdTasksRouteHandler: RouteHandler<
+  typeof postAgentsReposOwnerRepoAutomationsAutomationIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoPullsPullNumberAgentMergeRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAgentsReposOwnerRepoPullsPullNumberAgentMergeRouteHandler: RouteHandler<
+  typeof putAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRouteHandler: RouteHandler<
+  typeof deleteAgentsReposOwnerRepoPullsPullNumberAgentMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoTasksRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAgentsReposOwnerRepoTasksRouteHandler: RouteHandler<
+  typeof postAgentsReposOwnerRepoTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsReposOwnerRepoTasksTaskIdRouteHandler: RouteHandler<
+  typeof getAgentsReposOwnerRepoTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsTasksRouteHandler: RouteHandler<typeof getAgentsTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAgentsTasksTaskIdRouteHandler: RouteHandler<
+  typeof getAgentsTasksTaskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

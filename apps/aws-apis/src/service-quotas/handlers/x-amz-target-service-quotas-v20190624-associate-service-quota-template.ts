@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateHandler = app.openapi(
-  postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRouteHandler: RouteHandler<
+  typeof postXAmzTargetServiceQuotasV20190624AssociateServiceQuotaTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWorkflowsWorkflowIdExecutionsExecutionIdRoute,
   deleteWorkflowsWorkflowIdRoute,
   getWorkflowsRoute,
@@ -16,48 +16,82 @@ import {
   postWorkflowsWorkflowIdExecutionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkflowsRouteHandler: RouteHandler<typeof getWorkflowsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workflowsHandler = app
-  .openapi(getWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsWorkflowIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsWorkflowsWorkflowIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWorkflowsWorkflowIdExecutionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWorkflowsWorkflowIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkflowsWorkflowIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsWorkflowsWorkflowIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchWorkflowsWorkflowIdExecutionsExecutionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsWorkflowsRouteHandler: RouteHandler<typeof optionsWorkflowsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkflowsRouteHandler: RouteHandler<typeof postWorkflowsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof deleteWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof getWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof optionsWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof patchWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsWorkflowIdExecutionsRouteHandler: RouteHandler<
+  typeof getWorkflowsWorkflowIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsWorkflowsWorkflowIdExecutionsRouteHandler: RouteHandler<
+  typeof optionsWorkflowsWorkflowIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postWorkflowsWorkflowIdExecutionsRouteHandler: RouteHandler<
+  typeof postWorkflowsWorkflowIdExecutionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteWorkflowsWorkflowIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof deleteWorkflowsWorkflowIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkflowsWorkflowIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof getWorkflowsWorkflowIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsWorkflowsWorkflowIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof optionsWorkflowsWorkflowIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchWorkflowsWorkflowIdExecutionsExecutionIdRouteHandler: RouteHandler<
+  typeof patchWorkflowsWorkflowIdExecutionsExecutionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

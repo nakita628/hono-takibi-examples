@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTrentServiceGetKeyRotationStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTrentServiceGetKeyRotationStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTrentServiceGetKeyRotationStatusHandler = app.openapi(
-  postXAmzTargetTrentServiceGetKeyRotationStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTrentServiceGetKeyRotationStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetTrentServiceGetKeyRotationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

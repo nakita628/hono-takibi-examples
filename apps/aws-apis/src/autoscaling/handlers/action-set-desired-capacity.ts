@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSetDesiredCapacityRoute, postActionSetDesiredCapacityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSetDesiredCapacityRoute, postActionSetDesiredCapacityRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetDesiredCapacityRouteHandler: RouteHandler<
+  typeof getActionSetDesiredCapacityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetDesiredCapacityHandler = app
-  .openapi(getActionSetDesiredCapacityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetDesiredCapacityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetDesiredCapacityRouteHandler: RouteHandler<
+  typeof postActionSetDesiredCapacityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

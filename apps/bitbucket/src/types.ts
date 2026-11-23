@@ -2792,71 +2792,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/repositories/:workspace/:repo_slug/diff/:spec': {
-      $get:
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } } & {
-              query: {
-                context?: number | undefined
-                path?: string | undefined
-                ignore_whitespace?: boolean | undefined
-                binary?: boolean | undefined
-                renames?: boolean | undefined
-                merge?: boolean | undefined
-                topic?: boolean | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: { param: { repo_slug: string; spec: string; workspace: string } } & {
+          query: {
+            context?: number | undefined
+            path?: string | undefined
+            ignore_whitespace?: boolean | undefined
+            binary?: boolean | undefined
+            renames?: boolean | undefined
+            merge?: boolean | undefined
+            topic?: boolean | undefined
           }
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } } & {
-              query: {
-                context?: number | undefined
-                path?: string | undefined
-                ignore_whitespace?: boolean | undefined
-                binary?: boolean | undefined
-                renames?: boolean | undefined
-                merge?: boolean | undefined
-                topic?: boolean | undefined
-              }
-            }
-            output: Error
-            outputFormat: 'json'
-            status: 555
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/repositories/:workspace/:repo_slug/diffstat/:spec': {
-      $get:
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } } & {
-              query: {
-                ignore_whitespace?: boolean | undefined
-                merge?: boolean | undefined
-                path?: string | undefined
-                renames?: boolean | undefined
-                topic?: boolean | undefined
-              }
-            }
-            output: PaginatedDiffstats
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { repo_slug: string; spec: string; workspace: string } } & {
+          query: {
+            ignore_whitespace?: boolean | undefined
+            merge?: boolean | undefined
+            path?: string | undefined
+            renames?: boolean | undefined
+            topic?: boolean | undefined
           }
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } } & {
-              query: {
-                ignore_whitespace?: boolean | undefined
-                merge?: boolean | undefined
-                path?: string | undefined
-                renames?: boolean | undefined
-                topic?: boolean | undefined
-              }
-            }
-            output: Error
-            outputFormat: 'json'
-            status: 555
-          }
+        }
+        output: PaginatedDiffstats
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/repositories/:workspace/:repo_slug/downloads': {
@@ -3551,19 +3519,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/repositories/:workspace/:repo_slug/patch/:spec': {
-      $get:
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: { param: { repo_slug: string; spec: string; workspace: string } }
-            output: Error
-            outputFormat: 'json'
-            status: 555
-          }
+      $get: {
+        input: { param: { repo_slug: string; spec: string; workspace: string } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/repositories/:workspace/:repo_slug/permissions-config/groups': {
@@ -5183,19 +5144,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/repositories/:workspace/:repo_slug/pullrequests/:pull_request_id/decline': {
-      $post:
-        | {
-            input: { param: { pull_request_id: number; repo_slug: string; workspace: string } }
-            output: Pullrequest
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { pull_request_id: number; repo_slug: string; workspace: string } }
-            output: Error
-            outputFormat: 'json'
-            status: 555
-          }
+      $post: {
+        input: { param: { pull_request_id: number; repo_slug: string; workspace: string } }
+        output: Pullrequest
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/repositories/:workspace/:repo_slug/pullrequests/:pull_request_id/diff': {
@@ -5257,14 +5211,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: Error
             outputFormat: 'json'
             status: 503
-          }
-        | {
-            input: { param: { pull_request_id: number; repo_slug: string; workspace: string } } & {
-              query: { async?: boolean | undefined }
-            } & { json: PullrequestMergeParameters }
-            output: Error
-            outputFormat: 'json'
-            status: 555
           }
     }
   } & {
@@ -6032,21 +5978,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: Error
             outputFormat: 'json'
             status: 404
-          }
-        | {
-            input: {
-              param: { commit: string; path: string; repo_slug: string; workspace: string }
-            } & {
-              query: {
-                format?: 'meta' | 'rendered' | undefined
-                q?: string | undefined
-                sort?: string | undefined
-                max_depth?: number | undefined
-              }
-            }
-            output: Error
-            outputFormat: 'json'
-            status: 555
           }
     }
   } & {

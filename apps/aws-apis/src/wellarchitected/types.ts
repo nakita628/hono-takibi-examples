@@ -1,13 +1,6 @@
 type LensAlias = string
-type ValidationException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
-type AccessDeniedException = { [x: string]: unknown }
-type ThrottlingException = { [x: string]: unknown }
 type ShareId = string
 type CreateLensShareOutput = { ShareId?: ShareId | undefined }
-type ServiceQuotaExceededException = { [x: string]: unknown }
 type NextToken = string
 type ListLensSharesOutput = {
   LensShareSummaries?: {} | undefined
@@ -381,5871 +374,1011 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/workloads/:WorkloadId/associateLenses': {
-      $patch:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $patch: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { LensAliases: LensAlias[] } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias/shares': {
-      $post:
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: CreateLensShareOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { LensAlias: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { SharedWith: string; ClientRequestToken: string } }
+        output: CreateLensShareOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { LensAlias: string } } & {
+          query: {
+            SharedWithPrefix?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            Status?:
+              | 'ACCEPTED'
+              | 'REJECTED'
+              | 'PENDING'
+              | 'REVOKED'
+              | 'EXPIRED'
+              | 'ASSOCIATING'
+              | 'ASSOCIATED'
+              | 'FAILED'
+              | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { SharedWith: string; ClientRequestToken: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLensSharesOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListLensSharesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias/versions': {
-      $post:
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: CreateLensVersionOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { LensAlias: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            LensVersion: string
+            IsMajorVersion?: boolean | undefined
+            ClientRequestToken: string
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensVersion: string
-                IsMajorVersion?: boolean | undefined
-                ClientRequestToken: string
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateLensVersionOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/milestones': {
-      $post:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: CreateMilestoneOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken: string } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
+        } & { json: { MilestoneName: string; ClientRequestToken: string } }
+        output: CreateMilestoneOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: CreateWorkloadOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            WorkloadName: string
+            Description: string
+            Environment: 'PRODUCTION' | 'PREPRODUCTION'
+            AccountIds?: AwsAccountId[] | undefined
+            AwsRegions?: AwsRegion[] | undefined
+            NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
+            PillarPriorities?: PillarId[] | undefined
+            ArchitecturalDesign?: string | undefined
+            ReviewOwner?: string | undefined
+            IndustryType?: string | undefined
+            Industry?: string | undefined
+            Lenses: LensAlias[]
+            Notes?: string | undefined
+            ClientRequestToken: string
+            Tags?: { [x: string]: TagValue } | undefined
+            DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
+            Applications?: ApplicationArn[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName: string
-                Description: string
-                Environment: 'PRODUCTION' | 'PREPRODUCTION'
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Lenses: LensAlias[]
-                Notes?: string | undefined
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateWorkloadOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/shares': {
-      $post:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: CreateWorkloadShareOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            SharedWith: string
+            PermissionType: 'READONLY' | 'CONTRIBUTOR'
+            ClientRequestToken: string
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: CreateWorkloadShareOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { WorkloadId: string } } & {
+          query: {
+            SharedWithPrefix?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            Status?:
+              | 'ACCEPTED'
+              | 'REJECTED'
+              | 'PENDING'
+              | 'REVOKED'
+              | 'EXPIRED'
+              | 'ASSOCIATING'
+              | 'ASSOCIATED'
+              | 'FAILED'
+              | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SharedWith: string
-                PermissionType: 'READONLY' | 'CONTRIBUTOR'
-                ClientRequestToken: string
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
-      $get:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListWorkloadSharesOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                SharedWithPrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                Status?:
-                  | 'ACCEPTED'
-                  | 'REJECTED'
-                  | 'PENDING'
-                  | 'REVOKED'
-                  | 'EXPIRED'
-                  | 'ASSOCIATING'
-                  | 'ASSOCIATED'
-                  | 'FAILED'
-                  | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListWorkloadSharesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias#ClientRequestToken&LensStatus': {
-      $delete:
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { LensAlias: string } } & {
+          query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { ClientRequestToken: string; LensStatus: 'ALL' | 'DRAFT' | 'PUBLISHED' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias/shares/:ShareId#ClientRequestToken': {
-      $delete:
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { ShareId: string; LensAlias: string } } & {
+          query: { ClientRequestToken: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { ShareId: string; LensAlias: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId#ClientRequestToken': {
-      $delete:
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & { query: { ClientRequestToken: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/shares/:ShareId#ClientRequestToken': {
-      $delete:
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $delete: {
+        input: { param: { ShareId: string; WorkloadId: string } } & {
+          query: { ClientRequestToken: string }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              query: { ClientRequestToken: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/disassociateLenses': {
-      $patch:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $patch: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { LensAliases: LensAlias[] } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { LensAliases: LensAlias[] } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias/export': {
-      $get:
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ExportLensOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { LensAlias: string } } & {
+          query: { LensVersion?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ExportLensOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias/answers/:QuestionId': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetAnswerOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
+          query: { MilestoneNumber?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetAnswerOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          json: {
+            SelectedChoices?: ChoiceId[] | undefined
+            ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
+            Notes?: string | undefined
+            IsApplicable?: boolean | undefined
+            Reason?:
+              | 'OUT_OF_SCOPE'
+              | 'BUSINESS_PRIORITIES'
+              | 'ARCHITECTURE_CONSTRAINTS'
+              | 'OTHER'
+              | 'NONE'
+              | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
-      $patch:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: UpdateAnswerOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string; QuestionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                SelectedChoices?: ChoiceId[] | undefined
-                ChoiceUpdates?: { [x: string]: ChoiceUpdate } | undefined
-                Notes?: string | undefined
-                IsApplicable?: boolean | undefined
-                Reason?:
-                  | 'OUT_OF_SCOPE'
-                  | 'BUSINESS_PRIORITIES'
-                  | 'ARCHITECTURE_CONSTRAINTS'
-                  | 'OTHER'
-                  | 'NONE'
-                  | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateAnswerOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/consolidatedReport#Format': {
-      $get:
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetConsolidatedReportOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Format: 'PDF' | 'JSON'
+            IncludeSharedResources?: boolean | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                Format: 'PDF' | 'JSON'
-                IncludeSharedResources?: boolean | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetConsolidatedReportOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias': {
-      $get:
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLensOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { LensAlias: string } } & {
+          query: { LensVersion?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: { LensVersion?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetLensOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLensReviewOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          query: { MilestoneNumber?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetLensReviewOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
-      $patch:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: UpdateLensReviewOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensNotes?: string | undefined
-                PillarNotes?: { [x: string]: Notes } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & {
+          json: { LensNotes?: string | undefined; PillarNotes?: { [x: string]: Notes } | undefined }
+        }
+        output: UpdateLensReviewOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias/report': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLensReviewReportOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          query: { MilestoneNumber?: number | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: { MilestoneNumber?: number | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetLensReviewReportOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/lenses/:LensAlias/versionDifference': {
-      $get:
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLensVersionDifferenceOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { LensAlias: string } } & {
+          query: { BaseLensVersion?: string | undefined; TargetLensVersion?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { LensAlias: string } } & {
-              query: {
-                BaseLensVersion?: string | undefined
-                TargetLensVersion?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetLensVersionDifferenceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/milestones/:MilestoneNumber': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetMilestoneOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; MilestoneNumber: number } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetMilestoneOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetWorkloadOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetWorkloadOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $patch: {
+        input: { param: { WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
+        } & {
+          json: {
+            WorkloadName?: string | undefined
+            Description?: string | undefined
+            Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
+            AccountIds?: AwsAccountId[] | undefined
+            AwsRegions?: AwsRegion[] | undefined
+            NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
+            PillarPriorities?: PillarId[] | undefined
+            ArchitecturalDesign?: string | undefined
+            ReviewOwner?: string | undefined
+            IsReviewOwnerUpdateAcknowledged?: boolean | undefined
+            IndustryType?: string | undefined
+            Industry?: string | undefined
+            Notes?: string | undefined
+            ImprovementStatus?:
+              | 'NOT_APPLICABLE'
+              | 'NOT_STARTED'
+              | 'IN_PROGRESS'
+              | 'COMPLETE'
+              | 'RISK_ACKNOWLEDGED'
+              | undefined
+            DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
+            Applications?: ApplicationArn[] | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
-      $patch:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: UpdateWorkloadOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadName?: string | undefined
-                Description?: string | undefined
-                Environment?: 'PRODUCTION' | 'PREPRODUCTION' | undefined
-                AccountIds?: AwsAccountId[] | undefined
-                AwsRegions?: AwsRegion[] | undefined
-                NonAwsRegions?: WorkloadNonAwsRegion[] | undefined
-                PillarPriorities?: PillarId[] | undefined
-                ArchitecturalDesign?: string | undefined
-                ReviewOwner?: string | undefined
-                IsReviewOwnerUpdateAcknowledged?: boolean | undefined
-                IndustryType?: string | undefined
-                Industry?: string | undefined
-                Notes?: string | undefined
-                ImprovementStatus?:
-                  | 'NOT_APPLICABLE'
-                  | 'NOT_STARTED'
-                  | 'IN_PROGRESS'
-                  | 'COMPLETE'
-                  | 'RISK_ACKNOWLEDGED'
-                  | undefined
-                DiscoveryConfig?: { TrustedAdvisorIntegrationStatus?: {} | undefined } | undefined
-                Applications?: ApplicationArn[] | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateWorkloadOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/importLens': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ImportLensOutput
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            LensAlias?: string | undefined
+            JSONString: string
+            ClientRequestToken: string
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                LensAlias?: string | undefined
-                JSONString: string
-                ClientRequestToken: string
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: ImportLensOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias/answers': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListAnswersOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          query: {
+            PillarId?: string | undefined
+            MilestoneNumber?: number | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListAnswersOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/checks': {
-      $post:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ListCheckDetailsOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { WorkloadId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            LensArn: string
+            PillarId: string
+            QuestionId: string
+            ChoiceId: string
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListCheckDetailsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/checkSummaries': {
-      $post:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ListCheckSummariesOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { WorkloadId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            LensArn: string
+            PillarId: string
+            QuestionId: string
+            ChoiceId: string
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensArn: string
-                PillarId: string
-                QuestionId: string
-                ChoiceId: string
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListCheckSummariesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias/improvements': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLensReviewImprovementsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          query: {
+            PillarId?: string | undefined
+            MilestoneNumber?: number | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              query: {
-                PillarId?: string | undefined
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListLensReviewImprovementsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews': {
-      $get:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLensReviewsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadId: string } } & {
+          query: {
+            MilestoneNumber?: number | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: {
-                MilestoneNumber?: number | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListLensReviewsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/lenses': {
-      $get:
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
-                LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
-                LensName?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLensesOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
+            LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
+            LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
+            LensName?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
-                LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
-                LensName?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
-                LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
-                LensName?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
-                LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
-                LensName?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-                LensType?: 'AWS_OFFICIAL' | 'CUSTOM_SHARED' | 'CUSTOM_SELF' | undefined
-                LensStatus?: 'ALL' | 'DRAFT' | 'PUBLISHED' | undefined
-                LensName?: string | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListLensesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/milestonesSummaries': {
-      $post:
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: ListMilestonesOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { WorkloadId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { NextToken?: string | undefined; MaxResults?: number | undefined } }
+        output: ListMilestonesOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/notifications': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadId?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ListNotificationsOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadId?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            WorkloadId?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadId?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadId?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadId?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListNotificationsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/shareInvitations': {
-      $get:
-        | {
-            input: {
-              query: {
-                WorkloadNamePrefix?: string | undefined
-                LensNamePrefix?: string | undefined
-                ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListShareInvitationsOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            WorkloadNamePrefix?: string | undefined
+            LensNamePrefix?: string | undefined
+            ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: {
-                WorkloadNamePrefix?: string | undefined
-                LensNamePrefix?: string | undefined
-                ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                WorkloadNamePrefix?: string | undefined
-                LensNamePrefix?: string | undefined
-                ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: {
-                WorkloadNamePrefix?: string | undefined
-                LensNamePrefix?: string | undefined
-                ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                WorkloadNamePrefix?: string | undefined
-                LensNamePrefix?: string | undefined
-                ShareResourceType?: 'WORKLOAD' | 'LENS' | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListShareInvitationsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:WorkloadArn': {
-      $get:
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { WorkloadArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { WorkloadArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-      $post:
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: TagResourceOutput
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { Tags: { [x: string]: TagValue } } }
+        output: TagResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloadsSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadNamePrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ListWorkloadsOutput
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadNamePrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            WorkloadNamePrefix?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadNamePrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadNamePrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                WorkloadNamePrefix?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 483
-          }
+        }
+        output: ListWorkloadsOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:WorkloadArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { WorkloadArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceOutput
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { WorkloadArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: UntagResourceOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/global-settings': {
-      $patch:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $patch: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { OrganizationSharingStatus?: 'ENABLED' | 'DISABLED' | undefined } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/shareInvitations/:ShareInvitationId': {
-      $patch:
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: UpdateShareInvitationOutput
-            outputFormat: 'json'
-            status: 200
+      $patch: {
+        input: { param: { ShareInvitationId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { ShareInvitationId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { ShareInvitationAction: 'ACCEPT' | 'REJECT' } }
+        output: UpdateShareInvitationOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/shares/:ShareId': {
-      $patch:
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: UpdateWorkloadShareOutput
-            outputFormat: 'json'
-            status: 200
+      $patch: {
+        input: { param: { ShareId: string; WorkloadId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { ShareId: string; WorkloadId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { PermissionType: 'READONLY' | 'CONTRIBUTOR' } }
+        output: UpdateWorkloadShareOutput
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/workloads/:WorkloadId/lensReviews/:LensAlias/upgrade': {
-      $put:
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: {}
-            outputFormat: string
-            status: 200
+      $put: {
+        input: { param: { WorkloadId: string; LensAlias: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: { param: { WorkloadId: string; LensAlias: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
-            output: ThrottlingException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { MilestoneName: string; ClientRequestToken?: string | undefined } }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   },
   '/'

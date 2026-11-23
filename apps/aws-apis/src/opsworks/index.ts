@@ -1,157 +1,455 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetOpsWorks20130218AssignInstanceHandler,
-  xAmzTargetOpsWorks20130218AssignVolumeHandler,
-  xAmzTargetOpsWorks20130218AssociateElasticIpHandler,
-  xAmzTargetOpsWorks20130218AttachElasticLoadBalancerHandler,
-  xAmzTargetOpsWorks20130218CloneStackHandler,
-  xAmzTargetOpsWorks20130218CreateAppHandler,
-  xAmzTargetOpsWorks20130218CreateDeploymentHandler,
-  xAmzTargetOpsWorks20130218CreateInstanceHandler,
-  xAmzTargetOpsWorks20130218CreateLayerHandler,
-  xAmzTargetOpsWorks20130218CreateStackHandler,
-  xAmzTargetOpsWorks20130218CreateUserProfileHandler,
-  xAmzTargetOpsWorks20130218DeleteAppHandler,
-  xAmzTargetOpsWorks20130218DeleteInstanceHandler,
-  xAmzTargetOpsWorks20130218DeleteLayerHandler,
-  xAmzTargetOpsWorks20130218DeleteStackHandler,
-  xAmzTargetOpsWorks20130218DeleteUserProfileHandler,
-  xAmzTargetOpsWorks20130218DeregisterEcsClusterHandler,
-  xAmzTargetOpsWorks20130218DeregisterElasticIpHandler,
-  xAmzTargetOpsWorks20130218DeregisterInstanceHandler,
-  xAmzTargetOpsWorks20130218DeregisterRdsDbInstanceHandler,
-  xAmzTargetOpsWorks20130218DeregisterVolumeHandler,
-  xAmzTargetOpsWorks20130218DescribeAgentVersionsHandler,
-  xAmzTargetOpsWorks20130218DescribeAppsHandler,
-  xAmzTargetOpsWorks20130218DescribeCommandsHandler,
-  xAmzTargetOpsWorks20130218DescribeDeploymentsHandler,
-  xAmzTargetOpsWorks20130218DescribeEcsClustersHandler,
-  xAmzTargetOpsWorks20130218DescribeElasticIpsHandler,
-  xAmzTargetOpsWorks20130218DescribeElasticLoadBalancersHandler,
-  xAmzTargetOpsWorks20130218DescribeInstancesHandler,
-  xAmzTargetOpsWorks20130218DescribeLayersHandler,
-  xAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingHandler,
-  xAmzTargetOpsWorks20130218DescribeMyUserProfileHandler,
-  xAmzTargetOpsWorks20130218DescribeOperatingSystemsHandler,
-  xAmzTargetOpsWorks20130218DescribePermissionsHandler,
-  xAmzTargetOpsWorks20130218DescribeRaidArraysHandler,
-  xAmzTargetOpsWorks20130218DescribeRdsDbInstancesHandler,
-  xAmzTargetOpsWorks20130218DescribeServiceErrorsHandler,
-  xAmzTargetOpsWorks20130218DescribeStackProvisioningParametersHandler,
-  xAmzTargetOpsWorks20130218DescribeStacksHandler,
-  xAmzTargetOpsWorks20130218DescribeStackSummaryHandler,
-  xAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingHandler,
-  xAmzTargetOpsWorks20130218DescribeUserProfilesHandler,
-  xAmzTargetOpsWorks20130218DescribeVolumesHandler,
-  xAmzTargetOpsWorks20130218DetachElasticLoadBalancerHandler,
-  xAmzTargetOpsWorks20130218DisassociateElasticIpHandler,
-  xAmzTargetOpsWorks20130218GetHostnameSuggestionHandler,
-  xAmzTargetOpsWorks20130218GrantAccessHandler,
-  xAmzTargetOpsWorks20130218ListTagsHandler,
-  xAmzTargetOpsWorks20130218RebootInstanceHandler,
-  xAmzTargetOpsWorks20130218RegisterEcsClusterHandler,
-  xAmzTargetOpsWorks20130218RegisterElasticIpHandler,
-  xAmzTargetOpsWorks20130218RegisterInstanceHandler,
-  xAmzTargetOpsWorks20130218RegisterRdsDbInstanceHandler,
-  xAmzTargetOpsWorks20130218RegisterVolumeHandler,
-  xAmzTargetOpsWorks20130218SetLoadBasedAutoScalingHandler,
-  xAmzTargetOpsWorks20130218SetPermissionHandler,
-  xAmzTargetOpsWorks20130218SetTimeBasedAutoScalingHandler,
-  xAmzTargetOpsWorks20130218StartInstanceHandler,
-  xAmzTargetOpsWorks20130218StartStackHandler,
-  xAmzTargetOpsWorks20130218StopInstanceHandler,
-  xAmzTargetOpsWorks20130218StopStackHandler,
-  xAmzTargetOpsWorks20130218TagResourceHandler,
-  xAmzTargetOpsWorks20130218UnassignInstanceHandler,
-  xAmzTargetOpsWorks20130218UnassignVolumeHandler,
-  xAmzTargetOpsWorks20130218UntagResourceHandler,
-  xAmzTargetOpsWorks20130218UpdateAppHandler,
-  xAmzTargetOpsWorks20130218UpdateElasticIpHandler,
-  xAmzTargetOpsWorks20130218UpdateInstanceHandler,
-  xAmzTargetOpsWorks20130218UpdateLayerHandler,
-  xAmzTargetOpsWorks20130218UpdateMyUserProfileHandler,
-  xAmzTargetOpsWorks20130218UpdateRdsDbInstanceHandler,
-  xAmzTargetOpsWorks20130218UpdateStackHandler,
-  xAmzTargetOpsWorks20130218UpdateUserProfileHandler,
-  xAmzTargetOpsWorks20130218UpdateVolumeHandler,
+  postXAmzTargetOpsWorks20130218AssignInstanceRoute,
+  postXAmzTargetOpsWorks20130218AssignVolumeRoute,
+  postXAmzTargetOpsWorks20130218AssociateElasticIpRoute,
+  postXAmzTargetOpsWorks20130218AttachElasticLoadBalancerRoute,
+  postXAmzTargetOpsWorks20130218CloneStackRoute,
+  postXAmzTargetOpsWorks20130218CreateAppRoute,
+  postXAmzTargetOpsWorks20130218CreateDeploymentRoute,
+  postXAmzTargetOpsWorks20130218CreateInstanceRoute,
+  postXAmzTargetOpsWorks20130218CreateLayerRoute,
+  postXAmzTargetOpsWorks20130218CreateStackRoute,
+  postXAmzTargetOpsWorks20130218CreateUserProfileRoute,
+  postXAmzTargetOpsWorks20130218DeleteAppRoute,
+  postXAmzTargetOpsWorks20130218DeleteInstanceRoute,
+  postXAmzTargetOpsWorks20130218DeleteLayerRoute,
+  postXAmzTargetOpsWorks20130218DeleteStackRoute,
+  postXAmzTargetOpsWorks20130218DeleteUserProfileRoute,
+  postXAmzTargetOpsWorks20130218DeregisterEcsClusterRoute,
+  postXAmzTargetOpsWorks20130218DeregisterElasticIpRoute,
+  postXAmzTargetOpsWorks20130218DeregisterInstanceRoute,
+  postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute,
+  postXAmzTargetOpsWorks20130218DeregisterVolumeRoute,
+  postXAmzTargetOpsWorks20130218DescribeAgentVersionsRoute,
+  postXAmzTargetOpsWorks20130218DescribeAppsRoute,
+  postXAmzTargetOpsWorks20130218DescribeCommandsRoute,
+  postXAmzTargetOpsWorks20130218DescribeDeploymentsRoute,
+  postXAmzTargetOpsWorks20130218DescribeEcsClustersRoute,
+  postXAmzTargetOpsWorks20130218DescribeElasticIpsRoute,
+  postXAmzTargetOpsWorks20130218DescribeElasticLoadBalancersRoute,
+  postXAmzTargetOpsWorks20130218DescribeInstancesRoute,
+  postXAmzTargetOpsWorks20130218DescribeLayersRoute,
+  postXAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingRoute,
+  postXAmzTargetOpsWorks20130218DescribeMyUserProfileRoute,
+  postXAmzTargetOpsWorks20130218DescribeOperatingSystemsRoute,
+  postXAmzTargetOpsWorks20130218DescribePermissionsRoute,
+  postXAmzTargetOpsWorks20130218DescribeRaidArraysRoute,
+  postXAmzTargetOpsWorks20130218DescribeRdsDbInstancesRoute,
+  postXAmzTargetOpsWorks20130218DescribeServiceErrorsRoute,
+  postXAmzTargetOpsWorks20130218DescribeStackProvisioningParametersRoute,
+  postXAmzTargetOpsWorks20130218DescribeStacksRoute,
+  postXAmzTargetOpsWorks20130218DescribeStackSummaryRoute,
+  postXAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingRoute,
+  postXAmzTargetOpsWorks20130218DescribeUserProfilesRoute,
+  postXAmzTargetOpsWorks20130218DescribeVolumesRoute,
+  postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute,
+  postXAmzTargetOpsWorks20130218DisassociateElasticIpRoute,
+  postXAmzTargetOpsWorks20130218GetHostnameSuggestionRoute,
+  postXAmzTargetOpsWorks20130218GrantAccessRoute,
+  postXAmzTargetOpsWorks20130218ListTagsRoute,
+  postXAmzTargetOpsWorks20130218RebootInstanceRoute,
+  postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute,
+  postXAmzTargetOpsWorks20130218RegisterElasticIpRoute,
+  postXAmzTargetOpsWorks20130218RegisterInstanceRoute,
+  postXAmzTargetOpsWorks20130218RegisterRdsDbInstanceRoute,
+  postXAmzTargetOpsWorks20130218RegisterVolumeRoute,
+  postXAmzTargetOpsWorks20130218SetLoadBasedAutoScalingRoute,
+  postXAmzTargetOpsWorks20130218SetPermissionRoute,
+  postXAmzTargetOpsWorks20130218SetTimeBasedAutoScalingRoute,
+  postXAmzTargetOpsWorks20130218StartInstanceRoute,
+  postXAmzTargetOpsWorks20130218StartStackRoute,
+  postXAmzTargetOpsWorks20130218StopInstanceRoute,
+  postXAmzTargetOpsWorks20130218StopStackRoute,
+  postXAmzTargetOpsWorks20130218TagResourceRoute,
+  postXAmzTargetOpsWorks20130218UnassignInstanceRoute,
+  postXAmzTargetOpsWorks20130218UnassignVolumeRoute,
+  postXAmzTargetOpsWorks20130218UntagResourceRoute,
+  postXAmzTargetOpsWorks20130218UpdateAppRoute,
+  postXAmzTargetOpsWorks20130218UpdateElasticIpRoute,
+  postXAmzTargetOpsWorks20130218UpdateInstanceRoute,
+  postXAmzTargetOpsWorks20130218UpdateLayerRoute,
+  postXAmzTargetOpsWorks20130218UpdateMyUserProfileRoute,
+  postXAmzTargetOpsWorks20130218UpdateRdsDbInstanceRoute,
+  postXAmzTargetOpsWorks20130218UpdateStackRoute,
+  postXAmzTargetOpsWorks20130218UpdateUserProfileRoute,
+  postXAmzTargetOpsWorks20130218UpdateVolumeRoute,
+} from './routes'
+import {
+  postXAmzTargetOpsWorks20130218AssignInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218AssignVolumeRouteHandler,
+  postXAmzTargetOpsWorks20130218AssociateElasticIpRouteHandler,
+  postXAmzTargetOpsWorks20130218AttachElasticLoadBalancerRouteHandler,
+  postXAmzTargetOpsWorks20130218CloneStackRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateAppRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateDeploymentRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateLayerRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateStackRouteHandler,
+  postXAmzTargetOpsWorks20130218CreateUserProfileRouteHandler,
+  postXAmzTargetOpsWorks20130218DeleteAppRouteHandler,
+  postXAmzTargetOpsWorks20130218DeleteInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218DeleteLayerRouteHandler,
+  postXAmzTargetOpsWorks20130218DeleteStackRouteHandler,
+  postXAmzTargetOpsWorks20130218DeleteUserProfileRouteHandler,
+  postXAmzTargetOpsWorks20130218DeregisterEcsClusterRouteHandler,
+  postXAmzTargetOpsWorks20130218DeregisterElasticIpRouteHandler,
+  postXAmzTargetOpsWorks20130218DeregisterInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218DeregisterVolumeRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeAgentVersionsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeAppsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeCommandsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeDeploymentsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeEcsClustersRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeElasticIpsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeElasticLoadBalancersRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeInstancesRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeLayersRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeMyUserProfileRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeOperatingSystemsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribePermissionsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeRaidArraysRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeRdsDbInstancesRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeServiceErrorsRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeStackProvisioningParametersRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeStacksRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeStackSummaryRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeUserProfilesRouteHandler,
+  postXAmzTargetOpsWorks20130218DescribeVolumesRouteHandler,
+  postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRouteHandler,
+  postXAmzTargetOpsWorks20130218DisassociateElasticIpRouteHandler,
+  postXAmzTargetOpsWorks20130218GetHostnameSuggestionRouteHandler,
+  postXAmzTargetOpsWorks20130218GrantAccessRouteHandler,
+  postXAmzTargetOpsWorks20130218ListTagsRouteHandler,
+  postXAmzTargetOpsWorks20130218RebootInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218RegisterEcsClusterRouteHandler,
+  postXAmzTargetOpsWorks20130218RegisterElasticIpRouteHandler,
+  postXAmzTargetOpsWorks20130218RegisterInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218RegisterRdsDbInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218RegisterVolumeRouteHandler,
+  postXAmzTargetOpsWorks20130218SetLoadBasedAutoScalingRouteHandler,
+  postXAmzTargetOpsWorks20130218SetPermissionRouteHandler,
+  postXAmzTargetOpsWorks20130218SetTimeBasedAutoScalingRouteHandler,
+  postXAmzTargetOpsWorks20130218StartInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218StartStackRouteHandler,
+  postXAmzTargetOpsWorks20130218StopInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218StopStackRouteHandler,
+  postXAmzTargetOpsWorks20130218TagResourceRouteHandler,
+  postXAmzTargetOpsWorks20130218UnassignInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218UnassignVolumeRouteHandler,
+  postXAmzTargetOpsWorks20130218UntagResourceRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateAppRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateElasticIpRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateLayerRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateMyUserProfileRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateRdsDbInstanceRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateStackRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateUserProfileRouteHandler,
+  postXAmzTargetOpsWorks20130218UpdateVolumeRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetOpsWorks20130218AssignInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218AssignVolumeHandler)
-  .route('/', xAmzTargetOpsWorks20130218AssociateElasticIpHandler)
-  .route('/', xAmzTargetOpsWorks20130218AttachElasticLoadBalancerHandler)
-  .route('/', xAmzTargetOpsWorks20130218CloneStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateAppHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateDeploymentHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateLayerHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218CreateUserProfileHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeleteAppHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeleteInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeleteLayerHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeleteStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeleteUserProfileHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeregisterEcsClusterHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeregisterElasticIpHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeregisterInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeregisterRdsDbInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218DeregisterVolumeHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeAgentVersionsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeAppsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeCommandsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeDeploymentsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeEcsClustersHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeElasticIpsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeElasticLoadBalancersHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeInstancesHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeLayersHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeMyUserProfileHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeOperatingSystemsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribePermissionsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeRaidArraysHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeRdsDbInstancesHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeServiceErrorsHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeStackProvisioningParametersHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeStackSummaryHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeStacksHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeUserProfilesHandler)
-  .route('/', xAmzTargetOpsWorks20130218DescribeVolumesHandler)
-  .route('/', xAmzTargetOpsWorks20130218DetachElasticLoadBalancerHandler)
-  .route('/', xAmzTargetOpsWorks20130218DisassociateElasticIpHandler)
-  .route('/', xAmzTargetOpsWorks20130218GetHostnameSuggestionHandler)
-  .route('/', xAmzTargetOpsWorks20130218GrantAccessHandler)
-  .route('/', xAmzTargetOpsWorks20130218ListTagsHandler)
-  .route('/', xAmzTargetOpsWorks20130218RebootInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218RegisterEcsClusterHandler)
-  .route('/', xAmzTargetOpsWorks20130218RegisterElasticIpHandler)
-  .route('/', xAmzTargetOpsWorks20130218RegisterInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218RegisterRdsDbInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218RegisterVolumeHandler)
-  .route('/', xAmzTargetOpsWorks20130218SetLoadBasedAutoScalingHandler)
-  .route('/', xAmzTargetOpsWorks20130218SetPermissionHandler)
-  .route('/', xAmzTargetOpsWorks20130218SetTimeBasedAutoScalingHandler)
-  .route('/', xAmzTargetOpsWorks20130218StartInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218StartStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218StopInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218StopStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218TagResourceHandler)
-  .route('/', xAmzTargetOpsWorks20130218UnassignInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218UnassignVolumeHandler)
-  .route('/', xAmzTargetOpsWorks20130218UntagResourceHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateAppHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateElasticIpHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateLayerHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateMyUserProfileHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateRdsDbInstanceHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateStackHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateUserProfileHandler)
-  .route('/', xAmzTargetOpsWorks20130218UpdateVolumeHandler)
+  .openapi(
+    postXAmzTargetOpsWorks20130218AssignInstanceRoute,
+    postXAmzTargetOpsWorks20130218AssignInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218AssignVolumeRoute,
+    postXAmzTargetOpsWorks20130218AssignVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218AssociateElasticIpRoute,
+    postXAmzTargetOpsWorks20130218AssociateElasticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218AttachElasticLoadBalancerRoute,
+    postXAmzTargetOpsWorks20130218AttachElasticLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CloneStackRoute,
+    postXAmzTargetOpsWorks20130218CloneStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateAppRoute,
+    postXAmzTargetOpsWorks20130218CreateAppRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateDeploymentRoute,
+    postXAmzTargetOpsWorks20130218CreateDeploymentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateInstanceRoute,
+    postXAmzTargetOpsWorks20130218CreateInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateLayerRoute,
+    postXAmzTargetOpsWorks20130218CreateLayerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateStackRoute,
+    postXAmzTargetOpsWorks20130218CreateStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218CreateUserProfileRoute,
+    postXAmzTargetOpsWorks20130218CreateUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeleteAppRoute,
+    postXAmzTargetOpsWorks20130218DeleteAppRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeleteInstanceRoute,
+    postXAmzTargetOpsWorks20130218DeleteInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeleteLayerRoute,
+    postXAmzTargetOpsWorks20130218DeleteLayerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeleteStackRoute,
+    postXAmzTargetOpsWorks20130218DeleteStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeleteUserProfileRoute,
+    postXAmzTargetOpsWorks20130218DeleteUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeregisterEcsClusterRoute,
+    postXAmzTargetOpsWorks20130218DeregisterEcsClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeregisterElasticIpRoute,
+    postXAmzTargetOpsWorks20130218DeregisterElasticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeregisterInstanceRoute,
+    postXAmzTargetOpsWorks20130218DeregisterInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRoute,
+    postXAmzTargetOpsWorks20130218DeregisterRdsDbInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DeregisterVolumeRoute,
+    postXAmzTargetOpsWorks20130218DeregisterVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeAgentVersionsRoute,
+    postXAmzTargetOpsWorks20130218DescribeAgentVersionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeAppsRoute,
+    postXAmzTargetOpsWorks20130218DescribeAppsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeCommandsRoute,
+    postXAmzTargetOpsWorks20130218DescribeCommandsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeDeploymentsRoute,
+    postXAmzTargetOpsWorks20130218DescribeDeploymentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeEcsClustersRoute,
+    postXAmzTargetOpsWorks20130218DescribeEcsClustersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeElasticIpsRoute,
+    postXAmzTargetOpsWorks20130218DescribeElasticIpsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeElasticLoadBalancersRoute,
+    postXAmzTargetOpsWorks20130218DescribeElasticLoadBalancersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeInstancesRoute,
+    postXAmzTargetOpsWorks20130218DescribeInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeLayersRoute,
+    postXAmzTargetOpsWorks20130218DescribeLayersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingRoute,
+    postXAmzTargetOpsWorks20130218DescribeLoadBasedAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeMyUserProfileRoute,
+    postXAmzTargetOpsWorks20130218DescribeMyUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeOperatingSystemsRoute,
+    postXAmzTargetOpsWorks20130218DescribeOperatingSystemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribePermissionsRoute,
+    postXAmzTargetOpsWorks20130218DescribePermissionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeRaidArraysRoute,
+    postXAmzTargetOpsWorks20130218DescribeRaidArraysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeRdsDbInstancesRoute,
+    postXAmzTargetOpsWorks20130218DescribeRdsDbInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeServiceErrorsRoute,
+    postXAmzTargetOpsWorks20130218DescribeServiceErrorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeStackProvisioningParametersRoute,
+    postXAmzTargetOpsWorks20130218DescribeStackProvisioningParametersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeStackSummaryRoute,
+    postXAmzTargetOpsWorks20130218DescribeStackSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeStacksRoute,
+    postXAmzTargetOpsWorks20130218DescribeStacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingRoute,
+    postXAmzTargetOpsWorks20130218DescribeTimeBasedAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeUserProfilesRoute,
+    postXAmzTargetOpsWorks20130218DescribeUserProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DescribeVolumesRoute,
+    postXAmzTargetOpsWorks20130218DescribeVolumesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRoute,
+    postXAmzTargetOpsWorks20130218DetachElasticLoadBalancerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218DisassociateElasticIpRoute,
+    postXAmzTargetOpsWorks20130218DisassociateElasticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218GetHostnameSuggestionRoute,
+    postXAmzTargetOpsWorks20130218GetHostnameSuggestionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218GrantAccessRoute,
+    postXAmzTargetOpsWorks20130218GrantAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218ListTagsRoute,
+    postXAmzTargetOpsWorks20130218ListTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RebootInstanceRoute,
+    postXAmzTargetOpsWorks20130218RebootInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RegisterEcsClusterRoute,
+    postXAmzTargetOpsWorks20130218RegisterEcsClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RegisterElasticIpRoute,
+    postXAmzTargetOpsWorks20130218RegisterElasticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RegisterInstanceRoute,
+    postXAmzTargetOpsWorks20130218RegisterInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RegisterRdsDbInstanceRoute,
+    postXAmzTargetOpsWorks20130218RegisterRdsDbInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218RegisterVolumeRoute,
+    postXAmzTargetOpsWorks20130218RegisterVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218SetLoadBasedAutoScalingRoute,
+    postXAmzTargetOpsWorks20130218SetLoadBasedAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218SetPermissionRoute,
+    postXAmzTargetOpsWorks20130218SetPermissionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218SetTimeBasedAutoScalingRoute,
+    postXAmzTargetOpsWorks20130218SetTimeBasedAutoScalingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218StartInstanceRoute,
+    postXAmzTargetOpsWorks20130218StartInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218StartStackRoute,
+    postXAmzTargetOpsWorks20130218StartStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218StopInstanceRoute,
+    postXAmzTargetOpsWorks20130218StopInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218StopStackRoute,
+    postXAmzTargetOpsWorks20130218StopStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218TagResourceRoute,
+    postXAmzTargetOpsWorks20130218TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UnassignInstanceRoute,
+    postXAmzTargetOpsWorks20130218UnassignInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UnassignVolumeRoute,
+    postXAmzTargetOpsWorks20130218UnassignVolumeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UntagResourceRoute,
+    postXAmzTargetOpsWorks20130218UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateAppRoute,
+    postXAmzTargetOpsWorks20130218UpdateAppRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateElasticIpRoute,
+    postXAmzTargetOpsWorks20130218UpdateElasticIpRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateInstanceRoute,
+    postXAmzTargetOpsWorks20130218UpdateInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateLayerRoute,
+    postXAmzTargetOpsWorks20130218UpdateLayerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateMyUserProfileRoute,
+    postXAmzTargetOpsWorks20130218UpdateMyUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateRdsDbInstanceRoute,
+    postXAmzTargetOpsWorks20130218UpdateRdsDbInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateStackRoute,
+    postXAmzTargetOpsWorks20130218UpdateStackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateUserProfileRoute,
+    postXAmzTargetOpsWorks20130218UpdateUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorks20130218UpdateVolumeRoute,
+    postXAmzTargetOpsWorks20130218UpdateVolumeRouteHandler,
+  )
 
 export default app

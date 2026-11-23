@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1NameRoute,
   getV1NameConfigVersionsRoute,
   getV1NameRoute,
@@ -18,54 +18,90 @@ import {
   postV1ResourceTestIamPermissionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1NameRouteHandler: RouteHandler<typeof deleteV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(deleteV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameConfigVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1NameStatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameModifyCloudToDeviceConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1NameSendCommandToDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ParentRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentRegistriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentBindDeviceToGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ParentUnbindDeviceFromGatewayRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceGetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceSetIamPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResourceTestIamPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1NameRouteHandler: RouteHandler<typeof getV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1NameRouteHandler: RouteHandler<typeof patchV1NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameConfigVersionsRouteHandler: RouteHandler<
+  typeof getV1NameConfigVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1NameStatesRouteHandler: RouteHandler<typeof getV1NameStatesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameModifyCloudToDeviceConfigRouteHandler: RouteHandler<
+  typeof postV1NameModifyCloudToDeviceConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1NameSendCommandToDeviceRouteHandler: RouteHandler<
+  typeof postV1NameSendCommandToDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentDevicesRouteHandler: RouteHandler<typeof getV1ParentDevicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentDevicesRouteHandler: RouteHandler<
+  typeof postV1ParentDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ParentRegistriesRouteHandler: RouteHandler<
+  typeof getV1ParentRegistriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentRegistriesRouteHandler: RouteHandler<
+  typeof postV1ParentRegistriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentBindDeviceToGatewayRouteHandler: RouteHandler<
+  typeof postV1ParentBindDeviceToGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ParentUnbindDeviceFromGatewayRouteHandler: RouteHandler<
+  typeof postV1ParentUnbindDeviceFromGatewayRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceGetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1ResourceGetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceSetIamPolicyRouteHandler: RouteHandler<
+  typeof postV1ResourceSetIamPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResourceTestIamPermissionsRouteHandler: RouteHandler<
+  typeof postV1ResourceTestIamPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

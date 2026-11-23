@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDiscoveryV2AttractionsIdRoute,
   getDiscoveryV2AttractionsRoute,
   getDiscoveryV2ClassificationsGenresIdRoute,
@@ -15,45 +15,80 @@ import {
   getDiscoveryV2VenuesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDiscoveryV2AttractionsRouteHandler: RouteHandler<
+  typeof getDiscoveryV2AttractionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const discoveryHandler = app
-  .openapi(getDiscoveryV2AttractionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2AttractionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2ClassificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2ClassificationsGenresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2ClassificationsSegmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2ClassificationsSubgenresIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2ClassificationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2EventsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2EventsIdImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2SuggestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2VenuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDiscoveryV2VenuesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDiscoveryV2AttractionsIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2AttractionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2ClassificationsRouteHandler: RouteHandler<
+  typeof getDiscoveryV2ClassificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2ClassificationsGenresIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2ClassificationsGenresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2ClassificationsSegmentsIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2ClassificationsSegmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2ClassificationsSubgenresIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2ClassificationsSubgenresIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2ClassificationsIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2ClassificationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2EventsRouteHandler: RouteHandler<
+  typeof getDiscoveryV2EventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2EventsIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2EventsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2EventsIdImagesRouteHandler: RouteHandler<
+  typeof getDiscoveryV2EventsIdImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2SuggestRouteHandler: RouteHandler<
+  typeof getDiscoveryV2SuggestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2VenuesRouteHandler: RouteHandler<
+  typeof getDiscoveryV2VenuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDiscoveryV2VenuesIdRouteHandler: RouteHandler<
+  typeof getDiscoveryV2VenuesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

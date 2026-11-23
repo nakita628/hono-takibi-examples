@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Partner%20Services/Rollouts/321895/2026-09/partnerServices.json',
   output: './src/crm-partner-services/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-partner-services/types.ts' },
   client: { output: './src/crm-partner-services/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-partner-services/rpc.ts', parseResponse: true },

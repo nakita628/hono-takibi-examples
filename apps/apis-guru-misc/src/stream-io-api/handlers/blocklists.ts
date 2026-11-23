@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBlocklistsNameRoute,
   getBlocklistsNameRoute,
   getBlocklistsRoute,
@@ -7,21 +7,28 @@ import {
   putBlocklistsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBlocklistsRouteHandler: RouteHandler<typeof getBlocklistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const blocklistsHandler = app
-  .openapi(getBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBlocklistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBlocklistsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBlocklistsRouteHandler: RouteHandler<typeof postBlocklistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBlocklistsNameRouteHandler: RouteHandler<
+  typeof deleteBlocklistsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlocklistsNameRouteHandler: RouteHandler<typeof getBlocklistsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putBlocklistsNameRouteHandler: RouteHandler<typeof putBlocklistsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

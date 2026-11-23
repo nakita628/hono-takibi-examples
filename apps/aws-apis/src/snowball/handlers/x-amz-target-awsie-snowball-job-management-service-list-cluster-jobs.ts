@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsieSnowballJobManagementServiceListClusterJobsHandler = app.openapi(
-  postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSIESnowballJobManagementServiceListClusterJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

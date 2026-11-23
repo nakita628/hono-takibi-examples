@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMessagesMessageIdReactionsRoute,
   deleteMessagesMessageIdRoute,
   getMessagesMatchesNarrowRoute,
@@ -17,51 +17,88 @@ import {
   postMessagesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMessagesRouteHandler: RouteHandler<typeof getMessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const messagesHandler = app
-  .openapi(getMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesMessageIdHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesFlagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesFlagsNarrowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesRenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesMessageIdReactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMessagesMessageIdReactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesMessageIdReadReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesMatchesNarrowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMessagesMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesMessageIdReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessagesMessageIdTypingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMessagesRouteHandler: RouteHandler<typeof postMessagesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesMessageIdHistoryRouteHandler: RouteHandler<
+  typeof getMessagesMessageIdHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesFlagsRouteHandler: RouteHandler<typeof postMessagesFlagsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesFlagsNarrowRouteHandler: RouteHandler<
+  typeof postMessagesFlagsNarrowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesRenderRouteHandler: RouteHandler<typeof postMessagesRenderRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesMessageIdReactionsRouteHandler: RouteHandler<
+  typeof postMessagesMessageIdReactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMessagesMessageIdReactionsRouteHandler: RouteHandler<
+  typeof deleteMessagesMessageIdReactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesMessageIdReadReceiptsRouteHandler: RouteHandler<
+  typeof getMessagesMessageIdReadReceiptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesMatchesNarrowRouteHandler: RouteHandler<
+  typeof getMessagesMatchesNarrowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessagesMessageIdRouteHandler: RouteHandler<
+  typeof getMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMessagesMessageIdRouteHandler: RouteHandler<
+  typeof patchMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMessagesMessageIdRouteHandler: RouteHandler<
+  typeof deleteMessagesMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesMessageIdReportRouteHandler: RouteHandler<
+  typeof postMessagesMessageIdReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMessagesMessageIdTypingRouteHandler: RouteHandler<
+  typeof postMessagesMessageIdTypingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

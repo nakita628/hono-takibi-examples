@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOauthApplicationsOauthApplicationIdRoute,
   getOauthApplicationsOauthApplicationIdRoute,
   getOauthApplicationsRoute,
@@ -11,33 +11,56 @@ import {
   putOauthApplicationsOauthApplicationIdLogoRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauthApplicationsRouteHandler: RouteHandler<
+  typeof getOauthApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const oauthApplicationsHandler = app
-  .openapi(getOauthApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOauthApplicationsOauthApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOauthApplicationsOauthApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOauthApplicationsOauthApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOauthApplicationsOauthApplicationIdLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthApplicationsOauthApplicationIdRotateSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthApplicationsOauthApplicationIdRevokeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthApplicationsAccessTokensVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauthApplicationsRouteHandler: RouteHandler<
+  typeof postOauthApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOauthApplicationsOauthApplicationIdRouteHandler: RouteHandler<
+  typeof getOauthApplicationsOauthApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOauthApplicationsOauthApplicationIdRouteHandler: RouteHandler<
+  typeof patchOauthApplicationsOauthApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOauthApplicationsOauthApplicationIdRouteHandler: RouteHandler<
+  typeof deleteOauthApplicationsOauthApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOauthApplicationsOauthApplicationIdLogoRouteHandler: RouteHandler<
+  typeof putOauthApplicationsOauthApplicationIdLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthApplicationsOauthApplicationIdRotateSecretRouteHandler: RouteHandler<
+  typeof postOauthApplicationsOauthApplicationIdRotateSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthApplicationsOauthApplicationIdRevokeTokenRouteHandler: RouteHandler<
+  typeof postOauthApplicationsOauthApplicationIdRevokeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthApplicationsAccessTokensVerifyRouteHandler: RouteHandler<
+  typeof postOauthApplicationsAccessTokensVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

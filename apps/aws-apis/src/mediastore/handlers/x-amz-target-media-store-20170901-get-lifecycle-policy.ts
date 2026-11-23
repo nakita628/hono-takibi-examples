@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMediaStore20170901GetLifecyclePolicyHandler = app.openapi(
-  postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMediaStore20170901GetLifecyclePolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetMediaStore20170901GetLifecyclePolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSLicenseManagerListLicensesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSLicenseManagerListLicensesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsLicenseManagerListLicensesHandler = app.openapi(
-  postXAmzTargetAWSLicenseManagerListLicensesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSLicenseManagerListLicensesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSLicenseManagerListLicensesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMcginleyDynamicRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMcginleyDynamicRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mcginleyDynamicHandler = app.openapi(getMcginleyDynamicRoute, (c) => {
+export const getMcginleyDynamicRouteHandler: RouteHandler<typeof getMcginleyDynamicRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

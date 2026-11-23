@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPsd2FormatRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPsd2FormatRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const psd2Handler = app.openapi(postPsd2FormatRoute, (c) => {
+export const postPsd2FormatRouteHandler: RouteHandler<typeof postPsd2FormatRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionSetLoadBalancerListenerSSLCertificateRoute,
   postActionSetLoadBalancerListenerSSLCertificateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSetLoadBalancerListenerSSLCertificateRouteHandler: RouteHandler<
+  typeof getActionSetLoadBalancerListenerSSLCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSetLoadBalancerListenerSslCertificateHandler = app
-  .openapi(getActionSetLoadBalancerListenerSSLCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSetLoadBalancerListenerSSLCertificateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSetLoadBalancerListenerSSLCertificateRouteHandler: RouteHandler<
+  typeof postActionSetLoadBalancerListenerSSLCertificateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSpinsIdRoute, getSpinsRoute, postSpinsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSpinsIdRoute, getSpinsRoute, postSpinsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSpinsRouteHandler: RouteHandler<typeof getSpinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const spinsHandler = app
-  .openapi(getSpinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSpinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSpinsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSpinsRouteHandler: RouteHandler<typeof postSpinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSpinsIdRouteHandler: RouteHandler<typeof getSpinsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

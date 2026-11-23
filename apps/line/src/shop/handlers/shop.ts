@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postShopV3MissionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postShopV3MissionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const shopHandler = app.openapi(postShopV3MissionRoute, (c) => {
+export const postShopV3MissionRouteHandler: RouteHandler<typeof postShopV3MissionRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

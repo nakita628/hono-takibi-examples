@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWebhooksFirehoseTestRoute, putWebhooksFirehoseRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWebhooksFirehoseTestRoute, putWebhooksFirehoseRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const putWebhooksFirehoseRouteHandler: RouteHandler<
+  typeof putWebhooksFirehoseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webhooksHandler = app
-  .openapi(putWebhooksFirehoseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWebhooksFirehoseTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWebhooksFirehoseTestRouteHandler: RouteHandler<
+  typeof postWebhooksFirehoseTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

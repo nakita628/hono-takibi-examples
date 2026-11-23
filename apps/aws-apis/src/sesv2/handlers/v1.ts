@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putV1EmailIdentitiesEmailIdentityDkimSigningRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putV1EmailIdentitiesEmailIdentityDkimSigningRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1Handler = app.openapi(putV1EmailIdentitiesEmailIdentityDkimSigningRoute, (c) => {
+export const putV1EmailIdentitiesEmailIdentityDkimSigningRouteHandler: RouteHandler<
+  typeof putV1EmailIdentitiesEmailIdentityDkimSigningRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

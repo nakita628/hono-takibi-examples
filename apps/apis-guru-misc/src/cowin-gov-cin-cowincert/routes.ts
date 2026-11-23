@@ -27,6 +27,6 @@ export const postPdfCertificateRoute = createRoute({
   request: {
     body: { content: { 'application/json': { schema: CertificateRequestSchema } }, required: true },
   },
-  responses: { 400: { description: 'Bad request', content: {} } },
+  responses: { 400: { description: 'Bad request' } },
   security: [{ cert_auth: ['read:cert'] }],
 })

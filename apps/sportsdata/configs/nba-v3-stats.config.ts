@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sportsdata.io/nba-v3-stats/1.0/openapi.yaml',
   output: './src/nba-v3-stats/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nba-v3-stats/types.ts' },
   client: { output: './src/nba-v3-stats/client.ts', baseUrl: '/' },
   rpc: { output: './src/nba-v3-stats/rpc.ts', parseResponse: true },

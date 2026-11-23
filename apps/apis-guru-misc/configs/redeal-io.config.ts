@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/redeal.io/1.0.0/openapi.yaml',
   output: './src/redeal-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/redeal-io/types.ts' },
   client: { output: './src/redeal-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/redeal-io/rpc.ts', parseResponse: true },

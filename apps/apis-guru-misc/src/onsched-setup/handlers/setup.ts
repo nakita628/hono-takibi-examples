@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSetupV1BusinessusersIdRoute,
   deleteSetupV1CalendarsBlockIdRoute,
   deleteSetupV1CalendarsIdRoute,
@@ -140,420 +140,830 @@ import {
   putSetupV1ServicesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSetupV1AppointmentsRouteHandler: RouteHandler<
+  typeof getSetupV1AppointmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const setupHandler = app
-  .openapi(getSetupV1AppointmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1AppointmentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1AppointmentsIdReassignResourceResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1BusinessusersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1BusinessusersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1BusinessusersPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1BusinessusersEmailCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1BusinessusersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1BusinessusersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1BusinessusersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1CalendarsBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CalendarsBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CalendarsBlocksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1CalendarsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CalendarsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CalendarsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CalendarsIdBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CalendarsIdBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CalendarsIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CalendarsIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CompaniesDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1CompaniesDomainsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesDomainsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CompaniesDomainsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesEmailTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1CompaniesEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CompaniesEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesEmailTemplatesTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1CompaniesRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1CompaniesRegionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesRegionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1CompaniesRegionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CompaniesTimezonesDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CustomersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1CustomersIdPrivacyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1LocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdAppointmentremindersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1LocationsIdAppointmentremindersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdDeleteallimagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdDeleteimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdEmailTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsIdEmailTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsIdEmailTemplatesMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdEmailTemplatesTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdEmailTemplatesTemplateNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdGoogleServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsIdGoogleServiceAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1LocationsIdHolidaysHolidayIdClosedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1LocationsIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1LocationsIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1LocationsIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1LocationsIdSettingsScopeSettingsScopeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1LocationsIdUploadimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcegroupsIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcesBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesBlocksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesTimezonesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesIdAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesIdBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdCalendarAuthGoogleGoogleEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ResourcesIdCalendarAuthOutlookOutlookEmailAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcesIdDeleteimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesIdReassignAppointmentsResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ResourcesIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ResourcesIdServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ResourcesIdUploadimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicegroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicegroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicegroupsIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicesAllocationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicesBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicesBlockIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesBlocksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesCalendarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicesCalendarIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesIdAllocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesIdAllocationsBulkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicesIdAvailabilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesIdBlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdBlocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdCalendarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSetupV1ServicesIdDeleteimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSetupV1ServicesIdRecoverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSetupV1ServicesIdResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSetupV1ServicesIdUploadimageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSetupV1AppointmentsIdRouteHandler: RouteHandler<
+  typeof getSetupV1AppointmentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1AppointmentsIdReassignResourceResourceIdRouteHandler: RouteHandler<
+  typeof putSetupV1AppointmentsIdReassignResourceResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1BusinessusersRouteHandler: RouteHandler<
+  typeof getSetupV1BusinessusersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1BusinessusersRouteHandler: RouteHandler<
+  typeof postSetupV1BusinessusersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1BusinessusersPermissionsRouteHandler: RouteHandler<
+  typeof getSetupV1BusinessusersPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1BusinessusersEmailCompaniesRouteHandler: RouteHandler<
+  typeof getSetupV1BusinessusersEmailCompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1BusinessusersIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1BusinessusersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1BusinessusersIdRouteHandler: RouteHandler<
+  typeof getSetupV1BusinessusersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1BusinessusersIdRouteHandler: RouteHandler<
+  typeof putSetupV1BusinessusersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CalendarsRouteHandler: RouteHandler<
+  typeof getSetupV1CalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CalendarsRouteHandler: RouteHandler<
+  typeof postSetupV1CalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1CalendarsBlockIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1CalendarsBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CalendarsBlockIdRouteHandler: RouteHandler<
+  typeof putSetupV1CalendarsBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CalendarsBlocksIdRouteHandler: RouteHandler<
+  typeof getSetupV1CalendarsBlocksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1CalendarsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1CalendarsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CalendarsIdRouteHandler: RouteHandler<
+  typeof getSetupV1CalendarsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CalendarsIdRouteHandler: RouteHandler<
+  typeof putSetupV1CalendarsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CalendarsIdBlockRouteHandler: RouteHandler<
+  typeof postSetupV1CalendarsIdBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CalendarsIdBlocksRouteHandler: RouteHandler<
+  typeof getSetupV1CalendarsIdBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CalendarsIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1CalendarsIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CalendarsIdServicesRouteHandler: RouteHandler<
+  typeof getSetupV1CalendarsIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CompaniesRouteHandler: RouteHandler<
+  typeof postSetupV1CompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CompaniesRouteHandler: RouteHandler<
+  typeof putSetupV1CompaniesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesDomainsRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CompaniesDomainsRouteHandler: RouteHandler<
+  typeof postSetupV1CompaniesDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1CompaniesDomainsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1CompaniesDomainsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesDomainsIdRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesDomainsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CompaniesDomainsIdRouteHandler: RouteHandler<
+  typeof putSetupV1CompaniesDomainsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesEmailTemplatesRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesEmailTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1CompaniesEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof deleteSetupV1CompaniesEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CompaniesEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof postSetupV1CompaniesEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesEmailTemplatesTemplateNameRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesEmailTemplatesTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesRegionsRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1CompaniesRegionsRouteHandler: RouteHandler<
+  typeof postSetupV1CompaniesRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1CompaniesRegionsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1CompaniesRegionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesRegionsIdRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesRegionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1CompaniesRegionsIdRouteHandler: RouteHandler<
+  typeof putSetupV1CompaniesRegionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CompaniesTimezonesDateRouteHandler: RouteHandler<
+  typeof getSetupV1CompaniesTimezonesDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CustomersRouteHandler: RouteHandler<
+  typeof getSetupV1CustomersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CustomersIdRouteHandler: RouteHandler<
+  typeof getSetupV1CustomersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1CustomersIdPrivacyRouteHandler: RouteHandler<
+  typeof getSetupV1CustomersIdPrivacyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsBulkRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsServicesIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsServicesIdRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1LocationsIdRouteHandler: RouteHandler<
+  typeof putSetupV1LocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdAppointmentremindersRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdAppointmentremindersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1LocationsIdAppointmentremindersRouteHandler: RouteHandler<
+  typeof putSetupV1LocationsIdAppointmentremindersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdDeleteallimagesRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdDeleteallimagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdDeleteimageRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdDeleteimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdEmailTemplatesRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdEmailTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsIdEmailTemplatesRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsIdEmailTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsIdEmailTemplatesMasterRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsIdEmailTemplatesMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdEmailTemplatesTemplateNameRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdEmailTemplatesTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdEmailTemplatesTemplateNameRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdEmailTemplatesTemplateNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdGoogleServiceAccountRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdGoogleServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsIdGoogleServiceAccountRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsIdGoogleServiceAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1LocationsIdHolidaysHolidayIdClosedRouteHandler: RouteHandler<
+  typeof putSetupV1LocationsIdHolidaysHolidayIdClosedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1LocationsIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1LocationsIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1LocationsIdServicesRouteHandler: RouteHandler<
+  typeof deleteSetupV1LocationsIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1LocationsIdServicesRouteHandler: RouteHandler<
+  typeof getSetupV1LocationsIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsIdServicesRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1LocationsIdSettingsScopeSettingsScopeRouteHandler: RouteHandler<
+  typeof putSetupV1LocationsIdSettingsScopeSettingsScopeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1LocationsIdUploadimageRouteHandler: RouteHandler<
+  typeof postSetupV1LocationsIdUploadimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcegroupsRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcegroupsRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcegroupsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcegroupsIdRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcegroupsIdRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcegroupsIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcegroupsIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcesAllocationsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesAllocationsIdRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesAllocationsIdRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcesBlockIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcesBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesBlockIdRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesBlocksIdRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesBlocksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesBulkRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesBulkRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesTimezonesRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesTimezonesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcesIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesIdRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdAllocationsRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesIdAllocationsRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdAvailabilityRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesIdAvailabilityRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesIdAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesIdBlockRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesIdBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdBlocksRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdCalendarAuthGoogleGoogleEmailAddressRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdCalendarAuthGoogleGoogleEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ResourcesIdCalendarAuthOutlookOutlookEmailAddressRouteHandler: RouteHandler<
+  typeof getSetupV1ResourcesIdCalendarAuthOutlookOutlookEmailAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcesIdDeleteimageRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcesIdDeleteimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesIdReassignAppointmentsResourceIdRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesIdReassignAppointmentsResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ResourcesIdServicesRouteHandler: RouteHandler<
+  typeof deleteSetupV1ResourcesIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesIdServicesRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ResourcesIdServicesRouteHandler: RouteHandler<
+  typeof putSetupV1ResourcesIdServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ResourcesIdUploadimageRouteHandler: RouteHandler<
+  typeof postSetupV1ResourcesIdUploadimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicegroupsRouteHandler: RouteHandler<
+  typeof getSetupV1ServicegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicegroupsRouteHandler: RouteHandler<
+  typeof postSetupV1ServicegroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicegroupsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicegroupsIdRouteHandler: RouteHandler<
+  typeof getSetupV1ServicegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicegroupsIdRouteHandler: RouteHandler<
+  typeof putSetupV1ServicegroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicegroupsIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1ServicegroupsIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesRouteHandler: RouteHandler<typeof getSetupV1ServicesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicesAllocationsIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesAllocationsIdRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicesAllocationsIdRouteHandler: RouteHandler<
+  typeof putSetupV1ServicesAllocationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicesBlockIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicesBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicesBlockIdRouteHandler: RouteHandler<
+  typeof putSetupV1ServicesBlockIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesBlocksIdRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesBlocksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesCalendarRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesCalendarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicesCalendarIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicesCalendarIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicesIdRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicesIdRouteHandler: RouteHandler<
+  typeof putSetupV1ServicesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdAllocationsRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesIdAllocationsRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesIdAllocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesIdAllocationsBulkRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesIdAllocationsBulkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdAvailabilityRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicesIdAvailabilityRouteHandler: RouteHandler<
+  typeof putSetupV1ServicesIdAvailabilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesIdBlockRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesIdBlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdBlocksRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdBlocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdCalendarRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdCalendarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSetupV1ServicesIdDeleteimageRouteHandler: RouteHandler<
+  typeof deleteSetupV1ServicesIdDeleteimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSetupV1ServicesIdRecoverRouteHandler: RouteHandler<
+  typeof putSetupV1ServicesIdRecoverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSetupV1ServicesIdResourcesRouteHandler: RouteHandler<
+  typeof getSetupV1ServicesIdResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSetupV1ServicesIdUploadimageRouteHandler: RouteHandler<
+  typeof postSetupV1ServicesIdUploadimageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

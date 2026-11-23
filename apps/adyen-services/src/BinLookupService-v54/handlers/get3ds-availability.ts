@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGet3dsAvailabilityRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGet3dsAvailabilityRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const get3dsAvailabilityHandler = app.openapi(postGet3dsAvailabilityRoute, (c) => {
+export const postGet3dsAvailabilityRouteHandler: RouteHandler<
+  typeof postGet3dsAvailabilityRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

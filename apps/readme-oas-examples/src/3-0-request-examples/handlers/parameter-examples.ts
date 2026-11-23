@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getParameterExamplesParam1Param2Route,
   patchParameterExamplesParam1Param2Route,
   putParameterExamplesParam1Param2Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getParameterExamplesParam1Param2RouteHandler: RouteHandler<
+  typeof getParameterExamplesParam1Param2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const parameterExamplesHandler = app
-  .openapi(getParameterExamplesParam1Param2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchParameterExamplesParam1Param2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putParameterExamplesParam1Param2Route, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchParameterExamplesParam1Param2RouteHandler: RouteHandler<
+  typeof patchParameterExamplesParam1Param2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putParameterExamplesParam1Param2RouteHandler: RouteHandler<
+  typeof putParameterExamplesParam1Param2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}

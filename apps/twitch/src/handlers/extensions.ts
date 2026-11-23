@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getExtensionsConfigurationsRoute,
   getExtensionsJwtSecretsRoute,
   getExtensionsLiveRoute,
@@ -13,39 +13,66 @@ import {
   putExtensionsRequiredConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getExtensionsTransactionsRouteHandler: RouteHandler<
+  typeof getExtensionsTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const extensionsHandler = app
-  .openapi(getExtensionsTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtensionsConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtensionsConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putExtensionsRequiredConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtensionsPubsubRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtensionsLiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtensionsJwtSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtensionsJwtSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExtensionsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getExtensionsReleasedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getExtensionsConfigurationsRouteHandler: RouteHandler<
+  typeof getExtensionsConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtensionsConfigurationsRouteHandler: RouteHandler<
+  typeof putExtensionsConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putExtensionsRequiredConfigurationRouteHandler: RouteHandler<
+  typeof putExtensionsRequiredConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtensionsPubsubRouteHandler: RouteHandler<
+  typeof postExtensionsPubsubRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtensionsLiveRouteHandler: RouteHandler<typeof getExtensionsLiveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtensionsJwtSecretsRouteHandler: RouteHandler<
+  typeof getExtensionsJwtSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtensionsJwtSecretsRouteHandler: RouteHandler<
+  typeof postExtensionsJwtSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExtensionsChatRouteHandler: RouteHandler<typeof postExtensionsChatRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtensionsRouteHandler: RouteHandler<typeof getExtensionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getExtensionsReleasedRouteHandler: RouteHandler<
+  typeof getExtensionsReleasedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

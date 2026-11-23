@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDescribeElasticGpusRoute, postActionDescribeElasticGpusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDescribeElasticGpusRoute,
+  postActionDescribeElasticGpusRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeElasticGpusRouteHandler: RouteHandler<
+  typeof getActionDescribeElasticGpusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeElasticGpusHandler = app
-  .openapi(getActionDescribeElasticGpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeElasticGpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeElasticGpusRouteHandler: RouteHandler<
+  typeof postActionDescribeElasticGpusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

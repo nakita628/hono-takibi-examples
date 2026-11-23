@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAwsMountPathRolesNameRoute,
   deleteAwsMountPathStaticRolesNameRoute,
   getAwsMountPathConfigLeaseRoute,
@@ -19,57 +19,104 @@ import {
   postAwsMountPathStsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAwsMountPathConfigLeaseRouteHandler: RouteHandler<
+  typeof getAwsMountPathConfigLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const awsMountPathHandler = app
-  .openapi(getAwsMountPathConfigLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathConfigLeaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathConfigRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathConfigRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathConfigRotateRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAwsMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathStaticCredsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathStaticRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathStaticRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAwsMountPathStaticRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAwsMountPathStsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAwsMountPathStsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAwsMountPathConfigLeaseRouteHandler: RouteHandler<
+  typeof postAwsMountPathConfigLeaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathConfigRootRouteHandler: RouteHandler<
+  typeof getAwsMountPathConfigRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathConfigRootRouteHandler: RouteHandler<
+  typeof postAwsMountPathConfigRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathConfigRotateRootRouteHandler: RouteHandler<
+  typeof postAwsMountPathConfigRotateRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathCredsNameRouteHandler: RouteHandler<
+  typeof getAwsMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathCredsNameRouteHandler: RouteHandler<
+  typeof postAwsMountPathCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getAwsMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getAwsMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postAwsMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAwsMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deleteAwsMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathStaticCredsNameRouteHandler: RouteHandler<
+  typeof getAwsMountPathStaticCredsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathStaticRolesNameRouteHandler: RouteHandler<
+  typeof getAwsMountPathStaticRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathStaticRolesNameRouteHandler: RouteHandler<
+  typeof postAwsMountPathStaticRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAwsMountPathStaticRolesNameRouteHandler: RouteHandler<
+  typeof deleteAwsMountPathStaticRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAwsMountPathStsNameRouteHandler: RouteHandler<
+  typeof getAwsMountPathStsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAwsMountPathStsNameRouteHandler: RouteHandler<
+  typeof postAwsMountPathStsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/license-manager/2018-08-01/openapi.yaml',
   output: './src/license-manager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/license-manager/types.ts' },
   client: { output: './src/license-manager/client.ts', baseUrl: '/' },
   rpc: { output: './src/license-manager/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiOrders1137Route,
   deleteApiProducts1137Route,
   getApiAnalyzePricingRoute,
@@ -16,48 +16,72 @@ import {
   postApiRegisterWoocommerceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiAnalyzePricingRouteHandler: RouteHandler<
+  typeof getApiAnalyzePricingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiAnalyzePricingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiCustomersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiOrders1137Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiProducts1137Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiRegisterWoocommerceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRuleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRuleRuleData1Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiRuleRuleData1LatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiSeoRankingLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiCustomersRouteHandler: RouteHandler<typeof getApiCustomersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLoginRouteHandler: RouteHandler<typeof postApiLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiLogoutRouteHandler: RouteHandler<typeof postApiLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiOrdersRouteHandler: RouteHandler<typeof getApiOrdersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiOrders1137RouteHandler: RouteHandler<
+  typeof deleteApiOrders1137Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiProductsRouteHandler: RouteHandler<typeof getApiProductsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiProducts1137RouteHandler: RouteHandler<
+  typeof deleteApiProducts1137Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRegisterRouteHandler: RouteHandler<typeof postApiRegisterRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiRegisterWoocommerceRouteHandler: RouteHandler<
+  typeof postApiRegisterWoocommerceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRuleRouteHandler: RouteHandler<typeof getApiRuleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRuleRuleData1RouteHandler: RouteHandler<
+  typeof getApiRuleRuleData1Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiRuleRuleData1LatestRouteHandler: RouteHandler<
+  typeof getApiRuleRuleData1LatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiSeoRankingLatestRouteHandler: RouteHandler<
+  typeof getApiSeoRankingLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

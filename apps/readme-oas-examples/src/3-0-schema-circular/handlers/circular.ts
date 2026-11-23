@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putCircularRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putCircularRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const circularHandler = app.openapi(putCircularRoute, (c) => {
+export const putCircularRouteHandler: RouteHandler<typeof putCircularRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

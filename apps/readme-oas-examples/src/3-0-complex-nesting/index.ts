@@ -1,11 +1,26 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { anythingHandler, multischemaHandler, topLevelObjectHandler } from './handlers'
+import {
+  postAnythingTopLevelArrayRoute,
+  postAnythingTopLevelObjectSimpleRoute,
+  postMultischemaOfEverythingRoute,
+  postTopLevelObjectOfEverythingRoute,
+  putAnythingTopLevelArrayRoute,
+} from './routes'
+import {
+  postAnythingTopLevelArrayRouteHandler,
+  postAnythingTopLevelObjectSimpleRouteHandler,
+  postMultischemaOfEverythingRouteHandler,
+  postTopLevelObjectOfEverythingRouteHandler,
+  putAnythingTopLevelArrayRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', anythingHandler)
-  .route('/', topLevelObjectHandler)
-  .route('/', multischemaHandler)
+  .openapi(postAnythingTopLevelArrayRoute, postAnythingTopLevelArrayRouteHandler)
+  .openapi(putAnythingTopLevelArrayRoute, putAnythingTopLevelArrayRouteHandler)
+  .openapi(postAnythingTopLevelObjectSimpleRoute, postAnythingTopLevelObjectSimpleRouteHandler)
+  .openapi(postTopLevelObjectOfEverythingRoute, postTopLevelObjectOfEverythingRouteHandler)
+  .openapi(postMultischemaOfEverythingRoute, postMultischemaOfEverythingRouteHandler)
 
 export default app

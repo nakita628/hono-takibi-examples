@@ -1,8 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { xAmzTargetAwsmpEntitlementServiceGetEntitlementsHandler } from './handlers'
+import { postXAmzTargetAWSMPEntitlementServiceGetEntitlementsRoute } from './routes'
+import { postXAmzTargetAWSMPEntitlementServiceGetEntitlementsRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', xAmzTargetAwsmpEntitlementServiceGetEntitlementsHandler)
+export const api = app.openapi(
+  postXAmzTargetAWSMPEntitlementServiceGetEntitlementsRoute,
+  postXAmzTargetAWSMPEntitlementServiceGetEntitlementsRouteHandler,
+)
 
 export default app

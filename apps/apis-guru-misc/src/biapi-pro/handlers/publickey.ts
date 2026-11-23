@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPublickeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPublickeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const publickeyHandler = app.openapi(getPublickeyRoute, (c) => {
+export const getPublickeyRouteHandler: RouteHandler<typeof getPublickeyRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

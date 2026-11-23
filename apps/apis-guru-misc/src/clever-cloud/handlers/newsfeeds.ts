@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNewsfeedsBlogRoute, getNewsfeedsEngineeringRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNewsfeedsBlogRoute, getNewsfeedsEngineeringRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNewsfeedsBlogRouteHandler: RouteHandler<typeof getNewsfeedsBlogRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const newsfeedsHandler = app
-  .openapi(getNewsfeedsBlogRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNewsfeedsEngineeringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNewsfeedsEngineeringRouteHandler: RouteHandler<
+  typeof getNewsfeedsEngineeringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

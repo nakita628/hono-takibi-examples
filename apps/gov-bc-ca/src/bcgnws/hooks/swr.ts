@@ -990,19 +990,19 @@ export function useImmutableGetNamesSearch<TError = unknown>(
 }
 
 export function getGetNamesNameIdOutputFormatKey(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
 ) {
-  return ['names', '/names/:nameId.:outputFormat', args] as const
+  return ['names', '/names/:nameId.{outputFormat}', args] as const
 }
 
 export function useGetNamesNameIdOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1025,27 +1025,27 @@ export function useGetNamesNameIdOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.names[':nameId.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.names[':nameId.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetNamesNameIdOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.names)[':nameId.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.names)[':nameId.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1068,14 +1068,14 @@ export function useImmutableGetNamesNameIdOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.names)[':nameId.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.names)[':nameId.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.names[':nameId.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.names[':nameId.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

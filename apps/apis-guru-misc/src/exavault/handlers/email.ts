@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEmailReferralRoute, postEmailWelcomeUsernameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEmailReferralRoute, postEmailWelcomeUsernameRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEmailReferralRouteHandler: RouteHandler<typeof postEmailReferralRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const emailHandler = app
-  .openapi(postEmailReferralRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmailWelcomeUsernameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEmailWelcomeUsernameRouteHandler: RouteHandler<
+  typeof postEmailWelcomeUsernameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

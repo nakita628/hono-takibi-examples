@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteYoutubeV3CaptionsRoute,
   deleteYoutubeV3ChannelSectionsRoute,
   deleteYoutubeV3CommentsRoute,
@@ -78,234 +78,458 @@ import {
   putYoutubeV3VideosRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postYoutubeV3AbuseReportsRouteHandler: RouteHandler<
+  typeof postYoutubeV3AbuseReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const youtubeHandler = app
-  .openapi(postYoutubeV3AbuseReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3ActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3CaptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3CaptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3CaptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3CaptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3CaptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3ChannelBannersInsertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3ChannelSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3ChannelSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3ChannelSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3ChannelSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3ChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3ChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3CommentThreadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3CommentThreadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3CommentThreadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3CommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3CommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3CommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3CommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3CommentsMarkAsSpamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3CommentsSetModerationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3I18nLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3I18nRegionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3LiveBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3LiveBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3LiveBroadcastsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveBroadcastsBindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveBroadcastsCuepointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveBroadcastsTransitionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3LiveChatBansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveChatBansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3LiveChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3LiveChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3LiveChatModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3LiveChatModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveChatModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3LiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3LiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3LiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3LiveStreamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3MembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3MembershipsLevelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3PlaylistItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3PlaylistItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3PlaylistItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3PlaylistItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3PlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3PlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3PlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3PlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3SearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3SubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3SubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3SubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3SuperChatEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3TestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3ThirdPartyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3ThirdPartyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3ThirdPartyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3ThirdPartyLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3ThumbnailsSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3VideoAbuseReportReasonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3VideoCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteYoutubeV3VideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3VideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3VideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putYoutubeV3VideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getYoutubeV3VideosGetRatingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3VideosRateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3VideosReportAbuseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3WatermarksSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postYoutubeV3WatermarksUnsetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getYoutubeV3ActivitiesRouteHandler: RouteHandler<
+  typeof getYoutubeV3ActivitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3CaptionsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3CaptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3CaptionsRouteHandler: RouteHandler<
+  typeof getYoutubeV3CaptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3CaptionsRouteHandler: RouteHandler<
+  typeof postYoutubeV3CaptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3CaptionsRouteHandler: RouteHandler<
+  typeof putYoutubeV3CaptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3CaptionsIdRouteHandler: RouteHandler<
+  typeof getYoutubeV3CaptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3ChannelBannersInsertRouteHandler: RouteHandler<
+  typeof postYoutubeV3ChannelBannersInsertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3ChannelSectionsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3ChannelSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3ChannelSectionsRouteHandler: RouteHandler<
+  typeof getYoutubeV3ChannelSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3ChannelSectionsRouteHandler: RouteHandler<
+  typeof postYoutubeV3ChannelSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3ChannelSectionsRouteHandler: RouteHandler<
+  typeof putYoutubeV3ChannelSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3ChannelsRouteHandler: RouteHandler<
+  typeof getYoutubeV3ChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3ChannelsRouteHandler: RouteHandler<
+  typeof putYoutubeV3ChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3CommentThreadsRouteHandler: RouteHandler<
+  typeof getYoutubeV3CommentThreadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3CommentThreadsRouteHandler: RouteHandler<
+  typeof postYoutubeV3CommentThreadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3CommentThreadsRouteHandler: RouteHandler<
+  typeof putYoutubeV3CommentThreadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3CommentsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3CommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3CommentsRouteHandler: RouteHandler<
+  typeof getYoutubeV3CommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3CommentsRouteHandler: RouteHandler<
+  typeof postYoutubeV3CommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3CommentsRouteHandler: RouteHandler<
+  typeof putYoutubeV3CommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3CommentsMarkAsSpamRouteHandler: RouteHandler<
+  typeof postYoutubeV3CommentsMarkAsSpamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3CommentsSetModerationStatusRouteHandler: RouteHandler<
+  typeof postYoutubeV3CommentsSetModerationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3I18nLanguagesRouteHandler: RouteHandler<
+  typeof getYoutubeV3I18nLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3I18nRegionsRouteHandler: RouteHandler<
+  typeof getYoutubeV3I18nRegionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3LiveBroadcastsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3LiveBroadcastsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3LiveBroadcastsRouteHandler: RouteHandler<
+  typeof getYoutubeV3LiveBroadcastsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveBroadcastsRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveBroadcastsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3LiveBroadcastsRouteHandler: RouteHandler<
+  typeof putYoutubeV3LiveBroadcastsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveBroadcastsBindRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveBroadcastsBindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveBroadcastsCuepointRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveBroadcastsCuepointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveBroadcastsTransitionRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveBroadcastsTransitionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3LiveChatBansRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3LiveChatBansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveChatBansRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveChatBansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3LiveChatMessagesRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3LiveChatMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3LiveChatMessagesRouteHandler: RouteHandler<
+  typeof getYoutubeV3LiveChatMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveChatMessagesRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveChatMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3LiveChatModeratorsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3LiveChatModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3LiveChatModeratorsRouteHandler: RouteHandler<
+  typeof getYoutubeV3LiveChatModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveChatModeratorsRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveChatModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3LiveStreamsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3LiveStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3LiveStreamsRouteHandler: RouteHandler<
+  typeof getYoutubeV3LiveStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3LiveStreamsRouteHandler: RouteHandler<
+  typeof postYoutubeV3LiveStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3LiveStreamsRouteHandler: RouteHandler<
+  typeof putYoutubeV3LiveStreamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3MembersRouteHandler: RouteHandler<
+  typeof getYoutubeV3MembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3MembershipsLevelsRouteHandler: RouteHandler<
+  typeof getYoutubeV3MembershipsLevelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3PlaylistItemsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3PlaylistItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3PlaylistItemsRouteHandler: RouteHandler<
+  typeof getYoutubeV3PlaylistItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3PlaylistItemsRouteHandler: RouteHandler<
+  typeof postYoutubeV3PlaylistItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3PlaylistItemsRouteHandler: RouteHandler<
+  typeof putYoutubeV3PlaylistItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3PlaylistsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3PlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3PlaylistsRouteHandler: RouteHandler<
+  typeof getYoutubeV3PlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3PlaylistsRouteHandler: RouteHandler<
+  typeof postYoutubeV3PlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3PlaylistsRouteHandler: RouteHandler<
+  typeof putYoutubeV3PlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3SearchRouteHandler: RouteHandler<typeof getYoutubeV3SearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3SubscriptionsRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3SubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3SubscriptionsRouteHandler: RouteHandler<
+  typeof getYoutubeV3SubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3SubscriptionsRouteHandler: RouteHandler<
+  typeof postYoutubeV3SubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3SuperChatEventsRouteHandler: RouteHandler<
+  typeof getYoutubeV3SuperChatEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3TestsRouteHandler: RouteHandler<typeof postYoutubeV3TestsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3ThirdPartyLinksRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3ThirdPartyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3ThirdPartyLinksRouteHandler: RouteHandler<
+  typeof getYoutubeV3ThirdPartyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3ThirdPartyLinksRouteHandler: RouteHandler<
+  typeof postYoutubeV3ThirdPartyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3ThirdPartyLinksRouteHandler: RouteHandler<
+  typeof putYoutubeV3ThirdPartyLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3ThumbnailsSetRouteHandler: RouteHandler<
+  typeof postYoutubeV3ThumbnailsSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3VideoAbuseReportReasonsRouteHandler: RouteHandler<
+  typeof getYoutubeV3VideoAbuseReportReasonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3VideoCategoriesRouteHandler: RouteHandler<
+  typeof getYoutubeV3VideoCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteYoutubeV3VideosRouteHandler: RouteHandler<
+  typeof deleteYoutubeV3VideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3VideosRouteHandler: RouteHandler<typeof getYoutubeV3VideosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3VideosRouteHandler: RouteHandler<
+  typeof postYoutubeV3VideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putYoutubeV3VideosRouteHandler: RouteHandler<typeof putYoutubeV3VideosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getYoutubeV3VideosGetRatingRouteHandler: RouteHandler<
+  typeof getYoutubeV3VideosGetRatingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3VideosRateRouteHandler: RouteHandler<
+  typeof postYoutubeV3VideosRateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3VideosReportAbuseRouteHandler: RouteHandler<
+  typeof postYoutubeV3VideosReportAbuseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3WatermarksSetRouteHandler: RouteHandler<
+  typeof postYoutubeV3WatermarksSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postYoutubeV3WatermarksUnsetRouteHandler: RouteHandler<
+  typeof postYoutubeV3WatermarksUnsetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

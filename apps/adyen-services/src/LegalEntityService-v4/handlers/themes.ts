@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getThemesIdRoute, getThemesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getThemesIdRoute, getThemesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getThemesRouteHandler: RouteHandler<typeof getThemesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const themesHandler = app
-  .openapi(getThemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThemesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getThemesIdRouteHandler: RouteHandler<typeof getThemesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

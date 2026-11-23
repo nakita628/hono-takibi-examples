@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEscalationPoliciesIdRoute,
   getEscalationPoliciesIdAuditRecordsRoute,
   getEscalationPoliciesIdRoute,
@@ -8,24 +8,38 @@ import {
   putEscalationPoliciesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEscalationPoliciesRouteHandler: RouteHandler<
+  typeof getEscalationPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const escalationPoliciesHandler = app
-  .openapi(getEscalationPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEscalationPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEscalationPoliciesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEscalationPoliciesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEscalationPoliciesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEscalationPoliciesIdAuditRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEscalationPoliciesRouteHandler: RouteHandler<
+  typeof postEscalationPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEscalationPoliciesIdRouteHandler: RouteHandler<
+  typeof getEscalationPoliciesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEscalationPoliciesIdRouteHandler: RouteHandler<
+  typeof deleteEscalationPoliciesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEscalationPoliciesIdRouteHandler: RouteHandler<
+  typeof putEscalationPoliciesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEscalationPoliciesIdAuditRecordsRouteHandler: RouteHandler<
+  typeof getEscalationPoliciesIdAuditRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

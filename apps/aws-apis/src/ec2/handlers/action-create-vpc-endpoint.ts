@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionCreateVpcEndpointRoute, postActionCreateVpcEndpointRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionCreateVpcEndpointRoute, postActionCreateVpcEndpointRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateVpcEndpointRouteHandler: RouteHandler<
+  typeof getActionCreateVpcEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateVpcEndpointHandler = app
-  .openapi(getActionCreateVpcEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateVpcEndpointRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateVpcEndpointRouteHandler: RouteHandler<
+  typeof postActionCreateVpcEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

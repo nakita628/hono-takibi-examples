@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBasicAuthUserPasswdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBasicAuthUserPasswdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const basicAuthHandler = app.openapi(getBasicAuthUserPasswdRoute, (c) => {
+export const getBasicAuthUserPasswdRouteHandler: RouteHandler<
+  typeof getBasicAuthUserPasswdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

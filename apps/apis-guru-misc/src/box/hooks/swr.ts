@@ -4670,19 +4670,19 @@ export function useImmutableGetFilesFileIdTasks<TError = unknown>(
 }
 
 export function getGetFilesFileIdThumbnailExtensionKey(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
 ) {
-  return ['files', '/files/:file_id/thumbnail.:extension', args] as const
+  return ['files', '/files/:file_id/thumbnail.{extension}', args] as const
 }
 
 export function useGetFilesFileIdThumbnailExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
           >
         >
       >,
@@ -4705,7 +4705,7 @@ export function useGetFilesFileIdThumbnailExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
           >
         >
       >,
@@ -4713,20 +4713,20 @@ export function useGetFilesFileIdThumbnailExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.files[':file_id']['thumbnail.:extension'].$get(args, clientOptions)),
+        parseResponse(client.files[':file_id']['thumbnail.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetFilesFileIdThumbnailExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
           >
         >
       >,
@@ -4749,7 +4749,7 @@ export function useImmutableGetFilesFileIdThumbnailExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client.files)[':file_id']['thumbnail.{extension}']['$get']>>
           >
         >
       >,
@@ -4757,7 +4757,7 @@ export function useImmutableGetFilesFileIdThumbnailExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.files[':file_id']['thumbnail.:extension'].$get(args, clientOptions)),
+        parseResponse(client.files[':file_id']['thumbnail.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

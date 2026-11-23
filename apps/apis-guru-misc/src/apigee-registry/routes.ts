@@ -836,7 +836,7 @@ export const deleteV1ProjectsProjectLocationsLocationApisApiRoute = createRoute(
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -1232,7 +1232,7 @@ export const deleteV1ProjectsProjectLocationsLocationApisApiDeploymentsDeploymen
       }),
     },
     responses: {
-      200: { description: 'OK', content: {} },
+      200: { description: 'OK' },
       default: {
         description: 'Default error response',
         content: { 'application/json': { schema: StatusSchema } },
@@ -1944,7 +1944,7 @@ export const deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionRoute
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -2396,7 +2396,7 @@ export const deleteV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecs
       }),
     },
     responses: {
-      200: { description: 'OK', content: {} },
+      200: { description: 'OK' },
       default: {
         description: 'Default error response',
         content: { 'application/json': { schema: StatusSchema } },
@@ -2651,7 +2651,7 @@ export const getV1ProjectsProjectLocationsLocationApisApiVersionsVersionSpecsSpe
       }),
     },
     responses: {
-      200: { description: 'OK', content: {} },
+      200: { description: 'OK' },
       default: {
         description: 'Default error response',
         content: { 'application/json': { schema: StatusSchema } },
@@ -3231,7 +3231,7 @@ export const deleteV1ProjectsProjectLocationsLocationArtifactsArtifactRoute = cr
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },
@@ -3284,7 +3284,7 @@ export const getV1ProjectsProjectLocationsLocationArtifactsArtifactGetContentsRo
     }),
   },
   responses: {
-    200: { description: 'OK', content: {} },
+    200: { description: 'OK' },
     default: {
       description: 'Default error response',
       content: { 'application/json': { schema: StatusSchema } },

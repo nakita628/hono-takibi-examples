@@ -1,18 +1,8 @@
 type CloneReceiptRuleSetResponse = { [x: string]: unknown }
-type RuleSetDoesNotExistException = { [x: string]: unknown }
-type AlreadyExistsException = { [x: string]: unknown }
-type LimitExceededException = { [x: string]: unknown }
 type CloneReceiptRuleSetRequest = { RuleSetName: {}; OriginalRuleSetName: {} }
 type CreateConfigurationSetResponse = { [x: string]: unknown }
-type ConfigurationSetAlreadyExistsException = { [x: string]: unknown }
-type InvalidConfigurationSetException = { [x: string]: unknown }
 type CreateConfigurationSetRequest = { ConfigurationSet: { Name: {} } }
 type CreateConfigurationSetEventDestinationResponse = { [x: string]: unknown }
-type ConfigurationSetDoesNotExistException = { [x: string]: unknown }
-type EventDestinationAlreadyExistsException = { [x: string]: unknown }
-type InvalidCloudWatchDestinationException = { [x: string]: unknown }
-type InvalidFirehoseDestinationException = { [x: string]: unknown }
-type InvalidSNSDestinationException = { [x: string]: unknown }
 type CreateConfigurationSetEventDestinationRequest = {
   ConfigurationSetName: {}
   EventDestination: {
@@ -25,16 +15,11 @@ type CreateConfigurationSetEventDestinationRequest = {
   }
 }
 type CreateConfigurationSetTrackingOptionsResponse = { [x: string]: unknown }
-type TrackingOptionsAlreadyExistsException = { [x: string]: unknown }
-type InvalidTrackingOptionsException = { [x: string]: unknown }
 type TrackingOptions = { CustomRedirectDomain?: {} | undefined }
 type CreateConfigurationSetTrackingOptionsRequest = {
   ConfigurationSetName: {}
   TrackingOptions: TrackingOptions
 }
-type CustomVerificationEmailTemplateAlreadyExistsException = { [x: string]: unknown }
-type FromEmailAddressNotVerifiedException = { [x: string]: unknown }
-type CustomVerificationEmailInvalidContentException = { [x: string]: unknown }
 type CreateCustomVerificationEmailTemplateRequest = {
   TemplateName: {}
   FromEmailAddress: {}
@@ -46,10 +31,6 @@ type CreateCustomVerificationEmailTemplateRequest = {
 type CreateReceiptFilterResponse = { [x: string]: unknown }
 type CreateReceiptFilterRequest = { Filter: { Name: {}; IpFilter: { Policy: {}; Cidr: {} } } }
 type CreateReceiptRuleResponse = { [x: string]: unknown }
-type InvalidSnsTopicException = { [x: string]: unknown }
-type InvalidS3ConfigurationException = { [x: string]: unknown }
-type InvalidLambdaFunctionException = { [x: string]: unknown }
-type RuleDoesNotExistException = { [x: string]: unknown }
 type CreateReceiptRuleRequest = {
   RuleSetName: {}
   After?: {} | undefined
@@ -65,7 +46,6 @@ type CreateReceiptRuleRequest = {
 type CreateReceiptRuleSetResponse = { [x: string]: unknown }
 type CreateReceiptRuleSetRequest = { RuleSetName: {} }
 type CreateTemplateResponse = { [x: string]: unknown }
-type InvalidTemplateException = { [x: string]: unknown }
 type CreateTemplateRequest = {
   Template: {
     TemplateName: {}
@@ -77,13 +57,11 @@ type CreateTemplateRequest = {
 type DeleteConfigurationSetResponse = { [x: string]: unknown }
 type DeleteConfigurationSetRequest = { ConfigurationSetName: {} }
 type DeleteConfigurationSetEventDestinationResponse = { [x: string]: unknown }
-type EventDestinationDoesNotExistException = { [x: string]: unknown }
 type DeleteConfigurationSetEventDestinationRequest = {
   ConfigurationSetName: {}
   EventDestinationName: {}
 }
 type DeleteConfigurationSetTrackingOptionsResponse = { [x: string]: unknown }
-type TrackingOptionsDoesNotExistException = { [x: string]: unknown }
 type DeleteConfigurationSetTrackingOptionsRequest = { ConfigurationSetName: {} }
 type DeleteCustomVerificationEmailTemplateRequest = { TemplateName: {} }
 type DeleteIdentityResponse = { [x: string]: unknown }
@@ -95,7 +73,6 @@ type DeleteReceiptFilterRequest = { FilterName: {} }
 type DeleteReceiptRuleResponse = { [x: string]: unknown }
 type DeleteReceiptRuleRequest = { RuleSetName: {}; RuleName: {} }
 type DeleteReceiptRuleSetResponse = { [x: string]: unknown }
-type CannotDeleteException = { [x: string]: unknown }
 type DeleteReceiptRuleSetRequest = { RuleSetName: {} }
 type DeleteTemplateResponse = { [x: string]: unknown }
 type DeleteTemplateRequest = { TemplateName: {} }
@@ -155,7 +132,6 @@ type GetCustomVerificationEmailTemplateResponse = {
   SuccessRedirectionURL?: {} | undefined
   FailureRedirectionURL?: {} | undefined
 }
-type CustomVerificationEmailTemplateDoesNotExistException = { [x: string]: unknown }
 type GetCustomVerificationEmailTemplateRequest = { TemplateName: {} }
 type Identity = string
 type GetIdentityDkimAttributesResponse = { DkimAttributes: {} }
@@ -182,7 +158,6 @@ type Template = {
   HtmlPart?: {} | undefined
 }
 type GetTemplateResponse = { Template?: Template | undefined }
-type TemplateDoesNotExistException = { [x: string]: unknown }
 type GetTemplateRequest = { TemplateName: {} }
 type ListConfigurationSetsResponse = {
   ConfigurationSets?: {} | undefined
@@ -213,13 +188,11 @@ type ListTemplatesResponse = { TemplatesMetadata?: {} | undefined; NextToken?: {
 type ListTemplatesRequest = { NextToken?: {} | undefined; MaxItems?: {} | undefined }
 type ListVerifiedEmailAddressesResponse = { VerifiedEmailAddresses?: {} | undefined }
 type PutConfigurationSetDeliveryOptionsResponse = { [x: string]: unknown }
-type InvalidDeliveryOptionsException = { [x: string]: unknown }
 type PutConfigurationSetDeliveryOptionsRequest = {
   ConfigurationSetName: {}
   DeliveryOptions?: { TlsPolicy?: {} | undefined } | undefined
 }
 type PutIdentityPolicyResponse = { [x: string]: unknown }
-type InvalidPolicyException = { [x: string]: unknown }
 type PutIdentityPolicyRequest = { Identity: {}; PolicyName: {}; Policy: {} }
 type ReceiptRuleName = string
 type ReorderReceiptRuleSetResponse = { [x: string]: unknown }
@@ -241,7 +214,6 @@ type BouncedRecipientInfo = {
     | undefined
 }
 type SendBounceResponse = { MessageId?: {} | undefined }
-type MessageRejected = { [x: string]: unknown }
 type SendBounceRequest = {
   OriginalMessageId: {}
   BounceSender: {}
@@ -265,9 +237,6 @@ type BulkEmailDestination = {
   ReplacementTemplateData?: {} | undefined
 }
 type SendBulkTemplatedEmailResponse = { Status: {} }
-type MailFromDomainNotVerifiedException = { [x: string]: unknown }
-type ConfigurationSetSendingPausedException = { [x: string]: unknown }
-type AccountSendingPausedException = { [x: string]: unknown }
 type SendBulkTemplatedEmailRequest = {
   Source: {}
   SourceArn?: {} | undefined
@@ -282,7 +251,6 @@ type SendBulkTemplatedEmailRequest = {
   Destinations: {}
 }
 type SendCustomVerificationEmailResponse = { MessageId?: {} | undefined }
-type ProductionAccessNotGrantedException = { [x: string]: unknown }
 type SendCustomVerificationEmailRequest = {
   EmailAddress: {}
   TemplateName: {}
@@ -366,8 +334,6 @@ type SetIdentityNotificationTopicRequest = {
 type SetReceiptRulePositionResponse = { [x: string]: unknown }
 type SetReceiptRulePositionRequest = { RuleSetName: {}; RuleName: {}; After?: {} | undefined }
 type TestRenderTemplateResponse = { RenderedTemplate?: {} | undefined }
-type InvalidRenderingParameterException = { [x: string]: unknown }
-type MissingRenderingAttributeException = { [x: string]: unknown }
 type TestRenderTemplateRequest = { TemplateName: {}; TemplateData: {} }
 type UpdateAccountSendingEnabledRequest = { Enabled?: {} | undefined }
 type UpdateConfigurationSetEventDestinationResponse = { [x: string]: unknown }
@@ -425,2179 +391,531 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/#Action=CloneReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                OriginalRuleSetName: string
-                Action: 'CloneReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CloneReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            OriginalRuleSetName: string
+            Action: 'CloneReceiptRuleSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                OriginalRuleSetName: string
-                Action: 'CloneReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                OriginalRuleSetName: string
-                Action: 'CloneReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CloneReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CloneReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                OriginalRuleSetName: string
-                Action: 'CloneReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CloneReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CloneReceiptRuleSetRequest }
-            output: CloneReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CloneReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CloneReceiptRuleSetRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CloneReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CloneReceiptRuleSetRequest }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CloneReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CloneReceiptRuleSetRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CloneReceiptRuleSetRequest }
+        output: CloneReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateConfigurationSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSet: { Name: {} }
-                Action: 'CreateConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSet: { Name: {} }
+            Action: 'CreateConfigurationSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSet: { Name: {} }
-                Action: 'CreateConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetAlreadyExistsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSet: { Name: {} }
-                Action: 'CreateConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidConfigurationSetException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateConfigurationSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSet: { Name: {} }
-                Action: 'CreateConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetRequest }
-            output: CreateConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetRequest }
-            output: ConfigurationSetAlreadyExistsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetRequest }
-            output: InvalidConfigurationSetException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreateConfigurationSetRequest }
+        output: CreateConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateConfigurationSetEventDestination': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            EventDestination: {
+              Name: {}
+              Enabled?: {} | undefined
+              MatchingEventTypes: {}
+              KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
+              CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
+              SNSDestination?: { TopicARN: {} } | undefined
             }
-            output: CreateConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'CreateConfigurationSetEventDestination'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EventDestinationAlreadyExistsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidCloudWatchDestinationException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidFirehoseDestinationException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidSNSDestinationException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'CreateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: CreateConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: EventDestinationAlreadyExistsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: InvalidCloudWatchDestinationException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: InvalidFirehoseDestinationException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: InvalidSNSDestinationException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetEventDestinationRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: CreateConfigurationSetEventDestinationRequest }
+        output: CreateConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateConfigurationSetTrackingOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'CreateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            TrackingOptions: { CustomRedirectDomain?: {} | undefined }
+            Action: 'CreateConfigurationSetTrackingOptions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'CreateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'CreateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TrackingOptionsAlreadyExistsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'CreateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'CreateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTrackingOptionsException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetTrackingOptionsRequest }
-            output: CreateConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetTrackingOptionsRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetTrackingOptionsRequest }
-            output: TrackingOptionsAlreadyExistsException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'CreateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateConfigurationSetTrackingOptionsRequest }
-            output: InvalidTrackingOptionsException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreateConfigurationSetTrackingOptionsRequest }
+        output: CreateConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateCustomVerificationEmailTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress: string
-                TemplateSubject: string
-                TemplateContent: string
-                SuccessRedirectionURL: string
-                FailureRedirectionURL: string
-                Action: 'CreateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            TemplateName: string
+            FromEmailAddress: string
+            TemplateSubject: string
+            TemplateContent: string
+            SuccessRedirectionURL: string
+            FailureRedirectionURL: string
+            Action: 'CreateCustomVerificationEmailTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress: string
-                TemplateSubject: string
-                TemplateContent: string
-                SuccessRedirectionURL: string
-                FailureRedirectionURL: string
-                Action: 'CreateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailTemplateAlreadyExistsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress: string
-                TemplateSubject: string
-                TemplateContent: string
-                SuccessRedirectionURL: string
-                FailureRedirectionURL: string
-                Action: 'CreateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress: string
-                TemplateSubject: string
-                TemplateContent: string
-                SuccessRedirectionURL: string
-                FailureRedirectionURL: string
-                Action: 'CreateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailInvalidContentException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress: string
-                TemplateSubject: string
-                TemplateContent: string
-                SuccessRedirectionURL: string
-                FailureRedirectionURL: string
-                Action: 'CreateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomVerificationEmailTemplateRequest }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomVerificationEmailTemplateRequest }
-            output: CustomVerificationEmailTemplateAlreadyExistsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomVerificationEmailTemplateRequest }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomVerificationEmailTemplateRequest }
-            output: CustomVerificationEmailInvalidContentException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { Action: 'CreateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateCustomVerificationEmailTemplateRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 483
-          }
+        } & { json: CreateCustomVerificationEmailTemplateRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateReceiptFilter': {
-      $get:
-        | {
-            input: {
-              query: {
-                Filter: { Name: {}; IpFilter: { Policy: {}; Cidr: {} } }
-                Action: 'CreateReceiptFilter'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateReceiptFilterResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Filter: { Name: {}; IpFilter: { Policy: {}; Cidr: {} } }
+            Action: 'CreateReceiptFilter'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Filter: { Name: {}; IpFilter: { Policy: {}; Cidr: {} } }
-                Action: 'CreateReceiptFilter'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Filter: { Name: {}; IpFilter: { Policy: {}; Cidr: {} } }
-                Action: 'CreateReceiptFilter'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateReceiptFilterResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateReceiptFilter'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'CreateReceiptFilter'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptFilterRequest }
-            output: CreateReceiptFilterResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptFilter'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptFilterRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptFilter'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptFilterRequest }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: CreateReceiptFilterRequest }
+        output: CreateReceiptFilterResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateReceiptRule': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            After?: string | undefined
+            Rule: {
+              Name: {}
+              Enabled?: {} | undefined
+              TlsPolicy?: {} | undefined
+              Recipients?: {} | undefined
+              Actions?: {} | undefined
+              ScanEnabled?: {} | undefined
             }
-            output: CreateReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'CreateReceiptRule'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidSnsTopicException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidS3ConfigurationException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidLambdaFunctionException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                After?: string | undefined
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'CreateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 486
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: CreateReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: InvalidSnsTopicException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: InvalidS3ConfigurationException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: InvalidLambdaFunctionException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 485
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 486
-          }
+        } & { json: CreateReceiptRuleRequest }
+        output: CreateReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: { RuleSetName: string; Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { RuleSetName: string; Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { RuleSetName: string; Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: CreateReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { RuleSetName: string; Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 481
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleSetRequest }
-            output: CreateReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleSetRequest }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateReceiptRuleSetRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: CreateReceiptRuleSetRequest }
+        output: CreateReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=CreateTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'CreateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            Template: {
+              TemplateName: {}
+              SubjectPart?: {} | undefined
+              TextPart?: {} | undefined
+              HtmlPart?: {} | undefined
             }
-            output: CreateTemplateResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'CreateTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'CreateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'CreateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTemplateException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: CreateTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'CreateTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'CreateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'CreateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTemplateRequest }
-            output: CreateTemplateResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'CreateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTemplateRequest }
-            output: AlreadyExistsException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'CreateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTemplateRequest }
-            output: InvalidTemplateException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'CreateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: CreateTemplateRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: CreateTemplateRequest }
+        output: CreateTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteConfigurationSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Action: 'DeleteConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            Action: 'DeleteConfigurationSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Action: 'DeleteConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetRequest }
-            output: DeleteConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DeleteConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteConfigurationSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteConfigurationSetRequest }
+        output: DeleteConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteConfigurationSetEventDestination': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestinationName: string
-                Action: 'DeleteConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            EventDestinationName: string
+            Action: 'DeleteConfigurationSetEventDestination'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestinationName: string
-                Action: 'DeleteConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestinationName: string
-                Action: 'DeleteConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EventDestinationDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'DeleteConfigurationSetEventDestination'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetEventDestinationRequest }
-            output: DeleteConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetEventDestinationRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetEventDestinationRequest }
-            output: EventDestinationDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DeleteConfigurationSetEventDestinationRequest }
+        output: DeleteConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteConfigurationSetTrackingOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Action: 'DeleteConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            Action: 'DeleteConfigurationSetTrackingOptions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Action: 'DeleteConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Action: 'DeleteConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TrackingOptionsDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DeleteConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'DeleteConfigurationSetTrackingOptions'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetTrackingOptionsRequest }
-            output: DeleteConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetTrackingOptionsRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'DeleteConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteConfigurationSetTrackingOptionsRequest }
-            output: TrackingOptionsDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DeleteConfigurationSetTrackingOptionsRequest }
+        output: DeleteConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteCustomVerificationEmailTemplate': {
@@ -2758,159 +1076,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=DeleteReceiptRule': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                Action: 'DeleteReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            RuleName: string
+            Action: 'DeleteReceiptRule'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                Action: 'DeleteReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteReceiptRuleRequest }
-            output: DeleteReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DeleteReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteReceiptRule'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DeleteReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteReceiptRuleRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteReceiptRuleRequest }
+        output: DeleteReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: { RuleSetName: string; Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { RuleSetName: string; Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { RuleSetName: string; Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CannotDeleteException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DeleteReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteReceiptRuleSetRequest }
-            output: DeleteReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DeleteReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DeleteReceiptRuleSetRequest }
-            output: CannotDeleteException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DeleteReceiptRuleSetRequest }
+        output: DeleteReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DeleteTemplate': {
@@ -3027,289 +1268,124 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=DescribeConfigurationSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                ConfigurationSetAttributeNames?: ConfigurationSetAttribute[] | undefined
-                Action: 'DescribeConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            ConfigurationSetAttributeNames?: ConfigurationSetAttribute[] | undefined
+            Action: 'DescribeConfigurationSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                ConfigurationSetAttributeNames?: ConfigurationSetAttribute[] | undefined
-                Action: 'DescribeConfigurationSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationSetRequest }
-            output: DescribeConfigurationSetResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: DescribeConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeConfigurationSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'DescribeConfigurationSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeConfigurationSetRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeConfigurationSetRequest }
+        output: DescribeConfigurationSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeReceiptRule': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                Action: 'DescribeReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            RuleName: string
+            Action: 'DescribeReceiptRule'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                Action: 'DescribeReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                Action: 'DescribeReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: DescribeReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeReceiptRule'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReceiptRuleRequest }
-            output: DescribeReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReceiptRuleRequest }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'DescribeReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReceiptRuleRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: DescribeReceiptRuleRequest }
+        output: DescribeReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=DescribeReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Action: 'DescribeReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DescribeReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: { RuleSetName: string; Action: 'DescribeReceiptRuleSet'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Action: 'DescribeReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: DescribeReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'DescribeReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'DescribeReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReceiptRuleSetRequest }
-            output: DescribeReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'DescribeReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: DescribeReceiptRuleSetRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: DescribeReceiptRuleSetRequest }
+        output: DescribeReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=GetAccountSendingEnabled': {
@@ -3348,88 +1424,46 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=GetCustomVerificationEmailTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                Action: 'GetCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetCustomVerificationEmailTemplateResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            TemplateName: string
+            Action: 'GetCustomVerificationEmailTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                Action: 'GetCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'GetCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomVerificationEmailTemplateRequest }
-            output: GetCustomVerificationEmailTemplateResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: GetCustomVerificationEmailTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'GetCustomVerificationEmailTemplate'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'GetCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetCustomVerificationEmailTemplateRequest }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: GetCustomVerificationEmailTemplateRequest }
+        output: GetCustomVerificationEmailTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=GetIdentityDkimAttributes': {
@@ -3711,76 +1745,38 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=GetTemplate': {
-      $get:
-        | {
-            input: {
-              query: { TemplateName: string; Action: 'GetTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetTemplateResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: { query: { TemplateName: string; Action: 'GetTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { TemplateName: string; Action: 'GetTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        }
+        output: GetTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'GetTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'GetTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTemplateRequest }
-            output: GetTemplateResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'GetTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: GetTemplateRequest }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: GetTemplateRequest }
+        output: GetTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ListConfigurationSets': {
@@ -4115,2093 +2111,477 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=PutConfigurationSetDeliveryOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                DeliveryOptions?: { TlsPolicy?: {} | undefined } | undefined
-                Action: 'PutConfigurationSetDeliveryOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PutConfigurationSetDeliveryOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            DeliveryOptions?: { TlsPolicy?: {} | undefined } | undefined
+            Action: 'PutConfigurationSetDeliveryOptions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                DeliveryOptions?: { TlsPolicy?: {} | undefined } | undefined
-                Action: 'PutConfigurationSetDeliveryOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                DeliveryOptions?: { TlsPolicy?: {} | undefined } | undefined
-                Action: 'PutConfigurationSetDeliveryOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidDeliveryOptionsException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: PutConfigurationSetDeliveryOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'PutConfigurationSetDeliveryOptions'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'PutConfigurationSetDeliveryOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutConfigurationSetDeliveryOptionsRequest }
-            output: PutConfigurationSetDeliveryOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'PutConfigurationSetDeliveryOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutConfigurationSetDeliveryOptionsRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'PutConfigurationSetDeliveryOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutConfigurationSetDeliveryOptionsRequest }
-            output: InvalidDeliveryOptionsException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: PutConfigurationSetDeliveryOptionsRequest }
+        output: PutConfigurationSetDeliveryOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=PutIdentityPolicy': {
-      $get:
-        | {
-            input: {
-              query: {
-                Identity: string
-                PolicyName: string
-                Policy: string
-                Action: 'PutIdentityPolicy'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: PutIdentityPolicyResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Identity: string
+            PolicyName: string
+            Policy: string
+            Action: 'PutIdentityPolicy'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Identity: string
-                PolicyName: string
-                Policy: string
-                Action: 'PutIdentityPolicy'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidPolicyException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'PutIdentityPolicy'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutIdentityPolicyRequest }
-            output: PutIdentityPolicyResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: PutIdentityPolicyResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'PutIdentityPolicy'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'PutIdentityPolicy'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: PutIdentityPolicyRequest }
-            output: InvalidPolicyException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: PutIdentityPolicyRequest }
+        output: PutIdentityPolicyResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=ReorderReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleNames: ReceiptRuleName[]
-                Action: 'ReorderReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ReorderReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            RuleNames: ReceiptRuleName[]
+            Action: 'ReorderReceiptRuleSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleNames: ReceiptRuleName[]
-                Action: 'ReorderReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleNames: ReceiptRuleName[]
-                Action: 'ReorderReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: ReorderReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'ReorderReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'ReorderReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ReorderReceiptRuleSetRequest }
-            output: ReorderReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'ReorderReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ReorderReceiptRuleSetRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'ReorderReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: ReorderReceiptRuleSetRequest }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: ReorderReceiptRuleSetRequest }
+        output: ReorderReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendBounce': {
-      $get:
-        | {
-            input: {
-              query: {
-                OriginalMessageId: string
-                BounceSender: string
-                Explanation?: string | undefined
-                MessageDsn?:
-                  | {
-                      ReportingMta: {}
-                      ArrivalDate?: {} | undefined
-                      ExtensionFields?: {} | undefined
-                    }
-                  | undefined
-                BouncedRecipientInfoList: BouncedRecipientInfo[]
-                BounceSenderArn?: string | undefined
-                Action: 'SendBounce'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SendBounceResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            OriginalMessageId: string
+            BounceSender: string
+            Explanation?: string | undefined
+            MessageDsn?:
+              | { ReportingMta: {}; ArrivalDate?: {} | undefined; ExtensionFields?: {} | undefined }
+              | undefined
+            BouncedRecipientInfoList: BouncedRecipientInfo[]
+            BounceSenderArn?: string | undefined
+            Action: 'SendBounce'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                OriginalMessageId: string
-                BounceSender: string
-                Explanation?: string | undefined
-                MessageDsn?:
-                  | {
-                      ReportingMta: {}
-                      ArrivalDate?: {} | undefined
-                      ExtensionFields?: {} | undefined
-                    }
-                  | undefined
-                BouncedRecipientInfoList: BouncedRecipientInfo[]
-                BounceSenderArn?: string | undefined
-                Action: 'SendBounce'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SendBounce'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBounceRequest }
-            output: SendBounceResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: SendBounceResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendBounce'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'SendBounce'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBounceRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: SendBounceRequest }
+        output: SendBounceResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendBulkTemplatedEmail': {
-      $get:
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SendBulkTemplatedEmailResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Source: string
+            SourceArn?: string | undefined
+            ReplyToAddresses?: Address[] | undefined
+            ReturnPath?: string | undefined
+            ReturnPathArn?: string | undefined
+            ConfigurationSetName?: string | undefined
+            DefaultTags?: MessageTag[] | undefined
+            Template: string
+            TemplateArn?: string | undefined
+            DefaultTemplateData?: string | undefined
+            Destinations: BulkEmailDestination[]
+            Action: 'SendBulkTemplatedEmail'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SendBulkTemplatedEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                SourceArn?: string | undefined
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                ReturnPathArn?: string | undefined
-                ConfigurationSetName?: string | undefined
-                DefaultTags?: MessageTag[] | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                DefaultTemplateData?: string | undefined
-                Destinations: BulkEmailDestination[]
-                Action: 'SendBulkTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: SendBulkTemplatedEmailResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'SendBulkTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendBulkTemplatedEmailRequest }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: SendBulkTemplatedEmailRequest }
+        output: SendBulkTemplatedEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendCustomVerificationEmail': {
-      $get:
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SendCustomVerificationEmailResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            EmailAddress: string
+            TemplateName: string
+            ConfigurationSetName?: string | undefined
+            Action: 'SendCustomVerificationEmail'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SendCustomVerificationEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                EmailAddress: string
-                TemplateName: string
-                ConfigurationSetName?: string | undefined
-                Action: 'SendCustomVerificationEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ProductionAccessNotGrantedException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: SendCustomVerificationEmailResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'SendCustomVerificationEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendCustomVerificationEmailRequest }
-            output: ProductionAccessNotGrantedException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: SendCustomVerificationEmailRequest }
+        output: SendCustomVerificationEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendEmail': {
-      $get:
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
+      $get: {
+        input: {
+          query: {
+            Source: string
+            Destination: {
+              ToAddresses?: {} | undefined
+              CcAddresses?: {} | undefined
+              BccAddresses?: {} | undefined
+            }
+            Message: {
+              Subject: { Data: {}; Charset?: {} | undefined }
+              Body: {
+                Text?: { Data: {}; Charset?: {} | undefined } | undefined
+                Html?: { Data: {}; Charset?: {} | undefined } | undefined
               }
             }
-            output: SendEmailResponse
-            outputFormat: 'text'
-            status: 200
+            ReplyToAddresses?: Address[] | undefined
+            ReturnPath?: string | undefined
+            SourceArn?: string | undefined
+            ReturnPathArn?: string | undefined
+            Tags?: MessageTag[] | undefined
+            ConfigurationSetName?: string | undefined
+            Action: 'SendEmail'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SendEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                Message: {
-                  Subject: { Data: {}; Charset?: {} | undefined }
-                  Body: {
-                    Text?: { Data: {}; Charset?: {} | undefined } | undefined
-                    Html?: { Data: {}; Charset?: {} | undefined } | undefined
-                  }
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: SendEmailResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'SendEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendEmailRequest }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: SendEmailRequest }
+        output: SendEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendRawEmail': {
-      $get:
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SendRawEmailResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            Source?: string | undefined
+            Destinations?: Address[] | undefined
+            RawMessage: { Data: {} }
+            FromArn?: string | undefined
+            SourceArn?: string | undefined
+            ReturnPathArn?: string | undefined
+            Tags?: MessageTag[] | undefined
+            ConfigurationSetName?: string | undefined
+            Action: 'SendRawEmail'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SendRawEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                Source?: string | undefined
-                Destinations?: Address[] | undefined
-                RawMessage: { Data: {} }
-                FromArn?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Action: 'SendRawEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: SendRawEmailResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'SendRawEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendRawEmailRequest }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: SendRawEmailRequest }
+        output: SendRawEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SendTemplatedEmail': {
-      $get:
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            Source: string
+            Destination: {
+              ToAddresses?: {} | undefined
+              CcAddresses?: {} | undefined
+              BccAddresses?: {} | undefined
             }
-            output: SendTemplatedEmailResponse
-            outputFormat: 'text'
-            status: 200
+            ReplyToAddresses?: Address[] | undefined
+            ReturnPath?: string | undefined
+            SourceArn?: string | undefined
+            ReturnPathArn?: string | undefined
+            Tags?: MessageTag[] | undefined
+            ConfigurationSetName?: string | undefined
+            Template: string
+            TemplateArn?: string | undefined
+            TemplateData: string
+            Action: 'SendTemplatedEmail'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SendTemplatedEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                Source: string
-                Destination: {
-                  ToAddresses?: {} | undefined
-                  CcAddresses?: {} | undefined
-                  BccAddresses?: {} | undefined
-                }
-                ReplyToAddresses?: Address[] | undefined
-                ReturnPath?: string | undefined
-                SourceArn?: string | undefined
-                ReturnPathArn?: string | undefined
-                Tags?: MessageTag[] | undefined
-                ConfigurationSetName?: string | undefined
-                Template: string
-                TemplateArn?: string | undefined
-                TemplateData: string
-                Action: 'SendTemplatedEmail'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: SendTemplatedEmailResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: MessageRejected
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: MailFromDomainNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: ConfigurationSetSendingPausedException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'SendTemplatedEmail'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SendTemplatedEmailRequest }
-            output: AccountSendingPausedException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: SendTemplatedEmailRequest }
+        output: SendTemplatedEmailResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SetActiveReceiptRuleSet': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName?: string | undefined
-                Action: 'SetActiveReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SetActiveReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName?: string | undefined
+            Action: 'SetActiveReceiptRuleSet'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName?: string | undefined
-                Action: 'SetActiveReceiptRuleSet'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SetActiveReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetActiveReceiptRuleSetRequest }
-            output: SetActiveReceiptRuleSetResponse
-            outputFormat: 'text'
-            status: 200
+        }
+        output: SetActiveReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SetActiveReceiptRuleSet'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { query: { Action: 'SetActiveReceiptRuleSet'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetActiveReceiptRuleSetRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: SetActiveReceiptRuleSetRequest }
+        output: SetActiveReceiptRuleSetResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=SetIdentityDkimEnabled': {
@@ -6422,289 +2802,88 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=SetReceiptRulePosition': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                After?: string | undefined
-                Action: 'SetReceiptRulePosition'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: SetReceiptRulePositionResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            RuleName: string
+            After?: string | undefined
+            Action: 'SetReceiptRulePosition'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                After?: string | undefined
-                Action: 'SetReceiptRulePosition'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                RuleName: string
-                After?: string | undefined
-                Action: 'SetReceiptRulePosition'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: SetReceiptRulePositionResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'SetReceiptRulePosition'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'SetReceiptRulePosition'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetReceiptRulePositionRequest }
-            output: SetReceiptRulePositionResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'SetReceiptRulePosition'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetReceiptRulePositionRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'SetReceiptRulePosition'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: SetReceiptRulePositionRequest }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: SetReceiptRulePositionRequest }
+        output: SetReceiptRulePositionResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=TestRenderTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                TemplateData: string
-                Action: 'TestRenderTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TestRenderTemplateResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            TemplateName: string
+            TemplateData: string
+            Action: 'TestRenderTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                TemplateData: string
-                Action: 'TestRenderTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                TemplateData: string
-                Action: 'TestRenderTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidRenderingParameterException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: TestRenderTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'TestRenderTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                TemplateData: string
-                Action: 'TestRenderTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: MissingRenderingAttributeException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: { query: { Action: 'TestRenderTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TestRenderTemplateRequest }
-            output: TestRenderTemplateResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'TestRenderTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TestRenderTemplateRequest }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'TestRenderTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TestRenderTemplateRequest }
-            output: InvalidRenderingParameterException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'TestRenderTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: TestRenderTemplateRequest }
-            output: MissingRenderingAttributeException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: TestRenderTemplateRequest }
+        output: TestRenderTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateAccountSendingEnabled': {
@@ -6749,1291 +2928,329 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/#Action=UpdateConfigurationSetEventDestination': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            EventDestination: {
+              Name: {}
+              Enabled?: {} | undefined
+              MatchingEventTypes: {}
+              KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
+              CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
+              SNSDestination?: { TopicARN: {} } | undefined
             }
-            output: UpdateConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateConfigurationSetEventDestination'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: EventDestinationDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidCloudWatchDestinationException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidFirehoseDestinationException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                EventDestination: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  MatchingEventTypes: {}
-                  KinesisFirehoseDestination?: { IAMRoleARN: {}; DeliveryStreamARN: {} } | undefined
-                  CloudWatchDestination?: { DimensionConfigurations: {} } | undefined
-                  SNSDestination?: { TopicARN: {} } | undefined
-                }
-                Action: 'UpdateConfigurationSetEventDestination'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidSNSDestinationException
-            outputFormat: 'text'
-            status: 484
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: UpdateConfigurationSetEventDestinationResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: EventDestinationDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: InvalidCloudWatchDestinationException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: InvalidFirehoseDestinationException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetEventDestination'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetEventDestinationRequest }
-            output: InvalidSNSDestinationException
-            outputFormat: 'text'
-            status: 484
-          }
+        } & { json: UpdateConfigurationSetEventDestinationRequest }
+        output: UpdateConfigurationSetEventDestinationResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateConfigurationSetReputationMetricsEnabled': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Enabled: boolean
-                Action: 'UpdateConfigurationSetReputationMetricsEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            Enabled: boolean
+            Action: 'UpdateConfigurationSetReputationMetricsEnabled'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Enabled: boolean
-                Action: 'UpdateConfigurationSetReputationMetricsEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: {
-                Action: 'UpdateConfigurationSetReputationMetricsEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetReputationMetricsEnabledRequest }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateConfigurationSetReputationMetricsEnabled'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Action: 'UpdateConfigurationSetReputationMetricsEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetReputationMetricsEnabledRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: UpdateConfigurationSetReputationMetricsEnabledRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateConfigurationSetSendingEnabled': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Enabled: boolean
-                Action: 'UpdateConfigurationSetSendingEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            Enabled: boolean
+            Action: 'UpdateConfigurationSetSendingEnabled'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                Enabled: boolean
-                Action: 'UpdateConfigurationSetSendingEnabled'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetSendingEnabled'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetSendingEnabledRequest }
-            output: {}
-            outputFormat: string
-            status: 200
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateConfigurationSetSendingEnabled'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetSendingEnabled'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetSendingEnabledRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
+        } & { json: UpdateConfigurationSetSendingEnabledRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateConfigurationSetTrackingOptions': {
-      $get:
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'UpdateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UpdateConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
+      $get: {
+        input: {
+          query: {
+            ConfigurationSetName: string
+            TrackingOptions: { CustomRedirectDomain?: {} | undefined }
+            Action: 'UpdateConfigurationSetTrackingOptions'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'UpdateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'UpdateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TrackingOptionsDoesNotExistException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                ConfigurationSetName: string
-                TrackingOptions: { CustomRedirectDomain?: {} | undefined }
-                Action: 'UpdateConfigurationSetTrackingOptions'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTrackingOptionsException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetTrackingOptionsRequest }
-            output: UpdateConfigurationSetTrackingOptionsResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetTrackingOptionsRequest }
-            output: ConfigurationSetDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetTrackingOptionsRequest }
-            output: TrackingOptionsDoesNotExistException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateConfigurationSetTrackingOptions'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateConfigurationSetTrackingOptionsRequest }
-            output: InvalidTrackingOptionsException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: UpdateConfigurationSetTrackingOptionsRequest }
+        output: UpdateConfigurationSetTrackingOptionsResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateCustomVerificationEmailTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress?: string | undefined
-                TemplateSubject?: string | undefined
-                TemplateContent?: string | undefined
-                SuccessRedirectionURL?: string | undefined
-                FailureRedirectionURL?: string | undefined
-                Action: 'UpdateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 200
+      $get: {
+        input: {
+          query: {
+            TemplateName: string
+            FromEmailAddress?: string | undefined
+            TemplateSubject?: string | undefined
+            TemplateContent?: string | undefined
+            SuccessRedirectionURL?: string | undefined
+            FailureRedirectionURL?: string | undefined
+            Action: 'UpdateCustomVerificationEmailTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress?: string | undefined
-                TemplateSubject?: string | undefined
-                TemplateContent?: string | undefined
-                SuccessRedirectionURL?: string | undefined
-                FailureRedirectionURL?: string | undefined
-                Action: 'UpdateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress?: string | undefined
-                TemplateSubject?: string | undefined
-                TemplateContent?: string | undefined
-                SuccessRedirectionURL?: string | undefined
-                FailureRedirectionURL?: string | undefined
-                Action: 'UpdateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
+      $post: {
+        input: {
+          query: { Action: 'UpdateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                TemplateName: string
-                FromEmailAddress?: string | undefined
-                TemplateSubject?: string | undefined
-                TemplateContent?: string | undefined
-                SuccessRedirectionURL?: string | undefined
-                FailureRedirectionURL?: string | undefined
-                Action: 'UpdateCustomVerificationEmailTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CustomVerificationEmailInvalidContentException
-            outputFormat: 'text'
-            status: 482
-          }
-      $post:
-        | {
-            input: {
-              query: { Action: 'UpdateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCustomVerificationEmailTemplateRequest }
-            output: {}
-            outputFormat: string
-            status: 200
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCustomVerificationEmailTemplateRequest }
-            output: CustomVerificationEmailTemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCustomVerificationEmailTemplateRequest }
-            output: FromEmailAddressNotVerifiedException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: {
-              query: { Action: 'UpdateCustomVerificationEmailTemplate'; Version: '2010-12-01' }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateCustomVerificationEmailTemplateRequest }
-            output: CustomVerificationEmailInvalidContentException
-            outputFormat: 'text'
-            status: 482
-          }
+        } & { json: UpdateCustomVerificationEmailTemplateRequest }
+        output: {}
+        outputFormat: string
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateReceiptRule': {
-      $get:
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            RuleSetName: string
+            Rule: {
+              Name: {}
+              Enabled?: {} | undefined
+              TlsPolicy?: {} | undefined
+              Recipients?: {} | undefined
+              Actions?: {} | undefined
+              ScanEnabled?: {} | undefined
             }
-            output: UpdateReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateReceiptRule'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidSnsTopicException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidS3ConfigurationException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidLambdaFunctionException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: {
-              query: {
-                RuleSetName: string
-                Rule: {
-                  Name: {}
-                  Enabled?: {} | undefined
-                  TlsPolicy?: {} | undefined
-                  Recipients?: {} | undefined
-                  Actions?: {} | undefined
-                  ScanEnabled?: {} | undefined
-                }
-                Action: 'UpdateReceiptRule'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 485
-          }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: UpdateReceiptRuleResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: InvalidSnsTopicException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: InvalidS3ConfigurationException
-            outputFormat: 'text'
-            status: 481
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: InvalidLambdaFunctionException
-            outputFormat: 'text'
-            status: 482
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: RuleSetDoesNotExistException
-            outputFormat: 'text'
-            status: 483
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: RuleDoesNotExistException
-            outputFormat: 'text'
-            status: 484
-          }
-        | {
-            input: { query: { Action: 'UpdateReceiptRule'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateReceiptRuleRequest }
-            output: LimitExceededException
-            outputFormat: 'text'
-            status: 485
-          }
+        } & { json: UpdateReceiptRuleRequest }
+        output: UpdateReceiptRuleResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=UpdateTemplate': {
-      $get:
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'UpdateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
+      $get: {
+        input: {
+          query: {
+            Template: {
+              TemplateName: {}
+              SubjectPart?: {} | undefined
+              TextPart?: {} | undefined
+              HtmlPart?: {} | undefined
             }
-            output: UpdateTemplateResponse
-            outputFormat: 'text'
-            status: 200
+            Action: 'UpdateTemplate'
+            Version: '2010-12-01'
           }
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'UpdateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: {
-                Template: {
-                  TemplateName: {}
-                  SubjectPart?: {} | undefined
-                  TextPart?: {} | undefined
-                  HtmlPart?: {} | undefined
-                }
-                Action: 'UpdateTemplate'
-                Version: '2010-12-01'
-              }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InvalidTemplateException
-            outputFormat: 'text'
-            status: 481
+        }
+        output: UpdateTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
+      $post: {
+        input: { query: { Action: 'UpdateTemplate'; Version: '2010-12-01' } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { query: { Action: 'UpdateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTemplateRequest }
-            output: UpdateTemplateResponse
-            outputFormat: 'text'
-            status: 200
-          }
-        | {
-            input: { query: { Action: 'UpdateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTemplateRequest }
-            output: TemplateDoesNotExistException
-            outputFormat: 'text'
-            status: 480
-          }
-        | {
-            input: { query: { Action: 'UpdateTemplate'; Version: '2010-12-01' } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: UpdateTemplateRequest }
-            output: InvalidTemplateException
-            outputFormat: 'text'
-            status: 481
-          }
+        } & { json: UpdateTemplateRequest }
+        output: UpdateTemplateResponse
+        outputFormat: 'text'
+        status: 200
+      }
     }
   } & {
     '/#Action=VerifyDomainDkim': {

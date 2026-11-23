@@ -112,38 +112,38 @@ export async function getRelatedTagsTag(
 }
 
 export async function getSearchArticlesQueryQuery(
-  args: InferRequestType<(typeof client.search)['articles?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['articles?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['articles?query=:query'].$get(args, options))
+  return await parseResponse(client.search['articles?query={query}'].$get(args, options))
 }
 
 export async function getSearchListsQueryQuery(
-  args: InferRequestType<(typeof client.search)['lists?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['lists?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['lists?query=:query'].$get(args, options))
+  return await parseResponse(client.search['lists?query={query}'].$get(args, options))
 }
 
 export async function getSearchPublicationsQueryQuery(
-  args: InferRequestType<(typeof client.search)['publications?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['publications?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['publications?query=:query'].$get(args, options))
+  return await parseResponse(client.search['publications?query={query}'].$get(args, options))
 }
 
 export async function getSearchTagsQueryQuery(
-  args: InferRequestType<(typeof client.search)['tags?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['tags?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['tags?query=:query'].$get(args, options))
+  return await parseResponse(client.search['tags?query={query}'].$get(args, options))
 }
 
 export async function getSearchUsersQueryQuery(
-  args: InferRequestType<(typeof client.search)['users?query=:query']['$get']>,
+  args: InferRequestType<(typeof client.search)['users?query={query}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.search['users?query=:query'].$get(args, options))
+  return await parseResponse(client.search['users?query={query}'].$get(args, options))
 }
 
 export async function getTopWriterTopicSlug(

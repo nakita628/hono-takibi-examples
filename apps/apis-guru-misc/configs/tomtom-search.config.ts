@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/tomtom.com/search/1.0.0/openapi.yaml',
   output: './src/tomtom-search/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/tomtom-search/types.ts' },
   client: { output: './src/tomtom-search/client.ts', baseUrl: '/' },
   rpc: { output: './src/tomtom-search/rpc.ts', parseResponse: true },

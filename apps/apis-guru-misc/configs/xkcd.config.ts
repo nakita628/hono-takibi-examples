@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/xkcd.com/1.0.0/openapi.yaml',
   output: './src/xkcd/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/xkcd/types.ts' },
   client: { output: './src/xkcd/client.ts', baseUrl: '/' },
   rpc: { output: './src/xkcd/rpc.ts', parseResponse: true },

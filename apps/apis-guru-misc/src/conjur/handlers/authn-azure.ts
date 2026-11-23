@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAuthnAzureServiceIdAccountLoginAuthenticateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAuthnAzureServiceIdAccountLoginAuthenticateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const authnAzureHandler = app.openapi(
-  postAuthnAzureServiceIdAccountLoginAuthenticateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postAuthnAzureServiceIdAccountLoginAuthenticateRouteHandler: RouteHandler<
+  typeof postAuthnAzureServiceIdAccountLoginAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

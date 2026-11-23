@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteBatchesIdRoute, getBatchesIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteBatchesIdRoute, getBatchesIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBatchesIdRouteHandler: RouteHandler<typeof deleteBatchesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const batchesHandler = app
-  .openapi(deleteBatchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBatchesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBatchesIdRouteHandler: RouteHandler<typeof getBatchesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

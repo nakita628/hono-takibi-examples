@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/adexchangebuyer2/v2beta1/openapi.yaml',
   output: './src/adexchangebuyer2/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/adexchangebuyer2/types.ts' },
   client: { output: './src/adexchangebuyer2/client.ts', baseUrl: '/' },
   rpc: { output: './src/adexchangebuyer2/rpc.ts', parseResponse: true },

@@ -3795,6 +3795,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 500 }
       $put:
         | {
             input: { param: { client_id: string } } & {
@@ -3812,6 +3815,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsUpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsUpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsUpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { client_id: string } }
@@ -3820,6 +3847,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/connected_apps/clients/search': {
@@ -3836,6 +3866,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/connected_apps/clients': {
@@ -3851,6 +3899,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiConnectedappsV1ConnectedAppsClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -3872,6 +3938,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/connected_apps/clients/:client_id/secrets/rotate/cancel': {
@@ -3892,6 +3982,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/connected_apps/clients/:client_id/secrets/rotate': {
@@ -3911,6 +4025,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiConnectedappsV1ConnectedAppsClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -3938,6 +4076,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { organization_id: string; connection_id: string } } & {
@@ -3960,6 +4131,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
       $get:
         | {
@@ -3988,6 +4192,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              query: { cursor?: string | undefined; limit?: number | undefined }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              query: { cursor?: string | undefined; limit?: number | undefined }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              query: { cursor?: string | undefined; limit?: number | undefined }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/scim/:organization_id/connection/:connection_id/rotate/start': {
@@ -4013,6 +4256,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4040,6 +4316,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCompleteRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCompleteRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCompleteRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/scim/:organization_id/connection/:connection_id/rotate/cancel': {
@@ -4065,6 +4374,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCancelRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCancelRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionRotateCancelRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4092,6 +4434,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bScimV1B2bScimConnectionCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $get:
         | {
             input: { param: { organization_id: string } } & {
@@ -4115,6 +4490,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations': {
@@ -4131,6 +4539,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOrganizationV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOrganizationV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOrganizationV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id': {
@@ -4146,6 +4572,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
       $put:
         | {
@@ -4170,6 +4614,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { organization_id: string } } & {
@@ -4193,6 +4670,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/search': {
@@ -4209,6 +4719,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOrganizationV1SearchRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOrganizationV1SearchRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOrganizationV1SearchRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/metrics': {
@@ -4224,6 +4752,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4251,6 +4797,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/connected_apps/:connected_app_id': {
@@ -4276,6 +4855,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connected_app_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connected_app_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connected_app_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4303,6 +4915,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id': {
@@ -4329,6 +4974,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { organization_id: string; member_id: string } } & {
@@ -4351,6 +5029,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4378,6 +5089,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersReactivateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersReactivateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersReactivateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/mfa_phone_numbers/:member_id': {
@@ -4403,6 +5147,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4430,6 +5207,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/members/search': {
@@ -4455,6 +5265,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4482,6 +5325,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_password_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_password_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_password_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/members/dangerously_get/:member_id': {
@@ -4502,6 +5378,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { member_id: string } } & {
+              query: { include_deleted?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { member_id: string } } & {
+              query: { include_deleted?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { member_id: string } } & {
+              query: { include_deleted?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/oidc_providers': {
@@ -4521,6 +5421,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4548,6 +5472,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUnlinkRetiredEmailRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUnlinkRetiredEmailRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersUnlinkRetiredEmailRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/start_email_update': {
@@ -4573,6 +5530,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersStartEmailUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersStartEmailUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersStartEmailUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4600,6 +5590,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/external_id': {
@@ -4625,6 +5648,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4652,6 +5708,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/member': {
@@ -4671,6 +5760,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              query: { member_id?: string | undefined; email_address?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              query: { member_id?: string | undefined; email_address?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              query: { member_id?: string | undefined; email_address?: string | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4692,6 +5805,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/oauth_providers/microsoft': {
@@ -4712,6 +5849,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/oauth_providers/slack': {
@@ -4727,6 +5888,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4748,6 +5927,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/organizations/:organization_id/members/:member_id/oauth_providers/github': {
@@ -4767,6 +5970,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } } & {
+              query: { include_refresh_token?: boolean | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4798,6 +6025,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              param: { organization_id: string; member_id: string; connected_app_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersConnectedAppsRevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              param: { organization_id: string; member_id: string; connected_app_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersConnectedAppsRevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              param: { organization_id: string; member_id: string; connected_app_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiOrganizationV1OrganizationsMembersConnectedAppsRevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/idp/oauth/authorize/start': {
@@ -4813,6 +6079,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4830,6 +6114,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bIdpV1B2bIdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/users': {
@@ -4841,6 +6143,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { json: ApiUserV1CreateRequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: ApiUserV1CreateRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ApiUserV1CreateRequest }; output: {}; outputFormat: string; status: 429 }
+        | { input: { json: ApiUserV1CreateRequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/:user_id': {
@@ -4852,6 +6157,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 500 }
       $put:
         | {
             input: { param: { user_id: string } } & { json: ApiUserV1UpdateRequest }
@@ -4865,6 +6173,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1UpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { user_id: string } }
@@ -4873,6 +6199,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/search': {
@@ -4884,6 +6213,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { json: ApiUserV1SearchRequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: ApiUserV1SearchRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ApiUserV1SearchRequest }; output: {}; outputFormat: string; status: 429 }
+        | { input: { json: ApiUserV1SearchRequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/:user_id/exchange_primary_factor': {
@@ -4900,6 +6232,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1ExchangePrimaryFactorRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1ExchangePrimaryFactorRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { user_id: string } } & { json: ApiUserV1ExchangePrimaryFactorRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/users/emails/:email_id': {
@@ -4911,6 +6261,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { email_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { email_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { email_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { email_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/phone_numbers/:phone_id': {
@@ -4922,6 +6275,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { phone_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { phone_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { phone_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { phone_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/webauthn_registrations/:webauthn_registration_id': {
@@ -4937,6 +6293,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { webauthn_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { webauthn_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { webauthn_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4954,6 +6328,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { biometric_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { biometric_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { biometric_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/users/totps/:totp_id': {
@@ -4965,6 +6357,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { totp_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { totp_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { totp_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { totp_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/crypto_wallets/:crypto_wallet_id': {
@@ -4980,6 +6375,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { crypto_wallet_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { crypto_wallet_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { crypto_wallet_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -4997,6 +6410,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { password_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { password_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { password_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/users/oauth/:oauth_user_registration_id': {
@@ -5013,6 +6444,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { oauth_user_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { oauth_user_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { oauth_user_registration_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/users/:user_id/external_id': {
@@ -5024,6 +6473,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/:user_id/connected_apps': {
@@ -5035,6 +6487,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { user_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/users/:user_id/connected_apps/:connected_app_id/revoke': {
@@ -5055,6 +6510,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { user_id: string; connected_app_id: string } } & {
+              json: ApiUserV1RevokeRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { user_id: string; connected_app_id: string } } & {
+              json: ApiUserV1RevokeRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { user_id: string; connected_app_id: string } } & {
+              json: ApiUserV1RevokeRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/sessions': {
@@ -5066,6 +6545,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { query: { user_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { query: { user_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { query: { user_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { query: { user_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/sessions/authenticate': {
@@ -5081,6 +6563,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5098,6 +6598,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/sessions/migrate': {
@@ -5113,6 +6631,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5130,6 +6666,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/sessions/jwks/:project_id': {
@@ -5145,6 +6699,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5162,6 +6734,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sessions': {
@@ -5178,6 +6768,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { query: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { query: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { query: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sessions/authenticate': {
@@ -5193,6 +6801,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bSessionV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5220,6 +6846,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bSessionV1RevokeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sessions/exchange': {
@@ -5235,6 +6894,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5252,6 +6929,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bSessionV1ExchangeAccessTokenRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sessions/attest': {
@@ -5267,6 +6962,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bSessionV1AttestRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5284,6 +6997,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bSessionV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sessions/jwks/:project_id': {
@@ -5299,6 +7030,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { project_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5316,12 +7065,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/rbac/policy': {
       $get:
         | { input: {}; output: ApiB2bRbacV1PolicyResponse; outputFormat: 'json'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 400 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 429 }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/b2b/rbac/organizations/:organization_id': {
@@ -5337,6 +7107,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
       $put:
         | {
@@ -5355,6 +7143,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: ApiB2bRbacV1B2bRbacOrganizationsSetOrgPolicyRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: ApiB2bRbacV1B2bRbacOrganizationsSetOrgPolicyRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              json: ApiB2bRbacV1B2bRbacOrganizationsSetOrgPolicyRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/recovery_codes/recover': {
@@ -5370,6 +7182,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5387,6 +7217,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; member_id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/recovery_codes/rotate': {
@@ -5402,6 +7250,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RotateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RotateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bRecoveryCodesV1RotateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5419,6 +7285,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bTotpV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bTotpV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bTotpV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/totp/authenticate': {
@@ -5434,6 +7318,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5451,12 +7353,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bTotpV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bTotpV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bTotpV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/rbac/policy': {
       $get:
         | { input: {}; output: ApiConsumerRbacV1PolicyResponse; outputFormat: 'json'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 400 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 429 }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/crypto_wallets/authenticate/start': {
@@ -5472,6 +7395,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5489,12 +7430,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiCryptoWalletV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/debug/whoami': {
       $get:
         | { input: {}; output: ApiDebugV1WhoamiResponse; outputFormat: 'json'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 400 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 429 }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/b2b/discovery/intermediate_sessions/exchange': {
@@ -5510,6 +7472,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryIntermediateSessionsExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryIntermediateSessionsExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryIntermediateSessionsExchangeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5527,6 +7507,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryOrganizationsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryOrganizationsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryOrganizationsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/discovery/organizations': {
@@ -5542,6 +7540,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryListRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryListRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiDiscoveryV1DiscoveryListRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5559,6 +7575,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiFraudV1FraudFingerprintLookupRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudFingerprintLookupRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudFingerprintLookupRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/rules/set': {
@@ -5574,6 +7608,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiFraudV1FraudRulesSetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudRulesSetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudRulesSetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5591,6 +7643,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiFraudV1FraudRulesListRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudRulesListRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudRulesListRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/verdict_reasons/override': {
@@ -5606,6 +7676,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsOverrideRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsOverrideRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsOverrideRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5623,6 +7711,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsListRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsListRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudVerdictReasonsListRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/email/risk': {
@@ -5638,6 +7744,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiFraudV1FraudEmailRiskRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiFraudV1FraudEmailRiskRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiFraudV1FraudEmailRiskRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5655,6 +7779,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/idp/oauth/authorize': {
@@ -5670,6 +7812,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiIdpV1IdpOauthAuthorizeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5687,6 +7847,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiImpersonationV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/m2m/clients/:client_id': {
@@ -5698,6 +7876,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 500 }
       $put:
         | {
             input: { param: { client_id: string } } & { json: ApiM2mV1M2mClientsUpdateRequest }
@@ -5711,6 +7892,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & { json: ApiM2mV1M2mClientsUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & { json: ApiM2mV1M2mClientsUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & { json: ApiM2mV1M2mClientsUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $delete:
         | {
             input: { param: { client_id: string } }
@@ -5719,6 +7918,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 429 }
+        | { input: { param: { client_id: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/m2m/clients/search': {
@@ -5735,6 +7937,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiM2mV1M2mClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiM2mV1M2mClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiM2mV1M2mClientsSearchRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/m2m/clients': {
@@ -5750,6 +7970,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiM2mV1M2mClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiM2mV1M2mClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiM2mV1M2mClientsCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5771,6 +8009,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateStartRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/m2m/clients/:client_id/secrets/rotate/cancel': {
@@ -5790,6 +8052,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateCancelRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5811,6 +8097,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { client_id: string } } & {
+              json: ApiM2mV1M2mClientsSecretsRotateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/magic_links/authenticate': {
@@ -5826,6 +8136,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5843,6 +8171,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiMagicV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/magic_links/email/send': {
@@ -5858,6 +8204,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5875,6 +8239,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/magic_links/email/invite': {
@@ -5890,6 +8272,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5907,6 +8307,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailRevokeInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailRevokeInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiMagicV1MagicLinksEmailRevokeInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/magic_links/authenticate': {
@@ -5923,6 +8341,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bMagicV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/magic_links/email/login_or_signup': {
@@ -5938,6 +8374,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5965,6 +8419,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bMagicV1B2bMagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bMagicV1B2bMagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bMagicV1B2bMagicLinksEmailInviteRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/magic_links/email/discovery/send': {
@@ -5980,6 +8467,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -5997,6 +8502,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bMagicV1B2bMagicLinksDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/oauth/authenticate': {
@@ -6012,6 +8535,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6029,6 +8570,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bOauthV1B2bOauthDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOauthV1B2bOauthDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOauthV1B2bOauthDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/otps/sms/send': {
@@ -6044,6 +8603,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6061,6 +8638,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpSmsAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/otps/email/login_or_signup': {
@@ -6076,6 +8671,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailLoginOrSignupRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6093,6 +8706,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/otps/email/discovery/send': {
@@ -6108,6 +8739,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoverySendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6125,6 +8774,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bOtpV1B2bOtpEmailDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/passwords': {
@@ -6140,6 +8807,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiPasswordV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1CreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6157,6 +8842,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/passwords/strength_check': {
@@ -6172,6 +8875,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6189,6 +8910,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/passwords/email/reset/start': {
@@ -6204,6 +8943,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6221,6 +8978,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/passwords/existing_password/reset': {
@@ -6236,6 +9011,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6253,6 +9046,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiPasswordV1PasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiPasswordV1PasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/strength_check': {
@@ -6268,6 +9079,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1StrengthCheckRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6285,6 +9114,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1MigrateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/authenticate': {
@@ -6300,6 +9147,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6317,6 +9182,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/email/reset': {
@@ -6332,6 +9215,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6359,6 +9260,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bPasswordV1B2bPasswordsEmailRequireResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bPasswordV1B2bPasswordsEmailRequireResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiB2bPasswordV1B2bPasswordsEmailRequireResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/session/reset': {
@@ -6374,6 +9308,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsSessionResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6391,6 +9343,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsExistingPasswordResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/discovery/authenticate': {
@@ -6406,6 +9376,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryAuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6423,6 +9411,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/passwords/discovery/email/reset': {
@@ -6438,6 +9444,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiB2bPasswordV1B2bPasswordsDiscoveryEmailResetRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6455,6 +9479,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOauthV1AttachRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOauthV1AttachRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOauthV1AttachRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/oauth/authenticate': {
@@ -6470,6 +9512,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOauthV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6487,6 +9547,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOtpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/otps/sms/send': {
@@ -6502,6 +9580,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiOtpV1OtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpSmsSendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6519,6 +9615,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOtpV1OtpSmsLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpSmsLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpSmsLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/otps/whatsapp/send': {
@@ -6534,6 +9648,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappSendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappSendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappSendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6551,6 +9683,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpWhatsappLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/otps/email/send': {
@@ -6566,6 +9716,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiOtpV1OtpEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpEmailSendRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6583,12 +9751,33 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiOtpV1OtpEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiOtpV1OtpEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiOtpV1OtpEmailLoginOrCreateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/projects/metrics': {
       $get:
         | { input: {}; output: ApiProjectV1MetricsResponse; outputFormat: 'json'; status: 200 }
         | { input: {}; output: {}; outputFormat: string; status: 400 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 429 }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/b2b/sso/:organization_id': {
@@ -6614,6 +9803,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6641,6 +9863,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/authenticate': {
@@ -6656,6 +9911,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiSsoV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiSsoV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiSsoV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6683,6 +9956,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/oidc/:organization_id/connections/:connection_id': {
@@ -6708,6 +10014,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoOidcUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6735,6 +10074,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/saml/:organization_id/connections/:connection_id': {
@@ -6761,6 +10133,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/saml/:organization_id/connections/:connection_id/url': {
@@ -6786,6 +10191,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateByURLRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateByURLRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoSamlUpdateByURLRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6817,6 +10255,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; certificate_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; certificate_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; certificate_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/saml/:organization_id/connections/:connection_id/encryption_private_keys/:private_key_id': {
@@ -6847,6 +10324,45 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; private_key_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; private_key_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: {
+              param: { organization_id: string; connection_id: string; private_key_id: string }
+            } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/b2b/sso/external/:organization_id': {
@@ -6872,6 +10388,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalCreateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6899,6 +10448,39 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { organization_id: string; connection_id: string } } & {
+              header: {
+                'X-Stytch-Member-Session'?: string | undefined
+                'X-Stytch-Member-SessionJWT'?: string | undefined
+              }
+            } & { json: ApiSsoV1SsoExternalUpdateConnectionRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/totps': {
@@ -6910,6 +10492,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 200
           }
         | { input: { json: ApiTotpV1CreateRequest }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: ApiTotpV1CreateRequest }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: ApiTotpV1CreateRequest }; output: {}; outputFormat: string; status: 429 }
+        | { input: { json: ApiTotpV1CreateRequest }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/v1/totps/authenticate': {
@@ -6925,6 +10510,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiTotpV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6942,6 +10545,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiTotpV1RecoveryCodesRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiTotpV1RecoveryCodesRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiTotpV1RecoveryCodesRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/totps/recover': {
@@ -6957,6 +10578,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiTotpV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiTotpV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiTotpV1RecoverRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -6974,6 +10613,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiWebauthnV1RegisterStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiWebauthnV1RegisterStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiWebauthnV1RegisterStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/webauthn/register': {
@@ -6989,6 +10646,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiWebauthnV1RegisterRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiWebauthnV1RegisterRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiWebauthnV1RegisterRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -7006,6 +10681,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateStartRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/webauthn/authenticate': {
@@ -7021,6 +10714,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { json: ApiWebauthnV1AuthenticateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {
@@ -7042,6 +10753,30 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 400
           }
+        | {
+            input: { param: { webauthn_registration_id: string } } & {
+              json: ApiWebauthnV1UpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { webauthn_registration_id: string } } & {
+              json: ApiWebauthnV1UpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { webauthn_registration_id: string } } & {
+              json: ApiWebauthnV1UpdateRequest
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/v1/webauthn/credentials/:user_id/:domain': {
@@ -7057,6 +10792,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: {}
             outputFormat: string
             status: 400
+          }
+        | {
+            input: { param: { user_id: string; domain: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { user_id: string; domain: string } }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { user_id: string; domain: string } }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   },

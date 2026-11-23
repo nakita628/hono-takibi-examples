@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeleteSMSSandboxPhoneNumberRoute,
   postActionDeleteSMSSandboxPhoneNumberRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeleteSMSSandboxPhoneNumberRouteHandler: RouteHandler<
+  typeof getActionDeleteSMSSandboxPhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeleteSmsSandboxPhoneNumberHandler = app
-  .openapi(getActionDeleteSMSSandboxPhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeleteSMSSandboxPhoneNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeleteSMSSandboxPhoneNumberRouteHandler: RouteHandler<
+  typeof postActionDeleteSMSSandboxPhoneNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

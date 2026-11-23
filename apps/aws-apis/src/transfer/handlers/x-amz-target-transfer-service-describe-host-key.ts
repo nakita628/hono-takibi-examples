@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetTransferServiceDescribeHostKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetTransferServiceDescribeHostKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetTransferServiceDescribeHostKeyHandler = app.openapi(
-  postXAmzTargetTransferServiceDescribeHostKeyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetTransferServiceDescribeHostKeyRouteHandler: RouteHandler<
+  typeof postXAmzTargetTransferServiceDescribeHostKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

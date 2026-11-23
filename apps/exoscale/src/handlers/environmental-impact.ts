@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEnvironmentalImpactReportRoute, postEnvironmentalImpactEstimateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getEnvironmentalImpactReportRoute,
+  postEnvironmentalImpactEstimateRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postEnvironmentalImpactEstimateRouteHandler: RouteHandler<
+  typeof postEnvironmentalImpactEstimateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const environmentalImpactHandler = app
-  .openapi(postEnvironmentalImpactEstimateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentalImpactReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEnvironmentalImpactReportRouteHandler: RouteHandler<
+  typeof getEnvironmentalImpactReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

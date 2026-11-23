@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLegalHoldsLegalHoldIdCancelDescriptionRoute,
   getLegalHoldsIndexRoute,
   getLegalHoldsLegalHoldIdIndexRoute,
@@ -7,21 +7,32 @@ import {
   postLegalHoldsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteLegalHoldsLegalHoldIdCancelDescriptionRouteHandler: RouteHandler<
+  typeof deleteLegalHoldsLegalHoldIdCancelDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const legalHoldsHandler = app
-  .openapi(deleteLegalHoldsLegalHoldIdCancelDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLegalHoldsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldsLegalHoldIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLegalHoldsLegalHoldIdRecoveryPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLegalHoldsIndexRouteHandler: RouteHandler<
+  typeof postLegalHoldsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldsIndexRouteHandler: RouteHandler<typeof getLegalHoldsIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldsLegalHoldIdIndexRouteHandler: RouteHandler<
+  typeof getLegalHoldsLegalHoldIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLegalHoldsLegalHoldIdRecoveryPointsRouteHandler: RouteHandler<
+  typeof getLegalHoldsLegalHoldIdRecoveryPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

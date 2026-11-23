@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDashboardsDashboardIDCellsCellIDRoute,
   deleteDashboardsDashboardIDLabelsLabelIDRoute,
   deleteDashboardsDashboardIDMembersUserIDRoute,
@@ -22,66 +22,118 @@ import {
   putDashboardsDashboardIDCellsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDashboardsRouteHandler: RouteHandler<typeof getDashboardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dashboardsHandler = app
-  .openapi(getDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsDashboardIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsDashboardIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDashboardsDashboardIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsDashboardIDCellsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDashboardsDashboardIDCellsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsDashboardIDCellsCellIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDashboardsDashboardIDCellsCellIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsDashboardIDCellsCellIDViewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDashboardsDashboardIDCellsCellIDViewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsDashboardIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsDashboardIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsDashboardIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsDashboardIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsDashboardIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsDashboardIDMembersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDashboardsDashboardIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDashboardsDashboardIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDashboardsDashboardIDOwnersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDashboardsRouteHandler: RouteHandler<typeof postDashboardsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsDashboardIDRouteHandler: RouteHandler<
+  typeof deleteDashboardsDashboardIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsDashboardIDRouteHandler: RouteHandler<
+  typeof getDashboardsDashboardIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDashboardsDashboardIDRouteHandler: RouteHandler<
+  typeof patchDashboardsDashboardIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsDashboardIDCellsRouteHandler: RouteHandler<
+  typeof postDashboardsDashboardIDCellsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDashboardsDashboardIDCellsRouteHandler: RouteHandler<
+  typeof putDashboardsDashboardIDCellsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsDashboardIDCellsCellIDRouteHandler: RouteHandler<
+  typeof deleteDashboardsDashboardIDCellsCellIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDashboardsDashboardIDCellsCellIDRouteHandler: RouteHandler<
+  typeof patchDashboardsDashboardIDCellsCellIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsDashboardIDCellsCellIDViewRouteHandler: RouteHandler<
+  typeof getDashboardsDashboardIDCellsCellIDViewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDashboardsDashboardIDCellsCellIDViewRouteHandler: RouteHandler<
+  typeof patchDashboardsDashboardIDCellsCellIDViewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsDashboardIDLabelsRouteHandler: RouteHandler<
+  typeof getDashboardsDashboardIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsDashboardIDLabelsRouteHandler: RouteHandler<
+  typeof postDashboardsDashboardIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsDashboardIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteDashboardsDashboardIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsDashboardIDMembersRouteHandler: RouteHandler<
+  typeof getDashboardsDashboardIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsDashboardIDMembersRouteHandler: RouteHandler<
+  typeof postDashboardsDashboardIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsDashboardIDMembersUserIDRouteHandler: RouteHandler<
+  typeof deleteDashboardsDashboardIDMembersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDashboardsDashboardIDOwnersRouteHandler: RouteHandler<
+  typeof getDashboardsDashboardIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDashboardsDashboardIDOwnersRouteHandler: RouteHandler<
+  typeof postDashboardsDashboardIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDashboardsDashboardIDOwnersUserIDRouteHandler: RouteHandler<
+  typeof deleteDashboardsDashboardIDOwnersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

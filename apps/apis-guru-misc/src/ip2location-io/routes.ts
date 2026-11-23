@@ -106,5 +106,5 @@ export const getRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'Get response from IP lookup', content: {} } },
+  responses: { 200: { description: 'Get response from IP lookup' } },
 })

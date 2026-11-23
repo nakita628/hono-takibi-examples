@@ -54,6 +54,8 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+        | { input: {}; output: {}; outputFormat: string; status: 403 }
         | { input: {}; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
@@ -64,6 +66,24 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ForecastTypeSettingPublicResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { forecastTypeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { forecastTypeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { forecastTypeId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 404
           }
         | {
             input: { param: { forecastTypeId: bigint } }

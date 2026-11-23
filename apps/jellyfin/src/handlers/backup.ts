@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBackupManifestRoute,
   getBackupRoute,
   postBackupCreateRoute,
   postBackupRestoreRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBackupRouteHandler: RouteHandler<typeof getBackupRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const backupHandler = app
-  .openapi(getBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackupCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupManifestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackupRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBackupCreateRouteHandler: RouteHandler<typeof postBackupCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupManifestRouteHandler: RouteHandler<typeof getBackupManifestRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackupRestoreRouteHandler: RouteHandler<typeof postBackupRestoreRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

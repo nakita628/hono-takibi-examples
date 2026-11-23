@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminRelationTuplesRoute,
   patchAdminRelationTuplesRoute,
   putAdminRelationTuplesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAdminRelationTuplesRouteHandler: RouteHandler<
+  typeof deleteAdminRelationTuplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(deleteAdminRelationTuplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminRelationTuplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminRelationTuplesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchAdminRelationTuplesRouteHandler: RouteHandler<
+  typeof patchAdminRelationTuplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminRelationTuplesRouteHandler: RouteHandler<
+  typeof putAdminRelationTuplesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

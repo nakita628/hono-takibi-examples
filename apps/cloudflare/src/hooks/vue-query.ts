@@ -184181,13 +184181,13 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsLat
 export function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEventTEventNQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
     >
   >,
 ) {
   return [
     'accounts',
-    '/accounts/:account_id/magic/connectors/:connector_id/telemetry/events/:event_t.:event_n',
+    '/accounts/:account_id/magic/connectors/:connector_id/telemetry/events/:event_t.{event_n}',
     toValue(args),
   ] as const
 }
@@ -184195,7 +184195,7 @@ export function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
 export function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEventTEventNQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -184207,7 +184207,7 @@ export function getAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
         client.accounts[':account_id'].magic.connectors[':connector_id'].telemetry.events[
-          ':event_t.:event_n'
+          ':event_t.{event_n}'
         ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -184220,7 +184220,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+            (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
           >
         >
       >
@@ -184230,7 +184230,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+      (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
     >
   >,
   options?: {
@@ -184242,7 +184242,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
                   >
                 >
               >
@@ -184255,7 +184255,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
                   >
                 >
               >
@@ -184280,7 +184280,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+              (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
             >
           >
         >
@@ -184300,7 +184300,7 @@ export function useAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEve
       queryFn({ signal }) {
         return parseResponse(
           client.accounts[':account_id'].magic.connectors[':connector_id'].telemetry.events[
-            ':event_t.:event_n'
+            ':event_t.{event_n}'
           ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
       },

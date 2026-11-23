@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/velopayments.com/2.34.63/openapi.yaml',
   output: './src/velopayments/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/velopayments/types.ts' },
   client: { output: './src/velopayments/client.ts', baseUrl: '/' },
   rpc: { output: './src/velopayments/rpc.ts', parseResponse: true },

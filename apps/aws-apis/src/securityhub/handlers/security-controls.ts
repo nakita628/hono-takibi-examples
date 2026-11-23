@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSecurityControlsDefinitionsRoute, postSecurityControlsBatchGetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getSecurityControlsDefinitionsRoute,
+  postSecurityControlsBatchGetRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postSecurityControlsBatchGetRouteHandler: RouteHandler<
+  typeof postSecurityControlsBatchGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const securityControlsHandler = app
-  .openapi(postSecurityControlsBatchGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecurityControlsDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSecurityControlsDefinitionsRouteHandler: RouteHandler<
+  typeof getSecurityControlsDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

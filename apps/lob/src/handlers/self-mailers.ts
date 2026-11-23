@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSelfMailersSfmIdRoute,
   getSelfMailersRoute,
   getSelfMailersSfmIdRoute,
   postSelfMailersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSelfMailersSfmIdRouteHandler: RouteHandler<
+  typeof getSelfMailersSfmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const selfMailersHandler = app
-  .openapi(getSelfMailersSfmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSelfMailersSfmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSelfMailersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSelfMailersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSelfMailersSfmIdRouteHandler: RouteHandler<
+  typeof deleteSelfMailersSfmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSelfMailersRouteHandler: RouteHandler<typeof getSelfMailersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSelfMailersRouteHandler: RouteHandler<typeof postSelfMailersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

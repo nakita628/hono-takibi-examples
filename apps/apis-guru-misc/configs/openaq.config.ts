@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openaq.local/2.0.0/openapi.yaml',
   output: './src/openaq/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openaq/types.ts' },
   client: { output: './src/openaq/client.ts', baseUrl: '/' },
   rpc: { output: './src/openaq/rpc.ts', parseResponse: true },

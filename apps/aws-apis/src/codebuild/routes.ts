@@ -753,8 +753,8 @@ const BuildBatchesSchema: z.ZodType<BuildBatchesType> = z
 const BuildBatchIdsSchema = z.array(NonEmptyStringSchema).min(0).max(100).openapi('BuildBatchIds')
 
 type BatchGetBuildBatchesOutputType = {
-  buildBatches?: z.infer<typeof BuildBatchesSchema> & unknown
-  buildBatchesNotFound?: z.infer<typeof BuildBatchIdsSchema> & unknown
+  buildBatches?: z.infer<typeof BuildBatchesSchema>
+  buildBatchesNotFound?: z.infer<typeof BuildBatchIdsSchema>
 }
 
 const PlatformTypeSchema = z
@@ -837,12 +837,12 @@ const EnvironmentPlatformsSchema = z
   .openapi('EnvironmentPlatforms')
 
 type ListCuratedEnvironmentImagesOutputType = {
-  platforms?: z.infer<typeof EnvironmentPlatformsSchema> & unknown
+  platforms?: z.infer<typeof EnvironmentPlatformsSchema>
 }
 
 type RetryBuildBatchOutputType = { buildBatch?: z.infer<typeof BuildBatchSchema> }
 
-type StartBuildBatchOutputType = { buildBatch?: z.infer<typeof BuildBatchSchema> & unknown }
+type StartBuildBatchOutputType = { buildBatch?: z.infer<typeof BuildBatchSchema> }
 
 type StopBuildBatchOutputType = { buildBatch?: z.infer<typeof BuildBatchSchema> }
 

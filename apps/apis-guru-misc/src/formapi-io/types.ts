@@ -753,6 +753,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { folder_id: string } } & { json: { name: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { folder_id: string } } & { json: { name: string } }
             output: AuthenticationError
             outputFormat: 'json'
             status: 401

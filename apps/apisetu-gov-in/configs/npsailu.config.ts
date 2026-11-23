@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/npsailu/3.0.0/openapi.yaml',
   output: './src/npsailu/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/npsailu/types.ts' },
   client: { output: './src/npsailu/client.ts', baseUrl: '/' },
   rpc: { output: './src/npsailu/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute,
   deleteV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute,
   deleteV20180820AccesspointNamePolicyXAmzAccountIdRoute,
@@ -66,198 +66,386 @@ import {
   putV20180820StoragelensStoragelensidXAmzAccountIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putV20180820AccesspointNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820AccesspointNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v20180820Handler = app
-  .openapi(putV20180820AccesspointNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820AccesspointNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820JobsXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820JobsXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820AsyncRequestsMrapCreateXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820AccesspointNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820AccesspointNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820BucketNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820BucketNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820BucketNameReplicationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNameReplicationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNameReplicationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820BucketNameTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNameTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNameTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820JobsIdTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820JobsIdTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820JobsIdTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820AsyncRequestsMrapDeleteXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820StoragelensStoragelensidXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820StoragelensStoragelensidXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820StoragelensStoragelensidXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820JobsIdXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AsyncRequestsMrapRequestTokenXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointNamePolicyStatusXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointforobjectlambdaNamePolicyStatusXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketNameVersioningXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV20180820BucketNameVersioningXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820MrapInstancesNameXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820MrapInstancesNamePolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820MrapInstancesNamePolicystatusXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820MrapInstancesMrapRoutesXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV20180820MrapInstancesMrapRoutesXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820AccesspointforobjectlambdaXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820MrapInstancesXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820BucketXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV20180820StoragelensXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820AsyncRequestsMrapPutPolicyXAmzAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820JobsIdPriorityXAmzAccountIdPriorityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV20180820JobsIdStatusXAmzAccountIdRequestedJobStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteV20180820AccesspointNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820AccesspointNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820AccesspointforobjectlambdaNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820AccesspointforobjectlambdaNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointforobjectlambdaNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointforobjectlambdaNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNameRouteHandler: RouteHandler<
+  typeof putV20180820BucketNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820JobsXAmzAccountIdRouteHandler: RouteHandler<
+  typeof postV20180820JobsXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820JobsXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820JobsXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820AsyncRequestsMrapCreateXAmzAccountIdRouteHandler: RouteHandler<
+  typeof postV20180820AsyncRequestsMrapCreateXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820AccesspointNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820AccesspointNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820AccesspointNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820AccesspointNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820AccesspointforobjectlambdaNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820BucketNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820BucketNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820BucketNameLifecycleconfigurationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNameLifecycleconfigurationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNameLifecycleconfigurationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820BucketNameLifecycleconfigurationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820BucketNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820BucketNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820BucketNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820BucketNameReplicationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820BucketNameReplicationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNameReplicationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNameReplicationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNameReplicationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820BucketNameReplicationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820BucketNameTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820BucketNameTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNameTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNameTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNameTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820BucketNameTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820JobsIdTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820JobsIdTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820JobsIdTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820JobsIdTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820JobsIdTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820JobsIdTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820AsyncRequestsMrapDeleteXAmzAccountIdRouteHandler: RouteHandler<
+  typeof postV20180820AsyncRequestsMrapDeleteXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820ConfigurationPublicAccessBlockXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820ConfigurationPublicAccessBlockXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820ConfigurationPublicAccessBlockXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820ConfigurationPublicAccessBlockXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820StoragelensStoragelensidXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820StoragelensStoragelensidXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820StoragelensStoragelensidXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820StoragelensStoragelensidXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820StoragelensStoragelensidXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820StoragelensStoragelensidXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV20180820StoragelensStoragelensidTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof deleteV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820StoragelensStoragelensidTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820StoragelensStoragelensidTaggingXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820StoragelensStoragelensidTaggingXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820JobsIdXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820JobsIdXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AsyncRequestsMrapRequestTokenXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AsyncRequestsMrapRequestTokenXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820AccesspointforobjectlambdaNameConfigurationXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointNamePolicyStatusXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointNamePolicyStatusXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointforobjectlambdaNamePolicyStatusXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointforobjectlambdaNamePolicyStatusXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketNameVersioningXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketNameVersioningXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV20180820BucketNameVersioningXAmzAccountIdRouteHandler: RouteHandler<
+  typeof putV20180820BucketNameVersioningXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820MrapInstancesNameXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820MrapInstancesNameXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820MrapInstancesNamePolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820MrapInstancesNamePolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820MrapInstancesNamePolicystatusXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820MrapInstancesNamePolicystatusXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820MrapInstancesMrapRoutesXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820MrapInstancesMrapRoutesXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV20180820MrapInstancesMrapRoutesXAmzAccountIdRouteHandler: RouteHandler<
+  typeof patchV20180820MrapInstancesMrapRoutesXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820AccesspointforobjectlambdaXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820AccesspointforobjectlambdaXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820MrapInstancesXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820MrapInstancesXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820BucketXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820BucketXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV20180820StoragelensXAmzAccountIdRouteHandler: RouteHandler<
+  typeof getV20180820StoragelensXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820AsyncRequestsMrapPutPolicyXAmzAccountIdRouteHandler: RouteHandler<
+  typeof postV20180820AsyncRequestsMrapPutPolicyXAmzAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820JobsIdPriorityXAmzAccountIdPriorityRouteHandler: RouteHandler<
+  typeof postV20180820JobsIdPriorityXAmzAccountIdPriorityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV20180820JobsIdStatusXAmzAccountIdRequestedJobStatusRouteHandler: RouteHandler<
+  typeof postV20180820JobsIdStatusXAmzAccountIdRequestedJobStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

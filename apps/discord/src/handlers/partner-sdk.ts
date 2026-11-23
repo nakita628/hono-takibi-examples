@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postPartnerSdkProvisionalAccountsUnmergeBotRoute,
   postPartnerSdkProvisionalAccountsUnmergeRoute,
   postPartnerSdkTokenBotRoute,
@@ -7,21 +7,32 @@ import {
   putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRouteHandler: RouteHandler<
+  typeof putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const partnerSdkHandler = app
-  .openapi(putPartnerSdkDmsUserId1UserId2MessagesMessageIdModerationMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPartnerSdkProvisionalAccountsUnmergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPartnerSdkProvisionalAccountsUnmergeBotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPartnerSdkTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPartnerSdkTokenBotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPartnerSdkProvisionalAccountsUnmergeRouteHandler: RouteHandler<
+  typeof postPartnerSdkProvisionalAccountsUnmergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPartnerSdkProvisionalAccountsUnmergeBotRouteHandler: RouteHandler<
+  typeof postPartnerSdkProvisionalAccountsUnmergeBotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPartnerSdkTokenRouteHandler: RouteHandler<
+  typeof postPartnerSdkTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPartnerSdkTokenBotRouteHandler: RouteHandler<
+  typeof postPartnerSdkTokenBotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

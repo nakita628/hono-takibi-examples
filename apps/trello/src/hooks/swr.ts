@@ -8314,7 +8314,7 @@ export function useImmutableGetEnterprisesIdTransferrableBulkIdOrganizations<TEr
 }
 
 export function getPutEnterprisesIdEnterpriseJoinRequestBulkKey() {
-  return ['enterprises', '/enterprises/$:id/enterpriseJoinRequest/bulk', 'PUT'] as const
+  return ['enterprises', '/enterprises/${id}/enterpriseJoinRequest/bulk', 'PUT'] as const
 }
 
 export function usePutEnterprisesIdEnterpriseJoinRequestBulk<TError = unknown>(options?: {
@@ -8323,14 +8323,16 @@ export function usePutEnterprisesIdEnterpriseJoinRequestBulk<TError = unknown>(o
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']>
+            ReturnType<
+              (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
+            >
           >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']>
+    InferRequestType<(typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -8347,12 +8349,12 @@ export function usePutEnterprisesIdEnterpriseJoinRequestBulk<TError = unknown>(o
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.enterprises)['$:id']['enterpriseJoinRequest']['bulk']['$put']
+            (typeof client.enterprises)['${id}']['enterpriseJoinRequest']['bulk']['$put']
           >
         },
       ) =>
         parseResponse(
-          client.enterprises['$:id'].enterpriseJoinRequest.bulk.$put(arg, clientOptions),
+          client.enterprises['${id}'].enterpriseJoinRequest.bulk.$put(arg, clientOptions),
         ),
       restMutationOptions,
     ),

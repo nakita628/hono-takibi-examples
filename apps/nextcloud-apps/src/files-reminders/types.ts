@@ -8,7 +8,7 @@ type OCSMeta = {
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/ocs/v2.php/apps/files_reminders/api/v:version/:fileId': {
+    '/ocs/v2.php/apps/files_reminders/api/v{version}/:fileId': {
       $get:
         | {
             input: { param: { version: string; fileId: bigint } } & {

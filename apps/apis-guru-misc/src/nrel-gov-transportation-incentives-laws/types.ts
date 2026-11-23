@@ -51,7 +51,7 @@ type LawResult = { inputs: Inputs; metadata: Metadata; result: Law }
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/v1.:output_format': {
+    '/v1.{output_format}': {
       $get: {
         input: { param: { output_format: 'json' | 'xml' | 'csv' } } & {
           query: {
@@ -76,7 +76,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/v1/category-list.:output_format': {
+    '/v1/category-list.{output_format}': {
       $get: {
         input: { param: { output_format: 'json' | 'xml' } } & {
           query: {
@@ -90,7 +90,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/v1/pocs.:output_format': {
+    '/v1/pocs.{output_format}': {
       $get: {
         input: { param: { output_format: 'json' | 'xml' } } & {
           query: { api_key: string; jurisdiction: string }
@@ -101,7 +101,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/v1/:id.:output_format': {
+    '/v1/:id.{output_format}': {
       $get: {
         input: { param: { output_format: 'json' | 'xml'; id: number } } & {
           query: { api_key: string; poc?: boolean | undefined; expired?: boolean | undefined }

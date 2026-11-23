@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSetChatPermissionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSetChatPermissionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const setChatPermissionsHandler = app.openapi(postSetChatPermissionsRoute, (c) => {
+export const postSetChatPermissionsRouteHandler: RouteHandler<
+  typeof postSetChatPermissionsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

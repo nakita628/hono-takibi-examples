@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectionsIdRoute,
   getConnectionsCountRoute,
   getConnectionsIdRoute,
@@ -15,45 +15,74 @@ import {
   putConnectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getConnectionsRouteHandler: RouteHandler<typeof getConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectionsHandler = app
-  .openapi(getConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdUnarchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConnectionsIdUnpauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConnectionsRouteHandler: RouteHandler<typeof postConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsRouteHandler: RouteHandler<typeof putConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsCountRouteHandler: RouteHandler<
+  typeof getConnectionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsIdRouteHandler: RouteHandler<typeof getConnectionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdRouteHandler: RouteHandler<typeof putConnectionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsIdRouteHandler: RouteHandler<
+  typeof deleteConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdDisableRouteHandler: RouteHandler<
+  typeof putConnectionsIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdArchiveRouteHandler: RouteHandler<
+  typeof putConnectionsIdArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdEnableRouteHandler: RouteHandler<
+  typeof putConnectionsIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdUnarchiveRouteHandler: RouteHandler<
+  typeof putConnectionsIdUnarchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdPauseRouteHandler: RouteHandler<
+  typeof putConnectionsIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConnectionsIdUnpauseRouteHandler: RouteHandler<
+  typeof putConnectionsIdUnpauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

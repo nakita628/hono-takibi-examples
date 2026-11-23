@@ -166,10 +166,7 @@ export const getV1TaxCountrycodeRoute = createRoute({
         },
       },
     },
-    404: {
-      description: 'Country not found. Have you provided correct alpha-2 country code?',
-      content: {},
-    },
+    404: { description: 'Country not found. Have you provided correct alpha-2 country code?' },
     500: {
       description: 'Unexpected error',
       content: {
@@ -391,7 +388,7 @@ export const getV1TaxIpRoute = createRoute({
         },
       },
     },
-    404: { description: 'Geolocation can not be processed/No matching country found', content: {} },
+    404: { description: 'Geolocation can not be processed/No matching country found' },
     500: {
       description: 'Unexpected error',
       content: {
@@ -618,7 +615,6 @@ export const getV3TaxRatesRoute = createRoute({
     },
     404: {
       description: 'No configured tax rates found. Have you added any country to your account?',
-      content: {},
     },
     500: {
       description: 'Unexpected error',

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/firebasedynamiclinks/v1/openapi.yaml',
   output: './src/firebasedynamiclinks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/firebasedynamiclinks/types.ts' },
   client: { output: './src/firebasedynamiclinks/client.ts', baseUrl: '/' },
   rpc: { output: './src/firebasedynamiclinks/rpc.ts', parseResponse: true },

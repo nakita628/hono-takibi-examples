@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBucketKeyRoute,
   deleteBucketKeyTaggingRoute,
   deleteBucketKeyUploadIdRoute,
@@ -30,90 +30,150 @@ import {
   putBucketRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketKeyUploadIdRouteHandler: RouteHandler<
+  typeof deleteBucketKeyUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketHandler = app
-  .openapi(deleteBucketKeyUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBucketKeyUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyXAmzCopySourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBucketKeyUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBucketKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headBucketKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBucketKeyTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyTaggingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyAclRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyAttributesXAmzObjectAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyLegalHoldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyLegalHoldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyRetentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyRetentionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketKeyTorrentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBucketKeyRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBucketKeySelectSelectType2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyPartNumberUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketKeyXAmzCopySourcePartNumberUploadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBucketKeyUploadIdRouteHandler: RouteHandler<
+  typeof postBucketKeyUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyUploadIdRouteHandler: RouteHandler<
+  typeof getBucketKeyUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyXAmzCopySourceRouteHandler: RouteHandler<
+  typeof putBucketKeyXAmzCopySourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketRouteHandler: RouteHandler<typeof putBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBucketRouteHandler: RouteHandler<typeof deleteBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headBucketRouteHandler: RouteHandler<typeof headBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketRouteHandler: RouteHandler<typeof getBucketRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBucketKeyUploadsRouteHandler: RouteHandler<
+  typeof postBucketKeyUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBucketKeyRouteHandler: RouteHandler<typeof deleteBucketKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyRouteHandler: RouteHandler<typeof getBucketKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headBucketKeyRouteHandler: RouteHandler<typeof headBucketKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyRouteHandler: RouteHandler<typeof putBucketKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBucketKeyTaggingRouteHandler: RouteHandler<
+  typeof deleteBucketKeyTaggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyTaggingRouteHandler: RouteHandler<
+  typeof getBucketKeyTaggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyTaggingRouteHandler: RouteHandler<
+  typeof putBucketKeyTaggingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyAclRouteHandler: RouteHandler<typeof getBucketKeyAclRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyAclRouteHandler: RouteHandler<typeof putBucketKeyAclRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyAttributesXAmzObjectAttributesRouteHandler: RouteHandler<
+  typeof getBucketKeyAttributesXAmzObjectAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyLegalHoldRouteHandler: RouteHandler<
+  typeof getBucketKeyLegalHoldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyLegalHoldRouteHandler: RouteHandler<
+  typeof putBucketKeyLegalHoldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyRetentionRouteHandler: RouteHandler<
+  typeof getBucketKeyRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyRetentionRouteHandler: RouteHandler<
+  typeof putBucketKeyRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBucketKeyTorrentRouteHandler: RouteHandler<
+  typeof getBucketKeyTorrentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBucketKeyRestoreRouteHandler: RouteHandler<
+  typeof postBucketKeyRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBucketKeySelectSelectType2RouteHandler: RouteHandler<
+  typeof postBucketKeySelectSelectType2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyPartNumberUploadIdRouteHandler: RouteHandler<
+  typeof putBucketKeyPartNumberUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketKeyXAmzCopySourcePartNumberUploadIdRouteHandler: RouteHandler<
+  typeof putBucketKeyXAmzCopySourcePartNumberUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

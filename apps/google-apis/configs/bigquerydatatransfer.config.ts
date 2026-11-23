@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/bigquerydatatransfer/v1/openapi.yaml',
   output: './src/bigquerydatatransfer/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigquerydatatransfer/types.ts' },
   client: { output: './src/bigquerydatatransfer/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigquerydatatransfer/rpc.ts', parseResponse: true },

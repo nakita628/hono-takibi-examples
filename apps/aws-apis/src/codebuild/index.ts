@@ -1,99 +1,281 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCodeBuild20161006BatchDeleteBuildsHandler,
-  xAmzTargetCodeBuild20161006BatchGetBuildBatchesHandler,
-  xAmzTargetCodeBuild20161006BatchGetBuildsHandler,
-  xAmzTargetCodeBuild20161006BatchGetProjectsHandler,
-  xAmzTargetCodeBuild20161006BatchGetReportGroupsHandler,
-  xAmzTargetCodeBuild20161006BatchGetReportsHandler,
-  xAmzTargetCodeBuild20161006CreateProjectHandler,
-  xAmzTargetCodeBuild20161006CreateReportGroupHandler,
-  xAmzTargetCodeBuild20161006CreateWebhookHandler,
-  xAmzTargetCodeBuild20161006DeleteBuildBatchHandler,
-  xAmzTargetCodeBuild20161006DeleteProjectHandler,
-  xAmzTargetCodeBuild20161006DeleteReportGroupHandler,
-  xAmzTargetCodeBuild20161006DeleteReportHandler,
-  xAmzTargetCodeBuild20161006DeleteResourcePolicyHandler,
-  xAmzTargetCodeBuild20161006DeleteSourceCredentialsHandler,
-  xAmzTargetCodeBuild20161006DeleteWebhookHandler,
-  xAmzTargetCodeBuild20161006DescribeCodeCoveragesHandler,
-  xAmzTargetCodeBuild20161006DescribeTestCasesHandler,
-  xAmzTargetCodeBuild20161006GetReportGroupTrendHandler,
-  xAmzTargetCodeBuild20161006GetResourcePolicyHandler,
-  xAmzTargetCodeBuild20161006ImportSourceCredentialsHandler,
-  xAmzTargetCodeBuild20161006InvalidateProjectCacheHandler,
-  xAmzTargetCodeBuild20161006ListBuildBatchesForProjectHandler,
-  xAmzTargetCodeBuild20161006ListBuildBatchesHandler,
-  xAmzTargetCodeBuild20161006ListBuildsForProjectHandler,
-  xAmzTargetCodeBuild20161006ListBuildsHandler,
-  xAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesHandler,
-  xAmzTargetCodeBuild20161006ListProjectsHandler,
-  xAmzTargetCodeBuild20161006ListReportGroupsHandler,
-  xAmzTargetCodeBuild20161006ListReportsForReportGroupHandler,
-  xAmzTargetCodeBuild20161006ListReportsHandler,
-  xAmzTargetCodeBuild20161006ListSharedProjectsHandler,
-  xAmzTargetCodeBuild20161006ListSharedReportGroupsHandler,
-  xAmzTargetCodeBuild20161006ListSourceCredentialsHandler,
-  xAmzTargetCodeBuild20161006PutResourcePolicyHandler,
-  xAmzTargetCodeBuild20161006RetryBuildBatchHandler,
-  xAmzTargetCodeBuild20161006RetryBuildHandler,
-  xAmzTargetCodeBuild20161006StartBuildBatchHandler,
-  xAmzTargetCodeBuild20161006StartBuildHandler,
-  xAmzTargetCodeBuild20161006StopBuildBatchHandler,
-  xAmzTargetCodeBuild20161006StopBuildHandler,
-  xAmzTargetCodeBuild20161006UpdateProjectHandler,
-  xAmzTargetCodeBuild20161006UpdateProjectVisibilityHandler,
-  xAmzTargetCodeBuild20161006UpdateReportGroupHandler,
-  xAmzTargetCodeBuild20161006UpdateWebhookHandler,
+  postXAmzTargetCodeBuild20161006BatchDeleteBuildsRoute,
+  postXAmzTargetCodeBuild20161006BatchGetBuildBatchesRoute,
+  postXAmzTargetCodeBuild20161006BatchGetBuildsRoute,
+  postXAmzTargetCodeBuild20161006BatchGetProjectsRoute,
+  postXAmzTargetCodeBuild20161006BatchGetReportGroupsRoute,
+  postXAmzTargetCodeBuild20161006BatchGetReportsRoute,
+  postXAmzTargetCodeBuild20161006CreateProjectRoute,
+  postXAmzTargetCodeBuild20161006CreateReportGroupRoute,
+  postXAmzTargetCodeBuild20161006CreateWebhookRoute,
+  postXAmzTargetCodeBuild20161006DeleteBuildBatchRoute,
+  postXAmzTargetCodeBuild20161006DeleteProjectRoute,
+  postXAmzTargetCodeBuild20161006DeleteReportGroupRoute,
+  postXAmzTargetCodeBuild20161006DeleteReportRoute,
+  postXAmzTargetCodeBuild20161006DeleteResourcePolicyRoute,
+  postXAmzTargetCodeBuild20161006DeleteSourceCredentialsRoute,
+  postXAmzTargetCodeBuild20161006DeleteWebhookRoute,
+  postXAmzTargetCodeBuild20161006DescribeCodeCoveragesRoute,
+  postXAmzTargetCodeBuild20161006DescribeTestCasesRoute,
+  postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute,
+  postXAmzTargetCodeBuild20161006GetResourcePolicyRoute,
+  postXAmzTargetCodeBuild20161006ImportSourceCredentialsRoute,
+  postXAmzTargetCodeBuild20161006InvalidateProjectCacheRoute,
+  postXAmzTargetCodeBuild20161006ListBuildBatchesForProjectRoute,
+  postXAmzTargetCodeBuild20161006ListBuildBatchesRoute,
+  postXAmzTargetCodeBuild20161006ListBuildsForProjectRoute,
+  postXAmzTargetCodeBuild20161006ListBuildsRoute,
+  postXAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesRoute,
+  postXAmzTargetCodeBuild20161006ListProjectsRoute,
+  postXAmzTargetCodeBuild20161006ListReportGroupsRoute,
+  postXAmzTargetCodeBuild20161006ListReportsForReportGroupRoute,
+  postXAmzTargetCodeBuild20161006ListReportsRoute,
+  postXAmzTargetCodeBuild20161006ListSharedProjectsRoute,
+  postXAmzTargetCodeBuild20161006ListSharedReportGroupsRoute,
+  postXAmzTargetCodeBuild20161006ListSourceCredentialsRoute,
+  postXAmzTargetCodeBuild20161006PutResourcePolicyRoute,
+  postXAmzTargetCodeBuild20161006RetryBuildBatchRoute,
+  postXAmzTargetCodeBuild20161006RetryBuildRoute,
+  postXAmzTargetCodeBuild20161006StartBuildBatchRoute,
+  postXAmzTargetCodeBuild20161006StartBuildRoute,
+  postXAmzTargetCodeBuild20161006StopBuildBatchRoute,
+  postXAmzTargetCodeBuild20161006StopBuildRoute,
+  postXAmzTargetCodeBuild20161006UpdateProjectRoute,
+  postXAmzTargetCodeBuild20161006UpdateProjectVisibilityRoute,
+  postXAmzTargetCodeBuild20161006UpdateReportGroupRoute,
+  postXAmzTargetCodeBuild20161006UpdateWebhookRoute,
+} from './routes'
+import {
+  postXAmzTargetCodeBuild20161006BatchDeleteBuildsRouteHandler,
+  postXAmzTargetCodeBuild20161006BatchGetBuildBatchesRouteHandler,
+  postXAmzTargetCodeBuild20161006BatchGetBuildsRouteHandler,
+  postXAmzTargetCodeBuild20161006BatchGetProjectsRouteHandler,
+  postXAmzTargetCodeBuild20161006BatchGetReportGroupsRouteHandler,
+  postXAmzTargetCodeBuild20161006BatchGetReportsRouteHandler,
+  postXAmzTargetCodeBuild20161006CreateProjectRouteHandler,
+  postXAmzTargetCodeBuild20161006CreateReportGroupRouteHandler,
+  postXAmzTargetCodeBuild20161006CreateWebhookRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteBuildBatchRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteProjectRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteReportGroupRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteReportRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteResourcePolicyRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteSourceCredentialsRouteHandler,
+  postXAmzTargetCodeBuild20161006DeleteWebhookRouteHandler,
+  postXAmzTargetCodeBuild20161006DescribeCodeCoveragesRouteHandler,
+  postXAmzTargetCodeBuild20161006DescribeTestCasesRouteHandler,
+  postXAmzTargetCodeBuild20161006GetReportGroupTrendRouteHandler,
+  postXAmzTargetCodeBuild20161006GetResourcePolicyRouteHandler,
+  postXAmzTargetCodeBuild20161006ImportSourceCredentialsRouteHandler,
+  postXAmzTargetCodeBuild20161006InvalidateProjectCacheRouteHandler,
+  postXAmzTargetCodeBuild20161006ListBuildBatchesForProjectRouteHandler,
+  postXAmzTargetCodeBuild20161006ListBuildBatchesRouteHandler,
+  postXAmzTargetCodeBuild20161006ListBuildsForProjectRouteHandler,
+  postXAmzTargetCodeBuild20161006ListBuildsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesRouteHandler,
+  postXAmzTargetCodeBuild20161006ListProjectsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListReportGroupsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListReportsForReportGroupRouteHandler,
+  postXAmzTargetCodeBuild20161006ListReportsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListSharedProjectsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListSharedReportGroupsRouteHandler,
+  postXAmzTargetCodeBuild20161006ListSourceCredentialsRouteHandler,
+  postXAmzTargetCodeBuild20161006PutResourcePolicyRouteHandler,
+  postXAmzTargetCodeBuild20161006RetryBuildBatchRouteHandler,
+  postXAmzTargetCodeBuild20161006RetryBuildRouteHandler,
+  postXAmzTargetCodeBuild20161006StartBuildBatchRouteHandler,
+  postXAmzTargetCodeBuild20161006StartBuildRouteHandler,
+  postXAmzTargetCodeBuild20161006StopBuildBatchRouteHandler,
+  postXAmzTargetCodeBuild20161006StopBuildRouteHandler,
+  postXAmzTargetCodeBuild20161006UpdateProjectRouteHandler,
+  postXAmzTargetCodeBuild20161006UpdateProjectVisibilityRouteHandler,
+  postXAmzTargetCodeBuild20161006UpdateReportGroupRouteHandler,
+  postXAmzTargetCodeBuild20161006UpdateWebhookRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCodeBuild20161006BatchDeleteBuildsHandler)
-  .route('/', xAmzTargetCodeBuild20161006BatchGetBuildBatchesHandler)
-  .route('/', xAmzTargetCodeBuild20161006BatchGetBuildsHandler)
-  .route('/', xAmzTargetCodeBuild20161006BatchGetProjectsHandler)
-  .route('/', xAmzTargetCodeBuild20161006BatchGetReportGroupsHandler)
-  .route('/', xAmzTargetCodeBuild20161006BatchGetReportsHandler)
-  .route('/', xAmzTargetCodeBuild20161006CreateProjectHandler)
-  .route('/', xAmzTargetCodeBuild20161006CreateReportGroupHandler)
-  .route('/', xAmzTargetCodeBuild20161006CreateWebhookHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteBuildBatchHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteProjectHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteReportHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteReportGroupHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteResourcePolicyHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteSourceCredentialsHandler)
-  .route('/', xAmzTargetCodeBuild20161006DeleteWebhookHandler)
-  .route('/', xAmzTargetCodeBuild20161006DescribeCodeCoveragesHandler)
-  .route('/', xAmzTargetCodeBuild20161006DescribeTestCasesHandler)
-  .route('/', xAmzTargetCodeBuild20161006GetReportGroupTrendHandler)
-  .route('/', xAmzTargetCodeBuild20161006GetResourcePolicyHandler)
-  .route('/', xAmzTargetCodeBuild20161006ImportSourceCredentialsHandler)
-  .route('/', xAmzTargetCodeBuild20161006InvalidateProjectCacheHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListBuildBatchesHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListBuildBatchesForProjectHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListBuildsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListBuildsForProjectHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListProjectsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListReportGroupsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListReportsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListReportsForReportGroupHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListSharedProjectsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListSharedReportGroupsHandler)
-  .route('/', xAmzTargetCodeBuild20161006ListSourceCredentialsHandler)
-  .route('/', xAmzTargetCodeBuild20161006PutResourcePolicyHandler)
-  .route('/', xAmzTargetCodeBuild20161006RetryBuildHandler)
-  .route('/', xAmzTargetCodeBuild20161006RetryBuildBatchHandler)
-  .route('/', xAmzTargetCodeBuild20161006StartBuildHandler)
-  .route('/', xAmzTargetCodeBuild20161006StartBuildBatchHandler)
-  .route('/', xAmzTargetCodeBuild20161006StopBuildHandler)
-  .route('/', xAmzTargetCodeBuild20161006StopBuildBatchHandler)
-  .route('/', xAmzTargetCodeBuild20161006UpdateProjectHandler)
-  .route('/', xAmzTargetCodeBuild20161006UpdateProjectVisibilityHandler)
-  .route('/', xAmzTargetCodeBuild20161006UpdateReportGroupHandler)
-  .route('/', xAmzTargetCodeBuild20161006UpdateWebhookHandler)
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchDeleteBuildsRoute,
+    postXAmzTargetCodeBuild20161006BatchDeleteBuildsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchGetBuildBatchesRoute,
+    postXAmzTargetCodeBuild20161006BatchGetBuildBatchesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchGetBuildsRoute,
+    postXAmzTargetCodeBuild20161006BatchGetBuildsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchGetProjectsRoute,
+    postXAmzTargetCodeBuild20161006BatchGetProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchGetReportGroupsRoute,
+    postXAmzTargetCodeBuild20161006BatchGetReportGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006BatchGetReportsRoute,
+    postXAmzTargetCodeBuild20161006BatchGetReportsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006CreateProjectRoute,
+    postXAmzTargetCodeBuild20161006CreateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006CreateReportGroupRoute,
+    postXAmzTargetCodeBuild20161006CreateReportGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006CreateWebhookRoute,
+    postXAmzTargetCodeBuild20161006CreateWebhookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteBuildBatchRoute,
+    postXAmzTargetCodeBuild20161006DeleteBuildBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteProjectRoute,
+    postXAmzTargetCodeBuild20161006DeleteProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteReportRoute,
+    postXAmzTargetCodeBuild20161006DeleteReportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteReportGroupRoute,
+    postXAmzTargetCodeBuild20161006DeleteReportGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteResourcePolicyRoute,
+    postXAmzTargetCodeBuild20161006DeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteSourceCredentialsRoute,
+    postXAmzTargetCodeBuild20161006DeleteSourceCredentialsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DeleteWebhookRoute,
+    postXAmzTargetCodeBuild20161006DeleteWebhookRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DescribeCodeCoveragesRoute,
+    postXAmzTargetCodeBuild20161006DescribeCodeCoveragesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006DescribeTestCasesRoute,
+    postXAmzTargetCodeBuild20161006DescribeTestCasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute,
+    postXAmzTargetCodeBuild20161006GetReportGroupTrendRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006GetResourcePolicyRoute,
+    postXAmzTargetCodeBuild20161006GetResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ImportSourceCredentialsRoute,
+    postXAmzTargetCodeBuild20161006ImportSourceCredentialsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006InvalidateProjectCacheRoute,
+    postXAmzTargetCodeBuild20161006InvalidateProjectCacheRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListBuildBatchesRoute,
+    postXAmzTargetCodeBuild20161006ListBuildBatchesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListBuildBatchesForProjectRoute,
+    postXAmzTargetCodeBuild20161006ListBuildBatchesForProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListBuildsRoute,
+    postXAmzTargetCodeBuild20161006ListBuildsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListBuildsForProjectRoute,
+    postXAmzTargetCodeBuild20161006ListBuildsForProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesRoute,
+    postXAmzTargetCodeBuild20161006ListCuratedEnvironmentImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListProjectsRoute,
+    postXAmzTargetCodeBuild20161006ListProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListReportGroupsRoute,
+    postXAmzTargetCodeBuild20161006ListReportGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListReportsRoute,
+    postXAmzTargetCodeBuild20161006ListReportsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListReportsForReportGroupRoute,
+    postXAmzTargetCodeBuild20161006ListReportsForReportGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListSharedProjectsRoute,
+    postXAmzTargetCodeBuild20161006ListSharedProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListSharedReportGroupsRoute,
+    postXAmzTargetCodeBuild20161006ListSharedReportGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006ListSourceCredentialsRoute,
+    postXAmzTargetCodeBuild20161006ListSourceCredentialsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006PutResourcePolicyRoute,
+    postXAmzTargetCodeBuild20161006PutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006RetryBuildRoute,
+    postXAmzTargetCodeBuild20161006RetryBuildRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006RetryBuildBatchRoute,
+    postXAmzTargetCodeBuild20161006RetryBuildBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006StartBuildRoute,
+    postXAmzTargetCodeBuild20161006StartBuildRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006StartBuildBatchRoute,
+    postXAmzTargetCodeBuild20161006StartBuildBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006StopBuildRoute,
+    postXAmzTargetCodeBuild20161006StopBuildRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006StopBuildBatchRoute,
+    postXAmzTargetCodeBuild20161006StopBuildBatchRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006UpdateProjectRoute,
+    postXAmzTargetCodeBuild20161006UpdateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006UpdateProjectVisibilityRoute,
+    postXAmzTargetCodeBuild20161006UpdateProjectVisibilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006UpdateReportGroupRoute,
+    postXAmzTargetCodeBuild20161006UpdateReportGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeBuild20161006UpdateWebhookRoute,
+    postXAmzTargetCodeBuild20161006UpdateWebhookRouteHandler,
+  )
 
 export default app

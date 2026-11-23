@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBillCongressBillTypeBillNumberActionsRoute,
   getBillCongressBillTypeBillNumberAmendmentsRoute,
   getBillCongressBillTypeBillNumberCommitteesRoute,
@@ -15,45 +15,76 @@ import {
   getBillRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBillRouteHandler: RouteHandler<typeof getBillRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billHandler = app
-  .openapi(getBillRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberActionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberAmendmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberCommitteesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberCosponsorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberRelatedbillsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberSubjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberSummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillCongressBillTypeBillNumberTitlesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBillCongressRouteHandler: RouteHandler<typeof getBillCongressRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberActionsRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberActionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberAmendmentsRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberAmendmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberCommitteesRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberCommitteesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberCosponsorsRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberCosponsorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberRelatedbillsRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberRelatedbillsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberSubjectsRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberSubjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberSummariesRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberSummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberTextRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillCongressBillTypeBillNumberTitlesRouteHandler: RouteHandler<
+  typeof getBillCongressBillTypeBillNumberTitlesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

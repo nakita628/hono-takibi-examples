@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworkAnalyzerConfigurationsConfigurationNameRoute,
   getNetworkAnalyzerConfigurationsConfigurationNameRoute,
   getNetworkAnalyzerConfigurationsRoute,
@@ -7,21 +7,32 @@ import {
   postNetworkAnalyzerConfigurationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postNetworkAnalyzerConfigurationsRouteHandler: RouteHandler<
+  typeof postNetworkAnalyzerConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const networkAnalyzerConfigurationsHandler = app
-  .openapi(postNetworkAnalyzerConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkAnalyzerConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworkAnalyzerConfigurationsConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworkAnalyzerConfigurationsConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNetworkAnalyzerConfigurationsConfigurationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getNetworkAnalyzerConfigurationsRouteHandler: RouteHandler<
+  typeof getNetworkAnalyzerConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworkAnalyzerConfigurationsConfigurationNameRouteHandler: RouteHandler<
+  typeof deleteNetworkAnalyzerConfigurationsConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworkAnalyzerConfigurationsConfigurationNameRouteHandler: RouteHandler<
+  typeof getNetworkAnalyzerConfigurationsConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNetworkAnalyzerConfigurationsConfigurationNameRouteHandler: RouteHandler<
+  typeof patchNetworkAnalyzerConfigurationsConfigurationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

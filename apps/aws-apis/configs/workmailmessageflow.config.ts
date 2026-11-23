@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/workmailmessageflow/2019-05-01/openapi.yaml',
   output: './src/workmailmessageflow/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/workmailmessageflow/types.ts' },
   client: { output: './src/workmailmessageflow/client.ts', baseUrl: '/' },
   rpc: { output: './src/workmailmessageflow/rpc.ts', parseResponse: true },

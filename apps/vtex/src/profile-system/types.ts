@@ -1,10 +1,16 @@
+type ProfileBirthDate = string
+type ProfileDocument = string
+type ProfileDocumentType = string
+type ProfileEmail = string
+type ProfileFirstName = string
+type ProfileLastName = string
 type Profile = {
-  birthDate?: string | undefined
-  document: string
-  documentType: string
-  email: string
-  firstName: string
-  lastName: string
+  birthDate?: ProfileBirthDate | undefined
+  document: ProfileDocument
+  documentType: ProfileDocumentType
+  email: ProfileEmail
+  firstName: ProfileFirstName
+  lastName: ProfileLastName
 }
 type Schema = {
   description: string
@@ -26,13 +32,19 @@ type Schema = {
   'v-unique'?: { [x: string]: unknown }[] | undefined
   version?: number | undefined
 }
+type AddressAdministrativeAreaLevel1 = string
+type AddressCountryCode = string
+type AddressCountryName = string
+type AddressLocality = string
+type AddressLocalityAreaLevel1 = string
+type AddressPostalCode = string
 type Address = {
-  administrativeAreaLevel1: string
-  countryCode?: string | undefined
-  countryName: string
-  locality: string
-  localityAreaLevel1: string
-  postalCode: string
+  administrativeAreaLevel1: AddressAdministrativeAreaLevel1
+  countryCode?: AddressCountryCode | undefined
+  countryName: AddressCountryName
+  locality: AddressLocality
+  localityAreaLevel1: AddressLocalityAreaLevel1
+  postalCode: AddressPostalCode
   route: string
   streetNumber: string
 }
@@ -82,12 +94,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           query: { alternativeKey?: string | undefined; ttl?: number | undefined }
         } & { header: { 'Content-Type': string; Accept: string } } & {
           json: {
-            birthDate?: unknown | undefined
-            document?: unknown | undefined
-            documentType?: unknown | undefined
-            email?: unknown | undefined
-            firstName?: unknown | undefined
-            lastName?: unknown | undefined
+            birthDate?: ProfileBirthDate | undefined
+            document?: ProfileDocument | undefined
+            documentType?: ProfileDocumentType | undefined
+            email?: ProfileEmail | undefined
+            firstName?: ProfileFirstName | undefined
+            lastName?: ProfileLastName | undefined
           }
         }
         output: { [x: string]: unknown }
@@ -148,14 +160,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           query: { alternativeKey?: string | undefined }
         } & { header: { 'Content-Type': string; Accept: string } } & {
           json: {
-            administrativeAreaLevel1?: unknown | undefined
-            countryCode?: unknown | undefined
-            countryName?: unknown | undefined
-            locality?: unknown | undefined
-            localityAreaLevel1?: unknown | undefined
-            postalCode?: unknown | undefined
-            route?: unknown | undefined
-            streetNumber?: unknown | undefined
+            administrativeAreaLevel1?: AddressAdministrativeAreaLevel1 | undefined
+            countryCode?: AddressCountryCode | undefined
+            countryName?: AddressCountryName | undefined
+            locality?: AddressLocality | undefined
+            localityAreaLevel1?: AddressLocalityAreaLevel1 | undefined
+            postalCode?: AddressPostalCode | undefined
+            route?: AddressCountryName | undefined
+            streetNumber?: AddressCountryName | undefined
           }
         }
         output: { [x: string]: unknown }

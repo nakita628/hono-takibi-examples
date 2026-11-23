@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/realtimebidding/v1alpha/openapi.yaml',
   output: './src/realtimebidding/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/realtimebidding/types.ts' },
   client: { output: './src/realtimebidding/client.ts', baseUrl: '/' },
   rpc: { output: './src/realtimebidding/rpc.ts', parseResponse: true },

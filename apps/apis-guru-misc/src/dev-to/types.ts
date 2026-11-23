@@ -127,7 +127,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/api/admin/users': {
-      $post: { input: { json: UserInviteParam }; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: { json: UserInviteParam }; output: {}; outputFormat: string; status: 200 }
+        | { input: { json: UserInviteParam }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: UserInviteParam }; output: {}; outputFormat: string; status: 422 }
     }
   } & {
     '/api/articles': {
@@ -149,7 +152,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: { input: { json: Article }; output: {}; outputFormat: string; status: 200 }
+      $post:
+        | { input: { json: Article }; output: {}; outputFormat: string; status: 201 }
+        | { input: { json: Article }; output: {}; outputFormat: string; status: 401 }
+        | { input: { json: Article }; output: {}; outputFormat: string; status: 422 }
     }
   } & {
     '/api/articles/latest': {
@@ -162,295 +168,624 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/articles/me': {
-      $get: {
-        input: { query: { page?: number | undefined; per_page?: number | undefined } }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/articles/me/all': {
-      $get: {
-        input: { query: { page?: number | undefined; per_page?: number | undefined } }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/articles/me/published': {
-      $get: {
-        input: { query: { page?: number | undefined; per_page?: number | undefined } }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/articles/me/unpublished': {
-      $get: {
-        input: { query: { page?: number | undefined; per_page?: number | undefined } }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/articles/:id': {
-      $get: {
-        input: { param: { id: number } }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
-      $put: {
-        input: { param: { id: number } } & { json: Article }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { id: number } }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+      $put:
+        | {
+            input: { param: { id: number } } & { json: Article }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { id: number } } & { json: Article }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: number } } & { json: Article }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { id: number } } & { json: Article }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/api/articles/:id/unpublish': {
-      $put: {
-        input: { param: { id: number } } & { query: { note?: string | undefined } }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
+      $put:
+        | {
+            input: { param: { id: number } } & { query: { note?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { id: number } } & { query: { note?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: number } } & { query: { note?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/articles/:username/:slug': {
-      $get: {
-        input: { param: { username: string; slug: string } }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { username: string; slug: string } }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { username: string; slug: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/comments': {
-      $get: {
-        input: { query: { a_id?: string | undefined; p_id?: string | undefined } }
-        output: Comment[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { a_id?: string | undefined; p_id?: string | undefined } }
+            output: Comment[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { a_id?: string | undefined; p_id?: string | undefined } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/comments/:id': {
-      $get: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+      $get:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/display_ads': {
-      $get: { input: {}; output: {}; outputFormat: string; status: 200 }
-      $post: {
-        input: {
-          json: {
-            approved?: boolean | undefined
-            body_markdown: string
-            creator_id?: number | undefined
-            display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
-            name: string
-            organization_id?: number | undefined
-            placement_area:
-              | 'sidebar_left'
-              | 'sidebar_left_2'
-              | 'sidebar_right'
-              | 'post_sidebar'
-              | 'post_comments'
-            published?: boolean | undefined
-            tag_list?: string | undefined
-            type_of?: 'in_house' | 'community' | 'external' | undefined
+      $get:
+        | { input: {}; output: {}; outputFormat: string; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
+      $post:
+        | {
+            input: {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+                type_of?: 'in_house' | 'community' | 'external' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+                type_of?: 'in_house' | 'community' | 'external' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+                type_of?: 'in_house' | 'community' | 'external' | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/api/display_ads/:id': {
-      $get: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
-      $put: {
-        input: { param: { id: number } } & {
-          json: {
-            approved?: boolean | undefined
-            body_markdown: string
-            creator_id?: number | undefined
-            display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
-            name: string
-            organization_id?: number | undefined
-            placement_area:
-              | 'sidebar_left'
-              | 'sidebar_left_2'
-              | 'sidebar_right'
-              | 'post_sidebar'
-              | 'post_comments'
-            published?: boolean | undefined
-            tag_list?: string | undefined
+      $get:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
+      $put:
+        | {
+            input: { param: { id: number } } & {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: { param: { id: number } } & {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: number } } & {
+              json: {
+                approved?: boolean | undefined
+                body_markdown: string
+                creator_id?: number | undefined
+                display_to?: 'all' | 'logged_in' | 'logged_out' | undefined
+                name: string
+                organization_id?: number | undefined
+                placement_area:
+                  | 'sidebar_left'
+                  | 'sidebar_left_2'
+                  | 'sidebar_right'
+                  | 'post_sidebar'
+                  | 'post_comments'
+                published?: boolean | undefined
+                tag_list?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/display_ads/:id/unpublish': {
-      $put: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+      $put:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/followers/users': {
-      $get: {
-        input: {
-          query: {
-            page?: number | undefined
-            per_page?: number | undefined
-            sort?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                page?: number | undefined
+                per_page?: number | undefined
+                sort?: string | undefined
+              }
+            }
+            output: {
+              id?: number | undefined
+              name?: string | undefined
+              path?: string | undefined
+              profile_image?: string | undefined
+              type_of?: string | undefined
+              user_id?: number | undefined
+            }[]
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: {
-          id?: number | undefined
-          name?: string | undefined
-          path?: string | undefined
-          profile_image?: string | undefined
-          type_of?: string | undefined
-          user_id?: number | undefined
-        }[]
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                page?: number | undefined
+                per_page?: number | undefined
+                sort?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/follows/tags': {
-      $get: { input: {}; output: FollowedTag[]; outputFormat: 'json'; status: 200 }
+      $get:
+        | { input: {}; output: FollowedTag[]; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
     }
   } & {
     '/api/organizations/:username': {
-      $get: {
-        input: { param: { username: string } }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { username: string } }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { username: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/organizations/:username/articles': {
-      $get: {
-        input: { param: { username: string } } & {
-          query: { page?: number | undefined; per_page?: number | undefined }
-        }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { username: string } } & {
+              query: { page?: number | undefined; per_page?: number | undefined }
+            }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { username: string } } & {
+              query: { page?: number | undefined; per_page?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/organizations/:username/users': {
-      $get: {
-        input: { param: { username: string } } & {
-          query: { page?: number | undefined; per_page?: number | undefined }
-        }
-        output: User[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { username: string } } & {
+              query: { page?: number | undefined; per_page?: number | undefined }
+            }
+            output: User[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { username: string } } & {
+              query: { page?: number | undefined; per_page?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/pages': {
       $get: { input: {}; output: Page[]; outputFormat: 'json'; status: 200 }
-      $post: {
-        input: {
-          json: {
-            body_json?: string | undefined
-            body_markdown?: string | undefined
-            description?: string | undefined
-            is_top_level_path?: boolean | undefined
-            slug?: string | undefined
-            template?: 'contained' | 'full_within_layout' | 'nav_bar_included' | 'json' | undefined
-            title?: string | undefined
+      $post:
+        | {
+            input: {
+              json: {
+                body_json?: string | undefined
+                body_markdown?: string | undefined
+                description?: string | undefined
+                is_top_level_path?: boolean | undefined
+                slug?: string | undefined
+                template?:
+                  | 'contained'
+                  | 'full_within_layout'
+                  | 'nav_bar_included'
+                  | 'json'
+                  | undefined
+                title?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              json: {
+                body_json?: string | undefined
+                body_markdown?: string | undefined
+                description?: string | undefined
+                is_top_level_path?: boolean | undefined
+                slug?: string | undefined
+                template?:
+                  | 'contained'
+                  | 'full_within_layout'
+                  | 'nav_bar_included'
+                  | 'json'
+                  | undefined
+                title?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              json: {
+                body_json?: string | undefined
+                body_markdown?: string | undefined
+                description?: string | undefined
+                is_top_level_path?: boolean | undefined
+                slug?: string | undefined
+                template?:
+                  | 'contained'
+                  | 'full_within_layout'
+                  | 'nav_bar_included'
+                  | 'json'
+                  | undefined
+                title?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/api/pages/:id': {
-      $delete: { input: { param: { id: number } }; output: Page; outputFormat: 'json'; status: 200 }
+      $delete:
+        | { input: { param: { id: number } }; output: Page; outputFormat: 'json'; status: 200 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 422 }
       $get: { input: { param: { id: number } }; output: Page; outputFormat: 'json'; status: 200 }
-      $put: {
-        input: { param: { id: number } } & { json: Page }
-        output: Page
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { id: number } } & { json: Page }
+            output: Page
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: number } } & { json: Page }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { id: number } } & { json: Page }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
     }
   } & {
     '/api/podcast_episodes': {
-      $get: {
-        input: {
-          query: {
-            page?: number | undefined
-            per_page?: number | undefined
-            username?: string | undefined
+      $get:
+        | {
+            input: {
+              query: {
+                page?: number | undefined
+                per_page?: number | undefined
+                username?: string | undefined
+              }
+            }
+            output: PodcastEpisodeIndex[]
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: PodcastEpisodeIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                page?: number | undefined
+                per_page?: number | undefined
+                username?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
     }
   } & {
     '/api/profile_images/:username': {
-      $get: {
-        input: { param: { username: string } }
-        output: { [x: string]: unknown }
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { username: string } }
+            output: { [x: string]: unknown }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: { param: { username: string } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/reactions': {
-      $post: {
-        input: {
-          query: {
-            category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
-            reactable_id: number
-            reactable_type: 'Comment' | 'Article' | 'User'
+      $post:
+        | {
+            input: {
+              query: {
+                category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
+                reactable_id: number
+                reactable_type: 'Comment' | 'Article' | 'User'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
+                reactable_id: number
+                reactable_type: 'Comment' | 'Article' | 'User'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/reactions/toggle': {
-      $post: {
-        input: {
-          query: {
-            category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
-            reactable_id: number
-            reactable_type: 'Comment' | 'Article' | 'User'
+      $post:
+        | {
+            input: {
+              query: {
+                category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
+                reactable_id: number
+                reactable_type: 'Comment' | 'Article' | 'User'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+        | {
+            input: {
+              query: {
+                category: 'like' | 'unicorn' | 'exploding_head' | 'raised_hands' | 'fire'
+                reactable_id: number
+                reactable_type: 'Comment' | 'Article' | 'User'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/readinglist': {
-      $get: {
-        input: { query: { page?: number | undefined; per_page?: number | undefined } }
-        output: ArticleIndex[]
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: ArticleIndex[]
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { query: { page?: number | undefined; per_page?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
     }
   } & {
     '/api/tags': {
@@ -463,7 +798,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/users/me': {
-      $get: { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 200 }
+      $get:
+        | { input: {}; output: { [x: string]: unknown }; outputFormat: 'json'; status: 200 }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
     }
   } & {
     '/api/users/:id': {
@@ -476,11 +813,17 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/api/users/:id/suspend': {
-      $put: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+      $put:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/users/:id/unpublish': {
-      $put: { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+      $put:
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
     }
   } & {
     '/api/videos': {

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postLogoutXAmzSsoBearerTokenRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postLogoutXAmzSsoBearerTokenRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const logoutXAmzSsoBearerTokenHandler = app.openapi(
-  postLogoutXAmzSsoBearerTokenRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postLogoutXAmzSsoBearerTokenRouteHandler: RouteHandler<
+  typeof postLogoutXAmzSsoBearerTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

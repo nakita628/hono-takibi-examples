@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRuleTriggersRuleTriggerGidRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRuleTriggersRuleTriggerGidRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const ruleTriggersHandler = app.openapi(postRuleTriggersRuleTriggerGidRunRoute, (c) => {
+export const postRuleTriggersRuleTriggerGidRunRouteHandler: RouteHandler<
+  typeof postRuleTriggersRuleTriggerGidRunRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

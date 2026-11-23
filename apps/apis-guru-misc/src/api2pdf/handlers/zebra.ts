@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getZebraRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getZebraRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const zebraHandler = app.openapi(getZebraRoute, (c) => {
+export const getZebraRouteHandler: RouteHandler<typeof getZebraRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

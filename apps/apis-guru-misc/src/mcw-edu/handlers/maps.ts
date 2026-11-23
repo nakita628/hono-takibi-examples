@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMapsChrChromosomeMapKeyRoute,
   getMapsChrMapKeyRoute,
   getMapsSpeciesTypeKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMapsChrChromosomeMapKeyRouteHandler: RouteHandler<
+  typeof getMapsChrChromosomeMapKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mapsHandler = app
-  .openapi(getMapsChrChromosomeMapKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsChrMapKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMapsSpeciesTypeKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMapsChrMapKeyRouteHandler: RouteHandler<typeof getMapsChrMapKeyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMapsSpeciesTypeKeyRouteHandler: RouteHandler<
+  typeof getMapsSpeciesTypeKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

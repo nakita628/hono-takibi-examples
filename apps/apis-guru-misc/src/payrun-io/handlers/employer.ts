@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEmployerEmployerIdCisLineTypeCisLineTypeIdRoute,
   deleteEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute,
   deleteEmployerEmployerIdCisTransactionCisTransactionIdRoute,
@@ -274,867 +274,1634 @@ import {
   putEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteEmployerEmployerIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const employerHandler = app
-  .openapi(deleteEmployerEmployerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdCisLineTypeCisLineTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypeCisLineTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdCisLineTypeCisLineTypeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypeCisLineTypeIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdCisLineTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisLineTypesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdCisTransactionCisTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisTransactionCisTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdCisTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdDpsMessageDpsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdDpsMessageDpsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdDpsMessageDpsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdDpsMessageDpsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdDpsMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdDpsMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdEmployeeEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdCommentariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdCommentaryCommentaryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdJournalLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdPayRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdRevisionsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdEmployeeEmployeeIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdTagTagIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdTagsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEmployeesEffectiveDateSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdHolidaySchemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdHolidaySchemesEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdJournalInstructionJournalInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdJournalInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLineJournalLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLineJournalLineIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLinesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdJournalLinesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdNominalCodeNominalCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdNominalCodeNominalCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdNominalCodeNominalCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdNominalCodeNominalCodeIdPayCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdNominalCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdNominalCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPayCodePayCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdPayCodePayCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPayCodePayCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPayCodePayCodeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodePayCodeIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdPayCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPayCodesEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPaySchedulePayScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPaySchedulePayScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdAEAssessmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdCommentariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdCommentaryRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdJournalLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdPayLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdReportLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulePayScheduleIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdPaySchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPaySchedulesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPensionPensionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionPensionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdPensionPensionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdPensionPensionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionPensionIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdPensionPensionIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionPensionIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdPensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdPensionsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdReportLineReportLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdReportLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdReportingInstructionReportingInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdReportingInstructionReportingInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdReportingInstructionReportingInstructionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdReportingInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdReportingInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRevisionRevisionNumberSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRevisionsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdRtiTransactionRtiTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionRtiTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionRtiTransactionIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionRtiTransactionIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionsSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdRtiTransactionsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdSecretsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSubContractorSubContractorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchEmployerEmployerIdSubContractorSubContractorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdSubContractorSubContractorIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdJournalLinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdTagTagIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdTagsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEmployerEmployerIdSubContractorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSubContractorsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdTagTagIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdTagsEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdThirdPartyTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdThirdPartyTransactionsTagTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdThirdPartyTransactionsTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEmployerEmployerIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEffectiveDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmployerEmployerIdEffectiveDateSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmployerEmployerIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdCisLineTypeCisLineTypeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdCisLineTypeCisLineTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypeCisLineTypeIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypeCisLineTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdCisLineTypeCisLineTypeIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdCisLineTypeCisLineTypeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdCisLineTypeCisLineTypeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypeCisLineTypeIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypeCisLineTypeIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdCisLineTypesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdCisLineTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisLineTypesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisLineTypesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdCisTransactionCisTransactionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdCisTransactionCisTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisTransactionCisTransactionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisTransactionCisTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdCisTransactionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdCisTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdDpsMessageDpsMessageIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdDpsMessageDpsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdDpsMessageDpsMessageIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdDpsMessageDpsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdDpsMessageDpsMessageIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdDpsMessageDpsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdDpsMessageDpsMessageIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdDpsMessageDpsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdDpsMessagesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdDpsMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdDpsMessagesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdDpsMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdEmployeeEmployeeIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdEmployeeEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdAEAssessmentAEAssessmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdEmployeeEmployeeIdAEAssessmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdCommentariesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdCommentariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdCommentaryCommentaryIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdCommentaryCommentaryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdJournalLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdJournalLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionPayInstructionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdEmployeeEmployeeIdPayInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayInstructionsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinePayLineIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayLinesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdPayRunsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdPayRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdRevisionRevisionNumberSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdRevisionsSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdRevisionsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdSecretsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdEmployeeEmployeeIdSecretsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdEmployeeEmployeeIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdEmployeeEmployeeIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdEmployeeEmployeeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdTagTagIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdTagTagIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdTagsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdTagsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeeEmployeeIdEffectiveDateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdEmployeesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdEmployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEmployeesEffectiveDateSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEmployeesEffectiveDateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdHolidaySchemeHolidaySchemeIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdHolidaySchemeHolidaySchemeIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdHolidaySchemeHolidaySchemeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagTagIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdTagsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemeHolidaySchemeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdHolidaySchemesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdHolidaySchemesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdHolidaySchemesEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdHolidaySchemesEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdJournalInstructionJournalInstructionIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdJournalInstructionJournalInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalInstructionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdJournalInstructionsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdJournalInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLineJournalLineIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLineJournalLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdJournalLineJournalLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLineJournalLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdJournalLineJournalLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdJournalLineJournalLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLineJournalLineIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLineJournalLineIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLinesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLinesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdJournalLinesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdJournalLinesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdNominalCodeNominalCodeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdNominalCodeNominalCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdNominalCodeNominalCodeIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdNominalCodeNominalCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdNominalCodeNominalCodeIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdNominalCodeNominalCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdNominalCodeNominalCodeIdPayCodesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdNominalCodeNominalCodeIdPayCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdNominalCodesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdNominalCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdNominalCodesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdNominalCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPayCodePayCodeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPayCodePayCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdPayCodePayCodeIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdPayCodePayCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPayCodePayCodeIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPayCodePayCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPayCodePayCodeIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPayCodePayCodeIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPayCodePayCodeIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPayCodePayCodeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPayCodePayCodeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodePayCodeIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodePayCodeIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdPayCodesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdPayCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPayCodesEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPayCodesEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPaySchedulePayScheduleIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPaySchedulePayScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPaySchedulePayScheduleIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPaySchedulePayScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdEmployeesEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdAEAssessmentsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdAEAssessmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdCommentariesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdCommentariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdCommentaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeeEmployeeIdCommentaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdEmployeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdJournalLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdJournalLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdPayLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdPayLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdReportLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdReportLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunPayRunIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdPayRunsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPaySchedulePayScheduleIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulePayScheduleIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulePayScheduleIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdPaySchedulesRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdPaySchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPaySchedulesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPaySchedulesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPensionPensionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPensionPensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionPensionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionPensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdPensionPensionIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdPensionPensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdPensionPensionIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdPensionPensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionPensionIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionPensionIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionPensionIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdPensionPensionIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdPensionPensionIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionPensionIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionPensionIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdPensionsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdPensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdPensionsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdPensionsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdReportLineReportLineIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdReportLineReportLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdReportLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdReportLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdReportingInstructionReportingInstructionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdReportingInstructionReportingInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdReportingInstructionReportingInstructionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdReportingInstructionReportingInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdReportingInstructionReportingInstructionIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdReportingInstructionReportingInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdReportingInstructionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdReportingInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdReportingInstructionsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdReportingInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRevisionRevisionNumberSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRevisionRevisionNumberSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRevisionsSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRevisionsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdRtiTransactionRtiTransactionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdRtiTransactionRtiTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionRtiTransactionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionRtiTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionRtiTransactionIdSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionRtiTransactionIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdRtiTransactionRtiTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionRtiTransactionIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionRtiTransactionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionsSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionsSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdRtiTransactionsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdRtiTransactionsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSecretSecretIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSecretsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdSecretsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdSecretsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdSubContractorSubContractorIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdSubContractorSubContractorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSubContractorSubContractorIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSubContractorSubContractorIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRouteHandler: RouteHandler<
+  typeof patchEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionCisInstructionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdSubContractorSubContractorIdCisInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisInstructionsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLineCisLineIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdCisLinesTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdJournalLinesRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdJournalLinesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdRevisionRevisionNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdRevisionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdSubContractorSubContractorIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdSubContractorSubContractorIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdTagTagIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdTagTagIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdTagsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdTagsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorSubContractorIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEmployerEmployerIdSubContractorsRouteHandler: RouteHandler<
+  typeof postEmployerEmployerIdSubContractorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSubContractorsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSubContractorsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdTagTagIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdTagTagIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdTagsEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdTagsEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRouteHandler: RouteHandler<
+  typeof putEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionThirdPartyTransactionIdTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionsTagTagIdRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionsTagTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdThirdPartyTransactionsTagsRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdThirdPartyTransactionsTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEmployerEmployerIdEffectiveDateRouteHandler: RouteHandler<
+  typeof deleteEmployerEmployerIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEffectiveDateRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEffectiveDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEmployerEmployerIdEffectiveDateSummaryRouteHandler: RouteHandler<
+  typeof getEmployerEmployerIdEffectiveDateSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

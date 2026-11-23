@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteItemsItemIdImagesImageTypeImageIndexRoute,
   deleteItemsItemIdImagesImageTypeRoute,
   deleteItemsItemIdRoute,
@@ -58,180 +58,322 @@ import {
   postItemsRemoteSearchTrailerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getItemsFiltersRouteHandler: RouteHandler<typeof getItemsFiltersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const itemsHandler = app
-  .openapi(getItemsFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsFilters2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsItemIdImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headItemsItemIdImagesImageTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsItemIdImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headItemsItemIdImagesImageTypeImageIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    headItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postItemsItemIdImagesImageTypeImageIndexIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdInstantMixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdExternalIdInfosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchApplyItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchBookRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchBoxSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchMovieRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchMusicAlbumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchMusicArtistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchMusicVideoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchPersonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsRemoteSearchTrailerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdMetadataEditorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdAncestorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdCollectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdSimilarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdThemeMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdThemeSongsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdThemeVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdPlaybackInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdPlaybackInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdRemoteImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdRemoteImagesDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdRemoteImagesProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdRemoteSearchSubtitlesLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemsItemIdRemoteSearchSubtitlesSubtitleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsSuggestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdIntrosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdLocalTrailersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsItemIdSpecialFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemsRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getItemsFilters2RouteHandler: RouteHandler<typeof getItemsFilters2Route> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdImagesRouteHandler: RouteHandler<
+  typeof getItemsItemIdImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsItemIdImagesImageTypeRouteHandler: RouteHandler<
+  typeof deleteItemsItemIdImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdImagesImageTypeRouteHandler: RouteHandler<
+  typeof postItemsItemIdImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdImagesImageTypeRouteHandler: RouteHandler<
+  typeof getItemsItemIdImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headItemsItemIdImagesImageTypeRouteHandler: RouteHandler<
+  typeof headItemsItemIdImagesImageTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsItemIdImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof deleteItemsItemIdImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof postItemsItemIdImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof getItemsItemIdImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headItemsItemIdImagesImageTypeImageIndexRouteHandler: RouteHandler<
+  typeof headItemsItemIdImagesImageTypeImageIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRouteHandler: RouteHandler<
+  typeof getItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const headItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRouteHandler: RouteHandler<
+  typeof headItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPercentPlayedUnplayedCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdImagesImageTypeImageIndexIndexRouteHandler: RouteHandler<
+  typeof postItemsItemIdImagesImageTypeImageIndexIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdInstantMixRouteHandler: RouteHandler<
+  typeof getItemsItemIdInstantMixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdExternalIdInfosRouteHandler: RouteHandler<
+  typeof getItemsItemIdExternalIdInfosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchApplyItemIdRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchApplyItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchBookRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchBookRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchBoxSetRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchBoxSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchMovieRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchMovieRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchMusicAlbumRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchMusicAlbumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchMusicArtistRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchMusicArtistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchMusicVideoRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchMusicVideoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchPersonRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchPersonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchSeriesRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsRemoteSearchTrailerRouteHandler: RouteHandler<
+  typeof postItemsRemoteSearchTrailerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdRefreshRouteHandler: RouteHandler<
+  typeof postItemsItemIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsRouteHandler: RouteHandler<typeof getItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsRouteHandler: RouteHandler<typeof deleteItemsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdRouteHandler: RouteHandler<typeof postItemsItemIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteItemsItemIdRouteHandler: RouteHandler<typeof deleteItemsItemIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdRouteHandler: RouteHandler<typeof getItemsItemIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdContentTypeRouteHandler: RouteHandler<
+  typeof postItemsItemIdContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdMetadataEditorRouteHandler: RouteHandler<
+  typeof getItemsItemIdMetadataEditorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdAncestorsRouteHandler: RouteHandler<
+  typeof getItemsItemIdAncestorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdCollectionsRouteHandler: RouteHandler<
+  typeof getItemsItemIdCollectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdDownloadRouteHandler: RouteHandler<
+  typeof getItemsItemIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdFileRouteHandler: RouteHandler<typeof getItemsItemIdFileRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdSimilarRouteHandler: RouteHandler<
+  typeof getItemsItemIdSimilarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdThemeMediaRouteHandler: RouteHandler<
+  typeof getItemsItemIdThemeMediaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdThemeSongsRouteHandler: RouteHandler<
+  typeof getItemsItemIdThemeSongsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdThemeVideosRouteHandler: RouteHandler<
+  typeof getItemsItemIdThemeVideosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsCountsRouteHandler: RouteHandler<typeof getItemsCountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdPlaybackInfoRouteHandler: RouteHandler<
+  typeof getItemsItemIdPlaybackInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdPlaybackInfoRouteHandler: RouteHandler<
+  typeof postItemsItemIdPlaybackInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdRemoteImagesRouteHandler: RouteHandler<
+  typeof getItemsItemIdRemoteImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdRemoteImagesDownloadRouteHandler: RouteHandler<
+  typeof postItemsItemIdRemoteImagesDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdRemoteImagesProvidersRouteHandler: RouteHandler<
+  typeof getItemsItemIdRemoteImagesProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdRemoteSearchSubtitlesLanguageRouteHandler: RouteHandler<
+  typeof getItemsItemIdRemoteSearchSubtitlesLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemsItemIdRemoteSearchSubtitlesSubtitleIdRouteHandler: RouteHandler<
+  typeof postItemsItemIdRemoteSearchSubtitlesSubtitleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsSuggestionsRouteHandler: RouteHandler<
+  typeof getItemsSuggestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdIntrosRouteHandler: RouteHandler<
+  typeof getItemsItemIdIntrosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdLocalTrailersRouteHandler: RouteHandler<
+  typeof getItemsItemIdLocalTrailersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsItemIdSpecialFeaturesRouteHandler: RouteHandler<
+  typeof getItemsItemIdSpecialFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsLatestRouteHandler: RouteHandler<typeof getItemsLatestRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemsRootRouteHandler: RouteHandler<typeof getItemsRootRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

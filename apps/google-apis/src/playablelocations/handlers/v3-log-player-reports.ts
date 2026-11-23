@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV3LogPlayerReportsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV3LogPlayerReportsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v3LogPlayerReportsHandler = app.openapi(postV3LogPlayerReportsRoute, (c) => {
+export const postV3LogPlayerReportsRouteHandler: RouteHandler<
+  typeof postV3LogPlayerReportsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

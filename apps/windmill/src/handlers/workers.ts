@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWorkersCustomTagsRoute,
   getWorkersDevWorkspaceIsolationRoute,
   getWorkersExistsWorkersWithTagsRoute,
@@ -15,45 +15,78 @@ import {
   getWorkersWorkspaceFairnessEventsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWorkersCustomTagsRouteHandler: RouteHandler<
+  typeof getWorkersCustomTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const workersHandler = app
-  .openapi(getWorkersCustomTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersGetDefaultTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersIsDefaultTagsPerWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersDevWorkspaceIsolationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersExistsWorkersWithTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersQueueMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersRunnableStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersQueueMetricsSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersQueueStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersQueueCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersQueueRunningCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWorkersWorkspaceFairnessEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWorkersGetDefaultTagsRouteHandler: RouteHandler<
+  typeof getWorkersGetDefaultTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersIsDefaultTagsPerWorkspaceRouteHandler: RouteHandler<
+  typeof getWorkersIsDefaultTagsPerWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersDevWorkspaceIsolationRouteHandler: RouteHandler<
+  typeof getWorkersDevWorkspaceIsolationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersListRouteHandler: RouteHandler<typeof getWorkersListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersExistsWorkersWithTagsRouteHandler: RouteHandler<
+  typeof getWorkersExistsWorkersWithTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersQueueMetricsRouteHandler: RouteHandler<
+  typeof getWorkersQueueMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersRunnableStatsRouteHandler: RouteHandler<
+  typeof getWorkersRunnableStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersQueueMetricsSeriesRouteHandler: RouteHandler<
+  typeof getWorkersQueueMetricsSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersQueueStatusRouteHandler: RouteHandler<
+  typeof getWorkersQueueStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersQueueCountsRouteHandler: RouteHandler<
+  typeof getWorkersQueueCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersQueueRunningCountsRouteHandler: RouteHandler<
+  typeof getWorkersQueueRunningCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWorkersWorkspaceFairnessEventsRouteHandler: RouteHandler<
+  typeof getWorkersWorkspaceFairnessEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

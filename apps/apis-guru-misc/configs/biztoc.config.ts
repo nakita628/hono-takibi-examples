@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/biztoc.com/v1/openapi.yaml',
   output: './src/biztoc/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/biztoc/types.ts' },
   client: { output: './src/biztoc/client.ts', baseUrl: '/' },
   rpc: { output: './src/biztoc/rpc.ts', parseResponse: true },

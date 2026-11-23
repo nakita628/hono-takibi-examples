@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetWorkspacesServiceAuthorizeIpRulesHandler = app.openapi(
-  postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetWorkspacesServiceAuthorizeIpRulesRouteHandler: RouteHandler<
+  typeof postXAmzTargetWorkspacesServiceAuthorizeIpRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

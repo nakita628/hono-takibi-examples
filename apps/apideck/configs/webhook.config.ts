@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/webhook/9.3.0/openapi.yaml',
   output: './src/webhook/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/webhook/types.ts' },
   client: { output: './src/webhook/client.ts', baseUrl: '/' },
   rpc: { output: './src/webhook/rpc.ts', parseResponse: true },

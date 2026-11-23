@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteThingGroupsThingGroupNameRoute,
   getThingGroupsRoute,
   getThingGroupsThingGroupNameRoute,
@@ -11,33 +11,54 @@ import {
   putThingGroupsUpdateThingGroupsForThingRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putThingGroupsAddThingToThingGroupRouteHandler: RouteHandler<
+  typeof putThingGroupsAddThingToThingGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const thingGroupsHandler = app
-  .openapi(putThingGroupsAddThingToThingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchThingGroupsThingGroupNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThingGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getThingGroupsThingGroupNameThingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putThingGroupsRemoveThingFromThingGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putThingGroupsUpdateThingGroupsForThingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof postThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof deleteThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof getThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchThingGroupsThingGroupNameRouteHandler: RouteHandler<
+  typeof patchThingGroupsThingGroupNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getThingGroupsRouteHandler: RouteHandler<typeof getThingGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getThingGroupsThingGroupNameThingsRouteHandler: RouteHandler<
+  typeof getThingGroupsThingGroupNameThingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putThingGroupsRemoveThingFromThingGroupRouteHandler: RouteHandler<
+  typeof putThingGroupsRemoveThingFromThingGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putThingGroupsUpdateThingGroupsForThingRouteHandler: RouteHandler<
+  typeof putThingGroupsUpdateThingGroupsForThingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetEffectivePermissionsForPathRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetEffectivePermissionsForPathRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getEffectivePermissionsForPathHandler = app.openapi(
-  postGetEffectivePermissionsForPathRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postGetEffectivePermissionsForPathRouteHandler: RouteHandler<
+  typeof postGetEffectivePermissionsForPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

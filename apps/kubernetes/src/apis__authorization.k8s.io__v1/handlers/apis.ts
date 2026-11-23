@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApisAuthorizationK8sIoV1IndexRoute,
   postApisAuthorizationK8sIoV1NamespacesNamespaceLocalsubjectaccessreviewsRoute,
   postApisAuthorizationK8sIoV1SelfsubjectaccessreviewsRoute,
@@ -7,21 +7,32 @@ import {
   postApisAuthorizationK8sIoV1SubjectaccessreviewsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApisAuthorizationK8sIoV1IndexRouteHandler: RouteHandler<
+  typeof getApisAuthorizationK8sIoV1IndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apisHandler = app
-  .openapi(getApisAuthorizationK8sIoV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAuthorizationK8sIoV1NamespacesNamespaceLocalsubjectaccessreviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAuthorizationK8sIoV1SelfsubjectaccessreviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAuthorizationK8sIoV1SelfsubjectrulesreviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApisAuthorizationK8sIoV1SubjectaccessreviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApisAuthorizationK8sIoV1NamespacesNamespaceLocalsubjectaccessreviewsRouteHandler: RouteHandler<
+  typeof postApisAuthorizationK8sIoV1NamespacesNamespaceLocalsubjectaccessreviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAuthorizationK8sIoV1SelfsubjectaccessreviewsRouteHandler: RouteHandler<
+  typeof postApisAuthorizationK8sIoV1SelfsubjectaccessreviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAuthorizationK8sIoV1SelfsubjectrulesreviewsRouteHandler: RouteHandler<
+  typeof postApisAuthorizationK8sIoV1SelfsubjectrulesreviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApisAuthorizationK8sIoV1SubjectaccessreviewsRouteHandler: RouteHandler<
+  typeof postApisAuthorizationK8sIoV1SubjectaccessreviewsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

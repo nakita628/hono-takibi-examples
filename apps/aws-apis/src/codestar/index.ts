@@ -1,45 +1,119 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetCodeStar20170419AssociateTeamMemberHandler,
-  xAmzTargetCodeStar20170419CreateProjectHandler,
-  xAmzTargetCodeStar20170419CreateUserProfileHandler,
-  xAmzTargetCodeStar20170419DeleteProjectHandler,
-  xAmzTargetCodeStar20170419DeleteUserProfileHandler,
-  xAmzTargetCodeStar20170419DescribeProjectHandler,
-  xAmzTargetCodeStar20170419DescribeUserProfileHandler,
-  xAmzTargetCodeStar20170419DisassociateTeamMemberHandler,
-  xAmzTargetCodeStar20170419ListProjectsHandler,
-  xAmzTargetCodeStar20170419ListResourcesHandler,
-  xAmzTargetCodeStar20170419ListTagsForProjectHandler,
-  xAmzTargetCodeStar20170419ListTeamMembersHandler,
-  xAmzTargetCodeStar20170419ListUserProfilesHandler,
-  xAmzTargetCodeStar20170419TagProjectHandler,
-  xAmzTargetCodeStar20170419UntagProjectHandler,
-  xAmzTargetCodeStar20170419UpdateProjectHandler,
-  xAmzTargetCodeStar20170419UpdateTeamMemberHandler,
-  xAmzTargetCodeStar20170419UpdateUserProfileHandler,
+  postXAmzTargetCodeStar20170419AssociateTeamMemberRoute,
+  postXAmzTargetCodeStar20170419CreateProjectRoute,
+  postXAmzTargetCodeStar20170419CreateUserProfileRoute,
+  postXAmzTargetCodeStar20170419DeleteProjectRoute,
+  postXAmzTargetCodeStar20170419DeleteUserProfileRoute,
+  postXAmzTargetCodeStar20170419DescribeProjectRoute,
+  postXAmzTargetCodeStar20170419DescribeUserProfileRoute,
+  postXAmzTargetCodeStar20170419DisassociateTeamMemberRoute,
+  postXAmzTargetCodeStar20170419ListProjectsRoute,
+  postXAmzTargetCodeStar20170419ListResourcesRoute,
+  postXAmzTargetCodeStar20170419ListTagsForProjectRoute,
+  postXAmzTargetCodeStar20170419ListTeamMembersRoute,
+  postXAmzTargetCodeStar20170419ListUserProfilesRoute,
+  postXAmzTargetCodeStar20170419TagProjectRoute,
+  postXAmzTargetCodeStar20170419UntagProjectRoute,
+  postXAmzTargetCodeStar20170419UpdateProjectRoute,
+  postXAmzTargetCodeStar20170419UpdateTeamMemberRoute,
+  postXAmzTargetCodeStar20170419UpdateUserProfileRoute,
+} from './routes'
+import {
+  postXAmzTargetCodeStar20170419AssociateTeamMemberRouteHandler,
+  postXAmzTargetCodeStar20170419CreateProjectRouteHandler,
+  postXAmzTargetCodeStar20170419CreateUserProfileRouteHandler,
+  postXAmzTargetCodeStar20170419DeleteProjectRouteHandler,
+  postXAmzTargetCodeStar20170419DeleteUserProfileRouteHandler,
+  postXAmzTargetCodeStar20170419DescribeProjectRouteHandler,
+  postXAmzTargetCodeStar20170419DescribeUserProfileRouteHandler,
+  postXAmzTargetCodeStar20170419DisassociateTeamMemberRouteHandler,
+  postXAmzTargetCodeStar20170419ListProjectsRouteHandler,
+  postXAmzTargetCodeStar20170419ListResourcesRouteHandler,
+  postXAmzTargetCodeStar20170419ListTagsForProjectRouteHandler,
+  postXAmzTargetCodeStar20170419ListTeamMembersRouteHandler,
+  postXAmzTargetCodeStar20170419ListUserProfilesRouteHandler,
+  postXAmzTargetCodeStar20170419TagProjectRouteHandler,
+  postXAmzTargetCodeStar20170419UntagProjectRouteHandler,
+  postXAmzTargetCodeStar20170419UpdateProjectRouteHandler,
+  postXAmzTargetCodeStar20170419UpdateTeamMemberRouteHandler,
+  postXAmzTargetCodeStar20170419UpdateUserProfileRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetCodeStar20170419AssociateTeamMemberHandler)
-  .route('/', xAmzTargetCodeStar20170419CreateProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419CreateUserProfileHandler)
-  .route('/', xAmzTargetCodeStar20170419DeleteProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419DeleteUserProfileHandler)
-  .route('/', xAmzTargetCodeStar20170419DescribeProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419DescribeUserProfileHandler)
-  .route('/', xAmzTargetCodeStar20170419DisassociateTeamMemberHandler)
-  .route('/', xAmzTargetCodeStar20170419ListProjectsHandler)
-  .route('/', xAmzTargetCodeStar20170419ListResourcesHandler)
-  .route('/', xAmzTargetCodeStar20170419ListTagsForProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419ListTeamMembersHandler)
-  .route('/', xAmzTargetCodeStar20170419ListUserProfilesHandler)
-  .route('/', xAmzTargetCodeStar20170419TagProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419UntagProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419UpdateProjectHandler)
-  .route('/', xAmzTargetCodeStar20170419UpdateTeamMemberHandler)
-  .route('/', xAmzTargetCodeStar20170419UpdateUserProfileHandler)
+  .openapi(
+    postXAmzTargetCodeStar20170419AssociateTeamMemberRoute,
+    postXAmzTargetCodeStar20170419AssociateTeamMemberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419CreateProjectRoute,
+    postXAmzTargetCodeStar20170419CreateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419CreateUserProfileRoute,
+    postXAmzTargetCodeStar20170419CreateUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419DeleteProjectRoute,
+    postXAmzTargetCodeStar20170419DeleteProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419DeleteUserProfileRoute,
+    postXAmzTargetCodeStar20170419DeleteUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419DescribeProjectRoute,
+    postXAmzTargetCodeStar20170419DescribeProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419DescribeUserProfileRoute,
+    postXAmzTargetCodeStar20170419DescribeUserProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419DisassociateTeamMemberRoute,
+    postXAmzTargetCodeStar20170419DisassociateTeamMemberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419ListProjectsRoute,
+    postXAmzTargetCodeStar20170419ListProjectsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419ListResourcesRoute,
+    postXAmzTargetCodeStar20170419ListResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419ListTagsForProjectRoute,
+    postXAmzTargetCodeStar20170419ListTagsForProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419ListTeamMembersRoute,
+    postXAmzTargetCodeStar20170419ListTeamMembersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419ListUserProfilesRoute,
+    postXAmzTargetCodeStar20170419ListUserProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419TagProjectRoute,
+    postXAmzTargetCodeStar20170419TagProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419UntagProjectRoute,
+    postXAmzTargetCodeStar20170419UntagProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419UpdateProjectRoute,
+    postXAmzTargetCodeStar20170419UpdateProjectRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419UpdateTeamMemberRoute,
+    postXAmzTargetCodeStar20170419UpdateTeamMemberRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetCodeStar20170419UpdateUserProfileRoute,
+    postXAmzTargetCodeStar20170419UpdateUserProfileRouteHandler,
+  )
 
 export default app

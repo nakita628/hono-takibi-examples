@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetHealthLakeUntagResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetHealthLakeUntagResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetHealthLakeUntagResourceHandler = app.openapi(
-  postXAmzTargetHealthLakeUntagResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetHealthLakeUntagResourceRouteHandler: RouteHandler<
+  typeof postXAmzTargetHealthLakeUntagResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

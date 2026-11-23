@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOcsV2PhpAppsUpdatenotificationApiApiVersionApplistNewVersionRoute,
   getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOcsV2PhpAppsUpdatenotificationApiApiVersionApplistNewVersionRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsUpdatenotificationApiApiVersionApplistNewVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(getOcsV2PhpAppsUpdatenotificationApiApiVersionApplistNewVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsUpdatenotificationApiApiVersionChangelogAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

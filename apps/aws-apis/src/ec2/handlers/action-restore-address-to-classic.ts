@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionRestoreAddressToClassicRoute,
   postActionRestoreAddressToClassicRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRestoreAddressToClassicRouteHandler: RouteHandler<
+  typeof getActionRestoreAddressToClassicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRestoreAddressToClassicHandler = app
-  .openapi(getActionRestoreAddressToClassicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRestoreAddressToClassicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRestoreAddressToClassicRouteHandler: RouteHandler<
+  typeof postActionRestoreAddressToClassicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

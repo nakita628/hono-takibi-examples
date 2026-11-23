@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCalculateMinMaxRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCalculateMinMaxRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const calculateMinMaxHandler = app.openapi(postCalculateMinMaxRoute, (c) => {
+export const postCalculateMinMaxRouteHandler: RouteHandler<
+  typeof postCalculateMinMaxRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

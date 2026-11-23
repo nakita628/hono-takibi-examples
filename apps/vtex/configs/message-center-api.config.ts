@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Message-Center-API/1.0.0/openapi.yaml',
   output: './src/message-center-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/message-center-api/types.ts' },
   client: { output: './src/message-center-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/message-center-api/rpc.ts', parseResponse: true },

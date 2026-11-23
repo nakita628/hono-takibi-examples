@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGetTableObjectsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGetTableObjectsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getTableObjectsHandler = app.openapi(postGetTableObjectsRoute, (c) => {
+export const postGetTableObjectsRouteHandler: RouteHandler<
+  typeof postGetTableObjectsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

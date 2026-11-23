@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsHawksNestServiceFacadePutExternalModelHandler = app.openapi(
-  postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSHawksNestServiceFacadePutExternalModelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

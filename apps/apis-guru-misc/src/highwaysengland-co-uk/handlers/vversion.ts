@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVVersionAreasAreaIdsRoute,
   getVVersionAreasRoute,
   getVVersionQualityDailyRoute,
@@ -12,36 +12,62 @@ import {
   getVVersionSitetypesSiteTypeIdSitesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVVersionAreasRouteHandler: RouteHandler<typeof getVVersionAreasRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const vversionHandler = app
-  .openapi(getVVersionAreasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionAreasAreaIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionQualityDailyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionQualityOverallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionReportsReportTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionReportsStartDateToEndDateReportTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionSitesSiteIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionSitetypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVVersionSitetypesSiteTypeIdSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVVersionAreasAreaIdsRouteHandler: RouteHandler<
+  typeof getVVersionAreasAreaIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionQualityDailyRouteHandler: RouteHandler<
+  typeof getVVersionQualityDailyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionQualityOverallRouteHandler: RouteHandler<
+  typeof getVVersionQualityOverallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionReportsReportTypeRouteHandler: RouteHandler<
+  typeof getVVersionReportsReportTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionReportsStartDateToEndDateReportTypeRouteHandler: RouteHandler<
+  typeof getVVersionReportsStartDateToEndDateReportTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionSitesRouteHandler: RouteHandler<typeof getVVersionSitesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionSitesSiteIdsRouteHandler: RouteHandler<
+  typeof getVVersionSitesSiteIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionSitetypesRouteHandler: RouteHandler<
+  typeof getVVersionSitetypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVVersionSitetypesSiteTypeIdSitesRouteHandler: RouteHandler<
+  typeof getVVersionSitetypesSiteTypeIdSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

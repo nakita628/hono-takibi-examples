@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/certificatemanager/v1/openapi.yaml',
   output: './src/certificatemanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/certificatemanager/types.ts' },
   client: { output: './src/certificatemanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/certificatemanager/rpc.ts', parseResponse: true },

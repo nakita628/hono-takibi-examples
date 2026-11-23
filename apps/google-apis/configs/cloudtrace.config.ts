@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudtrace/v2beta1/openapi.yaml',
   output: './src/cloudtrace/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudtrace/types.ts' },
   client: { output: './src/cloudtrace/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudtrace/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-webhooks.yaml',
   output: './src/xero-webhooks/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/xero-webhooks/types.ts' },
   client: { output: './src/xero-webhooks/client.ts', baseUrl: '/' },
   rpc: { output: './src/xero-webhooks/rpc.ts', parseResponse: true },

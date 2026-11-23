@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEtagEtagRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEtagEtagRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const etagHandler = app.openapi(getEtagEtagRoute, (c) => {
+export const getEtagEtagRouteHandler: RouteHandler<typeof getEtagEtagRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

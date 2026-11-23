@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postOrderReadyForPreparationAsyncRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postOrderReadyForPreparationAsyncRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const orderReadyForPreparationAsyncHandler = app.openapi(
-  postOrderReadyForPreparationAsyncRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postOrderReadyForPreparationAsyncRouteHandler: RouteHandler<
+  typeof postOrderReadyForPreparationAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

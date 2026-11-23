@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFaxApplicationsIdRoute,
   getFaxApplicationsIdRoute,
   getFaxApplicationsRoute,
@@ -7,21 +7,32 @@ import {
   postFaxApplicationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFaxApplicationsRouteHandler: RouteHandler<typeof getFaxApplicationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const faxApplicationsHandler = app
-  .openapi(getFaxApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFaxApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFaxApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFaxApplicationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFaxApplicationsRouteHandler: RouteHandler<
+  typeof postFaxApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFaxApplicationsIdRouteHandler: RouteHandler<
+  typeof deleteFaxApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFaxApplicationsIdRouteHandler: RouteHandler<
+  typeof getFaxApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFaxApplicationsIdRouteHandler: RouteHandler<
+  typeof patchFaxApplicationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

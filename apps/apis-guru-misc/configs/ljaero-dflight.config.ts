@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ljaero.com/dflight/V 1.0.0/openapi.yaml',
   output: './src/ljaero-dflight/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ljaero-dflight/types.ts' },
   client: { output: './src/ljaero-dflight/client.ts', baseUrl: '/' },
   rpc: { output: './src/ljaero-dflight/rpc.ts', parseResponse: true },

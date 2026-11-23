@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVCustomPricesRulesPriceAssociationIdRoute,
   getVCustomPricesRulesPriceAssociationIdRoute,
   getVCustomPricesSessionSchemaRoute,
@@ -8,24 +8,38 @@ import {
   putVCustomPricesRulesPriceAssociationIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVCustomPricesRulesRouteHandler: RouteHandler<
+  typeof postVCustomPricesRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const vHandler = app
-  .openapi(postVCustomPricesRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVCustomPricesRulesPriceAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVCustomPricesRulesPriceAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVCustomPricesRulesPriceAssociationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVCustomPricesSessionSchemaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVCustomPricesSessionSchemaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteVCustomPricesRulesPriceAssociationIdRouteHandler: RouteHandler<
+  typeof deleteVCustomPricesRulesPriceAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVCustomPricesRulesPriceAssociationIdRouteHandler: RouteHandler<
+  typeof getVCustomPricesRulesPriceAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVCustomPricesRulesPriceAssociationIdRouteHandler: RouteHandler<
+  typeof putVCustomPricesRulesPriceAssociationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVCustomPricesSessionSchemaRouteHandler: RouteHandler<
+  typeof getVCustomPricesSessionSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVCustomPricesSessionSchemaRouteHandler: RouteHandler<
+  typeof postVCustomPricesSessionSchemaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

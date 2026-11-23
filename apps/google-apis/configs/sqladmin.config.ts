@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/sqladmin/v1/openapi.yaml',
   output: './src/sqladmin/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sqladmin/types.ts' },
   client: { output: './src/sqladmin/client.ts', baseUrl: '/' },
   rpc: { output: './src/sqladmin/rpc.ts', parseResponse: true },

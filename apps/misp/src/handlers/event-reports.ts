@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEventReportsIndexRoute,
   getEventReportsViewEventReportIdRoute,
   postEventReportsAddEventIdRoute,
@@ -10,30 +10,50 @@ import {
   postEventReportsRestoreEventReportIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEventReportsViewEventReportIdRouteHandler: RouteHandler<
+  typeof getEventReportsViewEventReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eventReportsHandler = app
-  .openapi(getEventReportsViewEventReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsAddEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsEditEventReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsDeleteEventReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsDeleteEventReportIdHardDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsRestoreEventReportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEventReportsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEventReportsImportReportFromUrlEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEventReportsAddEventIdRouteHandler: RouteHandler<
+  typeof postEventReportsAddEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventReportsEditEventReportIdRouteHandler: RouteHandler<
+  typeof postEventReportsEditEventReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventReportsDeleteEventReportIdRouteHandler: RouteHandler<
+  typeof postEventReportsDeleteEventReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventReportsDeleteEventReportIdHardDeleteRouteHandler: RouteHandler<
+  typeof postEventReportsDeleteEventReportIdHardDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventReportsRestoreEventReportIdRouteHandler: RouteHandler<
+  typeof postEventReportsRestoreEventReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEventReportsIndexRouteHandler: RouteHandler<
+  typeof getEventReportsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postEventReportsImportReportFromUrlEventIdRouteHandler: RouteHandler<
+  typeof postEventReportsImportReportFromUrlEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

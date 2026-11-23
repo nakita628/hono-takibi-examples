@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetDynamoDbStreams20120810GetShardIteratorHandler = app.openapi(
-  postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetDynamoDBStreams20120810GetShardIteratorRouteHandler: RouteHandler<
+  typeof postXAmzTargetDynamoDBStreams20120810GetShardIteratorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

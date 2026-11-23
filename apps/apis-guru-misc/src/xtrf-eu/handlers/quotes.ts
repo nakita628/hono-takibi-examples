@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQuotesQuoteIdFinancePayablesPayableIdRoute,
   deleteQuotesQuoteIdFinanceReceivablesReceivableIdRoute,
   deleteQuotesQuoteIdRoute,
@@ -21,63 +21,114 @@ import {
   putQuotesQuoteIdInstructionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuotesIdsRouteHandler: RouteHandler<typeof getQuotesIdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quotesHandler = app
-  .openapi(getQuotesIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQuotesQuoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdConfirmationSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIdCustomFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdDatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdFinanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdFinancePayablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQuotesQuoteIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIdFinancePayablesPayableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdFinanceReceivablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQuotesQuoteIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIdFinanceReceivablesReceivableIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQuotesQuoteIdInstructionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdLanguageCombinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteQuotesQuoteIdRouteHandler: RouteHandler<
+  typeof deleteQuotesQuoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdRouteHandler: RouteHandler<typeof getQuotesQuoteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdConfirmationSendRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdConfirmationSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdCustomFieldsRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIdCustomFieldsRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIdCustomFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdDatesRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdDatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdFinanceRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdFinanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdFinancePayablesRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdFinancePayablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQuotesQuoteIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof deleteQuotesQuoteIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIdFinancePayablesPayableIdRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIdFinancePayablesPayableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdFinanceReceivablesRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdFinanceReceivablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQuotesQuoteIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof deleteQuotesQuoteIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIdFinanceReceivablesReceivableIdRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIdFinanceReceivablesReceivableIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdInstructionsRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQuotesQuoteIdInstructionsRouteHandler: RouteHandler<
+  typeof putQuotesQuoteIdInstructionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdLanguageCombinationsRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdLanguageCombinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdStartRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdTasksRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

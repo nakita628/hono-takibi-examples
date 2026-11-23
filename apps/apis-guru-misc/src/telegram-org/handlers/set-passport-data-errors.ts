@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSetPassportDataErrorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSetPassportDataErrorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const setPassportDataErrorsHandler = app.openapi(postSetPassportDataErrorsRoute, (c) => {
+export const postSetPassportDataErrorsRouteHandler: RouteHandler<
+  typeof postSetPassportDataErrorsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

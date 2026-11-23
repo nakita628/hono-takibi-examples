@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWclpriceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWclpriceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const wclpriceHandler = app.openapi(getWclpriceRoute, (c) => {
+export const getWclpriceRouteHandler: RouteHandler<typeof getWclpriceRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

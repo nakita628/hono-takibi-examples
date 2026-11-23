@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeBuild20161006GetReportGroupTrendHandler = app.openapi(
-  postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeBuild20161006GetReportGroupTrendRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeBuild20161006GetReportGroupTrendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

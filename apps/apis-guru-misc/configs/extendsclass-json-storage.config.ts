@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/extendsclass.com/json-storage/0.1/openapi.yaml',
   output: './src/extendsclass-json-storage/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/extendsclass-json-storage/types.ts' },
   client: { output: './src/extendsclass-json-storage/client.ts', baseUrl: '/' },
   rpc: { output: './src/extendsclass-json-storage/rpc.ts', parseResponse: true },

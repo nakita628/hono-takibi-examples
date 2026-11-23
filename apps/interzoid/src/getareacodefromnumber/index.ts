@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { getareacodefromnumberHandler } from './handlers'
+import { getGetareacodefromnumberRoute } from './routes'
+import { getGetareacodefromnumberRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', getareacodefromnumberHandler)
+export const api = app.openapi(getGetareacodefromnumberRoute, getGetareacodefromnumberRouteHandler)
 
 export default app

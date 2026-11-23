@@ -277,12 +277,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/properties/2026-09/:objectType/batch/archive': {
-      $post: {
-        input: { param: { objectType: string } } & { json: BatchInputPropertyName }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { objectType: string } } & { json: BatchInputPropertyName }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string } } & { json: BatchInputPropertyName }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/properties/2026-09/:objectType/batch/create': {
@@ -382,12 +389,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { groupName: string; objectType: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { groupName: string; objectType: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { groupName: string; objectType: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { groupName: string; objectType: string } } & {
@@ -435,12 +449,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { objectType: string; propertyName: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { objectType: string; propertyName: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { objectType: string; propertyName: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { objectType: string; propertyName: string } } & {

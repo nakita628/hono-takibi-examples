@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSeerModelsIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSeerModelsIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const seerHandler = app.openapi(getSeerModelsIndexRoute, (c) => {
+export const getSeerModelsIndexRouteHandler: RouteHandler<typeof getSeerModelsIndexRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -28,10 +28,10 @@ export async function getCatalog(options?: ClientRequestOptions) {
 }
 
 export async function getFontFontstackStartEnd(
-  args: InferRequestType<(typeof client.font)[':fontstack'][':start-:end']['$get']>,
+  args: InferRequestType<(typeof client.font)[':fontstack'][':start-{end}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.font[':fontstack'][':start-:end'].$get(args, options))
+  return await parseResponse(client.font[':fontstack'][':start-{end}'].$get(args, options))
 }
 
 export async function getHealth(options?: ClientRequestOptions) {
@@ -227,32 +227,32 @@ export async function getStyleStyleId(
 }
 
 export async function getStyleStyleIdZXYFormat(
-  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.:format']['$get']>,
+  args: InferRequestType<(typeof client.style)[':style_id'][':z'][':x'][':y.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.style[':style_id'][':z'][':x'][':y.:format'].$get(args, options),
+    client.style[':style_id'][':z'][':x'][':y.{format}'].$get(args, options),
   )
 }
 
 export async function getStyleStyleIdStaticCameraSizeFormat(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$get']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.style[':style_id'].static[':camera'][':size.:format'].$get(args, options),
+    client.style[':style_id'].static[':camera'][':size.{format}'].$get(args, options),
   )
 }
 
 export async function postStyleStyleIdStaticCameraSizeFormat(
   args: InferRequestType<
-    (typeof client.style)[':style_id']['static'][':camera'][':size.:format']['$post']
+    (typeof client.style)[':style_id']['static'][':camera'][':size.{format}']['$post']
   >,
   options?: ClientRequestOptions,
 ) {
   return await parseResponse(
-    client.style[':style_id'].static[':camera'][':size.:format'].$post(args, options),
+    client.style[':style_id'].static[':camera'][':size.{format}'].$post(args, options),
   )
 }

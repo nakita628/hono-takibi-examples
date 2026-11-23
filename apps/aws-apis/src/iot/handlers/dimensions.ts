@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDimensionsNameRoute,
   getDimensionsNameRoute,
   getDimensionsRoute,
@@ -7,21 +7,30 @@ import {
   postDimensionsNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDimensionsNameRouteHandler: RouteHandler<typeof postDimensionsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const dimensionsHandler = app
-  .openapi(postDimensionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDimensionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDimensionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDimensionsNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDimensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteDimensionsNameRouteHandler: RouteHandler<
+  typeof deleteDimensionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDimensionsNameRouteHandler: RouteHandler<typeof getDimensionsNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDimensionsNameRouteHandler: RouteHandler<
+  typeof patchDimensionsNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDimensionsRouteHandler: RouteHandler<typeof getDimensionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

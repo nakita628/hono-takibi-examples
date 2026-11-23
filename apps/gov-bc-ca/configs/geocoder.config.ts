@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/geocoder/2.0.0/openapi.yaml',
   output: './src/geocoder/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/geocoder/types.ts' },
   client: { output: './src/geocoder/client.ts', baseUrl: '/' },
   rpc: { output: './src/geocoder/rpc.ts', parseResponse: true },

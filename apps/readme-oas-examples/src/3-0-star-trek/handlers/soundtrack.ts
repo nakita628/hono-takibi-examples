@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSoundtrackRoute, getSoundtrackSearchRoute, postSoundtrackSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getSoundtrackRoute,
+  getSoundtrackSearchRoute,
+  postSoundtrackSearchRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getSoundtrackRouteHandler: RouteHandler<typeof getSoundtrackRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const soundtrackHandler = app
-  .openapi(getSoundtrackRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSoundtrackSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSoundtrackSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSoundtrackSearchRouteHandler: RouteHandler<
+  typeof getSoundtrackSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSoundtrackSearchRouteHandler: RouteHandler<
+  typeof postSoundtrackSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

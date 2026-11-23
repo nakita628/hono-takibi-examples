@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAnythingAllOfObjectRoute,
   postAnythingAnyOfObjectRoute,
   postAnythingAnyOfPrimitiveRoute,
@@ -11,33 +11,56 @@ import {
   postAnythingOneOfPrimitiveRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAnythingAllOfObjectRouteHandler: RouteHandler<
+  typeof postAnythingAllOfObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(postAnythingAllOfObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingAnyOfObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingAnyOfPrimitiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingOneOfObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingOneOfPrimitiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingOneOfObjectRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingNestedOneOfObjectRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingNestedOneOfRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnythingNestedOneOfObjectWithNestedOneOfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAnythingAnyOfObjectRouteHandler: RouteHandler<
+  typeof postAnythingAnyOfObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingAnyOfPrimitiveRouteHandler: RouteHandler<
+  typeof postAnythingAnyOfPrimitiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingOneOfObjectRouteHandler: RouteHandler<
+  typeof postAnythingOneOfObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingOneOfPrimitiveRouteHandler: RouteHandler<
+  typeof postAnythingOneOfPrimitiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingOneOfObjectRefRouteHandler: RouteHandler<
+  typeof postAnythingOneOfObjectRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingNestedOneOfObjectRefRouteHandler: RouteHandler<
+  typeof postAnythingNestedOneOfObjectRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingNestedOneOfRefRouteHandler: RouteHandler<
+  typeof postAnythingNestedOneOfRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnythingNestedOneOfObjectWithNestedOneOfRouteHandler: RouteHandler<
+  typeof postAnythingNestedOneOfObjectWithNestedOneOfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

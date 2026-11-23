@@ -1,17 +1,23 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  multipleTypesMultipleExamplesHandler,
-  multipleTypesSingleExampleHandler,
-  singleTypeMultipleExamplesHandler,
-  singleTypeSingleExampleHandler,
+  getSingleTypeMultipleExamplesRoute,
+  getSingleTypeSingleExampleRoute,
+  postMultipleTypesMultipleExamplesRoute,
+  postMultipleTypesSingleExampleRoute,
+} from './routes'
+import {
+  getSingleTypeMultipleExamplesRouteHandler,
+  getSingleTypeSingleExampleRouteHandler,
+  postMultipleTypesMultipleExamplesRouteHandler,
+  postMultipleTypesSingleExampleRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', multipleTypesMultipleExamplesHandler)
-  .route('/', multipleTypesSingleExampleHandler)
-  .route('/', singleTypeMultipleExamplesHandler)
-  .route('/', singleTypeSingleExampleHandler)
+  .openapi(postMultipleTypesMultipleExamplesRoute, postMultipleTypesMultipleExamplesRouteHandler)
+  .openapi(postMultipleTypesSingleExampleRoute, postMultipleTypesSingleExampleRouteHandler)
+  .openapi(getSingleTypeMultipleExamplesRoute, getSingleTypeMultipleExamplesRouteHandler)
+  .openapi(getSingleTypeSingleExampleRoute, getSingleTypeSingleExampleRouteHandler)
 
 export default app

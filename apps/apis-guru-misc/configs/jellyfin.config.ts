@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/jellyfin.local/v1/openapi.yaml',
   output: './src/jellyfin/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/jellyfin/types.ts' },
   client: { output: './src/jellyfin/client.ts', baseUrl: '/' },
   rpc: { output: './src/jellyfin/rpc.ts', parseResponse: true },

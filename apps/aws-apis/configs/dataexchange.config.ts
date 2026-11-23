@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/dataexchange/2017-07-25/openapi.yaml',
   output: './src/dataexchange/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/dataexchange/types.ts' },
   client: { output: './src/dataexchange/client.ts', baseUrl: '/' },
   rpc: { output: './src/dataexchange/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bhagavadgita.io/1.0/openapi.yaml',
   output: './src/bhagavadgita-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bhagavadgita-io/types.ts' },
   client: { output: './src/bhagavadgita-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/bhagavadgita-io/rpc.ts', parseResponse: true },

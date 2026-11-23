@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/opendatanetwork.com/1.0.0/openapi.yaml',
   output: './src/opendatanetwork/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/opendatanetwork/types.ts' },
   client: { output: './src/opendatanetwork/client.ts', baseUrl: '/' },
   rpc: { output: './src/opendatanetwork/rpc.ts', parseResponse: true },

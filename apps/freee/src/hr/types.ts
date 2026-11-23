@@ -1442,6 +1442,14 @@ type ApiV1ApprovalActionRequest = {
   target_step_id: number | null
   next_approver_id?: (number | null) | undefined
 }
+type ApiV1WorkTimeIndexResponseParamsWorkRecordsItems = {
+  clock_in_at: string
+  clock_out_at: string
+}
+type ApiV1WorkTimeIndexResponseParamsBreakRecordsItems = {
+  clock_in_at: string
+  clock_out_at: string
+}
 type ApiV1WorkTimeIndexResponseParams = {
   id: number
   company_id: number
@@ -1452,10 +1460,10 @@ type ApiV1WorkTimeIndexResponseParams = {
   clear_work_time: boolean
   clock_in_at?: (string | null) | undefined
   clock_out_at?: (string | null) | undefined
-  work_records?: { clock_in_at: string; clock_out_at: string }[] | undefined
+  work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
   lateness_mins: number
   early_leaving_mins: number
-  break_records?: { clock_in_at: string; clock_out_at: string }[] | undefined
+  break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
   issue_date: string
   comment?: (string | null) | undefined
   status: 'draft' | 'in_progress' | 'approved' | 'feedback'
@@ -1472,10 +1480,10 @@ type ApiV1WorkTimeResponseParams = {
   clear_work_time: boolean
   clock_in_at?: (string | null) | undefined
   clock_out_at?: (string | null) | undefined
-  work_records?: unknown[] | undefined
+  work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
   lateness_mins: number
   early_leaving_mins: number
-  break_records?: unknown[] | undefined
+  break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
   issue_date: string
   comment?: (string | null) | undefined
   status: 'draft' | 'in_progress' | 'approved' | 'feedback'
@@ -6466,10 +6474,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6485,10 +6493,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6504,10 +6512,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6523,10 +6531,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6542,10 +6550,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6561,10 +6569,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6627,10 +6635,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6646,10 +6654,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6665,10 +6673,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6684,10 +6692,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6703,10 +6711,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6722,10 +6730,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined
@@ -6741,10 +6749,10 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 company_id: number
                 target_date: string
                 clear_work_time?: boolean | undefined
-                work_records?: unknown[] | undefined
+                work_records?: ApiV1WorkTimeIndexResponseParamsWorkRecordsItems[] | undefined
                 lateness_mins?: number | undefined
                 early_leaving_mins?: number | undefined
-                break_records?: unknown[] | undefined
+                break_records?: ApiV1WorkTimeIndexResponseParamsBreakRecordsItems[] | undefined
                 comment?: string | undefined
                 approval_flow_route_id: number
                 approver_id?: number | undefined

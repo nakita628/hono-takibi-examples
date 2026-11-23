@@ -1341,24 +1341,24 @@ export async function deleteApiV1VideosIdWebtorrent(
 }
 
 export async function getFeedsSubscriptionsFormat(
-  args: InferRequestType<(typeof client.feeds)['subscriptions.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['subscriptions.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.feeds['subscriptions.:format'].$get(args, options))
+  return await parseResponse(client.feeds['subscriptions.{format}'].$get(args, options))
 }
 
 export async function getFeedsVideoCommentsFormat(
-  args: InferRequestType<(typeof client.feeds)['video-comments.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['video-comments.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.feeds['video-comments.:format'].$get(args, options))
+  return await parseResponse(client.feeds['video-comments.{format}'].$get(args, options))
 }
 
 export async function getFeedsVideosFormat(
-  args: InferRequestType<(typeof client.feeds)['videos.:format']['$get']>,
+  args: InferRequestType<(typeof client.feeds)['videos.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.feeds['videos.:format'].$get(args, options))
+  return await parseResponse(client.feeds['videos.{format}'].$get(args, options))
 }
 
 export async function getStaticStreamingPlaylistsHlsPrivateFilename(

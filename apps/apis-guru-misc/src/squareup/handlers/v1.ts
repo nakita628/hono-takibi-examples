@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1LocationIdOrdersOrderIdRoute,
   getV1LocationIdOrdersRoute,
   getV1LocationIdPaymentsPaymentIdRoute,
@@ -19,57 +19,100 @@ import {
   putV1MeRolesRoleIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1MeEmployeesRouteHandler: RouteHandler<typeof getV1MeEmployeesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1MeEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MeEmployeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeEmployeesEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MeEmployeesEmployeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1MeRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MeRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1MeRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1LocationIdOrdersOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1LocationIdRefundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdSettlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1LocationIdSettlementsSettlementIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1MeEmployeesRouteHandler: RouteHandler<typeof postV1MeEmployeesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeEmployeesEmployeeIdRouteHandler: RouteHandler<
+  typeof getV1MeEmployeesEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MeEmployeesEmployeeIdRouteHandler: RouteHandler<
+  typeof putV1MeEmployeesEmployeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeRolesRouteHandler: RouteHandler<typeof getV1MeRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1MeRolesRouteHandler: RouteHandler<typeof postV1MeRolesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MeRolesRoleIdRouteHandler: RouteHandler<typeof getV1MeRolesRoleIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1MeRolesRoleIdRouteHandler: RouteHandler<typeof putV1MeRolesRoleIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdOrdersRouteHandler: RouteHandler<
+  typeof getV1LocationIdOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdOrdersOrderIdRouteHandler: RouteHandler<
+  typeof getV1LocationIdOrdersOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1LocationIdOrdersOrderIdRouteHandler: RouteHandler<
+  typeof putV1LocationIdOrdersOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdPaymentsRouteHandler: RouteHandler<
+  typeof getV1LocationIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof getV1LocationIdPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdRefundsRouteHandler: RouteHandler<
+  typeof getV1LocationIdRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1LocationIdRefundsRouteHandler: RouteHandler<
+  typeof postV1LocationIdRefundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdSettlementsRouteHandler: RouteHandler<
+  typeof getV1LocationIdSettlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1LocationIdSettlementsSettlementIdRouteHandler: RouteHandler<
+  typeof getV1LocationIdSettlementsSettlementIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

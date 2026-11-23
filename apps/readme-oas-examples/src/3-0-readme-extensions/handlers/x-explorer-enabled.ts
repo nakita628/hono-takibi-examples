@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchXExplorerEnabledRoute, postXExplorerEnabledRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchXExplorerEnabledRoute, postXExplorerEnabledRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postXExplorerEnabledRouteHandler: RouteHandler<
+  typeof postXExplorerEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const xExplorerEnabledHandler = app
-  .openapi(postXExplorerEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchXExplorerEnabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchXExplorerEnabledRouteHandler: RouteHandler<
+  typeof patchXExplorerEnabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

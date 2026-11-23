@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/archive.org/search/1.0.0/openapi.yaml',
   output: './src/archive-org-search/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/archive-org-search/types.ts' },
   client: { output: './src/archive-org-search/client.ts', baseUrl: '/' },
   rpc: { output: './src/archive-org-search/rpc.ts', parseResponse: true },

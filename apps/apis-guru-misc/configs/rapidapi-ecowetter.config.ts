@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/rapidapi.com/ecowetter/1.0.0/openapi.yaml',
   output: './src/rapidapi-ecowetter/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/rapidapi-ecowetter/types.ts' },
   client: { output: './src/rapidapi-ecowetter/client.ts', baseUrl: '/' },
   rpc: { output: './src/rapidapi-ecowetter/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/License-Manager-API/1.0/openapi.yaml',
   output: './src/license-manager-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/license-manager-api/types.ts' },
   client: { output: './src/license-manager-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/license-manager-api/rpc.ts', parseResponse: true },

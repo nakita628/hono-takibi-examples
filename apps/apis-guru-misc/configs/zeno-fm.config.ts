@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/zeno.fm/0.6-99cfdac/openapi.yaml',
   output: './src/zeno-fm/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/zeno-fm/types.ts' },
   client: { output: './src/zeno-fm/client.ts', baseUrl: '/' },
   rpc: { output: './src/zeno-fm/rpc.ts', parseResponse: true },

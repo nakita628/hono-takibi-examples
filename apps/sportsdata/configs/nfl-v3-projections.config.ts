@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sportsdata.io/nfl-v3-projections/1.0/openapi.yaml',
   output: './src/nfl-v3-projections/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/nfl-v3-projections/types.ts' },
   client: { output: './src/nfl-v3-projections/client.ts', baseUrl: '/' },
   rpc: { output: './src/nfl-v3-projections/rpc.ts', parseResponse: true },

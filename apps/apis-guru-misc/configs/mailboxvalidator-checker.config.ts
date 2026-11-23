@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mailboxvalidator.com/checker/1.0.0/openapi.yaml',
   output: './src/mailboxvalidator-checker/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mailboxvalidator-checker/types.ts' },
   client: { output: './src/mailboxvalidator-checker/client.ts', baseUrl: '/' },
   rpc: { output: './src/mailboxvalidator-checker/rpc.ts', parseResponse: true },

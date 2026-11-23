@@ -1,193 +1,563 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceBatchGetResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationHandler,
-  xAmzTargetStarlingDoveServiceDeleteConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorHandler,
-  xAmzTargetStarlingDoveServiceDeleteConfigurationRecorderHandler,
-  xAmzTargetStarlingDoveServiceDeleteConformancePackHandler,
-  xAmzTargetStarlingDoveServiceDeleteDeliveryChannelHandler,
-  xAmzTargetStarlingDoveServiceDeleteEvaluationResultsHandler,
-  xAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackHandler,
-  xAmzTargetStarlingDoveServiceDeletePendingAggregationRequestHandler,
-  xAmzTargetStarlingDoveServiceDeleteRemediationConfigurationHandler,
-  xAmzTargetStarlingDoveServiceDeleteRemediationExceptionsHandler,
-  xAmzTargetStarlingDoveServiceDeleteResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceDeleteRetentionConfigurationHandler,
-  xAmzTargetStarlingDoveServiceDeleteStoredQueryHandler,
-  xAmzTargetStarlingDoveServiceDeliverConfigSnapshotHandler,
-  xAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesHandler,
-  xAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksHandler,
-  xAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsHandler,
-  xAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceDescribeComplianceByResourceHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigRulesHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigurationRecordersHandler,
-  xAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeConformancePackComplianceHandler,
-  xAmzTargetStarlingDoveServiceDescribeConformancePacksHandler,
-  xAmzTargetStarlingDoveServiceDescribeConformancePackStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeDeliveryChannelsHandler,
-  xAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesHandler,
-  xAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesHandler,
-  xAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksHandler,
-  xAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesHandler,
-  xAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsHandler,
-  xAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsHandler,
-  xAmzTargetStarlingDoveServiceDescribeRemediationExceptionsHandler,
-  xAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusHandler,
-  xAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsHandler,
-  xAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryHandler,
-  xAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryHandler,
-  xAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsHandler,
-  xAmzTargetStarlingDoveServiceGetAggregateResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceHandler,
-  xAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleHandler,
-  xAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeHandler,
-  xAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsHandler,
-  xAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryHandler,
-  xAmzTargetStarlingDoveServiceGetCustomRulePolicyHandler,
-  xAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsHandler,
-  xAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusHandler,
-  xAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusHandler,
-  xAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyHandler,
-  xAmzTargetStarlingDoveServiceGetResourceConfigHistoryHandler,
-  xAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryHandler,
-  xAmzTargetStarlingDoveServiceGetStoredQueryHandler,
-  xAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesHandler,
-  xAmzTargetStarlingDoveServiceListConformancePackComplianceScoresHandler,
-  xAmzTargetStarlingDoveServiceListDiscoveredResourcesHandler,
-  xAmzTargetStarlingDoveServiceListResourceEvaluationsHandler,
-  xAmzTargetStarlingDoveServiceListStoredQueriesHandler,
-  xAmzTargetStarlingDoveServiceListTagsForResourceHandler,
-  xAmzTargetStarlingDoveServicePutAggregationAuthorizationHandler,
-  xAmzTargetStarlingDoveServicePutConfigRuleHandler,
-  xAmzTargetStarlingDoveServicePutConfigurationAggregatorHandler,
-  xAmzTargetStarlingDoveServicePutConfigurationRecorderHandler,
-  xAmzTargetStarlingDoveServicePutConformancePackHandler,
-  xAmzTargetStarlingDoveServicePutDeliveryChannelHandler,
-  xAmzTargetStarlingDoveServicePutEvaluationsHandler,
-  xAmzTargetStarlingDoveServicePutExternalEvaluationHandler,
-  xAmzTargetStarlingDoveServicePutOrganizationConfigRuleHandler,
-  xAmzTargetStarlingDoveServicePutOrganizationConformancePackHandler,
-  xAmzTargetStarlingDoveServicePutRemediationConfigurationsHandler,
-  xAmzTargetStarlingDoveServicePutRemediationExceptionsHandler,
-  xAmzTargetStarlingDoveServicePutResourceConfigHandler,
-  xAmzTargetStarlingDoveServicePutRetentionConfigurationHandler,
-  xAmzTargetStarlingDoveServicePutStoredQueryHandler,
-  xAmzTargetStarlingDoveServiceSelectAggregateResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceSelectResourceConfigHandler,
-  xAmzTargetStarlingDoveServiceStartConfigRulesEvaluationHandler,
-  xAmzTargetStarlingDoveServiceStartConfigurationRecorderHandler,
-  xAmzTargetStarlingDoveServiceStartRemediationExecutionHandler,
-  xAmzTargetStarlingDoveServiceStartResourceEvaluationHandler,
-  xAmzTargetStarlingDoveServiceStopConfigurationRecorderHandler,
-  xAmzTargetStarlingDoveServiceTagResourceHandler,
-  xAmzTargetStarlingDoveServiceUntagResourceHandler,
+  postXAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationRoute,
+  postXAmzTargetStarlingDoveServiceDeleteConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorRoute,
+  postXAmzTargetStarlingDoveServiceDeleteConfigurationRecorderRoute,
+  postXAmzTargetStarlingDoveServiceDeleteConformancePackRoute,
+  postXAmzTargetStarlingDoveServiceDeleteDeliveryChannelRoute,
+  postXAmzTargetStarlingDoveServiceDeleteEvaluationResultsRoute,
+  postXAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackRoute,
+  postXAmzTargetStarlingDoveServiceDeletePendingAggregationRequestRoute,
+  postXAmzTargetStarlingDoveServiceDeleteRemediationConfigurationRoute,
+  postXAmzTargetStarlingDoveServiceDeleteRemediationExceptionsRoute,
+  postXAmzTargetStarlingDoveServiceDeleteResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceDeleteRetentionConfigurationRoute,
+  postXAmzTargetStarlingDoveServiceDeleteStoredQueryRoute,
+  postXAmzTargetStarlingDoveServiceDeliverConfigSnapshotRoute,
+  postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesRoute,
+  postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksRoute,
+  postXAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceDescribeComplianceByResourceRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigRulesRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationRecordersRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePackComplianceRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePacksRoute,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePackStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesRoute,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesRoute,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksRoute,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesRoute,
+  postXAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationExceptionsRoute,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusRoute,
+  postXAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsRoute,
+  postXAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryRoute,
+  postXAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryRoute,
+  postXAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsRoute,
+  postXAmzTargetStarlingDoveServiceGetAggregateResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceRoute,
+  postXAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleRoute,
+  postXAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeRoute,
+  postXAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsRoute,
+  postXAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryRoute,
+  postXAmzTargetStarlingDoveServiceGetCustomRulePolicyRoute,
+  postXAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsRoute,
+  postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute,
+  postXAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusRoute,
+  postXAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyRoute,
+  postXAmzTargetStarlingDoveServiceGetResourceConfigHistoryRoute,
+  postXAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryRoute,
+  postXAmzTargetStarlingDoveServiceGetStoredQueryRoute,
+  postXAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesRoute,
+  postXAmzTargetStarlingDoveServiceListConformancePackComplianceScoresRoute,
+  postXAmzTargetStarlingDoveServiceListDiscoveredResourcesRoute,
+  postXAmzTargetStarlingDoveServiceListResourceEvaluationsRoute,
+  postXAmzTargetStarlingDoveServiceListStoredQueriesRoute,
+  postXAmzTargetStarlingDoveServiceListTagsForResourceRoute,
+  postXAmzTargetStarlingDoveServicePutAggregationAuthorizationRoute,
+  postXAmzTargetStarlingDoveServicePutConfigRuleRoute,
+  postXAmzTargetStarlingDoveServicePutConfigurationAggregatorRoute,
+  postXAmzTargetStarlingDoveServicePutConfigurationRecorderRoute,
+  postXAmzTargetStarlingDoveServicePutConformancePackRoute,
+  postXAmzTargetStarlingDoveServicePutDeliveryChannelRoute,
+  postXAmzTargetStarlingDoveServicePutEvaluationsRoute,
+  postXAmzTargetStarlingDoveServicePutExternalEvaluationRoute,
+  postXAmzTargetStarlingDoveServicePutOrganizationConfigRuleRoute,
+  postXAmzTargetStarlingDoveServicePutOrganizationConformancePackRoute,
+  postXAmzTargetStarlingDoveServicePutRemediationConfigurationsRoute,
+  postXAmzTargetStarlingDoveServicePutRemediationExceptionsRoute,
+  postXAmzTargetStarlingDoveServicePutResourceConfigRoute,
+  postXAmzTargetStarlingDoveServicePutRetentionConfigurationRoute,
+  postXAmzTargetStarlingDoveServicePutStoredQueryRoute,
+  postXAmzTargetStarlingDoveServiceSelectAggregateResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceSelectResourceConfigRoute,
+  postXAmzTargetStarlingDoveServiceStartConfigRulesEvaluationRoute,
+  postXAmzTargetStarlingDoveServiceStartConfigurationRecorderRoute,
+  postXAmzTargetStarlingDoveServiceStartRemediationExecutionRoute,
+  postXAmzTargetStarlingDoveServiceStartResourceEvaluationRoute,
+  postXAmzTargetStarlingDoveServiceStopConfigurationRecorderRoute,
+  postXAmzTargetStarlingDoveServiceTagResourceRoute,
+  postXAmzTargetStarlingDoveServiceUntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteConfigurationRecorderRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteConformancePackRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteDeliveryChannelRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteEvaluationResultsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeletePendingAggregationRequestRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteRemediationConfigurationRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteRemediationExceptionsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteRetentionConfigurationRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeleteStoredQueryRouteHandler,
+  postXAmzTargetStarlingDoveServiceDeliverConfigSnapshotRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeComplianceByResourceRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigRulesRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationRecordersRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePackComplianceRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePacksRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeConformancePackStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationExceptionsRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetAggregateResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetCustomRulePolicyRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetResourceConfigHistoryRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryRouteHandler,
+  postXAmzTargetStarlingDoveServiceGetStoredQueryRouteHandler,
+  postXAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesRouteHandler,
+  postXAmzTargetStarlingDoveServiceListConformancePackComplianceScoresRouteHandler,
+  postXAmzTargetStarlingDoveServiceListDiscoveredResourcesRouteHandler,
+  postXAmzTargetStarlingDoveServiceListResourceEvaluationsRouteHandler,
+  postXAmzTargetStarlingDoveServiceListStoredQueriesRouteHandler,
+  postXAmzTargetStarlingDoveServiceListTagsForResourceRouteHandler,
+  postXAmzTargetStarlingDoveServicePutAggregationAuthorizationRouteHandler,
+  postXAmzTargetStarlingDoveServicePutConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServicePutConfigurationAggregatorRouteHandler,
+  postXAmzTargetStarlingDoveServicePutConfigurationRecorderRouteHandler,
+  postXAmzTargetStarlingDoveServicePutConformancePackRouteHandler,
+  postXAmzTargetStarlingDoveServicePutDeliveryChannelRouteHandler,
+  postXAmzTargetStarlingDoveServicePutEvaluationsRouteHandler,
+  postXAmzTargetStarlingDoveServicePutExternalEvaluationRouteHandler,
+  postXAmzTargetStarlingDoveServicePutOrganizationConfigRuleRouteHandler,
+  postXAmzTargetStarlingDoveServicePutOrganizationConformancePackRouteHandler,
+  postXAmzTargetStarlingDoveServicePutRemediationConfigurationsRouteHandler,
+  postXAmzTargetStarlingDoveServicePutRemediationExceptionsRouteHandler,
+  postXAmzTargetStarlingDoveServicePutResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServicePutRetentionConfigurationRouteHandler,
+  postXAmzTargetStarlingDoveServicePutStoredQueryRouteHandler,
+  postXAmzTargetStarlingDoveServiceSelectAggregateResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceSelectResourceConfigRouteHandler,
+  postXAmzTargetStarlingDoveServiceStartConfigRulesEvaluationRouteHandler,
+  postXAmzTargetStarlingDoveServiceStartConfigurationRecorderRouteHandler,
+  postXAmzTargetStarlingDoveServiceStartRemediationExecutionRouteHandler,
+  postXAmzTargetStarlingDoveServiceStartResourceEvaluationRouteHandler,
+  postXAmzTargetStarlingDoveServiceStopConfigurationRecorderRouteHandler,
+  postXAmzTargetStarlingDoveServiceTagResourceRouteHandler,
+  postXAmzTargetStarlingDoveServiceUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceBatchGetResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteConfigurationRecorderHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteConformancePackHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteDeliveryChannelHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteEvaluationResultsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeletePendingAggregationRequestHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteRemediationConfigurationHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteRemediationExceptionsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteRetentionConfigurationHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeleteStoredQueryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDeliverConfigSnapshotHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeComplianceByResourceHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigRulesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConfigurationRecordersHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConformancePackComplianceHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConformancePackStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeConformancePacksHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeDeliveryChannelsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeRemediationExceptionsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetAggregateResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetCustomRulePolicyHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetResourceConfigHistoryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceGetStoredQueryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListConformancePackComplianceScoresHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListDiscoveredResourcesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListResourceEvaluationsHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListStoredQueriesHandler)
-  .route('/', xAmzTargetStarlingDoveServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutAggregationAuthorizationHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutConfigurationAggregatorHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutConfigurationRecorderHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutConformancePackHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutDeliveryChannelHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutEvaluationsHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutExternalEvaluationHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutOrganizationConfigRuleHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutOrganizationConformancePackHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutRemediationConfigurationsHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutRemediationExceptionsHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutRetentionConfigurationHandler)
-  .route('/', xAmzTargetStarlingDoveServicePutStoredQueryHandler)
-  .route('/', xAmzTargetStarlingDoveServiceSelectAggregateResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceSelectResourceConfigHandler)
-  .route('/', xAmzTargetStarlingDoveServiceStartConfigRulesEvaluationHandler)
-  .route('/', xAmzTargetStarlingDoveServiceStartConfigurationRecorderHandler)
-  .route('/', xAmzTargetStarlingDoveServiceStartRemediationExecutionHandler)
-  .route('/', xAmzTargetStarlingDoveServiceStartResourceEvaluationHandler)
-  .route('/', xAmzTargetStarlingDoveServiceStopConfigurationRecorderHandler)
-  .route('/', xAmzTargetStarlingDoveServiceTagResourceHandler)
-  .route('/', xAmzTargetStarlingDoveServiceUntagResourceHandler)
+  .openapi(
+    postXAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceBatchGetAggregateResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceBatchGetResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationRoute,
+    postXAmzTargetStarlingDoveServiceDeleteAggregationAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceDeleteConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorRoute,
+    postXAmzTargetStarlingDoveServiceDeleteConfigurationAggregatorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteConfigurationRecorderRoute,
+    postXAmzTargetStarlingDoveServiceDeleteConfigurationRecorderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteConformancePackRoute,
+    postXAmzTargetStarlingDoveServiceDeleteConformancePackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteDeliveryChannelRoute,
+    postXAmzTargetStarlingDoveServiceDeleteDeliveryChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteEvaluationResultsRoute,
+    postXAmzTargetStarlingDoveServiceDeleteEvaluationResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceDeleteOrganizationConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackRoute,
+    postXAmzTargetStarlingDoveServiceDeleteOrganizationConformancePackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeletePendingAggregationRequestRoute,
+    postXAmzTargetStarlingDoveServiceDeletePendingAggregationRequestRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteRemediationConfigurationRoute,
+    postXAmzTargetStarlingDoveServiceDeleteRemediationConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteRemediationExceptionsRoute,
+    postXAmzTargetStarlingDoveServiceDeleteRemediationExceptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceDeleteResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteRetentionConfigurationRoute,
+    postXAmzTargetStarlingDoveServiceDeleteRetentionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeleteStoredQueryRoute,
+    postXAmzTargetStarlingDoveServiceDeleteStoredQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDeliverConfigSnapshotRoute,
+    postXAmzTargetStarlingDoveServiceDeliverConfigSnapshotRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesRoute,
+    postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConfigRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksRoute,
+    postXAmzTargetStarlingDoveServiceDescribeAggregateComplianceByConformancePacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeAggregationAuthorizationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceDescribeComplianceByConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeComplianceByResourceRoute,
+    postXAmzTargetStarlingDoveServiceDescribeComplianceByResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigRuleEvaluationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigRulesRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorSourcesStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationAggregatorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationRecorderStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationRecordersRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConfigurationRecordersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConformancePackComplianceRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConformancePackComplianceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConformancePackStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConformancePackStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeConformancePacksRoute,
+    postXAmzTargetStarlingDoveServiceDescribeConformancePacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeDeliveryChannelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesRoute,
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRuleStatusesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesRoute,
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConfigRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesRoute,
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePackStatusesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksRoute,
+    postXAmzTargetStarlingDoveServiceDescribeOrganizationConformancePacksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsRoute,
+    postXAmzTargetStarlingDoveServiceDescribePendingAggregationRequestsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeRemediationConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeRemediationExceptionsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeRemediationExceptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusRoute,
+    postXAmzTargetStarlingDoveServiceDescribeRemediationExecutionStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsRoute,
+    postXAmzTargetStarlingDoveServiceDescribeRetentionConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceGetAggregateComplianceDetailsByConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryRoute,
+    postXAmzTargetStarlingDoveServiceGetAggregateConfigRuleComplianceSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryRoute,
+    postXAmzTargetStarlingDoveServiceGetAggregateConformancePackComplianceSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsRoute,
+    postXAmzTargetStarlingDoveServiceGetAggregateDiscoveredResourceCountsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetAggregateResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceGetAggregateResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceGetComplianceDetailsByConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceRoute,
+    postXAmzTargetStarlingDoveServiceGetComplianceDetailsByResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleRoute,
+    postXAmzTargetStarlingDoveServiceGetComplianceSummaryByConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeRoute,
+    postXAmzTargetStarlingDoveServiceGetComplianceSummaryByResourceTypeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsRoute,
+    postXAmzTargetStarlingDoveServiceGetConformancePackComplianceDetailsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryRoute,
+    postXAmzTargetStarlingDoveServiceGetConformancePackComplianceSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetCustomRulePolicyRoute,
+    postXAmzTargetStarlingDoveServiceGetCustomRulePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsRoute,
+    postXAmzTargetStarlingDoveServiceGetDiscoveredResourceCountsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRoute,
+    postXAmzTargetStarlingDoveServiceGetOrganizationConfigRuleDetailedStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusRoute,
+    postXAmzTargetStarlingDoveServiceGetOrganizationConformancePackDetailedStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyRoute,
+    postXAmzTargetStarlingDoveServiceGetOrganizationCustomRulePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetResourceConfigHistoryRoute,
+    postXAmzTargetStarlingDoveServiceGetResourceConfigHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryRoute,
+    postXAmzTargetStarlingDoveServiceGetResourceEvaluationSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceGetStoredQueryRoute,
+    postXAmzTargetStarlingDoveServiceGetStoredQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesRoute,
+    postXAmzTargetStarlingDoveServiceListAggregateDiscoveredResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListConformancePackComplianceScoresRoute,
+    postXAmzTargetStarlingDoveServiceListConformancePackComplianceScoresRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListDiscoveredResourcesRoute,
+    postXAmzTargetStarlingDoveServiceListDiscoveredResourcesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListResourceEvaluationsRoute,
+    postXAmzTargetStarlingDoveServiceListResourceEvaluationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListStoredQueriesRoute,
+    postXAmzTargetStarlingDoveServiceListStoredQueriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceListTagsForResourceRoute,
+    postXAmzTargetStarlingDoveServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutAggregationAuthorizationRoute,
+    postXAmzTargetStarlingDoveServicePutAggregationAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutConfigRuleRoute,
+    postXAmzTargetStarlingDoveServicePutConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutConfigurationAggregatorRoute,
+    postXAmzTargetStarlingDoveServicePutConfigurationAggregatorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutConfigurationRecorderRoute,
+    postXAmzTargetStarlingDoveServicePutConfigurationRecorderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutConformancePackRoute,
+    postXAmzTargetStarlingDoveServicePutConformancePackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutDeliveryChannelRoute,
+    postXAmzTargetStarlingDoveServicePutDeliveryChannelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutEvaluationsRoute,
+    postXAmzTargetStarlingDoveServicePutEvaluationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutExternalEvaluationRoute,
+    postXAmzTargetStarlingDoveServicePutExternalEvaluationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutOrganizationConfigRuleRoute,
+    postXAmzTargetStarlingDoveServicePutOrganizationConfigRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutOrganizationConformancePackRoute,
+    postXAmzTargetStarlingDoveServicePutOrganizationConformancePackRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutRemediationConfigurationsRoute,
+    postXAmzTargetStarlingDoveServicePutRemediationConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutRemediationExceptionsRoute,
+    postXAmzTargetStarlingDoveServicePutRemediationExceptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutResourceConfigRoute,
+    postXAmzTargetStarlingDoveServicePutResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutRetentionConfigurationRoute,
+    postXAmzTargetStarlingDoveServicePutRetentionConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServicePutStoredQueryRoute,
+    postXAmzTargetStarlingDoveServicePutStoredQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceSelectAggregateResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceSelectAggregateResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceSelectResourceConfigRoute,
+    postXAmzTargetStarlingDoveServiceSelectResourceConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceStartConfigRulesEvaluationRoute,
+    postXAmzTargetStarlingDoveServiceStartConfigRulesEvaluationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceStartConfigurationRecorderRoute,
+    postXAmzTargetStarlingDoveServiceStartConfigurationRecorderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceStartRemediationExecutionRoute,
+    postXAmzTargetStarlingDoveServiceStartRemediationExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceStartResourceEvaluationRoute,
+    postXAmzTargetStarlingDoveServiceStartResourceEvaluationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceStopConfigurationRecorderRoute,
+    postXAmzTargetStarlingDoveServiceStopConfigurationRecorderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceTagResourceRoute,
+    postXAmzTargetStarlingDoveServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetStarlingDoveServiceUntagResourceRoute,
+    postXAmzTargetStarlingDoveServiceUntagResourceRouteHandler,
+  )
 
 export default app

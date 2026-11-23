@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatDfsSlatesByDateDateRoute,
   getFormatInjuredPlayersRoute,
   getFormatPlayerGameProjectionStatsByDateDateRoute,
@@ -7,21 +7,32 @@ import {
   getFormatStartingGoaltendersByDateDateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatDfsSlatesByDateDateRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatDfsSlatesByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatInjuredPlayersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatStartingGoaltendersByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatInjuredPlayersRouteHandler: RouteHandler<
+  typeof getFormatInjuredPlayersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByDateDateRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerGameProjectionStatsByPlayerDatePlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatStartingGoaltendersByDateDateRouteHandler: RouteHandler<
+  typeof getFormatStartingGoaltendersByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -751,11 +751,11 @@ export function useSuspenseEntriesSourceLangWordIdAntonyms<
 
 export function getEntriesSourceLangWordIdRegionsRegionQueryKey(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['entries', '/entries/:source_lang/:word_id/regions=:region', keyArgs] as const
+  return ['entries', '/entries/:source_lang/:word_id/regions={region}', keyArgs] as const
 }
 
 export function getEntriesSourceLangWordIdRegionsRegionQueryOptions<
@@ -763,7 +763,9 @@ export function getEntriesSourceLangWordIdRegionsRegionQueryOptions<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+          ReturnType<
+            (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+          >
         >
       >
     >
@@ -771,7 +773,7 @@ export function getEntriesSourceLangWordIdRegionsRegionQueryOptions<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -781,7 +783,7 @@ export function getEntriesSourceLangWordIdRegionsRegionQueryOptions<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+              (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
             >
           >
         >
@@ -794,7 +796,7 @@ export function getEntriesSourceLangWordIdRegionsRegionQueryOptions<
     queryKey: getEntriesSourceLangWordIdRegionsRegionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.entries[':source_lang'][':word_id']['regions=:region'].$get(args, {
+        client.entries[':source_lang'][':word_id']['regions={region}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -808,7 +810,9 @@ export function useEntriesSourceLangWordIdRegionsRegion<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+          ReturnType<
+            (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+          >
         >
       >
     >
@@ -816,7 +820,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -826,7 +830,7 @@ export function useEntriesSourceLangWordIdRegionsRegion<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                  (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
                 >
               >
             >
@@ -857,7 +861,9 @@ export function useSuspenseEntriesSourceLangWordIdRegionsRegion<
     ReturnType<
       typeof parseResponse<
         Awaited<
-          ReturnType<(typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']>
+          ReturnType<
+            (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
+          >
         >
       >
     >
@@ -865,7 +871,7 @@ export function useSuspenseEntriesSourceLangWordIdRegionsRegion<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+    (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -875,7 +881,7 @@ export function useSuspenseEntriesSourceLangWordIdRegionsRegion<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.entries)[':source_lang'][':word_id']['regions=:region']['$get']
+                  (typeof client.entries)[':source_lang'][':word_id']['regions={region}']['$get']
                 >
               >
             >
@@ -1325,13 +1331,13 @@ export function useSuspenseEntriesSourceLangWordIdFilters<
 
 export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageQueryKey(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'entries',
-    '/entries/:source_translation_language/:word_id/translations=:target_translation_language',
+    '/entries/:source_translation_language/:word_id/translations={target_translation_language}',
     keyArgs,
   ] as const
 }
@@ -1342,7 +1348,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+            (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
           >
         >
       >
@@ -1351,7 +1357,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1361,7 +1367,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+              (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
             >
           >
         >
@@ -1378,7 +1384,7 @@ export function getEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
     queryFn({ signal }) {
       return parseResponse(
         client.entries[':source_translation_language'][':word_id'][
-          'translations=:target_translation_language'
+          'translations={target_translation_language}'
         ].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
@@ -1391,7 +1397,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+            (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
           >
         >
       >
@@ -1400,7 +1406,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -1410,7 +1416,7 @@ export function useEntriesSourceTranslationLanguageWordIdTranslationsTargetTrans
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                  (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
                 >
               >
             >
@@ -1447,7 +1453,7 @@ export function useSuspenseEntriesSourceTranslationLanguageWordIdTranslationsTar
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+            (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
           >
         >
       >
@@ -1456,7 +1462,7 @@ export function useSuspenseEntriesSourceTranslationLanguageWordIdTranslationsTar
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+    (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -1466,7 +1472,7 @@ export function useSuspenseEntriesSourceTranslationLanguageWordIdTranslationsTar
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.entries)[':source_translation_language'][':word_id']['translations=:target_translation_language']['$get']
+                  (typeof client.entries)[':source_translation_language'][':word_id']['translations={target_translation_language}']['$get']
                 >
               >
             >
@@ -2700,13 +2706,13 @@ export function useSuspenseSearchSourceLang<
 
 export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQueryKey(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
 ) {
   const { header: _, ...keyArgs } = args
   return [
     'search',
-    '/search/:source_search_language/translations=:target_search_language',
+    '/search/:source_search_language/translations={target_search_language}',
     keyArgs,
   ] as const
 }
@@ -2717,7 +2723,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+            (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
           >
         >
       >
@@ -2726,7 +2732,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: ClientRequestOptions,
 ) {
@@ -2736,7 +2742,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+              (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
             >
           >
         >
@@ -2749,7 +2755,7 @@ export function getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQue
     queryKey: getSearchSourceSearchLanguageTranslationsTargetSearchLanguageQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.search[':source_search_language']['translations=:target_search_language'].$get(
+        client.search[':source_search_language']['translations={target_search_language}'].$get(
           args,
           { ...options, init: { ...options?.init, signal } },
         ),
@@ -2764,7 +2770,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+            (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
           >
         >
       >
@@ -2773,7 +2779,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -2783,7 +2789,7 @@ export function useSearchSourceSearchLanguageTranslationsTargetSearchLanguage<
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                  (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
                 >
               >
             >
@@ -2818,7 +2824,7 @@ export function useSuspenseSearchSourceSearchLanguageTranslationsTargetSearchLan
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+            (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
           >
         >
       >
@@ -2827,7 +2833,7 @@ export function useSuspenseSearchSourceSearchLanguageTranslationsTargetSearchLan
   TError = DefaultError,
 >(
   args: InferRequestType<
-    (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+    (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
   >,
   options?: {
     query?: Omit<
@@ -2837,7 +2843,7 @@ export function useSuspenseSearchSourceSearchLanguageTranslationsTargetSearchLan
             typeof parseResponse<
               Awaited<
                 ReturnType<
-                  (typeof client.search)[':source_search_language']['translations=:target_search_language']['$get']
+                  (typeof client.search)[':source_search_language']['translations={target_search_language}']['$get']
                 >
               >
             >

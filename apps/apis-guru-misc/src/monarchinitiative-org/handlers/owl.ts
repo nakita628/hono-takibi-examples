@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOwlOntologyDlqueryQueryRoute, getOwlOntologySparqlQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOwlOntologyDlqueryQueryRoute, getOwlOntologySparqlQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOwlOntologyDlqueryQueryRouteHandler: RouteHandler<
+  typeof getOwlOntologyDlqueryQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const owlHandler = app
-  .openapi(getOwlOntologyDlqueryQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOwlOntologySparqlQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOwlOntologySparqlQueryRouteHandler: RouteHandler<
+  typeof getOwlOntologySparqlQueryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

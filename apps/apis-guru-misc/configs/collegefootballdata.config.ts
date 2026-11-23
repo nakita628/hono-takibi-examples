@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/collegefootballdata.com/4.4.12/openapi.yaml',
   output: './src/collegefootballdata/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/collegefootballdata/types.ts' },
   client: { output: './src/collegefootballdata/client.ts', baseUrl: '/' },
   rpc: { output: './src/collegefootballdata/rpc.ts', parseResponse: true },

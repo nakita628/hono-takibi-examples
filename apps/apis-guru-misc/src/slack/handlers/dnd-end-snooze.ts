@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDndEndSnoozeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDndEndSnoozeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dndEndSnoozeHandler = app.openapi(postDndEndSnoozeRoute, (c) => {
+export const postDndEndSnoozeRouteHandler: RouteHandler<typeof postDndEndSnoozeRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVerifiedSendersIdRoute,
   getVerifiedSendersDomainsRoute,
   getVerifiedSendersRoute,
@@ -10,30 +10,50 @@ import {
   postVerifiedSendersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVerifiedSendersRouteHandler: RouteHandler<typeof getVerifiedSendersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const verifiedSendersHandler = app
-  .openapi(getVerifiedSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerifiedSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVerifiedSendersDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVerifiedSendersResendIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVerifiedSendersStepsCompletedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVerifiedSendersVerifyTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVerifiedSendersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchVerifiedSendersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVerifiedSendersRouteHandler: RouteHandler<
+  typeof postVerifiedSendersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVerifiedSendersDomainsRouteHandler: RouteHandler<
+  typeof getVerifiedSendersDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVerifiedSendersResendIdRouteHandler: RouteHandler<
+  typeof postVerifiedSendersResendIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVerifiedSendersStepsCompletedRouteHandler: RouteHandler<
+  typeof getVerifiedSendersStepsCompletedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVerifiedSendersVerifyTokenRouteHandler: RouteHandler<
+  typeof getVerifiedSendersVerifyTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVerifiedSendersIdRouteHandler: RouteHandler<
+  typeof deleteVerifiedSendersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchVerifiedSendersIdRouteHandler: RouteHandler<
+  typeof patchVerifiedSendersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/vtex.local/Policies-System-API/1.0.0/openapi.yaml',
   output: './src/policies-system-api/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/policies-system-api/types.ts' },
   client: { output: './src/policies-system-api/client.ts', baseUrl: '/' },
   rpc: { output: './src/policies-system-api/rpc.ts', parseResponse: true },

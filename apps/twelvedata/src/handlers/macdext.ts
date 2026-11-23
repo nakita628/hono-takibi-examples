@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMacdextRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMacdextRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const macdextHandler = app.openapi(getMacdextRoute, (c) => {
+export const getMacdextRouteHandler: RouteHandler<typeof getMacdextRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

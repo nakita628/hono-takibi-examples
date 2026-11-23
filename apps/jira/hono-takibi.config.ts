@@ -4,7 +4,7 @@ export default defineConfig({
   // Jira Cloud platform REST API
   input: 'https://developer.atlassian.com/cloud/jira/platform/swagger-v3.v3.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

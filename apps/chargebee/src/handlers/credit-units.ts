@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCreditUnitsRoute,
   postCreditUnitsCreditUnitIdArchiveCommandRoute,
   postCreditUnitsCreditUnitIdReactivateCommandRoute,
@@ -7,21 +7,28 @@ import {
   postCreditUnitsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCreditUnitsRouteHandler: RouteHandler<typeof getCreditUnitsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const creditUnitsHandler = app
-  .openapi(getCreditUnitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditUnitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditUnitsCreditUnitIdArchiveCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditUnitsCreditUnitIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditUnitsCreditUnitIdReactivateCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCreditUnitsRouteHandler: RouteHandler<typeof postCreditUnitsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditUnitsCreditUnitIdArchiveCommandRouteHandler: RouteHandler<
+  typeof postCreditUnitsCreditUnitIdArchiveCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditUnitsCreditUnitIdRouteHandler: RouteHandler<
+  typeof postCreditUnitsCreditUnitIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditUnitsCreditUnitIdReactivateCommandRouteHandler: RouteHandler<
+  typeof postCreditUnitsCreditUnitIdReactivateCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

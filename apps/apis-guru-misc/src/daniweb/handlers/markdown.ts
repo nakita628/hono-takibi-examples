@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMarkdownEmoticonsRoute, postMarkdownRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMarkdownEmoticonsRoute, postMarkdownRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMarkdownRouteHandler: RouteHandler<typeof postMarkdownRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const markdownHandler = app
-  .openapi(postMarkdownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarkdownEmoticonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMarkdownEmoticonsRouteHandler: RouteHandler<
+  typeof getMarkdownEmoticonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

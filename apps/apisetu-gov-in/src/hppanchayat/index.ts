@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { fmcerHandler } from './handlers'
+import { postFmcerCertificateRoute } from './routes'
+import { postFmcerCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', fmcerHandler)
+export const api = app.openapi(postFmcerCertificateRoute, postFmcerCertificateRouteHandler)
 
 export default app

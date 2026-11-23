@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPatientmanagementDiagnosesRoute,
   getPatientmanagementLookuptypesRoute,
   getPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRoute,
@@ -8,24 +8,38 @@ import {
   postPatientmanagementValidateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPatientmanagementDiagnosesRouteHandler: RouteHandler<
+  typeof getPatientmanagementDiagnosesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const patientmanagementHandler = app
-  .openapi(getPatientmanagementDiagnosesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPatientmanagementLookuptypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPatientmanagementValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdSurgeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPatientmanagementLookuptypesRouteHandler: RouteHandler<
+  typeof getPatientmanagementLookuptypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPatientmanagementValidateRouteHandler: RouteHandler<
+  typeof postPatientmanagementValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRouteHandler: RouteHandler<
+  typeof getPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRouteHandler: RouteHandler<
+  typeof postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdSurgeriesRouteHandler: RouteHandler<
+  typeof postPatientmanagementUserIdGroupGroupIdIdentifierIdentifierIdSurgeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

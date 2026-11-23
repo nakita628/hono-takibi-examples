@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTeamsPageNumKeysRoute,
   getTeamsPageNumRoute,
   getTeamsPageNumSimpleRoute,
@@ -8,24 +8,36 @@ import {
   getTeamsYearPageNumSimpleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTeamsPageNumRouteHandler: RouteHandler<typeof getTeamsPageNumRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const teamsHandler = app
-  .openapi(getTeamsPageNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsPageNumKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsPageNumSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsYearPageNumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsYearPageNumKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTeamsYearPageNumSimpleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTeamsPageNumKeysRouteHandler: RouteHandler<
+  typeof getTeamsPageNumKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsPageNumSimpleRouteHandler: RouteHandler<
+  typeof getTeamsPageNumSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsYearPageNumRouteHandler: RouteHandler<
+  typeof getTeamsYearPageNumRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsYearPageNumKeysRouteHandler: RouteHandler<
+  typeof getTeamsYearPageNumKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTeamsYearPageNumSimpleRouteHandler: RouteHandler<
+  typeof getTeamsYearPageNumSimpleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

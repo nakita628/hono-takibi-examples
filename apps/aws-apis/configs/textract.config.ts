@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/textract/2018-06-27/openapi.yaml',
   output: './src/textract/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/textract/types.ts' },
   client: { output: './src/textract/client.ts', baseUrl: '/' },
   rpc: { output: './src/textract/rpc.ts', parseResponse: true },

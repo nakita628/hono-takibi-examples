@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCheckoutChangeToAnonymousUserOrderFormIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCheckoutChangeToAnonymousUserOrderFormIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const checkoutHandler = app.openapi(
-  getCheckoutChangeToAnonymousUserOrderFormIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getCheckoutChangeToAnonymousUserOrderFormIdRouteHandler: RouteHandler<
+  typeof getCheckoutChangeToAnonymousUserOrderFormIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

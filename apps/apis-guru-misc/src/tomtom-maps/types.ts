@@ -1,7 +1,7 @@
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/map/:versionNumber/copyrights.:format': {
+    '/map/:versionNumber/copyrights.{format}': {
       $get:
         | {
             input: { param: { versionNumber: 1; format: 'json' | 'jsonp' | 'xml' } } & {
@@ -53,7 +53,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/map/:versionNumber/copyrights/caption.:format': {
+    '/map/:versionNumber/copyrights/caption.{format}': {
       $get:
         | {
             input: { param: { versionNumber: 1; format: 'json' | 'jsonp' | 'xml' } } & {
@@ -105,7 +105,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.:format': {
+    '/map/:versionNumber/copyrights/:minLon/:minLat/:maxLon/:maxLat.{format}': {
       $get:
         | {
             input: {
@@ -214,7 +214,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/map/:versionNumber/copyrights/:zoom/:X/:Y.:format': {
+    '/map/:versionNumber/copyrights/:zoom/:X/:Y.{format}': {
       $get:
         | {
             input: {
@@ -867,7 +867,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.:format': {
+    '/map/:versionNumber/tile/:layer/:style/:zoom/:X/:Y.{format}': {
       $get:
         | {
             input: {

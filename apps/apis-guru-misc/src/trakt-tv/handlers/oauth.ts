@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOauthAuthorizeRoute,
   postOauthDeviceCodeRoute,
   postOauthDeviceTokenRoute,
@@ -7,21 +7,28 @@ import {
   postOauthTokenRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOauthAuthorizeRouteHandler: RouteHandler<typeof getOauthAuthorizeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const oauthHandler = app
-  .openapi(getOauthAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthDeviceCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthDeviceTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOauthTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOauthDeviceCodeRouteHandler: RouteHandler<
+  typeof postOauthDeviceCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthDeviceTokenRouteHandler: RouteHandler<
+  typeof postOauthDeviceTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthRevokeRouteHandler: RouteHandler<typeof postOauthRevokeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOauthTokenRouteHandler: RouteHandler<typeof postOauthTokenRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

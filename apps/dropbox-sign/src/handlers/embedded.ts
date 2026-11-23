@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEmbeddedSignUrlSignatureIdRoute, postEmbeddedEditUrlTemplateIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getEmbeddedSignUrlSignatureIdRoute,
+  postEmbeddedEditUrlTemplateIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postEmbeddedEditUrlTemplateIdRouteHandler: RouteHandler<
+  typeof postEmbeddedEditUrlTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const embeddedHandler = app
-  .openapi(postEmbeddedEditUrlTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEmbeddedSignUrlSignatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEmbeddedSignUrlSignatureIdRouteHandler: RouteHandler<
+  typeof getEmbeddedSignUrlSignatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

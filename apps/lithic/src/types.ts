@@ -12559,6 +12559,16 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 type: 'AUTH_STREAM_ACCESS' | 'THREE_DS_DECISIONING' | 'TOKENIZATION_DECISIONING'
               }
             }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: {
+              query: {
+                type: 'AUTH_STREAM_ACCESS' | 'THREE_DS_DECISIONING' | 'TOKENIZATION_DECISIONING'
+              }
+            }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -14195,6 +14205,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { tokenization_token: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tokenization_token: string } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -14227,6 +14243,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v1/tokenizations/:tokenization_token/unpause': {
       $post:
+        | {
+            input: { param: { tokenization_token: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { tokenization_token: string } }
             output: Error
@@ -14263,6 +14285,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { tokenization_token: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tokenization_token: string } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -14297,6 +14325,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { tokenization_token: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { tokenization_token: string } }
             output: Error
             outputFormat: 'json'
             status: 400
@@ -14329,6 +14363,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/v1/tokenizations/:tokenization_token/resend_activation_code': {
       $post:
+        | {
+            input: { param: { tokenization_token: string } } & {
+              json: {
+                activation_method_type?:
+                  | 'EMAIL_TO_CARDHOLDER_ADDRESS'
+                  | 'TEXT_TO_CARDHOLDER_NUMBER'
+                  | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
         | {
             input: { param: { tokenization_token: string } } & {
               json: {

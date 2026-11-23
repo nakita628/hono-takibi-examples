@@ -34,19 +34,19 @@ export function getStateNameMediaTypeExtensionKey() {
 }
 
 export function getGetApiArticlesMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/articles:mediaTypeExtension', args] as const
+  return ['api', '/api/articles{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiArticlesMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -69,7 +69,7 @@ export function useGetApiArticlesMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -77,20 +77,20 @@ export function useGetApiArticlesMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['articles:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['articles{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiArticlesMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['articles:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -113,7 +113,7 @@ export function useImmutableGetApiArticlesMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['articles:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['articles{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -121,26 +121,26 @@ export function useImmutableGetApiArticlesMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['articles:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['articles{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiBlogMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/blog:mediaTypeExtension', args] as const
+  return ['api', '/api/blog{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiBlogMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -163,27 +163,27 @@ export function useGetApiBlogMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['blog:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['blog{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiBlogMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['blog:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -206,33 +206,33 @@ export function useImmutableGetApiBlogMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['blog:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['blog{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['blog:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['blog{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiGlossaryMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/glossary:mediaTypeExtension', args] as const
+  return ['api', '/api/glossary{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiGlossaryMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -255,7 +255,7 @@ export function useGetApiGlossaryMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -263,20 +263,20 @@ export function useGetApiGlossaryMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['glossary:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['glossary{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiGlossaryMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -299,7 +299,7 @@ export function useImmutableGetApiGlossaryMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['glossary:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['glossary{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -307,26 +307,26 @@ export function useImmutableGetApiGlossaryMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['glossary:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['glossary{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiQuestionsMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/questions:mediaTypeExtension', args] as const
+  return ['api', '/api/questions{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiQuestionsMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -349,7 +349,7 @@ export function useGetApiQuestionsMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -357,20 +357,20 @@ export function useGetApiQuestionsMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['questions:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['questions{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiQuestionsMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['questions:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -393,7 +393,7 @@ export function useImmutableGetApiQuestionsMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['questions:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['questions{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -401,26 +401,26 @@ export function useImmutableGetApiQuestionsMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.api['questions:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.api['questions{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiStatesMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/states:mediaTypeExtension', args] as const
+  return ['api', '/api/states{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiStatesMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -443,27 +443,27 @@ export function useGetApiStatesMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['states:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['states{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiStatesMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['states:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['states{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -486,33 +486,33 @@ export function useImmutableGetApiStatesMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['states:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['states{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['states:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['states{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetApiTopicsMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>,
 ) {
-  return ['api', '/api/topics:mediaTypeExtension', args] as const
+  return ['api', '/api/topics{mediaTypeExtension}', args] as const
 }
 
 export function useGetApiTopicsMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -535,27 +535,27 @@ export function useGetApiTopicsMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['topics:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['topics{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetApiTopicsMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.api)['topics:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -578,33 +578,33 @@ export function useImmutableGetApiTopicsMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.api)['topics:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.api)['topics{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.api['topics:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client.api['topics{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetBlogPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['blog', '/blog/:pageName:mediaTypeExtension', args] as const
+  return ['blog', '/blog/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetBlogPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -627,7 +627,7 @@ export function useGetBlogPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -635,20 +635,20 @@ export function useGetBlogPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.blog[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.blog[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetBlogPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -671,7 +671,7 @@ export function useImmutableGetBlogPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -679,26 +679,26 @@ export function useImmutableGetBlogPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.blog[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.blog[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEsBlogPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['es', '/es/blog/:pageName:mediaTypeExtension', args] as const
+  return ['es', '/es/blog/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetEsBlogPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -721,7 +721,7 @@ export function useGetEsBlogPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -729,20 +729,20 @@ export function useGetEsBlogPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.blog[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es.blog[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEsBlogPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -765,7 +765,7 @@ export function useImmutableGetEsBlogPageNameMediaTypeExtension<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.blog)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es.blog)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -773,26 +773,28 @@ export function useImmutableGetEsBlogPageNameMediaTypeExtension<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.blog[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es.blog[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEsGlossaryPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['es', '/es/glossary/:pageName:mediaTypeExtension', args] as const
+  return ['es', '/es/glossary/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetEsGlossaryPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -815,7 +817,9 @@ export function useGetEsGlossaryPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -823,20 +827,24 @@ export function useGetEsGlossaryPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.glossary[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(
+          client.es.glossary[':pageName{mediaTypeExtension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEsGlossaryPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -859,7 +867,9 @@ export function useImmutableGetEsGlossaryPageNameMediaTypeExtension<TError = unk
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.glossary)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -867,26 +877,30 @@ export function useImmutableGetEsGlossaryPageNameMediaTypeExtension<TError = unk
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.glossary[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(
+          client.es.glossary[':pageName{mediaTypeExtension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEsQuestionPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['es', '/es/question/:pageName:mediaTypeExtension', args] as const
+  return ['es', '/es/question/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetEsQuestionPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -909,7 +923,9 @@ export function useGetEsQuestionPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -917,20 +933,24 @@ export function useGetEsQuestionPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.question[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(
+          client.es.question[':pageName{mediaTypeExtension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEsQuestionPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -953,7 +973,9 @@ export function useImmutableGetEsQuestionPageNameMediaTypeExtension<TError = unk
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.es.question)[':pageName{mediaTypeExtension}']['$get']>
+            >
           >
         >
       >,
@@ -961,26 +983,28 @@ export function useImmutableGetEsQuestionPageNameMediaTypeExtension<TError = unk
     >(
       swrKey,
       async () =>
-        parseResponse(client.es.question[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(
+          client.es.question[':pageName{mediaTypeExtension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEsPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['es', '/es/:pageName:mediaTypeExtension', args] as const
+  return ['es', '/es/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetEsPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1003,7 +1027,7 @@ export function useGetEsPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1011,20 +1035,20 @@ export function useGetEsPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEsPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1047,7 +1071,7 @@ export function useImmutableGetEsPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1055,26 +1079,26 @@ export function useImmutableGetEsPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetEsStateNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['es', '/es/:stateName:mediaTypeExtension', args] as const
+  return ['es', '/es/:stateName{mediaTypeExtension}', args] as const
 }
 
 export function useGetEsStateNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1097,7 +1121,7 @@ export function useGetEsStateNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1105,20 +1129,20 @@ export function useGetEsStateNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es[':stateName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es[':stateName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEsStateNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1141,7 +1165,7 @@ export function useImmutableGetEsStateNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.es)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.es)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1149,26 +1173,26 @@ export function useImmutableGetEsStateNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.es[':stateName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.es[':stateName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetGlossaryPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['glossary', '/glossary/:pageName:mediaTypeExtension', args] as const
+  return ['glossary', '/glossary/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetGlossaryPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1191,7 +1215,7 @@ export function useGetGlossaryPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1199,20 +1223,20 @@ export function useGetGlossaryPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.glossary[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.glossary[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetGlossaryPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1235,7 +1259,7 @@ export function useImmutableGetGlossaryPageNameMediaTypeExtension<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.glossary)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.glossary)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1243,26 +1267,26 @@ export function useImmutableGetGlossaryPageNameMediaTypeExtension<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.glossary[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.glossary[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetQuestionPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return ['question', '/question/:pageName:mediaTypeExtension', args] as const
+  return ['question', '/question/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetQuestionPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1285,7 +1309,7 @@ export function useGetQuestionPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1293,20 +1317,20 @@ export function useGetQuestionPageNameMediaTypeExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.question[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.question[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetQuestionPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1329,7 +1353,7 @@ export function useImmutableGetQuestionPageNameMediaTypeExtension<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.question)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client.question)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1337,26 +1361,26 @@ export function useImmutableGetQuestionPageNameMediaTypeExtension<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.question[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+        parseResponse(client.question[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetPageNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>,
 ) {
-  return [':pageName:mediaTypeExtension', '/:pageName:mediaTypeExtension', args] as const
+  return [':pageName{mediaTypeExtension}', '/:pageName{mediaTypeExtension}', args] as const
 }
 
 export function useGetPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1379,27 +1403,27 @@ export function useGetPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetPageNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':pageName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1422,33 +1446,33 @@ export function useImmutableGetPageNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':pageName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':pageName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':pageName:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client[':pageName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getGetStateNameMediaTypeExtensionKey(
-  args: InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>,
 ) {
-  return [':stateName:mediaTypeExtension', '/:stateName:mediaTypeExtension', args] as const
+  return [':stateName{mediaTypeExtension}', '/:stateName{mediaTypeExtension}', args] as const
 }
 
 export function useGetStateNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1471,27 +1495,27 @@ export function useGetStateNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':stateName:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client[':stateName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetStateNameMediaTypeExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':stateName:mediaTypeExtension']['$get']>,
+  args: InferRequestType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
@@ -1514,14 +1538,14 @@ export function useImmutableGetStateNameMediaTypeExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':stateName:mediaTypeExtension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':stateName{mediaTypeExtension}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client[':stateName:mediaTypeExtension'].$get(args, clientOptions)),
+      async () => parseResponse(client[':stateName{mediaTypeExtension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

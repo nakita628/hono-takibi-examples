@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGluePutDataCatalogEncryptionSettingsHandler = app.openapi(
-  postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGluePutDataCatalogEncryptionSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

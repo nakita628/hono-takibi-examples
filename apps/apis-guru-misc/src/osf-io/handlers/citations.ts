@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getCitationsStylesIndexRoute, getCitationsStylesStyleIdIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getCitationsStylesIndexRoute, getCitationsStylesStyleIdIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCitationsStylesIndexRouteHandler: RouteHandler<
+  typeof getCitationsStylesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const citationsHandler = app
-  .openapi(getCitationsStylesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCitationsStylesStyleIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCitationsStylesStyleIdIndexRouteHandler: RouteHandler<
+  typeof getCitationsStylesStyleIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

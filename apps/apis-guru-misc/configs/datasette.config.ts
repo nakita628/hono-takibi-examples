@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/datasette.local/v1/openapi.yaml',
   output: './src/datasette/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/datasette/types.ts' },
   client: { output: './src/datasette/client.ts', baseUrl: '/' },
   rpc: { output: './src/datasette/rpc.ts', parseResponse: true },

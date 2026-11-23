@@ -9079,345 +9079,2033 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/companies/:companyId/terminalThemes': {
-      $get: {
-        input: { param: { companyId: string } } & {
-          query: {
-            pageSize?: number | undefined
-            page?: number | undefined
-            search?: string | undefined
+      $get:
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: ListThemesResponse
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ListThemesResponse
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { companyId: string } } & { json: CreateThemeRequest }
-        output: CreateThemeResponse
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: CreateThemeResponse
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/companies/:companyId/terminalThemes/unapply': {
-      $post: {
-        input: { param: { companyId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | { input: { param: { companyId: string } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { companyId: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { companyId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { companyId: string } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { companyId: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/companies/:companyId/terminalThemes/:id': {
-      $get: {
-        input: { param: { companyId: string; id: string } }
-        output: ThemeWithAssetDetails
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { companyId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
-      $patch: {
-        input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
-        output: UpdateThemeResponse
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: ThemeWithAssetDetails
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $delete:
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: UpdateThemeResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/companies/:companyId/terminalThemes/:id/apply': {
-      $post: {
-        input: { param: { companyId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/companies/:companyId/terminalThemes/:id/assets': {
-      $post: {
-        input: { param: { companyId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+      $post:
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: ThemeAsset
+            outputFormat: 'json'
+            status: 201
           }
-        } & { form: AssetUploadRequest }
-        output: ThemeAsset
-        outputFormat: 'json'
-        status: 201
-      }
-      $delete: {
-        input: { param: { companyId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $delete:
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/companies/:companyId/terminalThemes/:id/assets/replace': {
-      $post: {
-        input: { param: { companyId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+      $post:
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: ThemeAsset
+            outputFormat: 'json'
+            status: 200
           }
-        } & { form: AssetUploadRequest }
-        output: ThemeAsset
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { companyId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes': {
-      $get: {
-        input: { param: { merchantId: string } } & {
-          query: {
-            pageSize?: number | undefined
-            page?: number | undefined
-            search?: string | undefined
+      $get:
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: ListThemesResponse
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output: ListThemesResponse
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: {
-        input: { param: { merchantId: string } } & { json: CreateThemeRequest }
-        output: CreateThemeResponse
-        outputFormat: 'json'
-        status: 201
-      }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string } } & {
+              query: {
+                pageSize?: number | undefined
+                page?: number | undefined
+                search?: string | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $post:
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: CreateThemeResponse
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string } } & { json: CreateThemeRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes/unapply': {
-      $post: {
-        input: { param: { merchantId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { merchantId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { merchantId: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes/:id': {
-      $get: {
-        input: { param: { merchantId: string; id: string } }
-        output: ThemeWithAssetDetails
-        outputFormat: 'json'
-        status: 200
-      }
-      $delete: {
-        input: { param: { merchantId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
-      $patch: {
-        input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
-        output: UpdateThemeResponse
-        outputFormat: 'json'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: ThemeWithAssetDetails
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $delete:
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $patch:
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: UpdateThemeResponse
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & { json: ThemeUpdateRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes/:id/apply': {
-      $post: {
-        input: { param: { merchantId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes/:id/assets': {
-      $post: {
-        input: { param: { merchantId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+      $post:
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: ThemeAsset
+            outputFormat: 'json'
+            status: 201
           }
-        } & { form: AssetUploadRequest }
-        output: ThemeAsset
-        outputFormat: 'json'
-        status: 201
-      }
-      $delete: {
-        input: { param: { merchantId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 400
           }
-        }
-        output: {}
-        outputFormat: string
-        status: 204
-      }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
+      $delete:
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/merchants/:merchantId/terminalThemes/:id/assets/replace': {
-      $post: {
-        input: { param: { merchantId: string; id: string } } & {
-          query: {
-            type:
-              | 'logo'
-              | 'homeScreen'
-              | 'idleScreen'
-              | 'afterPaymentScreen'
-              | 'shopperEngagementScreen'
-            model:
-              | 'All'
-              | 'SFO1'
-              | 'M450'
-              | 'S1F2'
-              | 'S1E2L'
-              | 'S1F2L'
-              | 'S1F4Pro'
-              | 'S1E4Pro'
-              | 'S1U2'
-              | 'S1U2M4'
-              | 'LDN1'
-              | 'AMS1'
-              | 'P630'
+      $post:
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: ThemeAsset
+            outputFormat: 'json'
+            status: 200
           }
-        } & { form: AssetUploadRequest }
-        output: ThemeAsset
-        outputFormat: 'json'
-        status: 200
-      }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 429
+          }
+        | {
+            input: { param: { merchantId: string; id: string } } & {
+              query: {
+                type:
+                  | 'logo'
+                  | 'homeScreen'
+                  | 'idleScreen'
+                  | 'afterPaymentScreen'
+                  | 'shopperEngagementScreen'
+                model:
+                  | 'All'
+                  | 'SFO1'
+                  | 'M450'
+                  | 'S1F2'
+                  | 'S1E2L'
+                  | 'S1F2L'
+                  | 'S1F4Pro'
+                  | 'S1E4Pro'
+                  | 'S1U2'
+                  | 'S1U2M4'
+                  | 'LDN1'
+                  | 'AMS1'
+                  | 'P630'
+              }
+            } & { form: AssetUploadRequest }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/stores/:storeId/terminalThemes/unapply': {
-      $post: {
-        input: { param: { storeId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | { input: { param: { storeId: string } }; output: {}; outputFormat: string; status: 200 }
+        | { input: { param: { storeId: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { storeId: string } }; output: {}; outputFormat: string; status: 403 }
+        | { input: { param: { storeId: string } }; output: {}; outputFormat: string; status: 404 }
+        | { input: { param: { storeId: string } }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/stores/:storeId/terminalThemes/:id/apply': {
-      $post: {
-        input: { param: { storeId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { storeId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { storeId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { storeId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { storeId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { storeId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/terminals/:terminalId/terminalThemes/unapply': {
-      $post: {
-        input: { param: { terminalId: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { terminalId: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   } & {
     '/terminals/:terminalId/terminalThemes/:id/apply': {
-      $post: {
-        input: { param: { terminalId: string; id: string } }
-        output: {}
-        outputFormat: string
-        status: 200
-      }
+      $post:
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 200
+          }
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 403
+          }
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 422
+          }
+        | {
+            input: { param: { terminalId: string; id: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
     }
   },
   '/'

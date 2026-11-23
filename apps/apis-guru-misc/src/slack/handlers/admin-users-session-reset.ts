@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postAdminUsersSessionResetRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postAdminUsersSessionResetRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const adminUsersSessionResetHandler = app.openapi(postAdminUsersSessionResetRoute, (c) => {
+export const postAdminUsersSessionResetRouteHandler: RouteHandler<
+  typeof postAdminUsersSessionResetRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

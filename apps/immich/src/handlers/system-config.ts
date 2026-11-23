@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSystemConfigDefaultsRoute,
   getSystemConfigRoute,
   getSystemConfigStorageTemplateOptionsRoute,
   putSystemConfigRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSystemConfigRouteHandler: RouteHandler<typeof getSystemConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const systemConfigHandler = app
-  .openapi(getSystemConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSystemConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemConfigDefaultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSystemConfigStorageTemplateOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putSystemConfigRouteHandler: RouteHandler<typeof putSystemConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemConfigDefaultsRouteHandler: RouteHandler<
+  typeof getSystemConfigDefaultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSystemConfigStorageTemplateOptionsRouteHandler: RouteHandler<
+  typeof getSystemConfigStorageTemplateOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

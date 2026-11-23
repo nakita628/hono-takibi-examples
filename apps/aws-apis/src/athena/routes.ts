@@ -40,15 +40,15 @@ const QueryStagesSchema: z.ZodType<QueryStagesType> = z
   .openapi('QueryStages')
 
 type QueryStageType = {
-  StageId?: z.infer<typeof LongSchema> & unknown
-  State?: z.infer<typeof StringSchema> & unknown
-  OutputBytes?: z.infer<typeof LongSchema> & unknown
-  OutputRows?: z.infer<typeof LongSchema> & unknown
-  InputBytes?: z.infer<typeof LongSchema> & unknown
-  InputRows?: z.infer<typeof LongSchema> & unknown
-  ExecutionTime?: z.infer<typeof LongSchema> & unknown
-  QueryStagePlan?: z.infer<typeof QueryStagePlanNodeSchema> & unknown
-  SubStages?: z.infer<typeof QueryStagesSchema> & unknown
+  StageId?: z.infer<typeof LongSchema>
+  State?: z.infer<typeof StringSchema>
+  OutputBytes?: z.infer<typeof LongSchema>
+  OutputRows?: z.infer<typeof LongSchema>
+  InputBytes?: z.infer<typeof LongSchema>
+  InputRows?: z.infer<typeof LongSchema>
+  ExecutionTime?: z.infer<typeof LongSchema>
+  QueryStagePlan?: z.infer<typeof QueryStagePlanNodeSchema>
+  SubStages?: z.infer<typeof QueryStagesSchema>
 }
 
 const QueryStagePlanNodesSchema: z.ZodType<QueryStagePlanNodesType> = z
@@ -60,10 +60,10 @@ type StringListType = z.infer<typeof StringSchema>[]
 const StringListSchema: z.ZodType<StringListType> = z.array(StringSchema).openapi('StringList')
 
 type QueryStagePlanNodeType = {
-  Name?: z.infer<typeof StringSchema> & unknown
-  Identifier?: z.infer<typeof StringSchema> & unknown
-  Children?: z.infer<typeof QueryStagePlanNodesSchema> & unknown
-  RemoteSources?: z.infer<typeof StringListSchema> & unknown
+  Name?: z.infer<typeof StringSchema>
+  Identifier?: z.infer<typeof StringSchema>
+  Children?: z.infer<typeof QueryStagePlanNodesSchema>
+  RemoteSources?: z.infer<typeof StringListSchema>
 }
 
 const QueryStageSchema: z.ZodType<QueryStageType> = z

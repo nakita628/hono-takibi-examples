@@ -1181,16 +1181,20 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/lists/2026-09/folders/move-list': {
-      $put: { input: { json: ListMoveRequest }; output: Error; outputFormat: 'text'; status: 200 }
+      $put:
+        | { input: { json: ListMoveRequest }; output: {}; outputFormat: string; status: 204 }
+        | { input: { json: ListMoveRequest }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/crm/lists/2026-09/folders/:folderId': {
-      $delete: {
-        input: { param: { folderId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { folderId: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { folderId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/lists/2026-09/folders/:folderId/move/:newParentFolderId': {
@@ -1340,12 +1344,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { listId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { listId: string } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/crm/lists/2026-09/:listId/memberships': {
@@ -1374,12 +1375,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { listId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { listId: string } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/crm/lists/2026-09/:listId/memberships/add': {
@@ -1415,12 +1413,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/lists/2026-09/:listId/memberships/add-from/:sourceListId': {
-      $put: {
-        input: { param: { listId: string; sourceListId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { listId: string; sourceListId: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { listId: string; sourceListId: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/crm/lists/2026-09/:listId/memberships/join-order': {
@@ -1468,12 +1473,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/crm/lists/2026-09/:listId/restore': {
-      $put: {
-        input: { param: { listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $put:
+        | { input: { param: { listId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { listId: string } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/crm/lists/2026-09/:listId/schedule-conversion': {
@@ -1498,12 +1500,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { listId: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { listId: string } }; output: {}; outputFormat: string; status: 204 }
+        | { input: { param: { listId: string } }; output: Error; outputFormat: 'text'; status: 200 }
     }
   } & {
     '/crm/lists/2026-09/:listId/size-and-edits-history/between': {

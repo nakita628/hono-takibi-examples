@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteManagementAccountsAccountIdEntityUserLinksLinkIdRoute,
   deleteManagementAccountsAccountIdFiltersFilterIdRoute,
   deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute,
@@ -83,399 +83,488 @@ import {
   putManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getManagementAccountSummariesRouteHandler: RouteHandler<
+  typeof getManagementAccountSummariesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const managementHandler = app
-  .openapi(getManagementAccountSummariesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdEntityUserLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdEntityUserLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteManagementAccountsAccountIdEntityUserLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManagementAccountsAccountIdEntityUserLinksLinkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteManagementAccountsAccountIdFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchManagementAccountsAccountIdFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManagementAccountsAccountIdFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdWebpropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdWebpropertiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdDeleteUploadDataRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsUploadIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postManagementClientIdHashClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getManagementSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getManagementAccountsRouteHandler: RouteHandler<
+  typeof getManagementAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdFiltersRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdFiltersRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdFiltersFilterIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdFiltersFilterIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdFiltersFilterIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdFiltersFilterIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdDeleteUploadDataRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdDeleteUploadDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsUploadIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDataSourcesCustomDataSourceIdUploadsUploadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomDimensionsCustomDimensionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdCustomMetricsCustomMetricIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityAdWordsLinksWebPropertyAdWordsLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdEntityUserLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdExperimentsExperimentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdGoalsGoalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdProfileFilterLinksLinkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdProfilesProfileIdUnsampledReportsUnsampledReportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRouteHandler: RouteHandler<
+  typeof postManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRouteHandler: RouteHandler<
+  typeof deleteManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRouteHandler: RouteHandler<
+  typeof getManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRouteHandler: RouteHandler<
+  typeof patchManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRouteHandler: RouteHandler<
+  typeof putManagementAccountsAccountIdWebpropertiesWebPropertyIdRemarketingAudiencesRemarketingAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postManagementClientIdHashClientIdRouteHandler: RouteHandler<
+  typeof postManagementClientIdHashClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getManagementSegmentsRouteHandler: RouteHandler<
+  typeof getManagementSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/visualcrossing.com/weather/4.6/openapi.yaml',
   output: './src/visualcrossing-weather/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/visualcrossing-weather/types.ts' },
   client: { output: './src/visualcrossing-weather/client.ts', baseUrl: '/' },
   rpc: { output: './src/visualcrossing-weather/rpc.ts', parseResponse: true },

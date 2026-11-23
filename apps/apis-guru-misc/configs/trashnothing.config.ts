@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/trashnothing.com/1.3/openapi.yaml',
   output: './src/trashnothing/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/trashnothing/types.ts' },
   client: { output: './src/trashnothing/client.ts', baseUrl: '/' },
   rpc: { output: './src/trashnothing/rpc.ts', parseResponse: true },

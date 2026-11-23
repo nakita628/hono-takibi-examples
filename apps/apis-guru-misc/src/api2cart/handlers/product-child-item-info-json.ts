@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getProductChildItemInfoJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getProductChildItemInfoJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const productChildItemInfoJsonHandler = app.openapi(
-  getProductChildItemInfoJsonRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getProductChildItemInfoJsonRouteHandler: RouteHandler<
+  typeof getProductChildItemInfoJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

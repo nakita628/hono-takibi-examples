@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getV7DeploymentsRoute, postV7DomainsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getV7DeploymentsRoute, postV7DomainsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV7DomainsRouteHandler: RouteHandler<typeof postV7DomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v7Handler = app
-  .openapi(postV7DomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV7DeploymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV7DeploymentsRouteHandler: RouteHandler<typeof getV7DeploymentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

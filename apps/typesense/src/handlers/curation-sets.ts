@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCurationSetsCurationSetNameItemsItemIdRoute,
   deleteCurationSetsCurationSetNameRoute,
   getCurationSetsCurationSetNameItemsItemIdRoute,
@@ -10,30 +10,48 @@ import {
   putCurationSetsCurationSetNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCurationSetsRouteHandler: RouteHandler<typeof getCurationSetsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const curationSetsHandler = app
-  .openapi(getCurationSetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCurationSetsCurationSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCurationSetsCurationSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCurationSetsCurationSetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCurationSetsCurationSetNameItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCurationSetsCurationSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCurationSetsCurationSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCurationSetsCurationSetNameItemsItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCurationSetsCurationSetNameRouteHandler: RouteHandler<
+  typeof getCurationSetsCurationSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCurationSetsCurationSetNameRouteHandler: RouteHandler<
+  typeof putCurationSetsCurationSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCurationSetsCurationSetNameRouteHandler: RouteHandler<
+  typeof deleteCurationSetsCurationSetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCurationSetsCurationSetNameItemsRouteHandler: RouteHandler<
+  typeof getCurationSetsCurationSetNameItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCurationSetsCurationSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof getCurationSetsCurationSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCurationSetsCurationSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof putCurationSetsCurationSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCurationSetsCurationSetNameItemsItemIdRouteHandler: RouteHandler<
+  typeof deleteCurationSetsCurationSetNameItemsItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

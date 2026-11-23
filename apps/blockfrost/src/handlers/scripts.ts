@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getScriptsDatumDatumHashCborRoute,
   getScriptsDatumDatumHashRoute,
   getScriptsRoute,
@@ -10,30 +10,48 @@ import {
   getScriptsScriptHashUtxosRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getScriptsRouteHandler: RouteHandler<typeof getScriptsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scriptsHandler = app
-  .openapi(getScriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsScriptHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsScriptHashJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsScriptHashCborRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsScriptHashRedeemersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsScriptHashUtxosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsDatumDatumHashRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getScriptsDatumDatumHashCborRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getScriptsScriptHashRouteHandler: RouteHandler<
+  typeof getScriptsScriptHashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsScriptHashJsonRouteHandler: RouteHandler<
+  typeof getScriptsScriptHashJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsScriptHashCborRouteHandler: RouteHandler<
+  typeof getScriptsScriptHashCborRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsScriptHashRedeemersRouteHandler: RouteHandler<
+  typeof getScriptsScriptHashRedeemersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsScriptHashUtxosRouteHandler: RouteHandler<
+  typeof getScriptsScriptHashUtxosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsDatumDatumHashRouteHandler: RouteHandler<
+  typeof getScriptsDatumDatumHashRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getScriptsDatumDatumHashCborRouteHandler: RouteHandler<
+  typeof getScriptsDatumDatumHashCborRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

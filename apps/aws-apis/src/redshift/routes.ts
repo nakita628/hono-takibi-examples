@@ -82,8 +82,8 @@ const ClusterSubnetGroupsSchema = z
   .openapi('ClusterSubnetGroups')
 
 type ClusterSubnetGroupMessageType = {
-  Marker?: z.infer<typeof StringSchema> & unknown
-  ClusterSubnetGroups?: z.infer<typeof ClusterSubnetGroupsSchema> & unknown
+  Marker?: z.infer<typeof StringSchema>
+  ClusterSubnetGroups?: z.infer<typeof ClusterSubnetGroupsSchema>
 }
 
 const IntegerSchema = z.int().openapi('Integer')
@@ -732,8 +732,8 @@ const ClusterListSchema = z
   .openapi('ClusterList')
 
 type ClustersMessageType = {
-  Marker?: z.infer<typeof StringSchema> & unknown
-  Clusters?: z.infer<typeof ClusterListSchema> & unknown
+  Marker?: z.infer<typeof StringSchema>
+  Clusters?: z.infer<typeof ClusterListSchema>
 }
 
 const RecurringChargeSchema = z

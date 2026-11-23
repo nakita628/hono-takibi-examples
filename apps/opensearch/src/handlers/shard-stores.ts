@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getShardStoresRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getShardStoresRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const shardStoresHandler = app.openapi(getShardStoresRoute, (c) => {
+export const getShardStoresRouteHandler: RouteHandler<typeof getShardStoresRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

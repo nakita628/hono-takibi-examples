@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getEntriesSourceLanguageWordIdSentencesRoute,
   getEntriesSourceLangWordIdAntonymsRoute,
   getEntriesSourceLangWordIdFiltersRoute,
@@ -10,33 +10,50 @@ import {
   getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEntriesSourceLanguageWordIdSentencesRouteHandler: RouteHandler<
+  typeof getEntriesSourceLanguageWordIdSentencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const entriesHandler = app
-  .openapi(getEntriesSourceLanguageWordIdSentencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdAntonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdRegionsRegionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdSynonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdSynonymsAntonymsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEntriesSourceLangWordIdFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getEntriesSourceLangWordIdRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceLangWordIdAntonymsRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdAntonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceLangWordIdRegionsRegionRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdRegionsRegionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceLangWordIdSynonymsRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdSynonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceLangWordIdSynonymsAntonymsRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdSynonymsAntonymsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceLangWordIdFiltersRouteHandler: RouteHandler<
+  typeof getEntriesSourceLangWordIdFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageRouteHandler: RouteHandler<
+  typeof getEntriesSourceTranslationLanguageWordIdTranslationsTargetTranslationLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

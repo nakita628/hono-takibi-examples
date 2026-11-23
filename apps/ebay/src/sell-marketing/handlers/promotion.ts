@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPromotionPromotionIdGetListingSetRoute,
   getPromotionRoute,
   postPromotionPromotionIdPauseRoute,
   postPromotionPromotionIdResumeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPromotionRouteHandler: RouteHandler<typeof getPromotionRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const promotionHandler = app
-  .openapi(getPromotionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPromotionPromotionIdGetListingSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPromotionPromotionIdPauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPromotionPromotionIdResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPromotionPromotionIdGetListingSetRouteHandler: RouteHandler<
+  typeof getPromotionPromotionIdGetListingSetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPromotionPromotionIdPauseRouteHandler: RouteHandler<
+  typeof postPromotionPromotionIdPauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPromotionPromotionIdResumeRouteHandler: RouteHandler<
+  typeof postPromotionPromotionIdResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

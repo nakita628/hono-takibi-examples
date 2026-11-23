@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postChatDeleteScheduledMessageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postChatDeleteScheduledMessageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const chatDeleteScheduledMessageHandler = app.openapi(
-  postChatDeleteScheduledMessageRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postChatDeleteScheduledMessageRouteHandler: RouteHandler<
+  typeof postChatDeleteScheduledMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

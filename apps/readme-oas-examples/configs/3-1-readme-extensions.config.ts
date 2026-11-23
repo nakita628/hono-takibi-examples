@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.1/yaml/readme-extensions.yaml',
   output: './src/3-1-readme-extensions/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-1-readme-extensions/types.ts' },
   client: { output: './src/3-1-readme-extensions/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-1-readme-extensions/rpc.ts', parseResponse: true },

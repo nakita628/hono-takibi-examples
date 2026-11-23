@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsRoute,
   getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsTimeRoute,
   getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsUrlsListTypeRoute,
@@ -23,78 +23,128 @@ import {
   postAnalysesUsernameProjectSlugAnalysisSlugUrlsSuggestedFiltersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnalysesUsernameProjectSlugRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analysesHandler = app
-  .openapi(getAnalysesUsernameProjectSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsUrlsListTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAnalysesUsernameProjectSlugAnalysisSlugFeaturesGanalyticsOrphanUrlsMediumSourceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugFeaturesLinksPercentilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugFeaturesPagerankLostRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsReportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesOutOfConfigRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesSitemapOnlyRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsSubdomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalysesUsernameProjectSlugAnalysisSlugUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalysesUsernameProjectSlugAnalysisSlugUrlsAggsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugUrlsDatamodelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportUrlExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAnalysesUsernameProjectSlugAnalysisSlugUrlsSuggestedFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalysesUsernameProjectSlugAnalysisSlugUrlsUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnalysesUsernameProjectSlugAnalysisSlugRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsTimeRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsUrlsListTypeRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugCrawlStatisticsUrlsListTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesGanalyticsOrphanUrlsMediumSourceRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesGanalyticsOrphanUrlsMediumSourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesLinksPercentilesRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesLinksPercentilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesPagerankLostRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesPagerankLostRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsReportRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsReportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesOutOfConfigRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesOutOfConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesSitemapOnlyRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesSitemapsSamplesSitemapOnlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsDomainsRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsSubdomainsRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugFeaturesTopDomainsSubdomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalysesUsernameProjectSlugAnalysisSlugUrlsRouteHandler: RouteHandler<
+  typeof postAnalysesUsernameProjectSlugAnalysisSlugUrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalysesUsernameProjectSlugAnalysisSlugUrlsAggsRouteHandler: RouteHandler<
+  typeof postAnalysesUsernameProjectSlugAnalysisSlugUrlsAggsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugUrlsDatamodelRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugUrlsDatamodelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRouteHandler: RouteHandler<
+  typeof postAnalysesUsernameProjectSlugAnalysisSlugUrlsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportUrlExportIdRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugUrlsExportUrlExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAnalysesUsernameProjectSlugAnalysisSlugUrlsSuggestedFiltersRouteHandler: RouteHandler<
+  typeof postAnalysesUsernameProjectSlugAnalysisSlugUrlsSuggestedFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnalysesUsernameProjectSlugAnalysisSlugUrlsUrlRouteHandler: RouteHandler<
+  typeof getAnalysesUsernameProjectSlugAnalysisSlugUrlsUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

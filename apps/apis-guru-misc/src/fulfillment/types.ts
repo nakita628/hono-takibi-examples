@@ -820,6 +820,95 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 warehouse?: { id?: number | undefined } | undefined
               }
             }
+            output: {}
+            outputFormat: string
+            status: 401
+          }
+        | {
+            input: {
+              json: {
+                integrator?:
+                  | '1ShoppingCart'
+                  | '3dCart'
+                  | 'AdobeBC'
+                  | 'AmazonAU'
+                  | 'AmazonEU'
+                  | 'AmazonNA'
+                  | 'BigCommerce'
+                  | 'BrandBoom'
+                  | 'BrightPearl'
+                  | 'BuyGoods'
+                  | 'Celery'
+                  | 'ChannelAdvisor'
+                  | 'Clickbank'
+                  | 'CommerceHub'
+                  | 'Custom'
+                  | 'Demandware'
+                  | 'Ebay'
+                  | 'Ecwid'
+                  | 'Etsy'
+                  | 'FoxyCart'
+                  | 'Goodsie'
+                  | 'Infusionsoft'
+                  | 'Konnektive'
+                  | 'LimeLight'
+                  | 'Linio'
+                  | 'Linnworks'
+                  | 'Magento'
+                  | 'Netsuite'
+                  | 'NewEgg'
+                  | 'Nexternal'
+                  | 'NuOrder'
+                  | 'Opencart'
+                  | 'OrderWave'
+                  | 'osCommerce1'
+                  | 'Overstock'
+                  | 'PayPal'
+                  | 'PrestaShop'
+                  | 'Pricefalls'
+                  | 'Quickbooks'
+                  | 'Rakuten'
+                  | 'Sears'
+                  | 'Sellbrite'
+                  | 'SellerCloud'
+                  | 'Shipstation'
+                  | 'Shopify'
+                  | 'Skubana'
+                  | 'SolidCommerce'
+                  | 'SparkPay'
+                  | 'SpreeCommerce'
+                  | 'spsCommerce'
+                  | 'StitchLabs'
+                  | 'StoneEdge'
+                  | 'TradeGecko'
+                  | 'UltraCart'
+                  | 'Volusion'
+                  | 'VTEX'
+                  | 'Walmart'
+                  | 'WooCommerce'
+                  | 'Yahoo'
+                  | undefined
+                items: { declaredValue: string; quantity: number; sku: string }[]
+                merchantId?: number | undefined
+                merchantOrderId: string
+                notes?: string | undefined
+                recipient: {
+                  address1: string
+                  address2?: string | undefined
+                  addressLocality: string
+                  addressRegion: string
+                  companyName?: string | undefined
+                  country: string
+                  email: string
+                  firstName: string
+                  lastName: string
+                  phone: string
+                  postalCode?: string | undefined
+                }
+                shippingMethod: string
+                warehouse?: { id?: number | undefined } | undefined
+              }
+            }
             output: { message?: string | undefined }
             outputFormat: 'json'
             status: 403
@@ -1104,21 +1193,259 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 200
           }
+        | { input: { param: { id: number } }; output: {}; outputFormat: string; status: 404 }
         | {
             input: { param: { id: number } }
             output: { message?: string | undefined }
             outputFormat: 'json'
             status: 405
           }
-      $get: {
-        input: { param: { id: string } } & {
-          query: {
-            merchantId?: number | undefined
-            hydrate?: ('integrator' | 'lineItems' | 'trackingNumbers.carrier')[] | undefined
+      $get:
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                merchantId?: number | undefined
+                hydrate?: ('integrator' | 'lineItems' | 'trackingNumbers.carrier')[] | undefined
+              }
+            }
+            output:
+              | {
+                  currentStatus: {
+                    createdBy?: { id: number } | undefined
+                    date?: string | undefined
+                    id: number
+                    reason?: string | undefined
+                    status?:
+                      | {
+                          actionRequiredBy?:
+                            | { id?: number | undefined; name?: string | undefined }
+                            | undefined
+                          code: string
+                          detail?: string | undefined
+                          detailCode: string
+                          id?: number | undefined
+                          isClosed?: boolean | undefined
+                          name?: string | undefined
+                          reason?: string | undefined
+                          stage: { code?: string | undefined; name?: string | undefined }
+                          state: { code?: string | undefined; name?: string | undefined }
+                        }
+                      | undefined
+                  }
+                  departDate?: string | undefined
+                  dispatchDate?: string | undefined
+                  id: number
+                  merchant: { id: number; name: string }
+                  merchantOrderId: string
+                  merchantShippingMethod: string
+                  originalConsignee: {
+                    address1: string
+                    address2?: string | undefined
+                    addressLocality: string
+                    addressRegion: string
+                    companyName?: string | undefined
+                    country: string
+                    email?: string | undefined
+                    firstName: string
+                    id: number
+                    iso?:
+                      | {
+                          id?: number | undefined
+                          iso2?: string | undefined
+                          name?: string | undefined
+                        }
+                      | undefined
+                    lastName: string
+                    phone?: string | undefined
+                    postalCode: string
+                    updatedAt?: string | undefined
+                    updatedBy?: { id: number } | undefined
+                  }
+                  parentOrder?: { id?: number | undefined } | undefined
+                  purchaseOrderNum?: string | undefined
+                  recordedOn: string
+                  trackingNumbers?:
+                    | {
+                        barcodeScanValue?: string | undefined
+                        carrier?: { id: number } | undefined
+                        value?: string | undefined
+                      }[]
+                    | undefined
+                  validatedConsignee: {
+                    address1: string
+                    address2?: string | undefined
+                    addressLocality: string
+                    addressRegion: string
+                    companyName?: string | undefined
+                    country: string
+                    email?: string | undefined
+                    firstName: string
+                    id: number
+                    iso?:
+                      | {
+                          id?: number | undefined
+                          iso2?: string | undefined
+                          name?: string | undefined
+                        }
+                      | undefined
+                    lastName: string
+                    phone?: string | undefined
+                    postalCode: string
+                    updatedAt?: string | undefined
+                    updatedBy?: { id: number } | undefined
+                  }
+                  warehouse?: { id: number } | undefined
+                }
+              | {
+                  currentStatus: {
+                    createdBy?: { id: number } | undefined
+                    date?: string | undefined
+                    id: number
+                    reason?: string | undefined
+                    status?:
+                      | {
+                          actionRequiredBy?:
+                            | { id?: number | undefined; name?: string | undefined }
+                            | undefined
+                          code: string
+                          detail?: string | undefined
+                          detailCode: string
+                          id?: number | undefined
+                          isClosed?: boolean | undefined
+                          name?: string | undefined
+                          reason?: string | undefined
+                          stage: { code?: string | undefined; name?: string | undefined }
+                          state: { code?: string | undefined; name?: string | undefined }
+                        }
+                      | undefined
+                  }
+                  departDate?: string | undefined
+                  dispatchDate?: string | undefined
+                  id: number
+                  merchant: { id: number; name: string }
+                  merchantOrderId: string
+                  merchantShippingMethod: string
+                  originalConsignee: {
+                    address1: string
+                    address2?: string | undefined
+                    addressLocality: string
+                    addressRegion: string
+                    companyName?: string | undefined
+                    country: string
+                    email?: string | undefined
+                    firstName: string
+                    id: number
+                    iso?:
+                      | {
+                          id?: number | undefined
+                          iso2?: string | undefined
+                          name?: string | undefined
+                        }
+                      | undefined
+                    lastName: string
+                    phone?: string | undefined
+                    postalCode: string
+                    updatedAt?: string | undefined
+                    updatedBy?: { id: number } | undefined
+                  }
+                  parentOrder?: { id?: number | undefined } | undefined
+                  purchaseOrderNum?: string | undefined
+                  recordedOn: string
+                  trackingNumbers?:
+                    | {
+                        carrier?:
+                          | {
+                              canReprintPostage?: boolean | undefined
+                              enabled?: boolean | undefined
+                              id: number
+                              includePeripherals?: boolean | undefined
+                              internalRatesOnly?: boolean | undefined
+                              name: string
+                              requiresDimensions?: boolean | undefined
+                              symbol: string
+                            }
+                          | undefined
+                      }[]
+                    | undefined
+                  validatedConsignee: {
+                    address1: string
+                    address2?: string | undefined
+                    addressLocality: string
+                    addressRegion: string
+                    companyName?: string | undefined
+                    country: string
+                    email?: string | undefined
+                    firstName: string
+                    id: number
+                    iso?:
+                      | {
+                          id?: number | undefined
+                          iso2?: string | undefined
+                          name?: string | undefined
+                        }
+                      | undefined
+                    lastName: string
+                    phone?: string | undefined
+                    postalCode: string
+                    updatedAt?: string | undefined
+                    updatedBy?: { id: number } | undefined
+                  }
+                  warehouse?: { id: number } | undefined
+                  integrator?: string | undefined
+                  lineItems?:
+                    | {
+                        id?: number | undefined
+                        inventoryDetails?:
+                          | {
+                              expirationDate?: string | undefined
+                              lotNum?: string | undefined
+                              quantity?: number | undefined
+                              serialNum?: string | undefined
+                            }[]
+                          | undefined
+                        lineDetails?:
+                          | {
+                              description?: string | undefined
+                              externalSku?: string | undefined
+                              id?: number | undefined
+                              name?: string | undefined
+                              totalQuantity?: number | undefined
+                            }
+                          | undefined
+                        requestedSkuData?:
+                          | {
+                              declaredValue?: string | undefined
+                              id?: number | undefined
+                              quantity?: number | undefined
+                              sku?: string | undefined
+                            }
+                          | undefined
+                      }[]
+                    | undefined
+                }
+            outputFormat: 'json'
+            status: 200
           }
-        }
-        output:
-          | {
+        | {
+            input: { param: { id: string } } & {
+              query: {
+                merchantId?: number | undefined
+                hydrate?: ('integrator' | 'lineItems' | 'trackingNumbers.carrier')[] | undefined
+              }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+    }
+  } & {
+    '/orders/:id/ship': {
+      $put:
+        | {
+            input: { param: { id: number } } & {
+              json: { trackingNumber: string; weightOverride?: number | undefined }
+            }
+            output: {
               currentStatus: {
                 createdBy?: { id: number } | undefined
                 date?: string | undefined
@@ -1205,7 +1532,26 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               }
               warehouse?: { id: number } | undefined
             }
-          | {
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { id: number } } & {
+              json: { trackingNumber: string; weightOverride?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
+          }
+    }
+  } & {
+    '/orders/:id/status': {
+      $put:
+        | {
+            input: { param: { id: number } } & {
+              json: { reason: string; status: { code: string } }
+            }
+            output: {
               currentStatus: {
                 createdBy?: { id: number } | undefined
                 date?: string | undefined
@@ -1262,18 +1608,9 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
               recordedOn: string
               trackingNumbers?:
                 | {
-                    carrier?:
-                      | {
-                          canReprintPostage?: boolean | undefined
-                          enabled?: boolean | undefined
-                          id: number
-                          includePeripherals?: boolean | undefined
-                          internalRatesOnly?: boolean | undefined
-                          name: string
-                          requiresDimensions?: boolean | undefined
-                          symbol: string
-                        }
-                      | undefined
+                    barcodeScanValue?: string | undefined
+                    carrier?: { id: number } | undefined
+                    value?: string | undefined
                   }[]
                 | undefined
               validatedConsignee: {
@@ -1300,217 +1637,18 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
                 updatedBy?: { id: number } | undefined
               }
               warehouse?: { id: number } | undefined
-              integrator?: string | undefined
-              lineItems?:
-                | {
-                    id?: number | undefined
-                    inventoryDetails?:
-                      | {
-                          expirationDate?: string | undefined
-                          lotNum?: string | undefined
-                          quantity?: number | undefined
-                          serialNum?: string | undefined
-                        }[]
-                      | undefined
-                    lineDetails?:
-                      | {
-                          description?: string | undefined
-                          externalSku?: string | undefined
-                          id?: number | undefined
-                          name?: string | undefined
-                          totalQuantity?: number | undefined
-                        }
-                      | undefined
-                    requestedSkuData?:
-                      | {
-                          declaredValue?: string | undefined
-                          id?: number | undefined
-                          quantity?: number | undefined
-                          sku?: string | undefined
-                        }
-                      | undefined
-                  }[]
-                | undefined
             }
-        outputFormat: 'json'
-        status: 200
-      }
-    }
-  } & {
-    '/orders/:id/ship': {
-      $put: {
-        input: { param: { id: number } } & {
-          json: { trackingNumber: string; weightOverride?: number | undefined }
-        }
-        output: {
-          currentStatus: {
-            createdBy?: { id: number } | undefined
-            date?: string | undefined
-            id: number
-            reason?: string | undefined
-            status?:
-              | {
-                  actionRequiredBy?:
-                    | { id?: number | undefined; name?: string | undefined }
-                    | undefined
-                  code: string
-                  detail?: string | undefined
-                  detailCode: string
-                  id?: number | undefined
-                  isClosed?: boolean | undefined
-                  name?: string | undefined
-                  reason?: string | undefined
-                  stage: { code?: string | undefined; name?: string | undefined }
-                  state: { code?: string | undefined; name?: string | undefined }
-                }
-              | undefined
+            outputFormat: 'json'
+            status: 200
           }
-          departDate?: string | undefined
-          dispatchDate?: string | undefined
-          id: number
-          merchant: { id: number; name: string }
-          merchantOrderId: string
-          merchantShippingMethod: string
-          originalConsignee: {
-            address1: string
-            address2?: string | undefined
-            addressLocality: string
-            addressRegion: string
-            companyName?: string | undefined
-            country: string
-            email?: string | undefined
-            firstName: string
-            id: number
-            iso?:
-              | { id?: number | undefined; iso2?: string | undefined; name?: string | undefined }
-              | undefined
-            lastName: string
-            phone?: string | undefined
-            postalCode: string
-            updatedAt?: string | undefined
-            updatedBy?: { id: number } | undefined
+        | {
+            input: { param: { id: number } } & {
+              json: { reason: string; status: { code: string } }
+            }
+            output: {}
+            outputFormat: string
+            status: 404
           }
-          parentOrder?: { id?: number | undefined } | undefined
-          purchaseOrderNum?: string | undefined
-          recordedOn: string
-          trackingNumbers?:
-            | {
-                barcodeScanValue?: string | undefined
-                carrier?: { id: number } | undefined
-                value?: string | undefined
-              }[]
-            | undefined
-          validatedConsignee: {
-            address1: string
-            address2?: string | undefined
-            addressLocality: string
-            addressRegion: string
-            companyName?: string | undefined
-            country: string
-            email?: string | undefined
-            firstName: string
-            id: number
-            iso?:
-              | { id?: number | undefined; iso2?: string | undefined; name?: string | undefined }
-              | undefined
-            lastName: string
-            phone?: string | undefined
-            postalCode: string
-            updatedAt?: string | undefined
-            updatedBy?: { id: number } | undefined
-          }
-          warehouse?: { id: number } | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-    }
-  } & {
-    '/orders/:id/status': {
-      $put: {
-        input: { param: { id: number } } & { json: { reason: string; status: { code: string } } }
-        output: {
-          currentStatus: {
-            createdBy?: { id: number } | undefined
-            date?: string | undefined
-            id: number
-            reason?: string | undefined
-            status?:
-              | {
-                  actionRequiredBy?:
-                    | { id?: number | undefined; name?: string | undefined }
-                    | undefined
-                  code: string
-                  detail?: string | undefined
-                  detailCode: string
-                  id?: number | undefined
-                  isClosed?: boolean | undefined
-                  name?: string | undefined
-                  reason?: string | undefined
-                  stage: { code?: string | undefined; name?: string | undefined }
-                  state: { code?: string | undefined; name?: string | undefined }
-                }
-              | undefined
-          }
-          departDate?: string | undefined
-          dispatchDate?: string | undefined
-          id: number
-          merchant: { id: number; name: string }
-          merchantOrderId: string
-          merchantShippingMethod: string
-          originalConsignee: {
-            address1: string
-            address2?: string | undefined
-            addressLocality: string
-            addressRegion: string
-            companyName?: string | undefined
-            country: string
-            email?: string | undefined
-            firstName: string
-            id: number
-            iso?:
-              | { id?: number | undefined; iso2?: string | undefined; name?: string | undefined }
-              | undefined
-            lastName: string
-            phone?: string | undefined
-            postalCode: string
-            updatedAt?: string | undefined
-            updatedBy?: { id: number } | undefined
-          }
-          parentOrder?: { id?: number | undefined } | undefined
-          purchaseOrderNum?: string | undefined
-          recordedOn: string
-          trackingNumbers?:
-            | {
-                barcodeScanValue?: string | undefined
-                carrier?: { id: number } | undefined
-                value?: string | undefined
-              }[]
-            | undefined
-          validatedConsignee: {
-            address1: string
-            address2?: string | undefined
-            addressLocality: string
-            addressRegion: string
-            companyName?: string | undefined
-            country: string
-            email?: string | undefined
-            firstName: string
-            id: number
-            iso?:
-              | { id?: number | undefined; iso2?: string | undefined; name?: string | undefined }
-              | undefined
-            lastName: string
-            phone?: string | undefined
-            postalCode: string
-            updatedAt?: string | undefined
-            updatedBy?: { id: number } | undefined
-          }
-          warehouse?: { id: number } | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
     }
   } & {
     '/returns': {

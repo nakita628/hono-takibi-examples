@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1ApiFyiDeliveryoptionsDeviceIdRoute,
   deleteV1ApiIserverAccountAccountIdAlertAlertIdRoute,
   deleteV1ApiIserverAccountAccountIdOrderOrderIdRoute,
@@ -125,375 +125,734 @@ import {
   putV1ApiIserverAccountAllocationGroupRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1ApiFaFaPresetGetRouteHandler: RouteHandler<
+  typeof postV1ApiFaFaPresetGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1ApiFaFaPresetGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaFaPresetSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaIsFullMasterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelAccountsDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelCashAnalyzerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelInvestDivestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelInvestDivestPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelRebalanceToExistingTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelRebalanceToNewTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelRebalanceToSpecificTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelSaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelSubmitTransfersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFaModelTwsInvestDivestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFyiDeliveryoptionsDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiFyiSettingsTypecodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAllocationGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAllocationGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ApiIserverAccountAllocationGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAllocationGroupDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAllocationGroupSingleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAllocationPresetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAllocationPresetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAccountIdAlertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAccountIdAlertActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAccountIdOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApiIserverAccountAccountIdOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAccountIdOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountAccountIdOrdersWhatifRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAccountModelCodeOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAuthSsodhInitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverAuthStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverContractRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverDynaccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverMarketdataUnsubscribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverQuestionsSuppressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverQuestionsSuppressResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverReplyReplyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverScannerRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverSecdefSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverSecdefSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiIserverWatchlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverWatchlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApiIserverWatchlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiOauthAccessTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiOauthLiveSessionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiOauthRequestTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiPaAllocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiPaAllperiodsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiPaPerformanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiPaTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiPortfolioAccountIdPositionsInvalidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ApiTickleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiAceswsAccountIdSignaturesAndOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiContractTradingScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiForecastCategoryTreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiForecastContractDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiForecastContractMarketRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiForecastContractRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiForecastContractSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiFyiDeliveryoptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiFyiDisclaimerTypecodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ApiFyiDisclaimerTypecodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiFyiNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiFyiSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiFyiUnreadnumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAlertAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAllocationAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAllocationModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountMtaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountOrderStatusOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountPnlPartitionedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountSearchSearchPatternRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountTradesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdSummaryAvailableFundsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdSummaryBalancesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdSummaryMarginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountAccountIdSummaryMarketValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverContractConidAlgosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverContractConidInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverContractConidInfoAndRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverCurrencyPairsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverExchangerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverMarketdataHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverMarketdataSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverMarketdataUnsubscribeallRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverScannerParamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverSecdefBondFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverSecdefInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverSecdefStrikesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiIserverWatchlistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioPositionsConidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioSubaccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioSubaccounts2Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdAllocationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdComboPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdLedgerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdMetaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdPositionConidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdPositionsPageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolioAccountIdSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiPortfolio2AccountIdPositionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiSsoValidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiTrsrvAllConidsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiTrsrvFuturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiTrsrvSecdefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiTrsrvSecdefScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiTrsrvStocksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ApiWsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ApiFyiDeliveryoptionsEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1ApiFyiNotificationsNotificationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApiFyiDeliveryoptionsDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1ApiIserverAccountAccountIdAlertAlertIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1ApiFaFaPresetSaveRouteHandler: RouteHandler<
+  typeof postV1ApiFaFaPresetSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaIsFullMasterRouteHandler: RouteHandler<
+  typeof postV1ApiFaIsFullMasterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelAccountsDetailsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelAccountsDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelCashAnalyzerRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelCashAnalyzerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelInvestDivestRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelInvestDivestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelInvestDivestPositionsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelInvestDivestPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelListRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelPositionsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelRebalanceToExistingTargetsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelRebalanceToExistingTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelRebalanceToNewTargetsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelRebalanceToNewTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelRebalanceToSpecificTargetsRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelRebalanceToSpecificTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelSaveRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelSaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelSubmitTransfersRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelSubmitTransfersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelSummaryRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFaModelTwsInvestDivestRouteHandler: RouteHandler<
+  typeof postV1ApiFaModelTwsInvestDivestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFyiDeliveryoptionsDeviceRouteHandler: RouteHandler<
+  typeof postV1ApiFyiDeliveryoptionsDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiFyiSettingsTypecodeRouteHandler: RouteHandler<
+  typeof postV1ApiFyiSettingsTypecodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAllocationGroupRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAllocationGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAllocationGroupRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAllocationGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ApiIserverAccountAllocationGroupRouteHandler: RouteHandler<
+  typeof putV1ApiIserverAccountAllocationGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAllocationGroupDeleteRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAllocationGroupDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAllocationGroupSingleRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAllocationGroupSingleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAllocationPresetsRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAllocationPresetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAllocationPresetsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAllocationPresetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAccountIdAlertRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAccountIdAlertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAccountIdAlertActivateRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAccountIdAlertActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAccountIdOrderOrderIdRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAccountIdOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApiIserverAccountAccountIdOrderOrderIdRouteHandler: RouteHandler<
+  typeof deleteV1ApiIserverAccountAccountIdOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAccountIdOrdersRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAccountIdOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountAccountIdOrdersWhatifRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountAccountIdOrdersWhatifRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAccountModelCodeOrdersRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAccountModelCodeOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAuthSsodhInitRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAuthSsodhInitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverAuthStatusRouteHandler: RouteHandler<
+  typeof postV1ApiIserverAuthStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverContractRulesRouteHandler: RouteHandler<
+  typeof postV1ApiIserverContractRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverDynaccountRouteHandler: RouteHandler<
+  typeof postV1ApiIserverDynaccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverMarketdataUnsubscribeRouteHandler: RouteHandler<
+  typeof postV1ApiIserverMarketdataUnsubscribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverNotificationRouteHandler: RouteHandler<
+  typeof postV1ApiIserverNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverQuestionsSuppressRouteHandler: RouteHandler<
+  typeof postV1ApiIserverQuestionsSuppressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverQuestionsSuppressResetRouteHandler: RouteHandler<
+  typeof postV1ApiIserverQuestionsSuppressResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverReplyReplyIdRouteHandler: RouteHandler<
+  typeof postV1ApiIserverReplyReplyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverScannerRunRouteHandler: RouteHandler<
+  typeof postV1ApiIserverScannerRunRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverSecdefSearchRouteHandler: RouteHandler<
+  typeof postV1ApiIserverSecdefSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverSecdefSearchRouteHandler: RouteHandler<
+  typeof getV1ApiIserverSecdefSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiIserverWatchlistRouteHandler: RouteHandler<
+  typeof postV1ApiIserverWatchlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverWatchlistRouteHandler: RouteHandler<
+  typeof getV1ApiIserverWatchlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApiIserverWatchlistRouteHandler: RouteHandler<
+  typeof deleteV1ApiIserverWatchlistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiLogoutRouteHandler: RouteHandler<typeof postV1ApiLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiOauthAccessTokenRouteHandler: RouteHandler<
+  typeof postV1ApiOauthAccessTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiOauthLiveSessionTokenRouteHandler: RouteHandler<
+  typeof postV1ApiOauthLiveSessionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiOauthRequestTokenRouteHandler: RouteHandler<
+  typeof postV1ApiOauthRequestTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiPaAllocationRouteHandler: RouteHandler<
+  typeof postV1ApiPaAllocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiPaAllperiodsRouteHandler: RouteHandler<
+  typeof postV1ApiPaAllperiodsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiPaPerformanceRouteHandler: RouteHandler<
+  typeof postV1ApiPaPerformanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiPaTransactionsRouteHandler: RouteHandler<
+  typeof postV1ApiPaTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiPortfolioAccountIdPositionsInvalidateRouteHandler: RouteHandler<
+  typeof postV1ApiPortfolioAccountIdPositionsInvalidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ApiTickleRouteHandler: RouteHandler<typeof postV1ApiTickleRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiAceswsAccountIdSignaturesAndOwnersRouteHandler: RouteHandler<
+  typeof getV1ApiAceswsAccountIdSignaturesAndOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiContractTradingScheduleRouteHandler: RouteHandler<
+  typeof getV1ApiContractTradingScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiForecastCategoryTreeRouteHandler: RouteHandler<
+  typeof getV1ApiForecastCategoryTreeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiForecastContractDetailsRouteHandler: RouteHandler<
+  typeof getV1ApiForecastContractDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiForecastContractMarketRouteHandler: RouteHandler<
+  typeof getV1ApiForecastContractMarketRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiForecastContractRulesRouteHandler: RouteHandler<
+  typeof getV1ApiForecastContractRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiForecastContractSchedulesRouteHandler: RouteHandler<
+  typeof getV1ApiForecastContractSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiFyiDeliveryoptionsRouteHandler: RouteHandler<
+  typeof getV1ApiFyiDeliveryoptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiFyiDisclaimerTypecodeRouteHandler: RouteHandler<
+  typeof getV1ApiFyiDisclaimerTypecodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ApiFyiDisclaimerTypecodeRouteHandler: RouteHandler<
+  typeof putV1ApiFyiDisclaimerTypecodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiFyiNotificationsRouteHandler: RouteHandler<
+  typeof getV1ApiFyiNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiFyiSettingsRouteHandler: RouteHandler<
+  typeof getV1ApiFyiSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiFyiUnreadnumberRouteHandler: RouteHandler<
+  typeof getV1ApiFyiUnreadnumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAlertAlertIdRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAlertAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAllocationAccountsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAllocationAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAllocationModelsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAllocationModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountMtaRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountMtaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountOrderStatusOrderIdRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountOrderStatusOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountOrdersRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountPnlPartitionedRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountPnlPartitionedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountSearchSearchPatternRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountSearchSearchPatternRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountTradesRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountTradesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdAlertsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdSummaryRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdSummaryAvailableFundsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdSummaryAvailableFundsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdSummaryBalancesRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdSummaryBalancesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdSummaryMarginsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdSummaryMarginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountAccountIdSummaryMarketValueRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountAccountIdSummaryMarketValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverAccountsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverContractConidAlgosRouteHandler: RouteHandler<
+  typeof getV1ApiIserverContractConidAlgosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverContractConidInfoRouteHandler: RouteHandler<
+  typeof getV1ApiIserverContractConidInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverContractConidInfoAndRulesRouteHandler: RouteHandler<
+  typeof getV1ApiIserverContractConidInfoAndRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverCurrencyPairsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverCurrencyPairsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverExchangerateRouteHandler: RouteHandler<
+  typeof getV1ApiIserverExchangerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverMarketdataHistoryRouteHandler: RouteHandler<
+  typeof getV1ApiIserverMarketdataHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverMarketdataSnapshotRouteHandler: RouteHandler<
+  typeof getV1ApiIserverMarketdataSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverMarketdataUnsubscribeallRouteHandler: RouteHandler<
+  typeof getV1ApiIserverMarketdataUnsubscribeallRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverScannerParamsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverScannerParamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverSecdefBondFiltersRouteHandler: RouteHandler<
+  typeof getV1ApiIserverSecdefBondFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverSecdefInfoRouteHandler: RouteHandler<
+  typeof getV1ApiIserverSecdefInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverSecdefStrikesRouteHandler: RouteHandler<
+  typeof getV1ApiIserverSecdefStrikesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiIserverWatchlistsRouteHandler: RouteHandler<
+  typeof getV1ApiIserverWatchlistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountsRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioPositionsConidRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioPositionsConidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioSubaccountsRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioSubaccountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioSubaccounts2RouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioSubaccounts2Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdAllocationRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdAllocationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdComboPositionsRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdComboPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdLedgerRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdLedgerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdMetaRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdMetaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdPositionConidRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdPositionConidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdPositionsPageIdRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdPositionsPageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolioAccountIdSummaryRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolioAccountIdSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiPortfolio2AccountIdPositionsRouteHandler: RouteHandler<
+  typeof getV1ApiPortfolio2AccountIdPositionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiSsoValidateRouteHandler: RouteHandler<
+  typeof getV1ApiSsoValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiTrsrvAllConidsRouteHandler: RouteHandler<
+  typeof getV1ApiTrsrvAllConidsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiTrsrvFuturesRouteHandler: RouteHandler<
+  typeof getV1ApiTrsrvFuturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiTrsrvSecdefRouteHandler: RouteHandler<
+  typeof getV1ApiTrsrvSecdefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiTrsrvSecdefScheduleRouteHandler: RouteHandler<
+  typeof getV1ApiTrsrvSecdefScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiTrsrvStocksRouteHandler: RouteHandler<
+  typeof getV1ApiTrsrvStocksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ApiWsRouteHandler: RouteHandler<typeof getV1ApiWsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ApiFyiDeliveryoptionsEmailRouteHandler: RouteHandler<
+  typeof putV1ApiFyiDeliveryoptionsEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1ApiFyiNotificationsNotificationIdRouteHandler: RouteHandler<
+  typeof putV1ApiFyiNotificationsNotificationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApiFyiDeliveryoptionsDeviceIdRouteHandler: RouteHandler<
+  typeof deleteV1ApiFyiDeliveryoptionsDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1ApiIserverAccountAccountIdAlertAlertIdRouteHandler: RouteHandler<
+  typeof deleteV1ApiIserverAccountAccountIdAlertAlertIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

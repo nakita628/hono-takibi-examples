@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1beta1ParentExternalAccountKeysRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1beta1ParentExternalAccountKeysRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1beta1Handler = app.openapi(postV1beta1ParentExternalAccountKeysRoute, (c) => {
+export const postV1beta1ParentExternalAccountKeysRouteHandler: RouteHandler<
+  typeof postV1beta1ParentExternalAccountKeysRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

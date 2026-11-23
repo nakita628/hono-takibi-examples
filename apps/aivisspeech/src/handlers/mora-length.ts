@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMoraLengthRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMoraLengthRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const moraLengthHandler = app.openapi(postMoraLengthRoute, (c) => {
+export const postMoraLengthRouteHandler: RouteHandler<typeof postMoraLengthRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

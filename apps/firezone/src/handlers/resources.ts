@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteResourcesIdRoute,
   getResourcesIdRoute,
   getResourcesResourceIdPoolMembersRoute,
@@ -11,33 +11,48 @@ import {
   putResourcesResourceIdPoolMembersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getResourcesRouteHandler: RouteHandler<typeof getResourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const resourcesHandler = app
-  .openapi(getResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesResourceIdPoolMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchResourcesResourceIdPoolMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putResourcesResourceIdPoolMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postResourcesRouteHandler: RouteHandler<typeof postResourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteResourcesIdRouteHandler: RouteHandler<typeof deleteResourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesIdRouteHandler: RouteHandler<typeof getResourcesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchResourcesIdRouteHandler: RouteHandler<typeof patchResourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putResourcesIdRouteHandler: RouteHandler<typeof putResourcesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesResourceIdPoolMembersRouteHandler: RouteHandler<
+  typeof getResourcesResourceIdPoolMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchResourcesResourceIdPoolMembersRouteHandler: RouteHandler<
+  typeof patchResourcesResourceIdPoolMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putResourcesResourceIdPoolMembersRouteHandler: RouteHandler<
+  typeof putResourcesResourceIdPoolMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

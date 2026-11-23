@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsMysqlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsMysqlRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsMysqlHandler = app.openapi(getDbaasSettingsMysqlRoute, (c) => {
+export const getDbaasSettingsMysqlRouteHandler: RouteHandler<
+  typeof getDbaasSettingsMysqlRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

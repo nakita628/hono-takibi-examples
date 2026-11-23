@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Scheduler/Meetings/Rollouts/177892/2026-09/meetings.json',
   output: './src/scheduler-meetings/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/scheduler-meetings/types.ts' },
   client: { output: './src/scheduler-meetings/client.ts', baseUrl: '/' },
   rpc: { output: './src/scheduler-meetings/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRoomsRoomIdRoute,
   getRoomsRoomIdRoute,
   getRoomsRoomIdSessionsRoute,
@@ -9,27 +9,38 @@ import {
   postRoomsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRoomsRouteHandler: RouteHandler<typeof getRoomsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const roomsHandler = app
-  .openapi(getRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsRoomIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoomsRoomIdActionsGenerateJoinClientTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoomsRoomIdActionsRefreshClientTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoomsRoomIdSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRoomsRouteHandler: RouteHandler<typeof postRoomsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRoomsRoomIdRouteHandler: RouteHandler<typeof deleteRoomsRoomIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsRoomIdRouteHandler: RouteHandler<typeof getRoomsRoomIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoomsRoomIdActionsGenerateJoinClientTokenRouteHandler: RouteHandler<
+  typeof postRoomsRoomIdActionsGenerateJoinClientTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoomsRoomIdActionsRefreshClientTokenRouteHandler: RouteHandler<
+  typeof postRoomsRoomIdActionsRefreshClientTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoomsRoomIdSessionsRouteHandler: RouteHandler<
+  typeof getRoomsRoomIdSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

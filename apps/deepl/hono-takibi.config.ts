@@ -4,7 +4,7 @@ export default defineConfig({
   // DeepL API: https://github.com/DeepL/openapi
   input: 'https://raw.githubusercontent.com/DeepL/openapi/main/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

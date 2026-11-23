@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRaritiesRarityRoute, getRaritiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRaritiesRarityRoute, getRaritiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRaritiesRouteHandler: RouteHandler<typeof getRaritiesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const raritiesHandler = app
-  .openapi(getRaritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRaritiesRarityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRaritiesRarityRouteHandler: RouteHandler<typeof getRaritiesRarityRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

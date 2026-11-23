@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBlobsIdRoute,
   getBlobsIdDownloadFilenameRoute,
   getBlobsIdRoute,
@@ -8,24 +8,30 @@ import {
   postBlobsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBlobsRouteHandler: RouteHandler<typeof getBlobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const blobsHandler = app
-  .openapi(getBlobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBlobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlobsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlobsIdDownloadFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlobsIdUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBlobsRouteHandler: RouteHandler<typeof postBlobsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBlobsIdRouteHandler: RouteHandler<typeof deleteBlobsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlobsIdRouteHandler: RouteHandler<typeof getBlobsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlobsIdDownloadFilenameRouteHandler: RouteHandler<
+  typeof getBlobsIdDownloadFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlobsIdUploadRouteHandler: RouteHandler<typeof postBlobsIdUploadRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

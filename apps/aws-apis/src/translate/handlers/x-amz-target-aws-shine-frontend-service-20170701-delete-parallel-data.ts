@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsShineFrontendService20170701DeleteParallelDataHandler = app.openapi(
-  postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSShineFrontendService20170701DeleteParallelDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

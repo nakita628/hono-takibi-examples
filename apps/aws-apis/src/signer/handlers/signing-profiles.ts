@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSigningProfilesProfileNamePermissionsStatementIdRevisionIdRoute,
   deleteSigningProfilesProfileNameRoute,
   getSigningProfilesProfileNamePermissionsRoute,
@@ -10,30 +10,50 @@ import {
   putSigningProfilesProfileNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSigningProfilesProfileNamePermissionsRouteHandler: RouteHandler<
+  typeof postSigningProfilesProfileNamePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const signingProfilesHandler = app
-  .openapi(postSigningProfilesProfileNamePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSigningProfilesProfileNamePermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSigningProfilesProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSigningProfilesProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSigningProfilesProfileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSigningProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSigningProfilesProfileNamePermissionsStatementIdRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSigningProfilesProfileNameRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSigningProfilesProfileNamePermissionsRouteHandler: RouteHandler<
+  typeof getSigningProfilesProfileNamePermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSigningProfilesProfileNameRouteHandler: RouteHandler<
+  typeof deleteSigningProfilesProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSigningProfilesProfileNameRouteHandler: RouteHandler<
+  typeof getSigningProfilesProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSigningProfilesProfileNameRouteHandler: RouteHandler<
+  typeof putSigningProfilesProfileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSigningProfilesRouteHandler: RouteHandler<typeof getSigningProfilesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSigningProfilesProfileNamePermissionsStatementIdRevisionIdRouteHandler: RouteHandler<
+  typeof deleteSigningProfilesProfileNamePermissionsStatementIdRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSigningProfilesProfileNameRevokeRouteHandler: RouteHandler<
+  typeof putSigningProfilesProfileNameRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

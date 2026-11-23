@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLoadBalancerIdFieldRoute,
   deleteLoadBalancerIdRoute,
   deleteLoadBalancerIdServiceServiceIdFieldRoute,
@@ -13,39 +13,66 @@ import {
   putLoadBalancerIdServiceServiceIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteLoadBalancerIdServiceServiceIdRouteHandler: RouteHandler<
+  typeof deleteLoadBalancerIdServiceServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const loadBalancerHandler = app
-  .openapi(deleteLoadBalancerIdServiceServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLoadBalancerIdServiceServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancerIdServiceServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLoadBalancerIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLoadBalancerIdServiceServiceIdFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLoadBalancerIdServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLoadBalancerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLoadBalancerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLoadBalancerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putLoadBalancerIdServiceServiceIdRouteHandler: RouteHandler<
+  typeof putLoadBalancerIdServiceServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancerIdServiceServiceIdRouteHandler: RouteHandler<
+  typeof getLoadBalancerIdServiceServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancerRouteHandler: RouteHandler<typeof postLoadBalancerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancerRouteHandler: RouteHandler<typeof getLoadBalancerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLoadBalancerIdFieldRouteHandler: RouteHandler<
+  typeof deleteLoadBalancerIdFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLoadBalancerIdServiceServiceIdFieldRouteHandler: RouteHandler<
+  typeof deleteLoadBalancerIdServiceServiceIdFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLoadBalancerIdServiceRouteHandler: RouteHandler<
+  typeof postLoadBalancerIdServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLoadBalancerIdRouteHandler: RouteHandler<typeof putLoadBalancerIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLoadBalancerIdRouteHandler: RouteHandler<
+  typeof deleteLoadBalancerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLoadBalancerIdRouteHandler: RouteHandler<typeof getLoadBalancerIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

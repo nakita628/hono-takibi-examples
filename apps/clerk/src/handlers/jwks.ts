@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJwksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJwksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const jwksHandler = app.openapi(getJwksRoute, (c) => {
+export const getJwksRouteHandler: RouteHandler<typeof getJwksRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

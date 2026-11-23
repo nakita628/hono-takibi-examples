@@ -1,29 +1,47 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  __rootHandler,
-  chatTokenizeHandler,
-  generateHandler,
-  generateStreamHandler,
-  healthHandler,
-  infoHandler,
-  invocationsHandler,
-  metricsHandler,
-  tokenizeHandler,
-  v1Handler,
+  getHealthRoute,
+  getInfoRoute,
+  getMetricsRoute,
+  getV1ModelsRoute,
+  postChatTokenizeRoute,
+  postGenerateRoute,
+  postGenerateStreamRoute,
+  postInvocationsRoute,
+  postRoute,
+  postTokenizeRoute,
+  postV1ChatCompletionsRoute,
+  postV1CompletionsRoute,
+} from './routes'
+import {
+  getHealthRouteHandler,
+  getInfoRouteHandler,
+  getMetricsRouteHandler,
+  getV1ModelsRouteHandler,
+  postChatTokenizeRouteHandler,
+  postGenerateRouteHandler,
+  postGenerateStreamRouteHandler,
+  postInvocationsRouteHandler,
+  postRouteHandler,
+  postTokenizeRouteHandler,
+  postV1ChatCompletionsRouteHandler,
+  postV1CompletionsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', __rootHandler)
-  .route('/', chatTokenizeHandler)
-  .route('/', generateHandler)
-  .route('/', generateStreamHandler)
-  .route('/', healthHandler)
-  .route('/', infoHandler)
-  .route('/', invocationsHandler)
-  .route('/', metricsHandler)
-  .route('/', tokenizeHandler)
-  .route('/', v1Handler)
+  .openapi(postRoute, postRouteHandler)
+  .openapi(postChatTokenizeRoute, postChatTokenizeRouteHandler)
+  .openapi(postGenerateRoute, postGenerateRouteHandler)
+  .openapi(postGenerateStreamRoute, postGenerateStreamRouteHandler)
+  .openapi(getHealthRoute, getHealthRouteHandler)
+  .openapi(getInfoRoute, getInfoRouteHandler)
+  .openapi(postInvocationsRoute, postInvocationsRouteHandler)
+  .openapi(getMetricsRoute, getMetricsRouteHandler)
+  .openapi(postTokenizeRoute, postTokenizeRouteHandler)
+  .openapi(postV1ChatCompletionsRoute, postV1ChatCompletionsRouteHandler)
+  .openapi(postV1CompletionsRoute, postV1CompletionsRouteHandler)
+  .openapi(getV1ModelsRoute, getV1ModelsRouteHandler)
 
 export default app

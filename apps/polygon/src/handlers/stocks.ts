@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStocksDevTradesTickerRoute,
   getStocksFilings10KVX0SectionsRoute,
   getStocksFilings10KVXSectionsRoute,
@@ -27,81 +27,152 @@ import {
   getStocksVXFloatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStocksDevTradesTickerRouteHandler: RouteHandler<
+  typeof getStocksDevTradesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stocksHandler = app
-  .openapi(getStocksDevTradesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilings10KVXSectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilings10KVX0SectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilings8KVXDisclosuresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilings8KVXTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVX13FRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVXForm3Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVXForm4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVXForm5Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVXIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFilingsVXRiskFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFinancialsV1BalanceSheetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFinancialsV1CashFlowStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFinancialsV1IncomeStatementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksFinancialsV1RatiosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksInsidersVXActivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksInsidersVXHoldingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksTaxonomiesVXDisclosuresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksTaxonomiesVXRiskFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksV1DividendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksV1ExchangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksV1ShortInterestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksV1ShortVolumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksV1SplitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStocksVXFloatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStocksFilings10KVXSectionsRouteHandler: RouteHandler<
+  typeof getStocksFilings10KVXSectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilings10KVX0SectionsRouteHandler: RouteHandler<
+  typeof getStocksFilings10KVX0SectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilings8KVXDisclosuresRouteHandler: RouteHandler<
+  typeof getStocksFilings8KVXDisclosuresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilings8KVXTextRouteHandler: RouteHandler<
+  typeof getStocksFilings8KVXTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVX13FRouteHandler: RouteHandler<
+  typeof getStocksFilingsVX13FRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVXForm3RouteHandler: RouteHandler<
+  typeof getStocksFilingsVXForm3Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVXForm4RouteHandler: RouteHandler<
+  typeof getStocksFilingsVXForm4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVXForm5RouteHandler: RouteHandler<
+  typeof getStocksFilingsVXForm5Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVXIndexRouteHandler: RouteHandler<
+  typeof getStocksFilingsVXIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFilingsVXRiskFactorsRouteHandler: RouteHandler<
+  typeof getStocksFilingsVXRiskFactorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFinancialsV1BalanceSheetsRouteHandler: RouteHandler<
+  typeof getStocksFinancialsV1BalanceSheetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFinancialsV1CashFlowStatementsRouteHandler: RouteHandler<
+  typeof getStocksFinancialsV1CashFlowStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFinancialsV1IncomeStatementsRouteHandler: RouteHandler<
+  typeof getStocksFinancialsV1IncomeStatementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksFinancialsV1RatiosRouteHandler: RouteHandler<
+  typeof getStocksFinancialsV1RatiosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksInsidersVXActivityRouteHandler: RouteHandler<
+  typeof getStocksInsidersVXActivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksInsidersVXHoldingsRouteHandler: RouteHandler<
+  typeof getStocksInsidersVXHoldingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksTaxonomiesVXDisclosuresRouteHandler: RouteHandler<
+  typeof getStocksTaxonomiesVXDisclosuresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksTaxonomiesVXRiskFactorsRouteHandler: RouteHandler<
+  typeof getStocksTaxonomiesVXRiskFactorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksV1DividendsRouteHandler: RouteHandler<
+  typeof getStocksV1DividendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksV1ExchangesRouteHandler: RouteHandler<
+  typeof getStocksV1ExchangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksV1ShortInterestRouteHandler: RouteHandler<
+  typeof getStocksV1ShortInterestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksV1ShortVolumeRouteHandler: RouteHandler<
+  typeof getStocksV1ShortVolumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksV1SplitsRouteHandler: RouteHandler<typeof getStocksV1SplitsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getStocksVXFloatRouteHandler: RouteHandler<typeof getStocksVXFloatRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

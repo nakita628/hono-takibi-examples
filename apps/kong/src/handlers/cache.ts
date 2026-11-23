@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteCacheKeyRoute, deleteCacheRoute, getCacheKeyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteCacheKeyRoute, deleteCacheRoute, getCacheKeyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCacheKeyRouteHandler: RouteHandler<typeof getCacheKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const cacheHandler = app
-  .openapi(getCacheKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCacheKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCacheRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteCacheKeyRouteHandler: RouteHandler<typeof deleteCacheKeyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCacheRouteHandler: RouteHandler<typeof deleteCacheRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

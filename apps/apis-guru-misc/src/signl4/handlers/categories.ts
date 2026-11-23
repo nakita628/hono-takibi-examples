@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCategoriesTeamIdCategoryIdRoute,
   getCategoriesImagesRoute,
   getCategoriesTeamIdCategoryIdMetricsRoute,
@@ -12,36 +12,62 @@ import {
   putCategoriesTeamIdCategoryIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCategoriesImagesRouteHandler: RouteHandler<
+  typeof getCategoriesImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const categoriesHandler = app
-  .openapi(getCategoriesImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCategoriesTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCategoriesTeamIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCategoriesTeamIdMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCategoriesTeamIdCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCategoriesTeamIdCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCategoriesTeamIdCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCategoriesTeamIdCategoryIdMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCategoriesTeamIdCategoryIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCategoriesTeamIdCategoryIdSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCategoriesTeamIdRouteHandler: RouteHandler<
+  typeof getCategoriesTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCategoriesTeamIdRouteHandler: RouteHandler<
+  typeof postCategoriesTeamIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCategoriesTeamIdMetricsRouteHandler: RouteHandler<
+  typeof getCategoriesTeamIdMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCategoriesTeamIdCategoryIdRouteHandler: RouteHandler<
+  typeof deleteCategoriesTeamIdCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCategoriesTeamIdCategoryIdRouteHandler: RouteHandler<
+  typeof getCategoriesTeamIdCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putCategoriesTeamIdCategoryIdRouteHandler: RouteHandler<
+  typeof putCategoriesTeamIdCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCategoriesTeamIdCategoryIdMetricsRouteHandler: RouteHandler<
+  typeof getCategoriesTeamIdCategoryIdMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCategoriesTeamIdCategoryIdSubscriptionsRouteHandler: RouteHandler<
+  typeof getCategoriesTeamIdCategoryIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCategoriesTeamIdCategoryIdSubscriptionsRouteHandler: RouteHandler<
+  typeof postCategoriesTeamIdCategoryIdSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

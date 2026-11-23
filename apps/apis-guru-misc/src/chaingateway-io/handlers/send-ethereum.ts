@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendEthereumRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendEthereumRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendEthereumHandler = app.openapi(postSendEthereumRoute, (c) => {
+export const postSendEthereumRouteHandler: RouteHandler<typeof postSendEthereumRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

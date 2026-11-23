@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteChatPinsRoute,
   getChatBadgesGlobalRoute,
   getChatBadgesRoute,
@@ -20,60 +20,90 @@ import {
   putChatPinsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getChatChattersRouteHandler: RouteHandler<typeof getChatChattersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const chatHandler = app
-  .openapi(getChatChattersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatEmotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatEmotesGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatEmotesSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatBadgesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatBadgesGlobalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChatSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatEmotesUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChatAnnouncementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChatShoutoutsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postChatMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChatPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchChatPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteChatPinsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getChatColorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putChatColorRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getChatEmotesRouteHandler: RouteHandler<typeof getChatEmotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatEmotesGlobalRouteHandler: RouteHandler<
+  typeof getChatEmotesGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatEmotesSetRouteHandler: RouteHandler<typeof getChatEmotesSetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatBadgesRouteHandler: RouteHandler<typeof getChatBadgesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatBadgesGlobalRouteHandler: RouteHandler<
+  typeof getChatBadgesGlobalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatSettingsRouteHandler: RouteHandler<typeof getChatSettingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChatSettingsRouteHandler: RouteHandler<typeof patchChatSettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatEmotesUserRouteHandler: RouteHandler<typeof getChatEmotesUserRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postChatAnnouncementsRouteHandler: RouteHandler<
+  typeof postChatAnnouncementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postChatShoutoutsRouteHandler: RouteHandler<typeof postChatShoutoutsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postChatMessagesRouteHandler: RouteHandler<typeof postChatMessagesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatPinsRouteHandler: RouteHandler<typeof getChatPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChatPinsRouteHandler: RouteHandler<typeof putChatPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchChatPinsRouteHandler: RouteHandler<typeof patchChatPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteChatPinsRouteHandler: RouteHandler<typeof deleteChatPinsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getChatColorRouteHandler: RouteHandler<typeof getChatColorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putChatColorRouteHandler: RouteHandler<typeof putChatColorRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

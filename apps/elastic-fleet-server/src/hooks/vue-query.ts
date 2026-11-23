@@ -666,18 +666,18 @@ export function useApiFleetFileId<
 export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+      (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
     >
   >,
 ) {
   const { header: _, ...keyArgs } = toValue(args)
-  return ['api', '/api/agents/upgrades/:major.:minor.:patch/pgp-public-key', keyArgs] as const
+  return ['api', '/api/agents/upgrades/:major.{minor}.{patch}/pgp-public-key', keyArgs] as const
 }
 
 export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+      (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -686,7 +686,7 @@ export function getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryOptions(
     queryKey: computed(() => getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(toValue(args), {
+        client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -701,7 +701,7 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+            (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
           >
         >
       >
@@ -711,7 +711,7 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+      (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
     >
   >,
   options?: {
@@ -723,7 +723,7 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
                   >
                 >
               >
@@ -736,7 +736,7 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+                    (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
                   >
                 >
               >
@@ -759,7 +759,7 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.api.agents.upgrades)[':major.:minor.:patch']['pgp-public-key']['$get']
+              (typeof client.api.agents.upgrades)[':major.{minor}.{patch}']['pgp-public-key']['$get']
             >
           >
         >
@@ -774,10 +774,10 @@ export function useApiAgentsUpgradesMajorMinorPatchPgpPublicKey<
       queryKey: computed(() => getApiAgentsUpgradesMajorMinorPatchPgpPublicKeyQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api.agents.upgrades[':major.:minor.:patch']['pgp-public-key'].$get(toValue(args), {
-            ...clientOptions,
-            init: { ...clientOptions?.init, signal },
-          }),
+          client.api.agents.upgrades[':major.{minor}.{patch}']['pgp-public-key'].$get(
+            toValue(args),
+            { ...clientOptions, init: { ...clientOptions?.init, signal } },
+          ),
         )
       },
     },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CRM/Notetaker%20Conversation%20Recap/Rollouts/321956/2026-09/notetakerConversationRecap.json',
   output: './src/crm-notetaker-conversation-recap/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/crm-notetaker-conversation-recap/types.ts' },
   client: { output: './src/crm-notetaker-conversation-recap/client.ts', baseUrl: '/' },
   rpc: { output: './src/crm-notetaker-conversation-recap/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/edistrictkerala/3.0.0/openapi.yaml',
   output: './src/edistrictkerala/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/edistrictkerala/types.ts' },
   client: { output: './src/edistrictkerala/client.ts', baseUrl: '/' },
   rpc: { output: './src/edistrictkerala/rpc.ts', parseResponse: true },

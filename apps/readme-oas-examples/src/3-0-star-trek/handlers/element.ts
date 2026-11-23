@@ -1,15 +1,18 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getElementRoute, getElementSearchRoute, postElementSearchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getElementRoute, getElementSearchRoute, postElementSearchRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getElementRouteHandler: RouteHandler<typeof getElementRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const elementHandler = app
-  .openapi(getElementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getElementSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postElementSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getElementSearchRouteHandler: RouteHandler<typeof getElementSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postElementSearchRouteHandler: RouteHandler<typeof postElementSearchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

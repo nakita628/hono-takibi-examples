@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDescribeJobsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDescribeJobsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const describeJobsHandler = app.openapi(postDescribeJobsRoute, (c) => {
+export const postDescribeJobsRouteHandler: RouteHandler<typeof postDescribeJobsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

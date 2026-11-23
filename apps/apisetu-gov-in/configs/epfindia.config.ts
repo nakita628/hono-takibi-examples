@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/epfindia/3.0.0/openapi.yaml',
   output: './src/epfindia/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/epfindia/types.ts' },
   client: { output: './src/epfindia/client.ts', baseUrl: '/' },
   rpc: { output: './src/epfindia/rpc.ts', parseResponse: true },

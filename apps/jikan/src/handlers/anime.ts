@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnimeIdCharactersRoute,
   getAnimeIdEpisodesEpisodeRoute,
   getAnimeIdEpisodesRoute,
@@ -23,69 +23,116 @@ import {
   getAnimeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnimeIdFullRouteHandler: RouteHandler<typeof getAnimeIdFullRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const animeHandler = app
-  .openapi(getAnimeIdFullRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdCharactersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdStaffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdEpisodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdEpisodesEpisodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdNewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdForumRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdVideosEpisodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdPicturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdMoreinfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdRecommendationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdUserupdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdReviewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdRelationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdThemesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdExternalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeIdStreamingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnimeIdRouteHandler: RouteHandler<typeof getAnimeIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdCharactersRouteHandler: RouteHandler<
+  typeof getAnimeIdCharactersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdStaffRouteHandler: RouteHandler<typeof getAnimeIdStaffRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdEpisodesRouteHandler: RouteHandler<typeof getAnimeIdEpisodesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdEpisodesEpisodeRouteHandler: RouteHandler<
+  typeof getAnimeIdEpisodesEpisodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdNewsRouteHandler: RouteHandler<typeof getAnimeIdNewsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdForumRouteHandler: RouteHandler<typeof getAnimeIdForumRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdVideosRouteHandler: RouteHandler<typeof getAnimeIdVideosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdVideosEpisodesRouteHandler: RouteHandler<
+  typeof getAnimeIdVideosEpisodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdPicturesRouteHandler: RouteHandler<typeof getAnimeIdPicturesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdStatisticsRouteHandler: RouteHandler<
+  typeof getAnimeIdStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdMoreinfoRouteHandler: RouteHandler<typeof getAnimeIdMoreinfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdRecommendationsRouteHandler: RouteHandler<
+  typeof getAnimeIdRecommendationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdUserupdatesRouteHandler: RouteHandler<
+  typeof getAnimeIdUserupdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdReviewsRouteHandler: RouteHandler<typeof getAnimeIdReviewsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdRelationsRouteHandler: RouteHandler<
+  typeof getAnimeIdRelationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdThemesRouteHandler: RouteHandler<typeof getAnimeIdThemesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdExternalRouteHandler: RouteHandler<typeof getAnimeIdExternalRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeIdStreamingRouteHandler: RouteHandler<
+  typeof getAnimeIdStreamingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnimeRouteHandler: RouteHandler<typeof getAnimeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

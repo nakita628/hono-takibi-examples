@@ -1,107 +1,305 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsHandler,
-  xAmzTargetGlobalAcceleratorV20180706AddEndpointsHandler,
-  xAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrHandler,
-  xAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706CreateListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeleteListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficHandler,
-  xAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706DescribeListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListAcceleratorsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListByoipCidrsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListListenersHandler,
-  xAmzTargetGlobalAcceleratorV20180706ListTagsForResourceHandler,
-  xAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrHandler,
-  xAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsHandler,
-  xAmzTargetGlobalAcceleratorV20180706RemoveEndpointsHandler,
-  xAmzTargetGlobalAcceleratorV20180706TagResourceHandler,
-  xAmzTargetGlobalAcceleratorV20180706UntagResourceHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupHandler,
-  xAmzTargetGlobalAcceleratorV20180706UpdateListenerHandler,
-  xAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrHandler,
+  postXAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706AddEndpointsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrRoute,
+  postXAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706CreateListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListAcceleratorsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListByoipCidrsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListListenersRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ListTagsForResourceRoute,
+  postXAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrRoute,
+  postXAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706RemoveEndpointsRoute,
+  postXAmzTargetGlobalAcceleratorV20180706TagResourceRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UntagResourceRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupRoute,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateListenerRoute,
+  postXAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrRoute,
+} from './routes'
+import {
+  postXAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706AddEndpointsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706CreateListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeleteListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706DescribeListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListAcceleratorsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListByoipCidrsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListListenersRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ListTagsForResourceRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706RemoveEndpointsRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706TagResourceRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UntagResourceRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706UpdateListenerRouteHandler,
+  postXAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706AddEndpointsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706CreateListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeleteListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706DescribeListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListAcceleratorsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListByoipCidrsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListListenersHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ListTagsForResourceHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706RemoveEndpointsHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706TagResourceHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UntagResourceHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706UpdateListenerHandler)
-  .route('/', xAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrHandler)
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706AddCustomRoutingEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706AddEndpointsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706AddEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrRoute,
+    postXAmzTargetGlobalAcceleratorV20180706AdvertiseByoipCidrRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficRoute,
+    postXAmzTargetGlobalAcceleratorV20180706AllowCustomRoutingTrafficRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateCustomRoutingListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706CreateListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706CreateListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteCustomRoutingListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeleteListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeleteListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DenyCustomRoutingTrafficRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DeprovisionByoipCidrRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeAcceleratorAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingAcceleratorAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeCustomRoutingListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706DescribeListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706DescribeListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListAcceleratorsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListAcceleratorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListByoipCidrsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListByoipCidrsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingAcceleratorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingEndpointGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingListenersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListCustomRoutingPortMappingsByDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListEndpointGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListListenersRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListListenersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ListTagsForResourceRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrRoute,
+    postXAmzTargetGlobalAcceleratorV20180706ProvisionByoipCidrRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706RemoveCustomRoutingEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706RemoveEndpointsRoute,
+    postXAmzTargetGlobalAcceleratorV20180706RemoveEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706TagResourceRoute,
+    postXAmzTargetGlobalAcceleratorV20180706TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UntagResourceRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateAcceleratorAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingAcceleratorAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateCustomRoutingListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateEndpointGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706UpdateListenerRoute,
+    postXAmzTargetGlobalAcceleratorV20180706UpdateListenerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrRoute,
+    postXAmzTargetGlobalAcceleratorV20180706WithdrawByoipCidrRouteHandler,
+  )
 
 export default app

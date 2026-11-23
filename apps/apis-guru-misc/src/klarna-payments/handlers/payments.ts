@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePaymentsV1AuthorizationsAuthorizationTokenRoute,
   getPaymentsV1SessionsSessionIdRoute,
   postPaymentsV1AuthorizationsAuthorizationTokenCustomerTokenRoute,
@@ -8,24 +8,38 @@ import {
   postPaymentsV1SessionsSessionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePaymentsV1AuthorizationsAuthorizationTokenRouteHandler: RouteHandler<
+  typeof deletePaymentsV1AuthorizationsAuthorizationTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentsHandler = app
-  .openapi(deletePaymentsV1AuthorizationsAuthorizationTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsV1AuthorizationsAuthorizationTokenCustomerTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsV1AuthorizationsAuthorizationTokenOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsV1SessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentsV1SessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentsV1SessionsSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentsV1AuthorizationsAuthorizationTokenCustomerTokenRouteHandler: RouteHandler<
+  typeof postPaymentsV1AuthorizationsAuthorizationTokenCustomerTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsV1AuthorizationsAuthorizationTokenOrderRouteHandler: RouteHandler<
+  typeof postPaymentsV1AuthorizationsAuthorizationTokenOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsV1SessionsRouteHandler: RouteHandler<
+  typeof postPaymentsV1SessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentsV1SessionsSessionIdRouteHandler: RouteHandler<
+  typeof getPaymentsV1SessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentsV1SessionsSessionIdRouteHandler: RouteHandler<
+  typeof postPaymentsV1SessionsSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

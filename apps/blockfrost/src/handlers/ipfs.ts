@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIpfsGatewayIPFSPathRoute,
   getIpfsPinListIPFSPathRoute,
   getIpfsPinListRoute,
@@ -8,24 +8,34 @@ import {
   postIpfsPinRemoveIPFSPathRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIpfsAddRouteHandler: RouteHandler<typeof postIpfsAddRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ipfsHandler = app
-  .openapi(postIpfsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpfsGatewayIPFSPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpfsPinAddIPFSPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpfsPinListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIpfsPinListIPFSPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIpfsPinRemoveIPFSPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getIpfsGatewayIPFSPathRouteHandler: RouteHandler<
+  typeof getIpfsGatewayIPFSPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpfsPinAddIPFSPathRouteHandler: RouteHandler<
+  typeof postIpfsPinAddIPFSPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpfsPinListRouteHandler: RouteHandler<typeof getIpfsPinListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIpfsPinListIPFSPathRouteHandler: RouteHandler<
+  typeof getIpfsPinListIPFSPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIpfsPinRemoveIPFSPathRouteHandler: RouteHandler<
+  typeof postIpfsPinRemoveIPFSPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

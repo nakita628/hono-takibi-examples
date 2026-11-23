@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionDescribeVolumeStatusRoute, postActionDescribeVolumeStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getActionDescribeVolumeStatusRoute,
+  postActionDescribeVolumeStatusRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeVolumeStatusRouteHandler: RouteHandler<
+  typeof getActionDescribeVolumeStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeVolumeStatusHandler = app
-  .openapi(getActionDescribeVolumeStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeVolumeStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeVolumeStatusRouteHandler: RouteHandler<
+  typeof postActionDescribeVolumeStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

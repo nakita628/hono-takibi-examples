@@ -4012,7 +4012,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/files/:file_id/thumbnail.:extension': {
+    '/files/:file_id/thumbnail.{extension}': {
       $get:
         | {
             input: { param: { file_id: string; extension: 'png' | 'jpg' } } & {

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListTimelineEventsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListTimelineEventsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listTimelineEventsHandler = app.openapi(postListTimelineEventsRoute, (c) => {
+export const postListTimelineEventsRouteHandler: RouteHandler<
+  typeof postListTimelineEventsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

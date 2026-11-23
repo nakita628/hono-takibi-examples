@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apigee.local/registry/0.0.1/openapi.yaml',
   output: './src/apigee-registry/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/apigee-registry/types.ts' },
   client: { output: './src/apigee-registry/client.ts', baseUrl: '/' },
   rpc: { output: './src/apigee-registry/rpc.ts', parseResponse: true },

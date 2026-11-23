@@ -1,32 +1,46 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type PushOptionPropertyType = {
+const PushOptionPushOptionTypeSchema = z
+  .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
+  .openapi({ title: 'Option Type' })
+  .openapi('PushOptionPushOptionType')
+
+const PushOptionPushOptionChoiceSchema = z
+  .object({
+    description: z.string().exactOptional(),
+    displayName: z.string().exactOptional(),
+    required: z.boolean().exactOptional(),
+    type: PushOptionPushOptionTypeSchema.exactOptional(),
+    value: z.string().min(1).exactOptional().openapi({ description: 'Allowed value for field.' }),
+  })
+  .openapi({ title: 'Push Option Choice', required: [] })
+  .openapi('PushOptionPushOptionChoice')
+
+const PushOptionPushFieldValidationSchema = z
+  .strictObject({
+    details: z.string().min(1),
+    field: z.string().exactOptional(),
+    ref: z.url().nullable().exactOptional(),
+  })
+  .openapi({ required: ['details'], title: 'Push field validation' })
+  .openapi('PushOptionPushFieldValidation')
+
+const PushOptionPushValidationInfoSchema = z
+  .strictObject({
+    information: z.array(PushOptionPushFieldValidationSchema).nullable().exactOptional(),
+    warnings: z.array(PushOptionPushFieldValidationSchema).nullable().exactOptional(),
+  })
+  .openapi({ title: 'Push validation info', required: [] })
+  .openapi('PushOptionPushValidationInfo')
+
+type PushOptionPushOptionPropertyType = {
   description: string
   displayName: string
-  options?:
-    | {
-        description?: string
-        displayName?: string
-        required?: boolean
-        type?:
-          | 'Array'
-          | 'Object'
-          | 'String'
-          | 'Number'
-          | 'Boolean'
-          | 'DateTime'
-          | 'File'
-          | 'MultiPart'
-        value?: string
-      }[]
-    | null
-  properties?: { [key: string]: PushOptionPropertyType } | null
+  options?: z.infer<typeof PushOptionPushOptionChoiceSchema>[] | null
+  properties?: { [key: string]: PushOptionPushOptionPropertyType } | null
   required: boolean
-  type: 'Array' | 'Object' | 'String' | 'Number' | 'Boolean' | 'DateTime' | 'File' | 'MultiPart'
-  validation?: {
-    information?: { details: string; field?: string; ref?: string | null }[] | null
-    warnings?: { details: string; field?: string; ref?: string | null }[] | null
-  }
+  type: z.infer<typeof PushOptionPushOptionTypeSchema>
+  validation?: z.infer<typeof PushOptionPushValidationInfoSchema>
 }
 
 const DateTimeSchema = z
@@ -111,102 +125,100 @@ const BankFeedAccountsSchema = z
   .openapi({ 'x-internal': true })
   .openapi('BankFeedAccounts')
 
+const BankTransactionsBankTransactionTypeSchema = z
+  .enum([
+    'Unknown',
+    'Credit',
+    'Debit',
+    'Int',
+    'Div',
+    'Fee',
+    'SerChg',
+    'Dep',
+    'Atm',
+    'Pos',
+    'Xfer',
+    'Check',
+    'Payment',
+    'Cash',
+    'DirectDep',
+    'DirectDebit',
+    'RepeatPmt',
+    'Other',
+  ])
+  .openapi({
+    description: 'Type of transaction for the bank statement line',
+    title: 'Bank transaction type',
+  })
+  .openapi('BankTransactionsBankTransactionType')
+
+const BankTransactionsBankTransactionLineSchema = z
+  .object({
+    amount: z.number().exactOptional(),
+    balance: z.number().exactOptional(),
+    clearedOnDate: DateTimeSchema.exactOptional(),
+    counterparty: z.string().nullable().exactOptional(),
+    description: z.string().nullable().exactOptional(),
+    id: z.string().exactOptional(),
+    reconciled: z.boolean().exactOptional(),
+    reference: z.string().nullable().exactOptional(),
+    transactionType: BankTransactionsBankTransactionTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .and(
+    z
+      .looseObject({})
+      .openapi({ required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'] }),
+  )
+  .superRefine((val, ctx) => {
+    if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
+      if (!Object.hasOwn(val, 'amount')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'balance')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'date')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'reconciled')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+      if (!Object.hasOwn(val, 'transactionType')) {
+        ctx.addIssue({ code: 'custom' })
+      }
+    }
+  })
+  .and(
+    z
+      .object({
+        modifiedDate: DateTimeSchema.exactOptional().openapi({
+          description: 'The date on which this record was last modified in Codat.',
+        }),
+      })
+      .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] })
+      .and(
+        z
+          .object({
+            sourceModifiedDate: DateTimeSchema.exactOptional().openapi({
+              description:
+                'The date on which this record was last modified in the originating system',
+            }),
+          })
+          .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] }),
+      )
+      .openapi({ 'x-internal': true }),
+  )
+  .openapi({
+    required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
+    title: 'Bank transaction line',
+  })
+  .openapi('BankTransactionsBankTransactionLine')
+
 const BankTransactionsSchema = z
   .object({
     accountId: z.string().nullable().exactOptional(),
-    transactions: z
-      .array(
-        z
-          .object({
-            amount: z.number().exactOptional(),
-            balance: z.number().exactOptional(),
-            clearedOnDate: DateTimeSchema.exactOptional(),
-            counterparty: z.string().nullable().exactOptional(),
-            description: z.string().nullable().exactOptional(),
-            id: z.string().exactOptional(),
-            reconciled: z.boolean().exactOptional(),
-            reference: z.string().nullable().exactOptional(),
-            transactionType: z
-              .enum([
-                'Unknown',
-                'Credit',
-                'Debit',
-                'Int',
-                'Div',
-                'Fee',
-                'SerChg',
-                'Dep',
-                'Atm',
-                'Pos',
-                'Xfer',
-                'Check',
-                'Payment',
-                'Cash',
-                'DirectDep',
-                'DirectDebit',
-                'RepeatPmt',
-                'Other',
-              ])
-              .exactOptional()
-              .openapi({
-                description: 'Type of transaction for the bank statement line',
-                title: 'Bank transaction type',
-              }),
-          })
-          .openapi({ required: [] })
-          .and(
-            z
-              .looseObject({})
-              .openapi({
-                required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-              }),
-          )
-          .superRefine((val, ctx) => {
-            if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
-              if (!Object.hasOwn(val, 'amount')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'balance')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'date')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'reconciled')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-              if (!Object.hasOwn(val, 'transactionType')) {
-                ctx.addIssue({ code: 'custom' })
-              }
-            }
-          })
-          .and(
-            z
-              .object({
-                modifiedDate: DateTimeSchema.exactOptional().openapi({
-                  description: 'The date on which this record was last modified in Codat.',
-                }),
-              })
-              .openapi({ title: 'ModifiedDate', 'x-internal': true, required: [] })
-              .and(
-                z
-                  .object({
-                    sourceModifiedDate: DateTimeSchema.exactOptional().openapi({
-                      description:
-                        'The date on which this record was last modified in the originating system',
-                    }),
-                  })
-                  .openapi({ title: 'Source Modified Date', 'x-internal': true, required: [] }),
-              )
-              .openapi({ 'x-internal': true }),
-          )
-          .openapi({
-            required: ['amount', 'balance', 'date', 'reconciled', 'transactionType'],
-            title: 'Bank transaction line',
-          }),
-      )
-      .nullable()
-      .exactOptional(),
+    transactions: z.array(BankTransactionsBankTransactionLineSchema).nullable().exactOptional(),
   })
   .openapi({
     description:
@@ -318,29 +330,58 @@ const DataTypeSchema = z
   .openapi({ description: 'Available Data types', example: 'invoices', 'x-internal': true })
   .openapi('DataType')
 
+const PushOperationPushOperationRefSchema = z
+  .strictObject({
+    dataType: DataTypeSchema.nullable().exactOptional(),
+    id: z.string().exactOptional(),
+  })
+  .openapi({ title: 'Push operation reference', 'x-internal': true, required: [] })
+  .openapi('PushOperationPushOperationRef')
+
+const PushOperationPushChangeTypeSchema = z
+  .enum(['Unknown', 'Created', 'Modified', 'Deleted', 'AttachmentUploaded'])
+  .openapi({ title: 'Push change type' })
+  .openapi('PushOperationPushChangeType')
+
+const PushOperationPushOperationChangeSchema = z
+  .object({
+    attachmentId: z.string().nullable().exactOptional(),
+    recordRef: PushOperationPushOperationRefSchema.exactOptional(),
+    type: PushOperationPushChangeTypeSchema.exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('PushOperationPushOperationChange')
+
+const PushOperationPushOperationStatusSchema = z
+  .enum(['Pending', 'Failed', 'Success', 'TimedOut'])
+  .openapi({ description: 'The status of the push operation.', title: 'Push operation status' })
+  .openapi('PushOperationPushOperationStatus')
+
+const PushOperationValidationItemSchema = z
+  .strictObject({
+    itemId: z.string().nullable().exactOptional(),
+    message: z.string().nullable().exactOptional(),
+    validatorName: z.string().nullable().exactOptional(),
+  })
+  .openapi({ title: 'Validation item', required: [] })
+  .openapi('PushOperationValidationItem')
+
+const PushOperationValidationSchema = z
+  .object({
+    errors: z.array(PushOperationValidationItemSchema).nullable().exactOptional(),
+    warnings: z.array(PushOperationValidationItemSchema).nullable().exactOptional(),
+  })
+  .openapi({
+    description:
+      'A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.',
+    title: 'Validation',
+    required: [],
+  })
+  .openapi('PushOperationValidation')
+
 const PushOperationSchema = z
   .object({
-    changes: z
-      .array(
-        z
-          .object({
-            attachmentId: z.string().nullable().exactOptional(),
-            recordRef: z
-              .strictObject({
-                dataType: DataTypeSchema.nullable().exactOptional(),
-                id: z.string().exactOptional(),
-              })
-              .exactOptional()
-              .openapi({ title: 'Push operation reference', 'x-internal': true, required: [] }),
-            type: z
-              .enum(['Unknown', 'Created', 'Modified', 'Deleted', 'AttachmentUploaded'])
-              .exactOptional()
-              .openapi({ title: 'Push change type' }),
-          })
-          .openapi({ required: [] }),
-      )
-      .nullable()
-      .exactOptional(),
+    changes: z.array(PushOperationPushOperationChangeSchema).nullable().exactOptional(),
     companyId: z
       .uuid()
       .openapi({
@@ -369,49 +410,11 @@ const PushOperationSchema = z
     requestedOnUtc: DateTimeSchema.openapi({
       description: 'The datetime when the push was requested.',
     }),
-    status: z
-      .enum(['Pending', 'Failed', 'Success', 'TimedOut'])
-      .openapi({
-        description: 'The status of the push operation.',
-        title: 'Push operation status',
-      }),
+    status: PushOperationPushOperationStatusSchema,
     statusCode: z.int(),
     timeoutInMinutes: z.int32().nullable().exactOptional(),
     timeoutInSeconds: z.int32().nullable().exactOptional().openapi({ deprecated: true }),
-    validation: z
-      .object({
-        errors: z
-          .array(
-            z
-              .strictObject({
-                itemId: z.string().nullable().exactOptional(),
-                message: z.string().nullable().exactOptional(),
-                validatorName: z.string().nullable().exactOptional(),
-              })
-              .openapi({ title: 'Validation item', required: [] }),
-          )
-          .nullable()
-          .exactOptional(),
-        warnings: z
-          .array(
-            z
-              .strictObject({
-                itemId: z.string().nullable().exactOptional(),
-                message: z.string().nullable().exactOptional(),
-                validatorName: z.string().nullable().exactOptional(),
-              })
-              .openapi({ title: 'Validation item', required: [] }),
-          )
-          .nullable()
-          .exactOptional(),
-      })
-      .exactOptional()
-      .openapi({
-        description:
-          'A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.',
-        title: 'Validation',
-        required: [],
-      }),
+    validation: PushOperationValidationSchema.exactOptional(),
   })
   .openapi({
     required: [
@@ -433,153 +436,37 @@ const CreateBankTransactionsResponseSchema = z
   .openapi({ 'x-internal': true })
   .openapi('CreateBankTransactionsResponse')
 
-const PushOptionPropertySchema: z.ZodType<PushOptionPropertyType> = z
+const PushOptionPushOptionPropertySchema: z.ZodType<PushOptionPushOptionPropertyType> = z
   .lazy(() =>
     z
       .object({
         description: z.string().min(1),
         displayName: z.string().min(1),
-        options: z
-          .array(
-            z
-              .object({
-                description: z.string().exactOptional(),
-                displayName: z.string().exactOptional(),
-                required: z.boolean().exactOptional(),
-                type: z
-                  .enum([
-                    'Array',
-                    'Object',
-                    'String',
-                    'Number',
-                    'Boolean',
-                    'DateTime',
-                    'File',
-                    'MultiPart',
-                  ])
-                  .exactOptional()
-                  .openapi({ title: 'Option Type' }),
-                value: z
-                  .string()
-                  .min(1)
-                  .exactOptional()
-                  .openapi({ description: 'Allowed value for field.' }),
-              })
-              .openapi({ title: 'Push Option Choice', required: [] }),
-          )
+        options: z.array(PushOptionPushOptionChoiceSchema).nullable().exactOptional(),
+        properties: z
+          .record(z.string(), PushOptionPushOptionPropertySchema)
           .nullable()
           .exactOptional(),
-        properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
         required: z.boolean(),
-        type: z
-          .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
-          .openapi({ title: 'Option Type' }),
-        validation: z
-          .strictObject({
-            information: z
-              .array(
-                z
-                  .strictObject({
-                    details: z.string().min(1),
-                    field: z.string().exactOptional(),
-                    ref: z.url().nullable().exactOptional(),
-                  })
-                  .openapi({ required: ['details'], title: 'Push field validation' }),
-              )
-              .nullable()
-              .exactOptional(),
-            warnings: z
-              .array(
-                z
-                  .strictObject({
-                    details: z.string().min(1),
-                    field: z.string().exactOptional(),
-                    ref: z.url().nullable().exactOptional(),
-                  })
-                  .openapi({ required: ['details'], title: 'Push field validation' }),
-              )
-              .nullable()
-              .exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ title: 'Push validation info', required: [] }),
+        type: PushOptionPushOptionTypeSchema,
+        validation: PushOptionPushValidationInfoSchema.exactOptional(),
       })
       .openapi({
         required: ['description', 'displayName', 'required', 'type'],
         title: 'Push Option Property',
       }),
   )
-  .openapi('PushOptionProperty')
+  .openapi('PushOptionPushOptionProperty')
 
 const PushOptionSchema = z
   .object({
     description: z.string().exactOptional(),
     displayName: z.string().min(1),
-    options: z
-      .array(
-        z
-          .object({
-            description: z.string().exactOptional(),
-            displayName: z.string().exactOptional(),
-            required: z.boolean().exactOptional(),
-            type: z
-              .enum([
-                'Array',
-                'Object',
-                'String',
-                'Number',
-                'Boolean',
-                'DateTime',
-                'File',
-                'MultiPart',
-              ])
-              .exactOptional()
-              .openapi({ title: 'Option Type' }),
-            value: z
-              .string()
-              .min(1)
-              .exactOptional()
-              .openapi({ description: 'Allowed value for field.' }),
-          })
-          .openapi({ title: 'Push Option Choice', required: [] }),
-      )
-      .nullable()
-      .exactOptional(),
-    properties: z.record(z.string(), PushOptionPropertySchema).nullable().exactOptional(),
+    options: z.array(PushOptionPushOptionChoiceSchema).nullable().exactOptional(),
+    properties: z.record(z.string(), PushOptionPushOptionPropertySchema).nullable().exactOptional(),
     required: z.boolean(),
-    type: z
-      .enum(['Array', 'Object', 'String', 'Number', 'Boolean', 'DateTime', 'File', 'MultiPart'])
-      .openapi({ title: 'Option Type' }),
-    validation: z
-      .strictObject({
-        information: z
-          .array(
-            z
-              .strictObject({
-                details: z.string().min(1),
-                field: z.string().exactOptional(),
-                ref: z.url().nullable().exactOptional(),
-              })
-              .openapi({ required: ['details'], title: 'Push field validation' }),
-          )
-          .nullable()
-          .exactOptional(),
-        warnings: z
-          .array(
-            z
-              .strictObject({
-                details: z.string().min(1),
-                field: z.string().exactOptional(),
-                ref: z.url().nullable().exactOptional(),
-              })
-              .openapi({ required: ['details'], title: 'Push field validation' }),
-          )
-          .nullable()
-          .exactOptional(),
-      })
-      .nullable()
-      .exactOptional()
-      .openapi({ title: 'Push validation info', required: [] }),
+    type: PushOptionPushOptionTypeSchema,
+    validation: PushOptionPushValidationInfoSchema.nullable().exactOptional(),
   })
   .openapi({
     required: ['displayName', 'required', 'type'],

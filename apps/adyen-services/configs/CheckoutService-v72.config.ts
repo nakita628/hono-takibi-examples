@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/CheckoutService-v72.json',
   output: './src/CheckoutService-v72/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/CheckoutService-v72/types.ts' },
   client: { output: './src/CheckoutService-v72/client.ts', baseUrl: '/' },
   rpc: { output: './src/CheckoutService-v72/rpc.ts', parseResponse: true },

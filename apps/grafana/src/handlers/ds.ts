@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDsQueryRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDsQueryRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dsHandler = app.openapi(postDsQueryRoute, (c) => {
+export const postDsQueryRouteHandler: RouteHandler<typeof postDsQueryRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

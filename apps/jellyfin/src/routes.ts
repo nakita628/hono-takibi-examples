@@ -10295,7 +10295,6 @@ export const getSystemActivityLogEntriesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -10336,7 +10335,6 @@ export const getAuthKeysRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -10385,7 +10383,6 @@ export const postAuthKeysRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -10434,7 +10431,6 @@ export const deleteAuthKeysKeyRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -10976,7 +10972,6 @@ export const getArtistsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -11047,7 +11042,6 @@ export const getArtistsNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -11590,7 +11584,6 @@ export const getArtistsAlbumArtistsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -12515,7 +12508,6 @@ export const getAudioItemIdStreamRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -13438,7 +13430,6 @@ export const headAudioItemIdStreamRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -14360,7 +14351,6 @@ export const getAudioItemIdStreamContainerRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15282,7 +15272,6 @@ export const headAudioItemIdStreamContainerRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15329,7 +15318,6 @@ export const getBackupRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15399,7 +15387,6 @@ export const postBackupCreateRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15471,7 +15458,6 @@ export const getBackupManifestRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15543,7 +15529,6 @@ export const postBackupRestoreRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15582,7 +15567,6 @@ export const getBrandingConfigurationRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15622,7 +15606,6 @@ export const getBrandingCssRoute = createRoute({
     204: { description: 'No branding css configured.' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15662,7 +15645,6 @@ export const getBrandingCssCssRoute = createRoute({
     204: { description: 'No branding css configured.' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15795,7 +15777,6 @@ export const getChannelsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -15851,7 +15832,6 @@ export const getChannelsChannelIdFeaturesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16036,7 +16016,6 @@ export const getChannelsChannelIdItemsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16077,7 +16056,6 @@ export const getChannelsFeaturesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16221,7 +16199,6 @@ export const getChannelsItemsLatestRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16282,7 +16259,6 @@ export const postClientLogDocumentRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16379,7 +16355,6 @@ export const postCollectionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16444,7 +16419,6 @@ export const postCollectionsCollectionIdItemsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16509,7 +16483,6 @@ export const deleteCollectionsCollectionIdItemsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16550,7 +16523,6 @@ export const getSystemConfigurationRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16607,7 +16579,6 @@ export const postSystemConfigurationRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16661,7 +16632,6 @@ export const getSystemConfigurationKeyRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16719,7 +16689,6 @@ export const postSystemConfigurationKeyRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16779,7 +16748,6 @@ export const postSystemConfigurationBrandingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16820,7 +16788,6 @@ export const getSystemConfigurationMetadataOptionsDefaultRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16884,7 +16851,6 @@ export const getWebConfigurationPageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -16948,7 +16914,6 @@ export const getWebConfigurationPagesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17005,7 +16970,6 @@ export const getDevicesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17066,7 +17030,6 @@ export const deleteDevicesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17130,7 +17093,6 @@ export const getDevicesInfoRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17194,7 +17156,6 @@ export const getDevicesOptionsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17264,7 +17225,6 @@ export const postDevicesOptionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17345,7 +17305,6 @@ export const getDisplayPreferencesDisplayPreferencesIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17443,7 +17402,6 @@ export const postDisplayPreferencesDisplayPreferencesIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17484,7 +17442,6 @@ export const getEnvironmentDefaultDirectoryBrowserRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17568,7 +17525,6 @@ export const getEnvironmentDirectoryContentsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17609,7 +17565,6 @@ export const getEnvironmentDrivesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17665,7 +17620,6 @@ export const getEnvironmentParentPathRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17724,7 +17678,6 @@ export const postEnvironmentValidatePathRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17824,7 +17777,6 @@ export const getItemsFiltersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -17994,7 +17946,6 @@ export const getItemsFilters2Route = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -18307,7 +18258,6 @@ export const getGenresRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -18377,7 +18327,6 @@ export const getGenresGenreNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -18733,7 +18682,6 @@ export const getArtistsNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19088,7 +19036,6 @@ export const headArtistsNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19151,7 +19098,6 @@ export const getBrandingSplashscreenRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19205,7 +19151,6 @@ export const postBrandingSplashscreenRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19239,7 +19184,6 @@ export const deleteBrandingSplashscreenRoute = createRoute({
     403: { description: 'User does not have permission to delete splashscreen..' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19596,7 +19540,6 @@ export const getGenresNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -19952,7 +19895,6 @@ export const headGenresNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -20307,7 +20249,6 @@ export const getGenresNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -20662,7 +20603,6 @@ export const headGenresNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -20725,7 +20665,6 @@ export const getItemsItemIdImagesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -21083,7 +21022,6 @@ export const getItemsItemIdImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -21177,7 +21115,6 @@ export const postItemsItemIdImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -21283,7 +21220,6 @@ export const deleteItemsItemIdImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -21641,7 +21577,6 @@ export const headItemsItemIdImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -21997,7 +21932,6 @@ export const getItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -22110,7 +22044,6 @@ export const postItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -22213,7 +22146,6 @@ export const deleteItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -22570,7 +22502,6 @@ export const headItemsItemIdImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -22922,7 +22853,6 @@ export const getItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightPe
       },
       503: {
         description: 'The server is currently starting or is temporarily not available.',
-        content: {},
         headers: z.object({
           'Retry-After': z
             .int32()
@@ -23274,7 +23204,6 @@ export const headItemsItemIdImagesImageTypeImageIndexTagFormatMaxWidthMaxHeightP
       },
       503: {
         description: 'The server is currently starting or is temporarily not available.',
-        content: {},
         headers: z.object({
           'Retry-After': z
             .int32()
@@ -23397,7 +23326,6 @@ export const postItemsItemIdImagesImageTypeImageIndexIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -23754,7 +23682,6 @@ export const getMusicGenresNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -24110,7 +24037,6 @@ export const headMusicGenresNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -24465,7 +24391,6 @@ export const getMusicGenresNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -24820,7 +24745,6 @@ export const headMusicGenresNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -25176,7 +25100,6 @@ export const getPersonsNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -25532,7 +25455,6 @@ export const headPersonsNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -25887,7 +25809,6 @@ export const getPersonsNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -26242,7 +26163,6 @@ export const headPersonsNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -26598,7 +26518,6 @@ export const getStudiosNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -26954,7 +26873,6 @@ export const headStudiosNameImagesImageTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27309,7 +27227,6 @@ export const getStudiosNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27664,7 +27581,6 @@ export const headStudiosNameImagesImageTypeImageIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27755,7 +27671,6 @@ export const getUserImageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27830,7 +27745,6 @@ export const postUserImageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27887,7 +27801,6 @@ export const deleteUserImageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -27979,7 +27892,6 @@ export const headUserImageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -28151,7 +28063,6 @@ export const getAlbumsItemIdInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -28324,7 +28235,6 @@ export const getArtistsItemIdInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -28497,7 +28407,6 @@ export const getItemsItemIdInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -28662,7 +28571,6 @@ export const getMusicGenresNameInstantMixRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -28834,7 +28742,6 @@ export const getMusicGenresInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29008,7 +28915,6 @@ export const getPlaylistsItemIdInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29181,7 +29087,6 @@ export const getSongsItemIdInstantMixRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29245,7 +29150,6 @@ export const getItemsItemIdExternalIdInfosRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29326,7 +29230,6 @@ export const postItemsRemoteSearchApplyItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29378,7 +29281,6 @@ export const postItemsRemoteSearchBookRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29430,7 +29332,6 @@ export const postItemsRemoteSearchBoxSetRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29482,7 +29383,6 @@ export const postItemsRemoteSearchMovieRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29534,7 +29434,6 @@ export const postItemsRemoteSearchMusicAlbumRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29586,7 +29485,6 @@ export const postItemsRemoteSearchMusicArtistRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29638,7 +29536,6 @@ export const postItemsRemoteSearchMusicVideoRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29690,7 +29587,6 @@ export const postItemsRemoteSearchPersonRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29742,7 +29638,6 @@ export const postItemsRemoteSearchSeriesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29794,7 +29689,6 @@ export const postItemsRemoteSearchTrailerRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -29925,7 +29819,6 @@ export const postItemsItemIdRefreshRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31263,7 +31156,6 @@ export const getItemsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31331,7 +31223,6 @@ export const deleteItemsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31409,7 +31300,6 @@ export const getUserItemsItemIdUserDataRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31508,7 +31398,6 @@ export const postUserItemsItemIdUserDataRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31779,7 +31668,6 @@ export const getUserItemsResumeRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31849,7 +31737,6 @@ export const getItemsItemIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31930,7 +31817,6 @@ export const postItemsItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -31994,7 +31880,6 @@ export const deleteItemsItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32065,7 +31950,6 @@ export const postItemsItemIdContentTypeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32129,7 +32013,6 @@ export const getItemsItemIdMetadataEditorRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32250,7 +32133,6 @@ export const getAlbumsItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32371,7 +32253,6 @@ export const getArtistsItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32449,7 +32330,6 @@ export const getItemsItemIdAncestorsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32583,7 +32463,6 @@ export const getItemsItemIdCollectionsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32646,7 +32525,6 @@ export const getItemsItemIdDownloadRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32709,7 +32587,6 @@ export const getItemsItemIdFileRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32830,7 +32707,6 @@ export const getItemsItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -32946,7 +32822,6 @@ export const getItemsItemIdThemeMediaRoute = createRoute({
     404: { description: 'Item not found.' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33069,7 +32944,6 @@ export const getItemsItemIdThemeSongsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33192,7 +33066,6 @@ export const getItemsItemIdThemeVideosRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33261,7 +33134,6 @@ export const getItemsCountsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33345,7 +33217,6 @@ export const getLibrariesAvailableOptionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33396,7 +33267,6 @@ export const postLibraryMediaUpdatedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33453,7 +33323,6 @@ export const getLibraryMediaFoldersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33515,7 +33384,6 @@ export const postLibraryMoviesAddedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33577,7 +33445,6 @@ export const postLibraryMoviesUpdatedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33618,7 +33485,6 @@ export const getLibraryPhysicalPathsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33652,7 +33518,6 @@ export const postLibraryRefreshRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33702,7 +33567,6 @@ export const postLibrarySeriesAddedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33752,7 +33616,6 @@ export const postLibrarySeriesUpdatedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33873,7 +33736,6 @@ export const getMoviesItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -33994,7 +33856,6 @@ export const getShowsItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34115,7 +33976,6 @@ export const getTrailersItemIdSimilarRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34156,7 +34016,6 @@ export const getLibraryVirtualFoldersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34270,7 +34129,6 @@ export const postLibraryVirtualFoldersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34334,7 +34192,6 @@ export const deleteLibraryVirtualFoldersRoute = createRoute({
     404: { description: 'Folder not found.' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34398,7 +34255,6 @@ export const postLibraryVirtualFoldersLibraryOptionsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34497,7 +34353,6 @@ export const postLibraryVirtualFoldersNameRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34561,7 +34416,6 @@ export const postLibraryVirtualFoldersPathsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34636,7 +34490,6 @@ export const deleteLibraryVirtualFoldersPathsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34693,7 +34546,6 @@ export const postLibraryVirtualFoldersPathsUpdateRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34750,7 +34602,6 @@ export const getLiveTvChannelMappingOptionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -34808,7 +34659,6 @@ export const postLiveTvChannelMappingsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35139,7 +34989,6 @@ export const getLiveTvChannelsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35217,7 +35066,6 @@ export const getLiveTvChannelsChannelIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35258,7 +35106,6 @@ export const getLiveTvGuideInfoRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35299,7 +35146,6 @@ export const getLiveTvInfoRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35390,7 +35236,6 @@ export const postLiveTvListingProvidersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35440,7 +35285,6 @@ export const deleteLiveTvListingProvidersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35481,7 +35325,6 @@ export const getLiveTvListingProvidersDefaultRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35574,7 +35417,6 @@ export const getLiveTvListingProvidersLineupsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35613,7 +35455,6 @@ export const getLiveTvListingProvidersSchedulesDirectCountriesRoute = createRout
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35671,7 +35512,6 @@ export const getLiveTvLiveRecordingsRecordingIdStreamRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -35740,7 +35580,6 @@ export const getLiveTvLiveStreamFilesStreamIdStreamContainerRoute = createRoute(
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36157,7 +35996,6 @@ export const getLiveTvProgramsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36212,7 +36050,6 @@ export const postLiveTvProgramsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36290,7 +36127,6 @@ export const getLiveTvProgramsProgramIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36575,7 +36411,6 @@ export const getLiveTvProgramsRecommendedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36889,7 +36724,6 @@ export const getLiveTvRecordingsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -36967,7 +36801,6 @@ export const getLiveTvRecordingsRecordingIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37024,7 +36857,6 @@ export const deleteLiveTvRecordingsRecordingIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37081,7 +36913,6 @@ export const getLiveTvRecordingsFoldersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37150,7 +36981,6 @@ export const getLiveTvSeriesTimersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37200,7 +37030,6 @@ export const postLiveTvSeriesTimersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37264,7 +37093,6 @@ export const getLiveTvSeriesTimersTimerIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37327,7 +37155,6 @@ export const postLiveTvSeriesTimersTimerIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37376,7 +37203,6 @@ export const deleteLiveTvSeriesTimersTimerIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37469,7 +37295,6 @@ export const getLiveTvTimersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37513,7 +37338,6 @@ export const postLiveTvTimersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37569,7 +37393,6 @@ export const getLiveTvTimersTimerIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37626,7 +37449,6 @@ export const postLiveTvTimersTimerIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37675,7 +37497,6 @@ export const deleteLiveTvTimersTimerIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37732,7 +37553,6 @@ export const getLiveTvTimersDefaultsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37783,7 +37603,6 @@ export const postLiveTvTunerHostsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37833,7 +37652,6 @@ export const deleteLiveTvTunerHostsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37874,7 +37692,6 @@ export const getLiveTvTunerHostsTypesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37923,7 +37740,6 @@ export const postLiveTvTunersTunerIdResetRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -37981,7 +37797,6 @@ export const getLiveTvTunersDiscoverRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38039,7 +37854,6 @@ export const getLiveTvTunersDiscvoverRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38080,7 +37894,6 @@ export const getLocalizationCountriesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38121,7 +37934,6 @@ export const getLocalizationCulturesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38162,7 +37974,6 @@ export const getLocalizationOptionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38203,7 +38014,6 @@ export const getLocalizationParentalRatingsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38267,7 +38077,6 @@ export const getAudioItemIdLyricsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38355,7 +38164,6 @@ export const postAudioItemIdLyricsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38412,7 +38220,6 @@ export const deleteAudioItemIdLyricsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38476,7 +38283,6 @@ export const getAudioItemIdRemoteSearchLyricsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38551,7 +38357,6 @@ export const postAudioItemIdRemoteSearchLyricsLyricIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38615,7 +38420,6 @@ export const getProvidersLyricsLyricIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38693,7 +38497,6 @@ export const getItemsItemIdPlaybackInfoRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -38995,7 +38798,6 @@ export const postItemsItemIdPlaybackInfoRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39044,7 +38846,6 @@ export const postLiveStreamsCloseRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39285,7 +39086,6 @@ export const postLiveStreamsOpenRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39357,7 +39157,6 @@ export const getPlaybackBitrateTestRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39438,7 +39237,6 @@ export const getMediaSegmentsItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39565,7 +39363,6 @@ export const getMoviesRecommendationsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39635,7 +39432,6 @@ export const getMusicGenresGenreNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39677,7 +39473,6 @@ export const getPackagesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39747,7 +39542,6 @@ export const getPackagesNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39842,7 +39636,6 @@ export const postPackagesInstalledNameRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39891,7 +39684,6 @@ export const deletePackagesInstallingPackageIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39932,7 +39724,6 @@ export const getRepositoriesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -39977,7 +39768,6 @@ export const postRepositoriesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40287,7 +40077,6 @@ export const getPersonsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40365,7 +40154,6 @@ export const getPersonsNameRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40481,7 +40269,6 @@ export const postPlaylistsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40545,7 +40332,6 @@ export const getPlaylistsPlaylistIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40633,7 +40419,6 @@ export const postPlaylistsPlaylistIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40834,7 +40619,6 @@ export const getPlaylistsPlaylistIdItemsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -40948,7 +40732,6 @@ export const postPlaylistsPlaylistIdItemsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41029,7 +40812,6 @@ export const deletePlaylistsPlaylistIdItemsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41123,7 +40905,6 @@ export const postPlaylistsPlaylistIdItemsItemIdMoveNewIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41196,7 +40977,6 @@ export const getPlaylistsPlaylistIdUsersRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41278,7 +41058,6 @@ export const getPlaylistsPlaylistIdUsersUserIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41377,7 +41156,6 @@ export const postPlaylistsPlaylistIdUsersUserIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41452,7 +41230,6 @@ export const deletePlaylistsPlaylistIdUsersUserIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41502,7 +41279,6 @@ export const postSessionsPlayingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41551,7 +41327,6 @@ export const postSessionsPlayingPingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41607,7 +41382,6 @@ export const postSessionsPlayingProgressRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41657,7 +41431,6 @@ export const postSessionsPlayingStoppedRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41747,7 +41520,6 @@ export const postUserPlayedItemsItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41825,7 +41597,6 @@ export const deleteUserPlayedItemsItemIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41866,7 +41637,6 @@ export const getPluginsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41923,7 +41693,6 @@ export const deletePluginsPluginIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -41991,7 +41760,6 @@ export const deletePluginsPluginIdVersionRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42059,7 +41827,6 @@ export const postPluginsPluginIdVersionDisableRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42127,7 +41894,6 @@ export const postPluginsPluginIdVersionEnableRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42198,7 +41964,6 @@ export const getPluginsPluginIdVersionImageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42262,7 +42027,6 @@ export const getPluginsPluginIdConfigurationRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42320,7 +42084,6 @@ export const postPluginsPluginIdConfigurationRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42377,7 +42140,6 @@ export const postPluginsPluginIdManifestRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42452,7 +42214,6 @@ export const postQuickConnectAuthorizeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42514,7 +42275,6 @@ export const getQuickConnectConnectRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42552,7 +42312,6 @@ export const getQuickConnectEnabledRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42598,7 +42357,6 @@ export const postQuickConnectInitiateRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42755,7 +42513,6 @@ export const getItemsItemIdRemoteImagesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42853,7 +42610,6 @@ export const postItemsItemIdRemoteImagesDownloadRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42917,7 +42673,6 @@ export const getItemsItemIdRemoteImagesProvidersRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -42986,7 +42741,6 @@ export const getScheduledTasksRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43050,7 +42804,6 @@ export const getScheduledTasksTaskIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43116,7 +42869,6 @@ export const postScheduledTasksTaskIdTriggersRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43173,7 +42925,6 @@ export const postScheduledTasksRunningTaskIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43230,7 +42981,6 @@ export const deleteScheduledTasksRunningTaskIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43525,7 +43275,6 @@ export const getSearchHintsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43566,7 +43315,6 @@ export const getAuthPasswordResetProvidersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43607,7 +43355,6 @@ export const getAuthProvidersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43696,7 +43443,6 @@ export const getSessionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43754,7 +43500,6 @@ export const postSessionsSessionIdCommandRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43860,7 +43605,6 @@ export const postSessionsSessionIdCommandCommandRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -43931,7 +43675,6 @@ export const postSessionsSessionIdMessageRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44100,7 +43843,6 @@ export const postSessionsSessionIdPlayingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44204,7 +43946,6 @@ export const postSessionsSessionIdPlayingCommandRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44310,7 +44051,6 @@ export const postSessionsSessionIdSystemCommandRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44370,7 +44110,6 @@ export const postSessionsSessionIdUserUserIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44430,7 +44169,6 @@ export const deleteSessionsSessionIdUserUserIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44554,7 +44292,6 @@ export const postSessionsSessionIdViewingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44661,7 +44398,6 @@ export const postSessionsCapabilitiesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44726,7 +44462,6 @@ export const postSessionsCapabilitiesFullRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44760,7 +44495,6 @@ export const postSessionsLogoutRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44821,7 +44555,6 @@ export const postSessionsViewingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44855,7 +44588,6 @@ export const postStartupCompleteRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44896,7 +44628,6 @@ export const getStartupConfigurationRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44954,7 +44685,6 @@ export const postStartupConfigurationRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -44996,7 +44726,6 @@ export const getStartupFirstUserRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45054,7 +44783,6 @@ export const postStartupRemoteAccessRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45096,7 +44824,6 @@ export const getStartupUserRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45147,7 +44874,6 @@ export const postStartupUserRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45442,7 +45168,6 @@ export const getStudiosRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45512,7 +45237,6 @@ export const getStudiosNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45553,7 +45277,6 @@ export const getFallbackFontFontsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45605,7 +45328,6 @@ export const getFallbackFontFontsNameRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45694,7 +45416,6 @@ export const getItemsItemIdRemoteSearchSubtitlesLanguageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45762,7 +45483,6 @@ export const postItemsItemIdRemoteSearchSubtitlesSubtitleIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45814,7 +45534,6 @@ export const getProvidersSubtitlesSubtitlesSubtitleIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45927,7 +45646,6 @@ export const getVideosItemIdMediaSourceIdSubtitlesIndexSubtitlesM3u8Route = crea
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -45999,7 +45717,6 @@ export const postVideosItemIdSubtitlesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46075,7 +45792,6 @@ export const deleteVideosItemIdSubtitlesIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46309,7 +46025,6 @@ export const getVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexRouteStart
       },
       503: {
         description: 'The server is currently starting or is temporarily not available.',
-        content: {},
         headers: z.object({
           'Retry-After': z
             .int32()
@@ -46526,7 +46241,6 @@ export const getVideosRouteItemIdRouteMediaSourceIdSubtitlesRouteIndexStreamRout
       },
       503: {
         description: 'The server is currently starting or is temporarily not available.',
-        content: {},
         headers: z.object({
           'Retry-After': z
             .int32()
@@ -46665,7 +46379,6 @@ export const getItemsSuggestionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46729,7 +46442,6 @@ export const getSyncPlayIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46782,7 +46494,6 @@ export const postSyncPlayBufferingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46835,7 +46546,6 @@ export const postSyncPlayJoinRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46871,7 +46581,6 @@ export const postSyncPlayLeaveRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46914,7 +46623,6 @@ export const getSyncPlayListRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -46973,7 +46681,6 @@ export const postSyncPlayMovePlaylistItemRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47034,7 +46741,6 @@ export const postSyncPlayNewRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47087,7 +46793,6 @@ export const postSyncPlayNextItemRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47123,7 +46828,6 @@ export const postSyncPlayPauseRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47176,7 +46880,6 @@ export const postSyncPlayPingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47233,7 +46936,6 @@ export const postSyncPlayPreviousItemRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47286,7 +46988,6 @@ export const postSyncPlayQueueRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47339,7 +47040,6 @@ export const postSyncPlayReadyRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47398,7 +47098,6 @@ export const postSyncPlayRemoveFromPlaylistRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47451,7 +47150,6 @@ export const postSyncPlaySeekRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47510,7 +47208,6 @@ export const postSyncPlaySetIgnoreWaitRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47563,7 +47260,6 @@ export const postSyncPlaySetNewQueueRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47622,7 +47318,6 @@ export const postSyncPlaySetPlaylistItemRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47681,7 +47376,6 @@ export const postSyncPlaySetRepeatModeRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47740,7 +47434,6 @@ export const postSyncPlaySetShuffleModeRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47776,7 +47469,6 @@ export const postSyncPlayStopRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47812,7 +47504,6 @@ export const postSyncPlayUnpauseRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47862,7 +47553,6 @@ export const getSystemEndpointRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47910,7 +47600,6 @@ export const getSystemInfoRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47951,7 +47640,6 @@ export const getSystemInfoPublicRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -47998,7 +47686,6 @@ export const getSystemInfoStorageRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48046,7 +47733,6 @@ export const getSystemLogsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48113,7 +47799,6 @@ export const getSystemLogsLogRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48152,7 +47837,6 @@ export const getSystemPingRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48190,7 +47874,6 @@ export const postSystemPingRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48230,7 +47913,6 @@ export const postSystemRestartRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48271,7 +47953,6 @@ export const postSystemShutdownRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -48310,7 +47991,6 @@ export const getGetUtcTimeRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -49611,7 +49291,6 @@ export const getTrailersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -49724,7 +49403,6 @@ export const getVideosItemIdTrickplayWidthIndexJpgRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -49819,7 +49497,6 @@ export const getVideosItemIdTrickplayWidthTilesM3u8Route = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -50125,7 +49802,6 @@ export const getShowsSeriesIdEpisodesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -50314,7 +49990,6 @@ export const getShowsSeriesIdSeasonsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -50563,7 +50238,6 @@ export const getShowsNextUpRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -50749,7 +50423,6 @@ export const getShowsUpcomingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51079,7 +50752,6 @@ export const getAudioItemIdUniversalRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51409,7 +51081,6 @@ export const headAudioItemIdUniversalRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51478,7 +51149,6 @@ export const getUsersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51552,7 +51222,6 @@ export const postUsersRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51616,7 +51285,6 @@ export const getUsersUserIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51673,7 +51341,6 @@ export const deleteUsersUserIdRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51746,7 +51413,6 @@ export const postUsersUserIdPolicyRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51809,7 +51475,6 @@ export const postUsersAuthenticateByNameRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51865,7 +51530,6 @@ export const postUsersAuthenticateWithQuickConnectRoute = createRoute({
     400: { description: 'Missing token.' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51936,7 +51600,6 @@ export const postUsersConfigurationRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -51998,7 +51661,6 @@ export const postUsersForgotPasswordRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52059,7 +51721,6 @@ export const postUsersForgotPasswordPinRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52107,7 +51768,6 @@ export const getUsersMeRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52171,7 +51831,6 @@ export const postUsersNewRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52258,7 +51917,6 @@ export const postUsersPasswordRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52297,7 +51955,6 @@ export const getUsersPublicRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52366,7 +52023,6 @@ export const getItemsItemIdIntrosRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52436,7 +52092,6 @@ export const getItemsItemIdLocalTrailersRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52506,7 +52161,6 @@ export const getItemsItemIdSpecialFeaturesRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52713,7 +52367,6 @@ export const getItemsLatestRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52770,7 +52423,6 @@ export const getItemsRootRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52840,7 +52492,6 @@ export const postUserFavoriteItemsItemIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52910,7 +52561,6 @@ export const deleteUserFavoriteItemsItemIdRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -52993,7 +52643,6 @@ export const postUserItemsItemIdRatingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53063,7 +52712,6 @@ export const deleteUserItemsItemIdRatingRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53160,7 +52808,6 @@ export const getUserViewsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53225,7 +52872,6 @@ export const getUserViewsGroupingOptionsRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53317,7 +52963,6 @@ export const getVideosVideoIdMediaSourceIdAttachmentsIndexRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53386,7 +53031,6 @@ export const getVideosItemIdAdditionalPartsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -53443,7 +53087,6 @@ export const deleteVideosItemIdAlternateSourcesRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -54408,7 +54051,6 @@ export const getVideosItemIdStreamRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -55372,7 +55014,6 @@ export const headVideosItemIdStreamRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -56334,7 +55975,6 @@ export const getVideosItemIdStreamContainerRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -57296,7 +56936,6 @@ export const headVideosItemIdStreamContainerRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -57355,7 +56994,6 @@ export const postVideosMergeVersionsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -57632,7 +57270,6 @@ export const getYearsRoute = createRoute({
     403: { description: 'Forbidden' },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()
@@ -57718,7 +57355,6 @@ export const getYearsYearRoute = createRoute({
     },
     503: {
       description: 'The server is currently starting or is temporarily not available.',
-      content: {},
       headers: z.object({
         'Retry-After': z
           .int32()

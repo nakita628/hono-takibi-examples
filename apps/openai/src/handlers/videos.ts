@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVideosVideoIdRoute,
   getVideosCharactersCharacterIdRoute,
   getVideosRoute,
@@ -12,36 +12,56 @@ import {
   postVideosVideoIdRemixRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postVideosRouteHandler: RouteHandler<typeof postVideosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const videosHandler = app
-  .openapi(postVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosCharactersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosCharactersCharacterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosEditsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosExtensionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVideosVideoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVideosVideoIdContentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVideosVideoIdRemixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVideosRouteHandler: RouteHandler<typeof getVideosRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVideosCharactersRouteHandler: RouteHandler<
+  typeof postVideosCharactersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosCharactersCharacterIdRouteHandler: RouteHandler<
+  typeof getVideosCharactersCharacterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVideosEditsRouteHandler: RouteHandler<typeof postVideosEditsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVideosExtensionsRouteHandler: RouteHandler<
+  typeof postVideosExtensionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosVideoIdRouteHandler: RouteHandler<typeof getVideosVideoIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVideosVideoIdRouteHandler: RouteHandler<
+  typeof deleteVideosVideoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVideosVideoIdContentRouteHandler: RouteHandler<
+  typeof getVideosVideoIdContentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVideosVideoIdRemixRouteHandler: RouteHandler<
+  typeof postVideosVideoIdRemixRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

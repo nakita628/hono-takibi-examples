@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudkms/v1/openapi.yaml',
   output: './src/cloudkms/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudkms/types.ts' },
   client: { output: './src/cloudkms/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudkms/rpc.ts', parseResponse: true },

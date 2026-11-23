@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bigdatacloud.net/1.0.0/openapi.yaml',
   output: './src/bigdatacloud-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bigdatacloud-net/types.ts' },
   client: { output: './src/bigdatacloud-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/bigdatacloud-net/rpc.ts', parseResponse: true },

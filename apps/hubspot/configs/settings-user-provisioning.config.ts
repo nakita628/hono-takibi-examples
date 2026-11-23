@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/User%20Provisioning/Rollouts/325901/2026-09/userProvisioning.json',
   output: './src/settings-user-provisioning/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/settings-user-provisioning/types.ts' },
   client: { output: './src/settings-user-provisioning/client.ts', baseUrl: '/' },
   rpc: { output: './src/settings-user-provisioning/rpc.ts', parseResponse: true },

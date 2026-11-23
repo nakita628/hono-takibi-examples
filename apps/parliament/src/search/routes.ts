@@ -1,6 +1,6 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const SearchResponseResponse = { description: 'Search results', content: {} }
+const SearchResponseResponse = { description: 'Search results' }
 
 const CountParamsSchema = z
   .preprocess(
@@ -55,7 +55,7 @@ export const getDescriptionRoute = createRoute({
     description: 'OpenSearch github repository',
     url: 'https://github.com/dewitt/opensearch/blob/master/opensearch-1-1-draft-6.md#opensearch-description-document',
   },
-  responses: { 200: { description: 'Open Search Description', content: {} } },
+  responses: { 200: { description: 'Open Search Description' } },
 })
 
 export const getQueryRoute = createRoute({

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putVmResizeDiskRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putVmResizeDiskRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmResizeDiskHandler = app.openapi(putVmResizeDiskRoute, (c) => {
+export const putVmResizeDiskRouteHandler: RouteHandler<typeof putVmResizeDiskRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

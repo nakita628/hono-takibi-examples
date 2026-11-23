@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDeregisterTransitGatewayMulticastGroupMembersRoute,
   postActionDeregisterTransitGatewayMulticastGroupMembersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler: RouteHandler<
+  typeof getActionDeregisterTransitGatewayMulticastGroupMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDeregisterTransitGatewayMulticastGroupMembersHandler = app
-  .openapi(getActionDeregisterTransitGatewayMulticastGroupMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDeregisterTransitGatewayMulticastGroupMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDeregisterTransitGatewayMulticastGroupMembersRouteHandler: RouteHandler<
+  typeof postActionDeregisterTransitGatewayMulticastGroupMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

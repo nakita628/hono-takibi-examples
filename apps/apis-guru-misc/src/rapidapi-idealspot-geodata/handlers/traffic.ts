@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTrafficCountsSegmentIdRoute,
   getTrafficRoadsNearestLatitudeLongitudeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTrafficCountsSegmentIdRouteHandler: RouteHandler<
+  typeof getTrafficCountsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const trafficHandler = app
-  .openapi(getTrafficCountsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTrafficRoadsNearestLatitudeLongitudeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTrafficRoadsNearestLatitudeLongitudeRouteHandler: RouteHandler<
+  typeof getTrafficRoadsNearestLatitudeLongitudeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

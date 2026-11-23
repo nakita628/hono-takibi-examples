@@ -325,6 +325,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { installPortalId?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { query: { installPortalId?: number | undefined } }
             output: Error
             outputFormat: 'text'
             status: 200
@@ -338,6 +344,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { query: { installPortalId?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { query: { installPortalId?: number | undefined } }
@@ -356,6 +368,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { offset: string } } & {
+              query: { installPortalId?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { offset: string } } & {
@@ -475,6 +495,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
         | {
             input: { query: { installPortalId?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { query: { installPortalId?: number | undefined } }
             output: Error
             outputFormat: 'text'
             status: 200
@@ -488,6 +514,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { query: { installPortalId?: number | undefined } }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { query: { installPortalId?: number | undefined } }
@@ -506,6 +538,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: JournalFetchResponse
             outputFormat: 'json'
             status: 200
+          }
+        | {
+            input: { param: { offset: string } } & {
+              query: { installPortalId?: number | undefined }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
           }
         | {
             input: { param: { offset: string } } & {
@@ -614,21 +654,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { filterId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { filterId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { filterId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/webhooks-journal/subscriptions/2026-09/portals/:portalId': {
-      $delete: {
-        input: { param: { portalId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { portalId: bigint } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { portalId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   } & {
     '/webhooks-journal/subscriptions/2026-09/:subscriptionId': {
@@ -645,12 +689,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { subscriptionId: bigint } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { subscriptionId: bigint } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { subscriptionId: bigint } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

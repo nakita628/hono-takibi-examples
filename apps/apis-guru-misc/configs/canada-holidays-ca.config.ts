@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/canada-holidays.ca/1.8.0/openapi.yaml',
   output: './src/canada-holidays-ca/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/canada-holidays-ca/types.ts' },
   client: { output: './src/canada-holidays-ca/client.ts', baseUrl: '/' },
   rpc: { output: './src/canada-holidays-ca/rpc.ts', parseResponse: true },

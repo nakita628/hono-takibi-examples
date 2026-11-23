@@ -1,47 +1,125 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetOpsWorksCmV20161101AssociateNodeHandler,
-  xAmzTargetOpsWorksCmV20161101CreateBackupHandler,
-  xAmzTargetOpsWorksCmV20161101CreateServerHandler,
-  xAmzTargetOpsWorksCmV20161101DeleteBackupHandler,
-  xAmzTargetOpsWorksCmV20161101DeleteServerHandler,
-  xAmzTargetOpsWorksCmV20161101DescribeAccountAttributesHandler,
-  xAmzTargetOpsWorksCmV20161101DescribeBackupsHandler,
-  xAmzTargetOpsWorksCmV20161101DescribeEventsHandler,
-  xAmzTargetOpsWorksCmV20161101DescribeNodeAssociationStatusHandler,
-  xAmzTargetOpsWorksCmV20161101DescribeServersHandler,
-  xAmzTargetOpsWorksCmV20161101DisassociateNodeHandler,
-  xAmzTargetOpsWorksCmV20161101ExportServerEngineAttributeHandler,
-  xAmzTargetOpsWorksCmV20161101ListTagsForResourceHandler,
-  xAmzTargetOpsWorksCmV20161101RestoreServerHandler,
-  xAmzTargetOpsWorksCmV20161101StartMaintenanceHandler,
-  xAmzTargetOpsWorksCmV20161101TagResourceHandler,
-  xAmzTargetOpsWorksCmV20161101UntagResourceHandler,
-  xAmzTargetOpsWorksCmV20161101UpdateServerEngineAttributesHandler,
-  xAmzTargetOpsWorksCmV20161101UpdateServerHandler,
+  postXAmzTargetOpsWorksCMV20161101AssociateNodeRoute,
+  postXAmzTargetOpsWorksCMV20161101CreateBackupRoute,
+  postXAmzTargetOpsWorksCMV20161101CreateServerRoute,
+  postXAmzTargetOpsWorksCMV20161101DeleteBackupRoute,
+  postXAmzTargetOpsWorksCMV20161101DeleteServerRoute,
+  postXAmzTargetOpsWorksCMV20161101DescribeAccountAttributesRoute,
+  postXAmzTargetOpsWorksCMV20161101DescribeBackupsRoute,
+  postXAmzTargetOpsWorksCMV20161101DescribeEventsRoute,
+  postXAmzTargetOpsWorksCMV20161101DescribeNodeAssociationStatusRoute,
+  postXAmzTargetOpsWorksCMV20161101DescribeServersRoute,
+  postXAmzTargetOpsWorksCMV20161101DisassociateNodeRoute,
+  postXAmzTargetOpsWorksCMV20161101ExportServerEngineAttributeRoute,
+  postXAmzTargetOpsWorksCMV20161101ListTagsForResourceRoute,
+  postXAmzTargetOpsWorksCMV20161101RestoreServerRoute,
+  postXAmzTargetOpsWorksCMV20161101StartMaintenanceRoute,
+  postXAmzTargetOpsWorksCMV20161101TagResourceRoute,
+  postXAmzTargetOpsWorksCMV20161101UntagResourceRoute,
+  postXAmzTargetOpsWorksCMV20161101UpdateServerEngineAttributesRoute,
+  postXAmzTargetOpsWorksCMV20161101UpdateServerRoute,
+} from './routes'
+import {
+  postXAmzTargetOpsWorksCMV20161101AssociateNodeRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101CreateBackupRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101CreateServerRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DeleteBackupRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DeleteServerRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DescribeAccountAttributesRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DescribeBackupsRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DescribeEventsRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DescribeNodeAssociationStatusRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DescribeServersRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101DisassociateNodeRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101ExportServerEngineAttributeRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101ListTagsForResourceRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101RestoreServerRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101StartMaintenanceRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101TagResourceRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101UntagResourceRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101UpdateServerEngineAttributesRouteHandler,
+  postXAmzTargetOpsWorksCMV20161101UpdateServerRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetOpsWorksCmV20161101AssociateNodeHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101CreateBackupHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101CreateServerHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DeleteBackupHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DeleteServerHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DescribeAccountAttributesHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DescribeBackupsHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DescribeEventsHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DescribeNodeAssociationStatusHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DescribeServersHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101DisassociateNodeHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101ExportServerEngineAttributeHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101ListTagsForResourceHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101RestoreServerHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101StartMaintenanceHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101TagResourceHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101UntagResourceHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101UpdateServerHandler)
-  .route('/', xAmzTargetOpsWorksCmV20161101UpdateServerEngineAttributesHandler)
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101AssociateNodeRoute,
+    postXAmzTargetOpsWorksCMV20161101AssociateNodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101CreateBackupRoute,
+    postXAmzTargetOpsWorksCMV20161101CreateBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101CreateServerRoute,
+    postXAmzTargetOpsWorksCMV20161101CreateServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DeleteBackupRoute,
+    postXAmzTargetOpsWorksCMV20161101DeleteBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DeleteServerRoute,
+    postXAmzTargetOpsWorksCMV20161101DeleteServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DescribeAccountAttributesRoute,
+    postXAmzTargetOpsWorksCMV20161101DescribeAccountAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DescribeBackupsRoute,
+    postXAmzTargetOpsWorksCMV20161101DescribeBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DescribeEventsRoute,
+    postXAmzTargetOpsWorksCMV20161101DescribeEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DescribeNodeAssociationStatusRoute,
+    postXAmzTargetOpsWorksCMV20161101DescribeNodeAssociationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DescribeServersRoute,
+    postXAmzTargetOpsWorksCMV20161101DescribeServersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101DisassociateNodeRoute,
+    postXAmzTargetOpsWorksCMV20161101DisassociateNodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101ExportServerEngineAttributeRoute,
+    postXAmzTargetOpsWorksCMV20161101ExportServerEngineAttributeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101ListTagsForResourceRoute,
+    postXAmzTargetOpsWorksCMV20161101ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101RestoreServerRoute,
+    postXAmzTargetOpsWorksCMV20161101RestoreServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101StartMaintenanceRoute,
+    postXAmzTargetOpsWorksCMV20161101StartMaintenanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101TagResourceRoute,
+    postXAmzTargetOpsWorksCMV20161101TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101UntagResourceRoute,
+    postXAmzTargetOpsWorksCMV20161101UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101UpdateServerRoute,
+    postXAmzTargetOpsWorksCMV20161101UpdateServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetOpsWorksCMV20161101UpdateServerEngineAttributesRoute,
+    postXAmzTargetOpsWorksCMV20161101UpdateServerEngineAttributesRouteHandler,
+  )
 
 export default app

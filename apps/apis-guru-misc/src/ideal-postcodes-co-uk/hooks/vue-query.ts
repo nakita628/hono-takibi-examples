@@ -1802,20 +1802,20 @@ export function usePlaces<
 }
 
 export function getPlacesPlaceQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['$:place']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['${place}']['$get']>>,
 ) {
-  return ['places', '/places/$:place', toValue(args)] as const
+  return ['places', '/places/${place}', toValue(args)] as const
 }
 
 export function getPlacesPlaceQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['$:place']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['${place}']['$get']>>,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getPlacesPlaceQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.places['$:place'].$get(toValue(args), {
+        client.places['${place}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1826,25 +1826,27 @@ export function getPlacesPlaceQueryOptions(
 
 export function usePlacesPlace<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>>
+    ReturnType<
+      typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
+    >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['$:place']['$get']>>,
+  args: MaybeRefOrGetter<InferRequestType<(typeof client.places)['${place}']['$get']>>,
   options?: {
     query?: Omit<
       Extract<
         UseQueryOptions<
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+              typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
             >
           >,
           TError,
           TData,
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+              typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
             >
           >,
           ReturnType<typeof getPlacesPlaceQueryKey>
@@ -1861,7 +1863,7 @@ export function usePlacesPlace<
   return useQuery<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.places)['$:place']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.places)['${place}']['$get']>>>
       >
     >,
     TError,
@@ -1873,7 +1875,7 @@ export function usePlacesPlace<
       queryKey: computed(() => getPlacesPlaceQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.places['$:place'].$get(toValue(args), {
+          client.places['${place}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUntagStreamRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUntagStreamRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const untagStreamHandler = app.openapi(postUntagStreamRoute, (c) => {
+export const postUntagStreamRouteHandler: RouteHandler<typeof postUntagStreamRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

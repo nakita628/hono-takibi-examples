@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Mermade/openapi3-examples/master/3.0/pass/externalPathItemRef.yaml',
   output: './src/3-0-externalpathitemref/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-externalpathitemref/types.ts' },
   client: { output: './src/3-0-externalpathitemref/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-externalpathitemref/rpc.ts', parseResponse: true },

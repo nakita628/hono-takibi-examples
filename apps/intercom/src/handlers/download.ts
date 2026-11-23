@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDownloadContentDataJobIdentifierRoute,
   getDownloadReportingDataJobIdentifierRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDownloadReportingDataJobIdentifierRouteHandler: RouteHandler<
+  typeof getDownloadReportingDataJobIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const downloadHandler = app
-  .openapi(getDownloadReportingDataJobIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDownloadContentDataJobIdentifierRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getDownloadContentDataJobIdentifierRouteHandler: RouteHandler<
+  typeof getDownloadContentDataJobIdentifierRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

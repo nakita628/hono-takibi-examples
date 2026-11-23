@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchExportEventIdRenameRoute,
   postExportCameraNameStartStartTimeEndEndTimeRoute,
   postExportCustomCameraNameStartStartTimeEndEndTimeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postExportCameraNameStartStartTimeEndEndTimeRouteHandler: RouteHandler<
+  typeof postExportCameraNameStartStartTimeEndEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const exportHandler = app
-  .openapi(postExportCameraNameStartStartTimeEndEndTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchExportEventIdRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postExportCustomCameraNameStartStartTimeEndEndTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchExportEventIdRenameRouteHandler: RouteHandler<
+  typeof patchExportEventIdRenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postExportCustomCameraNameStartStartTimeEndEndTimeRouteHandler: RouteHandler<
+  typeof postExportCustomCameraNameStartStartTimeEndEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

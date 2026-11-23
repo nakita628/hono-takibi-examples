@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAccountsAccountIDRoute,
   getAccountsAccountIDAttachmentsAttachmentIDRoute,
   getAccountsAccountIDAttachmentsFileNameRoute,
@@ -12,36 +12,58 @@ import {
   putAccountsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAccountsRouteHandler: RouteHandler<typeof getAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountsHandler = app
-  .openapi(getAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAccountsAccountIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIDAttachmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIDAttachmentsAttachmentIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAccountsAccountIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountsAccountIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAccountsAccountIDAttachmentsFileNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAccountsRouteHandler: RouteHandler<typeof putAccountsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIDRouteHandler: RouteHandler<
+  typeof getAccountsAccountIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIDRouteHandler: RouteHandler<
+  typeof postAccountsAccountIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAccountsAccountIDRouteHandler: RouteHandler<
+  typeof deleteAccountsAccountIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIDAttachmentsRouteHandler: RouteHandler<
+  typeof getAccountsAccountIDAttachmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIDAttachmentsAttachmentIDRouteHandler: RouteHandler<
+  typeof getAccountsAccountIDAttachmentsAttachmentIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAccountsAccountIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof getAccountsAccountIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAccountsAccountIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof postAccountsAccountIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAccountsAccountIDAttachmentsFileNameRouteHandler: RouteHandler<
+  typeof putAccountsAccountIDAttachmentsFileNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

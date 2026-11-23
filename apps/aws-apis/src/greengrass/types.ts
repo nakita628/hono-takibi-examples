@@ -1,6 +1,4 @@
 type AssociateRoleToGroupResponse = { AssociatedAt?: {} | undefined }
-type BadRequestException = { [x: string]: unknown }
-type InternalServerErrorException = { [x: string]: unknown }
 type DisassociateRoleFromGroupResponse = { DisassociatedAt?: {} | undefined }
 type GetAssociatedRoleResponse = { AssociatedAt?: {} | undefined; RoleArn?: {} | undefined }
 type AssociateServiceRoleToAccountResponse = { AssociatedAt?: {} | undefined }
@@ -496,321 +494,131 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/greengrass/groups/:GroupId/role': {
-      $put:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: AssociateRoleToGroupResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { RoleArn: string } }
+        output: AssociateRoleToGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DisassociateRoleFromGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $delete:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisassociateRoleFromGroupResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetAssociatedRoleResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: GetAssociatedRoleResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/servicerole': {
-      $put:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: AssociateServiceRoleToAccountResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { RoleArn: string } }
+        output: AssociateServiceRoleToAccountResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $delete: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { RoleArn: string } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
+        }
+        output: DisassociateServiceRoleFromAccountResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $delete:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DisassociateServiceRoleFromAccountResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 480
-          }
-      $get:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetServiceRoleForAccountResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetServiceRoleForAccountResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/connectors': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Connectors?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateConnectorDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Connectors?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Connectors?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateConnectorDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -830,128 +638,67 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/connectors/:ConnectorDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Connectors?: Connector[] | undefined } }
-            output: CreateConnectorDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { ConnectorDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Connectors?: Connector[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Connectors?: Connector[] | undefined } }
+        output: CreateConnectorDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { ConnectorDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListConnectorDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListConnectorDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/cores': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Cores?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateCoreDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Cores?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Cores?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateCoreDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -971,223 +718,115 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/cores/:CoreDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Cores?: Core[] | undefined } }
-            output: CreateCoreDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { CoreDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Cores?: Core[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Cores?: Core[] | undefined } }
+        output: CreateCoreDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { CoreDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListCoreDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListCoreDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/deployments': {
-      $post:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeploymentId?: string | undefined
-                DeploymentType:
-                  | 'NewDeployment'
-                  | 'Redeployment'
-                  | 'ResetDeployment'
-                  | 'ForceResetDeployment'
-                GroupVersionId?: string | undefined
-              }
-            }
-            output: CreateDeploymentResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DeploymentId?: string | undefined
-                DeploymentType:
-                  | 'NewDeployment'
-                  | 'Redeployment'
-                  | 'ResetDeployment'
-                  | 'ForceResetDeployment'
-                GroupVersionId?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            DeploymentId?: string | undefined
+            DeploymentType:
+              | 'NewDeployment'
+              | 'Redeployment'
+              | 'ResetDeployment'
+              | 'ForceResetDeployment'
+            GroupVersionId?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListDeploymentsResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: CreateDeploymentResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { GroupId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListDeploymentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/devices': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Devices?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateDeviceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Devices?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Devices?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateDeviceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -1207,142 +846,74 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/devices/:DeviceDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Devices?: Device[] | undefined } }
-            output: CreateDeviceDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { DeviceDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Devices?: Device[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Devices?: Device[] | undefined } }
+        output: CreateDeviceDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DeviceDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListDeviceDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListDeviceDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/functions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?:
-                  | {
-                      DefaultConfig?:
-                        | { Execution?: FunctionDefaultExecutionConfig | undefined }
-                        | undefined
-                      Functions?: {} | undefined
-                    }
-                  | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateFunctionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?:
-                  | {
-                      DefaultConfig?:
-                        | { Execution?: FunctionDefaultExecutionConfig | undefined }
-                        | undefined
-                      Functions?: {} | undefined
-                    }
-                  | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?:
+              | {
+                  DefaultConfig?:
+                    | { Execution?: FunctionDefaultExecutionConfig | undefined }
+                    | undefined
+                  Functions?: {} | undefined
+                }
+              | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateFunctionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -1362,162 +933,82 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/functions/:FunctionDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultConfig?:
-                  | { Execution?: FunctionDefaultExecutionConfig | undefined }
-                  | undefined
-                Functions?: Function[] | undefined
-              }
-            }
-            output: CreateFunctionDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { FunctionDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                DefaultConfig?:
-                  | { Execution?: FunctionDefaultExecutionConfig | undefined }
-                  | undefined
-                Functions?: Function[] | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            DefaultConfig?: { Execution?: FunctionDefaultExecutionConfig | undefined } | undefined
+            Functions?: Function[] | undefined
           }
-      $get:
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListFunctionDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: CreateFunctionDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { FunctionDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListFunctionDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?:
-                  | {
-                      ConnectorDefinitionVersionArn?: {} | undefined
-                      CoreDefinitionVersionArn?: {} | undefined
-                      DeviceDefinitionVersionArn?: {} | undefined
-                      FunctionDefinitionVersionArn?: {} | undefined
-                      LoggerDefinitionVersionArn?: {} | undefined
-                      ResourceDefinitionVersionArn?: {} | undefined
-                      SubscriptionDefinitionVersionArn?: {} | undefined
-                    }
-                  | undefined
-                Name: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateGroupResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?:
-                  | {
-                      ConnectorDefinitionVersionArn?: {} | undefined
-                      CoreDefinitionVersionArn?: {} | undefined
-                      DeviceDefinitionVersionArn?: {} | undefined
-                      FunctionDefinitionVersionArn?: {} | undefined
-                      LoggerDefinitionVersionArn?: {} | undefined
-                      ResourceDefinitionVersionArn?: {} | undefined
-                      SubscriptionDefinitionVersionArn?: {} | undefined
-                    }
-                  | undefined
-                Name: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?:
+              | {
+                  ConnectorDefinitionVersionArn?: {} | undefined
+                  CoreDefinitionVersionArn?: {} | undefined
+                  DeviceDefinitionVersionArn?: {} | undefined
+                  FunctionDefinitionVersionArn?: {} | undefined
+                  LoggerDefinitionVersionArn?: {} | undefined
+                  ResourceDefinitionVersionArn?: {} | undefined
+                  SubscriptionDefinitionVersionArn?: {} | undefined
+                }
+              | undefined
+            Name: string
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -1537,252 +1028,113 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/groups/:GroupId/certificateauthorities': {
-      $post:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: CreateGroupCertificateAuthorityResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: CreateGroupCertificateAuthorityResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListGroupCertificateAuthoritiesResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: ListGroupCertificateAuthoritiesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/versions': {
-      $post:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConnectorDefinitionVersionArn?: string | undefined
-                CoreDefinitionVersionArn?: string | undefined
-                DeviceDefinitionVersionArn?: string | undefined
-                FunctionDefinitionVersionArn?: string | undefined
-                LoggerDefinitionVersionArn?: string | undefined
-                ResourceDefinitionVersionArn?: string | undefined
-                SubscriptionDefinitionVersionArn?: string | undefined
-              }
-            }
-            output: CreateGroupVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ConnectorDefinitionVersionArn?: string | undefined
-                CoreDefinitionVersionArn?: string | undefined
-                DeviceDefinitionVersionArn?: string | undefined
-                FunctionDefinitionVersionArn?: string | undefined
-                LoggerDefinitionVersionArn?: string | undefined
-                ResourceDefinitionVersionArn?: string | undefined
-                SubscriptionDefinitionVersionArn?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            ConnectorDefinitionVersionArn?: string | undefined
+            CoreDefinitionVersionArn?: string | undefined
+            DeviceDefinitionVersionArn?: string | undefined
+            FunctionDefinitionVersionArn?: string | undefined
+            LoggerDefinitionVersionArn?: string | undefined
+            ResourceDefinitionVersionArn?: string | undefined
+            SubscriptionDefinitionVersionArn?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListGroupVersionsResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: CreateGroupVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { GroupId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListGroupVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/loggers': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Loggers?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateLoggerDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Loggers?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Loggers?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateLoggerDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -1802,128 +1154,67 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/loggers/:LoggerDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Loggers?: Logger[] | undefined } }
-            output: CreateLoggerDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { LoggerDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Loggers?: Logger[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Loggers?: Logger[] | undefined } }
+        output: CreateLoggerDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { LoggerDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListLoggerDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListLoggerDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/resources': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Resources?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateResourceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Resources?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Resources?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateResourceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -1943,237 +1234,105 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/resources/:ResourceDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Resources?: Resource[] | undefined } }
-            output: CreateResourceDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { ResourceDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Resources?: Resource[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Resources?: Resource[] | undefined } }
+        output: CreateResourceDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { ResourceDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListResourceDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListResourceDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/updates': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3UrlSignerRole: string
-                SoftwareToUpdate: 'core' | 'ota_agent'
-                UpdateAgentLogLevel?:
-                  | 'NONE'
-                  | 'TRACE'
-                  | 'DEBUG'
-                  | 'VERBOSE'
-                  | 'INFO'
-                  | 'WARN'
-                  | 'ERROR'
-                  | 'FATAL'
-                  | undefined
-                UpdateTargets: String[]
-                UpdateTargetsArchitecture: 'armv6l' | 'armv7l' | 'x86_64' | 'aarch64'
-                UpdateTargetsOperatingSystem: 'ubuntu' | 'raspbian' | 'amazon_linux' | 'openwrt'
-              }
-            }
-            output: CreateSoftwareUpdateJobResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3UrlSignerRole: string
-                SoftwareToUpdate: 'core' | 'ota_agent'
-                UpdateAgentLogLevel?:
-                  | 'NONE'
-                  | 'TRACE'
-                  | 'DEBUG'
-                  | 'VERBOSE'
-                  | 'INFO'
-                  | 'WARN'
-                  | 'ERROR'
-                  | 'FATAL'
-                  | undefined
-                UpdateTargets: String[]
-                UpdateTargetsArchitecture: 'armv6l' | 'armv7l' | 'x86_64' | 'aarch64'
-                UpdateTargetsOperatingSystem: 'ubuntu' | 'raspbian' | 'amazon_linux' | 'openwrt'
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            S3UrlSignerRole: string
+            SoftwareToUpdate: 'core' | 'ota_agent'
+            UpdateAgentLogLevel?:
+              | 'NONE'
+              | 'TRACE'
+              | 'DEBUG'
+              | 'VERBOSE'
+              | 'INFO'
+              | 'WARN'
+              | 'ERROR'
+              | 'FATAL'
+              | undefined
+            UpdateTargets: String[]
+            UpdateTargetsArchitecture: 'armv6l' | 'armv7l' | 'x86_64' | 'aarch64'
+            UpdateTargetsOperatingSystem: 'ubuntu' | 'raspbian' | 'amazon_linux' | 'openwrt'
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3UrlSignerRole: string
-                SoftwareToUpdate: 'core' | 'ota_agent'
-                UpdateAgentLogLevel?:
-                  | 'NONE'
-                  | 'TRACE'
-                  | 'DEBUG'
-                  | 'VERBOSE'
-                  | 'INFO'
-                  | 'WARN'
-                  | 'ERROR'
-                  | 'FATAL'
-                  | undefined
-                UpdateTargets: String[]
-                UpdateTargetsArchitecture: 'armv6l' | 'armv7l' | 'x86_64' | 'aarch64'
-                UpdateTargetsOperatingSystem: 'ubuntu' | 'raspbian' | 'amazon_linux' | 'openwrt'
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: CreateSoftwareUpdateJobResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/subscriptions': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Subscriptions?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: CreateSubscriptionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                InitialVersion?: { Subscriptions?: {} | undefined } | undefined
-                Name?: string | undefined
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            InitialVersion?: { Subscriptions?: {} | undefined } | undefined
+            Name?: string | undefined
+            tags?: { [x: string]: String } | undefined
           }
+        }
+        output: CreateSubscriptionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
       $get: {
         input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
           header: {
@@ -2193,1939 +1352,929 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/greengrass/definition/subscriptions/:SubscriptionDefinitionId/versions': {
-      $post:
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Subscriptions?: Subscription[] | undefined } }
-            output: CreateSubscriptionDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { SubscriptionDefinitionId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Subscriptions?: Subscription[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        } & { json: { Subscriptions?: Subscription[] | undefined } }
+        output: CreateSubscriptionDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { SubscriptionDefinitionId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListSubscriptionDefinitionVersionsResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListSubscriptionDefinitionVersionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/connectors/:ConnectorDefinitionId': {
-      $delete:
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteConnectorDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { ConnectorDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteConnectorDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { ConnectorDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetConnectorDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetConnectorDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { ConnectorDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateConnectorDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ConnectorDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateConnectorDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/cores/:CoreDefinitionId': {
-      $delete:
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteCoreDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { CoreDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteCoreDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { CoreDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetCoreDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetCoreDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { CoreDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateCoreDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { CoreDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateCoreDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/devices/:DeviceDefinitionId': {
-      $delete:
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteDeviceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { DeviceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteDeviceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { DeviceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetDeviceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetDeviceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { DeviceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateDeviceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { DeviceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateDeviceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/functions/:FunctionDefinitionId': {
-      $delete:
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteFunctionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { FunctionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteFunctionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { FunctionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetFunctionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetFunctionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { FunctionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateFunctionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { FunctionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateFunctionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId': {
-      $delete:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteGroupResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetGroupResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateGroupResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/loggers/:LoggerDefinitionId': {
-      $delete:
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteLoggerDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { LoggerDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteLoggerDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { LoggerDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLoggerDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetLoggerDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { LoggerDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateLoggerDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { LoggerDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateLoggerDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/resources/:ResourceDefinitionId': {
-      $delete:
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteResourceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { ResourceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteResourceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { ResourceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetResourceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetResourceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { ResourceDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateResourceDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ResourceDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateResourceDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/subscriptions/:SubscriptionDefinitionId': {
-      $delete:
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: DeleteSubscriptionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+      $delete: {
+        input: { param: { SubscriptionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: DeleteSubscriptionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $get: {
+        input: { param: { SubscriptionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $get:
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSubscriptionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
+        }
+        output: GetSubscriptionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { SubscriptionDefinitionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-      $put:
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: UpdateSubscriptionDefinitionResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { SubscriptionDefinitionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Name?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Name?: string | undefined } }
+        output: UpdateSubscriptionDefinitionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/bulk/deployments/:BulkDeploymentId/status': {
-      $get:
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetBulkDeploymentStatusResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { BulkDeploymentId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetBulkDeploymentStatusResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/things/:ThingName/connectivityInfo': {
-      $get:
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetConnectivityInfoResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ThingName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetConnectivityInfoResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { ThingName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-      $put:
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ConnectivityInfo?: ConnectivityInfo[] | undefined } }
-            output: UpdateConnectivityInfoResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ConnectivityInfo?: ConnectivityInfo[] | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { ConnectivityInfo?: ConnectivityInfo[] | undefined } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { ConnectivityInfo?: ConnectivityInfo[] | undefined } }
+        output: UpdateConnectivityInfoResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/connectors/:ConnectorDefinitionId/versions/:ConnectorDefinitionVersionId': {
-      $get:
-        | {
-            input: {
-              param: { ConnectorDefinitionId: string; ConnectorDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetConnectorDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          param: { ConnectorDefinitionId: string; ConnectorDefinitionVersionId: string }
+        } & { query: { NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { ConnectorDefinitionId: string; ConnectorDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetConnectorDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/cores/:CoreDefinitionId/versions/:CoreDefinitionVersionId': {
-      $get:
-        | {
-            input: { param: { CoreDefinitionId: string; CoreDefinitionVersionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetCoreDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { CoreDefinitionId: string; CoreDefinitionVersionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CoreDefinitionId: string; CoreDefinitionVersionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetCoreDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/deployments/:DeploymentId/status': {
-      $get:
-        | {
-            input: { param: { DeploymentId: string; GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetDeploymentStatusResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DeploymentId: string; GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DeploymentId: string; GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetDeploymentStatusResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/devices/:DeviceDefinitionId/versions/:DeviceDefinitionVersionId': {
-      $get:
-        | {
-            input: { param: { DeviceDefinitionId: string; DeviceDefinitionVersionId: string } } & {
-              query: { NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetDeviceDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { DeviceDefinitionId: string; DeviceDefinitionVersionId: string } } & {
+          query: { NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { DeviceDefinitionId: string; DeviceDefinitionVersionId: string } } & {
-              query: { NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetDeviceDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/functions/:FunctionDefinitionId/versions/:FunctionDefinitionVersionId': {
-      $get:
-        | {
-            input: {
-              param: { FunctionDefinitionId: string; FunctionDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetFunctionDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { FunctionDefinitionId: string; FunctionDefinitionVersionId: string } } & {
+          query: { NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { FunctionDefinitionId: string; FunctionDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetFunctionDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/certificateauthorities/:CertificateAuthorityId': {
-      $get:
-        | {
-            input: { param: { CertificateAuthorityId: string; GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetGroupCertificateAuthorityResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { CertificateAuthorityId: string; GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { CertificateAuthorityId: string; GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { CertificateAuthorityId: string; GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        }
+        output: GetGroupCertificateAuthorityResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/certificateauthorities/configuration/expiry': {
-      $get:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetGroupCertificateConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetGroupCertificateConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-      $put:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { CertificateExpiryInMilliseconds?: string | undefined } }
-            output: UpdateGroupCertificateConfigurationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { CertificateExpiryInMilliseconds?: string | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { CertificateExpiryInMilliseconds?: string | undefined } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { CertificateExpiryInMilliseconds?: string | undefined } }
+        output: UpdateGroupCertificateConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/versions/:GroupVersionId': {
-      $get:
-        | {
-            input: { param: { GroupId: string; GroupVersionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetGroupVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { GroupId: string; GroupVersionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string; GroupVersionId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetGroupVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/loggers/:LoggerDefinitionId/versions/:LoggerDefinitionVersionId': {
-      $get:
-        | {
-            input: { param: { LoggerDefinitionId: string; LoggerDefinitionVersionId: string } } & {
-              query: { NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetLoggerDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { LoggerDefinitionId: string; LoggerDefinitionVersionId: string } } & {
+          query: { NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { LoggerDefinitionId: string; LoggerDefinitionVersionId: string } } & {
-              query: { NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetLoggerDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/resources/:ResourceDefinitionId/versions/:ResourceDefinitionVersionId': {
-      $get:
-        | {
-            input: {
-              param: { ResourceDefinitionId: string; ResourceDefinitionVersionId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetResourceDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ResourceDefinitionId: string; ResourceDefinitionVersionId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { ResourceDefinitionId: string; ResourceDefinitionVersionId: string }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetResourceDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/definition/subscriptions/:SubscriptionDefinitionId/versions/:SubscriptionDefinitionVersionId': {
-      $get:
-        | {
-            input: {
-              param: { SubscriptionDefinitionId: string; SubscriptionDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetSubscriptionDefinitionVersionResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: {
+          param: { SubscriptionDefinitionId: string; SubscriptionDefinitionVersionId: string }
+        } & { query: { NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              param: { SubscriptionDefinitionId: string; SubscriptionDefinitionVersionId: string }
-            } & { query: { NextToken?: string | undefined } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: GetSubscriptionDefinitionVersionResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/things/:ThingName/runtimeconfig': {
-      $get:
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: GetThingRuntimeConfigurationResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { ThingName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: GetThingRuntimeConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $put: {
+        input: { param: { ThingName: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
-      $put:
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TelemetryConfiguration?: { Telemetry?: {} | undefined } | undefined } }
-            output: UpdateThingRuntimeConfigurationResponse
-            outputFormat: 'json'
-            status: 200
-          }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TelemetryConfiguration?: { Telemetry?: {} | undefined } | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { ThingName: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { TelemetryConfiguration?: { Telemetry?: {} | undefined } | undefined } }
-            output: InternalServerErrorException
-            outputFormat: 'json'
-            status: 481
-          }
+        } & { json: { TelemetryConfiguration?: { Telemetry?: {} | undefined } | undefined } }
+        output: UpdateThingRuntimeConfigurationResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/bulk/deployments/:BulkDeploymentId/detailed-reports': {
-      $get:
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBulkDeploymentDetailedReportsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { BulkDeploymentId: string } } & {
+          query: { MaxResults?: string | undefined; NextToken?: string | undefined }
+        } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: ListBulkDeploymentDetailedReportsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/bulk/deployments': {
-      $get:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListBulkDeploymentsResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListBulkDeploymentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ExecutionRoleArn: string
-                InputFileUri: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: StartBulkDeploymentResponse
-            outputFormat: 'json'
-            status: 200
+        } & {
+          json: {
+            ExecutionRoleArn: string
+            InputFileUri: string
+            tags?: { [x: string]: String } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                ExecutionRoleArn: string
-                InputFileUri: string
-                tags?: { [x: string]: String } | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: StartBulkDeploymentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resource-arn': {
-      $get:
-        | {
-            input: { param: { 'resource-arn': string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { 'resource-arn': string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { 'resource-arn': string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { 'resource-arn': string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-      $post:
-        | {
-            input: { param: { 'resource-arn': string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags?: { [x: string]: String } | undefined } }
-            output: {}
-            outputFormat: string
-            status: 204
-          }
-        | {
-            input: { param: { 'resource-arn': string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags?: { [x: string]: String } | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { tags?: { [x: string]: String } | undefined } }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   } & {
     '/greengrass/groups/:GroupId/deployments/$reset': {
-      $post:
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Force?: boolean | undefined } }
-            output: ResetDeploymentsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { param: { GroupId: string } } & {
+          header: {
+            'X-Amzn-Client-Token'?: string | undefined
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { GroupId: string } } & {
-              header: {
-                'X-Amzn-Client-Token'?: string | undefined
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { Force?: boolean | undefined } }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        } & { json: { Force?: boolean | undefined } }
+        output: ResetDeploymentsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/greengrass/bulk/deployments/:BulkDeploymentId/$stop': {
-      $put:
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: StopBulkDeploymentResponse
-            outputFormat: 'json'
-            status: 200
+      $put: {
+        input: { param: { BulkDeploymentId: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { BulkDeploymentId: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: StopBulkDeploymentResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resource-arn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { 'resource-arn': string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: {}
-            outputFormat: string
-            status: 204
+      $delete: {
+        input: { param: { 'resource-arn': string } } & { query: { tagKeys: String[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { 'resource-arn': string } } & { query: { tagKeys: String[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: BadRequestException
-            outputFormat: 'json'
-            status: 480
-          }
+        }
+        output: {}
+        outputFormat: string
+        status: 204
+      }
     }
   },
   '/'

@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/stytchauth/stytch-openapi/blob/ec16a0c52c21e2be8e28c1e75df7afd9d227fc55/openapi.yml
   input: 'https://raw.githubusercontent.com/stytchauth/stytch-openapi/main/openapi.yml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

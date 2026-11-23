@@ -953,20 +953,24 @@ export function useApiSectionSectionId<
 }
 
 export function getApiSectionSectionIdStepQueryKey(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>
+  >,
 ) {
-  return ['api', '/api/Section/:sectionId,:step', toValue(args)] as const
+  return ['api', '/api/Section/:sectionId,{step}', toValue(args)] as const
 }
 
 export function getApiSectionSectionIdStepQueryOptions(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>
+  >,
   options?: ClientRequestOptions,
 ) {
   return {
     queryKey: computed(() => getApiSectionSectionIdStepQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.api.Section[':sectionId,:step'].$get(toValue(args), {
+        client.api.Section[':sectionId,{step}'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -979,13 +983,15 @@ export function useApiSectionSectionIdStep<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+        Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: MaybeRefOrGetter<InferRequestType<(typeof client.api.Section)[':sectionId,:step']['$get']>>,
+  args: MaybeRefOrGetter<
+    InferRequestType<(typeof client.api.Section)[':sectionId,{step}']['$get']>
+  >,
   options?: {
     query?: Omit<
       Extract<
@@ -993,7 +999,7 @@ export function useApiSectionSectionIdStep<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+                Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
               >
             >
           >,
@@ -1002,7 +1008,7 @@ export function useApiSectionSectionIdStep<
           Awaited<
             ReturnType<
               typeof parseResponse<
-                Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+                Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
               >
             >
           >,
@@ -1021,7 +1027,7 @@ export function useApiSectionSectionIdStep<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.api.Section)[':sectionId,:step']['$get']>>
+          Awaited<ReturnType<(typeof client.api.Section)[':sectionId,{step}']['$get']>>
         >
       >
     >,
@@ -1034,7 +1040,7 @@ export function useApiSectionSectionIdStep<
       queryKey: computed(() => getApiSectionSectionIdStepQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.api.Section[':sectionId,:step'].$get(toValue(args), {
+          client.api.Section[':sectionId,{step}'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),

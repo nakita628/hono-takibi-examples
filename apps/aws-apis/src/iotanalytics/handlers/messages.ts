@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMessagesBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMessagesBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const messagesHandler = app.openapi(postMessagesBatchRoute, (c) => {
+export const postMessagesBatchRouteHandler: RouteHandler<typeof postMessagesBatchRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

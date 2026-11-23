@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFeaturesFeatureIdItemEntitlementsRoute,
   getFeaturesFeatureIdRoute,
   getFeaturesRoute,
@@ -12,36 +12,58 @@ import {
   postFeaturesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFeaturesRouteHandler: RouteHandler<typeof getFeaturesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const featuresHandler = app
-  .openapi(getFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeaturesFeatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdArchiveCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdActivateCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdReactivateCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFeaturesFeatureIdItemEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFeaturesFeatureIdItemEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFeaturesRouteHandler: RouteHandler<typeof postFeaturesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdDeleteRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeaturesFeatureIdRouteHandler: RouteHandler<
+  typeof getFeaturesFeatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdArchiveCommandRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdArchiveCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdActivateCommandRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdActivateCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdReactivateCommandRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdReactivateCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFeaturesFeatureIdItemEntitlementsRouteHandler: RouteHandler<
+  typeof getFeaturesFeatureIdItemEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFeaturesFeatureIdItemEntitlementsRouteHandler: RouteHandler<
+  typeof postFeaturesFeatureIdItemEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

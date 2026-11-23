@@ -1874,10 +1874,10 @@ A user who joins a conversation as a member can have one channel per membership 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|from|object|false|none|none|
+|from|[channelFromOneOf0](#schemachannelfromoneof0) \| object \| [channelFromOneOf2](#schemachannelfromoneof2) \| [channelFromOneOf3](#schemachannelfromoneof3) \| [channelFromOneOf4](#schemachannelfromoneof4)|false|none|none|
 |leg_id|[leg_id](#schemaleg_id)|false|none|The id of the leg. rtc_id and call_id are leg id|
 |leg_ids|[object]|false|none|Leg ids associated with this Channel. The first item in the array represents the main active Leg. The second item, if exists, represents a screen-share Leg.|
-|to|object|false|none|none|
+|to|[channelFromOneOf0](#schemachannelfromoneof0) \| object \| [channelFromOneOf2](#schemachannelfromoneof2) \| [channelFromOneOf3](#schemachannelfromoneof3) \| [channelFromOneOf4](#schemachannelfromoneof4)|false|none|none|
 |type|[channel_type](#schemachannel_type)|false|none|Channel type|
 
 #### Enumerated Values
@@ -2604,3 +2604,121 @@ User ID
 ```
 
 user name or user id of the inviter
+
+<h2 id="tocS_channelFromOneOf0">channelFromOneOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemachannelfromoneof0"></a>
+<a id="schema_channelFromOneOf0"></a>
+<a id="tocSchannelfromoneof0"></a>
+<a id="tocschannelfromoneof0"></a>
+
+```json
+{
+  "type": "app",
+  "user": "jamie"
+}
+```
+
+Connect to an App User
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The type of connection. Must be `app`|
+|user|string|true|none|The username to connect to|
+
+<h2 id="tocS_channelFromOneOf1Number">channelFromOneOf1Number</h2>
+<!-- backwards compatibility -->
+<a id="schemachannelfromoneof1number"></a>
+<a id="schema_channelFromOneOf1Number"></a>
+<a id="tocSchannelfromoneof1number"></a>
+<a id="tocschannelfromoneof1number"></a>
+
+```json
+"14155550100"
+```
+
+The phone number to connect to
+
+<h2 id="tocS_channelFromOneOf2">channelFromOneOf2</h2>
+<!-- backwards compatibility -->
+<a id="schemachannelfromoneof2"></a>
+<a id="schema_channelFromOneOf2"></a>
+<a id="tocSchannelfromoneof2"></a>
+<a id="tocschannelfromoneof2"></a>
+
+```json
+{
+  "type": "sip",
+  "uri": "sip:rebekka@sip.example.com"
+}
+```
+
+Connect to a SIP Endpoint
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|true|none|The type of connection. Must be `sip`|
+|uri|string|false|none|The SIP URI to connect to|
+
+<h2 id="tocS_channelFromOneOf3">channelFromOneOf3</h2>
+<!-- backwards compatibility -->
+<a id="schemachannelfromoneof3"></a>
+<a id="schema_channelFromOneOf3"></a>
+<a id="tocSchannelfromoneof3"></a>
+<a id="tocschannelfromoneof3"></a>
+
+```json
+{
+  "content-type": "audio/l16;rate=16000",
+  "headers": {
+    "customer_id": "ABC123"
+  },
+  "type": "websocket",
+  "uri": "wss://example.com/socket"
+}
+```
+
+Connect to a Websocket
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|content-type|string|true|none|none|
+|headers|object|false|none|Details of the Websocket you want to connect to|
+|type|string|true|none|The type of connection. Must be `websocket`|
+|uri|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|content-type|audio/l16;rate=8000|
+|content-type|audio/l16;rate=16000|
+
+<h2 id="tocS_channelFromOneOf4">channelFromOneOf4</h2>
+<!-- backwards compatibility -->
+<a id="schemachannelfromoneof4"></a>
+<a id="schema_channelFromOneOf4"></a>
+<a id="tocSchannelfromoneof4"></a>
+<a id="tocschannelfromoneof4"></a>
+
+```json
+{
+  "extension": "1234",
+  "type": "vbc"
+}
+```
+
+Connect to a VBC extension
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|extension|string|true|none|none|
+|type|string|true|none|The type of connection. Must be `vbc`|

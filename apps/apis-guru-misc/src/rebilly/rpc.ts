@@ -509,10 +509,10 @@ export async function getFilesIdDownload(
 }
 
 export async function getFilesIdDownloadExtension(
-  args: InferRequestType<(typeof client.files)[':id']['download:extension']['$get']>,
+  args: InferRequestType<(typeof client.files)[':id']['download{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
-  return await parseResponse(client.files[':id']['download:extension'].$get(args, options))
+  return await parseResponse(client.files[':id']['download{extension}'].$get(args, options))
 }
 
 export async function getInvoices(

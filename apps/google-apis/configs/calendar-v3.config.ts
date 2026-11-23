@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/calendar/v3/openapi.yaml',
   output: './src/calendar-v3/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/calendar-v3/types.ts' },
   client: { output: './src/calendar-v3/client.ts', baseUrl: '/' },
   rpc: { output: './src/calendar-v3/rpc.ts', parseResponse: true },

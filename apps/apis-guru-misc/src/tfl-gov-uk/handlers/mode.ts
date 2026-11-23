@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getModeActiveServiceTypesRoute, getModeModeArrivalsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getModeActiveServiceTypesRoute, getModeModeArrivalsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getModeActiveServiceTypesRouteHandler: RouteHandler<
+  typeof getModeActiveServiceTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const modeHandler = app
-  .openapi(getModeActiveServiceTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getModeModeArrivalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getModeModeArrivalsRouteHandler: RouteHandler<
+  typeof getModeModeArrivalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

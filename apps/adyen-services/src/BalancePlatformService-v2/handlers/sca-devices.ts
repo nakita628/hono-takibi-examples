@@ -1,23 +1,29 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteScaDevicesDeviceIdRoute,
   patchScaDevicesDeviceIdRoute,
   postScaDevicesDeviceIdScaAssociationsRoute,
   postScaDevicesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postScaDevicesRouteHandler: RouteHandler<typeof postScaDevicesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const scaDevicesHandler = app
-  .openapi(postScaDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteScaDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchScaDevicesDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postScaDevicesDeviceIdScaAssociationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteScaDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof deleteScaDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchScaDevicesDeviceIdRouteHandler: RouteHandler<
+  typeof patchScaDevicesDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postScaDevicesDeviceIdScaAssociationsRouteHandler: RouteHandler<
+  typeof postScaDevicesDeviceIdScaAssociationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

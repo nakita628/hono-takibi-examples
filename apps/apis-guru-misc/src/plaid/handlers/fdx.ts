@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postFdxNotificationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postFdxNotificationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const fdxHandler = app.openapi(postFdxNotificationsRoute, (c) => {
+export const postFdxNotificationsRouteHandler: RouteHandler<
+  typeof postFdxNotificationsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

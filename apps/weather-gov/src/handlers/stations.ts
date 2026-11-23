@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getStationsRoute,
   getStationsStationIdObservationsLatestRoute,
   getStationsStationIdObservationsRoute,
@@ -9,27 +9,42 @@ import {
   getStationsStationIdTafsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStationsStationIdObservationsRouteHandler: RouteHandler<
+  typeof getStationsStationIdObservationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const stationsHandler = app
-  .openapi(getStationsStationIdObservationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsStationIdObservationsLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsStationIdObservationsTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsStationIdTafsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsStationIdTafsDateTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStationsStationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getStationsStationIdObservationsLatestRouteHandler: RouteHandler<
+  typeof getStationsStationIdObservationsLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStationsStationIdObservationsTimeRouteHandler: RouteHandler<
+  typeof getStationsStationIdObservationsTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStationsStationIdTafsRouteHandler: RouteHandler<
+  typeof getStationsStationIdTafsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStationsStationIdTafsDateTimeRouteHandler: RouteHandler<
+  typeof getStationsStationIdTafsDateTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStationsRouteHandler: RouteHandler<typeof getStationsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStationsStationIdRouteHandler: RouteHandler<
+  typeof getStationsStationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

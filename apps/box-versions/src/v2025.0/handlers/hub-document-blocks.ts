@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHubDocumentBlocksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHubDocumentBlocksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const hubDocumentBlocksHandler = app.openapi(getHubDocumentBlocksRoute, (c) => {
+export const getHubDocumentBlocksRouteHandler: RouteHandler<
+  typeof getHubDocumentBlocksRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

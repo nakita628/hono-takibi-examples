@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/Settings/Tax%20Rates/Rollouts/207908/2026-09/taxRates.json',
   output: './src/settings-tax-rates/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/settings-tax-rates/types.ts' },
   client: { output: './src/settings-tax-rates/client.ts', baseUrl: '/' },
   rpc: { output: './src/settings-tax-rates/rpc.ts', parseResponse: true },

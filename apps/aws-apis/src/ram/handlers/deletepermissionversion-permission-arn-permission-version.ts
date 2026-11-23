@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDeletepermissionversionPermissionArnPermissionVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDeletepermissionversionPermissionArnPermissionVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deletepermissionversionPermissionArnPermissionVersionHandler = app.openapi(
-  deleteDeletepermissionversionPermissionArnPermissionVersionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteDeletepermissionversionPermissionArnPermissionVersionRouteHandler: RouteHandler<
+  typeof deleteDeletepermissionversionPermissionArnPermissionVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

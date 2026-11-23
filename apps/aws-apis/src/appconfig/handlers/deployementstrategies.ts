@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteDeployementstrategiesDeploymentStrategyIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteDeployementstrategiesDeploymentStrategyIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deployementstrategiesHandler = app.openapi(
-  deleteDeployementstrategiesDeploymentStrategyIdRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const deleteDeployementstrategiesDeploymentStrategyIdRouteHandler: RouteHandler<
+  typeof deleteDeployementstrategiesDeploymentStrategyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

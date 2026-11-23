@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteResourcesIdRoute,
   deleteResourcesRoute,
   getResourcesDownloadRoute,
@@ -17,51 +17,84 @@ import {
   postResourcesUploadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteResourcesRouteHandler: RouteHandler<typeof deleteResourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const resourcesHandler = app
-  .openapi(deleteResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesCompressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesCopyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesExtractRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postResourcesUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getResourcesRouteHandler: RouteHandler<typeof getResourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesRouteHandler: RouteHandler<typeof postResourcesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesCompressRouteHandler: RouteHandler<
+  typeof postResourcesCompressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesCopyRouteHandler: RouteHandler<typeof postResourcesCopyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesDownloadRouteHandler: RouteHandler<
+  typeof getResourcesDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesExtractRouteHandler: RouteHandler<
+  typeof postResourcesExtractRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesListRouteHandler: RouteHandler<typeof getResourcesListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesListIdRouteHandler: RouteHandler<typeof getResourcesListIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesMoveRouteHandler: RouteHandler<typeof postResourcesMoveRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesPreviewRouteHandler: RouteHandler<
+  typeof getResourcesPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postResourcesUploadRouteHandler: RouteHandler<
+  typeof postResourcesUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteResourcesIdRouteHandler: RouteHandler<typeof deleteResourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getResourcesIdRouteHandler: RouteHandler<typeof getResourcesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchResourcesIdRouteHandler: RouteHandler<typeof patchResourcesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

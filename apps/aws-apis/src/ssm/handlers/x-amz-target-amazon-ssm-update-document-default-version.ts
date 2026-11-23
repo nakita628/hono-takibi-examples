@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmUpdateDocumentDefaultVersionHandler = app.openapi(
-  postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMUpdateDocumentDefaultVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

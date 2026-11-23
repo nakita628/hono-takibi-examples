@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetStorageGateway20130630DeleteTapePoolRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetStorageGateway20130630DeleteTapePoolRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetStorageGateway20130630DeleteTapePoolHandler = app.openapi(
-  postXAmzTargetStorageGateway20130630DeleteTapePoolRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetStorageGateway20130630DeleteTapePoolRouteHandler: RouteHandler<
+  typeof postXAmzTargetStorageGateway20130630DeleteTapePoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

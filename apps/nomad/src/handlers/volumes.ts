@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteVolumesSnapshotRoute,
   getVolumesExternalRoute,
   getVolumesRoute,
@@ -8,24 +8,34 @@ import {
   postVolumesSnapshotRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVolumesRouteHandler: RouteHandler<typeof getVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const volumesHandler = app
-  .openapi(getVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesExternalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteVolumesSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVolumesSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVolumesSnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postVolumesRouteHandler: RouteHandler<typeof postVolumesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesExternalRouteHandler: RouteHandler<typeof getVolumesExternalRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteVolumesSnapshotRouteHandler: RouteHandler<
+  typeof deleteVolumesSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVolumesSnapshotRouteHandler: RouteHandler<typeof getVolumesSnapshotRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVolumesSnapshotRouteHandler: RouteHandler<
+  typeof postVolumesSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,135 +1,389 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetRoute53ResolverAssociateFirewallRuleGroupHandler,
-  xAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressHandler,
-  xAmzTargetRoute53ResolverAssociateResolverQueryLogConfigHandler,
-  xAmzTargetRoute53ResolverAssociateResolverRuleHandler,
-  xAmzTargetRoute53ResolverCreateFirewallDomainListHandler,
-  xAmzTargetRoute53ResolverCreateFirewallRuleGroupHandler,
-  xAmzTargetRoute53ResolverCreateFirewallRuleHandler,
-  xAmzTargetRoute53ResolverCreateResolverEndpointHandler,
-  xAmzTargetRoute53ResolverCreateResolverQueryLogConfigHandler,
-  xAmzTargetRoute53ResolverCreateResolverRuleHandler,
-  xAmzTargetRoute53ResolverDeleteFirewallDomainListHandler,
-  xAmzTargetRoute53ResolverDeleteFirewallRuleGroupHandler,
-  xAmzTargetRoute53ResolverDeleteFirewallRuleHandler,
-  xAmzTargetRoute53ResolverDeleteResolverEndpointHandler,
-  xAmzTargetRoute53ResolverDeleteResolverQueryLogConfigHandler,
-  xAmzTargetRoute53ResolverDeleteResolverRuleHandler,
-  xAmzTargetRoute53ResolverDisassociateFirewallRuleGroupHandler,
-  xAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressHandler,
-  xAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigHandler,
-  xAmzTargetRoute53ResolverDisassociateResolverRuleHandler,
-  xAmzTargetRoute53ResolverGetFirewallConfigHandler,
-  xAmzTargetRoute53ResolverGetFirewallDomainListHandler,
-  xAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationHandler,
-  xAmzTargetRoute53ResolverGetFirewallRuleGroupHandler,
-  xAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyHandler,
-  xAmzTargetRoute53ResolverGetResolverConfigHandler,
-  xAmzTargetRoute53ResolverGetResolverDnssecConfigHandler,
-  xAmzTargetRoute53ResolverGetResolverEndpointHandler,
-  xAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationHandler,
-  xAmzTargetRoute53ResolverGetResolverQueryLogConfigHandler,
-  xAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyHandler,
-  xAmzTargetRoute53ResolverGetResolverRuleAssociationHandler,
-  xAmzTargetRoute53ResolverGetResolverRuleHandler,
-  xAmzTargetRoute53ResolverGetResolverRulePolicyHandler,
-  xAmzTargetRoute53ResolverImportFirewallDomainsHandler,
-  xAmzTargetRoute53ResolverListFirewallConfigsHandler,
-  xAmzTargetRoute53ResolverListFirewallDomainListsHandler,
-  xAmzTargetRoute53ResolverListFirewallDomainsHandler,
-  xAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsHandler,
-  xAmzTargetRoute53ResolverListFirewallRuleGroupsHandler,
-  xAmzTargetRoute53ResolverListFirewallRulesHandler,
-  xAmzTargetRoute53ResolverListResolverConfigsHandler,
-  xAmzTargetRoute53ResolverListResolverDnssecConfigsHandler,
-  xAmzTargetRoute53ResolverListResolverEndpointIpAddressesHandler,
-  xAmzTargetRoute53ResolverListResolverEndpointsHandler,
-  xAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsHandler,
-  xAmzTargetRoute53ResolverListResolverQueryLogConfigsHandler,
-  xAmzTargetRoute53ResolverListResolverRuleAssociationsHandler,
-  xAmzTargetRoute53ResolverListResolverRulesHandler,
-  xAmzTargetRoute53ResolverListTagsForResourceHandler,
-  xAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyHandler,
-  xAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyHandler,
-  xAmzTargetRoute53ResolverPutResolverRulePolicyHandler,
-  xAmzTargetRoute53ResolverTagResourceHandler,
-  xAmzTargetRoute53ResolverUntagResourceHandler,
-  xAmzTargetRoute53ResolverUpdateFirewallConfigHandler,
-  xAmzTargetRoute53ResolverUpdateFirewallDomainsHandler,
-  xAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationHandler,
-  xAmzTargetRoute53ResolverUpdateFirewallRuleHandler,
-  xAmzTargetRoute53ResolverUpdateResolverConfigHandler,
-  xAmzTargetRoute53ResolverUpdateResolverDnssecConfigHandler,
-  xAmzTargetRoute53ResolverUpdateResolverEndpointHandler,
-  xAmzTargetRoute53ResolverUpdateResolverRuleHandler,
+  postXAmzTargetRoute53ResolverAssociateFirewallRuleGroupRoute,
+  postXAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressRoute,
+  postXAmzTargetRoute53ResolverAssociateResolverQueryLogConfigRoute,
+  postXAmzTargetRoute53ResolverAssociateResolverRuleRoute,
+  postXAmzTargetRoute53ResolverCreateFirewallDomainListRoute,
+  postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute,
+  postXAmzTargetRoute53ResolverCreateFirewallRuleRoute,
+  postXAmzTargetRoute53ResolverCreateResolverEndpointRoute,
+  postXAmzTargetRoute53ResolverCreateResolverQueryLogConfigRoute,
+  postXAmzTargetRoute53ResolverCreateResolverRuleRoute,
+  postXAmzTargetRoute53ResolverDeleteFirewallDomainListRoute,
+  postXAmzTargetRoute53ResolverDeleteFirewallRuleGroupRoute,
+  postXAmzTargetRoute53ResolverDeleteFirewallRuleRoute,
+  postXAmzTargetRoute53ResolverDeleteResolverEndpointRoute,
+  postXAmzTargetRoute53ResolverDeleteResolverQueryLogConfigRoute,
+  postXAmzTargetRoute53ResolverDeleteResolverRuleRoute,
+  postXAmzTargetRoute53ResolverDisassociateFirewallRuleGroupRoute,
+  postXAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressRoute,
+  postXAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigRoute,
+  postXAmzTargetRoute53ResolverDisassociateResolverRuleRoute,
+  postXAmzTargetRoute53ResolverGetFirewallConfigRoute,
+  postXAmzTargetRoute53ResolverGetFirewallDomainListRoute,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationRoute,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyRoute,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupRoute,
+  postXAmzTargetRoute53ResolverGetResolverConfigRoute,
+  postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute,
+  postXAmzTargetRoute53ResolverGetResolverEndpointRoute,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationRoute,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyRoute,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigRoute,
+  postXAmzTargetRoute53ResolverGetResolverRuleAssociationRoute,
+  postXAmzTargetRoute53ResolverGetResolverRulePolicyRoute,
+  postXAmzTargetRoute53ResolverGetResolverRuleRoute,
+  postXAmzTargetRoute53ResolverImportFirewallDomainsRoute,
+  postXAmzTargetRoute53ResolverListFirewallConfigsRoute,
+  postXAmzTargetRoute53ResolverListFirewallDomainListsRoute,
+  postXAmzTargetRoute53ResolverListFirewallDomainsRoute,
+  postXAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsRoute,
+  postXAmzTargetRoute53ResolverListFirewallRuleGroupsRoute,
+  postXAmzTargetRoute53ResolverListFirewallRulesRoute,
+  postXAmzTargetRoute53ResolverListResolverConfigsRoute,
+  postXAmzTargetRoute53ResolverListResolverDnssecConfigsRoute,
+  postXAmzTargetRoute53ResolverListResolverEndpointIpAddressesRoute,
+  postXAmzTargetRoute53ResolverListResolverEndpointsRoute,
+  postXAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsRoute,
+  postXAmzTargetRoute53ResolverListResolverQueryLogConfigsRoute,
+  postXAmzTargetRoute53ResolverListResolverRuleAssociationsRoute,
+  postXAmzTargetRoute53ResolverListResolverRulesRoute,
+  postXAmzTargetRoute53ResolverListTagsForResourceRoute,
+  postXAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyRoute,
+  postXAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyRoute,
+  postXAmzTargetRoute53ResolverPutResolverRulePolicyRoute,
+  postXAmzTargetRoute53ResolverTagResourceRoute,
+  postXAmzTargetRoute53ResolverUntagResourceRoute,
+  postXAmzTargetRoute53ResolverUpdateFirewallConfigRoute,
+  postXAmzTargetRoute53ResolverUpdateFirewallDomainsRoute,
+  postXAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationRoute,
+  postXAmzTargetRoute53ResolverUpdateFirewallRuleRoute,
+  postXAmzTargetRoute53ResolverUpdateResolverConfigRoute,
+  postXAmzTargetRoute53ResolverUpdateResolverDnssecConfigRoute,
+  postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute,
+  postXAmzTargetRoute53ResolverUpdateResolverRuleRoute,
+} from './routes'
+import {
+  postXAmzTargetRoute53ResolverAssociateFirewallRuleGroupRouteHandler,
+  postXAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressRouteHandler,
+  postXAmzTargetRoute53ResolverAssociateResolverQueryLogConfigRouteHandler,
+  postXAmzTargetRoute53ResolverAssociateResolverRuleRouteHandler,
+  postXAmzTargetRoute53ResolverCreateFirewallDomainListRouteHandler,
+  postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRouteHandler,
+  postXAmzTargetRoute53ResolverCreateFirewallRuleRouteHandler,
+  postXAmzTargetRoute53ResolverCreateResolverEndpointRouteHandler,
+  postXAmzTargetRoute53ResolverCreateResolverQueryLogConfigRouteHandler,
+  postXAmzTargetRoute53ResolverCreateResolverRuleRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteFirewallDomainListRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteFirewallRuleGroupRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteFirewallRuleRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteResolverEndpointRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteResolverQueryLogConfigRouteHandler,
+  postXAmzTargetRoute53ResolverDeleteResolverRuleRouteHandler,
+  postXAmzTargetRoute53ResolverDisassociateFirewallRuleGroupRouteHandler,
+  postXAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressRouteHandler,
+  postXAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigRouteHandler,
+  postXAmzTargetRoute53ResolverDisassociateResolverRuleRouteHandler,
+  postXAmzTargetRoute53ResolverGetFirewallConfigRouteHandler,
+  postXAmzTargetRoute53ResolverGetFirewallDomainListRouteHandler,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationRouteHandler,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyRouteHandler,
+  postXAmzTargetRoute53ResolverGetFirewallRuleGroupRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverConfigRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverDnssecConfigRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverEndpointRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverQueryLogConfigRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverRuleAssociationRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverRulePolicyRouteHandler,
+  postXAmzTargetRoute53ResolverGetResolverRuleRouteHandler,
+  postXAmzTargetRoute53ResolverImportFirewallDomainsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallConfigsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallDomainListsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallDomainsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallRuleGroupsRouteHandler,
+  postXAmzTargetRoute53ResolverListFirewallRulesRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverConfigsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverDnssecConfigsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverEndpointIpAddressesRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverEndpointsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverQueryLogConfigsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverRuleAssociationsRouteHandler,
+  postXAmzTargetRoute53ResolverListResolverRulesRouteHandler,
+  postXAmzTargetRoute53ResolverListTagsForResourceRouteHandler,
+  postXAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyRouteHandler,
+  postXAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyRouteHandler,
+  postXAmzTargetRoute53ResolverPutResolverRulePolicyRouteHandler,
+  postXAmzTargetRoute53ResolverTagResourceRouteHandler,
+  postXAmzTargetRoute53ResolverUntagResourceRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateFirewallConfigRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateFirewallDomainsRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateFirewallRuleRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateResolverConfigRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateResolverDnssecConfigRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateResolverEndpointRouteHandler,
+  postXAmzTargetRoute53ResolverUpdateResolverRuleRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetRoute53ResolverAssociateFirewallRuleGroupHandler)
-  .route('/', xAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressHandler)
-  .route('/', xAmzTargetRoute53ResolverAssociateResolverQueryLogConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverAssociateResolverRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateFirewallDomainListHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateFirewallRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateFirewallRuleGroupHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateResolverEndpointHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateResolverQueryLogConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverCreateResolverRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteFirewallDomainListHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteFirewallRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteFirewallRuleGroupHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteResolverEndpointHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteResolverQueryLogConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverDeleteResolverRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverDisassociateFirewallRuleGroupHandler)
-  .route('/', xAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressHandler)
-  .route('/', xAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverDisassociateResolverRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverGetFirewallConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverGetFirewallDomainListHandler)
-  .route('/', xAmzTargetRoute53ResolverGetFirewallRuleGroupHandler)
-  .route('/', xAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationHandler)
-  .route('/', xAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverDnssecConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverEndpointHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverQueryLogConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverRuleAssociationHandler)
-  .route('/', xAmzTargetRoute53ResolverGetResolverRulePolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverImportFirewallDomainsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallConfigsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallDomainListsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallDomainsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallRuleGroupsHandler)
-  .route('/', xAmzTargetRoute53ResolverListFirewallRulesHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverConfigsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverDnssecConfigsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverEndpointIpAddressesHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverEndpointsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverQueryLogConfigsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverRuleAssociationsHandler)
-  .route('/', xAmzTargetRoute53ResolverListResolverRulesHandler)
-  .route('/', xAmzTargetRoute53ResolverListTagsForResourceHandler)
-  .route('/', xAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverPutResolverRulePolicyHandler)
-  .route('/', xAmzTargetRoute53ResolverTagResourceHandler)
-  .route('/', xAmzTargetRoute53ResolverUntagResourceHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateFirewallConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateFirewallDomainsHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateFirewallRuleHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateResolverConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateResolverDnssecConfigHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateResolverEndpointHandler)
-  .route('/', xAmzTargetRoute53ResolverUpdateResolverRuleHandler)
+  .openapi(
+    postXAmzTargetRoute53ResolverAssociateFirewallRuleGroupRoute,
+    postXAmzTargetRoute53ResolverAssociateFirewallRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressRoute,
+    postXAmzTargetRoute53ResolverAssociateResolverEndpointIpAddressRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverAssociateResolverQueryLogConfigRoute,
+    postXAmzTargetRoute53ResolverAssociateResolverQueryLogConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverAssociateResolverRuleRoute,
+    postXAmzTargetRoute53ResolverAssociateResolverRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateFirewallDomainListRoute,
+    postXAmzTargetRoute53ResolverCreateFirewallDomainListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateFirewallRuleRoute,
+    postXAmzTargetRoute53ResolverCreateFirewallRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRoute,
+    postXAmzTargetRoute53ResolverCreateFirewallRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateResolverEndpointRoute,
+    postXAmzTargetRoute53ResolverCreateResolverEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateResolverQueryLogConfigRoute,
+    postXAmzTargetRoute53ResolverCreateResolverQueryLogConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverCreateResolverRuleRoute,
+    postXAmzTargetRoute53ResolverCreateResolverRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteFirewallDomainListRoute,
+    postXAmzTargetRoute53ResolverDeleteFirewallDomainListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteFirewallRuleRoute,
+    postXAmzTargetRoute53ResolverDeleteFirewallRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteFirewallRuleGroupRoute,
+    postXAmzTargetRoute53ResolverDeleteFirewallRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteResolverEndpointRoute,
+    postXAmzTargetRoute53ResolverDeleteResolverEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteResolverQueryLogConfigRoute,
+    postXAmzTargetRoute53ResolverDeleteResolverQueryLogConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDeleteResolverRuleRoute,
+    postXAmzTargetRoute53ResolverDeleteResolverRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDisassociateFirewallRuleGroupRoute,
+    postXAmzTargetRoute53ResolverDisassociateFirewallRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressRoute,
+    postXAmzTargetRoute53ResolverDisassociateResolverEndpointIpAddressRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigRoute,
+    postXAmzTargetRoute53ResolverDisassociateResolverQueryLogConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverDisassociateResolverRuleRoute,
+    postXAmzTargetRoute53ResolverDisassociateResolverRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetFirewallConfigRoute,
+    postXAmzTargetRoute53ResolverGetFirewallConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetFirewallDomainListRoute,
+    postXAmzTargetRoute53ResolverGetFirewallDomainListRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupRoute,
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationRoute,
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyRoute,
+    postXAmzTargetRoute53ResolverGetFirewallRuleGroupPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverConfigRoute,
+    postXAmzTargetRoute53ResolverGetResolverConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverDnssecConfigRoute,
+    postXAmzTargetRoute53ResolverGetResolverDnssecConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverEndpointRoute,
+    postXAmzTargetRoute53ResolverGetResolverEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigRoute,
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationRoute,
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyRoute,
+    postXAmzTargetRoute53ResolverGetResolverQueryLogConfigPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverRuleRoute,
+    postXAmzTargetRoute53ResolverGetResolverRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverRuleAssociationRoute,
+    postXAmzTargetRoute53ResolverGetResolverRuleAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverGetResolverRulePolicyRoute,
+    postXAmzTargetRoute53ResolverGetResolverRulePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverImportFirewallDomainsRoute,
+    postXAmzTargetRoute53ResolverImportFirewallDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallConfigsRoute,
+    postXAmzTargetRoute53ResolverListFirewallConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallDomainListsRoute,
+    postXAmzTargetRoute53ResolverListFirewallDomainListsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallDomainsRoute,
+    postXAmzTargetRoute53ResolverListFirewallDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsRoute,
+    postXAmzTargetRoute53ResolverListFirewallRuleGroupAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallRuleGroupsRoute,
+    postXAmzTargetRoute53ResolverListFirewallRuleGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListFirewallRulesRoute,
+    postXAmzTargetRoute53ResolverListFirewallRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverConfigsRoute,
+    postXAmzTargetRoute53ResolverListResolverConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverDnssecConfigsRoute,
+    postXAmzTargetRoute53ResolverListResolverDnssecConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverEndpointIpAddressesRoute,
+    postXAmzTargetRoute53ResolverListResolverEndpointIpAddressesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverEndpointsRoute,
+    postXAmzTargetRoute53ResolverListResolverEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsRoute,
+    postXAmzTargetRoute53ResolverListResolverQueryLogConfigAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverQueryLogConfigsRoute,
+    postXAmzTargetRoute53ResolverListResolverQueryLogConfigsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverRuleAssociationsRoute,
+    postXAmzTargetRoute53ResolverListResolverRuleAssociationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListResolverRulesRoute,
+    postXAmzTargetRoute53ResolverListResolverRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverListTagsForResourceRoute,
+    postXAmzTargetRoute53ResolverListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyRoute,
+    postXAmzTargetRoute53ResolverPutFirewallRuleGroupPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyRoute,
+    postXAmzTargetRoute53ResolverPutResolverQueryLogConfigPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverPutResolverRulePolicyRoute,
+    postXAmzTargetRoute53ResolverPutResolverRulePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverTagResourceRoute,
+    postXAmzTargetRoute53ResolverTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUntagResourceRoute,
+    postXAmzTargetRoute53ResolverUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateFirewallConfigRoute,
+    postXAmzTargetRoute53ResolverUpdateFirewallConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateFirewallDomainsRoute,
+    postXAmzTargetRoute53ResolverUpdateFirewallDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateFirewallRuleRoute,
+    postXAmzTargetRoute53ResolverUpdateFirewallRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationRoute,
+    postXAmzTargetRoute53ResolverUpdateFirewallRuleGroupAssociationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateResolverConfigRoute,
+    postXAmzTargetRoute53ResolverUpdateResolverConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateResolverDnssecConfigRoute,
+    postXAmzTargetRoute53ResolverUpdateResolverDnssecConfigRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute,
+    postXAmzTargetRoute53ResolverUpdateResolverEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53ResolverUpdateResolverRuleRoute,
+    postXAmzTargetRoute53ResolverUpdateResolverRuleRouteHandler,
+  )
 
 export default app

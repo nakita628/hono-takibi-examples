@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBackupKvRoute, getBackupMetadataRoute, getBackupShardsShardIDRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  getBackupKvRoute,
+  getBackupMetadataRoute,
+  getBackupShardsShardIDRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getBackupKvRouteHandler: RouteHandler<typeof getBackupKvRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const backupHandler = app
-  .openapi(getBackupKvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackupShardsShardIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBackupMetadataRouteHandler: RouteHandler<typeof getBackupMetadataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackupShardsShardIDRouteHandler: RouteHandler<
+  typeof getBackupShardsShardIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

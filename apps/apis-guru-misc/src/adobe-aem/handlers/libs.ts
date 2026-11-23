@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLibsGraniteCoreContentLoginHtmlRoute,
   getLibsGraniteSecurityTruststoreJsonRoute,
   postLibsGraniteSecurityPostAuthorizablesRoute,
@@ -8,24 +8,38 @@ import {
   postLibsReplicationTreeactivationHtmlRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLibsGraniteCoreContentLoginHtmlRouteHandler: RouteHandler<
+  typeof getLibsGraniteCoreContentLoginHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const libsHandler = app
-  .openapi(getLibsGraniteCoreContentLoginHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibsGraniteSecurityPostAuthorizablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibsGraniteSecurityPostSslSetupHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibsGraniteSecurityPostTruststoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLibsGraniteSecurityTruststoreJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLibsReplicationTreeactivationHtmlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLibsGraniteSecurityPostAuthorizablesRouteHandler: RouteHandler<
+  typeof postLibsGraniteSecurityPostAuthorizablesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibsGraniteSecurityPostSslSetupHtmlRouteHandler: RouteHandler<
+  typeof postLibsGraniteSecurityPostSslSetupHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibsGraniteSecurityPostTruststoreRouteHandler: RouteHandler<
+  typeof postLibsGraniteSecurityPostTruststoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLibsGraniteSecurityTruststoreJsonRouteHandler: RouteHandler<
+  typeof getLibsGraniteSecurityTruststoreJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postLibsReplicationTreeactivationHtmlRouteHandler: RouteHandler<
+  typeof postLibsReplicationTreeactivationHtmlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

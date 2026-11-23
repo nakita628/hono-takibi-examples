@@ -371,6 +371,17 @@ const SseEventSchema = z
   .object({
     data: z
       .string()
+      .transform((val, ctx) => {
+        try {
+          return JSON.parse(val)
+        } catch (err) {
+          ctx.addIssue({
+            code: 'custom',
+            params: { cause: err instanceof Error ? err.message : String(err) },
+          })
+          return z.NEVER
+        }
+      })
       .pipe(SseEventDataSchema)
       .openapi({
         description:

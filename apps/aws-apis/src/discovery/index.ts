@@ -1,62 +1,161 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAwsPoseidonServiceV20151101AssociateConfigurationItemsToApplicationHandler,
-  xAmzTargetAwsPoseidonServiceV20151101BatchDeleteImportDataHandler,
-  xAmzTargetAwsPoseidonServiceV20151101CreateApplicationHandler,
-  xAmzTargetAwsPoseidonServiceV20151101CreateTagsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DeleteApplicationsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DeleteTagsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeAgentsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeConfigurationsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeContinuousExportsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeExportConfigurationsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeExportTasksHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeImportTasksHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DescribeTagsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationHandler,
-  xAmzTargetAwsPoseidonServiceV20151101ExportConfigurationsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101GetDiscoverySummaryHandler,
-  xAmzTargetAwsPoseidonServiceV20151101ListConfigurationsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101ListServerNeighborsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StartContinuousExportHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StartDataCollectionByAgentIdsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StartExportTaskHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StartImportTaskHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StopContinuousExportHandler,
-  xAmzTargetAwsPoseidonServiceV20151101StopDataCollectionByAgentIdsHandler,
-  xAmzTargetAwsPoseidonServiceV20151101UpdateApplicationHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101BatchDeleteImportDataRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101CreateApplicationRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101CreateTagsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DeleteApplicationsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DeleteTagsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeAgentsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeConfigurationsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeContinuousExportsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeExportConfigurationsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeExportTasksRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeImportTasksRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeTagsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101ExportConfigurationsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101GetDiscoverySummaryRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101ListConfigurationsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101ListServerNeighborsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StartContinuousExportRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StartDataCollectionByAgentIdsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StartExportTaskRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StartImportTaskRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StopContinuousExportRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101StopDataCollectionByAgentIdsRoute,
+  postXAmzTargetAWSPoseidonServiceV20151101UpdateApplicationRoute,
+} from './routes'
+import {
+  postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101BatchDeleteImportDataRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101CreateApplicationRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101CreateTagsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DeleteApplicationsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DeleteTagsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeAgentsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeConfigurationsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeContinuousExportsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeExportConfigurationsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeExportTasksRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeImportTasksRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DescribeTagsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101ExportConfigurationsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101GetDiscoverySummaryRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101ListConfigurationsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101ListServerNeighborsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StartContinuousExportRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StartDataCollectionByAgentIdsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StartExportTaskRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StartImportTaskRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StopContinuousExportRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101StopDataCollectionByAgentIdsRouteHandler,
+  postXAmzTargetAWSPoseidonServiceV20151101UpdateApplicationRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101AssociateConfigurationItemsToApplicationHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101BatchDeleteImportDataHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101CreateApplicationHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101CreateTagsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DeleteApplicationsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DeleteTagsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeAgentsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeConfigurationsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeContinuousExportsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeExportConfigurationsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeExportTasksHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeImportTasksHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101DescribeTagsHandler)
-  .route(
-    '/',
-    xAmzTargetAwsPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationHandler,
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101AssociateConfigurationItemsToApplicationRouteHandler,
   )
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101ExportConfigurationsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101GetDiscoverySummaryHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101ListConfigurationsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101ListServerNeighborsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StartContinuousExportHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StartDataCollectionByAgentIdsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StartExportTaskHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StartImportTaskHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StopContinuousExportHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101StopDataCollectionByAgentIdsHandler)
-  .route('/', xAmzTargetAwsPoseidonServiceV20151101UpdateApplicationHandler)
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101BatchDeleteImportDataRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101BatchDeleteImportDataRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101CreateApplicationRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101CreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101CreateTagsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101CreateTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DeleteApplicationsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DeleteApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DeleteTagsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DeleteTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeAgentsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeAgentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeConfigurationsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeContinuousExportsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeContinuousExportsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeExportConfigurationsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeExportConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeExportTasksRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeExportTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeImportTasksRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeImportTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeTagsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DescribeTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101DisassociateConfigurationItemsFromApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101ExportConfigurationsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101ExportConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101GetDiscoverySummaryRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101GetDiscoverySummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101ListConfigurationsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101ListConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101ListServerNeighborsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101ListServerNeighborsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StartContinuousExportRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StartContinuousExportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StartDataCollectionByAgentIdsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StartDataCollectionByAgentIdsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StartExportTaskRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StartExportTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StartImportTaskRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StartImportTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StopContinuousExportRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StopContinuousExportRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101StopDataCollectionByAgentIdsRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101StopDataCollectionByAgentIdsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAWSPoseidonServiceV20151101UpdateApplicationRoute,
+    postXAmzTargetAWSPoseidonServiceV20151101UpdateApplicationRouteHandler,
+  )
 
 export default app

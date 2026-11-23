@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKvpairsIdRoute,
   getKvpairsIdRoute,
   getKvpairsRoute,
@@ -7,21 +7,22 @@ import {
   putKvpairsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKvpairsRouteHandler: RouteHandler<typeof getKvpairsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const kvpairsHandler = app
-  .openapi(getKvpairsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKvpairsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKvpairsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKvpairsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKvpairsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postKvpairsRouteHandler: RouteHandler<typeof postKvpairsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKvpairsIdRouteHandler: RouteHandler<typeof deleteKvpairsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKvpairsIdRouteHandler: RouteHandler<typeof getKvpairsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putKvpairsIdRouteHandler: RouteHandler<typeof putKvpairsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

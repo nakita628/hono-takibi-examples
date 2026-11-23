@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getDeliveriesIdRoute,
   getDeliveriesRoute,
   patchDeliveriesIdRoute,
@@ -9,27 +9,38 @@ import {
   putDeliveriesIdDeliveryStatusRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDeliveriesRouteHandler: RouteHandler<typeof getDeliveriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const deliveriesHandler = app
-  .openapi(getDeliveriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeliveriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDeliveriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDeliveriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDeliveriesIdCancellationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveriesIdDeliveryStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDeliveriesIdAcceptanceStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDeliveriesRouteHandler: RouteHandler<typeof postDeliveriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDeliveriesIdRouteHandler: RouteHandler<typeof getDeliveriesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDeliveriesIdRouteHandler: RouteHandler<typeof patchDeliveriesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postDeliveriesIdCancellationRouteHandler: RouteHandler<
+  typeof postDeliveriesIdCancellationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveriesIdDeliveryStatusRouteHandler: RouteHandler<
+  typeof putDeliveriesIdDeliveryStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDeliveriesIdAcceptanceStatusRouteHandler: RouteHandler<
+  typeof putDeliveriesIdAcceptanceStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

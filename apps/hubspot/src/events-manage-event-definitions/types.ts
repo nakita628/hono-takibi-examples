@@ -1142,12 +1142,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'text'
             status: 200
           }
-      $delete: {
-        input: { param: { eventName: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | { input: { param: { eventName: string } }; output: {}; outputFormat: string; status: 204 }
+        | {
+            input: { param: { eventName: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { eventName: string } } & {
@@ -1188,12 +1190,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/events/2026-09/event-definitions/:eventName/property/:propertyName': {
-      $delete: {
-        input: { param: { eventName: string; propertyName: string } }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $delete:
+        | {
+            input: { param: { eventName: string; propertyName: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { eventName: string; propertyName: string } }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
       $patch:
         | {
             input: { param: { eventName: string; propertyName: string } } & {
@@ -1214,12 +1223,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/events/2026-09/send/batch': {
-      $post: {
-        input: { json: BatchedBehavioralEventHttpCompletionRequest }
-        output: Error
-        outputFormat: 'text'
-        status: 200
-      }
+      $post:
+        | {
+            input: { json: BatchedBehavioralEventHttpCompletionRequest }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { json: BatchedBehavioralEventHttpCompletionRequest }
+            output: Error
+            outputFormat: 'text'
+            status: 200
+          }
     }
   },
   '/'

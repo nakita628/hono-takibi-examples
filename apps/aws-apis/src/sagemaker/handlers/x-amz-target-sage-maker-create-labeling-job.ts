@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerCreateLabelingJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerCreateLabelingJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerCreateLabelingJobHandler = app.openapi(
-  postXAmzTargetSageMakerCreateLabelingJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerCreateLabelingJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerCreateLabelingJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

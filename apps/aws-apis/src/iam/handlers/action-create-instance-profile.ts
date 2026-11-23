@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionCreateInstanceProfileRoute,
   postActionCreateInstanceProfileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionCreateInstanceProfileRouteHandler: RouteHandler<
+  typeof getActionCreateInstanceProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionCreateInstanceProfileHandler = app
-  .openapi(getActionCreateInstanceProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionCreateInstanceProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionCreateInstanceProfileRouteHandler: RouteHandler<
+  typeof postActionCreateInstanceProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

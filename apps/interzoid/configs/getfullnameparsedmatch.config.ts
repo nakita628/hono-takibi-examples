@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getfullnameparsedmatch/1.0.0/openapi.yaml',
   output: './src/getfullnameparsedmatch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getfullnameparsedmatch/types.ts' },
   client: { output: './src/getfullnameparsedmatch/client.ts', baseUrl: '/' },
   rpc: { output: './src/getfullnameparsedmatch/rpc.ts', parseResponse: true },

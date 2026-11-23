@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSavedadstylesRoute, getSavedadstylesSavedAdStyleIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSavedadstylesRoute, getSavedadstylesSavedAdStyleIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSavedadstylesRouteHandler: RouteHandler<typeof getSavedadstylesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const savedadstylesHandler = app
-  .openapi(getSavedadstylesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSavedadstylesSavedAdStyleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSavedadstylesSavedAdStyleIdRouteHandler: RouteHandler<
+  typeof getSavedadstylesSavedAdStyleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

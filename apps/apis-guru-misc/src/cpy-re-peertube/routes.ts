@@ -1,12 +1,8 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-type IdType = number
+const IdSchema = z.int().min(1).openapi({ example: 42 }).openapi('Id')
 
-const IdSchema: z.ZodType<IdType> = z.int().min(1).openapi({ example: 42 }).openapi('Id')
-
-type UsernameType = string
-
-const UsernameSchema: z.ZodType<UsernameType> = z
+const UsernameSchema = z
   .string()
   .regex(/\/^[a-z0-9._]+$\//)
   .min(1)
@@ -17,19 +13,7 @@ const UsernameSchema: z.ZodType<UsernameType> = z
   })
   .openapi('Username')
 
-type ActorType = {
-  createdAt?: string
-  followersCount?: number
-  followingCount?: number
-  host?: string
-  hostRedundancyAllowed?: boolean
-  id?: z.infer<typeof IdSchema>
-  name?: z.infer<typeof UsernameSchema>
-  updatedAt?: string
-  url?: string
-}
-
-const ActorSchema: z.ZodType<ActorType> = z
+const ActorSchema = z
   .object({
     createdAt: z.iso.datetime({ offset: true }).exactOptional(),
     followersCount: z
@@ -62,443 +46,37 @@ const ActorSchema: z.ZodType<ActorType> = z
   .openapi({ required: [] })
   .openapi('Actor')
 
-const UserSchema: z.ZodType<UserType> = z
-  .lazy(() =>
-    z
-      .object({
-        account: AccountSchema.exactOptional(),
-        autoPlayNextVideo: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Automatically start playing the upcoming video after the currently playing video',
-          }),
-        autoPlayNextVideoPlaylist: z
-          .boolean()
-          .exactOptional()
-          .openapi({
-            description:
-              'Automatically start playing the video on the playlist after the currently playing video',
-          }),
-        autoPlayVideo: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Automatically start playing the video on the watch page' }),
-        blocked: z.boolean().exactOptional(),
-        blockedReason: z.string().exactOptional(),
-        createdAt: z.string().exactOptional(),
-        email: z.email().exactOptional().openapi({ description: 'The user email' }),
-        emailVerified: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Has the user confirmed their email address?' }),
-        id: IdSchema.exactOptional().openapi({ readOnly: true }),
-        lastLoginDate: z.iso.datetime({ offset: true }).exactOptional(),
-        noAccountSetupWarningModal: z.boolean().exactOptional(),
-        noInstanceConfigWarningModal: z.boolean().exactOptional(),
-        noWelcomeModal: z.boolean().exactOptional(),
-        nsfwPolicy: NSFWPolicySchema.exactOptional(),
-        p2pEnabled: z
-          .boolean()
-          .exactOptional()
-          .openapi({ description: 'Enable P2P in the player' }),
-        pluginAuth: z
-          .string()
-          .exactOptional()
-          .openapi({ description: 'Auth plugin to use to authenticate the user' }),
-        role: z
-          .object({
-            id: UserRoleSchema.exactOptional(),
-            label: z.enum(['User', 'Moderator', 'Administrator']).exactOptional(),
-          })
-          .exactOptional()
-          .openapi({ required: [] }),
-        theme: z.string().exactOptional().openapi({ description: 'Theme enabled by this user' }),
-        username: UsernameSchema.exactOptional(),
-        videoChannels: z.array(VideoChannelSchema).exactOptional(),
-        videoQuota: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The user video quota in bytes', example: -1 }),
-        videoQuotaDaily: z
-          .int()
-          .exactOptional()
-          .openapi({ description: 'The user daily video quota in bytes', example: -1 }),
-      })
-      .openapi({ required: [] }),
-  )
-  .openapi('User')
+const UserIdSchema = IdSchema.openapi({ readOnly: true }).openapi('UserId')
 
-type AccountType = z.infer<typeof ActorSchema> & {
-  description?: string
-  displayName?: string
-  userId?: z.infer<typeof UserSchema>
-}
-
-type NSFWPolicyType = 'display' | 'blur' | 'do_not_list'
-
-const AccountSchema: z.ZodType<AccountType> = z
-  .lazy(() =>
-    ActorSchema.and(
-      z
-        .object({
-          description: z
-            .string()
-            .exactOptional()
-            .openapi({ description: "text or bio displayed on the account's profile" }),
-          displayName: z
-            .string()
-            .min(3)
-            .max(120)
-            .exactOptional()
-            .openapi({
-              description: 'editable name of the account, displayed in its representations',
-            }),
-          userId: z
-            .lazy(() => UserSchema)
-            .exactOptional()
-            .openapi({ description: 'object id for the user tied to this account' }),
-        })
-        .openapi({ required: [] }),
-    ),
-  )
-  .openapi('Account')
-
-const NSFWPolicySchema: z.ZodType<NSFWPolicyType> = z
-  .enum(['display', 'blur', 'do_not_list'])
-  .openapi('NSFWPolicy')
-
-type UserRoleType = 0 | 1 | 2
-
-const UserRoleSchema: z.ZodType<UserRoleType> = z
-  .union([z.literal(0), z.literal(1), z.literal(2)])
-  .openapi({ description: 'The user role (Admin = `0`, Moderator = `1`, User = `2`)', example: 2 })
-  .openapi('UserRole')
-
-const ActorImageSchema = z
-  .object({
-    createdAt: z.iso.datetime({ offset: true }).exactOptional(),
-    path: z.string().exactOptional(),
-    updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
-    width: z.int().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('ActorImage')
-
-const UUIDv4Schema = z
-  .uuid()
-  .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
-  .length(36)
-  .openapi({ example: '9c9de5e8-0a1e-484a-b099-e80766180a6d' })
-  .openapi('UUIDv4')
-
-type VideoChannelType = z.infer<typeof ActorSchema> & {
-  banners?: z.infer<typeof ActorImageSchema>[]
-  description?: string
-  displayName?: string
-  isLocal?: boolean
-  ownerAccount?: { id?: number; uuid?: z.infer<typeof UUIDv4Schema> } | null
-  support?: string
-  updatedAt?: string
-}
-
-const VideoChannelSchema: z.ZodType<VideoChannelType> = ActorSchema.and(
+const AccountSchema = ActorSchema.and(
   z
     .object({
-      banners: z.array(ActorImageSchema).exactOptional(),
       description: z
         .string()
-        .min(3)
-        .max(1000)
         .exactOptional()
-        .openapi({ example: 'Videos made with <3 by Framasoft' }),
+        .openapi({ description: "text or bio displayed on the account's profile" }),
       displayName: z
         .string()
-        .min(1)
+        .min(3)
         .max(120)
         .exactOptional()
-        .openapi({
-          description: 'editable name of the channel, displayed in its representations',
-          example: 'Videos of Framasoft',
-        }),
-      isLocal: z.boolean().exactOptional().openapi({ readOnly: true }),
-      ownerAccount: z
-        .object({ id: z.int().exactOptional(), uuid: UUIDv4Schema.exactOptional() })
-        .nullable()
-        .exactOptional()
-        .openapi({ readOnly: true, required: [] }),
-      support: z
-        .string()
-        .min(3)
-        .max(1000)
-        .exactOptional()
-        .openapi({
-          description:
-            'text shown by default on all videos of this channel, to tell the audience how to support it',
-          example: 'Please support our work on https://soutenir.framasoft.org/en/ <3',
-        }),
-      updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+        .openapi({ description: 'editable name of the account, displayed in its representations' }),
+      userId: UserIdSchema.exactOptional().openapi({
+        description: 'object id for the user tied to this account',
+      }),
     })
     .openapi({ required: [] }),
-).openapi('VideoChannel')
+).openapi('Account')
 
-type UserType = {
-  account?: z.infer<typeof AccountSchema>
-  autoPlayNextVideo?: boolean
-  autoPlayNextVideoPlaylist?: boolean
-  autoPlayVideo?: boolean
-  blocked?: boolean
-  blockedReason?: string
-  createdAt?: string
-  email?: string
-  emailVerified?: boolean
-  id?: z.infer<typeof IdSchema>
-  lastLoginDate?: string
-  noAccountSetupWarningModal?: boolean
-  noInstanceConfigWarningModal?: boolean
-  noWelcomeModal?: boolean
-  nsfwPolicy?: z.infer<typeof NSFWPolicySchema>
-  p2pEnabled?: boolean
-  pluginAuth?: string
-  role?: { id?: z.infer<typeof UserRoleSchema>; label?: 'User' | 'Moderator' | 'Administrator' }
-  theme?: string
-  username?: z.infer<typeof UsernameSchema>
-  videoChannels?: z.infer<typeof VideoChannelSchema>[]
-  videoQuota?: number
-  videoQuotaDaily?: number
-}
-
-const AccountSummarySchema = z
-  .object({
-    avatars: z.array(ActorImageSchema).exactOptional(),
-    displayName: z.string().exactOptional(),
-    host: z.hostname().exactOptional(),
-    id: z.int().exactOptional(),
-    name: z.string().exactOptional(),
-    url: z.url().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('AccountSummary')
-
-const VideoCategorySetSchema = z
-  .int()
-  .openapi({
-    description: 'category id of the video (see [/videos/categories](#operation/getCategories))',
-    example: 15,
-  })
-  .openapi('VideoCategorySet')
-
-const VideoConstantNumberCategorySchema = z
-  .object({
-    id: VideoCategorySetSchema.exactOptional(),
-    label: z.string().exactOptional().openapi({ example: 'Science & Technology' }),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoConstantNumberCategory')
-
-const VideoChannelSummarySchema = z
-  .object({
-    avatars: z.array(ActorImageSchema).exactOptional(),
-    displayName: z.string().exactOptional(),
-    host: z.hostname().exactOptional(),
-    id: IdSchema.exactOptional(),
-    name: z.string().exactOptional(),
-    url: z.url().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoChannelSummary')
-
-const VideoLanguageSetSchema = z
+const VideoCommentTextSchema = z
   .string()
-  .openapi({
-    description: 'language id of the video (see [/videos/languages](#operation/getLanguages))',
-    example: 'en',
-  })
-  .openapi('VideoLanguageSet')
+  .min(1)
+  .openapi({ description: 'Text of the comment', example: 'This video is wonderful!' })
+  .openapi('VideoCommentText')
 
-const VideoConstantStringLanguageSchema = z
-  .object({
-    id: VideoLanguageSetSchema.exactOptional(),
-    label: z.string().exactOptional().openapi({ example: 'English' }),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoConstantStringLanguage')
-
-const VideoLicenceSetSchema = z
-  .int()
-  .openapi({
-    description: 'licence id of the video (see [/videos/licences](#operation/getLicences))',
-    example: 2,
-  })
-  .openapi('VideoLicenceSet')
-
-const VideoConstantNumberLicenceSchema = z
-  .object({
-    id: VideoLicenceSetSchema.exactOptional(),
-    label: z.string().exactOptional().openapi({ example: 'Attribution - Share Alike' }),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoConstantNumberLicence')
-
-const VideoPrivacySetSchema = z
-  .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
-  .openapi({
-    description: 'privacy id of the video (see [/videos/privacies](#operation/getPrivacyPolicies))',
-  })
-  .openapi('VideoPrivacySet')
-
-const VideoPrivacyConstantSchema = z
-  .object({ id: VideoPrivacySetSchema.exactOptional(), label: z.string().exactOptional() })
-  .openapi({ required: [] })
-  .openapi('VideoPrivacyConstant')
-
-const VideoScheduledUpdateSchema = z
-  .object({
-    privacy: VideoPrivacySetSchema.exactOptional(),
-    updateAt: z.iso.date().openapi({ description: 'When to update the video' }),
-  })
-  .openapi({ required: ['updateAt'] })
-  .openapi('VideoScheduledUpdate')
-
-const ShortUUIDSchema = z
-  .string()
-  .openapi({
-    description: 'translation of a uuid v4 with a bigger alphabet to have a shorter uuid',
-    example: '2y84q2MQUMWPbiEcxNXMgC',
-  })
-  .openapi('ShortUUID')
-
-const VideoStateConstantSchema = z
-  .object({
-    id: z
-      .union([
-        z.literal(1),
-        z.literal(2),
-        z.literal(3),
-        z.literal(4),
-        z.literal(5),
-        z.literal(6),
-        z.literal(7),
-        z.literal(8),
-        z.literal(9),
-      ])
-      .exactOptional()
-      .openapi({
-        description:
-          'The video state:\n- `1`: Published\n- `2`: To transcode\n- `3`: To import\n- `4`: Waiting for live stream\n- `5`: Live ended\n- `6`: To move to an external storage (object storage...)\n- `7`: Transcoding failed\n- `8`: Moving to an external storage failed\n- `9`: To edit using studio edition feature\n',
-      }),
-    label: z.string().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoStateConstant')
-
-const VideoSchema = z
-  .object({
-    account: AccountSummarySchema.exactOptional(),
-    blacklisted: z.boolean().nullable().exactOptional(),
-    blacklistedReason: z.string().nullable().exactOptional(),
-    category: VideoConstantNumberCategorySchema.exactOptional().openapi({
-      description: 'category in which the video is classified',
-    }),
-    channel: VideoChannelSummarySchema.exactOptional(),
-    createdAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: 'time at which the video object was first drafted',
-        example: '2017-10-01T10:52:46.396Z',
-      }),
-    description: z
-      .string()
-      .min(3)
-      .max(250)
-      .exactOptional()
-      .openapi({
-        description:
-          'truncated description of the video, written in Markdown.\nResolve `descriptionPath` to get the full description of maximum `10000` characters.\n',
-        example:
-          '**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\\r\\n\\r\\n\n**Take back the control of your videos! [#JoinPeertube](https://joinpeertube.org)**\\r\\n*A decentralized video hosting network, based on fr...\n',
-      }),
-    dislikes: z.int().exactOptional().openapi({ example: 7 }),
-    duration: z
-      .int()
-      .exactOptional()
-      .openapi({ description: 'duration of the video in seconds', example: 1419 }),
-    embedPath: z
-      .string()
-      .exactOptional()
-      .openapi({ example: '/videos/embed/a65bc12f-9383-462e-81ae-8207e8b434ee' }),
-    id: IdSchema.exactOptional().openapi({ description: 'object id for the video' }),
-    isLive: z.boolean().exactOptional(),
-    isLocal: z.boolean().exactOptional(),
-    language: VideoConstantStringLanguageSchema.exactOptional().openapi({
-      description: 'main language used in the video',
-    }),
-    licence: VideoConstantNumberLicenceSchema.exactOptional().openapi({
-      description: 'licence under which the video is distributed',
-    }),
-    likes: z.int().exactOptional().openapi({ example: 42 }),
-    name: z
-      .string()
-      .min(3)
-      .max(120)
-      .exactOptional()
-      .openapi({ description: 'title of the video', example: 'What is PeerTube?' }),
-    nsfw: z.boolean().exactOptional(),
-    originallyPublishedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'used to represent a date of first publication, prior to the practical publication date of `publishedAt`',
-        example: '2010-10-01T10:52:46.396Z',
-      }),
-    previewPath: z
-      .string()
-      .exactOptional()
-      .openapi({ example: '/lazy-static/previews/a65bc12f-9383-462e-81ae-8207e8b434ee.jpg' }),
-    privacy: VideoPrivacyConstantSchema.exactOptional().openapi({
-      description: 'privacy policy used to distribute the video',
-    }),
-    publishedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description:
-          'time at which the video was marked as ready for playback (with restrictions depending on `privacy`). Usually set after a `state` evolution.',
-        example: '2018-10-01T10:52:46.396Z',
-      }),
-    scheduledUpdate: VideoScheduledUpdateSchema.nullable().exactOptional(),
-    shortUUID: ShortUUIDSchema.exactOptional(),
-    state: VideoStateConstantSchema.exactOptional().openapi({
-      description:
-        'represents the internal state of the video processing within the PeerTube instance',
-    }),
-    thumbnailPath: z
-      .string()
-      .exactOptional()
-      .openapi({ example: '/static/thumbnails/a65bc12f-9383-462e-81ae-8207e8b434ee.jpg' }),
-    updatedAt: z.iso
-      .datetime({ offset: true })
-      .exactOptional()
-      .openapi({
-        description: "last time the video's metadata was modified",
-        example: '2021-05-04T08:01:01.502Z',
-      }),
-    userHistory: z
-      .object({ currentTime: z.int().exactOptional() })
-      .nullable()
-      .exactOptional()
-      .openapi({ required: [] }),
-    uuid: UUIDv4Schema.exactOptional().openapi({
-      description: 'universal identifier for the video, that can be used across instances',
-    }),
-    views: z.int().exactOptional().openapi({ example: 1337 }),
-    waitTranscoding: z.boolean().nullable().exactOptional(),
-  })
-  .openapi({ required: [] })
-  .openapi('Video')
+const VideoIdSchema = IdSchema.openapi({ description: 'object id for the video' }).openapi(
+  'VideoId',
+)
 
 const VideoCommentSchema = z
   .object({
@@ -508,17 +86,13 @@ const VideoCommentSchema = z
     id: IdSchema.exactOptional(),
     inReplyToCommentId: IdSchema.nullable().exactOptional(),
     isDeleted: z.boolean().default(false).exactOptional(),
-    text: z
-      .string()
-      .min(1)
-      .exactOptional()
-      .openapi({ description: 'Text of the comment', example: 'This video is wonderful!' }),
+    text: VideoCommentTextSchema.exactOptional(),
     threadId: IdSchema.exactOptional(),
     totalReplies: z.int().min(0).exactOptional(),
     totalRepliesFromVideoAuthor: z.int().min(0).exactOptional(),
     updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
     url: z.url().exactOptional(),
-    videoId: z.lazy(() => VideoSchema).exactOptional(),
+    videoId: VideoIdSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('VideoComment')
@@ -554,11 +128,29 @@ const AbuseStateConstantSchema = z
   .openapi({ required: [] })
   .openapi('AbuseStateConstant')
 
+const VideoNameSchema = z
+  .string()
+  .min(3)
+  .max(120)
+  .openapi({ description: 'title of the video', example: 'What is PeerTube?' })
+  .openapi('VideoName')
+
+const UUIDv4Schema = z
+  .uuid()
+  .regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/)
+  .length(36)
+  .openapi({ example: '9c9de5e8-0a1e-484a-b099-e80766180a6d' })
+  .openapi('UUIDv4')
+
+const VideoUuidSchema = UUIDv4Schema.openapi({
+  description: 'universal identifier for the video, that can be used across instances',
+}).openapi('VideoUuid')
+
 const VideoInfoSchema = z
   .object({
-    id: z.lazy(() => VideoSchema).exactOptional(),
-    name: z.lazy(() => VideoSchema).exactOptional(),
-    uuid: z.lazy(() => VideoSchema).exactOptional(),
+    id: VideoIdSchema.exactOptional(),
+    name: VideoNameSchema.exactOptional(),
+    uuid: VideoUuidSchema.exactOptional(),
   })
   .openapi({ required: [] })
   .openapi('VideoInfo')
@@ -581,6 +173,28 @@ const AbuseSchema = z
   })
   .openapi({ required: [] })
   .openapi('Abuse')
+
+const ActorImageSchema = z
+  .object({
+    createdAt: z.iso.datetime({ offset: true }).exactOptional(),
+    path: z.string().exactOptional(),
+    updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
+    width: z.int().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('ActorImage')
+
+const AccountSummarySchema = z
+  .object({
+    avatars: z.array(ActorImageSchema).exactOptional(),
+    displayName: z.string().exactOptional(),
+    host: z.hostname().exactOptional(),
+    id: z.int().exactOptional(),
+    name: z.string().exactOptional(),
+    url: z.url().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('AccountSummary')
 
 const AbuseMessageSchema = z
   .object({
@@ -624,6 +238,11 @@ const UsernameChannelSchema = z
   .openapi('UsernameChannel')
 
 const PasswordSchema = z.string().min(6).max(255).openapi('Password')
+
+const UserRoleSchema = z
+  .union([z.literal(0), z.literal(1), z.literal(2)])
+  .openapi({ description: 'The user role (Admin = `0`, Moderator = `1`, User = `2`)', example: 2 })
+  .openapi('UserRole')
 
 const AddUserSchema = z
   .object({
@@ -822,6 +441,14 @@ const LiveVideoResponseSchema = z
   .openapi({ required: [] })
   .openapi('LiveVideoResponse')
 
+const ShortUUIDSchema = z
+  .string()
+  .openapi({
+    description: 'translation of a uuid v4 with a bigger alphabet to have a shorter uuid',
+    example: '2y84q2MQUMWPbiEcxNXMgC',
+  })
+  .openapi('ShortUUID')
+
 const LiveVideoSessionResponseSchema = z
   .object({
     endDate: z.iso
@@ -916,52 +543,13 @@ const MRSSPeerLinkSchema = z
   .openapi({ xml: { name: 'media:peerLink' }, required: [] })
   .openapi('MRSSPeerLink')
 
-const VideoImportStateConstantSchema = z
-  .object({
-    id: z
-      .union([z.literal(1), z.literal(2), z.literal(3)])
-      .exactOptional()
-      .openapi({
-        description: 'The video import state (Pending = `1`, Success = `2`, Failed = `3`)',
-      }),
-    label: z.string().exactOptional().openapi({ example: 'Pending' }),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoImportStateConstant')
+const NSFWPolicySchema = z.enum(['display', 'blur', 'do_not_list']).openapi('NSFWPolicy')
 
-const VideoImportSchema = z
-  .object({
-    createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    error: z.string().exactOptional().openapi({ readOnly: true }),
-    id: IdSchema.exactOptional().openapi({ readOnly: true }),
-    magnetUri: z
-      .url()
-      .regex(/\/magnet:\?xt=urn:[a-z0-9]+:[a-z0-9]{32}\/i/)
-      .exactOptional()
-      .openapi({ description: "magnet URI allowing to resolve the import's source video" }),
-    state: VideoImportStateConstantSchema.exactOptional().openapi({ readOnly: true }),
-    targetUrl: z
-      .url()
-      .exactOptional()
-      .openapi({
-        description: "remote URL where to find the import's source video",
-        example: 'https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d',
-      }),
-    torrentName: z.string().exactOptional().openapi({ readOnly: true }),
-    torrentfile: z
-      .file()
-      .exactOptional()
-      .openapi({
-        type: 'string',
-        format: 'binary',
-        description: 'Torrent file containing only the video file',
-        writeOnly: true,
-      }),
-    updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
-    video: VideoSchema.nullable().exactOptional().openapi({ readOnly: true }),
-  })
-  .openapi({ required: [] })
-  .openapi('VideoImport')
+const VideoImportMagnetUriSchema = z
+  .url()
+  .regex(/\/magnet:\?xt=urn:[a-z0-9]+:[a-z0-9]{32}\/i/)
+  .openapi({ description: "magnet URI allowing to resolve the import's source video" })
+  .openapi('VideoImportMagnetUri')
 
 const NotificationSchema = z
   .object({
@@ -1023,7 +611,7 @@ const NotificationSchema = z
     videoImport: z
       .object({
         id: IdSchema.exactOptional(),
-        magnetUri: z.lazy(() => VideoImportSchema).exactOptional(),
+        magnetUri: VideoImportMagnetUriSchema.exactOptional(),
         targetUri: z.url().nullable().exactOptional(),
         torrentName: z.string().nullable().exactOptional(),
         video: VideoInfoSchema.nullable().exactOptional(),
@@ -1185,6 +773,212 @@ const PlaybackMetricCreateSchema = z
     ],
   })
   .openapi('PlaybackMetricCreate')
+
+const VideoCategorySetSchema = z
+  .int()
+  .openapi({
+    description: 'category id of the video (see [/videos/categories](#operation/getCategories))',
+    example: 15,
+  })
+  .openapi('VideoCategorySet')
+
+const VideoConstantNumberCategorySchema = z
+  .object({
+    id: VideoCategorySetSchema.exactOptional(),
+    label: z.string().exactOptional().openapi({ example: 'Science & Technology' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoConstantNumberCategory')
+
+const VideoChannelSummarySchema = z
+  .object({
+    avatars: z.array(ActorImageSchema).exactOptional(),
+    displayName: z.string().exactOptional(),
+    host: z.hostname().exactOptional(),
+    id: IdSchema.exactOptional(),
+    name: z.string().exactOptional(),
+    url: z.url().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoChannelSummary')
+
+const VideoLanguageSetSchema = z
+  .string()
+  .openapi({
+    description: 'language id of the video (see [/videos/languages](#operation/getLanguages))',
+    example: 'en',
+  })
+  .openapi('VideoLanguageSet')
+
+const VideoConstantStringLanguageSchema = z
+  .object({
+    id: VideoLanguageSetSchema.exactOptional(),
+    label: z.string().exactOptional().openapi({ example: 'English' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoConstantStringLanguage')
+
+const VideoLicenceSetSchema = z
+  .int()
+  .openapi({
+    description: 'licence id of the video (see [/videos/licences](#operation/getLicences))',
+    example: 2,
+  })
+  .openapi('VideoLicenceSet')
+
+const VideoConstantNumberLicenceSchema = z
+  .object({
+    id: VideoLicenceSetSchema.exactOptional(),
+    label: z.string().exactOptional().openapi({ example: 'Attribution - Share Alike' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoConstantNumberLicence')
+
+const VideoPrivacySetSchema = z
+  .union([z.literal(1), z.literal(2), z.literal(3), z.literal(4)])
+  .openapi({
+    description: 'privacy id of the video (see [/videos/privacies](#operation/getPrivacyPolicies))',
+  })
+  .openapi('VideoPrivacySet')
+
+const VideoPrivacyConstantSchema = z
+  .object({ id: VideoPrivacySetSchema.exactOptional(), label: z.string().exactOptional() })
+  .openapi({ required: [] })
+  .openapi('VideoPrivacyConstant')
+
+const VideoScheduledUpdateSchema = z
+  .object({
+    privacy: VideoPrivacySetSchema.exactOptional(),
+    updateAt: z.iso.date().openapi({ description: 'When to update the video' }),
+  })
+  .openapi({ required: ['updateAt'] })
+  .openapi('VideoScheduledUpdate')
+
+const VideoShortUUIDSchema = ShortUUIDSchema.openapi('VideoShortUUID')
+
+const VideoStateConstantSchema = z
+  .object({
+    id: z
+      .union([
+        z.literal(1),
+        z.literal(2),
+        z.literal(3),
+        z.literal(4),
+        z.literal(5),
+        z.literal(6),
+        z.literal(7),
+        z.literal(8),
+        z.literal(9),
+      ])
+      .exactOptional()
+      .openapi({
+        description:
+          'The video state:\n- `1`: Published\n- `2`: To transcode\n- `3`: To import\n- `4`: Waiting for live stream\n- `5`: Live ended\n- `6`: To move to an external storage (object storage...)\n- `7`: Transcoding failed\n- `8`: Moving to an external storage failed\n- `9`: To edit using studio edition feature\n',
+      }),
+    label: z.string().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoStateConstant')
+
+const VideoSchema = z
+  .object({
+    account: AccountSummarySchema.exactOptional(),
+    blacklisted: z.boolean().nullable().exactOptional(),
+    blacklistedReason: z.string().nullable().exactOptional(),
+    category: VideoConstantNumberCategorySchema.exactOptional().openapi({
+      description: 'category in which the video is classified',
+    }),
+    channel: VideoChannelSummarySchema.exactOptional(),
+    createdAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: 'time at which the video object was first drafted',
+        example: '2017-10-01T10:52:46.396Z',
+      }),
+    description: z
+      .string()
+      .min(3)
+      .max(250)
+      .exactOptional()
+      .openapi({
+        description:
+          'truncated description of the video, written in Markdown.\nResolve `descriptionPath` to get the full description of maximum `10000` characters.\n',
+        example:
+          '**[Want to help to translate this video?](https://weblate.framasoft.org/projects/what-is-peertube-video/)**\\r\\n\\r\\n\n**Take back the control of your videos! [#JoinPeertube](https://joinpeertube.org)**\\r\\n*A decentralized video hosting network, based on fr...\n',
+      }),
+    dislikes: z.int().exactOptional().openapi({ example: 7 }),
+    duration: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'duration of the video in seconds', example: 1419 }),
+    embedPath: z
+      .string()
+      .exactOptional()
+      .openapi({ example: '/videos/embed/a65bc12f-9383-462e-81ae-8207e8b434ee' }),
+    id: VideoIdSchema.exactOptional(),
+    isLive: z.boolean().exactOptional(),
+    isLocal: z.boolean().exactOptional(),
+    language: VideoConstantStringLanguageSchema.exactOptional().openapi({
+      description: 'main language used in the video',
+    }),
+    licence: VideoConstantNumberLicenceSchema.exactOptional().openapi({
+      description: 'licence under which the video is distributed',
+    }),
+    likes: z.int().exactOptional().openapi({ example: 42 }),
+    name: VideoNameSchema.exactOptional(),
+    nsfw: z.boolean().exactOptional(),
+    originallyPublishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'used to represent a date of first publication, prior to the practical publication date of `publishedAt`',
+        example: '2010-10-01T10:52:46.396Z',
+      }),
+    previewPath: z
+      .string()
+      .exactOptional()
+      .openapi({ example: '/lazy-static/previews/a65bc12f-9383-462e-81ae-8207e8b434ee.jpg' }),
+    privacy: VideoPrivacyConstantSchema.exactOptional().openapi({
+      description: 'privacy policy used to distribute the video',
+    }),
+    publishedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description:
+          'time at which the video was marked as ready for playback (with restrictions depending on `privacy`). Usually set after a `state` evolution.',
+        example: '2018-10-01T10:52:46.396Z',
+      }),
+    scheduledUpdate: VideoScheduledUpdateSchema.nullable().exactOptional(),
+    shortUUID: VideoShortUUIDSchema.exactOptional(),
+    state: VideoStateConstantSchema.exactOptional().openapi({
+      description:
+        'represents the internal state of the video processing within the PeerTube instance',
+    }),
+    thumbnailPath: z
+      .string()
+      .exactOptional()
+      .openapi({ example: '/static/thumbnails/a65bc12f-9383-462e-81ae-8207e8b434ee.jpg' }),
+    updatedAt: z.iso
+      .datetime({ offset: true })
+      .exactOptional()
+      .openapi({
+        description: "last time the video's metadata was modified",
+        example: '2021-05-04T08:01:01.502Z',
+      }),
+    userHistory: z
+      .object({ currentTime: z.int().exactOptional() })
+      .nullable()
+      .exactOptional()
+      .openapi({ required: [] }),
+    uuid: VideoUuidSchema.exactOptional(),
+    views: z.int().exactOptional().openapi({ example: 1337 }),
+    waitTranscoding: z.boolean().nullable().exactOptional(),
+  })
+  .openapi({ required: [] })
+  .openapi('Video')
 
 const PlaylistElementSchema = z
   .object({
@@ -1757,6 +1551,8 @@ const ServerStatsSchema = z
   .openapi({ required: [] })
   .openapi('ServerStats')
 
+const UserEmailSchema = z.email().openapi({ description: 'The user email' }).openapi('UserEmail')
+
 const UpdateMeSchema = z
   .object({
     autoPlayNextVideo: z
@@ -1784,10 +1580,9 @@ const UpdateMeSchema = z
       .max(120)
       .exactOptional()
       .openapi({ description: 'new name of the user in its representations' }),
-    email: z
-      .lazy(() => UserSchema)
-      .exactOptional()
-      .openapi({ description: 'new email used for login and service communications' }),
+    email: UserEmailSchema.exactOptional().openapi({
+      description: 'new email used for login and service communications',
+    }),
     noAccountSetupWarningModal: z.boolean().exactOptional(),
     noInstanceConfigWarningModal: z.boolean().exactOptional(),
     noWelcomeModal: z.boolean().exactOptional(),
@@ -1812,10 +1607,9 @@ const UpdateMeSchema = z
 const UpdateUserSchema = z
   .object({
     adminFlags: UserAdminFlagsSchema.exactOptional(),
-    email: z
-      .lazy(() => UserSchema)
-      .exactOptional()
-      .openapi({ description: 'The updated email of the user' }),
+    email: UserEmailSchema.exactOptional().openapi({
+      description: 'The updated email of the user',
+    }),
     emailVerified: z
       .boolean()
       .exactOptional()
@@ -1841,6 +1635,108 @@ const UpdateUserSchema = z
   })
   .openapi({ required: [] })
   .openapi('UpdateUser')
+
+const VideoChannelSchema = ActorSchema.and(
+  z
+    .object({
+      banners: z.array(ActorImageSchema).exactOptional(),
+      description: z
+        .string()
+        .min(3)
+        .max(1000)
+        .exactOptional()
+        .openapi({ example: 'Videos made with <3 by Framasoft' }),
+      displayName: z
+        .string()
+        .min(1)
+        .max(120)
+        .exactOptional()
+        .openapi({
+          description: 'editable name of the channel, displayed in its representations',
+          example: 'Videos of Framasoft',
+        }),
+      isLocal: z.boolean().exactOptional().openapi({ readOnly: true }),
+      ownerAccount: z
+        .object({ id: z.int().exactOptional(), uuid: UUIDv4Schema.exactOptional() })
+        .nullable()
+        .exactOptional()
+        .openapi({ readOnly: true, required: [] }),
+      support: z
+        .string()
+        .min(3)
+        .max(1000)
+        .exactOptional()
+        .openapi({
+          description:
+            'text shown by default on all videos of this channel, to tell the audience how to support it',
+          example: 'Please support our work on https://soutenir.framasoft.org/en/ <3',
+        }),
+      updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    })
+    .openapi({ required: [] }),
+).openapi('VideoChannel')
+
+const UserSchema = z
+  .object({
+    account: AccountSchema.exactOptional(),
+    autoPlayNextVideo: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Automatically start playing the upcoming video after the currently playing video',
+      }),
+    autoPlayNextVideoPlaylist: z
+      .boolean()
+      .exactOptional()
+      .openapi({
+        description:
+          'Automatically start playing the video on the playlist after the currently playing video',
+      }),
+    autoPlayVideo: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Automatically start playing the video on the watch page' }),
+    blocked: z.boolean().exactOptional(),
+    blockedReason: z.string().exactOptional(),
+    createdAt: z.string().exactOptional(),
+    email: UserEmailSchema.exactOptional(),
+    emailVerified: z
+      .boolean()
+      .exactOptional()
+      .openapi({ description: 'Has the user confirmed their email address?' }),
+    id: UserIdSchema.exactOptional(),
+    lastLoginDate: z.iso.datetime({ offset: true }).exactOptional(),
+    noAccountSetupWarningModal: z.boolean().exactOptional(),
+    noInstanceConfigWarningModal: z.boolean().exactOptional(),
+    noWelcomeModal: z.boolean().exactOptional(),
+    nsfwPolicy: NSFWPolicySchema.exactOptional(),
+    p2pEnabled: z.boolean().exactOptional().openapi({ description: 'Enable P2P in the player' }),
+    pluginAuth: z
+      .string()
+      .exactOptional()
+      .openapi({ description: 'Auth plugin to use to authenticate the user' }),
+    role: z
+      .object({
+        id: UserRoleSchema.exactOptional(),
+        label: z.enum(['User', 'Moderator', 'Administrator']).exactOptional(),
+      })
+      .exactOptional()
+      .openapi({ required: [] }),
+    theme: z.string().exactOptional().openapi({ description: 'Theme enabled by this user' }),
+    username: UsernameSchema.exactOptional(),
+    videoChannels: z.array(VideoChannelSchema).exactOptional(),
+    videoQuota: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The user video quota in bytes', example: -1 }),
+    videoQuotaDaily: z
+      .int()
+      .exactOptional()
+      .openapi({ description: 'The user daily video quota in bytes', example: -1 }),
+  })
+  .openapi({ required: [] })
+  .openapi('User')
 
 const UserRegistrationSchema = z
   .object({
@@ -1959,7 +1855,7 @@ const VideoBlacklistSchema = z
     nsfw: z.boolean().exactOptional(),
     updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
     uuid: UUIDv4Schema.exactOptional(),
-    videoId: z.lazy(() => VideoSchema).exactOptional(),
+    videoId: VideoIdSchema.exactOptional(),
     views: z.int().exactOptional(),
   })
   .openapi({ required: [] })
@@ -2092,6 +1988,24 @@ const VideoCommentsForXMLSchema = z
   .openapi({ xml: { name: 'channel', wrapped: true } })
   .openapi('VideoCommentsForXML')
 
+const VideoImportTargetUrlSchema = z
+  .url()
+  .openapi({
+    description: "remote URL where to find the import's source video",
+    example: 'https://framatube.org/videos/watch/9c9de5e8-0a1e-484a-b099-e80766180a6d',
+  })
+  .openapi('VideoImportTargetUrl')
+
+const VideoImportTorrentfileSchema = z
+  .file()
+  .openapi({
+    type: 'string',
+    format: 'binary',
+    description: 'Torrent file containing only the video file',
+    writeOnly: true,
+  })
+  .openapi('VideoImportTorrentfile')
+
 const VideoUploadRequestCommonSchema = z
   .object({
     category: VideoCategorySetSchema.exactOptional(),
@@ -2174,11 +2088,9 @@ const VideoUploadRequestCommonSchema = z
 
 const VideoCreateImportSchema = (() => {
   const Schema = z.xor([
-    z.object({ targetUrl: z.lazy(() => VideoImportSchema) }).openapi({ required: ['targetUrl'] }),
-    z.object({ magnetUri: z.lazy(() => VideoImportSchema) }).openapi({ required: ['magnetUri'] }),
-    z
-      .object({ torrentfile: z.lazy(() => VideoImportSchema) })
-      .openapi({ required: ['torrentfile'] }),
+    z.object({ targetUrl: VideoImportTargetUrlSchema }).openapi({ required: ['targetUrl'] }),
+    z.object({ magnetUri: VideoImportMagnetUriSchema }).openapi({ required: ['magnetUri'] }),
+    z.object({ torrentfile: VideoImportTorrentfileSchema }).openapi({ required: ['torrentfile'] }),
   ])
   return z.preprocess((val: z.input<typeof Schema>, ctx) => {
     ;((ctx) => {
@@ -2340,6 +2252,35 @@ const VideoDetailsSchema = VideoSchema.and(
     .openapi({ required: [] }),
 ).openapi('VideoDetails')
 
+const VideoImportStateConstantSchema = z
+  .object({
+    id: z
+      .union([z.literal(1), z.literal(2), z.literal(3)])
+      .exactOptional()
+      .openapi({
+        description: 'The video import state (Pending = `1`, Success = `2`, Failed = `3`)',
+      }),
+    label: z.string().exactOptional().openapi({ example: 'Pending' }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoImportStateConstant')
+
+const VideoImportSchema = z
+  .object({
+    createdAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    error: z.string().exactOptional().openapi({ readOnly: true }),
+    id: IdSchema.exactOptional().openapi({ readOnly: true }),
+    magnetUri: VideoImportMagnetUriSchema.exactOptional(),
+    state: VideoImportStateConstantSchema.exactOptional().openapi({ readOnly: true }),
+    targetUrl: VideoImportTargetUrlSchema.exactOptional(),
+    torrentName: z.string().exactOptional().openapi({ readOnly: true }),
+    torrentfile: VideoImportTorrentfileSchema.exactOptional(),
+    updatedAt: z.iso.datetime({ offset: true }).exactOptional().openapi({ readOnly: true }),
+    video: VideoSchema.nullable().exactOptional().openapi({ readOnly: true }),
+  })
+  .openapi({ required: [] })
+  .openapi('VideoImport')
+
 const VideoImportsListSchema = z
   .object({
     data: z.array(VideoImportSchema).max(100).exactOptional(),
@@ -2366,6 +2307,8 @@ const VideoPlaylistPrivacyConstantSchema = z
   .openapi({ required: [] })
   .openapi('VideoPlaylistPrivacyConstant')
 
+const VideoPlaylistShortUUIDSchema = ShortUUIDSchema.openapi('VideoPlaylistShortUUID')
+
 const VideoPlaylistTypeSetSchema = z
   .union([z.literal(1), z.literal(2)])
   .openapi({ description: 'The video playlist type (Regular = `1`, Watch Later = `2`)' })
@@ -2385,7 +2328,7 @@ const VideoPlaylistSchema = z
     isLocal: z.boolean().exactOptional(),
     ownerAccount: AccountSummarySchema.exactOptional(),
     privacy: VideoPlaylistPrivacyConstantSchema.exactOptional(),
-    shortUUID: ShortUUIDSchema.exactOptional(),
+    shortUUID: VideoPlaylistShortUUIDSchema.exactOptional(),
     thumbnailPath: z.string().exactOptional(),
     type: VideoPlaylistTypeConstantSchema.exactOptional(),
     updatedAt: z.iso.datetime({ offset: true }).exactOptional(),
@@ -2567,9 +2510,9 @@ const VideoUploadResponseSchema = z
   .object({
     video: z
       .object({
-        id: z.lazy(() => VideoSchema).exactOptional(),
-        shortUUID: z.lazy(() => VideoSchema).exactOptional(),
-        uuid: z.lazy(() => VideoSchema).exactOptional(),
+        id: VideoIdSchema.exactOptional(),
+        shortUUID: VideoShortUUIDSchema.exactOptional(),
+        uuid: VideoUuidSchema.exactOptional(),
       })
       .exactOptional()
       .openapi({ required: [] }),
@@ -3844,10 +3787,7 @@ export const postApiV1AbusesRoute = createRoute({
                     .openapi({
                       description: 'Timestamp in the video that marks the ending of the report',
                     }),
-                  id: z
-                    .lazy(() => VideoSchema)
-                    .exactOptional()
-                    .openapi({ description: 'Video id to report' }),
+                  id: VideoIdSchema.exactOptional().openapi({ description: 'Video id to report' }),
                   startAt: z
                     .int()
                     .min(0)
@@ -5392,9 +5332,7 @@ export const postApiV1ServerRedundancyVideosRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .object({ videoId: z.lazy(() => VideoSchema) })
-            .openapi({ required: ['videoId'] }),
+          schema: z.object({ videoId: VideoIdSchema }).openapi({ required: ['videoId'] }),
         },
       },
     },
@@ -5769,16 +5707,22 @@ export const deleteApiV1UsersMeHistoryVideosVideoIdRoute = createRoute({
   summary: 'Delete history element',
   request: {
     params: z.object({
-      videoId: z
-        .lazy(() => VideoSchema)
-        .openapi({
+      videoId: z.preprocess(
+        (val) =>
+          typeof val === 'string' &&
+          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+            ? Number(val)
+            : val,
+        VideoIdSchema.openapi({
           param: {
             in: 'path',
             name: 'videoId',
             required: true,
-            schema: { $ref: '#/components/schemas/Video/properties/id' },
+            schema: { $ref: '#/components/schemas/VideoId' },
           },
         }),
+      ),
     }),
   },
   responses: { 204: { description: 'successful operation' } },
@@ -6010,7 +5954,17 @@ export const getApiV1UsersMeVideoPlaylistsVideosExistRoute = createRoute({
       videoIds: z
         .preprocess(
           (val) => (val === undefined || Array.isArray(val) ? val : [val]),
-          z.array(z.lazy(() => VideoSchema)),
+          z.array(
+            z.preprocess(
+              (val) =>
+                typeof val === 'string' &&
+                /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+                (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+                  ? Number(val)
+                  : val,
+              VideoIdSchema,
+            ),
+          ),
         )
         .openapi({
           param: {
@@ -6018,7 +5972,7 @@ export const getApiV1UsersMeVideoPlaylistsVideosExistRoute = createRoute({
             in: 'query',
             name: 'videoIds',
             required: true,
-            schema: { items: { $ref: '#/components/schemas/Video/properties/id' }, type: 'array' },
+            schema: { items: { $ref: '#/components/schemas/VideoId' }, type: 'array' },
           },
         }),
     }),
@@ -6175,17 +6129,23 @@ export const getApiV1UsersMeVideosVideoIdRatingRoute = createRoute({
   summary: 'Get rate of my user for a video',
   request: {
     params: z.object({
-      videoId: z
-        .lazy(() => VideoSchema)
-        .openapi({
+      videoId: z.preprocess(
+        (val) =>
+          typeof val === 'string' &&
+          /^-?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$/.test(val) &&
+          (!/^-?\d+$/.test(val) || Number.isSafeInteger(Number(val)))
+            ? Number(val)
+            : val,
+        VideoIdSchema.openapi({
           param: {
             description: 'The video id',
             in: 'path',
             name: 'videoId',
             required: true,
-            schema: { $ref: '#/components/schemas/Video/properties/id' },
+            schema: { $ref: '#/components/schemas/VideoId' },
           },
         }),
+      ),
     }),
   },
   responses: {
@@ -7101,7 +7061,7 @@ export const postApiV1VideoPlaylistsRoute = createRoute({
               videoPlaylist: z
                 .object({
                   id: IdSchema.exactOptional(),
-                  shortUUID: z.lazy(() => VideoPlaylistSchema).exactOptional(),
+                  shortUUID: VideoPlaylistShortUUIDSchema.exactOptional(),
                   uuid: UUIDv4Schema.exactOptional(),
                 })
                 .exactOptional()
@@ -7265,7 +7225,7 @@ export const postApiV1VideoPlaylistsPlaylistIdVideosRoute = createRoute({
                 .exactOptional()
                 .openapi({ description: 'Stop the video at this specific timestamp' }),
               videoId: z
-                .xor([z.lazy(() => VideoSchema), z.lazy(() => VideoSchema)])
+                .xor([VideoUuidSchema, VideoIdSchema])
                 .openapi({ description: 'Video to add in the playlist' }),
             })
             .openapi({ required: ['videoId'] }),
@@ -7516,13 +7476,13 @@ export const postApiV1VideosImportsRoute = createRoute({
           schema: (() => {
             const Schema = z.xor([
               z
-                .object({ targetUrl: z.lazy(() => VideoImportSchema) })
+                .object({ targetUrl: VideoImportTargetUrlSchema })
                 .openapi({ required: ['targetUrl'] }),
               z
-                .object({ magnetUri: z.lazy(() => VideoImportSchema) })
+                .object({ magnetUri: VideoImportMagnetUriSchema })
                 .openapi({ required: ['magnetUri'] }),
               z
-                .object({ torrentfile: z.lazy(() => VideoImportSchema) })
+                .object({ torrentfile: VideoImportTorrentfileSchema })
                 .openapi({ required: ['torrentfile'] }),
             ])
             return z.preprocess((val: z.input<typeof Schema>, ctx) => {
@@ -8883,9 +8843,7 @@ export const postApiV1VideosIdCommentThreadsRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .object({ text: z.lazy(() => VideoCommentSchema) })
-            .openapi({ required: ['text'] }),
+          schema: z.object({ text: VideoCommentTextSchema }).openapi({ required: ['text'] }),
         },
       },
     },
@@ -8924,9 +8882,7 @@ export const postApiV1VideosIdCommentsCommentIdRoute = createRoute({
     body: {
       content: {
         'application/json': {
-          schema: z
-            .object({ text: z.lazy(() => VideoCommentSchema) })
-            .openapi({ required: ['text'] }),
+          schema: z.object({ text: VideoCommentTextSchema }).openapi({ required: ['text'] }),
         },
       },
     },

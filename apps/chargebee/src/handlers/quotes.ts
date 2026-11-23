@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuotesQuoteIdQuoteEntitlementsRoute,
   getQuotesQuoteIdQuoteLineGroupsRoute,
   getQuotesQuoteIdRoute,
@@ -16,48 +16,84 @@ import {
   postQuotesUpdateSubscriptionQuoteForItemsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuotesQuoteIdRouteHandler: RouteHandler<typeof getQuotesQuoteIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const quotesHandler = app
-  .openapi(getQuotesQuoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdUpdateStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdExtendExpiryDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdConvertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesUpdateSubscriptionQuoteForItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdQuoteLineGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdEditForChargeItemsAndChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesQuoteIdPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuotesCreateForChargeItemsAndChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesQuoteIdQuoteEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQuotesQuoteIdUpdateStatusRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdUpdateStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdExtendExpiryDateRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdExtendExpiryDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdEditUpdateSubscriptionQuoteForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesRouteHandler: RouteHandler<typeof getQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdConvertRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdConvertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdDeleteRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdEditCreateSubscriptionQuoteForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesUpdateSubscriptionQuoteForItemsRouteHandler: RouteHandler<
+  typeof postQuotesUpdateSubscriptionQuoteForItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdQuoteLineGroupsRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdQuoteLineGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdEditForChargeItemsAndChargesRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdEditForChargeItemsAndChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesQuoteIdPdfRouteHandler: RouteHandler<
+  typeof postQuotesQuoteIdPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuotesCreateForChargeItemsAndChargesRouteHandler: RouteHandler<
+  typeof postQuotesCreateForChargeItemsAndChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesQuoteIdQuoteEntitlementsRouteHandler: RouteHandler<
+  typeof getQuotesQuoteIdQuoteEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -212,6 +212,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: {
               json: { groupId?: string | undefined; name: string; sourceOrgId?: string | undefined }
             }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: {
+              json: { groupId?: string | undefined; name: string; sourceOrgId?: string | undefined }
+            }
             output: { errorRef?: string | undefined; message?: string | undefined }
             outputFormat: 'text'
             status: 400
@@ -2748,17 +2756,19 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/user/me': {
-      $get: {
-        input: {}
-        output: {
-          email?: string | undefined
-          id?: string | undefined
-          orgs?: { [x: string]: unknown } | undefined
-          username?: string | undefined
-        }
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: {}
+            output: {
+              email?: string | undefined
+              id?: string | undefined
+              orgs?: { [x: string]: unknown } | undefined
+              username?: string | undefined
+            }
+            outputFormat: 'text'
+            status: 200
+          }
+        | { input: {}; output: {}; outputFormat: string; status: 401 }
     }
   } & {
     '/user/me/notification-settings/org/:orgId': {
@@ -2851,17 +2861,21 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/user/:userId': {
-      $get: {
-        input: { param: { userId: string } }
-        output: {
-          email?: string | undefined
-          id?: string | undefined
-          name?: string | undefined
-          username?: string | undefined
-        }
-        outputFormat: 'text'
-        status: 200
-      }
+      $get:
+        | {
+            input: { param: { userId: string } }
+            output: {
+              email?: string | undefined
+              id?: string | undefined
+              name?: string | undefined
+              username?: string | undefined
+            }
+            outputFormat: 'text'
+            status: 200
+          }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 400 }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 401 }
+        | { input: { param: { userId: string } }; output: {}; outputFormat: string; status: 404 }
     }
   },
   '/'

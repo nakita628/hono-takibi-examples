@@ -1,39 +1,101 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetBaldrApiServiceCopyBackupToRegionHandler,
-  xAmzTargetBaldrApiServiceCreateClusterHandler,
-  xAmzTargetBaldrApiServiceCreateHsmHandler,
-  xAmzTargetBaldrApiServiceDeleteBackupHandler,
-  xAmzTargetBaldrApiServiceDeleteClusterHandler,
-  xAmzTargetBaldrApiServiceDeleteHsmHandler,
-  xAmzTargetBaldrApiServiceDescribeBackupsHandler,
-  xAmzTargetBaldrApiServiceDescribeClustersHandler,
-  xAmzTargetBaldrApiServiceInitializeClusterHandler,
-  xAmzTargetBaldrApiServiceListTagsHandler,
-  xAmzTargetBaldrApiServiceModifyBackupAttributesHandler,
-  xAmzTargetBaldrApiServiceModifyClusterHandler,
-  xAmzTargetBaldrApiServiceRestoreBackupHandler,
-  xAmzTargetBaldrApiServiceTagResourceHandler,
-  xAmzTargetBaldrApiServiceUntagResourceHandler,
+  postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute,
+  postXAmzTargetBaldrApiServiceCreateClusterRoute,
+  postXAmzTargetBaldrApiServiceCreateHsmRoute,
+  postXAmzTargetBaldrApiServiceDeleteBackupRoute,
+  postXAmzTargetBaldrApiServiceDeleteClusterRoute,
+  postXAmzTargetBaldrApiServiceDeleteHsmRoute,
+  postXAmzTargetBaldrApiServiceDescribeBackupsRoute,
+  postXAmzTargetBaldrApiServiceDescribeClustersRoute,
+  postXAmzTargetBaldrApiServiceInitializeClusterRoute,
+  postXAmzTargetBaldrApiServiceListTagsRoute,
+  postXAmzTargetBaldrApiServiceModifyBackupAttributesRoute,
+  postXAmzTargetBaldrApiServiceModifyClusterRoute,
+  postXAmzTargetBaldrApiServiceRestoreBackupRoute,
+  postXAmzTargetBaldrApiServiceTagResourceRoute,
+  postXAmzTargetBaldrApiServiceUntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetBaldrApiServiceCopyBackupToRegionRouteHandler,
+  postXAmzTargetBaldrApiServiceCreateClusterRouteHandler,
+  postXAmzTargetBaldrApiServiceCreateHsmRouteHandler,
+  postXAmzTargetBaldrApiServiceDeleteBackupRouteHandler,
+  postXAmzTargetBaldrApiServiceDeleteClusterRouteHandler,
+  postXAmzTargetBaldrApiServiceDeleteHsmRouteHandler,
+  postXAmzTargetBaldrApiServiceDescribeBackupsRouteHandler,
+  postXAmzTargetBaldrApiServiceDescribeClustersRouteHandler,
+  postXAmzTargetBaldrApiServiceInitializeClusterRouteHandler,
+  postXAmzTargetBaldrApiServiceListTagsRouteHandler,
+  postXAmzTargetBaldrApiServiceModifyBackupAttributesRouteHandler,
+  postXAmzTargetBaldrApiServiceModifyClusterRouteHandler,
+  postXAmzTargetBaldrApiServiceRestoreBackupRouteHandler,
+  postXAmzTargetBaldrApiServiceTagResourceRouteHandler,
+  postXAmzTargetBaldrApiServiceUntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetBaldrApiServiceCopyBackupToRegionHandler)
-  .route('/', xAmzTargetBaldrApiServiceCreateClusterHandler)
-  .route('/', xAmzTargetBaldrApiServiceCreateHsmHandler)
-  .route('/', xAmzTargetBaldrApiServiceDeleteBackupHandler)
-  .route('/', xAmzTargetBaldrApiServiceDeleteClusterHandler)
-  .route('/', xAmzTargetBaldrApiServiceDeleteHsmHandler)
-  .route('/', xAmzTargetBaldrApiServiceDescribeBackupsHandler)
-  .route('/', xAmzTargetBaldrApiServiceDescribeClustersHandler)
-  .route('/', xAmzTargetBaldrApiServiceInitializeClusterHandler)
-  .route('/', xAmzTargetBaldrApiServiceListTagsHandler)
-  .route('/', xAmzTargetBaldrApiServiceModifyBackupAttributesHandler)
-  .route('/', xAmzTargetBaldrApiServiceModifyClusterHandler)
-  .route('/', xAmzTargetBaldrApiServiceRestoreBackupHandler)
-  .route('/', xAmzTargetBaldrApiServiceTagResourceHandler)
-  .route('/', xAmzTargetBaldrApiServiceUntagResourceHandler)
+  .openapi(
+    postXAmzTargetBaldrApiServiceCopyBackupToRegionRoute,
+    postXAmzTargetBaldrApiServiceCopyBackupToRegionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceCreateClusterRoute,
+    postXAmzTargetBaldrApiServiceCreateClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceCreateHsmRoute,
+    postXAmzTargetBaldrApiServiceCreateHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceDeleteBackupRoute,
+    postXAmzTargetBaldrApiServiceDeleteBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceDeleteClusterRoute,
+    postXAmzTargetBaldrApiServiceDeleteClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceDeleteHsmRoute,
+    postXAmzTargetBaldrApiServiceDeleteHsmRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceDescribeBackupsRoute,
+    postXAmzTargetBaldrApiServiceDescribeBackupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceDescribeClustersRoute,
+    postXAmzTargetBaldrApiServiceDescribeClustersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceInitializeClusterRoute,
+    postXAmzTargetBaldrApiServiceInitializeClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceListTagsRoute,
+    postXAmzTargetBaldrApiServiceListTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceModifyBackupAttributesRoute,
+    postXAmzTargetBaldrApiServiceModifyBackupAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceModifyClusterRoute,
+    postXAmzTargetBaldrApiServiceModifyClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceRestoreBackupRoute,
+    postXAmzTargetBaldrApiServiceRestoreBackupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceTagResourceRoute,
+    postXAmzTargetBaldrApiServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetBaldrApiServiceUntagResourceRoute,
+    postXAmzTargetBaldrApiServiceUntagResourceRouteHandler,
+  )
 
 export default app

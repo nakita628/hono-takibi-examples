@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPipelineactivitiesRunRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPipelineactivitiesRunRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pipelineactivitiesHandler = app.openapi(postPipelineactivitiesRunRoute, (c) => {
+export const postPipelineactivitiesRunRouteHandler: RouteHandler<
+  typeof postPipelineactivitiesRunRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

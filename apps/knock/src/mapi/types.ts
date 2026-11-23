@@ -2093,7 +2093,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { key: string } } & { query: { environment?: string | undefined } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
       $get: {
         input: { param: { key: string } }
@@ -2559,7 +2559,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/tags/:name': {
-      $delete: { input: { param: { name: string } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { name: string } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { name: string } } & { json: { tag: TagRequest } }
         output: { tag: Tag }
@@ -3532,7 +3532,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/v1/preference_categories/:name': {
-      $delete: { input: { param: { name: string } }; output: {}; outputFormat: string; status: 200 }
+      $delete: { input: { param: { name: string } }; output: {}; outputFormat: string; status: 204 }
       $put: {
         input: { param: { name: string } }
         output: { preference_category: PreferenceCategory }
@@ -3672,7 +3672,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { param: { channel_group_key: string } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 204
       }
       $get: {
         input: { param: { channel_group_key: string } }

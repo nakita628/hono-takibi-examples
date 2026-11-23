@@ -2723,7 +2723,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/:camera_name/latest.:extension': {
+    '/:camera_name/latest.{extension}': {
       $get:
         | {
             input: {
@@ -2775,7 +2775,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/:camera_name/recordings/:frame_time/snapshot.:format': {
+    '/:camera_name/recordings/:frame_time/snapshot.{format}': {
       $get:
         | {
             input: {
@@ -3049,7 +3049,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/events/:event_id/thumbnail.:extension': {
+    '/events/:event_id/thumbnail.{extension}': {
       $get:
         | {
             input: { param: { event_id: string; extension: Extension } } & {

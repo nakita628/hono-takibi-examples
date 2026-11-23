@@ -280,8 +280,8 @@ const ProjectVersionDescriptionsSchema: z.ZodType<ProjectVersionDescriptionsType
 const ExtendedPaginationTokenSchema = z.string().max(1024).openapi('ExtendedPaginationToken')
 
 type DescribeProjectVersionsResponseType = {
-  ProjectVersionDescriptions?: z.infer<typeof ProjectVersionDescriptionsSchema> & unknown
-  NextToken?: z.infer<typeof ExtendedPaginationTokenSchema> & unknown
+  ProjectVersionDescriptions?: z.infer<typeof ProjectVersionDescriptionsSchema>
+  NextToken?: z.infer<typeof ExtendedPaginationTokenSchema>
 }
 
 const StringSchema = z.string().openapi('String')
@@ -435,9 +435,9 @@ const ProtectiveEquipmentSummarySchema = z
   .openapi('ProtectiveEquipmentSummary')
 
 type DetectProtectiveEquipmentResponseType = {
-  ProtectiveEquipmentModelVersion?: z.infer<typeof StringSchema> & unknown
-  Persons?: z.infer<typeof ProtectiveEquipmentPersonsSchema> & unknown
-  Summary?: z.infer<typeof ProtectiveEquipmentSummarySchema> & unknown
+  ProtectiveEquipmentModelVersion?: z.infer<typeof StringSchema>
+  Persons?: z.infer<typeof ProtectiveEquipmentPersonsSchema>
+  Summary?: z.infer<typeof ProtectiveEquipmentSummarySchema>
 }
 
 const VideoJobStatusSchema = z
@@ -675,16 +675,16 @@ const GetLabelDetectionRequestMetadataSchema = z
   .openapi('GetLabelDetectionRequestMetadata')
 
 type GetLabelDetectionResponseType = {
-  JobStatus?: z.infer<typeof VideoJobStatusSchema> & unknown
-  StatusMessage?: z.infer<typeof StatusMessageSchema> & unknown
-  VideoMetadata?: z.infer<typeof VideoMetadataSchema> & unknown
-  NextToken?: z.infer<typeof PaginationTokenSchema> & unknown
-  Labels?: z.infer<typeof LabelDetectionsSchema> & unknown
-  LabelModelVersion?: z.infer<typeof StringSchema> & unknown
-  JobId?: z.infer<typeof JobIdSchema> & unknown
+  JobStatus?: z.infer<typeof VideoJobStatusSchema>
+  StatusMessage?: z.infer<typeof StatusMessageSchema>
+  VideoMetadata?: z.infer<typeof VideoMetadataSchema>
+  NextToken?: z.infer<typeof PaginationTokenSchema>
+  Labels?: z.infer<typeof LabelDetectionsSchema>
+  LabelModelVersion?: z.infer<typeof StringSchema>
+  JobId?: z.infer<typeof JobIdSchema>
   Video?: z.infer<typeof VideoSchema>
-  JobTag?: z.infer<typeof JobTagSchema> & unknown
-  GetRequestMetadata?: z.infer<typeof GetLabelDetectionRequestMetadataSchema> & unknown
+  JobTag?: z.infer<typeof JobTagSchema>
+  GetRequestMetadata?: z.infer<typeof GetLabelDetectionRequestMetadataSchema>
 }
 
 const FaceIdSchema = z

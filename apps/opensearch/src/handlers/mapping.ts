@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMappingFieldFieldsRoute, getMappingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMappingFieldFieldsRoute, getMappingRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMappingRouteHandler: RouteHandler<typeof getMappingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mappingHandler = app
-  .openapi(getMappingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMappingFieldFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMappingFieldFieldsRouteHandler: RouteHandler<
+  typeof getMappingFieldFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

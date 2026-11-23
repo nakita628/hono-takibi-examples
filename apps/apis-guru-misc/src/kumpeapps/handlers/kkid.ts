@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteKkidChorelistRoute,
   deleteKkidUserlistRoute,
   deleteKkidWishlistRoute,
@@ -20,60 +20,96 @@ import {
   putKkidWishlistRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKkidAllowanceRouteHandler: RouteHandler<typeof getKkidAllowanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const kkidHandler = app
-  .openapi(getKkidAllowanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidAllowanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidApnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKkidChorelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKkidChorelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidChorelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKkidChorelistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidMasteruserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKkidShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKkidUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKkidUserlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKkidUserlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidUserlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKkidUserlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteKkidWishlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKkidWishlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postKkidWishlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putKkidWishlistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postKkidAllowanceRouteHandler: RouteHandler<typeof postKkidAllowanceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKkidApnsRouteHandler: RouteHandler<typeof postKkidApnsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKkidChorelistRouteHandler: RouteHandler<
+  typeof deleteKkidChorelistRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKkidChorelistRouteHandler: RouteHandler<typeof getKkidChorelistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKkidChorelistRouteHandler: RouteHandler<typeof postKkidChorelistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKkidChorelistRouteHandler: RouteHandler<typeof putKkidChorelistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postKkidMasteruserRouteHandler: RouteHandler<typeof postKkidMasteruserRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKkidShareRouteHandler: RouteHandler<typeof getKkidShareRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKkidUserRouteHandler: RouteHandler<typeof getKkidUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKkidUserlistRouteHandler: RouteHandler<typeof deleteKkidUserlistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKkidUserlistRouteHandler: RouteHandler<typeof getKkidUserlistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKkidUserlistRouteHandler: RouteHandler<typeof postKkidUserlistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKkidUserlistRouteHandler: RouteHandler<typeof putKkidUserlistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteKkidWishlistRouteHandler: RouteHandler<typeof deleteKkidWishlistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getKkidWishlistRouteHandler: RouteHandler<typeof getKkidWishlistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postKkidWishlistRouteHandler: RouteHandler<typeof postKkidWishlistRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putKkidWishlistRouteHandler: RouteHandler<typeof putKkidWishlistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

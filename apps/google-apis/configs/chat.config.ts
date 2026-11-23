@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/chat/v1/openapi.yaml',
   output: './src/chat/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/chat/types.ts' },
   client: { output: './src/chat/client.ts', baseUrl: '/' },
   rpc: { output: './src/chat/rpc.ts', parseResponse: true },

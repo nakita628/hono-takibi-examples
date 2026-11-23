@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMetalGatewaysIdRoute,
   getMetalGatewaysIdBgpDynamicNeighborsRoute,
   getMetalGatewaysIdIpsRoute,
@@ -8,24 +8,38 @@ import {
   postMetalGatewaysIdIpsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteMetalGatewaysIdRouteHandler: RouteHandler<
+  typeof deleteMetalGatewaysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const metalGatewaysHandler = app
-  .openapi(deleteMetalGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetalGatewaysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetalGatewaysIdBgpDynamicNeighborsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetalGatewaysIdBgpDynamicNeighborsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetalGatewaysIdIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetalGatewaysIdIpsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMetalGatewaysIdRouteHandler: RouteHandler<typeof getMetalGatewaysIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetalGatewaysIdBgpDynamicNeighborsRouteHandler: RouteHandler<
+  typeof getMetalGatewaysIdBgpDynamicNeighborsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetalGatewaysIdBgpDynamicNeighborsRouteHandler: RouteHandler<
+  typeof postMetalGatewaysIdBgpDynamicNeighborsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetalGatewaysIdIpsRouteHandler: RouteHandler<
+  typeof getMetalGatewaysIdIpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetalGatewaysIdIpsRouteHandler: RouteHandler<
+  typeof postMetalGatewaysIdIpsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

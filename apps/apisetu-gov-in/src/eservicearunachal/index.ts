@@ -1,21 +1,29 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  chcerHandler,
-  dmcerHandler,
-  dpcerHandler,
-  incerHandler,
-  rscerHandler,
-  shcerHandler,
+  postChcerCertificateRoute,
+  postDmcerCertificateRoute,
+  postDpcerCertificateRoute,
+  postIncerCertificateRoute,
+  postRscerCertificateRoute,
+  postShcerCertificateRoute,
+} from './routes'
+import {
+  postChcerCertificateRouteHandler,
+  postDmcerCertificateRouteHandler,
+  postDpcerCertificateRouteHandler,
+  postIncerCertificateRouteHandler,
+  postRscerCertificateRouteHandler,
+  postShcerCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', chcerHandler)
-  .route('/', dmcerHandler)
-  .route('/', dpcerHandler)
-  .route('/', incerHandler)
-  .route('/', rscerHandler)
-  .route('/', shcerHandler)
+  .openapi(postChcerCertificateRoute, postChcerCertificateRouteHandler)
+  .openapi(postDmcerCertificateRoute, postDmcerCertificateRouteHandler)
+  .openapi(postDpcerCertificateRoute, postDpcerCertificateRouteHandler)
+  .openapi(postIncerCertificateRoute, postIncerCertificateRouteHandler)
+  .openapi(postRscerCertificateRoute, postRscerCertificateRouteHandler)
+  .openapi(postShcerCertificateRoute, postShcerCertificateRouteHandler)
 
 export default app

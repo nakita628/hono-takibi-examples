@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBucketIntelligentTieringIdRoute,
   getBucketIntelligentTieringIdRoute,
   putBucketIntelligentTieringIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBucketIntelligentTieringIdRouteHandler: RouteHandler<
+  typeof deleteBucketIntelligentTieringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const bucketIntelligentTieringIdHandler = app
-  .openapi(deleteBucketIntelligentTieringIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBucketIntelligentTieringIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putBucketIntelligentTieringIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBucketIntelligentTieringIdRouteHandler: RouteHandler<
+  typeof getBucketIntelligentTieringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putBucketIntelligentTieringIdRouteHandler: RouteHandler<
+  typeof putBucketIntelligentTieringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDomainsDomainNameObjectTypesObjectTypeNameRoute,
   deleteDomainsDomainNameRoute,
   deleteDomainsDomainNameWorkflowsWorkflowIdRoute,
@@ -34,102 +34,192 @@ import {
   putDomainsDomainNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postDomainsDomainNameProfilesKeysRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const domainsHandler = app
-  .openapi(postDomainsDomainNameProfilesKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameWorkflowsIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainsDomainNameProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameIntegrationsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesKeysDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesObjectsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainsDomainNameObjectTypesObjectTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameObjectTypesObjectTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainsDomainNameObjectTypesObjectTypeNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDomainsDomainNameWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameWorkflowsWorkflowIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameIdentityResolutionJobsAutoMergingPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameIdentityResolutionJobsJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainsDomainNameIntegrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameWorkflowsWorkflowIdStepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameIdentityResolutionJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDomainsDomainNameObjectTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesObjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDomainsDomainNameProfilesObjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesObjectsMergeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDomainsDomainNameProfilesSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDomainsDomainNameRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainsDomainNameRouteHandler: RouteHandler<
+  typeof deleteDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainsDomainNameRouteHandler: RouteHandler<
+  typeof putDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameWorkflowsIntegrationsRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameWorkflowsIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainsDomainNameProfilesRouteHandler: RouteHandler<
+  typeof putDomainsDomainNameProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameIntegrationsDeleteRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameIntegrationsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesDeleteRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesKeysDeleteRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesKeysDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesObjectsDeleteRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesObjectsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainsDomainNameObjectTypesObjectTypeNameRouteHandler: RouteHandler<
+  typeof deleteDomainsDomainNameObjectTypesObjectTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameObjectTypesObjectTypeNameRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameObjectTypesObjectTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainsDomainNameObjectTypesObjectTypeNameRouteHandler: RouteHandler<
+  typeof putDomainsDomainNameObjectTypesObjectTypeNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDomainsDomainNameWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof deleteDomainsDomainNameWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameWorkflowsWorkflowIdRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameWorkflowsWorkflowIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameIdentityResolutionJobsAutoMergingPreviewRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameIdentityResolutionJobsAutoMergingPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameIdentityResolutionJobsJobIdRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameIdentityResolutionJobsJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameIntegrationsRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameIntegrationsRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainsDomainNameIntegrationsRouteHandler: RouteHandler<
+  typeof putDomainsDomainNameIntegrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameMatchesRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameWorkflowsWorkflowIdStepsRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameWorkflowsWorkflowIdStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsRouteHandler: RouteHandler<typeof getDomainsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameIdentityResolutionJobsRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameIdentityResolutionJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDomainsDomainNameObjectTypesRouteHandler: RouteHandler<
+  typeof getDomainsDomainNameObjectTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesObjectsRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesObjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDomainsDomainNameProfilesObjectsRouteHandler: RouteHandler<
+  typeof putDomainsDomainNameProfilesObjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameWorkflowsRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesObjectsMergeRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesObjectsMergeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDomainsDomainNameProfilesSearchRouteHandler: RouteHandler<
+  typeof postDomainsDomainNameProfilesSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

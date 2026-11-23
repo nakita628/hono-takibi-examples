@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOrderAbandonedListJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOrderAbandonedListJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const orderAbandonedListJsonHandler = app.openapi(getOrderAbandonedListJsonRoute, (c) => {
+export const getOrderAbandonedListJsonRouteHandler: RouteHandler<
+  typeof getOrderAbandonedListJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

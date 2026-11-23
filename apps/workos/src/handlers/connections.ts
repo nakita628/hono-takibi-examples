@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute,
   deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute,
   deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute,
@@ -16,48 +16,82 @@ import {
   postConnectionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postConnectionsRouteHandler: RouteHandler<typeof postConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const connectionsHandler = app
-  .openapi(postConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsConnectionIdSamlIdpSigningCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionsConnectionIdSamlIdpSigningCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsConnectionIdSamlSpEncryptionCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionsConnectionIdSamlSpEncryptionCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsConnectionIdSamlSpSigningCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConnectionsConnectionIdSamlSpSigningCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConnectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConnectionsRouteHandler: RouteHandler<typeof getConnectionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsConnectionIdSamlIdpSigningCertsRouteHandler: RouteHandler<
+  typeof getConnectionsConnectionIdSamlIdpSigningCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionsConnectionIdSamlIdpSigningCertsRouteHandler: RouteHandler<
+  typeof postConnectionsConnectionIdSamlIdpSigningCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRouteHandler: RouteHandler<
+  typeof deleteConnectionsConnectionIdSamlIdpSigningCertsCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler: RouteHandler<
+  typeof getConnectionsConnectionIdSamlSpEncryptionCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionsConnectionIdSamlSpEncryptionCertsRouteHandler: RouteHandler<
+  typeof postConnectionsConnectionIdSamlSpEncryptionCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRouteHandler: RouteHandler<
+  typeof deleteConnectionsConnectionIdSamlSpEncryptionCertsCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsConnectionIdSamlSpSigningCertRouteHandler: RouteHandler<
+  typeof getConnectionsConnectionIdSamlSpSigningCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConnectionsConnectionIdSamlSpSigningCertRouteHandler: RouteHandler<
+  typeof postConnectionsConnectionIdSamlSpSigningCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRouteHandler: RouteHandler<
+  typeof deleteConnectionsConnectionIdSamlSpSigningCertCertificateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConnectionsIdRouteHandler: RouteHandler<typeof patchConnectionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getConnectionsIdRouteHandler: RouteHandler<typeof getConnectionsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConnectionsIdRouteHandler: RouteHandler<
+  typeof deleteConnectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

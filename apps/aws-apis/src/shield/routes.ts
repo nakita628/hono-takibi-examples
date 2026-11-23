@@ -193,7 +193,7 @@ const AttackDetailSchema = z
   .openapi({ description: 'The details of a DDoS attack.', required: [] })
   .openapi('AttackDetail')
 
-type DescribeAttackResponseType = { Attack?: z.infer<typeof AttackDetailSchema> & unknown }
+type DescribeAttackResponseType = { Attack?: z.infer<typeof AttackDetailSchema> }
 
 const AssociateDRTLogBucketResponseSchema = z
   .looseObject({})

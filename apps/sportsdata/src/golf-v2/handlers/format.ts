@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatCurrentSeasonRoute,
   getFormatDfsSlatesByTournamentTournamentidRoute,
   getFormatInjuriesByHistoricalRoute,
@@ -17,51 +17,90 @@ import {
   getFormatTournamentsSeasonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatCurrentSeasonRouteHandler: RouteHandler<
+  typeof getFormatCurrentSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatCurrentSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatDfsSlatesByTournamentTournamentidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatInjuriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatInjuriesByHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatLeaderboardTournamentidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatNewsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatNewsByDateDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatNewsByPlayerIDPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerSeasonStatsSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerTournamentProjectionStatsTournamentidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayerTournamentStatsByPlayerTournamentidPlayeridRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatTournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatTournamentsSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatDfsSlatesByTournamentTournamentidRouteHandler: RouteHandler<
+  typeof getFormatDfsSlatesByTournamentTournamentidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatInjuriesRouteHandler: RouteHandler<typeof getFormatInjuriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatInjuriesByHistoricalRouteHandler: RouteHandler<
+  typeof getFormatInjuriesByHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatLeaderboardTournamentidRouteHandler: RouteHandler<
+  typeof getFormatLeaderboardTournamentidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatNewsRouteHandler: RouteHandler<typeof getFormatNewsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatNewsByDateDateRouteHandler: RouteHandler<
+  typeof getFormatNewsByDateDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatNewsByPlayerIDPlayeridRouteHandler: RouteHandler<
+  typeof getFormatNewsByPlayerIDPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerPlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerSeasonStatsSeasonRouteHandler: RouteHandler<
+  typeof getFormatPlayerSeasonStatsSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerTournamentProjectionStatsTournamentidRouteHandler: RouteHandler<
+  typeof getFormatPlayerTournamentProjectionStatsTournamentidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayerTournamentStatsByPlayerTournamentidPlayeridRouteHandler: RouteHandler<
+  typeof getFormatPlayerTournamentStatsByPlayerTournamentidPlayeridRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatPlayersRouteHandler: RouteHandler<typeof getFormatPlayersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatTournamentsRouteHandler: RouteHandler<
+  typeof getFormatTournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatTournamentsSeasonRouteHandler: RouteHandler<
+  typeof getFormatTournamentsSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

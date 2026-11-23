@@ -1,10 +1,14 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { findEligibleItemsHandler, sendOfferToInterestedBuyersHandler } from './handlers'
+import { getFindEligibleItemsRoute, postSendOfferToInterestedBuyersRoute } from './routes'
+import {
+  getFindEligibleItemsRouteHandler,
+  postSendOfferToInterestedBuyersRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', findEligibleItemsHandler)
-  .route('/', sendOfferToInterestedBuyersHandler)
+  .openapi(getFindEligibleItemsRoute, getFindEligibleItemsRouteHandler)
+  .openapi(postSendOfferToInterestedBuyersRoute, postSendOfferToInterestedBuyersRouteHandler)
 
 export default app

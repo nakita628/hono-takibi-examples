@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListAnomalyGroupTimeSeriesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListAnomalyGroupTimeSeriesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listAnomalyGroupTimeSeriesHandler = app.openapi(
-  postListAnomalyGroupTimeSeriesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postListAnomalyGroupTimeSeriesRouteHandler: RouteHandler<
+  typeof postListAnomalyGroupTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

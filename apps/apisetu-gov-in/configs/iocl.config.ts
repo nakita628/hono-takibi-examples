@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/iocl/3.0.0/openapi.yaml',
   output: './src/iocl/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iocl/types.ts' },
   client: { output: './src/iocl/client.ts', baseUrl: '/' },
   rpc: { output: './src/iocl/rpc.ts', parseResponse: true },

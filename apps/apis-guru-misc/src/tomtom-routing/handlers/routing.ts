@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute,
   getRoutingVersionNumberCalculateRouteLocationsContentTypeRoute,
   postRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute,
   postRoutingVersionNumberCalculateRouteLocationsContentTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRoutingVersionNumberCalculateReachableRangeOriginContentTypeRouteHandler: RouteHandler<
+  typeof getRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const routingHandler = app
-  .openapi(getRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoutingVersionNumberCalculateRouteLocationsContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRoutingVersionNumberCalculateRouteLocationsContentTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRoutingVersionNumberCalculateReachableRangeOriginContentTypeRouteHandler: RouteHandler<
+  typeof postRoutingVersionNumberCalculateReachableRangeOriginContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoutingVersionNumberCalculateRouteLocationsContentTypeRouteHandler: RouteHandler<
+  typeof getRoutingVersionNumberCalculateRouteLocationsContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRoutingVersionNumberCalculateRouteLocationsContentTypeRouteHandler: RouteHandler<
+  typeof postRoutingVersionNumberCalculateRouteLocationsContentTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

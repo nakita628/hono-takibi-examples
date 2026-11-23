@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSongsItemIdInstantMixRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSongsItemIdInstantMixRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const songsHandler = app.openapi(getSongsItemIdInstantMixRoute, (c) => {
+export const getSongsItemIdInstantMixRouteHandler: RouteHandler<
+  typeof getSongsItemIdInstantMixRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

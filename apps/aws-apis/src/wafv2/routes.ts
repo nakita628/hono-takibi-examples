@@ -372,15 +372,15 @@ const ChallengeConfigSchema = z
   .openapi('ChallengeConfig')
 
 type RuleType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Priority: z.infer<typeof RulePrioritySchema> & unknown
-  Statement: z.infer<typeof StatementSchema> & unknown
-  Action?: z.infer<typeof RuleActionSchema> & unknown
-  OverrideAction?: z.infer<typeof OverrideActionSchema> & unknown
-  RuleLabels?: z.infer<typeof LabelsSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
-  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Priority: z.infer<typeof RulePrioritySchema>
+  Statement: z.infer<typeof StatementSchema>
+  Action?: z.infer<typeof RuleActionSchema>
+  OverrideAction?: z.infer<typeof OverrideActionSchema>
+  RuleLabels?: z.infer<typeof LabelsSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema>
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema>
 }
 
 const RuleSchema: z.ZodType<RuleType> = z
@@ -434,8 +434,8 @@ type RulesType = z.infer<typeof RuleSchema>[]
 const RulesSchema: z.ZodType<RulesType> = z.array(RuleSchema).openapi('Rules')
 
 type CheckCapacityRequestType = {
-  Scope: z.infer<typeof ScopeSchema> & unknown
-  Rules: z.infer<typeof RulesSchema> & unknown
+  Scope: z.infer<typeof ScopeSchema>
+  Rules: z.infer<typeof RulesSchema>
 }
 
 const CapacityUnitSchema = z.int().min(1).openapi('CapacityUnit')
@@ -516,14 +516,14 @@ const CustomResponseBodiesSchema = z
   .openapi('CustomResponseBodies')
 
 type CreateRuleGroupRequestType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Scope: z.infer<typeof ScopeSchema> & unknown
-  Capacity: z.infer<typeof CapacityUnitSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Scope: z.infer<typeof ScopeSchema>
+  Capacity: z.infer<typeof CapacityUnitSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
 }
 
 const DefaultActionSchema = z
@@ -588,18 +588,18 @@ const AssociationConfigSchema = z
   .openapi('AssociationConfig')
 
 type CreateWebACLRequestType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Scope: z.infer<typeof ScopeSchema> & unknown
-  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  Tags?: z.infer<typeof TagListSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
-  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
-  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
-  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
-  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Scope: z.infer<typeof ScopeSchema>
+  DefaultAction: z.infer<typeof DefaultActionSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  Tags?: z.infer<typeof TagListSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema>
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema>
+  TokenDomains?: z.infer<typeof TokenDomainsSchema>
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema>
 }
 
 type VersionKeyStringType = string
@@ -651,13 +651,13 @@ const LabelSummarySchema = z
 const LabelSummariesSchema = z.array(LabelSummarySchema).openapi('LabelSummaries')
 
 type DescribeManagedRuleGroupResponseType = {
-  VersionName?: z.infer<typeof VersionKeyStringSchema> & unknown
-  SnsTopicArn?: z.infer<typeof ResourceArnSchema> & unknown
-  Capacity?: z.infer<typeof CapacityUnitSchema> & unknown
-  Rules?: z.infer<typeof RuleSummariesSchema> & unknown
-  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
-  AvailableLabels?: z.infer<typeof LabelSummariesSchema> & unknown
-  ConsumedLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+  VersionName?: z.infer<typeof VersionKeyStringSchema>
+  SnsTopicArn?: z.infer<typeof ResourceArnSchema>
+  Capacity?: z.infer<typeof CapacityUnitSchema>
+  Rules?: z.infer<typeof RuleSummariesSchema>
+  LabelNamespace?: z.infer<typeof LabelNameSchema>
+  AvailableLabels?: z.infer<typeof LabelSummariesSchema>
+  ConsumedLabels?: z.infer<typeof LabelSummariesSchema>
 }
 
 const LogDestinationConfigsSchema = z
@@ -1077,7 +1077,7 @@ const LoggingConfigurationSchema = z
   .openapi('LoggingConfiguration')
 
 type GetLoggingConfigurationResponseType = {
-  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema> & unknown
+  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema>
 }
 
 const EntityIdSchema = z
@@ -1088,17 +1088,17 @@ const EntityIdSchema = z
   .openapi('EntityId')
 
 type RuleGroupType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Id: z.infer<typeof EntityIdSchema> & unknown
-  Capacity: z.infer<typeof CapacityUnitSchema> & unknown
-  ARN: z.infer<typeof ResourceArnSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
-  AvailableLabels?: z.infer<typeof LabelSummariesSchema> & unknown
-  ConsumedLabels?: z.infer<typeof LabelSummariesSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Id: z.infer<typeof EntityIdSchema>
+  Capacity: z.infer<typeof CapacityUnitSchema>
+  ARN: z.infer<typeof ResourceArnSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  LabelNamespace?: z.infer<typeof LabelNameSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
+  AvailableLabels?: z.infer<typeof LabelSummariesSchema>
+  ConsumedLabels?: z.infer<typeof LabelSummariesSchema>
 }
 
 const RuleGroupSchema: z.ZodType<RuleGroupType> = z
@@ -1161,8 +1161,8 @@ const LockTokenSchema = z
   .openapi('LockToken')
 
 type GetRuleGroupResponseType = {
-  RuleGroup?: z.infer<typeof RuleGroupSchema> & unknown
-  LockToken?: z.infer<typeof LockTokenSchema> & unknown
+  RuleGroup?: z.infer<typeof RuleGroupSchema>
+  LockToken?: z.infer<typeof LockTokenSchema>
 }
 
 const ConsumedCapacitySchema = z.int().min(0).openapi('ConsumedCapacity')
@@ -1252,9 +1252,9 @@ const RuleActionOverridesSchema: z.ZodType<RuleActionOverridesType> = z
   .openapi('RuleActionOverrides')
 
 type RuleGroupReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & unknown
-  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & unknown
-  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & unknown
+  ARN: z.infer<typeof ResourceArnSchema>
+  ExcludedRules?: z.infer<typeof ExcludedRulesSchema>
+  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema>
 }
 
 const RuleGroupReferenceStatementSchema: z.ZodType<RuleGroupReferenceStatementType> = z
@@ -1279,8 +1279,8 @@ const RuleGroupReferenceStatementSchema: z.ZodType<RuleGroupReferenceStatementTy
   .openapi('RuleGroupReferenceStatement')
 
 type FirewallManagerStatementType = {
-  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema> & unknown
-  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema> & unknown
+  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema>
+  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema>
 }
 
 const FirewallManagerStatementSchema: z.ZodType<FirewallManagerStatementType> = z
@@ -1302,11 +1302,11 @@ const FirewallManagerStatementSchema: z.ZodType<FirewallManagerStatementType> = 
   .openapi('FirewallManagerStatement')
 
 type FirewallManagerRuleGroupType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Priority: z.infer<typeof RulePrioritySchema> & unknown
-  FirewallManagerStatement: z.infer<typeof FirewallManagerStatementSchema> & unknown
-  OverrideAction: z.infer<typeof OverrideActionSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Priority: z.infer<typeof RulePrioritySchema>
+  FirewallManagerStatement: z.infer<typeof FirewallManagerStatementSchema>
+  OverrideAction: z.infer<typeof OverrideActionSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
 }
 
 const FirewallManagerRuleGroupSchema: z.ZodType<FirewallManagerRuleGroupType> = z
@@ -1351,23 +1351,23 @@ const FirewallManagerRuleGroupsSchema: z.ZodType<FirewallManagerRuleGroupsType> 
   .openapi('FirewallManagerRuleGroups')
 
 type WebACLType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Id: z.infer<typeof EntityIdSchema> & unknown
-  ARN: z.infer<typeof ResourceArnSchema> & unknown
-  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  Capacity?: z.infer<typeof ConsumedCapacitySchema> & unknown
-  PreProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema> & unknown
-  PostProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema> & unknown
-  ManagedByFirewallManager?: z.infer<typeof BooleanSchema> & unknown
-  LabelNamespace?: z.infer<typeof LabelNameSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
-  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
-  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
-  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
-  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Id: z.infer<typeof EntityIdSchema>
+  ARN: z.infer<typeof ResourceArnSchema>
+  DefaultAction: z.infer<typeof DefaultActionSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  Capacity?: z.infer<typeof ConsumedCapacitySchema>
+  PreProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema>
+  PostProcessFirewallManagerRuleGroups?: z.infer<typeof FirewallManagerRuleGroupsSchema>
+  ManagedByFirewallManager?: z.infer<typeof BooleanSchema>
+  LabelNamespace?: z.infer<typeof LabelNameSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema>
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema>
+  TokenDomains?: z.infer<typeof TokenDomainsSchema>
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema>
 }
 
 const WebACLSchema: z.ZodType<WebACLType> = z
@@ -1450,12 +1450,12 @@ const WebACLSchema: z.ZodType<WebACLType> = z
 const OutputUrlSchema = z.string().openapi('OutputUrl')
 
 type GetWebACLResponseType = {
-  WebACL?: z.infer<typeof WebACLSchema> & unknown
-  LockToken?: z.infer<typeof LockTokenSchema> & unknown
-  ApplicationIntegrationURL?: z.infer<typeof OutputUrlSchema> & unknown
+  WebACL?: z.infer<typeof WebACLSchema>
+  LockToken?: z.infer<typeof LockTokenSchema>
+  ApplicationIntegrationURL?: z.infer<typeof OutputUrlSchema>
 }
 
-type GetWebACLForResourceResponseType = { WebACL?: z.infer<typeof WebACLSchema> & unknown }
+type GetWebACLForResourceResponseType = { WebACL?: z.infer<typeof WebACLSchema> }
 
 type LoggingConfigurationsType = z.infer<typeof LoggingConfigurationSchema>[]
 
@@ -1471,43 +1471,43 @@ const NextMarkerSchema = z
   .openapi('NextMarker')
 
 type ListLoggingConfigurationsResponseType = {
-  LoggingConfigurations?: z.infer<typeof LoggingConfigurationsSchema> & unknown
-  NextMarker?: z.infer<typeof NextMarkerSchema> & unknown
+  LoggingConfigurations?: z.infer<typeof LoggingConfigurationsSchema>
+  NextMarker?: z.infer<typeof NextMarkerSchema>
 }
 
 type PutLoggingConfigurationResponseType = {
-  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema> & unknown
+  LoggingConfiguration?: z.infer<typeof LoggingConfigurationSchema>
 }
 
 type PutLoggingConfigurationRequestType = {
-  LoggingConfiguration: z.infer<typeof LoggingConfigurationSchema> & unknown
+  LoggingConfiguration: z.infer<typeof LoggingConfigurationSchema>
 }
 
 type UpdateRuleGroupRequestType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Scope: z.infer<typeof ScopeSchema> & unknown
-  Id: z.infer<typeof EntityIdSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  LockToken: z.infer<typeof LockTokenSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Scope: z.infer<typeof ScopeSchema>
+  Id: z.infer<typeof EntityIdSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  LockToken: z.infer<typeof LockTokenSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
 }
 
 type UpdateWebACLRequestType = {
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Scope: z.infer<typeof ScopeSchema> & unknown
-  Id: z.infer<typeof EntityIdSchema> & unknown
-  DefaultAction: z.infer<typeof DefaultActionSchema> & unknown
-  Description?: z.infer<typeof EntityDescriptionSchema> & unknown
-  Rules?: z.infer<typeof RulesSchema> & unknown
-  VisibilityConfig: z.infer<typeof VisibilityConfigSchema> & unknown
-  LockToken: z.infer<typeof LockTokenSchema> & unknown
-  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema> & unknown
-  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema> & unknown
-  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema> & unknown
-  TokenDomains?: z.infer<typeof TokenDomainsSchema> & unknown
-  AssociationConfig?: z.infer<typeof AssociationConfigSchema> & unknown
+  Name: z.infer<typeof EntityNameSchema>
+  Scope: z.infer<typeof ScopeSchema>
+  Id: z.infer<typeof EntityIdSchema>
+  DefaultAction: z.infer<typeof DefaultActionSchema>
+  Description?: z.infer<typeof EntityDescriptionSchema>
+  Rules?: z.infer<typeof RulesSchema>
+  VisibilityConfig: z.infer<typeof VisibilityConfigSchema>
+  LockToken: z.infer<typeof LockTokenSchema>
+  CustomResponseBodies?: z.infer<typeof CustomResponseBodiesSchema>
+  CaptchaConfig?: z.infer<typeof CaptchaConfigSchema>
+  ChallengeConfig?: z.infer<typeof ChallengeConfigSchema>
+  TokenDomains?: z.infer<typeof TokenDomainsSchema>
+  AssociationConfig?: z.infer<typeof AssociationConfigSchema>
 }
 
 type StatementsType = z.infer<typeof StatementSchema>[]
@@ -1516,7 +1516,7 @@ const StatementsSchema: z.ZodType<StatementsType> = z
   .lazy(() => z.array(StatementSchema))
   .openapi('Statements')
 
-type AndStatementType = { Statements: z.infer<typeof StatementsSchema> & unknown }
+type AndStatementType = { Statements: z.infer<typeof StatementsSchema> }
 
 const SearchStringSchema = z.string().openapi('SearchString')
 
@@ -1576,10 +1576,10 @@ const PositionalConstraintSchema = z
   .openapi('PositionalConstraint')
 
 type ByteMatchStatementType = {
-  SearchString: z.infer<typeof SearchStringSchema> & unknown
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
-  PositionalConstraint: z.infer<typeof PositionalConstraintSchema> & unknown
+  SearchString: z.infer<typeof SearchStringSchema>
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
+  PositionalConstraint: z.infer<typeof PositionalConstraintSchema>
 }
 
 type VendorNameType = string
@@ -1917,13 +1917,13 @@ const ManagedRuleGroupConfigsSchema: z.ZodType<ManagedRuleGroupConfigsType> = z
   .openapi('ManagedRuleGroupConfigs')
 
 type ManagedRuleGroupStatementType = {
-  VendorName: z.infer<typeof VendorNameSchema> & unknown
-  Name: z.infer<typeof EntityNameSchema> & unknown
-  Version?: z.infer<typeof VersionKeyStringSchema> & unknown
-  ExcludedRules?: z.infer<typeof ExcludedRulesSchema> & unknown
-  ScopeDownStatement?: z.infer<typeof StatementSchema> & unknown
-  ManagedRuleGroupConfigs?: z.infer<typeof ManagedRuleGroupConfigsSchema> & unknown
-  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema> & unknown
+  VendorName: z.infer<typeof VendorNameSchema>
+  Name: z.infer<typeof EntityNameSchema>
+  Version?: z.infer<typeof VersionKeyStringSchema>
+  ExcludedRules?: z.infer<typeof ExcludedRulesSchema>
+  ScopeDownStatement?: z.infer<typeof StatementSchema>
+  ManagedRuleGroupConfigs?: z.infer<typeof ManagedRuleGroupConfigsSchema>
+  RuleActionOverrides?: z.infer<typeof RuleActionOverridesSchema>
 }
 
 const ForwardedIPHeaderNameSchema = z
@@ -1936,8 +1936,8 @@ const ForwardedIPHeaderNameSchema = z
 const FallbackBehaviorSchema = z.enum(['MATCH', 'NO_MATCH']).openapi('FallbackBehavior')
 
 type ForwardedIPConfigType = {
-  HeaderName: z.infer<typeof ForwardedIPHeaderNameSchema> & unknown
-  FallbackBehavior: z.infer<typeof FallbackBehaviorSchema> & unknown
+  HeaderName: z.infer<typeof ForwardedIPHeaderNameSchema>
+  FallbackBehavior: z.infer<typeof FallbackBehaviorSchema>
 }
 
 const CountryCodeSchema = z
@@ -2216,8 +2216,8 @@ const ForwardedIPConfigSchema: z.ZodType<ForwardedIPConfigType> = z
   .openapi('ForwardedIPConfig')
 
 type GeoMatchStatementType = {
-  CountryCodes?: z.infer<typeof CountryCodesSchema> & unknown
-  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & unknown
+  CountryCodes?: z.infer<typeof CountryCodesSchema>
+  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema>
 }
 
 const ForwardedIPPositionSchema = z.enum(['FIRST', 'LAST', 'ANY']).openapi('ForwardedIPPosition')
@@ -2245,8 +2245,8 @@ const IPSetForwardedIPConfigSchema = z
   .openapi('IPSetForwardedIPConfig')
 
 type IPSetReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & unknown
-  IPSetForwardedIPConfig?: z.infer<typeof IPSetForwardedIPConfigSchema> & unknown
+  ARN: z.infer<typeof ResourceArnSchema>
+  IPSetForwardedIPConfig?: z.infer<typeof IPSetForwardedIPConfigSchema>
 }
 
 const LabelMatchScopeSchema = z.enum(['LABEL', 'NAMESPACE']).openapi('LabelMatchScope')
@@ -2259,8 +2259,8 @@ const LabelMatchKeySchema = z
   .openapi('LabelMatchKey')
 
 type LabelMatchStatementType = {
-  Scope: z.infer<typeof LabelMatchScopeSchema> & unknown
-  Key: z.infer<typeof LabelMatchKeySchema> & unknown
+  Scope: z.infer<typeof LabelMatchScopeSchema>
+  Key: z.infer<typeof LabelMatchKeySchema>
 }
 
 const ByteMatchStatementSchema: z.ZodType<ByteMatchStatementType> = z
@@ -2291,9 +2291,9 @@ const ByteMatchStatementSchema: z.ZodType<ByteMatchStatementType> = z
 const SensitivityLevelSchema = z.enum(['LOW', 'HIGH']).openapi('SensitivityLevel')
 
 type SqliMatchStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
-  SensitivityLevel?: z.infer<typeof SensitivityLevelSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
+  SensitivityLevel?: z.infer<typeof SensitivityLevelSchema>
 }
 
 const SqliMatchStatementSchema: z.ZodType<SqliMatchStatementType> = z
@@ -2318,8 +2318,8 @@ const SqliMatchStatementSchema: z.ZodType<SqliMatchStatementType> = z
   .openapi('SqliMatchStatement')
 
 type XssMatchStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
 }
 
 const XssMatchStatementSchema: z.ZodType<XssMatchStatementType> = z
@@ -2346,10 +2346,10 @@ const ComparisonOperatorSchema = z
 const SizeSchema = z.int().min(0).max(21474836480).openapi('Size')
 
 type SizeConstraintStatementType = {
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  ComparisonOperator: z.infer<typeof ComparisonOperatorSchema> & unknown
-  Size: z.infer<typeof SizeSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  ComparisonOperator: z.infer<typeof ComparisonOperatorSchema>
+  Size: z.infer<typeof SizeSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
 }
 
 const SizeConstraintStatementSchema: z.ZodType<SizeConstraintStatementType> = z
@@ -2412,9 +2412,9 @@ const IPSetReferenceStatementSchema: z.ZodType<IPSetReferenceStatementType> = z
   .openapi('IPSetReferenceStatement')
 
 type RegexPatternSetReferenceStatementType = {
-  ARN: z.infer<typeof ResourceArnSchema> & unknown
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  ARN: z.infer<typeof ResourceArnSchema>
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
 }
 
 const RegexPatternSetReferenceStatementSchema: z.ZodType<RegexPatternSetReferenceStatementType> = z
@@ -2542,9 +2542,9 @@ const RegexPatternStringSchema = z
   .openapi('RegexPatternString')
 
 type RegexMatchStatementType = {
-  RegexString: z.infer<typeof RegexPatternStringSchema> & unknown
-  FieldToMatch: z.infer<typeof FieldToMatchSchema> & unknown
-  TextTransformations: z.infer<typeof TextTransformationsSchema> & unknown
+  RegexString: z.infer<typeof RegexPatternStringSchema>
+  FieldToMatch: z.infer<typeof FieldToMatchSchema>
+  TextTransformations: z.infer<typeof TextTransformationsSchema>
 }
 
 const RegexMatchStatementSchema: z.ZodType<RegexMatchStatementType> = z
@@ -2568,27 +2568,26 @@ const RegexMatchStatementSchema: z.ZodType<RegexMatchStatementType> = z
   .openapi('RegexMatchStatement')
 
 type StatementType = {
-  ByteMatchStatement?: z.infer<typeof ByteMatchStatementSchema> & unknown
-  SqliMatchStatement?: z.infer<typeof SqliMatchStatementSchema> & unknown
-  XssMatchStatement?: z.infer<typeof XssMatchStatementSchema> & unknown
-  SizeConstraintStatement?: z.infer<typeof SizeConstraintStatementSchema> & unknown
-  GeoMatchStatement?: z.infer<typeof GeoMatchStatementSchema> & unknown
-  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema> & unknown
-  IPSetReferenceStatement?: z.infer<typeof IPSetReferenceStatementSchema> & unknown
-  RegexPatternSetReferenceStatement?: z.infer<typeof RegexPatternSetReferenceStatementSchema> &
-    unknown
-  RateBasedStatement?: z.infer<typeof RateBasedStatementSchema> & unknown
-  AndStatement?: z.infer<typeof AndStatementSchema> & unknown
-  OrStatement?: z.infer<typeof OrStatementSchema> & unknown
-  NotStatement?: z.infer<typeof NotStatementSchema> & unknown
-  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema> & unknown
-  LabelMatchStatement?: z.infer<typeof LabelMatchStatementSchema> & unknown
-  RegexMatchStatement?: z.infer<typeof RegexMatchStatementSchema> & unknown
+  ByteMatchStatement?: z.infer<typeof ByteMatchStatementSchema>
+  SqliMatchStatement?: z.infer<typeof SqliMatchStatementSchema>
+  XssMatchStatement?: z.infer<typeof XssMatchStatementSchema>
+  SizeConstraintStatement?: z.infer<typeof SizeConstraintStatementSchema>
+  GeoMatchStatement?: z.infer<typeof GeoMatchStatementSchema>
+  RuleGroupReferenceStatement?: z.infer<typeof RuleGroupReferenceStatementSchema>
+  IPSetReferenceStatement?: z.infer<typeof IPSetReferenceStatementSchema>
+  RegexPatternSetReferenceStatement?: z.infer<typeof RegexPatternSetReferenceStatementSchema>
+  RateBasedStatement?: z.infer<typeof RateBasedStatementSchema>
+  AndStatement?: z.infer<typeof AndStatementSchema>
+  OrStatement?: z.infer<typeof OrStatementSchema>
+  NotStatement?: z.infer<typeof NotStatementSchema>
+  ManagedRuleGroupStatement?: z.infer<typeof ManagedRuleGroupStatementSchema>
+  LabelMatchStatement?: z.infer<typeof LabelMatchStatementSchema>
+  RegexMatchStatement?: z.infer<typeof RegexMatchStatementSchema>
 }
 
-type NotStatementType = { Statement: z.infer<typeof StatementSchema> & unknown }
+type NotStatementType = { Statement: z.infer<typeof StatementSchema> }
 
-type OrStatementType = { Statements: z.infer<typeof StatementsSchema> & unknown }
+type OrStatementType = { Statements: z.infer<typeof StatementsSchema> }
 
 type RateLimitType = number
 
@@ -2604,10 +2603,10 @@ const RateBasedStatementAggregateKeyTypeSchema: z.ZodType<RateBasedStatementAggr
   z.enum(['IP', 'FORWARDED_IP']).openapi('RateBasedStatementAggregateKeyType')
 
 type RateBasedStatementType = {
-  Limit: z.infer<typeof RateLimitSchema> & unknown
-  AggregateKeyType: z.infer<typeof RateBasedStatementAggregateKeyTypeSchema> & unknown
-  ScopeDownStatement?: z.infer<typeof StatementSchema> & unknown
-  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema> & unknown
+  Limit: z.infer<typeof RateLimitSchema>
+  AggregateKeyType: z.infer<typeof RateBasedStatementAggregateKeyTypeSchema>
+  ScopeDownStatement?: z.infer<typeof StatementSchema>
+  ForwardedIPConfig?: z.infer<typeof ForwardedIPConfigSchema>
 }
 
 const AssociateWebACLResponseSchema = z.looseObject({}).openapi('AssociateWebACLResponse')

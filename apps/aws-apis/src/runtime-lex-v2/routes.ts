@@ -356,10 +356,10 @@ const SessionStateSchema = z
   .openapi('SessionState')
 
 type GetSessionResponseType = {
-  sessionId?: z.infer<typeof NonEmptyStringSchema> & unknown
-  messages?: z.infer<typeof MessagesSchema> & unknown
-  interpretations?: z.infer<typeof InterpretationsSchema> & unknown
-  sessionState?: z.infer<typeof SessionStateSchema> & unknown
+  sessionId?: z.infer<typeof NonEmptyStringSchema>
+  messages?: z.infer<typeof MessagesSchema>
+  interpretations?: z.infer<typeof InterpretationsSchema>
+  sessionState?: z.infer<typeof SessionStateSchema>
 }
 
 const SessionIdSchema = z
@@ -395,17 +395,17 @@ const RecognizedBotMemberSchema = z
   .openapi('RecognizedBotMember')
 
 type RecognizeTextResponseType = {
-  messages?: z.infer<typeof MessagesSchema> & unknown
-  sessionState?: z.infer<typeof SessionStateSchema> & unknown
-  interpretations?: z.infer<typeof InterpretationsSchema> & unknown
-  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
-  sessionId?: z.infer<typeof SessionIdSchema> & unknown
-  recognizedBotMember?: z.infer<typeof RecognizedBotMemberSchema> & unknown
+  messages?: z.infer<typeof MessagesSchema>
+  sessionState?: z.infer<typeof SessionStateSchema>
+  interpretations?: z.infer<typeof InterpretationsSchema>
+  requestAttributes?: z.infer<typeof StringMapSchema>
+  sessionId?: z.infer<typeof SessionIdSchema>
+  recognizedBotMember?: z.infer<typeof RecognizedBotMemberSchema>
 }
 
 type ElicitSubSlotType = {
-  name: z.infer<typeof NonEmptyStringSchema> & unknown
-  subSlotToElicit?: ElicitSubSlotType & unknown
+  name: z.infer<typeof NonEmptyStringSchema>
+  subSlotToElicit?: ElicitSubSlotType
 }
 
 const SlotSchema: z.ZodType<SlotType> = z
@@ -433,15 +433,15 @@ const SlotSchema: z.ZodType<SlotType> = z
 type SlotsType = { [key: string]: z.infer<typeof SlotSchema> }
 
 type PutSessionRequestType = {
-  messages?: z.infer<typeof MessagesSchema> & unknown
-  sessionState: z.infer<typeof SessionStateSchema> & unknown
-  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
+  messages?: z.infer<typeof MessagesSchema>
+  sessionState: z.infer<typeof SessionStateSchema>
+  requestAttributes?: z.infer<typeof StringMapSchema>
 }
 
 type RecognizeTextRequestType = {
-  text: z.infer<typeof TextSchema> & unknown
-  sessionState?: z.infer<typeof SessionStateSchema> & unknown
-  requestAttributes?: z.infer<typeof StringMapSchema> & unknown
+  text: z.infer<typeof TextSchema>
+  sessionState?: z.infer<typeof SessionStateSchema>
+  requestAttributes?: z.infer<typeof StringMapSchema>
 }
 
 const RuntimeHintPhraseSchema = z.string().min(1).max(140).openapi('RuntimeHintPhrase')
@@ -491,16 +491,16 @@ const RuntimeHintValuesListSchema: z.ZodType<RuntimeHintValuesListType> = z
   .openapi('RuntimeHintValuesList')
 
 type RuntimeHintDetailsType = {
-  runtimeHintValues?: z.infer<typeof RuntimeHintValuesListSchema> & unknown
-  subSlotHints?: z.infer<typeof SlotHintsSlotMapSchema> & unknown
+  runtimeHintValues?: z.infer<typeof RuntimeHintValuesListSchema>
+  subSlotHints?: z.infer<typeof SlotHintsSlotMapSchema>
 }
 
 const StringListSchema = z.array(NonEmptyStringSchema).openapi('StringList')
 
 type ValueType = {
-  originalValue?: z.infer<typeof NonEmptyStringSchema> & unknown
-  interpretedValue: z.infer<typeof NonEmptyStringSchema> & unknown
-  resolvedValues?: z.infer<typeof StringListSchema> & unknown
+  originalValue?: z.infer<typeof NonEmptyStringSchema>
+  interpretedValue: z.infer<typeof NonEmptyStringSchema>
+  resolvedValues?: z.infer<typeof StringListSchema>
 }
 
 type ValuesType = z.infer<typeof SlotSchema>[]
@@ -524,9 +524,9 @@ const ValueSchema: z.ZodType<ValueType> = z
 const ValuesSchema: z.ZodType<ValuesType> = z.lazy(() => z.array(SlotSchema)).openapi('Values')
 
 type SlotType = {
-  value?: z.infer<typeof ValueSchema> & unknown
-  values?: z.infer<typeof ValuesSchema> & unknown
-  subSlots?: z.infer<typeof SlotsSchema> & unknown
+  value?: z.infer<typeof ValueSchema>
+  values?: z.infer<typeof ValuesSchema>
+  subSlots?: z.infer<typeof SlotsSchema>
 }
 
 const BotAliasIdentifierSchema = z.string().openapi('BotAliasIdentifier')

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwswaf20150824ListSqlInjectionMatchSetsHandler = app.openapi(
-  postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSWAF20150824ListSqlInjectionMatchSetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

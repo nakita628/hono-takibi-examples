@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/iot1click-projects/2018-05-14/openapi.yaml',
   output: './src/iot1click-projects/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/iot1click-projects/types.ts' },
   client: { output: './src/iot1click-projects/client.ts', baseUrl: '/' },
   rpc: { output: './src/iot1click-projects/rpc.ts', parseResponse: true },

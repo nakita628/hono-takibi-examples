@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCalculateVarianceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCalculateVarianceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const calculateVarianceHandler = app.openapi(postCalculateVarianceRoute, (c) => {
+export const postCalculateVarianceRouteHandler: RouteHandler<
+  typeof postCalculateVarianceRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

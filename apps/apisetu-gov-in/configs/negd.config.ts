@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/negd/3.0.0/openapi.yaml',
   output: './src/negd/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/negd/types.ts' },
   client: { output: './src/negd/client.ts', baseUrl: '/' },
   rpc: { output: './src/negd/rpc.ts', parseResponse: true },

@@ -1372,24 +1372,24 @@ export function usePostRidesIdReserve<TError = unknown>(options?: {
 }
 
 export function getGetRidesPagePagePerPagePerPageKey(
-  args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>,
+  args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
   return [
-    'rides?page=:page&per_page=:per_page',
-    '/rides?page=:page&per_page=:per_page',
+    'rides?page={page}&per_page={per_page}',
+    '/rides?page={page}&per_page={per_page}',
     keyArgs,
   ] as const
 }
 
 export function useGetRidesPagePagePerPagePerPage<TError = unknown>(
-  args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>,
+  args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+            Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
           >
         >
       >,
@@ -1412,7 +1412,7 @@ export function useGetRidesPagePagePerPagePerPage<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+            Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
           >
         >
       >,
@@ -1420,20 +1420,20 @@ export function useGetRidesPagePagePerPagePerPage<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['rides?page=:page&per_page=:per_page'].$get(args, clientOptions)),
+        parseResponse(client['rides?page={page}&per_page={per_page}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetRidesPagePagePerPagePerPage<TError = unknown>(
-  args: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>,
+  args: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+            Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
           >
         >
       >,
@@ -1456,7 +1456,7 @@ export function useImmutableGetRidesPagePagePerPagePerPage<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$get']>>
+            Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$get']>>
           >
         >
       >,
@@ -1464,7 +1464,7 @@ export function useImmutableGetRidesPagePagePerPagePerPage<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['rides?page=:page&per_page=:per_page'].$get(args, clientOptions)),
+        parseResponse(client['rides?page={page}&per_page={per_page}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -1472,8 +1472,8 @@ export function useImmutableGetRidesPagePagePerPagePerPage<TError = unknown>(
 
 export function getPostRidesPagePagePerPagePerPageKey() {
   return [
-    'rides?page=:page&per_page=:per_page',
-    '/rides?page=:page&per_page=:per_page',
+    'rides?page={page}&per_page={per_page}',
+    '/rides?page={page}&per_page={per_page}',
     'POST',
   ] as const
 }
@@ -1483,13 +1483,13 @@ export function usePostRidesPagePagePerPagePerPage<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>>
+          Awaited<ReturnType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>
+    InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1505,9 +1505,9 @@ export function usePostRidesPagePagePerPagePerPage<TError = unknown>(options?: {
         {
           arg,
         }: {
-          arg: InferRequestType<(typeof client)['rides?page=:page&per_page=:per_page']['$post']>
+          arg: InferRequestType<(typeof client)['rides?page={page}&per_page={per_page}']['$post']>
         },
-      ) => parseResponse(client['rides?page=:page&per_page=:per_page'].$post(arg, clientOptions)),
+      ) => parseResponse(client['rides?page={page}&per_page={per_page}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }

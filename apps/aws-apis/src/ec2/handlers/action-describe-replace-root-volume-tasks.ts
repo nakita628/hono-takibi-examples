@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeReplaceRootVolumeTasksRoute,
   postActionDescribeReplaceRootVolumeTasksRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeReplaceRootVolumeTasksRouteHandler: RouteHandler<
+  typeof getActionDescribeReplaceRootVolumeTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeReplaceRootVolumeTasksHandler = app
-  .openapi(getActionDescribeReplaceRootVolumeTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeReplaceRootVolumeTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeReplaceRootVolumeTasksRouteHandler: RouteHandler<
+  typeof postActionDescribeReplaceRootVolumeTasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

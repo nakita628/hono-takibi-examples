@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSendAnimationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSendAnimationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sendAnimationHandler = app.openapi(postSendAnimationRoute, (c) => {
+export const postSendAnimationRouteHandler: RouteHandler<typeof postSendAnimationRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

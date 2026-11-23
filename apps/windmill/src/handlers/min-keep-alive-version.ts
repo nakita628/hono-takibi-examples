@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMinKeepAliveVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMinKeepAliveVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const minKeepAliveVersionHandler = app.openapi(getMinKeepAliveVersionRoute, (c) => {
+export const getMinKeepAliveVersionRouteHandler: RouteHandler<
+  typeof getMinKeepAliveVersionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

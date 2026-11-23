@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWatermarkImageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWatermarkImageRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const watermarkImageHandler = app.openapi(postWatermarkImageRoute, (c) => {
+export const postWatermarkImageRouteHandler: RouteHandler<typeof postWatermarkImageRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

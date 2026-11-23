@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMtermvectorsRoute, postMtermvectorsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMtermvectorsRoute, postMtermvectorsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMtermvectorsRouteHandler: RouteHandler<typeof getMtermvectorsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mtermvectorsHandler = app
-  .openapi(getMtermvectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMtermvectorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMtermvectorsRouteHandler: RouteHandler<typeof postMtermvectorsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

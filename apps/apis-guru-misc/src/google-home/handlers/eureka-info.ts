@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getEurekaInfoRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getEurekaInfoRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const eurekaInfoHandler = app.openapi(getEurekaInfoRoute, (c) => {
+export const getEurekaInfoRouteHandler: RouteHandler<typeof getEurekaInfoRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

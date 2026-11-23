@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPaymentNoticesIdRoute,
   getPaymentNoticesRoute,
   getPaymentNoticesTemplatesRoute,
@@ -9,27 +9,44 @@ import {
   putPaymentNoticesIdUncancelRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentNoticesRouteHandler: RouteHandler<typeof getPaymentNoticesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentNoticesHandler = app
-  .openapi(getPaymentNoticesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentNoticesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentNoticesTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentNoticesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPaymentNoticesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPaymentNoticesIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPaymentNoticesIdUncancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentNoticesRouteHandler: RouteHandler<typeof postPaymentNoticesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentNoticesTemplatesRouteHandler: RouteHandler<
+  typeof getPaymentNoticesTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentNoticesIdRouteHandler: RouteHandler<
+  typeof getPaymentNoticesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPaymentNoticesIdRouteHandler: RouteHandler<
+  typeof putPaymentNoticesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPaymentNoticesIdCancelRouteHandler: RouteHandler<
+  typeof putPaymentNoticesIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPaymentNoticesIdUncancelRouteHandler: RouteHandler<
+  typeof putPaymentNoticesIdUncancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

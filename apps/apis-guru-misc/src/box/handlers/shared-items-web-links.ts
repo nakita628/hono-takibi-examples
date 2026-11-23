@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSharedItemsWebLinksRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSharedItemsWebLinksRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sharedItemsWebLinksHandler = app.openapi(getSharedItemsWebLinksRoute, (c) => {
+export const getSharedItemsWebLinksRouteHandler: RouteHandler<
+  typeof getSharedItemsWebLinksRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

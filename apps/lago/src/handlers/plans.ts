@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePlansCodeChargesChargeCodeFiltersFilterIdRoute,
   deletePlansCodeChargesChargeCodeRoute,
   deletePlansCodeEntitlementsFeatureCodePrivilegesPrivilegeCodeRoute,
@@ -32,96 +32,172 @@ import {
   putPlansCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPlansRouteHandler: RouteHandler<typeof postPlansRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const plansHandler = app
-  .openapi(postPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlansCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlansCodeEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPlansCodeEntitlementsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeEntitlementsFeatureCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeEntitlementsFeatureCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeEntitlementsFeatureCodePrivilegesPrivilegeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlansCodeMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPlansCodeMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeMetadataKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlansCodeChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeChargesChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlansCodeChargesChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeChargesChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlansCodeChargesChargeCodeFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeChargesChargeCodeFiltersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlansCodeChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeChargesChargeCodeFiltersFilterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlansCodeFixedChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeFixedChargesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlansCodeFixedChargesFixedChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlansCodeFixedChargesFixedChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlansCodeFixedChargesFixedChargeCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPlansRouteHandler: RouteHandler<typeof getPlansRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlansCodeRouteHandler: RouteHandler<typeof putPlansCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeRouteHandler: RouteHandler<typeof getPlansCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeRouteHandler: RouteHandler<typeof deletePlansCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlansCodeEntitlementsRouteHandler: RouteHandler<
+  typeof postPlansCodeEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeEntitlementsRouteHandler: RouteHandler<
+  typeof getPlansCodeEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPlansCodeEntitlementsRouteHandler: RouteHandler<
+  typeof patchPlansCodeEntitlementsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeEntitlementsFeatureCodeRouteHandler: RouteHandler<
+  typeof getPlansCodeEntitlementsFeatureCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeEntitlementsFeatureCodeRouteHandler: RouteHandler<
+  typeof deletePlansCodeEntitlementsFeatureCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeEntitlementsFeatureCodePrivilegesPrivilegeCodeRouteHandler: RouteHandler<
+  typeof deletePlansCodeEntitlementsFeatureCodePrivilegesPrivilegeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlansCodeMetadataRouteHandler: RouteHandler<
+  typeof postPlansCodeMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPlansCodeMetadataRouteHandler: RouteHandler<
+  typeof patchPlansCodeMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeMetadataRouteHandler: RouteHandler<
+  typeof deletePlansCodeMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeMetadataKeyRouteHandler: RouteHandler<
+  typeof deletePlansCodeMetadataKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlansCodeChargesRouteHandler: RouteHandler<
+  typeof postPlansCodeChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeChargesRouteHandler: RouteHandler<
+  typeof getPlansCodeChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeChargesChargeCodeRouteHandler: RouteHandler<
+  typeof getPlansCodeChargesChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlansCodeChargesChargeCodeRouteHandler: RouteHandler<
+  typeof putPlansCodeChargesChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeChargesChargeCodeRouteHandler: RouteHandler<
+  typeof deletePlansCodeChargesChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlansCodeChargesChargeCodeFiltersRouteHandler: RouteHandler<
+  typeof postPlansCodeChargesChargeCodeFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeChargesChargeCodeFiltersRouteHandler: RouteHandler<
+  typeof getPlansCodeChargesChargeCodeFiltersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof getPlansCodeChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlansCodeChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof putPlansCodeChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeChargesChargeCodeFiltersFilterIdRouteHandler: RouteHandler<
+  typeof deletePlansCodeChargesChargeCodeFiltersFilterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlansCodeFixedChargesRouteHandler: RouteHandler<
+  typeof postPlansCodeFixedChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeFixedChargesRouteHandler: RouteHandler<
+  typeof getPlansCodeFixedChargesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlansCodeFixedChargesFixedChargeCodeRouteHandler: RouteHandler<
+  typeof getPlansCodeFixedChargesFixedChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlansCodeFixedChargesFixedChargeCodeRouteHandler: RouteHandler<
+  typeof putPlansCodeFixedChargesFixedChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlansCodeFixedChargesFixedChargeCodeRouteHandler: RouteHandler<
+  typeof deletePlansCodeFixedChargesFixedChargeCodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

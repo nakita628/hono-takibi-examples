@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postLogoutRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postLogoutRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const logoutHandler = app.openapi(postLogoutRoute, (c) => {
+export const postLogoutRouteHandler: RouteHandler<typeof postLogoutRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

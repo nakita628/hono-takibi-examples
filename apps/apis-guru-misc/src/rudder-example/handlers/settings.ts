@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSettingsAllowedNetworksNodeIdRoute,
   getSettingsRoute,
   getSettingsSettingIdRoute,
@@ -8,24 +8,36 @@ import {
   postSettingsSettingIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSettingsRouteHandler: RouteHandler<typeof getSettingsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const settingsHandler = app
-  .openapi(getSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSettingsAllowedNetworksNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSettingsAllowedNetworksNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSettingsAllowedNetworksNodeIdDiffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSettingsSettingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSettingsAllowedNetworksNodeIdRouteHandler: RouteHandler<
+  typeof getSettingsAllowedNetworksNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSettingsAllowedNetworksNodeIdRouteHandler: RouteHandler<
+  typeof postSettingsAllowedNetworksNodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSettingsAllowedNetworksNodeIdDiffRouteHandler: RouteHandler<
+  typeof postSettingsAllowedNetworksNodeIdDiffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSettingsSettingIdRouteHandler: RouteHandler<
+  typeof getSettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSettingsSettingIdRouteHandler: RouteHandler<
+  typeof postSettingsSettingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

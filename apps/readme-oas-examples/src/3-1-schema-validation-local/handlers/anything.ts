@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAnythingBooleansRoute,
   getAnythingJsonschemaFormatsRoute,
   getAnythingNumbersRoute,
@@ -7,21 +7,32 @@ import {
   getAnythingStringsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnythingNumbersRouteHandler: RouteHandler<typeof getAnythingNumbersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const anythingHandler = app
-  .openapi(getAnythingNumbersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingStringsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingJsonschemaFormatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingOasFormatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnythingBooleansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnythingStringsRouteHandler: RouteHandler<typeof getAnythingStringsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingJsonschemaFormatsRouteHandler: RouteHandler<
+  typeof getAnythingJsonschemaFormatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingOasFormatsRouteHandler: RouteHandler<
+  typeof getAnythingOasFormatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAnythingBooleansRouteHandler: RouteHandler<
+  typeof getAnythingBooleansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

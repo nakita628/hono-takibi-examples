@@ -247,7 +247,7 @@ const ListOfResourceSchema: z.ZodType<ListOfResourceType> = z
 
 type ResourcesType = {
   position?: z.infer<typeof StringSchema>
-  items?: z.infer<typeof ListOfResourceSchema> & unknown
+  items?: z.infer<typeof ListOfResourceSchema>
 }
 
 const TimestampSchema = z.iso.datetime({ offset: true }).openapi('Timestamp')

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getSchemaIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getSchemaIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const schemaHandler = app.openapi(getSchemaIndexRoute, (c) => {
+export const getSchemaIndexRouteHandler: RouteHandler<typeof getSchemaIndexRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

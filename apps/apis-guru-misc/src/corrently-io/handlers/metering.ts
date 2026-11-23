@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMeteringReadingRoute, postMeteringReadingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMeteringReadingRoute, postMeteringReadingRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMeteringReadingRouteHandler: RouteHandler<typeof getMeteringReadingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const meteringHandler = app
-  .openapi(getMeteringReadingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMeteringReadingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMeteringReadingRouteHandler: RouteHandler<
+  typeof postMeteringReadingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

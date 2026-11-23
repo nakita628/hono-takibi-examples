@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuthPinCodeRoute,
   getAuthStatusRoute,
   postAuthAdminSignUpRoute,
@@ -13,39 +13,58 @@ import {
   putAuthPinCodeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuthAdminSignUpRouteHandler: RouteHandler<
+  typeof postAuthAdminSignUpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const authHandler = app
-  .openapi(postAuthAdminSignUpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthChangePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthLoginRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuthPinCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthPinCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuthPinCodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthSessionLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthSessionUnlockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuthStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuthValidateTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAuthChangePasswordRouteHandler: RouteHandler<
+  typeof postAuthChangePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthLoginRouteHandler: RouteHandler<typeof postAuthLoginRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthLogoutRouteHandler: RouteHandler<typeof postAuthLogoutRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuthPinCodeRouteHandler: RouteHandler<typeof deleteAuthPinCodeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthPinCodeRouteHandler: RouteHandler<typeof postAuthPinCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuthPinCodeRouteHandler: RouteHandler<typeof putAuthPinCodeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthSessionLockRouteHandler: RouteHandler<
+  typeof postAuthSessionLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthSessionUnlockRouteHandler: RouteHandler<
+  typeof postAuthSessionUnlockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuthStatusRouteHandler: RouteHandler<typeof getAuthStatusRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuthValidateTokenRouteHandler: RouteHandler<
+  typeof postAuthValidateTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

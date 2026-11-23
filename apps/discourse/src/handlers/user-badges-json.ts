@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postUserBadgesJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postUserBadgesJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const userBadgesJsonHandler = app.openapi(postUserBadgesJsonRoute, (c) => {
+export const postUserBadgesJsonRouteHandler: RouteHandler<typeof postUserBadgesJsonRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

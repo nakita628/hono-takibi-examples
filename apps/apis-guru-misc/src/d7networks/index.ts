@@ -1,11 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { balanceHandler, sendbatchHandler, sendHandler } from './handlers'
+import { getBalanceRoute, postSendbatchRoute, postSendRoute } from './routes'
+import { getBalanceRouteHandler, postSendbatchRouteHandler, postSendRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', balanceHandler)
-  .route('/', sendHandler)
-  .route('/', sendbatchHandler)
+  .openapi(getBalanceRoute, getBalanceRouteHandler)
+  .openapi(postSendRoute, postSendRouteHandler)
+  .openapi(postSendbatchRoute, postSendbatchRouteHandler)
 
 export default app

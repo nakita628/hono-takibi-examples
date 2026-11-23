@@ -5552,7 +5552,7 @@ export const deleteMarketingEmails202609EmailIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
@@ -5872,7 +5872,7 @@ export const postMarketingEmails202609EmailIdDraftResetRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
@@ -5907,7 +5907,7 @@ export const postMarketingEmails202609EmailIdPublishRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing-email'] }, { oauth2: ['transactional-email'] }],
 })
 
@@ -6110,7 +6110,7 @@ export const postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreRoute = c
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [
     { oauth2: ['marketing.email.read'] },
     { oauth2: ['marketing.email.write'] },
@@ -6207,6 +6207,6 @@ export const postMarketingEmails202609EmailIdUnpublishRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['marketing-email'] }, { oauth2: ['transactional-email'] }],
 })

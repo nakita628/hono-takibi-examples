@@ -974,7 +974,7 @@ export function usePostAttributesRestoreAttributeId<
 }
 
 export function getPostAttributesAddTagAttributeIdTagIdLocalLocalMutationKey() {
-  return ['attributes', '/attributes/addTag/:attributeId/:tagId/local::local', 'POST'] as const
+  return ['attributes', '/attributes/addTag/:attributeId/:tagId/local:{local}', 'POST'] as const
 }
 
 export function getPostAttributesAddTagAttributeIdTagIdLocalLocalMutationOptions<
@@ -987,7 +987,7 @@ export function getPostAttributesAddTagAttributeIdTagIdLocalLocalMutationOptions
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+              (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
             >
           >
         >
@@ -995,18 +995,18 @@ export function getPostAttributesAddTagAttributeIdTagIdLocalLocalMutationOptions
     >,
     TError,
     InferRequestType<
-      (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+      (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostAttributesAddTagAttributeIdTagIdLocalLocalMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+        (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
       >,
     ) {
       return parseResponse(
-        client.attributes.addTag[':attributeId'][':tagId']['local::local'].$post(args, options),
+        client.attributes.addTag[':attributeId'][':tagId']['local:{local}'].$post(args, options),
       )
     },
   })
@@ -1025,7 +1025,7 @@ export function usePostAttributesAddTagAttributeIdTagIdLocalLocal<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+                    (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
                   >
                 >
               >
@@ -1033,7 +1033,7 @@ export function usePostAttributesAddTagAttributeIdTagIdLocalLocal<
           >,
           TError,
           InferRequestType<
-            (typeof client.attributes.addTag)[':attributeId'][':tagId']['local::local']['$post']
+            (typeof client.attributes.addTag)[':attributeId'][':tagId']['local:{local}']['$post']
           >,
           TOnMutateResult
         >,
@@ -3240,7 +3240,7 @@ export function usePostEventsUnpublishEventId<TError = DefaultError, TOnMutateRe
 }
 
 export function getPostEventsAddTagEventIdTagIdLocalLocalMutationKey() {
-  return ['events', '/events/addTag/:eventId/:tagId/local::local', 'POST'] as const
+  return ['events', '/events/addTag/:eventId/:tagId/local:{local}', 'POST'] as const
 }
 
 export function getPostEventsAddTagEventIdTagIdLocalLocalMutationOptions<
@@ -3252,23 +3252,25 @@ export function getPostEventsAddTagEventIdTagIdLocalLocalMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']>
+            ReturnType<
+              (typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']
+            >
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']>,
+    InferRequestType<(typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostEventsAddTagEventIdTagIdLocalLocalMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']
+        (typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']
       >,
     ) {
       return parseResponse(
-        client.events.addTag[':eventId'][':tagId']['local::local'].$post(args, options),
+        client.events.addTag[':eventId'][':tagId']['local:{local}'].$post(args, options),
       )
     },
   })
@@ -3287,7 +3289,7 @@ export function usePostEventsAddTagEventIdTagIdLocalLocal<
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']
+                    (typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']
                   >
                 >
               >
@@ -3295,7 +3297,7 @@ export function usePostEventsAddTagEventIdTagIdLocalLocal<
           >,
           TError,
           InferRequestType<
-            (typeof client.events.addTag)[':eventId'][':tagId']['local::local']['$post']
+            (typeof client.events.addTag)[':eventId'][':tagId']['local:{local}']['$post']
           >,
           TOnMutateResult
         >,
@@ -3924,7 +3926,7 @@ export function usePostGalaxiesExportGalaxyId<TError = DefaultError, TOnMutateRe
 export function getPostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocalMutationKey() {
   return [
     'galaxies',
-    '/galaxies/attachCluster/:attachTargetId/:attachTargetType/local::local',
+    '/galaxies/attachCluster/:attachTargetId/:attachTargetType/local:{local}',
     'POST',
   ] as const
 }
@@ -3939,7 +3941,7 @@ export function getPostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalL
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+              (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
             >
           >
         >
@@ -3947,21 +3949,20 @@ export function getPostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalL
     >,
     TError,
     InferRequestType<
-      (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+      (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
     >,
     TOnMutateResult
   >({
     mutationKey: getPostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalLocalMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+        (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
       >,
     ) {
       return parseResponse(
-        client.galaxies.attachCluster[':attachTargetId'][':attachTargetType']['local::local'].$post(
-          args,
-          options,
-        ),
+        client.galaxies.attachCluster[':attachTargetId'][':attachTargetType'][
+          'local:{local}'
+        ].$post(args, options),
       )
     },
   })
@@ -3980,7 +3981,7 @@ export function usePostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalL
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+                    (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
                   >
                 >
               >
@@ -3988,7 +3989,7 @@ export function usePostGalaxiesAttachClusterAttachTargetIdAttachTargetTypeLocalL
           >,
           TError,
           InferRequestType<
-            (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local::local']['$post']
+            (typeof client.galaxies.attachCluster)[':attachTargetId'][':attachTargetType']['local:{local}']['$post']
           >,
           TOnMutateResult
         >,

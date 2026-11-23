@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAddonsConfigurationSchemasAddonNameAddonVersionRoute,
   getAddonsSupportedVersionsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAddonsConfigurationSchemasAddonNameAddonVersionRouteHandler: RouteHandler<
+  typeof getAddonsConfigurationSchemasAddonNameAddonVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const addonsHandler = app
-  .openapi(getAddonsConfigurationSchemasAddonNameAddonVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonsSupportedVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAddonsSupportedVersionsRouteHandler: RouteHandler<
+  typeof getAddonsSupportedVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

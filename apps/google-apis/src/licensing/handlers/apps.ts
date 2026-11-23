@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute,
   getAppsLicensingV1ProductProductIdSkuSkuIdUsersRoute,
   getAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute,
@@ -9,27 +9,44 @@ import {
   putAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppsLicensingV1ProductProductIdSkuSkuIdUserRouteHandler: RouteHandler<
+  typeof postAppsLicensingV1ProductProductIdSkuSkuIdUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appsHandler = app
-  .openapi(postAppsLicensingV1ProductProductIdSkuSkuIdUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsLicensingV1ProductProductIdSkuSkuIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppsLicensingV1ProductProductIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRouteHandler: RouteHandler<
+  typeof deleteAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRouteHandler: RouteHandler<
+  typeof getAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRouteHandler: RouteHandler<
+  typeof patchAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRouteHandler: RouteHandler<
+  typeof putAppsLicensingV1ProductProductIdSkuSkuIdUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsLicensingV1ProductProductIdSkuSkuIdUsersRouteHandler: RouteHandler<
+  typeof getAppsLicensingV1ProductProductIdSkuSkuIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppsLicensingV1ProductProductIdUsersRouteHandler: RouteHandler<
+  typeof getAppsLicensingV1ProductProductIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

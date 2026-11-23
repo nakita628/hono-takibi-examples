@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCcrAutoFollowNameRoute,
   getCcrAutoFollowNameRoute,
   getCcrAutoFollowRoute,
@@ -9,27 +9,42 @@ import {
   putCcrAutoFollowNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCcrAutoFollowNameRouteHandler: RouteHandler<
+  typeof getCcrAutoFollowNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ccrHandler = app
-  .openapi(getCcrAutoFollowNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putCcrAutoFollowNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCcrAutoFollowNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCcrAutoFollowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCcrAutoFollowNamePauseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCcrAutoFollowNameResumeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCcrStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putCcrAutoFollowNameRouteHandler: RouteHandler<
+  typeof putCcrAutoFollowNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCcrAutoFollowNameRouteHandler: RouteHandler<
+  typeof deleteCcrAutoFollowNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCcrAutoFollowRouteHandler: RouteHandler<typeof getCcrAutoFollowRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postCcrAutoFollowNamePauseRouteHandler: RouteHandler<
+  typeof postCcrAutoFollowNamePauseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCcrAutoFollowNameResumeRouteHandler: RouteHandler<
+  typeof postCcrAutoFollowNameResumeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCcrStatsRouteHandler: RouteHandler<typeof getCcrStatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

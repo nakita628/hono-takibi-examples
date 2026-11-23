@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/openstates.org/2021.11.12/openapi.yaml',
   output: './src/openstates-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/openstates-org/types.ts' },
   client: { output: './src/openstates-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/openstates-org/rpc.ts', parseResponse: true },

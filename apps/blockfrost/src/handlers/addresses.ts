@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getAddressesAddressExtendedRoute,
   getAddressesAddressRoute,
   getAddressesAddressTotalRoute,
@@ -9,27 +9,44 @@ import {
   getAddressesAddressUtxosRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAddressesAddressRouteHandler: RouteHandler<
+  typeof getAddressesAddressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const addressesHandler = app
-  .openapi(getAddressesAddressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressExtendedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressTotalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressUtxosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressUtxosAssetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressTxsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddressesAddressTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAddressesAddressExtendedRouteHandler: RouteHandler<
+  typeof getAddressesAddressExtendedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressTotalRouteHandler: RouteHandler<
+  typeof getAddressesAddressTotalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressUtxosRouteHandler: RouteHandler<
+  typeof getAddressesAddressUtxosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressUtxosAssetRouteHandler: RouteHandler<
+  typeof getAddressesAddressUtxosAssetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressTxsRouteHandler: RouteHandler<
+  typeof getAddressesAddressTxsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddressesAddressTransactionsRouteHandler: RouteHandler<
+  typeof getAddressesAddressTransactionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNotificationsEmailTemplatesIdRoute,
   deleteNotificationsHistoryRoute,
   deleteNotificationsNotificationDefinitionsIdRoute,
@@ -14,42 +14,74 @@ import {
   putNotificationsNotificationDefinitionsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNotificationsEmailTemplatesRouteHandler: RouteHandler<
+  typeof getNotificationsEmailTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const notificationsHandler = app
-  .openapi(getNotificationsEmailTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationsEmailTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsEmailTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsEmailTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationsEmailTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsHistoryTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsNotificationDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationsNotificationDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsNotificationDefinitionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsNotificationDefinitionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationsNotificationDefinitionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNotificationsEmailTemplatesRouteHandler: RouteHandler<
+  typeof postNotificationsEmailTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsEmailTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteNotificationsEmailTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsEmailTemplatesIdRouteHandler: RouteHandler<
+  typeof getNotificationsEmailTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationsEmailTemplatesIdRouteHandler: RouteHandler<
+  typeof putNotificationsEmailTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsHistoryRouteHandler: RouteHandler<
+  typeof deleteNotificationsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsHistoryTasksIdRouteHandler: RouteHandler<
+  typeof getNotificationsHistoryTasksIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsNotificationDefinitionsRouteHandler: RouteHandler<
+  typeof getNotificationsNotificationDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNotificationsNotificationDefinitionsRouteHandler: RouteHandler<
+  typeof postNotificationsNotificationDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsNotificationDefinitionsIdRouteHandler: RouteHandler<
+  typeof deleteNotificationsNotificationDefinitionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsNotificationDefinitionsIdRouteHandler: RouteHandler<
+  typeof getNotificationsNotificationDefinitionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationsNotificationDefinitionsIdRouteHandler: RouteHandler<
+  typeof putNotificationsNotificationDefinitionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

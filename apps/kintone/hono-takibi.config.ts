@@ -4,7 +4,7 @@ export default defineConfig({
   // Kintone REST API: https://github.com/kintone/openapi-spec (bundled single file)
   input: 'https://raw.githubusercontent.com/kintone/openapi-spec/main/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

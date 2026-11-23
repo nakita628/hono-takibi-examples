@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getInsightsOrgSlugSummaryRoute,
   getInsightsPagesProjectSlugSummaryRoute,
   getInsightsProjectSlugBranchesRoute,
@@ -13,39 +13,68 @@ import {
   postInsightsPagesProjectSlugSummaryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postInsightsPagesProjectSlugSummaryRouteHandler: RouteHandler<
+  typeof postInsightsPagesProjectSlugSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const insightsHandler = app
-  .openapi(postInsightsPagesProjectSlugSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsPagesProjectSlugSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsTimeSeriesProjectSlugWorkflowsWorkflowNameJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsOrgSlugSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugBranchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugFlakyTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugWorkflowsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugWorkflowsWorkflowNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugWorkflowsWorkflowNameJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugWorkflowsWorkflowNameSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getInsightsProjectSlugWorkflowsWorkflowNameTestMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getInsightsPagesProjectSlugSummaryRouteHandler: RouteHandler<
+  typeof getInsightsPagesProjectSlugSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsTimeSeriesProjectSlugWorkflowsWorkflowNameJobsRouteHandler: RouteHandler<
+  typeof getInsightsTimeSeriesProjectSlugWorkflowsWorkflowNameJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsOrgSlugSummaryRouteHandler: RouteHandler<
+  typeof getInsightsOrgSlugSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugBranchesRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugBranchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugFlakyTestsRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugFlakyTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugWorkflowsRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugWorkflowsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugWorkflowsWorkflowNameRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugWorkflowsWorkflowNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugWorkflowsWorkflowNameJobsRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugWorkflowsWorkflowNameJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugWorkflowsWorkflowNameSummaryRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugWorkflowsWorkflowNameSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getInsightsProjectSlugWorkflowsWorkflowNameTestMetricsRouteHandler: RouteHandler<
+  typeof getInsightsProjectSlugWorkflowsWorkflowNameTestMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

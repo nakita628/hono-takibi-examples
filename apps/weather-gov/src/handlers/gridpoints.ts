@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGridpointsWfoXYForecastHourlyRoute,
   getGridpointsWfoXYForecastRoute,
   getGridpointsWfoXYRoute,
   getGridpointsWfoXYStationsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGridpointsWfoXYRouteHandler: RouteHandler<typeof getGridpointsWfoXYRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const gridpointsHandler = app
-  .openapi(getGridpointsWfoXYRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGridpointsWfoXYForecastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGridpointsWfoXYForecastHourlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGridpointsWfoXYStationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGridpointsWfoXYForecastRouteHandler: RouteHandler<
+  typeof getGridpointsWfoXYForecastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGridpointsWfoXYForecastHourlyRouteHandler: RouteHandler<
+  typeof getGridpointsWfoXYForecastHourlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGridpointsWfoXYStationsRouteHandler: RouteHandler<
+  typeof getGridpointsWfoXYStationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

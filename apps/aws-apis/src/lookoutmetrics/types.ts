@@ -1,14 +1,7 @@
 type ActivateAnomalyDetectorResponse = { [x: string]: unknown }
-type ValidationException = { [x: string]: unknown }
-type ResourceNotFoundException = { [x: string]: unknown }
-type AccessDeniedException = { [x: string]: unknown }
-type TooManyRequestsException = { [x: string]: unknown }
-type InternalServerException = { [x: string]: unknown }
-type ConflictException = { [x: string]: unknown }
 type BackTestAnomalyDetectorResponse = { [x: string]: unknown }
 type TagValue = string
 type CreateAlertResponse = { AlertArn?: {} | undefined }
-type ServiceQuotaExceededException = { [x: string]: unknown }
 type CreateAnomalyDetectorResponse = { AnomalyDetectorArn?: {} | undefined }
 type Metric = { MetricName: {}; AggregationFunction: {}; Namespace?: {} | undefined }
 type ColumnName = string
@@ -400,4992 +393,826 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
     '/ActivateAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ActivateAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { AnomalyDetectorArn: string } }
+        output: ActivateAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/BackTestAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: BackTestAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AnomalyDetectorArn: string } }
+        output: BackTestAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/CreateAlert': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: CreateAlertResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
+        } & {
+          json: {
+            AlertName: string
+            AlertSensitivityThreshold?: number | undefined
+            AlertDescription?: string | undefined
+            AnomalyDetectorArn: string
+            Action: {
+              SNSConfiguration?:
+                | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
+                | undefined
+              LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
             }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+            Tags?: { [x: string]: TagValue } | undefined
+            AlertFilters?:
+              | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertName: string
-                AlertSensitivityThreshold?: number | undefined
-                AlertDescription?: string | undefined
-                AnomalyDetectorArn: string
-                Action: {
-                  SNSConfiguration?:
-                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                    | undefined
-                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                }
-                Tags?: { [x: string]: TagValue } | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateAlertResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/CreateAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: CreateAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorName: string
+            AnomalyDetectorDescription?: string | undefined
+            AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
+            KmsKeyArn?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorName: string
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig: { AnomalyDetectorFrequency?: {} | undefined }
-                KmsKeyArn?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/CreateMetricSet': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: CreateMetricSetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            MetricSetName: string
+            MetricSetDescription?: string | undefined
+            MetricList: Metric[]
+            Offset?: number | undefined
+            TimestampColumn?:
+              | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
+              | undefined
+            DimensionList?: ColumnName[] | undefined
+            MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
+            MetricSource: {
+              S3SourceConfig?: S3SourceConfig | undefined
+              AppFlowConfig?: { RoleArn?: {} | undefined; FlowName?: {} | undefined } | undefined
+              CloudWatchConfig?:
+                | {
+                    RoleArn?: {} | undefined
+                    BackTestConfiguration?: { RunBackTestMode: {} } | undefined
+                  }
+                | undefined
+              RDSSourceConfig?:
+                | {
+                    DBInstanceIdentifier?: {} | undefined
+                    DatabaseHost?: {} | undefined
+                    DatabasePort?: {} | undefined
+                    SecretManagerArn?: {} | undefined
+                    DatabaseName?: {} | undefined
+                    TableName?: {} | undefined
+                    RoleArn?: {} | undefined
+                    VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
+                  }
+                | undefined
+              RedshiftSourceConfig?:
+                | {
+                    ClusterIdentifier?: {} | undefined
+                    DatabaseHost?: {} | undefined
+                    DatabasePort?: {} | undefined
+                    SecretManagerArn?: {} | undefined
+                    DatabaseName?: {} | undefined
+                    TableName?: {} | undefined
+                    RoleArn?: {} | undefined
+                    VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
+                  }
+                | undefined
+              AthenaSourceConfig?:
+                | {
+                    RoleArn?: {} | undefined
+                    DatabaseName?: {} | undefined
+                    DataCatalog?: {} | undefined
+                    TableName?: {} | undefined
+                    WorkGroupName?: {} | undefined
+                    S3ResultsPath?: {} | undefined
+                    BackTestConfiguration?: { RunBackTestMode: {} } | undefined
+                  }
+                | undefined
             }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 480
+            Timezone?: string | undefined
+            Tags?: { [x: string]: TagValue } | undefined
+            DimensionFilterList?: MetricSetDimensionFilter[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 485
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                MetricSetName: string
-                MetricSetDescription?: string | undefined
-                MetricList: Metric[]
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource: {
-                  S3SourceConfig?: S3SourceConfig | undefined
-                  AppFlowConfig?:
-                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                    | undefined
-                  CloudWatchConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                  RDSSourceConfig?:
-                    | {
-                        DBInstanceIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  RedshiftSourceConfig?:
-                    | {
-                        ClusterIdentifier?: {} | undefined
-                        DatabaseHost?: {} | undefined
-                        DatabasePort?: {} | undefined
-                        SecretManagerArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        TableName?: {} | undefined
-                        RoleArn?: {} | undefined
-                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
-                      }
-                    | undefined
-                  AthenaSourceConfig?:
-                    | {
-                        RoleArn?: {} | undefined
-                        DatabaseName?: {} | undefined
-                        DataCatalog?: {} | undefined
-                        TableName?: {} | undefined
-                        WorkGroupName?: {} | undefined
-                        S3ResultsPath?: {} | undefined
-                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                      }
-                    | undefined
-                }
-                Timezone?: string | undefined
-                Tags?: { [x: string]: TagValue } | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 486
-          }
+        }
+        output: CreateMetricSetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DeactivateAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: DeactivateAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { AnomalyDetectorArn: string } }
+        output: DeactivateAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DeleteAlert': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: DeleteAlertResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AlertArn: string } }
+        output: DeleteAlertResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DeleteAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: DeleteAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ConflictException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 485
-          }
+        } & { json: { AnomalyDetectorArn: string } }
+        output: DeleteAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeAlert': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: DescribeAlertResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AlertArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AlertArn: string } }
+        output: DescribeAlertResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeAnomalyDetectionExecutions': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: DescribeAnomalyDetectionExecutionsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            Timestamp?: string | undefined
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                Timestamp?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DescribeAnomalyDetectionExecutionsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: DescribeAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AnomalyDetectorArn: string } }
+        output: DescribeAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DescribeMetricSet': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: DescribeMetricSetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MetricSetArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { MetricSetArn: string } }
+        output: DescribeMetricSetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/DetectMetricSetConfig': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
-            }
-            output: DetectMetricSetConfigResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            AutoDetectionMetricSource: {
+              S3SourceConfig?:
+                | { TemplatedPathList?: {} | undefined; HistoricalDataPathList?: {} | undefined }
+                | undefined
             }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AutoDetectionMetricSource: {
-                  S3SourceConfig?:
-                    | {
-                        TemplatedPathList?: {} | undefined
-                        HistoricalDataPathList?: {} | undefined
-                      }
-                    | undefined
-                }
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: DetectMetricSetConfigResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/GetAnomalyGroup': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: GetAnomalyGroupResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AnomalyGroupId: string; AnomalyDetectorArn: string } }
+        output: GetAnomalyGroupResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/GetDataQualityMetrics': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: GetDataQualityMetricsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { AnomalyDetectorArn: string; MetricSetArn?: string | undefined } }
+        output: GetDataQualityMetricsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/GetFeedback': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: GetFeedbackResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            AnomalyGroupTimeSeriesFeedback: {
+              AnomalyGroupId?: {} | undefined
+              TimeSeriesId?: {} | undefined
             }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                }
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetFeedbackResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/GetSampleData': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: GetSampleDataResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            S3SourceConfig?:
+              | {
+                  RoleArn?: {} | undefined
+                  TemplatedPathList?: {} | undefined
+                  HistoricalDataPathList?: {} | undefined
+                  FileFormatDescriptor?: FileFormatDescriptor | undefined
+                }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                S3SourceConfig?:
-                  | {
-                      RoleArn?: {} | undefined
-                      TemplatedPathList?: {} | undefined
-                      HistoricalDataPathList?: {} | undefined
-                      FileFormatDescriptor?: FileFormatDescriptor | undefined
-                    }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: GetSampleDataResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListAlerts': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ListAlertsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn?: string | undefined
+            NextToken?: string | undefined
+            MaxResults?: number | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                NextToken?: string | undefined
-                MaxResults?: number | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListAlertsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListAnomalyDetectors': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: ListAnomalyDetectorsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        } & { json: { MaxResults?: number | undefined; NextToken?: string | undefined } }
+        output: ListAnomalyDetectorsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListAnomalyGroupRelatedMetrics': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ListAnomalyGroupRelatedMetricsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            AnomalyGroupId: string
+            RelationshipTypeFilter?:
+              | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
+              | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
+              | undefined
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                RelationshipTypeFilter?:
-                  | 'CAUSE_OF_INPUT_ANOMALY_GROUP'
-                  | 'EFFECT_OF_INPUT_ANOMALY_GROUP'
-                  | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListAnomalyGroupRelatedMetricsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListAnomalyGroupSummaries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ListAnomalyGroupSummariesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            SensitivityThreshold: number
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                SensitivityThreshold: number
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListAnomalyGroupSummariesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListAnomalyGroupTimeSeries': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ListAnomalyGroupTimeSeriesResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            AnomalyGroupId: string
+            MetricName: string
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupId: string
-                MetricName: string
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListAnomalyGroupTimeSeriesResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/ListMetricSets': {
-      $post:
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ListMetricSetsResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: { query: { MaxResults?: string | undefined; NextToken?: string | undefined } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn?: string | undefined
+            MaxResults?: number | undefined
+            NextToken?: string | undefined
           }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              query: { MaxResults?: string | undefined; NextToken?: string | undefined }
-            } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn?: string | undefined
-                MaxResults?: number | undefined
-                NextToken?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: ListMetricSetsResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn': {
-      $get:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ListTagsForResourceResponse
-            outputFormat: 'json'
-            status: 200
+      $get: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
+        }
+        output: ListTagsForResourceResponse
+        outputFormat: 'json'
+        status: 200
+      }
+      $post: {
+        input: { param: { resourceArn: string } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
-      $post:
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: TagResourceResponse
-            outputFormat: 'json'
-            status: 204
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & { json: { tags: { [x: string]: TagValue } } }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        } & { json: { tags: { [x: string]: TagValue } } }
+        output: TagResourceResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   } & {
     '/PutFeedback': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
-            }
-            output: PutFeedbackResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            AnomalyGroupTimeSeriesFeedback: {
+              AnomalyGroupId?: {} | undefined
+              TimeSeriesId?: {} | undefined
+              IsAnomaly?: {} | undefined
             }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                AnomalyGroupTimeSeriesFeedback: {
-                  AnomalyGroupId?: {} | undefined
-                  TimeSeriesId?: {} | undefined
-                  IsAnomaly?: {} | undefined
-                }
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: PutFeedbackResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/tags/:resourceArn#tagKeys': {
-      $delete:
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: UntagResourceResponse
-            outputFormat: 'json'
-            status: 204
+      $delete: {
+        input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 480
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: { param: { resourceArn: string } } & { query: { tagKeys: TagKey[] } } & {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 482
-          }
+        }
+        output: UntagResourceResponse
+        outputFormat: 'json'
+        status: 204
+      }
     }
   } & {
     '/UpdateAlert': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: UpdateAlertResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AlertArn: string
+            AlertDescription?: string | undefined
+            AlertSensitivityThreshold?: number | undefined
+            Action?:
+              | {
+                  SNSConfiguration?:
+                    | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
+                    | undefined
+                  LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
+                }
+              | undefined
+            AlertFilters?:
+              | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
+              | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AlertArn: string
-                AlertDescription?: string | undefined
-                AlertSensitivityThreshold?: number | undefined
-                Action?:
-                  | {
-                      SNSConfiguration?:
-                        | { RoleArn: {}; SnsTopicArn: {}; SnsFormat?: {} | undefined }
-                        | undefined
-                      LambdaConfiguration?: { RoleArn: {}; LambdaArn: {} } | undefined
-                    }
-                  | undefined
-                AlertFilters?:
-                  | { MetricList?: {} | undefined; DimensionFilterList?: {} | undefined }
-                  | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateAlertResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/UpdateAnomalyDetector': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: UpdateAnomalyDetectorResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            AnomalyDetectorArn: string
+            KmsKeyArn?: string | undefined
+            AnomalyDetectorDescription?: string | undefined
+            AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                AnomalyDetectorArn: string
-                KmsKeyArn?: string | undefined
-                AnomalyDetectorDescription?: string | undefined
-                AnomalyDetectorConfig?: { AnomalyDetectorFrequency?: {} | undefined } | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
+        }
+        output: UpdateAnomalyDetectorResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   } & {
     '/UpdateMetricSet': {
-      $post:
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: UpdateMetricSetResponse
-            outputFormat: 'json'
-            status: 200
+      $post: {
+        input: {
+          header: {
+            'X-Amz-Content-Sha256'?: string | undefined
+            'X-Amz-Date'?: string | undefined
+            'X-Amz-Algorithm'?: string | undefined
+            'X-Amz-Credential'?: string | undefined
+            'X-Amz-Security-Token'?: string | undefined
+            'X-Amz-Signature'?: string | undefined
+            'X-Amz-SignedHeaders'?: string | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ResourceNotFoundException
-            outputFormat: 'json'
-            status: 480
+        } & {
+          json: {
+            MetricSetArn: string
+            MetricSetDescription?: string | undefined
+            MetricList?: Metric[] | undefined
+            Offset?: number | undefined
+            TimestampColumn?:
+              | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
+              | undefined
+            DimensionList?: ColumnName[] | undefined
+            MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
+            MetricSource?:
+              | {
+                  S3SourceConfig?: S3SourceConfig | undefined
+                  AppFlowConfig?:
+                    | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
+                    | undefined
+                  CloudWatchConfig?:
+                    | {
+                        RoleArn?: {} | undefined
+                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
+                      }
+                    | undefined
+                  RDSSourceConfig?:
+                    | {
+                        DBInstanceIdentifier?: {} | undefined
+                        DatabaseHost?: {} | undefined
+                        DatabasePort?: {} | undefined
+                        SecretManagerArn?: {} | undefined
+                        DatabaseName?: {} | undefined
+                        TableName?: {} | undefined
+                        RoleArn?: {} | undefined
+                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
+                      }
+                    | undefined
+                  RedshiftSourceConfig?:
+                    | {
+                        ClusterIdentifier?: {} | undefined
+                        DatabaseHost?: {} | undefined
+                        DatabasePort?: {} | undefined
+                        SecretManagerArn?: {} | undefined
+                        DatabaseName?: {} | undefined
+                        TableName?: {} | undefined
+                        RoleArn?: {} | undefined
+                        VpcConfiguration?: { SubnetIdList: {}; SecurityGroupIdList: {} } | undefined
+                      }
+                    | undefined
+                  AthenaSourceConfig?:
+                    | {
+                        RoleArn?: {} | undefined
+                        DatabaseName?: {} | undefined
+                        DataCatalog?: {} | undefined
+                        TableName?: {} | undefined
+                        WorkGroupName?: {} | undefined
+                        S3ResultsPath?: {} | undefined
+                        BackTestConfiguration?: { RunBackTestMode: {} } | undefined
+                      }
+                    | undefined
+                }
+              | undefined
+            DimensionFilterList?: MetricSetDimensionFilter[] | undefined
           }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ValidationException
-            outputFormat: 'json'
-            status: 481
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: InternalServerException
-            outputFormat: 'json'
-            status: 482
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: AccessDeniedException
-            outputFormat: 'json'
-            status: 483
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: TooManyRequestsException
-            outputFormat: 'json'
-            status: 484
-          }
-        | {
-            input: {
-              header: {
-                'X-Amz-Content-Sha256'?: string | undefined
-                'X-Amz-Date'?: string | undefined
-                'X-Amz-Algorithm'?: string | undefined
-                'X-Amz-Credential'?: string | undefined
-                'X-Amz-Security-Token'?: string | undefined
-                'X-Amz-Signature'?: string | undefined
-                'X-Amz-SignedHeaders'?: string | undefined
-              }
-            } & {
-              json: {
-                MetricSetArn: string
-                MetricSetDescription?: string | undefined
-                MetricList?: Metric[] | undefined
-                Offset?: number | undefined
-                TimestampColumn?:
-                  | { ColumnName?: {} | undefined; ColumnFormat?: {} | undefined }
-                  | undefined
-                DimensionList?: ColumnName[] | undefined
-                MetricSetFrequency?: 'P1D' | 'PT1H' | 'PT10M' | 'PT5M' | undefined
-                MetricSource?:
-                  | {
-                      S3SourceConfig?: S3SourceConfig | undefined
-                      AppFlowConfig?:
-                        | { RoleArn?: {} | undefined; FlowName?: {} | undefined }
-                        | undefined
-                      CloudWatchConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                      RDSSourceConfig?:
-                        | {
-                            DBInstanceIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      RedshiftSourceConfig?:
-                        | {
-                            ClusterIdentifier?: {} | undefined
-                            DatabaseHost?: {} | undefined
-                            DatabasePort?: {} | undefined
-                            SecretManagerArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            TableName?: {} | undefined
-                            RoleArn?: {} | undefined
-                            VpcConfiguration?:
-                              | { SubnetIdList: {}; SecurityGroupIdList: {} }
-                              | undefined
-                          }
-                        | undefined
-                      AthenaSourceConfig?:
-                        | {
-                            RoleArn?: {} | undefined
-                            DatabaseName?: {} | undefined
-                            DataCatalog?: {} | undefined
-                            TableName?: {} | undefined
-                            WorkGroupName?: {} | undefined
-                            S3ResultsPath?: {} | undefined
-                            BackTestConfiguration?: { RunBackTestMode: {} } | undefined
-                          }
-                        | undefined
-                    }
-                  | undefined
-                DimensionFilterList?: MetricSetDimensionFilter[] | undefined
-              }
-            }
-            output: ServiceQuotaExceededException
-            outputFormat: 'json'
-            status: 485
-          }
+        }
+        output: UpdateMetricSetResponse
+        outputFormat: 'json'
+        status: 200
+      }
     }
   },
   '/'

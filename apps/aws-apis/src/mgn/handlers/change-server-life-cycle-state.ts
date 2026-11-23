@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postChangeServerLifeCycleStateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postChangeServerLifeCycleStateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const changeServerLifeCycleStateHandler = app.openapi(
-  postChangeServerLifeCycleStateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postChangeServerLifeCycleStateRouteHandler: RouteHandler<
+  typeof postChangeServerLifeCycleStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

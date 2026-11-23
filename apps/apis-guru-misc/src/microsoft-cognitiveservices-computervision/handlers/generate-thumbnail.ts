@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postGenerateThumbnailRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postGenerateThumbnailRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const generateThumbnailHandler = app.openapi(postGenerateThumbnailRoute, (c) => {
+export const postGenerateThumbnailRouteHandler: RouteHandler<
+  typeof postGenerateThumbnailRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

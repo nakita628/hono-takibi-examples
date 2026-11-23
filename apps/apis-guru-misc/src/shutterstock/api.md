@@ -71,152 +71,7 @@ This endpoint lists the descriptors that you can use in the audio regions in an 
 
 ```json
 {
-  "data": [
-    {
-      "average_render_speed": 8.242664029014177,
-      "bands": [
-        {
-          "id": "cinematic_minimal_tense_band_1",
-          "name": "Cinematic Minimal Tense Band 1"
-        },
-        {
-          "id": "cinematic_minimal_tense_band_2",
-          "name": "Cinematic Minimal Tense Band 2"
-        }
-      ],
-      "id": "cinematic_minimal_tense",
-      "instruments": [
-        {
-          "id": "blue_synth_pad",
-          "name": "Warm Pad - Lush"
-        },
-        {
-          "id": "direct_round_1_synth_bass",
-          "name": "Direct Round 1 Synth Bass"
-        },
-        {
-          "id": "direct_crystal_breath_mid_pad",
-          "name": "Direct Crystal Breath Mid Pad"
-        }
-      ],
-      "max_tempo": 76,
-      "min_tempo": 58,
-      "name": "Cinematic Minimal Tense",
-      "previews": [
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_1_v1.mp3"
-        },
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_2_v1.mp3"
-        }
-      ],
-      "tags": [
-        "Tense",
-        "Cinematic",
-        "Negative",
-        "Simple Meter",
-        "4/4",
-        "Natural Minor",
-        "Dorian",
-        "Minimal",
-        "Adagio",
-        "Single Region",
-        "Main",
-        "Entertainment",
-        "Politics",
-        "Keys",
-        "Mid Pads",
-        "Fast",
-        "Slow",
-        "Slow",
-        "Voice",
-        "Medium Bright",
-        "Non Noisy",
-        "Medium Thick",
-        "Angelic",
-        "Direct",
-        "Percussion",
-        "Perc FX",
-        "Misc",
-        "Acoustic Pianos",
-        "Grand",
-        "Nice",
-        "Roomy",
-        "Pop",
-        "Upright",
-        "Clean",
-        "Classic",
-        "Keyboards",
-        "Digital Keyboard",
-        "Strings",
-        "Synth Basses",
-        "Fast",
-        "Dark",
-        "Thick",
-        "Sub",
-        "Synth Mallets",
-        "Dull",
-        "Mid Synth Beds",
-        "Slow",
-        "None",
-        "Medium Noisy",
-        "Harsh",
-        "Fast",
-        "Airy",
-        "Long Textures",
-        "Ambience",
-        "Synth Texture",
-        "Ethereal",
-        "Set Kicks",
-        "Processed",
-        "Hubcap Mallet",
-        "Wide",
-        "Tickie",
-        "Airy",
-        "Chamber",
-        "Thin",
-        "Organ",
-        "Cello Ensemble",
-        "Sweet",
-        "Big",
-        "Di",
-        "Raw",
-        "Bright",
-        "Tight",
-        "Chorus",
-        "Buzzy",
-        "Huge",
-        "Warm",
-        "Jazz",
-        "Brass",
-        "String",
-        "Hollow",
-        "Woodwind",
-        "Breathy",
-        "Crystal",
-        "Rhodes",
-        "Synth Piano",
-        "Noisy",
-        "Woody",
-        "Metallic",
-        "Reverse Piano",
-        "Full",
-        "Foley",
-        "Piano",
-        "Clean",
-        "Delayed",
-        "Reverb",
-        "Low Passed",
-        "Large",
-        "Medium",
-        "Small"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 1
+  "$ref": "#/components/schemas/DescriptorsListResultExample"
 }
 ```
 
@@ -267,33 +122,7 @@ This endpoint lists the instruments that you can include in computer audio. If y
 
 ```json
 {
-  "data": [
-    {
-      "id": "bright_roomy_kit",
-      "name": "Bright Roomy Kit",
-      "previews": [
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/instruments/previews/bright_roomy_kit_v1.mp3"
-        }
-      ],
-      "tags": [
-        "Percussion",
-        "Aux Percs",
-        "Set Cymbals",
-        "Crash",
-        "Open",
-        "Ride",
-        "Set Hi-Hat",
-        "Set Kicks",
-        "Stick Snare",
-        "Quad Toms",
-        "Roto Toms"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5
+  "$ref": "#/components/schemas/InstrumentsListResultExample"
 }
 ```
 
@@ -339,53 +168,7 @@ This endpoint shows the status of one or more audio renders, including download 
 
 ```json
 {
-  "audio_renders": [
-    {
-      "created_date": "2021-07-13T16:19:30-04:00",
-      "files": [],
-      "id": "2yZp13IhLqnjfh2KquDTOHUHzTiP",
-      "preset": "MASTER_MP3",
-      "progress_percent": 20,
-      "status": "WAITING_COMPOSE",
-      "timeline": {},
-      "updated_date": "2021-07-13T16:19:30-04:00"
-    },
-    {
-      "created_date": "2021-07-12T16:39:59-04:00",
-      "files": [
-        {
-          "bits_sample": 16,
-          "content_type": "audio/mp3",
-          "download_url": "https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3",
-          "filename": "My_audio_ai.mp3",
-          "frequency_hz": 44100,
-          "kbits_second": 192,
-          "size_bytes": 481556,
-          "tracks": [
-            "master"
-          ]
-        },
-        {
-          "bits_sample": 0,
-          "content_type": "application/vnd.amper.waveform+json",
-          "download_url": "https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/1.json",
-          "filename": "render.json",
-          "frequency_hz": 42,
-          "kbits_second": 0,
-          "size_bytes": 4420,
-          "tracks": [
-            "master"
-          ]
-        }
-      ],
-      "id": "QwAgKqXQAzr622KuXYZ25C9WRH3a",
-      "preset": "MASTER_MP3",
-      "progress_percent": 100,
-      "status": "CREATED",
-      "timeline": {},
-      "updated_date": "2021-07-12T16:46:26-04:00"
-    }
-  ]
+  "$ref": "#/components/schemas/AudioRendersListResultsExample"
 }
 ```
 
@@ -417,60 +200,7 @@ curl https://example.com/v2/ai/audio/renders \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
-    "audio_renders": [
-      {
-        "filename": "My Project.mp3",
-        "preset": "MASTER_MP3",
-        "timeline": {
-          "spans": [
-            {
-              "id": 111,
-              "instrument_groups": [
-                {
-                  "instrument_group": "roomy_kit",
-                  "statuses": [
-                    {
-                      "beat": 12,
-                      "status": "active"
-                    }
-                  ]
-                }
-              ],
-              "regions": [
-                {
-                  "beat": 12,
-                  "descriptor": "cinematic_minimal_tense",
-                  "end_type": {
-                    "beat": 24,
-                    "event": "ending",
-                    "type": "ringout"
-                  },
-                  "id": 222,
-                  "key": {
-                    "tonic_note": "c",
-                    "tonic_quality": "major"
-                  },
-                  "region": "music"
-                }
-              ],
-              "span_type": "metered",
-              "tempo": 76,
-              "tempo_changes": [
-                {
-                  "tempo": 86,
-                  "time": 5
-                }
-              ],
-              "time": 5
-            },
-            {
-              "span_type": "unmetered",
-              "time": 20
-            }
-          ]
-        }
-      }
-    ]
+    "$ref": "#/components/schemas/CreateAudioRendersRequestExample"
   }'
 ```
 
@@ -482,60 +212,7 @@ This endpoint creates rendered audio from timeline data. It returns a render ID 
 
 ```json
 {
-  "audio_renders": [
-    {
-      "filename": "My Project.mp3",
-      "preset": "MASTER_MP3",
-      "timeline": {
-        "spans": [
-          {
-            "id": 111,
-            "instrument_groups": [
-              {
-                "instrument_group": "roomy_kit",
-                "statuses": [
-                  {
-                    "beat": 12,
-                    "status": "active"
-                  }
-                ]
-              }
-            ],
-            "regions": [
-              {
-                "beat": 12,
-                "descriptor": "cinematic_minimal_tense",
-                "end_type": {
-                  "beat": 24,
-                  "event": "ending",
-                  "type": "ringout"
-                },
-                "id": 222,
-                "key": {
-                  "tonic_note": "c",
-                  "tonic_quality": "major"
-                },
-                "region": "music"
-              }
-            ],
-            "span_type": "metered",
-            "tempo": 76,
-            "tempo_changes": [
-              {
-                "tempo": 86,
-                "time": 5
-              }
-            ],
-            "time": 5
-          },
-          {
-            "span_type": "unmetered",
-            "time": 20
-          }
-        ]
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/CreateAudioRendersRequestExample"
 }
 ```
 
@@ -620,89 +297,7 @@ This endpoint lists information about one or more audio tracks, including the de
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2016-04-12",
-      "artists": [
-        {
-          "name": "Fin Productions"
-        }
-      ],
-      "assets": {
-        "clean_audio": {
-          "file_size": 30760372
-        },
-        "preview_mp3": {
-          "file_size": 3846606,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/preview/preview.mp3"
-        },
-        "preview_ogg": {
-          "file_size": 4402608,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/preview/preview.ogg"
-        },
-        "waveform": {
-          "file_size": 19822,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/waveform/waveform.png"
-        }
-      },
-      "bpm": 100,
-      "contributor": {
-        "id": "2847971"
-      },
-      "description": "Pulsing and feel-good, featuring slick electric guitar, synthesizer, bass, electronic drum pads and drums that create a positive, celebratory mood.",
-      "duration": 160,
-      "genres": [
-        "Dance/Electronic",
-        "Electro Pop",
-        "Pop/Rock"
-      ],
-      "id": "434750",
-      "instruments": [
-        "Bass",
-        "Drums",
-        "Electric guitar",
-        "Pads",
-        "Percussion",
-        "Synthesizer"
-      ],
-      "is_adult": false,
-      "is_instrumental": true,
-      "isrc": "",
-      "keywords": [
-        "breezy",
-        "celebration",
-        "festive",
-        "good times",
-        "hopeful",
-        "optimistic",
-        "party",
-        "positive",
-        "reflective"
-      ],
-      "language": "en",
-      "lyrics": "",
-      "media_type": "audio",
-      "moods": [
-        "Bright",
-        "Confident",
-        "Fun",
-        "Happy",
-        "Inspiring",
-        "Optimistic",
-        "Playful",
-        "Sophisticated",
-        "Stylish",
-        "Uplifting"
-      ],
-      "published_time": "2016-04-12T17:45:29-04:00",
-      "recording_version": "",
-      "releases": [],
-      "similar_artists": [],
-      "title": "Fresh Love",
-      "updated_time": "2016-08-18T18:03:11-04:00",
-      "vocal_description": ""
-    }
-  ]
+  "$ref": "#/components/schemas/AudioDataListExample"
 }
 ```
 
@@ -757,20 +352,7 @@ This endpoint lists your collections of audio tracks and their basic attributes.
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "id": "297886754"
-      },
-      "id": "293542904",
-      "items_updated_time": "2021-05-20T16:15:22-04:00",
-      "name": "My collection",
-      "total_item_count": 85
-    }
-  ],
-  "page": 1,
-  "per_page": 100,
-  "total_count": 1
+  "$ref": "#/components/schemas/CollectionDataListExample"
 }
 ```
 
@@ -830,7 +412,7 @@ This endpoint creates one or more collections (soundboxes). To add tracks, use `
 
 ```json
 {
-  "id": "48433105"
+  "$ref": "#/components/schemas/CollectionCreateResponseExample"
 }
 ```
 
@@ -885,13 +467,7 @@ This endpoint gets more detailed information about a collection, including the n
 
 ```json
 {
-  "cover_item": {
-    "id": "297886754"
-  },
-  "id": "293542904",
-  "items_updated_time": "2021-05-20T16:15:22-04:00",
-  "name": "My collection",
-  "total_item_count": 85
+  "$ref": "#/components/schemas/CollectionExample"
 }
 ```
 
@@ -1200,12 +776,7 @@ This endpoint returns a list of all audio genres.
 
 ```json
 {
-  "data": [
-    "Rock",
-    "Pop > Singer-Songwriter",
-    "Pop > Synth Pop",
-    "Production / Film Scores"
-  ]
+  "$ref": "#/components/schemas/GenreListExample"
 }
 ```
 
@@ -1248,13 +819,7 @@ This endpoint returns a list of all audio instruments.
 
 ```json
 {
-  "data": [
-    "Orchestra",
-    "Organ",
-    "Oud",
-    "Pads",
-    "Electric Guitar"
-  ]
+  "$ref": "#/components/schemas/InstrumentListExample"
 }
 ```
 
@@ -1369,15 +934,7 @@ curl https://example.com/v2/audio/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "audio": [
-      {
-        "audio_id": "591623",
-        "license": "audio_platform",
-        "metadata": {
-          "customer_id": "12345"
-        }
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseAudioRequestExample"
   }'
 ```
 
@@ -1389,15 +946,7 @@ This endpoint gets licenses for one or more tracks. The download links in the re
 
 ```json
 {
-  "audio": [
-    {
-      "audio_id": "591623",
-      "license": "audio_platform",
-      "metadata": {
-        "customer_id": "12345"
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseAudioRequestExample"
 }
 ```
 
@@ -1427,16 +976,7 @@ This endpoint gets licenses for one or more tracks. The download links in the re
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "audio_id": "123456789",
-      "download": {
-        "url": "http://download2.dev.shutterstock.com/gatekeeper/abc/original.wav"
-      },
-      "license_id": "abcdef123456789ghijklmn"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseAudioResultDataListExample"
 }
 ```
 
@@ -1530,12 +1070,7 @@ This endpoint returns a list of all audio moods.
 
 ```json
 {
-  "data": [
-    "Action / Sports",
-    "Adventure / Discovery",
-    "Aerobics / Workout",
-    "Aggressive"
-  ]
+  "$ref": "#/components/schemas/MoodListExample"
 }
 ```
 
@@ -1616,92 +1151,7 @@ This endpoint searches for tracks. If you specify more than one search parameter
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2016-08-16",
-      "artists": [
-        {
-          "name": "Klimenko Music"
-        }
-      ],
-      "assets": {
-        "clean_audio": {
-          "file_size": 35188408
-        },
-        "preview_mp3": {
-          "file_size": 4400203,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3"
-        },
-        "preview_ogg": {
-          "file_size": 4453197,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg"
-        },
-        "waveform": {
-          "file_size": 18778,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png"
-        }
-      },
-      "bpm": 110,
-      "contributor": {
-        "id": "2847971"
-      },
-      "description": "Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.",
-      "duration": 183,
-      "genres": [
-        "Dance/Electronic",
-        "Electro Pop",
-        "Pop/Rock"
-      ],
-      "id": "442583",
-      "instruments": [
-        "Piano",
-        "Synth bass",
-        "Synth drums",
-        "Synthesizer"
-      ],
-      "is_adult": false,
-      "is_instrumental": true,
-      "isrc": "",
-      "keywords": [
-        "celebratory",
-        "chic",
-        "euphoric",
-        "good times",
-        "hip",
-        "optimistic",
-        "party",
-        "soaring",
-        "upbeat"
-      ],
-      "language": "en",
-      "lyrics": "",
-      "media_type": "audio",
-      "moods": [
-        "Bright",
-        "Confident",
-        "Fun",
-        "Happy",
-        "Inspiring",
-        "Optimistic",
-        "Playful",
-        "Sophisticated",
-        "Stylish",
-        "Uplifting"
-      ],
-      "published_time": "2016-08-16T14:30:03-04:00",
-      "recording_version": "",
-      "releases": [],
-      "similar_artists": [],
-      "title": "Another Tomorrow",
-      "updated_time": "2016-08-18T17:59:33-04:00",
-      "url": "",
-      "vocal_description": ""
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123455
+  "$ref": "#/components/schemas/AudioSearchResultsExample"
 }
 ```
 
@@ -1756,84 +1206,7 @@ This endpoint shows information about a track, including its genres, instruments
 
 ```json
 {
-  "added_date": "2016-08-16",
-  "artists": [
-    {
-      "name": "Klimenko Music"
-    }
-  ],
-  "assets": {
-    "clean_audio": {
-      "file_size": 35188408
-    },
-    "preview_mp3": {
-      "file_size": 4400203,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3"
-    },
-    "preview_ogg": {
-      "file_size": 4453197,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg"
-    },
-    "waveform": {
-      "file_size": 18778,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png"
-    }
-  },
-  "bpm": 110,
-  "contributor": {
-    "id": "2847971"
-  },
-  "description": "Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.",
-  "duration": 183,
-  "genres": [
-    "Dance/Electronic",
-    "Electro Pop",
-    "Pop/Rock"
-  ],
-  "id": "442583",
-  "instruments": [
-    "Piano",
-    "Synth bass",
-    "Synth drums",
-    "Synthesizer"
-  ],
-  "is_adult": false,
-  "is_instrumental": true,
-  "isrc": "",
-  "keywords": [
-    "celebratory",
-    "chic",
-    "euphoric",
-    "good times",
-    "hip",
-    "optimistic",
-    "party",
-    "soaring",
-    "upbeat"
-  ],
-  "language": "en",
-  "lyrics": "",
-  "media_type": "audio",
-  "moods": [
-    "Bright",
-    "Confident",
-    "Fun",
-    "Happy",
-    "Inspiring",
-    "Optimistic",
-    "Playful",
-    "Sophisticated",
-    "Stylish",
-    "Uplifting"
-  ],
-  "published_time": "2016-08-16T14:30:03-04:00",
-  "recording_version": "",
-  "releases": [],
-  "similar_artists": [],
-  "title": "Another Tomorrow",
-  "updated_time": "2016-08-18T17:59:33-04:00",
-  "url": "",
-  "vocal_description": ""
+  "$ref": "#/components/schemas/AudioExample"
 }
 ```
 
@@ -2032,68 +1405,7 @@ This endpoint runs up to 5 image searches in a single request and returns up to 
 
 ```json
 {
-  "results": [
-    {
-      "data": [
-        {
-          "aspect": 1.5,
-          "assets": {
-            "huge_thumb": {
-              "height": 260,
-              "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-              "width": 390
-            },
-            "large_thumb": {
-              "height": 100,
-              "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 150
-            },
-            "preview": {
-              "height": 300,
-              "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 450
-            },
-            "preview_1000": {
-              "height": 667,
-              "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-              "width": 1000
-            },
-            "preview_1500": {
-              "height": 1000,
-              "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 1500
-            },
-            "small_thumb": {
-              "height": 67,
-              "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 100
-            }
-          },
-          "contributor": {
-            "id": "250738318"
-          },
-          "description": "cropped image of woman gardening",
-          "has_model_release": true,
-          "id": "1572478477",
-          "image_type": "photo",
-          "media_type": "image"
-        }
-      ],
-      "page": 1,
-      "per_page": 5,
-      "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-      "spellcheck_info": {},
-      "total_count": 45
-    },
-    {
-      "data": [],
-      "page": 1,
-      "per_page": 5,
-      "search_id": "749090bb-2967-4a20-b22e-c800dc845e11",
-      "spellcheck_info": {},
-      "total_count": 0
-    }
-  ]
+  "$ref": "#/components/schemas/BulkImageSearchResultsExample"
 }
 ```
 
@@ -2148,54 +1460,7 @@ This endpoint lists information about one or more images, including the availabl
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/ImageDataListExample"
 }
 ```
 
@@ -2288,19 +1553,7 @@ This endpoint lists the categories (Shutterstock-assigned genres) that images ca
 
 ```json
 {
-  "data": [
-    {
-      "id": "1",
-      "name": "Animals/Wildlife"
-    },
-    {
-      "id": "11",
-      "name": "The Arts"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 13
+  "$ref": "#/components/schemas/CategoryDataListExample"
 }
 ```
 
@@ -2355,20 +1608,7 @@ This endpoint lists your collections of images and their basic attributes.
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "id": "297886754"
-      },
-      "id": "293542904",
-      "items_updated_time": "2021-05-20T16:15:22-04:00",
-      "name": "My collection",
-      "total_item_count": 85
-    }
-  ],
-  "page": 1,
-  "per_page": 100,
-  "total_count": 1
+  "$ref": "#/components/schemas/CollectionDataListExample"
 }
 ```
 
@@ -2399,7 +1639,7 @@ curl https://example.com/v2/images/collections \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "name": "Test Collection 19cf"
+    "$ref": "#/components/schemas/CollectionCreateRequestExample"
   }'
 ```
 
@@ -2411,7 +1651,7 @@ This endpoint creates one or more image collections (lightboxes). To add images 
 
 ```json
 {
-  "name": "Test Collection 19cf"
+  "$ref": "#/components/schemas/CollectionCreateRequestExample"
 }
 ```
 
@@ -2428,7 +1668,7 @@ This endpoint creates one or more image collections (lightboxes). To add images 
 
 ```json
 {
-  "id": "48433105"
+  "$ref": "#/components/schemas/CollectionCreateResponseExample"
 }
 ```
 
@@ -2487,22 +1727,7 @@ This endpoint lists featured collections of specific types and a name and cover 
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-      },
-      "created_time": "2021-07-07T13:10:24.000Z",
-      "id": "19853",
-      "items_updated_time": "2021-07-08T12:33:37.000Z",
-      "name": "Exercise & Fitness",
-      "total_item_count": 82,
-      "updated_time": "2021-07-07T13:10:24.000Z"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/FeaturedCollectionDataListExample"
 }
 ```
 
@@ -2558,15 +1783,7 @@ This endpoint gets more detailed information about a featured collection, includ
 
 ```json
 {
-  "cover_item": {
-    "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-  },
-  "created_time": "2021-07-07T13:10:24.000Z",
-  "id": "19853",
-  "items_updated_time": "2021-07-08T12:33:37.000Z",
-  "name": "Exercise & Fitness",
-  "total_item_count": 82,
-  "updated_time": "2021-07-07T13:10:24.000Z"
+  "$ref": "#/components/schemas/FeaturedCollectionExample"
 }
 ```
 
@@ -2615,21 +1832,7 @@ This endpoint lists the IDs of images in a featured collection and the date that
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2021-07-08T12:33:37.000Z",
-      "id": "1690105108",
-      "media_type": "image"
-    },
-    {
-      "added_time": "2021-07-08T12:31:43.000Z",
-      "id": "1468703072",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 82
+  "$ref": "#/components/schemas/CollectionItemDataListExample"
 }
 ```
 
@@ -2685,13 +1888,7 @@ This endpoint gets more detailed information about a collection, including its c
 
 ```json
 {
-  "cover_item": {
-    "id": "297886754"
-  },
-  "id": "293542904",
-  "items_updated_time": "2021-05-20T16:15:22-04:00",
-  "name": "My collection",
-  "total_item_count": 85
+  "$ref": "#/components/schemas/CollectionExample"
 }
 ```
 
@@ -2722,7 +1919,7 @@ curl https://example.com/v2/images/collections/126351027 \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "name": "My collection with a new name"
+    "$ref": "#/components/schemas/CollectionUpdateRequestExample"
   }'
 ```
 
@@ -2734,7 +1931,7 @@ This endpoint sets a new name for an image collection.
 
 ```json
 {
-  "name": "My collection with a new name"
+  "$ref": "#/components/schemas/CollectionUpdateRequestExample"
 }
 ```
 
@@ -2837,21 +2034,7 @@ This endpoint lists the IDs of images in a collection and the date that each was
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2021-07-08T12:33:37.000Z",
-      "id": "1690105108",
-      "media_type": "image"
-    },
-    {
-      "added_time": "2021-07-08T12:31:43.000Z",
-      "id": "1468703072",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 82
+  "$ref": "#/components/schemas/CollectionItemDataListExample"
 }
 ```
 
@@ -3014,33 +2197,7 @@ This endpoint lists existing licenses.
 
 ```json
 {
-  "data": [
-    {
-      "download_time": "2021-07-15T15:46:34.000Z",
-      "id": "e1eba3833793e77188d22caae8bac9f2cd",
-      "image": {
-        "format": {
-          "size": "original"
-        },
-        "id": "9763363ao"
-      },
-      "is_downloadable": false,
-      "license": "premier_editorial_all_digital",
-      "metadata": {
-        "client": "Company A",
-        "job": "Important project",
-        "other": "Important media",
-        "purchase_order": "123456"
-      },
-      "subscription_id": "s12345678",
-      "user": {
-        "username": "editorial_test_account_002"
-      }
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 2890
+  "$ref": "#/components/schemas/DownloadHistoryDataListExample"
 }
 ```
 
@@ -3071,23 +2228,7 @@ curl https://example.com/v2/images/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "images": [
-      {
-        "editorial_acknowledgement": true,
-        "format": "jpg",
-        "image_id": "123456789",
-        "metadata": {
-          "customer_id": "12345",
-          "geo_location": "US",
-          "number_viewed": "15",
-          "search_term": "dog"
-        },
-        "price": 12.34,
-        "show_modal": true,
-        "size": "small",
-        "subscription_id": "s12345678"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseImageRequestExample"
   }'
 ```
 
@@ -3099,23 +2240,7 @@ This endpoint gets licenses for one or more images. You must specify the image I
 
 ```json
 {
-  "images": [
-    {
-      "editorial_acknowledgement": true,
-      "format": "jpg",
-      "image_id": "123456789",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "price": 12.34,
-      "show_modal": true,
-      "size": "small",
-      "subscription_id": "s12345678"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseImageRequestExample"
 }
 ```
 
@@ -3150,18 +2275,7 @@ This endpoint gets licenses for one or more images. You must specify the image I
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
-      },
-      "image_id": "59656357"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 23
+  "$ref": "#/components/schemas/LicenseImageResultDataListExample"
 }
 ```
 
@@ -3192,7 +2306,7 @@ curl https://example.com/v2/images/licenses/e123/downloads \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "size": "small"
+    "$ref": "#/components/schemas/RedownloadImageExample"
   }'
 ```
 
@@ -3204,7 +2318,7 @@ This endpoint redownloads images that you have already received a license for. T
 
 ```json
 {
-  "size": "small"
+  "$ref": "#/components/schemas/RedownloadImageExample"
 }
 ```
 
@@ -3235,7 +2349,7 @@ This endpoint redownloads images that you have already received a license for. T
 
 ```json
 {
-  "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
+  "$ref": "#/components/schemas/UrlExample"
 }
 ```
 
@@ -3283,20 +2397,7 @@ This endpoint returns images that customers put in the same collection as the sp
 
 ```json
 {
-  "data": [
-    {
-      "id": "123456789"
-    },
-    {
-      "id": "99379946"
-    },
-    {
-      "id": "133918412"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 12
+  "$ref": "#/components/schemas/RecommendationDataListExample"
 }
 ```
 
@@ -3493,56 +2594,7 @@ This endpoint searches for images. If you specify more than one search parameter
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "spellcheck_info": {},
-  "total_count": 45
+  "$ref": "#/components/schemas/ImageSearchResultsExample"
 }
 ```
 
@@ -3589,18 +2641,7 @@ This endpoint provides autocomplete suggestions for partial search terms.
 
 ```json
 {
-  "data": [
-    "cat scan",
-    "cats and dogs",
-    "cats playing",
-    "catsuit",
-    "cat silhouette",
-    "catskills",
-    "cats eyes",
-    "cat sitting",
-    "cat sleeping",
-    "cats eye"
-  ]
+  "$ref": "#/components/schemas/SuggestionsExample"
 }
 ```
 
@@ -3631,7 +2672,7 @@ curl https://example.com/v2/images/search/suggestions \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
-    "text": "Planting flowers is a great way to make springtime more beautiful."
+    "$ref": "#/components/schemas/SearchEntitiesRequestExample"
   }'
 ```
 
@@ -3643,7 +2684,7 @@ This endpoint returns up to 10 important keywords from a block of plain text.
 
 ```json
 {
-  "text": "Planting flowers is a great way to make springtime more beautiful."
+  "$ref": "#/components/schemas/SearchEntitiesRequestExample"
 }
 ```
 
@@ -3727,19 +2768,7 @@ This endpoint lists images that have been updated in the specified time period t
 
 ```json
 {
-  "data": [
-    {
-      "id": "123456789",
-      "updated_time": "2020-05-29T12:10:22-05:00",
-      "updates": [
-        "addition",
-        "edit"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 13
+  "$ref": "#/components/schemas/UpdatedMediaDataListExample"
 }
 ```
 
@@ -3834,48 +2863,7 @@ This endpoint shows information about an image, including a URL to a preview ima
 
 ```json
 {
-  "aspect": 1.5,
-  "assets": {
-    "huge_thumb": {
-      "height": 260,
-      "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-      "width": 390
-    },
-    "large_thumb": {
-      "height": 100,
-      "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 150
-    },
-    "preview": {
-      "height": 300,
-      "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 450
-    },
-    "preview_1000": {
-      "height": 667,
-      "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-      "width": 1000
-    },
-    "preview_1500": {
-      "height": 1000,
-      "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 1500
-    },
-    "small_thumb": {
-      "height": 67,
-      "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 100
-    }
-  },
-  "contributor": {
-    "id": "250738318"
-  },
-  "description": "cropped image of woman gardening",
-  "has_model_release": true,
-  "id": "1572478477",
-  "image_type": "photo",
-  "media_type": "image",
-  "original_filename": "123.jpg"
+  "$ref": "#/components/schemas/ImageExample"
 }
 ```
 
@@ -3974,56 +2962,7 @@ This endpoint returns images that are visually similar to an image that you spec
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "spellcheck_info": {},
-  "total_count": 45
+  "$ref": "#/components/schemas/ImageSearchResultsExample"
 }
 ```
 
@@ -4081,48 +3020,7 @@ This endpoint returns a list of catalog collections.
 
 ```json
 {
-  "data": [
-    {
-      "cover_asset": {
-        "asset": {
-          "id": "1690105108",
-          "name": "Young couple playing tennis at the court",
-          "type": "image"
-        },
-        "created_time": "2021-06-10T13:26:09-04:00",
-        "id": "123"
-      },
-      "created_time": "2021-05-20T16:15:22-04:00",
-      "id": "126351028",
-      "name": "My collection",
-      "role_assignments": {
-        "collection_id": "126351028",
-        "roles": {
-          "editors": [
-            {
-              "email": "userTwo@org.com",
-              "id": "987",
-              "type": "USER"
-            }
-          ],
-          "owners": [
-            {
-              "email": "userOne@org.com",
-              "id": "321",
-              "type": "USER"
-            }
-          ],
-          "viewers": []
-        }
-      },
-      "total_item_count": 2,
-      "updated_time": "2021-06-10T13:26:09-04:00",
-      "visibility": "public"
-    }
-  ],
-  "page": 1,
-  "per_page": 20,
-  "total_count": 1
+  "$ref": "#/components/schemas/CatalogCollectionDataListExample"
 }
 ```
 
@@ -4151,16 +3049,7 @@ curl https://example.com/v2/catalog/collections \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "items": [
-      {
-        "asset": {
-          "id": "1690105108",
-          "type": "image"
-        }
-      }
-    ],
-    "name": "New Collection",
-    "visibility": "public"
+    "$ref": "#/components/schemas/CreateCatalogCollectionExample"
   }'
 ```
 
@@ -4172,16 +3061,7 @@ This endpoint creates a catalog collection and optionally adds assets. To add as
 
 ```json
 {
-  "items": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "type": "image"
-      }
-    }
-  ],
-  "name": "New Collection",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CreateCatalogCollectionExample"
 }
 ```
 
@@ -4207,41 +3087,7 @@ This endpoint creates a catalog collection and optionally adds assets. To add as
 
 ```json
 {
-  "cover_asset": {
-    "asset": {
-      "id": "1690105108",
-      "name": "Young couple playing tennis at the court",
-      "type": "image"
-    },
-    "created_time": "2021-06-10T13:26:09-04:00",
-    "id": "123"
-  },
-  "created_time": "2021-05-20T16:15:22-04:00",
-  "id": "126351028",
-  "name": "My collection",
-  "role_assignments": {
-    "collection_id": "126351028",
-    "roles": {
-      "editors": [
-        {
-          "email": "userTwo@org.com",
-          "id": "987",
-          "type": "USER"
-        }
-      ],
-      "owners": [
-        {
-          "email": "userOne@org.com",
-          "id": "321",
-          "type": "USER"
-        }
-      ],
-      "viewers": []
-    }
-  },
-  "total_item_count": 2,
-  "updated_time": "2021-06-10T13:26:09-04:00",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CatalogCollectionExample"
 }
 ```
 
@@ -4303,11 +3149,7 @@ curl https://example.com/v2/catalog/collections/126351028 \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "cover_asset": {
-      "id": "123"
-    },
-    "name": "My Collection",
-    "visibility": "public"
+    "$ref": "#/components/schemas/UpdateCatalogCollectionExample"
   }'
 ```
 
@@ -4319,11 +3161,7 @@ This endpoint updates the metadata of a catalog collection.
 
 ```json
 {
-  "cover_asset": {
-    "id": "123"
-  },
-  "name": "My Collection",
-  "visibility": "public"
+  "$ref": "#/components/schemas/UpdateCatalogCollectionExample"
 }
 ```
 
@@ -4351,41 +3189,7 @@ This endpoint updates the metadata of a catalog collection.
 
 ```json
 {
-  "cover_asset": {
-    "asset": {
-      "id": "1690105108",
-      "name": "Young couple playing tennis at the court",
-      "type": "image"
-    },
-    "created_time": "2021-06-10T13:26:09-04:00",
-    "id": "123"
-  },
-  "created_time": "2021-05-20T16:15:22-04:00",
-  "id": "126351028",
-  "name": "My collection",
-  "role_assignments": {
-    "collection_id": "126351028",
-    "roles": {
-      "editors": [
-        {
-          "email": "userTwo@org.com",
-          "id": "987",
-          "type": "USER"
-        }
-      ],
-      "owners": [
-        {
-          "email": "userOne@org.com",
-          "id": "321",
-          "type": "USER"
-        }
-      ],
-      "viewers": []
-    }
-  },
-  "total_item_count": 2,
-  "updated_time": "2021-06-10T13:26:09-04:00",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CatalogCollectionExample"
 }
 ```
 
@@ -4413,14 +3217,7 @@ curl https://example.com/v2/catalog/collections/126351028/items \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "items": [
-      {
-        "asset": {
-          "id": "1690105108",
-          "type": "image"
-        }
-      }
-    ]
+    "$ref": "#/components/schemas/CreateCatalogCollectionItemsExample"
   }'
 ```
 
@@ -4432,14 +3229,7 @@ This endpoint adds assets to a catalog collection. It also automatically adds th
 
 ```json
 {
-  "items": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "type": "image"
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/CreateCatalogCollectionItemsExample"
 }
 ```
 
@@ -4457,41 +3247,7 @@ This endpoint adds assets to a catalog collection. It also automatically adds th
 
 ```json
 {
-  "cover_asset": {
-    "asset": {
-      "id": "1690105108",
-      "name": "Young couple playing tennis at the court",
-      "type": "image"
-    },
-    "created_time": "2021-06-10T13:26:09-04:00",
-    "id": "123"
-  },
-  "created_time": "2021-05-20T16:15:22-04:00",
-  "id": "126351028",
-  "name": "My collection",
-  "role_assignments": {
-    "collection_id": "126351028",
-    "roles": {
-      "editors": [
-        {
-          "email": "userTwo@org.com",
-          "id": "987",
-          "type": "USER"
-        }
-      ],
-      "owners": [
-        {
-          "email": "userOne@org.com",
-          "id": "321",
-          "type": "USER"
-        }
-      ],
-      "viewers": []
-    }
-  },
-  "total_item_count": 2,
-  "updated_time": "2021-06-10T13:26:09-04:00",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CatalogCollectionExample"
 }
 ```
 
@@ -4519,11 +3275,7 @@ curl https://example.com/v2/catalog/collections/126351028/items \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "items": [
-      {
-        "id": "123"
-      }
-    ]
+    "$ref": "#/components/schemas/RemoveCatalogCollectionItemsExample"
   }'
 ```
 
@@ -4535,11 +3287,7 @@ This endpoint removes assets from a catalog collection. It does not remove the a
 
 ```json
 {
-  "items": [
-    {
-      "id": "123"
-    }
-  ]
+  "$ref": "#/components/schemas/RemoveCatalogCollectionItemsExample"
 }
 ```
 
@@ -4557,41 +3305,7 @@ This endpoint removes assets from a catalog collection. It does not remove the a
 
 ```json
 {
-  "cover_asset": {
-    "asset": {
-      "id": "1690105108",
-      "name": "Young couple playing tennis at the court",
-      "type": "image"
-    },
-    "created_time": "2021-06-10T13:26:09-04:00",
-    "id": "123"
-  },
-  "created_time": "2021-05-20T16:15:22-04:00",
-  "id": "126351028",
-  "name": "My collection",
-  "role_assignments": {
-    "collection_id": "126351028",
-    "roles": {
-      "editors": [
-        {
-          "email": "userTwo@org.com",
-          "id": "987",
-          "type": "USER"
-        }
-      ],
-      "owners": [
-        {
-          "email": "userOne@org.com",
-          "id": "321",
-          "type": "USER"
-        }
-      ],
-      "viewers": []
-    }
-  },
-  "total_item_count": 2,
-  "updated_time": "2021-06-10T13:26:09-04:00",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CatalogCollectionExample"
 }
 ```
 
@@ -4652,23 +3366,7 @@ This endpoint searches for assets in the account's catalog. If you specify more 
 
 ```json
 {
-  "data": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "name": "Young couple playing tennis at the court",
-        "type": "image"
-      },
-      "collection_ids": [
-        "126351028"
-      ],
-      "created_time": "2021-06-10T13:26:09-04:00",
-      "id": "123"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 82
+  "$ref": "#/components/schemas/CatalogCollectionItemDataListExample"
 }
 ```
 
@@ -4716,46 +3414,7 @@ This endpoint lists information about one or more contributors, including contri
 
 ```json
 {
-  "data": [
-    {
-      "about": "John Doe's photographs",
-      "contributor_type": [
-        "photographer"
-      ],
-      "display_name": "John Doe",
-      "equipment": [
-        "Nikon",
-        "Fuji"
-      ],
-      "id": "12345678",
-      "location": "US",
-      "portfolio_url": "https://www.shutterstock.com/g/jdoe",
-      "social_media": {
-        "facebook": "http://example.com/jdoe",
-        "google_plus": "http://example.com/jdoe",
-        "linkedin": "http://example.com/jdoe",
-        "pinterest": "http://example.com/jdoe",
-        "tumblr": "http://example.com/jdoe",
-        "twitter": "http://example.com/jdoe"
-      },
-      "styles": [
-        "landscape",
-        "nature",
-        "footage_travel"
-      ],
-      "subjects": [
-        "animals",
-        "landmarks",
-        "nature",
-        "objects",
-        "recreation"
-      ],
-      "website": "http://example.com/profiles/jdoe"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 15
+  "$ref": "#/components/schemas/ContributorProfileDataListExample"
 }
 ```
 
@@ -4801,39 +3460,7 @@ This endpoint shows information about a single contributor, including contributo
 
 ```json
 {
-  "about": "John Doe's photographs",
-  "contributor_type": [
-    "photographer"
-  ],
-  "display_name": "John Doe",
-  "equipment": [
-    "Nikon",
-    "Fuji"
-  ],
-  "id": "12345678",
-  "location": "US",
-  "portfolio_url": "https://www.shutterstock.com/g/jdoe",
-  "social_media": {
-    "facebook": "http://example.com/jdoe",
-    "google_plus": "http://example.com/jdoe",
-    "linkedin": "http://example.com/jdoe",
-    "pinterest": "http://example.com/jdoe",
-    "tumblr": "http://example.com/jdoe",
-    "twitter": "http://example.com/jdoe"
-  },
-  "styles": [
-    "landscape",
-    "nature",
-    "footage_travel"
-  ],
-  "subjects": [
-    "animals",
-    "landmarks",
-    "nature",
-    "objects",
-    "recreation"
-  ],
-  "website": "http://example.com/profiles/jdoe"
+  "$ref": "#/components/schemas/ContributorProfileExample"
 }
 ```
 
@@ -4888,20 +3515,7 @@ This endpoint lists collections based on contributor ID.
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "id": "297886754"
-      },
-      "id": "293542904",
-      "items_updated_time": "2021-05-20T16:15:22-04:00",
-      "name": "My collection",
-      "total_item_count": 85
-    }
-  ],
-  "page": 1,
-  "per_page": 100,
-  "total_count": 1
+  "$ref": "#/components/schemas/CollectionDataListExample"
 }
 ```
 
@@ -4949,13 +3563,7 @@ This endpoint gets more detailed information about a contributor's collection, i
 
 ```json
 {
-  "cover_item": {
-    "id": "297886754"
-  },
-  "id": "293542904",
-  "items_updated_time": "2021-05-20T16:15:22-04:00",
-  "name": "My collection",
-  "total_item_count": 85
+  "$ref": "#/components/schemas/CollectionExample"
 }
 ```
 
@@ -5063,7 +3671,7 @@ curl https://example.com/v2/cv/images \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
-    "base64_image": "R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu"
+    "$ref": "#/components/schemas/ImageCreateRequestExample"
   }'
 ```
 
@@ -5075,7 +3683,7 @@ This endpoint uploads an image for reverse image or video search. Images must be
 
 ```json
 {
-  "base64_image": "R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu"
+  "$ref": "#/components/schemas/ImageCreateRequestExample"
 }
 ```
 
@@ -5092,7 +3700,7 @@ This endpoint uploads an image for reverse image or video search. Images must be
 
 ```json
 {
-  "upload_id": "Udb14e1c3540bdbf82b4b3fe12d3a44f2"
+  "$ref": "#/components/schemas/ComputerVisionImageCreateResponseExample"
 }
 ```
 
@@ -5140,19 +3748,7 @@ This endpoint returns a list of suggested keywords for a media item that you spe
 
 ```json
 {
-  "data": [
-    "nature",
-    "wildlife",
-    "animal",
-    "cute",
-    "bamboo",
-    "panda",
-    "china",
-    "wild",
-    "endangered",
-    "black",
-    "bear"
-  ]
+  "$ref": "#/components/schemas/KeywordDataListExample"
 }
 ```
 
@@ -5256,56 +3852,7 @@ This endpoint returns images that are visually similar to an image that you spec
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "spellcheck_info": {},
-  "total_count": 45
+  "$ref": "#/components/schemas/ImageSearchResultsExample"
 }
 ```
 
@@ -5408,44 +3955,7 @@ This endpoint returns videos that are visually similar to an image that you spec
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        }
-      },
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "id": "1033184651",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123
+  "$ref": "#/components/schemas/VideoSearchResultsExample"
 }
 ```
 
@@ -5476,7 +3986,7 @@ curl https://example.com/v2/images \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
-    "base64_image": "R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu"
+    "$ref": "#/components/schemas/ImageCreateRequestExample"
   }'
 ```
 
@@ -5492,7 +4002,7 @@ Deprecated; use `POST /v2/cv/images` instead. This endpoint uploads an image for
 
 ```json
 {
-  "base64_image": "R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu"
+  "$ref": "#/components/schemas/ImageCreateRequestExample"
 }
 ```
 
@@ -5509,7 +4019,7 @@ Deprecated; use `POST /v2/cv/images` instead. This endpoint uploads an image for
 
 ```json
 {
-  "id": "Udb14e1c3540bdbf82b4b3fe12d3a44f2"
+  "$ref": "#/components/schemas/ImageCreateResponseExample"
 }
 ```
 
@@ -5556,17 +4066,7 @@ Deprecated; use `GET /v2/editorial/images/categories` instead. This endpoint lis
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialCategoryResultsExample"
 }
 ```
 
@@ -5606,20 +4106,7 @@ This endpoint lists the categories that editorial images can belong to, which ar
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    },
-    {
-      "name": "Film Stills"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialImageCategoryResultsExample"
 }
 ```
 
@@ -5684,33 +4171,7 @@ This endpoint lists existing editorial image licenses.
 
 ```json
 {
-  "data": [
-    {
-      "download_time": "2021-07-15T15:46:34.000Z",
-      "id": "e1eba3833793e77188d22caae8bac9f2cd",
-      "image": {
-        "format": {
-          "size": "original"
-        },
-        "id": "9763363ao"
-      },
-      "is_downloadable": false,
-      "license": "premier_editorial_all_digital",
-      "metadata": {
-        "client": "Company A",
-        "job": "Important project",
-        "other": "Important media",
-        "purchase_order": "123456"
-      },
-      "subscription_id": "s12345678",
-      "user": {
-        "username": "editorial_test_account_002"
-      }
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 2890
+  "$ref": "#/components/schemas/DownloadHistoryDataListExample"
 }
 ```
 
@@ -5741,20 +4202,7 @@ curl https://example.com/v2/editorial/images/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "country": "USA",
-    "editorial": [
-      {
-        "editorial_id": "10687730b",
-        "license": "premier_editorial_comp",
-        "metadata": {
-          "customer_id": "12345",
-          "geo_location": "US",
-          "number_viewed": "15",
-          "search_term": "dog"
-        },
-        "size": "original"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseEditorialContentRequestExample"
   }'
 ```
 
@@ -5766,20 +4214,7 @@ This endpoint gets licenses for one or more editorial images. You must specify t
 
 ```json
 {
-  "country": "USA",
-  "editorial": [
-    {
-      "editorial_id": "10687730b",
-      "license": "premier_editorial_comp",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "size": "original"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseEditorialContentRequestExample"
 }
 ```
 
@@ -5797,18 +4232,7 @@ This endpoint gets licenses for one or more editorial images. You must specify t
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://s3-eu-west-1.amazonaws.com/api-downloads.rexfeatures.com/[random-characters].jpg?Expires=1524717323"
-      },
-      "editorial_id": "69656358"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 12
+  "$ref": "#/components/schemas/LicenseEditorialContentResultsExample"
 }
 ```
 
@@ -5855,23 +4279,7 @@ curl 'https://example.com/v2/editorial/images/livefeeds?country=USA' \
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "height": 117,
-        "id": "9763363q",
-        "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-        "width": 170
-      },
-      "created_time": "2018-07-17T12:42:03+00:00",
-      "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-      "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-      "total_item_count": 38
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 5300
+  "$ref": "#/components/schemas/EditorialImageLivefeedListExample"
 }
 ```
 
@@ -5917,16 +4325,7 @@ curl 'https://example.com/v2/editorial/images/livefeeds/2018%252F10%252F15%252FW
 
 ```json
 {
-  "cover_item": {
-    "height": 117,
-    "id": "9763363q",
-    "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-    "width": 170
-  },
-  "created_time": "2018-07-17T12:42:03+00:00",
-  "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-  "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-  "total_item_count": 38
+  "$ref": "#/components/schemas/EditorialImageLivefeedExample"
 }
 ```
 
@@ -5972,81 +4371,7 @@ curl 'https://example.com/v2/editorial/images/livefeeds/2018%252F10%252F15%252FW
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 23
+  "$ref": "#/components/schemas/EditorialImageContentDataListExample"
 }
 ```
 
@@ -6109,83 +4434,7 @@ This endpoint searches for editorial images. If you specify more than one search
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "next": "eyJ2IjoyLCJzIjoxLCJwIjpbMF19",
-  "per_page": 1,
-  "prev": "",
-  "search_id": "BaMzOAkpHIvfnuWVRFs1ag",
-  "total_count": 46845
+  "$ref": "#/components/schemas/EditorialSearchResultsExample"
 }
 ```
 
@@ -6250,73 +4499,7 @@ This endpoint lists editorial images that have been updated in the specified tim
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.481,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 675,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3263,
-          "is_licensable": true,
-          "width": 4831
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 337,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 115,
-          "url": "https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 149,
-          "url": "https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 1500,
-          "url": "https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg",
-          "width": 1040
-        },
-        "watermark_450": {
-          "height": 304,
-          "url": "https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg",
-          "width": 450
-        }
-      },
-      "byline": "ALEX HOFFORD/EPA-EFE/Shutterstock",
-      "caption": "",
-      "categories": [],
-      "commercial_status": {
-        "status": "available"
-      },
-      "date_taken": "2018-08-24",
-      "description": "Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.",
-      "id": "9804979n",
-      "keywords": [],
-      "rights": {
-        "countries": "CAN,+DEU,+GBR,+USA,-*"
-      },
-      "supplier_code": "EPA",
-      "title": "Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018",
-      "updated_time": "2019-07-15T20:04:44-04:00",
-      "updates": [
-        "addition"
-      ]
-    }
-  ],
-  "next": "eyJ2IjoxLCJzIjoxfQ==",
-  "per_page": 1,
-  "prev": ""
+  "$ref": "#/components/schemas/EditorialUpdatedResultsExample"
 }
 ```
 
@@ -6364,74 +4547,7 @@ This endpoint shows information about an editorial image, including a URL to a p
 
 ```json
 {
-  "aspect": 1.621,
-  "assets": {
-    "medium_jpg": {
-      "display_name": "Med",
-      "height": 617,
-      "is_licensable": true,
-      "width": 1000
-    },
-    "original": {
-      "display_name": "Original",
-      "height": 3693,
-      "is_licensable": true,
-      "width": 5985
-    },
-    "small_jpg": {
-      "display_name": "Small",
-      "height": 309,
-      "is_licensable": true,
-      "width": 500
-    },
-    "thumb_170": {
-      "height": 105,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-      "width": 170
-    },
-    "thumb_220": {
-      "height": 136,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-      "width": 220
-    },
-    "watermark_1500": {
-      "height": 926,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-      "width": 1500
-    },
-    "watermark_450": {
-      "height": 278,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-      "width": 450
-    }
-  },
-  "byline": "Jon Super/AP/Shutterstock",
-  "caption": "",
-  "categories": [
-    {
-      "name": "Sport"
-    }
-  ],
-  "date_taken": "2021-05-11",
-  "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-  "id": "10687730b",
-  "keywords": [
-    "england",
-    "europe",
-    "leicester city fc",
-    "manchester",
-    "manchester united fc",
-    "men's soccer",
-    "men's sports",
-    "premier league",
-    "professional soccer",
-    "soccer",
-    "sports",
-    "united kingdom",
-    "western europe",
-    "wsoc"
-  ],
-  "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
+  "$ref": "#/components/schemas/EditorialContentExample"
 }
 ```
 
@@ -6463,20 +4579,7 @@ curl https://example.com/v2/editorial/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "country": "USA",
-    "editorial": [
-      {
-        "editorial_id": "10687730b",
-        "license": "premier_editorial_comp",
-        "metadata": {
-          "customer_id": "12345",
-          "geo_location": "US",
-          "number_viewed": "15",
-          "search_term": "dog"
-        },
-        "size": "original"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseEditorialContentRequestExample"
   }'
 ```
 
@@ -6492,20 +4595,7 @@ Deprecated; use `POST /v2/editorial/images/licenses` instead to get licenses for
 
 ```json
 {
-  "country": "USA",
-  "editorial": [
-    {
-      "editorial_id": "10687730b",
-      "license": "premier_editorial_comp",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "size": "original"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseEditorialContentRequestExample"
 }
 ```
 
@@ -6583,23 +4673,7 @@ Deprecated; use `GET /v2/editorial/images/livefeeds` instead to get a list of ed
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "height": 117,
-        "id": "9763363q",
-        "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-        "width": 170
-      },
-      "created_time": "2018-07-17T12:42:03+00:00",
-      "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-      "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-      "total_item_count": 38
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 56
+  "$ref": "#/components/schemas/EditorialLivefeedListExample"
 }
 ```
 
@@ -6651,16 +4725,7 @@ Deprecated: use `GET /v2/editorial/images/livefeeds/{id}` instead to get an edit
 
 ```json
 {
-  "cover_item": {
-    "height": 117,
-    "id": "9763363q",
-    "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-    "width": 170
-  },
-  "created_time": "2018-07-17T12:42:03+00:00",
-  "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-  "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-  "total_item_count": 38
+  "$ref": "#/components/schemas/EditorialLivefeedExample"
 }
 ```
 
@@ -6712,81 +4777,7 @@ Deprecated; use `GET /v2/editorial/images/livefeeds/{id}/items` instead to get e
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 16
+  "$ref": "#/components/schemas/EditorialContentDataListExample"
 }
 ```
 
@@ -6853,83 +4844,7 @@ Deprecated; use `GET /v2/editorial/images/search` instead to search for editoria
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "next": "eyJ2IjoyLCJzIjoxLCJwIjpbMF19",
-  "per_page": 1,
-  "prev": "",
-  "search_id": "BaMzOAkpHIvfnuWVRFs1ag",
-  "total_count": 46845
+  "$ref": "#/components/schemas/EditorialSearchResultsExample"
 }
 ```
 
@@ -6998,73 +4913,7 @@ Deprecated; use `GET /v2/editorial/images/updated` instead to get recently updat
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.481,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 675,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3263,
-          "is_licensable": true,
-          "width": 4831
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 337,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 115,
-          "url": "https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 149,
-          "url": "https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 1500,
-          "url": "https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg",
-          "width": 1040
-        },
-        "watermark_450": {
-          "height": 304,
-          "url": "https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg",
-          "width": 450
-        }
-      },
-      "byline": "ALEX HOFFORD/EPA-EFE/Shutterstock",
-      "caption": "",
-      "categories": [],
-      "commercial_status": {
-        "status": "available"
-      },
-      "date_taken": "2018-08-24",
-      "description": "Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.",
-      "id": "9804979n",
-      "keywords": [],
-      "rights": {
-        "countries": "CAN,+DEU,+GBR,+USA,-*"
-      },
-      "supplier_code": "EPA",
-      "title": "Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018",
-      "updated_time": "2019-07-15T20:04:44-04:00",
-      "updates": [
-        "addition"
-      ]
-    }
-  ],
-  "next": "eyJ2IjoxLCJzIjoxfQ==",
-  "per_page": 1,
-  "prev": ""
+  "$ref": "#/components/schemas/EditorialUpdatedResultsExample"
 }
 ```
 
@@ -7115,74 +4964,7 @@ Deprecated; use `GET /v2/editorial/images/{id}` instead to show information abou
 
 ```json
 {
-  "aspect": 1.621,
-  "assets": {
-    "medium_jpg": {
-      "display_name": "Med",
-      "height": 617,
-      "is_licensable": true,
-      "width": 1000
-    },
-    "original": {
-      "display_name": "Original",
-      "height": 3693,
-      "is_licensable": true,
-      "width": 5985
-    },
-    "small_jpg": {
-      "display_name": "Small",
-      "height": 309,
-      "is_licensable": true,
-      "width": 500
-    },
-    "thumb_170": {
-      "height": 105,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-      "width": 170
-    },
-    "thumb_220": {
-      "height": 136,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-      "width": 220
-    },
-    "watermark_1500": {
-      "height": 926,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-      "width": 1500
-    },
-    "watermark_450": {
-      "height": 278,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-      "width": 450
-    }
-  },
-  "byline": "Jon Super/AP/Shutterstock",
-  "caption": "",
-  "categories": [
-    {
-      "name": "Sport"
-    }
-  ],
-  "date_taken": "2021-05-11",
-  "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-  "id": "10687730b",
-  "keywords": [
-    "england",
-    "europe",
-    "leicester city fc",
-    "manchester",
-    "manchester united fc",
-    "men's soccer",
-    "men's sports",
-    "premier league",
-    "professional soccer",
-    "soccer",
-    "sports",
-    "united kingdom",
-    "western europe",
-    "wsoc"
-  ],
-  "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
+  "$ref": "#/components/schemas/EditorialContentExample"
 }
 ```
 
@@ -7225,20 +5007,7 @@ This endpoint lists the categories that editorial videos can belong to, which ar
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    },
-    {
-      "name": "Film Stills"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialVideoCategoryResultsExample"
 }
 ```
 
@@ -7381,17 +5150,7 @@ curl https://example.com/v2/editorial/videos/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "country": "USA",
-    "editorial": [
-      {
-        "editorial_id": "10679854a",
-        "license": "premier_editorial_video_digital_only",
-        "metadata": {
-          "purchase_order": "12345"
-        },
-        "size": "original"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseEditorialVideoContentRequestExample"
   }'
 ```
 
@@ -7403,17 +5162,7 @@ This endpoint gets licenses for one or more editorial videos. You must specify t
 
 ```json
 {
-  "country": "USA",
-  "editorial": [
-    {
-      "editorial_id": "10679854a",
-      "license": "premier_editorial_video_digital_only",
-      "metadata": {
-        "purchase_order": "12345"
-      },
-      "size": "original"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseEditorialVideoContentRequestExample"
 }
 ```
 
@@ -7505,76 +5254,7 @@ This endpoint searches for editorial videos. If you specify more than one search
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1,
-      "assets": {
-        "original": {
-          "display_name": "HD",
-          "file_size": 82233387,
-          "format": "avc1",
-          "fps": 30,
-          "height": 1080,
-          "is_licensable": true,
-          "width": 1080
-        },
-        "preview_mp4": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4"
-        },
-        "preview_webm": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg"
-        }
-      },
-      "byline": "ViralHog/Shutterstock",
-      "caption": "",
-      "categories": [],
-      "date_taken": "2020-11-13",
-      "description": "Info from Licensor: \"Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski's, and boats. He has brought joy to many people during the pandemic including those with cancer.\"",
-      "id": "10679854a",
-      "keywords": [
-        "2020",
-        "adorable",
-        "birds",
-        "bizarre",
-        "canadian goose",
-        "cute",
-        "domesticated animals",
-        "entertainment",
-        "feel good",
-        "flew",
-        "flies",
-        "fly",
-        "flying",
-        "fun",
-        "goose",
-        "jet skis",
-        "nature",
-        "odd",
-        "pets",
-        "played",
-        "playing",
-        "plays",
-        "prior lake",
-        "sports",
-        "strange",
-        "sweet",
-        "usa",
-        "viralhog",
-        "virals",
-        "water sports",
-        "weird"
-      ],
-      "title": "Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020"
-    }
-  ],
-  "next": "eyJ2IjoyLCJzIjoyMCwicCI6WzBdfQ==",
-  "per_page": 1,
-  "prev": "",
-  "search_id": "zhmz9zLmpQehdTPvg8cacQ",
-  "total_count": 331
+  "$ref": "#/components/schemas/EditorialVideoSearchResultsExample"
 }
 ```
 
@@ -7623,67 +5303,7 @@ This endpoint shows information about an editorial image, including a URL to a p
 
 ```json
 {
-  "aspect": 1,
-  "assets": {
-    "original": {
-      "display_name": "HD",
-      "file_size": 82233387,
-      "format": "avc1",
-      "fps": 30,
-      "height": 1080,
-      "is_licensable": true,
-      "width": 1080
-    },
-    "preview_mp4": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4"
-    },
-    "preview_webm": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm"
-    },
-    "thumb_jpg": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg"
-    }
-  },
-  "byline": "ViralHog/Shutterstock",
-  "caption": "",
-  "categories": [],
-  "date_taken": "2020-11-13",
-  "description": "Info from Licensor: \"Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski's, and boats. He has brought joy to many people during the pandemic including those with cancer.\"",
-  "id": "10679854a",
-  "keywords": [
-    "2020",
-    "adorable",
-    "birds",
-    "bizarre",
-    "canadian goose",
-    "cute",
-    "domesticated animals",
-    "entertainment",
-    "feel good",
-    "flew",
-    "flies",
-    "fly",
-    "flying",
-    "fun",
-    "goose",
-    "jet skis",
-    "nature",
-    "odd",
-    "pets",
-    "played",
-    "playing",
-    "plays",
-    "prior lake",
-    "sports",
-    "strange",
-    "sweet",
-    "usa",
-    "viralhog",
-    "virals",
-    "water sports",
-    "weird"
-  ],
-  "title": "Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020"
+  "$ref": "#/components/schemas/EditorialVideoContentExample"
 }
 ```
 
@@ -7761,8 +5381,7 @@ This endpoint returns an access token for the specified user and with the specif
 
 ```json
 {
-  "access_token": "v2/NmQwOTc0NTBiMjA5YzZkY2Q4NTkvMTA4OTg1MDk5L2N1c3RvbWVyLzIvZjB2a0RseGo4Rkt6ZjRmVWJNMm10V2VzcHh1NTBlZWJ6andUQU1NeTVYYnNFTDVWOFRJakItS2RnZTlmbEY1Y3haNWdXLUtYc2JhaXo5djk0V0p2QzZUUWZ4c2FNWm41NkdLYUgyVWlCaVUtQTNVMV9YQWpzd3lpblI3SlZEem8wSG1qQ2NzSkJlX3VQTnNXenBIdkd4SXViVi1rRGJTVENCV0g1U3U0RXRJSV9rSm5lQkl5QXlvbm5JN241UUhv",
-  "token_type": "Bearer"
+  "$ref": "#/components/schemas/OauthAccessTokenResponseExample"
 }
 ```
 
@@ -7921,15 +5540,7 @@ This endpoint shows information about sound effects.
 
 ```json
 {
-  "data": [
-    {
-      "contributor": {
-        "id": "1234"
-      },
-      "id": "123",
-      "media_type": "sfx"
-    }
-  ]
+  "$ref": "#/components/schemas/SFXDataListExample"
 }
 ```
 
@@ -7995,33 +5606,7 @@ This endpoint lists existing licenses.
 
 ```json
 {
-  "data": [
-    {
-      "download_time": "2021-07-15T15:46:34.000Z",
-      "id": "e1eba3833793e77188d22caae8bac9f2cd",
-      "image": {
-        "format": {
-          "size": "original"
-        },
-        "id": "9763363ao"
-      },
-      "is_downloadable": false,
-      "license": "premier_editorial_all_digital",
-      "metadata": {
-        "client": "Company A",
-        "job": "Important project",
-        "other": "Important media",
-        "purchase_order": "123456"
-      },
-      "subscription_id": "s12345678",
-      "user": {
-        "username": "editorial_test_account_002"
-      }
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 2890
+  "$ref": "#/components/schemas/DownloadHistoryDataListExample"
 }
 ```
 
@@ -8052,21 +5637,7 @@ curl https://example.com/v2/sfx/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Basic ${CREDENTIALS}" \
   -d '{
-    "sound_effects": [
-      {
-        "format": "wav",
-        "metadata": {
-          "customer_id": "12345",
-          "geo_location": "US",
-          "number_viewed": "15",
-          "search_term": "dog"
-        },
-        "sfx_id": "123456789",
-        "show_modal": true,
-        "size": "ambisonic",
-        "subscription_id": "s12345678"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseSFXRequestExample"
   }'
 ```
 
@@ -8078,21 +5649,7 @@ This endpoint licenses sounds effect assets.
 
 ```json
 {
-  "sound_effects": [
-    {
-      "format": "wav",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "sfx_id": "123456789",
-      "show_modal": true,
-      "size": "ambisonic",
-      "subscription_id": "s12345678"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseSFXRequestExample"
 }
 ```
 
@@ -8109,18 +5666,7 @@ This endpoint licenses sounds effect assets.
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp3"
-      },
-      "sfx_id": "123456789"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/LicenseSFXResultDataListExample"
 }
 ```
 
@@ -8381,11 +5927,7 @@ This endpoint shows information about a sound effect.
 
 ```json
 {
-  "contributor": {
-    "id": "1234"
-  },
-  "id": "123",
-  "media_type": "sfx"
+  "$ref": "#/components/schemas/SFXExample"
 }
 ```
 
@@ -8430,7 +5972,7 @@ curl https://example.com/v2/test \
 
 ```json
 {
-  "text": "Test string"
+  "$ref": "#/components/schemas/TestEchoExample"
 }
 ```
 
@@ -8474,15 +6016,7 @@ curl 'https://example.com/v2/test/validate?id=123' \
 
 ```json
 {
-  "header": {
-    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
-  },
-  "query": {
-    "id": 123456,
-    "tag": [
-      "Test string"
-    ]
-  }
+  "$ref": "#/components/schemas/TestValidateExample"
 }
 ```
 
@@ -8521,13 +6055,7 @@ curl https://example.com/v2/user \
 
 ```json
 {
-  "contributor_id": "212",
-  "first_name": "John",
-  "full_name": "John Doe",
-  "id": "101782699",
-  "language": "es",
-  "last_name": "Doe",
-  "username": "jdoe"
+  "$ref": "#/components/schemas/UserDetailsExample"
 }
 ```
 
@@ -8565,20 +6093,7 @@ curl https://example.com/v2/user/access_token \
 
 ```json
 {
-  "client_id": "c456b-26230-fa8ed-d19ab-05ce2-bf0aa",
-  "customer_id": "123456789",
-  "expires_in": 3600,
-  "realm": "customer",
-  "scopes": [
-    "collections.edit",
-    "collections.view",
-    "licenses.create",
-    "licenses.view",
-    "purchases.view",
-    "user.view"
-  ],
-  "user_id": "123456789",
-  "username": "jdoe"
+  "$ref": "#/components/schemas/AccessTokenDetailsExample"
 }
 ```
 
@@ -8616,47 +6131,7 @@ curl https://example.com/v2/user/subscriptions \
 
 ```json
 {
-  "data": [
-    {
-      "allotment": {
-        "downloads_left": 5,
-        "downloads_limit": 10,
-        "end_time": "2020-05-29T12:10:22-05:00",
-        "start_time": "2020-05-29T12:10:22-05:00"
-      },
-      "asset_type": "images",
-      "description": "Annual Subscription",
-      "expiration_time": "2020-05-29T12:10:22-05:00",
-      "formats": [
-        {
-          "description": "Small",
-          "format": "jpg",
-          "media_type": "image",
-          "min_resolution": 500,
-          "size": "small"
-        },
-        {
-          "description": "Med",
-          "format": "jpg",
-          "media_type": "image",
-          "min_resolution": 1000,
-          "size": "medium"
-        },
-        {
-          "description": "Vector",
-          "format": "eps",
-          "media_type": "image",
-          "size": "vector"
-        }
-      ],
-      "id": "s8906043",
-      "license": "standard",
-      "metadata": {}
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/SubscriptionDataListExample"
 }
 ```
 
@@ -8713,160 +6188,7 @@ This endpoint lists information about one or more videos, including the aspect r
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2019-07-13",
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "hd": {
-          "display_name": "Original HD",
-          "file_size": 110359552,
-          "format": "avc1",
-          "fps": 29.97,
-          "height": 1080,
-          "is_licensable": true,
-          "width": 1920
-        },
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "sd": {
-          "display_name": "Standard Definition MPEG",
-          "file_size": 4577280,
-          "format": "mov",
-          "fps": 29.97,
-          "height": 480,
-          "is_licensable": true,
-          "width": 852
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_jpgs": {
-          "urls": [
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-          ]
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "web": {
-          "display_name": "Low Resolution MPEG",
-          "file_size": 1291264,
-          "format": "mov",
-          "fps": 29.97,
-          "height": 240,
-          "is_licensable": true,
-          "width": 426
-        }
-      },
-      "categories": [
-        {
-          "id": "12",
-          "name": "Nature"
-        },
-        {
-          "id": "13",
-          "name": "People"
-        }
-      ],
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "has_property_release": false,
-      "id": "1033184651",
-      "is_adult": false,
-      "is_editorial": false,
-      "keywords": [
-        "active",
-        "activity",
-        "adventure",
-        "arms",
-        "backpacker",
-        "carefree",
-        "celebrating",
-        "cliff",
-        "climate",
-        "cloud",
-        "discovery",
-        "escape",
-        "explore",
-        "extreme",
-        "free",
-        "freedom",
-        "girl",
-        "happy",
-        "high",
-        "hiker",
-        "hiking",
-        "hill",
-        "independent",
-        "inspiration",
-        "landscape",
-        "leisure",
-        "lifestyle",
-        "mountain",
-        "mountains",
-        "nature",
-        "outdoor",
-        "peak",
-        "person",
-        "rock",
-        "scenic",
-        "sky",
-        "sport",
-        "success",
-        "summer",
-        "summit",
-        "sun",
-        "sunset",
-        "top",
-        "tourism",
-        "travel",
-        "trekking",
-        "vacation",
-        "view",
-        "winning",
-        "woman"
-      ],
-      "media_type": "video",
-      "models": [
-        {
-          "id": "33233810"
-        },
-        {
-          "id": "25487168"
-        }
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 25
+  "$ref": "#/components/schemas/VideoDataListExample"
 }
 ```
 
@@ -8959,19 +6281,7 @@ This endpoint lists the categories (Shutterstock-assigned genres) that videos ca
 
 ```json
 {
-  "data": [
-    {
-      "id": "1",
-      "name": "Animals/Wildlife"
-    },
-    {
-      "id": "11",
-      "name": "The Arts"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 13
+  "$ref": "#/components/schemas/CategoryDataListExample"
 }
 ```
 
@@ -9026,20 +6336,7 @@ This endpoint lists your collections of videos and their basic attributes.
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "id": "297886754"
-      },
-      "id": "293542904",
-      "items_updated_time": "2021-05-20T16:15:22-04:00",
-      "name": "My collection",
-      "total_item_count": 85
-    }
-  ],
-  "page": 1,
-  "per_page": 100,
-  "total_count": 1
+  "$ref": "#/components/schemas/CollectionDataListExample"
 }
 ```
 
@@ -9070,7 +6367,7 @@ curl https://example.com/v2/videos/collections \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "name": "Test Collection 19cf"
+    "$ref": "#/components/schemas/CollectionCreateRequestExample"
   }'
 ```
 
@@ -9082,7 +6379,7 @@ This endpoint creates one or more collections (clipboxes). To add videos to coll
 
 ```json
 {
-  "name": "Test Collection 19cf"
+  "$ref": "#/components/schemas/CollectionCreateRequestExample"
 }
 ```
 
@@ -9099,7 +6396,7 @@ This endpoint creates one or more collections (clipboxes). To add videos to coll
 
 ```json
 {
-  "id": "48433105"
+  "$ref": "#/components/schemas/CollectionCreateResponseExample"
 }
 ```
 
@@ -9151,22 +6448,7 @@ This endpoint lists featured video collections and a name and cover video for ea
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-      },
-      "created_time": "2021-07-07T13:10:24.000Z",
-      "id": "19853",
-      "items_updated_time": "2021-07-08T12:33:37.000Z",
-      "name": "Exercise & Fitness",
-      "total_item_count": 82,
-      "updated_time": "2021-07-07T13:10:24.000Z"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/FeaturedCollectionDataListExample"
 }
 ```
 
@@ -9219,15 +6501,7 @@ This endpoint gets more detailed information about a featured video collection, 
 
 ```json
 {
-  "cover_item": {
-    "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-  },
-  "created_time": "2021-07-07T13:10:24.000Z",
-  "id": "19853",
-  "items_updated_time": "2021-07-08T12:33:37.000Z",
-  "name": "Exercise & Fitness",
-  "total_item_count": 82,
-  "updated_time": "2021-07-07T13:10:24.000Z"
+  "$ref": "#/components/schemas/FeaturedCollectionExample"
 }
 ```
 
@@ -9276,20 +6550,7 @@ This endpoint lists the IDs of videos in a featured collection and the date that
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2016-08-18T18:52:59-04:00",
-      "id": "76688182",
-      "media_type": "video"
-    },
-    {
-      "added_time": "2016-08-18T18:52:59-04:00",
-      "id": "40005859",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 100
+  "$ref": "#/components/schemas/VideoCollectionItemDataListExample"
 }
 ```
 
@@ -9345,13 +6606,7 @@ This endpoint gets more detailed information about a collection, including the t
 
 ```json
 {
-  "cover_item": {
-    "id": "297886754"
-  },
-  "id": "293542904",
-  "items_updated_time": "2021-05-20T16:15:22-04:00",
-  "name": "My collection",
-  "total_item_count": 85
+  "$ref": "#/components/schemas/CollectionExample"
 }
 ```
 
@@ -9382,7 +6637,7 @@ curl https://example.com/v2/videos/collections/17555176 \
   -H 'Content-Type: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "name": "My collection with a new name"
+    "$ref": "#/components/schemas/CollectionUpdateRequestExample"
   }'
 ```
 
@@ -9394,7 +6649,7 @@ This endpoint sets a new name for a collection.
 
 ```json
 {
-  "name": "My collection with a new name"
+  "$ref": "#/components/schemas/CollectionUpdateRequestExample"
 }
 ```
 
@@ -9497,21 +6752,7 @@ This endpoint lists the IDs of videos in a collection and the date that each was
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2021-07-08T12:33:37.000Z",
-      "id": "1690105108",
-      "media_type": "image"
-    },
-    {
-      "added_time": "2021-07-08T12:31:43.000Z",
-      "id": "1468703072",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 82
+  "$ref": "#/components/schemas/CollectionItemDataListExample"
 }
 ```
 
@@ -9736,13 +6977,7 @@ curl https://example.com/v2/videos/licenses \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "videos": [
-      {
-        "size": "hd",
-        "subscription_id": "s12345678",
-        "video_id": "2140697"
-      }
-    ]
+    "$ref": "#/components/schemas/LicenseVideoRequestExample"
   }'
 ```
 
@@ -9754,13 +6989,7 @@ This endpoint gets licenses for one or more videos. You must specify the video I
 
 ```json
 {
-  "videos": [
-    {
-      "size": "hd",
-      "subscription_id": "s12345678",
-      "video_id": "2140697"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseVideoRequestExample"
 }
 ```
 
@@ -9789,22 +7018,7 @@ This endpoint gets licenses for one or more videos. You must specify the video I
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp4"
-      },
-      "price": {
-        "local_amount": 12.34,
-        "local_currency": "EUR"
-      },
-      "video_id": "123456789"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/LicenseVideoResultDataListExample"
 }
 ```
 
@@ -9835,7 +7049,7 @@ curl https://example.com/v2/videos/licenses/e123/downloads \
   -H 'Accept: application/json' \
   -H "Authorization: Bearer ${ACCESS_TOKEN}" \
   -d '{
-    "size": "web"
+    "$ref": "#/components/schemas/RedownloadVideoExample"
   }'
 ```
 
@@ -9847,7 +7061,7 @@ This endpoint redownloads videos that you have already received a license for.
 
 ```json
 {
-  "size": "web"
+  "$ref": "#/components/schemas/RedownloadVideoExample"
 }
 ```
 
@@ -10039,44 +7253,7 @@ This endpoint searches for videos. If you specify more than one search parameter
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        }
-      },
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "id": "1033184651",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123
+  "$ref": "#/components/schemas/VideoSearchResultsExample"
 }
 ```
 
@@ -10124,18 +7301,7 @@ This endpoint provides autocomplete suggestions for partial search terms.
 
 ```json
 {
-  "data": [
-    "cat scan",
-    "cats and dogs",
-    "cats playing",
-    "catsuit",
-    "cat silhouette",
-    "catskills",
-    "cats eyes",
-    "cat sitting",
-    "cat sleeping",
-    "cats eye"
-  ]
+  "$ref": "#/components/schemas/SuggestionsExample"
 }
 ```
 
@@ -10193,19 +7359,7 @@ This endpoint lists videos that have been updated in the specified time period t
 
 ```json
 {
-  "data": [
-    {
-      "id": "123456789",
-      "updated_time": "2020-05-29T12:10:22-05:00",
-      "updates": [
-        "addition",
-        "edit"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 13
+  "$ref": "#/components/schemas/UpdatedMediaDataListExample"
 }
 ```
 
@@ -10300,153 +7454,7 @@ This endpoint shows information about a video, including URLs to previews and th
 
 ```json
 {
-  "added_date": "2019-07-13",
-  "aspect": 1.778,
-  "aspect_ratio": "16:9",
-  "assets": {
-    "hd": {
-      "display_name": "Original HD",
-      "file_size": 110359552,
-      "format": "avc1",
-      "fps": 29.97,
-      "height": 1080,
-      "is_licensable": true,
-      "width": 1920
-    },
-    "preview_jpg": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-    },
-    "preview_mp4": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-    },
-    "preview_webm": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-    },
-    "sd": {
-      "display_name": "Standard Definition MPEG",
-      "file_size": 4577280,
-      "format": "mov",
-      "fps": 29.97,
-      "height": 480,
-      "is_licensable": true,
-      "width": 852
-    },
-    "thumb_jpg": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-    },
-    "thumb_jpgs": {
-      "urls": [
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-      ]
-    },
-    "thumb_mp4": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-    },
-    "thumb_webm": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-    },
-    "web": {
-      "display_name": "Low Resolution MPEG",
-      "file_size": 1291264,
-      "format": "mov",
-      "fps": 29.97,
-      "height": 240,
-      "is_licensable": true,
-      "width": 426
-    }
-  },
-  "categories": [
-    {
-      "id": "12",
-      "name": "Nature"
-    },
-    {
-      "id": "13",
-      "name": "People"
-    }
-  ],
-  "contributor": {
-    "id": "4411978"
-  },
-  "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-  "duration": 14.081,
-  "has_model_release": true,
-  "has_property_release": false,
-  "id": "1033184651",
-  "is_adult": false,
-  "is_editorial": false,
-  "keywords": [
-    "active",
-    "activity",
-    "adventure",
-    "arms",
-    "backpacker",
-    "carefree",
-    "celebrating",
-    "cliff",
-    "climate",
-    "cloud",
-    "discovery",
-    "escape",
-    "explore",
-    "extreme",
-    "free",
-    "freedom",
-    "girl",
-    "happy",
-    "high",
-    "hiker",
-    "hiking",
-    "hill",
-    "independent",
-    "inspiration",
-    "landscape",
-    "leisure",
-    "lifestyle",
-    "mountain",
-    "mountains",
-    "nature",
-    "outdoor",
-    "peak",
-    "person",
-    "rock",
-    "scenic",
-    "sky",
-    "sport",
-    "success",
-    "summer",
-    "summit",
-    "sun",
-    "sunset",
-    "top",
-    "tourism",
-    "travel",
-    "trekking",
-    "vacation",
-    "view",
-    "winning",
-    "woman"
-  ],
-  "media_type": "video",
-  "models": [
-    {
-      "id": "33233810"
-    },
-    {
-      "id": "25487168"
-    }
-  ]
+  "$ref": "#/components/schemas/VideoExample"
 }
 ```
 
@@ -10546,44 +7554,7 @@ This endpoint searches for videos that are similar to a video that you specify.
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        }
-      },
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "id": "1033184651",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123
+  "$ref": "#/components/schemas/VideoSearchResultsExample"
 }
 ```
 
@@ -10612,20 +7583,7 @@ basic, customer_accessCode
 
 ```json
 {
-  "client_id": "c456b-26230-fa8ed-d19ab-05ce2-bf0aa",
-  "customer_id": "123456789",
-  "expires_in": 3600,
-  "realm": "customer",
-  "scopes": [
-    "collections.edit",
-    "collections.view",
-    "licenses.create",
-    "licenses.view",
-    "purchases.view",
-    "user.view"
-  ],
-  "user_id": "123456789",
-  "username": "jdoe"
+  "$ref": "#/components/schemas/AccessTokenDetailsExample"
 }
 ```
 
@@ -10732,84 +7690,7 @@ Metadata about the artist that created the media
 
 ```json
 {
-  "added_date": "2016-08-16",
-  "artists": [
-    {
-      "name": "Klimenko Music"
-    }
-  ],
-  "assets": {
-    "clean_audio": {
-      "file_size": 35188408
-    },
-    "preview_mp3": {
-      "file_size": 4400203,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3"
-    },
-    "preview_ogg": {
-      "file_size": 4453197,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg"
-    },
-    "waveform": {
-      "file_size": 18778,
-      "url": "https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png"
-    }
-  },
-  "bpm": 110,
-  "contributor": {
-    "id": "2847971"
-  },
-  "description": "Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.",
-  "duration": 183,
-  "genres": [
-    "Dance/Electronic",
-    "Electro Pop",
-    "Pop/Rock"
-  ],
-  "id": "442583",
-  "instruments": [
-    "Piano",
-    "Synth bass",
-    "Synth drums",
-    "Synthesizer"
-  ],
-  "is_adult": false,
-  "is_instrumental": true,
-  "isrc": "",
-  "keywords": [
-    "celebratory",
-    "chic",
-    "euphoric",
-    "good times",
-    "hip",
-    "optimistic",
-    "party",
-    "soaring",
-    "upbeat"
-  ],
-  "language": "en",
-  "lyrics": "",
-  "media_type": "audio",
-  "moods": [
-    "Bright",
-    "Confident",
-    "Fun",
-    "Happy",
-    "Inspiring",
-    "Optimistic",
-    "Playful",
-    "Sophisticated",
-    "Stylish",
-    "Uplifting"
-  ],
-  "published_time": "2016-08-16T14:30:03-04:00",
-  "recording_version": "",
-  "releases": [],
-  "similar_artists": [],
-  "title": "Another Tomorrow",
-  "updated_time": "2016-08-18T17:59:33-04:00",
-  "url": "",
-  "vocal_description": ""
+  "$ref": "#/components/schemas/AudioExample"
 }
 ```
 
@@ -10924,89 +7805,7 @@ Files that are available as part of an audio asset
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2016-04-12",
-      "artists": [
-        {
-          "name": "Fin Productions"
-        }
-      ],
-      "assets": {
-        "clean_audio": {
-          "file_size": 30760372
-        },
-        "preview_mp3": {
-          "file_size": 3846606,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/preview/preview.mp3"
-        },
-        "preview_ogg": {
-          "file_size": 4402608,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/preview/preview.ogg"
-        },
-        "waveform": {
-          "file_size": 19822,
-          "url": "https://ak.picdn.net/shutterstock/audio/434750/waveform/waveform.png"
-        }
-      },
-      "bpm": 100,
-      "contributor": {
-        "id": "2847971"
-      },
-      "description": "Pulsing and feel-good, featuring slick electric guitar, synthesizer, bass, electronic drum pads and drums that create a positive, celebratory mood.",
-      "duration": 160,
-      "genres": [
-        "Dance/Electronic",
-        "Electro Pop",
-        "Pop/Rock"
-      ],
-      "id": "434750",
-      "instruments": [
-        "Bass",
-        "Drums",
-        "Electric guitar",
-        "Pads",
-        "Percussion",
-        "Synthesizer"
-      ],
-      "is_adult": false,
-      "is_instrumental": true,
-      "isrc": "",
-      "keywords": [
-        "breezy",
-        "celebration",
-        "festive",
-        "good times",
-        "hopeful",
-        "optimistic",
-        "party",
-        "positive",
-        "reflective"
-      ],
-      "language": "en",
-      "lyrics": "",
-      "media_type": "audio",
-      "moods": [
-        "Bright",
-        "Confident",
-        "Fun",
-        "Happy",
-        "Inspiring",
-        "Optimistic",
-        "Playful",
-        "Sophisticated",
-        "Stylish",
-        "Uplifting"
-      ],
-      "published_time": "2016-04-12T17:45:29-04:00",
-      "recording_version": "",
-      "releases": [],
-      "similar_artists": [],
-      "title": "Fresh Love",
-      "updated_time": "2016-08-18T18:03:11-04:00",
-      "vocal_description": ""
-    }
-  ]
+  "$ref": "#/components/schemas/AudioDataListExample"
 }
 ```
 
@@ -11361,53 +8160,7 @@ Files associated with the render
 
 ```json
 {
-  "audio_renders": [
-    {
-      "created_date": "2021-07-13T16:19:30-04:00",
-      "files": [],
-      "id": "2yZp13IhLqnjfh2KquDTOHUHzTiP",
-      "preset": "MASTER_MP3",
-      "progress_percent": 20,
-      "status": "WAITING_COMPOSE",
-      "timeline": {},
-      "updated_date": "2021-07-13T16:19:30-04:00"
-    },
-    {
-      "created_date": "2021-07-12T16:39:59-04:00",
-      "files": [
-        {
-          "bits_sample": 16,
-          "content_type": "audio/mp3",
-          "download_url": "https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/0.mp3",
-          "filename": "My_audio_ai.mp3",
-          "frequency_hz": 44100,
-          "kbits_second": 192,
-          "size_bytes": 481556,
-          "tracks": [
-            "master"
-          ]
-        },
-        {
-          "bits_sample": 0,
-          "content_type": "application/vnd.amper.waveform+json",
-          "download_url": "https://s3.amazonaws.com/prod-amper-inferno-ephemeral/renders/2021/07/13/amper-api-QwAgKqXQAzr622KuXYZ25C9WRH3a/1.json",
-          "filename": "render.json",
-          "frequency_hz": 42,
-          "kbits_second": 0,
-          "size_bytes": 4420,
-          "tracks": [
-            "master"
-          ]
-        }
-      ],
-      "id": "QwAgKqXQAzr622KuXYZ25C9WRH3a",
-      "preset": "MASTER_MP3",
-      "progress_percent": 100,
-      "status": "CREATED",
-      "timeline": {},
-      "updated_date": "2021-07-12T16:46:26-04:00"
-    }
-  ]
+  "$ref": "#/components/schemas/AudioRendersListResultsExample"
 }
 ```
 
@@ -11428,92 +8181,7 @@ Audio render data
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2016-08-16",
-      "artists": [
-        {
-          "name": "Klimenko Music"
-        }
-      ],
-      "assets": {
-        "clean_audio": {
-          "file_size": 35188408
-        },
-        "preview_mp3": {
-          "file_size": 4400203,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.mp3"
-        },
-        "preview_ogg": {
-          "file_size": 4453197,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/preview/preview.ogg"
-        },
-        "waveform": {
-          "file_size": 18778,
-          "url": "https://ak.picdn.net/shutterstock/audio/442583/waveform/waveform.png"
-        }
-      },
-      "bpm": 110,
-      "contributor": {
-        "id": "2847971"
-      },
-      "description": "Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.",
-      "duration": 183,
-      "genres": [
-        "Dance/Electronic",
-        "Electro Pop",
-        "Pop/Rock"
-      ],
-      "id": "442583",
-      "instruments": [
-        "Piano",
-        "Synth bass",
-        "Synth drums",
-        "Synthesizer"
-      ],
-      "is_adult": false,
-      "is_instrumental": true,
-      "isrc": "",
-      "keywords": [
-        "celebratory",
-        "chic",
-        "euphoric",
-        "good times",
-        "hip",
-        "optimistic",
-        "party",
-        "soaring",
-        "upbeat"
-      ],
-      "language": "en",
-      "lyrics": "",
-      "media_type": "audio",
-      "moods": [
-        "Bright",
-        "Confident",
-        "Fun",
-        "Happy",
-        "Inspiring",
-        "Optimistic",
-        "Playful",
-        "Sophisticated",
-        "Stylish",
-        "Uplifting"
-      ],
-      "published_time": "2016-08-16T14:30:03-04:00",
-      "recording_version": "",
-      "releases": [],
-      "similar_artists": [],
-      "title": "Another Tomorrow",
-      "updated_time": "2016-08-18T17:59:33-04:00",
-      "url": "",
-      "vocal_description": ""
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123455
+  "$ref": "#/components/schemas/AudioSearchResultsExample"
 }
 ```
 
@@ -11539,7 +8207,7 @@ Audio search results
 
 ```json
 {
-  "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
+  "$ref": "#/components/schemas/UrlExample"
 }
 ```
 
@@ -11622,68 +8290,7 @@ List of searches
 
 ```json
 {
-  "results": [
-    {
-      "data": [
-        {
-          "aspect": 1.5,
-          "assets": {
-            "huge_thumb": {
-              "height": 260,
-              "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-              "width": 390
-            },
-            "large_thumb": {
-              "height": 100,
-              "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 150
-            },
-            "preview": {
-              "height": 300,
-              "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 450
-            },
-            "preview_1000": {
-              "height": 667,
-              "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-              "width": 1000
-            },
-            "preview_1500": {
-              "height": 1000,
-              "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 1500
-            },
-            "small_thumb": {
-              "height": 67,
-              "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-              "width": 100
-            }
-          },
-          "contributor": {
-            "id": "250738318"
-          },
-          "description": "cropped image of woman gardening",
-          "has_model_release": true,
-          "id": "1572478477",
-          "image_type": "photo",
-          "media_type": "image"
-        }
-      ],
-      "page": 1,
-      "per_page": 5,
-      "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-      "spellcheck_info": {},
-      "total_count": 45
-    },
-    {
-      "data": [],
-      "page": 1,
-      "per_page": 5,
-      "search_id": "749090bb-2967-4a20-b22e-c800dc845e11",
-      "spellcheck_info": {},
-      "total_count": 0
-    }
-  ]
+  "$ref": "#/components/schemas/BulkImageSearchResultsExample"
 }
 ```
 
@@ -11705,41 +8312,7 @@ List of search results for each given query
 
 ```json
 {
-  "cover_asset": {
-    "asset": {
-      "id": "1690105108",
-      "name": "Young couple playing tennis at the court",
-      "type": "image"
-    },
-    "created_time": "2021-06-10T13:26:09-04:00",
-    "id": "123"
-  },
-  "created_time": "2021-05-20T16:15:22-04:00",
-  "id": "126351028",
-  "name": "My collection",
-  "role_assignments": {
-    "collection_id": "126351028",
-    "roles": {
-      "editors": [
-        {
-          "email": "userTwo@org.com",
-          "id": "987",
-          "type": "USER"
-        }
-      ],
-      "owners": [
-        {
-          "email": "userOne@org.com",
-          "id": "321",
-          "type": "USER"
-        }
-      ],
-      "viewers": []
-    }
-  },
-  "total_item_count": 2,
-  "updated_time": "2021-06-10T13:26:09-04:00",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CatalogCollectionExample"
 }
 ```
 
@@ -11774,48 +8347,7 @@ Catalog collection
 
 ```json
 {
-  "data": [
-    {
-      "cover_asset": {
-        "asset": {
-          "id": "1690105108",
-          "name": "Young couple playing tennis at the court",
-          "type": "image"
-        },
-        "created_time": "2021-06-10T13:26:09-04:00",
-        "id": "123"
-      },
-      "created_time": "2021-05-20T16:15:22-04:00",
-      "id": "126351028",
-      "name": "My collection",
-      "role_assignments": {
-        "collection_id": "126351028",
-        "roles": {
-          "editors": [
-            {
-              "email": "userTwo@org.com",
-              "id": "987",
-              "type": "USER"
-            }
-          ],
-          "owners": [
-            {
-              "email": "userOne@org.com",
-              "id": "321",
-              "type": "USER"
-            }
-          ],
-          "viewers": []
-        }
-      },
-      "total_item_count": 2,
-      "updated_time": "2021-06-10T13:26:09-04:00",
-      "visibility": "public"
-    }
-  ],
-  "page": 1,
-  "per_page": 20,
-  "total_count": 1
+  "$ref": "#/components/schemas/CatalogCollectionDataListExample"
 }
 ```
 
@@ -11872,23 +8404,7 @@ Metadata about an item that is part of a collection
 
 ```json
 {
-  "data": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "name": "Young couple playing tennis at the court",
-        "type": "image"
-      },
-      "collection_ids": [
-        "126351028"
-      ],
-      "created_time": "2021-06-10T13:26:09-04:00",
-      "id": "123"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 82
+  "$ref": "#/components/schemas/CatalogCollectionItemDataListExample"
 }
 ```
 
@@ -12005,19 +8521,7 @@ Category information
 
 ```json
 {
-  "data": [
-    {
-      "id": "1",
-      "name": "Animals/Wildlife"
-    },
-    {
-      "id": "11",
-      "name": "The Arts"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 13
+  "$ref": "#/components/schemas/CategoryDataListExample"
 }
 ```
 
@@ -12043,13 +8547,7 @@ List of categories that images can belong to
 
 ```json
 {
-  "cover_item": {
-    "id": "297886754"
-  },
-  "id": "293542904",
-  "items_updated_time": "2021-05-20T16:15:22-04:00",
-  "name": "My collection",
-  "total_item_count": 85
+  "$ref": "#/components/schemas/CollectionExample"
 }
 ```
 
@@ -12078,7 +8576,7 @@ Metadata about a collection of assets
 
 ```json
 {
-  "name": "Test Collection 19cf"
+  "$ref": "#/components/schemas/CollectionCreateRequestExample"
 }
 ```
 
@@ -12099,7 +8597,7 @@ Collection creation request
 
 ```json
 {
-  "id": "48433105"
+  "$ref": "#/components/schemas/CollectionCreateResponseExample"
 }
 ```
 
@@ -12120,20 +8618,7 @@ Collection creation response
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "id": "297886754"
-      },
-      "id": "293542904",
-      "items_updated_time": "2021-05-20T16:15:22-04:00",
-      "name": "My collection",
-      "total_item_count": 85
-    }
-  ],
-  "page": 1,
-  "per_page": 100,
-  "total_count": 1
+  "$ref": "#/components/schemas/CollectionDataListExample"
 }
 ```
 
@@ -12184,21 +8669,7 @@ Metadata about an item that is part of a collection
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2021-07-08T12:33:37.000Z",
-      "id": "1690105108",
-      "media_type": "image"
-    },
-    {
-      "added_time": "2021-07-08T12:31:43.000Z",
-      "id": "1468703072",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 2,
-  "total_count": 82
+  "$ref": "#/components/schemas/CollectionItemDataListExample"
 }
 ```
 
@@ -12251,7 +8722,7 @@ Request to get a list of items in a collection
 
 ```json
 {
-  "name": "My collection with a new name"
+  "$ref": "#/components/schemas/CollectionUpdateRequestExample"
 }
 ```
 
@@ -12272,7 +8743,7 @@ Collection update request
 
 ```json
 {
-  "upload_id": "Udb14e1c3540bdbf82b4b3fe12d3a44f2"
+  "$ref": "#/components/schemas/ComputerVisionImageCreateResponseExample"
 }
 ```
 
@@ -12314,39 +8785,7 @@ Information about a contributor
 
 ```json
 {
-  "about": "John Doe's photographs",
-  "contributor_type": [
-    "photographer"
-  ],
-  "display_name": "John Doe",
-  "equipment": [
-    "Nikon",
-    "Fuji"
-  ],
-  "id": "12345678",
-  "location": "US",
-  "portfolio_url": "https://www.shutterstock.com/g/jdoe",
-  "social_media": {
-    "facebook": "http://example.com/jdoe",
-    "google_plus": "http://example.com/jdoe",
-    "linkedin": "http://example.com/jdoe",
-    "pinterest": "http://example.com/jdoe",
-    "tumblr": "http://example.com/jdoe",
-    "twitter": "http://example.com/jdoe"
-  },
-  "styles": [
-    "landscape",
-    "nature",
-    "footage_travel"
-  ],
-  "subjects": [
-    "animals",
-    "landmarks",
-    "nature",
-    "objects",
-    "recreation"
-  ],
-  "website": "http://example.com/profiles/jdoe"
+  "$ref": "#/components/schemas/ContributorProfileExample"
 }
 ```
 
@@ -12377,46 +8816,7 @@ Contributor profile data
 
 ```json
 {
-  "data": [
-    {
-      "about": "John Doe's photographs",
-      "contributor_type": [
-        "photographer"
-      ],
-      "display_name": "John Doe",
-      "equipment": [
-        "Nikon",
-        "Fuji"
-      ],
-      "id": "12345678",
-      "location": "US",
-      "portfolio_url": "https://www.shutterstock.com/g/jdoe",
-      "social_media": {
-        "facebook": "http://example.com/jdoe",
-        "google_plus": "http://example.com/jdoe",
-        "linkedin": "http://example.com/jdoe",
-        "pinterest": "http://example.com/jdoe",
-        "tumblr": "http://example.com/jdoe",
-        "twitter": "http://example.com/jdoe"
-      },
-      "styles": [
-        "landscape",
-        "nature",
-        "footage_travel"
-      ],
-      "subjects": [
-        "animals",
-        "landmarks",
-        "nature",
-        "objects",
-        "recreation"
-      ],
-      "website": "http://example.com/profiles/jdoe"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 15
+  "$ref": "#/components/schemas/ContributorProfileDataListExample"
 }
 ```
 
@@ -12576,60 +8976,7 @@ Data required to create an audio render
 
 ```json
 {
-  "audio_renders": [
-    {
-      "filename": "My Project.mp3",
-      "preset": "MASTER_MP3",
-      "timeline": {
-        "spans": [
-          {
-            "id": 111,
-            "instrument_groups": [
-              {
-                "instrument_group": "roomy_kit",
-                "statuses": [
-                  {
-                    "beat": 12,
-                    "status": "active"
-                  }
-                ]
-              }
-            ],
-            "regions": [
-              {
-                "beat": 12,
-                "descriptor": "cinematic_minimal_tense",
-                "end_type": {
-                  "beat": 24,
-                  "event": "ending",
-                  "type": "ringout"
-                },
-                "id": 222,
-                "key": {
-                  "tonic_note": "c",
-                  "tonic_quality": "major"
-                },
-                "region": "music"
-              }
-            ],
-            "span_type": "metered",
-            "tempo": 76,
-            "tempo_changes": [
-              {
-                "tempo": 86,
-                "time": 5
-              }
-            ],
-            "time": 5
-          },
-          {
-            "span_type": "unmetered",
-            "time": 20
-          }
-        ]
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/CreateAudioRendersRequestExample"
 }
 ```
 
@@ -12650,16 +8997,7 @@ Render request data
 
 ```json
 {
-  "items": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "type": "image"
-      }
-    }
-  ],
-  "name": "New Collection",
-  "visibility": "public"
+  "$ref": "#/components/schemas/CreateCatalogCollectionExample"
 }
 ```
 
@@ -12709,14 +9047,7 @@ Render request data
 
 ```json
 {
-  "items": [
-    {
-      "asset": {
-        "id": "1690105108",
-        "type": "image"
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/CreateCatalogCollectionItemsExample"
 }
 ```
 
@@ -12926,152 +9257,7 @@ Information about a descriptor
 
 ```json
 {
-  "data": [
-    {
-      "average_render_speed": 8.242664029014177,
-      "bands": [
-        {
-          "id": "cinematic_minimal_tense_band_1",
-          "name": "Cinematic Minimal Tense Band 1"
-        },
-        {
-          "id": "cinematic_minimal_tense_band_2",
-          "name": "Cinematic Minimal Tense Band 2"
-        }
-      ],
-      "id": "cinematic_minimal_tense",
-      "instruments": [
-        {
-          "id": "blue_synth_pad",
-          "name": "Warm Pad - Lush"
-        },
-        {
-          "id": "direct_round_1_synth_bass",
-          "name": "Direct Round 1 Synth Bass"
-        },
-        {
-          "id": "direct_crystal_breath_mid_pad",
-          "name": "Direct Crystal Breath Mid Pad"
-        }
-      ],
-      "max_tempo": 76,
-      "min_tempo": 58,
-      "name": "Cinematic Minimal Tense",
-      "previews": [
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_1_v1.mp3"
-        },
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/bands/previews/cinematic_minimal_tense_band_2_v1.mp3"
-        }
-      ],
-      "tags": [
-        "Tense",
-        "Cinematic",
-        "Negative",
-        "Simple Meter",
-        "4/4",
-        "Natural Minor",
-        "Dorian",
-        "Minimal",
-        "Adagio",
-        "Single Region",
-        "Main",
-        "Entertainment",
-        "Politics",
-        "Keys",
-        "Mid Pads",
-        "Fast",
-        "Slow",
-        "Slow",
-        "Voice",
-        "Medium Bright",
-        "Non Noisy",
-        "Medium Thick",
-        "Angelic",
-        "Direct",
-        "Percussion",
-        "Perc FX",
-        "Misc",
-        "Acoustic Pianos",
-        "Grand",
-        "Nice",
-        "Roomy",
-        "Pop",
-        "Upright",
-        "Clean",
-        "Classic",
-        "Keyboards",
-        "Digital Keyboard",
-        "Strings",
-        "Synth Basses",
-        "Fast",
-        "Dark",
-        "Thick",
-        "Sub",
-        "Synth Mallets",
-        "Dull",
-        "Mid Synth Beds",
-        "Slow",
-        "None",
-        "Medium Noisy",
-        "Harsh",
-        "Fast",
-        "Airy",
-        "Long Textures",
-        "Ambience",
-        "Synth Texture",
-        "Ethereal",
-        "Set Kicks",
-        "Processed",
-        "Hubcap Mallet",
-        "Wide",
-        "Tickie",
-        "Airy",
-        "Chamber",
-        "Thin",
-        "Organ",
-        "Cello Ensemble",
-        "Sweet",
-        "Big",
-        "Di",
-        "Raw",
-        "Bright",
-        "Tight",
-        "Chorus",
-        "Buzzy",
-        "Huge",
-        "Warm",
-        "Jazz",
-        "Brass",
-        "String",
-        "Hollow",
-        "Woodwind",
-        "Breathy",
-        "Crystal",
-        "Rhodes",
-        "Synth Piano",
-        "Noisy",
-        "Woody",
-        "Metallic",
-        "Reverse Piano",
-        "Full",
-        "Foley",
-        "Piano",
-        "Clean",
-        "Delayed",
-        "Reverb",
-        "Low Passed",
-        "Large",
-        "Medium",
-        "Small"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 1
+  "$ref": "#/components/schemas/DescriptorsListResultExample"
 }
 ```
 
@@ -13138,33 +9324,7 @@ Information about a downloaded media item. Applicable for all media types, only 
 
 ```json
 {
-  "data": [
-    {
-      "download_time": "2021-07-15T15:46:34.000Z",
-      "id": "e1eba3833793e77188d22caae8bac9f2cd",
-      "image": {
-        "format": {
-          "size": "original"
-        },
-        "id": "9763363ao"
-      },
-      "is_downloadable": false,
-      "license": "premier_editorial_all_digital",
-      "metadata": {
-        "client": "Company A",
-        "job": "Important project",
-        "other": "Important media",
-        "purchase_order": "123456"
-      },
-      "subscription_id": "s12345678",
-      "user": {
-        "username": "editorial_test_account_002"
-      }
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 2890
+  "$ref": "#/components/schemas/DownloadHistoryDataListExample"
 }
 ```
 
@@ -13368,17 +9528,7 @@ Name of an editorial category
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialCategoryResultsExample"
 }
 ```
 
@@ -13399,74 +9549,7 @@ List of editorial categories
 
 ```json
 {
-  "aspect": 1.621,
-  "assets": {
-    "medium_jpg": {
-      "display_name": "Med",
-      "height": 617,
-      "is_licensable": true,
-      "width": 1000
-    },
-    "original": {
-      "display_name": "Original",
-      "height": 3693,
-      "is_licensable": true,
-      "width": 5985
-    },
-    "small_jpg": {
-      "display_name": "Small",
-      "height": 309,
-      "is_licensable": true,
-      "width": 500
-    },
-    "thumb_170": {
-      "height": 105,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-      "width": 170
-    },
-    "thumb_220": {
-      "height": 136,
-      "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-      "width": 220
-    },
-    "watermark_1500": {
-      "height": 926,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-      "width": 1500
-    },
-    "watermark_450": {
-      "height": 278,
-      "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-      "width": 450
-    }
-  },
-  "byline": "Jon Super/AP/Shutterstock",
-  "caption": "",
-  "categories": [
-    {
-      "name": "Sport"
-    }
-  ],
-  "date_taken": "2021-05-11",
-  "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-  "id": "10687730b",
-  "keywords": [
-    "england",
-    "europe",
-    "leicester city fc",
-    "manchester",
-    "manchester united fc",
-    "men's soccer",
-    "men's sports",
-    "premier league",
-    "professional soccer",
-    "soccer",
-    "sports",
-    "united kingdom",
-    "western europe",
-    "wsoc"
-  ],
-  "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
+  "$ref": "#/components/schemas/EditorialContentExample"
 }
 ```
 
@@ -13497,81 +9580,7 @@ Metadata about editorial content
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 16
+  "$ref": "#/components/schemas/EditorialContentDataListExample"
 }
 ```
 
@@ -13624,20 +9633,7 @@ Cover image for editorial livefeed
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    },
-    {
-      "name": "Film Stills"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialImageCategoryResultsExample"
 }
 ```
 
@@ -13658,81 +9654,7 @@ List of editorial categories
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 23
+  "$ref": "#/components/schemas/EditorialImageContentDataListExample"
 }
 ```
 
@@ -13758,16 +9680,7 @@ List of editorial items
 
 ```json
 {
-  "cover_item": {
-    "height": 117,
-    "id": "9763363q",
-    "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-    "width": 170
-  },
-  "created_time": "2018-07-17T12:42:03+00:00",
-  "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-  "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-  "total_item_count": 38
+  "$ref": "#/components/schemas/EditorialImageLivefeedExample"
 }
 ```
 
@@ -13792,23 +9705,7 @@ Metadata about editorial livefeed
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "height": 117,
-        "id": "9763363q",
-        "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-        "width": 170
-      },
-      "created_time": "2018-07-17T12:42:03+00:00",
-      "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-      "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-      "total_item_count": 38
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 5300
+  "$ref": "#/components/schemas/EditorialImageLivefeedListExample"
 }
 ```
 
@@ -13833,16 +9730,7 @@ List of editorial livefeeds
 
 ```json
 {
-  "cover_item": {
-    "height": 117,
-    "id": "9763363q",
-    "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-    "width": 170
-  },
-  "created_time": "2018-07-17T12:42:03+00:00",
-  "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-  "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-  "total_item_count": 38
+  "$ref": "#/components/schemas/EditorialLivefeedExample"
 }
 ```
 
@@ -13867,23 +9755,7 @@ Metadata about editorial livefeed
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "height": 117,
-        "id": "9763363q",
-        "url": "https://editorial01.qa.shuttercorp.net/thumb/9763363q/51e28f39/Shutterstock_9763363q.jpg",
-        "width": 170
-      },
-      "created_time": "2018-07-17T12:42:03+00:00",
-      "id": "2018%2F07%2F17%2FPrince%20Charles%20and%20Camilla%20Duchess%20of%20Cornwall%20visit%20to%20Cornwall%2C%20Day%202",
-      "name": "Prince Charles and Camilla Duchess of Cornwall visit to Cornwall, Day 2",
-      "total_item_count": 38
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 56
+  "$ref": "#/components/schemas/EditorialLivefeedListExample"
 }
 ```
 
@@ -13908,83 +9780,7 @@ List of editorial livefeeds
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.621,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 617,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3693,
-          "is_licensable": true,
-          "width": 5985
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 309,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 105,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb/10687730b/272a999e/Shutterstock_10687730b.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 136,
-          "url": "https://editorial01.qa.shuttercorp.net/thumb-220/10687730b/927a6ebe/Shutterstock_10687730b.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 926,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-1500/10687730b/ee2d7ae1/Shutterstock_10687730b.jpg",
-          "width": 1500
-        },
-        "watermark_450": {
-          "height": 278,
-          "url": "https://editorial01.qa.shuttercorp.net/wm-preview-450/10687730b/ff2443ad/Shutterstock_10687730b.jpg",
-          "width": 450
-        }
-      },
-      "byline": "Jon Super/AP/Shutterstock",
-      "caption": "",
-      "categories": [
-        {
-          "name": "Sport"
-        }
-      ],
-      "date_taken": "2021-05-11",
-      "description": "Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club",
-      "id": "10687730b",
-      "keywords": [
-        "england",
-        "europe",
-        "leicester city fc",
-        "manchester",
-        "manchester united fc",
-        "men's soccer",
-        "men's sports",
-        "premier league",
-        "professional soccer",
-        "soccer",
-        "sports",
-        "united kingdom",
-        "western europe",
-        "wsoc"
-      ],
-      "title": "Soccer Premier League, Manchester, United Kingdom - 11 May 2021"
-    }
-  ],
-  "next": "eyJ2IjoyLCJzIjoxLCJwIjpbMF19",
-  "per_page": 1,
-  "prev": "",
-  "search_id": "BaMzOAkpHIvfnuWVRFs1ag",
-  "total_count": 46845
+  "$ref": "#/components/schemas/EditorialSearchResultsExample"
 }
 ```
 
@@ -14108,73 +9904,7 @@ Metadata about updated editorial content
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.481,
-      "assets": {
-        "medium_jpg": {
-          "display_name": "Med",
-          "height": 675,
-          "is_licensable": true,
-          "width": 1000
-        },
-        "original": {
-          "display_name": "Original",
-          "height": 3263,
-          "is_licensable": true,
-          "width": 4831
-        },
-        "small_jpg": {
-          "display_name": "Small",
-          "height": 337,
-          "is_licensable": true,
-          "width": 500
-        },
-        "thumb_170": {
-          "height": 115,
-          "url": "https://editorial01.shutterstock.com/thumb/9804979n/c4377a53/Shutterstock_9804979n.jpg",
-          "width": 170
-        },
-        "thumb_220": {
-          "height": 149,
-          "url": "https://editorial01.shutterstock.com/thumb-220/9804979n/c57a68c7/Shutterstock_9804979n.jpg",
-          "width": 220
-        },
-        "watermark_1500": {
-          "height": 1500,
-          "url": "https://editorial01.shutterstock.com/wm-preview-1500/9933285a/ab82fea4/Shutterstock_9933285a.jpg",
-          "width": 1040
-        },
-        "watermark_450": {
-          "height": 304,
-          "url": "https://editorial01.shutterstock.com/wm-preview-450/9804979n/37d19dce/Shutterstock_9804979n.jpg",
-          "width": 450
-        }
-      },
-      "byline": "ALEX HOFFORD/EPA-EFE/Shutterstock",
-      "caption": "",
-      "categories": [],
-      "commercial_status": {
-        "status": "available"
-      },
-      "date_taken": "2018-08-24",
-      "description": "Members of the TyLoo e-Sports team from China prepare to face off against the Kinguin e-Sports team from Poland at the ICBC (Asia) e-Sports and Music Festival Hong Kong 2018, Hong Kong, China, 24 August 2018. The festival runs from 24 to 26 August with professional gamers from around the world competing in international e-sports tournaments.",
-      "id": "9804979n",
-      "keywords": [],
-      "rights": {
-        "countries": "CAN,+DEU,+GBR,+USA,-*"
-      },
-      "supplier_code": "EPA",
-      "title": "Hong Kong kicks off international e-Sports competition, China - 24 Aug 2018",
-      "updated_time": "2019-07-15T20:04:44-04:00",
-      "updates": [
-        "addition"
-      ]
-    }
-  ],
-  "next": "eyJ2IjoxLCJzIjoxfQ==",
-  "per_page": 1,
-  "prev": ""
+  "$ref": "#/components/schemas/EditorialUpdatedResultsExample"
 }
 ```
 
@@ -14240,20 +9970,7 @@ Asset information, including size and thumbnail URLs
 
 ```json
 {
-  "data": [
-    {
-      "name": "Animal"
-    },
-    {
-      "name": "Awards"
-    },
-    {
-      "name": "Art"
-    },
-    {
-      "name": "Film Stills"
-    }
-  ]
+  "$ref": "#/components/schemas/EditorialVideoCategoryResultsExample"
 }
 ```
 
@@ -14274,67 +9991,7 @@ List of editorial video categories
 
 ```json
 {
-  "aspect": 1,
-  "assets": {
-    "original": {
-      "display_name": "HD",
-      "file_size": 82233387,
-      "format": "avc1",
-      "fps": 30,
-      "height": 1080,
-      "is_licensable": true,
-      "width": 1080
-    },
-    "preview_mp4": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4"
-    },
-    "preview_webm": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm"
-    },
-    "thumb_jpg": {
-      "url": "https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg"
-    }
-  },
-  "byline": "ViralHog/Shutterstock",
-  "caption": "",
-  "categories": [],
-  "date_taken": "2020-11-13",
-  "description": "Info from Licensor: \"Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski's, and boats. He has brought joy to many people during the pandemic including those with cancer.\"",
-  "id": "10679854a",
-  "keywords": [
-    "2020",
-    "adorable",
-    "birds",
-    "bizarre",
-    "canadian goose",
-    "cute",
-    "domesticated animals",
-    "entertainment",
-    "feel good",
-    "flew",
-    "flies",
-    "fly",
-    "flying",
-    "fun",
-    "goose",
-    "jet skis",
-    "nature",
-    "odd",
-    "pets",
-    "played",
-    "playing",
-    "plays",
-    "prior lake",
-    "sports",
-    "strange",
-    "sweet",
-    "usa",
-    "viralhog",
-    "virals",
-    "water sports",
-    "weird"
-  ],
-  "title": "Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020"
+  "$ref": "#/components/schemas/EditorialVideoContentExample"
 }
 ```
 
@@ -14364,76 +10021,7 @@ Metadata about editorial content
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1,
-      "assets": {
-        "original": {
-          "display_name": "HD",
-          "file_size": 82233387,
-          "format": "avc1",
-          "fps": 30,
-          "height": 1080,
-          "is_licensable": true,
-          "width": 1080
-        },
-        "preview_mp4": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-mp4/10679854a/M0T7A13aNej2g82bMTI4NjY=/Shutterstock_10679854a.mp4"
-        },
-        "preview_webm": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/wm-preview-webm/10679854a/M4T6A63fN2j5g929MTI4NjY=/Shutterstock_10679854a.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://qa.editorial-cdn.shuttercorp.net/thumb-1/10679854a/M5TcAf30Ncjcge2eMTI4NjY=/Shutterstock_10679854a.jpg"
-        }
-      },
-      "byline": "ViralHog/Shutterstock",
-      "caption": "",
-      "categories": [],
-      "date_taken": "2020-11-13",
-      "description": "Info from Licensor: \"Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski's, and boats. He has brought joy to many people during the pandemic including those with cancer.\"",
-      "id": "10679854a",
-      "keywords": [
-        "2020",
-        "adorable",
-        "birds",
-        "bizarre",
-        "canadian goose",
-        "cute",
-        "domesticated animals",
-        "entertainment",
-        "feel good",
-        "flew",
-        "flies",
-        "fly",
-        "flying",
-        "fun",
-        "goose",
-        "jet skis",
-        "nature",
-        "odd",
-        "pets",
-        "played",
-        "playing",
-        "plays",
-        "prior lake",
-        "sports",
-        "strange",
-        "sweet",
-        "usa",
-        "viralhog",
-        "virals",
-        "water sports",
-        "weird"
-      ],
-      "title": "Peeps the Goose Has a Blast on a Jet Ski, Prior Lake, Minnesota, USA - 13 Nov 2020"
-    }
-  ],
-  "next": "eyJ2IjoyLCJzIjoyMCwicCI6WzBdfQ==",
-  "per_page": 1,
-  "prev": "",
-  "search_id": "zhmz9zLmpQehdTPvg8cacQ",
-  "total_count": 331
+  "$ref": "#/components/schemas/EditorialVideoSearchResultsExample"
 }
 ```
 
@@ -14489,15 +10077,7 @@ Error object
 
 ```json
 {
-  "cover_item": {
-    "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-  },
-  "created_time": "2021-07-07T13:10:24.000Z",
-  "id": "19853",
-  "items_updated_time": "2021-07-08T12:33:37.000Z",
-  "name": "Exercise & Fitness",
-  "total_item_count": 82,
-  "updated_time": "2021-07-07T13:10:24.000Z"
+  "$ref": "#/components/schemas/FeaturedCollectionExample"
 }
 ```
 
@@ -14547,22 +10127,7 @@ Featured collection cover item metadata
 
 ```json
 {
-  "data": [
-    {
-      "cover_item": {
-        "url": "https://ak.picdn.net/assets/cms/b467415246debdab45825d915a548f8f79b57882-Collection_1_Thumnail.jpg"
-      },
-      "created_time": "2021-07-07T13:10:24.000Z",
-      "id": "19853",
-      "items_updated_time": "2021-07-08T12:33:37.000Z",
-      "name": "Exercise & Fitness",
-      "total_item_count": 82,
-      "updated_time": "2021-07-07T13:10:24.000Z"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/FeaturedCollectionDataListExample"
 }
 ```
 
@@ -14588,12 +10153,7 @@ List of featured collections
 
 ```json
 {
-  "data": [
-    "Rock",
-    "Pop > Singer-Songwriter",
-    "Pop > Synth Pop",
-    "Production / Film Scores"
-  ]
+  "$ref": "#/components/schemas/GenreListExample"
 }
 ```
 
@@ -15133,48 +10693,7 @@ A valid ISO 3166-1 Alpha-2 or ISO 3166-1 Alpha-3 code.
 
 ```json
 {
-  "aspect": 1.5,
-  "assets": {
-    "huge_thumb": {
-      "height": 260,
-      "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-      "width": 390
-    },
-    "large_thumb": {
-      "height": 100,
-      "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 150
-    },
-    "preview": {
-      "height": 300,
-      "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 450
-    },
-    "preview_1000": {
-      "height": 667,
-      "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-      "width": 1000
-    },
-    "preview_1500": {
-      "height": 1000,
-      "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 1500
-    },
-    "small_thumb": {
-      "height": 67,
-      "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-      "width": 100
-    }
-  },
-  "contributor": {
-    "id": "250738318"
-  },
-  "description": "cropped image of woman gardening",
-  "has_model_release": true,
-  "id": "1572478477",
-  "image_type": "photo",
-  "media_type": "image",
-  "original_filename": "123.jpg"
+  "$ref": "#/components/schemas/ImageExample"
 }
 ```
 
@@ -15275,7 +10794,7 @@ Information about the assets that are part of an image
 
 ```json
 {
-  "base64_image": "R0lGODlhgACAAPcAAEwiBLyaLOzNUNmWFNjOrNSuN7x6PPzqeOTMgfKSDMyuTPzwsdi2dHwuBPzbVu"
+  "$ref": "#/components/schemas/ImageCreateRequestExample"
 }
 ```
 
@@ -15296,7 +10815,7 @@ Request to upload an image
 
 ```json
 {
-  "id": "Udb14e1c3540bdbf82b4b3fe12d3a44f2"
+  "$ref": "#/components/schemas/ImageCreateResponseExample"
 }
 ```
 
@@ -15317,54 +10836,7 @@ Image upload information
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/ImageDataListExample"
 }
 ```
 
@@ -15390,56 +10862,7 @@ List of images
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.5,
-      "assets": {
-        "huge_thumb": {
-          "height": 260,
-          "url": "https://image.shutterstock.com/image-photo/cropped-image-woman-gardening-260nw-1572478477.jpg",
-          "width": 390
-        },
-        "large_thumb": {
-          "height": 100,
-          "url": "https://thumb7.shutterstock.com/thumb_large/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 150
-        },
-        "preview": {
-          "height": 300,
-          "url": "https://image.shutterstock.com/display_pic_with_logo/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 450
-        },
-        "preview_1000": {
-          "height": 667,
-          "url": "https://ak.picdn.net/shutterstock/photos/1572478477/watermark_1000/1706028c641ea2f443057287c67d9b91/preview_1000-1572478477.jpg",
-          "width": 1000
-        },
-        "preview_1500": {
-          "height": 1000,
-          "url": "https://image.shutterstock.com/z/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 1500
-        },
-        "small_thumb": {
-          "height": 67,
-          "url": "https://thumb7.shutterstock.com/thumb_small/250738318/1572478477/stock-photo-cropped-image-of-woman-gardening-1572478477.jpg",
-          "width": 100
-        }
-      },
-      "contributor": {
-        "id": "250738318"
-      },
-      "description": "cropped image of woman gardening",
-      "has_model_release": true,
-      "id": "1572478477",
-      "image_type": "photo",
-      "media_type": "image"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "spellcheck_info": {},
-  "total_count": 45
+  "$ref": "#/components/schemas/ImageSearchResultsExample"
 }
 ```
 
@@ -15574,13 +10997,7 @@ Information about an musical instrument
 
 ```json
 {
-  "data": [
-    "Orchestra",
-    "Organ",
-    "Oud",
-    "Pads",
-    "Electric Guitar"
-  ]
+  "$ref": "#/components/schemas/InstrumentListExample"
 }
 ```
 
@@ -15624,33 +11041,7 @@ Instruments
 
 ```json
 {
-  "data": [
-    {
-      "id": "bright_roomy_kit",
-      "name": "Bright Roomy Kit",
-      "previews": [
-        {
-          "content_type": "audio/mp3",
-          "url": "https://public-cdn.ampermusic.com/instruments/previews/bright_roomy_kit_v1.mp3"
-        }
-      ],
-      "tags": [
-        "Percussion",
-        "Aux Percs",
-        "Set Cymbals",
-        "Crash",
-        "Open",
-        "Ride",
-        "Set Hi-Hat",
-        "Set Kicks",
-        "Stick Snare",
-        "Quad Toms",
-        "Roto Toms"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5
+  "$ref": "#/components/schemas/InstrumentsListResultExample"
 }
 ```
 
@@ -15673,19 +11064,7 @@ Image search results
 
 ```json
 {
-  "data": [
-    "nature",
-    "wildlife",
-    "animal",
-    "cute",
-    "bamboo",
-    "panda",
-    "china",
-    "wild",
-    "endangered",
-    "black",
-    "bear"
-  ]
+  "$ref": "#/components/schemas/KeywordDataListExample"
 }
 ```
 
@@ -15757,15 +11136,7 @@ An audio track in a licensing request
 
 ```json
 {
-  "audio": [
-    {
-      "audio_id": "591623",
-      "license": "audio_platform",
-      "metadata": {
-        "customer_id": "12345"
-      }
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseAudioRequestExample"
 }
 ```
 
@@ -15816,16 +11187,7 @@ The response to a licensing request for an audio track
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "audio_id": "123456789",
-      "download": {
-        "url": "http://download2.dev.shutterstock.com/gatekeeper/abc/original.wav"
-      },
-      "license_id": "abcdef123456789ghijklmn"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseAudioResultDataListExample"
 }
 ```
 
@@ -15891,20 +11253,7 @@ Individual editorial content to license
 
 ```json
 {
-  "country": "USA",
-  "editorial": [
-    {
-      "editorial_id": "10687730b",
-      "license": "premier_editorial_comp",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "size": "original"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseEditorialContentRequestExample"
 }
 ```
 
@@ -15954,18 +11303,7 @@ The response to a licensing request for editorial content
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://s3-eu-west-1.amazonaws.com/api-downloads.rexfeatures.com/[random-characters].jpg?Expires=1524717323"
-      },
-      "editorial_id": "69656358"
-    }
-  ],
-  "page": 1,
-  "per_page": 1,
-  "total_count": 12
+  "$ref": "#/components/schemas/LicenseEditorialContentResultsExample"
 }
 ```
 
@@ -16030,17 +11368,7 @@ Individual editorial video content to license
 
 ```json
 {
-  "country": "USA",
-  "editorial": [
-    {
-      "editorial_id": "10679854a",
-      "license": "premier_editorial_video_digital_only",
-      "metadata": {
-        "purchase_order": "12345"
-      },
-      "size": "original"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseEditorialVideoContentRequestExample"
 }
 ```
 
@@ -16154,23 +11482,7 @@ Data required to license an image
 
 ```json
 {
-  "images": [
-    {
-      "editorial_acknowledgement": true,
-      "format": "jpg",
-      "image_id": "123456789",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "price": 12.34,
-      "show_modal": true,
-      "size": "small",
-      "subscription_id": "s12345678"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseImageRequestExample"
 }
 ```
 
@@ -16225,18 +11537,7 @@ The response to a licensing request for an image
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
-      },
-      "image_id": "59656357"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 23
+  "$ref": "#/components/schemas/LicenseImageResultDataListExample"
 }
 ```
 
@@ -16373,21 +11674,7 @@ Additional information for license requests for enterprise accounts and API subs
 
 ```json
 {
-  "sound_effects": [
-    {
-      "format": "wav",
-      "metadata": {
-        "customer_id": "12345",
-        "geo_location": "US",
-        "number_viewed": "15",
-        "search_term": "dog"
-      },
-      "sfx_id": "123456789",
-      "show_modal": true,
-      "size": "ambisonic",
-      "subscription_id": "s12345678"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseSFXRequestExample"
 }
 ```
 
@@ -16437,18 +11724,7 @@ The response to a licensing request for an sound effects
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp3"
-      },
-      "sfx_id": "123456789"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/LicenseSFXResultDataListExample"
 }
 ```
 
@@ -16511,13 +11787,7 @@ Data required to license a video
 
 ```json
 {
-  "videos": [
-    {
-      "size": "hd",
-      "subscription_id": "s12345678",
-      "video_id": "2140697"
-    }
-  ]
+  "$ref": "#/components/schemas/LicenseVideoRequestExample"
 }
 ```
 
@@ -16572,22 +11842,7 @@ The response to a licensing request for a video
 
 ```json
 {
-  "data": [
-    {
-      "allotment_charge": 1,
-      "download": {
-        "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.mp4"
-      },
-      "price": {
-        "local_amount": 12.34,
-        "local_currency": "EUR"
-      },
-      "video_id": "123456789"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/LicenseVideoResultDataListExample"
 }
 ```
 
@@ -16655,12 +11910,7 @@ Model and property release metadata
 
 ```json
 {
-  "data": [
-    "Action / Sports",
-    "Adventure / Discovery",
-    "Aerobics / Workout",
-    "Aggressive"
-  ]
+  "$ref": "#/components/schemas/MoodListExample"
 }
 ```
 
@@ -16681,8 +11931,7 @@ List of audio moods
 
 ```json
 {
-  "access_token": "v2/NmQwOTc0NTBiMjA5YzZkY2Q4NTkvMTA4OTg1MDk5L2N1c3RvbWVyLzIvZjB2a0RseGo4Rkt6ZjRmVWJNMm10V2VzcHh1NTBlZWJ6andUQU1NeTVYYnNFTDVWOFRJakItS2RnZTlmbEY1Y3haNWdXLUtYc2JhaXo5djk0V0p2QzZUUWZ4c2FNWm41NkdLYUgyVWlCaVUtQTNVMV9YQWpzd3lpblI3SlZEem8wSG1qQ2NzSkJlX3VQTnNXenBIdkd4SXViVi1rRGJTVENCV0g1U3U0RXRJSV9rSm5lQkl5QXlvbm5JN241UUhv",
-  "token_type": "Bearer"
+  "$ref": "#/components/schemas/OauthAccessTokenResponseExample"
 }
 ```
 
@@ -16780,20 +12029,7 @@ Media Recommendation
 
 ```json
 {
-  "data": [
-    {
-      "id": "123456789"
-    },
-    {
-      "id": "99379946"
-    },
-    {
-      "id": "133918412"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 12
+  "$ref": "#/components/schemas/RecommendationDataListExample"
 }
 ```
 
@@ -16819,7 +12055,7 @@ List of recommended images
 
 ```json
 {
-  "size": "small"
+  "$ref": "#/components/schemas/RedownloadImageExample"
 }
 ```
 
@@ -16853,7 +12089,7 @@ Data required to redownload an image
 
 ```json
 {
-  "size": "web"
+  "$ref": "#/components/schemas/RedownloadVideoExample"
 }
 ```
 
@@ -16905,11 +12141,7 @@ Data required to redownload a video
 
 ```json
 {
-  "items": [
-    {
-      "id": "123"
-    }
-  ]
+  "$ref": "#/components/schemas/RemoveCatalogCollectionItemsExample"
 }
 ```
 
@@ -16928,11 +12160,7 @@ Data required to redownload a video
 
 ```json
 {
-  "contributor": {
-    "id": "1234"
-  },
-  "id": "123",
-  "media_type": "sfx"
+  "$ref": "#/components/schemas/SFXExample"
 }
 ```
 
@@ -17018,15 +12246,7 @@ Files that are available as part of an sound effect asset
 
 ```json
 {
-  "data": [
-    {
-      "contributor": {
-        "id": "1234"
-      },
-      "id": "123",
-      "media_type": "sfx"
-    }
-  ]
+  "$ref": "#/components/schemas/SFXDataListExample"
 }
 ```
 
@@ -17095,7 +12315,7 @@ Sound effects search results
 
 ```json
 {
-  "text": "Planting flowers is a great way to make springtime more beautiful."
+  "$ref": "#/components/schemas/SearchEntitiesRequestExample"
 }
 ```
 
@@ -17306,7 +12526,7 @@ Data required to search for an image
 
 ```json
 {
-  "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
+  "$ref": "#/components/schemas/UrlExample"
 }
 ```
 
@@ -17435,47 +12655,7 @@ Subscription information
 
 ```json
 {
-  "data": [
-    {
-      "allotment": {
-        "downloads_left": 5,
-        "downloads_limit": 10,
-        "end_time": "2020-05-29T12:10:22-05:00",
-        "start_time": "2020-05-29T12:10:22-05:00"
-      },
-      "asset_type": "images",
-      "description": "Annual Subscription",
-      "expiration_time": "2020-05-29T12:10:22-05:00",
-      "formats": [
-        {
-          "description": "Small",
-          "format": "jpg",
-          "media_type": "image",
-          "min_resolution": 500,
-          "size": "small"
-        },
-        {
-          "description": "Med",
-          "format": "jpg",
-          "media_type": "image",
-          "min_resolution": 1000,
-          "size": "medium"
-        },
-        {
-          "description": "Vector",
-          "format": "eps",
-          "media_type": "image",
-          "size": "vector"
-        }
-      ],
-      "id": "s8906043",
-      "license": "standard",
-      "metadata": {}
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 123455
+  "$ref": "#/components/schemas/SubscriptionDataListExample"
 }
 ```
 
@@ -17527,18 +12707,7 @@ Subscription metadata; different for each customer
 
 ```json
 {
-  "data": [
-    "cat scan",
-    "cats and dogs",
-    "cats playing",
-    "catsuit",
-    "cat silhouette",
-    "catskills",
-    "cats eyes",
-    "cat sitting",
-    "cat sleeping",
-    "cats eye"
-  ]
+  "$ref": "#/components/schemas/SuggestionsExample"
 }
 ```
 
@@ -17559,7 +12728,7 @@ List of search suggestions
 
 ```json
 {
-  "text": "Test string"
+  "$ref": "#/components/schemas/TestEchoExample"
 }
 ```
 
@@ -17580,15 +12749,7 @@ Text to echo in the response
 
 ```json
 {
-  "header": {
-    "user-agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"
-  },
-  "query": {
-    "id": 123456,
-    "tag": [
-      "Test string"
-    ]
-  }
+  "$ref": "#/components/schemas/TestValidateExample"
 }
 ```
 
@@ -17681,11 +12842,7 @@ Image thumbnail information
 
 ```json
 {
-  "cover_asset": {
-    "id": "123"
-  },
-  "name": "My Collection",
-  "visibility": "public"
+  "$ref": "#/components/schemas/UpdateCatalogCollectionExample"
 }
 ```
 
@@ -17741,19 +12898,7 @@ Information about a piece of updated media
 
 ```json
 {
-  "data": [
-    {
-      "id": "123456789",
-      "updated_time": "2020-05-29T12:10:22-05:00",
-      "updates": [
-        "addition",
-        "edit"
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 13
+  "$ref": "#/components/schemas/UpdatedMediaDataListExample"
 }
 ```
 
@@ -17779,7 +12924,7 @@ List of updated media
 
 ```json
 {
-  "url": "https://download.shutterstock.com/gatekeeper/[random-characters]/shutterstock_59656357.jpg"
+  "$ref": "#/components/schemas/UrlExample"
 }
 ```
 
@@ -17823,13 +12968,7 @@ List of URLs
 
 ```json
 {
-  "contributor_id": "212",
-  "first_name": "John",
-  "full_name": "John Doe",
-  "id": "101782699",
-  "language": "es",
-  "last_name": "Doe",
-  "username": "jdoe"
+  "$ref": "#/components/schemas/UserDetailsExample"
 }
 ```
 
@@ -17864,153 +13003,7 @@ User details
 
 ```json
 {
-  "added_date": "2019-07-13",
-  "aspect": 1.778,
-  "aspect_ratio": "16:9",
-  "assets": {
-    "hd": {
-      "display_name": "Original HD",
-      "file_size": 110359552,
-      "format": "avc1",
-      "fps": 29.97,
-      "height": 1080,
-      "is_licensable": true,
-      "width": 1920
-    },
-    "preview_jpg": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-    },
-    "preview_mp4": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-    },
-    "preview_webm": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-    },
-    "sd": {
-      "display_name": "Standard Definition MPEG",
-      "file_size": 4577280,
-      "format": "mov",
-      "fps": 29.97,
-      "height": 480,
-      "is_licensable": true,
-      "width": 852
-    },
-    "thumb_jpg": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-    },
-    "thumb_jpgs": {
-      "urls": [
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg",
-        "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-      ]
-    },
-    "thumb_mp4": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-    },
-    "thumb_webm": {
-      "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-    },
-    "web": {
-      "display_name": "Low Resolution MPEG",
-      "file_size": 1291264,
-      "format": "mov",
-      "fps": 29.97,
-      "height": 240,
-      "is_licensable": true,
-      "width": 426
-    }
-  },
-  "categories": [
-    {
-      "id": "12",
-      "name": "Nature"
-    },
-    {
-      "id": "13",
-      "name": "People"
-    }
-  ],
-  "contributor": {
-    "id": "4411978"
-  },
-  "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-  "duration": 14.081,
-  "has_model_release": true,
-  "has_property_release": false,
-  "id": "1033184651",
-  "is_adult": false,
-  "is_editorial": false,
-  "keywords": [
-    "active",
-    "activity",
-    "adventure",
-    "arms",
-    "backpacker",
-    "carefree",
-    "celebrating",
-    "cliff",
-    "climate",
-    "cloud",
-    "discovery",
-    "escape",
-    "explore",
-    "extreme",
-    "free",
-    "freedom",
-    "girl",
-    "happy",
-    "high",
-    "hiker",
-    "hiking",
-    "hill",
-    "independent",
-    "inspiration",
-    "landscape",
-    "leisure",
-    "lifestyle",
-    "mountain",
-    "mountains",
-    "nature",
-    "outdoor",
-    "peak",
-    "person",
-    "rock",
-    "scenic",
-    "sky",
-    "sport",
-    "success",
-    "summer",
-    "summit",
-    "sun",
-    "sunset",
-    "top",
-    "tourism",
-    "travel",
-    "trekking",
-    "vacation",
-    "view",
-    "winning",
-    "woman"
-  ],
-  "media_type": "video",
-  "models": [
-    {
-      "id": "33233810"
-    },
-    {
-      "id": "25487168"
-    }
-  ]
+  "$ref": "#/components/schemas/VideoExample"
 }
 ```
 
@@ -18140,20 +13133,7 @@ Video asset information
 
 ```json
 {
-  "data": [
-    {
-      "added_time": "2016-08-18T18:52:59-04:00",
-      "id": "76688182",
-      "media_type": "video"
-    },
-    {
-      "added_time": "2016-08-18T18:52:59-04:00",
-      "id": "40005859",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 100
+  "$ref": "#/components/schemas/VideoCollectionItemDataListExample"
 }
 ```
 
@@ -18179,160 +13159,7 @@ List of items in a collection
 
 ```json
 {
-  "data": [
-    {
-      "added_date": "2019-07-13",
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "hd": {
-          "display_name": "Original HD",
-          "file_size": 110359552,
-          "format": "avc1",
-          "fps": 29.97,
-          "height": 1080,
-          "is_licensable": true,
-          "width": 1920
-        },
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "sd": {
-          "display_name": "Standard Definition MPEG",
-          "file_size": 4577280,
-          "format": "mov",
-          "fps": 29.97,
-          "height": 480,
-          "is_licensable": true,
-          "width": 852
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_jpgs": {
-          "urls": [
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/1.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/2.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/3.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/4.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/5.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/6.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/7.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/8.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/9.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/10.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/11.jpg",
-            "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-          ]
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "web": {
-          "display_name": "Low Resolution MPEG",
-          "file_size": 1291264,
-          "format": "mov",
-          "fps": 29.97,
-          "height": 240,
-          "is_licensable": true,
-          "width": 426
-        }
-      },
-      "categories": [
-        {
-          "id": "12",
-          "name": "Nature"
-        },
-        {
-          "id": "13",
-          "name": "People"
-        }
-      ],
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "has_property_release": false,
-      "id": "1033184651",
-      "is_adult": false,
-      "is_editorial": false,
-      "keywords": [
-        "active",
-        "activity",
-        "adventure",
-        "arms",
-        "backpacker",
-        "carefree",
-        "celebrating",
-        "cliff",
-        "climate",
-        "cloud",
-        "discovery",
-        "escape",
-        "explore",
-        "extreme",
-        "free",
-        "freedom",
-        "girl",
-        "happy",
-        "high",
-        "hiker",
-        "hiking",
-        "hill",
-        "independent",
-        "inspiration",
-        "landscape",
-        "leisure",
-        "lifestyle",
-        "mountain",
-        "mountains",
-        "nature",
-        "outdoor",
-        "peak",
-        "person",
-        "rock",
-        "scenic",
-        "sky",
-        "sport",
-        "success",
-        "summer",
-        "summit",
-        "sun",
-        "sunset",
-        "top",
-        "tourism",
-        "travel",
-        "trekking",
-        "vacation",
-        "view",
-        "winning",
-        "woman"
-      ],
-      "media_type": "video",
-      "models": [
-        {
-          "id": "33233810"
-        },
-        {
-          "id": "25487168"
-        }
-      ]
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "total_count": 25
+  "$ref": "#/components/schemas/VideoDataListExample"
 }
 ```
 
@@ -18379,44 +13206,7 @@ Video preview information
 
 ```json
 {
-  "data": [
-    {
-      "aspect": 1.778,
-      "aspect_ratio": "16:9",
-      "assets": {
-        "preview_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "preview_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "preview_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/preview/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        },
-        "thumb_jpg": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/12.jpg"
-        },
-        "thumb_mp4": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.mp4"
-        },
-        "thumb_webm": {
-          "url": "https://ak.picdn.net/shutterstock/videos/1033184651/thumb/stock-footage-camera-follows-hipster-millennial-young-woman-in-orange-jacket-running-up-on-top-of-mountain-summit.webm"
-        }
-      },
-      "contributor": {
-        "id": "4411978"
-      },
-      "description": "Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness",
-      "duration": 14.081,
-      "has_model_release": true,
-      "id": "1033184651",
-      "media_type": "video"
-    }
-  ],
-  "page": 1,
-  "per_page": 5,
-  "search_id": "749090bb-2967-4a20-b22e-c800dc845e10",
-  "total_count": 123
+  "$ref": "#/components/schemas/VideoSearchResultsExample"
 }
 ```
 
@@ -18465,3 +13255,910 @@ Video asset information
 |height|integer|false|none|Height of this video size|
 |is_licensable|boolean|false|none|Whether or not videos can be licensed in this video size|
 |width|integer|false|none|Width of this video size|
+
+<h2 id="tocS_DescriptorsListResultExample">DescriptorsListResultExample</h2>
+<!-- backwards compatibility -->
+<a id="schemadescriptorslistresultexample"></a>
+<a id="schema_DescriptorsListResultExample"></a>
+<a id="tocSdescriptorslistresultexample"></a>
+<a id="tocsdescriptorslistresultexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_InstrumentsListResultExample">InstrumentsListResultExample</h2>
+<!-- backwards compatibility -->
+<a id="schemainstrumentslistresultexample"></a>
+<a id="schema_InstrumentsListResultExample"></a>
+<a id="tocSinstrumentslistresultexample"></a>
+<a id="tocsinstrumentslistresultexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AudioRendersListResultsExample">AudioRendersListResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaaudiorenderslistresultsexample"></a>
+<a id="schema_AudioRendersListResultsExample"></a>
+<a id="tocSaudiorenderslistresultsexample"></a>
+<a id="tocsaudiorenderslistresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CreateAudioRendersRequestExample">CreateAudioRendersRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacreateaudiorendersrequestexample"></a>
+<a id="schema_CreateAudioRendersRequestExample"></a>
+<a id="tocScreateaudiorendersrequestexample"></a>
+<a id="tocscreateaudiorendersrequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AudioDataListExample">AudioDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaaudiodatalistexample"></a>
+<a id="schema_AudioDataListExample"></a>
+<a id="tocSaudiodatalistexample"></a>
+<a id="tocsaudiodatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionDataListExample">CollectionDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectiondatalistexample"></a>
+<a id="schema_CollectionDataListExample"></a>
+<a id="tocScollectiondatalistexample"></a>
+<a id="tocscollectiondatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionCreateResponseExample">CollectionCreateResponseExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectioncreateresponseexample"></a>
+<a id="schema_CollectionCreateResponseExample"></a>
+<a id="tocScollectioncreateresponseexample"></a>
+<a id="tocscollectioncreateresponseexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionExample">CollectionExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectionexample"></a>
+<a id="schema_CollectionExample"></a>
+<a id="tocScollectionexample"></a>
+<a id="tocscollectionexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_GenreListExample">GenreListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemagenrelistexample"></a>
+<a id="schema_GenreListExample"></a>
+<a id="tocSgenrelistexample"></a>
+<a id="tocsgenrelistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_InstrumentListExample">InstrumentListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemainstrumentlistexample"></a>
+<a id="schema_InstrumentListExample"></a>
+<a id="tocSinstrumentlistexample"></a>
+<a id="tocsinstrumentlistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseAudioRequestExample">LicenseAudioRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseaudiorequestexample"></a>
+<a id="schema_LicenseAudioRequestExample"></a>
+<a id="tocSlicenseaudiorequestexample"></a>
+<a id="tocslicenseaudiorequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseAudioResultDataListExample">LicenseAudioResultDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseaudioresultdatalistexample"></a>
+<a id="schema_LicenseAudioResultDataListExample"></a>
+<a id="tocSlicenseaudioresultdatalistexample"></a>
+<a id="tocslicenseaudioresultdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_MoodListExample">MoodListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemamoodlistexample"></a>
+<a id="schema_MoodListExample"></a>
+<a id="tocSmoodlistexample"></a>
+<a id="tocsmoodlistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AudioSearchResultsExample">AudioSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaaudiosearchresultsexample"></a>
+<a id="schema_AudioSearchResultsExample"></a>
+<a id="tocSaudiosearchresultsexample"></a>
+<a id="tocsaudiosearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AudioExample">AudioExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaaudioexample"></a>
+<a id="schema_AudioExample"></a>
+<a id="tocSaudioexample"></a>
+<a id="tocsaudioexample"></a>
+
+```json
+null
+```
+
+Pulsing and feel-good, featuring soaring synthesizer, groovy synth bass drums and synth drums that create a euphoric, upbeat mood.
+
+<h2 id="tocS_BulkImageSearchResultsExample">BulkImageSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemabulkimagesearchresultsexample"></a>
+<a id="schema_BulkImageSearchResultsExample"></a>
+<a id="tocSbulkimagesearchresultsexample"></a>
+<a id="tocsbulkimagesearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CatalogCollectionDataListExample">CatalogCollectionDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacatalogcollectiondatalistexample"></a>
+<a id="schema_CatalogCollectionDataListExample"></a>
+<a id="tocScatalogcollectiondatalistexample"></a>
+<a id="tocscatalogcollectiondatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CreateCatalogCollectionExample">CreateCatalogCollectionExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatecatalogcollectionexample"></a>
+<a id="schema_CreateCatalogCollectionExample"></a>
+<a id="tocScreatecatalogcollectionexample"></a>
+<a id="tocscreatecatalogcollectionexample"></a>
+
+```json
+[
+  null
+]
+```
+
+<h2 id="tocS_CatalogCollectionExample">CatalogCollectionExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacatalogcollectionexample"></a>
+<a id="schema_CatalogCollectionExample"></a>
+<a id="tocScatalogcollectionexample"></a>
+<a id="tocscatalogcollectionexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_UpdateCatalogCollectionExample">UpdateCatalogCollectionExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatecatalogcollectionexample"></a>
+<a id="schema_UpdateCatalogCollectionExample"></a>
+<a id="tocSupdatecatalogcollectionexample"></a>
+<a id="tocsupdatecatalogcollectionexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_RemoveCatalogCollectionItemsExample">RemoveCatalogCollectionItemsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaremovecatalogcollectionitemsexample"></a>
+<a id="schema_RemoveCatalogCollectionItemsExample"></a>
+<a id="tocSremovecatalogcollectionitemsexample"></a>
+<a id="tocsremovecatalogcollectionitemsexample"></a>
+
+```json
+[
+  null
+]
+```
+
+<h2 id="tocS_CreateCatalogCollectionItemsExample">CreateCatalogCollectionItemsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacreatecatalogcollectionitemsexample"></a>
+<a id="schema_CreateCatalogCollectionItemsExample"></a>
+<a id="tocScreatecatalogcollectionitemsexample"></a>
+<a id="tocscreatecatalogcollectionitemsexample"></a>
+
+```json
+[
+  null
+]
+```
+
+<h2 id="tocS_CatalogCollectionItemDataListExample">CatalogCollectionItemDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacatalogcollectionitemdatalistexample"></a>
+<a id="schema_CatalogCollectionItemDataListExample"></a>
+<a id="tocScatalogcollectionitemdatalistexample"></a>
+<a id="tocscatalogcollectionitemdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ContributorProfileDataListExample">ContributorProfileDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacontributorprofiledatalistexample"></a>
+<a id="schema_ContributorProfileDataListExample"></a>
+<a id="tocScontributorprofiledatalistexample"></a>
+<a id="tocscontributorprofiledatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ContributorProfileExample">ContributorProfileExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacontributorprofileexample"></a>
+<a id="schema_ContributorProfileExample"></a>
+<a id="tocScontributorprofileexample"></a>
+<a id="tocscontributorprofileexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ImageCreateRequestExample">ImageCreateRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaimagecreaterequestexample"></a>
+<a id="schema_ImageCreateRequestExample"></a>
+<a id="tocSimagecreaterequestexample"></a>
+<a id="tocsimagecreaterequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ComputerVisionImageCreateResponseExample">ComputerVisionImageCreateResponseExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacomputervisionimagecreateresponseexample"></a>
+<a id="schema_ComputerVisionImageCreateResponseExample"></a>
+<a id="tocScomputervisionimagecreateresponseexample"></a>
+<a id="tocscomputervisionimagecreateresponseexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_KeywordDataListExample">KeywordDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemakeyworddatalistexample"></a>
+<a id="schema_KeywordDataListExample"></a>
+<a id="tocSkeyworddatalistexample"></a>
+<a id="tocskeyworddatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ImageSearchResultsExample">ImageSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaimagesearchresultsexample"></a>
+<a id="schema_ImageSearchResultsExample"></a>
+<a id="tocSimagesearchresultsexample"></a>
+<a id="tocsimagesearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_VideoSearchResultsExample">VideoSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemavideosearchresultsexample"></a>
+<a id="schema_VideoSearchResultsExample"></a>
+<a id="tocSvideosearchresultsexample"></a>
+<a id="tocsvideosearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialCategoryResultsExample">EditorialCategoryResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialcategoryresultsexample"></a>
+<a id="schema_EditorialCategoryResultsExample"></a>
+<a id="tocSeditorialcategoryresultsexample"></a>
+<a id="tocseditorialcategoryresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialImageCategoryResultsExample">EditorialImageCategoryResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialimagecategoryresultsexample"></a>
+<a id="schema_EditorialImageCategoryResultsExample"></a>
+<a id="tocSeditorialimagecategoryresultsexample"></a>
+<a id="tocseditorialimagecategoryresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_DownloadHistoryDataListExample">DownloadHistoryDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemadownloadhistorydatalistexample"></a>
+<a id="schema_DownloadHistoryDataListExample"></a>
+<a id="tocSdownloadhistorydatalistexample"></a>
+<a id="tocsdownloadhistorydatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseEditorialContentRequestExample">LicenseEditorialContentRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseeditorialcontentrequestexample"></a>
+<a id="schema_LicenseEditorialContentRequestExample"></a>
+<a id="tocSlicenseeditorialcontentrequestexample"></a>
+<a id="tocslicenseeditorialcontentrequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseEditorialContentResultsExample">LicenseEditorialContentResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseeditorialcontentresultsexample"></a>
+<a id="schema_LicenseEditorialContentResultsExample"></a>
+<a id="tocSlicenseeditorialcontentresultsexample"></a>
+<a id="tocslicenseeditorialcontentresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialImageLivefeedListExample">EditorialImageLivefeedListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialimagelivefeedlistexample"></a>
+<a id="schema_EditorialImageLivefeedListExample"></a>
+<a id="tocSeditorialimagelivefeedlistexample"></a>
+<a id="tocseditorialimagelivefeedlistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialImageLivefeedExample">EditorialImageLivefeedExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialimagelivefeedexample"></a>
+<a id="schema_EditorialImageLivefeedExample"></a>
+<a id="tocSeditorialimagelivefeedexample"></a>
+<a id="tocseditorialimagelivefeedexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialImageContentDataListExample">EditorialImageContentDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialimagecontentdatalistexample"></a>
+<a id="schema_EditorialImageContentDataListExample"></a>
+<a id="tocSeditorialimagecontentdatalistexample"></a>
+<a id="tocseditorialimagecontentdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialSearchResultsExample">EditorialSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialsearchresultsexample"></a>
+<a id="schema_EditorialSearchResultsExample"></a>
+<a id="tocSeditorialsearchresultsexample"></a>
+<a id="tocseditorialsearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialUpdatedResultsExample">EditorialUpdatedResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialupdatedresultsexample"></a>
+<a id="schema_EditorialUpdatedResultsExample"></a>
+<a id="tocSeditorialupdatedresultsexample"></a>
+<a id="tocseditorialupdatedresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialContentExample">EditorialContentExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialcontentexample"></a>
+<a id="schema_EditorialContentExample"></a>
+<a id="tocSeditorialcontentexample"></a>
+<a id="tocseditorialcontentexample"></a>
+
+```json
+null
+```
+
+Security and stewards stand outside the Old Trafford stadium in Manchester, England, ahead of the English Premier League soccer match between Manchester United and Leicester City. This is the first Manchester United home match since fans protested against American owner Joel Glazer, forcing the postponement of the team's Premier League game against Liverpool. The protests prompted Glazer to publish a letter in which he pledged to accelerate discussions with fans about supporters being able to have a greater say at the club
+
+<h2 id="tocS_EditorialLivefeedListExample">EditorialLivefeedListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditoriallivefeedlistexample"></a>
+<a id="schema_EditorialLivefeedListExample"></a>
+<a id="tocSeditoriallivefeedlistexample"></a>
+<a id="tocseditoriallivefeedlistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialLivefeedExample">EditorialLivefeedExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditoriallivefeedexample"></a>
+<a id="schema_EditorialLivefeedExample"></a>
+<a id="tocSeditoriallivefeedexample"></a>
+<a id="tocseditoriallivefeedexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialContentDataListExample">EditorialContentDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialcontentdatalistexample"></a>
+<a id="schema_EditorialContentDataListExample"></a>
+<a id="tocSeditorialcontentdatalistexample"></a>
+<a id="tocseditorialcontentdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialVideoCategoryResultsExample">EditorialVideoCategoryResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialvideocategoryresultsexample"></a>
+<a id="schema_EditorialVideoCategoryResultsExample"></a>
+<a id="tocSeditorialvideocategoryresultsexample"></a>
+<a id="tocseditorialvideocategoryresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseEditorialVideoContentRequestExample">LicenseEditorialVideoContentRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseeditorialvideocontentrequestexample"></a>
+<a id="schema_LicenseEditorialVideoContentRequestExample"></a>
+<a id="tocSlicenseeditorialvideocontentrequestexample"></a>
+<a id="tocslicenseeditorialvideocontentrequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialVideoSearchResultsExample">EditorialVideoSearchResultsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialvideosearchresultsexample"></a>
+<a id="schema_EditorialVideoSearchResultsExample"></a>
+<a id="tocSeditorialvideosearchresultsexample"></a>
+<a id="tocseditorialvideosearchresultsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_EditorialVideoContentExample">EditorialVideoContentExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaeditorialvideocontentexample"></a>
+<a id="schema_EditorialVideoContentExample"></a>
+<a id="tocSeditorialvideocontentexample"></a>
+<a id="tocseditorialvideocontentexample"></a>
+
+```json
+null
+```
+
+Info from Licensor: "Peeps the Canadian Goose has been raised with our family since a gosling. Peeps has made appearances on our local news channels, TV shows, and local newspapers. He has been trained to fly next to four wheelers, jet ski's, and boats. He has brought joy to many people during the pandemic including those with cancer."
+
+<h2 id="tocS_ImageDataListExample">ImageDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaimagedatalistexample"></a>
+<a id="schema_ImageDataListExample"></a>
+<a id="tocSimagedatalistexample"></a>
+<a id="tocsimagedatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ImageCreateResponseExample">ImageCreateResponseExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaimagecreateresponseexample"></a>
+<a id="schema_ImageCreateResponseExample"></a>
+<a id="tocSimagecreateresponseexample"></a>
+<a id="tocsimagecreateresponseexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CategoryDataListExample">CategoryDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacategorydatalistexample"></a>
+<a id="schema_CategoryDataListExample"></a>
+<a id="tocScategorydatalistexample"></a>
+<a id="tocscategorydatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionCreateRequestExample">CollectionCreateRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectioncreaterequestexample"></a>
+<a id="schema_CollectionCreateRequestExample"></a>
+<a id="tocScollectioncreaterequestexample"></a>
+<a id="tocscollectioncreaterequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_FeaturedCollectionDataListExample">FeaturedCollectionDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemafeaturedcollectiondatalistexample"></a>
+<a id="schema_FeaturedCollectionDataListExample"></a>
+<a id="tocSfeaturedcollectiondatalistexample"></a>
+<a id="tocsfeaturedcollectiondatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_FeaturedCollectionExample">FeaturedCollectionExample</h2>
+<!-- backwards compatibility -->
+<a id="schemafeaturedcollectionexample"></a>
+<a id="schema_FeaturedCollectionExample"></a>
+<a id="tocSfeaturedcollectionexample"></a>
+<a id="tocsfeaturedcollectionexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionItemDataListExample">CollectionItemDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectionitemdatalistexample"></a>
+<a id="schema_CollectionItemDataListExample"></a>
+<a id="tocScollectionitemdatalistexample"></a>
+<a id="tocscollectionitemdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_CollectionUpdateRequestExample">CollectionUpdateRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemacollectionupdaterequestexample"></a>
+<a id="schema_CollectionUpdateRequestExample"></a>
+<a id="tocScollectionupdaterequestexample"></a>
+<a id="tocscollectionupdaterequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseImageRequestExample">LicenseImageRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseimagerequestexample"></a>
+<a id="schema_LicenseImageRequestExample"></a>
+<a id="tocSlicenseimagerequestexample"></a>
+<a id="tocslicenseimagerequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseImageResultDataListExample">LicenseImageResultDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicenseimageresultdatalistexample"></a>
+<a id="schema_LicenseImageResultDataListExample"></a>
+<a id="tocSlicenseimageresultdatalistexample"></a>
+<a id="tocslicenseimageresultdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_RedownloadImageExample">RedownloadImageExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaredownloadimageexample"></a>
+<a id="schema_RedownloadImageExample"></a>
+<a id="tocSredownloadimageexample"></a>
+<a id="tocsredownloadimageexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_UrlExample">UrlExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaurlexample"></a>
+<a id="schema_UrlExample"></a>
+<a id="tocSurlexample"></a>
+<a id="tocsurlexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_RecommendationDataListExample">RecommendationDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemarecommendationdatalistexample"></a>
+<a id="schema_RecommendationDataListExample"></a>
+<a id="tocSrecommendationdatalistexample"></a>
+<a id="tocsrecommendationdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_SuggestionsExample">SuggestionsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemasuggestionsexample"></a>
+<a id="schema_SuggestionsExample"></a>
+<a id="tocSsuggestionsexample"></a>
+<a id="tocssuggestionsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_SearchEntitiesRequestExample">SearchEntitiesRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemasearchentitiesrequestexample"></a>
+<a id="schema_SearchEntitiesRequestExample"></a>
+<a id="tocSsearchentitiesrequestexample"></a>
+<a id="tocssearchentitiesrequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_UpdatedMediaDataListExample">UpdatedMediaDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaupdatedmediadatalistexample"></a>
+<a id="schema_UpdatedMediaDataListExample"></a>
+<a id="tocSupdatedmediadatalistexample"></a>
+<a id="tocsupdatedmediadatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_ImageExample">ImageExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaimageexample"></a>
+<a id="schema_ImageExample"></a>
+<a id="tocSimageexample"></a>
+<a id="tocsimageexample"></a>
+
+```json
+null
+```
+
+cropped image of woman gardening
+
+<h2 id="tocS_OauthAccessTokenResponseExample">OauthAccessTokenResponseExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaoauthaccesstokenresponseexample"></a>
+<a id="schema_OauthAccessTokenResponseExample"></a>
+<a id="tocSoauthaccesstokenresponseexample"></a>
+<a id="tocsoauthaccesstokenresponseexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_SFXDataListExample">SFXDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemasfxdatalistexample"></a>
+<a id="schema_SFXDataListExample"></a>
+<a id="tocSsfxdatalistexample"></a>
+<a id="tocssfxdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseSFXRequestExample">LicenseSFXRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicensesfxrequestexample"></a>
+<a id="schema_LicenseSFXRequestExample"></a>
+<a id="tocSlicensesfxrequestexample"></a>
+<a id="tocslicensesfxrequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseSFXResultDataListExample">LicenseSFXResultDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicensesfxresultdatalistexample"></a>
+<a id="schema_LicenseSFXResultDataListExample"></a>
+<a id="tocSlicensesfxresultdatalistexample"></a>
+<a id="tocslicensesfxresultdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_SFXExample">SFXExample</h2>
+<!-- backwards compatibility -->
+<a id="schemasfxexample"></a>
+<a id="schema_SFXExample"></a>
+<a id="tocSsfxexample"></a>
+<a id="tocssfxexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_TestEchoExample">TestEchoExample</h2>
+<!-- backwards compatibility -->
+<a id="schematestechoexample"></a>
+<a id="schema_TestEchoExample"></a>
+<a id="tocStestechoexample"></a>
+<a id="tocstestechoexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_TestValidateExample">TestValidateExample</h2>
+<!-- backwards compatibility -->
+<a id="schematestvalidateexample"></a>
+<a id="schema_TestValidateExample"></a>
+<a id="tocStestvalidateexample"></a>
+<a id="tocstestvalidateexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_UserDetailsExample">UserDetailsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemauserdetailsexample"></a>
+<a id="schema_UserDetailsExample"></a>
+<a id="tocSuserdetailsexample"></a>
+<a id="tocsuserdetailsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_AccessTokenDetailsExample">AccessTokenDetailsExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccesstokendetailsexample"></a>
+<a id="schema_AccessTokenDetailsExample"></a>
+<a id="tocSaccesstokendetailsexample"></a>
+<a id="tocsaccesstokendetailsexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_SubscriptionDataListExample">SubscriptionDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemasubscriptiondatalistexample"></a>
+<a id="schema_SubscriptionDataListExample"></a>
+<a id="tocSsubscriptiondatalistexample"></a>
+<a id="tocssubscriptiondatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_VideoDataListExample">VideoDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemavideodatalistexample"></a>
+<a id="schema_VideoDataListExample"></a>
+<a id="tocSvideodatalistexample"></a>
+<a id="tocsvideodatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_VideoCollectionItemDataListExample">VideoCollectionItemDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemavideocollectionitemdatalistexample"></a>
+<a id="schema_VideoCollectionItemDataListExample"></a>
+<a id="tocSvideocollectionitemdatalistexample"></a>
+<a id="tocsvideocollectionitemdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseVideoRequestExample">LicenseVideoRequestExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicensevideorequestexample"></a>
+<a id="schema_LicenseVideoRequestExample"></a>
+<a id="tocSlicensevideorequestexample"></a>
+<a id="tocslicensevideorequestexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_LicenseVideoResultDataListExample">LicenseVideoResultDataListExample</h2>
+<!-- backwards compatibility -->
+<a id="schemalicensevideoresultdatalistexample"></a>
+<a id="schema_LicenseVideoResultDataListExample"></a>
+<a id="tocSlicensevideoresultdatalistexample"></a>
+<a id="tocslicensevideoresultdatalistexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_RedownloadVideoExample">RedownloadVideoExample</h2>
+<!-- backwards compatibility -->
+<a id="schemaredownloadvideoexample"></a>
+<a id="schema_RedownloadVideoExample"></a>
+<a id="tocSredownloadvideoexample"></a>
+<a id="tocsredownloadvideoexample"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_VideoExample">VideoExample</h2>
+<!-- backwards compatibility -->
+<a id="schemavideoexample"></a>
+<a id="schema_VideoExample"></a>
+<a id="tocSvideoexample"></a>
+<a id="tocsvideoexample"></a>
+
+```json
+null
+```
+
+Camera follows hipster millennial young woman in orange jacket running up on top of mountain summit at sunset, jumps on top of rocks, raises arms into air, happy and drunk on life, youth and happiness

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSmsCampaignsCampaignIdLinkExportFilenameFilenameRoute,
   getSmsCampaignsCampaignIdLinkStatisticsRoute,
   getSmsCampaignsCampaignIdLinkTrackingRoute,
@@ -11,33 +11,54 @@ import {
   putSmsCampaignsSmsCampaignIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSmsCampaignsRouteHandler: RouteHandler<typeof getSmsCampaignsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const smsCampaignsHandler = app
-  .openapi(getSmsCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSmsCampaignsPriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSmsCampaignsSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmsCampaignsCampaignIdLinkExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmsCampaignsCampaignIdLinkStatisticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmsCampaignsCampaignIdLinkTrackingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmsCampaignsSmsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSmsCampaignsSmsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSmsCampaignsSmsCampaignIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSmsCampaignsPriceRouteHandler: RouteHandler<
+  typeof postSmsCampaignsPriceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSmsCampaignsSendRouteHandler: RouteHandler<
+  typeof postSmsCampaignsSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmsCampaignsCampaignIdLinkExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getSmsCampaignsCampaignIdLinkExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmsCampaignsCampaignIdLinkStatisticsRouteHandler: RouteHandler<
+  typeof getSmsCampaignsCampaignIdLinkStatisticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmsCampaignsCampaignIdLinkTrackingRouteHandler: RouteHandler<
+  typeof getSmsCampaignsCampaignIdLinkTrackingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmsCampaignsSmsCampaignIdRouteHandler: RouteHandler<
+  typeof getSmsCampaignsSmsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSmsCampaignsSmsCampaignIdRouteHandler: RouteHandler<
+  typeof putSmsCampaignsSmsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSmsCampaignsSmsCampaignIdCancelRouteHandler: RouteHandler<
+  typeof putSmsCampaignsSmsCampaignIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

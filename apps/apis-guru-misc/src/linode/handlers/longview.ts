@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLongviewClientsClientIdRoute,
   getLongviewClientsClientIdRoute,
   getLongviewClientsRoute,
@@ -11,33 +11,52 @@ import {
   putLongviewPlanRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLongviewClientsRouteHandler: RouteHandler<typeof getLongviewClientsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const longviewHandler = app
-  .openapi(getLongviewClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postLongviewClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLongviewClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLongviewClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLongviewClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLongviewPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLongviewPlanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLongviewSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLongviewSubscriptionsSubscriptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postLongviewClientsRouteHandler: RouteHandler<
+  typeof postLongviewClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLongviewClientsClientIdRouteHandler: RouteHandler<
+  typeof deleteLongviewClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLongviewClientsClientIdRouteHandler: RouteHandler<
+  typeof getLongviewClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLongviewClientsClientIdRouteHandler: RouteHandler<
+  typeof putLongviewClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLongviewPlanRouteHandler: RouteHandler<typeof getLongviewPlanRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLongviewPlanRouteHandler: RouteHandler<typeof putLongviewPlanRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLongviewSubscriptionsRouteHandler: RouteHandler<
+  typeof getLongviewSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLongviewSubscriptionsSubscriptionIdRouteHandler: RouteHandler<
+  typeof getLongviewSubscriptionsSubscriptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

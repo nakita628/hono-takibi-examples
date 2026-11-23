@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetRoute53ResolverUpdateResolverEndpointHandler = app.openapi(
-  postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetRoute53ResolverUpdateResolverEndpointRouteHandler: RouteHandler<
+  typeof postXAmzTargetRoute53ResolverUpdateResolverEndpointRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -127,14 +127,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string } } & {
-          form: UploadObject
-        }
-        output: FileObject
-        outputFormat: 'json'
-        status: 201
-      }
+      $post:
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { form: UploadObject }
+            output: FileObject
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { form: UploadObject }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/Files/:FileId': {
@@ -144,14 +153,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $put: {
-        input: { param: { FileId: string } } & {
-          header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
-        } & { json: FileObject }
-        output: FileObject
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { FileId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: FileObject }
+            output: FileObject
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { FileId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: FileObject }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
       $delete: {
         input: { param: { FileId: string } } & { header: { 'xero-tenant-id': string } }
         output: {}
@@ -161,14 +179,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/Files/:FolderId': {
-      $post: {
-        input: { param: { FolderId: string } } & {
-          header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
-        } & { form: UploadObject }
-        output: FileObject
-        outputFormat: 'json'
-        status: 201
-      }
+      $post:
+        | {
+            input: { param: { FolderId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { form: UploadObject }
+            output: FileObject
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { FolderId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { form: UploadObject }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/Files/:FileId/Content': {
@@ -187,14 +214,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { param: { FileId: string } } & {
-          header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
-        } & { json: Association }
-        output: Association
-        outputFormat: 'json'
-        status: 201
-      }
+      $post:
+        | {
+            input: { param: { FileId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Association }
+            output: Association
+            outputFormat: 'json'
+            status: 201
+          }
+        | {
+            input: { param: { FileId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Association }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/Files/:FileId/Associations/:ObjectId': {
@@ -242,14 +278,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $post: {
-        input: { header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string } } & {
-          json: Folder
-        }
-        output: Folder
-        outputFormat: 'json'
-        status: 200
-      }
+      $post:
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Folder }
+            output: Folder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Folder }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
     }
   } & {
     '/Folders/:FolderId': {
@@ -259,14 +304,23 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         outputFormat: 'json'
         status: 200
       }
-      $put: {
-        input: { param: { FolderId: string } } & {
-          header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
-        } & { json: Folder }
-        output: Folder
-        outputFormat: 'json'
-        status: 200
-      }
+      $put:
+        | {
+            input: { param: { FolderId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Folder }
+            output: Folder
+            outputFormat: 'json'
+            status: 200
+          }
+        | {
+            input: { param: { FolderId: string } } & {
+              header: { 'Idempotency-Key'?: string | undefined; 'xero-tenant-id': string }
+            } & { json: Folder }
+            output: {}
+            outputFormat: string
+            status: 400
+          }
       $delete: {
         input: { param: { FolderId: string } } & { header: { 'xero-tenant-id': string } }
         output: {}

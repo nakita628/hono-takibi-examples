@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserManagementAuthkitOauthResourcesIdRoute,
   deleteUserManagementOrganizationMembershipsIdRoute,
   deleteUserManagementRedirectUrisIdRoute,
@@ -71,213 +71,416 @@ import {
   putUserManagementUsersUserIdConnectedAccountsSlugRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postUserManagementAuthenticateRouteHandler: RouteHandler<
+  typeof postUserManagementAuthenticateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userManagementHandler = app
-  .openapi(postUserManagementAuthenticateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementAuthkitOauthResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementAuthkitOauthResourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementAuthkitOauthResourcesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementAuthorizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementAuthorizeDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementCorsOriginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementCorsOriginsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementEmailVerificationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementInvitationsByTokenTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementInvitationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementInvitationsIdAcceptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementInvitationsIdResendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementInvitationsIdRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementJwtTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementJwtTemplateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementMagicAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementMagicAuthIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementOrganizationMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementOrganizationMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementOrganizationMembershipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementOrganizationMembershipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementOrganizationMembershipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementOrganizationMembershipsIdDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementOrganizationMembershipsIdReactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementOrganizationMembershipsOmIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementPasswordResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementPasswordResetConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementPasswordResetIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementRadarChallengesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementRadarChallengesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementRedirectUrisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementRedirectUrisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementRedirectUrisIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementSessionsLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementSessionsRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersExternalIdExternalIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersIdEmailChangeConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersIdEmailChangeSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersIdEmailVerificationConfirmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersIdEmailVerificationSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersIdIdentitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersIdSessionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersUserIdApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserIdFeatureFlagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserIdAuthorizedApplicationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserIdConnectedAccountsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementUsersUserIdConnectedAccountsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersUserIdConnectedAccountsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserManagementUsersUserIdConnectedAccountsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserIdDataProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementUsersUserlandUserIdAuthFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementUsersUserlandUserIdAuthFactorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserManagementWaitlistEntriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementWaitlistEntriesIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementWaitlistEntriesIdDenyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementWaitlistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementWaitlistsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserManagementWaitlistsIdEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserManagementWaitlistsIdEntriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUserManagementAuthkitOauthResourcesRouteHandler: RouteHandler<
+  typeof postUserManagementAuthkitOauthResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementAuthkitOauthResourcesRouteHandler: RouteHandler<
+  typeof getUserManagementAuthkitOauthResourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementAuthkitOauthResourcesIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementAuthkitOauthResourcesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementAuthorizeRouteHandler: RouteHandler<
+  typeof getUserManagementAuthorizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementAuthorizeDeviceRouteHandler: RouteHandler<
+  typeof postUserManagementAuthorizeDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementCorsOriginsRouteHandler: RouteHandler<
+  typeof postUserManagementCorsOriginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementCorsOriginsRouteHandler: RouteHandler<
+  typeof getUserManagementCorsOriginsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementEmailVerificationIdRouteHandler: RouteHandler<
+  typeof getUserManagementEmailVerificationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementInvitationsRouteHandler: RouteHandler<
+  typeof getUserManagementInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementInvitationsRouteHandler: RouteHandler<
+  typeof postUserManagementInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementInvitationsByTokenTokenRouteHandler: RouteHandler<
+  typeof getUserManagementInvitationsByTokenTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementInvitationsIdRouteHandler: RouteHandler<
+  typeof getUserManagementInvitationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementInvitationsIdAcceptRouteHandler: RouteHandler<
+  typeof postUserManagementInvitationsIdAcceptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementInvitationsIdResendRouteHandler: RouteHandler<
+  typeof postUserManagementInvitationsIdResendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementInvitationsIdRevokeRouteHandler: RouteHandler<
+  typeof postUserManagementInvitationsIdRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementJwtTemplateRouteHandler: RouteHandler<
+  typeof getUserManagementJwtTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementJwtTemplateRouteHandler: RouteHandler<
+  typeof putUserManagementJwtTemplateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementMagicAuthRouteHandler: RouteHandler<
+  typeof postUserManagementMagicAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementMagicAuthIdRouteHandler: RouteHandler<
+  typeof getUserManagementMagicAuthIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementOrganizationMembershipsRouteHandler: RouteHandler<
+  typeof getUserManagementOrganizationMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementOrganizationMembershipsRouteHandler: RouteHandler<
+  typeof postUserManagementOrganizationMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementOrganizationMembershipsIdRouteHandler: RouteHandler<
+  typeof getUserManagementOrganizationMembershipsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementOrganizationMembershipsIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementOrganizationMembershipsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementOrganizationMembershipsIdRouteHandler: RouteHandler<
+  typeof putUserManagementOrganizationMembershipsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementOrganizationMembershipsIdDeactivateRouteHandler: RouteHandler<
+  typeof putUserManagementOrganizationMembershipsIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementOrganizationMembershipsIdReactivateRouteHandler: RouteHandler<
+  typeof putUserManagementOrganizationMembershipsIdReactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementOrganizationMembershipsOmIdGroupsRouteHandler: RouteHandler<
+  typeof getUserManagementOrganizationMembershipsOmIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementPasswordResetRouteHandler: RouteHandler<
+  typeof postUserManagementPasswordResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementPasswordResetConfirmRouteHandler: RouteHandler<
+  typeof postUserManagementPasswordResetConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementPasswordResetIdRouteHandler: RouteHandler<
+  typeof getUserManagementPasswordResetIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementRadarChallengesRouteHandler: RouteHandler<
+  typeof postUserManagementRadarChallengesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementRadarChallengesIdRouteHandler: RouteHandler<
+  typeof getUserManagementRadarChallengesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementRedirectUrisRouteHandler: RouteHandler<
+  typeof postUserManagementRedirectUrisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementRedirectUrisRouteHandler: RouteHandler<
+  typeof getUserManagementRedirectUrisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementRedirectUrisIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementRedirectUrisIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementSessionsLogoutRouteHandler: RouteHandler<
+  typeof getUserManagementSessionsLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementSessionsRevokeRouteHandler: RouteHandler<
+  typeof postUserManagementSessionsRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersRouteHandler: RouteHandler<
+  typeof getUserManagementUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersRouteHandler: RouteHandler<
+  typeof postUserManagementUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersExternalIdExternalIdRouteHandler: RouteHandler<
+  typeof getUserManagementUsersExternalIdExternalIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementUsersIdRouteHandler: RouteHandler<
+  typeof putUserManagementUsersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersIdRouteHandler: RouteHandler<
+  typeof getUserManagementUsersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementUsersIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementUsersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersIdEmailChangeConfirmRouteHandler: RouteHandler<
+  typeof postUserManagementUsersIdEmailChangeConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersIdEmailChangeSendRouteHandler: RouteHandler<
+  typeof postUserManagementUsersIdEmailChangeSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersIdEmailVerificationConfirmRouteHandler: RouteHandler<
+  typeof postUserManagementUsersIdEmailVerificationConfirmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersIdEmailVerificationSendRouteHandler: RouteHandler<
+  typeof postUserManagementUsersIdEmailVerificationSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersIdIdentitiesRouteHandler: RouteHandler<
+  typeof getUserManagementUsersIdIdentitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersIdSessionsRouteHandler: RouteHandler<
+  typeof getUserManagementUsersIdSessionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserIdApiKeysRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersUserIdApiKeysRouteHandler: RouteHandler<
+  typeof postUserManagementUsersUserIdApiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserIdFeatureFlagsRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserIdFeatureFlagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserIdAuthorizedApplicationsRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserIdAuthorizedApplicationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementUsersUserIdAuthorizedApplicationsApplicationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserIdConnectedAccountsSlugRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserIdConnectedAccountsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementUsersUserIdConnectedAccountsSlugRouteHandler: RouteHandler<
+  typeof deleteUserManagementUsersUserIdConnectedAccountsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersUserIdConnectedAccountsSlugRouteHandler: RouteHandler<
+  typeof postUserManagementUsersUserIdConnectedAccountsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUserManagementUsersUserIdConnectedAccountsSlugRouteHandler: RouteHandler<
+  typeof putUserManagementUsersUserIdConnectedAccountsSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserIdDataProvidersRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserIdDataProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementUsersUserlandUserIdAuthFactorsRouteHandler: RouteHandler<
+  typeof postUserManagementUsersUserlandUserIdAuthFactorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementUsersUserlandUserIdAuthFactorsRouteHandler: RouteHandler<
+  typeof getUserManagementUsersUserlandUserIdAuthFactorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserManagementWaitlistEntriesIdRouteHandler: RouteHandler<
+  typeof deleteUserManagementWaitlistEntriesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementWaitlistEntriesIdApproveRouteHandler: RouteHandler<
+  typeof postUserManagementWaitlistEntriesIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementWaitlistEntriesIdDenyRouteHandler: RouteHandler<
+  typeof postUserManagementWaitlistEntriesIdDenyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementWaitlistsRouteHandler: RouteHandler<
+  typeof getUserManagementWaitlistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementWaitlistsIdRouteHandler: RouteHandler<
+  typeof getUserManagementWaitlistsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserManagementWaitlistsIdEntriesRouteHandler: RouteHandler<
+  typeof getUserManagementWaitlistsIdEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserManagementWaitlistsIdEntriesRouteHandler: RouteHandler<
+  typeof postUserManagementWaitlistsIdEntriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

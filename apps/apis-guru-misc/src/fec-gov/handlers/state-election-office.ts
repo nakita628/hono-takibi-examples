@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getStateElectionOfficeIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getStateElectionOfficeIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const stateElectionOfficeHandler = app.openapi(getStateElectionOfficeIndexRoute, (c) => {
+export const getStateElectionOfficeIndexRouteHandler: RouteHandler<
+  typeof getStateElectionOfficeIndexRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute,
   deleteV2AdvertisersAdvertiserIdChannelsChannelIdSitesUrlOrAppIdRoute,
   deleteV2AdvertisersAdvertiserIdCreativesCreativeIdRoute,
@@ -151,549 +151,888 @@ import {
   postV2UsersUserIdBulkEditAssignedUserRolesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV2AdvertisersRouteHandler: RouteHandler<typeof getV2AdvertisersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v2Handler = app
-  .openapi(getV2AdvertisersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdAssetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdCampaignsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdCampaignsCampaignIdListAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2AdvertisersAdvertiserIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdChannelsChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdChannelsChannelIdSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdChannelsChannelIdSitesUrlOrAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdChannelsChannelIdSitesBulkEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdChannelsChannelIdSitesReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdCreativesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdCreativesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdCreativesCreativeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdCreativesCreativeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdCreativesCreativeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdInsertionOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdInsertionOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdListAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2AdvertisersAdvertiserIdInvoicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdInvoicesLookupInvoiceCurrencyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdLineItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLineItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV2AdvertisersAdvertiserIdLineItemsLineItemIdDuplicateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLineItemsBulkEditAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdLineItemsBulkListAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLineItemsBulkUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLineItemsGenerateDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdLocationListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLocationListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdLocationListsLocationListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsAssignedLocationIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsBulkEditRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2AdvertisersAdvertiserIdManualTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdManualTriggersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdManualTriggersTriggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdManualTriggersTriggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdManualTriggersTriggerIdActivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdManualTriggersTriggerIdDeactivateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdNegativeKeywordListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdNegativeKeywordListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsKeywordValueRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsBulkEditRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsReplaceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsYoutubeAdGroupAdIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdYoutubeAdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2AdvertisersAdvertiserIdYoutubeAdGroupsBulkListAdGroupAssignedTargetingOptionsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2AdvertisersAdvertiserIdAuditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2AdvertisersAdvertiserIdEditAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2AdvertisersAdvertiserIdListAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CombinedAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CombinedAudiencesCombinedAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomBiddingAlgorithmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomBiddingAlgorithmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsCustomBiddingScriptIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdUploadScriptRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2CustomListsCustomListIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FirstAndThirdPartyAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2FirstAndThirdPartyAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdEditCustomerMatchMembersRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2FloodlightGroupsFloodlightGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2GoogleAudiencesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2GoogleAudiencesGoogleAudienceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2GuaranteedOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2GuaranteedOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2GuaranteedOrdersGuaranteedOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2GuaranteedOrdersGuaranteedOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2GuaranteedOrdersGuaranteedOrderIdEditGuaranteedOrderReadAccessorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InventorySourceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InventorySourceGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2InventorySourceGroupsInventorySourceGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InventorySourceGroupsInventorySourceGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesAssignedInventorySourceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesBulkEditRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2InventorySourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2InventorySourcesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2InventorySourcesInventorySourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2InventorySourcesInventorySourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postV2InventorySourcesInventorySourceIdEditInventorySourceReadWriteAccessorsRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getV2PartnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PartnersPartnerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PartnersPartnerIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PartnersPartnerIdChannelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2PartnersPartnerIdChannelsChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PartnersPartnerIdChannelsChannelIdSitesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2PartnersPartnerIdChannelsChannelIdSitesUrlOrAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PartnersPartnerIdChannelsChannelIdSitesBulkEditRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PartnersPartnerIdChannelsChannelIdSitesReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postV2PartnersPartnerIdEditAssignedTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2SdfdownloadtasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TargetingTypesTargetingTypeTargetingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2TargetingTypesTargetingTypeTargetingOptionsTargetingOptionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2TargetingTypesTargetingTypeTargetingOptionsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV2UsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV2UsersUserIdBulkEditAssignedUserRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV2AdvertisersRouteHandler: RouteHandler<typeof postV2AdvertisersRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdAssetsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdAssetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCampaignsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdCampaignsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdCampaignsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdCampaignsCampaignIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdCampaignsCampaignIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCampaignsCampaignIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCampaignsCampaignIdListAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCampaignsCampaignIdListAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdChannelsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdChannelsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdChannelsChannelIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdChannelsChannelIdSitesRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdChannelsChannelIdSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdChannelsChannelIdSitesUrlOrAppIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdChannelsChannelIdSitesUrlOrAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdChannelsChannelIdSitesBulkEditRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdChannelsChannelIdSitesBulkEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdChannelsChannelIdSitesReplaceRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdChannelsChannelIdSitesReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCreativesRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCreativesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdCreativesRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdCreativesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdCreativesCreativeIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdCreativesCreativeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdCreativesCreativeIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdCreativesCreativeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdCreativesCreativeIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdCreativesCreativeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInsertionOrdersRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInsertionOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdInsertionOrdersRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdInsertionOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdListAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInsertionOrdersInsertionOrderIdListAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInvoicesRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInvoicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdInvoicesLookupInvoiceCurrencyRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdInvoicesLookupInvoiceCurrencyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLineItemsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLineItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLineItemsLineItemIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdLineItemsLineItemIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdLineItemsLineItemIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLineItemsLineItemIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsLineItemIdDuplicateRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsLineItemIdDuplicateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsBulkEditAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsBulkEditAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLineItemsBulkListAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLineItemsBulkListAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsBulkUpdateRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsBulkUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLineItemsGenerateDefaultRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLineItemsGenerateDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLocationListsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLocationListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLocationListsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLocationListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdLocationListsLocationListIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdLocationListsLocationListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsAssignedLocationIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsAssignedLocationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsBulkEditRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdLocationListsLocationListIdAssignedLocationsBulkEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdManualTriggersRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdManualTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdManualTriggersRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdManualTriggersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdManualTriggersTriggerIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdManualTriggersTriggerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdManualTriggersTriggerIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdManualTriggersTriggerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdManualTriggersTriggerIdActivateRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdManualTriggersTriggerIdActivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdManualTriggersTriggerIdDeactivateRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdManualTriggersTriggerIdDeactivateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdNegativeKeywordListsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdNegativeKeywordListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdNegativeKeywordListsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdNegativeKeywordListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdRouteHandler: RouteHandler<
+  typeof patchV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsKeywordValueRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsKeywordValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsBulkEditRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsBulkEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsReplaceRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdNegativeKeywordListsNegativeKeywordListIdNegativeKeywordsReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof deleteV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsYoutubeAdGroupAdIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupAdsYoutubeAdGroupAdIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupsYoutubeAdGroupIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdYoutubeAdGroupsBulkListAdGroupAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdYoutubeAdGroupsBulkListAdGroupAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdAuditRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdAuditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2AdvertisersAdvertiserIdEditAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2AdvertisersAdvertiserIdEditAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2AdvertisersAdvertiserIdListAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2AdvertisersAdvertiserIdListAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CombinedAudiencesRouteHandler: RouteHandler<
+  typeof getV2CombinedAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CombinedAudiencesCombinedAudienceIdRouteHandler: RouteHandler<
+  typeof getV2CombinedAudiencesCombinedAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomBiddingAlgorithmsRouteHandler: RouteHandler<
+  typeof getV2CustomBiddingAlgorithmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomBiddingAlgorithmsRouteHandler: RouteHandler<
+  typeof postV2CustomBiddingAlgorithmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRouteHandler: RouteHandler<
+  typeof getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRouteHandler: RouteHandler<
+  typeof patchV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRouteHandler: RouteHandler<
+  typeof getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRouteHandler: RouteHandler<
+  typeof postV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsCustomBiddingScriptIdRouteHandler: RouteHandler<
+  typeof getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdScriptsCustomBiddingScriptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdUploadScriptRouteHandler: RouteHandler<
+  typeof getV2CustomBiddingAlgorithmsCustomBiddingAlgorithmIdUploadScriptRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomListsRouteHandler: RouteHandler<typeof getV2CustomListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2CustomListsCustomListIdRouteHandler: RouteHandler<
+  typeof getV2CustomListsCustomListIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FirstAndThirdPartyAudiencesRouteHandler: RouteHandler<
+  typeof getV2FirstAndThirdPartyAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FirstAndThirdPartyAudiencesRouteHandler: RouteHandler<
+  typeof postV2FirstAndThirdPartyAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRouteHandler: RouteHandler<
+  typeof getV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRouteHandler: RouteHandler<
+  typeof patchV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdEditCustomerMatchMembersRouteHandler: RouteHandler<
+  typeof postV2FirstAndThirdPartyAudiencesFirstAndThirdPartyAudienceIdEditCustomerMatchMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2FloodlightGroupsFloodlightGroupIdRouteHandler: RouteHandler<
+  typeof getV2FloodlightGroupsFloodlightGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2GoogleAudiencesRouteHandler: RouteHandler<
+  typeof getV2GoogleAudiencesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2GoogleAudiencesGoogleAudienceIdRouteHandler: RouteHandler<
+  typeof getV2GoogleAudiencesGoogleAudienceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2GuaranteedOrdersRouteHandler: RouteHandler<
+  typeof getV2GuaranteedOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2GuaranteedOrdersRouteHandler: RouteHandler<
+  typeof postV2GuaranteedOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2GuaranteedOrdersGuaranteedOrderIdRouteHandler: RouteHandler<
+  typeof getV2GuaranteedOrdersGuaranteedOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2GuaranteedOrdersGuaranteedOrderIdRouteHandler: RouteHandler<
+  typeof patchV2GuaranteedOrdersGuaranteedOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2GuaranteedOrdersGuaranteedOrderIdEditGuaranteedOrderReadAccessorsRouteHandler: RouteHandler<
+  typeof postV2GuaranteedOrdersGuaranteedOrderIdEditGuaranteedOrderReadAccessorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InventorySourceGroupsRouteHandler: RouteHandler<
+  typeof getV2InventorySourceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InventorySourceGroupsRouteHandler: RouteHandler<
+  typeof postV2InventorySourceGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InventorySourceGroupsInventorySourceGroupIdRouteHandler: RouteHandler<
+  typeof deleteV2InventorySourceGroupsInventorySourceGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InventorySourceGroupsInventorySourceGroupIdRouteHandler: RouteHandler<
+  typeof getV2InventorySourceGroupsInventorySourceGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRouteHandler: RouteHandler<
+  typeof getV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRouteHandler: RouteHandler<
+  typeof postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesAssignedInventorySourceIdRouteHandler: RouteHandler<
+  typeof deleteV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesAssignedInventorySourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesBulkEditRouteHandler: RouteHandler<
+  typeof postV2InventorySourceGroupsInventorySourceGroupIdAssignedInventorySourcesBulkEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InventorySourcesRouteHandler: RouteHandler<
+  typeof getV2InventorySourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InventorySourcesRouteHandler: RouteHandler<
+  typeof postV2InventorySourcesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2InventorySourcesInventorySourceIdRouteHandler: RouteHandler<
+  typeof getV2InventorySourcesInventorySourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2InventorySourcesInventorySourceIdRouteHandler: RouteHandler<
+  typeof patchV2InventorySourcesInventorySourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2InventorySourcesInventorySourceIdEditInventorySourceReadWriteAccessorsRouteHandler: RouteHandler<
+  typeof postV2InventorySourcesInventorySourceIdEditInventorySourceReadWriteAccessorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersRouteHandler: RouteHandler<typeof getV2PartnersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersPartnerIdRouteHandler: RouteHandler<
+  typeof getV2PartnersPartnerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersPartnerIdChannelsRouteHandler: RouteHandler<
+  typeof getV2PartnersPartnerIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PartnersPartnerIdChannelsRouteHandler: RouteHandler<
+  typeof postV2PartnersPartnerIdChannelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2PartnersPartnerIdChannelsChannelIdRouteHandler: RouteHandler<
+  typeof patchV2PartnersPartnerIdChannelsChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersPartnerIdChannelsChannelIdSitesRouteHandler: RouteHandler<
+  typeof getV2PartnersPartnerIdChannelsChannelIdSitesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2PartnersPartnerIdChannelsChannelIdSitesUrlOrAppIdRouteHandler: RouteHandler<
+  typeof deleteV2PartnersPartnerIdChannelsChannelIdSitesUrlOrAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PartnersPartnerIdChannelsChannelIdSitesBulkEditRouteHandler: RouteHandler<
+  typeof postV2PartnersPartnerIdChannelsChannelIdSitesBulkEditRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PartnersPartnerIdChannelsChannelIdSitesReplaceRouteHandler: RouteHandler<
+  typeof postV2PartnersPartnerIdChannelsChannelIdSitesReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof deleteV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2PartnersPartnerIdTargetingTypesTargetingTypeAssignedTargetingOptionsAssignedTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2PartnersPartnerIdEditAssignedTargetingOptionsRouteHandler: RouteHandler<
+  typeof postV2PartnersPartnerIdEditAssignedTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2SdfdownloadtasksRouteHandler: RouteHandler<
+  typeof postV2SdfdownloadtasksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TargetingTypesTargetingTypeTargetingOptionsRouteHandler: RouteHandler<
+  typeof getV2TargetingTypesTargetingTypeTargetingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2TargetingTypesTargetingTypeTargetingOptionsTargetingOptionIdRouteHandler: RouteHandler<
+  typeof getV2TargetingTypesTargetingTypeTargetingOptionsTargetingOptionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2TargetingTypesTargetingTypeTargetingOptionsSearchRouteHandler: RouteHandler<
+  typeof postV2TargetingTypesTargetingTypeTargetingOptionsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UsersRouteHandler: RouteHandler<typeof getV2UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersRouteHandler: RouteHandler<typeof postV2UsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV2UsersUserIdRouteHandler: RouteHandler<
+  typeof deleteV2UsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2UsersUserIdRouteHandler: RouteHandler<typeof getV2UsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV2UsersUserIdRouteHandler: RouteHandler<typeof patchV2UsersUserIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV2UsersUserIdBulkEditAssignedUserRolesRouteHandler: RouteHandler<
+  typeof postV2UsersUserIdBulkEditAssignedUserRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV2NameRouteHandler: RouteHandler<typeof getV2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

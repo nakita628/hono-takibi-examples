@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/unicourt.com/1.0.0/openapi.yaml',
   output: './src/unicourt/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/unicourt/types.ts' },
   client: { output: './src/unicourt/client.ts', baseUrl: '/' },
   rpc: { output: './src/unicourt/rpc.ts', parseResponse: true },

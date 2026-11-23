@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPayoutRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPayoutRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const payoutHandler = app.openapi(postPayoutRoute, (c) => {
+export const postPayoutRouteHandler: RouteHandler<typeof postPayoutRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

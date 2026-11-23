@@ -1,11 +1,12 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { healthHandler, locateHandler, versionHandler } from './handlers'
+import { getHealthRoute, getVersionRoute, postLocateRoute } from './routes'
+import { getHealthRouteHandler, getVersionRouteHandler, postLocateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', healthHandler)
-  .route('/', locateHandler)
-  .route('/', versionHandler)
+  .openapi(getHealthRoute, getHealthRouteHandler)
+  .openapi(postLocateRoute, postLocateRouteHandler)
+  .openapi(getVersionRoute, getVersionRouteHandler)
 
 export default app

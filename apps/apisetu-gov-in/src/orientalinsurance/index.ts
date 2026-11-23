@@ -1,29 +1,41 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  cripcHandler,
-  cvipcHandler,
-  egipcHandler,
-  hlipcHandler,
-  hmipcHandler,
-  mripcHandler,
-  podocHandler,
-  pripcHandler,
-  tripcHandler,
-  twipcHandler,
+  postCripcCertificateRoute,
+  postCvipcCertificateRoute,
+  postEgipcCertificateRoute,
+  postHlipcCertificateRoute,
+  postHmipcCertificateRoute,
+  postMripcCertificateRoute,
+  postPodocCertificateRoute,
+  postPripcCertificateRoute,
+  postTripcCertificateRoute,
+  postTwipcCertificateRoute,
+} from './routes'
+import {
+  postCripcCertificateRouteHandler,
+  postCvipcCertificateRouteHandler,
+  postEgipcCertificateRouteHandler,
+  postHlipcCertificateRouteHandler,
+  postHmipcCertificateRouteHandler,
+  postMripcCertificateRouteHandler,
+  postPodocCertificateRouteHandler,
+  postPripcCertificateRouteHandler,
+  postTripcCertificateRouteHandler,
+  postTwipcCertificateRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', cripcHandler)
-  .route('/', cvipcHandler)
-  .route('/', egipcHandler)
-  .route('/', hlipcHandler)
-  .route('/', hmipcHandler)
-  .route('/', mripcHandler)
-  .route('/', podocHandler)
-  .route('/', pripcHandler)
-  .route('/', tripcHandler)
-  .route('/', twipcHandler)
+  .openapi(postCripcCertificateRoute, postCripcCertificateRouteHandler)
+  .openapi(postCvipcCertificateRoute, postCvipcCertificateRouteHandler)
+  .openapi(postEgipcCertificateRoute, postEgipcCertificateRouteHandler)
+  .openapi(postHlipcCertificateRoute, postHlipcCertificateRouteHandler)
+  .openapi(postHmipcCertificateRoute, postHmipcCertificateRouteHandler)
+  .openapi(postMripcCertificateRoute, postMripcCertificateRouteHandler)
+  .openapi(postPodocCertificateRoute, postPodocCertificateRouteHandler)
+  .openapi(postPripcCertificateRoute, postPripcCertificateRouteHandler)
+  .openapi(postTripcCertificateRoute, postTripcCertificateRouteHandler)
+  .openapi(postTwipcCertificateRoute, postTwipcCertificateRouteHandler)
 
 export default app

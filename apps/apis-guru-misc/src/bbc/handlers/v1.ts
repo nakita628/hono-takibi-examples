@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV1BrandsPidFranchisesIndexRoute,
   getV1BrandsPidRoute,
   getV1EpisodesPidAncestorsIndexRoute,
@@ -11,33 +11,52 @@ import {
   getV1PromotionsPidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1BrandsPidRouteHandler: RouteHandler<typeof getV1BrandsPidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1BrandsPidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1BrandsPidFranchisesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EpisodesPidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EpisodesPidAncestorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EpisodesPidFormatsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EpisodesPidGenreGroupsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1ImagesPidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1MasterBrandsMbidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1PromotionsPidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1BrandsPidFranchisesIndexRouteHandler: RouteHandler<
+  typeof getV1BrandsPidFranchisesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EpisodesPidRouteHandler: RouteHandler<typeof getV1EpisodesPidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EpisodesPidAncestorsIndexRouteHandler: RouteHandler<
+  typeof getV1EpisodesPidAncestorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EpisodesPidFormatsIndexRouteHandler: RouteHandler<
+  typeof getV1EpisodesPidFormatsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EpisodesPidGenreGroupsIndexRouteHandler: RouteHandler<
+  typeof getV1EpisodesPidGenreGroupsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1ImagesPidRouteHandler: RouteHandler<typeof getV1ImagesPidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1MasterBrandsMbidRouteHandler: RouteHandler<
+  typeof getV1MasterBrandsMbidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1PromotionsPidRouteHandler: RouteHandler<typeof getV1PromotionsPidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetFmrsServiceUpdateTaskRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetFmrsServiceUpdateTaskRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetFmrsServiceUpdateTaskHandler = app.openapi(
-  postXAmzTargetFmrsServiceUpdateTaskRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetFmrsServiceUpdateTaskRouteHandler: RouteHandler<
+  typeof postXAmzTargetFmrsServiceUpdateTaskRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

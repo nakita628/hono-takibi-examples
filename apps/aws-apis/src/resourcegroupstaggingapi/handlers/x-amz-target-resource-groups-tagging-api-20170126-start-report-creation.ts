@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetResourceGroupsTaggingAPI20170126StartReportCreationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetResourceGroupsTaggingAPI20170126StartReportCreationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetResourceGroupsTaggingApi20170126StartReportCreationHandler = app.openapi(
-  postXAmzTargetResourceGroupsTaggingAPI20170126StartReportCreationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetResourceGroupsTaggingAPI20170126StartReportCreationRouteHandler: RouteHandler<
+  typeof postXAmzTargetResourceGroupsTaggingAPI20170126StartReportCreationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

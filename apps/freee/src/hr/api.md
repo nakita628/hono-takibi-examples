@@ -11052,14 +11052,10 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/work_times \
 |» company_id|body|integer(int32)|true|事業所ID（必須）|
 |» target_date|body|string(date)|true|対象日（必須）|
 |» clear_work_time|body|boolean|false|false: 勤務時間を修正する  <br>true: 勤務時間を削除する<br><br>勤務時間を削除する場合は以下のパラメータは指定しないでください。<br>- work_records<br>- lateness_mins<br>- early_leaving_mins<br>- break_records|
-|» work_records|body|[object]|false|勤務時間のリスト|
-|» » clock_in_at|body|string|true|開始時刻|
-|» » clock_out_at|body|string|true|終了時刻|
+|» work_records|body|[[ApiV1WorkTimeIndexResponseParamsWorkRecordsItems](#schemaapiv1worktimeindexresponseparamsworkrecordsitems)]|false|勤務時間のリスト|
 |» lateness_mins|body|integer(int32)|false|遅刻分の時間（分単位）|
 |» early_leaving_mins|body|integer(int32)|false|早退分の時間（分単位）|
-|» break_records|body|[object]|false|休憩時間のリスト|
-|» » clock_in_at|body|string|true|開始時刻|
-|» » clock_out_at|body|string|true|終了時刻|
+|» break_records|body|[[ApiV1WorkTimeIndexResponseParamsBreakRecordsItems](#schemaapiv1worktimeindexresponseparamsbreakrecordsitems)]|false|休憩時間のリスト|
 |» comment|body|string|false|申請理由|
 |» approval_flow_route_id|body|integer(int32)|true|申請経路ID（必須）|
 |» approver_id|body|integer(int32)|false|承認者のユーザーID|
@@ -11505,14 +11501,10 @@ curl https://api.freee.co.jp/hr/api/v1/approval_requests/work_times/1 \
 |» company_id|body|integer(int32)|true|事業所ID（必須）|
 |» target_date|body|string(date)|true|対象日（必須）|
 |» clear_work_time|body|boolean|false|false: 勤務時間を修正する  <br>true: 勤務時間を削除する<br><br>勤務時間を削除する場合は以下のパラメータは指定しないでください。<br>- work_records<br>- lateness_mins<br>- early_leaving_mins<br>- break_records|
-|» work_records|body|[object]|false|勤務時間のリスト|
-|» » clock_in_at|body|string|true|開始時刻|
-|» » clock_out_at|body|string|true|終了時刻|
+|» work_records|body|[[ApiV1WorkTimeIndexResponseParamsWorkRecordsItems](#schemaapiv1worktimeindexresponseparamsworkrecordsitems)]|false|勤務時間のリスト|
 |» lateness_mins|body|integer(int32)|false|遅刻分の時間（分単位）|
 |» early_leaving_mins|body|integer(int32)|false|早退分の時間（分単位）|
-|» break_records|body|[object]|false|休憩時間のリスト|
-|» » clock_in_at|body|string|true|開始時刻|
-|» » clock_out_at|body|string|true|終了時刻|
+|» break_records|body|[[ApiV1WorkTimeIndexResponseParamsBreakRecordsItems](#schemaapiv1worktimeindexresponseparamsbreakrecordsitems)]|false|休憩時間のリスト|
 |» comment|body|string|false|申請理由|
 |» approval_flow_route_id|body|integer(int32)|true|申請経路ID（必須）|
 |» approver_id|body|integer(int32)|false|承認者のユーザーID|
@@ -25147,10 +25139,10 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |clear_work_time|boolean|true|none|勤務時間削除フラグ（false:勤務時間を修正する、true:勤務時間を削除する）|
 |clock_in_at|string \| null|false|none|勤務開始時間<br>  - 勤務時間が複数登録されている場合は、最初の勤務の出勤時間を返します。|
 |clock_out_at|string \| null|false|none|勤務終了時間<br>  - 勤務時間が複数登録されている場合は、最後の勤務の退勤時間を返します。|
-|work_records|[object]|false|none|勤務時間のリスト<br>  - 登録されている全ての勤務時間のリストを返します。|
+|work_records|[[ApiV1WorkTimeIndexResponseParamsWorkRecordsItems](#schemaapiv1worktimeindexresponseparamsworkrecordsitems)]|false|none|勤務時間のリスト<br>  - 登録されている全ての勤務時間のリストを返します。|
 |lateness_mins|integer(int32)|true|none|遅刻分の時間（分単位）|
 |early_leaving_mins|integer(int32)|true|none|早退分の時間（分単位）|
-|break_records|[object]|false|none|休憩時間のリスト|
+|break_records|[[ApiV1WorkTimeIndexResponseParamsBreakRecordsItems](#schemaapiv1worktimeindexresponseparamsbreakrecordsitems)]|false|none|休憩時間のリスト|
 |issue_date|string(date)|true|none|申請日|
 |comment|string \| null|false|none|申請理由|
 |status|string|true|none|申請ステータス。（draft:下書き、in_progress:申請中、approved:承認済、feedback:差戻し）|
@@ -25239,10 +25231,10 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |clear_work_time|boolean|true|none|勤務時間削除フラグ（false:勤務時間を修正する、true:勤務時間を削除する）|
 |clock_in_at|string \| null|false|none|勤務開始時間<br>  - 勤務が複数登録されている場合は、最初の勤務の出勤時間を返します。|
 |clock_out_at|string \| null|false|none|勤務終了時間<br>  - 勤務が複数登録されている場合は、最後の勤務の退勤時間を返します。|
-|work_records|[object]|false|none|勤務時間のリスト<br>  - 登録されている全ての勤務時間のリストを返します。|
+|work_records|[[ApiV1WorkTimeIndexResponseParamsWorkRecordsItems](#schemaapiv1worktimeindexresponseparamsworkrecordsitems)]|false|none|勤務時間のリスト<br>  - 登録されている全ての勤務時間のリストを返します。|
 |lateness_mins|integer(int32)|true|none|遅刻分の時間（分単位）|
 |early_leaving_mins|integer(int32)|true|none|早退分の時間（分単位）|
-|break_records|[object]|false|none|休憩時間のリスト|
+|break_records|[[ApiV1WorkTimeIndexResponseParamsBreakRecordsItems](#schemaapiv1worktimeindexresponseparamsbreakrecordsitems)]|false|none|休憩時間のリスト|
 |issue_date|string(date)|true|none|申請日|
 |comment|string \| null|false|none|申請理由|
 |status|string|true|none|申請ステータス。（draft:下書き、in_progress:申請中、approved:承認済、feedback:差戻し）|
@@ -28988,3 +28980,45 @@ hourly では mins を返し、時間帯を持つ実績の場合は time_ranges 
 |---|---|---|---|---|
 |status_code|integer|false|none|none|
 |errors|[object]|false|none|none|
+
+<h2 id="tocS_ApiV1WorkTimeIndexResponseParamsWorkRecordsItems">ApiV1WorkTimeIndexResponseParamsWorkRecordsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1worktimeindexresponseparamsworkrecordsitems"></a>
+<a id="schema_ApiV1WorkTimeIndexResponseParamsWorkRecordsItems"></a>
+<a id="tocSapiv1worktimeindexresponseparamsworkrecordsitems"></a>
+<a id="tocsapiv1worktimeindexresponseparamsworkrecordsitems"></a>
+
+```json
+{
+  "clock_in_at": "12:00",
+  "clock_out_at": "23:59"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clock_in_at|string|true|none|開始時刻|
+|clock_out_at|string|true|none|終了時刻|
+
+<h2 id="tocS_ApiV1WorkTimeIndexResponseParamsBreakRecordsItems">ApiV1WorkTimeIndexResponseParamsBreakRecordsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaapiv1worktimeindexresponseparamsbreakrecordsitems"></a>
+<a id="schema_ApiV1WorkTimeIndexResponseParamsBreakRecordsItems"></a>
+<a id="tocSapiv1worktimeindexresponseparamsbreakrecordsitems"></a>
+<a id="tocsapiv1worktimeindexresponseparamsbreakrecordsitems"></a>
+
+```json
+{
+  "clock_in_at": "12:00",
+  "clock_out_at": "23:59"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|clock_in_at|string|true|none|開始時刻|
+|clock_out_at|string|true|none|終了時刻|

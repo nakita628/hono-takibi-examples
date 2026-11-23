@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/portfoliooptimizer.io/1.0.9/openapi.yaml',
   output: './src/portfoliooptimizer-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/portfoliooptimizer-io/types.ts' },
   client: { output: './src/portfoliooptimizer-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/portfoliooptimizer-io/rpc.ts', parseResponse: true },

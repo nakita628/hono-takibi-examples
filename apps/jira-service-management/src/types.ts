@@ -3292,6 +3292,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $post:
         | {
             input: { param: { serviceDeskId: string } } & { form: MultipartFile[] }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
+        | {
+            input: { param: { serviceDeskId: string } } & { form: MultipartFile[] }
             output: ErrorResponse
             outputFormat: 'json'
             status: 400
@@ -3468,6 +3474,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   } & {
     '/rest/servicedeskapi/servicedesk/:serviceDeskId/customer/invite': {
       $post:
+        | {
+            input: { param: { serviceDeskId: string } } & {
+              query: { strictConflictStatusCode?: boolean | undefined }
+            } & { json: ServiceDeskCustomerInviteDTO }
+            output: {}
+            outputFormat: string
+            status: 201
+          }
         | {
             input: { param: { serviceDeskId: string } } & {
               query: { strictConflictStatusCode?: boolean | undefined }

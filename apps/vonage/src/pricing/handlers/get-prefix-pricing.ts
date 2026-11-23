@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGetPrefixPricingOutboundTypeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGetPrefixPricingOutboundTypeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const getPrefixPricingHandler = app.openapi(getGetPrefixPricingOutboundTypeRoute, (c) => {
+export const getGetPrefixPricingOutboundTypeRouteHandler: RouteHandler<
+  typeof getGetPrefixPricingOutboundTypeRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

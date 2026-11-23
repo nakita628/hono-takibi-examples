@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSharingGroupsDeleteSharingGroupIdRoute,
   getSharingGroupsRoute,
   getSharingGroupsViewSharingGroupIdRoute,
@@ -11,33 +11,56 @@ import {
   postSharingGroupsRemoveServerSharingGroupServerIdServerIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSharingGroupsAddRouteHandler: RouteHandler<
+  typeof postSharingGroupsAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sharingGroupsHandler = app
-  .openapi(postSharingGroupsAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharingGroupsEditSharingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSharingGroupsDeleteSharingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharingGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSharingGroupsViewSharingGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharingGroupsAddOrgSharingGroupIdOrganisationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharingGroupsRemoveOrgSharingGroupIdOrganisationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharingGroupsAddServerSharingGroupIdServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSharingGroupsRemoveServerSharingGroupServerIdServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSharingGroupsEditSharingGroupIdRouteHandler: RouteHandler<
+  typeof postSharingGroupsEditSharingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSharingGroupsDeleteSharingGroupIdRouteHandler: RouteHandler<
+  typeof deleteSharingGroupsDeleteSharingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharingGroupsRouteHandler: RouteHandler<typeof getSharingGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSharingGroupsViewSharingGroupIdRouteHandler: RouteHandler<
+  typeof getSharingGroupsViewSharingGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSharingGroupsAddOrgSharingGroupIdOrganisationIdRouteHandler: RouteHandler<
+  typeof postSharingGroupsAddOrgSharingGroupIdOrganisationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSharingGroupsRemoveOrgSharingGroupIdOrganisationIdRouteHandler: RouteHandler<
+  typeof postSharingGroupsRemoveOrgSharingGroupIdOrganisationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSharingGroupsAddServerSharingGroupIdServerIdRouteHandler: RouteHandler<
+  typeof postSharingGroupsAddServerSharingGroupIdServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postSharingGroupsRemoveServerSharingGroupServerIdServerIdRouteHandler: RouteHandler<
+  typeof postSharingGroupsRemoveServerSharingGroupServerIdServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSStepFunctionsSendTaskFailureRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSStepFunctionsSendTaskFailureRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsStepFunctionsSendTaskFailureHandler = app.openapi(
-  postXAmzTargetAWSStepFunctionsSendTaskFailureRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSStepFunctionsSendTaskFailureRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSStepFunctionsSendTaskFailureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

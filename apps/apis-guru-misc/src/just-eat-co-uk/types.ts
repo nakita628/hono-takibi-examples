@@ -1776,6 +1776,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { tenant: string; type: CommunicationTypes } } & {
               json: ChannelSubscriptions
             }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { tenant: string; type: CommunicationTypes } } & {
+              json: ChannelSubscriptions
+            }
             output: _4XXErrorSchema
             outputFormat: 'json'
             status: 401
@@ -1802,6 +1810,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       $delete:
         | {
             input: { param: { tenant: string; type: CommunicationTypes; channel: string } }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
+        | {
+            input: { param: { tenant: string; type: CommunicationTypes; channel: string } }
             output: _4XXErrorSchema
             outputFormat: 'json'
             status: 401
@@ -1819,6 +1833,14 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             status: 500
           }
       $post:
+        | {
+            input: {
+              param: { tenant: string; type: CommunicationTypes; channel: CommunicationChannels }
+            }
+            output: {}
+            outputFormat: string
+            status: 204
+          }
         | {
             input: {
               param: { tenant: string; type: CommunicationTypes; channel: CommunicationChannels }
@@ -1922,17 +1944,22 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
     }
   } & {
     '/delivery/pools': {
-      $get: {
-        input: {}
-        output: {
-          'delivery-pool-id'?:
-            | { name?: string | undefined; restaurants?: number[] | undefined }
-            | undefined
-        }
-        outputFormat: 'json'
-        status: 200
-      }
-      $post: { input: { json: CreateDeliveryPool }; output: {}; outputFormat: string; status: 201 }
+      $get:
+        | {
+            input: {}
+            output: {
+              'delivery-pool-id'?:
+                | { name?: string | undefined; restaurants?: number[] | undefined }
+                | undefined
+            }
+            outputFormat: 'json'
+            status: 200
+          }
+        | { input: {}; output: {}; outputFormat: string; status: 500 }
+      $post:
+        | { input: { json: CreateDeliveryPool }; output: {}; outputFormat: string; status: 201 }
+        | { input: { json: CreateDeliveryPool }; output: {}; outputFormat: string; status: 400 }
+        | { input: { json: CreateDeliveryPool }; output: {}; outputFormat: string; status: 500 }
     }
   } & {
     '/delivery/pools/:deliveryPoolId': {
@@ -1949,6 +1976,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 404
           }
+        | {
+            input: { param: { deliveryPoolId: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $get:
         | {
             input: { param: { deliveryPoolId: string } }
@@ -1962,6 +1995,12 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: string
             status: 404
           }
+        | {
+            input: { param: { deliveryPoolId: string } }
+            output: {}
+            outputFormat: string
+            status: 500
+          }
       $patch:
         | {
             input: { param: { deliveryPoolId: string } } & { json: PatchDeliveryPool }
@@ -1973,7 +2012,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { deliveryPoolId: string } } & { json: PatchDeliveryPool }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: PatchDeliveryPool }
+            output: {}
+            outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: PatchDeliveryPool }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: PatchDeliveryPool }
+            output: {}
+            outputFormat: string
+            status: 500
           }
       $put:
         | {
@@ -1986,7 +2043,25 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             input: { param: { deliveryPoolId: string } } & { json: CreateDeliveryPool }
             output: {}
             outputFormat: string
+            status: 400
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: CreateDeliveryPool }
+            output: {}
+            outputFormat: string
             status: 404
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: CreateDeliveryPool }
+            output: {}
+            outputFormat: string
+            status: 409
+          }
+        | {
+            input: { param: { deliveryPoolId: string } } & { json: CreateDeliveryPool }
+            output: {}
+            outputFormat: string
+            status: 500
           }
     }
   } & {

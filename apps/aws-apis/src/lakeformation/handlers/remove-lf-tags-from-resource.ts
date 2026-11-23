@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postRemoveLFTagsFromResourceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postRemoveLFTagsFromResourceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const removeLfTagsFromResourceHandler = app.openapi(
-  postRemoveLFTagsFromResourceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postRemoveLFTagsFromResourceRouteHandler: RouteHandler<
+  typeof postRemoveLFTagsFromResourceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAppInstanceUsersAppInstanceUserArnRoute,
   getAppInstanceUsersAppInstanceUserArnRoute,
   postAppInstanceUsersRoute,
   putAppInstanceUsersAppInstanceUserArnRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppInstanceUsersRouteHandler: RouteHandler<
+  typeof postAppInstanceUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const appInstanceUsersHandler = app
-  .openapi(postAppInstanceUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAppInstanceUsersAppInstanceUserArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppInstanceUsersAppInstanceUserArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAppInstanceUsersAppInstanceUserArnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteAppInstanceUsersAppInstanceUserArnRouteHandler: RouteHandler<
+  typeof deleteAppInstanceUsersAppInstanceUserArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAppInstanceUsersAppInstanceUserArnRouteHandler: RouteHandler<
+  typeof getAppInstanceUsersAppInstanceUserArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAppInstanceUsersAppInstanceUserArnRouteHandler: RouteHandler<
+  typeof putAppInstanceUsersAppInstanceUserArnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

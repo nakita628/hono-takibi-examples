@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementHandler =
-  app.openapi(postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRouteHandler: RouteHandler<
+  typeof postXAmzTargetPhotonAdminProxyServiceAssociateApplicationToEntitlementRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

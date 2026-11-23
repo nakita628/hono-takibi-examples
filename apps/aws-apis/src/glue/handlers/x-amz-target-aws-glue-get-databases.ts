@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSGlueGetDatabasesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSGlueGetDatabasesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsGlueGetDatabasesHandler = app.openapi(
-  postXAmzTargetAWSGlueGetDatabasesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSGlueGetDatabasesRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSGlueGetDatabasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -444,7 +444,7 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Account](#schemaaccount)|false|none|
-|» currency|body|string(ISO4217)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
 |» currentBalance|body|number \| null|false|Current balance in the account.|
 |» description|body|string \| null|false|Description for the account.|
 |» fullyQualifiedCategory|body|string \| null|false|Full category of the account. For example:<br>Liability.Current or Income.Revenue. See example data.|
@@ -454,8 +454,8 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» name|body|string \| null|false|Name of the account.|
 |» nominalCode|body|string \| null|false|Reference given to each nominal account for a business. It ensures money is allocated to the correct account. This code isn't a unique identifier in the Codat system.|
-|» status|body|string|true|Status of the account|
-|» type|body|string|true|Type of account|
+|» status|body|[AccountAccountStatus](#schemaaccountaccountstatus)|true|Status of the account|
+|» type|body|[AccountAccountType](#schemaaccountaccounttype)|true|Type of account|
 |» validDatatypeLinks|body|[[ValidDataTypeLinks](#schemavaliddatatypelinks)]|false|'The validDatatypeLinks can be used to determine whether an account can be correctly mapped to another object; for example, accounts with a `type` of `income` might only support being used on an Invoice and Direct Income. For more information, see Valid Data Type Links.'|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
@@ -1240,7 +1240,7 @@ Required data may vary by integration. To see what data to post, first call []()
 |» accountType|body|string|false|The type of transactions and balances on the account.  <br>For Credit accounts, positive balances are liabilities, and positive transactions **reduce** liabilities.  <br>For Debit accounts, positive balances are assets, and positive transactions **increase** assets.|
 |» availableBalance|body|number \| null|false|Total available balance of the bank account as reported by the underlying data source. This may take into account overdrafts or pending transactions for example.|
 |» balance|body|number \| null|false|Balance of the bank account.|
-|» currency|body|string(ISO4217)|false|Base currency of the bank account.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Base currency of the bank account.|
 |» iBan|body|string \| null|false|International bank account number of the account. Often used when making or receiving international payments.|
 |» id|body|string|false|Identifier for the account, unique for the company in the accounting platform.|
 |» institution|body|string \| null|false|The institution of the bank account.|
@@ -1424,7 +1424,7 @@ Required data may vary by integration. To see what data to post, first call []()
 |» accountType|body|string|false|The type of transactions and balances on the account.  <br>For Credit accounts, positive balances are liabilities, and positive transactions **reduce** liabilities.  <br>For Debit accounts, positive balances are assets, and positive transactions **increase** assets.|
 |» availableBalance|body|number \| null|false|Total available balance of the bank account as reported by the underlying data source. This may take into account overdrafts or pending transactions for example.|
 |» balance|body|number \| null|false|Balance of the bank account.|
-|» currency|body|string(ISO4217)|false|Base currency of the bank account.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Base currency of the bank account.|
 |» iBan|body|string \| null|false|International bank account number of the account. Often used when making or receiving international payments.|
 |» id|body|string|false|Identifier for the account, unique for the company in the accounting platform.|
 |» institution|body|string \| null|false|The institution of the bank account.|
@@ -1888,41 +1888,7 @@ Posts bank transactions to the accounting package for a given company.
 |timeoutInMinutes|query|integer(int32)|false|none|
 |body|body|[BankTransactions](#schemabanktransactions)|false|none|
 |» accountId|body|string \| null|false|none|
-|» transactions|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » balance|body|number|true|none|
-|» » clearedOnDate|body|[DateTime](#schemadatetime)|false|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|» » counterparty|body|string \| null|false|none|
-|» » description|body|string \| null|false|none|
-|» » id|body|string|false|none|
-|» » reconciled|body|boolean|true|none|
-|» » reference|body|string \| null|false|none|
-|» » transactionType|body|string|true|Type of transaction for the bank statement line|
-|» » modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
-|» » sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » transactionType|Unknown|
-|» » transactionType|Credit|
-|» » transactionType|Debit|
-|» » transactionType|Int|
-|» » transactionType|Div|
-|» » transactionType|Fee|
-|» » transactionType|SerChg|
-|» » transactionType|Dep|
-|» » transactionType|Atm|
-|» » transactionType|Pos|
-|» » transactionType|Xfer|
-|» » transactionType|Check|
-|» » transactionType|Payment|
-|» » transactionType|Cash|
-|» » transactionType|DirectDep|
-|» » transactionType|DirectDebit|
-|» » transactionType|RepeatPmt|
-|» » transactionType|Other|
+|» transactions|body|[[BankTransactionsBankTransactionLine](#schemabanktransactionsbanktransactionline)]|false|none|
 
 > Example responses
 
@@ -2746,80 +2712,23 @@ Required data may vary by integration. To see what data to post, first call [Get
 |body|body|[Bill](#schemabill)|false|none|
 |» amountDue|body|number \| null|false|Amount outstanding on the bill.|
 |» currency|body|object|false|none|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» dueDate|body|object|false|none|
 |» id|body|string|false|Identifier for the bill, unique for the company in the accounting platform.|
 |» issueDate|body|object|true|none|
-|» lineItems|body|[object]|false|Array of Bill line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of the goods or services received.|
-|» » discountAmount|body|number \| null|false|Numerical value of any discounts applied.<br><br>Do not use to apply discounts in Oracle NetSuite—see Oracle NetSuite integration reference.|
-|» » discountPercentage|body|number \| null|false|none|
-|» » isDirectCost|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the product, service type, or inventory item to which the line item is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of goods or services received.|
-|» » subTotal|body|number \| null|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line, including tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Collection of categories against which this item is tracked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Price of each unit of goods or services.|
+|» lineItems|body|[[BillBillLineItem](#schemabillbilllineitem)]|false|Array of Bill line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any private, company notes about the bill, such as payment information.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
-|» purchaseOrderRefs|body|[object]|false|none|
-|» » id|body|string|false|Identifier for the purchase order, unique for the company in the accounting platform.|
-|» » purchaseOrderNumber|body|string \| null|false|Friendly reference for the purchase order, commonly generated by the accounting platform.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
+|» purchaseOrderRefs|body|[[PurchaseOrderPurchaseOrderRef](#schemapurchaseorderpurchaseorderref)]|false|none|
 |» reference|body|string \| null|false|User-friendly reference for the bill.|
-|» status|body|string|true|Current state of the bill.|
+|» status|body|[BillBillStatus](#schemabillbillstatus)|true|Current state of the bill.|
 |» subTotal|body|number|true|Total amount of the bill, excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» supplierRef|body|object|false|Reference to the supplier the record relates to.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Reference to the supplier the record relates to.|
 |» taxAmount|body|number|true|Amount of tax on the bill.|
 |» totalAmount|body|number|true|Amount of the bill, including tax.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -2827,14 +2736,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Customer|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Customer|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Open|
 |» status|PartiallyPaid|
@@ -3300,80 +3201,23 @@ Required data may vary by integration. To see what data to post, first call [Get
 |body|body|[Bill](#schemabill)|false|none|
 |» amountDue|body|number \| null|false|Amount outstanding on the bill.|
 |» currency|body|object|false|none|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» dueDate|body|object|false|none|
 |» id|body|string|false|Identifier for the bill, unique for the company in the accounting platform.|
 |» issueDate|body|object|true|none|
-|» lineItems|body|[object]|false|Array of Bill line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of the goods or services received.|
-|» » discountAmount|body|number \| null|false|Numerical value of any discounts applied.<br><br>Do not use to apply discounts in Oracle NetSuite—see Oracle NetSuite integration reference.|
-|» » discountPercentage|body|number \| null|false|none|
-|» » isDirectCost|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the product, service type, or inventory item to which the line item is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of goods or services received.|
-|» » subTotal|body|number \| null|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line, including tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Collection of categories against which this item is tracked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Price of each unit of goods or services.|
+|» lineItems|body|[[BillBillLineItem](#schemabillbilllineitem)]|false|Array of Bill line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any private, company notes about the bill, such as payment information.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
-|» purchaseOrderRefs|body|[object]|false|none|
-|» » id|body|string|false|Identifier for the purchase order, unique for the company in the accounting platform.|
-|» » purchaseOrderNumber|body|string \| null|false|Friendly reference for the purchase order, commonly generated by the accounting platform.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
+|» purchaseOrderRefs|body|[[PurchaseOrderPurchaseOrderRef](#schemapurchaseorderpurchaseorderref)]|false|none|
 |» reference|body|string \| null|false|User-friendly reference for the bill.|
-|» status|body|string|true|Current state of the bill.|
+|» status|body|[BillBillStatus](#schemabillbillstatus)|true|Current state of the bill.|
 |» subTotal|body|number|true|Total amount of the bill, excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» supplierRef|body|object|false|Reference to the supplier the record relates to.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Reference to the supplier the record relates to.|
 |» taxAmount|body|number|true|Amount of tax on the bill.|
 |» totalAmount|body|number|true|Amount of the bill, including tax.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -3381,14 +3225,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Customer|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Customer|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Open|
 |» status|PartiallyPaid|
@@ -4499,78 +4335,24 @@ Required data may vary by integration. To see what data to post, first call [Get
 |body|body|[BillCreditNote](#schemabillcreditnote)|false|none|
 |» allocatedOnDate|body|[DateTime](#schemadatetime)|false|Date the bill credit note was fully refunded or allocated.|
 |» billCreditNoteNumber|body|string \| null|false|Friendly reference for the bill credit note.|
-|» currency|body|string(ISO4217)|false|Currency of the bill credit note.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the bill credit note.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» discountPercentage|body|number|true|Percentage rate of any discount applied to the bill credit note.|
 |» id|body|string|false|Identifier for the bill credit note that is unique to a company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date the bill credit note was issued by the supplier.|
-|» lineItems|body|[object]|false|An array of line |
-|» » accountRef|body|object|false|Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of each line item. For example, the goods or service for which credit has been received.|
-|» » discountAmount|body|number \| null|false|Value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate of any discount applied to the line item.|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of the goods or service for which credit has been received.|
-|» » subTotal|body|number \| null|false|Amount of credit associated with the line item, including discounts but excluding tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax associated with the line item.|
-|» » taxRateRef|body|object|false|Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.<br><br>Found on:<br><br>- Bill line items<br>- Bill Credit Note line items<br>- Credit Note line items<br>- Direct incomes line items<br>- Invoice line items<br>- Items|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line item, including discounts and tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Unit price of the goods or service.|
+|» lineItems|body|[[BillCreditNoteBillCreditNoteLineItem](#schemabillcreditnotebillcreditnotelineitem)]|false|An array of line |
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the bill credit note.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» remainingCredit|body|number|true|Amount of the bill credit note that is still outstanding.|
-|» status|body|string|true|Current state of the bill credit note|
+|» status|body|[BillCreditNoteBillCreditNoteStatus](#schemabillcreditnotebillcreditnotestatus)|true|Current state of the bill credit note|
 |» subTotal|body|number|true|Total amount of the bill credit note, including discounts but excluding tax.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» supplierRef|body|object|false|Reference to the supplier the record relates to.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Reference to the supplier the record relates to.|
 |» totalAmount|body|number|true|Total amount of credit that has been applied to the business' account with the supplier, including discounts and tax.|
 |» totalDiscount|body|number|true|Total value of any discounts applied.|
 |» totalTaxAmount|body|number|true|Amount of tax included in the bill credit note.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -4578,14 +4360,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Customer|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Customer|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -4985,78 +4759,24 @@ Required data may vary by integration. To see what data to post, first call [Get
 |body|body|[BillCreditNote](#schemabillcreditnote)|false|none|
 |» allocatedOnDate|body|[DateTime](#schemadatetime)|false|Date the bill credit note was fully refunded or allocated.|
 |» billCreditNoteNumber|body|string \| null|false|Friendly reference for the bill credit note.|
-|» currency|body|string(ISO4217)|false|Currency of the bill credit note.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the bill credit note.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» discountPercentage|body|number|true|Percentage rate of any discount applied to the bill credit note.|
 |» id|body|string|false|Identifier for the bill credit note that is unique to a company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date the bill credit note was issued by the supplier.|
-|» lineItems|body|[object]|false|An array of line |
-|» » accountRef|body|object|false|Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of each line item. For example, the goods or service for which credit has been received.|
-|» » discountAmount|body|number \| null|false|Value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate of any discount applied to the line item.|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of the goods or service for which credit has been received.|
-|» » subTotal|body|number \| null|false|Amount of credit associated with the line item, including discounts but excluding tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax associated with the line item.|
-|» » taxRateRef|body|object|false|Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.<br><br>Found on:<br><br>- Bill line items<br>- Bill Credit Note line items<br>- Credit Note line items<br>- Direct incomes line items<br>- Invoice line items<br>- Items|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line item, including discounts and tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Unit price of the goods or service.|
+|» lineItems|body|[[BillCreditNoteBillCreditNoteLineItem](#schemabillcreditnotebillcreditnotelineitem)]|false|An array of line |
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the bill credit note.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» remainingCredit|body|number|true|Amount of the bill credit note that is still outstanding.|
-|» status|body|string|true|Current state of the bill credit note|
+|» status|body|[BillCreditNoteBillCreditNoteStatus](#schemabillcreditnotebillcreditnotestatus)|true|Current state of the bill credit note|
 |» subTotal|body|number|true|Total amount of the bill credit note, including discounts but excluding tax.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» supplierRef|body|object|false|Reference to the supplier the record relates to.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Reference to the supplier the record relates to.|
 |» totalAmount|body|number|true|Total amount of credit that has been applied to the business' account with the supplier, including discounts and tax.|
 |» totalDiscount|body|number|true|Total value of any discounts applied.|
 |» totalTaxAmount|body|number|true|Amount of tax included in the bill credit note.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -5064,14 +4784,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Customer|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Customer|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -5765,52 +5477,21 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[BillPayment](#schemabillpayment)|false|none|
-|» accountRef|body|object|false|Account the payment is linked to in the accounting platform.|
-|» » id|body|string|false|'id' from the Accounts data type.|
-|» » name|body|string|false|'name' from the Accounts data type.|
-|» currency|body|string(ISO4217)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» accountRef|body|[AccountAccountRef](#schemaaccountaccountref)|false|Account the payment is linked to in the accounting platform.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» date|body|[DateTime](#schemadatetime)|true|Date the bill payment was recorded in the accounting software.|
 |» id|body|string|false|Identifier for the bill payment, unique for the company in the accounting platform.|
-|» lines|body|[object]|false|An array of bill payment lines.|
-|» » allocatedOnDate|body|[DateTime](#schemadatetime)|false|AllocatedOnDate must be specified and be later than the issue date of the bill.|
-|» » amount|body|number|true|Amount in the bill payment currency.|
-|» » links|body|[object]|false|none|
-|» » » amount|body|number \| null|false|Amount by which the balance of the linked entity is altered, in the currency of the linked entity.<br><br>- A negative link amount reduces the outstanding amount on the accounts payable account.<br>- A positive link amount increases the outstanding amount on the accounts payable account.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string \| null|false|Unique identifier of the transaction represented by the link.|
-|» » » type|body|string|true|Types of links to bill payment lines.|
+|» lines|body|[[BillPaymentBillPaymentLine](#schemabillpaymentbillpaymentline)]|false|An array of bill payment lines.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Additional information associated with the payment.|
-|» paymentMethodRef|body|object|false|The Payment Method to which the payment is linked in the accounting platform.|
-|» » id|body|string|false|`id` from the Payment Methods data type|
-|» » name|body|string \| null|false|`name` from the Payment Methods data type|
+|» paymentMethodRef|body|[PaymentMethodPaymentMethodRef](#schemapaymentmethodpaymentmethodref)|false|The Payment Method to which the payment is linked in the accounting platform.|
 |» reference|body|string \| null|false|Additional information associated with the payment.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» supplierRef|body|object|false|Reference to the supplier the record relates to.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Reference to the supplier the record relates to.|
 |» totalAmount|body|number|false|Amount of the payment in the payment currency. This value never changes and represents the amount of money that is paid into the supplier's account.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » » type|Unknown|
-|» » » type|Unlinked|
-|» » » type|Bill|
-|» » » type|Other|
-|» » » type|CreditNote|
-|» » » type|BillPayment|
-|» » » type|PaymentOnAccount|
-|» » » type|Refund|
-|» » » type|ManualJournal|
-|» » » type|Discount|
 
 > Example responses
 
@@ -6996,79 +6677,24 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» additionalTaxPercentage|body|number|false|none|
 |» allocatedOnDate|body|[DateTime](#schemadatetime)|false|Date on which the credit note was fully allocated.|
 |» creditNoteNumber|body|string \| null|false|Friendly reference for the credit note.|
-|» currency|body|string(ISO4217)|false|Currency of the credit note.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» customerRef|body|object|false|Reference to the customer the credit note has been issued to.|
-|» » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » id|body|string|true|`id` from the Customers data type|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the credit note.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» customerRef|body|[CustomerCustomerRef](#schemacustomercustomerref)|false|Reference to the customer the credit note has been issued to.|
 |» discountPercentage|body|number|true|Percentage rate (from 0 to 100) of discounts applied to the credit note.|
 |» id|body|string|false|Identifier for the credit note, unique to the company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date of the credit note as recorded in the accounting system.|
-|» lineItems|body|[object]|false|none|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of each line item. For example, the goods or service for which credit has been issued.|
-|» » discountAmount|body|number \| null|false|Value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate of any discount applied to the line item.|
-|» » isDirectIncome|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of the goods or service for which credit has been issued.|
-|» » subTotal|body|number \| null|false|Amount of credit associated with the line item, including discounts but excluding tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax associated with the line item.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line item, including discounts and tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Unit price of the goods or service.|
+|» lineItems|body|[[CreditNoteCreditNoteLineItem](#schemacreditnotecreditnotelineitem)]|false|none|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the credit note. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when a credit note is emailed from the accounting platform to the customer.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» remainingCredit|body|number|true|Unused balance of totalAmount originally raised.|
-|» status|body|string|true|Current state of the credit note.|
+|» status|body|[CreditNoteCreditNoteStatus](#schemacreditnotecreditnotestatus)|true|Current state of the credit note.|
 |» subTotal|body|number|true|Value of the credit note, including discounts and excluding tax.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» totalAmount|body|number|true|Total amount of credit that has been applied to the customer's accounts receivable|
 |» totalDiscount|body|number|true|Any discounts applied to the credit note amount.|
 |» totalTaxAmount|body|number|true|Any tax applied to the credit note amount.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -7076,12 +6702,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -7336,79 +6956,24 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» additionalTaxPercentage|body|number|false|none|
 |» allocatedOnDate|body|[DateTime](#schemadatetime)|false|Date on which the credit note was fully allocated.|
 |» creditNoteNumber|body|string \| null|false|Friendly reference for the credit note.|
-|» currency|body|string(ISO4217)|false|Currency of the credit note.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» customerRef|body|object|false|Reference to the customer the credit note has been issued to.|
-|» » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » id|body|string|true|`id` from the Customers data type|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the credit note.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» customerRef|body|[CustomerCustomerRef](#schemacustomercustomerref)|false|Reference to the customer the credit note has been issued to.|
 |» discountPercentage|body|number|true|Percentage rate (from 0 to 100) of discounts applied to the credit note.|
 |» id|body|string|false|Identifier for the credit note, unique to the company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date of the credit note as recorded in the accounting system.|
-|» lineItems|body|[object]|false|none|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of each line item. For example, the goods or service for which credit has been issued.|
-|» » discountAmount|body|number \| null|false|Value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate of any discount applied to the line item.|
-|» » isDirectIncome|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of the goods or service for which credit has been issued.|
-|» » subTotal|body|number \| null|false|Amount of credit associated with the line item, including discounts but excluding tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax associated with the line item.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line item, including discounts and tax.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Unit price of the goods or service.|
+|» lineItems|body|[[CreditNoteCreditNoteLineItem](#schemacreditnotecreditnotelineitem)]|false|none|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the credit note. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when a credit note is emailed from the accounting platform to the customer.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» remainingCredit|body|number|true|Unused balance of totalAmount originally raised.|
-|» status|body|string|true|Current state of the credit note.|
+|» status|body|[CreditNoteCreditNoteStatus](#schemacreditnotecreditnotestatus)|true|Current state of the credit note.|
 |» subTotal|body|number|true|Value of the credit note, including discounts and excluding tax.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» totalAmount|body|number|true|Total amount of credit that has been applied to the customer's accounts receivable|
 |» totalDiscount|body|number|true|Any discounts applied to the credit note amount.|
 |» totalTaxAmount|body|number|true|Any tax applied to the credit note amount.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -7416,12 +6981,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -8242,43 +7801,18 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Customer](#schemacustomer)|false|none|
-|» addresses|body|[object]|false|An array of Addresses.|
-|» » city|body|string \| null|false|City of the customer address.|
-|» » country|body|string \| null|false|Country of the customer address.|
-|» » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » region|body|string \| null|false|Region of the customer address.|
-|» » type|body|string|true|The type of the address|
+|» addresses|body|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|An array of Addresses.|
 |» contactName|body|string \| null|false|Name of the main contact for the identified customer.|
-|» contacts|body|[object]|false|An array of Contacts.|
-|» » address|body|object|false|An object of Address information.|
-|» » » city|body|string \| null|false|City of the customer address.|
-|» » » country|body|string \| null|false|Country of the customer address.|
-|» » » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » » region|body|string \| null|false|Region of the customer address.|
-|» » » type|body|string|true|The type of the address|
-|» » email|body|string \| null|false|Email of a contact for a customer.|
-|» » modifiedDate|body|[DateTime](#schemadatetime)|false|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|» » name|body|string \| null|false|Name of a contact for a customer.|
-|» » phone|body|[object]|false|An array of Phone numbers.|
-|» » » number|body|string \| null|true|A phone number.|
-|» » » type|body|string|true|The type of phone number|
-|» » status|body|string|true|Status of customer.|
+|» contacts|body|[[CustomerContact](#schemacustomercontact)]|false|An array of Contacts.|
 |» customerName|body|string \| null|false|Name of the customer as recorded in the accounting system, typically the company name.|
-|» defaultCurrency|body|string(ISO4217)|false|Default currency the transactional data of the customer is recorded in.|
+|» defaultCurrency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Default currency the transactional data of the customer is recorded in.|
 |» emailAddress|body|string \| null|false|Email address the customer can be contacted by.|
 |» id|body|string|false|Identifier for the customer, unique to the company in the accounting platform.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» phone|body|string \| null|false|Phone number the customer can be contacted by.|
 |» registrationNumber|body|string \| null|false|Company number. In the UK, this is typically the Companies House company registration number.|
-|» status|body|string|true|Current state of the customer.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» status|body|[CustomerCustomerStatus](#schemacustomercustomerstatus)|true|Current state of the customer.|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» taxNumber|body|string \| null|false|Company tax number.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
@@ -8287,20 +7821,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » type|Unknown|
-|» » type|Billing|
-|» » type|Delivery|
-|» » » type|Unknown|
-|» » » type|Billing|
-|» » » type|Delivery|
-|» » » type|Primary|
-|» » » type|Landline|
-|» » » type|Mobile|
-|» » » type|Fax|
-|» » » type|Unknown|
-|» » status|Unknown|
-|» » status|Active|
-|» » status|Archived|
 |» status|Unknown|
 |» status|Active|
 |» status|Archived|
@@ -8587,43 +8107,18 @@ Required data may vary by integration. To see what data to post, first call [Get
 |connectionId|path|string(uuid)|true|none|
 |customerId|path|string|true|none|
 |body|body|[Customer](#schemacustomer)|false|none|
-|» addresses|body|[object]|false|An array of Addresses.|
-|» » city|body|string \| null|false|City of the customer address.|
-|» » country|body|string \| null|false|Country of the customer address.|
-|» » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » region|body|string \| null|false|Region of the customer address.|
-|» » type|body|string|true|The type of the address|
+|» addresses|body|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|An array of Addresses.|
 |» contactName|body|string \| null|false|Name of the main contact for the identified customer.|
-|» contacts|body|[object]|false|An array of Contacts.|
-|» » address|body|object|false|An object of Address information.|
-|» » » city|body|string \| null|false|City of the customer address.|
-|» » » country|body|string \| null|false|Country of the customer address.|
-|» » » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » » region|body|string \| null|false|Region of the customer address.|
-|» » » type|body|string|true|The type of the address|
-|» » email|body|string \| null|false|Email of a contact for a customer.|
-|» » modifiedDate|body|[DateTime](#schemadatetime)|false|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|» » name|body|string \| null|false|Name of a contact for a customer.|
-|» » phone|body|[object]|false|An array of Phone numbers.|
-|» » » number|body|string \| null|true|A phone number.|
-|» » » type|body|string|true|The type of phone number|
-|» » status|body|string|true|Status of customer.|
+|» contacts|body|[[CustomerContact](#schemacustomercontact)]|false|An array of Contacts.|
 |» customerName|body|string \| null|false|Name of the customer as recorded in the accounting system, typically the company name.|
-|» defaultCurrency|body|string(ISO4217)|false|Default currency the transactional data of the customer is recorded in.|
+|» defaultCurrency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Default currency the transactional data of the customer is recorded in.|
 |» emailAddress|body|string \| null|false|Email address the customer can be contacted by.|
 |» id|body|string|false|Identifier for the customer, unique to the company in the accounting platform.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» phone|body|string \| null|false|Phone number the customer can be contacted by.|
 |» registrationNumber|body|string \| null|false|Company number. In the UK, this is typically the Companies House company registration number.|
-|» status|body|string|true|Current state of the customer.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» status|body|[CustomerCustomerStatus](#schemacustomercustomerstatus)|true|Current state of the customer.|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» taxNumber|body|string \| null|false|Company tax number.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
@@ -8632,20 +8127,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » type|Unknown|
-|» » type|Billing|
-|» » type|Delivery|
-|» » » type|Unknown|
-|» » » type|Billing|
-|» » » type|Delivery|
-|» » » type|Primary|
-|» » » type|Landline|
-|» » » type|Mobile|
-|» » » type|Fax|
-|» » » type|Unknown|
-|» » status|Unknown|
-|» » status|Active|
-|» » status|Archived|
 |» status|Unknown|
 |» status|Active|
 |» status|Archived|
@@ -10265,67 +9746,18 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[DirectCost](#schemadirectcost)|false|none|
-|» contactRef|body|object|false|A customer or supplier associated with the direct cost.|
-|» » dataType|body|string \| null|false|none|
-|» » id|body|string|true|none|
-|» currency|body|string(ISO4217)|true|Currency of the direct cost.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» contactRef|body|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|A customer or supplier associated with the direct cost.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|Currency of the direct cost.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» id|body|string|false|Identifier of the direct cost, unique for the company.|
 |» issueDate|body|[DateTime](#schemadatetime)|true|Date of the direct cost as recorded in the accounting platform.Date of the direct cost as recorded in the accounting platform.|
-|» lineItems|body|[object]|true|An array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of the goods or services.|
-|» » discountAmount|body|number \| null|false|Discount amount for the line before tax.|
-|» » discountPercentage|body|number \| null|false|Discount percentage for the line before tax.|
-|» » itemRef|body|object|false|Reference to the product, service type, or inventory item to which the direct cost is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of goods or services received.<br><br>Note: If the platform does not provide this information, the quantity will be mapped as 1.|
-|» » subTotal|body|number \| null|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line, including tax.|
-|» » tracking|body|object|false|none|
-|» » » invoiceTo|body|object|false|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
-|» » » » dataType|body|string|false|Name of the 'dataType'.|
-|» » » » id|body|string|false|'id' of the underlying record or data type.|
-|» » » recordRefs|body|[object]|true|none|
-|» » » » dataType|body|string|false|Name of the 'dataType'.|
-|» » » » id|body|string|false|'id' of the underlying record or data type.|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Collection of categories against which this direct cost is tracked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Price of each unit of goods or services.<br>Note: If the platform does not provide this information, the unit amount will be mapped to the total amount.|
+|» lineItems|body|[[DirectCostDirectCostLineItem](#schemadirectcostdirectcostlineitem)]|true|An array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|A note attached to the direct cost.|
-|» paymentAllocations|body|[object]|true|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|true|An array of payment allocations.|
 |» reference|body|string \| null|false|User-friendly reference for the direct cost.|
 |» subTotal|body|number|true|The total amount of the direct costs, excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» taxAmount|body|number|true|The total amount of tax on the direct costs.|
 |» totalAmount|body|number|true|The amount of the direct costs, inclusive of tax.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
@@ -11384,60 +10816,18 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[DirectIncome](#schemadirectincome)|false|none|
-|» contactRef|body|object|false|A customer or supplier associated with the direct income.|
-|» » dataType|body|string \| null|false|none|
-|» » id|body|string|true|none|
-|» currency|body|string(ISO4217)|true|The currency of the direct income.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» contactRef|body|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|A customer or supplier associated with the direct income.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|The currency of the direct income.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» id|body|string|false|Identifier of the direct income, unique for the company.|
 |» issueDate|body|[DateTime](#schemadatetime)|true|The date of the direct income as recorded in the accounting platform.|
-|» lineItems|body|[object]|true|An array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|A user-friendly name of the goods or services.|
-|» » discountAmount|body|number \| null|false|Discount amount for the line before tax.|
-|» » discountPercentage|body|number \| null|false|Discount percentage for the line before tax.|
-|» » itemRef|body|object|false|Reference to the product, service type, or inventory item to which the direct cost is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|The number of units of goods or services received.<br><br>Note: If the platform does not provide this information, the quantity will be mapped as 1.|
-|» » subTotal|body|number \| null|false|The amount of the line, inclusive of discounts, but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|The amount of tax for the line.<br>Note: If the platform does not provide this information, the quantity will be mapped as 0.00.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|The total amount of the line, including tax.|
-|» » trackingCategoryRefs|body|[object]|false|An array of categories against which this direct cost is tracked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|The price of each unit of goods or services.<br>Note: If the platform does not provide this information, the unit amount will be mapped to the total amount.|
+|» lineItems|body|[[DirectIncomeDirectIncomeLineItem](#schemadirectincomedirectincomelineitem)]|true|An array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|none|
-|» paymentAllocations|body|[object]|true|none|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|true|none|
 |» reference|body|string \| null|false|User-friendly reference for the direct income.|
 |» subTotal|body|number|true|The total amount of the direct incomes, excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» taxAmount|body|number|true|The total amount of tax on the direct incomes.|
 |» totalAmount|body|number|true|The amount of the direct incomes, inclusive of tax.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
@@ -13229,82 +12619,27 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» additionalTaxAmount|body|number|false|none|
 |» additionalTaxPercentage|body|number|false|none|
 |» amountDue|body|number|true|Amount outstanding on the invoice.|
-|» currency|body|string(ISO4217)|false|Currency of the invoice.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» customerRef|body|object|false|Reference to the customer the invoice has been issued to.|
-|» » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » id|body|string|true|`id` from the Customers data type|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the invoice.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» customerRef|body|[CustomerCustomerRef](#schemacustomercustomerref)|false|Reference to the customer the invoice has been issued to.|
 |» discountPercentage|body|number \| null|false|Percentage rate (from 0 to 100) of discounts applied to the invoice. For example: A 5% discount will return a value of `5`, not `0.05`.|
 |» dueDate|body|[DateTime](#schemadatetime)|false|Date the customer is due to be paid by.|
 |» id|body|string|false|Identifier for the invoice, unique to the company in the accounting platform.|
 |» invoiceNumber|body|string \| null|false|Friendly reference for the invoice. If available, this appears in the file name of invoice attachments.|
 |» issueDate|body|[DateTime](#schemadatetime)|true|Date of the invoice as recorded in the accounting system.|
-|» lineItems|body|[object]|false|An array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of the goods or services provided.|
-|» » discountAmount|body|number \| null|false|Numerical value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
-|» » isDirectIncome|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of goods or services provided.|
-|» » subTotal|body|number \| null|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line, including tax. When pushing invoices to Xero, the total amount is exclusive of tax to allow automatic calculations if a tax rate or tax amount is not specified.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Price of each unit of goods or services.|
+|» lineItems|body|[[InvoiceInvoiceLineItem](#schemainvoiceinvoicelineitem)]|false|An array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the invoice. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when an invoice is emailed from the accounting platform to the customer.|
 |» paidOnDate|body|[DateTime](#schemadatetime)|false|Date the invoice was marked as paid in the accounting system. If this field is not available from the accounting software, it is calculated by Codat using associated payments.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» salesOrderRefs|body|[string]|false|List of references to related Sales orders.|
-|» status|body|string|true|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
+|» status|body|[InvoiceInvoiceStatus](#schemainvoiceinvoicestatus)|true|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
 |» subTotal|body|number \| null|false|Total amount of the invoice excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» totalAmount|body|number|true|Amount of the invoice, inclusive of tax.|
 |» totalDiscount|body|number \| null|false|Numerical value of discounts applied to the invoice.|
 |» totalTaxAmount|body|number|true|Amount of tax on the invoice.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -13312,12 +12647,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -13790,82 +13119,27 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» additionalTaxAmount|body|number|false|none|
 |» additionalTaxPercentage|body|number|false|none|
 |» amountDue|body|number|true|Amount outstanding on the invoice.|
-|» currency|body|string(ISO4217)|false|Currency of the invoice.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» customerRef|body|object|false|Reference to the customer the invoice has been issued to.|
-|» » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » id|body|string|true|`id` from the Customers data type|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the invoice.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» customerRef|body|[CustomerCustomerRef](#schemacustomercustomerref)|false|Reference to the customer the invoice has been issued to.|
 |» discountPercentage|body|number \| null|false|Percentage rate (from 0 to 100) of discounts applied to the invoice. For example: A 5% discount will return a value of `5`, not `0.05`.|
 |» dueDate|body|[DateTime](#schemadatetime)|false|Date the customer is due to be paid by.|
 |» id|body|string|false|Identifier for the invoice, unique to the company in the accounting platform.|
 |» invoiceNumber|body|string \| null|false|Friendly reference for the invoice. If available, this appears in the file name of invoice attachments.|
 |» issueDate|body|[DateTime](#schemadatetime)|true|Date of the invoice as recorded in the accounting system.|
-|» lineItems|body|[object]|false|An array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Friendly name of the goods or services provided.|
-|» » discountAmount|body|number \| null|false|Numerical value of any discounts applied.|
-|» » discountPercentage|body|number \| null|false|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
-|» » isDirectIncome|body|boolean|false|none|
-|» » itemRef|body|object|false|Reference to the item the line is linked to.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|true|Number of units of goods or services provided.|
-|» » subTotal|body|number \| null|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number \| null|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number \| null|false|Total amount of the line, including tax. When pushing invoices to Xero, the total amount is exclusive of tax to allow automatic calculations if a tax rate or tax amount is not specified.|
-|» » tracking|body|object|false|Categories, and a project and customer, against which the item is tracked.|
-|» » » categoryRefs|body|[object]|true|none|
-|» » » » id|body|string|true|none|
-|» » » » name|body|string \| null|false|none|
-|» » » customerRef|body|object|false|none|
-|» » » » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » » » id|body|string|true|`id` from the Customers data type|
-|» » » isBilledTo|body|string|true|none|
-|» » » isRebilledTo|body|string|true|none|
-|» » » projectRef|body|[ProjectRef](#schemaprojectref)|false|none|
-|» » trackingCategoryRefs|body|[object]|false|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|true|Price of each unit of goods or services.|
+|» lineItems|body|[[InvoiceInvoiceLineItem](#schemainvoiceinvoicelineitem)]|false|An array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information about the invoice. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when an invoice is emailed from the accounting platform to the customer.|
 |» paidOnDate|body|[DateTime](#schemadatetime)|false|Date the invoice was marked as paid in the accounting system. If this field is not available from the accounting software, it is calculated by Codat using associated payments.|
-|» paymentAllocations|body|[object]|false|An array of payment allocations.|
-|» » allocation|body|object|true|none|
-|» » » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » » currency|body|string(ISO4217)|false|The currency of the transaction.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » totalAmount|body|number|false|The total amount that has been allocated.|
-|» » payment|body|object|true|none|
-|» » » accountRef|body|object|false|The account that the allocated payment is made from or to.|
-|» » » » id|body|string|false|'id' from the Accounts data type.|
-|» » » » name|body|string|false|'name' from the Accounts data type.|
-|» » » currency|body|string(ISO4217)|false|Currency the payment has been made in.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Identifier of the allocated payment.|
-|» » » note|body|string \| null|false|Notes attached to the allocated payment.|
-|» » » paidOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was paid.|
-|» » » reference|body|string \| null|false|Reference to the allocated payment.|
-|» » » totalAmount|body|number|false|Total amount that was paid.|
+|» paymentAllocations|body|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|An array of payment allocations.|
 |» salesOrderRefs|body|[string]|false|List of references to related Sales orders.|
-|» status|body|string|true|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
+|» status|body|[InvoiceInvoiceStatus](#schemainvoiceinvoicestatus)|true|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
 |» subTotal|body|number \| null|false|Total amount of the invoice excluding any taxes.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» totalAmount|body|number|true|Amount of the invoice, inclusive of tax.|
 |» totalDiscount|body|number \| null|false|Numerical value of discounts applied to the invoice.|
 |» totalTaxAmount|body|number|true|Amount of tax on the invoice.|
-|» withholdingTax|body|[object]|false|none|
-|» » amount|body|number|true|none|
-|» » name|body|string|true|none|
+|» withholdingTax|body|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -13873,12 +13147,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » isBilledTo|Unknown|
-|» » » isBilledTo|NotApplicable|
-|» » » isBilledTo|Project|
-|» » » isRebilledTo|Unknown|
-|» » » isRebilledTo|NotApplicable|
-|» » » isRebilledTo|Project|
 |» status|Unknown|
 |» status|Draft|
 |» status|Submitted|
@@ -14983,34 +14251,16 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Item](#schemaitem)|false|none|
-|» billItem|body|object|false|Item details that are only for bills.|
-|» » accountRef|body|object|false|Reference of the account to which the item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Short description of the product or service that has been bought by the customer.|
-|» » taxRateRef|body|object|false|Reference of the tax rate to which the item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » unitPrice|body|number \| null|false|Unit price of the product or service.|
+|» billItem|body|[ItemBillItem](#schemaitembillitem)|false|Item details that are only for bills.|
 |» code|body|string \| null|false|Friendly reference for the item.|
 |» id|body|string|false|Identifier for the item that is unique to a company in the accounting platform.|
-|» invoiceItem|body|object|false|Item details that are only for bills.|
-|» » accountRef|body|object|false|Reference of the account to which the item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Short description of the product or service that has been bought by the customer.|
-|» » taxRateRef|body|object|false|Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.<br><br>Found on:<br><br>- Bill line items<br>- Bill Credit Note line items<br>- Credit Note line items<br>- Direct incomes line items<br>- Invoice line items<br>- Items|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » unitPrice|body|number \| null|false|Unit price of the product or service.|
+|» invoiceItem|body|[ItemInvoiceItem](#schemaiteminvoiceitem)|false|Item details that are only for bills.|
 |» isBillItem|body|boolean|true|Whether you can use this item for bills.|
 |» isInvoiceItem|body|boolean|true|Whether you can use this item for invoices.|
-|» itemStatus|body|string|true|Current state of the item, either:<br><br>- `Active`: Available for use<br>- `Archived`: Unavailable<br>- `Unknown`<br><br>Due to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.|
+|» itemStatus|body|[ItemItemStatus](#schemaitemitemstatus)|true|Current state of the item, either:<br><br>- `Active`: Available for use<br>- `Archived`: Unavailable<br>- `Unknown`<br><br>Due to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» name|body|string \| null|false|Name of the item in the accounting platform.|
-|» type|body|any|true|none|
+|» type|body|[ItemItemType](#schemaitemitemtype)|true|none|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -15485,7 +14735,7 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» name|body|string \| null|false|Journal name.<br>The maximum length for a journal name is 256 characters. All characters above that number will be truncated.|
 |» parentId|body|string \| null|false|Parent journal ID.<br>If the journal is a parent journal, this value is not present.|
-|» status|body|string|false|Current journal status.|
+|» status|body|[JournalJournalStatus](#schemajournaljournalstatus)|false|Current journal status.|
 |» type|body|string \| null|false|The type of the journal.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
@@ -15572,12 +14822,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Journal](#schemajournal)|false|none|> **Language tip:** For line items, or individual transactions, of a company's financial documents, refer to the [Journal entries](https://docs.codat.io/accounting-api#/schemas/JournalEntry) data type<br><br>> View the coverage for journals in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=journals" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>In accounting software, journals are used to record all the financial transactions of a company. Each transaction in a journal is represented by a separate [journal entry](https://docs.codat.io/accounting-api#/schemas/JournalEntry). These entries are used to create the general ledger, which is then used to create the financial statements of a business.<br><br>When a company records all their transactions in a single journal, it can become large and difficult to maintain and track. This is why large companies often use multiple journals (also known as subjournals) to categorize and manage journal entries.<br><br>Such journals can be divided into two categories:<br><br>- Special journals: journals used to record specific types of transactions; for example, a purchases journal, a sales journal, or a cash management journal.<br>- General journals: journals used to record transactions that fall outside the scope of the special journals.<br><br>Multiple journals or subjournals are used in the following Codat integrations:<br><br>- [Sage Intacct](https://docs.codat.io/integrations/accounting/sage-intacct/accounting-sage-intacct)  (mandatory)<br>- [Exact Online](https://docs.codat.io/integrations/accounting/exact-online/accounting-exact-online)  (mandatory)<br>- [Oracle NetSuite](https://docs.codat.io/integrations/accounting/netsuite/accounting-netsuite) (optional)<br><br>> When pushing journal entries to an accounting platform that doesn’t support multiple journals (multi-book accounting), the entries will be linked to the platform-generic journal. The Journals data type will only include one object.<br>|
-|changes|[object]|false|none|none|
-|» attachmentId|string \| null|false|none|none|
-|» recordRef|object|false|none|none|
-|» » dataType|[DataType](#schemadatatype)|false|none|Available Data types|
-|» » id|string|false|none|none|
-|» type|string|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -15585,71 +14830,16 @@ Status Code **200**
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
-|» errors|[object]|false|none|none|
-|» » itemId|string \| null|false|none|none|
-|» » message|string \| null|false|none|none|
-|» » validatorName|string \| null|false|none|none|
-|» warnings|[object]|false|none|none|
-|» » itemId|string \| null|false|none|none|
-|» » message|string \| null|false|none|none|
-|» » validatorName|string \| null|false|none|none|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|» » dataType|accountTransactions|
-|» » dataType|balanceSheet|
-|» » dataType|bankAccounts|
-|» » dataType|bankTransactions|
-|» » dataType|billCreditNotes|
-|» » dataType|billPayments|
-|» » dataType|bills|
-|» » dataType|cashFlowStatement|
-|» » dataType|chartOfAccounts|
-|» » dataType|company|
-|» » dataType|creditNotes|
-|» » dataType|customers|
-|» » dataType|directCosts|
-|» » dataType|directIncomes|
-|» » dataType|invoices|
-|» » dataType|items|
-|» » dataType|journalEntries|
-|» » dataType|journals|
-|» » dataType|paymentMethods|
-|» » dataType|payments|
-|» » dataType|profitAndLoss|
-|» » dataType|purchaseOrders|
-|» » dataType|salesOrders|
-|» » dataType|suppliers|
-|» » dataType|taxRates|
-|» » dataType|trackingCategories|
-|» » dataType|transfers|
-|» » dataType|banking-accountBalances|
-|» » dataType|banking-accounts|
-|» » dataType|banking-transactionCategories|
-|» » dataType|banking-transactions|
-|» » dataType|commerce-companyInfo|
-|» » dataType|commerce-customers|
-|» » dataType|commerce-disputes|
-|» » dataType|commerce-locations|
-|» » dataType|commerce-orders|
-|» » dataType|commerce-paymentMethods|
-|» » dataType|commerce-payments|
-|» » dataType|commerce-productCategories|
-|» » dataType|commerce-products|
-|» » dataType|commerce-taxComponents|
-|» » dataType|commerce-transactions|
-|» type|Unknown|
-|» type|Created|
-|» type|Modified|
-|» type|Deleted|
-|» type|AttachmentUploaded|
 |dataType|accountTransactions|
 |dataType|balanceSheet|
 |dataType|bankAccounts|
@@ -16132,29 +15322,12 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» createdOn|body|[DateTime](#schemadatetime)|false|Date on which the journal was created in the accounting platform.|
 |» description|body|string \| null|false|Optional description of the journal entry.|
 |» id|body|string|false|Unique identifier of the journal entry for the company in the accounting platform.|
-|» journalLines|body|[object]|false|An array of journal lines.|
-|» » accountRef|body|object|false|Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » currency|body|string \| null|false|Currency for the journal line item.|
-|» » description|body|string \| null|false|Description of the journal line item.|
-|» » netAmount|body|number|true|Amount for the journal line. Debit entries are considered positive, and credit entries are considered negative.|
-|» » tracking|body|object|false|List of record refs associated with the tracking information for the line (eg to a Tracking Category, or customer etc.)|
-|» » » recordRefs|body|[object]|false|none|
-|» » » » dataType|body|string|false|Name of the 'dataType'.|
-|» » » » id|body|string|false|'id' of the underlying record or data type.|
-|» journalRef|body|object|false|Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).|
-|» » id|body|string|true|GUID of the underlying journal.|
-|» » name|body|string \| null|false|Name of journal|
+|» journalLines|body|[[JournalEntryJournalLine](#schemajournalentryjournalline)]|false|An array of journal lines.|
+|» journalRef|body|[JournalJournalRef](#schemajournaljournalref)|false|Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» postedOn|body|[DateTime](#schemadatetime)|false|Date on which the journal entry was posted to the accounting platform, and had an impact on the general ledger. This may be different from the creation date.<br><br>For example, a user creates a journal entry on Monday and saves it as draft, which has no impact on the general ledger. On Thursday, they return to the entry and post it.<br><br>The **createdOn** date shows as Monday.<br>The **postedOn** date shows as Thursday.<br>Journal entries can also be backdated, so the **postedOn** date may be earlier than the **createdOn** date.|
-|» recordRef|body|object|false|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
-|» » dataType|body|string|false|Name of the 'dataType'.|
-|» » id|body|string|false|'id' of the underlying record or data type.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» recordRef|body|[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)|false|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» updatedOn|body|[DateTime](#schemadatetime)|false|Date on which the journal was last updated in the accounting platform.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
@@ -16893,52 +16066,21 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Payment](#schemapayment)|false|none|
-|» accountRef|body|object|false|Account the payment is recorded against in the accounting platform.|
-|» » id|body|string|false|'id' from the Accounts data type.|
-|» » name|body|string|false|'name' from the Accounts data type.|
-|» currency|body|string(ISO4217)|false|ISO currency code recorded for the payment in the accounting platform.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» customerRef|body|object|false|Customer the payment is recorded against in the accounting platform.|
-|» » companyName|body|string \| null|false|`customerName` from the Customer data type|
-|» » id|body|string|true|`id` from the Customers data type|
+|» accountRef|body|[AccountAccountRef](#schemaaccountaccountref)|false|Account the payment is recorded against in the accounting platform.|
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|ISO currency code recorded for the payment in the accounting platform.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» customerRef|body|[CustomerCustomerRef](#schemacustomercustomerref)|false|Customer the payment is recorded against in the accounting platform.|
 |» date|body|[DateTime](#schemadatetime)|true|Date the payment was recorded in the accounting software.|
 |» id|body|string|false|Identifier for the payment, unique to the company in the accounting platform.|
-|» lines|body|[object]|false|An array of payment lines.|
-|» » allocatedOnDate|body|[DateTime](#schemadatetime)|false|The date the payment was allocated.|
-|» » amount|body|number|true|Amount in the payment currency.|
-|» » links|body|[object]|false|none|
-|» » » amount|body|number \| null|false|Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  <br>A negative link amount _reduces_ the outstanding amount on the accounts receivable account.  <br>A positive link amount _increases_ the outstanding amount on the accounts receivable account.|
-|» » » currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|» » » id|body|string|false|Unique identifier of the transaction represented by the link.|
-|» » » type|body|string|true|Types of payment line links, either:  <br>`Unknown`  <br>`Unlinked` - Not used  <br>`Invoice` - ID refers to the invoice  <br>`CreditNote` - ID refers to the credit note  <br>`Refund` - ID refers to the sibling payment  <br>`Payment` - ID refers to the sibling payment  <br>`PaymentOnAccount` - ID refers to the customer  <br>`Other` - ID refers to the customer  <br>`Manual Journal`  <br>`Discount` - ID refers to the payment|
+|» lines|body|[[PaymentPaymentLine](#schemapaymentpaymentline)]|false|An array of payment lines.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information associated with the payment.|
-|» paymentMethodRef|body|object|false|The Payment Method to which the payment is linked in the accounting platform.|
-|» » id|body|string|false|`id` from the Payment Methods data type|
-|» » name|body|string \| null|false|`name` from the Payment Methods data type|
+|» paymentMethodRef|body|[PaymentMethodPaymentMethodRef](#schemapaymentmethodpaymentmethodref)|false|The Payment Method to which the payment is linked in the accounting platform.|
 |» reference|body|string \| null|false|Friendly reference for the payment.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» totalAmount|body|number|false|Amount of the payment in the payment currency. This value should never change and represents the amount of money paid into the customer's account.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
-
-#### Enumerated Values
-
-|Parameter|Value|
-|---|---|
-|» » » type|Unknown|
-|» » » type|Unlinked|
-|» » » type|Invoice|
-|» » » type|CreditNote|
-|» » » type|Other|
-|» » » type|Refund|
-|» » » type|Payment|
-|» » » type|PaymentOnAccount|
-|» » » type|ManualJournal|
-|» » » type|Discount|
 
 > Example responses
 
@@ -17842,56 +16984,21 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[PurchaseOrder](#schemapurchaseorder)|false|none|
-|» currency|body|string(ISO4217)|false|Currency of the purchase order.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the purchase order.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» deliveryDate|body|[DateTime](#schemadatetime)|false|Actual delivery date for any goods that have been ordered.|
 |» expectedDeliveryDate|body|[DateTime](#schemadatetime)|false|Expected delivery date for any goods that have been ordered.|
 |» id|body|string|false|Identifier for the purchase order, unique for the company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date of the purchase order as recorded in the accounting platform.|
-|» lineItems|body|[object]|false|Array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Description of the goods / services that have been ordered.|
-|» » discountAmount|body|number|false|Value of any discounts applied.|
-|» » discountPercentage|body|number|false|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
-|» » itemRef|body|object|false|Reference to the product or inventory item to which the line item is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|false|Number of units that have been ordered.|
-|» » subTotal|body|number|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number|false|Total amount of the line, inclusive of discounts and tax.|
-|» » trackingCategoryRefs|body|[object]|false|Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|false|Price of each unit.|
+|» lineItems|body|[[PurchaseOrderPurchaseOrderLineItem](#schemapurchaseorderpurchaseorderlineitem)]|false|Array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information associated with the purchase order.|
 |» paymentDueDate|body|[DateTime](#schemadatetime)|false|Date the supplier is due to be paid.|
 |» purchaseOrderNumber|body|string \| null|false|Friendly reference for the purchase order, commonly generated by the accounting platform.|
-|» shipTo|body|object|false|Delivery details for any goods that have been ordered.|
-|» » address|body|object|false|Delivery address for any goods that have been ordered.|
-|» » » city|body|string \| null|false|City of the customer address.|
-|» » » country|body|string \| null|false|Country of the customer address.|
-|» » » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » » region|body|string \| null|false|Region of the customer address.|
-|» » » type|body|string|true|The type of the address|
-|» » contact|body|object|false|Details of the named contact at the delivery address.|
-|» » » email|body|string \| null|false|Email address of the contact at the delivery address.|
-|» » » name|body|string \| null|false|Name of the contact at the delivery address.|
-|» » » phone|body|string \| null|false|Phone number of the contact at the delivery address.|
-|» status|body|string|false|Current state of the purchase order|
+|» shipTo|body|[SalesOrderAllOf0ShipTo](#schemasalesorderallof0shipto)|false|Delivery details for any goods that have been ordered.|
+|» status|body|[PurchaseOrderPurchaseOrderStatus](#schemapurchaseorderpurchaseorderstatus)|false|Current state of the purchase order|
 |» subTotal|body|number|false|Total amount of the purchase order, including discounts but excluding tax.|
-|» supplierRef|body|object|false|Supplier that the purchase order is recorded against in the accounting system.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Supplier that the purchase order is recorded against in the accounting system.|
 |» totalAmount|body|number|false|Total amount of the purchase order, including discounts and tax.|
 |» totalDiscount|body|number|false|Total value of any discounts applied to the purchase order.|
 |» totalTaxAmount|body|number|false|	<br>Total amount of tax included in the purchase order.|
@@ -17902,9 +17009,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » » type|Unknown|
-|» » » type|Billing|
-|» » » type|Delivery|
 |» status|Unknown|
 |» status|Draft|
 |» status|Open|
@@ -18196,56 +17300,21 @@ Required data may vary by integration. To see what data to post, first call []()
 |connectionId|path|string(uuid)|true|none|
 |purchaseOrderId|path|string|true|none|
 |body|body|[PurchaseOrder](#schemapurchaseorder)|false|none|
-|» currency|body|string(ISO4217)|false|Currency of the purchase order.|
-|» currencyRate|body|number \| null|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|» currency|body|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|Currency of the purchase order.|
+|» currencyRate|body|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |» deliveryDate|body|[DateTime](#schemadatetime)|false|Actual delivery date for any goods that have been ordered.|
 |» expectedDeliveryDate|body|[DateTime](#schemadatetime)|false|Expected delivery date for any goods that have been ordered.|
 |» id|body|string|false|Identifier for the purchase order, unique for the company in the accounting platform.|
 |» issueDate|body|[DateTime](#schemadatetime)|false|Date of the purchase order as recorded in the accounting platform.|
-|» lineItems|body|[object]|false|Array of line items.|
-|» » accountRef|body|object|false|Reference to the account to which the line item is linked.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » description|body|string \| null|false|Description of the goods / services that have been ordered.|
-|» » discountAmount|body|number|false|Value of any discounts applied.|
-|» » discountPercentage|body|number|false|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
-|» » itemRef|body|object|false|Reference to the product or inventory item to which the line item is linked.|
-|» » » id|body|string|true|Unique identifier for the item in the accounting platform.|
-|» » » name|body|string \| null|false|Name of the item in the accounting platform.|
-|» » quantity|body|number|false|Number of units that have been ordered.|
-|» » subTotal|body|number|false|Amount of the line, inclusive of discounts but exclusive of tax.|
-|» » taxAmount|body|number|false|Amount of tax for the line.|
-|» » taxRateRef|body|object|false|Reference to the tax rate to which the line item is linked.|
-|» » » effectiveTaxRate|body|number|false|Applicable tax rate.|
-|» » » id|body|string|false|Unique identifier for the tax rate in the accounting platform.|
-|» » » name|body|string|false|Name of the tax rate in the accounting platform.|
-|» » totalAmount|body|number|false|Total amount of the line, inclusive of discounts and tax.|
-|» » trackingCategoryRefs|body|[object]|false|Reference to the tracking categories to which the line item is linked.|
-|» » » id|body|string|true|none|
-|» » » name|body|string \| null|false|none|
-|» » unitAmount|body|number|false|Price of each unit.|
+|» lineItems|body|[[PurchaseOrderPurchaseOrderLineItem](#schemapurchaseorderpurchaseorderlineitem)]|false|Array of line items.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» note|body|string \| null|false|Any additional information associated with the purchase order.|
 |» paymentDueDate|body|[DateTime](#schemadatetime)|false|Date the supplier is due to be paid.|
 |» purchaseOrderNumber|body|string \| null|false|Friendly reference for the purchase order, commonly generated by the accounting platform.|
-|» shipTo|body|object|false|Delivery details for any goods that have been ordered.|
-|» » address|body|object|false|Delivery address for any goods that have been ordered.|
-|» » » city|body|string \| null|false|City of the customer address.|
-|» » » country|body|string \| null|false|Country of the customer address.|
-|» » » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » » region|body|string \| null|false|Region of the customer address.|
-|» » » type|body|string|true|The type of the address|
-|» » contact|body|object|false|Details of the named contact at the delivery address.|
-|» » » email|body|string \| null|false|Email address of the contact at the delivery address.|
-|» » » name|body|string \| null|false|Name of the contact at the delivery address.|
-|» » » phone|body|string \| null|false|Phone number of the contact at the delivery address.|
-|» status|body|string|false|Current state of the purchase order|
+|» shipTo|body|[SalesOrderAllOf0ShipTo](#schemasalesorderallof0shipto)|false|Delivery details for any goods that have been ordered.|
+|» status|body|[PurchaseOrderPurchaseOrderStatus](#schemapurchaseorderpurchaseorderstatus)|false|Current state of the purchase order|
 |» subTotal|body|number|false|Total amount of the purchase order, including discounts but excluding tax.|
-|» supplierRef|body|object|false|Supplier that the purchase order is recorded against in the accounting system.|
-|» » id|body|string|true|The supplier's unique ID|
-|» » supplierName|body|string \| null|false|The supplier's name|
+|» supplierRef|body|[SupplierSupplierRef](#schemasuppliersupplierref)|false|Supplier that the purchase order is recorded against in the accounting system.|
 |» totalAmount|body|number|false|Total amount of the purchase order, including discounts and tax.|
 |» totalDiscount|body|number|false|Total value of any discounts applied to the purchase order.|
 |» totalTaxAmount|body|number|false|	<br>Total amount of tax included in the purchase order.|
@@ -18256,9 +17325,6 @@ Required data may vary by integration. To see what data to post, first call []()
 
 |Parameter|Value|
 |---|---|
-|» » » type|Unknown|
-|» » » type|Billing|
-|» » » type|Delivery|
 |» status|Unknown|
 |» status|Draft|
 |» status|Open|
@@ -19296,14 +18362,7 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Supplier](#schemasupplier)|false|none|
-|» addresses|body|[object]|false|An array of Addresses.|
-|» » city|body|string \| null|false|City of the customer address.|
-|» » country|body|string \| null|false|Country of the customer address.|
-|» » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » region|body|string \| null|false|Region of the customer address.|
-|» » type|body|string|true|The type of the address|
+|» addresses|body|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|An array of Addresses.|
 |» contactName|body|string \| null|false|Name of the main contact for the supplier.|
 |» defaultCurrency|body|string \| null|false|Default currency the supplier's transactional data is recorded in.|
 |» emailAddress|body|string \| null|false|Email address that the supplier may be contacted on.|
@@ -19311,11 +18370,8 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» phone|body|string \| null|false|Phone number that the supplier may be contacted on.|
 |» registrationNumber|body|string \| null|false|Company number of the supplier. In the UK, this is typically the company registration number issued by Companies House.|
-|» status|body|string|true|Status of the supplier.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» status|body|[SupplierSupplierStatus](#schemasuppliersupplierstatus)|true|Status of the supplier.|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» supplierName|body|string \| null|false|Name of the supplier as recorded in the accounting system, typically the company name.|
 |» taxNumber|body|string \| null|false|Supplier's company tax number.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
@@ -19325,9 +18381,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » type|Unknown|
-|» » type|Billing|
-|» » type|Delivery|
 |» status|Unknown|
 |» status|Active|
 |» status|Archived|
@@ -19545,14 +18598,7 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Supplier](#schemasupplier)|false|none|
-|» addresses|body|[object]|false|An array of Addresses.|
-|» » city|body|string \| null|false|City of the customer address.|
-|» » country|body|string \| null|false|Country of the customer address.|
-|» » line1|body|string \| null|false|Line 1 of the customer address.|
-|» » line2|body|string \| null|false|Line 2 of the customer address.|
-|» » postalCode|body|string \| null|false|Postal code or zip code.|
-|» » region|body|string \| null|false|Region of the customer address.|
-|» » type|body|string|true|The type of the address|
+|» addresses|body|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|An array of Addresses.|
 |» contactName|body|string \| null|false|Name of the main contact for the supplier.|
 |» defaultCurrency|body|string \| null|false|Default currency the supplier's transactional data is recorded in.|
 |» emailAddress|body|string \| null|false|Email address that the supplier may be contacted on.|
@@ -19560,11 +18606,8 @@ Required data may vary by integration. To see what data to post, first call [Get
 |» metadata|body|[Metadata](#schemametadata)|false|none|
 |» phone|body|string \| null|false|Phone number that the supplier may be contacted on.|
 |» registrationNumber|body|string \| null|false|Company number of the supplier. In the UK, this is typically the company registration number issued by Companies House.|
-|» status|body|string|true|Status of the supplier.|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
+|» status|body|[SupplierSupplierStatus](#schemasuppliersupplierstatus)|true|Status of the supplier.|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |» supplierName|body|string \| null|false|Name of the supplier as recorded in the accounting system, typically the company name.|
 |» taxNumber|body|string \| null|false|Supplier's company tax number.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
@@ -19574,9 +18617,6 @@ Required data may vary by integration. To see what data to post, first call [Get
 
 |Parameter|Value|
 |---|---|
-|» » type|Unknown|
-|» » type|Billing|
-|» » type|Delivery|
 |» status|Unknown|
 |» status|Active|
 |» status|Archived|
@@ -19679,12 +18719,7 @@ Status Code **200**
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Supplier](#schemasupplier)|false|none|> View the coverage for suppliers in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=suppliers" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>From the **Suppliers** endpoints, you can retrieve a list of [all the suppliers for a company](https://docs.codat.io/accounting-api#/operations/list-suppliers). Suppliers' data links to accounts payable [bills](https://docs.codat.io/accounting-api#/schemas/Bill).|
-|changes|[object]|false|none|none|
-|» attachmentId|string \| null|false|none|none|
-|» recordRef|object|false|none|none|
-|» » dataType|[DataType](#schemadatatype)|false|none|Available Data types|
-|» » id|string|false|none|none|
-|» type|string|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -19692,71 +18727,16 @@ Status Code **200**
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
-|» errors|[object]|false|none|none|
-|» » itemId|string \| null|false|none|none|
-|» » message|string \| null|false|none|none|
-|» » validatorName|string \| null|false|none|none|
-|» warnings|[object]|false|none|none|
-|» » itemId|string \| null|false|none|none|
-|» » message|string \| null|false|none|none|
-|» » validatorName|string \| null|false|none|none|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
 |Property|Value|
 |---|---|
-|» » dataType|accountTransactions|
-|» » dataType|balanceSheet|
-|» » dataType|bankAccounts|
-|» » dataType|bankTransactions|
-|» » dataType|billCreditNotes|
-|» » dataType|billPayments|
-|» » dataType|bills|
-|» » dataType|cashFlowStatement|
-|» » dataType|chartOfAccounts|
-|» » dataType|company|
-|» » dataType|creditNotes|
-|» » dataType|customers|
-|» » dataType|directCosts|
-|» » dataType|directIncomes|
-|» » dataType|invoices|
-|» » dataType|items|
-|» » dataType|journalEntries|
-|» » dataType|journals|
-|» » dataType|paymentMethods|
-|» » dataType|payments|
-|» » dataType|profitAndLoss|
-|» » dataType|purchaseOrders|
-|» » dataType|salesOrders|
-|» » dataType|suppliers|
-|» » dataType|taxRates|
-|» » dataType|trackingCategories|
-|» » dataType|transfers|
-|» » dataType|banking-accountBalances|
-|» » dataType|banking-accounts|
-|» » dataType|banking-transactionCategories|
-|» » dataType|banking-transactions|
-|» » dataType|commerce-companyInfo|
-|» » dataType|commerce-customers|
-|» » dataType|commerce-disputes|
-|» » dataType|commerce-locations|
-|» » dataType|commerce-orders|
-|» » dataType|commerce-paymentMethods|
-|» » dataType|commerce-payments|
-|» » dataType|commerce-productCategories|
-|» » dataType|commerce-products|
-|» » dataType|commerce-taxComponents|
-|» » dataType|commerce-transactions|
-|» type|Unknown|
-|» type|Created|
-|» type|Modified|
-|» type|Deleted|
-|» type|AttachmentUploaded|
 |dataType|accountTransactions|
 |dataType|balanceSheet|
 |dataType|bankAccounts|
@@ -20908,33 +19888,16 @@ Required data may vary by integration. To see what data to post, first call [Get
 |companyId|path|string(uuid)|true|none|
 |connectionId|path|string(uuid)|true|none|
 |body|body|[Transfer](#schematransfer)|false|none|
-|» contactRef|body|object|false|The customer or supplier for the transfer, if available.|
-|» » dataType|body|string \| null|false|none|
-|» » id|body|string|true|none|
+|» contactRef|body|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|The customer or supplier for the transfer, if available.|
 |» date|body|[DateTime](#schemadatetime)|false|The day on which the transfer was made.|
 |» depositedRecordRefs|body|[string]|false|none|
 |» description|body|string \| null|false|Description of the transfer.|
-|» from|body|object|false|The details of the accounts the transfer is moving from.|
-|» » accountRef|body|object|false|The account that the transfer is moving from or to.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » amount|body|number|false|The amount transferred between accounts.|
-|» » currency|body|string(ISO4217)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|» from|body|[TransferTransferAccount](#schematransfertransferaccount)|false|The details of the accounts the transfer is moving from.|
 |» id|body|string|false|Unique identifier for the transfer.|
 |» metadata|body|[Metadata](#schemametadata)|false|none|
-|» supplementalData|body|object|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|» » content|body|object \| null|false|none|
-|» » » **additionalProperties**|body|object|false|none|
-|» » » » **additionalProperties**|body|object|false|none|
-|» to|body|object|false|The details of the accounts the transfer is moving to.|
-|» » accountRef|body|object|false|The account that the transfer is moving from or to.|
-|» » » id|body|string|false|'id' from the Accounts data type.|
-|» » » name|body|string|false|'name' from the Accounts data type.|
-|» » amount|body|number|false|The amount transferred between accounts.|
-|» » currency|body|string(ISO4217)|false|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
-|» trackingCategoryRefs|body|[object]|false|Reference to the tracking categories this transfer is being tracked against.|
-|» » id|body|string|true|none|
-|» » name|body|string \| null|false|none|
+|» supplementalData|body|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|» to|body|[TransferTransferAccount](#schematransfertransferaccount)|false|The details of the accounts the transfer is moving to.|
+|» trackingCategoryRefs|body|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|Reference to the tracking categories this transfer is being tracked against.|
 |» modifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in Codat.|
 |» sourceModifiedDate|body|[DateTime](#schemadatetime)|false|The date on which this record was last modified in the originating system|
 
@@ -21337,7 +20300,7 @@ The categories for an account include:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string(ISO4217)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
 |currentBalance|number \| null|false|none|Current balance in the account.|
 |description|string \| null|false|none|Description for the account.|
 |fullyQualifiedCategory|string \| null|false|none|Full category of the account. For example:<br>Liability.Current or Income.Revenue. See example data.|
@@ -21347,8 +20310,8 @@ The categories for an account include:
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |name|string \| null|false|none|Name of the account.|
 |nominalCode|string \| null|false|none|Reference given to each nominal account for a business. It ensures money is allocated to the correct account. This code isn't a unique identifier in the Codat system.|
-|status|string|true|none|Status of the account|
-|type|string|true|none|Type of account|
+|status|[AccountAccountStatus](#schemaaccountaccountstatus)|true|none|Status of the account|
+|type|[AccountAccountType](#schemaaccountaccounttype)|true|none|Type of account|
 |validDatatypeLinks|[[ValidDataTypeLinks](#schemavaliddatatypelinks)]|false|none|'The validDatatypeLinks can be used to determine whether an account can be correctly mapped to another object; for example, accounts with a `type` of `income` might only support being used on an Invoice and Direct Income. For more information, see Valid Data Type Links.'|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -21429,12 +20392,12 @@ Account transactions is the parent data type of [payments](https://docs.codat.io
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|bankAccountRef|object|false|none|Reference to the bank account the account transaction is recorded against.|
-|currency|string(ISO4217)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|bankAccountRef|[BankAccountBankAccountRef](#schemabankaccountbankaccountref)|false|none|Reference to the bank account the account transaction is recorded against.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |date|[DateTime](#schemadatetime)|false|none|The date the account transaction was recorded in the platform.|
 |id|string|false|none|Identifier of the direct cost (unique to the company).|
-|lines|[object]|false|none|Array of account transaction lines.|
+|lines|[[AccountTransactionAccountTransactionLine](#schemaaccounttransactionaccounttransactionline)]|false|none|Array of account transaction lines.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Additional information about the account transaction, if available.|
 |status|string|false|none|The status of the account transaction.|
@@ -21652,7 +20615,7 @@ The report will be grouped per supplier and depending on the periods requested. 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data|[object]|false|none|Array of aged creditor.|
+|data|[[AgedCreditorReportAgedCreditor](#schemaagedcreditorreportagedcreditor)]|false|none|Array of aged creditor.|
 |generated|[DateTime](#schemadatetime)|false|none|Date and time the report was generated.|
 |reportDate|[DateTime](#schemadatetime)|false|none|Date the report is generated up to.|
 
@@ -21731,7 +20694,7 @@ The report will be grouped per supplier and depending on the periods requested. 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|data|[object]|false|none|Array of aged debtors.|
+|data|[[AgedDebtorReportAgedDebtor](#schemaageddebtorreportageddebtor)]|false|none|Array of aged debtors.|
 |generated|[DateTime](#schemadatetime)|false|none|Date and time the report was generated.|
 |reportDate|[DateTime](#schemadatetime)|false|none|Date the report is generated up to.|
 
@@ -21876,10 +20839,10 @@ Our [Enhanced Financials](https://docs.codat.io/assess/reports/enhanced-financia
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string(ISO4217)|true|none|Currency of the balance sheet.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|none|Currency of the balance sheet.|
 |earliestAvailableMonth|[DateTime](#schemadatetime)|false|none|Earliest available monthly report data.|
 |mostRecentAvailableMonth|[DateTime](#schemadatetime)|false|none|Most recent available monthly report data.|
-|reports|[object]|true|none|An array of balance sheet reports.|
+|reports|[[BalanceSheetBalanceSheet](#schemabalancesheetbalancesheet)]|true|none|An array of balance sheet reports.|
 
 <h2 id="tocS_BankAccount">BankAccount</h2>
 <!-- backwards compatibility -->
@@ -21936,7 +20899,7 @@ Bank accounts data includes:
 |accountType|string|false|none|The type of transactions and balances on the account.  <br>For Credit accounts, positive balances are liabilities, and positive transactions **reduce** liabilities.  <br>For Debit accounts, positive balances are assets, and positive transactions **increase** assets.|
 |availableBalance|number \| null|false|none|Total available balance of the bank account as reported by the underlying data source. This may take into account overdrafts or pending transactions for example.|
 |balance|number \| null|false|none|Balance of the bank account.|
-|currency|string(ISO4217)|false|none|Base currency of the bank account.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Base currency of the bank account.|
 |iBan|string \| null|false|none|International bank account number of the account. Often used when making or receiving international payments.|
 |id|string|false|none|Identifier for the account, unique for the company in the accounting platform.|
 |institution|string \| null|false|none|The institution of the bank account.|
@@ -21997,7 +20960,7 @@ Bank accounts data includes:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|results|[object]|false|none|none|
+|results|[[BankTransactionsBankTransactionLine](#schemabanktransactionsbanktransactionline)]|false|none|none|
 |_links|[Links](#schemalinks)|true|none|none|
 |pageNumber|integer|true|none|none|
 |pageSize|integer|true|none|none|
@@ -22101,11 +21064,11 @@ Bank accounts data includes:
 |iban|string \| null|false|none|none|
 |id|string|false|none|none|
 |institution|string \| null|false|none|none|
-|modifiedDate|object|false|none|none|
+|modifiedDate|[ModifiedDatesAllOf0](#schemamodifieddatesallof0)|false|none|none|
 |nominalCode|string \| null|false|none|none|
 |overdraftLimit|number \| null|false|none|none|
 |sortCode|string \| null|false|none|none|
-|sourceModifiedDate|object|false|none|none|
+|sourceModifiedDate|[ModifiedDatesAllOf1](#schemamodifieddatesallof1)|false|none|none|
 |toDate|[DateTime](#schemadatetime)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 
 <h2 id="tocS_BankTransactions">BankTransactions</h2>
@@ -22158,7 +21121,7 @@ Bank transactions include the:
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |accountId|string \| null|false|none|none|
-|transactions|[object]|false|none|none|
+|transactions|[[BankTransactionsBankTransactionLine](#schemabanktransactionsbanktransactionline)]|false|none|none|
 
 <h2 id="tocS_BankTransactionsResponse">BankTransactionsResponse</h2>
 <!-- backwards compatibility -->
@@ -22367,23 +21330,23 @@ You can find these types of transactions in our [Direct costs](https://docs.coda
 |---|---|---|---|---|
 |amountDue|number \| null|false|none|Amount outstanding on the bill.|
 |currency|object|false|none|none|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |dueDate|object|false|none|none|
 |id|string|false|none|Identifier for the bill, unique for the company in the accounting platform.|
 |issueDate|object|true|none|none|
-|lineItems|[object]|false|none|Array of Bill line items.|
+|lineItems|[[BillBillLineItem](#schemabillbilllineitem)]|false|none|Array of Bill line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any private, company notes about the bill, such as payment information.|
-|paymentAllocations|[object]|false|none|An array of payment allocations.|
-|purchaseOrderRefs|[object]|false|none|none|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|none|An array of payment allocations.|
+|purchaseOrderRefs|[[PurchaseOrderPurchaseOrderRef](#schemapurchaseorderpurchaseorderref)]|false|none|none|
 |reference|string \| null|false|none|User-friendly reference for the bill.|
-|status|string|true|none|Current state of the bill.|
+|status|[BillBillStatus](#schemabillbillstatus)|true|none|Current state of the bill.|
 |subTotal|number|true|none|Total amount of the bill, excluding any taxes.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|supplierRef|object|false|none|Reference to the supplier the record relates to.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplierRef|[SupplierSupplierRef](#schemasuppliersupplierref)|false|none|Reference to the supplier the record relates to.|
 |taxAmount|number|true|none|Amount of tax on the bill.|
 |totalAmount|number|true|none|Amount of the bill, including tax.|
-|withholdingTax|[object]|false|none|none|
+|withholdingTax|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -22529,24 +21492,24 @@ A bill credit note includes details of:
 |---|---|---|---|---|
 |allocatedOnDate|[DateTime](#schemadatetime)|false|none|Date the bill credit note was fully refunded or allocated.|
 |billCreditNoteNumber|string \| null|false|none|Friendly reference for the bill credit note.|
-|currency|string(ISO4217)|false|none|Currency of the bill credit note.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency of the bill credit note.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |discountPercentage|number|true|none|Percentage rate of any discount applied to the bill credit note.|
 |id|string|false|none|Identifier for the bill credit note that is unique to a company in the accounting platform.|
 |issueDate|[DateTime](#schemadatetime)|false|none|Date the bill credit note was issued by the supplier.|
-|lineItems|[object]|false|none|An array of line |
+|lineItems|[[BillCreditNoteBillCreditNoteLineItem](#schemabillcreditnotebillcreditnotelineitem)]|false|none|An array of line |
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information about the bill credit note.|
-|paymentAllocations|[object]|false|none|An array of payment allocations.|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|none|An array of payment allocations.|
 |remainingCredit|number|true|none|Amount of the bill credit note that is still outstanding.|
-|status|string|true|none|Current state of the bill credit note|
+|status|[BillCreditNoteBillCreditNoteStatus](#schemabillcreditnotebillcreditnotestatus)|true|none|Current state of the bill credit note|
 |subTotal|number|true|none|Total amount of the bill credit note, including discounts but excluding tax.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|supplierRef|object|false|none|Reference to the supplier the record relates to.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplierRef|[SupplierSupplierRef](#schemasuppliersupplierref)|false|none|Reference to the supplier the record relates to.|
 |totalAmount|number|true|none|Total amount of credit that has been applied to the business' account with the supplier, including discounts and tax.|
 |totalDiscount|number|true|none|Total value of any discounts applied.|
 |totalTaxAmount|number|true|none|Amount of tax included in the bill credit note.|
-|withholdingTax|[object]|false|none|none|
+|withholdingTax|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -22872,18 +21835,18 @@ These two rates allow the calculation of currency loss or gain for any of the tr
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accountRef|object|false|none|Account the payment is linked to in the accounting platform.|
-|currency|string(ISO4217)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Account the payment is linked to in the accounting platform.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |date|[DateTime](#schemadatetime)|true|none|Date the bill payment was recorded in the accounting software.|
 |id|string|false|none|Identifier for the bill payment, unique for the company in the accounting platform.|
-|lines|[object]|false|none|An array of bill payment lines.|
+|lines|[[BillPaymentBillPaymentLine](#schemabillpaymentbillpaymentline)]|false|none|An array of bill payment lines.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Additional information associated with the payment.|
-|paymentMethodRef|object|false|none|The Payment Method to which the payment is linked in the accounting platform.|
+|paymentMethodRef|[PaymentMethodPaymentMethodRef](#schemapaymentmethodpaymentmethodref)|false|none|The Payment Method to which the payment is linked in the accounting platform.|
 |reference|string \| null|false|none|Additional information associated with the payment.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|supplierRef|object|false|none|Reference to the supplier the record relates to.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplierRef|[SupplierSupplierRef](#schemasuppliersupplierref)|false|none|Reference to the supplier the record relates to.|
 |totalAmount|number|false|none|Amount of the payment in the payment currency. This value never changes and represents the amount of money that is paid into the supplier's account.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -23150,12 +22113,12 @@ A cash flow statement is a financial report that records all cash that is receiv
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string(ISO4217)|true|none|Currency of all values in the cash flow statement.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|none|Currency of all values in the cash flow statement.|
 |earliestAvailableMonth|[DateTime](#schemadatetime)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |mostRecentAvailableMonth|[DateTime](#schemadatetime)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
-|reportBasis|string|true|none|Accounting method used when aggregating the report data. In this case, `Cash`.|
-|reportInput|string|true|none|Accounting method used to prepare the cash flow statement.|
-|reports|[object]|true|none|Array of cash flow statements.|
+|reportBasis|[CashFlowStatementReportBasis](#schemacashflowstatementreportbasis)|true|none|Accounting method used when aggregating the report data. In this case, `Cash`.|
+|reportInput|[CashFlowStatementReportInput](#schemacashflowstatementreportinput)|true|none|Accounting method used to prepare the cash flow statement.|
+|reports|[[CashFlowStatementCashFlowStatement](#schemacashflowstatementcashflowstatement)]|true|none|Array of cash flow statements.|
 
 #### Enumerated Values
 
@@ -23238,14 +22201,14 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |accountingPlatformRef|string \| null|false|none|Identifier or reference for the company in the accounting platform.|
-|addresses|[object]|false|none|An array of Addresses.|
+|addresses|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|none|An array of Addresses.|
 |baseCurrency|string \| null|false|none|Currency set in the accounting platform of the linked company. Used by the currency rate.|
 |companyLegalName|string \| null|false|none|Registered legal name of the linked company.|
 |companyName|string \| null|false|none|Name of the linked company.|
 |createdDate|[DateTime](#schemadatetime)|false|none|Date the linked company was created in the accounting platform.|
 |financialYearStartDate|[DateTime](#schemadatetime)|false|none|Start date of the financial year for the company.|
 |ledgerLockDate|[DateTime](#schemadatetime)|false|none|If set in the accounting platform, the date (in the ISO 8601 date/time format) after which accounting transactions cannot be edited. Commonly used when books are closed at year-end.|
-|phoneNumbers|[object]|false|none|An array of phone numbers.|
+|phoneNumbers|[[CompanyDatasetPhoneNumbersItems](#schemacompanydatasetphonenumbersitems)]|false|none|An array of phone numbers.|
 |registrationNumber|string \| null|false|none|Registration number given to the linked company by the companies authority in the country of origin. In the UK this is Companies House.|
 |sourceUrls|object \| null|false|none|URL addresses for the accounting source.<br><br>For example, for Xero integrations two URLs are returned. These have many potential use cases, such as [deep linking](https://developer.xero.com/documentation/api-guides/deep-link-xero).|
 |taxNumber|string \| null|false|none|Company tax number.|
@@ -23331,7 +22294,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Account](#schemaaccount)|false|none|> **Language tip:** Accounts are also referred to as **chart of accounts**, **nominal accounts**, and **general ledger**.<br><br>View the coverage for accounts in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=chartOfAccounts" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Accounts are the categories a business uses to record accounting transactions. From the Accounts endpoints, you can retrieve a list of all accounts for a specified company. <br><br>The categories for an account include:<br>  * Asset<br>  * Expense<br>  * Income<br>  * Liability<br>  * Equity.<br><br>> **Accounts with no category**<br>> <br>> If an account is pulled from the chart of accounts and its nominal code does not lie within the category layout for the company's accounts, then the **type** is `Unknown`. The **fullyQualifiedCategory** and **fullyQualifiedName** fields return `null`.<br>> <br>> This approach gives a true representation of the company's accounts whilst preventing distorting financials such as a company's profit and loss and balance sheet reports.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -23339,11 +22302,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -23476,7 +22439,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Account](#schemaaccount)|false|none|> **Language tip:** Accounts are also referred to as **chart of accounts**, **nominal accounts**, and **general ledger**.<br><br>View the coverage for accounts in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=chartOfAccounts" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Accounts are the categories a business uses to record accounting transactions. From the Accounts endpoints, you can retrieve a list of all accounts for a specified company. <br><br>The categories for an account include:<br>  * Asset<br>  * Expense<br>  * Income<br>  * Liability<br>  * Equity.<br><br>> **Accounts with no category**<br>> <br>> If an account is pulled from the chart of accounts and its nominal code does not lie within the category layout for the company's accounts, then the **type** is `Unknown`. The **fullyQualifiedCategory** and **fullyQualifiedName** fields return `null`.<br>> <br>> This approach gives a true representation of the company's accounts whilst preventing distorting financials such as a company's profit and loss and balance sheet reports.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -23484,11 +22447,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -23613,7 +22576,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[BankTransactions](#schemabanktransactions)|false|none|> **Accessing Bank Accounts through Banking API**<br>> <br>> This datatype was originally used for accessing bank account data both in accounting integrations and open banking aggregators. <br>><br>> To view bank account data through the Banking API, please refer to the new datatype [here](https://docs.codat.io/banking-api#/operations/list-all-banking-transactions)<br><br>> View the coverage for bank transactions in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=bankTransactions" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Transactional banking data for a specific company and account.<br><br>Bank transactions include the:<br>* Amount of the transaction.<br>* Current account balance.<br>* Transaction type, for example, credit, debit, or transfer.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -23621,11 +22584,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -23830,7 +22793,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[BillCreditNote](#schemabillcreditnote)|false|none|> **Bill credit notes or credit notes?**<br>> <br>> In Codat, bill credit notes represent accounts payable only. For accounts receivable, see [Credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).<br><br>View the coverage for bill credit notes in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=billCreditNotes" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A bill credit note is issued by a supplier for the purpose of recording credit. For example, if a supplier was unable to fulfil an order that was placed by a business, or delivered damaged goods, they would issue a bill credit note. A bill credit note reduces the amount a business owes to the supplier. It can be refunded to the business or used to pay off future bills.<br><br>In the Codat API, a bill credit note is an accounts payable record issued by a [supplier](https://docs.codat.io/accounting-api#/schemas/Supplier). <br><br>A bill credit note includes details of:<br>* The original and remaining credit.<br>* Any allocations of the credit against other records, such as [bills](https://docs.codat.io/accounting-api#/schemas/Bill).<br>* The supplier that issued the bill credit note.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -23838,11 +22801,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -23964,7 +22927,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[BillPayment](#schemabillpayment)|false|none|> **Bill payments or payments?**  <br>> <br>> In Codat, bill payments represent accounts payable only. For accounts receivable, see [payments](https://docs.codat.io/accounting-api#/schemas/Payment), which includes [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice) and [credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).<br><br>> View the coverage for bill payments in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=billPayments" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Bill payments include all accounts payable transaction data. This includes [bills](https://docs.codat.io/accounting-api#/schemas/Bill) and [credit notes against bills](https://docs.codat.io/accounting-api#/schemas/BillCreditNote).<br><br>A bill payment in Codat usually represents an allocation of money within any customer accounts payable account. This includes, but is not strictly limited to:<br><br>- A payment made against a bill — for example, a credit card payment, cheque payment, or cash payment.<br>- An allocation of a supplier's credit note to a bill or perhaps a refund.<br>- A bill payment made directly to an accounts payable account. This could be an overpayment or a prepayment, or a refund of a payment made directly to an accounts payable account.<br><br>Depending on the bill payments which are allowed by the underlying accounting package, some of these types may be combined. Please see the example data section for samples of what these cases look like.<br><br>In Codat, a bill payment contains details of:<br><br>- When the bill payment was recorded in the accounting system.<br>- How much it is for and in the currency.<br>- Who the payment has been paid to, the _supplier_.<br>- The types of bill payments, the _line items_.  <br><br>Some accounting platforms give a separate name to purchases where the payment is made immediately, such as something bought with a credit card or online payment. One example of this would be QuickBooks Online's _expenses_. You can find these types of transactions in our [Direct costs](https://docs.codat.io/accounting-api#/schemas/DirectCost) data model.<br><br>Bill payments is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).<br><br>---<br><br>## Bill payment types<br><br>### Payment of a bill<br><br>A payment paying a single bill should have the following properties:<br><br>- A `totalAmount` indicating the amount of the bill that was paid. This is always positive.<br>- A `lines` array containing one element with the following properties:<br>  - An `amount` equal to the `totalAmount` above.<br>  - A `links` array containing one element with the following properties:<br>    - A `type` indicating the type of link, in this case a `Bill`.<br>    - An `id` containing the ID of the bill that was paid.<br>    - An amount of `-totalAmount` (negative `totalAmount`), indicating that the entirety of the paid amount is allocated to the bill.<br><br>### Payment of multiple bills<br><br>It is possible for one payment to pay multiple bills. This can be represented using two possible formats, depending on how the supplier keeps their books:<br><br>1. The payment has multiple entries in its **lines** array, one for each bill that is paid. Each line will follow the above example for paying a bill, and the rules detailed in the data model.<br>2. The payment has a line with multiple links to each bill. This occurs when the proportion of the original payment allocated to each bill is not available.<br><br>Each line is the same as those described above, with the **amount** indicating how much of the payment is allocated to the bill. The **amount** on the lines sum to the **totalAmount** on the payment.<br><br>> Pushing batch payments to Xero<br>> <br>> When pushing a single bill payment to Xero to pay multiple bills, only the first format is supported—multiple entries in the payment **lines** array.<br><br>### Payments and refunds on account<br><br>A payment on account, that is a payment that doesn’t pay a specific bill, has one entry in its lines array.<br><br>The line has the following properties:<br><br>- A **totalAmount** indicating the amount paid by a supplier or refunded to them by a company. A payment to the supplier is always negative. A refund is always positive.<br>- A **links** array containing one element with the following properties:<br>  - A **type** indicating the type of link. For a payment this is `PaymentOnAccount`. For a refund this is `Refund`.<br>  - The **id** containing the ID of the supplier.<br>  - An amount for the link is `0` **totalAmount** or the amount of the payment or refund.<br><br>It is possible to have a payment that is part on account and part allocated to a bill. Each line should follow the examples above.<br><br>### Using a credit note to pay a bill<br><br>The payment of a bill using a credit note has one entry in its `lines` array. This **line** has the following properties:<br><br>- An **amount** indicating the amount of money moved, which in this case is `0`, as the credit note and bill allocation must balance each other.<br>- A **links** array containing two elements:<br>  - The first link has:<br>    - A **type** indicating the type of link, in this case a `Bill`.<br>    - An **id** containing the ID of the bill that was paid.<br>  - The second link has:<br>    - A **type** indicating the type of link, in this case a `CreditNote`.<br>    - An **id** containing the ID of the credit note used by this payment.<br><br>The **amount** field on the **line** equals the **totalAmount** on the payment.<br><br>### Refunding a credit note<br><br>A bill payment refunding a credit note has one entry in its **lines** array. This line has the following properties:<br><br>- An **amount** indicating the amount of the credit note that was refunded. This is always negative, indicating that it is a refund.<br>- A **links** array containing one element with the following properties:<br>  - A **type** indicating the type of `link`, in this case a `CreditNote`.<br>  - An **id** containing the ID of the credit note that was refunded.<br><br>The **totalAmount** field on the payment equals the line's **amount** field. These are both negative, as this is money leaving accounts payable.<br><br>### Refunding a payment<br><br>If a payment is refunded, for example, when a company overpaid a bill and the overpayment is returned, there are two payment records: <br><br>- One for the incoming overpayment.<br>- Another for the outgoing refund.<br><br>The payment issuing the refund is identified by the fact that the **totalAmount** is negative. This payment has one entry in its lines array that have the following properties:<br><br>- An **amount** indicating the amount that was refunded. This is always negative.<br>- A **links** array containing one element with the following properties:<br>  - A **type** indicating the type of a the link, in this case a `BillPayment`.<br>  - An **id** containing the ID of the payment that was refunded.<br><br>The **amount** field on the line equals the **totalAmount** on the payment and is negative as this is money leaving accounts payable.<br><br>The payment that was refunded can be identified as it has a line where the `amount` on its `line` is positive and the type of the link is `Refund`. This payment may have several entries in its **lines** array if it was partly used to pay an bill. For example, a £1,050 payment paying a £1,000 bill with a refund of £50 has two lines: <br><br>- One for £1,000 linked to the bill that was paid<br>- Another for £50 linked to the payment that refunded the over payment. This link is of type `Refund` but the ID corresponds to a bill payment.<br><br>The line linked to the bill payment has the following properties:<br><br>- An **amount** indicating the amount that was refunded. This is positive as its money that was added to accounts payable, but is balanced out by the negative amount of the refund.<br>- A **links** array containing one element with the following properties:<br>  - A **type** indicating the type of the link, in this case a `Refund`.<br>  - An **id** containing the ID of the payment that refunded this line.<br><br>> Linked payments<br>> <br>> Not all accounting packages support linked payments in this way. In these platforms you may see a payment on account and a refund on account.<br><br>## Foreign currencies<br><br>There are two types of currency rate that are detailed in the bill payments data type: <br><br>Payment currency rate: <br><br>- Base currency of the accounts payable account.<br>- Foreign currency of the bill payment.<br><br>Payment line link currency rate: <br><br>- Base currency of the item that the link represents.<br>- Foreign currency of the payment.<br><br>These two rates allow the calculation of currency loss or gain for any of the transactions affected by the payment lines. The second rate is used when a bill payment is applied to an item in a currency that does not match either:<br><br>- The base currency for the accounts payable account. <br>- The currency of the item.<br>|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -23972,11 +22935,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -24203,7 +23166,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Bill](#schemabill)|false|none|> **Invoices or bills?**<br>><br>> In Codat, bills are for accounts payable only. For the accounts receivable equivalent of bills, see [Invoices](https://docs.codat.io/accounting-api#/schemas/Invoice).<br><br>View the coverage for bills in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=bills" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>In Codat, a bill contains details of:<br>* When the bill was recorded in the accounting system.<br>* How much the bill is for and the currency of the amount.<br>* Who the bill was received from — the *supplier*.<br>* What the bill is for — the *line items*.<br><br>Some accounting platforms give a separate name to purchases where the payment is made immediately, such as something bought with a credit card or online payment. One example of this would be QuickBooks Online's *expenses*.<br><br>You can find these types of transactions in our [Direct costs](https://docs.codat.io/accounting-api#/schemas/DirectCost) data model.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -24211,11 +23174,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -24371,7 +23334,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[CreditNote](#schemacreditnote)|false|none|> View the coverage for credit notes in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=creditNotes" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Think of a credit note as a voucher issued to a customer. It is a reduction that can be applied against one or multiple invoices. A credit note can either reduce the amount owed or cancel out an invoice entirely.<br><br>In the Codat system a credit note is issued to a [customer's](https://docs.codat.io/accounting-api#/schemas/Customer) accounts receivable. <br><br>It contains details of:<br>* The amount of credit remaining and its status.<br>* Payment allocations against the payments type, in this case an invoice.<br>* Which customers the credit notes have been issued to.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -24379,11 +23342,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -24552,7 +23515,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Customer](#schemacustomer)|false|none|> View the coverage for customers in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=customers" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A customer is a person or organisation that buys goods or services. From the Customers endpoints, you can retrieve a [list of all the customers of a company](https://api.codat.io/swagger/index.html#/Customers/get_companies__companyId__data_customers).<br><br>Customers' data links to accounts receivable [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice).<br>|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -24560,11 +23523,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -24769,7 +23732,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[DirectCost](#schemadirectcost)|false|none|> **Language tip:** Direct costs may also be referred to as **Spend transactions**, **Spend money transactions**, or **Payments** in various accounting platforms.<br><br>> View the coverage for direct costs in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=directCosts" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Direct costs include:<br>  * Purchasing an item and paying it off at the point of the purchase<br>  * Receiving cash from a refunded item if the refund is made by the supplier<br>  * Withdrawing money from a bank account <br>  * Writing a cheque<br><br>Direct costs is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -24777,11 +23740,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -24974,7 +23937,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[DirectIncome](#schemadirectincome)|false|none|> **Language tip:**  Direct incomes may also be referred to as **Receive transactions**, **Receive money transactions**, **Sales receipts**, or **Cash sales** in various accounting platforms.<br><br>> View the coverage for direct incomes in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=directIncomes" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Direct incomes include: <br><br>- Selling an item directly to a contact, and receiving payment at the point of the sale.<br>- Refunding an item in cash to a contact.<br>- Depositing money into a bank account.<br><br>Direct incomes is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).<br>|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -24982,11 +23945,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -25215,7 +24178,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Invoice](#schemainvoice)|false|none|> View the coverage for invoices in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=invoices" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>An invoice is an itemized record of goods sold or services provided to a [customer](https://docs.codat.io/accounting-api#/schemas/Customer).<br><br>In Codat, an invoice contains details of:<br><br>- The timeline of the invoice—when it was raised, marked as paid, last edited, and so on.<br>- How much the invoice is for, what portion of the invoice is tax or discounts, and what currency the amounts are represented in. <br>- Who the invoice has been raised to; the _customer_.<br>- The breakdown of what the invoice is for; the _line items_.<br>- Any [payments](https://docs.codat.io/accounting-api#/schemas/Payment) assigned to the invoice; the _payment allocations_.<br><br>> **Invoices or bills?**  <br>><br>> In Codat, invoices represent accounts receivable only. For accounts payable invoices, see [Bills](https://docs.codat.io/accounting-api#/schemas/Bill).<br><br>> **Invoice PDF downloads**  <br>><br>> You can <a className="external" href="https://docs.codat.io/accounting-api#/operations/get-invoice-pdf" target="_blank">download a PDF version</a> of an invoice for supported integrations.<br>> <br>> The filename will be invoice-{number}.pdf.<br><br>> **Referencing an invoice in Sage 50 and ClearBooks**<br>><br>> In Sage 50 and ClearBooks, you may prefer to use the **invoiceNumber** to identify an invoice rather than the invoice **id**. Each time a draft invoice is submitted or printed, the draft **id** becomes void and a submitted invoice with a new **id** exists in its place. In both platforms, the **invoiceNumber** should remain the same.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -25223,11 +24186,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -25374,7 +24337,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Item](#schemaitem)|false|none|> View the coverage for items in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=items" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>**Items** allow your customers to save and track details of the products and services that they buy and sell.<br>|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -25382,11 +24345,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -25544,7 +24507,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[JournalEntry](#schemajournalentry)|false|none|> **Language tip:** For the top-level record of a company's financial transactions, refer to the [Journals](https://docs.codat.io/accounting-api#/schemas/Journal) data type<br><br>> View the coverage for journal entries in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=journalEntries" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A journal entry report shows the entries made in a company's general ledger, or [accounts](https://docs.codat.io/accounting-api#/schemas/Account), when transactions are approved. The journal line items for each journal entry should balance.<br><br>A journal entry line item is a single transaction line on the journal entry. For example: <br><br>- When a journal entry is recording a receipt of cash, the credit to accounts receivable and the debit to cash are separate line items. <br>- When a company needs to recognise revenue from an annual contract on a monthly basis, on receipt of cash for month one, they make a debit to deferred income and a credit to revenue.<br><br>In Codat a journal entry contains details of:<br><br>- The date on which the entry was created and posted.<br>- Itemised lines, including amounts and currency.<br>- A reference to the associated accounts.<br>- A reference to the underlying record. For example, the invoice, bill, or other data type that triggered the posting of the journal entry to the general ledger. <br><br>> **Pushing journal entries**  <br>> Codat only supports journal entries in the base currency of the company that are pushed into accounts denominated in the same base currency.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -25552,11 +24515,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -25715,7 +24678,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Payment](#schemapayment)|false|none|> **Payments or bill payments?**  <br>> <br>>  In Codat, payments represent accounts receivable only. For accounts payable, see [bill payments](https://docs.codat.io/accounting-api#/schemas/BillPayment). These include [bills](https://docs.codat.io/accounting-api#/schemas/Bill) and credit notes against bills.<br><br>> View the coverage for payments in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=payments" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Payments include all accounts receivable transaction data. This includes [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice) and [credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).<br><br>A payment in Codat usually represents an allocation of money within any customer accounts receivable account. This includes, but is not strictly limited to: <br><br>- A payment made against an invoice, like a credit card, cheque, or cash payment.<br>- An allocation of a customer's credit note, either to an invoice or maybe a refund.<br>- A payment made directly to that accounts receivable account. This might be an overpayment or a prepayment. It might also be the refund of a payment made directly to an accounts receivable account.<br><br>Depending on the payments allowed by the underlying accounting package, some payment types may be combined. Please see the example for more details.<br><br>In Codat, a payment contains details of:<br><br>- When the payment was recorded in the accounting system.<br>- How much it is for and in what currency that amount is in.<br>- Who the payment was _paid by_ – the _customer_.<br>- The payment method used.<br>- The breakdown of the types of payments – the _line items_.<br><br>Payments is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).<br><br>## Payment types<br><br>## Payment of an invoice<br><br>A payment paying a single invoice has one entry in its `lines` array. This **line** has the following properties:<br><br>- An _amount_ that indicates the amount of the invoice that was paid. This is always positive.<br>- A **links** array containing one element with the following properties:<br>  - A **type** that indicates the type of **link**, in this case an `Invoice`.<br>  - An **id** that contains the ID of the invoice that was paid.<br>  - An **amount** for the link. The sum of the **line.amount** and the **links.amount** must equal `0`.<br><br>The **amount** field on the **line** equals the **totalAmount** on the payment.<br><br>## Payment of multiple invoices<br><br>A single payment can pay multiple invoices. This can be represented in one of two formats depending on how the customer keeps their books:<br><br>- The payment has multiple entries in its **lines** array, one for each invoice that is paid. Each line follows the example and rules described in [Payment of an invoice](#payment-of-an-invoice).<br>- The payment has a line with multiple links to each invoice. This occurs when the proportion of the original payment allocated to each invoice is not available.<br><br>Each **line** has the same properties as those described in [Payment of an invoice](#payment-of-an-invoice), with the **amount** indicating how much of the payment was allocated to the invoice. The sum of line amounts equals the **totalAmount** on the payment.<br><br>## Payments and refunds on account<br><br>A payment on account, that is a payment that doesn’t pay a specific invoice, has one entry in its lines array. The **line** has the following properties:<br><br>- A **totalAmount** that indicates the amount paid by a customer or refunded to them by a company. A payment to the customer is always negative. A refund is always positive.<br>- A **links** array containing one element with the following properties:<br>- A **type** that indicates the type of link. For a payment this is `PaymentOnAccount`. For a refund this is `Refund`.<br>- The **id** containing the ID of the customer.<br>- The **amount** for the link is `0` – the **totalAmount** _or_ the amount of the payment or refund.<br><br>It is possible to have a payment that is part _on account_ and part _allocated_ to an invoice. Each line should follow the examples above.<br><br>## Using a credit note to pay an invoice<br><br>The payment of an invoice using a credit note has one entry in its **lines** array. This **line** has the following properties:<br><br>- An **amount** that indicates the amount of money moved, which in this case is `0`, as the credit note and invoice allocation must balance each other.<br>- A **links** array containing two elements:<br>  - The first **link** has:<br>    - A **type** that indicates the type of **link**, in this case an `Invoice`.<br>    - An **id** that contains the ID of the invoice that was paid.<br>  - The second **link** has:<br>    - A **type** that indicates the type of **link**, in this case a `CreditNote`.<br>    - An **id** that contains the ID of the credit note used by this payment.<br><br>The **amount** field on the **line** equals the **totalAmount** on the payment.<br><br>## Refunding a credit note<br><br>A payment refunding a credit note has one entry in its **lines** array. This **line** has the following properties:<br><br>- An **amount** that indicates the amount of the credit note that was refunded. This is always negative for a refund.<br>- A **links** array that contains one element with the following properties:<br>  - A **type** that indicates the type of **link**, in this case a `CreditNote`.<br>  - An **id** that contains the ID of the credit note that was refunded.<br><br>The **totalAmount** field on the payment equals the **amount** field of the **line**. These are both negative, as this is money leaving accounts receivable.<br><br>## Refunding a payment<br><br>If a payment is refunded, for example, if a customer overpaid an invoice and the overpayment is returned to the customer, there are two payment records: <br><br>- One for the incoming over payment.<br>- Another for the outgoing refund.<br><br>The payment issuing the refund has a negative **totalAmount**. This payment also has one entry in its lines array with the following properties:<br><br>- An **amount** that indicates the amount that was refunded. This is always negative.<br>- A **links** array that contains one element with the following properties:<br>  - A **type** that indicates the type of **link**, in this case a `Payment`.<br>  - An **id** that contains the ID of the payment that was refunded.<br><br>The **amount** field on the **line** equals the **totalAmount** on the payment and is negative, as this is money leaving accounts receivable.<br><br>The payment that was refunded has a line where the **amount** is positive and the type of the link is `Refund`. This payment may have several entries in its **lines** array if it was used to partly pay an invoice. <br><br>For example: A £1,050 payment on a £1,000 invoice with a refund of £50 has two lines: <br><br>- One for £1,000 linked to the invoice that was paid.<br>- Another for £50 linked to the payment that refunded the overpayment with a** type** of `Refund` and an ID that corresponds to the payment.<br><br>The **line** linked to the payment has the following properties:<br><br>- An **amount** that indicates the amount that was refunded. This is positive as its money that was added to accounts receivable. It's balanced out by the negative amount of the refund.<br>- A **links** array containing one element with the following properties:<br>  - A **type** that indicates the type of **link**, in this case a `Refund`.<br>  - An **id** that contains the ID of the payment that refunded this line.<br><br>> **Support for linked payments**<br>> <br>> Not all accounting packages support linking payments in this way. In some platforms, you may see a payment on account and a refund on account.<br><br>## Foreign currencies<br><br>There are two types of currency rate that are included in the payments data type: <br><br>Payment currency rate: <br><br>- Base currency of the accounts receivable account.<br>- Foreign currency of the payment.<br><br>Payment line link currency rate: <br><br>- Base currency of the item the link represents.<br>- Foreign currency of the payment.<br><br>These two rates allow the calculation of currency loss or gain for any of the transactions affected by the payment lines. The second rate is used when a payment is applied to an item in a currency that doesn't match either:<br><br>- The base currency for the accounts receivable account. <br>- The currency of the item.<br><br>```json title="Currency rate example"<br>{<br>    "id": "123",<br>    "note": ""<br>    "totalAmount": 99.99,<br>    "currency": "GBP",<br>    "lines": [<br>        {<br>            "amount": 99.99,<br>            "links": [<br>                {<br>                    "type": "Invoice",<br>                    "id": "178",<br>                    "amount": -50,<br>                    "currencyRate":  1.9998,<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>## Example data<br><br>> **Object properties**<br>> <br>> For the sake of brevity, the examples here may omit properties from objects. For the full object definition, see [Payments](https://api.codat.io/swagger/index.html#/Payments).<br><br>## Simple examples<br><br>```json title="Payment for invoice"<br>{<br>    "totalAmount": 1000,<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Allocation of credit note"<br>{<br>    "totalAmount": 0,<br>    "lines": [<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Payment of invoice and payment on account"<br>{<br>    "totalAmount": 2000,<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "PaymentOnAccount",<br>                    "id" : "y",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Refund of credit note"<br>{<br>    "totalAmount": -1000,<br>    "lines": [<br>        {<br>            "amount" : -1000,<br>            "links" : [<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Refund on accounts receivable account"<br>{<br>    "totalAmount": -1000,<br>    "lines": [<br>        {<br>            "amount" : -1000,<br>            "links" : [<br>                {<br>                    "type" : "PaymentOnAccount",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Linked refund on accounts receivable account"<br>{<br>    "id" : "payment-001",<br>    "totalAmount": 1000,<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Refund",<br>                    "id" : "refund-001",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>{<br>    "id" : "refund-001",<br>    "totalAmount": -1000,<br>    "lines": [<br>        {<br>            "amount" : -1000,<br>            "links" : [<br>                {<br>                    "type" : "Payment",<br>                    "id" : "payment-001",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Using a credit note and cash to pay an invoice"<br>{<br>    "totalAmount": 250,<br>    "lines": [<br>        {<br>            "amount": 0,<br>            "links": [<br>                {<br>                    "type": "Invoice",<br>                    "id": "x",<br>                    "amount": -750<br>                }, <br>                {<br>                    "type": "CreditNote",<br>                    "id": "y",<br>                    "amount": 750<br>                }<br>            ]<br>        },<br>        {<br>            "amount": 250,<br>            "links": [<br>                {<br>                    "type": "Invoice",<br>                    "id": "x",<br>                    "amount": -250<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>## Complex examples<br><br>```json title="Use two credit notes and 1000 in to "bank" (cash, cheque etc.) to pay invoice"<br>{<br>    "totalAmount": 1000,<br>    "lines": [<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "z",<br>                    "amount" : 1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Pay an invoice with two credit notes and cash, with 1000 left 'on account'"<br>{<br>    "totalAmount": 2000,<br>    "lines": [<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "z",<br>                    "amount" : 1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "PaymentOnAccount",<br>                    "id" : "customer-001",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Two credit notes pay two invoices with no allocation amount specified"<br>{<br>    "totalAmount": 0,<br>    "lines": [<br>        {<br>            "amount" : 0,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "w",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "z",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Two credit notes and cash pay three invoices with no allocation amount specified, and refund cash"<br>{<br>    "totalAmount": 2000,<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "w",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "x",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "u",<br>                    "amount" : -1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "y",<br>                    "amount" : 1000<br>                },<br>                {<br>                    "type" : "CreditNote",<br>                    "id" : "z",<br>                    "amount" : 1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Refund",<br>                    "id" : "refund-001",<br>                    "amount" : -1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>{<br>    "id" : "refund-001",<br>    "totalAmount": -1000,<br>    "lines": [<br>        {<br>            "amount" : -1000,<br>            "links" : [<br>                {<br>                    "type" : "Payment",<br>                    "id" : "payment-001",<br>                    "amount" : 1000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>In this example, a payment on account is used to pay the same invoice in January and again in February.<br><br>```json title="January"<br>{<br>    "id": "001",<br>    "totalAmount": 5000,<br>    "date" : "1901-01-01",<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "Invoice-x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 4000,<br>            "links" : [<br>                {<br>                    "type" : "PaymentOnAccount",<br>                    "id" : "PaymentOnAccount-y",<br>                    "amount" : -4000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="February"<br>{<br>    "id": "001",<br>    "totalAmount": 5000,<br>    "date" : "1901-02-01",<br>    "lines": [<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "Invoice-x",<br>                    "amount" : -1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 1000,<br>            "links" : [<br>                {<br>                    "type" : "Invoice",<br>                    "id" : "Invoice-y",<br>                    "amount" : -1000<br>                }<br>            ]<br>        },<br>        {<br>            "amount" : 3000,<br>            "links" : [<br>                {<br>                    "type" : "PaymentOnAccount",<br>                    "id" : "PaymentOnAccount-y",<br>                    "amount" : -3000<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```<br><br><br><br>```json title="Two credit notes and some cash pay two invoices with no allocations specified"<br>{<br>    "totalAmount": 500,<br>    "lines": [<br>        {<br>            "amount": 500,<br>            "links": [{<br>                    "type": "Invoice",<br>                    "id": "a",<br>                    "amount": -1000<br>                }, {<br>                    "type": "Invoice",<br>                    "id": "b",<br>                    "amount": -1000<br>                }, {<br>                    "type": "CreditNote",<br>                    "id": "y",<br>                    "amount": 750<br>                },{<br>                    "type": "CreditNote",<br>                    "id": "z",<br>                    "amount": 750<br>                }<br>            ]<br>        }<br>    ]<br>}<br>```|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -25723,11 +24686,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -25897,7 +24860,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[PurchaseOrder](#schemapurchaseorder)|false|none|> View the coverage for purchase orders in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=purchaseOrders" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Purchase orders represent a business's intent to purchase goods or services from a supplier and normally include information such as expected delivery dates and shipping details.  <br><br>This information can be used to provide visibility on a business's expected payables and to track a purchase through the full procurement process.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -25905,11 +24868,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -26055,7 +25018,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Supplier](#schemasupplier)|false|none|> View the coverage for suppliers in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=suppliers" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>From the **Suppliers** endpoints, you can retrieve a list of [all the suppliers for a company](https://docs.codat.io/accounting-api#/operations/list-suppliers). Suppliers' data links to accounts payable [bills](https://docs.codat.io/accounting-api#/schemas/Bill).|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -26063,11 +25026,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -26225,7 +25188,7 @@ Company info provides standard details about a linked company such as their addr
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Transfer](#schematransfer)|false|none|> View the coverage for transfers in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=transfers" target="_blank">Data coverage explorer</a>.<br><br>A transfer records the movement of money between two bank accounts, or between a bank account and a nominal account. It is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -26233,11 +25196,11 @@ Company info provides standard details about a linked company such as their addr
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -26370,24 +25333,24 @@ It contains details of:
 |additionalTaxPercentage|number|false|none|none|
 |allocatedOnDate|[DateTime](#schemadatetime)|false|none|Date on which the credit note was fully allocated.|
 |creditNoteNumber|string \| null|false|none|Friendly reference for the credit note.|
-|currency|string(ISO4217)|false|none|Currency of the credit note.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|customerRef|object|false|none|Reference to the customer the credit note has been issued to.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency of the credit note.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|Reference to the customer the credit note has been issued to.|
 |discountPercentage|number|true|none|Percentage rate (from 0 to 100) of discounts applied to the credit note.|
 |id|string|false|none|Identifier for the credit note, unique to the company in the accounting platform.|
 |issueDate|[DateTime](#schemadatetime)|false|none|Date of the credit note as recorded in the accounting system.|
-|lineItems|[object]|false|none|none|
+|lineItems|[[CreditNoteCreditNoteLineItem](#schemacreditnotecreditnotelineitem)]|false|none|none|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information about the credit note. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when a credit note is emailed from the accounting platform to the customer.|
-|paymentAllocations|[object]|false|none|An array of payment allocations.|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|none|An array of payment allocations.|
 |remainingCredit|number|true|none|Unused balance of totalAmount originally raised.|
-|status|string|true|none|Current state of the credit note.|
+|status|[CreditNoteCreditNoteStatus](#schemacreditnotecreditnotestatus)|true|none|Current state of the credit note.|
 |subTotal|number|true|none|Value of the credit note, including discounts and excluding tax.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |totalAmount|number|true|none|Total amount of credit that has been applied to the customer's accounts receivable|
 |totalDiscount|number|true|none|Any discounts applied to the credit note amount.|
 |totalTaxAmount|number|true|none|Any tax applied to the credit note amount.|
-|withholdingTax|[object]|false|none|none|
+|withholdingTax|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -26570,18 +25533,18 @@ Customers' data links to accounts receivable [invoices](https://docs.codat.io/ac
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|addresses|[object]|false|none|An array of Addresses.|
+|addresses|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|none|An array of Addresses.|
 |contactName|string \| null|false|none|Name of the main contact for the identified customer.|
-|contacts|[object]|false|none|An array of Contacts.|
+|contacts|[[CustomerContact](#schemacustomercontact)]|false|none|An array of Contacts.|
 |customerName|string \| null|false|none|Name of the customer as recorded in the accounting system, typically the company name.|
-|defaultCurrency|string(ISO4217)|false|none|Default currency the transactional data of the customer is recorded in.|
+|defaultCurrency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Default currency the transactional data of the customer is recorded in.|
 |emailAddress|string \| null|false|none|Email address the customer can be contacted by.|
 |id|string|false|none|Identifier for the customer, unique to the company in the accounting platform.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |phone|string \| null|false|none|Phone number the customer can be contacted by.|
 |registrationNumber|string \| null|false|none|Company number. In the UK, this is typically the Companies House company registration number.|
-|status|string|true|none|Current state of the customer.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|status|[CustomerCustomerStatus](#schemacustomercustomerstatus)|true|none|Current state of the customer.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |taxNumber|string \| null|false|none|Company tax number.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -26930,18 +25893,18 @@ Direct costs is a child data type of [account transactions](https://docs.codat.i
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|contactRef|object|false|none|A customer or supplier associated with the direct cost.|
-|currency|string(ISO4217)|true|none|Currency of the direct cost.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|contactRef|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|none|A customer or supplier associated with the direct cost.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|none|Currency of the direct cost.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |id|string|false|none|Identifier of the direct cost, unique for the company.|
 |issueDate|[DateTime](#schemadatetime)|true|none|Date of the direct cost as recorded in the accounting platform.Date of the direct cost as recorded in the accounting platform.|
-|lineItems|[object]|true|none|An array of line items.|
+|lineItems|[[DirectCostDirectCostLineItem](#schemadirectcostdirectcostlineitem)]|true|none|An array of line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|A note attached to the direct cost.|
-|paymentAllocations|[object]|true|none|An array of payment allocations.|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|true|none|An array of payment allocations.|
 |reference|string \| null|false|none|User-friendly reference for the direct cost.|
 |subTotal|number|true|none|The total amount of the direct costs, excluding any taxes.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |taxAmount|number|true|none|The total amount of tax on the direct costs.|
 |totalAmount|number|true|none|The amount of the direct costs, inclusive of tax.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -27194,18 +26157,18 @@ Direct incomes is a child data type of [account transactions](https://docs.codat
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|contactRef|object|false|none|A customer or supplier associated with the direct income.|
-|currency|string(ISO4217)|true|none|The currency of the direct income.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|contactRef|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|none|A customer or supplier associated with the direct income.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|true|none|The currency of the direct income.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |id|string|false|none|Identifier of the direct income, unique for the company.|
 |issueDate|[DateTime](#schemadatetime)|true|none|The date of the direct income as recorded in the accounting platform.|
-|lineItems|[object]|true|none|An array of line items.|
+|lineItems|[[DirectIncomeDirectIncomeLineItem](#schemadirectincomedirectincomelineitem)]|true|none|An array of line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|none|
-|paymentAllocations|[object]|true|none|none|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|true|none|none|
 |reference|string \| null|false|none|User-friendly reference for the direct income.|
 |subTotal|number|true|none|The total amount of the direct incomes, excluding any taxes.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |taxAmount|number|true|none|The total amount of tax on the direct incomes.|
 |totalAmount|number|true|none|The amount of the direct incomes, inclusive of tax.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -27518,27 +26481,27 @@ In Codat, an invoice contains details of:
 |additionalTaxAmount|number|false|none|none|
 |additionalTaxPercentage|number|false|none|none|
 |amountDue|number|true|none|Amount outstanding on the invoice.|
-|currency|string(ISO4217)|false|none|Currency of the invoice.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|customerRef|object|false|none|Reference to the customer the invoice has been issued to.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency of the invoice.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|Reference to the customer the invoice has been issued to.|
 |discountPercentage|number \| null|false|none|Percentage rate (from 0 to 100) of discounts applied to the invoice. For example: A 5% discount will return a value of `5`, not `0.05`.|
 |dueDate|[DateTime](#schemadatetime)|false|none|Date the customer is due to be paid by.|
 |id|string|false|none|Identifier for the invoice, unique to the company in the accounting platform.|
 |invoiceNumber|string \| null|false|none|Friendly reference for the invoice. If available, this appears in the file name of invoice attachments.|
 |issueDate|[DateTime](#schemadatetime)|true|none|Date of the invoice as recorded in the accounting system.|
-|lineItems|[object]|false|none|An array of line items.|
+|lineItems|[[InvoiceInvoiceLineItem](#schemainvoiceinvoicelineitem)]|false|none|An array of line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information about the invoice. Where possible, Codat links to a data field in the accounting platform that is publicly available. This means that the contents of the note field are included when an invoice is emailed from the accounting platform to the customer.|
 |paidOnDate|[DateTime](#schemadatetime)|false|none|Date the invoice was marked as paid in the accounting system. If this field is not available from the accounting software, it is calculated by Codat using associated payments.|
-|paymentAllocations|[object]|false|none|An array of payment allocations.|
+|paymentAllocations|[[BillAllOf0PaymentAllocationsItems](#schemabillallof0paymentallocationsitems)]|false|none|An array of payment allocations.|
 |salesOrderRefs|[string]|false|none|List of references to related Sales orders.|
-|status|string|true|none|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
+|status|[InvoiceInvoiceStatus](#schemainvoiceinvoicestatus)|true|none|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
 |subTotal|number \| null|false|none|Total amount of the invoice excluding any taxes.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |totalAmount|number|true|none|Amount of the invoice, inclusive of tax.|
 |totalDiscount|number \| null|false|none|Numerical value of discounts applied to the invoice.|
 |totalTaxAmount|number|true|none|Amount of tax on the invoice.|
-|withholdingTax|[object]|false|none|none|
+|withholdingTax|[[BillAllOf0WithholdingTaxItems](#schemabillallof0withholdingtaxitems)]|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -27770,16 +26733,16 @@ In Codat, an invoice contains details of:
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|billItem|object|false|none|Item details that are only for bills.|
+|billItem|[ItemBillItem](#schemaitembillitem)|false|none|Item details that are only for bills.|
 |code|string \| null|false|none|Friendly reference for the item.|
 |id|string|false|none|Identifier for the item that is unique to a company in the accounting platform.|
-|invoiceItem|object|false|none|Item details that are only for bills.|
+|invoiceItem|[ItemInvoiceItem](#schemaiteminvoiceitem)|false|none|Item details that are only for bills.|
 |isBillItem|boolean|true|none|Whether you can use this item for bills.|
 |isInvoiceItem|boolean|true|none|Whether you can use this item for invoices.|
-|itemStatus|string|true|none|Current state of the item, either:<br><br>- `Active`: Available for use<br>- `Archived`: Unavailable<br>- `Unknown`<br><br>Due to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.|
+|itemStatus|[ItemItemStatus](#schemaitemitemstatus)|true|none|Current state of the item, either:<br><br>- `Active`: Available for use<br>- `Archived`: Unavailable<br>- `Unknown`<br><br>Due to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |name|string \| null|false|none|Name of the item in the accounting platform.|
-|type|any|true|none|none|
+|type|[ItemItemType](#schemaitemitemtype)|true|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -27925,7 +26888,7 @@ Multiple journals or subjournals are used in the following Codat integrations:
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |name|string \| null|false|none|Journal name.<br>The maximum length for a journal name is 256 characters. All characters above that number will be truncated.|
 |parentId|string \| null|false|none|Parent journal ID.<br>If the journal is a parent journal, this value is not present.|
-|status|string|false|none|Current journal status.|
+|status|[JournalJournalStatus](#schemajournaljournalstatus)|false|none|Current journal status.|
 |type|string \| null|false|none|The type of the journal.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -28115,12 +27078,12 @@ In Codat a journal entry contains details of:
 |createdOn|[DateTime](#schemadatetime)|false|none|Date on which the journal was created in the accounting platform.|
 |description|string \| null|false|none|Optional description of the journal entry.|
 |id|string|false|none|Unique identifier of the journal entry for the company in the accounting platform.|
-|journalLines|[object]|false|none|An array of journal lines.|
-|journalRef|object|false|none|Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).|
+|journalLines|[[JournalEntryJournalLine](#schemajournalentryjournalline)]|false|none|An array of journal lines.|
+|journalRef|[JournalJournalRef](#schemajournaljournalref)|false|none|Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |postedOn|[DateTime](#schemadatetime)|false|none|Date on which the journal entry was posted to the accounting platform, and had an impact on the general ledger. This may be different from the creation date.<br><br>For example, a user creates a journal entry on Monday and saves it as draft, which has no impact on the general ledger. On Thursday, they return to the entry and post it.<br><br>The **createdOn** date shows as Monday.<br>The **postedOn** date shows as Thursday.<br>Journal entries can also be backdated, so the **postedOn** date may be earlier than the **createdOn** date.|
-|recordRef|object|false|none|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|recordRef|[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)|false|none|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |updatedOn|[DateTime](#schemadatetime)|false|none|Date on which the journal was last updated in the accounting platform.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -29019,18 +27982,18 @@ In this example, a payment on account is used to pay the same invoice in January
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accountRef|object|false|none|Account the payment is recorded against in the accounting platform.|
-|currency|string(ISO4217)|false|none|ISO currency code recorded for the payment in the accounting platform.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
-|customerRef|object|false|none|Customer the payment is recorded against in the accounting platform.|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Account the payment is recorded against in the accounting platform.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|ISO currency code recorded for the payment in the accounting platform.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|Customer the payment is recorded against in the accounting platform.|
 |date|[DateTime](#schemadatetime)|true|none|Date the payment was recorded in the accounting software.|
 |id|string|false|none|Identifier for the payment, unique to the company in the accounting platform.|
-|lines|[object]|false|none|An array of payment lines.|
+|lines|[[PaymentPaymentLine](#schemapaymentpaymentline)]|false|none|An array of payment lines.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information associated with the payment.|
-|paymentMethodRef|object|false|none|The Payment Method to which the payment is linked in the accounting platform.|
+|paymentMethodRef|[PaymentMethodPaymentMethodRef](#schemapaymentmethodpaymentmethodref)|false|none|The Payment Method to which the payment is linked in the accounting platform.|
 |reference|string \| null|false|none|Friendly reference for the payment.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |totalAmount|number|false|none|Amount of the payment in the payment currency. This value should never change and represents the amount of money paid into the customer's account.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -29069,8 +28032,8 @@ A Payment Method represents the payment method(s) used to pay a Bill. Payment Me
 |id|string|false|none|Unique identifier for the payment method.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |name|string \| null|false|none|Name of the payment method.|
-|status|string|false|none|Status of the Payment Method.|
-|type|string|false|none|Method of payment.|
+|status|[PaymentMethodPaymentMethodStatus](#schemapaymentmethodpaymentmethodstatus)|false|none|Status of the Payment Method.|
+|type|[PaymentMethodPaymentMethodType](#schemapaymentmethodpaymentmethodtype)|false|none|Method of payment.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -29391,8 +28354,8 @@ Our [Enhanced Financials](https://docs.codat.io/assess/reports/enhanced-financia
 |currency|string|true|none|Base currency of the company in which the profit and loss report is presented.|
 |earliestAvailableMonth|[DateTime](#schemadatetime)|false|none|Earliest available monthly report data.|
 |mostRecentAvailableMonth|[DateTime](#schemadatetime)|false|none|Most recent available monthly report data.|
-|reportBasis|string|true|none|The basis of a report.|
-|reports|[object]|true|none|An array of profit and loss reports.|
+|reportBasis|[ProfitAndLossReportReportBasis](#schemaprofitandlossreportreportbasis)|true|none|The basis of a report.|
+|reports|[[ProfitAndLossReportProfitAndLossReport](#schemaprofitandlossreportprofitandlossreport)]|true|none|An array of profit and loss reports.|
 
 #### Enumerated Values
 
@@ -29508,21 +28471,21 @@ This information can be used to provide visibility on a business's expected paya
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string(ISO4217)|false|none|Currency of the purchase order.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency of the purchase order.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |deliveryDate|[DateTime](#schemadatetime)|false|none|Actual delivery date for any goods that have been ordered.|
 |expectedDeliveryDate|[DateTime](#schemadatetime)|false|none|Expected delivery date for any goods that have been ordered.|
 |id|string|false|none|Identifier for the purchase order, unique for the company in the accounting platform.|
 |issueDate|[DateTime](#schemadatetime)|false|none|Date of the purchase order as recorded in the accounting platform.|
-|lineItems|[object]|false|none|Array of line items.|
+|lineItems|[[PurchaseOrderPurchaseOrderLineItem](#schemapurchaseorderpurchaseorderlineitem)]|false|none|Array of line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information associated with the purchase order.|
 |paymentDueDate|[DateTime](#schemadatetime)|false|none|Date the supplier is due to be paid.|
 |purchaseOrderNumber|string \| null|false|none|Friendly reference for the purchase order, commonly generated by the accounting platform.|
-|shipTo|object|false|none|Delivery details for any goods that have been ordered.|
-|status|string|false|none|Current state of the purchase order|
+|shipTo|[SalesOrderAllOf0ShipTo](#schemasalesorderallof0shipto)|false|none|Delivery details for any goods that have been ordered.|
+|status|[PurchaseOrderPurchaseOrderStatus](#schemapurchaseorderpurchaseorderstatus)|false|none|Current state of the purchase order|
 |subTotal|number|false|none|Total amount of the purchase order, including discounts but excluding tax.|
-|supplierRef|object|false|none|Supplier that the purchase order is recorded against in the accounting system.|
+|supplierRef|[SupplierSupplierRef](#schemasuppliersupplierref)|false|none|Supplier that the purchase order is recorded against in the accounting system.|
 |totalAmount|number|false|none|Total amount of the purchase order, including discounts and tax.|
 |totalDiscount|number|false|none|Total value of any discounts applied to the purchase order.|
 |totalTaxAmount|number|false|none|	<br>Total amount of tax included in the purchase order.|
@@ -29690,7 +28653,7 @@ This information can be used to provide visibility on a business's expected paya
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -29698,11 +28661,11 @@ This information can be used to provide visibility on a business's expected paya
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -29874,11 +28837,11 @@ This information can be used to provide visibility on a business's expected paya
 |---|---|---|---|---|
 |description|string|false|none|none|
 |displayName|string|true|none|none|
-|options|[object]|false|none|none|
+|options|[[PushOptionPushOptionChoice](#schemapushoptionpushoptionchoice)]|false|none|none|
 |properties|object \| null|false|none|none|
 |required|boolean|true|none|none|
-|type|string|true|none|none|
-|validation|object \| null|false|none|none|
+|type|[PushOptionPushOptionType](#schemapushoptionpushoptiontype)|true|none|none|
+|validation|[PushOptionPushValidationInfo](#schemapushoptionpushvalidationinfo)|false|none|none|
 
 #### Enumerated Values
 
@@ -30020,20 +28983,20 @@ A sales order is typically converted to an [invoice](https://docs.codat.io/accou
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|currency|string(ISO4217)|false|none|Currency of the sales order.|
-|currencyRate|number \| null|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency of the sales order.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
 |customerPurchaseOrderNumber|string \| null|false|none|A customer-supplied identifier for the purchase order in the customer's system.|
-|customerRef|object|false|none|The customer that the sales order is recorded against in the accounting system.|
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|The customer that the sales order is recorded against in the accounting system.|
 |expectedDeliveryDate|[DateTime](#schemadatetime)|false|none|Expected delivery date for any goods that have been ordered.|
 |id|string|false|none|Identifier for the sales order, unique for the company in the accounting platform.|
-|invoicingStatus|string|false|none|If the sales order is converted to an invoice, or will be in future, the invoicingStatus field indicates the current stage of the invoicing process.|
+|invoicingStatus|[SalesOrderSalesOrderInvoiceStatus](#schemasalesordersalesorderinvoicestatus)|false|none|If the sales order is converted to an invoice, or will be in future, the invoicingStatus field indicates the current stage of the invoicing process.|
 |issueDate|[DateTime](#schemadatetime)|false|none|Date of the sales order as recorded in the accounting platform.|
-|lineItems|[object]|false|none|An array of line items.|
+|lineItems|[[SalesOrderSalesOrderLineItem](#schemasalesordersalesorderlineitem)]|false|none|An array of line items.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |note|string \| null|false|none|Any additional information associated with the sales order.|
 |salesOrderNumber|string \| null|false|none|Friendly reference for the sales order, commonly generated by the accounting platform.|
-|shipTo|object|false|none|Delivery details for any goods that have been ordered.|
-|status|string|false|none|Current state of the sales order.|
+|shipTo|[SalesOrderAllOf0ShipTo](#schemasalesorderallof0shipto)|false|none|Delivery details for any goods that have been ordered.|
+|status|[SalesOrderSalesOrderStatus](#schemasalesordersalesorderstatus)|false|none|Current state of the sales order.|
 |subTotal|number|false|none|Total amount of the sales order, including discounts but excluding tax.|
 |totalAmount|number|false|none|Total amount of the sales order, including discounts and tax.|
 |totalDiscount|number|false|none|	<br>Total value of any discounts applied to the sales order.|
@@ -30220,7 +29183,7 @@ From the **Suppliers** endpoints, you can retrieve a list of [all the suppliers 
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|addresses|[object]|false|none|An array of Addresses.|
+|addresses|[[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)]|false|none|An array of Addresses.|
 |contactName|string \| null|false|none|Name of the main contact for the supplier.|
 |defaultCurrency|string \| null|false|none|Default currency the supplier's transactional data is recorded in.|
 |emailAddress|string \| null|false|none|Email address that the supplier may be contacted on.|
@@ -30228,8 +29191,8 @@ From the **Suppliers** endpoints, you can retrieve a list of [all the suppliers 
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |phone|string \| null|false|none|Phone number that the supplier may be contacted on.|
 |registrationNumber|string \| null|false|none|Company number of the supplier. In the UK, this is typically the company registration number issued by Companies House.|
-|status|string|true|none|Status of the supplier.|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|status|[SupplierSupplierStatus](#schemasuppliersupplierstatus)|true|none|Status of the supplier.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
 |supplierName|string \| null|false|none|Name of the supplier as recorded in the accounting system, typically the company name.|
 |taxNumber|string \| null|false|none|Supplier's company tax number.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -30381,12 +29344,12 @@ In some cases, a tax is made up of multiple sub taxes, often called _components_
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |code|string \| null|false|none|Code for the tax rate from the accounting platform.|
-|components|[object]|false|none|none|
+|components|[[TaxRateTaxRateComponent](#schemataxratetaxratecomponent)]|false|none|none|
 |effectiveTaxRate|number \| null|false|none|See Effective tax rates description.|
 |id|string|false|none|Identifier for the tax rate, unique for the company in the accounting platform.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
 |name|string \| null|false|none|Codat-augmented name of the tax rate in the accounting platform.|
-|status|string|false|none|Status of the tax rate in the accounting platform.  <br>- `Active` - An active tax rate in use by a company.  <br>- `Archived` - A tax rate that has been archived or is inactive in the accounting platform.  <br>- `Unknown` - Where the status of the tax rate cannot be determined from the underlying platform.|
+|status|[TaxRateTaxRateStatus](#schemataxratetaxratestatus)|false|none|Status of the tax rate in the accounting platform.  <br>- `Active` - An active tax rate in use by a company.  <br>- `Archived` - A tax rate that has been archived or is inactive in the accounting platform.  <br>- `Unknown` - Where the status of the tax rate cannot be determined from the underlying platform.|
 |totalTaxRate|number \| null|false|none|Total (not compounded) sum of the components of a tax rate.|
 |validDatatypeLinks|[[ValidDataTypeLinks](#schemavaliddatatypelinks)]|false|none|none|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
@@ -30561,7 +29524,7 @@ If a tracking category has a parent category, the ID of that parent category is 
 |id|string \| null|false|none|The identifier for the item, unique per tracking category|
 |name|string \| null|false|none|The name of the tracking category|
 |parentId|string \| null|false|none|The identifier for this item's immediate parent|
-|status|string|false|none|Current state of the tracking category.|
+|status|[TrackingCategoryStatus](#schematrackingcategorystatus)|false|none|Current state of the tracking category.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -30616,7 +29579,7 @@ The full structure of a specific tracking category including any child or subcat
 |id|string \| null|false|none|The identifier for the item, unique per tracking category|
 |name|string \| null|false|none|The name of the tracking category|
 |parentId|string \| null|false|none|The identifier for this item's immediate parent|
-|status|string|false|none|Current state of the tracking category.|
+|status|[TrackingCategoryStatus](#schematrackingcategorystatus)|false|none|Current state of the tracking category.|
 |subCategories|[[TrackingCategoryTree](#schematrackingcategorytree)]|false|none|A collection of subcategories that are nested beneath this category.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
@@ -30698,16 +29661,16 @@ A transfer records the movement of money between two bank accounts, or between a
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|contactRef|object|false|none|The customer or supplier for the transfer, if available.|
+|contactRef|[TransferAllOf0ContactRef](#schematransferallof0contactref)|false|none|The customer or supplier for the transfer, if available.|
 |date|[DateTime](#schemadatetime)|false|none|The day on which the transfer was made.|
 |depositedRecordRefs|[string]|false|none|none|
 |description|string \| null|false|none|Description of the transfer.|
-|from|object|false|none|The details of the accounts the transfer is moving from.|
+|from|[TransferTransferAccount](#schematransfertransferaccount)|false|none|The details of the accounts the transfer is moving from.|
 |id|string|false|none|Unique identifier for the transfer.|
 |metadata|[Metadata](#schemametadata)|false|none|none|
-|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
-|to|object|false|none|The details of the accounts the transfer is moving to.|
-|trackingCategoryRefs|[object]|false|none|Reference to the tracking categories this transfer is being tracked against.|
+|supplementalData|[BillAllOf0SupplementalData](#schemabillallof0supplementaldata)|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|to|[TransferTransferAccount](#schematransfertransferaccount)|false|none|The details of the accounts the transfer is moving to.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|Reference to the tracking categories this transfer is being tracked against.|
 |modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
 |sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
 
@@ -30870,7 +29833,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[BankAccount](#schemabankaccount)|false|none|> **Accessing Bank Accounts through Banking API**<br>> <br>> This datatype was originally used for accessing bank account data both in accounting integrations and open banking aggregators. <br>> <br>> To view bank account data through the Banking API, please refer to the new datatype [here](https://docs.codat.io/banking-api#/schemas/Account)<br><br>> View the coverage for bank accounts in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=bankAccounts" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A list of bank accounts associated with a company and a specific data connection.<br><br>Bank accounts data includes:<br>* The name and ID of the account in the accounting platform.<br>* The currency and balance of the account.<br>* The sort code and account number.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -30878,11 +29841,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -31087,7 +30050,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[BillCreditNote](#schemabillcreditnote)|false|none|> **Bill credit notes or credit notes?**<br>> <br>> In Codat, bill credit notes represent accounts payable only. For accounts receivable, see [Credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).<br><br>View the coverage for bill credit notes in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=billCreditNotes" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A bill credit note is issued by a supplier for the purpose of recording credit. For example, if a supplier was unable to fulfil an order that was placed by a business, or delivered damaged goods, they would issue a bill credit note. A bill credit note reduces the amount a business owes to the supplier. It can be refunded to the business or used to pay off future bills.<br><br>In the Codat API, a bill credit note is an accounts payable record issued by a [supplier](https://docs.codat.io/accounting-api#/schemas/Supplier). <br><br>A bill credit note includes details of:<br>* The original and remaining credit.<br>* Any allocations of the credit against other records, such as [bills](https://docs.codat.io/accounting-api#/schemas/Bill).<br>* The supplier that issued the bill credit note.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -31095,11 +30058,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -31326,7 +30289,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Bill](#schemabill)|false|none|> **Invoices or bills?**<br>><br>> In Codat, bills are for accounts payable only. For the accounts receivable equivalent of bills, see [Invoices](https://docs.codat.io/accounting-api#/schemas/Invoice).<br><br>View the coverage for bills in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=bills" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>In Codat, a bill contains details of:<br>* When the bill was recorded in the accounting system.<br>* How much the bill is for and the currency of the amount.<br>* Who the bill was received from — the *supplier*.<br>* What the bill is for — the *line items*.<br><br>Some accounting platforms give a separate name to purchases where the payment is made immediately, such as something bought with a credit card or online payment. One example of this would be QuickBooks Online's *expenses*.<br><br>You can find these types of transactions in our [Direct costs](https://docs.codat.io/accounting-api#/schemas/DirectCost) data model.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -31334,11 +30297,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -31494,7 +30457,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[CreditNote](#schemacreditnote)|false|none|> View the coverage for credit notes in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=creditNotes" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Think of a credit note as a voucher issued to a customer. It is a reduction that can be applied against one or multiple invoices. A credit note can either reduce the amount owed or cancel out an invoice entirely.<br><br>In the Codat system a credit note is issued to a [customer's](https://docs.codat.io/accounting-api#/schemas/Customer) accounts receivable. <br><br>It contains details of:<br>* The amount of credit remaining and its status.<br>* Payment allocations against the payments type, in this case an invoice.<br>* Which customers the credit notes have been issued to.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -31502,11 +30465,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -31675,7 +30638,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Customer](#schemacustomer)|false|none|> View the coverage for customers in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=customers" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>A customer is a person or organisation that buys goods or services. From the Customers endpoints, you can retrieve a [list of all the customers of a company](https://api.codat.io/swagger/index.html#/Customers/get_companies__companyId__data_customers).<br><br>Customers' data links to accounts receivable [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice).<br>|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -31683,11 +30646,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -31916,7 +30879,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[Invoice](#schemainvoice)|false|none|> View the coverage for invoices in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=invoices" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>An invoice is an itemized record of goods sold or services provided to a [customer](https://docs.codat.io/accounting-api#/schemas/Customer).<br><br>In Codat, an invoice contains details of:<br><br>- The timeline of the invoice—when it was raised, marked as paid, last edited, and so on.<br>- How much the invoice is for, what portion of the invoice is tax or discounts, and what currency the amounts are represented in. <br>- Who the invoice has been raised to; the _customer_.<br>- The breakdown of what the invoice is for; the _line items_.<br>- Any [payments](https://docs.codat.io/accounting-api#/schemas/Payment) assigned to the invoice; the _payment allocations_.<br><br>> **Invoices or bills?**  <br>><br>> In Codat, invoices represent accounts receivable only. For accounts payable invoices, see [Bills](https://docs.codat.io/accounting-api#/schemas/Bill).<br><br>> **Invoice PDF downloads**  <br>><br>> You can <a className="external" href="https://docs.codat.io/accounting-api#/operations/get-invoice-pdf" target="_blank">download a PDF version</a> of an invoice for supported integrations.<br>> <br>> The filename will be invoice-{number}.pdf.<br><br>> **Referencing an invoice in Sage 50 and ClearBooks**<br>><br>> In Sage 50 and ClearBooks, you may prefer to use the **invoiceNumber** to identify an invoice rather than the invoice **id**. Each time a draft invoice is submitted or printed, the draft **id** becomes void and a submitted invoice with a new **id** exists in its place. In both platforms, the **invoiceNumber** should remain the same.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -31924,11 +30887,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -32098,7 +31061,7 @@ A transfer records the movement of money between two bank accounts, or between a
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |data|[PurchaseOrder](#schemapurchaseorder)|false|none|> View the coverage for purchase orders in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=purchaseOrders" target="_blank">Data coverage explorer</a>.<br><br>## Overview<br><br>Purchase orders represent a business's intent to purchase goods or services from a supplier and normally include information such as expected delivery dates and shipping details.  <br><br>This information can be used to provide visibility on a business's expected payables and to track a purchase through the full procurement process.|
-|changes|[object]|false|none|none|
+|changes|[[PushOperationSummaryPushOperationChange](#schemapushoperationsummarypushoperationchange)]|false|none|none|
 |companyId|string(uuid)|true|none|Unique identifier for your SMB in Codat.|
 |completedOnUtc|[DateTime](#schemadatetime)|false|none|The datetime when the push was completed, null if Pending.|
 |dataConnectionKey|string(uuid)|true|none|Unique identifier for a company's data connection.|
@@ -32106,11 +31069,11 @@ A transfer records the movement of money between two bank accounts, or between a
 |errorMessage|string \| null|false|none|none|
 |pushOperationKey|string(uuid)|true|none|A unique identifier generated by Codat to represent this single push operation. This identifier can be used to track the status of the push, and should be persisted.|
 |requestedOnUtc|[DateTime](#schemadatetime)|true|none|The datetime when the push was requested.|
-|status|string|true|none|The status of the push operation.|
+|status|[PushOperationSummaryPushOperationStatus](#schemapushoperationsummarypushoperationstatus)|true|none|The status of the push operation.|
 |statusCode|integer|true|none|none|
 |timeoutInMinutes|integer \| null(int32)|false|none|none|
 |timeoutInSeconds|integer \| null(int32)|false|none|**Deprecated.**|
-|validation|object|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
+|validation|[PushOperationSummaryValidation](#schemapushoperationsummaryvalidation)|false|none|A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.|
 
 #### Enumerated Values
 
@@ -32227,12 +31190,2471 @@ If you'd like us to extend support to more data types or integrations, suggest o
 |links|[string]|false|none|Supported `dataTypes` that the record can be linked to.|
 |property|string \| null|false|none|The property from the account that can be linked.|
 
-<h2 id="tocS_pushOptionProperty">pushOptionProperty</h2>
+<h2 id="tocS_TransferTransferAccountCurrency">TransferTransferAccountCurrency</h2>
 <!-- backwards compatibility -->
-<a id="schemapushoptionproperty"></a>
-<a id="schema_pushOptionProperty"></a>
-<a id="tocSpushoptionproperty"></a>
-<a id="tocspushoptionproperty"></a>
+<a id="schematransfertransferaccountcurrency"></a>
+<a id="schema_TransferTransferAccountCurrency"></a>
+<a id="tocStransfertransferaccountcurrency"></a>
+<a id="tocstransfertransferaccountcurrency"></a>
+
+```json
+"GBP"
+```
+
+The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.
+
+## Unknown currencies
+
+In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. 
+
+There are only a very small number of edge cases where this currency code is returned by the Codat system.
+
+<h2 id="tocS_AccountAccountStatus">AccountAccountStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccountstatus"></a>
+<a id="schema_AccountAccountStatus"></a>
+<a id="tocSaccountaccountstatus"></a>
+<a id="tocsaccountaccountstatus"></a>
+
+```json
+"Unknown"
+```
+
+Status of the account
+
+<h2 id="tocS_AccountAccountType">AccountAccountType</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccounttype"></a>
+<a id="schema_AccountAccountType"></a>
+<a id="tocSaccountaccounttype"></a>
+<a id="tocsaccountaccounttype"></a>
+
+```json
+"Unknown"
+```
+
+Type of account
+
+<h2 id="tocS_BankAccountBankAccountRef">BankAccountBankAccountRef</h2>
+<!-- backwards compatibility -->
+<a id="schemabankaccountbankaccountref"></a>
+<a id="schema_BankAccountBankAccountRef"></a>
+<a id="tocSbankaccountbankaccountref"></a>
+<a id="tocsbankaccountbankaccountref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+Links to the Account transactions data type.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|Bank account 'id' for the account transaction.|
+|name|string|false|none|bank account 'name' for the account transaction.|
+
+<h2 id="tocS_BillPaymentBillPaymentLineLinkCurrencyRate">BillPaymentBillPaymentLineLinkCurrencyRate</h2>
+<!-- backwards compatibility -->
+<a id="schemabillpaymentbillpaymentlinelinkcurrencyrate"></a>
+<a id="schema_BillPaymentBillPaymentLineLinkCurrencyRate"></a>
+<a id="tocSbillpaymentbillpaymentlinelinkcurrencyrate"></a>
+<a id="tocsbillpaymentbillpaymentlinelinkcurrencyrate"></a>
+
+```json
+0
+```
+
+Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.
+
+Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  
+
+Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). 
+
+For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.
+
+## Examples with base currency of GBP
+
+| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (GBP) |
+| :--------------- | :------------- | :------------ | :------------------------- |
+| **USD**          | $20            | 0.781         | £15.62                     |
+| **EUR**          | €20            | 0.885         | £17.70                     |
+| **RUB**          | ₽20            | 0.011         | £0.22                      |
+
+## Examples with base currency of USD
+
+| Foreign Currency | Foreign Amount | Currency Rate | Base Currency Amount (USD) |
+| :--------------- | :------------- | :------------ | :------------------------- |
+| **GBP**          | £20            | 1.277         | $25.54                     |
+| **EUR**          | €20            | 1.134         | $22.68                     |
+| **RUB**          | ₽20            | 0.015         | $0.30                      |
+
+<h2 id="tocS_AccountTransactionAccountTransactionLine">AccountTransactionAccountTransactionLine</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccounttransactionaccounttransactionline"></a>
+<a id="schema_AccountTransactionAccountTransactionLine"></a>
+<a id="tocSaccounttransactionaccounttransactionline"></a>
+<a id="tocsaccounttransactionaccounttransactionline"></a>
+
+```json
+{
+  "amount": 0,
+  "description": "string",
+  "recordRef": {
+    "dataType": "string",
+    "id": "string"
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number|false|none|Amount in the bill payment currency.|
+|description|string \| null|false|none|Description of the account transaction.|
+|recordRef|[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)|false|none|Links an account transaction line to the underlying record that created it.|
+
+<h2 id="tocS_DirectCostTrackingInvoiceTo">DirectCostTrackingInvoiceTo</h2>
+<!-- backwards compatibility -->
+<a id="schemadirectcosttrackinginvoiceto"></a>
+<a id="schema_DirectCostTrackingInvoiceTo"></a>
+<a id="tocSdirectcosttrackinginvoiceto"></a>
+<a id="tocsdirectcosttrackinginvoiceto"></a>
+
+```json
+{
+  "dataType": "string",
+  "id": "string"
+}
+```
+
+Links to the underlying record or data type.
+
+Found on:
+
+- Journal entries
+- Account transactions
+- Invoices
+- Transfers
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataType|string|false|none|Name of the 'dataType'.|
+|id|string|false|none|'id' of the underlying record or data type.|
+
+<h2 id="tocS_AgedCreditorReportAgedCreditor">AgedCreditorReportAgedCreditor</h2>
+<!-- backwards compatibility -->
+<a id="schemaagedcreditorreportagedcreditor"></a>
+<a id="schema_AgedCreditorReportAgedCreditor"></a>
+<a id="tocSagedcreditorreportagedcreditor"></a>
+<a id="tocsagedcreditorreportagedcreditor"></a>
+
+```json
+{
+  "agedCurrencyOutstanding": [
+    {
+      "agedOutstandingAmounts": [
+        {
+          "amount": 0,
+          "details": [
+            {
+              "amount": 0,
+              "name": "string"
+            }
+          ],
+          "fromDate": "2022-10-23T00:00:00Z",
+          "toDate": "2022-10-23T00:00:00Z"
+        }
+      ],
+      "currency": "GBP"
+    }
+  ],
+  "supplierId": "f594cefb-7750-4c3a-bab2-b5322026dee9",
+  "supplierName": "John Doe"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agedCurrencyOutstanding|[[AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems](#schemaagedcreditorreportagedcreditoragedcurrencyoutstandingitems)]|false|none|Array of aged creditors by currency.|
+|supplierId|string|false|none|Supplier ID of the aged creditor.|
+|supplierName|string|false|none|Supplier name of the aged creditor.|
+
+<h2 id="tocS_AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems">AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems</h2>
+<!-- backwards compatibility -->
+<a id="schemaagedcreditorreportagedcreditoragedcurrencyoutstandingitems"></a>
+<a id="schema_AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems"></a>
+<a id="tocSagedcreditorreportagedcreditoragedcurrencyoutstandingitems"></a>
+<a id="tocsagedcreditorreportagedcreditoragedcurrencyoutstandingitems"></a>
+
+```json
+{
+  "agedOutstandingAmounts": [
+    {
+      "amount": 0,
+      "details": [
+        {
+          "amount": 0,
+          "name": "string"
+        }
+      ],
+      "fromDate": "2022-10-23T00:00:00Z",
+      "toDate": "2022-10-23T00:00:00Z"
+    }
+  ],
+  "currency": "GBP"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agedOutstandingAmounts|[object]|false|none|Array of outstanding amounts by period.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+
+<h2 id="tocS_AgedDebtorReportAgedDebtor">AgedDebtorReportAgedDebtor</h2>
+<!-- backwards compatibility -->
+<a id="schemaageddebtorreportageddebtor"></a>
+<a id="schema_AgedDebtorReportAgedDebtor"></a>
+<a id="tocSageddebtorreportageddebtor"></a>
+<a id="tocsageddebtorreportageddebtor"></a>
+
+```json
+{
+  "agedCurrencyOutstanding": [
+    {
+      "agedOutstandingAmounts": [
+        {
+          "amount": 0,
+          "details": [
+            {
+              "amount": 0,
+              "name": "string"
+            }
+          ],
+          "fromDate": "2022-10-23T00:00:00Z",
+          "toDate": "2022-10-23T00:00:00Z"
+        }
+      ],
+      "currency": "GBP"
+    }
+  ],
+  "customerId": "f594cefb-7750-4c3a-bab2-b5322026dee9",
+  "customerName": "John Doe"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|agedCurrencyOutstanding|[[AgedCreditorReportAgedCreditorAgedCurrencyOutstandingItems](#schemaagedcreditorreportagedcreditoragedcurrencyoutstandingitems)]|false|none|Array of aged debtors by currency.|
+|customerId|string|false|none|Customer ID of the aged debtor.|
+|customerName|string|false|none|Customer name of the aged debtor.|
+
+<h2 id="tocS_BalanceSheetBalanceSheet">BalanceSheetBalanceSheet</h2>
+<!-- backwards compatibility -->
+<a id="schemabalancesheetbalancesheet"></a>
+<a id="schema_BalanceSheetBalanceSheet"></a>
+<a id="tocSbalancesheetbalancesheet"></a>
+<a id="tocsbalancesheetbalancesheet"></a>
+
+```json
+{
+  "assets": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "date": "2022-10-23T00:00:00Z",
+  "equity": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "liabilities": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "netAssets": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|assets|[ReportLine](#schemareportline)|false|none|ReportLines for assets. For example, fixed and current assets.|
+|date|[DateTime](#schemadatetime)|false|none|Point in time when a snapshot of a company's financial position is taken.|
+|equity|[ReportLine](#schemareportline)|false|none|ReportLines for equities. For example, retained and current year earnings. See below.|
+|liabilities|[ReportLine](#schemareportline)|false|none|ReportLines for liabilities. For example, current liabilities.|
+|netAssets|number|true|none|Value of net assets for a company in their base currency.|
+
+<h2 id="tocS_BankTransactionsBankTransactionLine">BankTransactionsBankTransactionLine</h2>
+<!-- backwards compatibility -->
+<a id="schemabanktransactionsbanktransactionline"></a>
+<a id="schema_BankTransactionsBankTransactionLine"></a>
+<a id="tocSbanktransactionsbanktransactionline"></a>
+<a id="tocsbanktransactionsbanktransactionline"></a>
+
+```json
+{
+  "amount": 0,
+  "balance": 0,
+  "clearedOnDate": "2022-10-23T00:00:00Z",
+  "counterparty": "string",
+  "description": "string",
+  "id": "string",
+  "reconciled": true,
+  "reference": "string",
+  "transactionType": "Unknown",
+  "modifiedDate": "2022-10-23T00:00:00Z",
+  "sourceModifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number|true|none|none|
+|balance|number|true|none|none|
+|clearedOnDate|[DateTime](#schemadatetime)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|counterparty|string \| null|false|none|none|
+|description|string \| null|false|none|none|
+|id|string|false|none|none|
+|reconciled|boolean|true|none|none|
+|reference|string \| null|false|none|none|
+|transactionType|[BankTransactionsBankTransactionType](#schemabanktransactionsbanktransactiontype)|true|none|Type of transaction for the bank statement line|
+|modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
+|sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|transactionType|Unknown|
+|transactionType|Credit|
+|transactionType|Debit|
+|transactionType|Int|
+|transactionType|Div|
+|transactionType|Fee|
+|transactionType|SerChg|
+|transactionType|Dep|
+|transactionType|Atm|
+|transactionType|Pos|
+|transactionType|Xfer|
+|transactionType|Check|
+|transactionType|Payment|
+|transactionType|Cash|
+|transactionType|DirectDep|
+|transactionType|DirectDebit|
+|transactionType|RepeatPmt|
+|transactionType|Other|
+
+<h2 id="tocS_ModifiedDatesAllOf0">ModifiedDatesAllOf0</h2>
+<!-- backwards compatibility -->
+<a id="schemamodifieddatesallof0"></a>
+<a id="schema_ModifiedDatesAllOf0"></a>
+<a id="tocSmodifieddatesallof0"></a>
+<a id="tocsmodifieddatesallof0"></a>
+
+```json
+{
+  "modifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|modifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in Codat.|
+
+<h2 id="tocS_ModifiedDatesAllOf1">ModifiedDatesAllOf1</h2>
+<!-- backwards compatibility -->
+<a id="schemamodifieddatesallof1"></a>
+<a id="schema_ModifiedDatesAllOf1"></a>
+<a id="tocSmodifieddatesallof1"></a>
+<a id="tocsmodifieddatesallof1"></a>
+
+```json
+{
+  "sourceModifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sourceModifiedDate|[DateTime](#schemadatetime)|false|none|The date on which this record was last modified in the originating system|
+
+<h2 id="tocS_BankTransactionsBankTransactionType">BankTransactionsBankTransactionType</h2>
+<!-- backwards compatibility -->
+<a id="schemabanktransactionsbanktransactiontype"></a>
+<a id="schema_BankTransactionsBankTransactionType"></a>
+<a id="tocSbanktransactionsbanktransactiontype"></a>
+<a id="tocsbanktransactionsbanktransactiontype"></a>
+
+```json
+"Unknown"
+```
+
+Type of transaction for the bank statement line
+
+<h2 id="tocS_BillBillLineItem">BillBillLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemabillbilllineitem"></a>
+<a id="schema_BillBillLineItem"></a>
+<a id="tocSbillbilllineitem"></a>
+<a id="tocsbillbilllineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "isDirectCost": true,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "categoryRefs": [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "customerRef": {
+      "companyName": "string",
+      "id": "string"
+    },
+    "isBilledTo": "Unknown",
+    "isRebilledTo": "Unknown",
+    "projectRef": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Friendly name of the goods or services received.|
+|discountAmount|number \| null|false|none|Numerical value of any discounts applied.<br><br>Do not use to apply discounts in Oracle NetSuite—see Oracle NetSuite integration reference.|
+|discountPercentage|number \| null|false|none|none|
+|isDirectCost|boolean|false|none|none|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the product, service type, or inventory item to which the line item is linked.|
+|quantity|number|true|none|Number of units of goods or services received.|
+|subTotal|number \| null|false|none|Amount of the line, inclusive of discounts but exclusive of tax.|
+|taxAmount|number \| null|false|none|Amount of tax for the line.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number \| null|false|none|Total amount of the line, including tax.|
+|tracking|[BillCreditNoteBillCreditNoteLineItemTracking](#schemabillcreditnotebillcreditnotelineitemtracking)|false|none|Categories, and a project and customer, against which the item is tracked.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|**Deprecated.** Collection of categories against which this item is tracked.|
+|unitAmount|number|true|none|Price of each unit of goods or services.|
+
+<h2 id="tocS_AccountAccountRef">AccountAccountRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaaccountaccountref"></a>
+<a id="schema_AccountAccountRef"></a>
+<a id="tocSaccountaccountref"></a>
+<a id="tocsaccountaccountref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|'id' from the Accounts data type.|
+|name|string|false|none|'name' from the Accounts data type.|
+
+<h2 id="tocS_BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment">BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment</h2>
+<!-- backwards compatibility -->
+<a id="schemabillallof0paymentallocationsitemspaymentallocationpayment"></a>
+<a id="schema_BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment"></a>
+<a id="tocSbillallof0paymentallocationsitemspaymentallocationpayment"></a>
+<a id="tocsbillallof0paymentallocationsitemspaymentallocationpayment"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "currency": "GBP",
+  "currencyRate": 0,
+  "id": "string",
+  "note": "string",
+  "paidOnDate": "2022-10-23T00:00:00Z",
+  "reference": "string",
+  "totalAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|The account that the allocated payment is made from or to.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|Currency the payment has been made in.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|id|string|false|none|Identifier of the allocated payment.|
+|note|string \| null|false|none|Notes attached to the allocated payment.|
+|paidOnDate|[DateTime](#schemadatetime)|false|none|The date the payment was paid.|
+|reference|string \| null|false|none|Reference to the allocated payment.|
+|totalAmount|number|false|none|Total amount that was paid.|
+
+<h2 id="tocS_PurchaseOrderPurchaseOrderRef">PurchaseOrderPurchaseOrderRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapurchaseorderpurchaseorderref"></a>
+<a id="schema_PurchaseOrderPurchaseOrderRef"></a>
+<a id="tocSpurchaseorderpurchaseorderref"></a>
+<a id="tocspurchaseorderpurchaseorderref"></a>
+
+```json
+{
+  "id": "string",
+  "purchaseOrderNumber": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|Identifier for the purchase order, unique for the company in the accounting platform.|
+|purchaseOrderNumber|string \| null|false|none|Friendly reference for the purchase order, commonly generated by the accounting platform.|
+
+<h2 id="tocS_BillBillStatus">BillBillStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabillbillstatus"></a>
+<a id="schema_BillBillStatus"></a>
+<a id="tocSbillbillstatus"></a>
+<a id="tocsbillbillstatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the bill.
+
+<h2 id="tocS_SupplierSupplierRef">SupplierSupplierRef</h2>
+<!-- backwards compatibility -->
+<a id="schemasuppliersupplierref"></a>
+<a id="schema_SupplierSupplierRef"></a>
+<a id="tocSsuppliersupplierref"></a>
+<a id="tocssuppliersupplierref"></a>
+
+```json
+{
+  "id": "string",
+  "supplierName": "string"
+}
+```
+
+Reference to the supplier the record relates to.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|The supplier's unique ID|
+|supplierName|string \| null|false|none|The supplier's name|
+
+<h2 id="tocS_ItemItemRef">ItemItemRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaitemitemref"></a>
+<a id="schema_ItemItemRef"></a>
+<a id="tocSitemitemref"></a>
+<a id="tocsitemitemref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|Unique identifier for the item in the accounting platform.|
+|name|string \| null|false|none|Name of the item in the accounting platform.|
+
+<h2 id="tocS_TaxRateTaxRateRef">TaxRateTaxRateRef</h2>
+<!-- backwards compatibility -->
+<a id="schemataxratetaxrateref"></a>
+<a id="schema_TaxRateTaxRateRef"></a>
+<a id="tocStaxratetaxrateref"></a>
+<a id="tocstaxratetaxrateref"></a>
+
+```json
+{
+  "effectiveTaxRate": 0,
+  "id": "string",
+  "name": "string"
+}
+```
+
+Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.
+
+Found on:
+
+- Bill line items
+- Bill Credit Note line items
+- Credit Note line items
+- Direct incomes line items
+- Invoice line items
+- Items
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|effectiveTaxRate|number|false|none|Applicable tax rate.|
+|id|string|false|none|Unique identifier for the tax rate in the accounting platform.|
+|name|string|false|none|Name of the tax rate in the accounting platform.|
+
+<h2 id="tocS_BillCreditNoteBillCreditNoteLineItemTracking">BillCreditNoteBillCreditNoteLineItemTracking</h2>
+<!-- backwards compatibility -->
+<a id="schemabillcreditnotebillcreditnotelineitemtracking"></a>
+<a id="schema_BillCreditNoteBillCreditNoteLineItemTracking"></a>
+<a id="tocSbillcreditnotebillcreditnotelineitemtracking"></a>
+<a id="tocsbillcreditnotebillcreditnotelineitemtracking"></a>
+
+```json
+{
+  "categoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "customerRef": {
+    "companyName": "string",
+    "id": "string"
+  },
+  "isBilledTo": "Unknown",
+  "isRebilledTo": "Unknown",
+  "projectRef": {
+    "id": "string",
+    "name": "string"
+  }
+}
+```
+
+Categories, and a project and customer, against which the item is tracked.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|categoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|true|none|none|
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|none|
+|isBilledTo|[BillCreditNoteBillCreditNoteLineItemTrackingBilledToType](#schemabillcreditnotebillcreditnotelineitemtrackingbilledtotype)|true|none|none|
+|isRebilledTo|[BillCreditNoteBillCreditNoteLineItemTrackingBilledToType](#schemabillcreditnotebillcreditnotelineitemtrackingbilledtotype)|true|none|none|
+|projectRef|[ProjectRef](#schemaprojectref)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|isBilledTo|Unknown|
+|isBilledTo|NotApplicable|
+|isBilledTo|Customer|
+|isBilledTo|Project|
+|isRebilledTo|Unknown|
+|isRebilledTo|NotApplicable|
+|isRebilledTo|Customer|
+|isRebilledTo|Project|
+
+<h2 id="tocS_TrackingCategoryTrackingCategoryRef">TrackingCategoryTrackingCategoryRef</h2>
+<!-- backwards compatibility -->
+<a id="schematrackingcategorytrackingcategoryref"></a>
+<a id="schema_TrackingCategoryTrackingCategoryRef"></a>
+<a id="tocStrackingcategorytrackingcategoryref"></a>
+<a id="tocstrackingcategorytrackingcategoryref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+References a category against which the item is tracked.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|none|
+|name|string \| null|false|none|none|
+
+<h2 id="tocS_BillCreditNoteBillCreditNoteLineItem">BillCreditNoteBillCreditNoteLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemabillcreditnotebillcreditnotelineitem"></a>
+<a id="schema_BillCreditNoteBillCreditNoteLineItem"></a>
+<a id="tocSbillcreditnotebillcreditnotelineitem"></a>
+<a id="tocsbillcreditnotebillcreditnotelineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "categoryRefs": [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "customerRef": {
+      "companyName": "string",
+      "id": "string"
+    },
+    "isBilledTo": "Unknown",
+    "isRebilledTo": "Unknown",
+    "projectRef": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.|
+|description|string \| null|false|none|Friendly name of each line item. For example, the goods or service for which credit has been received.|
+|discountAmount|number \| null|false|none|Value of any discounts applied.|
+|discountPercentage|number \| null|false|none|Percentage rate of any discount applied to the line item.|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the item the line is linked to.|
+|quantity|number|true|none|Number of units of the goods or service for which credit has been received.|
+|subTotal|number \| null|false|none|Amount of credit associated with the line item, including discounts but excluding tax.|
+|taxAmount|number \| null|false|none|Amount of tax associated with the line item.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.<br><br>Found on:<br><br>- Bill line items<br>- Bill Credit Note line items<br>- Credit Note line items<br>- Direct incomes line items<br>- Invoice line items<br>- Items|
+|totalAmount|number \| null|false|none|Total amount of the line item, including discounts and tax.|
+|tracking|[BillCreditNoteBillCreditNoteLineItemTracking](#schemabillcreditnotebillcreditnotelineitemtracking)|false|none|Categories, and a project and customer, against which the item is tracked.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
+|unitAmount|number|true|none|Unit price of the goods or service.|
+
+<h2 id="tocS_BillAllOf0PaymentAllocationsItems">BillAllOf0PaymentAllocationsItems</h2>
+<!-- backwards compatibility -->
+<a id="schemabillallof0paymentallocationsitems"></a>
+<a id="schema_BillAllOf0PaymentAllocationsItems"></a>
+<a id="tocSbillallof0paymentallocationsitems"></a>
+<a id="tocsbillallof0paymentallocationsitems"></a>
+
+```json
+{
+  "allocation": {
+    "allocatedOnDate": "2022-10-23T00:00:00Z",
+    "currency": "GBP",
+    "currencyRate": 0,
+    "totalAmount": 0
+  },
+  "payment": {
+    "accountRef": {
+      "id": "string",
+      "name": "string"
+    },
+    "currency": "GBP",
+    "currencyRate": 0,
+    "id": "string",
+    "note": "string",
+    "paidOnDate": "2022-10-23T00:00:00Z",
+    "reference": "string",
+    "totalAmount": 0
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allocation|object|true|none|none|
+|payment|[BillAllOf0PaymentAllocationsItemsPaymentAllocationPayment](#schemabillallof0paymentallocationsitemspaymentallocationpayment)|true|none|none|
+
+<h2 id="tocS_BillCreditNoteBillCreditNoteStatus">BillCreditNoteBillCreditNoteStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemabillcreditnotebillcreditnotestatus"></a>
+<a id="schema_BillCreditNoteBillCreditNoteStatus"></a>
+<a id="tocSbillcreditnotebillcreditnotestatus"></a>
+<a id="tocsbillcreditnotebillcreditnotestatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the bill credit note
+
+<h2 id="tocS_BillAllOf0SupplementalData">BillAllOf0SupplementalData</h2>
+<!-- backwards compatibility -->
+<a id="schemabillallof0supplementaldata"></a>
+<a id="schema_BillAllOf0SupplementalData"></a>
+<a id="tocSbillallof0supplementaldata"></a>
+<a id="tocsbillallof0supplementaldata"></a>
+
+```json
+{
+  "content": {
+    "property1": {
+      "property1": null,
+      "property2": null
+    },
+    "property2": {
+      "property1": null,
+      "property2": null
+    }
+  }
+}
+```
+
+Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|content|object \| null|false|none|none|
+
+<h2 id="tocS_BillAllOf0WithholdingTaxItems">BillAllOf0WithholdingTaxItems</h2>
+<!-- backwards compatibility -->
+<a id="schemabillallof0withholdingtaxitems"></a>
+<a id="schema_BillAllOf0WithholdingTaxItems"></a>
+<a id="tocSbillallof0withholdingtaxitems"></a>
+<a id="tocsbillallof0withholdingtaxitems"></a>
+
+```json
+{
+  "amount": 0,
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number|true|none|none|
+|name|string|true|none|none|
+
+<h2 id="tocS_CustomerCustomerRef">CustomerCustomerRef</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomercustomerref"></a>
+<a id="schema_CustomerCustomerRef"></a>
+<a id="tocScustomercustomerref"></a>
+<a id="tocscustomercustomerref"></a>
+
+```json
+{
+  "companyName": "string",
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|companyName|string \| null|false|none|`customerName` from the Customer data type|
+|id|string|true|none|`id` from the Customers data type|
+
+<h2 id="tocS_BillCreditNoteBillCreditNoteLineItemTrackingBilledToType">BillCreditNoteBillCreditNoteLineItemTrackingBilledToType</h2>
+<!-- backwards compatibility -->
+<a id="schemabillcreditnotebillcreditnotelineitemtrackingbilledtotype"></a>
+<a id="schema_BillCreditNoteBillCreditNoteLineItemTrackingBilledToType"></a>
+<a id="tocSbillcreditnotebillcreditnotelineitemtrackingbilledtotype"></a>
+<a id="tocsbillcreditnotebillcreditnotelineitemtrackingbilledtotype"></a>
+
+```json
+"Unknown"
+```
+
+<h2 id="tocS_BillPaymentBillPaymentLine">BillPaymentBillPaymentLine</h2>
+<!-- backwards compatibility -->
+<a id="schemabillpaymentbillpaymentline"></a>
+<a id="schema_BillPaymentBillPaymentLine"></a>
+<a id="tocSbillpaymentbillpaymentline"></a>
+<a id="tocsbillpaymentbillpaymentline"></a>
+
+```json
+{
+  "allocatedOnDate": "2022-10-23T00:00:00Z",
+  "amount": 0,
+  "links": [
+    {
+      "amount": 0,
+      "currencyRate": 0,
+      "id": "string",
+      "type": "Unknown"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allocatedOnDate|[DateTime](#schemadatetime)|false|none|AllocatedOnDate must be specified and be later than the issue date of the bill.|
+|amount|number|true|none|Amount in the bill payment currency.|
+|links|[[BillPaymentBillPaymentLineLink](#schemabillpaymentbillpaymentlinelink)]|false|none|none|
+
+<h2 id="tocS_PaymentMethodPaymentMethodRef">PaymentMethodPaymentMethodRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodpaymentmethodref"></a>
+<a id="schema_PaymentMethodPaymentMethodRef"></a>
+<a id="tocSpaymentmethodpaymentmethodref"></a>
+<a id="tocspaymentmethodpaymentmethodref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|`id` from the Payment Methods data type|
+|name|string \| null|false|none|`name` from the Payment Methods data type|
+
+<h2 id="tocS_BillPaymentBillPaymentLineLink">BillPaymentBillPaymentLineLink</h2>
+<!-- backwards compatibility -->
+<a id="schemabillpaymentbillpaymentlinelink"></a>
+<a id="schema_BillPaymentBillPaymentLineLink"></a>
+<a id="tocSbillpaymentbillpaymentlinelink"></a>
+<a id="tocsbillpaymentbillpaymentlinelink"></a>
+
+```json
+{
+  "amount": 0,
+  "currencyRate": 0,
+  "id": "string",
+  "type": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number \| null|false|none|Amount by which the balance of the linked entity is altered, in the currency of the linked entity.<br><br>- A negative link amount reduces the outstanding amount on the accounts payable account.<br>- A positive link amount increases the outstanding amount on the accounts payable account.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|id|string \| null|false|none|Unique identifier of the transaction represented by the link.|
+|type|[BillPaymentBillPaymentLineLinkType](#schemabillpaymentbillpaymentlinelinktype)|true|none|Types of links to bill payment lines.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Unknown|
+|type|Unlinked|
+|type|Bill|
+|type|Other|
+|type|CreditNote|
+|type|BillPayment|
+|type|PaymentOnAccount|
+|type|Refund|
+|type|ManualJournal|
+|type|Discount|
+
+<h2 id="tocS_BillPaymentBillPaymentLineLinkType">BillPaymentBillPaymentLineLinkType</h2>
+<!-- backwards compatibility -->
+<a id="schemabillpaymentbillpaymentlinelinktype"></a>
+<a id="schema_BillPaymentBillPaymentLineLinkType"></a>
+<a id="tocSbillpaymentbillpaymentlinelinktype"></a>
+<a id="tocsbillpaymentbillpaymentlinelinktype"></a>
+
+```json
+"Unknown"
+```
+
+Types of links to bill payment lines.
+
+<h2 id="tocS_CashFlowStatementReportBasis">CashFlowStatementReportBasis</h2>
+<!-- backwards compatibility -->
+<a id="schemacashflowstatementreportbasis"></a>
+<a id="schema_CashFlowStatementReportBasis"></a>
+<a id="tocScashflowstatementreportbasis"></a>
+<a id="tocscashflowstatementreportbasis"></a>
+
+```json
+"Unknown"
+```
+
+Accounting method used when aggregating the report data. In this case, `Cash`.
+
+<h2 id="tocS_CashFlowStatementReportInput">CashFlowStatementReportInput</h2>
+<!-- backwards compatibility -->
+<a id="schemacashflowstatementreportinput"></a>
+<a id="schema_CashFlowStatementReportInput"></a>
+<a id="tocScashflowstatementreportinput"></a>
+<a id="tocscashflowstatementreportinput"></a>
+
+```json
+"Unknown"
+```
+
+Accounting method used to prepare the cash flow statement.
+
+<h2 id="tocS_CashFlowStatementCashFlowStatement">CashFlowStatementCashFlowStatement</h2>
+<!-- backwards compatibility -->
+<a id="schemacashflowstatementcashflowstatement"></a>
+<a id="schema_CashFlowStatementCashFlowStatement"></a>
+<a id="tocScashflowstatementcashflowstatement"></a>
+<a id="tocscashflowstatementcashflowstatement"></a>
+
+```json
+{
+  "cashPayments": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "cashReceipts": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "fromDate": "2022-10-23T00:00:00Z",
+  "toDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|cashPayments|[ReportLine](#schemareportline)|false|none|ReportLines for cash payments to suppliers for the purchase of goods or services.|
+|cashReceipts|[ReportLine](#schemareportline)|false|none|ReportLines for cash receipts from the sale of goods.|
+|fromDate|[DateTime](#schemadatetime)|false|none|Start date for the reporting period.|
+|toDate|[DateTime](#schemadatetime)|false|none|End date for the reporting period.|
+
+<h2 id="tocS_CompanyDatasetAddressesItemsAddressType">CompanyDatasetAddressesItemsAddressType</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanydatasetaddressesitemsaddresstype"></a>
+<a id="schema_CompanyDatasetAddressesItemsAddressType"></a>
+<a id="tocScompanydatasetaddressesitemsaddresstype"></a>
+<a id="tocscompanydatasetaddressesitemsaddresstype"></a>
+
+```json
+"Unknown"
+```
+
+The type of the address
+
+<h2 id="tocS_CompanyDatasetPhoneNumbersItemsPhoneNumberType">CompanyDatasetPhoneNumbersItemsPhoneNumberType</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanydatasetphonenumbersitemsphonenumbertype"></a>
+<a id="schema_CompanyDatasetPhoneNumbersItemsPhoneNumberType"></a>
+<a id="tocScompanydatasetphonenumbersitemsphonenumbertype"></a>
+<a id="tocscompanydatasetphonenumbersitemsphonenumbertype"></a>
+
+```json
+"Primary"
+```
+
+The type of phone number
+
+<h2 id="tocS_CreditNoteCreditNoteLineItem">CreditNoteCreditNoteLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemacreditnotecreditnotelineitem"></a>
+<a id="schema_CreditNoteCreditNoteLineItem"></a>
+<a id="tocScreditnotecreditnotelineitem"></a>
+<a id="tocscreditnotecreditnotelineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "isDirectIncome": true,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "categoryRefs": [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "customerRef": {
+      "companyName": "string",
+      "id": "string"
+    },
+    "isBilledTo": "Unknown",
+    "isRebilledTo": "Unknown",
+    "projectRef": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Friendly name of each line item. For example, the goods or service for which credit has been issued.|
+|discountAmount|number \| null|false|none|Value of any discounts applied.|
+|discountPercentage|number \| null|false|none|Percentage rate of any discount applied to the line item.|
+|isDirectIncome|boolean|false|none|none|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the item the line is linked to.|
+|quantity|number|true|none|Number of units of the goods or service for which credit has been issued.|
+|subTotal|number \| null|false|none|Amount of credit associated with the line item, including discounts but excluding tax.|
+|taxAmount|number \| null|false|none|Amount of tax associated with the line item.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number \| null|false|none|Total amount of the line item, including discounts and tax.|
+|tracking|[CreditNoteCreditNoteLineItemTracking](#schemacreditnotecreditnotelineitemtracking)|false|none|Categories, and a project and customer, against which the item is tracked.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
+|unitAmount|number|true|none|Unit price of the goods or service.|
+
+<h2 id="tocS_CreditNoteCreditNoteStatus">CreditNoteCreditNoteStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemacreditnotecreditnotestatus"></a>
+<a id="schema_CreditNoteCreditNoteStatus"></a>
+<a id="tocScreditnotecreditnotestatus"></a>
+<a id="tocscreditnotecreditnotestatus"></a>
+
+```json
+"Unknown"
+```
+
+<h2 id="tocS_CreditNoteCreditNoteLineItemTrackingBilledToType">CreditNoteCreditNoteLineItemTrackingBilledToType</h2>
+<!-- backwards compatibility -->
+<a id="schemacreditnotecreditnotelineitemtrackingbilledtotype"></a>
+<a id="schema_CreditNoteCreditNoteLineItemTrackingBilledToType"></a>
+<a id="tocScreditnotecreditnotelineitemtrackingbilledtotype"></a>
+<a id="tocscreditnotecreditnotelineitemtrackingbilledtotype"></a>
+
+```json
+"Unknown"
+```
+
+<h2 id="tocS_CompanyDatasetAddressesItems">CompanyDatasetAddressesItems</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanydatasetaddressesitems"></a>
+<a id="schema_CompanyDatasetAddressesItems"></a>
+<a id="tocScompanydatasetaddressesitems"></a>
+<a id="tocscompanydatasetaddressesitems"></a>
+
+```json
+{
+  "city": "string",
+  "country": "string",
+  "line1": "string",
+  "line2": "string",
+  "postalCode": "string",
+  "region": "string",
+  "type": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|city|string \| null|false|none|City of the customer address.|
+|country|string \| null|false|none|Country of the customer address.|
+|line1|string \| null|false|none|Line 1 of the customer address.|
+|line2|string \| null|false|none|Line 2 of the customer address.|
+|postalCode|string \| null|false|none|Postal code or zip code.|
+|region|string \| null|false|none|Region of the customer address.|
+|type|[CompanyDatasetAddressesItemsAddressType](#schemacompanydatasetaddressesitemsaddresstype)|true|none|The type of the address|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Unknown|
+|type|Billing|
+|type|Delivery|
+
+<h2 id="tocS_CustomerContact">CustomerContact</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomercontact"></a>
+<a id="schema_CustomerContact"></a>
+<a id="tocScustomercontact"></a>
+<a id="tocscustomercontact"></a>
+
+```json
+{
+  "address": {
+    "city": "string",
+    "country": "string",
+    "line1": "string",
+    "line2": "string",
+    "postalCode": "string",
+    "region": "string",
+    "type": "Unknown"
+  },
+  "email": "string",
+  "modifiedDate": "2022-10-23T00:00:00Z",
+  "name": "string",
+  "phone": [
+    {
+      "number": "+44 25691 154789",
+      "type": "Primary"
+    }
+  ],
+  "status": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|address|[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)|false|none|An object of Address information.|
+|email|string \| null|false|none|Email of a contact for a customer.|
+|modifiedDate|[DateTime](#schemadatetime)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|name|string \| null|false|none|Name of a contact for a customer.|
+|phone|[[CompanyDatasetPhoneNumbersItems](#schemacompanydatasetphonenumbersitems)]|false|none|An array of Phone numbers.|
+|status|[CustomerCustomerStatus](#schemacustomercustomerstatus)|true|none|Status of customer.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|Unknown|
+|status|Active|
+|status|Archived|
+
+<h2 id="tocS_CustomerCustomerStatus">CustomerCustomerStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemacustomercustomerstatus"></a>
+<a id="schema_CustomerCustomerStatus"></a>
+<a id="tocScustomercustomerstatus"></a>
+<a id="tocscustomercustomerstatus"></a>
+
+```json
+"Unknown"
+```
+
+Status of customer.
+
+<h2 id="tocS_CompanyDatasetPhoneNumbersItems">CompanyDatasetPhoneNumbersItems</h2>
+<!-- backwards compatibility -->
+<a id="schemacompanydatasetphonenumbersitems"></a>
+<a id="schema_CompanyDatasetPhoneNumbersItems"></a>
+<a id="tocScompanydatasetphonenumbersitems"></a>
+<a id="tocscompanydatasetphonenumbersitems"></a>
+
+```json
+{
+  "number": "+44 25691 154789",
+  "type": "Primary"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|number|string \| null|true|none|A phone number.|
+|type|[CompanyDatasetPhoneNumbersItemsPhoneNumberType](#schemacompanydatasetphonenumbersitemsphonenumbertype)|true|none|The type of phone number|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Primary|
+|type|Landline|
+|type|Mobile|
+|type|Fax|
+|type|Unknown|
+
+<h2 id="tocS_TransferAllOf0ContactRef">TransferAllOf0ContactRef</h2>
+<!-- backwards compatibility -->
+<a id="schematransferallof0contactref"></a>
+<a id="schema_TransferAllOf0ContactRef"></a>
+<a id="tocStransferallof0contactref"></a>
+<a id="tocstransferallof0contactref"></a>
+
+```json
+{
+  "dataType": "string",
+  "id": "string"
+}
+```
+
+The customer or supplier for the transfer, if available.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataType|string \| null|false|none|none|
+|id|string|true|none|none|
+
+<h2 id="tocS_DirectCostDirectCostLineItem">DirectCostDirectCostLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemadirectcostdirectcostlineitem"></a>
+<a id="schema_DirectCostDirectCostLineItem"></a>
+<a id="tocSdirectcostdirectcostlineitem"></a>
+<a id="tocsdirectcostdirectcostlineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "invoiceTo": {
+      "dataType": "string",
+      "id": "string"
+    },
+    "recordRefs": [
+      {
+        "dataType": "string",
+        "id": "string"
+      }
+    ]
+  },
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Friendly name of the goods or services.|
+|discountAmount|number \| null|false|none|Discount amount for the line before tax.|
+|discountPercentage|number \| null|false|none|Discount percentage for the line before tax.|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the product, service type, or inventory item to which the direct cost is linked.|
+|quantity|number|true|none|Number of units of goods or services received.<br><br>Note: If the platform does not provide this information, the quantity will be mapped as 1.|
+|subTotal|number \| null|false|none|Amount of the line, inclusive of discounts but exclusive of tax.|
+|taxAmount|number \| null|false|none|Amount of tax for the line.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the the line item is linked.|
+|totalAmount|number \| null|false|none|Total amount of the line, including tax.|
+|tracking|[DirectCostTracking](#schemadirectcosttracking)|false|none|none|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|**Deprecated.** Collection of categories against which this direct cost is tracked.|
+|unitAmount|number|true|none|Price of each unit of goods or services.<br>Note: If the platform does not provide this information, the unit amount will be mapped to the total amount.|
+
+<h2 id="tocS_DirectCostTracking">DirectCostTracking</h2>
+<!-- backwards compatibility -->
+<a id="schemadirectcosttracking"></a>
+<a id="schema_DirectCostTracking"></a>
+<a id="tocSdirectcosttracking"></a>
+<a id="tocsdirectcosttracking"></a>
+
+```json
+{
+  "invoiceTo": {
+    "dataType": "string",
+    "id": "string"
+  },
+  "recordRefs": [
+    {
+      "dataType": "string",
+      "id": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|invoiceTo|[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)|false|none|Links to the underlying record or data type.<br><br>Found on:<br><br>- Journal entries<br>- Account transactions<br>- Invoices<br>- Transfers|
+|recordRefs|[[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)]|true|none|none|
+
+<h2 id="tocS_DirectIncomeDirectIncomeLineItem">DirectIncomeDirectIncomeLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemadirectincomedirectincomelineitem"></a>
+<a id="schema_DirectIncomeDirectIncomeLineItem"></a>
+<a id="tocSdirectincomedirectincomelineitem"></a>
+<a id="tocsdirectincomedirectincomelineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|A user-friendly name of the goods or services.|
+|discountAmount|number \| null|false|none|Discount amount for the line before tax.|
+|discountPercentage|number \| null|false|none|Discount percentage for the line before tax.|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the product, service type, or inventory item to which the direct cost is linked.|
+|quantity|number|true|none|The number of units of goods or services received.<br><br>Note: If the platform does not provide this information, the quantity will be mapped as 1.|
+|subTotal|number \| null|false|none|The amount of the line, inclusive of discounts, but exclusive of tax.|
+|taxAmount|number \| null|false|none|The amount of tax for the line.<br>Note: If the platform does not provide this information, the quantity will be mapped as 0.00.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number \| null|false|none|The total amount of the line, including tax.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|An array of categories against which this direct cost is tracked.|
+|unitAmount|number|true|none|The price of each unit of goods or services.<br>Note: If the platform does not provide this information, the unit amount will be mapped to the total amount.|
+
+<h2 id="tocS_InvoiceInvoiceLineItem">InvoiceInvoiceLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemainvoiceinvoicelineitem"></a>
+<a id="schema_InvoiceInvoiceLineItem"></a>
+<a id="tocSinvoiceinvoicelineitem"></a>
+<a id="tocsinvoiceinvoicelineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "isDirectIncome": true,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "categoryRefs": [
+      {
+        "id": "string",
+        "name": "string"
+      }
+    ],
+    "customerRef": {
+      "companyName": "string",
+      "id": "string"
+    },
+    "isBilledTo": "Unknown",
+    "isRebilledTo": "Unknown",
+    "projectRef": {
+      "id": "string",
+      "name": "string"
+    }
+  },
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Friendly name of the goods or services provided.|
+|discountAmount|number \| null|false|none|Numerical value of any discounts applied.|
+|discountPercentage|number \| null|false|none|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
+|isDirectIncome|boolean|false|none|none|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the item the line is linked to.|
+|quantity|number|true|none|Number of units of goods or services provided.|
+|subTotal|number \| null|false|none|Amount of the line, inclusive of discounts but exclusive of tax.|
+|taxAmount|number \| null|false|none|Amount of tax for the line.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number \| null|false|none|Total amount of the line, including tax. When pushing invoices to Xero, the total amount is exclusive of tax to allow automatic calculations if a tax rate or tax amount is not specified.|
+|tracking|[CreditNoteCreditNoteLineItemTracking](#schemacreditnotecreditnotelineitemtracking)|false|none|Categories, and a project and customer, against which the item is tracked.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|**Deprecated.** Reference to the tracking categories to which the line item is linked.|
+|unitAmount|number|true|none|Price of each unit of goods or services.|
+
+<h2 id="tocS_InvoiceInvoiceStatus">InvoiceInvoiceStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemainvoiceinvoicestatus"></a>
+<a id="schema_InvoiceInvoiceStatus"></a>
+<a id="tocSinvoiceinvoicestatus"></a>
+<a id="tocsinvoiceinvoicestatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the invoice:
+
+- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.
+- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).
+- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).
+- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).
+- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.
+
+<h2 id="tocS_CreditNoteCreditNoteLineItemTracking">CreditNoteCreditNoteLineItemTracking</h2>
+<!-- backwards compatibility -->
+<a id="schemacreditnotecreditnotelineitemtracking"></a>
+<a id="schema_CreditNoteCreditNoteLineItemTracking"></a>
+<a id="tocScreditnotecreditnotelineitemtracking"></a>
+<a id="tocscreditnotecreditnotelineitemtracking"></a>
+
+```json
+{
+  "categoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "customerRef": {
+    "companyName": "string",
+    "id": "string"
+  },
+  "isBilledTo": "Unknown",
+  "isRebilledTo": "Unknown",
+  "projectRef": {
+    "id": "string",
+    "name": "string"
+  }
+}
+```
+
+Categories, and a project and customer, against which the item is tracked.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|categoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|true|none|none|
+|customerRef|[CustomerCustomerRef](#schemacustomercustomerref)|false|none|none|
+|isBilledTo|[CreditNoteCreditNoteLineItemTrackingBilledToType](#schemacreditnotecreditnotelineitemtrackingbilledtotype)|true|none|none|
+|isRebilledTo|[CreditNoteCreditNoteLineItemTrackingBilledToType](#schemacreditnotecreditnotelineitemtrackingbilledtotype)|true|none|none|
+|projectRef|[ProjectRef](#schemaprojectref)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|isBilledTo|Unknown|
+|isBilledTo|NotApplicable|
+|isBilledTo|Project|
+|isRebilledTo|Unknown|
+|isRebilledTo|NotApplicable|
+|isRebilledTo|Project|
+
+<h2 id="tocS_ItemBillItem">ItemBillItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaitembillitem"></a>
+<a id="schema_ItemBillItem"></a>
+<a id="tocSitembillitem"></a>
+<a id="tocsitembillitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "unitPrice": 0
+}
+```
+
+Item details that are only for bills.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference of the account to which the item is linked.|
+|description|string \| null|false|none|Short description of the product or service that has been bought by the customer.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference of the tax rate to which the item is linked.|
+|unitPrice|number \| null|false|none|Unit price of the product or service.|
+
+<h2 id="tocS_ItemInvoiceItem">ItemInvoiceItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaiteminvoiceitem"></a>
+<a id="schema_ItemInvoiceItem"></a>
+<a id="tocSiteminvoiceitem"></a>
+<a id="tocsiteminvoiceitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "unitPrice": 0
+}
+```
+
+Item details that are only for bills.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference of the account to which the item is linked.|
+|description|string \| null|false|none|Short description of the product or service that has been bought by the customer.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Data types that reference a tax rate, for example invoice and bill line items, use a taxRateRef that includes the ID and name of the linked tax rate.<br><br>Found on:<br><br>- Bill line items<br>- Bill Credit Note line items<br>- Credit Note line items<br>- Direct incomes line items<br>- Invoice line items<br>- Items|
+|unitPrice|number \| null|false|none|Unit price of the product or service.|
+
+<h2 id="tocS_ItemItemStatus">ItemItemStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaitemitemstatus"></a>
+<a id="schema_ItemItemStatus"></a>
+<a id="tocSitemitemstatus"></a>
+<a id="tocsitemitemstatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the item, either:
+
+- `Active`: Available for use
+- `Archived`: Unavailable
+- `Unknown`
+
+Due to a [limitation in Xero's API](https://docs.codat.io/integrations/accounting/xero/xero-faq#why-do-all-of-my-items-from-xero-have-their-status-as-unknown), all items from Xero are mapped as `Unknown`.
+
+<h2 id="tocS_ItemItemType">ItemItemType</h2>
+<!-- backwards compatibility -->
+<a id="schemaitemitemtype"></a>
+<a id="schema_ItemItemType"></a>
+<a id="tocSitemitemtype"></a>
+<a id="tocsitemitemtype"></a>
+
+```json
+null
+```
+
+<h2 id="tocS_JournalJournalStatus">JournalJournalStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemajournaljournalstatus"></a>
+<a id="schema_JournalJournalStatus"></a>
+<a id="tocSjournaljournalstatus"></a>
+<a id="tocsjournaljournalstatus"></a>
+
+```json
+"Unknown"
+```
+
+Current journal status.
+
+<h2 id="tocS_JournalEntryJournalLine">JournalEntryJournalLine</h2>
+<!-- backwards compatibility -->
+<a id="schemajournalentryjournalline"></a>
+<a id="schema_JournalEntryJournalLine"></a>
+<a id="tocSjournalentryjournalline"></a>
+<a id="tocsjournalentryjournalline"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "currency": "string",
+  "description": "string",
+  "netAmount": 0,
+  "tracking": {
+    "recordRefs": [
+      {
+        "dataType": "string",
+        "id": "string"
+      }
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Data types that reference an account, for example bill and invoice line items, use an accountRef that includes the ID and name of the linked account.|
+|currency|string \| null|false|none|Currency for the journal line item.|
+|description|string \| null|false|none|Description of the journal line item.|
+|netAmount|number|true|none|Amount for the journal line. Debit entries are considered positive, and credit entries are considered negative.|
+|tracking|[SalesOrderSalesOrderLineItemTracking](#schemasalesordersalesorderlineitemtracking)|false|none|List of record refs associated with the tracking information for the line (eg to a Tracking Category, or customer etc.)|
+
+<h2 id="tocS_JournalJournalRef">JournalJournalRef</h2>
+<!-- backwards compatibility -->
+<a id="schemajournaljournalref"></a>
+<a id="schema_JournalJournalRef"></a>
+<a id="tocSjournaljournalref"></a>
+<a id="tocsjournaljournalref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+Links journal entries to the relevant journal in accounting integrations that use multi-book accounting (multiple journals).
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|true|none|GUID of the underlying journal.|
+|name|string \| null|false|none|Name of journal|
+
+<h2 id="tocS_SalesOrderSalesOrderLineItemTracking">SalesOrderSalesOrderLineItemTracking</h2>
+<!-- backwards compatibility -->
+<a id="schemasalesordersalesorderlineitemtracking"></a>
+<a id="schema_SalesOrderSalesOrderLineItemTracking"></a>
+<a id="tocSsalesordersalesorderlineitemtracking"></a>
+<a id="tocssalesordersalesorderlineitemtracking"></a>
+
+```json
+{
+  "recordRefs": [
+    {
+      "dataType": "string",
+      "id": "string"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|recordRefs|[[DirectCostTrackingInvoiceTo](#schemadirectcosttrackinginvoiceto)]|false|none|none|
+
+<h2 id="tocS_PaymentPaymentLine">PaymentPaymentLine</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymentline"></a>
+<a id="schema_PaymentPaymentLine"></a>
+<a id="tocSpaymentpaymentline"></a>
+<a id="tocspaymentpaymentline"></a>
+
+```json
+{
+  "allocatedOnDate": "2022-10-23T00:00:00Z",
+  "amount": 0,
+  "links": [
+    {
+      "amount": 0,
+      "currencyRate": 0,
+      "id": "string",
+      "type": "Unknown"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allocatedOnDate|[DateTime](#schemadatetime)|false|none|The date the payment was allocated.|
+|amount|number|true|none|Amount in the payment currency.|
+|links|[[PaymentPaymentLineLink](#schemapaymentpaymentlinelink)]|false|none|none|
+
+<h2 id="tocS_PaymentPaymentLineLink">PaymentPaymentLineLink</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymentlinelink"></a>
+<a id="schema_PaymentPaymentLineLink"></a>
+<a id="tocSpaymentpaymentlinelink"></a>
+<a id="tocspaymentpaymentlinelink"></a>
+
+```json
+{
+  "amount": 0,
+  "currencyRate": 0,
+  "id": "string",
+  "type": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number \| null|false|none|Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  <br>A negative link amount _reduces_ the outstanding amount on the accounts receivable account.  <br>A positive link amount _increases_ the outstanding amount on the accounts receivable account.|
+|currencyRate|[BillPaymentBillPaymentLineLinkCurrencyRate](#schemabillpaymentbillpaymentlinelinkcurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|id|string|false|none|Unique identifier of the transaction represented by the link.|
+|type|[PaymentPaymentLinkType](#schemapaymentpaymentlinktype)|true|none|Types of payment line links, either:  <br>`Unknown`  <br>`Unlinked` - Not used  <br>`Invoice` - ID refers to the invoice  <br>`CreditNote` - ID refers to the credit note  <br>`Refund` - ID refers to the sibling payment  <br>`Payment` - ID refers to the sibling payment  <br>`PaymentOnAccount` - ID refers to the customer  <br>`Other` - ID refers to the customer  <br>`Manual Journal`  <br>`Discount` - ID refers to the payment|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Unknown|
+|type|Unlinked|
+|type|Invoice|
+|type|CreditNote|
+|type|Other|
+|type|Refund|
+|type|Payment|
+|type|PaymentOnAccount|
+|type|ManualJournal|
+|type|Discount|
+
+<h2 id="tocS_PaymentPaymentLinkType">PaymentPaymentLinkType</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentpaymentlinktype"></a>
+<a id="schema_PaymentPaymentLinkType"></a>
+<a id="tocSpaymentpaymentlinktype"></a>
+<a id="tocspaymentpaymentlinktype"></a>
+
+```json
+"Unknown"
+```
+
+Types of payment line links, either:  
+`Unknown`  
+`Unlinked` - Not used  
+`Invoice` - ID refers to the invoice  
+`CreditNote` - ID refers to the credit note  
+`Refund` - ID refers to the sibling payment  
+`Payment` - ID refers to the sibling payment  
+`PaymentOnAccount` - ID refers to the customer  
+`Other` - ID refers to the customer  
+`Manual Journal`  
+`Discount` - ID refers to the payment
+
+<h2 id="tocS_PaymentMethodPaymentMethodStatus">PaymentMethodPaymentMethodStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodpaymentmethodstatus"></a>
+<a id="schema_PaymentMethodPaymentMethodStatus"></a>
+<a id="tocSpaymentmethodpaymentmethodstatus"></a>
+<a id="tocspaymentmethodpaymentmethodstatus"></a>
+
+```json
+"Unknown"
+```
+
+Status of the Payment Method.
+
+<h2 id="tocS_PaymentMethodPaymentMethodType">PaymentMethodPaymentMethodType</h2>
+<!-- backwards compatibility -->
+<a id="schemapaymentmethodpaymentmethodtype"></a>
+<a id="schema_PaymentMethodPaymentMethodType"></a>
+<a id="tocSpaymentmethodpaymentmethodtype"></a>
+<a id="tocspaymentmethodpaymentmethodtype"></a>
+
+```json
+"Unknown"
+```
+
+Method of payment.
+
+<h2 id="tocS_ProfitAndLossReportReportBasis">ProfitAndLossReportReportBasis</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofitandlossreportreportbasis"></a>
+<a id="schema_ProfitAndLossReportReportBasis"></a>
+<a id="tocSprofitandlossreportreportbasis"></a>
+<a id="tocsprofitandlossreportreportbasis"></a>
+
+```json
+"Unknown"
+```
+
+The basis of a report.
+
+<h2 id="tocS_ProfitAndLossReportProfitAndLossReport">ProfitAndLossReportProfitAndLossReport</h2>
+<!-- backwards compatibility -->
+<a id="schemaprofitandlossreportprofitandlossreport"></a>
+<a id="schema_ProfitAndLossReportProfitAndLossReport"></a>
+<a id="tocSprofitandlossreportprofitandlossreport"></a>
+<a id="tocsprofitandlossreportprofitandlossreport"></a>
+
+```json
+{
+  "costOfSales": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "expenses": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "fromDate": "2022-10-23T00:00:00Z",
+  "grossProfit": 0,
+  "income": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "netOperatingProfit": 0,
+  "netOtherIncome": 0,
+  "netProfit": 0,
+  "otherExpenses": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "otherIncome": {
+    "accountId": "string",
+    "items": [
+      {}
+    ],
+    "name": "string",
+    "value": 0
+  },
+  "toDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|costOfSales|[ReportLine](#schemareportline)|false|none|ReportLine items for cost of sales in the given date range.|
+|expenses|[ReportLine](#schemareportline)|false|none|ReportLine items for expenses in the given date range.|
+|fromDate|[DateTime](#schemadatetime)|false|none|Date from which the report data begins.|
+|grossProfit|number|true|none|Gross profit of the company in the given date range.|
+|income|[ReportLine](#schemareportline)|false|none|ReportLine items for income in the given date range.|
+|netOperatingProfit|number|true|none|Net operating profit of the company in the given date range.|
+|netOtherIncome|number|true|none|Net other income of the company in the given date range.|
+|netProfit|number|true|none|Net profit of the company in the given date range.|
+|otherExpenses|[ReportLine](#schemareportline)|false|none|ReportLine items for other expenses in the given date range.|
+|otherIncome|[ReportLine](#schemareportline)|false|none|ReportLine items for other income in the given date range.|
+|toDate|[DateTime](#schemadatetime)|false|none|Date on which the report data ends.|
+
+<h2 id="tocS_PurchaseOrderPurchaseOrderLineItem">PurchaseOrderPurchaseOrderLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemapurchaseorderpurchaseorderlineitem"></a>
+<a id="schema_PurchaseOrderPurchaseOrderLineItem"></a>
+<a id="tocSpurchaseorderpurchaseorderlineitem"></a>
+<a id="tocspurchaseorderpurchaseorderlineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "trackingCategoryRefs": [
+    {
+      "id": "string",
+      "name": "string"
+    }
+  ],
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Description of the goods / services that have been ordered.|
+|discountAmount|number|false|none|Value of any discounts applied.|
+|discountPercentage|number|false|none|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the product or inventory item to which the line item is linked.|
+|quantity|number|false|none|Number of units that have been ordered.|
+|subTotal|number|false|none|Amount of the line, inclusive of discounts but exclusive of tax.|
+|taxAmount|number|false|none|Amount of tax for the line.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number|false|none|Total amount of the line, inclusive of discounts and tax.|
+|trackingCategoryRefs|[[TrackingCategoryTrackingCategoryRef](#schematrackingcategorytrackingcategoryref)]|false|none|Reference to the tracking categories to which the line item is linked.|
+|unitAmount|number|false|none|Price of each unit.|
+
+<h2 id="tocS_SalesOrderAllOf0ShipTo">SalesOrderAllOf0ShipTo</h2>
+<!-- backwards compatibility -->
+<a id="schemasalesorderallof0shipto"></a>
+<a id="schema_SalesOrderAllOf0ShipTo"></a>
+<a id="tocSsalesorderallof0shipto"></a>
+<a id="tocssalesorderallof0shipto"></a>
+
+```json
+{
+  "address": {
+    "city": "string",
+    "country": "string",
+    "line1": "string",
+    "line2": "string",
+    "postalCode": "string",
+    "region": "string",
+    "type": "Unknown"
+  },
+  "contact": {
+    "email": "string",
+    "name": "string",
+    "phone": "string"
+  }
+}
+```
+
+Delivery details for any goods that have been ordered.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|address|[CompanyDatasetAddressesItems](#schemacompanydatasetaddressesitems)|false|none|Delivery address for any goods that have been ordered.|
+|contact|object|false|none|Details of the named contact at the delivery address.|
+
+<h2 id="tocS_PurchaseOrderPurchaseOrderStatus">PurchaseOrderPurchaseOrderStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapurchaseorderpurchaseorderstatus"></a>
+<a id="schema_PurchaseOrderPurchaseOrderStatus"></a>
+<a id="tocSpurchaseorderpurchaseorderstatus"></a>
+<a id="tocspurchaseorderpurchaseorderstatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the purchase order
+
+<h2 id="tocS_PushOperationSummaryPushOperationRef">PushOperationSummaryPushOperationRef</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummarypushoperationref"></a>
+<a id="schema_PushOperationSummaryPushOperationRef"></a>
+<a id="tocSpushoperationsummarypushoperationref"></a>
+<a id="tocspushoperationsummarypushoperationref"></a>
+
+```json
+{
+  "dataType": "invoices",
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|dataType|[DataType](#schemadatatype)|false|none|Available Data types|
+|id|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|dataType|accountTransactions|
+|dataType|balanceSheet|
+|dataType|bankAccounts|
+|dataType|bankTransactions|
+|dataType|billCreditNotes|
+|dataType|billPayments|
+|dataType|bills|
+|dataType|cashFlowStatement|
+|dataType|chartOfAccounts|
+|dataType|company|
+|dataType|creditNotes|
+|dataType|customers|
+|dataType|directCosts|
+|dataType|directIncomes|
+|dataType|invoices|
+|dataType|items|
+|dataType|journalEntries|
+|dataType|journals|
+|dataType|paymentMethods|
+|dataType|payments|
+|dataType|profitAndLoss|
+|dataType|purchaseOrders|
+|dataType|salesOrders|
+|dataType|suppliers|
+|dataType|taxRates|
+|dataType|trackingCategories|
+|dataType|transfers|
+|dataType|banking-accountBalances|
+|dataType|banking-accounts|
+|dataType|banking-transactionCategories|
+|dataType|banking-transactions|
+|dataType|commerce-companyInfo|
+|dataType|commerce-customers|
+|dataType|commerce-disputes|
+|dataType|commerce-locations|
+|dataType|commerce-orders|
+|dataType|commerce-paymentMethods|
+|dataType|commerce-payments|
+|dataType|commerce-productCategories|
+|dataType|commerce-products|
+|dataType|commerce-taxComponents|
+|dataType|commerce-transactions|
+
+<h2 id="tocS_PushOperationSummaryPushChangeType">PushOperationSummaryPushChangeType</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummarypushchangetype"></a>
+<a id="schema_PushOperationSummaryPushChangeType"></a>
+<a id="tocSpushoperationsummarypushchangetype"></a>
+<a id="tocspushoperationsummarypushchangetype"></a>
+
+```json
+"Unknown"
+```
+
+<h2 id="tocS_PushOperationSummaryValidationItem">PushOperationSummaryValidationItem</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummaryvalidationitem"></a>
+<a id="schema_PushOperationSummaryValidationItem"></a>
+<a id="tocSpushoperationsummaryvalidationitem"></a>
+<a id="tocspushoperationsummaryvalidationitem"></a>
+
+```json
+{
+  "itemId": "string",
+  "message": "string",
+  "validatorName": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|itemId|string \| null|false|none|none|
+|message|string \| null|false|none|none|
+|validatorName|string \| null|false|none|none|
+
+<h2 id="tocS_PushOperationSummaryPushOperationChange">PushOperationSummaryPushOperationChange</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummarypushoperationchange"></a>
+<a id="schema_PushOperationSummaryPushOperationChange"></a>
+<a id="tocSpushoperationsummarypushoperationchange"></a>
+<a id="tocspushoperationsummarypushoperationchange"></a>
+
+```json
+{
+  "attachmentId": "string",
+  "recordRef": {
+    "dataType": "invoices",
+    "id": "string"
+  },
+  "type": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|attachmentId|string \| null|false|none|none|
+|recordRef|[PushOperationSummaryPushOperationRef](#schemapushoperationsummarypushoperationref)|false|none|none|
+|type|[PushOperationSummaryPushChangeType](#schemapushoperationsummarypushchangetype)|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Unknown|
+|type|Created|
+|type|Modified|
+|type|Deleted|
+|type|AttachmentUploaded|
+
+<h2 id="tocS_PushOperationSummaryPushOperationStatus">PushOperationSummaryPushOperationStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummarypushoperationstatus"></a>
+<a id="schema_PushOperationSummaryPushOperationStatus"></a>
+<a id="tocSpushoperationsummarypushoperationstatus"></a>
+<a id="tocspushoperationsummarypushoperationstatus"></a>
+
+```json
+"Pending"
+```
+
+The status of the push operation.
+
+<h2 id="tocS_PushOperationSummaryValidation">PushOperationSummaryValidation</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoperationsummaryvalidation"></a>
+<a id="schema_PushOperationSummaryValidation"></a>
+<a id="tocSpushoperationsummaryvalidation"></a>
+<a id="tocspushoperationsummaryvalidation"></a>
+
+```json
+{
+  "errors": [
+    {
+      "itemId": "string",
+      "message": "string",
+      "validatorName": "string"
+    }
+  ],
+  "warnings": [
+    {
+      "itemId": "string",
+      "message": "string",
+      "validatorName": "string"
+    }
+  ]
+}
+```
+
+A human-readable object describing validation decisions Codat has made when pushing data into the platform. If a push has failed because of validation errors, they will be detailed here.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[[PushOperationSummaryValidationItem](#schemapushoperationsummaryvalidationitem)]|false|none|none|
+|warnings|[[PushOperationSummaryValidationItem](#schemapushoperationsummaryvalidationitem)]|false|none|none|
+
+<h2 id="tocS_PushOptionPushOptionType">PushOptionPushOptionType</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionpushoptiontype"></a>
+<a id="schema_PushOptionPushOptionType"></a>
+<a id="tocSpushoptionpushoptiontype"></a>
+<a id="tocspushoptionpushoptiontype"></a>
+
+```json
+"Array"
+```
+
+<h2 id="tocS_PushOptionPushOptionChoice">PushOptionPushOptionChoice</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionpushoptionchoice"></a>
+<a id="schema_PushOptionPushOptionChoice"></a>
+<a id="tocSpushoptionpushoptionchoice"></a>
+<a id="tocspushoptionpushoptionchoice"></a>
+
+```json
+{
+  "description": "string",
+  "displayName": "string",
+  "required": true,
+  "type": "Array",
+  "value": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|description|string|false|none|none|
+|displayName|string|false|none|none|
+|required|boolean|false|none|none|
+|type|[PushOptionPushOptionType](#schemapushoptionpushoptiontype)|false|none|none|
+|value|string|false|none|Allowed value for field.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Array|
+|type|Object|
+|type|String|
+|type|Number|
+|type|Boolean|
+|type|DateTime|
+|type|File|
+|type|MultiPart|
+
+<h2 id="tocS_PushOptionPushOptionProperty">PushOptionPushOptionProperty</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionpushoptionproperty"></a>
+<a id="schema_PushOptionPushOptionProperty"></a>
+<a id="tocSpushoptionpushoptionproperty"></a>
+<a id="tocspushoptionpushoptionproperty"></a>
 
 ```json
 {
@@ -32346,11 +33768,11 @@ If you'd like us to extend support to more data types or integrations, suggest o
 |---|---|---|---|---|
 |description|string|true|none|none|
 |displayName|string|true|none|none|
-|options|[object]|false|none|none|
+|options|[[PushOptionPushOptionChoice](#schemapushoptionpushoptionchoice)]|false|none|none|
 |properties|object \| null|false|none|none|
 |required|boolean|true|none|none|
-|type|string|true|none|none|
-|validation|object|false|none|none|
+|type|[PushOptionPushOptionType](#schemapushoptionpushoptiontype)|true|none|none|
+|validation|[PushOptionPushValidationInfo](#schemapushoptionpushvalidationinfo)|false|none|none|
 
 #### Enumerated Values
 
@@ -32364,3 +33786,236 @@ If you'd like us to extend support to more data types or integrations, suggest o
 |type|DateTime|
 |type|File|
 |type|MultiPart|
+
+<h2 id="tocS_PushOptionPushValidationInfo">PushOptionPushValidationInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionpushvalidationinfo"></a>
+<a id="schema_PushOptionPushValidationInfo"></a>
+<a id="tocSpushoptionpushvalidationinfo"></a>
+<a id="tocspushoptionpushvalidationinfo"></a>
+
+```json
+{
+  "information": [
+    {
+      "details": "string",
+      "field": "string",
+      "ref": "http://example.com"
+    }
+  ],
+  "warnings": [
+    {
+      "details": "string",
+      "field": "string",
+      "ref": "http://example.com"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|information|[[PushOptionPushFieldValidation](#schemapushoptionpushfieldvalidation)]|false|none|none|
+|warnings|[[PushOptionPushFieldValidation](#schemapushoptionpushfieldvalidation)]|false|none|none|
+
+<h2 id="tocS_PushOptionPushFieldValidation">PushOptionPushFieldValidation</h2>
+<!-- backwards compatibility -->
+<a id="schemapushoptionpushfieldvalidation"></a>
+<a id="schema_PushOptionPushFieldValidation"></a>
+<a id="tocSpushoptionpushfieldvalidation"></a>
+<a id="tocspushoptionpushfieldvalidation"></a>
+
+```json
+{
+  "details": "string",
+  "field": "string",
+  "ref": "http://example.com"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|details|string|true|none|none|
+|field|string|false|none|none|
+|ref|string(uri) \| null|false|none|none|
+
+<h2 id="tocS_SalesOrderSalesOrderInvoiceStatus">SalesOrderSalesOrderInvoiceStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemasalesordersalesorderinvoicestatus"></a>
+<a id="schema_SalesOrderSalesOrderInvoiceStatus"></a>
+<a id="tocSsalesordersalesorderinvoicestatus"></a>
+<a id="tocssalesordersalesorderinvoicestatus"></a>
+
+```json
+"Unknown"
+```
+
+If the sales order is converted to an invoice, or will be in future, the invoicingStatus field indicates the current stage of the invoicing process.
+
+<h2 id="tocS_SalesOrderSalesOrderLineItem">SalesOrderSalesOrderLineItem</h2>
+<!-- backwards compatibility -->
+<a id="schemasalesordersalesorderlineitem"></a>
+<a id="schema_SalesOrderSalesOrderLineItem"></a>
+<a id="tocSsalesordersalesorderlineitem"></a>
+<a id="tocssalesordersalesorderlineitem"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "description": "string",
+  "discountAmount": 0,
+  "discountPercentage": 0,
+  "itemRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "quantity": 0,
+  "subTotal": 0,
+  "taxAmount": 0,
+  "taxRateRef": {
+    "effectiveTaxRate": 0,
+    "id": "string",
+    "name": "string"
+  },
+  "totalAmount": 0,
+  "tracking": {
+    "recordRefs": [
+      {
+        "dataType": "string",
+        "id": "string"
+      }
+    ]
+  },
+  "unitAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|Reference to the account to which the line item is linked.|
+|description|string \| null|false|none|Description of the goods or services that have been ordered.|
+|discountAmount|number|false|none|Value of any discounts applied.|
+|discountPercentage|number|false|none|Percentage rate (from 0 to 100) of any discounts applied to the unit amount.|
+|itemRef|[ItemItemRef](#schemaitemitemref)|false|none|Reference to the product or inventory item to which the line item is linked.|
+|quantity|number|false|none|Number of units that have been ordered.|
+|subTotal|number|false|none|Amount of the line, inclusive of discounts but exclusive of tax.|
+|taxAmount|number|false|none|Amount of tax for the line.|
+|taxRateRef|[TaxRateTaxRateRef](#schemataxratetaxrateref)|false|none|Reference to the tax rate to which the line item is linked.|
+|totalAmount|number|false|none|Total amount of the line, inclusive of discounts and tax.|
+|tracking|[SalesOrderSalesOrderLineItemTracking](#schemasalesordersalesorderlineitemtracking)|false|none|none|
+|unitAmount|number|false|none|Price of each unit.|
+
+<h2 id="tocS_SalesOrderSalesOrderStatus">SalesOrderSalesOrderStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemasalesordersalesorderstatus"></a>
+<a id="schema_SalesOrderSalesOrderStatus"></a>
+<a id="tocSsalesordersalesorderstatus"></a>
+<a id="tocssalesordersalesorderstatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the sales order.
+
+<h2 id="tocS_SupplierSupplierStatus">SupplierSupplierStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemasuppliersupplierstatus"></a>
+<a id="schema_SupplierSupplierStatus"></a>
+<a id="tocSsuppliersupplierstatus"></a>
+<a id="tocssuppliersupplierstatus"></a>
+
+```json
+"Unknown"
+```
+
+Status of the supplier.
+
+<h2 id="tocS_TaxRateTaxRateComponent">TaxRateTaxRateComponent</h2>
+<!-- backwards compatibility -->
+<a id="schemataxratetaxratecomponent"></a>
+<a id="schema_TaxRateTaxRateComponent"></a>
+<a id="tocStaxratetaxratecomponent"></a>
+<a id="tocstaxratetaxratecomponent"></a>
+
+```json
+{
+  "isCompound": true,
+  "name": "string",
+  "rate": 0
+}
+```
+
+A tax rate can be made up of multiple sub taxes, often called components of the tax.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|isCompound|boolean|true|none|A flag to indicate with the tax is calculated using the principle of compounding. |
+|name|string \| null|false|none|Name of the tax rate component.|
+|rate|number \| null|false|none|The rate of the tax rate component, usually a percentage.|
+
+<h2 id="tocS_TaxRateTaxRateStatus">TaxRateTaxRateStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemataxratetaxratestatus"></a>
+<a id="schema_TaxRateTaxRateStatus"></a>
+<a id="tocStaxratetaxratestatus"></a>
+<a id="tocstaxratetaxratestatus"></a>
+
+```json
+"Unknown"
+```
+
+Status of the tax rate in the accounting platform.  
+- `Active` - An active tax rate in use by a company.  
+- `Archived` - A tax rate that has been archived or is inactive in the accounting platform.  
+- `Unknown` - Where the status of the tax rate cannot be determined from the underlying platform.
+
+<h2 id="tocS_TrackingCategoryStatus">TrackingCategoryStatus</h2>
+<!-- backwards compatibility -->
+<a id="schematrackingcategorystatus"></a>
+<a id="schema_TrackingCategoryStatus"></a>
+<a id="tocStrackingcategorystatus"></a>
+<a id="tocstrackingcategorystatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the tracking category.
+
+<h2 id="tocS_TransferTransferAccount">TransferTransferAccount</h2>
+<!-- backwards compatibility -->
+<a id="schematransfertransferaccount"></a>
+<a id="schema_TransferTransferAccount"></a>
+<a id="tocStransfertransferaccount"></a>
+<a id="tocstransfertransferaccount"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "amount": 0,
+  "currency": "GBP"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[AccountAccountRef](#schemaaccountaccountref)|false|none|The account that the transfer is moving from or to.|
+|amount|number|false|none|The amount transferred between accounts.|
+|currency|[TransferTransferAccountCurrency](#schematransfertransferaccountcurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|

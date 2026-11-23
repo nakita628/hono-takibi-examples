@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/elasticbeanstalk/2010-12-01/openapi.yaml',
   output: './src/elasticbeanstalk/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/elasticbeanstalk/types.ts' },
   client: { output: './src/elasticbeanstalk/client.ts', baseUrl: '/' },
   rpc: { output: './src/elasticbeanstalk/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTestsIdEventsTestCaseIdRoute,
   getTestsIdMessagesTestCaseIdRoute,
   getTestsIdRoute,
@@ -9,27 +9,40 @@ import {
   postTestsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTestsRouteHandler: RouteHandler<typeof postTestsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const testsHandler = app
-  .openapi(postTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestsServiceServiceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestsServiceServiceIdCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestsIdEventsTestCaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTestsIdMessagesTestCaseIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTestsIdTestCaseResultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTestsServiceServiceIdRouteHandler: RouteHandler<
+  typeof getTestsServiceServiceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestsServiceServiceIdCountRouteHandler: RouteHandler<
+  typeof getTestsServiceServiceIdCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestsIdRouteHandler: RouteHandler<typeof getTestsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestsIdEventsTestCaseIdRouteHandler: RouteHandler<
+  typeof getTestsIdEventsTestCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTestsIdMessagesTestCaseIdRouteHandler: RouteHandler<
+  typeof getTestsIdMessagesTestCaseIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTestsIdTestCaseResultRouteHandler: RouteHandler<
+  typeof postTestsIdTestCaseResultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

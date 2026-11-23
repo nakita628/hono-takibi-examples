@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNotificationsV3RegistrationChannelIdRoute,
   deleteNotificationsV3RegistrationsRoute,
   getNotificationsV3HealthRoute,
@@ -10,30 +10,50 @@ import {
   putNotificationsV3RegistrationChannelIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNotificationsV3HealthRouteHandler: RouteHandler<
+  typeof getNotificationsV3HealthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const notificationsHandler = app
-  .openapi(getNotificationsV3HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsV3RegistrationChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsV3RegistrationChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNotificationsV3RegistrationChannelIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNotificationsV3RegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsV3RegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNotificationsV3RegistrationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNotificationsV3VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteNotificationsV3RegistrationChannelIdRouteHandler: RouteHandler<
+  typeof deleteNotificationsV3RegistrationChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsV3RegistrationChannelIdRouteHandler: RouteHandler<
+  typeof getNotificationsV3RegistrationChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNotificationsV3RegistrationChannelIdRouteHandler: RouteHandler<
+  typeof putNotificationsV3RegistrationChannelIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNotificationsV3RegistrationsRouteHandler: RouteHandler<
+  typeof deleteNotificationsV3RegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsV3RegistrationsRouteHandler: RouteHandler<
+  typeof getNotificationsV3RegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNotificationsV3RegistrationsRouteHandler: RouteHandler<
+  typeof postNotificationsV3RegistrationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNotificationsV3VersionRouteHandler: RouteHandler<
+  typeof getNotificationsV3VersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

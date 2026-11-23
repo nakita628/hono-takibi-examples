@@ -3678,13 +3678,13 @@ type AppType = {
   live_url?: string
   live_url_base?: string
   owner_uuid?: string
-  pending_deployment?: unknown & z.infer<typeof AppsDeploymentSchema>
+  pending_deployment?: z.infer<typeof AppsDeploymentSchema>
   project_id?: string
   region?: z.infer<typeof AppsRegionSchema>
   spec: z.infer<typeof AppSpecSchema>
   tier_slug?: string
   updated_at?: string
-  pinned_deployment?: unknown & z.infer<typeof AppsDeploymentSchema>
+  pinned_deployment?: z.infer<typeof AppsDeploymentSchema>
   dedicated_ips?: z.infer<typeof AppsDedicatedEgressIpSchema>[]
   vpc?: z.infer<typeof AppsVpcSchema>
 }
@@ -57213,7 +57213,6 @@ const AssociatedKubernetesResourcesListResponse = {
 
 const KubeconfigResponse = {
   description: 'A kubeconfig file for the cluster in YAML format.',
-  content: {},
   headers: z.object({
     'ratelimit-limit': RatelimitLimitHeaderSchema,
     'ratelimit-remaining': RatelimitRemainingHeaderSchema,

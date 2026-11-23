@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSandboxTopupRoute, postSandboxTransactionsIdActionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSandboxTopupRoute, postSandboxTransactionsIdActionRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSandboxTransactionsIdActionRouteHandler: RouteHandler<
+  typeof postSandboxTransactionsIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const sandboxHandler = app
-  .openapi(postSandboxTransactionsIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSandboxTopupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSandboxTopupRouteHandler: RouteHandler<typeof postSandboxTopupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

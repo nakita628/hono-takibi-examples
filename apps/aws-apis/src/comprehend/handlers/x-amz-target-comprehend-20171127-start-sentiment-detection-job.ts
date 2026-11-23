@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComprehend20171127StartSentimentDetectionJobHandler = app.openapi(
-  postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComprehend20171127StartSentimentDetectionJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetComprehend20171127StartSentimentDetectionJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

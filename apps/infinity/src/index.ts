@@ -1,27 +1,38 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  __rootHandler,
-  classifyHandler,
-  embeddingsAudioHandler,
-  embeddingsHandler,
-  embeddingsImageHandler,
-  healthHandler,
-  metricsHandler,
-  modelsHandler,
-  rerankHandler,
+  getHealthRoute,
+  getMetricsRoute,
+  getModelsRoute,
+  getRoute,
+  postClassifyRoute,
+  postEmbeddingsAudioRoute,
+  postEmbeddingsImageRoute,
+  postEmbeddingsRoute,
+  postRerankRoute,
+} from './routes'
+import {
+  getHealthRouteHandler,
+  getMetricsRouteHandler,
+  getModelsRouteHandler,
+  getRouteHandler,
+  postClassifyRouteHandler,
+  postEmbeddingsAudioRouteHandler,
+  postEmbeddingsImageRouteHandler,
+  postEmbeddingsRouteHandler,
+  postRerankRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', healthHandler)
-  .route('/', __rootHandler)
-  .route('/', modelsHandler)
-  .route('/', embeddingsHandler)
-  .route('/', rerankHandler)
-  .route('/', classifyHandler)
-  .route('/', embeddingsImageHandler)
-  .route('/', embeddingsAudioHandler)
-  .route('/', metricsHandler)
+  .openapi(getHealthRoute, getHealthRouteHandler)
+  .openapi(getRoute, getRouteHandler)
+  .openapi(getModelsRoute, getModelsRouteHandler)
+  .openapi(postEmbeddingsRoute, postEmbeddingsRouteHandler)
+  .openapi(postRerankRoute, postRerankRouteHandler)
+  .openapi(postClassifyRoute, postClassifyRouteHandler)
+  .openapi(postEmbeddingsImageRoute, postEmbeddingsImageRouteHandler)
+  .openapi(postEmbeddingsAudioRoute, postEmbeddingsAudioRouteHandler)
+  .openapi(getMetricsRoute, getMetricsRouteHandler)
 
 export default app

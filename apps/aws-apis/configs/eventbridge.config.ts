@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/eventbridge/2015-10-07/openapi.yaml',
   output: './src/eventbridge/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/eventbridge/types.ts' },
   client: { output: './src/eventbridge/client.ts', baseUrl: '/' },
   rpc: { output: './src/eventbridge/rpc.ts', parseResponse: true },

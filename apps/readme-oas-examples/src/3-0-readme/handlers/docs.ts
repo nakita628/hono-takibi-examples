@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDocsSlugRoute,
   getDocsSlugProductionRoute,
   getDocsSlugRoute,
@@ -8,24 +8,28 @@ import {
   putDocsSlugRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDocsSlugRouteHandler: RouteHandler<typeof getDocsSlugRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const docsHandler = app
-  .openapi(getDocsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDocsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDocsSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocsSlugProductionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putDocsSlugRouteHandler: RouteHandler<typeof putDocsSlugRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDocsSlugRouteHandler: RouteHandler<typeof deleteDocsSlugRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocsSlugProductionRouteHandler: RouteHandler<
+  typeof getDocsSlugProductionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocsRouteHandler: RouteHandler<typeof postDocsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocsSearchRouteHandler: RouteHandler<typeof postDocsSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

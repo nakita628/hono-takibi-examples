@@ -6769,7 +6769,7 @@ export const postCmsBlogs202609PostsBatchArchiveRoute = createRoute({
     },
   },
   responses: {
-    204: { description: 'No content', content: {} },
+    204: { description: 'No content' },
     207: {
       description: 'multiple statuses',
       content: {
@@ -7412,7 +7412,7 @@ export const putCmsBlogs202609PostsMultiLanguageSetNewLangPrimaryRoute = createR
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7447,7 +7447,7 @@ export const postCmsBlogs202609PostsScheduleRoute = createRoute({
       required: true,
     },
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7560,7 +7560,7 @@ export const deleteCmsBlogs202609PostsObjectIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7722,7 +7722,7 @@ export const postCmsBlogs202609PostsObjectIdDraftPushLiveRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 
@@ -7752,7 +7752,7 @@ export const postCmsBlogs202609PostsObjectIdDraftResetRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ oauth2: ['content'] }],
 })
 

@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPositionConfigurationsResourceIdentifierResourceTypeRoute,
   getPositionConfigurationsRoute,
   putPositionConfigurationsResourceIdentifierResourceTypeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPositionConfigurationsResourceIdentifierResourceTypeRouteHandler: RouteHandler<
+  typeof getPositionConfigurationsResourceIdentifierResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const positionConfigurationsHandler = app
-  .openapi(getPositionConfigurationsResourceIdentifierResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPositionConfigurationsResourceIdentifierResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPositionConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putPositionConfigurationsResourceIdentifierResourceTypeRouteHandler: RouteHandler<
+  typeof putPositionConfigurationsResourceIdentifierResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPositionConfigurationsRouteHandler: RouteHandler<
+  typeof getPositionConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

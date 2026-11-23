@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postListImageScanFindingAggregationsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postListImageScanFindingAggregationsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const listImageScanFindingAggregationsHandler = app.openapi(
-  postListImageScanFindingAggregationsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postListImageScanFindingAggregationsRouteHandler: RouteHandler<
+  typeof postListImageScanFindingAggregationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

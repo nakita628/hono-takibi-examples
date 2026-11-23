@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV9ProjectsIdOrNameDomainsDomainRoute,
   deleteV9ProjectsIdOrNameEnvIdRoute,
   deleteV9ProjectsIdOrNameRoute,
@@ -16,48 +16,82 @@ import {
   postV9ProjectsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV9ProjectsRouteHandler: RouteHandler<typeof getV9ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v9Handler = app
-  .openapi(getV9ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV9ProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV9ProjectsIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV9ProjectsIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV9ProjectsIdOrNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV9ProjectsIdOrNameDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV9ProjectsIdOrNameDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV9ProjectsIdOrNameDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV9ProjectsIdOrNameDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV9ProjectsIdOrNameDomainsDomainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV9ProjectsIdOrNameDomainsDomainVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV9ProjectsIdOrNameEnvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV9ProjectsIdOrNameEnvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV9ProjectsIdOrNameEnvIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV9ProjectsRouteHandler: RouteHandler<typeof postV9ProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV9ProjectsIdOrNameRouteHandler: RouteHandler<
+  typeof deleteV9ProjectsIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV9ProjectsIdOrNameRouteHandler: RouteHandler<
+  typeof getV9ProjectsIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV9ProjectsIdOrNameRouteHandler: RouteHandler<
+  typeof patchV9ProjectsIdOrNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV9ProjectsIdOrNameDomainsRouteHandler: RouteHandler<
+  typeof getV9ProjectsIdOrNameDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV9ProjectsIdOrNameDomainsRouteHandler: RouteHandler<
+  typeof postV9ProjectsIdOrNameDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV9ProjectsIdOrNameDomainsDomainRouteHandler: RouteHandler<
+  typeof deleteV9ProjectsIdOrNameDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV9ProjectsIdOrNameDomainsDomainRouteHandler: RouteHandler<
+  typeof getV9ProjectsIdOrNameDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV9ProjectsIdOrNameDomainsDomainRouteHandler: RouteHandler<
+  typeof patchV9ProjectsIdOrNameDomainsDomainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV9ProjectsIdOrNameDomainsDomainVerifyRouteHandler: RouteHandler<
+  typeof postV9ProjectsIdOrNameDomainsDomainVerifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV9ProjectsIdOrNameEnvRouteHandler: RouteHandler<
+  typeof getV9ProjectsIdOrNameEnvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV9ProjectsIdOrNameEnvIdRouteHandler: RouteHandler<
+  typeof deleteV9ProjectsIdOrNameEnvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV9ProjectsIdOrNameEnvIdRouteHandler: RouteHandler<
+  typeof patchV9ProjectsIdOrNameEnvIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

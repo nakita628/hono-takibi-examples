@@ -36,7 +36,7 @@ type Article = {
 declare const routes: import('@hono/zod-openapi').OpenAPIHono<
   import('hono/types').Env,
   {
-    '/:section.:format': {
+    '/:section.{format}': {
       $get: {
         input: {
           param: {

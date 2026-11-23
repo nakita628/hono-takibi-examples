@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { drvlcHandler, rvcerHandler } from './handlers'
+import { postDrvlcCertificateRoute, postRvcerCertificateRoute } from './routes'
+import { postDrvlcCertificateRouteHandler, postRvcerCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', drvlcHandler).route('/', rvcerHandler)
+export const api = app
+  .openapi(postDrvlcCertificateRoute, postDrvlcCertificateRouteHandler)
+  .openapi(postRvcerCertificateRoute, postRvcerCertificateRouteHandler)
 
 export default app

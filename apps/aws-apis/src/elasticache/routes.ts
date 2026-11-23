@@ -430,8 +430,8 @@ const CacheClusterListSchema = z
   .openapi('CacheClusterList')
 
 type CacheClusterMessageType = {
-  Marker?: z.infer<typeof StringSchema> & unknown
-  CacheClusters?: z.infer<typeof CacheClusterListSchema> & unknown
+  Marker?: z.infer<typeof StringSchema>
+  CacheClusters?: z.infer<typeof CacheClusterListSchema>
 }
 
 const GlobalReplicationGroupInfoSchema = z
@@ -749,8 +749,8 @@ const ReplicationGroupListSchema = z
   .openapi('ReplicationGroupList')
 
 type ReplicationGroupMessageType = {
-  Marker?: z.infer<typeof StringSchema> & unknown
-  ReplicationGroups?: z.infer<typeof ReplicationGroupListSchema> & unknown
+  Marker?: z.infer<typeof StringSchema>
+  ReplicationGroups?: z.infer<typeof ReplicationGroupListSchema>
 }
 
 const TagSchema = z

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRulesCategoriesRuleCategoryIdRoute,
   deleteRulesRuleIdRoute,
   getRulesCategoriesRuleCategoryIdRoute,
@@ -12,36 +12,52 @@ import {
   putRulesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRulesRouteHandler: RouteHandler<typeof getRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rulesHandler = app
-  .openapi(getRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRulesCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesCategoriesRuleCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesCategoriesRuleCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRulesCategoriesRuleCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesTreeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putRulesRouteHandler: RouteHandler<typeof putRulesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRulesCategoriesRouteHandler: RouteHandler<typeof putRulesCategoriesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesCategoriesRuleCategoryIdRouteHandler: RouteHandler<
+  typeof deleteRulesCategoriesRuleCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesCategoriesRuleCategoryIdRouteHandler: RouteHandler<
+  typeof getRulesCategoriesRuleCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRulesCategoriesRuleCategoryIdRouteHandler: RouteHandler<
+  typeof postRulesCategoriesRuleCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesTreeRouteHandler: RouteHandler<typeof getRulesTreeRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRulesRuleIdRouteHandler: RouteHandler<typeof deleteRulesRuleIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRulesRuleIdRouteHandler: RouteHandler<typeof getRulesRuleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRulesRuleIdRouteHandler: RouteHandler<typeof postRulesRuleIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

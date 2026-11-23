@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCrmExports202609ExportAsyncTasksTaskIdStatusRoute,
   getCrmExports202609ExportExportIdRoute,
   postCrmExports202609ExportAsyncRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCrmExports202609ExportAsyncRouteHandler: RouteHandler<
+  typeof postCrmExports202609ExportAsyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(postCrmExports202609ExportAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmExports202609ExportAsyncTasksTaskIdStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmExports202609ExportExportIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCrmExports202609ExportAsyncTasksTaskIdStatusRouteHandler: RouteHandler<
+  typeof getCrmExports202609ExportAsyncTasksTaskIdStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmExports202609ExportExportIdRouteHandler: RouteHandler<
+  typeof getCrmExports202609ExportExportIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

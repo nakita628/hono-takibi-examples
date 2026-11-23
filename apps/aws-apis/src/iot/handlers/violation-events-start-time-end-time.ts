@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getViolationEventsStartTimeEndTimeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getViolationEventsStartTimeEndTimeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const violationEventsStartTimeEndTimeHandler = app.openapi(
-  getViolationEventsStartTimeEndTimeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const getViolationEventsStartTimeEndTimeRouteHandler: RouteHandler<
+  typeof getViolationEventsStartTimeEndTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

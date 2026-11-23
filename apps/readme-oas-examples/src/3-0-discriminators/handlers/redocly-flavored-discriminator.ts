@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { patchRedoclyFlavoredDiscriminatorRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { patchRedoclyFlavoredDiscriminatorRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const redoclyFlavoredDiscriminatorHandler = app.openapi(
-  patchRedoclyFlavoredDiscriminatorRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const patchRedoclyFlavoredDiscriminatorRouteHandler: RouteHandler<
+  typeof patchRedoclyFlavoredDiscriminatorRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postBetaCashAdvanceIncomeInsightsV1GetRoute,
   postBetaCreditV1BankEmploymentGetRoute,
   postBetaEwaReportV1GetRoute,
@@ -19,57 +19,104 @@ import {
   postBetaWebhookEventsListRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBetaWebhookEventsListRouteHandler: RouteHandler<
+  typeof postBetaWebhookEventsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const betaHandler = app
-  .openapi(postBetaWebhookEventsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaCreditV1BankEmploymentGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaTransactionsRulesV1CreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaTransactionsRulesV1ListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaTransactionsRulesV1RemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaTransactionsUserInsightsV1GetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaEwaReportV1GetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaCashAdvanceIncomeInsightsV1GetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaIssuesV1GetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaIssuesV1ListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaIssuesV1MatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaIssuesV1SubscribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaIssuesV1UnsubscribeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaPartnerCustomerV1CreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaPartnerCustomerV1GetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaPartnerCustomerV1UpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBetaPartnerCustomerV1EnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBetaCreditV1BankEmploymentGetRouteHandler: RouteHandler<
+  typeof postBetaCreditV1BankEmploymentGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaTransactionsRulesV1CreateRouteHandler: RouteHandler<
+  typeof postBetaTransactionsRulesV1CreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaTransactionsRulesV1ListRouteHandler: RouteHandler<
+  typeof postBetaTransactionsRulesV1ListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaTransactionsRulesV1RemoveRouteHandler: RouteHandler<
+  typeof postBetaTransactionsRulesV1RemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaTransactionsUserInsightsV1GetRouteHandler: RouteHandler<
+  typeof postBetaTransactionsUserInsightsV1GetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaEwaReportV1GetRouteHandler: RouteHandler<
+  typeof postBetaEwaReportV1GetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaCashAdvanceIncomeInsightsV1GetRouteHandler: RouteHandler<
+  typeof postBetaCashAdvanceIncomeInsightsV1GetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaIssuesV1GetRouteHandler: RouteHandler<
+  typeof postBetaIssuesV1GetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaIssuesV1ListRouteHandler: RouteHandler<
+  typeof postBetaIssuesV1ListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaIssuesV1MatchRouteHandler: RouteHandler<
+  typeof postBetaIssuesV1MatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaIssuesV1SubscribeRouteHandler: RouteHandler<
+  typeof postBetaIssuesV1SubscribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaIssuesV1UnsubscribeRouteHandler: RouteHandler<
+  typeof postBetaIssuesV1UnsubscribeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaPartnerCustomerV1CreateRouteHandler: RouteHandler<
+  typeof postBetaPartnerCustomerV1CreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaPartnerCustomerV1GetRouteHandler: RouteHandler<
+  typeof postBetaPartnerCustomerV1GetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaPartnerCustomerV1UpdateRouteHandler: RouteHandler<
+  typeof postBetaPartnerCustomerV1UpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBetaPartnerCustomerV1EnableRouteHandler: RouteHandler<
+  typeof postBetaPartnerCustomerV1EnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

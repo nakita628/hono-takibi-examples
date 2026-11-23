@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGraphEdgesFromIdRoute, getGraphNodeIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGraphEdgesFromIdRoute, getGraphNodeIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGraphEdgesFromIdRouteHandler: RouteHandler<
+  typeof getGraphEdgesFromIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const graphHandler = app
-  .openapi(getGraphEdgesFromIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGraphNodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGraphNodeIdRouteHandler: RouteHandler<typeof getGraphNodeIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

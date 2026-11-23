@@ -1,147 +1,425 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonDmSv20160101AddTagsToResourceHandler,
-  xAmzTargetAmazonDmSv20160101ApplyPendingMaintenanceActionHandler,
-  xAmzTargetAmazonDmSv20160101BatchStartRecommendationsHandler,
-  xAmzTargetAmazonDmSv20160101CancelReplicationTaskAssessmentRunHandler,
-  xAmzTargetAmazonDmSv20160101CreateEndpointHandler,
-  xAmzTargetAmazonDmSv20160101CreateEventSubscriptionHandler,
-  xAmzTargetAmazonDmSv20160101CreateFleetAdvisorCollectorHandler,
-  xAmzTargetAmazonDmSv20160101CreateReplicationInstanceHandler,
-  xAmzTargetAmazonDmSv20160101CreateReplicationSubnetGroupHandler,
-  xAmzTargetAmazonDmSv20160101CreateReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101DeleteCertificateHandler,
-  xAmzTargetAmazonDmSv20160101DeleteConnectionHandler,
-  xAmzTargetAmazonDmSv20160101DeleteEndpointHandler,
-  xAmzTargetAmazonDmSv20160101DeleteEventSubscriptionHandler,
-  xAmzTargetAmazonDmSv20160101DeleteFleetAdvisorCollectorHandler,
-  xAmzTargetAmazonDmSv20160101DeleteFleetAdvisorDatabasesHandler,
-  xAmzTargetAmazonDmSv20160101DeleteReplicationInstanceHandler,
-  xAmzTargetAmazonDmSv20160101DeleteReplicationSubnetGroupHandler,
-  xAmzTargetAmazonDmSv20160101DeleteReplicationTaskAssessmentRunHandler,
-  xAmzTargetAmazonDmSv20160101DeleteReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101DescribeAccountAttributesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeApplicableIndividualAssessmentsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeCertificatesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeConnectionsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEndpointSettingsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEndpointsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEndpointTypesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEventCategoriesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEventsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeEventSubscriptionsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorCollectorsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorDatabasesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorLsaAnalysisHandler,
-  xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorSchemaObjectSummaryHandler,
-  xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorSchemasHandler,
-  xAmzTargetAmazonDmSv20160101DescribeOrderableReplicationInstancesHandler,
-  xAmzTargetAmazonDmSv20160101DescribePendingMaintenanceActionsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeRecommendationLimitationsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeRecommendationsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeRefreshSchemasStatusHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationInstancesHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationInstanceTaskLogsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationSubnetGroupsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationTaskAssessmentResultsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationTaskAssessmentRunsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationTaskIndividualAssessmentsHandler,
-  xAmzTargetAmazonDmSv20160101DescribeReplicationTasksHandler,
-  xAmzTargetAmazonDmSv20160101DescribeSchemasHandler,
-  xAmzTargetAmazonDmSv20160101DescribeTableStatisticsHandler,
-  xAmzTargetAmazonDmSv20160101ImportCertificateHandler,
-  xAmzTargetAmazonDmSv20160101ListTagsForResourceHandler,
-  xAmzTargetAmazonDmSv20160101ModifyEndpointHandler,
-  xAmzTargetAmazonDmSv20160101ModifyEventSubscriptionHandler,
-  xAmzTargetAmazonDmSv20160101ModifyReplicationInstanceHandler,
-  xAmzTargetAmazonDmSv20160101ModifyReplicationSubnetGroupHandler,
-  xAmzTargetAmazonDmSv20160101ModifyReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101MoveReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101RebootReplicationInstanceHandler,
-  xAmzTargetAmazonDmSv20160101RefreshSchemasHandler,
-  xAmzTargetAmazonDmSv20160101ReloadTablesHandler,
-  xAmzTargetAmazonDmSv20160101RemoveTagsFromResourceHandler,
-  xAmzTargetAmazonDmSv20160101RunFleetAdvisorLsaAnalysisHandler,
-  xAmzTargetAmazonDmSv20160101StartRecommendationsHandler,
-  xAmzTargetAmazonDmSv20160101StartReplicationTaskAssessmentHandler,
-  xAmzTargetAmazonDmSv20160101StartReplicationTaskAssessmentRunHandler,
-  xAmzTargetAmazonDmSv20160101StartReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101StopReplicationTaskHandler,
-  xAmzTargetAmazonDmSv20160101TestConnectionHandler,
-  xAmzTargetAmazonDmSv20160101UpdateSubscriptionsToEventBridgeHandler,
+  postXAmzTargetAmazonDMSv20160101AddTagsToResourceRoute,
+  postXAmzTargetAmazonDMSv20160101ApplyPendingMaintenanceActionRoute,
+  postXAmzTargetAmazonDMSv20160101BatchStartRecommendationsRoute,
+  postXAmzTargetAmazonDMSv20160101CancelReplicationTaskAssessmentRunRoute,
+  postXAmzTargetAmazonDMSv20160101CreateEndpointRoute,
+  postXAmzTargetAmazonDMSv20160101CreateEventSubscriptionRoute,
+  postXAmzTargetAmazonDMSv20160101CreateFleetAdvisorCollectorRoute,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationInstanceRoute,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteCertificateRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteConnectionRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteEndpointRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteEventSubscriptionRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorCollectorRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorDatabasesRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationInstanceRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationSubnetGroupRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskAssessmentRunRoute,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeAccountAttributesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeApplicableIndividualAssessmentsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeCertificatesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeConnectionsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointSettingsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointTypesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEventCategoriesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEventsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeEventSubscriptionsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorDatabasesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorLsaAnalysisRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemaObjectSummaryRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemasRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeOrderableReplicationInstancesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribePendingMaintenanceActionsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeRecommendationLimitationsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeRecommendationsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeRefreshSchemasStatusRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationInstancesRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationInstanceTaskLogsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationSubnetGroupsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentResultsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentRunsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskIndividualAssessmentsRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTasksRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeSchemasRoute,
+  postXAmzTargetAmazonDMSv20160101DescribeTableStatisticsRoute,
+  postXAmzTargetAmazonDMSv20160101ImportCertificateRoute,
+  postXAmzTargetAmazonDMSv20160101ListTagsForResourceRoute,
+  postXAmzTargetAmazonDMSv20160101ModifyEndpointRoute,
+  postXAmzTargetAmazonDMSv20160101ModifyEventSubscriptionRoute,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationInstanceRoute,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationSubnetGroupRoute,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101MoveReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101RebootReplicationInstanceRoute,
+  postXAmzTargetAmazonDMSv20160101RefreshSchemasRoute,
+  postXAmzTargetAmazonDMSv20160101ReloadTablesRoute,
+  postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute,
+  postXAmzTargetAmazonDMSv20160101RunFleetAdvisorLsaAnalysisRoute,
+  postXAmzTargetAmazonDMSv20160101StartRecommendationsRoute,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRoute,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRunRoute,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101StopReplicationTaskRoute,
+  postXAmzTargetAmazonDMSv20160101TestConnectionRoute,
+  postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonDMSv20160101AddTagsToResourceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ApplyPendingMaintenanceActionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101BatchStartRecommendationsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CancelReplicationTaskAssessmentRunRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateEndpointRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateEventSubscriptionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateFleetAdvisorCollectorRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationInstanceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRouteHandler,
+  postXAmzTargetAmazonDMSv20160101CreateReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteCertificateRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteConnectionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteEndpointRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteEventSubscriptionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorCollectorRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorDatabasesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationInstanceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationSubnetGroupRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskAssessmentRunRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeAccountAttributesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeApplicableIndividualAssessmentsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeCertificatesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeConnectionsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointSettingsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEndpointTypesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEventCategoriesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEventsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeEventSubscriptionsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorDatabasesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorLsaAnalysisRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemaObjectSummaryRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemasRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeOrderableReplicationInstancesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribePendingMaintenanceActionsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeRecommendationLimitationsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeRecommendationsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeRefreshSchemasStatusRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationInstancesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationInstanceTaskLogsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationSubnetGroupsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentResultsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentRunsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskIndividualAssessmentsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeReplicationTasksRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeSchemasRouteHandler,
+  postXAmzTargetAmazonDMSv20160101DescribeTableStatisticsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ImportCertificateRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ListTagsForResourceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ModifyEndpointRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ModifyEventSubscriptionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationInstanceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationSubnetGroupRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ModifyReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101MoveReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101RebootReplicationInstanceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101RefreshSchemasRouteHandler,
+  postXAmzTargetAmazonDMSv20160101ReloadTablesRouteHandler,
+  postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRouteHandler,
+  postXAmzTargetAmazonDMSv20160101RunFleetAdvisorLsaAnalysisRouteHandler,
+  postXAmzTargetAmazonDMSv20160101StartRecommendationsRouteHandler,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRouteHandler,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRunRouteHandler,
+  postXAmzTargetAmazonDMSv20160101StartReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101StopReplicationTaskRouteHandler,
+  postXAmzTargetAmazonDMSv20160101TestConnectionRouteHandler,
+  postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonDmSv20160101AddTagsToResourceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ApplyPendingMaintenanceActionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101BatchStartRecommendationsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CancelReplicationTaskAssessmentRunHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateEndpointHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateEventSubscriptionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateFleetAdvisorCollectorHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateReplicationInstanceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateReplicationSubnetGroupHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101CreateReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteCertificateHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteConnectionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteEndpointHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteEventSubscriptionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteFleetAdvisorCollectorHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteFleetAdvisorDatabasesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteReplicationInstanceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteReplicationSubnetGroupHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DeleteReplicationTaskAssessmentRunHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeAccountAttributesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeApplicableIndividualAssessmentsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeCertificatesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeConnectionsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEndpointSettingsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEndpointTypesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEndpointsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEventCategoriesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEventSubscriptionsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeEventsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorCollectorsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorDatabasesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorLsaAnalysisHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorSchemaObjectSummaryHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeFleetAdvisorSchemasHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeOrderableReplicationInstancesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribePendingMaintenanceActionsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeRecommendationLimitationsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeRecommendationsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeRefreshSchemasStatusHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationInstanceTaskLogsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationInstancesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationSubnetGroupsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationTaskAssessmentResultsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationTaskAssessmentRunsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationTaskIndividualAssessmentsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeReplicationTasksHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeSchemasHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101DescribeTableStatisticsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ImportCertificateHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ListTagsForResourceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ModifyEndpointHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ModifyEventSubscriptionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ModifyReplicationInstanceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ModifyReplicationSubnetGroupHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ModifyReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101MoveReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101RebootReplicationInstanceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101RefreshSchemasHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101ReloadTablesHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101RemoveTagsFromResourceHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101RunFleetAdvisorLsaAnalysisHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101StartRecommendationsHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101StartReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101StartReplicationTaskAssessmentHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101StartReplicationTaskAssessmentRunHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101StopReplicationTaskHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101TestConnectionHandler)
-  .route('/', xAmzTargetAmazonDmSv20160101UpdateSubscriptionsToEventBridgeHandler)
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101AddTagsToResourceRoute,
+    postXAmzTargetAmazonDMSv20160101AddTagsToResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ApplyPendingMaintenanceActionRoute,
+    postXAmzTargetAmazonDMSv20160101ApplyPendingMaintenanceActionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101BatchStartRecommendationsRoute,
+    postXAmzTargetAmazonDMSv20160101BatchStartRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CancelReplicationTaskAssessmentRunRoute,
+    postXAmzTargetAmazonDMSv20160101CancelReplicationTaskAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateEndpointRoute,
+    postXAmzTargetAmazonDMSv20160101CreateEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateEventSubscriptionRoute,
+    postXAmzTargetAmazonDMSv20160101CreateEventSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateFleetAdvisorCollectorRoute,
+    postXAmzTargetAmazonDMSv20160101CreateFleetAdvisorCollectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateReplicationInstanceRoute,
+    postXAmzTargetAmazonDMSv20160101CreateReplicationInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRoute,
+    postXAmzTargetAmazonDMSv20160101CreateReplicationSubnetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101CreateReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101CreateReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteCertificateRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteConnectionRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteEndpointRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteEventSubscriptionRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteEventSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorCollectorRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorCollectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorDatabasesRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteFleetAdvisorDatabasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationInstanceRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationSubnetGroupRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationSubnetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskAssessmentRunRoute,
+    postXAmzTargetAmazonDMSv20160101DeleteReplicationTaskAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeAccountAttributesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeAccountAttributesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeApplicableIndividualAssessmentsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeApplicableIndividualAssessmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeCertificatesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeConnectionsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeConnectionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointSettingsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointSettingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointTypesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointTypesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEndpointsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEventCategoriesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEventCategoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEventSubscriptionsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEventSubscriptionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeEventsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorCollectorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorDatabasesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorDatabasesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorLsaAnalysisRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorLsaAnalysisRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemaObjectSummaryRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemaObjectSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemasRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeFleetAdvisorSchemasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeOrderableReplicationInstancesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeOrderableReplicationInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribePendingMaintenanceActionsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribePendingMaintenanceActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeRecommendationLimitationsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeRecommendationLimitationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeRecommendationsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeRefreshSchemasStatusRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeRefreshSchemasStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationInstanceTaskLogsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationInstanceTaskLogsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationInstancesRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationSubnetGroupsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationSubnetGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentResultsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentRunsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskAssessmentRunsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskIndividualAssessmentsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTaskIndividualAssessmentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTasksRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeReplicationTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeSchemasRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeSchemasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101DescribeTableStatisticsRoute,
+    postXAmzTargetAmazonDMSv20160101DescribeTableStatisticsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ImportCertificateRoute,
+    postXAmzTargetAmazonDMSv20160101ImportCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ListTagsForResourceRoute,
+    postXAmzTargetAmazonDMSv20160101ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ModifyEndpointRoute,
+    postXAmzTargetAmazonDMSv20160101ModifyEndpointRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ModifyEventSubscriptionRoute,
+    postXAmzTargetAmazonDMSv20160101ModifyEventSubscriptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationInstanceRoute,
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationSubnetGroupRoute,
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationSubnetGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101ModifyReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101MoveReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101MoveReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101RebootReplicationInstanceRoute,
+    postXAmzTargetAmazonDMSv20160101RebootReplicationInstanceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101RefreshSchemasRoute,
+    postXAmzTargetAmazonDMSv20160101RefreshSchemasRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101ReloadTablesRoute,
+    postXAmzTargetAmazonDMSv20160101ReloadTablesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRoute,
+    postXAmzTargetAmazonDMSv20160101RemoveTagsFromResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101RunFleetAdvisorLsaAnalysisRoute,
+    postXAmzTargetAmazonDMSv20160101RunFleetAdvisorLsaAnalysisRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101StartRecommendationsRoute,
+    postXAmzTargetAmazonDMSv20160101StartRecommendationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRoute,
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRunRoute,
+    postXAmzTargetAmazonDMSv20160101StartReplicationTaskAssessmentRunRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101StopReplicationTaskRoute,
+    postXAmzTargetAmazonDMSv20160101StopReplicationTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101TestConnectionRoute,
+    postXAmzTargetAmazonDMSv20160101TestConnectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRoute,
+    postXAmzTargetAmazonDMSv20160101UpdateSubscriptionsToEventBridgeRouteHandler,
+  )
 
 export default app

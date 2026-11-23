@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPlaybackBitrateTestRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPlaybackBitrateTestRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const playbackHandler = app.openapi(getPlaybackBitrateTestRoute, (c) => {
+export const getPlaybackBitrateTestRouteHandler: RouteHandler<
+  typeof getPlaybackBitrateTestRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

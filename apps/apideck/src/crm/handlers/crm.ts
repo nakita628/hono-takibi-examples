@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCrmActivitiesIdRoute,
   deleteCrmCompaniesIdRoute,
   deleteCrmContactsIdRoute,
@@ -42,126 +42,210 @@ import {
   postCrmUsersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCrmActivitiesRouteHandler: RouteHandler<typeof getCrmActivitiesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const crmHandler = app
-  .openapi(getCrmActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmActivitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmActivitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmActivitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmActivitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmCompaniesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmContactsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmContactsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmContactsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmLeadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmLeadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmLeadsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmLeadsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmLeadsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmNotesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmOpportunitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmOpportunitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmOpportunitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmOpportunitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmOpportunitiesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmPipelinesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmPipelinesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmPipelinesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmPipelinesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCrmUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCrmUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCrmUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchCrmUsersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCrmActivitiesRouteHandler: RouteHandler<typeof postCrmActivitiesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmActivitiesIdRouteHandler: RouteHandler<
+  typeof deleteCrmActivitiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmActivitiesIdRouteHandler: RouteHandler<typeof getCrmActivitiesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmActivitiesIdRouteHandler: RouteHandler<
+  typeof patchCrmActivitiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmCompaniesRouteHandler: RouteHandler<typeof getCrmCompaniesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmCompaniesRouteHandler: RouteHandler<typeof postCrmCompaniesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmCompaniesIdRouteHandler: RouteHandler<
+  typeof deleteCrmCompaniesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmCompaniesIdRouteHandler: RouteHandler<typeof getCrmCompaniesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmCompaniesIdRouteHandler: RouteHandler<
+  typeof patchCrmCompaniesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmContactsRouteHandler: RouteHandler<typeof getCrmContactsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmContactsRouteHandler: RouteHandler<typeof postCrmContactsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmContactsIdRouteHandler: RouteHandler<
+  typeof deleteCrmContactsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmContactsIdRouteHandler: RouteHandler<typeof getCrmContactsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmContactsIdRouteHandler: RouteHandler<typeof patchCrmContactsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmLeadsRouteHandler: RouteHandler<typeof getCrmLeadsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmLeadsRouteHandler: RouteHandler<typeof postCrmLeadsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmLeadsIdRouteHandler: RouteHandler<typeof deleteCrmLeadsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmLeadsIdRouteHandler: RouteHandler<typeof getCrmLeadsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmLeadsIdRouteHandler: RouteHandler<typeof patchCrmLeadsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmNotesRouteHandler: RouteHandler<typeof getCrmNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmNotesRouteHandler: RouteHandler<typeof postCrmNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmNotesIdRouteHandler: RouteHandler<typeof deleteCrmNotesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmNotesIdRouteHandler: RouteHandler<typeof getCrmNotesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmNotesIdRouteHandler: RouteHandler<typeof patchCrmNotesIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmOpportunitiesRouteHandler: RouteHandler<
+  typeof getCrmOpportunitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmOpportunitiesRouteHandler: RouteHandler<
+  typeof postCrmOpportunitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmOpportunitiesIdRouteHandler: RouteHandler<
+  typeof deleteCrmOpportunitiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmOpportunitiesIdRouteHandler: RouteHandler<
+  typeof getCrmOpportunitiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmOpportunitiesIdRouteHandler: RouteHandler<
+  typeof patchCrmOpportunitiesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelinesRouteHandler: RouteHandler<typeof getCrmPipelinesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmPipelinesRouteHandler: RouteHandler<typeof postCrmPipelinesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmPipelinesIdRouteHandler: RouteHandler<
+  typeof deleteCrmPipelinesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmPipelinesIdRouteHandler: RouteHandler<typeof getCrmPipelinesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmPipelinesIdRouteHandler: RouteHandler<
+  typeof patchCrmPipelinesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmUsersRouteHandler: RouteHandler<typeof getCrmUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCrmUsersRouteHandler: RouteHandler<typeof postCrmUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCrmUsersIdRouteHandler: RouteHandler<typeof deleteCrmUsersIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getCrmUsersIdRouteHandler: RouteHandler<typeof getCrmUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchCrmUsersIdRouteHandler: RouteHandler<typeof patchCrmUsersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

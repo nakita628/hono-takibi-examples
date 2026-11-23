@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDescribeFastLaunchImagesRoute,
   postActionDescribeFastLaunchImagesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDescribeFastLaunchImagesRouteHandler: RouteHandler<
+  typeof getActionDescribeFastLaunchImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDescribeFastLaunchImagesHandler = app
-  .openapi(getActionDescribeFastLaunchImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDescribeFastLaunchImagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDescribeFastLaunchImagesRouteHandler: RouteHandler<
+  typeof postActionDescribeFastLaunchImagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

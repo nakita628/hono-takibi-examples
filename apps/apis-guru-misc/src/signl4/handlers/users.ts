@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersRoute,
   getUsersUserIdDutyStatusRoute,
   getUsersUserIdImageRoute,
@@ -14,42 +14,70 @@ import {
   putUsersUserIdProfileRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersRouteHandler: RouteHandler<typeof getUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersUserIdChangePasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdCheckPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdDutyStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdImageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersUserIdProfileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdPunchInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdPunchInAsManagerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserIdPunchOutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserIdSetupProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getUsersUserIdRouteHandler: RouteHandler<typeof getUsersUserIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersUserIdChangePasswordRouteHandler: RouteHandler<
+  typeof putUsersUserIdChangePasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdCheckPermissionsRouteHandler: RouteHandler<
+  typeof postUsersUserIdCheckPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdDutyStatusRouteHandler: RouteHandler<
+  typeof getUsersUserIdDutyStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdImageRouteHandler: RouteHandler<
+  typeof getUsersUserIdImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdImageRouteHandler: RouteHandler<
+  typeof postUsersUserIdImageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersUserIdProfileRouteHandler: RouteHandler<
+  typeof putUsersUserIdProfileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdPunchInRouteHandler: RouteHandler<
+  typeof postUsersUserIdPunchInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdPunchInAsManagerRouteHandler: RouteHandler<
+  typeof postUsersUserIdPunchInAsManagerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserIdPunchOutRouteHandler: RouteHandler<
+  typeof postUsersUserIdPunchOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserIdSetupProgressRouteHandler: RouteHandler<
+  typeof getUsersUserIdSetupProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

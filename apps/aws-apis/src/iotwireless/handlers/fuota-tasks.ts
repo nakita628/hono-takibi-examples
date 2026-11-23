@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFuotaTasksIdMulticastGroupsMulticastGroupIdRoute,
   deleteFuotaTasksIdRoute,
   deleteFuotaTasksIdWirelessDevicesWirelessDeviceIdRoute,
@@ -13,39 +13,60 @@ import {
   putFuotaTasksIdWirelessDeviceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putFuotaTasksIdMulticastGroupRouteHandler: RouteHandler<
+  typeof putFuotaTasksIdMulticastGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fuotaTasksHandler = app
-  .openapi(putFuotaTasksIdMulticastGroupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFuotaTasksIdWirelessDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFuotaTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuotaTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFuotaTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuotaTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFuotaTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchFuotaTasksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFuotaTasksIdMulticastGroupsMulticastGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFuotaTasksIdWirelessDevicesWirelessDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuotaTasksIdMulticastGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putFuotaTasksIdWirelessDeviceRouteHandler: RouteHandler<
+  typeof putFuotaTasksIdWirelessDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFuotaTasksRouteHandler: RouteHandler<typeof postFuotaTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuotaTasksRouteHandler: RouteHandler<typeof getFuotaTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFuotaTasksIdRouteHandler: RouteHandler<typeof deleteFuotaTasksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuotaTasksIdRouteHandler: RouteHandler<typeof getFuotaTasksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFuotaTasksIdRouteHandler: RouteHandler<typeof putFuotaTasksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchFuotaTasksIdRouteHandler: RouteHandler<typeof patchFuotaTasksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFuotaTasksIdMulticastGroupsMulticastGroupIdRouteHandler: RouteHandler<
+  typeof deleteFuotaTasksIdMulticastGroupsMulticastGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFuotaTasksIdWirelessDevicesWirelessDeviceIdRouteHandler: RouteHandler<
+  typeof deleteFuotaTasksIdWirelessDevicesWirelessDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuotaTasksIdMulticastGroupsRouteHandler: RouteHandler<
+  typeof getFuotaTasksIdMulticastGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

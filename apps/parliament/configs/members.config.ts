@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/parliament.uk/members/v1/openapi.yaml',
   output: './src/members/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/members/types.ts' },
   client: { output: './src/members/client.ts', baseUrl: '/' },
   rpc: { output: './src/members/rpc.ts', parseResponse: true },

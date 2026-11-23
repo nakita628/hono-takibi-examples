@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFormatPlayByPlayDeltaSeasonWeekMinutesRoute,
   getFormatPlayByPlaySeasonWeekHometeamRoute,
   getFormatSimulatedPlayByPlayNumberofplaysRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFormatPlayByPlaySeasonWeekHometeamRouteHandler: RouteHandler<
+  typeof getFormatPlayByPlaySeasonWeekHometeamRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const formatHandler = app
-  .openapi(getFormatPlayByPlaySeasonWeekHometeamRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatPlayByPlayDeltaSeasonWeekMinutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFormatSimulatedPlayByPlayNumberofplaysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFormatPlayByPlayDeltaSeasonWeekMinutesRouteHandler: RouteHandler<
+  typeof getFormatPlayByPlayDeltaSeasonWeekMinutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFormatSimulatedPlayByPlayNumberofplaysRouteHandler: RouteHandler<
+  typeof getFormatSimulatedPlayByPlayNumberofplaysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

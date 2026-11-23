@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerCreateTransformJobRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerCreateTransformJobRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerCreateTransformJobHandler = app.openapi(
-  postXAmzTargetSageMakerCreateTransformJobRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerCreateTransformJobRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerCreateTransformJobRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

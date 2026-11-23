@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postInvitesCreateMultipleJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postInvitesCreateMultipleJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const invitesHandler = app.openapi(postInvitesCreateMultipleJsonRoute, (c) => {
+export const postInvitesCreateMultipleJsonRouteHandler: RouteHandler<
+  typeof postInvitesCreateMultipleJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

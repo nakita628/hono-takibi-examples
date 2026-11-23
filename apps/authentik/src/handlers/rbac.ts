@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRbacCustomPermissionsIdIndexRoute,
   deleteRbacInitialPermissionsIdIndexRoute,
   deleteRbacPermissionChecksCheckUuidIndexRoute,
@@ -38,114 +38,218 @@ import {
   putRbacRolesUuidIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRbacCustomPermissionsIndexRouteHandler: RouteHandler<
+  typeof getRbacCustomPermissionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const rbacHandler = app
-  .openapi(getRbacCustomPermissionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacCustomPermissionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacCustomPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRbacCustomPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRbacCustomPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRbacCustomPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacEndpointsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacInitialPermissionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacInitialPermissionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacInitialPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRbacInitialPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRbacInitialPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRbacInitialPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacInitialPermissionsIdUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacPermissionChecksIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionChecksCheckUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRbacPermissionChecksCheckUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRbacPermissionChecksCheckUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRbacPermissionChecksCheckUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionChecksCheckUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionsIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionsAssignedByRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacPermissionsAssignedByRolesUuidAssignIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRbacPermissionsAssignedByRolesUuidUnassignIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacPermissionsRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacRolesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRbacRolesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRbacRolesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRbacRolesUuidIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacRolesUuidAddUserIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRbacRolesUuidRemoveUserIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRbacRolesUuidUsedByIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRbacCustomPermissionsIndexRouteHandler: RouteHandler<
+  typeof postRbacCustomPermissionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacCustomPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof getRbacCustomPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRbacCustomPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof putRbacCustomPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRbacCustomPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof patchRbacCustomPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRbacCustomPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof deleteRbacCustomPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacEndpointsIndexRouteHandler: RouteHandler<
+  typeof getRbacEndpointsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacInitialPermissionsIndexRouteHandler: RouteHandler<
+  typeof getRbacInitialPermissionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacInitialPermissionsIndexRouteHandler: RouteHandler<
+  typeof postRbacInitialPermissionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacInitialPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof getRbacInitialPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRbacInitialPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof putRbacInitialPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRbacInitialPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof patchRbacInitialPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRbacInitialPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof deleteRbacInitialPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacInitialPermissionsIdUsedByIndexRouteHandler: RouteHandler<
+  typeof getRbacInitialPermissionsIdUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionChecksIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacPermissionChecksIndexRouteHandler: RouteHandler<
+  typeof postRbacPermissionChecksIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionChecksCheckUuidIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionChecksCheckUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRbacPermissionChecksCheckUuidIndexRouteHandler: RouteHandler<
+  typeof putRbacPermissionChecksCheckUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRbacPermissionChecksCheckUuidIndexRouteHandler: RouteHandler<
+  typeof patchRbacPermissionChecksCheckUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRbacPermissionChecksCheckUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRbacPermissionChecksCheckUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionChecksCheckUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionChecksCheckUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionsIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionsIdIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionsIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionsAssignedByRolesIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionsAssignedByRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacPermissionsAssignedByRolesUuidAssignIndexRouteHandler: RouteHandler<
+  typeof postRbacPermissionsAssignedByRolesUuidAssignIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRbacPermissionsAssignedByRolesUuidUnassignIndexRouteHandler: RouteHandler<
+  typeof patchRbacPermissionsAssignedByRolesUuidUnassignIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacPermissionsRolesIndexRouteHandler: RouteHandler<
+  typeof getRbacPermissionsRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacRolesIndexRouteHandler: RouteHandler<typeof getRbacRolesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacRolesIndexRouteHandler: RouteHandler<typeof postRbacRolesIndexRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacRolesUuidIndexRouteHandler: RouteHandler<
+  typeof getRbacRolesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRbacRolesUuidIndexRouteHandler: RouteHandler<
+  typeof putRbacRolesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchRbacRolesUuidIndexRouteHandler: RouteHandler<
+  typeof patchRbacRolesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRbacRolesUuidIndexRouteHandler: RouteHandler<
+  typeof deleteRbacRolesUuidIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacRolesUuidAddUserIndexRouteHandler: RouteHandler<
+  typeof postRbacRolesUuidAddUserIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postRbacRolesUuidRemoveUserIndexRouteHandler: RouteHandler<
+  typeof postRbacRolesUuidRemoveUserIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRbacRolesUuidUsedByIndexRouteHandler: RouteHandler<
+  typeof getRbacRolesUuidUsedByIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

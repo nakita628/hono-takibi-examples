@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute,
   getStoragePolicyAssignmentsRoute,
   getStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute,
@@ -7,21 +7,32 @@ import {
   putStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getStoragePolicyAssignmentsRouteHandler: RouteHandler<
+  typeof getStoragePolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const storagePolicyAssignmentsHandler = app
-  .openapi(getStoragePolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postStoragePolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postStoragePolicyAssignmentsRouteHandler: RouteHandler<
+  typeof postStoragePolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteStoragePolicyAssignmentsStoragePolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getStoragePolicyAssignmentsStoragePolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof getStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putStoragePolicyAssignmentsStoragePolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof putStoragePolicyAssignmentsStoragePolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

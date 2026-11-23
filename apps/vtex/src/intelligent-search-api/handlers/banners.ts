@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBannersFacetsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBannersFacetsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bannersHandler = app.openapi(getBannersFacetsRoute, (c) => {
+export const getBannersFacetsRouteHandler: RouteHandler<typeof getBannersFacetsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

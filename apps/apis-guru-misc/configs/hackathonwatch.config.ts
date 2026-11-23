@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/hackathonwatch.com/0.1/openapi.yaml',
   output: './src/hackathonwatch/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/hackathonwatch/types.ts' },
   client: { output: './src/hackathonwatch/client.ts', baseUrl: '/' },
   rpc: { output: './src/hackathonwatch/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDnsDomainNameRecordsRecordIdRoute,
   getDnsDomainNameRecordsRecordIdRoute,
   getDnsDomainNameRecordsRoute,
@@ -7,21 +7,32 @@ import {
   putDnsDomainNameRecordsRecordIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDnsDomainNameRecordsRouteHandler: RouteHandler<
+  typeof getDnsDomainNameRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const dnsHandler = app
-  .openapi(getDnsDomainNameRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDnsDomainNameRecordsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDnsDomainNameRecordsRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDnsDomainNameRecordsRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDnsDomainNameRecordsRecordIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDnsDomainNameRecordsRouteHandler: RouteHandler<
+  typeof postDnsDomainNameRecordsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDnsDomainNameRecordsRecordIdRouteHandler: RouteHandler<
+  typeof deleteDnsDomainNameRecordsRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDnsDomainNameRecordsRecordIdRouteHandler: RouteHandler<
+  typeof getDnsDomainNameRecordsRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDnsDomainNameRecordsRecordIdRouteHandler: RouteHandler<
+  typeof putDnsDomainNameRecordsRecordIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

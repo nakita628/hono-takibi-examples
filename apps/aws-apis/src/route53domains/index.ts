@@ -1,77 +1,215 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountHandler,
-  xAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainHandler,
-  xAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountHandler,
-  xAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityHandler,
-  xAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityHandler,
-  xAmzTargetRoute53DomainsV20140515DeleteDomainHandler,
-  xAmzTargetRoute53DomainsV20140515DeleteTagsForDomainHandler,
-  xAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewHandler,
-  xAmzTargetRoute53DomainsV20140515DisableDomainTransferLockHandler,
-  xAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainHandler,
-  xAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewHandler,
-  xAmzTargetRoute53DomainsV20140515EnableDomainTransferLockHandler,
-  xAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusHandler,
-  xAmzTargetRoute53DomainsV20140515GetDomainDetailHandler,
-  xAmzTargetRoute53DomainsV20140515GetDomainSuggestionsHandler,
-  xAmzTargetRoute53DomainsV20140515GetOperationDetailHandler,
-  xAmzTargetRoute53DomainsV20140515ListDomainsHandler,
-  xAmzTargetRoute53DomainsV20140515ListOperationsHandler,
-  xAmzTargetRoute53DomainsV20140515ListPricesHandler,
-  xAmzTargetRoute53DomainsV20140515ListTagsForDomainHandler,
-  xAmzTargetRoute53DomainsV20140515PushDomainHandler,
-  xAmzTargetRoute53DomainsV20140515RegisterDomainHandler,
-  xAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountHandler,
-  xAmzTargetRoute53DomainsV20140515RenewDomainHandler,
-  xAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailHandler,
-  xAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationHandler,
-  xAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeHandler,
-  xAmzTargetRoute53DomainsV20140515TransferDomainHandler,
-  xAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountHandler,
-  xAmzTargetRoute53DomainsV20140515UpdateDomainContactHandler,
-  xAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyHandler,
-  xAmzTargetRoute53DomainsV20140515UpdateDomainNameserversHandler,
-  xAmzTargetRoute53DomainsV20140515UpdateTagsForDomainHandler,
-  xAmzTargetRoute53DomainsV20140515ViewBillingHandler,
+  postXAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountRoute,
+  postXAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountRoute,
+  postXAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityRoute,
+  postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute,
+  postXAmzTargetRoute53DomainsV20140515DeleteDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515DeleteTagsForDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute,
+  postXAmzTargetRoute53DomainsV20140515DisableDomainTransferLockRoute,
+  postXAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewRoute,
+  postXAmzTargetRoute53DomainsV20140515EnableDomainTransferLockRoute,
+  postXAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusRoute,
+  postXAmzTargetRoute53DomainsV20140515GetDomainDetailRoute,
+  postXAmzTargetRoute53DomainsV20140515GetDomainSuggestionsRoute,
+  postXAmzTargetRoute53DomainsV20140515GetOperationDetailRoute,
+  postXAmzTargetRoute53DomainsV20140515ListDomainsRoute,
+  postXAmzTargetRoute53DomainsV20140515ListOperationsRoute,
+  postXAmzTargetRoute53DomainsV20140515ListPricesRoute,
+  postXAmzTargetRoute53DomainsV20140515ListTagsForDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515PushDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515RegisterDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountRoute,
+  postXAmzTargetRoute53DomainsV20140515RenewDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailRoute,
+  postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute,
+  postXAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeRoute,
+  postXAmzTargetRoute53DomainsV20140515TransferDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountRoute,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyRoute,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainContactRoute,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainNameserversRoute,
+  postXAmzTargetRoute53DomainsV20140515UpdateTagsForDomainRoute,
+  postXAmzTargetRoute53DomainsV20140515ViewBillingRoute,
+} from './routes'
+import {
+  postXAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515DeleteDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515DeleteTagsForDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515DisableDomainTransferLockRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515EnableDomainTransferLockRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515GetDomainDetailRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515GetDomainSuggestionsRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515GetOperationDetailRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ListDomainsRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ListOperationsRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ListPricesRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ListTagsForDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515PushDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515RegisterDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515RenewDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515TransferDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainContactRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515UpdateDomainNameserversRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515UpdateTagsForDomainRouteHandler,
+  postXAmzTargetRoute53DomainsV20140515ViewBillingRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515DeleteDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515DeleteTagsForDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515DisableDomainTransferLockHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515EnableDomainTransferLockHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515GetDomainDetailHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515GetDomainSuggestionsHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515GetOperationDetailHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ListDomainsHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ListOperationsHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ListPricesHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ListTagsForDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515PushDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515RegisterDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515RenewDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515TransferDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515UpdateDomainContactHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515UpdateDomainNameserversHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515UpdateTagsForDomainHandler)
-  .route('/', xAmzTargetRoute53DomainsV20140515ViewBillingHandler)
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountRoute,
+    postXAmzTargetRoute53DomainsV20140515AcceptDomainTransferFromAnotherAwsAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515AssociateDelegationSignerToDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountRoute,
+    postXAmzTargetRoute53DomainsV20140515CancelDomainTransferToAnotherAwsAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityRoute,
+    postXAmzTargetRoute53DomainsV20140515CheckDomainAvailabilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRoute,
+    postXAmzTargetRoute53DomainsV20140515CheckDomainTransferabilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515DeleteDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515DeleteDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515DeleteTagsForDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515DeleteTagsForDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRoute,
+    postXAmzTargetRoute53DomainsV20140515DisableDomainAutoRenewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515DisableDomainTransferLockRoute,
+    postXAmzTargetRoute53DomainsV20140515DisableDomainTransferLockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515DisassociateDelegationSignerFromDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewRoute,
+    postXAmzTargetRoute53DomainsV20140515EnableDomainAutoRenewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515EnableDomainTransferLockRoute,
+    postXAmzTargetRoute53DomainsV20140515EnableDomainTransferLockRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusRoute,
+    postXAmzTargetRoute53DomainsV20140515GetContactReachabilityStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515GetDomainDetailRoute,
+    postXAmzTargetRoute53DomainsV20140515GetDomainDetailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515GetDomainSuggestionsRoute,
+    postXAmzTargetRoute53DomainsV20140515GetDomainSuggestionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515GetOperationDetailRoute,
+    postXAmzTargetRoute53DomainsV20140515GetOperationDetailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ListDomainsRoute,
+    postXAmzTargetRoute53DomainsV20140515ListDomainsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ListOperationsRoute,
+    postXAmzTargetRoute53DomainsV20140515ListOperationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ListPricesRoute,
+    postXAmzTargetRoute53DomainsV20140515ListPricesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ListTagsForDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515ListTagsForDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515PushDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515PushDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515RegisterDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515RegisterDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountRoute,
+    postXAmzTargetRoute53DomainsV20140515RejectDomainTransferFromAnotherAwsAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515RenewDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515RenewDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailRoute,
+    postXAmzTargetRoute53DomainsV20140515ResendContactReachabilityEmailRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRoute,
+    postXAmzTargetRoute53DomainsV20140515ResendOperationAuthorizationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeRoute,
+    postXAmzTargetRoute53DomainsV20140515RetrieveDomainAuthCodeRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515TransferDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515TransferDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountRoute,
+    postXAmzTargetRoute53DomainsV20140515TransferDomainToAnotherAwsAccountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainContactRoute,
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainContactRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyRoute,
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainContactPrivacyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainNameserversRoute,
+    postXAmzTargetRoute53DomainsV20140515UpdateDomainNameserversRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515UpdateTagsForDomainRoute,
+    postXAmzTargetRoute53DomainsV20140515UpdateTagsForDomainRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetRoute53DomainsV20140515ViewBillingRoute,
+    postXAmzTargetRoute53DomainsV20140515ViewBillingRouteHandler,
+  )
 
 export default app

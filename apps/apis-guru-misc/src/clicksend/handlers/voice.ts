@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getVoiceHistoryDateFromDateFromDateToDateToRoute,
   getVoiceHistoryExportFilenameFilenameRoute,
   getVoiceLangRoute,
@@ -13,39 +13,62 @@ import {
   putVoiceReceiptsReadDateBeforeDateBeforeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putVoiceCancelAllRouteHandler: RouteHandler<typeof putVoiceCancelAllRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const voiceHandler = app
-  .openapi(putVoiceCancelAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceHistoryExportFilenameFilenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceHistoryDateFromDateFromDateToDateToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceLangRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoicePriceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceReceiptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceReceiptsReadDateBeforeDateBeforeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVoiceReceiptsMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postVoiceSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putVoiceMessageIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVoiceHistoryExportFilenameFilenameRouteHandler: RouteHandler<
+  typeof getVoiceHistoryExportFilenameFilenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceHistoryDateFromDateFromDateToDateToRouteHandler: RouteHandler<
+  typeof getVoiceHistoryDateFromDateFromDateToDateToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceLangRouteHandler: RouteHandler<typeof getVoiceLangRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoicePriceRouteHandler: RouteHandler<typeof postVoicePriceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceReceiptsRouteHandler: RouteHandler<typeof getVoiceReceiptsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceReceiptsRouteHandler: RouteHandler<typeof postVoiceReceiptsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceReceiptsReadDateBeforeDateBeforeRouteHandler: RouteHandler<
+  typeof putVoiceReceiptsReadDateBeforeDateBeforeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getVoiceReceiptsMessageIdRouteHandler: RouteHandler<
+  typeof getVoiceReceiptsMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postVoiceSendRouteHandler: RouteHandler<typeof postVoiceSendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putVoiceMessageIdCancelRouteHandler: RouteHandler<
+  typeof putVoiceMessageIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

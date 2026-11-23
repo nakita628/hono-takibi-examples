@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsSpreedApiApiVersionBanTokenBanIdRoute,
   deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRoute,
   deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRoute,
@@ -213,639 +213,1268 @@ import {
   putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarEmojiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarDarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMatrixAvatarSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBanTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBanTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBanTokenBanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBotTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenBroadcastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenAttendeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenSwitchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionDashboardEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMutualEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionCallTokenDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionCallTokenRingAttendeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionCallTokenDialoutAttendeeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionCallTokenNotificationStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenSummarizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatUpcomingRemindersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenMentionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentFolderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionTagsReorderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdCollapsedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionFileFileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionPublicshareShareTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionGuestTokenNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTranslationLanguagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenTargetLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountCheckRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountBackupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenProcessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionPollTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdExportFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionPresetsRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionPublicshareauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenNotificationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenShareChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionListedRoomRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomNoteToSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyCallsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenObjectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsSelfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenReadOnlyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenListableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenMentionPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPasswordRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPermissionsModeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarLobbyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarSipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRecordingConsentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsResendInvitationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMessageExpirationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMeetingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionSettingsUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionSignalingSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedTempUserAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedTempUserAvatarRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsRecentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatSubscribedThreadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsMessageIdNotifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeDarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeDarkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionFederationInvitationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBotTokenMessageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionBotAskFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBotAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionCertificateExpirationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverRequesttrialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdTestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionBridgeVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionBridgeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRecordingWelcomeServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionSettingsSipRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionSignalingWelcomeServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingBackendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRequestUploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenStoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsSpreedApiApiVersionRoomTokenPinPinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomDirectDialInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionRoomTokenOpenDialInRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRejectedDialoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsSpreedApiApiVersionSignalingBackendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarEmojiRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarEmojiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarDarkRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenAvatarDarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMatrixAvatarSizeRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMatrixAvatarSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBanTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBanTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBanTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBanTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBanTokenBanIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBanTokenBanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBotTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBotTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenBotIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenBroadcastRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenBroadcastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenAttendeesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenAttendeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRequestAssistanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenRoomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenSwitchRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBreakoutRoomsTokenSwitchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionDashboardEventsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionDashboardEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMutualEventsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenMutualEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionCallTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionCallTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionCallTokenRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionCallTokenDownloadRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionCallTokenDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionCallTokenFederationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionCallTokenRingAttendeeIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionCallTokenRingAttendeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionCallTokenDialoutAttendeeIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionCallTokenDialoutAttendeeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionCallTokenNotificationStateRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionCallTokenNotificationStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenScheduleMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenSummarizeRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenSummarizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdContextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdReminderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatUpcomingRemindersRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatUpcomingRemindersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareOverviewRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenShareOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinSelfRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionChatTokenMessageIdPinSelfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenMentionsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenMentionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentFolderRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentFolderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenAttachmentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionTagsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionTagsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionTagsTagIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionTagsReorderRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionTagsReorderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdCollapsedRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionTagsTagIdCollapsedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionFileFileIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionFileFileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionPublicshareShareTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionPublicshareShareTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionGuestTokenNameRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionGuestTokenNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionLanguagesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTranslationLanguagesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTranslationLanguagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenLanguageRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenTargetLanguageRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionLiveTranscriptionTokenTargetLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountCheckRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountCheckRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAccountVerificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountBackupRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAccountBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionMatrixInviteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomJoinRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixRoomJoinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBridgeTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenProcessRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBridgeTokenProcessRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionPollTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionPollTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftPollIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionPollTokenDraftsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdExportFormatRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionPollTokenPollIdExportFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionPresetsRoomRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionPresetsRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionPublicshareauthRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionPublicshareauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionReactionTokenMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenNotificationRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRecordingTokenNotificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRetryRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenShareChatRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenShareChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionListedRoomRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionListedRoomRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomNoteToSelfRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomNoteToSelfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFavoriteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyCallsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenNotifyCallsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenDescriptionRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenObjectRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenObjectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsParticipantsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenBreakoutRoomsParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsSelfRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsSelfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenReadOnlyRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenReadOnlyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenListableRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenListableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenMentionPermissionsRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenMentionPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPasswordRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPasswordRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenArchiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenPreserveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenTagsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportantRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenSensitiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsStateRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenModeratorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPermissionsModeRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenPermissionsModeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsAllRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenAttendeesPermissionsAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarLobbyRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarLobbyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarSipRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenWebinarSipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRecordingConsentRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionRoomTokenRecordingConsentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsResendInvitationsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenParticipantsResendInvitationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMessageExpirationRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMessageExpirationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportEmailsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenImportEmailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenCapabilitiesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMeetingRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMeetingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenMuteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionSettingsUserRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionSettingsUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionSignalingSettingsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionSignalingSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionSignalingTokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedTempUserAvatarRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedTempUserAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedTempUserAvatarRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedTempUserAvatarRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsRecentRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsRecentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatSubscribedThreadsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatSubscribedThreadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsThreadIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsMessageIdNotifyRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionChatTokenThreadsMessageIdNotifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeDarkRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionProxyNewUserAvatarSizeDarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeDarkRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionProxyTokenUserAvatarSizeDarkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionFederationInvitationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionFederationInvitationRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionFederationInvitationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenFederationActiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBotTokenMessageRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBotTokenMessageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBotTokenReactionMessageIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionBotAskFeaturesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionBotAskFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBotAdminRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBotAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionCertificateExpirationRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionCertificateExpirationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverRequesttrialRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverRequesttrialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverDeleteRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionHostedsignalingserverDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdTestRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionMatrixAdminHomeserverIdTestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionBridgeVersionRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionBridgeVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionBridgeRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionBridgeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRecordingWelcomeServerIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRecordingWelcomeServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionSettingsSipRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionSettingsSipRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionSignalingWelcomeServerIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionSignalingWelcomeServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingBackendRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingBackendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRequestUploadRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenRequestUploadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenStoreRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRecordingTokenStoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsSpreedApiApiVersionRoomTokenPinPinRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsSpreedApiApiVersionRoomTokenPinPinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialinRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomDirectDialInRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomDirectDialInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialoutRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenVerifyDialoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionRoomTokenOpenDialInRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionRoomTokenOpenDialInRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRejectedDialoutRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsSpreedApiApiVersionRoomTokenRejectedDialoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsSpreedApiApiVersionSignalingBackendRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsSpreedApiApiVersionSignalingBackendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

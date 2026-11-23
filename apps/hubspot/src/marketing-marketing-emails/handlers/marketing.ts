@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMarketingEmails202609EmailIdRoute,
   getMarketingEmails202609EmailIdAbTestGetVariationRoute,
   getMarketingEmails202609EmailIdDraftRoute,
@@ -21,63 +21,116 @@ import {
   postMarketingEmails202609Route,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMarketingEmails202609RouteHandler: RouteHandler<
+  typeof getMarketingEmails202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const marketingHandler = app
-  .openapi(getMarketingEmails202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609AbTestCreateVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609CloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609StatisticsHistogramRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609StatisticsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609EmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingEmails202609EmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingEmails202609EmailIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609EmailIdAbTestGetVariationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609EmailIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingEmails202609EmailIdDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609EmailIdDraftResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609EmailIdPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609EmailIdRevisionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingEmails202609EmailIdRevisionsRevisionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreToDraftRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingEmails202609EmailIdUnpublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMarketingEmails202609RouteHandler: RouteHandler<
+  typeof postMarketingEmails202609Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609AbTestCreateVariationRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609AbTestCreateVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609CloneRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609CloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609StatisticsHistogramRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609StatisticsHistogramRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609StatisticsListRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609StatisticsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609EmailIdRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609EmailIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingEmails202609EmailIdRouteHandler: RouteHandler<
+  typeof deleteMarketingEmails202609EmailIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingEmails202609EmailIdRouteHandler: RouteHandler<
+  typeof patchMarketingEmails202609EmailIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609EmailIdAbTestGetVariationRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609EmailIdAbTestGetVariationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609EmailIdDraftRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609EmailIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingEmails202609EmailIdDraftRouteHandler: RouteHandler<
+  typeof patchMarketingEmails202609EmailIdDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609EmailIdDraftResetRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609EmailIdDraftResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609EmailIdPublishRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609EmailIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609EmailIdRevisionsRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609EmailIdRevisionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingEmails202609EmailIdRevisionsRevisionIdRouteHandler: RouteHandler<
+  typeof getMarketingEmails202609EmailIdRevisionsRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreToDraftRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609EmailIdRevisionsRevisionIdRestoreToDraftRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingEmails202609EmailIdUnpublishRouteHandler: RouteHandler<
+  typeof postMarketingEmails202609EmailIdUnpublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

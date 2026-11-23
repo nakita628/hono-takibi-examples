@@ -938,19 +938,17 @@ const Url2screenshotrequestSchema = z
   })
   .openapi('Url2screenshotrequest')
 
-const BadRequestResponse = { description: 'Bad Request. Invalid payload specified.', content: {} }
+const BadRequestResponse = { description: 'Bad Request. Invalid payload specified.' }
 
 const InternalServerErrorResponse = {
   description:
     "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-  content: {},
 }
 
-const NotFoundResponse = { description: 'The specified resource was not found', content: {} }
+const NotFoundResponse = { description: 'The specified resource was not found' }
 
 const UnauthorizedResponse = {
   description: 'Unauthorized. `api_key` parameter is missed or incorrect',
-  content: {},
 }
 
 const ApiKeyAuthSecurityScheme = { in: 'query', name: 'api_key', type: 'apiKey' }
@@ -973,12 +971,11 @@ export const postConvertUrlPdfRoute = createRoute({
         'application/pdf': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
     },
-    400: { description: 'Bad Request. Invalid payload specified.', content: {} },
-    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect', content: {} },
+    400: { description: 'Bad Request. Invalid payload specified.' },
+    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect' },
     500: {
       description:
         "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-      content: {},
     },
   },
 })
@@ -1005,12 +1002,11 @@ export const postConvertUrlScreenshotRoute = createRoute({
         'image/png': { schema: z.file().openapi({ type: 'string', format: 'binary' }) },
       },
     },
-    400: { description: 'Bad Request. Invalid payload specified.', content: {} },
-    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect', content: {} },
+    400: { description: 'Bad Request. Invalid payload specified.' },
+    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect' },
     500: {
       description:
         "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-      content: {},
     },
   },
 })
@@ -1031,13 +1027,12 @@ export const postFetchRoute = createRoute({
     },
   },
   responses: {
-    200: { description: 'Returns utf8 encoded web page content.', content: {} },
-    400: { description: 'Bad Request. Invalid payload specified.', content: {} },
-    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect', content: {} },
+    200: { description: 'Returns utf8 encoded web page content.' },
+    400: { description: 'Bad Request. Invalid payload specified.' },
+    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect' },
     500: {
       description:
         "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-      content: {},
     },
   },
 })
@@ -1280,12 +1275,11 @@ export const postParseRoute = createRoute({
         },
       },
     },
-    400: { description: 'Bad Request. Invalid payload specified.', content: {} },
-    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect', content: {} },
+    400: { description: 'Bad Request. Invalid payload specified.' },
+    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect' },
     500: {
       description:
         "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-      content: {},
     },
   },
 })
@@ -1380,12 +1374,11 @@ export const postSerpRoute = createRoute({
         },
       },
     },
-    400: { description: 'Bad Request. Invalid payload specified.', content: {} },
-    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect', content: {} },
+    400: { description: 'Bad Request. Invalid payload specified.' },
+    401: { description: 'Unauthorized. `api_key` parameter is missed or incorrect' },
     500: {
       description:
         "Internal Server Error is a very general HTTP status code that means something has gone wrong on the web site's server.",
-      content: {},
     },
   },
 })

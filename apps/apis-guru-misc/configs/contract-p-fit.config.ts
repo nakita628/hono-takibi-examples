@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/contract-p.fit/1.0/openapi.yaml',
   output: './src/contract-p-fit/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/contract-p-fit/types.ts' },
   client: { output: './src/contract-p-fit/client.ts', baseUrl: '/' },
   rpc: { output: './src/contract-p-fit/rpc.ts', parseResponse: true },

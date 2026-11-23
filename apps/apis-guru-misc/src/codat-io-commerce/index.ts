@@ -1,8 +1,77 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { companiesHandler } from './handlers'
+import {
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRoute,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRoute,
+} from './routes'
+import {
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRouteHandler,
+  getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', companiesHandler)
+export const api = app
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceCustomersRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceDisputesRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceInfoRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceLocationsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceOrdersRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentMethodsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommercePaymentsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductCategoriesRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceProductsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTaxComponentsRouteHandler,
+  )
+  .openapi(
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRoute,
+    getCompaniesCompanyIdConnectionsConnectionIdDataCommerceTransactionsRouteHandler,
+  )
 
 export default app

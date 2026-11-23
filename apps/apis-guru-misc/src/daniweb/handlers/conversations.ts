@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getConversationsIDMessagesRoute,
   getConversationsIDRoute,
   getConversationsIDStatusesRoute,
@@ -12,36 +12,62 @@ import {
   postConversationsSearchesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postConversationsSchedulesRouteHandler: RouteHandler<
+  typeof postConversationsSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const conversationsHandler = app
-  .openapi(postConversationsSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsSearchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsIDMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsIDMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsIDSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postConversationsIDSearchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConversationsIDStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchConversationsIDStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postConversationsSearchesRouteHandler: RouteHandler<
+  typeof postConversationsSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsStatusesRouteHandler: RouteHandler<
+  typeof getConversationsStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsIDRouteHandler: RouteHandler<typeof getConversationsIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsIDMessagesRouteHandler: RouteHandler<
+  typeof getConversationsIDMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsIDMessagesRouteHandler: RouteHandler<
+  typeof postConversationsIDMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsIDSchedulesRouteHandler: RouteHandler<
+  typeof postConversationsIDSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postConversationsIDSearchesRouteHandler: RouteHandler<
+  typeof postConversationsIDSearchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConversationsIDStatusesRouteHandler: RouteHandler<
+  typeof getConversationsIDStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchConversationsIDStatusesRouteHandler: RouteHandler<
+  typeof patchConversationsIDStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

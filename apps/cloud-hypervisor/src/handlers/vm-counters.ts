@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getVmCountersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getVmCountersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const vmCountersHandler = app.openapi(getVmCountersRoute, (c) => {
+export const getVmCountersRouteHandler: RouteHandler<typeof getVmCountersRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

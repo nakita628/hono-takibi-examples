@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/Adyen/adyen-openapi/main/json/RaiseDisputesService-v4.json',
   output: './src/RaiseDisputesService-v4/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/RaiseDisputesService-v4/types.ts' },
   client: { output: './src/RaiseDisputesService-v4/client.ts', baseUrl: '/' },
   rpc: { output: './src/RaiseDisputesService-v4/rpc.ts', parseResponse: true },

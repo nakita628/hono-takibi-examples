@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionRegisterInstanceEventNotificationAttributesRoute,
   postActionRegisterInstanceEventNotificationAttributesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionRegisterInstanceEventNotificationAttributesRouteHandler: RouteHandler<
+  typeof getActionRegisterInstanceEventNotificationAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionRegisterInstanceEventNotificationAttributesHandler = app
-  .openapi(getActionRegisterInstanceEventNotificationAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionRegisterInstanceEventNotificationAttributesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionRegisterInstanceEventNotificationAttributesRouteHandler: RouteHandler<
+  typeof postActionRegisterInstanceEventNotificationAttributesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

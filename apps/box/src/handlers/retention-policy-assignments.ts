@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRoute,
   getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFilesUnderRetentionRoute,
   getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFileVersionsUnderRetentionRoute,
@@ -7,27 +7,32 @@ import {
   postRetentionPolicyAssignmentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRetentionPolicyAssignmentsRouteHandler: RouteHandler<
+  typeof postRetentionPolicyAssignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const retentionPolicyAssignmentsHandler = app
-  .openapi(postRetentionPolicyAssignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFilesUnderRetentionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFileVersionsUnderRetentionRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteRetentionPolicyAssignmentsRetentionPolicyAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFilesUnderRetentionRouteHandler: RouteHandler<
+  typeof getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFilesUnderRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFileVersionsUnderRetentionRouteHandler: RouteHandler<
+  typeof getRetentionPolicyAssignmentsRetentionPolicyAssignmentIdFileVersionsUnderRetentionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

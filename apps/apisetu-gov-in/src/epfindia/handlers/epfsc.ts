@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEpfscCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEpfscCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const epfscHandler = app.openapi(postEpfscCertificateRoute, (c) => {
+export const postEpfscCertificateRouteHandler: RouteHandler<
+  typeof postEpfscCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

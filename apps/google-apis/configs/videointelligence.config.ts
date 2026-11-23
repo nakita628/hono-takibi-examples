@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/videointelligence/v1p3beta1/openapi.yaml',
   output: './src/videointelligence/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/videointelligence/types.ts' },
   client: { output: './src/videointelligence/client.ts', baseUrl: '/' },
   rpc: { output: './src/videointelligence/rpc.ts', parseResponse: true },

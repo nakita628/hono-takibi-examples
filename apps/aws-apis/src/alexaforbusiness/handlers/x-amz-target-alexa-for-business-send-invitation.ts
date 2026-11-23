@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAlexaForBusinessSendInvitationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAlexaForBusinessSendInvitationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAlexaForBusinessSendInvitationHandler = app.openapi(
-  postXAmzTargetAlexaForBusinessSendInvitationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAlexaForBusinessSendInvitationRouteHandler: RouteHandler<
+  typeof postXAmzTargetAlexaForBusinessSendInvitationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

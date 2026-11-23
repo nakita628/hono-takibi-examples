@@ -1,8 +1,20 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { criticsHandler, reviewsHandler } from './handlers'
+import {
+  getCriticsResourceTypeJsonRoute,
+  getReviewsResourceTypeJsonRoute,
+  getReviewsSearchJsonRoute,
+} from './routes'
+import {
+  getCriticsResourceTypeJsonRouteHandler,
+  getReviewsResourceTypeJsonRouteHandler,
+  getReviewsSearchJsonRouteHandler,
+} from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', criticsHandler).route('/', reviewsHandler)
+export const api = app
+  .openapi(getCriticsResourceTypeJsonRoute, getCriticsResourceTypeJsonRouteHandler)
+  .openapi(getReviewsSearchJsonRoute, getReviewsSearchJsonRouteHandler)
+  .openapi(getReviewsResourceTypeJsonRoute, getReviewsResourceTypeJsonRouteHandler)
 
 export default app

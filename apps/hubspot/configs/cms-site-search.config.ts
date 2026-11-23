@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/HubSpot/HubSpot-public-api-spec-collection/main/PublicApiSpecs/CMS/Site%20Search/Rollouts/144890/2026-09/siteSearch.json',
   output: './src/cms-site-search/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cms-site-search/types.ts' },
   client: { output: './src/cms-site-search/client.ts', baseUrl: '/' },
   rpc: { output: './src/cms-site-search/rpc.ts', parseResponse: true },

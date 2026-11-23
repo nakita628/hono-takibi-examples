@@ -1,94 +1,257 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetAmazonEc2ContainerRegistryV20150921BatchCheckLayerAvailabilityHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921BatchDeleteImageHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921BatchGetImageHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921CompleteLayerUploadHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921CreatePullThroughCacheRuleHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921CreateRepositoryHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteLifecyclePolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DeletePullThroughCacheRuleHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRegistryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRepositoryHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRepositoryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImageReplicationStatusHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImageScanFindingsHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImagesHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribePullThroughCacheRulesHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeRegistryHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeRepositoriesHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetAuthorizationTokenHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetDownloadUrlForLayerHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetLifecyclePolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetLifecyclePolicyPreviewHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetRegistryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetRegistryScanningConfigurationHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921GetRepositoryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921InitiateLayerUploadHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921ListImagesHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921ListTagsForResourceHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageScanningConfigurationHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageTagMutabilityHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutLifecyclePolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutRegistryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutRegistryScanningConfigurationHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921PutReplicationConfigurationHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921SetRepositoryPolicyHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921StartImageScanHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921StartLifecyclePolicyPreviewHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921TagResourceHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921UntagResourceHandler,
-  xAmzTargetAmazonEc2ContainerRegistryV20150921UploadLayerPartHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchCheckLayerAvailabilityRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CompleteLayerUploadRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CreateRepositoryRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeletePullThroughCacheRuleRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageReplicationStatusRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImagesRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribePullThroughCacheRulesRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRegistryRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRepositoriesRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyPreviewRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRepositoryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921InitiateLayerUploadRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921ListImagesRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageScanningConfigurationRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutReplicationConfigurationRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921StartImageScanRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921TagResourceRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921UntagResourceRoute,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921UploadLayerPartRoute,
+} from './routes'
+import {
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchCheckLayerAvailabilityRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CompleteLayerUploadRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921CreateRepositoryRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeletePullThroughCacheRuleRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageReplicationStatusRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImagesRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribePullThroughCacheRulesRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRegistryRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRepositoriesRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyPreviewRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRepositoryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921InitiateLayerUploadRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921ListImagesRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageScanningConfigurationRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921PutReplicationConfigurationRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921StartImageScanRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921TagResourceRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921UntagResourceRouteHandler,
+  postXAmzTargetAmazonEC2ContainerRegistryV20150921UploadLayerPartRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921BatchCheckLayerAvailabilityHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921BatchDeleteImageHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921BatchGetImageHandler)
-  .route(
-    '/',
-    xAmzTargetAmazonEc2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationHandler,
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchCheckLayerAvailabilityRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchCheckLayerAvailabilityRouteHandler,
   )
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921CompleteLayerUploadHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921CreatePullThroughCacheRuleHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921CreateRepositoryHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteLifecyclePolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DeletePullThroughCacheRuleHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRegistryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRepositoryHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DeleteRepositoryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImageReplicationStatusHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImageScanFindingsHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeImagesHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribePullThroughCacheRulesHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeRegistryHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921DescribeRepositoriesHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetAuthorizationTokenHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetDownloadUrlForLayerHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetLifecyclePolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetLifecyclePolicyPreviewHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetRegistryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetRegistryScanningConfigurationHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921GetRepositoryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921InitiateLayerUploadHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921ListImagesHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921ListTagsForResourceHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageScanningConfigurationHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutImageTagMutabilityHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutLifecyclePolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutRegistryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutRegistryScanningConfigurationHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921PutReplicationConfigurationHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921SetRepositoryPolicyHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921StartImageScanHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921StartLifecyclePolicyPreviewHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921TagResourceHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921UntagResourceHandler)
-  .route('/', xAmzTargetAmazonEc2ContainerRegistryV20150921UploadLayerPartHandler)
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchDeleteImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921BatchGetRepositoryScanningConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CompleteLayerUploadRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CompleteLayerUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CreatePullThroughCacheRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CreateRepositoryRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921CreateRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeletePullThroughCacheRuleRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeletePullThroughCacheRuleRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRegistryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DeleteRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageReplicationStatusRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageReplicationStatusRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImageScanFindingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImagesRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribePullThroughCacheRulesRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribePullThroughCacheRulesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRegistryRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRegistryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRepositoriesRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921DescribeRepositoriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetAuthorizationTokenRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetDownloadUrlForLayerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyPreviewRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetLifecyclePolicyPreviewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRegistryScanningConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRepositoryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921GetRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921InitiateLayerUploadRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921InitiateLayerUploadRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921ListImagesRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921ListImagesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageScanningConfigurationRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageScanningConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutImageTagMutabilityRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutLifecyclePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutRegistryScanningConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutReplicationConfigurationRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921PutReplicationConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921StartImageScanRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921StartImageScanRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921StartLifecyclePolicyPreviewRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921TagResourceRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921UntagResourceRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921UntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921UploadLayerPartRoute,
+    postXAmzTargetAmazonEC2ContainerRegistryV20150921UploadLayerPartRouteHandler,
+  )
 
 export default app

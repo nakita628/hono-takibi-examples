@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTransactionsCategoriesCategoryIdRoute,
   deleteTransactionsCategoriesRulesRuleIdRoute,
   getTransactionsCategoriesRoute,
@@ -15,45 +15,78 @@ import {
   putTransactionsTransactionIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTransactionsRouteHandler: RouteHandler<typeof getTransactionsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const transactionsHandler = app
-  .openapi(getTransactionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTransactionsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionsCategoriesRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsCategoriesRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTransactionsCategoriesRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTransactionsCategoriesRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTransactionsCategoriesRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionsCategoriesTxnRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTransactionsCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTransactionsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTransactionsTransactionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTransactionsCategoriesRouteHandler: RouteHandler<
+  typeof getTransactionsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsCategoriesRouteHandler: RouteHandler<
+  typeof postTransactionsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTransactionsCategoriesRouteHandler: RouteHandler<
+  typeof putTransactionsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionsCategoriesRulesRouteHandler: RouteHandler<
+  typeof getTransactionsCategoriesRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsCategoriesRulesRouteHandler: RouteHandler<
+  typeof postTransactionsCategoriesRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTransactionsCategoriesRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteTransactionsCategoriesRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTransactionsCategoriesRulesRuleIdRouteHandler: RouteHandler<
+  typeof postTransactionsCategoriesRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTransactionsCategoriesRulesRuleIdRouteHandler: RouteHandler<
+  typeof putTransactionsCategoriesRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionsCategoriesTxnRulesRouteHandler: RouteHandler<
+  typeof getTransactionsCategoriesTxnRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTransactionsCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof deleteTransactionsCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTransactionsCountRouteHandler: RouteHandler<
+  typeof getTransactionsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putTransactionsTransactionIdRouteHandler: RouteHandler<
+  typeof putTransactionsTransactionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

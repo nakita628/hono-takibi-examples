@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/byautomata.io/1.0.1/openapi.yaml',
   output: './src/byautomata-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/byautomata-io/types.ts' },
   client: { output: './src/byautomata-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/byautomata-io/rpc.ts', parseResponse: true },

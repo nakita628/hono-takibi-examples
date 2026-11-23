@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/nextcloud/server/master/apps/user_ldap/openapi.json',
   output: './src/user-ldap/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/user-ldap/types.ts' },
   client: { output: './src/user-ldap/client.ts', baseUrl: '/' },
   rpc: { output: './src/user-ldap/rpc.ts', parseResponse: true },

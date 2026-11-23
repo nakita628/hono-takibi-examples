@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getKpiDauDataSeriesRoute,
   getKpiMauDataSeriesRoute,
   getKpiNewUsersDataSeriesRoute,
   getKpiUninstallsDataSeriesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getKpiDauDataSeriesRouteHandler: RouteHandler<
+  typeof getKpiDauDataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const kpiHandler = app
-  .openapi(getKpiDauDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKpiMauDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKpiNewUsersDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getKpiUninstallsDataSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getKpiMauDataSeriesRouteHandler: RouteHandler<
+  typeof getKpiMauDataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKpiNewUsersDataSeriesRouteHandler: RouteHandler<
+  typeof getKpiNewUsersDataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getKpiUninstallsDataSeriesRouteHandler: RouteHandler<
+  typeof getKpiUninstallsDataSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute,
   postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRouteHandler: RouteHandler<
+  typeof postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const accountNameEnvironmentComBrHandler = app
-  .openapi(postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRouteHandler: RouteHandler<
+  typeof postAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

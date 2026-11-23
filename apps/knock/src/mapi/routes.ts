@@ -20357,7 +20357,7 @@ export const deleteV1VariablesKeyRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   callbacks: {},
 })
 
@@ -24611,7 +24611,7 @@ export const deleteV1TagsNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   callbacks: {},
 })
 
@@ -32746,7 +32746,7 @@ export const deleteV1PreferenceCategoriesNameRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   callbacks: {},
 })
 
@@ -34298,7 +34298,7 @@ export const deleteV1ChannelGroupsChannelGroupKeyRoute = createRoute({
         }),
     }),
   },
-  responses: { 204: { description: 'No Content', content: {} } },
+  responses: { 204: { description: 'No Content' } },
   callbacks: {},
 })
 

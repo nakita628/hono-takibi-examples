@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getRelativeRedirectNRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getRelativeRedirectNRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const relativeRedirectHandler = app.openapi(getRelativeRedirectNRoute, (c) => {
+export const getRelativeRedirectNRouteHandler: RouteHandler<
+  typeof getRelativeRedirectNRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

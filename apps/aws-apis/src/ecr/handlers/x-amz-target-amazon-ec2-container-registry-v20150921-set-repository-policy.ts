@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonEc2ContainerRegistryV20150921SetRepositoryPolicyHandler = app.openapi(
-  postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonEC2ContainerRegistryV20150921SetRepositoryPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/marketplace-catalog/2018-09-17/openapi.yaml',
   output: './src/marketplace-catalog/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/marketplace-catalog/types.ts' },
   client: { output: './src/marketplace-catalog/client.ts', baseUrl: '/' },
   rpc: { output: './src/marketplace-catalog/rpc.ts', parseResponse: true },

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/readmeio/oas-examples/main/3.0/yaml/schema-visibility.yaml',
   output: './src/3-0-schema-visibility/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/3-0-schema-visibility/types.ts' },
   client: { output: './src/3-0-schema-visibility/client.ts', baseUrl: '/' },
   rpc: { output: './src/3-0-schema-visibility/rpc.ts', parseResponse: true },

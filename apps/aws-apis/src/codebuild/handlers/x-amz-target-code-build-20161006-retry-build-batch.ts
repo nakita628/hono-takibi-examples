@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetCodeBuild20161006RetryBuildBatchRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetCodeBuild20161006RetryBuildBatchRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetCodeBuild20161006RetryBuildBatchHandler = app.openapi(
-  postXAmzTargetCodeBuild20161006RetryBuildBatchRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetCodeBuild20161006RetryBuildBatchRouteHandler: RouteHandler<
+  typeof postXAmzTargetCodeBuild20161006RetryBuildBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

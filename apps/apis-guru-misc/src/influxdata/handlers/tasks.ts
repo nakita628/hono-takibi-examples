@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTasksTaskIDLabelsLabelIDRoute,
   deleteTasksTaskIDMembersUserIDRoute,
   deleteTasksTaskIDOwnersUserIDRoute,
@@ -23,69 +23,122 @@ import {
   postTasksTaskIDRunsRunIDRetryRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTasksRouteHandler: RouteHandler<typeof getTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tasksHandler = app
-  .openapi(getTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTasksTaskIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskIDLabelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskIDLabelsLabelIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskIDMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskIDMembersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskIDOwnersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskIDOwnersUserIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskIDRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTasksTaskIDRunsRunIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDRunsRunIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTasksTaskIDRunsRunIDLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTasksTaskIDRunsRunIDRetryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTasksRouteHandler: RouteHandler<typeof postTasksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskIDRouteHandler: RouteHandler<typeof deleteTasksTaskIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDRouteHandler: RouteHandler<typeof getTasksTaskIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTasksTaskIDRouteHandler: RouteHandler<typeof patchTasksTaskIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDLabelsRouteHandler: RouteHandler<
+  typeof getTasksTaskIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskIDLabelsRouteHandler: RouteHandler<
+  typeof postTasksTaskIDLabelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskIDLabelsLabelIDRouteHandler: RouteHandler<
+  typeof deleteTasksTaskIDLabelsLabelIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDLogsRouteHandler: RouteHandler<typeof getTasksTaskIDLogsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDMembersRouteHandler: RouteHandler<
+  typeof getTasksTaskIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskIDMembersRouteHandler: RouteHandler<
+  typeof postTasksTaskIDMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskIDMembersUserIDRouteHandler: RouteHandler<
+  typeof deleteTasksTaskIDMembersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDOwnersRouteHandler: RouteHandler<
+  typeof getTasksTaskIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskIDOwnersRouteHandler: RouteHandler<
+  typeof postTasksTaskIDOwnersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskIDOwnersUserIDRouteHandler: RouteHandler<
+  typeof deleteTasksTaskIDOwnersUserIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDRunsRouteHandler: RouteHandler<typeof getTasksTaskIDRunsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskIDRunsRouteHandler: RouteHandler<
+  typeof postTasksTaskIDRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTasksTaskIDRunsRunIDRouteHandler: RouteHandler<
+  typeof deleteTasksTaskIDRunsRunIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDRunsRunIDRouteHandler: RouteHandler<
+  typeof getTasksTaskIDRunsRunIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTasksTaskIDRunsRunIDLogsRouteHandler: RouteHandler<
+  typeof getTasksTaskIDRunsRunIDLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTasksTaskIDRunsRunIDRetryRouteHandler: RouteHandler<
+  typeof postTasksTaskIDRunsRunIDRetryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

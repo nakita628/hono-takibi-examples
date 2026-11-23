@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonSsmRegisterTaskWithMaintenanceWindowHandler = app.openapi(
-  postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonSSMRegisterTaskWithMaintenanceWindowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

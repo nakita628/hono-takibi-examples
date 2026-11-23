@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSmartArtsChildObjectsIdRoute,
   getSmartArtsDetailsIdRoute,
   getSmartArtsIdRoute,
@@ -8,24 +8,36 @@ import {
   putSmartArtsOpenOfficeXmlIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSmartArtsChildObjectsIdRouteHandler: RouteHandler<
+  typeof getSmartArtsChildObjectsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const smartArtsHandler = app
-  .openapi(getSmartArtsChildObjectsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmartArtsDetailsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmartArtsOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSmartArtsOpenOfficeXmlIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmartArtsSvgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSmartArtsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSmartArtsDetailsIdRouteHandler: RouteHandler<
+  typeof getSmartArtsDetailsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmartArtsOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof getSmartArtsOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSmartArtsOpenOfficeXmlIdRouteHandler: RouteHandler<
+  typeof putSmartArtsOpenOfficeXmlIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmartArtsSvgIdRouteHandler: RouteHandler<typeof getSmartArtsSvgIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getSmartArtsIdRouteHandler: RouteHandler<typeof getSmartArtsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

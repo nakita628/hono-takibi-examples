@@ -272,9 +272,7 @@ const CertificateSummaryListSchema = z
   .array(CertificateSummarySchema)
   .openapi('CertificateSummaryList')
 
-type GetCertificatesResultType = {
-  certificates?: z.infer<typeof CertificateSummaryListSchema> & unknown
-}
+type GetCertificatesResultType = { certificates?: z.infer<typeof CertificateSummaryListSchema> }
 
 const ResourceNameSchema = z
   .string()
@@ -399,7 +397,7 @@ const ResourcesBudgetEstimateSchema = z
   .openapi('ResourcesBudgetEstimate')
 
 type GetCostEstimateResultType = {
-  resourcesBudgetEstimate?: z.infer<typeof ResourcesBudgetEstimateSchema> & unknown
+  resourcesBudgetEstimate?: z.infer<typeof ResourcesBudgetEstimateSchema>
 }
 
 const RegionNameSchema = z
@@ -800,8 +798,8 @@ const InstanceSchema = z
 const InstanceListSchema = z.array(InstanceSchema).openapi('InstanceList')
 
 type GetInstancesResultType = {
-  instances?: z.infer<typeof InstanceListSchema> & unknown
-  nextPageToken?: z.infer<typeof StringSchema> & unknown
+  instances?: z.infer<typeof InstanceListSchema>
+  nextPageToken?: z.infer<typeof StringSchema>
 }
 
 const OperationTypeSchema = z

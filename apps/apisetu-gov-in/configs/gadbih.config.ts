@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/gadbih/3.0.0/openapi.yaml',
   output: './src/gadbih/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/gadbih/types.ts' },
   client: { output: './src/gadbih/client.ts', baseUrl: '/' },
   rpc: { output: './src/gadbih/rpc.ts', parseResponse: true },

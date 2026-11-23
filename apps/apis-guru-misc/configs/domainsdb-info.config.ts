@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/domainsdb.info/1.0/openapi.yaml',
   output: './src/domainsdb-info/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/domainsdb-info/types.ts' },
   client: { output: './src/domainsdb-info/client.ts', baseUrl: '/' },
   rpc: { output: './src/domainsdb-info/rpc.ts', parseResponse: true },

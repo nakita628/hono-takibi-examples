@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetMediaStore20170901DeleteCorsPolicyHandler = app.openapi(
-  postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetMediaStore20170901DeleteCorsPolicyRouteHandler: RouteHandler<
+  typeof postXAmzTargetMediaStore20170901DeleteCorsPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

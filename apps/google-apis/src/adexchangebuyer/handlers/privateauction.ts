@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPrivateauctionPrivateAuctionIdUpdateproposalRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPrivateauctionPrivateAuctionIdUpdateproposalRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const privateauctionHandler = app.openapi(
-  postPrivateauctionPrivateAuctionIdUpdateproposalRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postPrivateauctionPrivateAuctionIdUpdateproposalRouteHandler: RouteHandler<
+  typeof postPrivateauctionPrivateAuctionIdUpdateproposalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

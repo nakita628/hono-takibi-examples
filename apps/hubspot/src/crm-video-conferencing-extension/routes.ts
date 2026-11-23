@@ -289,6 +289,6 @@ export const deleteCrmExtensionsVideoconferencing202609SettingsAppIdRoute = crea
         }),
     }),
   },
-  responses: { 204: { description: 'No content', content: {} }, default: ErrorResponse },
+  responses: { 204: { description: 'No content' }, default: ErrorResponse },
   security: [{ developer_hapikey: [] }],
 })

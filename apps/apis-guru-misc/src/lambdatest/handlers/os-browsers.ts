@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getOsBrowsersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getOsBrowsersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const osBrowsersHandler = app.openapi(getOsBrowsersRoute, (c) => {
+export const getOsBrowsersRouteHandler: RouteHandler<typeof getOsBrowsersRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

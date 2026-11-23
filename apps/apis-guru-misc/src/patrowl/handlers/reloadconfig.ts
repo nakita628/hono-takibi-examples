@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReloadconfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReloadconfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const reloadconfigHandler = app.openapi(getReloadconfigRoute, (c) => {
+export const getReloadconfigRouteHandler: RouteHandler<typeof getReloadconfigRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

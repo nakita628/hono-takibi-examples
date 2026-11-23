@@ -1,39 +1,65 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  deleteGroupHandler,
-  getAccountSettingsHandler,
-  getGroupConfigurationHandler,
-  getGroupHandler,
-  getGroupQueryHandler,
-  groupResourcesHandler,
-  groupsHandler,
-  groupsListHandler,
-  listGroupResourcesHandler,
-  putGroupConfigurationHandler,
-  resourcesHandler,
-  ungroupResourcesHandler,
-  updateAccountSettingsHandler,
-  updateGroupHandler,
-  updateGroupQueryHandler,
+  getResourcesArnTagsRoute,
+  patchResourcesArnTagsRoute,
+  postDeleteGroupRoute,
+  postGetAccountSettingsRoute,
+  postGetGroupConfigurationRoute,
+  postGetGroupQueryRoute,
+  postGetGroupRoute,
+  postGroupResourcesRoute,
+  postGroupsListRoute,
+  postGroupsRoute,
+  postListGroupResourcesRoute,
+  postPutGroupConfigurationRoute,
+  postResourcesSearchRoute,
+  postUngroupResourcesRoute,
+  postUpdateAccountSettingsRoute,
+  postUpdateGroupQueryRoute,
+  postUpdateGroupRoute,
+  putResourcesArnTagsRoute,
+} from './routes'
+import {
+  getResourcesArnTagsRouteHandler,
+  patchResourcesArnTagsRouteHandler,
+  postDeleteGroupRouteHandler,
+  postGetAccountSettingsRouteHandler,
+  postGetGroupConfigurationRouteHandler,
+  postGetGroupQueryRouteHandler,
+  postGetGroupRouteHandler,
+  postGroupResourcesRouteHandler,
+  postGroupsListRouteHandler,
+  postGroupsRouteHandler,
+  postListGroupResourcesRouteHandler,
+  postPutGroupConfigurationRouteHandler,
+  postResourcesSearchRouteHandler,
+  postUngroupResourcesRouteHandler,
+  postUpdateAccountSettingsRouteHandler,
+  postUpdateGroupQueryRouteHandler,
+  postUpdateGroupRouteHandler,
+  putResourcesArnTagsRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', groupsHandler)
-  .route('/', deleteGroupHandler)
-  .route('/', getAccountSettingsHandler)
-  .route('/', getGroupHandler)
-  .route('/', getGroupConfigurationHandler)
-  .route('/', getGroupQueryHandler)
-  .route('/', resourcesHandler)
-  .route('/', groupResourcesHandler)
-  .route('/', listGroupResourcesHandler)
-  .route('/', groupsListHandler)
-  .route('/', putGroupConfigurationHandler)
-  .route('/', ungroupResourcesHandler)
-  .route('/', updateAccountSettingsHandler)
-  .route('/', updateGroupHandler)
-  .route('/', updateGroupQueryHandler)
+  .openapi(postGroupsRoute, postGroupsRouteHandler)
+  .openapi(postDeleteGroupRoute, postDeleteGroupRouteHandler)
+  .openapi(postGetAccountSettingsRoute, postGetAccountSettingsRouteHandler)
+  .openapi(postGetGroupRoute, postGetGroupRouteHandler)
+  .openapi(postGetGroupConfigurationRoute, postGetGroupConfigurationRouteHandler)
+  .openapi(postGetGroupQueryRoute, postGetGroupQueryRouteHandler)
+  .openapi(getResourcesArnTagsRoute, getResourcesArnTagsRouteHandler)
+  .openapi(putResourcesArnTagsRoute, putResourcesArnTagsRouteHandler)
+  .openapi(patchResourcesArnTagsRoute, patchResourcesArnTagsRouteHandler)
+  .openapi(postGroupResourcesRoute, postGroupResourcesRouteHandler)
+  .openapi(postListGroupResourcesRoute, postListGroupResourcesRouteHandler)
+  .openapi(postGroupsListRoute, postGroupsListRouteHandler)
+  .openapi(postPutGroupConfigurationRoute, postPutGroupConfigurationRouteHandler)
+  .openapi(postResourcesSearchRoute, postResourcesSearchRouteHandler)
+  .openapi(postUngroupResourcesRoute, postUngroupResourcesRouteHandler)
+  .openapi(postUpdateAccountSettingsRoute, postUpdateAccountSettingsRouteHandler)
+  .openapi(postUpdateGroupRoute, postUpdateGroupRouteHandler)
+  .openapi(postUpdateGroupQueryRoute, postUpdateGroupQueryRouteHandler)
 
 export default app

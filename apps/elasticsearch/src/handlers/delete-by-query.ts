@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDeleteByQueryTaskIdRethrottleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDeleteByQueryTaskIdRethrottleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const deleteByQueryHandler = app.openapi(postDeleteByQueryTaskIdRethrottleRoute, (c) => {
+export const postDeleteByQueryTaskIdRethrottleRouteHandler: RouteHandler<
+  typeof postDeleteByQueryTaskIdRethrottleRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

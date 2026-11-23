@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getCreditNotesCreditNoteIdDownloadEinvoiceRoute,
   getCreditNotesCreditNoteIdRoute,
   getCreditNotesRoute,
@@ -17,51 +17,88 @@ import {
   postCreditNotesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postCreditNotesCreditNoteIdRecordRefundRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdRecordRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const creditNotesHandler = app
-  .openapi(postCreditNotesCreditNoteIdRecordRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesImportCreditNoteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdPdfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdSendEinvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCreditNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCreditNotesCreditNoteIdDownloadEinvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdResendEinvoiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCreditNotesCreditNoteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCreditNotesCreditNoteIdSendEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postCreditNotesImportCreditNoteRouteHandler: RouteHandler<
+  typeof postCreditNotesImportCreditNoteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdDeleteRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdPdfRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdPdfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdSendEinvoiceRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdSendEinvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdVoidRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdRefundRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCreditNotesRouteHandler: RouteHandler<typeof getCreditNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesRouteHandler: RouteHandler<typeof postCreditNotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdUpdateRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCreditNotesCreditNoteIdDownloadEinvoiceRouteHandler: RouteHandler<
+  typeof getCreditNotesCreditNoteIdDownloadEinvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdResendEinvoiceRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdResendEinvoiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdRemoveTaxWithheldRefundRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getCreditNotesCreditNoteIdRouteHandler: RouteHandler<
+  typeof getCreditNotesCreditNoteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCreditNotesCreditNoteIdSendEmailRouteHandler: RouteHandler<
+  typeof postCreditNotesCreditNoteIdSendEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

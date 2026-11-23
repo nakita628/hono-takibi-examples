@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionFailoverDBClusterRoute, postActionFailoverDBClusterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionFailoverDBClusterRoute, postActionFailoverDBClusterRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionFailoverDBClusterRouteHandler: RouteHandler<
+  typeof getActionFailoverDBClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionFailoverDbClusterHandler = app
-  .openapi(getActionFailoverDBClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionFailoverDBClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionFailoverDBClusterRouteHandler: RouteHandler<
+  typeof postActionFailoverDBClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

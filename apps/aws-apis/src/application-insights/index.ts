@@ -1,63 +1,173 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetEc2WindowsBarleyServiceCreateApplicationHandler,
-  xAmzTargetEc2WindowsBarleyServiceCreateComponentHandler,
-  xAmzTargetEc2WindowsBarleyServiceCreateLogPatternHandler,
-  xAmzTargetEc2WindowsBarleyServiceDeleteApplicationHandler,
-  xAmzTargetEc2WindowsBarleyServiceDeleteComponentHandler,
-  xAmzTargetEc2WindowsBarleyServiceDeleteLogPatternHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeApplicationHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeComponentConfigurationHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeComponentConfigurationRecommendationHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeComponentHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeLogPatternHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeObservationHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeProblemHandler,
-  xAmzTargetEc2WindowsBarleyServiceDescribeProblemObservationsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListApplicationsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListComponentsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListConfigurationHistoryHandler,
-  xAmzTargetEc2WindowsBarleyServiceListLogPatternSetsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListLogPatternsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListProblemsHandler,
-  xAmzTargetEc2WindowsBarleyServiceListTagsForResourceHandler,
-  xAmzTargetEc2WindowsBarleyServiceTagResourceHandler,
-  xAmzTargetEc2WindowsBarleyServiceUntagResourceHandler,
-  xAmzTargetEc2WindowsBarleyServiceUpdateApplicationHandler,
-  xAmzTargetEc2WindowsBarleyServiceUpdateComponentConfigurationHandler,
-  xAmzTargetEc2WindowsBarleyServiceUpdateComponentHandler,
-  xAmzTargetEc2WindowsBarleyServiceUpdateLogPatternHandler,
+  postXAmzTargetEC2WindowsBarleyServiceCreateApplicationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceCreateComponentRoute,
+  postXAmzTargetEC2WindowsBarleyServiceCreateLogPatternRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteApplicationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteComponentRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteLogPatternRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeApplicationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRecommendationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeLogPatternRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeObservationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeProblemObservationsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeProblemRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListApplicationsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListComponentsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListConfigurationHistoryRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListLogPatternSetsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListLogPatternsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute,
+  postXAmzTargetEC2WindowsBarleyServiceListTagsForResourceRoute,
+  postXAmzTargetEC2WindowsBarleyServiceTagResourceRoute,
+  postXAmzTargetEC2WindowsBarleyServiceUntagResourceRoute,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateApplicationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateComponentConfigurationRoute,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateComponentRoute,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateLogPatternRoute,
+} from './routes'
+import {
+  postXAmzTargetEC2WindowsBarleyServiceCreateApplicationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceCreateComponentRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceCreateLogPatternRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteApplicationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteComponentRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDeleteLogPatternRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeApplicationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRecommendationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeComponentRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeLogPatternRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeObservationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeProblemObservationsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceDescribeProblemRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListApplicationsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListComponentsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListConfigurationHistoryRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListLogPatternSetsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListLogPatternsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListProblemsRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceListTagsForResourceRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceTagResourceRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceUntagResourceRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateApplicationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateComponentConfigurationRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateComponentRouteHandler,
+  postXAmzTargetEC2WindowsBarleyServiceUpdateLogPatternRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetEc2WindowsBarleyServiceCreateApplicationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceCreateComponentHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceCreateLogPatternHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDeleteApplicationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDeleteComponentHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDeleteLogPatternHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeApplicationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeComponentHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeComponentConfigurationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeComponentConfigurationRecommendationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeLogPatternHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeObservationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeProblemHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceDescribeProblemObservationsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListApplicationsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListComponentsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListConfigurationHistoryHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListLogPatternSetsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListLogPatternsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListProblemsHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceTagResourceHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceUntagResourceHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceUpdateApplicationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceUpdateComponentHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceUpdateComponentConfigurationHandler)
-  .route('/', xAmzTargetEc2WindowsBarleyServiceUpdateLogPatternHandler)
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceCreateApplicationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceCreateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceCreateComponentRoute,
+    postXAmzTargetEC2WindowsBarleyServiceCreateComponentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceCreateLogPatternRoute,
+    postXAmzTargetEC2WindowsBarleyServiceCreateLogPatternRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDeleteApplicationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDeleteApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDeleteComponentRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDeleteComponentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDeleteLogPatternRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDeleteLogPatternRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeApplicationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRecommendationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeComponentConfigurationRecommendationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeLogPatternRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeLogPatternRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeObservationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeObservationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeProblemRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeProblemRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceDescribeProblemObservationsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceDescribeProblemObservationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListApplicationsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListApplicationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListComponentsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListComponentsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListConfigurationHistoryRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListConfigurationHistoryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListLogPatternSetsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListLogPatternSetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListLogPatternsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListLogPatternsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListProblemsRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListProblemsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceListTagsForResourceRoute,
+    postXAmzTargetEC2WindowsBarleyServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceTagResourceRoute,
+    postXAmzTargetEC2WindowsBarleyServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceUntagResourceRoute,
+    postXAmzTargetEC2WindowsBarleyServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceUpdateApplicationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceUpdateApplicationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceUpdateComponentRoute,
+    postXAmzTargetEC2WindowsBarleyServiceUpdateComponentRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceUpdateComponentConfigurationRoute,
+    postXAmzTargetEC2WindowsBarleyServiceUpdateComponentConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetEC2WindowsBarleyServiceUpdateLogPatternRoute,
+    postXAmzTargetEC2WindowsBarleyServiceUpdateLogPatternRouteHandler,
+  )
 
 export default app

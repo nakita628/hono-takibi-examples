@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/circuitsandbox.net/2.9.235/openapi.yaml',
   output: './src/circuitsandbox-net/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/circuitsandbox-net/types.ts' },
   client: { output: './src/circuitsandbox-net/client.ts', baseUrl: '/' },
   rpc: { output: './src/circuitsandbox-net/rpc.ts', parseResponse: true },

@@ -36,19 +36,19 @@ export function getTruckKey() {
 }
 
 export function getGetDirectionsOutputFormatKey(
-  args: InferRequestType<(typeof client)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>,
 ) {
-  return ['directions.:outputFormat', '/directions.:outputFormat', args] as const
+  return ['directions.{outputFormat}', '/directions.{outputFormat}', args] as const
 }
 
 export function useGetDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -71,27 +71,27 @@ export function useGetDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['directions.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['directions.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['directions.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -114,21 +114,21 @@ export function useImmutableGetDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['directions.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['directions.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostDirectionsOutputFormatKey() {
-  return ['directions.:outputFormat', '/directions.:outputFormat', 'POST'] as const
+  return ['directions.{outputFormat}', '/directions.{outputFormat}', 'POST'] as const
 }
 
 export function usePostDirectionsOutputFormat<TError = unknown>(options?: {
@@ -136,13 +136,13 @@ export function usePostDirectionsOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['directions.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['directions.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['directions.:outputFormat']['$post']>
+    InferRequestType<(typeof client)['directions.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -155,27 +155,27 @@ export function usePostDirectionsOutputFormat<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client)['directions.:outputFormat']['$post']> },
-      ) => parseResponse(client['directions.:outputFormat'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client)['directions.{outputFormat}']['$post']> },
+      ) => parseResponse(client['directions.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetDistanceOutputFormatKey(
-  args: InferRequestType<(typeof client)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>,
 ) {
-  return ['distance.:outputFormat', '/distance.:outputFormat', args] as const
+  return ['distance.{outputFormat}', '/distance.{outputFormat}', args] as const
 }
 
 export function useGetDistanceOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -198,27 +198,27 @@ export function useGetDistanceOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['distance.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['distance.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetDistanceOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['distance.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -241,21 +241,21 @@ export function useImmutableGetDistanceOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['distance.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['distance.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostDistanceOutputFormatKey() {
-  return ['distance.:outputFormat', '/distance.:outputFormat', 'POST'] as const
+  return ['distance.{outputFormat}', '/distance.{outputFormat}', 'POST'] as const
 }
 
 export function usePostDistanceOutputFormat<TError = unknown>(options?: {
@@ -263,13 +263,13 @@ export function usePostDistanceOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['distance.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['distance.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['distance.:outputFormat']['$post']>
+    InferRequestType<(typeof client)['distance.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -282,27 +282,27 @@ export function usePostDistanceOutputFormat<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client)['distance.:outputFormat']['$post']> },
-      ) => parseResponse(client['distance.:outputFormat'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client)['distance.{outputFormat}']['$post']> },
+      ) => parseResponse(client['distance.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetDistanceBetweenPairsOutputFormatKey(
-  args: InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>,
 ) {
-  return ['distance', '/distance/betweenPairs.:outputFormat', args] as const
+  return ['distance', '/distance/betweenPairs.{outputFormat}', args] as const
 }
 
 export function useGetDistanceBetweenPairsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -325,7 +325,7 @@ export function useGetDistanceBetweenPairsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -333,20 +333,20 @@ export function useGetDistanceBetweenPairsOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.distance['betweenPairs.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.distance['betweenPairs.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetDistanceBetweenPairsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -369,7 +369,7 @@ export function useImmutableGetDistanceBetweenPairsOutputFormat<TError = unknown
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -377,14 +377,14 @@ export function useImmutableGetDistanceBetweenPairsOutputFormat<TError = unknown
     >(
       swrKey,
       async () =>
-        parseResponse(client.distance['betweenPairs.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.distance['betweenPairs.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostDistanceBetweenPairsOutputFormatKey() {
-  return ['distance', '/distance/betweenPairs.:outputFormat', 'POST'] as const
+  return ['distance', '/distance/betweenPairs.{outputFormat}', 'POST'] as const
 }
 
 export function usePostDistanceBetweenPairsOutputFormat<TError = unknown>(options?: {
@@ -392,13 +392,13 @@ export function usePostDistanceBetweenPairsOutputFormat<TError = unknown>(option
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>
+    InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -414,28 +414,28 @@ export function usePostDistanceBetweenPairsOutputFormat<TError = unknown>(option
         {
           arg,
         }: {
-          arg: InferRequestType<(typeof client.distance)['betweenPairs.:outputFormat']['$post']>
+          arg: InferRequestType<(typeof client.distance)['betweenPairs.{outputFormat}']['$post']>
         },
-      ) => parseResponse(client.distance['betweenPairs.:outputFormat'].$post(arg, clientOptions)),
+      ) => parseResponse(client.distance['betweenPairs.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetOptimalDirectionsOutputFormatKey(
-  args: InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>,
 ) {
-  return ['optimalDirections.:outputFormat', '/optimalDirections.:outputFormat', args] as const
+  return ['optimalDirections.{outputFormat}', '/optimalDirections.{outputFormat}', args] as const
 }
 
 export function useGetOptimalDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -458,7 +458,7 @@ export function useGetOptimalDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -466,20 +466,20 @@ export function useGetOptimalDirectionsOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['optimalDirections.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client['optimalDirections.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetOptimalDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -502,7 +502,7 @@ export function useImmutableGetOptimalDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -510,14 +510,14 @@ export function useImmutableGetOptimalDirectionsOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client['optimalDirections.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client['optimalDirections.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostOptimalDirectionsOutputFormatKey() {
-  return ['optimalDirections.:outputFormat', '/optimalDirections.:outputFormat', 'POST'] as const
+  return ['optimalDirections.{outputFormat}', '/optimalDirections.{outputFormat}', 'POST'] as const
 }
 
 export function usePostOptimalDirectionsOutputFormat<TError = unknown>(options?: {
@@ -525,13 +525,13 @@ export function usePostOptimalDirectionsOutputFormat<TError = unknown>(options?:
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalDirections.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['optimalDirections.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$post']>
+    InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -546,27 +546,27 @@ export function usePostOptimalDirectionsOutputFormat<TError = unknown>(options?:
         _: Key,
         {
           arg,
-        }: { arg: InferRequestType<(typeof client)['optimalDirections.:outputFormat']['$post']> },
-      ) => parseResponse(client['optimalDirections.:outputFormat'].$post(arg, clientOptions)),
+        }: { arg: InferRequestType<(typeof client)['optimalDirections.{outputFormat}']['$post']> },
+      ) => parseResponse(client['optimalDirections.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetOptimalRouteOutputFormatKey(
-  args: InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>,
 ) {
-  return ['optimalRoute.:outputFormat', '/optimalRoute.:outputFormat', args] as const
+  return ['optimalRoute.{outputFormat}', '/optimalRoute.{outputFormat}', args] as const
 }
 
 export function useGetOptimalRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -589,27 +589,27 @@ export function useGetOptimalRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['optimalRoute.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['optimalRoute.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetOptimalRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -632,21 +632,21 @@ export function useImmutableGetOptimalRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['optimalRoute.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['optimalRoute.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostOptimalRouteOutputFormatKey() {
-  return ['optimalRoute.:outputFormat', '/optimalRoute.:outputFormat', 'POST'] as const
+  return ['optimalRoute.{outputFormat}', '/optimalRoute.{outputFormat}', 'POST'] as const
 }
 
 export function usePostOptimalRouteOutputFormat<TError = unknown>(options?: {
@@ -654,13 +654,13 @@ export function usePostOptimalRouteOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client)['optimalRoute.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client)['optimalRoute.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$post']>
+    InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -673,26 +673,26 @@ export function usePostOptimalRouteOutputFormat<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client)['optimalRoute.:outputFormat']['$post']> },
-      ) => parseResponse(client['optimalRoute.:outputFormat'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client)['optimalRoute.{outputFormat}']['$post']> },
+      ) => parseResponse(client['optimalRoute.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetRouteOutputFormatKey(
-  args: InferRequestType<(typeof client)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['route.{outputFormat}']['$get']>,
 ) {
-  return ['route.:outputFormat', '/route.:outputFormat', args] as const
+  return ['route.{outputFormat}', '/route.{outputFormat}', args] as const
 }
 
 export function useGetRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['route.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
         >
       >,
       TError
@@ -713,25 +713,25 @@ export function useGetRouteOutputFormat<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['route.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['route.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client)['route.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
         >
       >,
       TError
@@ -752,32 +752,32 @@ export function useImmutableGetRouteOutputFormat<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['route.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client['route.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostRouteOutputFormatKey() {
-  return ['route.:outputFormat', '/route.:outputFormat', 'POST'] as const
+  return ['route.{outputFormat}', '/route.{outputFormat}', 'POST'] as const
 }
 
 export function usePostRouteOutputFormat<TError = unknown>(options?: {
   mutation?: SWRMutationConfiguration<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.:outputFormat']['$post']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['route.{outputFormat}']['$post']>>>
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client)['route.:outputFormat']['$post']>
+    InferRequestType<(typeof client)['route.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -790,27 +790,27 @@ export function usePostRouteOutputFormat<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client)['route.:outputFormat']['$post']> },
-      ) => parseResponse(client['route.:outputFormat'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client)['route.{outputFormat}']['$post']> },
+      ) => parseResponse(client['route.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetTruckDirectionsOutputFormatKey(
-  args: InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/directions.:outputFormat', args] as const
+  return ['truck', '/truck/directions.{outputFormat}', args] as const
 }
 
 export function useGetTruckDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -833,27 +833,28 @@ export function useGetTruckDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['directions.:outputFormat'].$get(args, clientOptions)),
+      async () =>
+        parseResponse(client.truck['directions.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetTruckDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['directions.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -876,21 +877,22 @@ export function useImmutableGetTruckDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['directions.:outputFormat'].$get(args, clientOptions)),
+      async () =>
+        parseResponse(client.truck['directions.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostTruckDirectionsOutputFormatKey() {
-  return ['truck', '/truck/directions.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/directions.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckDirectionsOutputFormat<TError = unknown>(options?: {
@@ -898,13 +900,13 @@ export function usePostTruckDirectionsOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['directions.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['directions.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck)['directions.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -919,27 +921,27 @@ export function usePostTruckDirectionsOutputFormat<TError = unknown>(options?: {
         _: Key,
         {
           arg,
-        }: { arg: InferRequestType<(typeof client.truck)['directions.:outputFormat']['$post']> },
-      ) => parseResponse(client.truck['directions.:outputFormat'].$post(arg, clientOptions)),
+        }: { arg: InferRequestType<(typeof client.truck)['directions.{outputFormat}']['$post']> },
+      ) => parseResponse(client.truck['directions.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetTruckDistanceOutputFormatKey(
-  args: InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/distance.:outputFormat', args] as const
+  return ['truck', '/truck/distance.{outputFormat}', args] as const
 }
 
 export function useGetTruckDistanceOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -962,27 +964,27 @@ export function useGetTruckDistanceOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['distance.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.truck['distance.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetTruckDistanceOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['distance.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1005,21 +1007,21 @@ export function useImmutableGetTruckDistanceOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['distance.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.truck['distance.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostTruckDistanceOutputFormatKey() {
-  return ['truck', '/truck/distance.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/distance.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckDistanceOutputFormat<TError = unknown>(options?: {
@@ -1027,13 +1029,13 @@ export function usePostTruckDistanceOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['distance.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['distance.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck)['distance.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1048,28 +1050,28 @@ export function usePostTruckDistanceOutputFormat<TError = unknown>(options?: {
         _: Key,
         {
           arg,
-        }: { arg: InferRequestType<(typeof client.truck)['distance.:outputFormat']['$post']> },
-      ) => parseResponse(client.truck['distance.:outputFormat'].$post(arg, clientOptions)),
+        }: { arg: InferRequestType<(typeof client.truck)['distance.{outputFormat}']['$post']> },
+      ) => parseResponse(client.truck['distance.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetTruckDistanceBetweenPairsOutputFormatKey(
-  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/distance/betweenPairs.:outputFormat', args] as const
+  return ['truck', '/truck/distance/betweenPairs.{outputFormat}', args] as const
 }
 
 export function useGetTruckDistanceBetweenPairsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+              ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
             >
           >
         >
@@ -1094,7 +1096,7 @@ export function useGetTruckDistanceBetweenPairsOutputFormat<TError = unknown>(
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+              ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
             >
           >
         >
@@ -1104,7 +1106,7 @@ export function useGetTruckDistanceBetweenPairsOutputFormat<TError = unknown>(
       swrKey,
       async () =>
         parseResponse(
-          client.truck.distance['betweenPairs.:outputFormat'].$get(args, clientOptions),
+          client.truck.distance['betweenPairs.{outputFormat}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1112,14 +1114,14 @@ export function useGetTruckDistanceBetweenPairsOutputFormat<TError = unknown>(
 }
 
 export function useImmutableGetTruckDistanceBetweenPairsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+              ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
             >
           >
         >
@@ -1144,7 +1146,7 @@ export function useImmutableGetTruckDistanceBetweenPairsOutputFormat<TError = un
         ReturnType<
           typeof parseResponse<
             Awaited<
-              ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$get']>
+              ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$get']>
             >
           >
         >
@@ -1154,7 +1156,7 @@ export function useImmutableGetTruckDistanceBetweenPairsOutputFormat<TError = un
       swrKey,
       async () =>
         parseResponse(
-          client.truck.distance['betweenPairs.:outputFormat'].$get(args, clientOptions),
+          client.truck.distance['betweenPairs.{outputFormat}'].$get(args, clientOptions),
         ),
       restSwrOptions,
     ),
@@ -1162,7 +1164,7 @@ export function useImmutableGetTruckDistanceBetweenPairsOutputFormat<TError = un
 }
 
 export function getPostTruckDistanceBetweenPairsOutputFormatKey() {
-  return ['truck', '/truck/distance/betweenPairs.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/distance/betweenPairs.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckDistanceBetweenPairsOutputFormat<TError = unknown>(options?: {
@@ -1170,13 +1172,15 @@ export function usePostTruckDistanceBetweenPairsOutputFormat<TError = unknown>(o
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>>
+          Awaited<
+            ReturnType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>
+          >
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1193,12 +1197,12 @@ export function usePostTruckDistanceBetweenPairsOutputFormat<TError = unknown>(o
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client.truck.distance)['betweenPairs.:outputFormat']['$post']
+            (typeof client.truck.distance)['betweenPairs.{outputFormat}']['$post']
           >
         },
       ) =>
         parseResponse(
-          client.truck.distance['betweenPairs.:outputFormat'].$post(arg, clientOptions),
+          client.truck.distance['betweenPairs.{outputFormat}'].$post(arg, clientOptions),
         ),
       restMutationOptions,
     ),
@@ -1206,19 +1210,19 @@ export function usePostTruckDistanceBetweenPairsOutputFormat<TError = unknown>(o
 }
 
 export function getGetTruckOptimalDirectionsOutputFormatKey(
-  args: InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/optimalDirections.:outputFormat', args] as const
+  return ['truck', '/truck/optimalDirections.{outputFormat}', args] as const
 }
 
 export function useGetTruckOptimalDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1241,7 +1245,7 @@ export function useGetTruckOptimalDirectionsOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1249,20 +1253,20 @@ export function useGetTruckOptimalDirectionsOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.truck['optimalDirections.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.truck['optimalDirections.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetTruckOptimalDirectionsOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1285,7 +1289,7 @@ export function useImmutableGetTruckOptimalDirectionsOutputFormat<TError = unkno
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1293,14 +1297,14 @@ export function useImmutableGetTruckOptimalDirectionsOutputFormat<TError = unkno
     >(
       swrKey,
       async () =>
-        parseResponse(client.truck['optimalDirections.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.truck['optimalDirections.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostTruckOptimalDirectionsOutputFormatKey() {
-  return ['truck', '/truck/optimalDirections.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/optimalDirections.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckOptimalDirectionsOutputFormat<TError = unknown>(options?: {
@@ -1308,13 +1312,13 @@ export function usePostTruckOptimalDirectionsOutputFormat<TError = unknown>(opti
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1330,28 +1334,29 @@ export function usePostTruckOptimalDirectionsOutputFormat<TError = unknown>(opti
         {
           arg,
         }: {
-          arg: InferRequestType<(typeof client.truck)['optimalDirections.:outputFormat']['$post']>
+          arg: InferRequestType<(typeof client.truck)['optimalDirections.{outputFormat}']['$post']>
         },
-      ) => parseResponse(client.truck['optimalDirections.:outputFormat'].$post(arg, clientOptions)),
+      ) =>
+        parseResponse(client.truck['optimalDirections.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetTruckOptimalRouteOutputFormatKey(
-  args: InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/optimalRoute.:outputFormat', args] as const
+  return ['truck', '/truck/optimalRoute.{outputFormat}', args] as const
 }
 
 export function useGetTruckOptimalRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1374,7 +1379,7 @@ export function useGetTruckOptimalRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1382,20 +1387,20 @@ export function useGetTruckOptimalRouteOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.truck['optimalRoute.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.truck['optimalRoute.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetTruckOptimalRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1418,7 +1423,7 @@ export function useImmutableGetTruckOptimalRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1426,14 +1431,14 @@ export function useImmutableGetTruckOptimalRouteOutputFormat<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.truck['optimalRoute.:outputFormat'].$get(args, clientOptions)),
+        parseResponse(client.truck['optimalRoute.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostTruckOptimalRouteOutputFormatKey() {
-  return ['truck', '/truck/optimalRoute.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/optimalRoute.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckOptimalRouteOutputFormat<TError = unknown>(options?: {
@@ -1441,13 +1446,13 @@ export function usePostTruckOptimalRouteOutputFormat<TError = unknown>(options?:
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1462,27 +1467,27 @@ export function usePostTruckOptimalRouteOutputFormat<TError = unknown>(options?:
         _: Key,
         {
           arg,
-        }: { arg: InferRequestType<(typeof client.truck)['optimalRoute.:outputFormat']['$post']> },
-      ) => parseResponse(client.truck['optimalRoute.:outputFormat'].$post(arg, clientOptions)),
+        }: { arg: InferRequestType<(typeof client.truck)['optimalRoute.{outputFormat}']['$post']> },
+      ) => parseResponse(client.truck['optimalRoute.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }
 }
 
 export function getGetTruckRouteOutputFormatKey(
-  args: InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>,
 ) {
-  return ['truck', '/truck/route.:outputFormat', args] as const
+  return ['truck', '/truck/route.{outputFormat}', args] as const
 }
 
 export function useGetTruckRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1505,27 +1510,27 @@ export function useGetTruckRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['route.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.truck['route.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetTruckRouteOutputFormat<TError = unknown>(
-  args: InferRequestType<(typeof client.truck)['route.:outputFormat']['$get']>,
+  args: InferRequestType<(typeof client.truck)['route.{outputFormat}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
           >
         >
       >,
@@ -1548,21 +1553,21 @@ export function useImmutableGetTruckRouteOutputFormat<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$get']>>
+            Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$get']>>
           >
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client.truck['route.:outputFormat'].$get(args, clientOptions)),
+      async () => parseResponse(client.truck['route.{outputFormat}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function getPostTruckRouteOutputFormatKey() {
-  return ['truck', '/truck/route.:outputFormat', 'POST'] as const
+  return ['truck', '/truck/route.{outputFormat}', 'POST'] as const
 }
 
 export function usePostTruckRouteOutputFormat<TError = unknown>(options?: {
@@ -1570,13 +1575,13 @@ export function usePostTruckRouteOutputFormat<TError = unknown>(options?: {
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.truck)['route.:outputFormat']['$post']>>
+          Awaited<ReturnType<(typeof client.truck)['route.{outputFormat}']['$post']>>
         >
       >
     >,
     TError,
     Key,
-    InferRequestType<(typeof client.truck)['route.:outputFormat']['$post']>
+    InferRequestType<(typeof client.truck)['route.{outputFormat}']['$post']>
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
 }) {
@@ -1589,8 +1594,8 @@ export function usePostTruckRouteOutputFormat<TError = unknown>(options?: {
       swrKey,
       async (
         _: Key,
-        { arg }: { arg: InferRequestType<(typeof client.truck)['route.:outputFormat']['$post']> },
-      ) => parseResponse(client.truck['route.:outputFormat'].$post(arg, clientOptions)),
+        { arg }: { arg: InferRequestType<(typeof client.truck)['route.{outputFormat}']['$post']> },
+      ) => parseResponse(client.truck['route.{outputFormat}'].$post(arg, clientOptions)),
       restMutationOptions,
     ),
   }

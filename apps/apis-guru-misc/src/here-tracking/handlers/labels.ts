@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteLabelsV4ResourceTypeResourceIdKeyRoute,
   deleteLabelsV4ResourceTypeResourceIdKeyValueRoute,
   deleteLabelsV4ResourceTypeResourceIdRoute,
@@ -13,39 +13,68 @@ import {
   putLabelsV4ResourceTypeResourceIdKeyValueRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLabelsV4HealthRouteHandler: RouteHandler<typeof getLabelsV4HealthRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const labelsHandler = app
-  .openapi(getLabelsV4HealthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsV4VersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsV4ResourceTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsV4ResourceTypeKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsV4ResourceTypeKeysKeyValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelsV4ResourceTypeResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLabelsV4ResourceTypeResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLabelsV4ResourceTypeResourceIdBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelsV4ResourceTypeResourceIdKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteLabelsV4ResourceTypeResourceIdKeyValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putLabelsV4ResourceTypeResourceIdKeyValueRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLabelsV4VersionRouteHandler: RouteHandler<typeof getLabelsV4VersionRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsV4ResourceTypeRouteHandler: RouteHandler<
+  typeof getLabelsV4ResourceTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsV4ResourceTypeKeysRouteHandler: RouteHandler<
+  typeof getLabelsV4ResourceTypeKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsV4ResourceTypeKeysKeyValuesRouteHandler: RouteHandler<
+  typeof getLabelsV4ResourceTypeKeysKeyValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLabelsV4ResourceTypeResourceIdRouteHandler: RouteHandler<
+  typeof deleteLabelsV4ResourceTypeResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLabelsV4ResourceTypeResourceIdRouteHandler: RouteHandler<
+  typeof getLabelsV4ResourceTypeResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLabelsV4ResourceTypeResourceIdBatchRouteHandler: RouteHandler<
+  typeof putLabelsV4ResourceTypeResourceIdBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLabelsV4ResourceTypeResourceIdKeyRouteHandler: RouteHandler<
+  typeof deleteLabelsV4ResourceTypeResourceIdKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteLabelsV4ResourceTypeResourceIdKeyValueRouteHandler: RouteHandler<
+  typeof deleteLabelsV4ResourceTypeResourceIdKeyValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putLabelsV4ResourceTypeResourceIdKeyValueRouteHandler: RouteHandler<
+  typeof putLabelsV4ResourceTypeResourceIdKeyValueRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

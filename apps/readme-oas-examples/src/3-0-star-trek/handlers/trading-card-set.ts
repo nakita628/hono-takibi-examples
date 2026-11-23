@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTradingCardSetRoute,
   getTradingCardSetSearchRoute,
   postTradingCardSetSearchRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTradingCardSetRouteHandler: RouteHandler<typeof getTradingCardSetRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const tradingCardSetHandler = app
-  .openapi(getTradingCardSetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTradingCardSetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTradingCardSetSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTradingCardSetSearchRouteHandler: RouteHandler<
+  typeof getTradingCardSetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTradingCardSetSearchRouteHandler: RouteHandler<
+  typeof postTradingCardSetSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

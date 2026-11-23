@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSecurityProfileBehaviorsValidateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSecurityProfileBehaviorsValidateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const securityProfileBehaviorsHandler = app.openapi(
-  postSecurityProfileBehaviorsValidateRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postSecurityProfileBehaviorsValidateRouteHandler: RouteHandler<
+  typeof postSecurityProfileBehaviorsValidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

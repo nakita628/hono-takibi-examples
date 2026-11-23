@@ -2372,7 +2372,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v3/outlets/location/:latitude,:longitude': {
+    '/v3/outlets/location/:latitude,{longitude}': {
       $get:
         | {
             input: { param: { latitude: number; longitude: number } } & {
@@ -3852,7 +3852,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
           }
     }
   } & {
-    '/v3/stops/location/:latitude,:longitude': {
+    '/v3/stops/location/:latitude,{longitude}': {
       $get:
         | {
             input: { param: { latitude: number; longitude: number } } & {

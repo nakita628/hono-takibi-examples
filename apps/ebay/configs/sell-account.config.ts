@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/ebay.com/sell-account/v1.9.0/openapi.yaml',
   output: './src/sell-account/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/sell-account/types.ts' },
   client: { output: './src/sell-account/client.ts', baseUrl: '/' },
   rpc: { output: './src/sell-account/rpc.ts', parseResponse: true },

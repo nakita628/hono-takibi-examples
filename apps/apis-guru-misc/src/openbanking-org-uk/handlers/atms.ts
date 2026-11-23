@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAtmsRoute, headAtmsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAtmsRoute, headAtmsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAtmsRouteHandler: RouteHandler<typeof getAtmsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const atmsHandler = app
-  .openapi(getAtmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(headAtmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const headAtmsRouteHandler: RouteHandler<typeof headAtmsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

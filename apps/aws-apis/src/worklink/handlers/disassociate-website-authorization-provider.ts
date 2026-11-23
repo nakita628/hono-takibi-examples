@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDisassociateWebsiteAuthorizationProviderRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDisassociateWebsiteAuthorizationProviderRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const disassociateWebsiteAuthorizationProviderHandler = app.openapi(
-  postDisassociateWebsiteAuthorizationProviderRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDisassociateWebsiteAuthorizationProviderRouteHandler: RouteHandler<
+  typeof postDisassociateWebsiteAuthorizationProviderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

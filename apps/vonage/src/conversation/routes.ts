@@ -1,41 +1,5 @@
 import { createRoute, z } from '@hono/zod-openapi'
 
-const LegIdSchema = z
-  .string()
-  .openapi({
-    description: 'The id of the leg. rtc_id and call_id are leg id',
-    example: 'a595959595959595995',
-  })
-  .openapi('LegId')
-
-const ChannelTypeSchema = z
-  .enum(['app', 'phone', 'sip', 'websocket', 'vbc'])
-  .openapi({ description: 'Channel type', example: 'phone' })
-  .openapi('ChannelType')
-
-type ChannelType = {
-  from?:
-    | { type: string; user: string }
-    | { number: string; type: string }
-    | { type: string; uri?: string }
-    | {
-        'content-type': 'audio/l16;rate=8000' | 'audio/l16;rate=16000'
-        headers?: { customer_id?: string }
-        type: string
-        uri?: string
-      }
-    | { extension: string; type: string }
-  leg_id?: z.infer<typeof LegIdSchema>
-  leg_ids?: { leg_id?: z.infer<typeof LegIdSchema> }[]
-  to?:
-    | ChannelType
-    | { dtmfAnswer?: string; number: ChannelType; type: string }
-    | ChannelType
-    | ChannelType
-    | ChannelType
-  type?: z.infer<typeof ChannelTypeSchema>
-}
-
 const HrefConversationSchema = z
   .url()
   .openapi({
@@ -76,166 +40,162 @@ const ActionSchema = z
   .openapi({ description: 'Recording Action', example: 'start' })
   .openapi('Action')
 
-const ChannelSchema: z.ZodType<ChannelType> = z
-  .lazy(() =>
-    z
+const ChannelFromOneOf0Schema = z
+  .object({
+    type: z
+      .string()
+      .openapi({ description: 'The type of connection. Must be `app`', example: 'app' }),
+    user: z.string().openapi({ description: 'The username to connect to', example: 'jamie' }),
+  })
+  .openapi({ description: 'Connect to an App User', required: ['type', 'user'] })
+  .openapi('ChannelFromOneOf0')
+
+const ChannelFromOneOf1NumberSchema = z
+  .string()
+  .regex(/\d{7,15}/)
+  .min(7)
+  .max(15)
+  .openapi({ description: 'The phone number to connect to', example: '14155550100' })
+  .openapi('ChannelFromOneOf1Number')
+
+const ChannelFromOneOf2Schema = z
+  .object({
+    type: z
+      .string()
+      .openapi({ description: 'The type of connection. Must be `sip`', example: 'sip' }),
+    uri: z
+      .string()
+      .min(1)
+      .max(50)
+      .exactOptional()
+      .openapi({
+        description: 'The SIP URI to connect to',
+        example: 'sip:rebekka@sip.example.com',
+      }),
+  })
+  .openapi({ description: 'Connect to a SIP Endpoint', required: ['type'] })
+  .openapi('ChannelFromOneOf2')
+
+const ChannelFromOneOf3Schema = z
+  .object({
+    'content-type': z
+      .enum(['audio/l16;rate=8000', 'audio/l16;rate=16000'])
+      .openapi({ example: 'audio/l16;rate=16000' }),
+    headers: z
       .object({
-        from: z
-          .xor([
-            z
-              .object({
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `app`',
-                    example: 'app',
-                  }),
-                user: z
-                  .string()
-                  .openapi({ description: 'The username to connect to', example: 'jamie' }),
-              })
-              .openapi({ description: 'Connect to an App User', required: ['type', 'user'] }),
-            z
-              .object({
-                number: z
-                  .string()
-                  .regex(/\d{7,15}/)
-                  .min(7)
-                  .max(15)
-                  .openapi({
-                    description: 'The phone number to connect to',
-                    example: '14155550100',
-                  }),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `phone`',
-                    example: 'phone',
-                  }),
-              })
-              .openapi({
-                description: 'Connect to a Phone (PSTN) number',
-                required: ['number', 'type'],
-              }),
-            z
-              .object({
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `sip`',
-                    example: 'sip',
-                  }),
-                uri: z
-                  .string()
-                  .min(1)
-                  .max(50)
-                  .exactOptional()
-                  .openapi({
-                    description: 'The SIP URI to connect to',
-                    example: 'sip:rebekka@sip.example.com',
-                  }),
-              })
-              .openapi({ description: 'Connect to a SIP Endpoint', required: ['type'] }),
-            z
-              .object({
-                'content-type': z
-                  .enum(['audio/l16;rate=8000', 'audio/l16;rate=16000'])
-                  .openapi({ example: 'audio/l16;rate=16000' }),
-                headers: z
-                  .object({
-                    customer_id: z
-                      .string()
-                      .exactOptional()
-                      .openapi({
-                        description:
-                          'This is an example header. You can provide any headers you may need',
-                        example: 'ABC123',
-                      }),
-                  })
-                  .exactOptional()
-                  .openapi({
-                    description: 'Details of the Websocket you want to connect to',
-                    required: [],
-                  }),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `websocket`',
-                    example: 'websocket',
-                  }),
-                uri: z
-                  .string()
-                  .min(1)
-                  .max(50)
-                  .exactOptional()
-                  .openapi({ example: 'wss://example.com/socket' }),
-              })
-              .openapi({
-                description: 'Connect to a Websocket',
-                required: ['type', 'content-type'],
-              }),
-            z
-              .object({
-                extension: z.string().openapi({ example: '1234' }),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `vbc`',
-                    example: 'vbc',
-                  }),
-              })
-              .openapi({
-                description: 'Connect to a VBC extension',
-                required: ['type', 'extension'],
-              }),
-          ])
-          .exactOptional(),
-        leg_id: LegIdSchema.exactOptional(),
-        leg_ids: z
-          .array(z.object({ leg_id: LegIdSchema.exactOptional() }).openapi({ required: [] }))
+        customer_id: z
+          .string()
           .exactOptional()
           .openapi({
-            description:
-              'Leg ids associated with this Channel. The first item in the array represents the main active Leg. The second item, if exists, represents a screen-share Leg.',
+            description: 'This is an example header. You can provide any headers you may need',
+            example: 'ABC123',
           }),
-        to: z
-          .xor([
-            z.lazy(() => ChannelSchema),
-            z
-              .object({
-                dtmfAnswer: z
-                  .string()
-                  .exactOptional()
-                  .openapi({
-                    description:
-                      'Provide [DTMF digits](https://developer.nexmo.com/voice/voice-api/guides/dtmf) to send when the call is answered',
-                    example: 'p*123#',
-                  }),
-                number: z.lazy(() => ChannelSchema),
-                type: z
-                  .string()
-                  .openapi({
-                    description: 'The type of connection. Must be `phone`',
-                    example: 'phone',
-                  }),
-              })
-              .openapi({
-                description: 'Connect to a Phone (PSTN) number',
-                required: ['number', 'type'],
-              }),
-            z.lazy(() => ChannelSchema),
-            z.lazy(() => ChannelSchema),
-            z.lazy(() => ChannelSchema),
-          ])
-          .exactOptional(),
-        type: ChannelTypeSchema.exactOptional(),
       })
+      .exactOptional()
+      .openapi({ description: 'Details of the Websocket you want to connect to', required: [] }),
+    type: z
+      .string()
+      .openapi({
+        description: 'The type of connection. Must be `websocket`',
+        example: 'websocket',
+      }),
+    uri: z.string().min(1).max(50).exactOptional().openapi({ example: 'wss://example.com/socket' }),
+  })
+  .openapi({ description: 'Connect to a Websocket', required: ['type', 'content-type'] })
+  .openapi('ChannelFromOneOf3')
+
+const ChannelFromOneOf4Schema = z
+  .object({
+    extension: z.string().openapi({ example: '1234' }),
+    type: z
+      .string()
+      .openapi({ description: 'The type of connection. Must be `vbc`', example: 'vbc' }),
+  })
+  .openapi({ description: 'Connect to a VBC extension', required: ['type', 'extension'] })
+  .openapi('ChannelFromOneOf4')
+
+const LegIdSchema = z
+  .string()
+  .openapi({
+    description: 'The id of the leg. rtc_id and call_id are leg id',
+    example: 'a595959595959595995',
+  })
+  .openapi('LegId')
+
+const ChannelTypeSchema = z
+  .enum(['app', 'phone', 'sip', 'websocket', 'vbc'])
+  .openapi({ description: 'Channel type', example: 'phone' })
+  .openapi('ChannelType')
+
+const ChannelSchema = z
+  .object({
+    from: z
+      .xor([
+        ChannelFromOneOf0Schema,
+        z
+          .object({
+            number: ChannelFromOneOf1NumberSchema,
+            type: z
+              .string()
+              .openapi({
+                description: 'The type of connection. Must be `phone`',
+                example: 'phone',
+              }),
+          })
+          .openapi({
+            description: 'Connect to a Phone (PSTN) number',
+            required: ['number', 'type'],
+          }),
+        ChannelFromOneOf2Schema,
+        ChannelFromOneOf3Schema,
+        ChannelFromOneOf4Schema,
+      ])
+      .exactOptional(),
+    leg_id: LegIdSchema.exactOptional(),
+    leg_ids: z
+      .array(z.object({ leg_id: LegIdSchema.exactOptional() }).openapi({ required: [] }))
+      .exactOptional()
       .openapi({
         description:
-          'A user who joins a conversation as a member can have one channel per membership type. Channels can be `app`, `phone`, `sip`, `websocket`, or `vbc`',
-        required: [],
+          'Leg ids associated with this Channel. The first item in the array represents the main active Leg. The second item, if exists, represents a screen-share Leg.',
       }),
-  )
+    to: z
+      .xor([
+        ChannelFromOneOf0Schema,
+        z
+          .object({
+            dtmfAnswer: z
+              .string()
+              .exactOptional()
+              .openapi({
+                description:
+                  'Provide [DTMF digits](https://developer.nexmo.com/voice/voice-api/guides/dtmf) to send when the call is answered',
+                example: 'p*123#',
+              }),
+            number: ChannelFromOneOf1NumberSchema,
+            type: z
+              .string()
+              .openapi({
+                description: 'The type of connection. Must be `phone`',
+                example: 'phone',
+              }),
+          })
+          .openapi({
+            description: 'Connect to a Phone (PSTN) number',
+            required: ['number', 'type'],
+          }),
+        ChannelFromOneOf2Schema,
+        ChannelFromOneOf3Schema,
+        ChannelFromOneOf4Schema,
+      ])
+      .exactOptional(),
+    type: ChannelTypeSchema.exactOptional(),
+  })
+  .openapi({
+    description:
+      'A user who joins a conversation as a member can have one channel per membership type. Channels can be `app`, `phone`, `sip`, `websocket`, or `vbc`',
+    required: [],
+  })
   .openapi('Channel')
 
 const ChannelNumberSchema = z

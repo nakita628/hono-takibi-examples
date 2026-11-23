@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBrowseCategoriesCategoryIdPlaylistsRoute,
   getBrowseCategoriesCategoryIdRoute,
   getBrowseCategoriesRoute,
@@ -7,21 +7,32 @@ import {
   getBrowseNewReleasesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBrowseFeaturedPlaylistsRouteHandler: RouteHandler<
+  typeof getBrowseFeaturedPlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const browseHandler = app
-  .openapi(getBrowseFeaturedPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrowseCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrowseCategoriesCategoryIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrowseCategoriesCategoryIdPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBrowseNewReleasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBrowseCategoriesRouteHandler: RouteHandler<
+  typeof getBrowseCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrowseCategoriesCategoryIdRouteHandler: RouteHandler<
+  typeof getBrowseCategoriesCategoryIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrowseCategoriesCategoryIdPlaylistsRouteHandler: RouteHandler<
+  typeof getBrowseCategoriesCategoryIdPlaylistsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBrowseNewReleasesRouteHandler: RouteHandler<
+  typeof getBrowseNewReleasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

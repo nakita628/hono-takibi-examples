@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getProductsProductIdRoute,
   getProductsProductIdVariantsRoute,
   getProductsRoute,
@@ -10,30 +10,46 @@ import {
   postProductsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProductsProductIdRouteHandler: RouteHandler<
+  typeof getProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const productsHandler = app
-  .openapi(getProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProductsProductIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProductsProductIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProductsProductIdUpdateOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProductsProductIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProductsProductIdVariantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProductsProductIdRouteHandler: RouteHandler<
+  typeof postProductsProductIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProductsProductIdDeleteRouteHandler: RouteHandler<
+  typeof postProductsProductIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProductsProductIdUpdateOptionsRouteHandler: RouteHandler<
+  typeof postProductsProductIdUpdateOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProductsRouteHandler: RouteHandler<typeof getProductsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProductsRouteHandler: RouteHandler<typeof postProductsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProductsProductIdVariantsRouteHandler: RouteHandler<
+  typeof getProductsProductIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postProductsProductIdVariantsRouteHandler: RouteHandler<
+  typeof postProductsProductIdVariantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

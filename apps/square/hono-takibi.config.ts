@@ -4,7 +4,7 @@ export default defineConfig({
   // Square Connect API (square/connect-api-specification)
   input: 'https://raw.githubusercontent.com/square/connect-api-specification/master/api.json',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

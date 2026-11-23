@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRoute,
   deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRoute,
   deleteOcsV2PhpAppsFilesSharingApiV1SharesIdRoute,
@@ -22,66 +22,122 @@ import {
   putOcsV2PhpAppsFilesSharingApiV1SharesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOcsV2PhpAppsFilesSharingApiV1SharesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1SharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1SharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsFilesSharingApiV1SharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1SharesInheritedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1SharesPendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1SharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpAppsFilesSharingApiV1SharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsFilesSharingApiV1SharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsFilesSharingApiV1SharesIdSendEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsFilesSharingApiV1SharesPendingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1DeletedsharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsFilesSharingApiV1DeletedsharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1ShareesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1ShareesRecommendedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1RemoteSharesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsFilesSharingApiV1TokenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOcsV2PhpAppsFilesSharingApiV1SharesRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsFilesSharingApiV1SharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1SharesInheritedRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1SharesInheritedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1SharesPendingRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1SharesPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1SharesIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1SharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpAppsFilesSharingApiV1SharesIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpAppsFilesSharingApiV1SharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsFilesSharingApiV1SharesIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsFilesSharingApiV1SharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsFilesSharingApiV1SharesIdSendEmailRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsFilesSharingApiV1SharesIdSendEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsFilesSharingApiV1SharesPendingIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsFilesSharingApiV1SharesPendingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1DeletedsharesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1DeletedsharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsFilesSharingApiV1DeletedsharesIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsFilesSharingApiV1DeletedsharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1ShareesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1ShareesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1ShareesRecommendedRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1ShareesRecommendedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1RemoteSharesRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1RemoteSharesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesPendingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsFilesSharingApiV1RemoteSharesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsFilesSharingApiV1TokenRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsFilesSharingApiV1TokenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getThumbnailsSatelliteAreaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getThumbnailsSatelliteAreaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const thumbnailsHandler = app.openapi(getThumbnailsSatelliteAreaRoute, (c) => {
+export const getThumbnailsSatelliteAreaRouteHandler: RouteHandler<
+  typeof getThumbnailsSatelliteAreaRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

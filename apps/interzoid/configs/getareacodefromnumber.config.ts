@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/interzoid.com/getareacodefromnumber/1.0.0/openapi.yaml',
   output: './src/getareacodefromnumber/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/getareacodefromnumber/types.ts' },
   client: { output: './src/getareacodefromnumber/client.ts', baseUrl: '/' },
   rpc: { output: './src/getareacodefromnumber/rpc.ts', parseResponse: true },

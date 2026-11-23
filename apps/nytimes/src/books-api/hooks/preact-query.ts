@@ -22,24 +22,24 @@ export function getReviewsFormatKey() {
 }
 
 export function getListsFormatQueryKey(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
 ) {
-  return ['lists.:format', '/lists.:format', args] as const
+  return ['lists.{format}', '/lists.{format}', args] as const
 }
 
 export function getListsFormatQueryOptions<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
       >
     >,
     TError,
@@ -49,7 +49,7 @@ export function getListsFormatQueryOptions<
     queryKey: getListsFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['lists.:format'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['lists.{format}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -57,17 +57,17 @@ export function getListsFormatQueryOptions<
 
 export function useListsFormat<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
           >
         >,
         TError,
@@ -89,17 +89,17 @@ export function useListsFormat<
 
 export function useSuspenseListsFormat<
   TData = Awaited<
-    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>>
+    ReturnType<typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>>
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['lists.:format']['$get']>,
+  args: InferRequestType<(typeof client)['lists.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['lists.{format}']['$get']>>>
           >
         >,
         TError,
@@ -245,26 +245,26 @@ export function useSuspenseListsBestSellersHistoryJson<
 }
 
 export function getListsNamesFormatQueryKey(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
 ) {
-  return ['lists', '/lists/names.:format', args] as const
+  return ['lists', '/lists/names.{format}', args] as const
 }
 
 export function getListsNamesFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
       >
     >,
     TError,
@@ -274,7 +274,7 @@ export function getListsNamesFormatQueryOptions<
     queryKey: getListsNamesFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.lists['names.:format'].$get(args, {
+        client.lists['names.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -286,19 +286,19 @@ export function getListsNamesFormatQueryOptions<
 export function useListsNamesFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>
             >
           >
         >,
@@ -322,19 +322,19 @@ export function useListsNamesFormat<
 export function useSuspenseListsNamesFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['names.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['names.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.lists)['names.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.lists)['names.{format}']['$get']>>
             >
           >
         >,
@@ -356,26 +356,28 @@ export function useSuspenseListsNamesFormat<
 }
 
 export function getListsOverviewFormatQueryKey(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
 ) {
-  return ['lists', '/lists/overview.:format', args] as const
+  return ['lists', '/lists/overview.{format}', args] as const
 }
 
 export function getListsOverviewFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>>
+        typeof parseResponse<
+          Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
+        >
       >
     >,
     TError,
@@ -385,7 +387,7 @@ export function getListsOverviewFormatQueryOptions<
     queryKey: getListsOverviewFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.lists['overview.:format'].$get(args, {
+        client.lists['overview.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -397,19 +399,19 @@ export function getListsOverviewFormatQueryOptions<
 export function useListsOverviewFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
             >
           >
         >,
@@ -433,19 +435,19 @@ export function useListsOverviewFormat<
 export function useSuspenseListsOverviewFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.lists)['overview.:format']['$get']>,
+  args: InferRequestType<(typeof client.lists)['overview.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.lists)['overview.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.lists)['overview.{format}']['$get']>>
             >
           >
         >,
@@ -586,26 +588,26 @@ export function useSuspenseListsDateListJson<
 }
 
 export function getReviewsFormatQueryKey(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
 ) {
-  return ['reviews.:format', '/reviews.:format', args] as const
+  return ['reviews.{format}', '/reviews.{format}', args] as const
 }
 
 export function getReviewsFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
       >
     >,
     TError,
@@ -615,7 +617,7 @@ export function getReviewsFormatQueryOptions<
     queryKey: getReviewsFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['reviews.:format'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['reviews.{format}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -624,18 +626,18 @@ export function getReviewsFormatQueryOptions<
 export function useReviewsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
           >
         >,
         TError,
@@ -658,18 +660,18 @@ export function useReviewsFormat<
 export function useSuspenseReviewsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['reviews.:format']['$get']>,
+  args: InferRequestType<(typeof client)['reviews.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['reviews.{format}']['$get']>>>
           >
         >,
         TError,

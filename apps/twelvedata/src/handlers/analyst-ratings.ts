@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAnalystRatingsLightRoute, getAnalystRatingsUsEquitiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAnalystRatingsLightRoute, getAnalystRatingsUsEquitiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAnalystRatingsLightRouteHandler: RouteHandler<
+  typeof getAnalystRatingsLightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const analystRatingsHandler = app
-  .openapi(getAnalystRatingsLightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAnalystRatingsUsEquitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAnalystRatingsUsEquitiesRouteHandler: RouteHandler<
+  typeof getAnalystRatingsUsEquitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

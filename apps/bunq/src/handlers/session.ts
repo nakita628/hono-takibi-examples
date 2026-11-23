@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteSessionItemIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteSessionItemIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const sessionHandler = app.openapi(deleteSessionItemIdRoute, (c) => {
+export const deleteSessionItemIdRouteHandler: RouteHandler<
+  typeof deleteSessionItemIdRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

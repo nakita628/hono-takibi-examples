@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOrdersOrderIdFeedbackBuyerRoute,
   getOrdersOrderIdFeedbackSellerRoute,
   postOrdersOrderIdFeedbackBuyerRoute,
   postOrdersOrderIdFeedbackSellerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOrdersOrderIdFeedbackBuyerRouteHandler: RouteHandler<
+  typeof getOrdersOrderIdFeedbackBuyerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ordersHandler = app
-  .openapi(getOrdersOrderIdFeedbackBuyerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdFeedbackBuyerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOrdersOrderIdFeedbackSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOrdersOrderIdFeedbackSellerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postOrdersOrderIdFeedbackBuyerRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdFeedbackBuyerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOrdersOrderIdFeedbackSellerRouteHandler: RouteHandler<
+  typeof getOrdersOrderIdFeedbackSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOrdersOrderIdFeedbackSellerRouteHandler: RouteHandler<
+  typeof postOrdersOrderIdFeedbackSellerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

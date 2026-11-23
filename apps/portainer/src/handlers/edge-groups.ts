@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEdgeGroupsIdRoute,
   getEdgeGroupsIdRoute,
   getEdgeGroupsRoute,
@@ -7,21 +7,24 @@ import {
   putEdgeGroupsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getEdgeGroupsRouteHandler: RouteHandler<typeof getEdgeGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const edgeGroupsHandler = app
-  .openapi(getEdgeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEdgeGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEdgeGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEdgeGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEdgeGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEdgeGroupsRouteHandler: RouteHandler<typeof postEdgeGroupsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEdgeGroupsIdRouteHandler: RouteHandler<typeof deleteEdgeGroupsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEdgeGroupsIdRouteHandler: RouteHandler<typeof getEdgeGroupsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEdgeGroupsIdRouteHandler: RouteHandler<typeof putEdgeGroupsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

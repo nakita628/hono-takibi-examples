@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCSVtoJSONRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCSVtoJSONRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const csVtoJsonHandler = app.openapi(postCSVtoJSONRoute, (c) => {
+export const postCSVtoJSONRouteHandler: RouteHandler<typeof postCSVtoJSONRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBusinessGroupsIdSpacesSpaceIdRoute,
   getBusinessGroupsAllRoute,
   getBusinessGroupsIdRoute,
@@ -11,39 +11,56 @@ import {
   postBusinessGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBusinessGroupsRouteHandler: RouteHandler<typeof getBusinessGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const businessGroupsHandler = app
-  .openapi(getBusinessGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchBusinessGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBusinessGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessGroupsAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessGroupsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBusinessGroupsIdSpacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteBusinessGroupsIdSpacesSpaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const patchBusinessGroupsRouteHandler: RouteHandler<
+  typeof patchBusinessGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessGroupsRouteHandler: RouteHandler<typeof postBusinessGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessGroupsAllRouteHandler: RouteHandler<
+  typeof getBusinessGroupsAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessGroupsIdRouteHandler: RouteHandler<
+  typeof getBusinessGroupsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBusinessGroupsIdSpacesRouteHandler: RouteHandler<
+  typeof getBusinessGroupsIdSpacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteBusinessGroupsIdSpacesSpaceIdRouteHandler: RouteHandler<
+  typeof deleteBusinessGroupsIdSpacesSpaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRouteHandler: RouteHandler<
+  typeof postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdGuestInSpaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRouteHandler: RouteHandler<
+  typeof postBusinessGroupsIdSpacesSpaceIdLegalEntitiesPersonIdCustomersFolderIdSpacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

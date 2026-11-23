@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAmazonPersonalizeDescribeDatasetGroupHandler = app.openapi(
-  postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetAmazonPersonalizeDescribeDatasetGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getLeaguesLeagueIdOrSlugMatchesPastRoute,
   getLeaguesLeagueIdOrSlugMatchesRoute,
   getLeaguesLeagueIdOrSlugMatchesRunningRoute,
@@ -10,30 +10,48 @@ import {
   getLeaguesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getLeaguesRouteHandler: RouteHandler<typeof getLeaguesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const leaguesHandler = app
-  .openapi(getLeaguesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugMatchesPastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugMatchesRunningRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugMatchesUpcomingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getLeaguesLeagueIdOrSlugTournamentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getLeaguesLeagueIdOrSlugRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugMatchesRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugMatchesPastRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugMatchesPastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugMatchesRunningRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugMatchesRunningRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugMatchesUpcomingRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugMatchesUpcomingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugSeriesRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getLeaguesLeagueIdOrSlugTournamentsRouteHandler: RouteHandler<
+  typeof getLeaguesLeagueIdOrSlugTournamentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

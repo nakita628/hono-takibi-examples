@@ -1,8 +1,11 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { micerHandler, pvcerHandler } from './handlers'
+import { postMicerCertificateRoute, postPvcerCertificateRoute } from './routes'
+import { postMicerCertificateRouteHandler, postPvcerCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', micerHandler).route('/', pvcerHandler)
+export const api = app
+  .openapi(postMicerCertificateRoute, postMicerCertificateRouteHandler)
+  .openapi(postPvcerCertificateRoute, postPvcerCertificateRouteHandler)
 
 export default app

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/spotify.com/sonallux/2023.2.27/openapi.yaml',
   output: './src/spotify-sonallux/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/spotify-sonallux/types.ts' },
   client: { output: './src/spotify-sonallux/client.ts', baseUrl: '/' },
   rpc: { output: './src/spotify-sonallux/rpc.ts', parseResponse: true },

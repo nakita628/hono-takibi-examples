@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/remove.bg/1.0.0/openapi.yaml',
   output: './src/remove-bg/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/remove-bg/types.ts' },
   client: { output: './src/remove-bg/client.ts', baseUrl: '/' },
   rpc: { output: './src/remove-bg/rpc.ts', parseResponse: true },

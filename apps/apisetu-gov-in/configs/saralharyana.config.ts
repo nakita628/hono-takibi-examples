@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/saralharyana/3.0.0/openapi.yaml',
   output: './src/saralharyana/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/saralharyana/types.ts' },
   client: { output: './src/saralharyana/client.ts', baseUrl: '/' },
   rpc: { output: './src/saralharyana/rpc.ts', parseResponse: true },

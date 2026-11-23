@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDraftRegistrationsDraftIdIndexRoute,
   getDraftRegistrationsDraftIdContributorsIndexRoute,
   getDraftRegistrationsDraftIdContributorsUserIdIndexRoute,
@@ -12,36 +12,62 @@ import {
   postDraftRegistrationsIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDraftRegistrationsIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const draftRegistrationsHandler = app
-  .openapi(getDraftRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDraftRegistrationsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchDraftRegistrationsDraftIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDraftRegistrationsDraftIdContributorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDraftRegistrationsDraftIdContributorsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDraftRegistrationsDraftIdContributorsUserIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDraftRegistrationsDraftIdInstitutionsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDraftRegistrationsDraftIdSubjectsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDraftRegistrationsIndexRouteHandler: RouteHandler<
+  typeof postDraftRegistrationsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof deleteDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchDraftRegistrationsDraftIdIndexRouteHandler: RouteHandler<
+  typeof patchDraftRegistrationsDraftIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDraftRegistrationsDraftIdContributorsIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsDraftIdContributorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDraftRegistrationsDraftIdContributorsIndexRouteHandler: RouteHandler<
+  typeof postDraftRegistrationsDraftIdContributorsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDraftRegistrationsDraftIdContributorsUserIdIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsDraftIdContributorsUserIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDraftRegistrationsDraftIdInstitutionsIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsDraftIdInstitutionsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDraftRegistrationsDraftIdSubjectsIndexRouteHandler: RouteHandler<
+  typeof getDraftRegistrationsDraftIdSubjectsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

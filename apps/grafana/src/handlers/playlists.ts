@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePlaylistsUidRoute,
   getPlaylistsRoute,
   getPlaylistsUidItemsRoute,
@@ -8,24 +8,30 @@ import {
   putPlaylistsUidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlaylistsRouteHandler: RouteHandler<typeof getPlaylistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const playlistsHandler = app
-  .openapi(getPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlaylistsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePlaylistsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPlaylistsUidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaylistsUidItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPlaylistsRouteHandler: RouteHandler<typeof postPlaylistsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePlaylistsUidRouteHandler: RouteHandler<typeof deletePlaylistsUidRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsUidRouteHandler: RouteHandler<typeof getPlaylistsUidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPlaylistsUidRouteHandler: RouteHandler<typeof putPlaylistsUidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaylistsUidItemsRouteHandler: RouteHandler<
+  typeof getPlaylistsUidItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

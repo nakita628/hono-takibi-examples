@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/optimade.local/1.1.0~develop/openapi.yaml',
   output: './src/optimade/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/optimade/types.ts' },
   client: { output: './src/optimade/client.ts', baseUrl: '/' },
   rpc: { output: './src/optimade/rpc.ts', parseResponse: true },

@@ -1,12 +1,12 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deletePeeringsPeeringIdRoute, getPeeringsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deletePeeringsPeeringIdRoute, getPeeringsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const deletePeeringsPeeringIdRouteHandler: RouteHandler<
+  typeof deletePeeringsPeeringIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const peeringsHandler = app
-  .openapi(deletePeeringsPeeringIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPeeringsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPeeringsRouteHandler: RouteHandler<typeof getPeeringsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

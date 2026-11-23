@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getQwoaterEmployersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getQwoaterEmployersRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const qwoaterHandler = app.openapi(getQwoaterEmployersRoute, (c) => {
+export const getQwoaterEmployersRouteHandler: RouteHandler<
+  typeof getQwoaterEmployersRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

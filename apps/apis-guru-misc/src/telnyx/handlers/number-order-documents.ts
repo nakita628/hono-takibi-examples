@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getNumberOrderDocumentsNumberOrderDocumentIdRoute,
   getNumberOrderDocumentsRoute,
   patchNumberOrderDocumentsNumberOrderDocumentIdRoute,
   postNumberOrderDocumentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNumberOrderDocumentsRouteHandler: RouteHandler<
+  typeof getNumberOrderDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const numberOrderDocumentsHandler = app
-  .openapi(getNumberOrderDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNumberOrderDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNumberOrderDocumentsNumberOrderDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchNumberOrderDocumentsNumberOrderDocumentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postNumberOrderDocumentsRouteHandler: RouteHandler<
+  typeof postNumberOrderDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNumberOrderDocumentsNumberOrderDocumentIdRouteHandler: RouteHandler<
+  typeof getNumberOrderDocumentsNumberOrderDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchNumberOrderDocumentsNumberOrderDocumentIdRouteHandler: RouteHandler<
+  typeof patchNumberOrderDocumentsNumberOrderDocumentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

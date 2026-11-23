@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postDbaasServiceMetricsServiceNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postDbaasServiceMetricsServiceNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasServiceMetricsHandler = app.openapi(
-  postDbaasServiceMetricsServiceNameRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postDbaasServiceMetricsServiceNameRouteHandler: RouteHandler<
+  typeof postDbaasServiceMetricsServiceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

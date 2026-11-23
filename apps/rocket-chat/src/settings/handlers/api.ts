@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiV1AuditAuditionsRoute,
   getApiV1CloudRegistrationStatusRoute,
   getApiV1CloudWorkspaceRegisterDataRoute,
@@ -82,246 +82,482 @@ import {
   postApiV1VideoConferenceStartRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1SettingsPublicRouteHandler: RouteHandler<
+  typeof getApiV1SettingsPublicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1SettingsPublicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SettingsOauthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SettingsAddCustomOAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SettingsRemoveCustomOAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SettingsRefreshOAuthServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SettingsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SetupWizardParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ServiceConfigurationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CloudConnectWorkspaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1CloudManualRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CloudRegistrationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1CloudWorkspaceRegisterDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DnsResolveTxtRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DnsResolveSrvRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1E2eFetchMyKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1E2eGetUsersOfRoomWithoutKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eSetRoomKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eSetUserPublicAndPrivateKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eUpdateGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eRequestSubscriptionKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eAcceptSuggestedGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eRejectSuggestedGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1E2eFetchUsersWaitingForGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eProvideUsersSuggestedGroupKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1E2eResetRoomKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1UploadImportFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DownloadPublicImportFileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1StartImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1GetImportFileDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1GetImportProgressRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1GetLatestImportOperationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DownloadPendingFilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1DownloadPendingAvatarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1GetCurrentImportOperationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ImportersListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ImportNewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ImportAddUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ImportRunRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ImportStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ImportClearRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1InstancesGetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationReportsByUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationUserReportedMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationReportInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ModerationDismissReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ModerationUserDeleteReportedMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ModerationDismissUserReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationUserReportsByUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ModerationUserReportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SessionsListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SessionsListAllRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SessionsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1SessionsInfoAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SessionsLogoutMeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1SessionsLogoutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1PwGetPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1VideoConferenceCapabilitiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1VideoConferenceListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1VideoConferenceInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1VideoConferenceProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceStartRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceJoinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceDeclineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceLeaveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceHeartbeatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceRingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceAddParticipantsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1VideoConferenceShareChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1VideoConferenceJoinableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MediaCallsStateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MediaCallsInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1AuditAuditionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AuditMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1AuditOmnichannelMessagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiV1SettingsOauthRouteHandler: RouteHandler<
+  typeof getApiV1SettingsOauthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SettingsRouteHandler: RouteHandler<typeof getApiV1SettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SettingsRouteHandler: RouteHandler<typeof postApiV1SettingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SettingsAddCustomOAuthRouteHandler: RouteHandler<
+  typeof postApiV1SettingsAddCustomOAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SettingsRemoveCustomOAuthRouteHandler: RouteHandler<
+  typeof postApiV1SettingsRemoveCustomOAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SettingsRefreshOAuthServicesRouteHandler: RouteHandler<
+  typeof postApiV1SettingsRefreshOAuthServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SettingsIdRouteHandler: RouteHandler<
+  typeof postApiV1SettingsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SettingsIdRouteHandler: RouteHandler<typeof getApiV1SettingsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SetupWizardParametersRouteHandler: RouteHandler<
+  typeof getApiV1SetupWizardParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ServiceConfigurationsRouteHandler: RouteHandler<
+  typeof getApiV1ServiceConfigurationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CloudConnectWorkspaceRouteHandler: RouteHandler<
+  typeof postApiV1CloudConnectWorkspaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1CloudManualRegisterRouteHandler: RouteHandler<
+  typeof postApiV1CloudManualRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CloudRegistrationStatusRouteHandler: RouteHandler<
+  typeof getApiV1CloudRegistrationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1CloudWorkspaceRegisterDataRouteHandler: RouteHandler<
+  typeof getApiV1CloudWorkspaceRegisterDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DnsResolveTxtRouteHandler: RouteHandler<
+  typeof postApiV1DnsResolveTxtRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DnsResolveSrvRouteHandler: RouteHandler<
+  typeof postApiV1DnsResolveSrvRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1E2eFetchMyKeysRouteHandler: RouteHandler<
+  typeof getApiV1E2eFetchMyKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1E2eGetUsersOfRoomWithoutKeyRouteHandler: RouteHandler<
+  typeof getApiV1E2eGetUsersOfRoomWithoutKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eSetRoomKeyIDRouteHandler: RouteHandler<
+  typeof postApiV1E2eSetRoomKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eSetUserPublicAndPrivateKeysRouteHandler: RouteHandler<
+  typeof postApiV1E2eSetUserPublicAndPrivateKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eUpdateGroupKeyRouteHandler: RouteHandler<
+  typeof postApiV1E2eUpdateGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eRequestSubscriptionKeysRouteHandler: RouteHandler<
+  typeof postApiV1E2eRequestSubscriptionKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eAcceptSuggestedGroupKeyRouteHandler: RouteHandler<
+  typeof postApiV1E2eAcceptSuggestedGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eRejectSuggestedGroupKeyRouteHandler: RouteHandler<
+  typeof postApiV1E2eRejectSuggestedGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1E2eFetchUsersWaitingForGroupKeyRouteHandler: RouteHandler<
+  typeof getApiV1E2eFetchUsersWaitingForGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eProvideUsersSuggestedGroupKeysRouteHandler: RouteHandler<
+  typeof postApiV1E2eProvideUsersSuggestedGroupKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1E2eResetRoomKeyRouteHandler: RouteHandler<
+  typeof postApiV1E2eResetRoomKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1UploadImportFileRouteHandler: RouteHandler<
+  typeof postApiV1UploadImportFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DownloadPublicImportFileRouteHandler: RouteHandler<
+  typeof postApiV1DownloadPublicImportFileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1StartImportRouteHandler: RouteHandler<
+  typeof postApiV1StartImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1GetImportFileDataRouteHandler: RouteHandler<
+  typeof getApiV1GetImportFileDataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1GetImportProgressRouteHandler: RouteHandler<
+  typeof getApiV1GetImportProgressRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1GetLatestImportOperationsRouteHandler: RouteHandler<
+  typeof getApiV1GetLatestImportOperationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DownloadPendingFilesRouteHandler: RouteHandler<
+  typeof postApiV1DownloadPendingFilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1DownloadPendingAvatarsRouteHandler: RouteHandler<
+  typeof postApiV1DownloadPendingAvatarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1GetCurrentImportOperationRouteHandler: RouteHandler<
+  typeof getApiV1GetCurrentImportOperationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ImportersListRouteHandler: RouteHandler<
+  typeof getApiV1ImportersListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ImportNewRouteHandler: RouteHandler<typeof postApiV1ImportNewRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ImportAddUsersRouteHandler: RouteHandler<
+  typeof postApiV1ImportAddUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ImportRunRouteHandler: RouteHandler<typeof postApiV1ImportRunRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ImportStatusRouteHandler: RouteHandler<
+  typeof getApiV1ImportStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ImportClearRouteHandler: RouteHandler<
+  typeof postApiV1ImportClearRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1InstancesGetRouteHandler: RouteHandler<
+  typeof getApiV1InstancesGetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationReportsByUsersRouteHandler: RouteHandler<
+  typeof getApiV1ModerationReportsByUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationUserReportedMessagesRouteHandler: RouteHandler<
+  typeof getApiV1ModerationUserReportedMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationReportsRouteHandler: RouteHandler<
+  typeof getApiV1ModerationReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationReportInfoRouteHandler: RouteHandler<
+  typeof getApiV1ModerationReportInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ModerationDismissReportsRouteHandler: RouteHandler<
+  typeof postApiV1ModerationDismissReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ModerationUserDeleteReportedMessagesRouteHandler: RouteHandler<
+  typeof postApiV1ModerationUserDeleteReportedMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1ModerationDismissUserReportsRouteHandler: RouteHandler<
+  typeof postApiV1ModerationDismissUserReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationUserReportsByUserIdRouteHandler: RouteHandler<
+  typeof getApiV1ModerationUserReportsByUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ModerationUserReportsRouteHandler: RouteHandler<
+  typeof getApiV1ModerationUserReportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SessionsListRouteHandler: RouteHandler<
+  typeof getApiV1SessionsListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SessionsListAllRouteHandler: RouteHandler<
+  typeof getApiV1SessionsListAllRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SessionsInfoRouteHandler: RouteHandler<
+  typeof getApiV1SessionsInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1SessionsInfoAdminRouteHandler: RouteHandler<
+  typeof getApiV1SessionsInfoAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SessionsLogoutMeRouteHandler: RouteHandler<
+  typeof postApiV1SessionsLogoutMeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1SessionsLogoutRouteHandler: RouteHandler<
+  typeof postApiV1SessionsLogoutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1PwGetPolicyRouteHandler: RouteHandler<
+  typeof getApiV1PwGetPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1VideoConferenceCapabilitiesRouteHandler: RouteHandler<
+  typeof getApiV1VideoConferenceCapabilitiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1VideoConferenceListRouteHandler: RouteHandler<
+  typeof getApiV1VideoConferenceListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1VideoConferenceInfoRouteHandler: RouteHandler<
+  typeof getApiV1VideoConferenceInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1VideoConferenceProvidersRouteHandler: RouteHandler<
+  typeof getApiV1VideoConferenceProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceStartRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceStartRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceJoinRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceJoinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceCancelRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceDeclineRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceDeclineRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceLeaveRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceLeaveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceHeartbeatRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceHeartbeatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceRingRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceRingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceAddParticipantsRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceAddParticipantsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceRenameRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceRenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1VideoConferenceShareChatRouteHandler: RouteHandler<
+  typeof postApiV1VideoConferenceShareChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1VideoConferenceJoinableRouteHandler: RouteHandler<
+  typeof getApiV1VideoConferenceJoinableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MediaCallsStateRouteHandler: RouteHandler<
+  typeof getApiV1MediaCallsStateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MediaCallsInfoRouteHandler: RouteHandler<
+  typeof getApiV1MediaCallsInfoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1AuditAuditionsRouteHandler: RouteHandler<
+  typeof getApiV1AuditAuditionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AuditMessagesRouteHandler: RouteHandler<
+  typeof postApiV1AuditMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1AuditOmnichannelMessagesRouteHandler: RouteHandler<
+  typeof postApiV1AuditOmnichannelMessagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

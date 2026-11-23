@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteNetworksNetworkIdApplianceInterfacesL3InterfaceIdRoute,
   deleteNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute,
   deleteNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute,
@@ -444,1392 +444,2654 @@ import {
   putNetworksNetworkIdWirelessZigbeeRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getNetworksNetworkIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const networksHandler = app
-  .openapi(getNetworksNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdAlertsHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdAlertsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdAlertsSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceClientsClientIdSecurityEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceContentFilteringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceContentFilteringRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceContentFilteringCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceDevicesRedundancyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceDevicesRedundancySwapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallCellularFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallCellularFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallFirewalledServicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallL3FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallL3FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallL7FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallL7FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallL7FirewallRulesApplicationCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallMulticastForwardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallOneToManyNatRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallOneToManyNatRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallOneToOneNatRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallOneToOneNatRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallPortForwardingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceFirewallSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceFirewallSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceInterfacesL3Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceInterfacesL3InterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdApplianceInterfacesL3InterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdAppliancePortsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdAppliancePortsPortIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdAppliancePortsPortIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdAppliancePrefixesDelegatedStaticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdAppliancePrefixesDelegatedStaticsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdApplianceRfProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceRfProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSdwanInternetPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSecurityEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSecurityHttpsInspectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSecurityIntrusionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSecurityIntrusionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSecurityMalwareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSecurityMalwareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSingleLanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSingleLanRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSsidsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceSsidsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceSsidsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceTrafficShapingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceTrafficShapingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(putNetworksNetworkIdApplianceTrafficShapingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceTrafficShapingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceTrafficShapingVpnExclusionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceUmbrellaAccountConnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceUmbrellaAccountDisconnectRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceUmbrellaDomainsExclusionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceUmbrellaPoliciesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceUmbrellaPoliciesRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceUmbrellaProtectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceUplinksNatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceUplinksUsageHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceVlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceVlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceVlansSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceVlansSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceVlansVlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceVlansVlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdApplianceVlansVlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceVpnBgpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceVpnBgpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceVpnSiteToSiteVpnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceVpnSiteToSiteVpnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdApplianceWarmSpareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdApplianceWarmSpareRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdApplianceWarmSpareSwapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdBindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdBluetoothClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdBluetoothClientsBluetoothClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCameraQualityRetentionProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdCameraQualityRetentionProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdCameraSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdCameraWirelessProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCameraWirelessProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdCampusGatewayClustersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCampusGatewayClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdCampusGatewayClustersClusterIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCampusGatewaySsidsNumberMdnsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCellularGatewayDhcpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCellularGatewayDhcpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCellularGatewaySubnetPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCellularGatewaySubnetPoolRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdCellularGatewayUplinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdCellularGatewayUplinkRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsApplicationUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsBandwidthUsageHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsOverviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdClientsProvisionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsUsageHistoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsClientIdPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdClientsClientIdPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsClientIdTrafficHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdClientsClientIdUsageHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdDevicesClaimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdDevicesClaimVmxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdDevicesRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdDevicesSyslogServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdEventsEventTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFirmwareUpgradesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdFirmwareUpgradesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFirmwareUpgradesRollbacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFirmwareUpgradesStagedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFirmwareUpgradesStagedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdFirmwareUpgradesStagedEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFirmwareUpgradesStagedEventsDeferRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFirmwareUpgradesStagedEventsRollbacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFirmwareUpgradesStagedGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFirmwareUpgradesStagedGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFirmwareUpgradesStagedStagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdFirmwareUpgradesStagedStagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFloorPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansAutoLocateJobsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdRecalculateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdFloorPlansDevicesBatchUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdFloorPlansFloorPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdFloorPlansFloorPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdFloorPlansFloorPlanIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdGroupPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdGroupPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdHealthAlertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdInsightApplicationsApplicationIdHealthByTimeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdMerakiAuthUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdMerakiAuthUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdMqttBrokersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdMqttBrokersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdMqttBrokersMqttBrokerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdMqttBrokersMqttBrokerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdMqttBrokersMqttBrokerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdNetflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdNetflowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdNetworkHealthChannelUtilizationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPiiPiiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPiiRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdPiiRequestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPiiRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdPiiRequestsRequestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPiiSmDevicesForKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPiiSmOwnersForKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdPoliciesByClientRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorAlertsCurrentOverviewByMetricRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorAlertsOverviewByMetricRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorAlertsProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSensorAlertsProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorAlertsProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSensorAlertsProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSensorAlertsProfilesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorMqttBrokersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSensorRelationshipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmBypassActivationLockAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmBypassActivationLockAttemptsAttemptIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesCheckinRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSmDevicesFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesLockRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesModifyTagsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesMoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesRebootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesShutdownRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesWipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdCellularUsageHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdCertsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdConnectivityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdDesktopLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdDeviceCommandLogsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdDeviceProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesDeviceIdInstallAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdNetworkAdaptersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdPerformanceHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesDeviceIdRefreshDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdRestrictionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdSecurityCentersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdSoftwaresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesDeviceIdUnenrollRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmDevicesDeviceIdUninstallAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmDevicesDeviceIdWlanListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmTargetGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSmTargetGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmTrustedAccessConfigsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmUserAccessDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSmUserAccessDevicesUserAccessDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmUsersUserIdDeviceProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSmUsersUserIdSoftwaresRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSnmpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSnmpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSplashLoginAttemptsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSplitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchAccessControlListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchAccessControlListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchAccessPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchAccessPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchAlternateManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchAlternateManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchDhcpV4ServersSeenRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchDhcpServerPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchDhcpServerPolicyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    putNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionWarningsByDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchDscpToCosMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchDscpToCosMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchLinkAggregationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchLinkAggregationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchMtuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchMtuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchPortSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchPortSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchQosRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchQosRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchQosRulesOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchQosRulesOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchQosRulesQosRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSwitchQosRulesQosRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchQosRulesQosRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchRoutingMulticastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchRoutingMulticastRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdSwitchRoutingOspfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchRoutingOspfRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchStacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchStacksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchStacksSwitchStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchStacksSwitchStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchStacksSwitchStackIdAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchStacksSwitchStackIdRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(
-    deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getNetworksNetworkIdSwitchStormControlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchStormControlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSwitchStpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSwitchStpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdSyslogServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdSyslogServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdTopologyLinkLayerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdTrafficRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdTrafficAnalysisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdTrafficAnalysisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdTrafficShapingApplicationCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdTrafficShapingDscpTaggingOptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdUnbindRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdVlanProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdVlanProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdVlanProfilesAssignmentsByDeviceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdVlanProfilesAssignmentsReassignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdVlanProfilesInameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdVlanProfilesInameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdVlanProfilesInameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWebhooksHttpServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWebhooksHttpServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWebhooksPayloadTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWebhooksPayloadTemplatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWebhooksWebhookTestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWebhooksWebhookTestsWebhookTestIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessAirMarshalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessAirMarshalRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessAirMarshalRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWirelessAirMarshalRulesRuleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessAirMarshalSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessAlternateManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessAlternateManagementInterfaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessBillingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessBillingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessBluetoothSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessBluetoothSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessChannelUtilizationHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientCountHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsConnectionStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsLatencyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsClientIdConnectionStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsClientIdConnectivityEventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsClientIdLatencyHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessClientsClientIdLatencyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessConnectionStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessDataRateHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessDevicesConnectionStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessDevicesLatencyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessElectronicShelfLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessElectronicShelfLabelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessElectronicShelfLabelConfiguredDevicesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessEthernetPortsProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessEthernetPortsProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessEthernetPortsProfilesAssignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessEthernetPortsProfilesSetDefaultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessFailedConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessLatencyHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessLatencyStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessLocationScanningRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessMeshStatusesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessRadioRrmRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessRfProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessRfProfilesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSignalQualityHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsOweRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberEapOverrideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberEapOverrideRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberHotspot20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberHotspot20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberIdentityPsksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postNetworksNetworkIdWirelessSsidsNumberIdentityPsksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberOpenRoamingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberOverridesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberSchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberSplashSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberSplashSettingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessSsidsNumberVpnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessSsidsNumberVpnRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getNetworksNetworkIdWirelessUsageHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putNetworksNetworkIdWirelessZigbeeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putNetworksNetworkIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAlertsHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAlertsHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAlertsSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAlertsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdAlertsSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdAlertsSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceClientsClientIdSecurityEventsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceClientsClientIdSecurityEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceConnectivityMonitoringDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceContentFilteringRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceContentFilteringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceContentFilteringRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceContentFilteringRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceContentFilteringCategoriesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceContentFilteringCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceDevicesRedundancyRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceDevicesRedundancyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceDevicesRedundancySwapRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceDevicesRedundancySwapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallCellularFirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallCellularFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallCellularFirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallCellularFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallFirewalledServicesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallFirewalledServicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallFirewalledServicesServiceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallInboundCellularFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallInboundFirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallInboundFirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallInboundFirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallL3FirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallL3FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallL3FirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallL3FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallL7FirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallL7FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallL7FirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallL7FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallL7FirewallRulesApplicationCategoriesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallL7FirewallRulesApplicationCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallMulticastForwardingRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallMulticastForwardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallOneToManyNatRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallOneToManyNatRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallOneToManyNatRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallOneToManyNatRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallOneToOneNatRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallOneToOneNatRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallOneToOneNatRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallOneToOneNatRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallPortForwardingRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallPortForwardingRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallPortForwardingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceFirewallSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceFirewallSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceFirewallSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceFirewallSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceInterfacesL3RouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceInterfacesL3Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceInterfacesL3InterfaceIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceInterfacesL3InterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdApplianceInterfacesL3InterfaceIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdApplianceInterfacesL3InterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAppliancePortsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAppliancePortsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAppliancePortsPortIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAppliancePortsPortIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdAppliancePortsPortIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdAppliancePortsPortIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAppliancePrefixesDelegatedStaticsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAppliancePrefixesDelegatedStaticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdAppliancePrefixesDelegatedStaticsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdAppliancePrefixesDelegatedStaticsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdAppliancePrefixesDelegatedStaticsStaticDelegatedPrefixIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceRfProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceRfProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceRfProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceRfProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdApplianceRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSdwanInternetPoliciesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSdwanInternetPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSecurityEventsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSecurityEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSecurityHttpsInspectionRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSecurityHttpsInspectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSecurityIntrusionRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSecurityIntrusionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSecurityIntrusionRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSecurityIntrusionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSecurityMalwareRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSecurityMalwareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSecurityMalwareRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSecurityMalwareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSingleLanRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSingleLanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSingleLanRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSingleLanRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSsidsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSsidsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceSsidsNumberRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceSsidsNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceSsidsNumberRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceSsidsNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceStaticRoutesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceStaticRoutesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdApplianceStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdApplianceTrafficShapingCustomPerformanceClassesCustomPerformanceClassIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingUplinkBandwidthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingUplinkSelectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceTrafficShapingVpnExclusionsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceTrafficShapingVpnExclusionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceUmbrellaAccountConnectRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceUmbrellaAccountConnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceUmbrellaAccountDisconnectRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceUmbrellaAccountDisconnectRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceUmbrellaDomainsExclusionsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceUmbrellaDomainsExclusionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceUmbrellaPoliciesAddRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceUmbrellaPoliciesAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceUmbrellaPoliciesRemoveRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceUmbrellaPoliciesRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceUmbrellaProtectionRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceUmbrellaProtectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceUplinksNatRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceUplinksNatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceUplinksUsageHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceUplinksUsageHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceVlansRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceVlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceVlansRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceVlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceVlansSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceVlansSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceVlansSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceVlansSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceVlansVlanIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceVlansVlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceVlansVlanIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceVlansVlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdApplianceVlansVlanIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdApplianceVlansVlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceVpnBgpRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceVpnBgpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceVpnBgpRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceVpnBgpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceVpnSiteToSiteVpnRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceVpnSiteToSiteVpnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceVpnSiteToSiteVpnRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceVpnSiteToSiteVpnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdApplianceWarmSpareRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdApplianceWarmSpareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdApplianceWarmSpareRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdApplianceWarmSpareRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdApplianceWarmSpareSwapRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdApplianceWarmSpareSwapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdBindRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdBindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdBluetoothClientsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdBluetoothClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdBluetoothClientsBluetoothClientIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdBluetoothClientsBluetoothClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCameraQualityRetentionProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCameraQualityRetentionProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdCameraQualityRetentionProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdCameraQualityRetentionProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdCameraQualityRetentionProfilesQualityRetentionProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCameraSchedulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCameraSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdCameraWirelessProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdCameraWirelessProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCameraWirelessProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCameraWirelessProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdCameraWirelessProfilesWirelessProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdCampusGatewayClustersRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdCampusGatewayClustersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCampusGatewayClustersClusterIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCampusGatewayClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdCampusGatewayClustersClusterIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdCampusGatewayClustersClusterIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCampusGatewaySsidsNumberMdnsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCampusGatewaySsidsNumberMdnsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCellularGatewayConnectivityMonitoringDestinationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCellularGatewayDhcpRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCellularGatewayDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCellularGatewayDhcpRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCellularGatewayDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCellularGatewaySubnetPoolRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCellularGatewaySubnetPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCellularGatewaySubnetPoolRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCellularGatewaySubnetPoolRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdCellularGatewayUplinkRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdCellularGatewayUplinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdCellularGatewayUplinkRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdCellularGatewayUplinkRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsApplicationUsageRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsApplicationUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsBandwidthUsageHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsBandwidthUsageHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsOverviewRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsOverviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdClientsProvisionRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdClientsProvisionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsUsageHistoriesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsUsageHistoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsClientIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsClientIdPolicyRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsClientIdPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdClientsClientIdPolicyRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdClientsClientIdPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdClientsClientIdSplashAuthorizationStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsClientIdTrafficHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsClientIdTrafficHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdClientsClientIdUsageHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdClientsClientIdUsageHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdDevicesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdDevicesClaimRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdDevicesClaimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdDevicesClaimVmxRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdDevicesClaimVmxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdDevicesRemoveRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdDevicesRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdDevicesSyslogServersRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdDevicesSyslogServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdEventsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdEventsEventTypesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdEventsEventTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFirmwareUpgradesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFirmwareUpgradesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdFirmwareUpgradesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdFirmwareUpgradesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFirmwareUpgradesRollbacksRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFirmwareUpgradesRollbacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFirmwareUpgradesStagedEventsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFirmwareUpgradesStagedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFirmwareUpgradesStagedEventsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFirmwareUpgradesStagedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdFirmwareUpgradesStagedEventsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdFirmwareUpgradesStagedEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFirmwareUpgradesStagedEventsDeferRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFirmwareUpgradesStagedEventsDeferRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFirmwareUpgradesStagedEventsRollbacksRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFirmwareUpgradesStagedEventsRollbacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFirmwareUpgradesStagedGroupsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFirmwareUpgradesStagedGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFirmwareUpgradesStagedGroupsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFirmwareUpgradesStagedGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdFirmwareUpgradesStagedGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFirmwareUpgradesStagedStagesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFirmwareUpgradesStagedStagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdFirmwareUpgradesStagedStagesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdFirmwareUpgradesStagedStagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFloorPlansRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFloorPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansAutoLocateJobsBatchRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansAutoLocateJobsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdCancelRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdPublishRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdRecalculateRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansAutoLocateJobsJobIdRecalculateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdFloorPlansDevicesBatchUpdateRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdFloorPlansDevicesBatchUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdFloorPlansFloorPlanIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdFloorPlansFloorPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdFloorPlansFloorPlanIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdFloorPlansFloorPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdFloorPlansFloorPlanIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdFloorPlansFloorPlanIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdGroupPoliciesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdGroupPoliciesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdGroupPoliciesGroupPolicyIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdGroupPoliciesGroupPolicyIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdGroupPoliciesGroupPolicyIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdGroupPoliciesGroupPolicyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdHealthAlertsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdHealthAlertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdInsightApplicationsApplicationIdHealthByTimeRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdInsightApplicationsApplicationIdHealthByTimeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdMerakiAuthUsersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdMerakiAuthUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdMerakiAuthUsersRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdMerakiAuthUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdMerakiAuthUsersMerakiAuthUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdMqttBrokersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdMqttBrokersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdMqttBrokersRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdMqttBrokersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdMqttBrokersMqttBrokerIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdMqttBrokersMqttBrokerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdMqttBrokersMqttBrokerIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdMqttBrokersMqttBrokerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdMqttBrokersMqttBrokerIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdMqttBrokersMqttBrokerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdNetflowRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdNetflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdNetflowRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdNetflowRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdNetworkHealthChannelUtilizationRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdNetworkHealthChannelUtilizationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPiiPiiKeysRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPiiPiiKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPiiRequestsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPiiRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdPiiRequestsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdPiiRequestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPiiRequestsRequestIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPiiRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdPiiRequestsRequestIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdPiiRequestsRequestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPiiSmDevicesForKeyRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPiiSmDevicesForKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPiiSmOwnersForKeyRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPiiSmOwnersForKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdPoliciesByClientRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdPoliciesByClientRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorAlertsCurrentOverviewByMetricRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorAlertsCurrentOverviewByMetricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorAlertsOverviewByMetricRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorAlertsOverviewByMetricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorAlertsProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorAlertsProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSensorAlertsProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSensorAlertsProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorAlertsProfilesIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorAlertsProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSensorAlertsProfilesIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSensorAlertsProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSensorAlertsProfilesIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSensorAlertsProfilesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorMqttBrokersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorMqttBrokersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSensorMqttBrokersMqttBrokerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSensorRelationshipsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSensorRelationshipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmBypassActivationLockAttemptsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmBypassActivationLockAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmBypassActivationLockAttemptsAttemptIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmBypassActivationLockAttemptsAttemptIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesCheckinRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesCheckinRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSmDevicesFieldsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSmDevicesFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesLockRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesLockRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesModifyTagsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesModifyTagsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesMoveRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesMoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesRebootRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesRebootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesShutdownRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesShutdownRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesWipeRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesWipeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdCellularUsageHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdCellularUsageHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdCertsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdCertsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdConnectivityRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdConnectivityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdDesktopLogsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdDesktopLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdDeviceCommandLogsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdDeviceCommandLogsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdDeviceProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdDeviceProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesDeviceIdInstallAppsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesDeviceIdInstallAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdNetworkAdaptersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdNetworkAdaptersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdPerformanceHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdPerformanceHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesDeviceIdRefreshDetailsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesDeviceIdRefreshDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdRestrictionsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdRestrictionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdSecurityCentersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdSecurityCentersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdSoftwaresRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdSoftwaresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesDeviceIdUnenrollRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesDeviceIdUnenrollRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmDevicesDeviceIdUninstallAppsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmDevicesDeviceIdUninstallAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmDevicesDeviceIdWlanListsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmDevicesDeviceIdWlanListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmTargetGroupsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmTargetGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSmTargetGroupsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSmTargetGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmTargetGroupsTargetGroupIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSmTargetGroupsTargetGroupIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSmTargetGroupsTargetGroupIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSmTargetGroupsTargetGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmTrustedAccessConfigsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmTrustedAccessConfigsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmUserAccessDevicesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmUserAccessDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSmUserAccessDevicesUserAccessDeviceIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSmUserAccessDevicesUserAccessDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmUsersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmUsersUserIdDeviceProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmUsersUserIdDeviceProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSmUsersUserIdSoftwaresRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSmUsersUserIdSoftwaresRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSnmpRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSnmpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSnmpRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSnmpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSplashLoginAttemptsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSplashLoginAttemptsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSplitRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSplitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchAccessControlListsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchAccessControlListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchAccessControlListsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchAccessControlListsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchAccessPoliciesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchAccessPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchAccessPoliciesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchAccessPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchAccessPoliciesAccessPolicyNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchAlternateManagementInterfaceRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchAlternateManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchAlternateManagementInterfaceRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchAlternateManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchDhcpV4ServersSeenRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchDhcpV4ServersSeenRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchDhcpServerPolicyRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchDhcpServerPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchDhcpServerPolicyRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchDhcpServerPolicyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionTrustedServersTrustedServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionWarningsByDeviceRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchDhcpServerPolicyArpInspectionWarningsByDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchDscpToCosMappingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchDscpToCosMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchDscpToCosMappingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchDscpToCosMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchLinkAggregationsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchLinkAggregationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchLinkAggregationsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchLinkAggregationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchLinkAggregationsLinkAggregationIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchMtuRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchMtuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchMtuRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchMtuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchPortSchedulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchPortSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchPortSchedulesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchPortSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchPortSchedulesPortScheduleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchQosRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchQosRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchQosRulesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchQosRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchQosRulesOrderRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchQosRulesOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchQosRulesOrderRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchQosRulesOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchQosRulesQosRuleIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchQosRulesQosRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchQosRulesQosRuleIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchQosRulesQosRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchQosRulesQosRuleIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchQosRulesQosRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchRoutingMulticastRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchRoutingMulticastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchRoutingMulticastRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchRoutingMulticastRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchRoutingMulticastRendezvousPointsRendezvousPointIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchRoutingOspfRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchRoutingOspfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchRoutingOspfRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchRoutingOspfRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchStacksRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchStacksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStacksSwitchStackIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStacksSwitchStackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchStacksSwitchStackIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchStacksSwitchStackIdAddRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchStacksSwitchStackIdAddRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchStacksSwitchStackIdRemoveRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchStacksSwitchStackIdRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingInterfacesInterfaceIdDhcpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdSwitchStacksSwitchStackIdRoutingStaticRoutesStaticRouteIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStormControlRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStormControlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStormControlRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStormControlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSwitchStpRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSwitchStpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSwitchStpRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSwitchStpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdSyslogServersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdSyslogServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdSyslogServersRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdSyslogServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdTopologyLinkLayerRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdTopologyLinkLayerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdTrafficRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdTrafficRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdTrafficAnalysisRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdTrafficAnalysisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdTrafficAnalysisRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdTrafficAnalysisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdTrafficShapingApplicationCategoriesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdTrafficShapingApplicationCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdTrafficShapingDscpTaggingOptionsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdTrafficShapingDscpTaggingOptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdUnbindRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdUnbindRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdVlanProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdVlanProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdVlanProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdVlanProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdVlanProfilesAssignmentsByDeviceRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdVlanProfilesAssignmentsByDeviceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdVlanProfilesAssignmentsReassignRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdVlanProfilesAssignmentsReassignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdVlanProfilesInameRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdVlanProfilesInameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdVlanProfilesInameRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdVlanProfilesInameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdVlanProfilesInameRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdVlanProfilesInameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWebhooksHttpServersRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWebhooksHttpServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWebhooksHttpServersRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWebhooksHttpServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWebhooksHttpServersHttpServerIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWebhooksHttpServersHttpServerIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWebhooksHttpServersHttpServerIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWebhooksHttpServersHttpServerIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWebhooksPayloadTemplatesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWebhooksPayloadTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWebhooksPayloadTemplatesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWebhooksPayloadTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWebhooksPayloadTemplatesPayloadTemplateIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWebhooksWebhookTestsRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWebhooksWebhookTestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWebhooksWebhookTestsWebhookTestIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWebhooksWebhookTestsWebhookTestIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessAirMarshalRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessAirMarshalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessAirMarshalRulesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessAirMarshalRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessAirMarshalRulesRuleIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessAirMarshalRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWirelessAirMarshalRulesRuleIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWirelessAirMarshalRulesRuleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessAirMarshalSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessAirMarshalSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessAlternateManagementInterfaceRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessAlternateManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessAlternateManagementInterfaceRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessAlternateManagementInterfaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessBillingRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessBillingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessBillingRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessBillingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessBluetoothSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessBluetoothSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessBluetoothSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessBluetoothSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessChannelUtilizationHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessChannelUtilizationHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientCountHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientCountHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsConnectionStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsConnectionStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsLatencyStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsLatencyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsClientIdConnectionStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsClientIdConnectionStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsClientIdConnectivityEventsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsClientIdConnectivityEventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsClientIdLatencyHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsClientIdLatencyHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessClientsClientIdLatencyStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessClientsClientIdLatencyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessConnectionStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessConnectionStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessDataRateHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessDataRateHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessDevicesConnectionStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessDevicesConnectionStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessDevicesLatencyStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessDevicesLatencyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessElectronicShelfLabelRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessElectronicShelfLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessElectronicShelfLabelRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessElectronicShelfLabelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessElectronicShelfLabelConfiguredDevicesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessElectronicShelfLabelConfiguredDevicesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessEthernetPortsProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessEthernetPortsProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessEthernetPortsProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessEthernetPortsProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessEthernetPortsProfilesAssignRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessEthernetPortsProfilesAssignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessEthernetPortsProfilesSetDefaultRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessEthernetPortsProfilesSetDefaultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWirelessEthernetPortsProfilesProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessFailedConnectionsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessFailedConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessLatencyHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessLatencyHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessLatencyStatsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessLatencyStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessLocationScanningRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessLocationScanningRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessMeshStatusesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessMeshStatusesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessRadioRrmRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessRadioRrmRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessRfProfilesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessRfProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessRfProfilesRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessRfProfilesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWirelessRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessRfProfilesRfProfileIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessRfProfilesRfProfileIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSignalQualityHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSignalQualityHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsOweRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsOweRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberBonjourForwardingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberDeviceTypeGroupPoliciesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberEapOverrideRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberEapOverrideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberEapOverrideRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberEapOverrideRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberFirewallL3FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberFirewallL7FirewallRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberHotspot20RouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberHotspot20Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberHotspot20RouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberHotspot20Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberIdentityPsksRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberIdentityPsksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postNetworksNetworkIdWirelessSsidsNumberIdentityPsksRouteHandler: RouteHandler<
+  typeof postNetworksNetworkIdWirelessSsidsNumberIdentityPsksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRouteHandler: RouteHandler<
+  typeof deleteNetworksNetworkIdWirelessSsidsNumberIdentityPsksIdentityPskIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberOpenRoamingRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberOpenRoamingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberOverridesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberOverridesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberOverridesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberSchedulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberSchedulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberSchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberSplashSettingsRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberSplashSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberSplashSettingsRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberSplashSettingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberTrafficShapingRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessSsidsNumberVpnRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessSsidsNumberVpnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessSsidsNumberVpnRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessSsidsNumberVpnRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getNetworksNetworkIdWirelessUsageHistoryRouteHandler: RouteHandler<
+  typeof getNetworksNetworkIdWirelessUsageHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putNetworksNetworkIdWirelessZigbeeRouteHandler: RouteHandler<
+  typeof putNetworksNetworkIdWirelessZigbeeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

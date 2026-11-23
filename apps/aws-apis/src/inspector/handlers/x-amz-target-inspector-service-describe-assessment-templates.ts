@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetInspectorServiceDescribeAssessmentTemplatesHandler = app.openapi(
-  postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRouteHandler: RouteHandler<
+  typeof postXAmzTargetInspectorServiceDescribeAssessmentTemplatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

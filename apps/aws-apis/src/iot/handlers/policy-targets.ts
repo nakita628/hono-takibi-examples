@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPolicyTargetsPolicyNameRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPolicyTargetsPolicyNameRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const policyTargetsHandler = app.openapi(postPolicyTargetsPolicyNameRoute, (c) => {
+export const postPolicyTargetsPolicyNameRouteHandler: RouteHandler<
+  typeof postPolicyTargetsPolicyNameRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

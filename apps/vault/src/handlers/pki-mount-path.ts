@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePkiMountPathEabKeyIdRoute,
   deletePkiMountPathIssuerIssuerRefRoute,
   deletePkiMountPathKeyKeyRefRoute,
@@ -146,438 +146,866 @@ import {
   postPkiMountPathTidyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPkiMountPathAcmeAccountKidRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeAccountKidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pkiMountPathHandler = app
-  .openapi(postPkiMountPathAcmeAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeAuthorizationAuthIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeChallengeAuthIdChallengeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathAcmeDirectoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeNewAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeNewEabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathAcmeNewNonceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeNewOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeOrderOrderIdCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeOrderOrderIdFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathAcmeRevokeCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCaPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCaChainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertCaChainRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertDeltaCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertSerialRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertSerialRawRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertSerialRawPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCertsRevokedIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigAcmeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigAutoTidyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigAutoTidyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigCaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigClusterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigIssuersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigIssuersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathConfigUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathConfigUrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlDeltaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlDeltaPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlRotateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathCrlRotateDeltaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathEabIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePkiMountPathEabKeyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIntermediateCrossSignRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIntermediateGenerateExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIntermediateSetSignedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssueRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePkiMountPathIssuerIssuerRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeAuthorizationAuthIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeChallengeAuthIdChallengeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefAcmeDirectoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeNewAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeNewEabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefAcmeNewNonceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeNewOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefAcmeRevokeCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlDeltaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlDeltaDerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlDeltaPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlDerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefCrlPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefDerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefIssueRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefJsonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefPemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefResignCrlsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeAuthorizationAuthIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeChallengeAuthIdChallengeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefRolesRoleAcmeDirectoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewEabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuerIssuerRefRolesRoleAcmeNewNonceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefRolesRoleAcmeRevokeCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignIntermediateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignRevocationListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignSelfIssuedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignVerbatimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignVerbatimRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuerIssuerRefSignRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathIssuersIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuersGenerateIntermediateExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuersGenerateRootExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuersImportBundleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathIssuersImportCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathKeyKeyRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathKeyKeyRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePkiMountPathKeyKeyRefRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathKeysIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathKeysGenerateExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathKeysGenerateInternalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathKeysGenerateKmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathKeysImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathOcspRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathOcspReqRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRevokeWithKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathRolesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePkiMountPathRolesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeAccountKidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeAuthorizationAuthIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeChallengeAuthIdChallengeTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathRolesRoleAcmeDirectoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeNewAccountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeNewEabRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathRolesRoleAcmeNewNonceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeNewOrderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeOrderOrderIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeOrderOrderIdCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeOrderOrderIdFinalizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeOrdersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRolesRoleAcmeRevokeCertRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePkiMountPathRootRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRootGenerateExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRootReplaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRootRotateExportedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRootSignIntermediateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathRootSignSelfIssuedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathSignVerbatimRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathSignVerbatimRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathSignRoleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathTidyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPkiMountPathTidyCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPkiMountPathTidyStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPkiMountPathAcmeAuthorizationAuthIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeAuthorizationAuthIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeChallengeAuthIdChallengeTypeRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeChallengeAuthIdChallengeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathAcmeDirectoryRouteHandler: RouteHandler<
+  typeof getPkiMountPathAcmeDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeNewAccountRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeNewAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeNewEabRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeNewEabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathAcmeNewNonceRouteHandler: RouteHandler<
+  typeof getPkiMountPathAcmeNewNonceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeNewOrderRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeNewOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeOrderOrderIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeOrderOrderIdCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeOrderOrderIdCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeOrderOrderIdFinalizeRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeOrderOrderIdFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeOrdersRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathAcmeRevokeCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathAcmeRevokeCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCaRouteHandler: RouteHandler<typeof getPkiMountPathCaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCaPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathCaPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCaChainRouteHandler: RouteHandler<
+  typeof getPkiMountPathCaChainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertCaChainRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertCaChainRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertCrlRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertCrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertDeltaCrlRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertDeltaCrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertSerialRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertSerialRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertSerialRawRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertSerialRawRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertSerialRawPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertSerialRawPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertsIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCertsRevokedIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathCertsRevokedIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigAcmeRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigAcmeRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigAcmeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigAutoTidyRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigAutoTidyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigAutoTidyRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigAutoTidyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigCaRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigCaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigClusterRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigClusterRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigClusterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigCrlRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigCrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigCrlRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigCrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigIssuersRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigIssuersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigIssuersRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigIssuersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigKeysRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigKeysRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigKeysRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathConfigUrlsRouteHandler: RouteHandler<
+  typeof getPkiMountPathConfigUrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathConfigUrlsRouteHandler: RouteHandler<
+  typeof postPkiMountPathConfigUrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlRouteHandler: RouteHandler<typeof getPkiMountPathCrlRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlDeltaRouteHandler: RouteHandler<
+  typeof getPkiMountPathCrlDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlDeltaPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathCrlDeltaPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathCrlPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlRotateRouteHandler: RouteHandler<
+  typeof getPkiMountPathCrlRotateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathCrlRotateDeltaRouteHandler: RouteHandler<
+  typeof getPkiMountPathCrlRotateDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathEabIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathEabIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePkiMountPathEabKeyIdRouteHandler: RouteHandler<
+  typeof deletePkiMountPathEabKeyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIntermediateCrossSignRouteHandler: RouteHandler<
+  typeof postPkiMountPathIntermediateCrossSignRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIntermediateGenerateExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathIntermediateGenerateExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIntermediateSetSignedRouteHandler: RouteHandler<
+  typeof postPkiMountPathIntermediateSetSignedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssueRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssueRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePkiMountPathIssuerIssuerRefRouteHandler: RouteHandler<
+  typeof deletePkiMountPathIssuerIssuerRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeAccountKidRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeAccountKidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeAuthorizationAuthIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeAuthorizationAuthIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeChallengeAuthIdChallengeTypeRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeChallengeAuthIdChallengeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefAcmeDirectoryRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefAcmeDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeNewAccountRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeNewAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeNewEabRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeNewEabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefAcmeNewNonceRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefAcmeNewNonceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeNewOrderRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeNewOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdFinalizeRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeOrderOrderIdFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeOrdersRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefAcmeRevokeCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefAcmeRevokeCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlDeltaRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlDeltaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlDeltaDerRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlDeltaDerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlDeltaPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlDeltaPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlDerRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlDerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefCrlPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefCrlPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefDerRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefDerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefIssueRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefIssueRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefJsonRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefJsonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefPemRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefPemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefResignCrlsRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefResignCrlsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRevokeRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeAccountKidRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeAccountKidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeAuthorizationAuthIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeAuthorizationAuthIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeChallengeAuthIdChallengeTypeRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeChallengeAuthIdChallengeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefRolesRoleAcmeDirectoryRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefRolesRoleAcmeDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewAccountRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewEabRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewEabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuerIssuerRefRolesRoleAcmeNewNonceRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuerIssuerRefRolesRoleAcmeNewNonceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewOrderRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeNewOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdFinalizeRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrderOrderIdFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrdersRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefRolesRoleAcmeRevokeCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefRolesRoleAcmeRevokeCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignIntermediateRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignIntermediateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignRevocationListRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignRevocationListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignSelfIssuedRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignSelfIssuedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignVerbatimRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignVerbatimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignVerbatimRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignVerbatimRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuerIssuerRefSignRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuerIssuerRefSignRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathIssuersIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathIssuersIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuersGenerateIntermediateExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuersGenerateIntermediateExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuersGenerateRootExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuersGenerateRootExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuersImportBundleRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuersImportBundleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathIssuersImportCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathIssuersImportCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathKeyKeyRefRouteHandler: RouteHandler<
+  typeof getPkiMountPathKeyKeyRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathKeyKeyRefRouteHandler: RouteHandler<
+  typeof postPkiMountPathKeyKeyRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePkiMountPathKeyKeyRefRouteHandler: RouteHandler<
+  typeof deletePkiMountPathKeyKeyRefRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathKeysIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathKeysIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathKeysGenerateExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathKeysGenerateExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathKeysGenerateInternalRouteHandler: RouteHandler<
+  typeof postPkiMountPathKeysGenerateInternalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathKeysGenerateKmsRouteHandler: RouteHandler<
+  typeof postPkiMountPathKeysGenerateKmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathKeysImportRouteHandler: RouteHandler<
+  typeof postPkiMountPathKeysImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathOcspRouteHandler: RouteHandler<
+  typeof postPkiMountPathOcspRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathOcspReqRouteHandler: RouteHandler<
+  typeof getPkiMountPathOcspReqRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRevokeRouteHandler: RouteHandler<
+  typeof postPkiMountPathRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRevokeWithKeyRouteHandler: RouteHandler<
+  typeof postPkiMountPathRevokeWithKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathRolesIndexRouteHandler: RouteHandler<
+  typeof getPkiMountPathRolesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathRolesNameRouteHandler: RouteHandler<
+  typeof getPkiMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesNameRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePkiMountPathRolesNameRouteHandler: RouteHandler<
+  typeof deletePkiMountPathRolesNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeAccountKidRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeAccountKidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeAuthorizationAuthIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeAuthorizationAuthIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeChallengeAuthIdChallengeTypeRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeChallengeAuthIdChallengeTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathRolesRoleAcmeDirectoryRouteHandler: RouteHandler<
+  typeof getPkiMountPathRolesRoleAcmeDirectoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeNewAccountRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeNewAccountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeNewEabRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeNewEabRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathRolesRoleAcmeNewNonceRouteHandler: RouteHandler<
+  typeof getPkiMountPathRolesRoleAcmeNewNonceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeNewOrderRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeNewOrderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeOrderOrderIdRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeOrderOrderIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeOrderOrderIdCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeOrderOrderIdCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeOrderOrderIdFinalizeRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeOrderOrderIdFinalizeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeOrdersRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeOrdersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRolesRoleAcmeRevokeCertRouteHandler: RouteHandler<
+  typeof postPkiMountPathRolesRoleAcmeRevokeCertRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePkiMountPathRootRouteHandler: RouteHandler<
+  typeof deletePkiMountPathRootRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRootGenerateExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathRootGenerateExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRootReplaceRouteHandler: RouteHandler<
+  typeof postPkiMountPathRootReplaceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRootRotateExportedRouteHandler: RouteHandler<
+  typeof postPkiMountPathRootRotateExportedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRootSignIntermediateRouteHandler: RouteHandler<
+  typeof postPkiMountPathRootSignIntermediateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathRootSignSelfIssuedRouteHandler: RouteHandler<
+  typeof postPkiMountPathRootSignSelfIssuedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathSignVerbatimRouteHandler: RouteHandler<
+  typeof postPkiMountPathSignVerbatimRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathSignVerbatimRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathSignVerbatimRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathSignRoleRouteHandler: RouteHandler<
+  typeof postPkiMountPathSignRoleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathTidyRouteHandler: RouteHandler<
+  typeof postPkiMountPathTidyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPkiMountPathTidyCancelRouteHandler: RouteHandler<
+  typeof postPkiMountPathTidyCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPkiMountPathTidyStatusRouteHandler: RouteHandler<
+  typeof getPkiMountPathTidyStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -7,7 +7,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         input: { json: { choices?: string[] | undefined; question?: string | undefined } }
         output: {}
         outputFormat: string
-        status: 200
+        status: 201
       }
     }
   },

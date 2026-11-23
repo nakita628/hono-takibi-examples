@@ -1,63 +1,5384 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  adminHandler,
-  agentsHandler,
-  authenticatorsHandler,
-  coreHandler,
-  cryptoHandler,
-  debugHandler,
-  endpointsHandler,
-  enterpriseHandler,
-  eventsHandler,
-  flowsHandler,
-  lifecycleHandler,
-  managedHandler,
-  oauth2Handler,
-  outpostsHandler,
-  policiesHandler,
-  propertymappingsHandler,
-  providersHandler,
-  racHandler,
-  rbacHandler,
-  reportsHandler,
-  requestsHandler,
-  rootHandler,
-  schemaHandler,
-  sourcesHandler,
-  ssfHandler,
-  stagesHandler,
-  tasksHandler,
+  deleteAdminFileIndexRoute,
+  deleteAgentsAgentsIdIndexRoute,
+  deleteAuthenticatorsAdminDuoIdIndexRoute,
+  deleteAuthenticatorsAdminEmailIdIndexRoute,
+  deleteAuthenticatorsAdminEndpointUuidIndexRoute,
+  deleteAuthenticatorsAdminSmsIdIndexRoute,
+  deleteAuthenticatorsAdminStaticIdIndexRoute,
+  deleteAuthenticatorsAdminTotpIdIndexRoute,
+  deleteAuthenticatorsAdminWebauthnIdIndexRoute,
+  deleteAuthenticatorsDuoIdIndexRoute,
+  deleteAuthenticatorsEmailIdIndexRoute,
+  deleteAuthenticatorsSmsIdIndexRoute,
+  deleteAuthenticatorsStaticIdIndexRoute,
+  deleteAuthenticatorsTotpIdIndexRoute,
+  deleteAuthenticatorsWebauthnIdIndexRoute,
+  deleteCoreApplicationEntitlementsPbmUuidIndexRoute,
+  deleteCoreApplicationsSlugIndexRoute,
+  deleteCoreAuthenticatedSessionsBulkDeleteIndexRoute,
+  deleteCoreAuthenticatedSessionsUuidIndexRoute,
+  deleteCoreBrandsBrandUuidIndexRoute,
+  deleteCoreGroupsGroupUuidIndexRoute,
+  deleteCoreObjectAttributesAttributeIdIndexRoute,
+  deleteCoreTokensIdentifierIndexRoute,
+  deleteCoreUserConsentIdIndexRoute,
+  deleteCoreUsersIdIndexRoute,
+  deleteCryptoCertificatekeypairsKpUuidIndexRoute,
+  deleteEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+  deleteEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+  deleteEndpointsAgentsPssoIseUuidIndexRoute,
+  deleteEndpointsAgentsPssoRegisterDeviceIndexRoute,
+  deleteEndpointsConnectorsConnectorUuidIndexRoute,
+  deleteEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+  deleteEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+  deleteEndpointsDevicesDeviceUuidIndexRoute,
+  deleteEndpointsFleetConnectorsConnectorUuidIndexRoute,
+  deleteEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+  deleteEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+  deleteEnterpriseLicenseLicenseUuidIndexRoute,
+  deleteEventsEventsEventUuidIndexRoute,
+  deleteEventsNotificationsUuidIndexRoute,
+  deleteEventsRulesPbmUuidIndexRoute,
+  deleteEventsTransportsUuidIndexRoute,
+  deleteFlowsBindingsFsbUuidIndexRoute,
+  deleteFlowsInstancesSlugIndexRoute,
+  deleteLifecycleRulesIdIndexRoute,
+  deleteLifecycleUserExpirationRulesIdIndexRoute,
+  deleteLifecycleUserOffboardingIdIndexRoute,
+  deleteManagedBlueprintsInstanceUuidIndexRoute,
+  deleteOauth2AccessTokensIdIndexRoute,
+  deleteOauth2AuthorizationCodesIdIndexRoute,
+  deleteOauth2RefreshTokensIdIndexRoute,
+  deleteOutpostsInstancesUuidIndexRoute,
+  deleteOutpostsServiceConnectionsAllUuidIndexRoute,
+  deleteOutpostsServiceConnectionsDockerUuidIndexRoute,
+  deleteOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+  deletePoliciesAllPolicyUuidIndexRoute,
+  deletePoliciesBindingsPolicyBindingUuidIndexRoute,
+  deletePoliciesDummyPolicyUuidIndexRoute,
+  deletePoliciesEventMatcherPolicyUuidIndexRoute,
+  deletePoliciesExpressionPolicyUuidIndexRoute,
+  deletePoliciesGeoipPolicyUuidIndexRoute,
+  deletePoliciesPasswordExpiryPolicyUuidIndexRoute,
+  deletePoliciesPasswordPolicyUuidIndexRoute,
+  deletePoliciesReputationPolicyUuidIndexRoute,
+  deletePoliciesReputationScoresReputationUuidIndexRoute,
+  deletePoliciesUniquePasswordPolicyUuidIndexRoute,
+  deletePropertymappingsAllPmUuidIndexRoute,
+  deletePropertymappingsNotificationPmUuidIndexRoute,
+  deletePropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+  deletePropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+  deletePropertymappingsProviderRacPmUuidIndexRoute,
+  deletePropertymappingsProviderRadiusPmUuidIndexRoute,
+  deletePropertymappingsProviderSamlPmUuidIndexRoute,
+  deletePropertymappingsProviderScimPmUuidIndexRoute,
+  deletePropertymappingsProviderScopePmUuidIndexRoute,
+  deletePropertymappingsSourceKerberosPmUuidIndexRoute,
+  deletePropertymappingsSourceLdapPmUuidIndexRoute,
+  deletePropertymappingsSourceOauthPmUuidIndexRoute,
+  deletePropertymappingsSourcePlexPmUuidIndexRoute,
+  deletePropertymappingsSourceSamlPmUuidIndexRoute,
+  deletePropertymappingsSourceScimPmUuidIndexRoute,
+  deletePropertymappingsSourceTelegramPmUuidIndexRoute,
+  deleteProvidersAllIdIndexRoute,
+  deleteProvidersGoogleWorkspaceGroupsIdIndexRoute,
+  deleteProvidersGoogleWorkspaceIdIndexRoute,
+  deleteProvidersGoogleWorkspaceUsersIdIndexRoute,
+  deleteProvidersLdapIdIndexRoute,
+  deleteProvidersMicrosoftEntraGroupsIdIndexRoute,
+  deleteProvidersMicrosoftEntraIdIndexRoute,
+  deleteProvidersMicrosoftEntraUsersIdIndexRoute,
+  deleteProvidersOauth2DcrPbmUuidIndexRoute,
+  deleteProvidersOauth2IdIndexRoute,
+  deleteProvidersProxyIdIndexRoute,
+  deleteProvidersRacIdIndexRoute,
+  deleteProvidersRadiusIdIndexRoute,
+  deleteProvidersSamlIdIndexRoute,
+  deleteProvidersScimGroupsIdIndexRoute,
+  deleteProvidersScimIdIndexRoute,
+  deleteProvidersScimUsersIdIndexRoute,
+  deleteProvidersSsfIdIndexRoute,
+  deleteProvidersWsfedIdIndexRoute,
+  deleteRacConnectionTokensConnectionTokenUuidIndexRoute,
+  deleteRbacCustomPermissionsIdIndexRoute,
+  deleteRbacInitialPermissionsIdIndexRoute,
+  deleteRbacPermissionChecksCheckUuidIndexRoute,
+  deleteRbacRolesUuidIndexRoute,
+  deleteReportsExportsIdIndexRoute,
+  deleteRequestsGrantRequestsUuidIndexRoute,
+  deleteRequestsGrantRequestsUuidRevokeIndexRoute,
+  deleteRequestsRuleBindingsUuidIndexRoute,
+  deleteRequestsRuleChildBindingsUuidIndexRoute,
+  deleteRequestsRulesUuidIndexRoute,
+  deleteSourcesAllSlugIndexRoute,
+  deleteSourcesGroupConnectionsAllIdIndexRoute,
+  deleteSourcesGroupConnectionsKerberosIdIndexRoute,
+  deleteSourcesGroupConnectionsLdapIdIndexRoute,
+  deleteSourcesGroupConnectionsOauthIdIndexRoute,
+  deleteSourcesGroupConnectionsPlexIdIndexRoute,
+  deleteSourcesGroupConnectionsSamlIdIndexRoute,
+  deleteSourcesGroupConnectionsTelegramIdIndexRoute,
+  deleteSourcesKerberosSlugIndexRoute,
+  deleteSourcesLdapSlugIndexRoute,
+  deleteSourcesOauthSlugIndexRoute,
+  deleteSourcesPlexSlugIndexRoute,
+  deleteSourcesSamlSlugIndexRoute,
+  deleteSourcesScimGroupsIdIndexRoute,
+  deleteSourcesScimSlugIndexRoute,
+  deleteSourcesScimUsersIdIndexRoute,
+  deleteSourcesTelegramSlugIndexRoute,
+  deleteSourcesUserConnectionsAllIdIndexRoute,
+  deleteSourcesUserConnectionsKerberosIdIndexRoute,
+  deleteSourcesUserConnectionsLdapIdIndexRoute,
+  deleteSourcesUserConnectionsOauthIdIndexRoute,
+  deleteSourcesUserConnectionsPlexIdIndexRoute,
+  deleteSourcesUserConnectionsSamlIdIndexRoute,
+  deleteSourcesUserConnectionsTelegramIdIndexRoute,
+  deleteSsfStreamsUuidIndexRoute,
+  deleteStagesAccountLockdownStageUuidIndexRoute,
+  deleteStagesAllStageUuidIndexRoute,
+  deleteStagesAuthenticatorDuoStageUuidIndexRoute,
+  deleteStagesAuthenticatorEmailStageUuidIndexRoute,
+  deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+  deleteStagesAuthenticatorSmsStageUuidIndexRoute,
+  deleteStagesAuthenticatorStaticStageUuidIndexRoute,
+  deleteStagesAuthenticatorTotpStageUuidIndexRoute,
+  deleteStagesAuthenticatorValidateStageUuidIndexRoute,
+  deleteStagesAuthenticatorWebauthnStageUuidIndexRoute,
+  deleteStagesCaptchaStageUuidIndexRoute,
+  deleteStagesConsentStageUuidIndexRoute,
+  deleteStagesDenyStageUuidIndexRoute,
+  deleteStagesDummyStageUuidIndexRoute,
+  deleteStagesEmailStageUuidIndexRoute,
+  deleteStagesEndpointsStageUuidIndexRoute,
+  deleteStagesIdentificationStageUuidIndexRoute,
+  deleteStagesInvitationInvitationsInviteUuidIndexRoute,
+  deleteStagesInvitationStagesStageUuidIndexRoute,
+  deleteStagesMtlsStageUuidIndexRoute,
+  deleteStagesPasswordStageUuidIndexRoute,
+  deleteStagesPromptPromptsPromptUuidIndexRoute,
+  deleteStagesPromptStagesStageUuidIndexRoute,
+  deleteStagesRedirectStageUuidIndexRoute,
+  deleteStagesSourceStageUuidIndexRoute,
+  deleteStagesUserDeleteStageUuidIndexRoute,
+  deleteStagesUserLoginStageUuidIndexRoute,
+  deleteStagesUserLogoutStageUuidIndexRoute,
+  deleteStagesUserWriteStageUuidIndexRoute,
+  getAdminAppsIndexRoute,
+  getAdminFileIndexRoute,
+  getAdminFileUsedByIndexRoute,
+  getAdminModelsIndexRoute,
+  getAdminSettingsIndexRoute,
+  getAdminSystemIndexRoute,
+  getAdminVersionHistoryIdIndexRoute,
+  getAdminVersionHistoryIndexRoute,
+  getAdminVersionIndexRoute,
+  getAgentsAgentsIdIndexRoute,
+  getAgentsAgentsIndexRoute,
+  getAuthenticatorsAdminAllIndexRoute,
+  getAuthenticatorsAdminDuoIdIndexRoute,
+  getAuthenticatorsAdminDuoIndexRoute,
+  getAuthenticatorsAdminEmailIdIndexRoute,
+  getAuthenticatorsAdminEmailIndexRoute,
+  getAuthenticatorsAdminEndpointIndexRoute,
+  getAuthenticatorsAdminEndpointUuidIndexRoute,
+  getAuthenticatorsAdminSmsIdIndexRoute,
+  getAuthenticatorsAdminSmsIndexRoute,
+  getAuthenticatorsAdminStaticIdIndexRoute,
+  getAuthenticatorsAdminStaticIndexRoute,
+  getAuthenticatorsAdminTotpIdIndexRoute,
+  getAuthenticatorsAdminTotpIndexRoute,
+  getAuthenticatorsAdminWebauthnIdIndexRoute,
+  getAuthenticatorsAdminWebauthnIndexRoute,
+  getAuthenticatorsAllIndexRoute,
+  getAuthenticatorsDuoIdIndexRoute,
+  getAuthenticatorsDuoIdUsedByIndexRoute,
+  getAuthenticatorsDuoIndexRoute,
+  getAuthenticatorsEmailIdIndexRoute,
+  getAuthenticatorsEmailIdUsedByIndexRoute,
+  getAuthenticatorsEmailIndexRoute,
+  getAuthenticatorsEndpointIndexRoute,
+  getAuthenticatorsEndpointUuidIndexRoute,
+  getAuthenticatorsEndpointUuidUsedByIndexRoute,
+  getAuthenticatorsSmsIdIndexRoute,
+  getAuthenticatorsSmsIdUsedByIndexRoute,
+  getAuthenticatorsSmsIndexRoute,
+  getAuthenticatorsStaticIdIndexRoute,
+  getAuthenticatorsStaticIdUsedByIndexRoute,
+  getAuthenticatorsStaticIndexRoute,
+  getAuthenticatorsTotpIdIndexRoute,
+  getAuthenticatorsTotpIdUsedByIndexRoute,
+  getAuthenticatorsTotpIndexRoute,
+  getAuthenticatorsWebauthnIdIndexRoute,
+  getAuthenticatorsWebauthnIdUsedByIndexRoute,
+  getAuthenticatorsWebauthnIndexRoute,
+  getCoreApplicationEntitlementsIndexRoute,
+  getCoreApplicationEntitlementsPbmUuidIndexRoute,
+  getCoreApplicationEntitlementsPbmUuidUsedByIndexRoute,
+  getCoreApplicationEntitlementsRequestableIndexRoute,
+  getCoreApplicationsAccessibleIndexRoute,
+  getCoreApplicationsIndexRoute,
+  getCoreApplicationsRequestableIndexRoute,
+  getCoreApplicationsSlugCheckAccessIndexRoute,
+  getCoreApplicationsSlugIndexRoute,
+  getCoreApplicationsSlugUsedByIndexRoute,
+  getCoreAuthenticatedSessionsIndexRoute,
+  getCoreAuthenticatedSessionsUuidIndexRoute,
+  getCoreAuthenticatedSessionsUuidUsedByIndexRoute,
+  getCoreBrandsBrandUuidIndexRoute,
+  getCoreBrandsBrandUuidUsedByIndexRoute,
+  getCoreBrandsCurrentIndexRoute,
+  getCoreBrandsIndexRoute,
+  getCoreGroupsGroupUuidIndexRoute,
+  getCoreGroupsGroupUuidUsedByIndexRoute,
+  getCoreGroupsIndexRoute,
+  getCoreObjectAttributesAttributeIdIndexRoute,
+  getCoreObjectAttributesIndexRoute,
+  getCoreTokensIdentifierIndexRoute,
+  getCoreTokensIdentifierUsedByIndexRoute,
+  getCoreTokensIdentifierViewKeyIndexRoute,
+  getCoreTokensIndexRoute,
+  getCoreUserConsentIdIndexRoute,
+  getCoreUserConsentIdUsedByIndexRoute,
+  getCoreUserConsentIndexRoute,
+  getCoreUsersIdIndexRoute,
+  getCoreUsersIdUsedByIndexRoute,
+  getCoreUsersImpersonateEndIndexRoute,
+  getCoreUsersIndexRoute,
+  getCoreUsersMeIndexRoute,
+  getCoreUsersPathsIndexRoute,
+  getCryptoCertificatekeypairsIndexRoute,
+  getCryptoCertificatekeypairsKpUuidIndexRoute,
+  getCryptoCertificatekeypairsKpUuidUsedByIndexRoute,
+  getCryptoCertificatekeypairsKpUuidViewCertificateIndexRoute,
+  getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRoute,
+  getEndpointsAgentsConnectorsAgentConfigIndexRoute,
+  getEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+  getEndpointsAgentsConnectorsConnectorUuidUsedByIndexRoute,
+  getEndpointsAgentsConnectorsIndexRoute,
+  getEndpointsAgentsEnrollmentTokensIndexRoute,
+  getEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+  getEndpointsAgentsEnrollmentTokensTokenUuidUsedByIndexRoute,
+  getEndpointsAgentsEnrollmentTokensTokenUuidViewKeyIndexRoute,
+  getEndpointsAgentsPssoIseIndexRoute,
+  getEndpointsAgentsPssoIseUuidIndexRoute,
+  getEndpointsAgentsPssoIseUuidUsedByIndexRoute,
+  getEndpointsAgentsPssoRegisterDeviceIndexRoute,
+  getEndpointsConnectorsConnectorUuidIndexRoute,
+  getEndpointsConnectorsConnectorUuidUsedByIndexRoute,
+  getEndpointsConnectorsIndexRoute,
+  getEndpointsConnectorsTypesIndexRoute,
+  getEndpointsDeviceAccessGroupsIndexRoute,
+  getEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+  getEndpointsDeviceAccessGroupsPbmUuidUsedByIndexRoute,
+  getEndpointsDeviceBindingsIndexRoute,
+  getEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+  getEndpointsDeviceBindingsPolicyBindingUuidUsedByIndexRoute,
+  getEndpointsDevicesDeviceUuidIndexRoute,
+  getEndpointsDevicesDeviceUuidUsedByIndexRoute,
+  getEndpointsDevicesIndexRoute,
+  getEndpointsDevicesSummaryIndexRoute,
+  getEndpointsFleetConnectorsConnectorUuidIndexRoute,
+  getEndpointsFleetConnectorsConnectorUuidUsedByIndexRoute,
+  getEndpointsFleetConnectorsIndexRoute,
+  getEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+  getEndpointsGoogleChromeConnectorsConnectorUuidUsedByIndexRoute,
+  getEndpointsGoogleChromeConnectorsIndexRoute,
+  getEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+  getEndpointsMicrosoftIntuneConnectorsConnectorUuidUsedByIndexRoute,
+  getEndpointsMicrosoftIntuneConnectorsIndexRoute,
+  getEnterpriseLicenseIndexRoute,
+  getEnterpriseLicenseInstallIdIndexRoute,
+  getEnterpriseLicenseLicenseUuidIndexRoute,
+  getEnterpriseLicenseLicenseUuidUsedByIndexRoute,
+  getEnterpriseLicenseSummaryIndexRoute,
+  getEnterpriseLicenseUserCountsIndexRoute,
+  getEventsEventsActionsIndexRoute,
+  getEventsEventsEventUuidIndexRoute,
+  getEventsEventsIndexRoute,
+  getEventsEventsStatsIndexRoute,
+  getEventsEventsTopPerUserIndexRoute,
+  getEventsEventsVolumeIndexRoute,
+  getEventsNotificationsIndexRoute,
+  getEventsNotificationsUuidIndexRoute,
+  getEventsNotificationsUuidUsedByIndexRoute,
+  getEventsRulesIndexRoute,
+  getEventsRulesPbmUuidIndexRoute,
+  getEventsRulesPbmUuidUsedByIndexRoute,
+  getEventsTransportsIndexRoute,
+  getEventsTransportsUuidIndexRoute,
+  getEventsTransportsUuidUsedByIndexRoute,
+  getFlowsBindingsFsbUuidIndexRoute,
+  getFlowsBindingsFsbUuidUsedByIndexRoute,
+  getFlowsBindingsIndexRoute,
+  getFlowsExecutorFlowSlugIndexRoute,
+  getFlowsInspectorFlowSlugIndexRoute,
+  getFlowsInstancesCacheInfoIndexRoute,
+  getFlowsInstancesIndexRoute,
+  getFlowsInstancesSlugDiagramIndexRoute,
+  getFlowsInstancesSlugExecuteIndexRoute,
+  getFlowsInstancesSlugExportIndexRoute,
+  getFlowsInstancesSlugIndexRoute,
+  getFlowsInstancesSlugUsedByIndexRoute,
+  getLifecycleIterationsLatestContentTypeObjectIdIndexRoute,
+  getLifecycleIterationsOpenIndexRoute,
+  getLifecycleRulesIdIndexRoute,
+  getLifecycleRulesIndexRoute,
+  getLifecycleUserExpirationRulesIdIndexRoute,
+  getLifecycleUserExpirationRulesIdPreviewIndexRoute,
+  getLifecycleUserExpirationRulesIdUsedByIndexRoute,
+  getLifecycleUserExpirationRulesIndexRoute,
+  getLifecycleUserOffboardingIdIndexRoute,
+  getLifecycleUserOffboardingIndexRoute,
+  getManagedBlueprintsAvailableIndexRoute,
+  getManagedBlueprintsIndexRoute,
+  getManagedBlueprintsInstanceUuidIndexRoute,
+  getManagedBlueprintsInstanceUuidUsedByIndexRoute,
+  getOauth2AccessTokensIdIndexRoute,
+  getOauth2AccessTokensIdUsedByIndexRoute,
+  getOauth2AccessTokensIndexRoute,
+  getOauth2AuthorizationCodesIdIndexRoute,
+  getOauth2AuthorizationCodesIdUsedByIndexRoute,
+  getOauth2AuthorizationCodesIndexRoute,
+  getOauth2RefreshTokensIdIndexRoute,
+  getOauth2RefreshTokensIdUsedByIndexRoute,
+  getOauth2RefreshTokensIndexRoute,
+  getOutpostsInstancesDefaultSettingsIndexRoute,
+  getOutpostsInstancesIndexRoute,
+  getOutpostsInstancesUuidHealthIndexRoute,
+  getOutpostsInstancesUuidIndexRoute,
+  getOutpostsInstancesUuidUsedByIndexRoute,
+  getOutpostsLdapIdCheckAccessIndexRoute,
+  getOutpostsLdapIndexRoute,
+  getOutpostsProxyIndexRoute,
+  getOutpostsRadiusIdCheckAccessIndexRoute,
+  getOutpostsRadiusIndexRoute,
+  getOutpostsServiceConnectionsAllIndexRoute,
+  getOutpostsServiceConnectionsAllTypesIndexRoute,
+  getOutpostsServiceConnectionsAllUuidIndexRoute,
+  getOutpostsServiceConnectionsAllUuidStateIndexRoute,
+  getOutpostsServiceConnectionsAllUuidUsedByIndexRoute,
+  getOutpostsServiceConnectionsDockerIndexRoute,
+  getOutpostsServiceConnectionsDockerUuidIndexRoute,
+  getOutpostsServiceConnectionsDockerUuidUsedByIndexRoute,
+  getOutpostsServiceConnectionsKubernetesIndexRoute,
+  getOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+  getOutpostsServiceConnectionsKubernetesUuidUsedByIndexRoute,
+  getPoliciesAllCacheInfoIndexRoute,
+  getPoliciesAllIndexRoute,
+  getPoliciesAllPolicyUuidIndexRoute,
+  getPoliciesAllPolicyUuidUsedByIndexRoute,
+  getPoliciesAllTypesIndexRoute,
+  getPoliciesBindingsIndexRoute,
+  getPoliciesBindingsPolicyBindingUuidIndexRoute,
+  getPoliciesBindingsPolicyBindingUuidUsedByIndexRoute,
+  getPoliciesDummyIndexRoute,
+  getPoliciesDummyPolicyUuidIndexRoute,
+  getPoliciesDummyPolicyUuidUsedByIndexRoute,
+  getPoliciesEventMatcherIndexRoute,
+  getPoliciesEventMatcherPolicyUuidIndexRoute,
+  getPoliciesEventMatcherPolicyUuidUsedByIndexRoute,
+  getPoliciesExpressionIndexRoute,
+  getPoliciesExpressionPolicyUuidIndexRoute,
+  getPoliciesExpressionPolicyUuidUsedByIndexRoute,
+  getPoliciesGeoipIndexRoute,
+  getPoliciesGeoipIso3166IndexRoute,
+  getPoliciesGeoipPolicyUuidIndexRoute,
+  getPoliciesGeoipPolicyUuidUsedByIndexRoute,
+  getPoliciesPasswordExpiryIndexRoute,
+  getPoliciesPasswordExpiryPolicyUuidIndexRoute,
+  getPoliciesPasswordExpiryPolicyUuidUsedByIndexRoute,
+  getPoliciesPasswordIndexRoute,
+  getPoliciesPasswordPolicyUuidIndexRoute,
+  getPoliciesPasswordPolicyUuidUsedByIndexRoute,
+  getPoliciesReputationIndexRoute,
+  getPoliciesReputationPolicyUuidIndexRoute,
+  getPoliciesReputationPolicyUuidUsedByIndexRoute,
+  getPoliciesReputationScoresIndexRoute,
+  getPoliciesReputationScoresReputationUuidIndexRoute,
+  getPoliciesReputationScoresReputationUuidUsedByIndexRoute,
+  getPoliciesUniquePasswordIndexRoute,
+  getPoliciesUniquePasswordPolicyUuidIndexRoute,
+  getPoliciesUniquePasswordPolicyUuidUsedByIndexRoute,
+  getPropertymappingsAllIndexRoute,
+  getPropertymappingsAllPmUuidIndexRoute,
+  getPropertymappingsAllPmUuidUsedByIndexRoute,
+  getPropertymappingsAllTypesIndexRoute,
+  getPropertymappingsNotificationIndexRoute,
+  getPropertymappingsNotificationPmUuidIndexRoute,
+  getPropertymappingsNotificationPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderGoogleWorkspaceIndexRoute,
+  getPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+  getPropertymappingsProviderGoogleWorkspacePmUuidUsedByIndexRoute,
+  getPropertymappingsProviderMicrosoftEntraIndexRoute,
+  getPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+  getPropertymappingsProviderMicrosoftEntraPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderRacIndexRoute,
+  getPropertymappingsProviderRacPmUuidIndexRoute,
+  getPropertymappingsProviderRacPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderRadiusIndexRoute,
+  getPropertymappingsProviderRadiusPmUuidIndexRoute,
+  getPropertymappingsProviderRadiusPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderSamlIndexRoute,
+  getPropertymappingsProviderSamlPmUuidIndexRoute,
+  getPropertymappingsProviderSamlPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderScimIndexRoute,
+  getPropertymappingsProviderScimPmUuidIndexRoute,
+  getPropertymappingsProviderScimPmUuidUsedByIndexRoute,
+  getPropertymappingsProviderScopeIndexRoute,
+  getPropertymappingsProviderScopePmUuidIndexRoute,
+  getPropertymappingsProviderScopePmUuidUsedByIndexRoute,
+  getPropertymappingsSourceKerberosIndexRoute,
+  getPropertymappingsSourceKerberosPmUuidIndexRoute,
+  getPropertymappingsSourceKerberosPmUuidUsedByIndexRoute,
+  getPropertymappingsSourceLdapIndexRoute,
+  getPropertymappingsSourceLdapPmUuidIndexRoute,
+  getPropertymappingsSourceLdapPmUuidUsedByIndexRoute,
+  getPropertymappingsSourceOauthIndexRoute,
+  getPropertymappingsSourceOauthPmUuidIndexRoute,
+  getPropertymappingsSourceOauthPmUuidUsedByIndexRoute,
+  getPropertymappingsSourcePlexIndexRoute,
+  getPropertymappingsSourcePlexPmUuidIndexRoute,
+  getPropertymappingsSourcePlexPmUuidUsedByIndexRoute,
+  getPropertymappingsSourceSamlIndexRoute,
+  getPropertymappingsSourceSamlPmUuidIndexRoute,
+  getPropertymappingsSourceSamlPmUuidUsedByIndexRoute,
+  getPropertymappingsSourceScimIndexRoute,
+  getPropertymappingsSourceScimPmUuidIndexRoute,
+  getPropertymappingsSourceScimPmUuidUsedByIndexRoute,
+  getPropertymappingsSourceTelegramIndexRoute,
+  getPropertymappingsSourceTelegramPmUuidIndexRoute,
+  getPropertymappingsSourceTelegramPmUuidUsedByIndexRoute,
+  getProvidersAllIdIndexRoute,
+  getProvidersAllIdUsedByIndexRoute,
+  getProvidersAllIndexRoute,
+  getProvidersAllTypesIndexRoute,
+  getProvidersGoogleWorkspaceGroupsIdIndexRoute,
+  getProvidersGoogleWorkspaceGroupsIdUsedByIndexRoute,
+  getProvidersGoogleWorkspaceGroupsIndexRoute,
+  getProvidersGoogleWorkspaceIdIndexRoute,
+  getProvidersGoogleWorkspaceIdSyncStatusIndexRoute,
+  getProvidersGoogleWorkspaceIdUsedByIndexRoute,
+  getProvidersGoogleWorkspaceIndexRoute,
+  getProvidersGoogleWorkspaceUsersIdIndexRoute,
+  getProvidersGoogleWorkspaceUsersIdUsedByIndexRoute,
+  getProvidersGoogleWorkspaceUsersIndexRoute,
+  getProvidersLdapIdIndexRoute,
+  getProvidersLdapIdUsedByIndexRoute,
+  getProvidersLdapIndexRoute,
+  getProvidersMicrosoftEntraGroupsIdIndexRoute,
+  getProvidersMicrosoftEntraGroupsIdUsedByIndexRoute,
+  getProvidersMicrosoftEntraGroupsIndexRoute,
+  getProvidersMicrosoftEntraIdIndexRoute,
+  getProvidersMicrosoftEntraIdSyncStatusIndexRoute,
+  getProvidersMicrosoftEntraIdUsedByIndexRoute,
+  getProvidersMicrosoftEntraIndexRoute,
+  getProvidersMicrosoftEntraUsersIdIndexRoute,
+  getProvidersMicrosoftEntraUsersIdUsedByIndexRoute,
+  getProvidersMicrosoftEntraUsersIndexRoute,
+  getProvidersOauth2DcrIndexRoute,
+  getProvidersOauth2DcrPbmUuidIndexRoute,
+  getProvidersOauth2IdIndexRoute,
+  getProvidersOauth2IdPreviewUserIndexRoute,
+  getProvidersOauth2IdSetupUrlsIndexRoute,
+  getProvidersOauth2IdUsedByIndexRoute,
+  getProvidersOauth2IndexRoute,
+  getProvidersProxyIdIndexRoute,
+  getProvidersProxyIdUsedByIndexRoute,
+  getProvidersProxyIndexRoute,
+  getProvidersRacIdIndexRoute,
+  getProvidersRacIdUsedByIndexRoute,
+  getProvidersRacIndexRoute,
+  getProvidersRadiusIdIndexRoute,
+  getProvidersRadiusIdUsedByIndexRoute,
+  getProvidersRadiusIndexRoute,
+  getProvidersSamlIdIndexRoute,
+  getProvidersSamlIdMetadataIndexRoute,
+  getProvidersSamlIdPreviewUserIndexRoute,
+  getProvidersSamlIdUsedByIndexRoute,
+  getProvidersSamlIndexRoute,
+  getProvidersScimGroupsIdIndexRoute,
+  getProvidersScimGroupsIdUsedByIndexRoute,
+  getProvidersScimGroupsIndexRoute,
+  getProvidersScimIdIndexRoute,
+  getProvidersScimIdSyncStatusIndexRoute,
+  getProvidersScimIdUsedByIndexRoute,
+  getProvidersScimIndexRoute,
+  getProvidersScimUsersIdIndexRoute,
+  getProvidersScimUsersIdUsedByIndexRoute,
+  getProvidersScimUsersIndexRoute,
+  getProvidersSsfIdIndexRoute,
+  getProvidersSsfIdUsedByIndexRoute,
+  getProvidersSsfIndexRoute,
+  getProvidersWsfedIdIndexRoute,
+  getProvidersWsfedIdMetadataIndexRoute,
+  getProvidersWsfedIdPreviewUserIndexRoute,
+  getProvidersWsfedIdUsedByIndexRoute,
+  getProvidersWsfedIndexRoute,
+  getRacConnectionTokensConnectionTokenUuidIndexRoute,
+  getRacConnectionTokensConnectionTokenUuidUsedByIndexRoute,
+  getRacConnectionTokensIndexRoute,
+  getRacDevicesIndexRoute,
+  getRbacCustomPermissionsIdIndexRoute,
+  getRbacCustomPermissionsIndexRoute,
+  getRbacEndpointsIndexRoute,
+  getRbacInitialPermissionsIdIndexRoute,
+  getRbacInitialPermissionsIdUsedByIndexRoute,
+  getRbacInitialPermissionsIndexRoute,
+  getRbacPermissionChecksCheckUuidIndexRoute,
+  getRbacPermissionChecksCheckUuidUsedByIndexRoute,
+  getRbacPermissionChecksIndexRoute,
+  getRbacPermissionsAssignedByRolesIndexRoute,
+  getRbacPermissionsIdIndexRoute,
+  getRbacPermissionsIndexRoute,
+  getRbacPermissionsRolesIndexRoute,
+  getRbacRolesIndexRoute,
+  getRbacRolesUuidIndexRoute,
+  getRbacRolesUuidUsedByIndexRoute,
+  getReportsExportsIdIndexRoute,
+  getReportsExportsIndexRoute,
+  getRequestsGrantRequestsIndexRoute,
+  getRequestsGrantRequestsPendingReviewIndexRoute,
+  getRequestsGrantRequestsUuidIndexRoute,
+  getRequestsRuleBindingsIndexRoute,
+  getRequestsRuleBindingsUuidIndexRoute,
+  getRequestsRuleBindingsUuidUsedByIndexRoute,
+  getRequestsRuleChildBindingsIndexRoute,
+  getRequestsRuleChildBindingsUuidIndexRoute,
+  getRequestsRuleChildBindingsUuidUsedByIndexRoute,
+  getRequestsRulesIndexRoute,
+  getRequestsRulesUuidIndexRoute,
+  getRequestsRulesUuidUsedByIndexRoute,
+  getRootConfigIndexRoute,
+  getSchemaIndexRoute,
+  getSourcesAllIndexRoute,
+  getSourcesAllSlugIndexRoute,
+  getSourcesAllSlugUsedByIndexRoute,
+  getSourcesAllTypesIndexRoute,
+  getSourcesAllUserSettingsIndexRoute,
+  getSourcesGroupConnectionsAllIdIndexRoute,
+  getSourcesGroupConnectionsAllIdUsedByIndexRoute,
+  getSourcesGroupConnectionsAllIndexRoute,
+  getSourcesGroupConnectionsKerberosIdIndexRoute,
+  getSourcesGroupConnectionsKerberosIdUsedByIndexRoute,
+  getSourcesGroupConnectionsKerberosIndexRoute,
+  getSourcesGroupConnectionsLdapIdIndexRoute,
+  getSourcesGroupConnectionsLdapIdUsedByIndexRoute,
+  getSourcesGroupConnectionsLdapIndexRoute,
+  getSourcesGroupConnectionsOauthIdIndexRoute,
+  getSourcesGroupConnectionsOauthIdUsedByIndexRoute,
+  getSourcesGroupConnectionsOauthIndexRoute,
+  getSourcesGroupConnectionsPlexIdIndexRoute,
+  getSourcesGroupConnectionsPlexIdUsedByIndexRoute,
+  getSourcesGroupConnectionsPlexIndexRoute,
+  getSourcesGroupConnectionsSamlIdIndexRoute,
+  getSourcesGroupConnectionsSamlIdUsedByIndexRoute,
+  getSourcesGroupConnectionsSamlIndexRoute,
+  getSourcesGroupConnectionsTelegramIdIndexRoute,
+  getSourcesGroupConnectionsTelegramIdUsedByIndexRoute,
+  getSourcesGroupConnectionsTelegramIndexRoute,
+  getSourcesKerberosIndexRoute,
+  getSourcesKerberosSlugIndexRoute,
+  getSourcesKerberosSlugSyncStatusIndexRoute,
+  getSourcesKerberosSlugUsedByIndexRoute,
+  getSourcesLdapIndexRoute,
+  getSourcesLdapSlugDebugIndexRoute,
+  getSourcesLdapSlugIndexRoute,
+  getSourcesLdapSlugSyncStatusIndexRoute,
+  getSourcesLdapSlugUsedByIndexRoute,
+  getSourcesOauthIndexRoute,
+  getSourcesOauthSlugIndexRoute,
+  getSourcesOauthSlugUsedByIndexRoute,
+  getSourcesOauthSourceTypesIndexRoute,
+  getSourcesPlexIndexRoute,
+  getSourcesPlexSlugIndexRoute,
+  getSourcesPlexSlugUsedByIndexRoute,
+  getSourcesSamlIndexRoute,
+  getSourcesSamlSlugIndexRoute,
+  getSourcesSamlSlugMetadataIndexRoute,
+  getSourcesSamlSlugUsedByIndexRoute,
+  getSourcesScimGroupsIdIndexRoute,
+  getSourcesScimGroupsIdUsedByIndexRoute,
+  getSourcesScimGroupsIndexRoute,
+  getSourcesScimIndexRoute,
+  getSourcesScimSlugIndexRoute,
+  getSourcesScimSlugUsedByIndexRoute,
+  getSourcesScimUsersIdIndexRoute,
+  getSourcesScimUsersIdUsedByIndexRoute,
+  getSourcesScimUsersIndexRoute,
+  getSourcesTelegramIndexRoute,
+  getSourcesTelegramSlugIndexRoute,
+  getSourcesTelegramSlugUsedByIndexRoute,
+  getSourcesUserConnectionsAllIdIndexRoute,
+  getSourcesUserConnectionsAllIdUsedByIndexRoute,
+  getSourcesUserConnectionsAllIndexRoute,
+  getSourcesUserConnectionsKerberosIdIndexRoute,
+  getSourcesUserConnectionsKerberosIdUsedByIndexRoute,
+  getSourcesUserConnectionsKerberosIndexRoute,
+  getSourcesUserConnectionsLdapIdIndexRoute,
+  getSourcesUserConnectionsLdapIdUsedByIndexRoute,
+  getSourcesUserConnectionsLdapIndexRoute,
+  getSourcesUserConnectionsOauthIdIndexRoute,
+  getSourcesUserConnectionsOauthIdUsedByIndexRoute,
+  getSourcesUserConnectionsOauthIndexRoute,
+  getSourcesUserConnectionsPlexIdIndexRoute,
+  getSourcesUserConnectionsPlexIdUsedByIndexRoute,
+  getSourcesUserConnectionsPlexIndexRoute,
+  getSourcesUserConnectionsSamlIdIndexRoute,
+  getSourcesUserConnectionsSamlIdUsedByIndexRoute,
+  getSourcesUserConnectionsSamlIndexRoute,
+  getSourcesUserConnectionsTelegramIdIndexRoute,
+  getSourcesUserConnectionsTelegramIdUsedByIndexRoute,
+  getSourcesUserConnectionsTelegramIndexRoute,
+  getSsfStreamsIndexRoute,
+  getSsfStreamsUuidIndexRoute,
+  getStagesAccountLockdownIndexRoute,
+  getStagesAccountLockdownStageUuidIndexRoute,
+  getStagesAccountLockdownStageUuidUsedByIndexRoute,
+  getStagesAllIndexRoute,
+  getStagesAllStageUuidIndexRoute,
+  getStagesAllStageUuidUsedByIndexRoute,
+  getStagesAllTypesIndexRoute,
+  getStagesAllUserSettingsIndexRoute,
+  getStagesAuthenticatorDuoIndexRoute,
+  getStagesAuthenticatorDuoStageUuidIndexRoute,
+  getStagesAuthenticatorDuoStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorEmailIndexRoute,
+  getStagesAuthenticatorEmailStageUuidIndexRoute,
+  getStagesAuthenticatorEmailStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorEndpointGdtcIndexRoute,
+  getStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+  getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorSmsIndexRoute,
+  getStagesAuthenticatorSmsStageUuidIndexRoute,
+  getStagesAuthenticatorSmsStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorStaticIndexRoute,
+  getStagesAuthenticatorStaticStageUuidIndexRoute,
+  getStagesAuthenticatorStaticStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorTotpIndexRoute,
+  getStagesAuthenticatorTotpStageUuidIndexRoute,
+  getStagesAuthenticatorTotpStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorValidateIndexRoute,
+  getStagesAuthenticatorValidateStageUuidIndexRoute,
+  getStagesAuthenticatorValidateStageUuidUsedByIndexRoute,
+  getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRoute,
+  getStagesAuthenticatorWebauthnDeviceTypesIndexRoute,
+  getStagesAuthenticatorWebauthnIndexRoute,
+  getStagesAuthenticatorWebauthnStageUuidIndexRoute,
+  getStagesAuthenticatorWebauthnStageUuidUsedByIndexRoute,
+  getStagesCaptchaIndexRoute,
+  getStagesCaptchaStageUuidIndexRoute,
+  getStagesCaptchaStageUuidUsedByIndexRoute,
+  getStagesConsentIndexRoute,
+  getStagesConsentStageUuidIndexRoute,
+  getStagesConsentStageUuidUsedByIndexRoute,
+  getStagesDenyIndexRoute,
+  getStagesDenyStageUuidIndexRoute,
+  getStagesDenyStageUuidUsedByIndexRoute,
+  getStagesDummyIndexRoute,
+  getStagesDummyStageUuidIndexRoute,
+  getStagesDummyStageUuidUsedByIndexRoute,
+  getStagesEmailIndexRoute,
+  getStagesEmailStageUuidIndexRoute,
+  getStagesEmailStageUuidUsedByIndexRoute,
+  getStagesEmailTemplatesIndexRoute,
+  getStagesEndpointsIndexRoute,
+  getStagesEndpointsStageUuidIndexRoute,
+  getStagesEndpointsStageUuidUsedByIndexRoute,
+  getStagesIdentificationIndexRoute,
+  getStagesIdentificationStageUuidIndexRoute,
+  getStagesIdentificationStageUuidUsedByIndexRoute,
+  getStagesInvitationInvitationsIndexRoute,
+  getStagesInvitationInvitationsInviteUuidIndexRoute,
+  getStagesInvitationInvitationsInviteUuidUsedByIndexRoute,
+  getStagesInvitationStagesIndexRoute,
+  getStagesInvitationStagesStageUuidIndexRoute,
+  getStagesInvitationStagesStageUuidUsedByIndexRoute,
+  getStagesMtlsIndexRoute,
+  getStagesMtlsStageUuidIndexRoute,
+  getStagesMtlsStageUuidUsedByIndexRoute,
+  getStagesPasswordIndexRoute,
+  getStagesPasswordStageUuidIndexRoute,
+  getStagesPasswordStageUuidUsedByIndexRoute,
+  getStagesPromptPromptsIndexRoute,
+  getStagesPromptPromptsPromptUuidIndexRoute,
+  getStagesPromptPromptsPromptUuidUsedByIndexRoute,
+  getStagesPromptStagesIndexRoute,
+  getStagesPromptStagesStageUuidIndexRoute,
+  getStagesPromptStagesStageUuidUsedByIndexRoute,
+  getStagesRedirectIndexRoute,
+  getStagesRedirectStageUuidIndexRoute,
+  getStagesRedirectStageUuidUsedByIndexRoute,
+  getStagesSourceIndexRoute,
+  getStagesSourceStageUuidIndexRoute,
+  getStagesSourceStageUuidUsedByIndexRoute,
+  getStagesUserDeleteIndexRoute,
+  getStagesUserDeleteStageUuidIndexRoute,
+  getStagesUserDeleteStageUuidUsedByIndexRoute,
+  getStagesUserLoginIndexRoute,
+  getStagesUserLoginStageUuidIndexRoute,
+  getStagesUserLoginStageUuidUsedByIndexRoute,
+  getStagesUserLogoutIndexRoute,
+  getStagesUserLogoutStageUuidIndexRoute,
+  getStagesUserLogoutStageUuidUsedByIndexRoute,
+  getStagesUserWriteIndexRoute,
+  getStagesUserWriteStageUuidIndexRoute,
+  getStagesUserWriteStageUuidUsedByIndexRoute,
+  getTasksSchedulesIdIndexRoute,
+  getTasksSchedulesIndexRoute,
+  getTasksTasksIndexRoute,
+  getTasksTasksMessageIdIndexRoute,
+  getTasksTasksStatusIndexRoute,
+  getTasksWorkersIndexRoute,
+  patchAdminSettingsIndexRoute,
+  patchAgentsAgentsIdIndexRoute,
+  patchAuthenticatorsAdminDuoIdIndexRoute,
+  patchAuthenticatorsAdminEmailIdIndexRoute,
+  patchAuthenticatorsAdminEndpointUuidIndexRoute,
+  patchAuthenticatorsAdminSmsIdIndexRoute,
+  patchAuthenticatorsAdminStaticIdIndexRoute,
+  patchAuthenticatorsAdminTotpIdIndexRoute,
+  patchAuthenticatorsAdminWebauthnIdIndexRoute,
+  patchAuthenticatorsDuoIdIndexRoute,
+  patchAuthenticatorsEmailIdIndexRoute,
+  patchAuthenticatorsSmsIdIndexRoute,
+  patchAuthenticatorsStaticIdIndexRoute,
+  patchAuthenticatorsTotpIdIndexRoute,
+  patchAuthenticatorsWebauthnIdIndexRoute,
+  patchCoreApplicationEntitlementsPbmUuidIndexRoute,
+  patchCoreApplicationsSlugIndexRoute,
+  patchCoreBrandsBrandUuidIndexRoute,
+  patchCoreGroupsGroupUuidIndexRoute,
+  patchCoreObjectAttributesAttributeIdIndexRoute,
+  patchCoreTokensIdentifierIndexRoute,
+  patchCoreUsersIdIndexRoute,
+  patchCryptoCertificatekeypairsKpUuidIndexRoute,
+  patchEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+  patchEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+  patchEndpointsAgentsPssoIseUuidIndexRoute,
+  patchEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+  patchEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+  patchEndpointsDevicesDeviceUuidIndexRoute,
+  patchEndpointsFleetConnectorsConnectorUuidIndexRoute,
+  patchEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+  patchEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+  patchEnterpriseLicenseLicenseUuidIndexRoute,
+  patchEventsEventsEventUuidIndexRoute,
+  patchEventsNotificationsUuidIndexRoute,
+  patchEventsRulesPbmUuidIndexRoute,
+  patchEventsTransportsUuidIndexRoute,
+  patchFlowsBindingsFsbUuidIndexRoute,
+  patchFlowsInstancesSlugIndexRoute,
+  patchLifecycleRulesIdIndexRoute,
+  patchLifecycleUserExpirationRulesIdIndexRoute,
+  patchManagedBlueprintsInstanceUuidIndexRoute,
+  patchOutpostsInstancesUuidIndexRoute,
+  patchOutpostsServiceConnectionsDockerUuidIndexRoute,
+  patchOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+  patchPoliciesBindingsPolicyBindingUuidIndexRoute,
+  patchPoliciesDummyPolicyUuidIndexRoute,
+  patchPoliciesEventMatcherPolicyUuidIndexRoute,
+  patchPoliciesExpressionPolicyUuidIndexRoute,
+  patchPoliciesGeoipPolicyUuidIndexRoute,
+  patchPoliciesPasswordExpiryPolicyUuidIndexRoute,
+  patchPoliciesPasswordPolicyUuidIndexRoute,
+  patchPoliciesReputationPolicyUuidIndexRoute,
+  patchPoliciesUniquePasswordPolicyUuidIndexRoute,
+  patchPropertymappingsNotificationPmUuidIndexRoute,
+  patchPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+  patchPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+  patchPropertymappingsProviderRacPmUuidIndexRoute,
+  patchPropertymappingsProviderRadiusPmUuidIndexRoute,
+  patchPropertymappingsProviderSamlPmUuidIndexRoute,
+  patchPropertymappingsProviderScimPmUuidIndexRoute,
+  patchPropertymappingsProviderScopePmUuidIndexRoute,
+  patchPropertymappingsSourceKerberosPmUuidIndexRoute,
+  patchPropertymappingsSourceLdapPmUuidIndexRoute,
+  patchPropertymappingsSourceOauthPmUuidIndexRoute,
+  patchPropertymappingsSourcePlexPmUuidIndexRoute,
+  patchPropertymappingsSourceSamlPmUuidIndexRoute,
+  patchPropertymappingsSourceScimPmUuidIndexRoute,
+  patchPropertymappingsSourceTelegramPmUuidIndexRoute,
+  patchProvidersGoogleWorkspaceIdIndexRoute,
+  patchProvidersLdapIdIndexRoute,
+  patchProvidersMicrosoftEntraIdIndexRoute,
+  patchProvidersOauth2DcrPbmUuidIndexRoute,
+  patchProvidersOauth2IdIndexRoute,
+  patchProvidersProxyIdIndexRoute,
+  patchProvidersRacIdIndexRoute,
+  patchProvidersRadiusIdIndexRoute,
+  patchProvidersSamlIdIndexRoute,
+  patchProvidersScimIdIndexRoute,
+  patchProvidersSsfIdIndexRoute,
+  patchProvidersWsfedIdIndexRoute,
+  patchRacConnectionTokensConnectionTokenUuidIndexRoute,
+  patchRbacCustomPermissionsIdIndexRoute,
+  patchRbacInitialPermissionsIdIndexRoute,
+  patchRbacPermissionChecksCheckUuidIndexRoute,
+  patchRbacPermissionsAssignedByRolesUuidUnassignIndexRoute,
+  patchRbacRolesUuidIndexRoute,
+  patchRequestsGrantRequestsUuidFulfillIndexRoute,
+  patchRequestsRuleBindingsUuidIndexRoute,
+  patchRequestsRuleChildBindingsUuidIndexRoute,
+  patchRequestsRulesUuidIndexRoute,
+  patchSourcesGroupConnectionsAllIdIndexRoute,
+  patchSourcesGroupConnectionsKerberosIdIndexRoute,
+  patchSourcesGroupConnectionsLdapIdIndexRoute,
+  patchSourcesGroupConnectionsOauthIdIndexRoute,
+  patchSourcesGroupConnectionsPlexIdIndexRoute,
+  patchSourcesGroupConnectionsSamlIdIndexRoute,
+  patchSourcesGroupConnectionsTelegramIdIndexRoute,
+  patchSourcesKerberosSlugIndexRoute,
+  patchSourcesLdapSlugIndexRoute,
+  patchSourcesOauthSlugIndexRoute,
+  patchSourcesPlexSlugIndexRoute,
+  patchSourcesSamlSlugIndexRoute,
+  patchSourcesScimGroupsIdIndexRoute,
+  patchSourcesScimSlugIndexRoute,
+  patchSourcesScimUsersIdIndexRoute,
+  patchSourcesTelegramSlugIndexRoute,
+  patchSourcesUserConnectionsAllIdIndexRoute,
+  patchSourcesUserConnectionsKerberosIdIndexRoute,
+  patchSourcesUserConnectionsLdapIdIndexRoute,
+  patchSourcesUserConnectionsOauthIdIndexRoute,
+  patchSourcesUserConnectionsPlexIdIndexRoute,
+  patchSourcesUserConnectionsSamlIdIndexRoute,
+  patchSourcesUserConnectionsTelegramIdIndexRoute,
+  patchStagesAccountLockdownStageUuidIndexRoute,
+  patchStagesAuthenticatorDuoStageUuidIndexRoute,
+  patchStagesAuthenticatorEmailStageUuidIndexRoute,
+  patchStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+  patchStagesAuthenticatorSmsStageUuidIndexRoute,
+  patchStagesAuthenticatorStaticStageUuidIndexRoute,
+  patchStagesAuthenticatorTotpStageUuidIndexRoute,
+  patchStagesAuthenticatorValidateStageUuidIndexRoute,
+  patchStagesAuthenticatorWebauthnStageUuidIndexRoute,
+  patchStagesCaptchaStageUuidIndexRoute,
+  patchStagesConsentStageUuidIndexRoute,
+  patchStagesDenyStageUuidIndexRoute,
+  patchStagesDummyStageUuidIndexRoute,
+  patchStagesEmailStageUuidIndexRoute,
+  patchStagesEndpointsStageUuidIndexRoute,
+  patchStagesIdentificationStageUuidIndexRoute,
+  patchStagesInvitationInvitationsInviteUuidIndexRoute,
+  patchStagesInvitationStagesStageUuidIndexRoute,
+  patchStagesMtlsStageUuidIndexRoute,
+  patchStagesPasswordStageUuidIndexRoute,
+  patchStagesPromptPromptsPromptUuidIndexRoute,
+  patchStagesPromptStagesStageUuidIndexRoute,
+  patchStagesRedirectStageUuidIndexRoute,
+  patchStagesSourceStageUuidIndexRoute,
+  patchStagesUserDeleteStageUuidIndexRoute,
+  patchStagesUserLoginStageUuidIndexRoute,
+  patchStagesUserLogoutStageUuidIndexRoute,
+  patchStagesUserWriteStageUuidIndexRoute,
+  patchTasksSchedulesIdIndexRoute,
+  postAdminFileIndexRoute,
+  postAdminSystemIndexRoute,
+  postAgentsAgentsIndexRoute,
+  postAuthenticatorsAdminDuoIndexRoute,
+  postAuthenticatorsAdminEmailIndexRoute,
+  postAuthenticatorsAdminEndpointIndexRoute,
+  postAuthenticatorsAdminSmsIndexRoute,
+  postAuthenticatorsAdminStaticIndexRoute,
+  postAuthenticatorsAdminTotpIndexRoute,
+  postAuthenticatorsAdminWebauthnIndexRoute,
+  postAuthenticatorsPasswordIdLockIndexRoute,
+  postAuthenticatorsPasswordIdUnlockIndexRoute,
+  postCoreApplicationEntitlementsIndexRoute,
+  postCoreApplicationsIndexRoute,
+  postCoreBrandsIndexRoute,
+  postCoreGroupsGroupUuidAddUserIndexRoute,
+  postCoreGroupsGroupUuidRemoveUserIndexRoute,
+  postCoreGroupsIndexRoute,
+  postCoreObjectAttributesIndexRoute,
+  postCoreTokensIdentifierSetKeyIndexRoute,
+  postCoreTokensIndexRoute,
+  postCoreUsersAccountLockdownIndexRoute,
+  postCoreUsersExportIndexRoute,
+  postCoreUsersIdImpersonateIndexRoute,
+  postCoreUsersIdRecoveryEmailIndexRoute,
+  postCoreUsersIdRecoveryIndexRoute,
+  postCoreUsersIdSetPasswordHashIndexRoute,
+  postCoreUsersIdSetPasswordIndexRoute,
+  postCoreUsersIndexRoute,
+  postCoreUsersServiceAccountIndexRoute,
+  postCoreUsersSwitchIndexRoute,
+  postCryptoCertificatekeypairsGenerateIndexRoute,
+  postCryptoCertificatekeypairsIndexRoute,
+  postDebugLogIndexRoute,
+  postEndpointsAgentsConnectorsAuthFedIndexRoute,
+  postEndpointsAgentsConnectorsAuthIaIndexRoute,
+  postEndpointsAgentsConnectorsCheckInIndexRoute,
+  postEndpointsAgentsConnectorsConnectorUuidMdmConfigIndexRoute,
+  postEndpointsAgentsConnectorsEnrollIndexRoute,
+  postEndpointsAgentsConnectorsIndexRoute,
+  postEndpointsAgentsEnrollmentTokensIndexRoute,
+  postEndpointsAgentsPssoIseIndexRoute,
+  postEndpointsAgentsPssoRegisterDeviceIndexRoute,
+  postEndpointsAgentsPssoRegisterUserIndexRoute,
+  postEndpointsDeviceAccessGroupsIndexRoute,
+  postEndpointsDeviceBindingsIndexRoute,
+  postEndpointsDevicesIndexRoute,
+  postEndpointsFleetConnectorsIndexRoute,
+  postEndpointsGoogleChromeConnectorsIndexRoute,
+  postEndpointsMicrosoftIntuneConnectorsIndexRoute,
+  postEnterpriseLicenseIndexRoute,
+  postEventsEventsExportIndexRoute,
+  postEventsEventsIndexRoute,
+  postEventsNotificationsMarkAllSeenIndexRoute,
+  postEventsRulesIndexRoute,
+  postEventsTransportsIndexRoute,
+  postEventsTransportsUuidTestIndexRoute,
+  postFlowsBindingsIndexRoute,
+  postFlowsExecutorFlowSlugIndexRoute,
+  postFlowsInstancesCacheClearIndexRoute,
+  postFlowsInstancesIndexRoute,
+  postLifecycleIterationsIndexRoute,
+  postLifecycleReviewsIndexRoute,
+  postLifecycleRulesIndexRoute,
+  postLifecycleUserExpirationRulesIdPreviewIndexRoute,
+  postLifecycleUserExpirationRulesIndexRoute,
+  postLifecycleUserOffboardingIndexRoute,
+  postManagedBlueprintsImportIndexRoute,
+  postManagedBlueprintsIndexRoute,
+  postManagedBlueprintsInstanceUuidApplyIndexRoute,
+  postManagedBlueprintsValidateIndexRoute,
+  postOutpostsInstancesIndexRoute,
+  postOutpostsInstancesUuidRebuildPermissionsIndexRoute,
+  postOutpostsServiceConnectionsDockerIndexRoute,
+  postOutpostsServiceConnectionsKubernetesIndexRoute,
+  postPoliciesAllCacheClearIndexRoute,
+  postPoliciesAllPolicyUuidTestIndexRoute,
+  postPoliciesBindingsIndexRoute,
+  postPoliciesDummyIndexRoute,
+  postPoliciesEventMatcherIndexRoute,
+  postPoliciesExpressionIndexRoute,
+  postPoliciesGeoipIndexRoute,
+  postPoliciesPasswordExpiryIndexRoute,
+  postPoliciesPasswordIndexRoute,
+  postPoliciesReputationIndexRoute,
+  postPoliciesUniquePasswordIndexRoute,
+  postPropertymappingsAllPmUuidTestIndexRoute,
+  postPropertymappingsNotificationIndexRoute,
+  postPropertymappingsProviderGoogleWorkspaceIndexRoute,
+  postPropertymappingsProviderMicrosoftEntraIndexRoute,
+  postPropertymappingsProviderRacIndexRoute,
+  postPropertymappingsProviderRadiusIndexRoute,
+  postPropertymappingsProviderSamlIndexRoute,
+  postPropertymappingsProviderScimIndexRoute,
+  postPropertymappingsProviderScopeIndexRoute,
+  postPropertymappingsSourceKerberosIndexRoute,
+  postPropertymappingsSourceLdapIndexRoute,
+  postPropertymappingsSourceOauthIndexRoute,
+  postPropertymappingsSourcePlexIndexRoute,
+  postPropertymappingsSourceSamlIndexRoute,
+  postPropertymappingsSourceScimIndexRoute,
+  postPropertymappingsSourceTelegramIndexRoute,
+  postProvidersGoogleWorkspaceGroupsIndexRoute,
+  postProvidersGoogleWorkspaceIdSyncObjectIndexRoute,
+  postProvidersGoogleWorkspaceIndexRoute,
+  postProvidersGoogleWorkspaceUsersIndexRoute,
+  postProvidersLdapIndexRoute,
+  postProvidersMicrosoftEntraGroupsIndexRoute,
+  postProvidersMicrosoftEntraIdSyncObjectIndexRoute,
+  postProvidersMicrosoftEntraIndexRoute,
+  postProvidersMicrosoftEntraUsersIndexRoute,
+  postProvidersOauth2DcrIndexRoute,
+  postProvidersOauth2IndexRoute,
+  postProvidersProxyIndexRoute,
+  postProvidersRacIndexRoute,
+  postProvidersRadiusIndexRoute,
+  postProvidersSamlImportMetadataIndexRoute,
+  postProvidersSamlIndexRoute,
+  postProvidersScimGroupsIndexRoute,
+  postProvidersScimIdSyncObjectIndexRoute,
+  postProvidersScimIndexRoute,
+  postProvidersScimUsersIndexRoute,
+  postProvidersSsfIndexRoute,
+  postProvidersWsfedIndexRoute,
+  postRbacCustomPermissionsIndexRoute,
+  postRbacInitialPermissionsIndexRoute,
+  postRbacPermissionChecksIndexRoute,
+  postRbacPermissionsAssignedByRolesUuidAssignIndexRoute,
+  postRbacRolesIndexRoute,
+  postRbacRolesUuidAddUserIndexRoute,
+  postRbacRolesUuidRemoveUserIndexRoute,
+  postRequestsGrantRequestsAgentIndexRoute,
+  postRequestsGrantRequestsIndexRoute,
+  postRequestsRuleBindingsIndexRoute,
+  postRequestsRuleChildBindingsIndexRoute,
+  postRequestsRulesIndexRoute,
+  postSourcesGroupConnectionsKerberosIndexRoute,
+  postSourcesGroupConnectionsLdapIndexRoute,
+  postSourcesGroupConnectionsOauthIndexRoute,
+  postSourcesGroupConnectionsPlexIndexRoute,
+  postSourcesGroupConnectionsSamlIndexRoute,
+  postSourcesGroupConnectionsTelegramIndexRoute,
+  postSourcesKerberosIndexRoute,
+  postSourcesLdapIndexRoute,
+  postSourcesOauthIndexRoute,
+  postSourcesPlexIndexRoute,
+  postSourcesPlexRedeemTokenAuthenticatedIndexRoute,
+  postSourcesPlexRedeemTokenIndexRoute,
+  postSourcesSamlIndexRoute,
+  postSourcesScimGroupsIndexRoute,
+  postSourcesScimIndexRoute,
+  postSourcesScimUsersIndexRoute,
+  postSourcesTelegramIndexRoute,
+  postSourcesTelegramSlugConnectUserIndexRoute,
+  postSourcesUserConnectionsKerberosIndexRoute,
+  postSourcesUserConnectionsLdapIndexRoute,
+  postSourcesUserConnectionsOauthIndexRoute,
+  postSourcesUserConnectionsPlexIndexRoute,
+  postSourcesUserConnectionsSamlIndexRoute,
+  postSourcesUserConnectionsTelegramIndexRoute,
+  postStagesAccountLockdownIndexRoute,
+  postStagesAuthenticatorDuoIndexRoute,
+  postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRoute,
+  postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRoute,
+  postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRoute,
+  postStagesAuthenticatorEmailIndexRoute,
+  postStagesAuthenticatorEndpointGdtcIndexRoute,
+  postStagesAuthenticatorSmsIndexRoute,
+  postStagesAuthenticatorStaticIndexRoute,
+  postStagesAuthenticatorTotpIndexRoute,
+  postStagesAuthenticatorValidateIndexRoute,
+  postStagesAuthenticatorWebauthnIndexRoute,
+  postStagesCaptchaIndexRoute,
+  postStagesConsentIndexRoute,
+  postStagesDenyIndexRoute,
+  postStagesDummyIndexRoute,
+  postStagesEmailIndexRoute,
+  postStagesEndpointsIndexRoute,
+  postStagesIdentificationIndexRoute,
+  postStagesInvitationInvitationsIndexRoute,
+  postStagesInvitationInvitationsInviteUuidSendEmailIndexRoute,
+  postStagesInvitationStagesIndexRoute,
+  postStagesMtlsIndexRoute,
+  postStagesPasswordIndexRoute,
+  postStagesPromptPromptsIndexRoute,
+  postStagesPromptPromptsPreviewIndexRoute,
+  postStagesPromptStagesIndexRoute,
+  postStagesRedirectIndexRoute,
+  postStagesSourceIndexRoute,
+  postStagesUserDeleteIndexRoute,
+  postStagesUserLoginIndexRoute,
+  postStagesUserLogoutIndexRoute,
+  postStagesUserWriteIndexRoute,
+  postTasksSchedulesIdSendIndexRoute,
+  postTasksTasksMessageIdRetryIndexRoute,
+  putAdminSettingsIndexRoute,
+  putAgentsAgentsIdIndexRoute,
+  putAuthenticatorsAdminDuoIdIndexRoute,
+  putAuthenticatorsAdminEmailIdIndexRoute,
+  putAuthenticatorsAdminEndpointUuidIndexRoute,
+  putAuthenticatorsAdminSmsIdIndexRoute,
+  putAuthenticatorsAdminStaticIdIndexRoute,
+  putAuthenticatorsAdminTotpIdIndexRoute,
+  putAuthenticatorsAdminWebauthnIdIndexRoute,
+  putAuthenticatorsDuoIdIndexRoute,
+  putAuthenticatorsEmailIdIndexRoute,
+  putAuthenticatorsSmsIdIndexRoute,
+  putAuthenticatorsStaticIdIndexRoute,
+  putAuthenticatorsTotpIdIndexRoute,
+  putAuthenticatorsWebauthnIdIndexRoute,
+  putCoreApplicationEntitlementsPbmUuidIndexRoute,
+  putCoreApplicationsSlugIndexRoute,
+  putCoreBrandsBrandUuidIndexRoute,
+  putCoreGroupsGroupUuidIndexRoute,
+  putCoreObjectAttributesAttributeIdIndexRoute,
+  putCoreTokensIdentifierIndexRoute,
+  putCoreTransactionalApplicationsIndexRoute,
+  putCoreUsersIdIndexRoute,
+  putCryptoCertificatekeypairsKpUuidIndexRoute,
+  putEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+  putEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+  putEndpointsAgentsPssoIseUuidIndexRoute,
+  putEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+  putEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+  putEndpointsDevicesDeviceUuidIndexRoute,
+  putEndpointsFleetConnectorsConnectorUuidIndexRoute,
+  putEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+  putEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+  putEnterpriseLicenseLicenseUuidIndexRoute,
+  putEventsEventsEventUuidIndexRoute,
+  putEventsNotificationsUuidIndexRoute,
+  putEventsRulesPbmUuidIndexRoute,
+  putEventsTransportsUuidIndexRoute,
+  putFlowsBindingsFsbUuidIndexRoute,
+  putFlowsInstancesSlugIndexRoute,
+  putLifecycleRulesIdIndexRoute,
+  putLifecycleUserExpirationRulesIdIndexRoute,
+  putManagedBlueprintsInstanceUuidIndexRoute,
+  putOutpostsInstancesUuidIndexRoute,
+  putOutpostsServiceConnectionsDockerUuidIndexRoute,
+  putOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+  putPoliciesBindingsPolicyBindingUuidIndexRoute,
+  putPoliciesDummyPolicyUuidIndexRoute,
+  putPoliciesEventMatcherPolicyUuidIndexRoute,
+  putPoliciesExpressionPolicyUuidIndexRoute,
+  putPoliciesGeoipPolicyUuidIndexRoute,
+  putPoliciesPasswordExpiryPolicyUuidIndexRoute,
+  putPoliciesPasswordPolicyUuidIndexRoute,
+  putPoliciesReputationPolicyUuidIndexRoute,
+  putPoliciesUniquePasswordPolicyUuidIndexRoute,
+  putPropertymappingsNotificationPmUuidIndexRoute,
+  putPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+  putPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+  putPropertymappingsProviderRacPmUuidIndexRoute,
+  putPropertymappingsProviderRadiusPmUuidIndexRoute,
+  putPropertymappingsProviderSamlPmUuidIndexRoute,
+  putPropertymappingsProviderScimPmUuidIndexRoute,
+  putPropertymappingsProviderScopePmUuidIndexRoute,
+  putPropertymappingsSourceKerberosPmUuidIndexRoute,
+  putPropertymappingsSourceLdapPmUuidIndexRoute,
+  putPropertymappingsSourceOauthPmUuidIndexRoute,
+  putPropertymappingsSourcePlexPmUuidIndexRoute,
+  putPropertymappingsSourceSamlPmUuidIndexRoute,
+  putPropertymappingsSourceScimPmUuidIndexRoute,
+  putPropertymappingsSourceTelegramPmUuidIndexRoute,
+  putProvidersGoogleWorkspaceIdIndexRoute,
+  putProvidersLdapIdIndexRoute,
+  putProvidersMicrosoftEntraIdIndexRoute,
+  putProvidersOauth2DcrPbmUuidIndexRoute,
+  putProvidersOauth2IdIndexRoute,
+  putProvidersProxyIdIndexRoute,
+  putProvidersRacIdIndexRoute,
+  putProvidersRadiusIdIndexRoute,
+  putProvidersSamlIdIndexRoute,
+  putProvidersScimIdIndexRoute,
+  putProvidersSsfIdIndexRoute,
+  putProvidersWsfedIdIndexRoute,
+  putRacConnectionTokensConnectionTokenUuidIndexRoute,
+  putRbacCustomPermissionsIdIndexRoute,
+  putRbacInitialPermissionsIdIndexRoute,
+  putRbacPermissionChecksCheckUuidIndexRoute,
+  putRbacRolesUuidIndexRoute,
+  putRequestsRuleBindingsUuidIndexRoute,
+  putRequestsRuleChildBindingsUuidIndexRoute,
+  putRequestsRulesUuidIndexRoute,
+  putSourcesGroupConnectionsAllIdIndexRoute,
+  putSourcesGroupConnectionsKerberosIdIndexRoute,
+  putSourcesGroupConnectionsLdapIdIndexRoute,
+  putSourcesGroupConnectionsOauthIdIndexRoute,
+  putSourcesGroupConnectionsPlexIdIndexRoute,
+  putSourcesGroupConnectionsSamlIdIndexRoute,
+  putSourcesGroupConnectionsTelegramIdIndexRoute,
+  putSourcesKerberosSlugIndexRoute,
+  putSourcesLdapSlugIndexRoute,
+  putSourcesOauthSlugIndexRoute,
+  putSourcesPlexSlugIndexRoute,
+  putSourcesSamlSlugIndexRoute,
+  putSourcesScimGroupsIdIndexRoute,
+  putSourcesScimSlugIndexRoute,
+  putSourcesScimUsersIdIndexRoute,
+  putSourcesTelegramSlugIndexRoute,
+  putSourcesUserConnectionsAllIdIndexRoute,
+  putSourcesUserConnectionsKerberosIdIndexRoute,
+  putSourcesUserConnectionsLdapIdIndexRoute,
+  putSourcesUserConnectionsOauthIdIndexRoute,
+  putSourcesUserConnectionsPlexIdIndexRoute,
+  putSourcesUserConnectionsSamlIdIndexRoute,
+  putSourcesUserConnectionsTelegramIdIndexRoute,
+  putStagesAccountLockdownStageUuidIndexRoute,
+  putStagesAuthenticatorDuoStageUuidIndexRoute,
+  putStagesAuthenticatorEmailStageUuidIndexRoute,
+  putStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+  putStagesAuthenticatorSmsStageUuidIndexRoute,
+  putStagesAuthenticatorStaticStageUuidIndexRoute,
+  putStagesAuthenticatorTotpStageUuidIndexRoute,
+  putStagesAuthenticatorValidateStageUuidIndexRoute,
+  putStagesAuthenticatorWebauthnStageUuidIndexRoute,
+  putStagesCaptchaStageUuidIndexRoute,
+  putStagesConsentStageUuidIndexRoute,
+  putStagesDenyStageUuidIndexRoute,
+  putStagesDummyStageUuidIndexRoute,
+  putStagesEmailStageUuidIndexRoute,
+  putStagesEndpointsStageUuidIndexRoute,
+  putStagesIdentificationStageUuidIndexRoute,
+  putStagesInvitationInvitationsInviteUuidIndexRoute,
+  putStagesInvitationStagesStageUuidIndexRoute,
+  putStagesMtlsStageUuidIndexRoute,
+  putStagesPasswordStageUuidIndexRoute,
+  putStagesPromptPromptsPromptUuidIndexRoute,
+  putStagesPromptStagesStageUuidIndexRoute,
+  putStagesRedirectStageUuidIndexRoute,
+  putStagesSourceStageUuidIndexRoute,
+  putStagesUserDeleteStageUuidIndexRoute,
+  putStagesUserLoginStageUuidIndexRoute,
+  putStagesUserLogoutStageUuidIndexRoute,
+  putStagesUserWriteStageUuidIndexRoute,
+  putTasksSchedulesIdIndexRoute,
+} from './routes'
+import {
+  deleteAdminFileIndexRouteHandler,
+  deleteAgentsAgentsIdIndexRouteHandler,
+  deleteAuthenticatorsAdminDuoIdIndexRouteHandler,
+  deleteAuthenticatorsAdminEmailIdIndexRouteHandler,
+  deleteAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  deleteAuthenticatorsAdminSmsIdIndexRouteHandler,
+  deleteAuthenticatorsAdminStaticIdIndexRouteHandler,
+  deleteAuthenticatorsAdminTotpIdIndexRouteHandler,
+  deleteAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  deleteAuthenticatorsDuoIdIndexRouteHandler,
+  deleteAuthenticatorsEmailIdIndexRouteHandler,
+  deleteAuthenticatorsSmsIdIndexRouteHandler,
+  deleteAuthenticatorsStaticIdIndexRouteHandler,
+  deleteAuthenticatorsTotpIdIndexRouteHandler,
+  deleteAuthenticatorsWebauthnIdIndexRouteHandler,
+  deleteCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  deleteCoreApplicationsSlugIndexRouteHandler,
+  deleteCoreAuthenticatedSessionsBulkDeleteIndexRouteHandler,
+  deleteCoreAuthenticatedSessionsUuidIndexRouteHandler,
+  deleteCoreBrandsBrandUuidIndexRouteHandler,
+  deleteCoreGroupsGroupUuidIndexRouteHandler,
+  deleteCoreObjectAttributesAttributeIdIndexRouteHandler,
+  deleteCoreTokensIdentifierIndexRouteHandler,
+  deleteCoreUserConsentIdIndexRouteHandler,
+  deleteCoreUsersIdIndexRouteHandler,
+  deleteCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  deleteEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  deleteEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  deleteEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  deleteEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  deleteEndpointsConnectorsConnectorUuidIndexRouteHandler,
+  deleteEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  deleteEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  deleteEndpointsDevicesDeviceUuidIndexRouteHandler,
+  deleteEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  deleteEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  deleteEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  deleteEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  deleteEventsEventsEventUuidIndexRouteHandler,
+  deleteEventsNotificationsUuidIndexRouteHandler,
+  deleteEventsRulesPbmUuidIndexRouteHandler,
+  deleteEventsTransportsUuidIndexRouteHandler,
+  deleteFlowsBindingsFsbUuidIndexRouteHandler,
+  deleteFlowsInstancesSlugIndexRouteHandler,
+  deleteLifecycleRulesIdIndexRouteHandler,
+  deleteLifecycleUserExpirationRulesIdIndexRouteHandler,
+  deleteLifecycleUserOffboardingIdIndexRouteHandler,
+  deleteManagedBlueprintsInstanceUuidIndexRouteHandler,
+  deleteOauth2AccessTokensIdIndexRouteHandler,
+  deleteOauth2AuthorizationCodesIdIndexRouteHandler,
+  deleteOauth2RefreshTokensIdIndexRouteHandler,
+  deleteOutpostsInstancesUuidIndexRouteHandler,
+  deleteOutpostsServiceConnectionsAllUuidIndexRouteHandler,
+  deleteOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  deleteOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  deletePoliciesAllPolicyUuidIndexRouteHandler,
+  deletePoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  deletePoliciesDummyPolicyUuidIndexRouteHandler,
+  deletePoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  deletePoliciesExpressionPolicyUuidIndexRouteHandler,
+  deletePoliciesGeoipPolicyUuidIndexRouteHandler,
+  deletePoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  deletePoliciesPasswordPolicyUuidIndexRouteHandler,
+  deletePoliciesReputationPolicyUuidIndexRouteHandler,
+  deletePoliciesReputationScoresReputationUuidIndexRouteHandler,
+  deletePoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  deletePropertymappingsAllPmUuidIndexRouteHandler,
+  deletePropertymappingsNotificationPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  deletePropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderRacPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderScimPmUuidIndexRouteHandler,
+  deletePropertymappingsProviderScopePmUuidIndexRouteHandler,
+  deletePropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  deletePropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  deletePropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  deletePropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  deletePropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  deletePropertymappingsSourceScimPmUuidIndexRouteHandler,
+  deletePropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  deleteProvidersAllIdIndexRouteHandler,
+  deleteProvidersGoogleWorkspaceGroupsIdIndexRouteHandler,
+  deleteProvidersGoogleWorkspaceIdIndexRouteHandler,
+  deleteProvidersGoogleWorkspaceUsersIdIndexRouteHandler,
+  deleteProvidersLdapIdIndexRouteHandler,
+  deleteProvidersMicrosoftEntraGroupsIdIndexRouteHandler,
+  deleteProvidersMicrosoftEntraIdIndexRouteHandler,
+  deleteProvidersMicrosoftEntraUsersIdIndexRouteHandler,
+  deleteProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  deleteProvidersOauth2IdIndexRouteHandler,
+  deleteProvidersProxyIdIndexRouteHandler,
+  deleteProvidersRacIdIndexRouteHandler,
+  deleteProvidersRadiusIdIndexRouteHandler,
+  deleteProvidersSamlIdIndexRouteHandler,
+  deleteProvidersScimGroupsIdIndexRouteHandler,
+  deleteProvidersScimIdIndexRouteHandler,
+  deleteProvidersScimUsersIdIndexRouteHandler,
+  deleteProvidersSsfIdIndexRouteHandler,
+  deleteProvidersWsfedIdIndexRouteHandler,
+  deleteRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  deleteRbacCustomPermissionsIdIndexRouteHandler,
+  deleteRbacInitialPermissionsIdIndexRouteHandler,
+  deleteRbacPermissionChecksCheckUuidIndexRouteHandler,
+  deleteRbacRolesUuidIndexRouteHandler,
+  deleteReportsExportsIdIndexRouteHandler,
+  deleteRequestsGrantRequestsUuidIndexRouteHandler,
+  deleteRequestsGrantRequestsUuidRevokeIndexRouteHandler,
+  deleteRequestsRuleBindingsUuidIndexRouteHandler,
+  deleteRequestsRuleChildBindingsUuidIndexRouteHandler,
+  deleteRequestsRulesUuidIndexRouteHandler,
+  deleteSourcesAllSlugIndexRouteHandler,
+  deleteSourcesGroupConnectionsAllIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  deleteSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  deleteSourcesKerberosSlugIndexRouteHandler,
+  deleteSourcesLdapSlugIndexRouteHandler,
+  deleteSourcesOauthSlugIndexRouteHandler,
+  deleteSourcesPlexSlugIndexRouteHandler,
+  deleteSourcesSamlSlugIndexRouteHandler,
+  deleteSourcesScimGroupsIdIndexRouteHandler,
+  deleteSourcesScimSlugIndexRouteHandler,
+  deleteSourcesScimUsersIdIndexRouteHandler,
+  deleteSourcesTelegramSlugIndexRouteHandler,
+  deleteSourcesUserConnectionsAllIdIndexRouteHandler,
+  deleteSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  deleteSourcesUserConnectionsLdapIdIndexRouteHandler,
+  deleteSourcesUserConnectionsOauthIdIndexRouteHandler,
+  deleteSourcesUserConnectionsPlexIdIndexRouteHandler,
+  deleteSourcesUserConnectionsSamlIdIndexRouteHandler,
+  deleteSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  deleteSsfStreamsUuidIndexRouteHandler,
+  deleteStagesAccountLockdownStageUuidIndexRouteHandler,
+  deleteStagesAllStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  deleteStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  deleteStagesCaptchaStageUuidIndexRouteHandler,
+  deleteStagesConsentStageUuidIndexRouteHandler,
+  deleteStagesDenyStageUuidIndexRouteHandler,
+  deleteStagesDummyStageUuidIndexRouteHandler,
+  deleteStagesEmailStageUuidIndexRouteHandler,
+  deleteStagesEndpointsStageUuidIndexRouteHandler,
+  deleteStagesIdentificationStageUuidIndexRouteHandler,
+  deleteStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  deleteStagesInvitationStagesStageUuidIndexRouteHandler,
+  deleteStagesMtlsStageUuidIndexRouteHandler,
+  deleteStagesPasswordStageUuidIndexRouteHandler,
+  deleteStagesPromptPromptsPromptUuidIndexRouteHandler,
+  deleteStagesPromptStagesStageUuidIndexRouteHandler,
+  deleteStagesRedirectStageUuidIndexRouteHandler,
+  deleteStagesSourceStageUuidIndexRouteHandler,
+  deleteStagesUserDeleteStageUuidIndexRouteHandler,
+  deleteStagesUserLoginStageUuidIndexRouteHandler,
+  deleteStagesUserLogoutStageUuidIndexRouteHandler,
+  deleteStagesUserWriteStageUuidIndexRouteHandler,
+  getAdminAppsIndexRouteHandler,
+  getAdminFileIndexRouteHandler,
+  getAdminFileUsedByIndexRouteHandler,
+  getAdminModelsIndexRouteHandler,
+  getAdminSettingsIndexRouteHandler,
+  getAdminSystemIndexRouteHandler,
+  getAdminVersionHistoryIdIndexRouteHandler,
+  getAdminVersionHistoryIndexRouteHandler,
+  getAdminVersionIndexRouteHandler,
+  getAgentsAgentsIdIndexRouteHandler,
+  getAgentsAgentsIndexRouteHandler,
+  getAuthenticatorsAdminAllIndexRouteHandler,
+  getAuthenticatorsAdminDuoIdIndexRouteHandler,
+  getAuthenticatorsAdminDuoIndexRouteHandler,
+  getAuthenticatorsAdminEmailIdIndexRouteHandler,
+  getAuthenticatorsAdminEmailIndexRouteHandler,
+  getAuthenticatorsAdminEndpointIndexRouteHandler,
+  getAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  getAuthenticatorsAdminSmsIdIndexRouteHandler,
+  getAuthenticatorsAdminSmsIndexRouteHandler,
+  getAuthenticatorsAdminStaticIdIndexRouteHandler,
+  getAuthenticatorsAdminStaticIndexRouteHandler,
+  getAuthenticatorsAdminTotpIdIndexRouteHandler,
+  getAuthenticatorsAdminTotpIndexRouteHandler,
+  getAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  getAuthenticatorsAdminWebauthnIndexRouteHandler,
+  getAuthenticatorsAllIndexRouteHandler,
+  getAuthenticatorsDuoIdIndexRouteHandler,
+  getAuthenticatorsDuoIdUsedByIndexRouteHandler,
+  getAuthenticatorsDuoIndexRouteHandler,
+  getAuthenticatorsEmailIdIndexRouteHandler,
+  getAuthenticatorsEmailIdUsedByIndexRouteHandler,
+  getAuthenticatorsEmailIndexRouteHandler,
+  getAuthenticatorsEndpointIndexRouteHandler,
+  getAuthenticatorsEndpointUuidIndexRouteHandler,
+  getAuthenticatorsEndpointUuidUsedByIndexRouteHandler,
+  getAuthenticatorsSmsIdIndexRouteHandler,
+  getAuthenticatorsSmsIdUsedByIndexRouteHandler,
+  getAuthenticatorsSmsIndexRouteHandler,
+  getAuthenticatorsStaticIdIndexRouteHandler,
+  getAuthenticatorsStaticIdUsedByIndexRouteHandler,
+  getAuthenticatorsStaticIndexRouteHandler,
+  getAuthenticatorsTotpIdIndexRouteHandler,
+  getAuthenticatorsTotpIdUsedByIndexRouteHandler,
+  getAuthenticatorsTotpIndexRouteHandler,
+  getAuthenticatorsWebauthnIdIndexRouteHandler,
+  getAuthenticatorsWebauthnIdUsedByIndexRouteHandler,
+  getAuthenticatorsWebauthnIndexRouteHandler,
+  getCoreApplicationEntitlementsIndexRouteHandler,
+  getCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  getCoreApplicationEntitlementsPbmUuidUsedByIndexRouteHandler,
+  getCoreApplicationEntitlementsRequestableIndexRouteHandler,
+  getCoreApplicationsAccessibleIndexRouteHandler,
+  getCoreApplicationsIndexRouteHandler,
+  getCoreApplicationsRequestableIndexRouteHandler,
+  getCoreApplicationsSlugCheckAccessIndexRouteHandler,
+  getCoreApplicationsSlugIndexRouteHandler,
+  getCoreApplicationsSlugUsedByIndexRouteHandler,
+  getCoreAuthenticatedSessionsIndexRouteHandler,
+  getCoreAuthenticatedSessionsUuidIndexRouteHandler,
+  getCoreAuthenticatedSessionsUuidUsedByIndexRouteHandler,
+  getCoreBrandsBrandUuidIndexRouteHandler,
+  getCoreBrandsBrandUuidUsedByIndexRouteHandler,
+  getCoreBrandsCurrentIndexRouteHandler,
+  getCoreBrandsIndexRouteHandler,
+  getCoreGroupsGroupUuidIndexRouteHandler,
+  getCoreGroupsGroupUuidUsedByIndexRouteHandler,
+  getCoreGroupsIndexRouteHandler,
+  getCoreObjectAttributesAttributeIdIndexRouteHandler,
+  getCoreObjectAttributesIndexRouteHandler,
+  getCoreTokensIdentifierIndexRouteHandler,
+  getCoreTokensIdentifierUsedByIndexRouteHandler,
+  getCoreTokensIdentifierViewKeyIndexRouteHandler,
+  getCoreTokensIndexRouteHandler,
+  getCoreUserConsentIdIndexRouteHandler,
+  getCoreUserConsentIdUsedByIndexRouteHandler,
+  getCoreUserConsentIndexRouteHandler,
+  getCoreUsersIdIndexRouteHandler,
+  getCoreUsersIdUsedByIndexRouteHandler,
+  getCoreUsersImpersonateEndIndexRouteHandler,
+  getCoreUsersIndexRouteHandler,
+  getCoreUsersMeIndexRouteHandler,
+  getCoreUsersPathsIndexRouteHandler,
+  getCryptoCertificatekeypairsIndexRouteHandler,
+  getCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  getCryptoCertificatekeypairsKpUuidUsedByIndexRouteHandler,
+  getCryptoCertificatekeypairsKpUuidViewCertificateIndexRouteHandler,
+  getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRouteHandler,
+  getEndpointsAgentsConnectorsAgentConfigIndexRouteHandler,
+  getEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  getEndpointsAgentsConnectorsConnectorUuidUsedByIndexRouteHandler,
+  getEndpointsAgentsConnectorsIndexRouteHandler,
+  getEndpointsAgentsEnrollmentTokensIndexRouteHandler,
+  getEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  getEndpointsAgentsEnrollmentTokensTokenUuidUsedByIndexRouteHandler,
+  getEndpointsAgentsEnrollmentTokensTokenUuidViewKeyIndexRouteHandler,
+  getEndpointsAgentsPssoIseIndexRouteHandler,
+  getEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  getEndpointsAgentsPssoIseUuidUsedByIndexRouteHandler,
+  getEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  getEndpointsConnectorsConnectorUuidIndexRouteHandler,
+  getEndpointsConnectorsConnectorUuidUsedByIndexRouteHandler,
+  getEndpointsConnectorsIndexRouteHandler,
+  getEndpointsConnectorsTypesIndexRouteHandler,
+  getEndpointsDeviceAccessGroupsIndexRouteHandler,
+  getEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  getEndpointsDeviceAccessGroupsPbmUuidUsedByIndexRouteHandler,
+  getEndpointsDeviceBindingsIndexRouteHandler,
+  getEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  getEndpointsDeviceBindingsPolicyBindingUuidUsedByIndexRouteHandler,
+  getEndpointsDevicesDeviceUuidIndexRouteHandler,
+  getEndpointsDevicesDeviceUuidUsedByIndexRouteHandler,
+  getEndpointsDevicesIndexRouteHandler,
+  getEndpointsDevicesSummaryIndexRouteHandler,
+  getEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  getEndpointsFleetConnectorsConnectorUuidUsedByIndexRouteHandler,
+  getEndpointsFleetConnectorsIndexRouteHandler,
+  getEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  getEndpointsGoogleChromeConnectorsConnectorUuidUsedByIndexRouteHandler,
+  getEndpointsGoogleChromeConnectorsIndexRouteHandler,
+  getEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  getEndpointsMicrosoftIntuneConnectorsConnectorUuidUsedByIndexRouteHandler,
+  getEndpointsMicrosoftIntuneConnectorsIndexRouteHandler,
+  getEnterpriseLicenseIndexRouteHandler,
+  getEnterpriseLicenseInstallIdIndexRouteHandler,
+  getEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  getEnterpriseLicenseLicenseUuidUsedByIndexRouteHandler,
+  getEnterpriseLicenseSummaryIndexRouteHandler,
+  getEnterpriseLicenseUserCountsIndexRouteHandler,
+  getEventsEventsActionsIndexRouteHandler,
+  getEventsEventsEventUuidIndexRouteHandler,
+  getEventsEventsIndexRouteHandler,
+  getEventsEventsStatsIndexRouteHandler,
+  getEventsEventsTopPerUserIndexRouteHandler,
+  getEventsEventsVolumeIndexRouteHandler,
+  getEventsNotificationsIndexRouteHandler,
+  getEventsNotificationsUuidIndexRouteHandler,
+  getEventsNotificationsUuidUsedByIndexRouteHandler,
+  getEventsRulesIndexRouteHandler,
+  getEventsRulesPbmUuidIndexRouteHandler,
+  getEventsRulesPbmUuidUsedByIndexRouteHandler,
+  getEventsTransportsIndexRouteHandler,
+  getEventsTransportsUuidIndexRouteHandler,
+  getEventsTransportsUuidUsedByIndexRouteHandler,
+  getFlowsBindingsFsbUuidIndexRouteHandler,
+  getFlowsBindingsFsbUuidUsedByIndexRouteHandler,
+  getFlowsBindingsIndexRouteHandler,
+  getFlowsExecutorFlowSlugIndexRouteHandler,
+  getFlowsInspectorFlowSlugIndexRouteHandler,
+  getFlowsInstancesCacheInfoIndexRouteHandler,
+  getFlowsInstancesIndexRouteHandler,
+  getFlowsInstancesSlugDiagramIndexRouteHandler,
+  getFlowsInstancesSlugExecuteIndexRouteHandler,
+  getFlowsInstancesSlugExportIndexRouteHandler,
+  getFlowsInstancesSlugIndexRouteHandler,
+  getFlowsInstancesSlugUsedByIndexRouteHandler,
+  getLifecycleIterationsLatestContentTypeObjectIdIndexRouteHandler,
+  getLifecycleIterationsOpenIndexRouteHandler,
+  getLifecycleRulesIdIndexRouteHandler,
+  getLifecycleRulesIndexRouteHandler,
+  getLifecycleUserExpirationRulesIdIndexRouteHandler,
+  getLifecycleUserExpirationRulesIdPreviewIndexRouteHandler,
+  getLifecycleUserExpirationRulesIdUsedByIndexRouteHandler,
+  getLifecycleUserExpirationRulesIndexRouteHandler,
+  getLifecycleUserOffboardingIdIndexRouteHandler,
+  getLifecycleUserOffboardingIndexRouteHandler,
+  getManagedBlueprintsAvailableIndexRouteHandler,
+  getManagedBlueprintsIndexRouteHandler,
+  getManagedBlueprintsInstanceUuidIndexRouteHandler,
+  getManagedBlueprintsInstanceUuidUsedByIndexRouteHandler,
+  getOauth2AccessTokensIdIndexRouteHandler,
+  getOauth2AccessTokensIdUsedByIndexRouteHandler,
+  getOauth2AccessTokensIndexRouteHandler,
+  getOauth2AuthorizationCodesIdIndexRouteHandler,
+  getOauth2AuthorizationCodesIdUsedByIndexRouteHandler,
+  getOauth2AuthorizationCodesIndexRouteHandler,
+  getOauth2RefreshTokensIdIndexRouteHandler,
+  getOauth2RefreshTokensIdUsedByIndexRouteHandler,
+  getOauth2RefreshTokensIndexRouteHandler,
+  getOutpostsInstancesDefaultSettingsIndexRouteHandler,
+  getOutpostsInstancesIndexRouteHandler,
+  getOutpostsInstancesUuidHealthIndexRouteHandler,
+  getOutpostsInstancesUuidIndexRouteHandler,
+  getOutpostsInstancesUuidUsedByIndexRouteHandler,
+  getOutpostsLdapIdCheckAccessIndexRouteHandler,
+  getOutpostsLdapIndexRouteHandler,
+  getOutpostsProxyIndexRouteHandler,
+  getOutpostsRadiusIdCheckAccessIndexRouteHandler,
+  getOutpostsRadiusIndexRouteHandler,
+  getOutpostsServiceConnectionsAllIndexRouteHandler,
+  getOutpostsServiceConnectionsAllTypesIndexRouteHandler,
+  getOutpostsServiceConnectionsAllUuidIndexRouteHandler,
+  getOutpostsServiceConnectionsAllUuidStateIndexRouteHandler,
+  getOutpostsServiceConnectionsAllUuidUsedByIndexRouteHandler,
+  getOutpostsServiceConnectionsDockerIndexRouteHandler,
+  getOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  getOutpostsServiceConnectionsDockerUuidUsedByIndexRouteHandler,
+  getOutpostsServiceConnectionsKubernetesIndexRouteHandler,
+  getOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  getOutpostsServiceConnectionsKubernetesUuidUsedByIndexRouteHandler,
+  getPoliciesAllCacheInfoIndexRouteHandler,
+  getPoliciesAllIndexRouteHandler,
+  getPoliciesAllPolicyUuidIndexRouteHandler,
+  getPoliciesAllPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesAllTypesIndexRouteHandler,
+  getPoliciesBindingsIndexRouteHandler,
+  getPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  getPoliciesBindingsPolicyBindingUuidUsedByIndexRouteHandler,
+  getPoliciesDummyIndexRouteHandler,
+  getPoliciesDummyPolicyUuidIndexRouteHandler,
+  getPoliciesDummyPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesEventMatcherIndexRouteHandler,
+  getPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  getPoliciesEventMatcherPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesExpressionIndexRouteHandler,
+  getPoliciesExpressionPolicyUuidIndexRouteHandler,
+  getPoliciesExpressionPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesGeoipIndexRouteHandler,
+  getPoliciesGeoipIso3166IndexRouteHandler,
+  getPoliciesGeoipPolicyUuidIndexRouteHandler,
+  getPoliciesGeoipPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesPasswordExpiryIndexRouteHandler,
+  getPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  getPoliciesPasswordExpiryPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesPasswordIndexRouteHandler,
+  getPoliciesPasswordPolicyUuidIndexRouteHandler,
+  getPoliciesPasswordPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesReputationIndexRouteHandler,
+  getPoliciesReputationPolicyUuidIndexRouteHandler,
+  getPoliciesReputationPolicyUuidUsedByIndexRouteHandler,
+  getPoliciesReputationScoresIndexRouteHandler,
+  getPoliciesReputationScoresReputationUuidIndexRouteHandler,
+  getPoliciesReputationScoresReputationUuidUsedByIndexRouteHandler,
+  getPoliciesUniquePasswordIndexRouteHandler,
+  getPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  getPoliciesUniquePasswordPolicyUuidUsedByIndexRouteHandler,
+  getPropertymappingsAllIndexRouteHandler,
+  getPropertymappingsAllPmUuidIndexRouteHandler,
+  getPropertymappingsAllPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsAllTypesIndexRouteHandler,
+  getPropertymappingsNotificationIndexRouteHandler,
+  getPropertymappingsNotificationPmUuidIndexRouteHandler,
+  getPropertymappingsNotificationPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderGoogleWorkspaceIndexRouteHandler,
+  getPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  getPropertymappingsProviderGoogleWorkspacePmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderMicrosoftEntraIndexRouteHandler,
+  getPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  getPropertymappingsProviderMicrosoftEntraPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderRacIndexRouteHandler,
+  getPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  getPropertymappingsProviderRacPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderRadiusIndexRouteHandler,
+  getPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  getPropertymappingsProviderRadiusPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderSamlIndexRouteHandler,
+  getPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  getPropertymappingsProviderSamlPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderScimIndexRouteHandler,
+  getPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  getPropertymappingsProviderScimPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsProviderScopeIndexRouteHandler,
+  getPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  getPropertymappingsProviderScopePmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceKerberosIndexRouteHandler,
+  getPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  getPropertymappingsSourceKerberosPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceLdapIndexRouteHandler,
+  getPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  getPropertymappingsSourceLdapPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceOauthIndexRouteHandler,
+  getPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  getPropertymappingsSourceOauthPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourcePlexIndexRouteHandler,
+  getPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  getPropertymappingsSourcePlexPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceSamlIndexRouteHandler,
+  getPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  getPropertymappingsSourceSamlPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceScimIndexRouteHandler,
+  getPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  getPropertymappingsSourceScimPmUuidUsedByIndexRouteHandler,
+  getPropertymappingsSourceTelegramIndexRouteHandler,
+  getPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  getPropertymappingsSourceTelegramPmUuidUsedByIndexRouteHandler,
+  getProvidersAllIdIndexRouteHandler,
+  getProvidersAllIdUsedByIndexRouteHandler,
+  getProvidersAllIndexRouteHandler,
+  getProvidersAllTypesIndexRouteHandler,
+  getProvidersGoogleWorkspaceGroupsIdIndexRouteHandler,
+  getProvidersGoogleWorkspaceGroupsIdUsedByIndexRouteHandler,
+  getProvidersGoogleWorkspaceGroupsIndexRouteHandler,
+  getProvidersGoogleWorkspaceIdIndexRouteHandler,
+  getProvidersGoogleWorkspaceIdSyncStatusIndexRouteHandler,
+  getProvidersGoogleWorkspaceIdUsedByIndexRouteHandler,
+  getProvidersGoogleWorkspaceIndexRouteHandler,
+  getProvidersGoogleWorkspaceUsersIdIndexRouteHandler,
+  getProvidersGoogleWorkspaceUsersIdUsedByIndexRouteHandler,
+  getProvidersGoogleWorkspaceUsersIndexRouteHandler,
+  getProvidersLdapIdIndexRouteHandler,
+  getProvidersLdapIdUsedByIndexRouteHandler,
+  getProvidersLdapIndexRouteHandler,
+  getProvidersMicrosoftEntraGroupsIdIndexRouteHandler,
+  getProvidersMicrosoftEntraGroupsIdUsedByIndexRouteHandler,
+  getProvidersMicrosoftEntraGroupsIndexRouteHandler,
+  getProvidersMicrosoftEntraIdIndexRouteHandler,
+  getProvidersMicrosoftEntraIdSyncStatusIndexRouteHandler,
+  getProvidersMicrosoftEntraIdUsedByIndexRouteHandler,
+  getProvidersMicrosoftEntraIndexRouteHandler,
+  getProvidersMicrosoftEntraUsersIdIndexRouteHandler,
+  getProvidersMicrosoftEntraUsersIdUsedByIndexRouteHandler,
+  getProvidersMicrosoftEntraUsersIndexRouteHandler,
+  getProvidersOauth2DcrIndexRouteHandler,
+  getProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  getProvidersOauth2IdIndexRouteHandler,
+  getProvidersOauth2IdPreviewUserIndexRouteHandler,
+  getProvidersOauth2IdSetupUrlsIndexRouteHandler,
+  getProvidersOauth2IdUsedByIndexRouteHandler,
+  getProvidersOauth2IndexRouteHandler,
+  getProvidersProxyIdIndexRouteHandler,
+  getProvidersProxyIdUsedByIndexRouteHandler,
+  getProvidersProxyIndexRouteHandler,
+  getProvidersRacIdIndexRouteHandler,
+  getProvidersRacIdUsedByIndexRouteHandler,
+  getProvidersRacIndexRouteHandler,
+  getProvidersRadiusIdIndexRouteHandler,
+  getProvidersRadiusIdUsedByIndexRouteHandler,
+  getProvidersRadiusIndexRouteHandler,
+  getProvidersSamlIdIndexRouteHandler,
+  getProvidersSamlIdMetadataIndexRouteHandler,
+  getProvidersSamlIdPreviewUserIndexRouteHandler,
+  getProvidersSamlIdUsedByIndexRouteHandler,
+  getProvidersSamlIndexRouteHandler,
+  getProvidersScimGroupsIdIndexRouteHandler,
+  getProvidersScimGroupsIdUsedByIndexRouteHandler,
+  getProvidersScimGroupsIndexRouteHandler,
+  getProvidersScimIdIndexRouteHandler,
+  getProvidersScimIdSyncStatusIndexRouteHandler,
+  getProvidersScimIdUsedByIndexRouteHandler,
+  getProvidersScimIndexRouteHandler,
+  getProvidersScimUsersIdIndexRouteHandler,
+  getProvidersScimUsersIdUsedByIndexRouteHandler,
+  getProvidersScimUsersIndexRouteHandler,
+  getProvidersSsfIdIndexRouteHandler,
+  getProvidersSsfIdUsedByIndexRouteHandler,
+  getProvidersSsfIndexRouteHandler,
+  getProvidersWsfedIdIndexRouteHandler,
+  getProvidersWsfedIdMetadataIndexRouteHandler,
+  getProvidersWsfedIdPreviewUserIndexRouteHandler,
+  getProvidersWsfedIdUsedByIndexRouteHandler,
+  getProvidersWsfedIndexRouteHandler,
+  getRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  getRacConnectionTokensConnectionTokenUuidUsedByIndexRouteHandler,
+  getRacConnectionTokensIndexRouteHandler,
+  getRacDevicesIndexRouteHandler,
+  getRbacCustomPermissionsIdIndexRouteHandler,
+  getRbacCustomPermissionsIndexRouteHandler,
+  getRbacEndpointsIndexRouteHandler,
+  getRbacInitialPermissionsIdIndexRouteHandler,
+  getRbacInitialPermissionsIdUsedByIndexRouteHandler,
+  getRbacInitialPermissionsIndexRouteHandler,
+  getRbacPermissionChecksCheckUuidIndexRouteHandler,
+  getRbacPermissionChecksCheckUuidUsedByIndexRouteHandler,
+  getRbacPermissionChecksIndexRouteHandler,
+  getRbacPermissionsAssignedByRolesIndexRouteHandler,
+  getRbacPermissionsIdIndexRouteHandler,
+  getRbacPermissionsIndexRouteHandler,
+  getRbacPermissionsRolesIndexRouteHandler,
+  getRbacRolesIndexRouteHandler,
+  getRbacRolesUuidIndexRouteHandler,
+  getRbacRolesUuidUsedByIndexRouteHandler,
+  getReportsExportsIdIndexRouteHandler,
+  getReportsExportsIndexRouteHandler,
+  getRequestsGrantRequestsIndexRouteHandler,
+  getRequestsGrantRequestsPendingReviewIndexRouteHandler,
+  getRequestsGrantRequestsUuidIndexRouteHandler,
+  getRequestsRuleBindingsIndexRouteHandler,
+  getRequestsRuleBindingsUuidIndexRouteHandler,
+  getRequestsRuleBindingsUuidUsedByIndexRouteHandler,
+  getRequestsRuleChildBindingsIndexRouteHandler,
+  getRequestsRuleChildBindingsUuidIndexRouteHandler,
+  getRequestsRuleChildBindingsUuidUsedByIndexRouteHandler,
+  getRequestsRulesIndexRouteHandler,
+  getRequestsRulesUuidIndexRouteHandler,
+  getRequestsRulesUuidUsedByIndexRouteHandler,
+  getRootConfigIndexRouteHandler,
+  getSchemaIndexRouteHandler,
+  getSourcesAllIndexRouteHandler,
+  getSourcesAllSlugIndexRouteHandler,
+  getSourcesAllSlugUsedByIndexRouteHandler,
+  getSourcesAllTypesIndexRouteHandler,
+  getSourcesAllUserSettingsIndexRouteHandler,
+  getSourcesGroupConnectionsAllIdIndexRouteHandler,
+  getSourcesGroupConnectionsAllIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsAllIndexRouteHandler,
+  getSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  getSourcesGroupConnectionsKerberosIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsKerberosIndexRouteHandler,
+  getSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  getSourcesGroupConnectionsLdapIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsLdapIndexRouteHandler,
+  getSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  getSourcesGroupConnectionsOauthIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsOauthIndexRouteHandler,
+  getSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  getSourcesGroupConnectionsPlexIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsPlexIndexRouteHandler,
+  getSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  getSourcesGroupConnectionsSamlIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsSamlIndexRouteHandler,
+  getSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  getSourcesGroupConnectionsTelegramIdUsedByIndexRouteHandler,
+  getSourcesGroupConnectionsTelegramIndexRouteHandler,
+  getSourcesKerberosIndexRouteHandler,
+  getSourcesKerberosSlugIndexRouteHandler,
+  getSourcesKerberosSlugSyncStatusIndexRouteHandler,
+  getSourcesKerberosSlugUsedByIndexRouteHandler,
+  getSourcesLdapIndexRouteHandler,
+  getSourcesLdapSlugDebugIndexRouteHandler,
+  getSourcesLdapSlugIndexRouteHandler,
+  getSourcesLdapSlugSyncStatusIndexRouteHandler,
+  getSourcesLdapSlugUsedByIndexRouteHandler,
+  getSourcesOauthIndexRouteHandler,
+  getSourcesOauthSlugIndexRouteHandler,
+  getSourcesOauthSlugUsedByIndexRouteHandler,
+  getSourcesOauthSourceTypesIndexRouteHandler,
+  getSourcesPlexIndexRouteHandler,
+  getSourcesPlexSlugIndexRouteHandler,
+  getSourcesPlexSlugUsedByIndexRouteHandler,
+  getSourcesSamlIndexRouteHandler,
+  getSourcesSamlSlugIndexRouteHandler,
+  getSourcesSamlSlugMetadataIndexRouteHandler,
+  getSourcesSamlSlugUsedByIndexRouteHandler,
+  getSourcesScimGroupsIdIndexRouteHandler,
+  getSourcesScimGroupsIdUsedByIndexRouteHandler,
+  getSourcesScimGroupsIndexRouteHandler,
+  getSourcesScimIndexRouteHandler,
+  getSourcesScimSlugIndexRouteHandler,
+  getSourcesScimSlugUsedByIndexRouteHandler,
+  getSourcesScimUsersIdIndexRouteHandler,
+  getSourcesScimUsersIdUsedByIndexRouteHandler,
+  getSourcesScimUsersIndexRouteHandler,
+  getSourcesTelegramIndexRouteHandler,
+  getSourcesTelegramSlugIndexRouteHandler,
+  getSourcesTelegramSlugUsedByIndexRouteHandler,
+  getSourcesUserConnectionsAllIdIndexRouteHandler,
+  getSourcesUserConnectionsAllIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsAllIndexRouteHandler,
+  getSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  getSourcesUserConnectionsKerberosIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsKerberosIndexRouteHandler,
+  getSourcesUserConnectionsLdapIdIndexRouteHandler,
+  getSourcesUserConnectionsLdapIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsLdapIndexRouteHandler,
+  getSourcesUserConnectionsOauthIdIndexRouteHandler,
+  getSourcesUserConnectionsOauthIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsOauthIndexRouteHandler,
+  getSourcesUserConnectionsPlexIdIndexRouteHandler,
+  getSourcesUserConnectionsPlexIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsPlexIndexRouteHandler,
+  getSourcesUserConnectionsSamlIdIndexRouteHandler,
+  getSourcesUserConnectionsSamlIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsSamlIndexRouteHandler,
+  getSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  getSourcesUserConnectionsTelegramIdUsedByIndexRouteHandler,
+  getSourcesUserConnectionsTelegramIndexRouteHandler,
+  getSsfStreamsIndexRouteHandler,
+  getSsfStreamsUuidIndexRouteHandler,
+  getStagesAccountLockdownIndexRouteHandler,
+  getStagesAccountLockdownStageUuidIndexRouteHandler,
+  getStagesAccountLockdownStageUuidUsedByIndexRouteHandler,
+  getStagesAllIndexRouteHandler,
+  getStagesAllStageUuidIndexRouteHandler,
+  getStagesAllStageUuidUsedByIndexRouteHandler,
+  getStagesAllTypesIndexRouteHandler,
+  getStagesAllUserSettingsIndexRouteHandler,
+  getStagesAuthenticatorDuoIndexRouteHandler,
+  getStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  getStagesAuthenticatorDuoStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorEmailIndexRouteHandler,
+  getStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  getStagesAuthenticatorEmailStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorEndpointGdtcIndexRouteHandler,
+  getStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorSmsIndexRouteHandler,
+  getStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  getStagesAuthenticatorSmsStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorStaticIndexRouteHandler,
+  getStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  getStagesAuthenticatorStaticStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorTotpIndexRouteHandler,
+  getStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  getStagesAuthenticatorTotpStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorValidateIndexRouteHandler,
+  getStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  getStagesAuthenticatorValidateStageUuidUsedByIndexRouteHandler,
+  getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRouteHandler,
+  getStagesAuthenticatorWebauthnDeviceTypesIndexRouteHandler,
+  getStagesAuthenticatorWebauthnIndexRouteHandler,
+  getStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  getStagesAuthenticatorWebauthnStageUuidUsedByIndexRouteHandler,
+  getStagesCaptchaIndexRouteHandler,
+  getStagesCaptchaStageUuidIndexRouteHandler,
+  getStagesCaptchaStageUuidUsedByIndexRouteHandler,
+  getStagesConsentIndexRouteHandler,
+  getStagesConsentStageUuidIndexRouteHandler,
+  getStagesConsentStageUuidUsedByIndexRouteHandler,
+  getStagesDenyIndexRouteHandler,
+  getStagesDenyStageUuidIndexRouteHandler,
+  getStagesDenyStageUuidUsedByIndexRouteHandler,
+  getStagesDummyIndexRouteHandler,
+  getStagesDummyStageUuidIndexRouteHandler,
+  getStagesDummyStageUuidUsedByIndexRouteHandler,
+  getStagesEmailIndexRouteHandler,
+  getStagesEmailStageUuidIndexRouteHandler,
+  getStagesEmailStageUuidUsedByIndexRouteHandler,
+  getStagesEmailTemplatesIndexRouteHandler,
+  getStagesEndpointsIndexRouteHandler,
+  getStagesEndpointsStageUuidIndexRouteHandler,
+  getStagesEndpointsStageUuidUsedByIndexRouteHandler,
+  getStagesIdentificationIndexRouteHandler,
+  getStagesIdentificationStageUuidIndexRouteHandler,
+  getStagesIdentificationStageUuidUsedByIndexRouteHandler,
+  getStagesInvitationInvitationsIndexRouteHandler,
+  getStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  getStagesInvitationInvitationsInviteUuidUsedByIndexRouteHandler,
+  getStagesInvitationStagesIndexRouteHandler,
+  getStagesInvitationStagesStageUuidIndexRouteHandler,
+  getStagesInvitationStagesStageUuidUsedByIndexRouteHandler,
+  getStagesMtlsIndexRouteHandler,
+  getStagesMtlsStageUuidIndexRouteHandler,
+  getStagesMtlsStageUuidUsedByIndexRouteHandler,
+  getStagesPasswordIndexRouteHandler,
+  getStagesPasswordStageUuidIndexRouteHandler,
+  getStagesPasswordStageUuidUsedByIndexRouteHandler,
+  getStagesPromptPromptsIndexRouteHandler,
+  getStagesPromptPromptsPromptUuidIndexRouteHandler,
+  getStagesPromptPromptsPromptUuidUsedByIndexRouteHandler,
+  getStagesPromptStagesIndexRouteHandler,
+  getStagesPromptStagesStageUuidIndexRouteHandler,
+  getStagesPromptStagesStageUuidUsedByIndexRouteHandler,
+  getStagesRedirectIndexRouteHandler,
+  getStagesRedirectStageUuidIndexRouteHandler,
+  getStagesRedirectStageUuidUsedByIndexRouteHandler,
+  getStagesSourceIndexRouteHandler,
+  getStagesSourceStageUuidIndexRouteHandler,
+  getStagesSourceStageUuidUsedByIndexRouteHandler,
+  getStagesUserDeleteIndexRouteHandler,
+  getStagesUserDeleteStageUuidIndexRouteHandler,
+  getStagesUserDeleteStageUuidUsedByIndexRouteHandler,
+  getStagesUserLoginIndexRouteHandler,
+  getStagesUserLoginStageUuidIndexRouteHandler,
+  getStagesUserLoginStageUuidUsedByIndexRouteHandler,
+  getStagesUserLogoutIndexRouteHandler,
+  getStagesUserLogoutStageUuidIndexRouteHandler,
+  getStagesUserLogoutStageUuidUsedByIndexRouteHandler,
+  getStagesUserWriteIndexRouteHandler,
+  getStagesUserWriteStageUuidIndexRouteHandler,
+  getStagesUserWriteStageUuidUsedByIndexRouteHandler,
+  getTasksSchedulesIdIndexRouteHandler,
+  getTasksSchedulesIndexRouteHandler,
+  getTasksTasksIndexRouteHandler,
+  getTasksTasksMessageIdIndexRouteHandler,
+  getTasksTasksStatusIndexRouteHandler,
+  getTasksWorkersIndexRouteHandler,
+  patchAdminSettingsIndexRouteHandler,
+  patchAgentsAgentsIdIndexRouteHandler,
+  patchAuthenticatorsAdminDuoIdIndexRouteHandler,
+  patchAuthenticatorsAdminEmailIdIndexRouteHandler,
+  patchAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  patchAuthenticatorsAdminSmsIdIndexRouteHandler,
+  patchAuthenticatorsAdminStaticIdIndexRouteHandler,
+  patchAuthenticatorsAdminTotpIdIndexRouteHandler,
+  patchAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  patchAuthenticatorsDuoIdIndexRouteHandler,
+  patchAuthenticatorsEmailIdIndexRouteHandler,
+  patchAuthenticatorsSmsIdIndexRouteHandler,
+  patchAuthenticatorsStaticIdIndexRouteHandler,
+  patchAuthenticatorsTotpIdIndexRouteHandler,
+  patchAuthenticatorsWebauthnIdIndexRouteHandler,
+  patchCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  patchCoreApplicationsSlugIndexRouteHandler,
+  patchCoreBrandsBrandUuidIndexRouteHandler,
+  patchCoreGroupsGroupUuidIndexRouteHandler,
+  patchCoreObjectAttributesAttributeIdIndexRouteHandler,
+  patchCoreTokensIdentifierIndexRouteHandler,
+  patchCoreUsersIdIndexRouteHandler,
+  patchCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  patchEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  patchEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  patchEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  patchEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  patchEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  patchEndpointsDevicesDeviceUuidIndexRouteHandler,
+  patchEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  patchEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  patchEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  patchEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  patchEventsEventsEventUuidIndexRouteHandler,
+  patchEventsNotificationsUuidIndexRouteHandler,
+  patchEventsRulesPbmUuidIndexRouteHandler,
+  patchEventsTransportsUuidIndexRouteHandler,
+  patchFlowsBindingsFsbUuidIndexRouteHandler,
+  patchFlowsInstancesSlugIndexRouteHandler,
+  patchLifecycleRulesIdIndexRouteHandler,
+  patchLifecycleUserExpirationRulesIdIndexRouteHandler,
+  patchManagedBlueprintsInstanceUuidIndexRouteHandler,
+  patchOutpostsInstancesUuidIndexRouteHandler,
+  patchOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  patchOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  patchPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  patchPoliciesDummyPolicyUuidIndexRouteHandler,
+  patchPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  patchPoliciesExpressionPolicyUuidIndexRouteHandler,
+  patchPoliciesGeoipPolicyUuidIndexRouteHandler,
+  patchPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  patchPoliciesPasswordPolicyUuidIndexRouteHandler,
+  patchPoliciesReputationPolicyUuidIndexRouteHandler,
+  patchPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  patchPropertymappingsNotificationPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  patchPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  patchPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  patchPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  patchPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  patchPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  patchPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  patchPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  patchPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  patchPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  patchProvidersGoogleWorkspaceIdIndexRouteHandler,
+  patchProvidersLdapIdIndexRouteHandler,
+  patchProvidersMicrosoftEntraIdIndexRouteHandler,
+  patchProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  patchProvidersOauth2IdIndexRouteHandler,
+  patchProvidersProxyIdIndexRouteHandler,
+  patchProvidersRacIdIndexRouteHandler,
+  patchProvidersRadiusIdIndexRouteHandler,
+  patchProvidersSamlIdIndexRouteHandler,
+  patchProvidersScimIdIndexRouteHandler,
+  patchProvidersSsfIdIndexRouteHandler,
+  patchProvidersWsfedIdIndexRouteHandler,
+  patchRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  patchRbacCustomPermissionsIdIndexRouteHandler,
+  patchRbacInitialPermissionsIdIndexRouteHandler,
+  patchRbacPermissionChecksCheckUuidIndexRouteHandler,
+  patchRbacPermissionsAssignedByRolesUuidUnassignIndexRouteHandler,
+  patchRbacRolesUuidIndexRouteHandler,
+  patchRequestsGrantRequestsUuidFulfillIndexRouteHandler,
+  patchRequestsRuleBindingsUuidIndexRouteHandler,
+  patchRequestsRuleChildBindingsUuidIndexRouteHandler,
+  patchRequestsRulesUuidIndexRouteHandler,
+  patchSourcesGroupConnectionsAllIdIndexRouteHandler,
+  patchSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  patchSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  patchSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  patchSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  patchSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  patchSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  patchSourcesKerberosSlugIndexRouteHandler,
+  patchSourcesLdapSlugIndexRouteHandler,
+  patchSourcesOauthSlugIndexRouteHandler,
+  patchSourcesPlexSlugIndexRouteHandler,
+  patchSourcesSamlSlugIndexRouteHandler,
+  patchSourcesScimGroupsIdIndexRouteHandler,
+  patchSourcesScimSlugIndexRouteHandler,
+  patchSourcesScimUsersIdIndexRouteHandler,
+  patchSourcesTelegramSlugIndexRouteHandler,
+  patchSourcesUserConnectionsAllIdIndexRouteHandler,
+  patchSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  patchSourcesUserConnectionsLdapIdIndexRouteHandler,
+  patchSourcesUserConnectionsOauthIdIndexRouteHandler,
+  patchSourcesUserConnectionsPlexIdIndexRouteHandler,
+  patchSourcesUserConnectionsSamlIdIndexRouteHandler,
+  patchSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  patchStagesAccountLockdownStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  patchStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  patchStagesCaptchaStageUuidIndexRouteHandler,
+  patchStagesConsentStageUuidIndexRouteHandler,
+  patchStagesDenyStageUuidIndexRouteHandler,
+  patchStagesDummyStageUuidIndexRouteHandler,
+  patchStagesEmailStageUuidIndexRouteHandler,
+  patchStagesEndpointsStageUuidIndexRouteHandler,
+  patchStagesIdentificationStageUuidIndexRouteHandler,
+  patchStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  patchStagesInvitationStagesStageUuidIndexRouteHandler,
+  patchStagesMtlsStageUuidIndexRouteHandler,
+  patchStagesPasswordStageUuidIndexRouteHandler,
+  patchStagesPromptPromptsPromptUuidIndexRouteHandler,
+  patchStagesPromptStagesStageUuidIndexRouteHandler,
+  patchStagesRedirectStageUuidIndexRouteHandler,
+  patchStagesSourceStageUuidIndexRouteHandler,
+  patchStagesUserDeleteStageUuidIndexRouteHandler,
+  patchStagesUserLoginStageUuidIndexRouteHandler,
+  patchStagesUserLogoutStageUuidIndexRouteHandler,
+  patchStagesUserWriteStageUuidIndexRouteHandler,
+  patchTasksSchedulesIdIndexRouteHandler,
+  postAdminFileIndexRouteHandler,
+  postAdminSystemIndexRouteHandler,
+  postAgentsAgentsIndexRouteHandler,
+  postAuthenticatorsAdminDuoIndexRouteHandler,
+  postAuthenticatorsAdminEmailIndexRouteHandler,
+  postAuthenticatorsAdminEndpointIndexRouteHandler,
+  postAuthenticatorsAdminSmsIndexRouteHandler,
+  postAuthenticatorsAdminStaticIndexRouteHandler,
+  postAuthenticatorsAdminTotpIndexRouteHandler,
+  postAuthenticatorsAdminWebauthnIndexRouteHandler,
+  postAuthenticatorsPasswordIdLockIndexRouteHandler,
+  postAuthenticatorsPasswordIdUnlockIndexRouteHandler,
+  postCoreApplicationEntitlementsIndexRouteHandler,
+  postCoreApplicationsIndexRouteHandler,
+  postCoreBrandsIndexRouteHandler,
+  postCoreGroupsGroupUuidAddUserIndexRouteHandler,
+  postCoreGroupsGroupUuidRemoveUserIndexRouteHandler,
+  postCoreGroupsIndexRouteHandler,
+  postCoreObjectAttributesIndexRouteHandler,
+  postCoreTokensIdentifierSetKeyIndexRouteHandler,
+  postCoreTokensIndexRouteHandler,
+  postCoreUsersAccountLockdownIndexRouteHandler,
+  postCoreUsersExportIndexRouteHandler,
+  postCoreUsersIdImpersonateIndexRouteHandler,
+  postCoreUsersIdRecoveryEmailIndexRouteHandler,
+  postCoreUsersIdRecoveryIndexRouteHandler,
+  postCoreUsersIdSetPasswordHashIndexRouteHandler,
+  postCoreUsersIdSetPasswordIndexRouteHandler,
+  postCoreUsersIndexRouteHandler,
+  postCoreUsersServiceAccountIndexRouteHandler,
+  postCoreUsersSwitchIndexRouteHandler,
+  postCryptoCertificatekeypairsGenerateIndexRouteHandler,
+  postCryptoCertificatekeypairsIndexRouteHandler,
+  postDebugLogIndexRouteHandler,
+  postEndpointsAgentsConnectorsAuthFedIndexRouteHandler,
+  postEndpointsAgentsConnectorsAuthIaIndexRouteHandler,
+  postEndpointsAgentsConnectorsCheckInIndexRouteHandler,
+  postEndpointsAgentsConnectorsConnectorUuidMdmConfigIndexRouteHandler,
+  postEndpointsAgentsConnectorsEnrollIndexRouteHandler,
+  postEndpointsAgentsConnectorsIndexRouteHandler,
+  postEndpointsAgentsEnrollmentTokensIndexRouteHandler,
+  postEndpointsAgentsPssoIseIndexRouteHandler,
+  postEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  postEndpointsAgentsPssoRegisterUserIndexRouteHandler,
+  postEndpointsDeviceAccessGroupsIndexRouteHandler,
+  postEndpointsDeviceBindingsIndexRouteHandler,
+  postEndpointsDevicesIndexRouteHandler,
+  postEndpointsFleetConnectorsIndexRouteHandler,
+  postEndpointsGoogleChromeConnectorsIndexRouteHandler,
+  postEndpointsMicrosoftIntuneConnectorsIndexRouteHandler,
+  postEnterpriseLicenseIndexRouteHandler,
+  postEventsEventsExportIndexRouteHandler,
+  postEventsEventsIndexRouteHandler,
+  postEventsNotificationsMarkAllSeenIndexRouteHandler,
+  postEventsRulesIndexRouteHandler,
+  postEventsTransportsIndexRouteHandler,
+  postEventsTransportsUuidTestIndexRouteHandler,
+  postFlowsBindingsIndexRouteHandler,
+  postFlowsExecutorFlowSlugIndexRouteHandler,
+  postFlowsInstancesCacheClearIndexRouteHandler,
+  postFlowsInstancesIndexRouteHandler,
+  postLifecycleIterationsIndexRouteHandler,
+  postLifecycleReviewsIndexRouteHandler,
+  postLifecycleRulesIndexRouteHandler,
+  postLifecycleUserExpirationRulesIdPreviewIndexRouteHandler,
+  postLifecycleUserExpirationRulesIndexRouteHandler,
+  postLifecycleUserOffboardingIndexRouteHandler,
+  postManagedBlueprintsImportIndexRouteHandler,
+  postManagedBlueprintsIndexRouteHandler,
+  postManagedBlueprintsInstanceUuidApplyIndexRouteHandler,
+  postManagedBlueprintsValidateIndexRouteHandler,
+  postOutpostsInstancesIndexRouteHandler,
+  postOutpostsInstancesUuidRebuildPermissionsIndexRouteHandler,
+  postOutpostsServiceConnectionsDockerIndexRouteHandler,
+  postOutpostsServiceConnectionsKubernetesIndexRouteHandler,
+  postPoliciesAllCacheClearIndexRouteHandler,
+  postPoliciesAllPolicyUuidTestIndexRouteHandler,
+  postPoliciesBindingsIndexRouteHandler,
+  postPoliciesDummyIndexRouteHandler,
+  postPoliciesEventMatcherIndexRouteHandler,
+  postPoliciesExpressionIndexRouteHandler,
+  postPoliciesGeoipIndexRouteHandler,
+  postPoliciesPasswordExpiryIndexRouteHandler,
+  postPoliciesPasswordIndexRouteHandler,
+  postPoliciesReputationIndexRouteHandler,
+  postPoliciesUniquePasswordIndexRouteHandler,
+  postPropertymappingsAllPmUuidTestIndexRouteHandler,
+  postPropertymappingsNotificationIndexRouteHandler,
+  postPropertymappingsProviderGoogleWorkspaceIndexRouteHandler,
+  postPropertymappingsProviderMicrosoftEntraIndexRouteHandler,
+  postPropertymappingsProviderRacIndexRouteHandler,
+  postPropertymappingsProviderRadiusIndexRouteHandler,
+  postPropertymappingsProviderSamlIndexRouteHandler,
+  postPropertymappingsProviderScimIndexRouteHandler,
+  postPropertymappingsProviderScopeIndexRouteHandler,
+  postPropertymappingsSourceKerberosIndexRouteHandler,
+  postPropertymappingsSourceLdapIndexRouteHandler,
+  postPropertymappingsSourceOauthIndexRouteHandler,
+  postPropertymappingsSourcePlexIndexRouteHandler,
+  postPropertymappingsSourceSamlIndexRouteHandler,
+  postPropertymappingsSourceScimIndexRouteHandler,
+  postPropertymappingsSourceTelegramIndexRouteHandler,
+  postProvidersGoogleWorkspaceGroupsIndexRouteHandler,
+  postProvidersGoogleWorkspaceIdSyncObjectIndexRouteHandler,
+  postProvidersGoogleWorkspaceIndexRouteHandler,
+  postProvidersGoogleWorkspaceUsersIndexRouteHandler,
+  postProvidersLdapIndexRouteHandler,
+  postProvidersMicrosoftEntraGroupsIndexRouteHandler,
+  postProvidersMicrosoftEntraIdSyncObjectIndexRouteHandler,
+  postProvidersMicrosoftEntraIndexRouteHandler,
+  postProvidersMicrosoftEntraUsersIndexRouteHandler,
+  postProvidersOauth2DcrIndexRouteHandler,
+  postProvidersOauth2IndexRouteHandler,
+  postProvidersProxyIndexRouteHandler,
+  postProvidersRacIndexRouteHandler,
+  postProvidersRadiusIndexRouteHandler,
+  postProvidersSamlImportMetadataIndexRouteHandler,
+  postProvidersSamlIndexRouteHandler,
+  postProvidersScimGroupsIndexRouteHandler,
+  postProvidersScimIdSyncObjectIndexRouteHandler,
+  postProvidersScimIndexRouteHandler,
+  postProvidersScimUsersIndexRouteHandler,
+  postProvidersSsfIndexRouteHandler,
+  postProvidersWsfedIndexRouteHandler,
+  postRbacCustomPermissionsIndexRouteHandler,
+  postRbacInitialPermissionsIndexRouteHandler,
+  postRbacPermissionChecksIndexRouteHandler,
+  postRbacPermissionsAssignedByRolesUuidAssignIndexRouteHandler,
+  postRbacRolesIndexRouteHandler,
+  postRbacRolesUuidAddUserIndexRouteHandler,
+  postRbacRolesUuidRemoveUserIndexRouteHandler,
+  postRequestsGrantRequestsAgentIndexRouteHandler,
+  postRequestsGrantRequestsIndexRouteHandler,
+  postRequestsRuleBindingsIndexRouteHandler,
+  postRequestsRuleChildBindingsIndexRouteHandler,
+  postRequestsRulesIndexRouteHandler,
+  postSourcesGroupConnectionsKerberosIndexRouteHandler,
+  postSourcesGroupConnectionsLdapIndexRouteHandler,
+  postSourcesGroupConnectionsOauthIndexRouteHandler,
+  postSourcesGroupConnectionsPlexIndexRouteHandler,
+  postSourcesGroupConnectionsSamlIndexRouteHandler,
+  postSourcesGroupConnectionsTelegramIndexRouteHandler,
+  postSourcesKerberosIndexRouteHandler,
+  postSourcesLdapIndexRouteHandler,
+  postSourcesOauthIndexRouteHandler,
+  postSourcesPlexIndexRouteHandler,
+  postSourcesPlexRedeemTokenAuthenticatedIndexRouteHandler,
+  postSourcesPlexRedeemTokenIndexRouteHandler,
+  postSourcesSamlIndexRouteHandler,
+  postSourcesScimGroupsIndexRouteHandler,
+  postSourcesScimIndexRouteHandler,
+  postSourcesScimUsersIndexRouteHandler,
+  postSourcesTelegramIndexRouteHandler,
+  postSourcesTelegramSlugConnectUserIndexRouteHandler,
+  postSourcesUserConnectionsKerberosIndexRouteHandler,
+  postSourcesUserConnectionsLdapIndexRouteHandler,
+  postSourcesUserConnectionsOauthIndexRouteHandler,
+  postSourcesUserConnectionsPlexIndexRouteHandler,
+  postSourcesUserConnectionsSamlIndexRouteHandler,
+  postSourcesUserConnectionsTelegramIndexRouteHandler,
+  postStagesAccountLockdownIndexRouteHandler,
+  postStagesAuthenticatorDuoIndexRouteHandler,
+  postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRouteHandler,
+  postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRouteHandler,
+  postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRouteHandler,
+  postStagesAuthenticatorEmailIndexRouteHandler,
+  postStagesAuthenticatorEndpointGdtcIndexRouteHandler,
+  postStagesAuthenticatorSmsIndexRouteHandler,
+  postStagesAuthenticatorStaticIndexRouteHandler,
+  postStagesAuthenticatorTotpIndexRouteHandler,
+  postStagesAuthenticatorValidateIndexRouteHandler,
+  postStagesAuthenticatorWebauthnIndexRouteHandler,
+  postStagesCaptchaIndexRouteHandler,
+  postStagesConsentIndexRouteHandler,
+  postStagesDenyIndexRouteHandler,
+  postStagesDummyIndexRouteHandler,
+  postStagesEmailIndexRouteHandler,
+  postStagesEndpointsIndexRouteHandler,
+  postStagesIdentificationIndexRouteHandler,
+  postStagesInvitationInvitationsIndexRouteHandler,
+  postStagesInvitationInvitationsInviteUuidSendEmailIndexRouteHandler,
+  postStagesInvitationStagesIndexRouteHandler,
+  postStagesMtlsIndexRouteHandler,
+  postStagesPasswordIndexRouteHandler,
+  postStagesPromptPromptsIndexRouteHandler,
+  postStagesPromptPromptsPreviewIndexRouteHandler,
+  postStagesPromptStagesIndexRouteHandler,
+  postStagesRedirectIndexRouteHandler,
+  postStagesSourceIndexRouteHandler,
+  postStagesUserDeleteIndexRouteHandler,
+  postStagesUserLoginIndexRouteHandler,
+  postStagesUserLogoutIndexRouteHandler,
+  postStagesUserWriteIndexRouteHandler,
+  postTasksSchedulesIdSendIndexRouteHandler,
+  postTasksTasksMessageIdRetryIndexRouteHandler,
+  putAdminSettingsIndexRouteHandler,
+  putAgentsAgentsIdIndexRouteHandler,
+  putAuthenticatorsAdminDuoIdIndexRouteHandler,
+  putAuthenticatorsAdminEmailIdIndexRouteHandler,
+  putAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  putAuthenticatorsAdminSmsIdIndexRouteHandler,
+  putAuthenticatorsAdminStaticIdIndexRouteHandler,
+  putAuthenticatorsAdminTotpIdIndexRouteHandler,
+  putAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  putAuthenticatorsDuoIdIndexRouteHandler,
+  putAuthenticatorsEmailIdIndexRouteHandler,
+  putAuthenticatorsSmsIdIndexRouteHandler,
+  putAuthenticatorsStaticIdIndexRouteHandler,
+  putAuthenticatorsTotpIdIndexRouteHandler,
+  putAuthenticatorsWebauthnIdIndexRouteHandler,
+  putCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  putCoreApplicationsSlugIndexRouteHandler,
+  putCoreBrandsBrandUuidIndexRouteHandler,
+  putCoreGroupsGroupUuidIndexRouteHandler,
+  putCoreObjectAttributesAttributeIdIndexRouteHandler,
+  putCoreTokensIdentifierIndexRouteHandler,
+  putCoreTransactionalApplicationsIndexRouteHandler,
+  putCoreUsersIdIndexRouteHandler,
+  putCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  putEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  putEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  putEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  putEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  putEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  putEndpointsDevicesDeviceUuidIndexRouteHandler,
+  putEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  putEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  putEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  putEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  putEventsEventsEventUuidIndexRouteHandler,
+  putEventsNotificationsUuidIndexRouteHandler,
+  putEventsRulesPbmUuidIndexRouteHandler,
+  putEventsTransportsUuidIndexRouteHandler,
+  putFlowsBindingsFsbUuidIndexRouteHandler,
+  putFlowsInstancesSlugIndexRouteHandler,
+  putLifecycleRulesIdIndexRouteHandler,
+  putLifecycleUserExpirationRulesIdIndexRouteHandler,
+  putManagedBlueprintsInstanceUuidIndexRouteHandler,
+  putOutpostsInstancesUuidIndexRouteHandler,
+  putOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  putOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  putPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  putPoliciesDummyPolicyUuidIndexRouteHandler,
+  putPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  putPoliciesExpressionPolicyUuidIndexRouteHandler,
+  putPoliciesGeoipPolicyUuidIndexRouteHandler,
+  putPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  putPoliciesPasswordPolicyUuidIndexRouteHandler,
+  putPoliciesReputationPolicyUuidIndexRouteHandler,
+  putPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  putPropertymappingsNotificationPmUuidIndexRouteHandler,
+  putPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  putPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  putPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  putPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  putPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  putPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  putPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  putPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  putPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  putPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  putPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  putPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  putPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  putPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  putProvidersGoogleWorkspaceIdIndexRouteHandler,
+  putProvidersLdapIdIndexRouteHandler,
+  putProvidersMicrosoftEntraIdIndexRouteHandler,
+  putProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  putProvidersOauth2IdIndexRouteHandler,
+  putProvidersProxyIdIndexRouteHandler,
+  putProvidersRacIdIndexRouteHandler,
+  putProvidersRadiusIdIndexRouteHandler,
+  putProvidersSamlIdIndexRouteHandler,
+  putProvidersScimIdIndexRouteHandler,
+  putProvidersSsfIdIndexRouteHandler,
+  putProvidersWsfedIdIndexRouteHandler,
+  putRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  putRbacCustomPermissionsIdIndexRouteHandler,
+  putRbacInitialPermissionsIdIndexRouteHandler,
+  putRbacPermissionChecksCheckUuidIndexRouteHandler,
+  putRbacRolesUuidIndexRouteHandler,
+  putRequestsRuleBindingsUuidIndexRouteHandler,
+  putRequestsRuleChildBindingsUuidIndexRouteHandler,
+  putRequestsRulesUuidIndexRouteHandler,
+  putSourcesGroupConnectionsAllIdIndexRouteHandler,
+  putSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  putSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  putSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  putSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  putSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  putSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  putSourcesKerberosSlugIndexRouteHandler,
+  putSourcesLdapSlugIndexRouteHandler,
+  putSourcesOauthSlugIndexRouteHandler,
+  putSourcesPlexSlugIndexRouteHandler,
+  putSourcesSamlSlugIndexRouteHandler,
+  putSourcesScimGroupsIdIndexRouteHandler,
+  putSourcesScimSlugIndexRouteHandler,
+  putSourcesScimUsersIdIndexRouteHandler,
+  putSourcesTelegramSlugIndexRouteHandler,
+  putSourcesUserConnectionsAllIdIndexRouteHandler,
+  putSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  putSourcesUserConnectionsLdapIdIndexRouteHandler,
+  putSourcesUserConnectionsOauthIdIndexRouteHandler,
+  putSourcesUserConnectionsPlexIdIndexRouteHandler,
+  putSourcesUserConnectionsSamlIdIndexRouteHandler,
+  putSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  putStagesAccountLockdownStageUuidIndexRouteHandler,
+  putStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  putStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  putStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  putStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  putStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  putStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  putStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  putStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  putStagesCaptchaStageUuidIndexRouteHandler,
+  putStagesConsentStageUuidIndexRouteHandler,
+  putStagesDenyStageUuidIndexRouteHandler,
+  putStagesDummyStageUuidIndexRouteHandler,
+  putStagesEmailStageUuidIndexRouteHandler,
+  putStagesEndpointsStageUuidIndexRouteHandler,
+  putStagesIdentificationStageUuidIndexRouteHandler,
+  putStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  putStagesInvitationStagesStageUuidIndexRouteHandler,
+  putStagesMtlsStageUuidIndexRouteHandler,
+  putStagesPasswordStageUuidIndexRouteHandler,
+  putStagesPromptPromptsPromptUuidIndexRouteHandler,
+  putStagesPromptStagesStageUuidIndexRouteHandler,
+  putStagesRedirectStageUuidIndexRouteHandler,
+  putStagesSourceStageUuidIndexRouteHandler,
+  putStagesUserDeleteStageUuidIndexRouteHandler,
+  putStagesUserLoginStageUuidIndexRouteHandler,
+  putStagesUserLogoutStageUuidIndexRouteHandler,
+  putStagesUserWriteStageUuidIndexRouteHandler,
+  putTasksSchedulesIdIndexRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', adminHandler)
-  .route('/', agentsHandler)
-  .route('/', authenticatorsHandler)
-  .route('/', coreHandler)
-  .route('/', cryptoHandler)
-  .route('/', debugHandler)
-  .route('/', endpointsHandler)
-  .route('/', enterpriseHandler)
-  .route('/', eventsHandler)
-  .route('/', flowsHandler)
-  .route('/', lifecycleHandler)
-  .route('/', managedHandler)
-  .route('/', oauth2Handler)
-  .route('/', outpostsHandler)
-  .route('/', policiesHandler)
-  .route('/', propertymappingsHandler)
-  .route('/', providersHandler)
-  .route('/', racHandler)
-  .route('/', rbacHandler)
-  .route('/', reportsHandler)
-  .route('/', requestsHandler)
-  .route('/', rootHandler)
-  .route('/', schemaHandler)
-  .route('/', sourcesHandler)
-  .route('/', ssfHandler)
-  .route('/', stagesHandler)
-  .route('/', tasksHandler)
+  .openapi(getAdminAppsIndexRoute, getAdminAppsIndexRouteHandler)
+  .openapi(getAdminFileIndexRoute, getAdminFileIndexRouteHandler)
+  .openapi(postAdminFileIndexRoute, postAdminFileIndexRouteHandler)
+  .openapi(deleteAdminFileIndexRoute, deleteAdminFileIndexRouteHandler)
+  .openapi(getAdminFileUsedByIndexRoute, getAdminFileUsedByIndexRouteHandler)
+  .openapi(getAdminModelsIndexRoute, getAdminModelsIndexRouteHandler)
+  .openapi(getAdminSettingsIndexRoute, getAdminSettingsIndexRouteHandler)
+  .openapi(putAdminSettingsIndexRoute, putAdminSettingsIndexRouteHandler)
+  .openapi(patchAdminSettingsIndexRoute, patchAdminSettingsIndexRouteHandler)
+  .openapi(getAdminSystemIndexRoute, getAdminSystemIndexRouteHandler)
+  .openapi(postAdminSystemIndexRoute, postAdminSystemIndexRouteHandler)
+  .openapi(getAdminVersionIndexRoute, getAdminVersionIndexRouteHandler)
+  .openapi(getAdminVersionHistoryIndexRoute, getAdminVersionHistoryIndexRouteHandler)
+  .openapi(getAdminVersionHistoryIdIndexRoute, getAdminVersionHistoryIdIndexRouteHandler)
+  .openapi(getAgentsAgentsIndexRoute, getAgentsAgentsIndexRouteHandler)
+  .openapi(postAgentsAgentsIndexRoute, postAgentsAgentsIndexRouteHandler)
+  .openapi(getAgentsAgentsIdIndexRoute, getAgentsAgentsIdIndexRouteHandler)
+  .openapi(putAgentsAgentsIdIndexRoute, putAgentsAgentsIdIndexRouteHandler)
+  .openapi(patchAgentsAgentsIdIndexRoute, patchAgentsAgentsIdIndexRouteHandler)
+  .openapi(deleteAgentsAgentsIdIndexRoute, deleteAgentsAgentsIdIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminAllIndexRoute, getAuthenticatorsAdminAllIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminDuoIndexRoute, getAuthenticatorsAdminDuoIndexRouteHandler)
+  .openapi(postAuthenticatorsAdminDuoIndexRoute, postAuthenticatorsAdminDuoIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminDuoIdIndexRoute, getAuthenticatorsAdminDuoIdIndexRouteHandler)
+  .openapi(putAuthenticatorsAdminDuoIdIndexRoute, putAuthenticatorsAdminDuoIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsAdminDuoIdIndexRoute, patchAuthenticatorsAdminDuoIdIndexRouteHandler)
+  .openapi(
+    deleteAuthenticatorsAdminDuoIdIndexRoute,
+    deleteAuthenticatorsAdminDuoIdIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsAdminEmailIndexRoute, getAuthenticatorsAdminEmailIndexRouteHandler)
+  .openapi(postAuthenticatorsAdminEmailIndexRoute, postAuthenticatorsAdminEmailIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminEmailIdIndexRoute, getAuthenticatorsAdminEmailIdIndexRouteHandler)
+  .openapi(putAuthenticatorsAdminEmailIdIndexRoute, putAuthenticatorsAdminEmailIdIndexRouteHandler)
+  .openapi(
+    patchAuthenticatorsAdminEmailIdIndexRoute,
+    patchAuthenticatorsAdminEmailIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteAuthenticatorsAdminEmailIdIndexRoute,
+    deleteAuthenticatorsAdminEmailIdIndexRouteHandler,
+  )
+  .openapi(
+    getAuthenticatorsAdminEndpointIndexRoute,
+    getAuthenticatorsAdminEndpointIndexRouteHandler,
+  )
+  .openapi(
+    postAuthenticatorsAdminEndpointIndexRoute,
+    postAuthenticatorsAdminEndpointIndexRouteHandler,
+  )
+  .openapi(
+    getAuthenticatorsAdminEndpointUuidIndexRoute,
+    getAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  )
+  .openapi(
+    putAuthenticatorsAdminEndpointUuidIndexRoute,
+    putAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchAuthenticatorsAdminEndpointUuidIndexRoute,
+    patchAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteAuthenticatorsAdminEndpointUuidIndexRoute,
+    deleteAuthenticatorsAdminEndpointUuidIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsAdminSmsIndexRoute, getAuthenticatorsAdminSmsIndexRouteHandler)
+  .openapi(postAuthenticatorsAdminSmsIndexRoute, postAuthenticatorsAdminSmsIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminSmsIdIndexRoute, getAuthenticatorsAdminSmsIdIndexRouteHandler)
+  .openapi(putAuthenticatorsAdminSmsIdIndexRoute, putAuthenticatorsAdminSmsIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsAdminSmsIdIndexRoute, patchAuthenticatorsAdminSmsIdIndexRouteHandler)
+  .openapi(
+    deleteAuthenticatorsAdminSmsIdIndexRoute,
+    deleteAuthenticatorsAdminSmsIdIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsAdminStaticIndexRoute, getAuthenticatorsAdminStaticIndexRouteHandler)
+  .openapi(postAuthenticatorsAdminStaticIndexRoute, postAuthenticatorsAdminStaticIndexRouteHandler)
+  .openapi(
+    getAuthenticatorsAdminStaticIdIndexRoute,
+    getAuthenticatorsAdminStaticIdIndexRouteHandler,
+  )
+  .openapi(
+    putAuthenticatorsAdminStaticIdIndexRoute,
+    putAuthenticatorsAdminStaticIdIndexRouteHandler,
+  )
+  .openapi(
+    patchAuthenticatorsAdminStaticIdIndexRoute,
+    patchAuthenticatorsAdminStaticIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteAuthenticatorsAdminStaticIdIndexRoute,
+    deleteAuthenticatorsAdminStaticIdIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsAdminTotpIndexRoute, getAuthenticatorsAdminTotpIndexRouteHandler)
+  .openapi(postAuthenticatorsAdminTotpIndexRoute, postAuthenticatorsAdminTotpIndexRouteHandler)
+  .openapi(getAuthenticatorsAdminTotpIdIndexRoute, getAuthenticatorsAdminTotpIdIndexRouteHandler)
+  .openapi(putAuthenticatorsAdminTotpIdIndexRoute, putAuthenticatorsAdminTotpIdIndexRouteHandler)
+  .openapi(
+    patchAuthenticatorsAdminTotpIdIndexRoute,
+    patchAuthenticatorsAdminTotpIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteAuthenticatorsAdminTotpIdIndexRoute,
+    deleteAuthenticatorsAdminTotpIdIndexRouteHandler,
+  )
+  .openapi(
+    getAuthenticatorsAdminWebauthnIndexRoute,
+    getAuthenticatorsAdminWebauthnIndexRouteHandler,
+  )
+  .openapi(
+    postAuthenticatorsAdminWebauthnIndexRoute,
+    postAuthenticatorsAdminWebauthnIndexRouteHandler,
+  )
+  .openapi(
+    getAuthenticatorsAdminWebauthnIdIndexRoute,
+    getAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  )
+  .openapi(
+    putAuthenticatorsAdminWebauthnIdIndexRoute,
+    putAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  )
+  .openapi(
+    patchAuthenticatorsAdminWebauthnIdIndexRoute,
+    patchAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteAuthenticatorsAdminWebauthnIdIndexRoute,
+    deleteAuthenticatorsAdminWebauthnIdIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsAllIndexRoute, getAuthenticatorsAllIndexRouteHandler)
+  .openapi(getAuthenticatorsDuoIndexRoute, getAuthenticatorsDuoIndexRouteHandler)
+  .openapi(getAuthenticatorsDuoIdIndexRoute, getAuthenticatorsDuoIdIndexRouteHandler)
+  .openapi(putAuthenticatorsDuoIdIndexRoute, putAuthenticatorsDuoIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsDuoIdIndexRoute, patchAuthenticatorsDuoIdIndexRouteHandler)
+  .openapi(deleteAuthenticatorsDuoIdIndexRoute, deleteAuthenticatorsDuoIdIndexRouteHandler)
+  .openapi(getAuthenticatorsDuoIdUsedByIndexRoute, getAuthenticatorsDuoIdUsedByIndexRouteHandler)
+  .openapi(getAuthenticatorsEmailIndexRoute, getAuthenticatorsEmailIndexRouteHandler)
+  .openapi(getAuthenticatorsEmailIdIndexRoute, getAuthenticatorsEmailIdIndexRouteHandler)
+  .openapi(putAuthenticatorsEmailIdIndexRoute, putAuthenticatorsEmailIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsEmailIdIndexRoute, patchAuthenticatorsEmailIdIndexRouteHandler)
+  .openapi(deleteAuthenticatorsEmailIdIndexRoute, deleteAuthenticatorsEmailIdIndexRouteHandler)
+  .openapi(
+    getAuthenticatorsEmailIdUsedByIndexRoute,
+    getAuthenticatorsEmailIdUsedByIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsEndpointIndexRoute, getAuthenticatorsEndpointIndexRouteHandler)
+  .openapi(getAuthenticatorsEndpointUuidIndexRoute, getAuthenticatorsEndpointUuidIndexRouteHandler)
+  .openapi(
+    getAuthenticatorsEndpointUuidUsedByIndexRoute,
+    getAuthenticatorsEndpointUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    postAuthenticatorsPasswordIdLockIndexRoute,
+    postAuthenticatorsPasswordIdLockIndexRouteHandler,
+  )
+  .openapi(
+    postAuthenticatorsPasswordIdUnlockIndexRoute,
+    postAuthenticatorsPasswordIdUnlockIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsSmsIndexRoute, getAuthenticatorsSmsIndexRouteHandler)
+  .openapi(getAuthenticatorsSmsIdIndexRoute, getAuthenticatorsSmsIdIndexRouteHandler)
+  .openapi(putAuthenticatorsSmsIdIndexRoute, putAuthenticatorsSmsIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsSmsIdIndexRoute, patchAuthenticatorsSmsIdIndexRouteHandler)
+  .openapi(deleteAuthenticatorsSmsIdIndexRoute, deleteAuthenticatorsSmsIdIndexRouteHandler)
+  .openapi(getAuthenticatorsSmsIdUsedByIndexRoute, getAuthenticatorsSmsIdUsedByIndexRouteHandler)
+  .openapi(getAuthenticatorsStaticIndexRoute, getAuthenticatorsStaticIndexRouteHandler)
+  .openapi(getAuthenticatorsStaticIdIndexRoute, getAuthenticatorsStaticIdIndexRouteHandler)
+  .openapi(putAuthenticatorsStaticIdIndexRoute, putAuthenticatorsStaticIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsStaticIdIndexRoute, patchAuthenticatorsStaticIdIndexRouteHandler)
+  .openapi(deleteAuthenticatorsStaticIdIndexRoute, deleteAuthenticatorsStaticIdIndexRouteHandler)
+  .openapi(
+    getAuthenticatorsStaticIdUsedByIndexRoute,
+    getAuthenticatorsStaticIdUsedByIndexRouteHandler,
+  )
+  .openapi(getAuthenticatorsTotpIndexRoute, getAuthenticatorsTotpIndexRouteHandler)
+  .openapi(getAuthenticatorsTotpIdIndexRoute, getAuthenticatorsTotpIdIndexRouteHandler)
+  .openapi(putAuthenticatorsTotpIdIndexRoute, putAuthenticatorsTotpIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsTotpIdIndexRoute, patchAuthenticatorsTotpIdIndexRouteHandler)
+  .openapi(deleteAuthenticatorsTotpIdIndexRoute, deleteAuthenticatorsTotpIdIndexRouteHandler)
+  .openapi(getAuthenticatorsTotpIdUsedByIndexRoute, getAuthenticatorsTotpIdUsedByIndexRouteHandler)
+  .openapi(getAuthenticatorsWebauthnIndexRoute, getAuthenticatorsWebauthnIndexRouteHandler)
+  .openapi(getAuthenticatorsWebauthnIdIndexRoute, getAuthenticatorsWebauthnIdIndexRouteHandler)
+  .openapi(putAuthenticatorsWebauthnIdIndexRoute, putAuthenticatorsWebauthnIdIndexRouteHandler)
+  .openapi(patchAuthenticatorsWebauthnIdIndexRoute, patchAuthenticatorsWebauthnIdIndexRouteHandler)
+  .openapi(
+    deleteAuthenticatorsWebauthnIdIndexRoute,
+    deleteAuthenticatorsWebauthnIdIndexRouteHandler,
+  )
+  .openapi(
+    getAuthenticatorsWebauthnIdUsedByIndexRoute,
+    getAuthenticatorsWebauthnIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getCoreApplicationEntitlementsIndexRoute,
+    getCoreApplicationEntitlementsIndexRouteHandler,
+  )
+  .openapi(
+    postCoreApplicationEntitlementsIndexRoute,
+    postCoreApplicationEntitlementsIndexRouteHandler,
+  )
+  .openapi(
+    getCoreApplicationEntitlementsPbmUuidIndexRoute,
+    getCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putCoreApplicationEntitlementsPbmUuidIndexRoute,
+    putCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchCoreApplicationEntitlementsPbmUuidIndexRoute,
+    patchCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteCoreApplicationEntitlementsPbmUuidIndexRoute,
+    deleteCoreApplicationEntitlementsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getCoreApplicationEntitlementsPbmUuidUsedByIndexRoute,
+    getCoreApplicationEntitlementsPbmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getCoreApplicationEntitlementsRequestableIndexRoute,
+    getCoreApplicationEntitlementsRequestableIndexRouteHandler,
+  )
+  .openapi(getCoreApplicationsIndexRoute, getCoreApplicationsIndexRouteHandler)
+  .openapi(postCoreApplicationsIndexRoute, postCoreApplicationsIndexRouteHandler)
+  .openapi(getCoreApplicationsSlugIndexRoute, getCoreApplicationsSlugIndexRouteHandler)
+  .openapi(putCoreApplicationsSlugIndexRoute, putCoreApplicationsSlugIndexRouteHandler)
+  .openapi(patchCoreApplicationsSlugIndexRoute, patchCoreApplicationsSlugIndexRouteHandler)
+  .openapi(deleteCoreApplicationsSlugIndexRoute, deleteCoreApplicationsSlugIndexRouteHandler)
+  .openapi(
+    getCoreApplicationsSlugCheckAccessIndexRoute,
+    getCoreApplicationsSlugCheckAccessIndexRouteHandler,
+  )
+  .openapi(getCoreApplicationsSlugUsedByIndexRoute, getCoreApplicationsSlugUsedByIndexRouteHandler)
+  .openapi(getCoreApplicationsAccessibleIndexRoute, getCoreApplicationsAccessibleIndexRouteHandler)
+  .openapi(
+    getCoreApplicationsRequestableIndexRoute,
+    getCoreApplicationsRequestableIndexRouteHandler,
+  )
+  .openapi(getCoreAuthenticatedSessionsIndexRoute, getCoreAuthenticatedSessionsIndexRouteHandler)
+  .openapi(
+    getCoreAuthenticatedSessionsUuidIndexRoute,
+    getCoreAuthenticatedSessionsUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteCoreAuthenticatedSessionsUuidIndexRoute,
+    deleteCoreAuthenticatedSessionsUuidIndexRouteHandler,
+  )
+  .openapi(
+    getCoreAuthenticatedSessionsUuidUsedByIndexRoute,
+    getCoreAuthenticatedSessionsUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    deleteCoreAuthenticatedSessionsBulkDeleteIndexRoute,
+    deleteCoreAuthenticatedSessionsBulkDeleteIndexRouteHandler,
+  )
+  .openapi(getCoreBrandsIndexRoute, getCoreBrandsIndexRouteHandler)
+  .openapi(postCoreBrandsIndexRoute, postCoreBrandsIndexRouteHandler)
+  .openapi(getCoreBrandsBrandUuidIndexRoute, getCoreBrandsBrandUuidIndexRouteHandler)
+  .openapi(putCoreBrandsBrandUuidIndexRoute, putCoreBrandsBrandUuidIndexRouteHandler)
+  .openapi(patchCoreBrandsBrandUuidIndexRoute, patchCoreBrandsBrandUuidIndexRouteHandler)
+  .openapi(deleteCoreBrandsBrandUuidIndexRoute, deleteCoreBrandsBrandUuidIndexRouteHandler)
+  .openapi(getCoreBrandsBrandUuidUsedByIndexRoute, getCoreBrandsBrandUuidUsedByIndexRouteHandler)
+  .openapi(getCoreBrandsCurrentIndexRoute, getCoreBrandsCurrentIndexRouteHandler)
+  .openapi(getCoreGroupsIndexRoute, getCoreGroupsIndexRouteHandler)
+  .openapi(postCoreGroupsIndexRoute, postCoreGroupsIndexRouteHandler)
+  .openapi(getCoreGroupsGroupUuidIndexRoute, getCoreGroupsGroupUuidIndexRouteHandler)
+  .openapi(putCoreGroupsGroupUuidIndexRoute, putCoreGroupsGroupUuidIndexRouteHandler)
+  .openapi(patchCoreGroupsGroupUuidIndexRoute, patchCoreGroupsGroupUuidIndexRouteHandler)
+  .openapi(deleteCoreGroupsGroupUuidIndexRoute, deleteCoreGroupsGroupUuidIndexRouteHandler)
+  .openapi(
+    postCoreGroupsGroupUuidAddUserIndexRoute,
+    postCoreGroupsGroupUuidAddUserIndexRouteHandler,
+  )
+  .openapi(
+    postCoreGroupsGroupUuidRemoveUserIndexRoute,
+    postCoreGroupsGroupUuidRemoveUserIndexRouteHandler,
+  )
+  .openapi(getCoreGroupsGroupUuidUsedByIndexRoute, getCoreGroupsGroupUuidUsedByIndexRouteHandler)
+  .openapi(getCoreObjectAttributesIndexRoute, getCoreObjectAttributesIndexRouteHandler)
+  .openapi(postCoreObjectAttributesIndexRoute, postCoreObjectAttributesIndexRouteHandler)
+  .openapi(
+    getCoreObjectAttributesAttributeIdIndexRoute,
+    getCoreObjectAttributesAttributeIdIndexRouteHandler,
+  )
+  .openapi(
+    putCoreObjectAttributesAttributeIdIndexRoute,
+    putCoreObjectAttributesAttributeIdIndexRouteHandler,
+  )
+  .openapi(
+    patchCoreObjectAttributesAttributeIdIndexRoute,
+    patchCoreObjectAttributesAttributeIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteCoreObjectAttributesAttributeIdIndexRoute,
+    deleteCoreObjectAttributesAttributeIdIndexRouteHandler,
+  )
+  .openapi(getCoreTokensIndexRoute, getCoreTokensIndexRouteHandler)
+  .openapi(postCoreTokensIndexRoute, postCoreTokensIndexRouteHandler)
+  .openapi(getCoreTokensIdentifierIndexRoute, getCoreTokensIdentifierIndexRouteHandler)
+  .openapi(putCoreTokensIdentifierIndexRoute, putCoreTokensIdentifierIndexRouteHandler)
+  .openapi(patchCoreTokensIdentifierIndexRoute, patchCoreTokensIdentifierIndexRouteHandler)
+  .openapi(deleteCoreTokensIdentifierIndexRoute, deleteCoreTokensIdentifierIndexRouteHandler)
+  .openapi(
+    postCoreTokensIdentifierSetKeyIndexRoute,
+    postCoreTokensIdentifierSetKeyIndexRouteHandler,
+  )
+  .openapi(getCoreTokensIdentifierUsedByIndexRoute, getCoreTokensIdentifierUsedByIndexRouteHandler)
+  .openapi(
+    getCoreTokensIdentifierViewKeyIndexRoute,
+    getCoreTokensIdentifierViewKeyIndexRouteHandler,
+  )
+  .openapi(
+    putCoreTransactionalApplicationsIndexRoute,
+    putCoreTransactionalApplicationsIndexRouteHandler,
+  )
+  .openapi(getCoreUserConsentIndexRoute, getCoreUserConsentIndexRouteHandler)
+  .openapi(getCoreUserConsentIdIndexRoute, getCoreUserConsentIdIndexRouteHandler)
+  .openapi(deleteCoreUserConsentIdIndexRoute, deleteCoreUserConsentIdIndexRouteHandler)
+  .openapi(getCoreUserConsentIdUsedByIndexRoute, getCoreUserConsentIdUsedByIndexRouteHandler)
+  .openapi(getCoreUsersIndexRoute, getCoreUsersIndexRouteHandler)
+  .openapi(postCoreUsersIndexRoute, postCoreUsersIndexRouteHandler)
+  .openapi(getCoreUsersIdIndexRoute, getCoreUsersIdIndexRouteHandler)
+  .openapi(putCoreUsersIdIndexRoute, putCoreUsersIdIndexRouteHandler)
+  .openapi(patchCoreUsersIdIndexRoute, patchCoreUsersIdIndexRouteHandler)
+  .openapi(deleteCoreUsersIdIndexRoute, deleteCoreUsersIdIndexRouteHandler)
+  .openapi(postCoreUsersIdImpersonateIndexRoute, postCoreUsersIdImpersonateIndexRouteHandler)
+  .openapi(postCoreUsersIdRecoveryIndexRoute, postCoreUsersIdRecoveryIndexRouteHandler)
+  .openapi(postCoreUsersIdRecoveryEmailIndexRoute, postCoreUsersIdRecoveryEmailIndexRouteHandler)
+  .openapi(postCoreUsersIdSetPasswordIndexRoute, postCoreUsersIdSetPasswordIndexRouteHandler)
+  .openapi(
+    postCoreUsersIdSetPasswordHashIndexRoute,
+    postCoreUsersIdSetPasswordHashIndexRouteHandler,
+  )
+  .openapi(getCoreUsersIdUsedByIndexRoute, getCoreUsersIdUsedByIndexRouteHandler)
+  .openapi(postCoreUsersAccountLockdownIndexRoute, postCoreUsersAccountLockdownIndexRouteHandler)
+  .openapi(postCoreUsersExportIndexRoute, postCoreUsersExportIndexRouteHandler)
+  .openapi(getCoreUsersImpersonateEndIndexRoute, getCoreUsersImpersonateEndIndexRouteHandler)
+  .openapi(getCoreUsersMeIndexRoute, getCoreUsersMeIndexRouteHandler)
+  .openapi(getCoreUsersPathsIndexRoute, getCoreUsersPathsIndexRouteHandler)
+  .openapi(postCoreUsersServiceAccountIndexRoute, postCoreUsersServiceAccountIndexRouteHandler)
+  .openapi(postCoreUsersSwitchIndexRoute, postCoreUsersSwitchIndexRouteHandler)
+  .openapi(getCryptoCertificatekeypairsIndexRoute, getCryptoCertificatekeypairsIndexRouteHandler)
+  .openapi(postCryptoCertificatekeypairsIndexRoute, postCryptoCertificatekeypairsIndexRouteHandler)
+  .openapi(
+    getCryptoCertificatekeypairsKpUuidIndexRoute,
+    getCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  )
+  .openapi(
+    putCryptoCertificatekeypairsKpUuidIndexRoute,
+    putCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchCryptoCertificatekeypairsKpUuidIndexRoute,
+    patchCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteCryptoCertificatekeypairsKpUuidIndexRoute,
+    deleteCryptoCertificatekeypairsKpUuidIndexRouteHandler,
+  )
+  .openapi(
+    getCryptoCertificatekeypairsKpUuidUsedByIndexRoute,
+    getCryptoCertificatekeypairsKpUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getCryptoCertificatekeypairsKpUuidViewCertificateIndexRoute,
+    getCryptoCertificatekeypairsKpUuidViewCertificateIndexRouteHandler,
+  )
+  .openapi(
+    getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRoute,
+    getCryptoCertificatekeypairsKpUuidViewPrivateKeyIndexRouteHandler,
+  )
+  .openapi(
+    postCryptoCertificatekeypairsGenerateIndexRoute,
+    postCryptoCertificatekeypairsGenerateIndexRouteHandler,
+  )
+  .openapi(postDebugLogIndexRoute, postDebugLogIndexRouteHandler)
+  .openapi(getEndpointsAgentsConnectorsIndexRoute, getEndpointsAgentsConnectorsIndexRouteHandler)
+  .openapi(postEndpointsAgentsConnectorsIndexRoute, postEndpointsAgentsConnectorsIndexRouteHandler)
+  .openapi(
+    getEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+    getEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+    putEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+    patchEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsAgentsConnectorsConnectorUuidIndexRoute,
+    deleteEndpointsAgentsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsConnectorsConnectorUuidMdmConfigIndexRoute,
+    postEndpointsAgentsConnectorsConnectorUuidMdmConfigIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsConnectorsConnectorUuidUsedByIndexRoute,
+    getEndpointsAgentsConnectorsConnectorUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsConnectorsAgentConfigIndexRoute,
+    getEndpointsAgentsConnectorsAgentConfigIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsConnectorsAuthFedIndexRoute,
+    postEndpointsAgentsConnectorsAuthFedIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsConnectorsAuthIaIndexRoute,
+    postEndpointsAgentsConnectorsAuthIaIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsConnectorsCheckInIndexRoute,
+    postEndpointsAgentsConnectorsCheckInIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsConnectorsEnrollIndexRoute,
+    postEndpointsAgentsConnectorsEnrollIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsEnrollmentTokensIndexRoute,
+    getEndpointsAgentsEnrollmentTokensIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsEnrollmentTokensIndexRoute,
+    postEndpointsAgentsEnrollmentTokensIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+    getEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+    putEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+    patchEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsAgentsEnrollmentTokensTokenUuidIndexRoute,
+    deleteEndpointsAgentsEnrollmentTokensTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsEnrollmentTokensTokenUuidUsedByIndexRoute,
+    getEndpointsAgentsEnrollmentTokensTokenUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsEnrollmentTokensTokenUuidViewKeyIndexRoute,
+    getEndpointsAgentsEnrollmentTokensTokenUuidViewKeyIndexRouteHandler,
+  )
+  .openapi(getEndpointsAgentsPssoIseIndexRoute, getEndpointsAgentsPssoIseIndexRouteHandler)
+  .openapi(postEndpointsAgentsPssoIseIndexRoute, postEndpointsAgentsPssoIseIndexRouteHandler)
+  .openapi(getEndpointsAgentsPssoIseUuidIndexRoute, getEndpointsAgentsPssoIseUuidIndexRouteHandler)
+  .openapi(putEndpointsAgentsPssoIseUuidIndexRoute, putEndpointsAgentsPssoIseUuidIndexRouteHandler)
+  .openapi(
+    patchEndpointsAgentsPssoIseUuidIndexRoute,
+    patchEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsAgentsPssoIseUuidIndexRoute,
+    deleteEndpointsAgentsPssoIseUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsPssoIseUuidUsedByIndexRoute,
+    getEndpointsAgentsPssoIseUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsAgentsPssoRegisterDeviceIndexRoute,
+    getEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsPssoRegisterDeviceIndexRoute,
+    postEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsAgentsPssoRegisterDeviceIndexRoute,
+    deleteEndpointsAgentsPssoRegisterDeviceIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsAgentsPssoRegisterUserIndexRoute,
+    postEndpointsAgentsPssoRegisterUserIndexRouteHandler,
+  )
+  .openapi(getEndpointsConnectorsIndexRoute, getEndpointsConnectorsIndexRouteHandler)
+  .openapi(
+    getEndpointsConnectorsConnectorUuidIndexRoute,
+    getEndpointsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsConnectorsConnectorUuidIndexRoute,
+    deleteEndpointsConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsConnectorsConnectorUuidUsedByIndexRoute,
+    getEndpointsConnectorsConnectorUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEndpointsConnectorsTypesIndexRoute, getEndpointsConnectorsTypesIndexRouteHandler)
+  .openapi(
+    getEndpointsDeviceAccessGroupsIndexRoute,
+    getEndpointsDeviceAccessGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsDeviceAccessGroupsIndexRoute,
+    postEndpointsDeviceAccessGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+    getEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+    putEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+    patchEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsDeviceAccessGroupsPbmUuidIndexRoute,
+    deleteEndpointsDeviceAccessGroupsPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsDeviceAccessGroupsPbmUuidUsedByIndexRoute,
+    getEndpointsDeviceAccessGroupsPbmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEndpointsDeviceBindingsIndexRoute, getEndpointsDeviceBindingsIndexRouteHandler)
+  .openapi(postEndpointsDeviceBindingsIndexRoute, postEndpointsDeviceBindingsIndexRouteHandler)
+  .openapi(
+    getEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+    getEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+    putEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+    patchEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsDeviceBindingsPolicyBindingUuidIndexRoute,
+    deleteEndpointsDeviceBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsDeviceBindingsPolicyBindingUuidUsedByIndexRoute,
+    getEndpointsDeviceBindingsPolicyBindingUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEndpointsDevicesIndexRoute, getEndpointsDevicesIndexRouteHandler)
+  .openapi(postEndpointsDevicesIndexRoute, postEndpointsDevicesIndexRouteHandler)
+  .openapi(getEndpointsDevicesDeviceUuidIndexRoute, getEndpointsDevicesDeviceUuidIndexRouteHandler)
+  .openapi(putEndpointsDevicesDeviceUuidIndexRoute, putEndpointsDevicesDeviceUuidIndexRouteHandler)
+  .openapi(
+    patchEndpointsDevicesDeviceUuidIndexRoute,
+    patchEndpointsDevicesDeviceUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsDevicesDeviceUuidIndexRoute,
+    deleteEndpointsDevicesDeviceUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsDevicesDeviceUuidUsedByIndexRoute,
+    getEndpointsDevicesDeviceUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEndpointsDevicesSummaryIndexRoute, getEndpointsDevicesSummaryIndexRouteHandler)
+  .openapi(getEndpointsFleetConnectorsIndexRoute, getEndpointsFleetConnectorsIndexRouteHandler)
+  .openapi(postEndpointsFleetConnectorsIndexRoute, postEndpointsFleetConnectorsIndexRouteHandler)
+  .openapi(
+    getEndpointsFleetConnectorsConnectorUuidIndexRoute,
+    getEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsFleetConnectorsConnectorUuidIndexRoute,
+    putEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsFleetConnectorsConnectorUuidIndexRoute,
+    patchEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsFleetConnectorsConnectorUuidIndexRoute,
+    deleteEndpointsFleetConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsFleetConnectorsConnectorUuidUsedByIndexRoute,
+    getEndpointsFleetConnectorsConnectorUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsGoogleChromeConnectorsIndexRoute,
+    getEndpointsGoogleChromeConnectorsIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsGoogleChromeConnectorsIndexRoute,
+    postEndpointsGoogleChromeConnectorsIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+    getEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+    putEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+    patchEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsGoogleChromeConnectorsConnectorUuidIndexRoute,
+    deleteEndpointsGoogleChromeConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsGoogleChromeConnectorsConnectorUuidUsedByIndexRoute,
+    getEndpointsGoogleChromeConnectorsConnectorUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsMicrosoftIntuneConnectorsIndexRoute,
+    getEndpointsMicrosoftIntuneConnectorsIndexRouteHandler,
+  )
+  .openapi(
+    postEndpointsMicrosoftIntuneConnectorsIndexRoute,
+    postEndpointsMicrosoftIntuneConnectorsIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+    getEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+    putEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+    patchEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRoute,
+    deleteEndpointsMicrosoftIntuneConnectorsConnectorUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEndpointsMicrosoftIntuneConnectorsConnectorUuidUsedByIndexRoute,
+    getEndpointsMicrosoftIntuneConnectorsConnectorUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEnterpriseLicenseIndexRoute, getEnterpriseLicenseIndexRouteHandler)
+  .openapi(postEnterpriseLicenseIndexRoute, postEnterpriseLicenseIndexRouteHandler)
+  .openapi(
+    getEnterpriseLicenseLicenseUuidIndexRoute,
+    getEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  )
+  .openapi(
+    putEnterpriseLicenseLicenseUuidIndexRoute,
+    putEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchEnterpriseLicenseLicenseUuidIndexRoute,
+    patchEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteEnterpriseLicenseLicenseUuidIndexRoute,
+    deleteEnterpriseLicenseLicenseUuidIndexRouteHandler,
+  )
+  .openapi(
+    getEnterpriseLicenseLicenseUuidUsedByIndexRoute,
+    getEnterpriseLicenseLicenseUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getEnterpriseLicenseInstallIdIndexRoute, getEnterpriseLicenseInstallIdIndexRouteHandler)
+  .openapi(getEnterpriseLicenseSummaryIndexRoute, getEnterpriseLicenseSummaryIndexRouteHandler)
+  .openapi(
+    getEnterpriseLicenseUserCountsIndexRoute,
+    getEnterpriseLicenseUserCountsIndexRouteHandler,
+  )
+  .openapi(getEventsEventsIndexRoute, getEventsEventsIndexRouteHandler)
+  .openapi(postEventsEventsIndexRoute, postEventsEventsIndexRouteHandler)
+  .openapi(getEventsEventsEventUuidIndexRoute, getEventsEventsEventUuidIndexRouteHandler)
+  .openapi(putEventsEventsEventUuidIndexRoute, putEventsEventsEventUuidIndexRouteHandler)
+  .openapi(patchEventsEventsEventUuidIndexRoute, patchEventsEventsEventUuidIndexRouteHandler)
+  .openapi(deleteEventsEventsEventUuidIndexRoute, deleteEventsEventsEventUuidIndexRouteHandler)
+  .openapi(getEventsEventsActionsIndexRoute, getEventsEventsActionsIndexRouteHandler)
+  .openapi(postEventsEventsExportIndexRoute, postEventsEventsExportIndexRouteHandler)
+  .openapi(getEventsEventsStatsIndexRoute, getEventsEventsStatsIndexRouteHandler)
+  .openapi(getEventsEventsTopPerUserIndexRoute, getEventsEventsTopPerUserIndexRouteHandler)
+  .openapi(getEventsEventsVolumeIndexRoute, getEventsEventsVolumeIndexRouteHandler)
+  .openapi(getEventsNotificationsIndexRoute, getEventsNotificationsIndexRouteHandler)
+  .openapi(getEventsNotificationsUuidIndexRoute, getEventsNotificationsUuidIndexRouteHandler)
+  .openapi(putEventsNotificationsUuidIndexRoute, putEventsNotificationsUuidIndexRouteHandler)
+  .openapi(patchEventsNotificationsUuidIndexRoute, patchEventsNotificationsUuidIndexRouteHandler)
+  .openapi(deleteEventsNotificationsUuidIndexRoute, deleteEventsNotificationsUuidIndexRouteHandler)
+  .openapi(
+    getEventsNotificationsUuidUsedByIndexRoute,
+    getEventsNotificationsUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    postEventsNotificationsMarkAllSeenIndexRoute,
+    postEventsNotificationsMarkAllSeenIndexRouteHandler,
+  )
+  .openapi(getEventsRulesIndexRoute, getEventsRulesIndexRouteHandler)
+  .openapi(postEventsRulesIndexRoute, postEventsRulesIndexRouteHandler)
+  .openapi(getEventsRulesPbmUuidIndexRoute, getEventsRulesPbmUuidIndexRouteHandler)
+  .openapi(putEventsRulesPbmUuidIndexRoute, putEventsRulesPbmUuidIndexRouteHandler)
+  .openapi(patchEventsRulesPbmUuidIndexRoute, patchEventsRulesPbmUuidIndexRouteHandler)
+  .openapi(deleteEventsRulesPbmUuidIndexRoute, deleteEventsRulesPbmUuidIndexRouteHandler)
+  .openapi(getEventsRulesPbmUuidUsedByIndexRoute, getEventsRulesPbmUuidUsedByIndexRouteHandler)
+  .openapi(getEventsTransportsIndexRoute, getEventsTransportsIndexRouteHandler)
+  .openapi(postEventsTransportsIndexRoute, postEventsTransportsIndexRouteHandler)
+  .openapi(getEventsTransportsUuidIndexRoute, getEventsTransportsUuidIndexRouteHandler)
+  .openapi(putEventsTransportsUuidIndexRoute, putEventsTransportsUuidIndexRouteHandler)
+  .openapi(patchEventsTransportsUuidIndexRoute, patchEventsTransportsUuidIndexRouteHandler)
+  .openapi(deleteEventsTransportsUuidIndexRoute, deleteEventsTransportsUuidIndexRouteHandler)
+  .openapi(postEventsTransportsUuidTestIndexRoute, postEventsTransportsUuidTestIndexRouteHandler)
+  .openapi(getEventsTransportsUuidUsedByIndexRoute, getEventsTransportsUuidUsedByIndexRouteHandler)
+  .openapi(getFlowsBindingsIndexRoute, getFlowsBindingsIndexRouteHandler)
+  .openapi(postFlowsBindingsIndexRoute, postFlowsBindingsIndexRouteHandler)
+  .openapi(getFlowsBindingsFsbUuidIndexRoute, getFlowsBindingsFsbUuidIndexRouteHandler)
+  .openapi(putFlowsBindingsFsbUuidIndexRoute, putFlowsBindingsFsbUuidIndexRouteHandler)
+  .openapi(patchFlowsBindingsFsbUuidIndexRoute, patchFlowsBindingsFsbUuidIndexRouteHandler)
+  .openapi(deleteFlowsBindingsFsbUuidIndexRoute, deleteFlowsBindingsFsbUuidIndexRouteHandler)
+  .openapi(getFlowsBindingsFsbUuidUsedByIndexRoute, getFlowsBindingsFsbUuidUsedByIndexRouteHandler)
+  .openapi(getFlowsExecutorFlowSlugIndexRoute, getFlowsExecutorFlowSlugIndexRouteHandler)
+  .openapi(postFlowsExecutorFlowSlugIndexRoute, postFlowsExecutorFlowSlugIndexRouteHandler)
+  .openapi(getFlowsInspectorFlowSlugIndexRoute, getFlowsInspectorFlowSlugIndexRouteHandler)
+  .openapi(getFlowsInstancesIndexRoute, getFlowsInstancesIndexRouteHandler)
+  .openapi(postFlowsInstancesIndexRoute, postFlowsInstancesIndexRouteHandler)
+  .openapi(getFlowsInstancesSlugIndexRoute, getFlowsInstancesSlugIndexRouteHandler)
+  .openapi(putFlowsInstancesSlugIndexRoute, putFlowsInstancesSlugIndexRouteHandler)
+  .openapi(patchFlowsInstancesSlugIndexRoute, patchFlowsInstancesSlugIndexRouteHandler)
+  .openapi(deleteFlowsInstancesSlugIndexRoute, deleteFlowsInstancesSlugIndexRouteHandler)
+  .openapi(getFlowsInstancesSlugDiagramIndexRoute, getFlowsInstancesSlugDiagramIndexRouteHandler)
+  .openapi(getFlowsInstancesSlugExecuteIndexRoute, getFlowsInstancesSlugExecuteIndexRouteHandler)
+  .openapi(getFlowsInstancesSlugExportIndexRoute, getFlowsInstancesSlugExportIndexRouteHandler)
+  .openapi(getFlowsInstancesSlugUsedByIndexRoute, getFlowsInstancesSlugUsedByIndexRouteHandler)
+  .openapi(postFlowsInstancesCacheClearIndexRoute, postFlowsInstancesCacheClearIndexRouteHandler)
+  .openapi(getFlowsInstancesCacheInfoIndexRoute, getFlowsInstancesCacheInfoIndexRouteHandler)
+  .openapi(postLifecycleIterationsIndexRoute, postLifecycleIterationsIndexRouteHandler)
+  .openapi(
+    getLifecycleIterationsLatestContentTypeObjectIdIndexRoute,
+    getLifecycleIterationsLatestContentTypeObjectIdIndexRouteHandler,
+  )
+  .openapi(getLifecycleIterationsOpenIndexRoute, getLifecycleIterationsOpenIndexRouteHandler)
+  .openapi(postLifecycleReviewsIndexRoute, postLifecycleReviewsIndexRouteHandler)
+  .openapi(getLifecycleRulesIndexRoute, getLifecycleRulesIndexRouteHandler)
+  .openapi(postLifecycleRulesIndexRoute, postLifecycleRulesIndexRouteHandler)
+  .openapi(getLifecycleRulesIdIndexRoute, getLifecycleRulesIdIndexRouteHandler)
+  .openapi(putLifecycleRulesIdIndexRoute, putLifecycleRulesIdIndexRouteHandler)
+  .openapi(patchLifecycleRulesIdIndexRoute, patchLifecycleRulesIdIndexRouteHandler)
+  .openapi(deleteLifecycleRulesIdIndexRoute, deleteLifecycleRulesIdIndexRouteHandler)
+  .openapi(
+    getLifecycleUserExpirationRulesIndexRoute,
+    getLifecycleUserExpirationRulesIndexRouteHandler,
+  )
+  .openapi(
+    postLifecycleUserExpirationRulesIndexRoute,
+    postLifecycleUserExpirationRulesIndexRouteHandler,
+  )
+  .openapi(
+    getLifecycleUserExpirationRulesIdIndexRoute,
+    getLifecycleUserExpirationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    putLifecycleUserExpirationRulesIdIndexRoute,
+    putLifecycleUserExpirationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    patchLifecycleUserExpirationRulesIdIndexRoute,
+    patchLifecycleUserExpirationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteLifecycleUserExpirationRulesIdIndexRoute,
+    deleteLifecycleUserExpirationRulesIdIndexRouteHandler,
+  )
+  .openapi(
+    getLifecycleUserExpirationRulesIdPreviewIndexRoute,
+    getLifecycleUserExpirationRulesIdPreviewIndexRouteHandler,
+  )
+  .openapi(
+    postLifecycleUserExpirationRulesIdPreviewIndexRoute,
+    postLifecycleUserExpirationRulesIdPreviewIndexRouteHandler,
+  )
+  .openapi(
+    getLifecycleUserExpirationRulesIdUsedByIndexRoute,
+    getLifecycleUserExpirationRulesIdUsedByIndexRouteHandler,
+  )
+  .openapi(getLifecycleUserOffboardingIndexRoute, getLifecycleUserOffboardingIndexRouteHandler)
+  .openapi(postLifecycleUserOffboardingIndexRoute, postLifecycleUserOffboardingIndexRouteHandler)
+  .openapi(getLifecycleUserOffboardingIdIndexRoute, getLifecycleUserOffboardingIdIndexRouteHandler)
+  .openapi(
+    deleteLifecycleUserOffboardingIdIndexRoute,
+    deleteLifecycleUserOffboardingIdIndexRouteHandler,
+  )
+  .openapi(getManagedBlueprintsIndexRoute, getManagedBlueprintsIndexRouteHandler)
+  .openapi(postManagedBlueprintsIndexRoute, postManagedBlueprintsIndexRouteHandler)
+  .openapi(
+    getManagedBlueprintsInstanceUuidIndexRoute,
+    getManagedBlueprintsInstanceUuidIndexRouteHandler,
+  )
+  .openapi(
+    putManagedBlueprintsInstanceUuidIndexRoute,
+    putManagedBlueprintsInstanceUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchManagedBlueprintsInstanceUuidIndexRoute,
+    patchManagedBlueprintsInstanceUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteManagedBlueprintsInstanceUuidIndexRoute,
+    deleteManagedBlueprintsInstanceUuidIndexRouteHandler,
+  )
+  .openapi(
+    postManagedBlueprintsInstanceUuidApplyIndexRoute,
+    postManagedBlueprintsInstanceUuidApplyIndexRouteHandler,
+  )
+  .openapi(
+    getManagedBlueprintsInstanceUuidUsedByIndexRoute,
+    getManagedBlueprintsInstanceUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getManagedBlueprintsAvailableIndexRoute, getManagedBlueprintsAvailableIndexRouteHandler)
+  .openapi(postManagedBlueprintsImportIndexRoute, postManagedBlueprintsImportIndexRouteHandler)
+  .openapi(postManagedBlueprintsValidateIndexRoute, postManagedBlueprintsValidateIndexRouteHandler)
+  .openapi(getOauth2AccessTokensIndexRoute, getOauth2AccessTokensIndexRouteHandler)
+  .openapi(getOauth2AccessTokensIdIndexRoute, getOauth2AccessTokensIdIndexRouteHandler)
+  .openapi(deleteOauth2AccessTokensIdIndexRoute, deleteOauth2AccessTokensIdIndexRouteHandler)
+  .openapi(getOauth2AccessTokensIdUsedByIndexRoute, getOauth2AccessTokensIdUsedByIndexRouteHandler)
+  .openapi(getOauth2AuthorizationCodesIndexRoute, getOauth2AuthorizationCodesIndexRouteHandler)
+  .openapi(getOauth2AuthorizationCodesIdIndexRoute, getOauth2AuthorizationCodesIdIndexRouteHandler)
+  .openapi(
+    deleteOauth2AuthorizationCodesIdIndexRoute,
+    deleteOauth2AuthorizationCodesIdIndexRouteHandler,
+  )
+  .openapi(
+    getOauth2AuthorizationCodesIdUsedByIndexRoute,
+    getOauth2AuthorizationCodesIdUsedByIndexRouteHandler,
+  )
+  .openapi(getOauth2RefreshTokensIndexRoute, getOauth2RefreshTokensIndexRouteHandler)
+  .openapi(getOauth2RefreshTokensIdIndexRoute, getOauth2RefreshTokensIdIndexRouteHandler)
+  .openapi(deleteOauth2RefreshTokensIdIndexRoute, deleteOauth2RefreshTokensIdIndexRouteHandler)
+  .openapi(
+    getOauth2RefreshTokensIdUsedByIndexRoute,
+    getOauth2RefreshTokensIdUsedByIndexRouteHandler,
+  )
+  .openapi(getOutpostsInstancesIndexRoute, getOutpostsInstancesIndexRouteHandler)
+  .openapi(postOutpostsInstancesIndexRoute, postOutpostsInstancesIndexRouteHandler)
+  .openapi(getOutpostsInstancesUuidIndexRoute, getOutpostsInstancesUuidIndexRouteHandler)
+  .openapi(putOutpostsInstancesUuidIndexRoute, putOutpostsInstancesUuidIndexRouteHandler)
+  .openapi(patchOutpostsInstancesUuidIndexRoute, patchOutpostsInstancesUuidIndexRouteHandler)
+  .openapi(deleteOutpostsInstancesUuidIndexRoute, deleteOutpostsInstancesUuidIndexRouteHandler)
+  .openapi(
+    getOutpostsInstancesUuidHealthIndexRoute,
+    getOutpostsInstancesUuidHealthIndexRouteHandler,
+  )
+  .openapi(
+    postOutpostsInstancesUuidRebuildPermissionsIndexRoute,
+    postOutpostsInstancesUuidRebuildPermissionsIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsInstancesUuidUsedByIndexRoute,
+    getOutpostsInstancesUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsInstancesDefaultSettingsIndexRoute,
+    getOutpostsInstancesDefaultSettingsIndexRouteHandler,
+  )
+  .openapi(getOutpostsLdapIndexRoute, getOutpostsLdapIndexRouteHandler)
+  .openapi(getOutpostsLdapIdCheckAccessIndexRoute, getOutpostsLdapIdCheckAccessIndexRouteHandler)
+  .openapi(getOutpostsProxyIndexRoute, getOutpostsProxyIndexRouteHandler)
+  .openapi(getOutpostsRadiusIndexRoute, getOutpostsRadiusIndexRouteHandler)
+  .openapi(
+    getOutpostsRadiusIdCheckAccessIndexRoute,
+    getOutpostsRadiusIdCheckAccessIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsAllIndexRoute,
+    getOutpostsServiceConnectionsAllIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsAllUuidIndexRoute,
+    getOutpostsServiceConnectionsAllUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteOutpostsServiceConnectionsAllUuidIndexRoute,
+    deleteOutpostsServiceConnectionsAllUuidIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsAllUuidStateIndexRoute,
+    getOutpostsServiceConnectionsAllUuidStateIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsAllUuidUsedByIndexRoute,
+    getOutpostsServiceConnectionsAllUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsAllTypesIndexRoute,
+    getOutpostsServiceConnectionsAllTypesIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsDockerIndexRoute,
+    getOutpostsServiceConnectionsDockerIndexRouteHandler,
+  )
+  .openapi(
+    postOutpostsServiceConnectionsDockerIndexRoute,
+    postOutpostsServiceConnectionsDockerIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsDockerUuidIndexRoute,
+    getOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  )
+  .openapi(
+    putOutpostsServiceConnectionsDockerUuidIndexRoute,
+    putOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchOutpostsServiceConnectionsDockerUuidIndexRoute,
+    patchOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteOutpostsServiceConnectionsDockerUuidIndexRoute,
+    deleteOutpostsServiceConnectionsDockerUuidIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsDockerUuidUsedByIndexRoute,
+    getOutpostsServiceConnectionsDockerUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsKubernetesIndexRoute,
+    getOutpostsServiceConnectionsKubernetesIndexRouteHandler,
+  )
+  .openapi(
+    postOutpostsServiceConnectionsKubernetesIndexRoute,
+    postOutpostsServiceConnectionsKubernetesIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+    getOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  )
+  .openapi(
+    putOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+    putOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+    patchOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteOutpostsServiceConnectionsKubernetesUuidIndexRoute,
+    deleteOutpostsServiceConnectionsKubernetesUuidIndexRouteHandler,
+  )
+  .openapi(
+    getOutpostsServiceConnectionsKubernetesUuidUsedByIndexRoute,
+    getOutpostsServiceConnectionsKubernetesUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesAllIndexRoute, getPoliciesAllIndexRouteHandler)
+  .openapi(getPoliciesAllPolicyUuidIndexRoute, getPoliciesAllPolicyUuidIndexRouteHandler)
+  .openapi(deletePoliciesAllPolicyUuidIndexRoute, deletePoliciesAllPolicyUuidIndexRouteHandler)
+  .openapi(postPoliciesAllPolicyUuidTestIndexRoute, postPoliciesAllPolicyUuidTestIndexRouteHandler)
+  .openapi(
+    getPoliciesAllPolicyUuidUsedByIndexRoute,
+    getPoliciesAllPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(postPoliciesAllCacheClearIndexRoute, postPoliciesAllCacheClearIndexRouteHandler)
+  .openapi(getPoliciesAllCacheInfoIndexRoute, getPoliciesAllCacheInfoIndexRouteHandler)
+  .openapi(getPoliciesAllTypesIndexRoute, getPoliciesAllTypesIndexRouteHandler)
+  .openapi(getPoliciesBindingsIndexRoute, getPoliciesBindingsIndexRouteHandler)
+  .openapi(postPoliciesBindingsIndexRoute, postPoliciesBindingsIndexRouteHandler)
+  .openapi(
+    getPoliciesBindingsPolicyBindingUuidIndexRoute,
+    getPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesBindingsPolicyBindingUuidIndexRoute,
+    putPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesBindingsPolicyBindingUuidIndexRoute,
+    patchPoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesBindingsPolicyBindingUuidIndexRoute,
+    deletePoliciesBindingsPolicyBindingUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesBindingsPolicyBindingUuidUsedByIndexRoute,
+    getPoliciesBindingsPolicyBindingUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesDummyIndexRoute, getPoliciesDummyIndexRouteHandler)
+  .openapi(postPoliciesDummyIndexRoute, postPoliciesDummyIndexRouteHandler)
+  .openapi(getPoliciesDummyPolicyUuidIndexRoute, getPoliciesDummyPolicyUuidIndexRouteHandler)
+  .openapi(putPoliciesDummyPolicyUuidIndexRoute, putPoliciesDummyPolicyUuidIndexRouteHandler)
+  .openapi(patchPoliciesDummyPolicyUuidIndexRoute, patchPoliciesDummyPolicyUuidIndexRouteHandler)
+  .openapi(deletePoliciesDummyPolicyUuidIndexRoute, deletePoliciesDummyPolicyUuidIndexRouteHandler)
+  .openapi(
+    getPoliciesDummyPolicyUuidUsedByIndexRoute,
+    getPoliciesDummyPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesEventMatcherIndexRoute, getPoliciesEventMatcherIndexRouteHandler)
+  .openapi(postPoliciesEventMatcherIndexRoute, postPoliciesEventMatcherIndexRouteHandler)
+  .openapi(
+    getPoliciesEventMatcherPolicyUuidIndexRoute,
+    getPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesEventMatcherPolicyUuidIndexRoute,
+    putPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesEventMatcherPolicyUuidIndexRoute,
+    patchPoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesEventMatcherPolicyUuidIndexRoute,
+    deletePoliciesEventMatcherPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesEventMatcherPolicyUuidUsedByIndexRoute,
+    getPoliciesEventMatcherPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesExpressionIndexRoute, getPoliciesExpressionIndexRouteHandler)
+  .openapi(postPoliciesExpressionIndexRoute, postPoliciesExpressionIndexRouteHandler)
+  .openapi(
+    getPoliciesExpressionPolicyUuidIndexRoute,
+    getPoliciesExpressionPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesExpressionPolicyUuidIndexRoute,
+    putPoliciesExpressionPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesExpressionPolicyUuidIndexRoute,
+    patchPoliciesExpressionPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesExpressionPolicyUuidIndexRoute,
+    deletePoliciesExpressionPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesExpressionPolicyUuidUsedByIndexRoute,
+    getPoliciesExpressionPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesGeoipIndexRoute, getPoliciesGeoipIndexRouteHandler)
+  .openapi(postPoliciesGeoipIndexRoute, postPoliciesGeoipIndexRouteHandler)
+  .openapi(getPoliciesGeoipPolicyUuidIndexRoute, getPoliciesGeoipPolicyUuidIndexRouteHandler)
+  .openapi(putPoliciesGeoipPolicyUuidIndexRoute, putPoliciesGeoipPolicyUuidIndexRouteHandler)
+  .openapi(patchPoliciesGeoipPolicyUuidIndexRoute, patchPoliciesGeoipPolicyUuidIndexRouteHandler)
+  .openapi(deletePoliciesGeoipPolicyUuidIndexRoute, deletePoliciesGeoipPolicyUuidIndexRouteHandler)
+  .openapi(
+    getPoliciesGeoipPolicyUuidUsedByIndexRoute,
+    getPoliciesGeoipPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesGeoipIso3166IndexRoute, getPoliciesGeoipIso3166IndexRouteHandler)
+  .openapi(getPoliciesPasswordIndexRoute, getPoliciesPasswordIndexRouteHandler)
+  .openapi(postPoliciesPasswordIndexRoute, postPoliciesPasswordIndexRouteHandler)
+  .openapi(getPoliciesPasswordPolicyUuidIndexRoute, getPoliciesPasswordPolicyUuidIndexRouteHandler)
+  .openapi(putPoliciesPasswordPolicyUuidIndexRoute, putPoliciesPasswordPolicyUuidIndexRouteHandler)
+  .openapi(
+    patchPoliciesPasswordPolicyUuidIndexRoute,
+    patchPoliciesPasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesPasswordPolicyUuidIndexRoute,
+    deletePoliciesPasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesPasswordPolicyUuidUsedByIndexRoute,
+    getPoliciesPasswordPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesPasswordExpiryIndexRoute, getPoliciesPasswordExpiryIndexRouteHandler)
+  .openapi(postPoliciesPasswordExpiryIndexRoute, postPoliciesPasswordExpiryIndexRouteHandler)
+  .openapi(
+    getPoliciesPasswordExpiryPolicyUuidIndexRoute,
+    getPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesPasswordExpiryPolicyUuidIndexRoute,
+    putPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesPasswordExpiryPolicyUuidIndexRoute,
+    patchPoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesPasswordExpiryPolicyUuidIndexRoute,
+    deletePoliciesPasswordExpiryPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesPasswordExpiryPolicyUuidUsedByIndexRoute,
+    getPoliciesPasswordExpiryPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesReputationIndexRoute, getPoliciesReputationIndexRouteHandler)
+  .openapi(postPoliciesReputationIndexRoute, postPoliciesReputationIndexRouteHandler)
+  .openapi(
+    getPoliciesReputationPolicyUuidIndexRoute,
+    getPoliciesReputationPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesReputationPolicyUuidIndexRoute,
+    putPoliciesReputationPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesReputationPolicyUuidIndexRoute,
+    patchPoliciesReputationPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesReputationPolicyUuidIndexRoute,
+    deletePoliciesReputationPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesReputationPolicyUuidUsedByIndexRoute,
+    getPoliciesReputationPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesReputationScoresIndexRoute, getPoliciesReputationScoresIndexRouteHandler)
+  .openapi(
+    getPoliciesReputationScoresReputationUuidIndexRoute,
+    getPoliciesReputationScoresReputationUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesReputationScoresReputationUuidIndexRoute,
+    deletePoliciesReputationScoresReputationUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesReputationScoresReputationUuidUsedByIndexRoute,
+    getPoliciesReputationScoresReputationUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPoliciesUniquePasswordIndexRoute, getPoliciesUniquePasswordIndexRouteHandler)
+  .openapi(postPoliciesUniquePasswordIndexRoute, postPoliciesUniquePasswordIndexRouteHandler)
+  .openapi(
+    getPoliciesUniquePasswordPolicyUuidIndexRoute,
+    getPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPoliciesUniquePasswordPolicyUuidIndexRoute,
+    putPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPoliciesUniquePasswordPolicyUuidIndexRoute,
+    patchPoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePoliciesUniquePasswordPolicyUuidIndexRoute,
+    deletePoliciesUniquePasswordPolicyUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPoliciesUniquePasswordPolicyUuidUsedByIndexRoute,
+    getPoliciesUniquePasswordPolicyUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsAllIndexRoute, getPropertymappingsAllIndexRouteHandler)
+  .openapi(getPropertymappingsAllPmUuidIndexRoute, getPropertymappingsAllPmUuidIndexRouteHandler)
+  .openapi(
+    deletePropertymappingsAllPmUuidIndexRoute,
+    deletePropertymappingsAllPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsAllPmUuidTestIndexRoute,
+    postPropertymappingsAllPmUuidTestIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsAllPmUuidUsedByIndexRoute,
+    getPropertymappingsAllPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsAllTypesIndexRoute, getPropertymappingsAllTypesIndexRouteHandler)
+  .openapi(
+    getPropertymappingsNotificationIndexRoute,
+    getPropertymappingsNotificationIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsNotificationIndexRoute,
+    postPropertymappingsNotificationIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsNotificationPmUuidIndexRoute,
+    getPropertymappingsNotificationPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsNotificationPmUuidIndexRoute,
+    putPropertymappingsNotificationPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsNotificationPmUuidIndexRoute,
+    patchPropertymappingsNotificationPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsNotificationPmUuidIndexRoute,
+    deletePropertymappingsNotificationPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsNotificationPmUuidUsedByIndexRoute,
+    getPropertymappingsNotificationPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderGoogleWorkspaceIndexRoute,
+    getPropertymappingsProviderGoogleWorkspaceIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderGoogleWorkspaceIndexRoute,
+    postPropertymappingsProviderGoogleWorkspaceIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+    getPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+    putPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+    patchPropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderGoogleWorkspacePmUuidIndexRoute,
+    deletePropertymappingsProviderGoogleWorkspacePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderGoogleWorkspacePmUuidUsedByIndexRoute,
+    getPropertymappingsProviderGoogleWorkspacePmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderMicrosoftEntraIndexRoute,
+    getPropertymappingsProviderMicrosoftEntraIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderMicrosoftEntraIndexRoute,
+    postPropertymappingsProviderMicrosoftEntraIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+    getPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+    putPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+    patchPropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderMicrosoftEntraPmUuidIndexRoute,
+    deletePropertymappingsProviderMicrosoftEntraPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderMicrosoftEntraPmUuidUsedByIndexRoute,
+    getPropertymappingsProviderMicrosoftEntraPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRacIndexRoute,
+    getPropertymappingsProviderRacIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderRacIndexRoute,
+    postPropertymappingsProviderRacIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRacPmUuidIndexRoute,
+    getPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderRacPmUuidIndexRoute,
+    putPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderRacPmUuidIndexRoute,
+    patchPropertymappingsProviderRacPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderRacPmUuidIndexRoute,
+    deletePropertymappingsProviderRacPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRacPmUuidUsedByIndexRoute,
+    getPropertymappingsProviderRacPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRadiusIndexRoute,
+    getPropertymappingsProviderRadiusIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderRadiusIndexRoute,
+    postPropertymappingsProviderRadiusIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRadiusPmUuidIndexRoute,
+    getPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderRadiusPmUuidIndexRoute,
+    putPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderRadiusPmUuidIndexRoute,
+    patchPropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderRadiusPmUuidIndexRoute,
+    deletePropertymappingsProviderRadiusPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderRadiusPmUuidUsedByIndexRoute,
+    getPropertymappingsProviderRadiusPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderSamlIndexRoute,
+    getPropertymappingsProviderSamlIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderSamlIndexRoute,
+    postPropertymappingsProviderSamlIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderSamlPmUuidIndexRoute,
+    getPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderSamlPmUuidIndexRoute,
+    putPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderSamlPmUuidIndexRoute,
+    patchPropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderSamlPmUuidIndexRoute,
+    deletePropertymappingsProviderSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderSamlPmUuidUsedByIndexRoute,
+    getPropertymappingsProviderSamlPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScimIndexRoute,
+    getPropertymappingsProviderScimIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderScimIndexRoute,
+    postPropertymappingsProviderScimIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScimPmUuidIndexRoute,
+    getPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderScimPmUuidIndexRoute,
+    putPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderScimPmUuidIndexRoute,
+    patchPropertymappingsProviderScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderScimPmUuidIndexRoute,
+    deletePropertymappingsProviderScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScimPmUuidUsedByIndexRoute,
+    getPropertymappingsProviderScimPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScopeIndexRoute,
+    getPropertymappingsProviderScopeIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsProviderScopeIndexRoute,
+    postPropertymappingsProviderScopeIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScopePmUuidIndexRoute,
+    getPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsProviderScopePmUuidIndexRoute,
+    putPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsProviderScopePmUuidIndexRoute,
+    patchPropertymappingsProviderScopePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsProviderScopePmUuidIndexRoute,
+    deletePropertymappingsProviderScopePmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsProviderScopePmUuidUsedByIndexRoute,
+    getPropertymappingsProviderScopePmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceKerberosIndexRoute,
+    getPropertymappingsSourceKerberosIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsSourceKerberosIndexRoute,
+    postPropertymappingsSourceKerberosIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceKerberosPmUuidIndexRoute,
+    getPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceKerberosPmUuidIndexRoute,
+    putPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceKerberosPmUuidIndexRoute,
+    patchPropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceKerberosPmUuidIndexRoute,
+    deletePropertymappingsSourceKerberosPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceKerberosPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceKerberosPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsSourceLdapIndexRoute, getPropertymappingsSourceLdapIndexRouteHandler)
+  .openapi(
+    postPropertymappingsSourceLdapIndexRoute,
+    postPropertymappingsSourceLdapIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceLdapPmUuidIndexRoute,
+    getPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceLdapPmUuidIndexRoute,
+    putPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceLdapPmUuidIndexRoute,
+    patchPropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceLdapPmUuidIndexRoute,
+    deletePropertymappingsSourceLdapPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceLdapPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceLdapPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceOauthIndexRoute,
+    getPropertymappingsSourceOauthIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsSourceOauthIndexRoute,
+    postPropertymappingsSourceOauthIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceOauthPmUuidIndexRoute,
+    getPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceOauthPmUuidIndexRoute,
+    putPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceOauthPmUuidIndexRoute,
+    patchPropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceOauthPmUuidIndexRoute,
+    deletePropertymappingsSourceOauthPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceOauthPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceOauthPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsSourcePlexIndexRoute, getPropertymappingsSourcePlexIndexRouteHandler)
+  .openapi(
+    postPropertymappingsSourcePlexIndexRoute,
+    postPropertymappingsSourcePlexIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourcePlexPmUuidIndexRoute,
+    getPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourcePlexPmUuidIndexRoute,
+    putPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourcePlexPmUuidIndexRoute,
+    patchPropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourcePlexPmUuidIndexRoute,
+    deletePropertymappingsSourcePlexPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourcePlexPmUuidUsedByIndexRoute,
+    getPropertymappingsSourcePlexPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsSourceSamlIndexRoute, getPropertymappingsSourceSamlIndexRouteHandler)
+  .openapi(
+    postPropertymappingsSourceSamlIndexRoute,
+    postPropertymappingsSourceSamlIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceSamlPmUuidIndexRoute,
+    getPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceSamlPmUuidIndexRoute,
+    putPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceSamlPmUuidIndexRoute,
+    patchPropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceSamlPmUuidIndexRoute,
+    deletePropertymappingsSourceSamlPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceSamlPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceSamlPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getPropertymappingsSourceScimIndexRoute, getPropertymappingsSourceScimIndexRouteHandler)
+  .openapi(
+    postPropertymappingsSourceScimIndexRoute,
+    postPropertymappingsSourceScimIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceScimPmUuidIndexRoute,
+    getPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceScimPmUuidIndexRoute,
+    putPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceScimPmUuidIndexRoute,
+    patchPropertymappingsSourceScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceScimPmUuidIndexRoute,
+    deletePropertymappingsSourceScimPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceScimPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceScimPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceTelegramIndexRoute,
+    getPropertymappingsSourceTelegramIndexRouteHandler,
+  )
+  .openapi(
+    postPropertymappingsSourceTelegramIndexRoute,
+    postPropertymappingsSourceTelegramIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceTelegramPmUuidIndexRoute,
+    getPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    putPropertymappingsSourceTelegramPmUuidIndexRoute,
+    putPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchPropertymappingsSourceTelegramPmUuidIndexRoute,
+    patchPropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deletePropertymappingsSourceTelegramPmUuidIndexRoute,
+    deletePropertymappingsSourceTelegramPmUuidIndexRouteHandler,
+  )
+  .openapi(
+    getPropertymappingsSourceTelegramPmUuidUsedByIndexRoute,
+    getPropertymappingsSourceTelegramPmUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getProvidersAllIndexRoute, getProvidersAllIndexRouteHandler)
+  .openapi(getProvidersAllIdIndexRoute, getProvidersAllIdIndexRouteHandler)
+  .openapi(deleteProvidersAllIdIndexRoute, deleteProvidersAllIdIndexRouteHandler)
+  .openapi(getProvidersAllIdUsedByIndexRoute, getProvidersAllIdUsedByIndexRouteHandler)
+  .openapi(getProvidersAllTypesIndexRoute, getProvidersAllTypesIndexRouteHandler)
+  .openapi(getProvidersGoogleWorkspaceIndexRoute, getProvidersGoogleWorkspaceIndexRouteHandler)
+  .openapi(postProvidersGoogleWorkspaceIndexRoute, postProvidersGoogleWorkspaceIndexRouteHandler)
+  .openapi(getProvidersGoogleWorkspaceIdIndexRoute, getProvidersGoogleWorkspaceIdIndexRouteHandler)
+  .openapi(putProvidersGoogleWorkspaceIdIndexRoute, putProvidersGoogleWorkspaceIdIndexRouteHandler)
+  .openapi(
+    patchProvidersGoogleWorkspaceIdIndexRoute,
+    patchProvidersGoogleWorkspaceIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersGoogleWorkspaceIdIndexRoute,
+    deleteProvidersGoogleWorkspaceIdIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersGoogleWorkspaceIdSyncObjectIndexRoute,
+    postProvidersGoogleWorkspaceIdSyncObjectIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceIdSyncStatusIndexRoute,
+    getProvidersGoogleWorkspaceIdSyncStatusIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceIdUsedByIndexRoute,
+    getProvidersGoogleWorkspaceIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceGroupsIndexRoute,
+    getProvidersGoogleWorkspaceGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersGoogleWorkspaceGroupsIndexRoute,
+    postProvidersGoogleWorkspaceGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceGroupsIdIndexRoute,
+    getProvidersGoogleWorkspaceGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersGoogleWorkspaceGroupsIdIndexRoute,
+    deleteProvidersGoogleWorkspaceGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceGroupsIdUsedByIndexRoute,
+    getProvidersGoogleWorkspaceGroupsIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceUsersIndexRoute,
+    getProvidersGoogleWorkspaceUsersIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersGoogleWorkspaceUsersIndexRoute,
+    postProvidersGoogleWorkspaceUsersIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceUsersIdIndexRoute,
+    getProvidersGoogleWorkspaceUsersIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersGoogleWorkspaceUsersIdIndexRoute,
+    deleteProvidersGoogleWorkspaceUsersIdIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersGoogleWorkspaceUsersIdUsedByIndexRoute,
+    getProvidersGoogleWorkspaceUsersIdUsedByIndexRouteHandler,
+  )
+  .openapi(getProvidersLdapIndexRoute, getProvidersLdapIndexRouteHandler)
+  .openapi(postProvidersLdapIndexRoute, postProvidersLdapIndexRouteHandler)
+  .openapi(getProvidersLdapIdIndexRoute, getProvidersLdapIdIndexRouteHandler)
+  .openapi(putProvidersLdapIdIndexRoute, putProvidersLdapIdIndexRouteHandler)
+  .openapi(patchProvidersLdapIdIndexRoute, patchProvidersLdapIdIndexRouteHandler)
+  .openapi(deleteProvidersLdapIdIndexRoute, deleteProvidersLdapIdIndexRouteHandler)
+  .openapi(getProvidersLdapIdUsedByIndexRoute, getProvidersLdapIdUsedByIndexRouteHandler)
+  .openapi(getProvidersMicrosoftEntraIndexRoute, getProvidersMicrosoftEntraIndexRouteHandler)
+  .openapi(postProvidersMicrosoftEntraIndexRoute, postProvidersMicrosoftEntraIndexRouteHandler)
+  .openapi(getProvidersMicrosoftEntraIdIndexRoute, getProvidersMicrosoftEntraIdIndexRouteHandler)
+  .openapi(putProvidersMicrosoftEntraIdIndexRoute, putProvidersMicrosoftEntraIdIndexRouteHandler)
+  .openapi(
+    patchProvidersMicrosoftEntraIdIndexRoute,
+    patchProvidersMicrosoftEntraIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersMicrosoftEntraIdIndexRoute,
+    deleteProvidersMicrosoftEntraIdIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersMicrosoftEntraIdSyncObjectIndexRoute,
+    postProvidersMicrosoftEntraIdSyncObjectIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraIdSyncStatusIndexRoute,
+    getProvidersMicrosoftEntraIdSyncStatusIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraIdUsedByIndexRoute,
+    getProvidersMicrosoftEntraIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraGroupsIndexRoute,
+    getProvidersMicrosoftEntraGroupsIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersMicrosoftEntraGroupsIndexRoute,
+    postProvidersMicrosoftEntraGroupsIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraGroupsIdIndexRoute,
+    getProvidersMicrosoftEntraGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersMicrosoftEntraGroupsIdIndexRoute,
+    deleteProvidersMicrosoftEntraGroupsIdIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraGroupsIdUsedByIndexRoute,
+    getProvidersMicrosoftEntraGroupsIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraUsersIndexRoute,
+    getProvidersMicrosoftEntraUsersIndexRouteHandler,
+  )
+  .openapi(
+    postProvidersMicrosoftEntraUsersIndexRoute,
+    postProvidersMicrosoftEntraUsersIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraUsersIdIndexRoute,
+    getProvidersMicrosoftEntraUsersIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersMicrosoftEntraUsersIdIndexRoute,
+    deleteProvidersMicrosoftEntraUsersIdIndexRouteHandler,
+  )
+  .openapi(
+    getProvidersMicrosoftEntraUsersIdUsedByIndexRoute,
+    getProvidersMicrosoftEntraUsersIdUsedByIndexRouteHandler,
+  )
+  .openapi(getProvidersOauth2IndexRoute, getProvidersOauth2IndexRouteHandler)
+  .openapi(postProvidersOauth2IndexRoute, postProvidersOauth2IndexRouteHandler)
+  .openapi(getProvidersOauth2DcrIndexRoute, getProvidersOauth2DcrIndexRouteHandler)
+  .openapi(postProvidersOauth2DcrIndexRoute, postProvidersOauth2DcrIndexRouteHandler)
+  .openapi(getProvidersOauth2DcrPbmUuidIndexRoute, getProvidersOauth2DcrPbmUuidIndexRouteHandler)
+  .openapi(putProvidersOauth2DcrPbmUuidIndexRoute, putProvidersOauth2DcrPbmUuidIndexRouteHandler)
+  .openapi(
+    patchProvidersOauth2DcrPbmUuidIndexRoute,
+    patchProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteProvidersOauth2DcrPbmUuidIndexRoute,
+    deleteProvidersOauth2DcrPbmUuidIndexRouteHandler,
+  )
+  .openapi(getProvidersOauth2IdIndexRoute, getProvidersOauth2IdIndexRouteHandler)
+  .openapi(putProvidersOauth2IdIndexRoute, putProvidersOauth2IdIndexRouteHandler)
+  .openapi(patchProvidersOauth2IdIndexRoute, patchProvidersOauth2IdIndexRouteHandler)
+  .openapi(deleteProvidersOauth2IdIndexRoute, deleteProvidersOauth2IdIndexRouteHandler)
+  .openapi(
+    getProvidersOauth2IdPreviewUserIndexRoute,
+    getProvidersOauth2IdPreviewUserIndexRouteHandler,
+  )
+  .openapi(getProvidersOauth2IdSetupUrlsIndexRoute, getProvidersOauth2IdSetupUrlsIndexRouteHandler)
+  .openapi(getProvidersOauth2IdUsedByIndexRoute, getProvidersOauth2IdUsedByIndexRouteHandler)
+  .openapi(getProvidersProxyIndexRoute, getProvidersProxyIndexRouteHandler)
+  .openapi(postProvidersProxyIndexRoute, postProvidersProxyIndexRouteHandler)
+  .openapi(getProvidersProxyIdIndexRoute, getProvidersProxyIdIndexRouteHandler)
+  .openapi(putProvidersProxyIdIndexRoute, putProvidersProxyIdIndexRouteHandler)
+  .openapi(patchProvidersProxyIdIndexRoute, patchProvidersProxyIdIndexRouteHandler)
+  .openapi(deleteProvidersProxyIdIndexRoute, deleteProvidersProxyIdIndexRouteHandler)
+  .openapi(getProvidersProxyIdUsedByIndexRoute, getProvidersProxyIdUsedByIndexRouteHandler)
+  .openapi(getProvidersRacIndexRoute, getProvidersRacIndexRouteHandler)
+  .openapi(postProvidersRacIndexRoute, postProvidersRacIndexRouteHandler)
+  .openapi(getProvidersRacIdIndexRoute, getProvidersRacIdIndexRouteHandler)
+  .openapi(putProvidersRacIdIndexRoute, putProvidersRacIdIndexRouteHandler)
+  .openapi(patchProvidersRacIdIndexRoute, patchProvidersRacIdIndexRouteHandler)
+  .openapi(deleteProvidersRacIdIndexRoute, deleteProvidersRacIdIndexRouteHandler)
+  .openapi(getProvidersRacIdUsedByIndexRoute, getProvidersRacIdUsedByIndexRouteHandler)
+  .openapi(getProvidersRadiusIndexRoute, getProvidersRadiusIndexRouteHandler)
+  .openapi(postProvidersRadiusIndexRoute, postProvidersRadiusIndexRouteHandler)
+  .openapi(getProvidersRadiusIdIndexRoute, getProvidersRadiusIdIndexRouteHandler)
+  .openapi(putProvidersRadiusIdIndexRoute, putProvidersRadiusIdIndexRouteHandler)
+  .openapi(patchProvidersRadiusIdIndexRoute, patchProvidersRadiusIdIndexRouteHandler)
+  .openapi(deleteProvidersRadiusIdIndexRoute, deleteProvidersRadiusIdIndexRouteHandler)
+  .openapi(getProvidersRadiusIdUsedByIndexRoute, getProvidersRadiusIdUsedByIndexRouteHandler)
+  .openapi(getProvidersSamlIndexRoute, getProvidersSamlIndexRouteHandler)
+  .openapi(postProvidersSamlIndexRoute, postProvidersSamlIndexRouteHandler)
+  .openapi(getProvidersSamlIdIndexRoute, getProvidersSamlIdIndexRouteHandler)
+  .openapi(putProvidersSamlIdIndexRoute, putProvidersSamlIdIndexRouteHandler)
+  .openapi(patchProvidersSamlIdIndexRoute, patchProvidersSamlIdIndexRouteHandler)
+  .openapi(deleteProvidersSamlIdIndexRoute, deleteProvidersSamlIdIndexRouteHandler)
+  .openapi(getProvidersSamlIdMetadataIndexRoute, getProvidersSamlIdMetadataIndexRouteHandler)
+  .openapi(getProvidersSamlIdPreviewUserIndexRoute, getProvidersSamlIdPreviewUserIndexRouteHandler)
+  .openapi(getProvidersSamlIdUsedByIndexRoute, getProvidersSamlIdUsedByIndexRouteHandler)
+  .openapi(
+    postProvidersSamlImportMetadataIndexRoute,
+    postProvidersSamlImportMetadataIndexRouteHandler,
+  )
+  .openapi(getProvidersScimIndexRoute, getProvidersScimIndexRouteHandler)
+  .openapi(postProvidersScimIndexRoute, postProvidersScimIndexRouteHandler)
+  .openapi(getProvidersScimIdIndexRoute, getProvidersScimIdIndexRouteHandler)
+  .openapi(putProvidersScimIdIndexRoute, putProvidersScimIdIndexRouteHandler)
+  .openapi(patchProvidersScimIdIndexRoute, patchProvidersScimIdIndexRouteHandler)
+  .openapi(deleteProvidersScimIdIndexRoute, deleteProvidersScimIdIndexRouteHandler)
+  .openapi(postProvidersScimIdSyncObjectIndexRoute, postProvidersScimIdSyncObjectIndexRouteHandler)
+  .openapi(getProvidersScimIdSyncStatusIndexRoute, getProvidersScimIdSyncStatusIndexRouteHandler)
+  .openapi(getProvidersScimIdUsedByIndexRoute, getProvidersScimIdUsedByIndexRouteHandler)
+  .openapi(getProvidersScimGroupsIndexRoute, getProvidersScimGroupsIndexRouteHandler)
+  .openapi(postProvidersScimGroupsIndexRoute, postProvidersScimGroupsIndexRouteHandler)
+  .openapi(getProvidersScimGroupsIdIndexRoute, getProvidersScimGroupsIdIndexRouteHandler)
+  .openapi(deleteProvidersScimGroupsIdIndexRoute, deleteProvidersScimGroupsIdIndexRouteHandler)
+  .openapi(
+    getProvidersScimGroupsIdUsedByIndexRoute,
+    getProvidersScimGroupsIdUsedByIndexRouteHandler,
+  )
+  .openapi(getProvidersScimUsersIndexRoute, getProvidersScimUsersIndexRouteHandler)
+  .openapi(postProvidersScimUsersIndexRoute, postProvidersScimUsersIndexRouteHandler)
+  .openapi(getProvidersScimUsersIdIndexRoute, getProvidersScimUsersIdIndexRouteHandler)
+  .openapi(deleteProvidersScimUsersIdIndexRoute, deleteProvidersScimUsersIdIndexRouteHandler)
+  .openapi(getProvidersScimUsersIdUsedByIndexRoute, getProvidersScimUsersIdUsedByIndexRouteHandler)
+  .openapi(getProvidersSsfIndexRoute, getProvidersSsfIndexRouteHandler)
+  .openapi(postProvidersSsfIndexRoute, postProvidersSsfIndexRouteHandler)
+  .openapi(getProvidersSsfIdIndexRoute, getProvidersSsfIdIndexRouteHandler)
+  .openapi(putProvidersSsfIdIndexRoute, putProvidersSsfIdIndexRouteHandler)
+  .openapi(patchProvidersSsfIdIndexRoute, patchProvidersSsfIdIndexRouteHandler)
+  .openapi(deleteProvidersSsfIdIndexRoute, deleteProvidersSsfIdIndexRouteHandler)
+  .openapi(getProvidersSsfIdUsedByIndexRoute, getProvidersSsfIdUsedByIndexRouteHandler)
+  .openapi(getProvidersWsfedIndexRoute, getProvidersWsfedIndexRouteHandler)
+  .openapi(postProvidersWsfedIndexRoute, postProvidersWsfedIndexRouteHandler)
+  .openapi(getProvidersWsfedIdIndexRoute, getProvidersWsfedIdIndexRouteHandler)
+  .openapi(putProvidersWsfedIdIndexRoute, putProvidersWsfedIdIndexRouteHandler)
+  .openapi(patchProvidersWsfedIdIndexRoute, patchProvidersWsfedIdIndexRouteHandler)
+  .openapi(deleteProvidersWsfedIdIndexRoute, deleteProvidersWsfedIdIndexRouteHandler)
+  .openapi(getProvidersWsfedIdMetadataIndexRoute, getProvidersWsfedIdMetadataIndexRouteHandler)
+  .openapi(
+    getProvidersWsfedIdPreviewUserIndexRoute,
+    getProvidersWsfedIdPreviewUserIndexRouteHandler,
+  )
+  .openapi(getProvidersWsfedIdUsedByIndexRoute, getProvidersWsfedIdUsedByIndexRouteHandler)
+  .openapi(getRacConnectionTokensIndexRoute, getRacConnectionTokensIndexRouteHandler)
+  .openapi(
+    getRacConnectionTokensConnectionTokenUuidIndexRoute,
+    getRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    putRacConnectionTokensConnectionTokenUuidIndexRoute,
+    putRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchRacConnectionTokensConnectionTokenUuidIndexRoute,
+    patchRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteRacConnectionTokensConnectionTokenUuidIndexRoute,
+    deleteRacConnectionTokensConnectionTokenUuidIndexRouteHandler,
+  )
+  .openapi(
+    getRacConnectionTokensConnectionTokenUuidUsedByIndexRoute,
+    getRacConnectionTokensConnectionTokenUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getRacDevicesIndexRoute, getRacDevicesIndexRouteHandler)
+  .openapi(getRbacCustomPermissionsIndexRoute, getRbacCustomPermissionsIndexRouteHandler)
+  .openapi(postRbacCustomPermissionsIndexRoute, postRbacCustomPermissionsIndexRouteHandler)
+  .openapi(getRbacCustomPermissionsIdIndexRoute, getRbacCustomPermissionsIdIndexRouteHandler)
+  .openapi(putRbacCustomPermissionsIdIndexRoute, putRbacCustomPermissionsIdIndexRouteHandler)
+  .openapi(patchRbacCustomPermissionsIdIndexRoute, patchRbacCustomPermissionsIdIndexRouteHandler)
+  .openapi(deleteRbacCustomPermissionsIdIndexRoute, deleteRbacCustomPermissionsIdIndexRouteHandler)
+  .openapi(getRbacEndpointsIndexRoute, getRbacEndpointsIndexRouteHandler)
+  .openapi(getRbacInitialPermissionsIndexRoute, getRbacInitialPermissionsIndexRouteHandler)
+  .openapi(postRbacInitialPermissionsIndexRoute, postRbacInitialPermissionsIndexRouteHandler)
+  .openapi(getRbacInitialPermissionsIdIndexRoute, getRbacInitialPermissionsIdIndexRouteHandler)
+  .openapi(putRbacInitialPermissionsIdIndexRoute, putRbacInitialPermissionsIdIndexRouteHandler)
+  .openapi(patchRbacInitialPermissionsIdIndexRoute, patchRbacInitialPermissionsIdIndexRouteHandler)
+  .openapi(
+    deleteRbacInitialPermissionsIdIndexRoute,
+    deleteRbacInitialPermissionsIdIndexRouteHandler,
+  )
+  .openapi(
+    getRbacInitialPermissionsIdUsedByIndexRoute,
+    getRbacInitialPermissionsIdUsedByIndexRouteHandler,
+  )
+  .openapi(getRbacPermissionChecksIndexRoute, getRbacPermissionChecksIndexRouteHandler)
+  .openapi(postRbacPermissionChecksIndexRoute, postRbacPermissionChecksIndexRouteHandler)
+  .openapi(
+    getRbacPermissionChecksCheckUuidIndexRoute,
+    getRbacPermissionChecksCheckUuidIndexRouteHandler,
+  )
+  .openapi(
+    putRbacPermissionChecksCheckUuidIndexRoute,
+    putRbacPermissionChecksCheckUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchRbacPermissionChecksCheckUuidIndexRoute,
+    patchRbacPermissionChecksCheckUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteRbacPermissionChecksCheckUuidIndexRoute,
+    deleteRbacPermissionChecksCheckUuidIndexRouteHandler,
+  )
+  .openapi(
+    getRbacPermissionChecksCheckUuidUsedByIndexRoute,
+    getRbacPermissionChecksCheckUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getRbacPermissionsIndexRoute, getRbacPermissionsIndexRouteHandler)
+  .openapi(getRbacPermissionsIdIndexRoute, getRbacPermissionsIdIndexRouteHandler)
+  .openapi(
+    getRbacPermissionsAssignedByRolesIndexRoute,
+    getRbacPermissionsAssignedByRolesIndexRouteHandler,
+  )
+  .openapi(
+    postRbacPermissionsAssignedByRolesUuidAssignIndexRoute,
+    postRbacPermissionsAssignedByRolesUuidAssignIndexRouteHandler,
+  )
+  .openapi(
+    patchRbacPermissionsAssignedByRolesUuidUnassignIndexRoute,
+    patchRbacPermissionsAssignedByRolesUuidUnassignIndexRouteHandler,
+  )
+  .openapi(getRbacPermissionsRolesIndexRoute, getRbacPermissionsRolesIndexRouteHandler)
+  .openapi(getRbacRolesIndexRoute, getRbacRolesIndexRouteHandler)
+  .openapi(postRbacRolesIndexRoute, postRbacRolesIndexRouteHandler)
+  .openapi(getRbacRolesUuidIndexRoute, getRbacRolesUuidIndexRouteHandler)
+  .openapi(putRbacRolesUuidIndexRoute, putRbacRolesUuidIndexRouteHandler)
+  .openapi(patchRbacRolesUuidIndexRoute, patchRbacRolesUuidIndexRouteHandler)
+  .openapi(deleteRbacRolesUuidIndexRoute, deleteRbacRolesUuidIndexRouteHandler)
+  .openapi(postRbacRolesUuidAddUserIndexRoute, postRbacRolesUuidAddUserIndexRouteHandler)
+  .openapi(postRbacRolesUuidRemoveUserIndexRoute, postRbacRolesUuidRemoveUserIndexRouteHandler)
+  .openapi(getRbacRolesUuidUsedByIndexRoute, getRbacRolesUuidUsedByIndexRouteHandler)
+  .openapi(getReportsExportsIndexRoute, getReportsExportsIndexRouteHandler)
+  .openapi(getReportsExportsIdIndexRoute, getReportsExportsIdIndexRouteHandler)
+  .openapi(deleteReportsExportsIdIndexRoute, deleteReportsExportsIdIndexRouteHandler)
+  .openapi(getRequestsGrantRequestsIndexRoute, getRequestsGrantRequestsIndexRouteHandler)
+  .openapi(postRequestsGrantRequestsIndexRoute, postRequestsGrantRequestsIndexRouteHandler)
+  .openapi(getRequestsGrantRequestsUuidIndexRoute, getRequestsGrantRequestsUuidIndexRouteHandler)
+  .openapi(
+    deleteRequestsGrantRequestsUuidIndexRoute,
+    deleteRequestsGrantRequestsUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchRequestsGrantRequestsUuidFulfillIndexRoute,
+    patchRequestsGrantRequestsUuidFulfillIndexRouteHandler,
+  )
+  .openapi(
+    deleteRequestsGrantRequestsUuidRevokeIndexRoute,
+    deleteRequestsGrantRequestsUuidRevokeIndexRouteHandler,
+  )
+  .openapi(
+    postRequestsGrantRequestsAgentIndexRoute,
+    postRequestsGrantRequestsAgentIndexRouteHandler,
+  )
+  .openapi(
+    getRequestsGrantRequestsPendingReviewIndexRoute,
+    getRequestsGrantRequestsPendingReviewIndexRouteHandler,
+  )
+  .openapi(getRequestsRuleBindingsIndexRoute, getRequestsRuleBindingsIndexRouteHandler)
+  .openapi(postRequestsRuleBindingsIndexRoute, postRequestsRuleBindingsIndexRouteHandler)
+  .openapi(getRequestsRuleBindingsUuidIndexRoute, getRequestsRuleBindingsUuidIndexRouteHandler)
+  .openapi(putRequestsRuleBindingsUuidIndexRoute, putRequestsRuleBindingsUuidIndexRouteHandler)
+  .openapi(patchRequestsRuleBindingsUuidIndexRoute, patchRequestsRuleBindingsUuidIndexRouteHandler)
+  .openapi(
+    deleteRequestsRuleBindingsUuidIndexRoute,
+    deleteRequestsRuleBindingsUuidIndexRouteHandler,
+  )
+  .openapi(
+    getRequestsRuleBindingsUuidUsedByIndexRoute,
+    getRequestsRuleBindingsUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getRequestsRuleChildBindingsIndexRoute, getRequestsRuleChildBindingsIndexRouteHandler)
+  .openapi(postRequestsRuleChildBindingsIndexRoute, postRequestsRuleChildBindingsIndexRouteHandler)
+  .openapi(
+    getRequestsRuleChildBindingsUuidIndexRoute,
+    getRequestsRuleChildBindingsUuidIndexRouteHandler,
+  )
+  .openapi(
+    putRequestsRuleChildBindingsUuidIndexRoute,
+    putRequestsRuleChildBindingsUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchRequestsRuleChildBindingsUuidIndexRoute,
+    patchRequestsRuleChildBindingsUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteRequestsRuleChildBindingsUuidIndexRoute,
+    deleteRequestsRuleChildBindingsUuidIndexRouteHandler,
+  )
+  .openapi(
+    getRequestsRuleChildBindingsUuidUsedByIndexRoute,
+    getRequestsRuleChildBindingsUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getRequestsRulesIndexRoute, getRequestsRulesIndexRouteHandler)
+  .openapi(postRequestsRulesIndexRoute, postRequestsRulesIndexRouteHandler)
+  .openapi(getRequestsRulesUuidIndexRoute, getRequestsRulesUuidIndexRouteHandler)
+  .openapi(putRequestsRulesUuidIndexRoute, putRequestsRulesUuidIndexRouteHandler)
+  .openapi(patchRequestsRulesUuidIndexRoute, patchRequestsRulesUuidIndexRouteHandler)
+  .openapi(deleteRequestsRulesUuidIndexRoute, deleteRequestsRulesUuidIndexRouteHandler)
+  .openapi(getRequestsRulesUuidUsedByIndexRoute, getRequestsRulesUuidUsedByIndexRouteHandler)
+  .openapi(getRootConfigIndexRoute, getRootConfigIndexRouteHandler)
+  .openapi(getSchemaIndexRoute, getSchemaIndexRouteHandler)
+  .openapi(getSourcesAllIndexRoute, getSourcesAllIndexRouteHandler)
+  .openapi(getSourcesAllSlugIndexRoute, getSourcesAllSlugIndexRouteHandler)
+  .openapi(deleteSourcesAllSlugIndexRoute, deleteSourcesAllSlugIndexRouteHandler)
+  .openapi(getSourcesAllSlugUsedByIndexRoute, getSourcesAllSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesAllTypesIndexRoute, getSourcesAllTypesIndexRouteHandler)
+  .openapi(getSourcesAllUserSettingsIndexRoute, getSourcesAllUserSettingsIndexRouteHandler)
+  .openapi(getSourcesGroupConnectionsAllIndexRoute, getSourcesGroupConnectionsAllIndexRouteHandler)
+  .openapi(
+    getSourcesGroupConnectionsAllIdIndexRoute,
+    getSourcesGroupConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsAllIdIndexRoute,
+    putSourcesGroupConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsAllIdIndexRoute,
+    patchSourcesGroupConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsAllIdIndexRoute,
+    deleteSourcesGroupConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsAllIdUsedByIndexRoute,
+    getSourcesGroupConnectionsAllIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsKerberosIndexRoute,
+    getSourcesGroupConnectionsKerberosIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsKerberosIndexRoute,
+    postSourcesGroupConnectionsKerberosIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsKerberosIdIndexRoute,
+    getSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsKerberosIdIndexRoute,
+    putSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsKerberosIdIndexRoute,
+    patchSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsKerberosIdIndexRoute,
+    deleteSourcesGroupConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsKerberosIdUsedByIndexRoute,
+    getSourcesGroupConnectionsKerberosIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsLdapIndexRoute,
+    getSourcesGroupConnectionsLdapIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsLdapIndexRoute,
+    postSourcesGroupConnectionsLdapIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsLdapIdIndexRoute,
+    getSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsLdapIdIndexRoute,
+    putSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsLdapIdIndexRoute,
+    patchSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsLdapIdIndexRoute,
+    deleteSourcesGroupConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsLdapIdUsedByIndexRoute,
+    getSourcesGroupConnectionsLdapIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsOauthIndexRoute,
+    getSourcesGroupConnectionsOauthIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsOauthIndexRoute,
+    postSourcesGroupConnectionsOauthIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsOauthIdIndexRoute,
+    getSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsOauthIdIndexRoute,
+    putSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsOauthIdIndexRoute,
+    patchSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsOauthIdIndexRoute,
+    deleteSourcesGroupConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsOauthIdUsedByIndexRoute,
+    getSourcesGroupConnectionsOauthIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsPlexIndexRoute,
+    getSourcesGroupConnectionsPlexIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsPlexIndexRoute,
+    postSourcesGroupConnectionsPlexIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsPlexIdIndexRoute,
+    getSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsPlexIdIndexRoute,
+    putSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsPlexIdIndexRoute,
+    patchSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsPlexIdIndexRoute,
+    deleteSourcesGroupConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsPlexIdUsedByIndexRoute,
+    getSourcesGroupConnectionsPlexIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsSamlIndexRoute,
+    getSourcesGroupConnectionsSamlIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsSamlIndexRoute,
+    postSourcesGroupConnectionsSamlIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsSamlIdIndexRoute,
+    getSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsSamlIdIndexRoute,
+    putSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsSamlIdIndexRoute,
+    patchSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsSamlIdIndexRoute,
+    deleteSourcesGroupConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsSamlIdUsedByIndexRoute,
+    getSourcesGroupConnectionsSamlIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsTelegramIndexRoute,
+    getSourcesGroupConnectionsTelegramIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesGroupConnectionsTelegramIndexRoute,
+    postSourcesGroupConnectionsTelegramIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsTelegramIdIndexRoute,
+    getSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesGroupConnectionsTelegramIdIndexRoute,
+    putSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesGroupConnectionsTelegramIdIndexRoute,
+    patchSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesGroupConnectionsTelegramIdIndexRoute,
+    deleteSourcesGroupConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesGroupConnectionsTelegramIdUsedByIndexRoute,
+    getSourcesGroupConnectionsTelegramIdUsedByIndexRouteHandler,
+  )
+  .openapi(getSourcesKerberosIndexRoute, getSourcesKerberosIndexRouteHandler)
+  .openapi(postSourcesKerberosIndexRoute, postSourcesKerberosIndexRouteHandler)
+  .openapi(getSourcesKerberosSlugIndexRoute, getSourcesKerberosSlugIndexRouteHandler)
+  .openapi(putSourcesKerberosSlugIndexRoute, putSourcesKerberosSlugIndexRouteHandler)
+  .openapi(patchSourcesKerberosSlugIndexRoute, patchSourcesKerberosSlugIndexRouteHandler)
+  .openapi(deleteSourcesKerberosSlugIndexRoute, deleteSourcesKerberosSlugIndexRouteHandler)
+  .openapi(
+    getSourcesKerberosSlugSyncStatusIndexRoute,
+    getSourcesKerberosSlugSyncStatusIndexRouteHandler,
+  )
+  .openapi(getSourcesKerberosSlugUsedByIndexRoute, getSourcesKerberosSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesLdapIndexRoute, getSourcesLdapIndexRouteHandler)
+  .openapi(postSourcesLdapIndexRoute, postSourcesLdapIndexRouteHandler)
+  .openapi(getSourcesLdapSlugIndexRoute, getSourcesLdapSlugIndexRouteHandler)
+  .openapi(putSourcesLdapSlugIndexRoute, putSourcesLdapSlugIndexRouteHandler)
+  .openapi(patchSourcesLdapSlugIndexRoute, patchSourcesLdapSlugIndexRouteHandler)
+  .openapi(deleteSourcesLdapSlugIndexRoute, deleteSourcesLdapSlugIndexRouteHandler)
+  .openapi(getSourcesLdapSlugDebugIndexRoute, getSourcesLdapSlugDebugIndexRouteHandler)
+  .openapi(getSourcesLdapSlugSyncStatusIndexRoute, getSourcesLdapSlugSyncStatusIndexRouteHandler)
+  .openapi(getSourcesLdapSlugUsedByIndexRoute, getSourcesLdapSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesOauthIndexRoute, getSourcesOauthIndexRouteHandler)
+  .openapi(postSourcesOauthIndexRoute, postSourcesOauthIndexRouteHandler)
+  .openapi(getSourcesOauthSlugIndexRoute, getSourcesOauthSlugIndexRouteHandler)
+  .openapi(putSourcesOauthSlugIndexRoute, putSourcesOauthSlugIndexRouteHandler)
+  .openapi(patchSourcesOauthSlugIndexRoute, patchSourcesOauthSlugIndexRouteHandler)
+  .openapi(deleteSourcesOauthSlugIndexRoute, deleteSourcesOauthSlugIndexRouteHandler)
+  .openapi(getSourcesOauthSlugUsedByIndexRoute, getSourcesOauthSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesOauthSourceTypesIndexRoute, getSourcesOauthSourceTypesIndexRouteHandler)
+  .openapi(getSourcesPlexIndexRoute, getSourcesPlexIndexRouteHandler)
+  .openapi(postSourcesPlexIndexRoute, postSourcesPlexIndexRouteHandler)
+  .openapi(getSourcesPlexSlugIndexRoute, getSourcesPlexSlugIndexRouteHandler)
+  .openapi(putSourcesPlexSlugIndexRoute, putSourcesPlexSlugIndexRouteHandler)
+  .openapi(patchSourcesPlexSlugIndexRoute, patchSourcesPlexSlugIndexRouteHandler)
+  .openapi(deleteSourcesPlexSlugIndexRoute, deleteSourcesPlexSlugIndexRouteHandler)
+  .openapi(getSourcesPlexSlugUsedByIndexRoute, getSourcesPlexSlugUsedByIndexRouteHandler)
+  .openapi(postSourcesPlexRedeemTokenIndexRoute, postSourcesPlexRedeemTokenIndexRouteHandler)
+  .openapi(
+    postSourcesPlexRedeemTokenAuthenticatedIndexRoute,
+    postSourcesPlexRedeemTokenAuthenticatedIndexRouteHandler,
+  )
+  .openapi(getSourcesSamlIndexRoute, getSourcesSamlIndexRouteHandler)
+  .openapi(postSourcesSamlIndexRoute, postSourcesSamlIndexRouteHandler)
+  .openapi(getSourcesSamlSlugIndexRoute, getSourcesSamlSlugIndexRouteHandler)
+  .openapi(putSourcesSamlSlugIndexRoute, putSourcesSamlSlugIndexRouteHandler)
+  .openapi(patchSourcesSamlSlugIndexRoute, patchSourcesSamlSlugIndexRouteHandler)
+  .openapi(deleteSourcesSamlSlugIndexRoute, deleteSourcesSamlSlugIndexRouteHandler)
+  .openapi(getSourcesSamlSlugMetadataIndexRoute, getSourcesSamlSlugMetadataIndexRouteHandler)
+  .openapi(getSourcesSamlSlugUsedByIndexRoute, getSourcesSamlSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesScimIndexRoute, getSourcesScimIndexRouteHandler)
+  .openapi(postSourcesScimIndexRoute, postSourcesScimIndexRouteHandler)
+  .openapi(getSourcesScimSlugIndexRoute, getSourcesScimSlugIndexRouteHandler)
+  .openapi(putSourcesScimSlugIndexRoute, putSourcesScimSlugIndexRouteHandler)
+  .openapi(patchSourcesScimSlugIndexRoute, patchSourcesScimSlugIndexRouteHandler)
+  .openapi(deleteSourcesScimSlugIndexRoute, deleteSourcesScimSlugIndexRouteHandler)
+  .openapi(getSourcesScimSlugUsedByIndexRoute, getSourcesScimSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesScimGroupsIndexRoute, getSourcesScimGroupsIndexRouteHandler)
+  .openapi(postSourcesScimGroupsIndexRoute, postSourcesScimGroupsIndexRouteHandler)
+  .openapi(getSourcesScimGroupsIdIndexRoute, getSourcesScimGroupsIdIndexRouteHandler)
+  .openapi(putSourcesScimGroupsIdIndexRoute, putSourcesScimGroupsIdIndexRouteHandler)
+  .openapi(patchSourcesScimGroupsIdIndexRoute, patchSourcesScimGroupsIdIndexRouteHandler)
+  .openapi(deleteSourcesScimGroupsIdIndexRoute, deleteSourcesScimGroupsIdIndexRouteHandler)
+  .openapi(getSourcesScimGroupsIdUsedByIndexRoute, getSourcesScimGroupsIdUsedByIndexRouteHandler)
+  .openapi(getSourcesScimUsersIndexRoute, getSourcesScimUsersIndexRouteHandler)
+  .openapi(postSourcesScimUsersIndexRoute, postSourcesScimUsersIndexRouteHandler)
+  .openapi(getSourcesScimUsersIdIndexRoute, getSourcesScimUsersIdIndexRouteHandler)
+  .openapi(putSourcesScimUsersIdIndexRoute, putSourcesScimUsersIdIndexRouteHandler)
+  .openapi(patchSourcesScimUsersIdIndexRoute, patchSourcesScimUsersIdIndexRouteHandler)
+  .openapi(deleteSourcesScimUsersIdIndexRoute, deleteSourcesScimUsersIdIndexRouteHandler)
+  .openapi(getSourcesScimUsersIdUsedByIndexRoute, getSourcesScimUsersIdUsedByIndexRouteHandler)
+  .openapi(getSourcesTelegramIndexRoute, getSourcesTelegramIndexRouteHandler)
+  .openapi(postSourcesTelegramIndexRoute, postSourcesTelegramIndexRouteHandler)
+  .openapi(getSourcesTelegramSlugIndexRoute, getSourcesTelegramSlugIndexRouteHandler)
+  .openapi(putSourcesTelegramSlugIndexRoute, putSourcesTelegramSlugIndexRouteHandler)
+  .openapi(patchSourcesTelegramSlugIndexRoute, patchSourcesTelegramSlugIndexRouteHandler)
+  .openapi(deleteSourcesTelegramSlugIndexRoute, deleteSourcesTelegramSlugIndexRouteHandler)
+  .openapi(
+    postSourcesTelegramSlugConnectUserIndexRoute,
+    postSourcesTelegramSlugConnectUserIndexRouteHandler,
+  )
+  .openapi(getSourcesTelegramSlugUsedByIndexRoute, getSourcesTelegramSlugUsedByIndexRouteHandler)
+  .openapi(getSourcesUserConnectionsAllIndexRoute, getSourcesUserConnectionsAllIndexRouteHandler)
+  .openapi(
+    getSourcesUserConnectionsAllIdIndexRoute,
+    getSourcesUserConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsAllIdIndexRoute,
+    putSourcesUserConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsAllIdIndexRoute,
+    patchSourcesUserConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsAllIdIndexRoute,
+    deleteSourcesUserConnectionsAllIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsAllIdUsedByIndexRoute,
+    getSourcesUserConnectionsAllIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsKerberosIndexRoute,
+    getSourcesUserConnectionsKerberosIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesUserConnectionsKerberosIndexRoute,
+    postSourcesUserConnectionsKerberosIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsKerberosIdIndexRoute,
+    getSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsKerberosIdIndexRoute,
+    putSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsKerberosIdIndexRoute,
+    patchSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsKerberosIdIndexRoute,
+    deleteSourcesUserConnectionsKerberosIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsKerberosIdUsedByIndexRoute,
+    getSourcesUserConnectionsKerberosIdUsedByIndexRouteHandler,
+  )
+  .openapi(getSourcesUserConnectionsLdapIndexRoute, getSourcesUserConnectionsLdapIndexRouteHandler)
+  .openapi(
+    postSourcesUserConnectionsLdapIndexRoute,
+    postSourcesUserConnectionsLdapIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsLdapIdIndexRoute,
+    getSourcesUserConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsLdapIdIndexRoute,
+    putSourcesUserConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsLdapIdIndexRoute,
+    patchSourcesUserConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsLdapIdIndexRoute,
+    deleteSourcesUserConnectionsLdapIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsLdapIdUsedByIndexRoute,
+    getSourcesUserConnectionsLdapIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsOauthIndexRoute,
+    getSourcesUserConnectionsOauthIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesUserConnectionsOauthIndexRoute,
+    postSourcesUserConnectionsOauthIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsOauthIdIndexRoute,
+    getSourcesUserConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsOauthIdIndexRoute,
+    putSourcesUserConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsOauthIdIndexRoute,
+    patchSourcesUserConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsOauthIdIndexRoute,
+    deleteSourcesUserConnectionsOauthIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsOauthIdUsedByIndexRoute,
+    getSourcesUserConnectionsOauthIdUsedByIndexRouteHandler,
+  )
+  .openapi(getSourcesUserConnectionsPlexIndexRoute, getSourcesUserConnectionsPlexIndexRouteHandler)
+  .openapi(
+    postSourcesUserConnectionsPlexIndexRoute,
+    postSourcesUserConnectionsPlexIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsPlexIdIndexRoute,
+    getSourcesUserConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsPlexIdIndexRoute,
+    putSourcesUserConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsPlexIdIndexRoute,
+    patchSourcesUserConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsPlexIdIndexRoute,
+    deleteSourcesUserConnectionsPlexIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsPlexIdUsedByIndexRoute,
+    getSourcesUserConnectionsPlexIdUsedByIndexRouteHandler,
+  )
+  .openapi(getSourcesUserConnectionsSamlIndexRoute, getSourcesUserConnectionsSamlIndexRouteHandler)
+  .openapi(
+    postSourcesUserConnectionsSamlIndexRoute,
+    postSourcesUserConnectionsSamlIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsSamlIdIndexRoute,
+    getSourcesUserConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsSamlIdIndexRoute,
+    putSourcesUserConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsSamlIdIndexRoute,
+    patchSourcesUserConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsSamlIdIndexRoute,
+    deleteSourcesUserConnectionsSamlIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsSamlIdUsedByIndexRoute,
+    getSourcesUserConnectionsSamlIdUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsTelegramIndexRoute,
+    getSourcesUserConnectionsTelegramIndexRouteHandler,
+  )
+  .openapi(
+    postSourcesUserConnectionsTelegramIndexRoute,
+    postSourcesUserConnectionsTelegramIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsTelegramIdIndexRoute,
+    getSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    putSourcesUserConnectionsTelegramIdIndexRoute,
+    putSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    patchSourcesUserConnectionsTelegramIdIndexRoute,
+    patchSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    deleteSourcesUserConnectionsTelegramIdIndexRoute,
+    deleteSourcesUserConnectionsTelegramIdIndexRouteHandler,
+  )
+  .openapi(
+    getSourcesUserConnectionsTelegramIdUsedByIndexRoute,
+    getSourcesUserConnectionsTelegramIdUsedByIndexRouteHandler,
+  )
+  .openapi(getSsfStreamsIndexRoute, getSsfStreamsIndexRouteHandler)
+  .openapi(getSsfStreamsUuidIndexRoute, getSsfStreamsUuidIndexRouteHandler)
+  .openapi(deleteSsfStreamsUuidIndexRoute, deleteSsfStreamsUuidIndexRouteHandler)
+  .openapi(getStagesAccountLockdownIndexRoute, getStagesAccountLockdownIndexRouteHandler)
+  .openapi(postStagesAccountLockdownIndexRoute, postStagesAccountLockdownIndexRouteHandler)
+  .openapi(
+    getStagesAccountLockdownStageUuidIndexRoute,
+    getStagesAccountLockdownStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAccountLockdownStageUuidIndexRoute,
+    putStagesAccountLockdownStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAccountLockdownStageUuidIndexRoute,
+    patchStagesAccountLockdownStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAccountLockdownStageUuidIndexRoute,
+    deleteStagesAccountLockdownStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAccountLockdownStageUuidUsedByIndexRoute,
+    getStagesAccountLockdownStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesAllIndexRoute, getStagesAllIndexRouteHandler)
+  .openapi(getStagesAllStageUuidIndexRoute, getStagesAllStageUuidIndexRouteHandler)
+  .openapi(deleteStagesAllStageUuidIndexRoute, deleteStagesAllStageUuidIndexRouteHandler)
+  .openapi(getStagesAllStageUuidUsedByIndexRoute, getStagesAllStageUuidUsedByIndexRouteHandler)
+  .openapi(getStagesAllTypesIndexRoute, getStagesAllTypesIndexRouteHandler)
+  .openapi(getStagesAllUserSettingsIndexRoute, getStagesAllUserSettingsIndexRouteHandler)
+  .openapi(getStagesAuthenticatorDuoIndexRoute, getStagesAuthenticatorDuoIndexRouteHandler)
+  .openapi(postStagesAuthenticatorDuoIndexRoute, postStagesAuthenticatorDuoIndexRouteHandler)
+  .openapi(
+    getStagesAuthenticatorDuoStageUuidIndexRoute,
+    getStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorDuoStageUuidIndexRoute,
+    putStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorDuoStageUuidIndexRoute,
+    patchStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorDuoStageUuidIndexRoute,
+    deleteStagesAuthenticatorDuoStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRoute,
+    postStagesAuthenticatorDuoStageUuidEnrollmentStatusIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRoute,
+    postStagesAuthenticatorDuoStageUuidImportDeviceManualIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRoute,
+    postStagesAuthenticatorDuoStageUuidImportDevicesAutomaticIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorDuoStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorDuoStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesAuthenticatorEmailIndexRoute, getStagesAuthenticatorEmailIndexRouteHandler)
+  .openapi(postStagesAuthenticatorEmailIndexRoute, postStagesAuthenticatorEmailIndexRouteHandler)
+  .openapi(
+    getStagesAuthenticatorEmailStageUuidIndexRoute,
+    getStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorEmailStageUuidIndexRoute,
+    putStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorEmailStageUuidIndexRoute,
+    patchStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorEmailStageUuidIndexRoute,
+    deleteStagesAuthenticatorEmailStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorEmailStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorEmailStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorEndpointGdtcIndexRoute,
+    getStagesAuthenticatorEndpointGdtcIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorEndpointGdtcIndexRoute,
+    postStagesAuthenticatorEndpointGdtcIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+    getStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+    putStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+    patchStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRoute,
+    deleteStagesAuthenticatorEndpointGdtcStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorEndpointGdtcStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesAuthenticatorSmsIndexRoute, getStagesAuthenticatorSmsIndexRouteHandler)
+  .openapi(postStagesAuthenticatorSmsIndexRoute, postStagesAuthenticatorSmsIndexRouteHandler)
+  .openapi(
+    getStagesAuthenticatorSmsStageUuidIndexRoute,
+    getStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorSmsStageUuidIndexRoute,
+    putStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorSmsStageUuidIndexRoute,
+    patchStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorSmsStageUuidIndexRoute,
+    deleteStagesAuthenticatorSmsStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorSmsStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorSmsStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesAuthenticatorStaticIndexRoute, getStagesAuthenticatorStaticIndexRouteHandler)
+  .openapi(postStagesAuthenticatorStaticIndexRoute, postStagesAuthenticatorStaticIndexRouteHandler)
+  .openapi(
+    getStagesAuthenticatorStaticStageUuidIndexRoute,
+    getStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorStaticStageUuidIndexRoute,
+    putStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorStaticStageUuidIndexRoute,
+    patchStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorStaticStageUuidIndexRoute,
+    deleteStagesAuthenticatorStaticStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorStaticStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorStaticStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesAuthenticatorTotpIndexRoute, getStagesAuthenticatorTotpIndexRouteHandler)
+  .openapi(postStagesAuthenticatorTotpIndexRoute, postStagesAuthenticatorTotpIndexRouteHandler)
+  .openapi(
+    getStagesAuthenticatorTotpStageUuidIndexRoute,
+    getStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorTotpStageUuidIndexRoute,
+    putStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorTotpStageUuidIndexRoute,
+    patchStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorTotpStageUuidIndexRoute,
+    deleteStagesAuthenticatorTotpStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorTotpStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorTotpStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorValidateIndexRoute,
+    getStagesAuthenticatorValidateIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorValidateIndexRoute,
+    postStagesAuthenticatorValidateIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorValidateStageUuidIndexRoute,
+    getStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorValidateStageUuidIndexRoute,
+    putStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorValidateStageUuidIndexRoute,
+    patchStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorValidateStageUuidIndexRoute,
+    deleteStagesAuthenticatorValidateStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorValidateStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorValidateStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorWebauthnIndexRoute,
+    getStagesAuthenticatorWebauthnIndexRouteHandler,
+  )
+  .openapi(
+    postStagesAuthenticatorWebauthnIndexRoute,
+    postStagesAuthenticatorWebauthnIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorWebauthnStageUuidIndexRoute,
+    getStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesAuthenticatorWebauthnStageUuidIndexRoute,
+    putStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesAuthenticatorWebauthnStageUuidIndexRoute,
+    patchStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesAuthenticatorWebauthnStageUuidIndexRoute,
+    deleteStagesAuthenticatorWebauthnStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorWebauthnStageUuidUsedByIndexRoute,
+    getStagesAuthenticatorWebauthnStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorWebauthnDeviceTypesIndexRoute,
+    getStagesAuthenticatorWebauthnDeviceTypesIndexRouteHandler,
+  )
+  .openapi(
+    getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRoute,
+    getStagesAuthenticatorWebauthnDeviceTypesAaguidIndexRouteHandler,
+  )
+  .openapi(getStagesCaptchaIndexRoute, getStagesCaptchaIndexRouteHandler)
+  .openapi(postStagesCaptchaIndexRoute, postStagesCaptchaIndexRouteHandler)
+  .openapi(getStagesCaptchaStageUuidIndexRoute, getStagesCaptchaStageUuidIndexRouteHandler)
+  .openapi(putStagesCaptchaStageUuidIndexRoute, putStagesCaptchaStageUuidIndexRouteHandler)
+  .openapi(patchStagesCaptchaStageUuidIndexRoute, patchStagesCaptchaStageUuidIndexRouteHandler)
+  .openapi(deleteStagesCaptchaStageUuidIndexRoute, deleteStagesCaptchaStageUuidIndexRouteHandler)
+  .openapi(
+    getStagesCaptchaStageUuidUsedByIndexRoute,
+    getStagesCaptchaStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesConsentIndexRoute, getStagesConsentIndexRouteHandler)
+  .openapi(postStagesConsentIndexRoute, postStagesConsentIndexRouteHandler)
+  .openapi(getStagesConsentStageUuidIndexRoute, getStagesConsentStageUuidIndexRouteHandler)
+  .openapi(putStagesConsentStageUuidIndexRoute, putStagesConsentStageUuidIndexRouteHandler)
+  .openapi(patchStagesConsentStageUuidIndexRoute, patchStagesConsentStageUuidIndexRouteHandler)
+  .openapi(deleteStagesConsentStageUuidIndexRoute, deleteStagesConsentStageUuidIndexRouteHandler)
+  .openapi(
+    getStagesConsentStageUuidUsedByIndexRoute,
+    getStagesConsentStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesDenyIndexRoute, getStagesDenyIndexRouteHandler)
+  .openapi(postStagesDenyIndexRoute, postStagesDenyIndexRouteHandler)
+  .openapi(getStagesDenyStageUuidIndexRoute, getStagesDenyStageUuidIndexRouteHandler)
+  .openapi(putStagesDenyStageUuidIndexRoute, putStagesDenyStageUuidIndexRouteHandler)
+  .openapi(patchStagesDenyStageUuidIndexRoute, patchStagesDenyStageUuidIndexRouteHandler)
+  .openapi(deleteStagesDenyStageUuidIndexRoute, deleteStagesDenyStageUuidIndexRouteHandler)
+  .openapi(getStagesDenyStageUuidUsedByIndexRoute, getStagesDenyStageUuidUsedByIndexRouteHandler)
+  .openapi(getStagesDummyIndexRoute, getStagesDummyIndexRouteHandler)
+  .openapi(postStagesDummyIndexRoute, postStagesDummyIndexRouteHandler)
+  .openapi(getStagesDummyStageUuidIndexRoute, getStagesDummyStageUuidIndexRouteHandler)
+  .openapi(putStagesDummyStageUuidIndexRoute, putStagesDummyStageUuidIndexRouteHandler)
+  .openapi(patchStagesDummyStageUuidIndexRoute, patchStagesDummyStageUuidIndexRouteHandler)
+  .openapi(deleteStagesDummyStageUuidIndexRoute, deleteStagesDummyStageUuidIndexRouteHandler)
+  .openapi(getStagesDummyStageUuidUsedByIndexRoute, getStagesDummyStageUuidUsedByIndexRouteHandler)
+  .openapi(getStagesEmailIndexRoute, getStagesEmailIndexRouteHandler)
+  .openapi(postStagesEmailIndexRoute, postStagesEmailIndexRouteHandler)
+  .openapi(getStagesEmailStageUuidIndexRoute, getStagesEmailStageUuidIndexRouteHandler)
+  .openapi(putStagesEmailStageUuidIndexRoute, putStagesEmailStageUuidIndexRouteHandler)
+  .openapi(patchStagesEmailStageUuidIndexRoute, patchStagesEmailStageUuidIndexRouteHandler)
+  .openapi(deleteStagesEmailStageUuidIndexRoute, deleteStagesEmailStageUuidIndexRouteHandler)
+  .openapi(getStagesEmailStageUuidUsedByIndexRoute, getStagesEmailStageUuidUsedByIndexRouteHandler)
+  .openapi(getStagesEmailTemplatesIndexRoute, getStagesEmailTemplatesIndexRouteHandler)
+  .openapi(getStagesEndpointsIndexRoute, getStagesEndpointsIndexRouteHandler)
+  .openapi(postStagesEndpointsIndexRoute, postStagesEndpointsIndexRouteHandler)
+  .openapi(getStagesEndpointsStageUuidIndexRoute, getStagesEndpointsStageUuidIndexRouteHandler)
+  .openapi(putStagesEndpointsStageUuidIndexRoute, putStagesEndpointsStageUuidIndexRouteHandler)
+  .openapi(patchStagesEndpointsStageUuidIndexRoute, patchStagesEndpointsStageUuidIndexRouteHandler)
+  .openapi(
+    deleteStagesEndpointsStageUuidIndexRoute,
+    deleteStagesEndpointsStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesEndpointsStageUuidUsedByIndexRoute,
+    getStagesEndpointsStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesIdentificationIndexRoute, getStagesIdentificationIndexRouteHandler)
+  .openapi(postStagesIdentificationIndexRoute, postStagesIdentificationIndexRouteHandler)
+  .openapi(
+    getStagesIdentificationStageUuidIndexRoute,
+    getStagesIdentificationStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesIdentificationStageUuidIndexRoute,
+    putStagesIdentificationStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesIdentificationStageUuidIndexRoute,
+    patchStagesIdentificationStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesIdentificationStageUuidIndexRoute,
+    deleteStagesIdentificationStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesIdentificationStageUuidUsedByIndexRoute,
+    getStagesIdentificationStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    getStagesInvitationInvitationsIndexRoute,
+    getStagesInvitationInvitationsIndexRouteHandler,
+  )
+  .openapi(
+    postStagesInvitationInvitationsIndexRoute,
+    postStagesInvitationInvitationsIndexRouteHandler,
+  )
+  .openapi(
+    getStagesInvitationInvitationsInviteUuidIndexRoute,
+    getStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesInvitationInvitationsInviteUuidIndexRoute,
+    putStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesInvitationInvitationsInviteUuidIndexRoute,
+    patchStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesInvitationInvitationsInviteUuidIndexRoute,
+    deleteStagesInvitationInvitationsInviteUuidIndexRouteHandler,
+  )
+  .openapi(
+    postStagesInvitationInvitationsInviteUuidSendEmailIndexRoute,
+    postStagesInvitationInvitationsInviteUuidSendEmailIndexRouteHandler,
+  )
+  .openapi(
+    getStagesInvitationInvitationsInviteUuidUsedByIndexRoute,
+    getStagesInvitationInvitationsInviteUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesInvitationStagesIndexRoute, getStagesInvitationStagesIndexRouteHandler)
+  .openapi(postStagesInvitationStagesIndexRoute, postStagesInvitationStagesIndexRouteHandler)
+  .openapi(
+    getStagesInvitationStagesStageUuidIndexRoute,
+    getStagesInvitationStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesInvitationStagesStageUuidIndexRoute,
+    putStagesInvitationStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesInvitationStagesStageUuidIndexRoute,
+    patchStagesInvitationStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesInvitationStagesStageUuidIndexRoute,
+    deleteStagesInvitationStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesInvitationStagesStageUuidUsedByIndexRoute,
+    getStagesInvitationStagesStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesMtlsIndexRoute, getStagesMtlsIndexRouteHandler)
+  .openapi(postStagesMtlsIndexRoute, postStagesMtlsIndexRouteHandler)
+  .openapi(getStagesMtlsStageUuidIndexRoute, getStagesMtlsStageUuidIndexRouteHandler)
+  .openapi(putStagesMtlsStageUuidIndexRoute, putStagesMtlsStageUuidIndexRouteHandler)
+  .openapi(patchStagesMtlsStageUuidIndexRoute, patchStagesMtlsStageUuidIndexRouteHandler)
+  .openapi(deleteStagesMtlsStageUuidIndexRoute, deleteStagesMtlsStageUuidIndexRouteHandler)
+  .openapi(getStagesMtlsStageUuidUsedByIndexRoute, getStagesMtlsStageUuidUsedByIndexRouteHandler)
+  .openapi(getStagesPasswordIndexRoute, getStagesPasswordIndexRouteHandler)
+  .openapi(postStagesPasswordIndexRoute, postStagesPasswordIndexRouteHandler)
+  .openapi(getStagesPasswordStageUuidIndexRoute, getStagesPasswordStageUuidIndexRouteHandler)
+  .openapi(putStagesPasswordStageUuidIndexRoute, putStagesPasswordStageUuidIndexRouteHandler)
+  .openapi(patchStagesPasswordStageUuidIndexRoute, patchStagesPasswordStageUuidIndexRouteHandler)
+  .openapi(deleteStagesPasswordStageUuidIndexRoute, deleteStagesPasswordStageUuidIndexRouteHandler)
+  .openapi(
+    getStagesPasswordStageUuidUsedByIndexRoute,
+    getStagesPasswordStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesPromptPromptsIndexRoute, getStagesPromptPromptsIndexRouteHandler)
+  .openapi(postStagesPromptPromptsIndexRoute, postStagesPromptPromptsIndexRouteHandler)
+  .openapi(
+    getStagesPromptPromptsPromptUuidIndexRoute,
+    getStagesPromptPromptsPromptUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesPromptPromptsPromptUuidIndexRoute,
+    putStagesPromptPromptsPromptUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesPromptPromptsPromptUuidIndexRoute,
+    patchStagesPromptPromptsPromptUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesPromptPromptsPromptUuidIndexRoute,
+    deleteStagesPromptPromptsPromptUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesPromptPromptsPromptUuidUsedByIndexRoute,
+    getStagesPromptPromptsPromptUuidUsedByIndexRouteHandler,
+  )
+  .openapi(
+    postStagesPromptPromptsPreviewIndexRoute,
+    postStagesPromptPromptsPreviewIndexRouteHandler,
+  )
+  .openapi(getStagesPromptStagesIndexRoute, getStagesPromptStagesIndexRouteHandler)
+  .openapi(postStagesPromptStagesIndexRoute, postStagesPromptStagesIndexRouteHandler)
+  .openapi(
+    getStagesPromptStagesStageUuidIndexRoute,
+    getStagesPromptStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    putStagesPromptStagesStageUuidIndexRoute,
+    putStagesPromptStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    patchStagesPromptStagesStageUuidIndexRoute,
+    patchStagesPromptStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesPromptStagesStageUuidIndexRoute,
+    deleteStagesPromptStagesStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesPromptStagesStageUuidUsedByIndexRoute,
+    getStagesPromptStagesStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesRedirectIndexRoute, getStagesRedirectIndexRouteHandler)
+  .openapi(postStagesRedirectIndexRoute, postStagesRedirectIndexRouteHandler)
+  .openapi(getStagesRedirectStageUuidIndexRoute, getStagesRedirectStageUuidIndexRouteHandler)
+  .openapi(putStagesRedirectStageUuidIndexRoute, putStagesRedirectStageUuidIndexRouteHandler)
+  .openapi(patchStagesRedirectStageUuidIndexRoute, patchStagesRedirectStageUuidIndexRouteHandler)
+  .openapi(deleteStagesRedirectStageUuidIndexRoute, deleteStagesRedirectStageUuidIndexRouteHandler)
+  .openapi(
+    getStagesRedirectStageUuidUsedByIndexRoute,
+    getStagesRedirectStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesSourceIndexRoute, getStagesSourceIndexRouteHandler)
+  .openapi(postStagesSourceIndexRoute, postStagesSourceIndexRouteHandler)
+  .openapi(getStagesSourceStageUuidIndexRoute, getStagesSourceStageUuidIndexRouteHandler)
+  .openapi(putStagesSourceStageUuidIndexRoute, putStagesSourceStageUuidIndexRouteHandler)
+  .openapi(patchStagesSourceStageUuidIndexRoute, patchStagesSourceStageUuidIndexRouteHandler)
+  .openapi(deleteStagesSourceStageUuidIndexRoute, deleteStagesSourceStageUuidIndexRouteHandler)
+  .openapi(
+    getStagesSourceStageUuidUsedByIndexRoute,
+    getStagesSourceStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesUserDeleteIndexRoute, getStagesUserDeleteIndexRouteHandler)
+  .openapi(postStagesUserDeleteIndexRoute, postStagesUserDeleteIndexRouteHandler)
+  .openapi(getStagesUserDeleteStageUuidIndexRoute, getStagesUserDeleteStageUuidIndexRouteHandler)
+  .openapi(putStagesUserDeleteStageUuidIndexRoute, putStagesUserDeleteStageUuidIndexRouteHandler)
+  .openapi(
+    patchStagesUserDeleteStageUuidIndexRoute,
+    patchStagesUserDeleteStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesUserDeleteStageUuidIndexRoute,
+    deleteStagesUserDeleteStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesUserDeleteStageUuidUsedByIndexRoute,
+    getStagesUserDeleteStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesUserLoginIndexRoute, getStagesUserLoginIndexRouteHandler)
+  .openapi(postStagesUserLoginIndexRoute, postStagesUserLoginIndexRouteHandler)
+  .openapi(getStagesUserLoginStageUuidIndexRoute, getStagesUserLoginStageUuidIndexRouteHandler)
+  .openapi(putStagesUserLoginStageUuidIndexRoute, putStagesUserLoginStageUuidIndexRouteHandler)
+  .openapi(patchStagesUserLoginStageUuidIndexRoute, patchStagesUserLoginStageUuidIndexRouteHandler)
+  .openapi(
+    deleteStagesUserLoginStageUuidIndexRoute,
+    deleteStagesUserLoginStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesUserLoginStageUuidUsedByIndexRoute,
+    getStagesUserLoginStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesUserLogoutIndexRoute, getStagesUserLogoutIndexRouteHandler)
+  .openapi(postStagesUserLogoutIndexRoute, postStagesUserLogoutIndexRouteHandler)
+  .openapi(getStagesUserLogoutStageUuidIndexRoute, getStagesUserLogoutStageUuidIndexRouteHandler)
+  .openapi(putStagesUserLogoutStageUuidIndexRoute, putStagesUserLogoutStageUuidIndexRouteHandler)
+  .openapi(
+    patchStagesUserLogoutStageUuidIndexRoute,
+    patchStagesUserLogoutStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    deleteStagesUserLogoutStageUuidIndexRoute,
+    deleteStagesUserLogoutStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesUserLogoutStageUuidUsedByIndexRoute,
+    getStagesUserLogoutStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getStagesUserWriteIndexRoute, getStagesUserWriteIndexRouteHandler)
+  .openapi(postStagesUserWriteIndexRoute, postStagesUserWriteIndexRouteHandler)
+  .openapi(getStagesUserWriteStageUuidIndexRoute, getStagesUserWriteStageUuidIndexRouteHandler)
+  .openapi(putStagesUserWriteStageUuidIndexRoute, putStagesUserWriteStageUuidIndexRouteHandler)
+  .openapi(patchStagesUserWriteStageUuidIndexRoute, patchStagesUserWriteStageUuidIndexRouteHandler)
+  .openapi(
+    deleteStagesUserWriteStageUuidIndexRoute,
+    deleteStagesUserWriteStageUuidIndexRouteHandler,
+  )
+  .openapi(
+    getStagesUserWriteStageUuidUsedByIndexRoute,
+    getStagesUserWriteStageUuidUsedByIndexRouteHandler,
+  )
+  .openapi(getTasksSchedulesIndexRoute, getTasksSchedulesIndexRouteHandler)
+  .openapi(getTasksSchedulesIdIndexRoute, getTasksSchedulesIdIndexRouteHandler)
+  .openapi(putTasksSchedulesIdIndexRoute, putTasksSchedulesIdIndexRouteHandler)
+  .openapi(patchTasksSchedulesIdIndexRoute, patchTasksSchedulesIdIndexRouteHandler)
+  .openapi(postTasksSchedulesIdSendIndexRoute, postTasksSchedulesIdSendIndexRouteHandler)
+  .openapi(getTasksTasksIndexRoute, getTasksTasksIndexRouteHandler)
+  .openapi(getTasksTasksMessageIdIndexRoute, getTasksTasksMessageIdIndexRouteHandler)
+  .openapi(postTasksTasksMessageIdRetryIndexRoute, postTasksTasksMessageIdRetryIndexRouteHandler)
+  .openapi(getTasksTasksStatusIndexRoute, getTasksTasksStatusIndexRouteHandler)
+  .openapi(getTasksWorkersIndexRoute, getTasksWorkersIndexRouteHandler)
 
 export default app

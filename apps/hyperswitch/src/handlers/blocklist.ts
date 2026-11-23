@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteBlocklistRoute,
   getBlocklistBatchJobIdRoute,
   getBlocklistBatchRoute,
@@ -13,39 +13,62 @@ import {
   postBlocklistToggleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteBlocklistRouteHandler: RouteHandler<typeof deleteBlocklistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const blocklistHandler = app
-  .openapi(deleteBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistToggleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistLookupRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBlocklistBatchJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBlocklistCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getBlocklistRouteHandler: RouteHandler<typeof getBlocklistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlocklistRouteHandler: RouteHandler<typeof postBlocklistRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlocklistToggleRouteHandler: RouteHandler<
+  typeof postBlocklistToggleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlocklistCountRouteHandler: RouteHandler<typeof getBlocklistCountRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlocklistLookupRouteHandler: RouteHandler<typeof getBlocklistLookupRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlocklistBatchRouteHandler: RouteHandler<typeof postBlocklistBatchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlocklistBatchRouteHandler: RouteHandler<typeof getBlocklistBatchRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getBlocklistBatchJobIdRouteHandler: RouteHandler<
+  typeof getBlocklistBatchJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlocklistExportRouteHandler: RouteHandler<
+  typeof postBlocklistExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBlocklistCloneRouteHandler: RouteHandler<typeof postBlocklistCloneRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

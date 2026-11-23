@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/snyk.io/1.0.0/openapi.yaml',
   output: './src/snyk-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/snyk-io/types.ts' },
   client: { output: './src/snyk-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/snyk-io/rpc.ts', parseResponse: true },

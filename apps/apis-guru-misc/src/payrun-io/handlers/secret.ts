@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSecretSecretIdRoute,
   getSecretSecretIdRoute,
   putSecretSecretIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteSecretSecretIdRouteHandler: RouteHandler<
+  typeof deleteSecretSecretIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const secretHandler = app
-  .openapi(deleteSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSecretSecretIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSecretSecretIdRouteHandler: RouteHandler<typeof getSecretSecretIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putSecretSecretIdRouteHandler: RouteHandler<typeof putSecretSecretIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

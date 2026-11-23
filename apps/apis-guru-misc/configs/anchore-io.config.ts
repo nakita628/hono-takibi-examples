@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/anchore.io/0.1.20/openapi.yaml',
   output: './src/anchore-io/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/anchore-io/types.ts' },
   client: { output: './src/anchore-io/client.ts', baseUrl: '/' },
   rpc: { output: './src/anchore-io/rpc.ts', parseResponse: true },

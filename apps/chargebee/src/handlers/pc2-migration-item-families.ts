@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute,
   getPc2MigrationItemFamiliesRoute,
   postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRoute,
@@ -7,21 +7,32 @@ import {
   postPc2MigrationItemFamiliesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRouteHandler: RouteHandler<
+  typeof postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const pc2MigrationItemFamiliesHandler = app
-  .openapi(postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPc2MigrationItemFamiliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPc2MigrationItemFamiliesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler: RouteHandler<
+  typeof getPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRouteHandler: RouteHandler<
+  typeof postPc2MigrationItemFamiliesPc2MigrationItemFamilyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPc2MigrationItemFamiliesRouteHandler: RouteHandler<
+  typeof getPc2MigrationItemFamiliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPc2MigrationItemFamiliesRouteHandler: RouteHandler<
+  typeof postPc2MigrationItemFamiliesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

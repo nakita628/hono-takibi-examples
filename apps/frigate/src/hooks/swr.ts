@@ -8262,19 +8262,19 @@ export function useImmutableGetCameraNamePtzInfo<TError = unknown>(
 }
 
 export function getGetCameraNameLatestExtensionKey(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
 ) {
-  return [':camera_name', '/:camera_name/latest.:extension', args] as const
+  return [':camera_name', '/:camera_name/latest.{extension}', args] as const
 }
 
 export function useGetCameraNameLatestExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
           >
         >
       >,
@@ -8297,7 +8297,7 @@ export function useGetCameraNameLatestExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
           >
         >
       >,
@@ -8305,20 +8305,20 @@ export function useGetCameraNameLatestExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client[':camera_name']['latest.:extension'].$get(args, clientOptions)),
+        parseResponse(client[':camera_name']['latest.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetCameraNameLatestExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)[':camera_name']['latest.:extension']['$get']>,
+  args: InferRequestType<(typeof client)[':camera_name']['latest.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
           >
         >
       >,
@@ -8341,7 +8341,7 @@ export function useImmutableGetCameraNameLatestExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client)[':camera_name']['latest.:extension']['$get']>>
+            Awaited<ReturnType<(typeof client)[':camera_name']['latest.{extension}']['$get']>>
           >
         >
       >,
@@ -8349,7 +8349,7 @@ export function useImmutableGetCameraNameLatestExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client[':camera_name']['latest.:extension'].$get(args, clientOptions)),
+        parseResponse(client[':camera_name']['latest.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
@@ -8357,15 +8357,15 @@ export function useImmutableGetCameraNameLatestExtension<TError = unknown>(
 
 export function getGetCameraNameRecordingsFrameTimeSnapshotFormatKey(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
 ) {
-  return [':camera_name', '/:camera_name/recordings/:frame_time/snapshot.:format', args] as const
+  return [':camera_name', '/:camera_name/recordings/:frame_time/snapshot.{format}', args] as const
 }
 
 export function useGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8374,7 +8374,7 @@ export function useGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
               >
             >
           >
@@ -8401,7 +8401,7 @@ export function useGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unkno
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
               >
             >
           >
@@ -8412,7 +8412,7 @@ export function useGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unkno
       swrKey,
       async () =>
         parseResponse(
-          client[':camera_name'].recordings[':frame_time']['snapshot.:format'].$get(
+          client[':camera_name'].recordings[':frame_time']['snapshot.{format}'].$get(
             args,
             clientOptions,
           ),
@@ -8424,7 +8424,7 @@ export function useGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unkno
 
 export function useImmutableGetCameraNameRecordingsFrameTimeSnapshotFormat<TError = unknown>(
   args: InferRequestType<
-    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+    (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -8433,7 +8433,7 @@ export function useImmutableGetCameraNameRecordingsFrameTimeSnapshotFormat<TErro
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
               >
             >
           >
@@ -8460,7 +8460,7 @@ export function useImmutableGetCameraNameRecordingsFrameTimeSnapshotFormat<TErro
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.:format']['$get']
+                (typeof client)[':camera_name']['recordings'][':frame_time']['snapshot.{format}']['$get']
               >
             >
           >
@@ -8471,7 +8471,7 @@ export function useImmutableGetCameraNameRecordingsFrameTimeSnapshotFormat<TErro
       swrKey,
       async () =>
         parseResponse(
-          client[':camera_name'].recordings[':frame_time']['snapshot.:format'].$get(
+          client[':camera_name'].recordings[':frame_time']['snapshot.{format}'].$get(
             args,
             clientOptions,
           ),
@@ -9443,19 +9443,21 @@ export function useImmutableGetEventsEventIdSnapshotJpg<TError = unknown>(
 }
 
 export function getGetEventsEventIdThumbnailExtensionKey(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
 ) {
-  return ['events', '/events/:event_id/thumbnail.:extension', args] as const
+  return ['events', '/events/:event_id/thumbnail.{extension}', args] as const
 }
 
 export function useGetEventsEventIdThumbnailExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>
+            >
           >
         >
       >,
@@ -9478,7 +9480,9 @@ export function useGetEventsEventIdThumbnailExtension<TError = unknown>(
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>
+            >
           >
         >
       >,
@@ -9486,20 +9490,24 @@ export function useGetEventsEventIdThumbnailExtension<TError = unknown>(
     >(
       swrKey,
       async () =>
-        parseResponse(client.events[':event_id']['thumbnail.:extension'].$get(args, clientOptions)),
+        parseResponse(
+          client.events[':event_id']['thumbnail.{extension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetEventsEventIdThumbnailExtension<TError = unknown>(
-  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>,
+  args: InferRequestType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>
+            >
           >
         >
       >,
@@ -9522,7 +9530,9 @@ export function useImmutableGetEventsEventIdThumbnailExtension<TError = unknown>
       Awaited<
         ReturnType<
           typeof parseResponse<
-            Awaited<ReturnType<(typeof client.events)[':event_id']['thumbnail.:extension']['$get']>>
+            Awaited<
+              ReturnType<(typeof client.events)[':event_id']['thumbnail.{extension}']['$get']>
+            >
           >
         >
       >,
@@ -9530,7 +9540,9 @@ export function useImmutableGetEventsEventIdThumbnailExtension<TError = unknown>
     >(
       swrKey,
       async () =>
-        parseResponse(client.events[':event_id']['thumbnail.:extension'].$get(args, clientOptions)),
+        parseResponse(
+          client.events[':event_id']['thumbnail.{extension}'].$get(args, clientOptions),
+        ),
       restSwrOptions,
     ),
   }

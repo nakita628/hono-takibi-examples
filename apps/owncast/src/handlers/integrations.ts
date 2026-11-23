@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getIntegrationsChatRoute,
   getIntegrationsClientsRoute,
   getIntegrationsModerationChatUserUserIdRoute,
@@ -22,66 +22,122 @@ import {
   postIntegrationsStreamtitleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIntegrationsChatSystemRouteHandler: RouteHandler<
+  typeof postIntegrationsChatSystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integrationsHandler = app
-  .openapi(postIntegrationsChatSystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatSystemRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsChatSystemClientClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatSystemClientClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsChatUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsChatSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsChatActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsChatMessagevisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatMessagevisibilityRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegrationsStreamtitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsStreamtitleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsChatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(optionsIntegrationsClientsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getIntegrationsModerationChatUserUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const optionsIntegrationsChatSystemRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatSystemRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsChatSystemClientClientIdRouteHandler: RouteHandler<
+  typeof postIntegrationsChatSystemClientClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatSystemClientClientIdRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatSystemClientClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsChatUserRouteHandler: RouteHandler<
+  typeof postIntegrationsChatUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatUserRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsChatSendRouteHandler: RouteHandler<
+  typeof postIntegrationsChatSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatSendRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsChatActionRouteHandler: RouteHandler<
+  typeof postIntegrationsChatActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatActionRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsChatMessagevisibilityRouteHandler: RouteHandler<
+  typeof postIntegrationsChatMessagevisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatMessagevisibilityRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatMessagevisibilityRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsStatusRouteHandler: RouteHandler<
+  typeof getIntegrationsStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegrationsStreamtitleRouteHandler: RouteHandler<
+  typeof postIntegrationsStreamtitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsStreamtitleRouteHandler: RouteHandler<
+  typeof optionsIntegrationsStreamtitleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsChatRouteHandler: RouteHandler<
+  typeof getIntegrationsChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsChatRouteHandler: RouteHandler<
+  typeof optionsIntegrationsChatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsClientsRouteHandler: RouteHandler<
+  typeof getIntegrationsClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const optionsIntegrationsClientsRouteHandler: RouteHandler<
+  typeof optionsIntegrationsClientsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getIntegrationsModerationChatUserUserIdRouteHandler: RouteHandler<
+  typeof getIntegrationsModerationChatUserUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,15 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteSwaggerIdRoute, postSwaggerRoute, putSwaggerIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteSwaggerIdRoute, postSwaggerRoute, putSwaggerIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postSwaggerRouteHandler: RouteHandler<typeof postSwaggerRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const swaggerHandler = app
-  .openapi(postSwaggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSwaggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSwaggerIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteSwaggerIdRouteHandler: RouteHandler<typeof deleteSwaggerIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSwaggerIdRouteHandler: RouteHandler<typeof putSwaggerIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

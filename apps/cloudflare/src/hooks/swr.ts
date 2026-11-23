@@ -149890,12 +149890,12 @@ export function useImmutableGetAccountsAccountIdMagicConnectorsConnectorIdTeleme
 
 export function getGetAccountsAccountIdMagicConnectorsConnectorIdTelemetryEventsEventTEventNKey(
   args: InferRequestType<
-    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
   >,
 ) {
   return [
     'accounts',
-    '/accounts/:account_id/magic/connectors/:connector_id/telemetry/events/:event_t.:event_n',
+    '/accounts/:account_id/magic/connectors/:connector_id/telemetry/events/:event_t.{event_n}',
     args,
   ] as const
 }
@@ -149904,7 +149904,7 @@ export function useGetAccountsAccountIdMagicConnectorsConnectorIdTelemetryEvents
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -149913,7 +149913,7 @@ export function useGetAccountsAccountIdMagicConnectorsConnectorIdTelemetryEvents
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
               >
             >
           >
@@ -149940,7 +149940,7 @@ export function useGetAccountsAccountIdMagicConnectorsConnectorIdTelemetryEvents
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
               >
             >
           >
@@ -149952,7 +149952,7 @@ export function useGetAccountsAccountIdMagicConnectorsConnectorIdTelemetryEvents
       async () =>
         parseResponse(
           client.accounts[':account_id'].magic.connectors[':connector_id'].telemetry.events[
-            ':event_t.:event_n'
+            ':event_t.{event_n}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,
@@ -149964,7 +149964,7 @@ export function useImmutableGetAccountsAccountIdMagicConnectorsConnectorIdTeleme
   TError = unknown,
 >(
   args: InferRequestType<
-    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+    (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
   >,
   options?: {
     swr?: SWRConfiguration<
@@ -149973,7 +149973,7 @@ export function useImmutableGetAccountsAccountIdMagicConnectorsConnectorIdTeleme
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
               >
             >
           >
@@ -150000,7 +150000,7 @@ export function useImmutableGetAccountsAccountIdMagicConnectorsConnectorIdTeleme
           typeof parseResponse<
             Awaited<
               ReturnType<
-                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.:event_n']['$get']
+                (typeof client.accounts)[':account_id']['magic']['connectors'][':connector_id']['telemetry']['events'][':event_t.{event_n}']['$get']
               >
             >
           >
@@ -150012,7 +150012,7 @@ export function useImmutableGetAccountsAccountIdMagicConnectorsConnectorIdTeleme
       async () =>
         parseResponse(
           client.accounts[':account_id'].magic.connectors[':connector_id'].telemetry.events[
-            ':event_t.:event_n'
+            ':event_t.{event_n}'
           ].$get(args, clientOptions),
         ),
       restSwrOptions,

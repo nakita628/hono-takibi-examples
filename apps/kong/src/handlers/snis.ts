@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteSnisSniNameOrIdRoute,
   getSnisRoute,
   getSnisSniNameOrIdRoute,
@@ -8,24 +8,34 @@ import {
   putSnisSniNameOrIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getSnisRouteHandler: RouteHandler<typeof getSnisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const snisHandler = app
-  .openapi(getSnisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postSnisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putSnisSniNameOrIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postSnisRouteHandler: RouteHandler<typeof postSnisRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof deleteSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getSnisSniNameOrIdRouteHandler: RouteHandler<typeof getSnisSniNameOrIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSnisSniNameOrIdRouteHandler: RouteHandler<
+  typeof patchSnisSniNameOrIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putSnisSniNameOrIdRouteHandler: RouteHandler<typeof putSnisSniNameOrIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

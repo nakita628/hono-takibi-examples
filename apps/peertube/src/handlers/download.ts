@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDownloadVideosGenerateVideoIdOrUUIDRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDownloadVideosGenerateVideoIdOrUUIDRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const downloadHandler = app.openapi(getDownloadVideosGenerateVideoIdOrUUIDRoute, (c) => {
+export const getDownloadVideosGenerateVideoIdOrUUIDRouteHandler: RouteHandler<
+  typeof getDownloadVideosGenerateVideoIdOrUUIDRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

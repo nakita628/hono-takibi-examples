@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMlDeliveryPredictionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postMlDeliveryPredictionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const mlHandler = app.openapi(postMlDeliveryPredictionRoute, (c) => {
+export const postMlDeliveryPredictionRouteHandler: RouteHandler<
+  typeof postMlDeliveryPredictionRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

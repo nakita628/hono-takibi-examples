@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCreateTestCardRangesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCreateTestCardRangesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createTestCardRangesHandler = app.openapi(postCreateTestCardRangesRoute, (c) => {
+export const postCreateTestCardRangesRouteHandler: RouteHandler<
+  typeof postCreateTestCardRangesRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

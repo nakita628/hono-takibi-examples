@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTemplatesSensitivityInspectionsIdRoute,
   getTemplatesSensitivityInspectionsRoute,
   putTemplatesSensitivityInspectionsIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getTemplatesSensitivityInspectionsIdRouteHandler: RouteHandler<
+  typeof getTemplatesSensitivityInspectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const templatesHandler = app
-  .openapi(getTemplatesSensitivityInspectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putTemplatesSensitivityInspectionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTemplatesSensitivityInspectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putTemplatesSensitivityInspectionsIdRouteHandler: RouteHandler<
+  typeof putTemplatesSensitivityInspectionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTemplatesSensitivityInspectionsRouteHandler: RouteHandler<
+  typeof getTemplatesSensitivityInspectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

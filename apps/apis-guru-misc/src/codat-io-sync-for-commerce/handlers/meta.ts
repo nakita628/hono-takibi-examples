@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMetaCompaniesCompanyIdConnectionsRoute,
   getMetaCompaniesCompanyIdSyncCommerceStatusRoute,
   getMetaCompaniesRoute,
@@ -9,27 +9,44 @@ import {
   postMetaCompaniesSyncRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMetaCompaniesRouteHandler: RouteHandler<typeof getMetaCompaniesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const metaHandler = app
-  .openapi(getMetaCompaniesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetaCompaniesSyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetaCompaniesCompanyIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetaCompaniesCompanyIdConnectionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMetaCompaniesCompanyIdConnectionsConnectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMetaCompaniesCompanyIdSyncCommerceHistoricRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMetaCompaniesCompanyIdSyncCommerceStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMetaCompaniesSyncRouteHandler: RouteHandler<
+  typeof postMetaCompaniesSyncRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetaCompaniesCompanyIdConnectionsRouteHandler: RouteHandler<
+  typeof getMetaCompaniesCompanyIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetaCompaniesCompanyIdConnectionsRouteHandler: RouteHandler<
+  typeof postMetaCompaniesCompanyIdConnectionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMetaCompaniesCompanyIdConnectionsConnectionIdRouteHandler: RouteHandler<
+  typeof patchMetaCompaniesCompanyIdConnectionsConnectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMetaCompaniesCompanyIdSyncCommerceHistoricRouteHandler: RouteHandler<
+  typeof postMetaCompaniesCompanyIdSyncCommerceHistoricRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMetaCompaniesCompanyIdSyncCommerceStatusRouteHandler: RouteHandler<
+  typeof getMetaCompaniesCompanyIdSyncCommerceStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDesignerTemplatesIdRoute,
   getDesignerTemplatesIdRoute,
   getDesignerTemplatesIndexRoute,
@@ -9,27 +9,44 @@ import {
   putDesignerTemplatesIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDesignerTemplatesIndexRouteHandler: RouteHandler<
+  typeof getDesignerTemplatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const designerHandler = app
-  .openapi(getDesignerTemplatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignerTemplatesIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignerTemplatesPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDesignerTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDesignerTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDesignerTemplatesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDesignerTemplatesIdGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDesignerTemplatesIndexRouteHandler: RouteHandler<
+  typeof postDesignerTemplatesIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDesignerTemplatesPreviewRouteHandler: RouteHandler<
+  typeof postDesignerTemplatesPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDesignerTemplatesIdRouteHandler: RouteHandler<
+  typeof deleteDesignerTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDesignerTemplatesIdRouteHandler: RouteHandler<
+  typeof getDesignerTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDesignerTemplatesIdRouteHandler: RouteHandler<
+  typeof putDesignerTemplatesIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDesignerTemplatesIdGenerateRouteHandler: RouteHandler<
+  typeof postDesignerTemplatesIdGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postEnrichmentAnnotatedGenesRoute, postEnrichmentDataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postEnrichmentAnnotatedGenesRoute, postEnrichmentDataRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEnrichmentAnnotatedGenesRouteHandler: RouteHandler<
+  typeof postEnrichmentAnnotatedGenesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const enrichmentHandler = app
-  .openapi(postEnrichmentAnnotatedGenesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postEnrichmentDataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postEnrichmentDataRouteHandler: RouteHandler<typeof postEnrichmentDataRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQshowRoute,
   getQshowListRoute,
   getQshowQuotesRoute,
@@ -10,30 +10,38 @@ import {
   putQshowRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteQshowRouteHandler: RouteHandler<typeof deleteQshowRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const qshowHandler = app
-  .openapi(deleteQshowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQshowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchQshowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQshowRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQshowListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQshowQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQshowQuotesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQshowQuotesRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQshowRouteHandler: RouteHandler<typeof getQshowRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchQshowRouteHandler: RouteHandler<typeof patchQshowRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQshowRouteHandler: RouteHandler<typeof putQshowRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQshowListRouteHandler: RouteHandler<typeof getQshowListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQshowQuotesRouteHandler: RouteHandler<typeof getQshowQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQshowQuotesAddRouteHandler: RouteHandler<typeof postQshowQuotesAddRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQshowQuotesRemoveRouteHandler: RouteHandler<
+  typeof postQshowQuotesRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

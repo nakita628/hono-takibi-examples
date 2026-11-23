@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteTablesFullNameRoute,
   getTablesFullNameRoute,
   getTablesRoute,
@@ -7,21 +7,28 @@ import {
   postTablesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTablesRouteHandler: RouteHandler<typeof postTablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tablesHandler = app
-  .openapi(postTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTablesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTablesFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchTablesFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteTablesFullNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getTablesRouteHandler: RouteHandler<typeof getTablesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTablesFullNameRouteHandler: RouteHandler<typeof getTablesFullNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchTablesFullNameRouteHandler: RouteHandler<
+  typeof patchTablesFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteTablesFullNameRouteHandler: RouteHandler<
+  typeof deleteTablesFullNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

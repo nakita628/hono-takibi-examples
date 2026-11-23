@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getUsersRoute,
   getUsersUserGidFavoritesRoute,
   getUsersUserGidNotificationsRoute,
@@ -13,39 +13,62 @@ import {
   putUsersUserGidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUsersUserGidNotificationsRouteHandler: RouteHandler<
+  typeof getUsersUserGidNotificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const usersHandler = app
-  .openapi(getUsersUserGidNotificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserGidNotificationsMarkReadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUsersUserGidNotificationsMarkUnreadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidTeamMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidTeamsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidUserTaskListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUsersUserGidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidFavoritesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUsersUserGidWorkspaceMembershipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postUsersUserGidNotificationsMarkReadRouteHandler: RouteHandler<
+  typeof postUsersUserGidNotificationsMarkReadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUsersUserGidNotificationsMarkUnreadRouteHandler: RouteHandler<
+  typeof postUsersUserGidNotificationsMarkUnreadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidTeamMembershipsRouteHandler: RouteHandler<
+  typeof getUsersUserGidTeamMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidTeamsRouteHandler: RouteHandler<
+  typeof getUsersUserGidTeamsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidUserTaskListRouteHandler: RouteHandler<
+  typeof getUsersUserGidUserTaskListRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersRouteHandler: RouteHandler<typeof getUsersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidRouteHandler: RouteHandler<typeof getUsersUserGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putUsersUserGidRouteHandler: RouteHandler<typeof putUsersUserGidRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidFavoritesRouteHandler: RouteHandler<
+  typeof getUsersUserGidFavoritesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUsersUserGidWorkspaceMembershipsRouteHandler: RouteHandler<
+  typeof getUsersUserGidWorkspaceMembershipsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

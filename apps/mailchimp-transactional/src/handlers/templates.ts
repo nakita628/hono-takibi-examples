@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postTemplatesAddRoute,
   postTemplatesDeleteRoute,
   postTemplatesInfoRoute,
@@ -10,30 +10,50 @@ import {
   postTemplatesUpdateRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTemplatesAddRouteHandler: RouteHandler<typeof postTemplatesAddRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const templatesHandler = app
-  .openapi(postTemplatesAddRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesInfoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesPublishRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesTimeSeriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTemplatesRenderRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTemplatesInfoRouteHandler: RouteHandler<typeof postTemplatesInfoRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesUpdateRouteHandler: RouteHandler<
+  typeof postTemplatesUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesPublishRouteHandler: RouteHandler<
+  typeof postTemplatesPublishRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesDeleteRouteHandler: RouteHandler<
+  typeof postTemplatesDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesListRouteHandler: RouteHandler<typeof postTemplatesListRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesTimeSeriesRouteHandler: RouteHandler<
+  typeof postTemplatesTimeSeriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTemplatesRenderRouteHandler: RouteHandler<
+  typeof postTemplatesRenderRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { putUpdateDistributionConfigurationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { putUpdateDistributionConfigurationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const updateDistributionConfigurationHandler = app.openapi(
-  putUpdateDistributionConfigurationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const putUpdateDistributionConfigurationRouteHandler: RouteHandler<
+  typeof putUpdateDistributionConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

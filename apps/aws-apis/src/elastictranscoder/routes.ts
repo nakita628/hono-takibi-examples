@@ -747,23 +747,23 @@ const JobSchema = z
   })
   .openapi('Job')
 
-type CreateJobResponseType = { Job?: z.infer<typeof JobSchema> & unknown }
+type CreateJobResponseType = { Job?: z.infer<typeof JobSchema> }
 
 type JobsType = z.infer<typeof JobSchema>[]
 
 const JobsSchema: z.ZodType<JobsType> = z.array(JobSchema).openapi('Jobs')
 
 type ListJobsByPipelineResponseType = {
-  Jobs?: z.infer<typeof JobsSchema> & unknown
-  NextPageToken?: z.infer<typeof IdSchema> & unknown
+  Jobs?: z.infer<typeof JobsSchema>
+  NextPageToken?: z.infer<typeof IdSchema>
 }
 
 type ListJobsByStatusResponseType = {
-  Jobs?: z.infer<typeof JobsSchema> & unknown
-  NextPageToken?: z.infer<typeof IdSchema> & unknown
+  Jobs?: z.infer<typeof JobsSchema>
+  NextPageToken?: z.infer<typeof IdSchema>
 }
 
-type ReadJobResponseType = { Job?: z.infer<typeof JobSchema> & unknown }
+type ReadJobResponseType = { Job?: z.infer<typeof JobSchema> }
 
 const CancelJobResponseSchema = z
   .looseObject({})

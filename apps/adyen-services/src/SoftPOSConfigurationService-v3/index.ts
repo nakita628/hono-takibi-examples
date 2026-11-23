@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { authHandler } from './handlers'
+import { postAuthCertificateRoute } from './routes'
+import { postAuthCertificateRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', authHandler)
+export const api = app.openapi(postAuthCertificateRoute, postAuthCertificateRouteHandler)
 
 export default app

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getLongpollRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getLongpollRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const longpollHandler = app.openapi(getLongpollRoute, (c) => {
+export const getLongpollRouteHandler: RouteHandler<typeof getLongpollRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

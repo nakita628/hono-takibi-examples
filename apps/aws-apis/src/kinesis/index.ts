@@ -1,65 +1,179 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetKinesis20131202AddTagsToStreamHandler,
-  xAmzTargetKinesis20131202CreateStreamHandler,
-  xAmzTargetKinesis20131202DecreaseStreamRetentionPeriodHandler,
-  xAmzTargetKinesis20131202DeleteStreamHandler,
-  xAmzTargetKinesis20131202DeregisterStreamConsumerHandler,
-  xAmzTargetKinesis20131202DescribeLimitsHandler,
-  xAmzTargetKinesis20131202DescribeStreamConsumerHandler,
-  xAmzTargetKinesis20131202DescribeStreamHandler,
-  xAmzTargetKinesis20131202DescribeStreamSummaryHandler,
-  xAmzTargetKinesis20131202DisableEnhancedMonitoringHandler,
-  xAmzTargetKinesis20131202EnableEnhancedMonitoringHandler,
-  xAmzTargetKinesis20131202GetRecordsHandler,
-  xAmzTargetKinesis20131202GetShardIteratorHandler,
-  xAmzTargetKinesis20131202IncreaseStreamRetentionPeriodHandler,
-  xAmzTargetKinesis20131202ListShardsHandler,
-  xAmzTargetKinesis20131202ListStreamConsumersHandler,
-  xAmzTargetKinesis20131202ListStreamsHandler,
-  xAmzTargetKinesis20131202ListTagsForStreamHandler,
-  xAmzTargetKinesis20131202MergeShardsHandler,
-  xAmzTargetKinesis20131202PutRecordHandler,
-  xAmzTargetKinesis20131202PutRecordsHandler,
-  xAmzTargetKinesis20131202RegisterStreamConsumerHandler,
-  xAmzTargetKinesis20131202RemoveTagsFromStreamHandler,
-  xAmzTargetKinesis20131202SplitShardHandler,
-  xAmzTargetKinesis20131202StartStreamEncryptionHandler,
-  xAmzTargetKinesis20131202StopStreamEncryptionHandler,
-  xAmzTargetKinesis20131202UpdateShardCountHandler,
-  xAmzTargetKinesis20131202UpdateStreamModeHandler,
+  postXAmzTargetKinesis20131202AddTagsToStreamRoute,
+  postXAmzTargetKinesis20131202CreateStreamRoute,
+  postXAmzTargetKinesis20131202DecreaseStreamRetentionPeriodRoute,
+  postXAmzTargetKinesis20131202DeleteStreamRoute,
+  postXAmzTargetKinesis20131202DeregisterStreamConsumerRoute,
+  postXAmzTargetKinesis20131202DescribeLimitsRoute,
+  postXAmzTargetKinesis20131202DescribeStreamConsumerRoute,
+  postXAmzTargetKinesis20131202DescribeStreamRoute,
+  postXAmzTargetKinesis20131202DescribeStreamSummaryRoute,
+  postXAmzTargetKinesis20131202DisableEnhancedMonitoringRoute,
+  postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute,
+  postXAmzTargetKinesis20131202GetRecordsRoute,
+  postXAmzTargetKinesis20131202GetShardIteratorRoute,
+  postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute,
+  postXAmzTargetKinesis20131202ListShardsRoute,
+  postXAmzTargetKinesis20131202ListStreamConsumersRoute,
+  postXAmzTargetKinesis20131202ListStreamsRoute,
+  postXAmzTargetKinesis20131202ListTagsForStreamRoute,
+  postXAmzTargetKinesis20131202MergeShardsRoute,
+  postXAmzTargetKinesis20131202PutRecordRoute,
+  postXAmzTargetKinesis20131202PutRecordsRoute,
+  postXAmzTargetKinesis20131202RegisterStreamConsumerRoute,
+  postXAmzTargetKinesis20131202RemoveTagsFromStreamRoute,
+  postXAmzTargetKinesis20131202SplitShardRoute,
+  postXAmzTargetKinesis20131202StartStreamEncryptionRoute,
+  postXAmzTargetKinesis20131202StopStreamEncryptionRoute,
+  postXAmzTargetKinesis20131202UpdateShardCountRoute,
+  postXAmzTargetKinesis20131202UpdateStreamModeRoute,
+} from './routes'
+import {
+  postXAmzTargetKinesis20131202AddTagsToStreamRouteHandler,
+  postXAmzTargetKinesis20131202CreateStreamRouteHandler,
+  postXAmzTargetKinesis20131202DecreaseStreamRetentionPeriodRouteHandler,
+  postXAmzTargetKinesis20131202DeleteStreamRouteHandler,
+  postXAmzTargetKinesis20131202DeregisterStreamConsumerRouteHandler,
+  postXAmzTargetKinesis20131202DescribeLimitsRouteHandler,
+  postXAmzTargetKinesis20131202DescribeStreamConsumerRouteHandler,
+  postXAmzTargetKinesis20131202DescribeStreamRouteHandler,
+  postXAmzTargetKinesis20131202DescribeStreamSummaryRouteHandler,
+  postXAmzTargetKinesis20131202DisableEnhancedMonitoringRouteHandler,
+  postXAmzTargetKinesis20131202EnableEnhancedMonitoringRouteHandler,
+  postXAmzTargetKinesis20131202GetRecordsRouteHandler,
+  postXAmzTargetKinesis20131202GetShardIteratorRouteHandler,
+  postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRouteHandler,
+  postXAmzTargetKinesis20131202ListShardsRouteHandler,
+  postXAmzTargetKinesis20131202ListStreamConsumersRouteHandler,
+  postXAmzTargetKinesis20131202ListStreamsRouteHandler,
+  postXAmzTargetKinesis20131202ListTagsForStreamRouteHandler,
+  postXAmzTargetKinesis20131202MergeShardsRouteHandler,
+  postXAmzTargetKinesis20131202PutRecordRouteHandler,
+  postXAmzTargetKinesis20131202PutRecordsRouteHandler,
+  postXAmzTargetKinesis20131202RegisterStreamConsumerRouteHandler,
+  postXAmzTargetKinesis20131202RemoveTagsFromStreamRouteHandler,
+  postXAmzTargetKinesis20131202SplitShardRouteHandler,
+  postXAmzTargetKinesis20131202StartStreamEncryptionRouteHandler,
+  postXAmzTargetKinesis20131202StopStreamEncryptionRouteHandler,
+  postXAmzTargetKinesis20131202UpdateShardCountRouteHandler,
+  postXAmzTargetKinesis20131202UpdateStreamModeRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetKinesis20131202AddTagsToStreamHandler)
-  .route('/', xAmzTargetKinesis20131202CreateStreamHandler)
-  .route('/', xAmzTargetKinesis20131202DecreaseStreamRetentionPeriodHandler)
-  .route('/', xAmzTargetKinesis20131202DeleteStreamHandler)
-  .route('/', xAmzTargetKinesis20131202DeregisterStreamConsumerHandler)
-  .route('/', xAmzTargetKinesis20131202DescribeLimitsHandler)
-  .route('/', xAmzTargetKinesis20131202DescribeStreamHandler)
-  .route('/', xAmzTargetKinesis20131202DescribeStreamConsumerHandler)
-  .route('/', xAmzTargetKinesis20131202DescribeStreamSummaryHandler)
-  .route('/', xAmzTargetKinesis20131202DisableEnhancedMonitoringHandler)
-  .route('/', xAmzTargetKinesis20131202EnableEnhancedMonitoringHandler)
-  .route('/', xAmzTargetKinesis20131202GetRecordsHandler)
-  .route('/', xAmzTargetKinesis20131202GetShardIteratorHandler)
-  .route('/', xAmzTargetKinesis20131202IncreaseStreamRetentionPeriodHandler)
-  .route('/', xAmzTargetKinesis20131202ListShardsHandler)
-  .route('/', xAmzTargetKinesis20131202ListStreamConsumersHandler)
-  .route('/', xAmzTargetKinesis20131202ListStreamsHandler)
-  .route('/', xAmzTargetKinesis20131202ListTagsForStreamHandler)
-  .route('/', xAmzTargetKinesis20131202MergeShardsHandler)
-  .route('/', xAmzTargetKinesis20131202PutRecordHandler)
-  .route('/', xAmzTargetKinesis20131202PutRecordsHandler)
-  .route('/', xAmzTargetKinesis20131202RegisterStreamConsumerHandler)
-  .route('/', xAmzTargetKinesis20131202RemoveTagsFromStreamHandler)
-  .route('/', xAmzTargetKinesis20131202SplitShardHandler)
-  .route('/', xAmzTargetKinesis20131202StartStreamEncryptionHandler)
-  .route('/', xAmzTargetKinesis20131202StopStreamEncryptionHandler)
-  .route('/', xAmzTargetKinesis20131202UpdateShardCountHandler)
-  .route('/', xAmzTargetKinesis20131202UpdateStreamModeHandler)
+  .openapi(
+    postXAmzTargetKinesis20131202AddTagsToStreamRoute,
+    postXAmzTargetKinesis20131202AddTagsToStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202CreateStreamRoute,
+    postXAmzTargetKinesis20131202CreateStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DecreaseStreamRetentionPeriodRoute,
+    postXAmzTargetKinesis20131202DecreaseStreamRetentionPeriodRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DeleteStreamRoute,
+    postXAmzTargetKinesis20131202DeleteStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DeregisterStreamConsumerRoute,
+    postXAmzTargetKinesis20131202DeregisterStreamConsumerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DescribeLimitsRoute,
+    postXAmzTargetKinesis20131202DescribeLimitsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DescribeStreamRoute,
+    postXAmzTargetKinesis20131202DescribeStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DescribeStreamConsumerRoute,
+    postXAmzTargetKinesis20131202DescribeStreamConsumerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DescribeStreamSummaryRoute,
+    postXAmzTargetKinesis20131202DescribeStreamSummaryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202DisableEnhancedMonitoringRoute,
+    postXAmzTargetKinesis20131202DisableEnhancedMonitoringRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202EnableEnhancedMonitoringRoute,
+    postXAmzTargetKinesis20131202EnableEnhancedMonitoringRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202GetRecordsRoute,
+    postXAmzTargetKinesis20131202GetRecordsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202GetShardIteratorRoute,
+    postXAmzTargetKinesis20131202GetShardIteratorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRoute,
+    postXAmzTargetKinesis20131202IncreaseStreamRetentionPeriodRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202ListShardsRoute,
+    postXAmzTargetKinesis20131202ListShardsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202ListStreamConsumersRoute,
+    postXAmzTargetKinesis20131202ListStreamConsumersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202ListStreamsRoute,
+    postXAmzTargetKinesis20131202ListStreamsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202ListTagsForStreamRoute,
+    postXAmzTargetKinesis20131202ListTagsForStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202MergeShardsRoute,
+    postXAmzTargetKinesis20131202MergeShardsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202PutRecordRoute,
+    postXAmzTargetKinesis20131202PutRecordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202PutRecordsRoute,
+    postXAmzTargetKinesis20131202PutRecordsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202RegisterStreamConsumerRoute,
+    postXAmzTargetKinesis20131202RegisterStreamConsumerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202RemoveTagsFromStreamRoute,
+    postXAmzTargetKinesis20131202RemoveTagsFromStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202SplitShardRoute,
+    postXAmzTargetKinesis20131202SplitShardRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202StartStreamEncryptionRoute,
+    postXAmzTargetKinesis20131202StartStreamEncryptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202StopStreamEncryptionRoute,
+    postXAmzTargetKinesis20131202StopStreamEncryptionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202UpdateShardCountRoute,
+    postXAmzTargetKinesis20131202UpdateShardCountRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetKinesis20131202UpdateStreamModeRoute,
+    postXAmzTargetKinesis20131202UpdateStreamModeRouteHandler,
+  )
 
 export default app

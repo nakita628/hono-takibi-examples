@@ -15704,7 +15704,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/api/collections/:namespace/:slug-:id': {
+    '/api/collections/:namespace/:slug-{id}': {
       $get: {
         input: { param: { namespace: string; slug: string; id: string } }
         output: {
@@ -18398,7 +18398,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/api/collections/:namespace/:slug-:id/items': {
+    '/api/collections/:namespace/:slug-{id}/items': {
       $post: {
         input: { param: { namespace: string; slug: string; id: string } } & {
           json: {
@@ -21118,7 +21118,7 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
       }
     }
   } & {
-    '/api/collections/:namespace/:slug-:id/resource-group': {
+    '/api/collections/:namespace/:slug-{id}/resource-group': {
       $get: {
         input: { param: { namespace: string; slug: string; id: string } }
         output: { id: string; name: string; numUsers?: number | undefined }

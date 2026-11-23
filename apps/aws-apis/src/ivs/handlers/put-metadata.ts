@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPutMetadataRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPutMetadataRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const putMetadataHandler = app.openapi(postPutMetadataRoute, (c) => {
+export const postPutMetadataRouteHandler: RouteHandler<typeof postPutMetadataRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

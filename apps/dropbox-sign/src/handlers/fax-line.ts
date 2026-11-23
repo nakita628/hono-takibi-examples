@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteFaxLineRoute,
   getFaxLineAreaCodesRoute,
   getFaxLineListRoute,
@@ -9,27 +9,38 @@ import {
   putFaxLineRemoveUserRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const putFaxLineAddUserRouteHandler: RouteHandler<typeof putFaxLineAddUserRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const faxLineHandler = app
-  .openapi(putFaxLineAddUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxLineAreaCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFaxLineCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxLineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteFaxLineRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFaxLineListRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFaxLineRemoveUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFaxLineAreaCodesRouteHandler: RouteHandler<
+  typeof getFaxLineAreaCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFaxLineCreateRouteHandler: RouteHandler<typeof postFaxLineCreateRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getFaxLineRouteHandler: RouteHandler<typeof getFaxLineRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteFaxLineRouteHandler: RouteHandler<typeof deleteFaxLineRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFaxLineListRouteHandler: RouteHandler<typeof getFaxLineListRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFaxLineRemoveUserRouteHandler: RouteHandler<
+  typeof putFaxLineRemoveUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

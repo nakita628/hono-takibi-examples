@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute,
   getRegistrierkassenRegistrierkasseUuidBelegeRoute,
   getRegistrierkassenRegistrierkasseUuidDepRoute,
@@ -9,27 +9,44 @@ import {
   putRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRegistrierkassenRegistrierkasseUuidRouteHandler: RouteHandler<
+  typeof getRegistrierkassenRegistrierkasseUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const registrierkassenHandler = app
-  .openapi(getRegistrierkassenRegistrierkasseUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postRegistrierkassenRegistrierkasseUuidAbschlussRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistrierkassenRegistrierkasseUuidBelegeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistrierkassenRegistrierkasseUuidDepRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRegistrierkassenRegistrierkasseUuidMonatsbelegeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postRegistrierkassenRegistrierkasseUuidAbschlussRouteHandler: RouteHandler<
+  typeof postRegistrierkassenRegistrierkasseUuidAbschlussRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistrierkassenRegistrierkasseUuidBelegeRouteHandler: RouteHandler<
+  typeof getRegistrierkassenRegistrierkasseUuidBelegeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRouteHandler: RouteHandler<
+  typeof getRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRouteHandler: RouteHandler<
+  typeof putRegistrierkassenRegistrierkasseUuidBelegeBelegUuidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistrierkassenRegistrierkasseUuidDepRouteHandler: RouteHandler<
+  typeof getRegistrierkassenRegistrierkasseUuidDepRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRegistrierkassenRegistrierkasseUuidMonatsbelegeRouteHandler: RouteHandler<
+  typeof getRegistrierkassenRegistrierkasseUuidMonatsbelegeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

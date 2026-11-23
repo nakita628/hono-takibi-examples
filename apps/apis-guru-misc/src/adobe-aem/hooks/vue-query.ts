@@ -1606,15 +1606,15 @@ export function useCrxServerCrxDefaultJcrRoot1Json<
 
 export function getEtcPackagesGroupNameVersionZipQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+    InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
   >,
 ) {
-  return ['etc', '/etc/packages/:group/:name-:version.zip', toValue(args)] as const
+  return ['etc', '/etc/packages/:group/:name-{version}.zip', toValue(args)] as const
 }
 
 export function getEtcPackagesGroupNameVersionZipQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+    InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1622,7 +1622,7 @@ export function getEtcPackagesGroupNameVersionZipQueryOptions(
     queryKey: computed(() => getEtcPackagesGroupNameVersionZipQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.etc.packages[':group'][':name-:version.zip'].$get(toValue(args), {
+        client.etc.packages[':group'][':name-{version}.zip'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1635,14 +1635,14 @@ export function useEtcPackagesGroupNameVersionZip<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>>
+        Awaited<ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+    InferRequestType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1652,7 +1652,7 @@ export function useEtcPackagesGroupNameVersionZip<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+                  ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
                 >
               >
             >
@@ -1663,7 +1663,7 @@ export function useEtcPackagesGroupNameVersionZip<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>
+                  ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>
                 >
               >
             >
@@ -1683,7 +1683,7 @@ export function useEtcPackagesGroupNameVersionZip<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.etc.packages)[':group'][':name-:version.zip']['$get']>>
+          Awaited<ReturnType<(typeof client.etc.packages)[':group'][':name-{version}.zip']['$get']>>
         >
       >
     >,
@@ -1696,7 +1696,7 @@ export function useEtcPackagesGroupNameVersionZip<
       queryKey: computed(() => getEtcPackagesGroupNameVersionZipQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.etc.packages[':group'][':name-:version.zip'].$get(toValue(args), {
+          client.etc.packages[':group'][':name-{version}.zip'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1710,13 +1710,13 @@ export function useEtcPackagesGroupNameVersionZip<
 export function getEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTidy2JsonQueryKey(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+      (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
     >
   >,
 ) {
   return [
     'etc',
-    '/etc/packages/:group/:name-:version.zip/jcr:content/vlt:definition/filter.tidy.2.json',
+    '/etc/packages/:group/:name-{version}.zip/jcr:content/vlt:definition/filter.tidy.2.json',
     toValue(args),
   ] as const
 }
@@ -1724,7 +1724,7 @@ export function getEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
 export function getEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTidy2JsonQueryOptions(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+      (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
     >
   >,
   options?: ClientRequestOptions,
@@ -1735,7 +1735,7 @@ export function getEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
     ),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.etc.packages[':group'][':name-:version.zip']['jcr:content']['vlt:definition'][
+        client.etc.packages[':group'][':name-{version}.zip']['jcr:content']['vlt:definition'][
           'filter.tidy.2.json'
         ].$get(toValue(args), { ...options, init: { ...options?.init, signal } }),
       )
@@ -1749,7 +1749,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
       typeof parseResponse<
         Awaited<
           ReturnType<
-            (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+            (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
           >
         >
       >
@@ -1759,7 +1759,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
 >(
   args: MaybeRefOrGetter<
     InferRequestType<
-      (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+      (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
     >
   >,
   options?: {
@@ -1771,7 +1771,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
                   >
                 >
               >
@@ -1784,7 +1784,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
               typeof parseResponse<
                 Awaited<
                   ReturnType<
-                    (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+                    (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
                   >
                 >
               >
@@ -1809,7 +1809,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client.etc.packages)[':group'][':name-:version.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
+              (typeof client.etc.packages)[':group'][':name-{version}.zip']['jcr:content']['vlt:definition']['filter.tidy.2.json']['$get']
             >
           >
         >
@@ -1828,7 +1828,7 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
       ),
       queryFn({ signal }) {
         return parseResponse(
-          client.etc.packages[':group'][':name-:version.zip']['jcr:content']['vlt:definition'][
+          client.etc.packages[':group'][':name-{version}.zip']['jcr:content']['vlt:definition'][
             'filter.tidy.2.json'
           ].$get(toValue(args), { ...clientOptions, init: { ...clientOptions?.init, signal } }),
         )
@@ -1840,15 +1840,15 @@ export function useEtcPackagesGroupNameVersionZipJcrContentVltDefinitionFilterTi
 
 export function getEtcReplicationAgentsRunmode1JsonQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>
   >,
 ) {
-  return ['etc', '/etc/replication/agents.:runmode.-1.json', toValue(args)] as const
+  return ['etc', '/etc/replication/agents.{runmode}.-1.json', toValue(args)] as const
 }
 
 export function getEtcReplicationAgentsRunmode1JsonQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1856,7 +1856,7 @@ export function getEtcReplicationAgentsRunmode1JsonQueryOptions(
     queryKey: computed(() => getEtcReplicationAgentsRunmode1JsonQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.etc.replication['agents.:runmode.-1.json'].$get(toValue(args), {
+        client.etc.replication['agents.{runmode}.-1.json'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1869,14 +1869,14 @@ export function useEtcReplicationAgentsRunmode1Json<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+        Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1886,7 +1886,7 @@ export function useEtcReplicationAgentsRunmode1Json<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>
+                  ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>
                 >
               >
             >
@@ -1897,7 +1897,7 @@ export function useEtcReplicationAgentsRunmode1Json<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>
+                  ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>
                 >
               >
             >
@@ -1917,7 +1917,7 @@ export function useEtcReplicationAgentsRunmode1Json<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode.-1.json']['$get']>>
+          Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}.-1.json']['$get']>>
         >
       >
     >,
@@ -1930,7 +1930,7 @@ export function useEtcReplicationAgentsRunmode1Json<
       queryKey: computed(() => getEtcReplicationAgentsRunmode1JsonQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.etc.replication['agents.:runmode.-1.json'].$get(toValue(args), {
+          client.etc.replication['agents.{runmode}.-1.json'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -1943,15 +1943,15 @@ export function useEtcReplicationAgentsRunmode1Json<
 
 export function getEtcReplicationAgentsRunmodeNameQueryKey(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
   >,
 ) {
-  return ['etc', '/etc/replication/agents.:runmode/:name', toValue(args)] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', toValue(args)] as const
 }
 
 export function getEtcReplicationAgentsRunmodeNameQueryOptions(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
   >,
   options?: ClientRequestOptions,
 ) {
@@ -1959,7 +1959,7 @@ export function getEtcReplicationAgentsRunmodeNameQueryOptions(
     queryKey: computed(() => getEtcReplicationAgentsRunmodeNameQueryKey(args)),
     queryFn({ signal }: QueryFunctionContext) {
       return parseResponse(
-        client.etc.replication['agents.:runmode'][':name'].$get(toValue(args), {
+        client.etc.replication['agents.{runmode}'][':name'].$get(toValue(args), {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -1972,14 +1972,14 @@ export function useEtcReplicationAgentsRunmodeName<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+        Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
   args: MaybeRefOrGetter<
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
   >,
   options?: {
     query?: Omit<
@@ -1989,7 +1989,7 @@ export function useEtcReplicationAgentsRunmodeName<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>
+                  ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
                 >
               >
             >
@@ -2000,7 +2000,7 @@ export function useEtcReplicationAgentsRunmodeName<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>
+                  ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>
                 >
               >
             >
@@ -2020,7 +2020,7 @@ export function useEtcReplicationAgentsRunmodeName<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$get']>>
+          Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$get']>>
         >
       >
     >,
@@ -2033,7 +2033,7 @@ export function useEtcReplicationAgentsRunmodeName<
       queryKey: computed(() => getEtcReplicationAgentsRunmodeNameQueryKey(args)),
       queryFn({ signal }) {
         return parseResponse(
-          client.etc.replication['agents.:runmode'][':name'].$get(toValue(args), {
+          client.etc.replication['agents.{runmode}'][':name'].$get(toValue(args), {
             ...clientOptions,
             init: { ...clientOptions?.init, signal },
           }),
@@ -2045,7 +2045,7 @@ export function useEtcReplicationAgentsRunmodeName<
 }
 
 export function getPostEtcReplicationAgentsRunmodeNameMutationKey() {
-  return ['etc', '/etc/replication/agents.:runmode/:name', 'POST'] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', 'POST'] as const
 }
 
 export function getPostEtcReplicationAgentsRunmodeNameMutationOptions<
@@ -2056,19 +2056,19 @@ export function getPostEtcReplicationAgentsRunmodeNameMutationOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>>
+          Awaited<ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>>
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>,
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>,
     TOnMutateResult
   >({
     mutationKey: getPostEtcReplicationAgentsRunmodeNameMutationKey(),
     async mutationFn(
-      args: InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>,
+      args: InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>,
     ) {
-      return parseResponse(client.etc.replication['agents.:runmode'][':name'].$post(args, options))
+      return parseResponse(client.etc.replication['agents.{runmode}'][':name'].$post(args, options))
     },
   })
 }
@@ -2085,13 +2085,13 @@ export function usePostEtcReplicationAgentsRunmodeName<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>
+                  ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>
                 >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$post']>,
+          InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$post']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }
@@ -2118,7 +2118,7 @@ export function usePostEtcReplicationAgentsRunmodeName<
 }
 
 export function getDeleteEtcReplicationAgentsRunmodeNameMutationKey() {
-  return ['etc', '/etc/replication/agents.:runmode/:name', 'DELETE'] as const
+  return ['etc', '/etc/replication/agents.{runmode}/:name', 'DELETE'] as const
 }
 
 export function getDeleteEtcReplicationAgentsRunmodeNameMutationOptions<
@@ -2130,23 +2130,23 @@ export function getDeleteEtcReplicationAgentsRunmodeNameMutationOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>
+            ReturnType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>
           >
         >
       >
     >,
     TError,
-    InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>,
+    InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>,
     TOnMutateResult
   >({
     mutationKey: getDeleteEtcReplicationAgentsRunmodeNameMutationKey(),
     async mutationFn(
       args: InferRequestType<
-        (typeof client.etc.replication)['agents.:runmode'][':name']['$delete']
+        (typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']
       >,
     ) {
       return parseResponse(
-        client.etc.replication['agents.:runmode'][':name'].$delete(args, options),
+        client.etc.replication['agents.{runmode}'][':name'].$delete(args, options),
       )
     },
   })
@@ -2164,13 +2164,15 @@ export function useDeleteEtcReplicationAgentsRunmodeName<
             ReturnType<
               typeof parseResponse<
                 Awaited<
-                  ReturnType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>
+                  ReturnType<
+                    (typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']
+                  >
                 >
               >
             >
           >,
           TError,
-          InferRequestType<(typeof client.etc.replication)['agents.:runmode'][':name']['$delete']>,
+          InferRequestType<(typeof client.etc.replication)['agents.{runmode}'][':name']['$delete']>,
           TOnMutateResult
         >,
         { mutationFn?: unknown }

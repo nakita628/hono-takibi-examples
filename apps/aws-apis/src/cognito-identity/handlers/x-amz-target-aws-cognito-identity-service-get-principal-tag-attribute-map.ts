@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityServiceGetPrincipalTagAttributeMapHandler = app.openapi(
-  postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityServiceGetPrincipalTagAttributeMapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

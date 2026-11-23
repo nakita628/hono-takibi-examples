@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetComputeOptimizerServiceGetEnrollmentStatusHandler = app.openapi(
-  postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRouteHandler: RouteHandler<
+  typeof postXAmzTargetComputeOptimizerServiceGetEnrollmentStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

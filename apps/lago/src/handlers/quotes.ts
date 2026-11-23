@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getQuotesLagoIdRoute, getQuotesLagoIdVersionsRoute, getQuotesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getQuotesLagoIdRoute, getQuotesLagoIdVersionsRoute, getQuotesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuotesRouteHandler: RouteHandler<typeof getQuotesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quotesHandler = app
-  .openapi(getQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQuotesLagoIdVersionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQuotesLagoIdRouteHandler: RouteHandler<typeof getQuotesLagoIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQuotesLagoIdVersionsRouteHandler: RouteHandler<
+  typeof getQuotesLagoIdVersionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

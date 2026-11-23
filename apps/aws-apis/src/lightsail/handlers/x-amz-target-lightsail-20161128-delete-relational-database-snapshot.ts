@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotHandler = app.openapi(
-  postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRouteHandler: RouteHandler<
+  typeof postXAmzTargetLightsail20161128DeleteRelationalDatabaseSnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

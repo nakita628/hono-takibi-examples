@@ -124,18 +124,18 @@ export function useImmutableGetQuery<TError = unknown>(
 }
 
 export function getGetQueryExtensionKey(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
 ) {
-  return ['query.:extension', '/query.:extension', args] as const
+  return ['query.{extension}', '/query.{extension}', args] as const
 }
 
 export function useGetQueryExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
         >
       >,
       TError
@@ -152,25 +152,25 @@ export function useGetQueryExtension<TError = unknown>(
     ...useSWR<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['query.:extension'].$get(args, clientOptions)),
+      async () => parseResponse(client['query.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }
 }
 
 export function useImmutableGetQueryExtension<TError = unknown>(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: {
     swr?: SWRConfiguration<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
         >
       >,
       TError
@@ -187,13 +187,13 @@ export function useImmutableGetQueryExtension<TError = unknown>(
     ...useSWRImmutable<
       Awaited<
         ReturnType<
-          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+          typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
         >
       >,
       TError
     >(
       swrKey,
-      async () => parseResponse(client['query.:extension'].$get(args, clientOptions)),
+      async () => parseResponse(client['query.{extension}'].$get(args, clientOptions)),
       restSwrOptions,
     ),
   }

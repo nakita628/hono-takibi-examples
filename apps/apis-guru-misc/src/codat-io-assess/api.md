@@ -5816,9 +5816,9 @@ Webhook request body for account categories updated.
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|accountRef|object|false|none|An object containing account reference data.|
-|confirmed|object|false|none|none|
-|suggested|object|false|none|none|
+|accountRef|[CategorisedAccountAccountRef](#schemacategorisedaccountaccountref)|false|none|An object containing account reference data.|
+|confirmed|[CategorisedAccountAccountCategoryDeprecated](#schemacategorisedaccountaccountcategorydeprecated)|false|none|none|
+|suggested|[CategorisedAccountAccountCategoryDeprecated](#schemacategorisedaccountaccountcategorydeprecated)|false|none|none|
 
 <h2 id="tocS_CategorisedAccounts">CategorisedAccounts</h2>
 <!-- backwards compatibility -->
@@ -6017,10 +6017,10 @@ For accounting platforms which do not provide an explicit currency rate, it is c
 |amount|number|false|none|The transaction value.|
 |connectionId|string(uuid)|false|read-only|ID GUID representing the connection of the accounting or banking platform.|
 |currency|[Currency](#schemacurrency)|false|none|The currency of the transaction.|
-|date|string|false|none|The date of the transaction.|
+|date|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date of the transaction.|
 |description|string|false|none|The transaction description.|
 |id|string|false|none|ID GUID of the transaction.|
-|matches|[object]|false|none|none|
+|matches|[[DataIntegrityDetailsDataIntegrityMatch](#schemadataintegritydetailsdataintegritymatch)]|false|none|none|
 |type|string|false|none|The data type of the record.|
 
 <h2 id="tocS_DataIntegrityStatus">DataIntegrityStatus</h2>
@@ -6067,10 +6067,10 @@ For accounting platforms which do not provide an explicit currency rate, it is c
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|false|none|The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.|
-|amounts|object|false|none|Only returned for transactions. For accounts, there is nothing returned.|
-|connectionIds|object|false|none|none|
-|dates|object|false|none|Only returned for transactions. For accounts, there is nothing returned.|
-|statusInfo|object|false|none|none|
+|amounts|[DataIntegrityStatusDataIntegrityAmounts](#schemadataintegritystatusdataintegrityamounts)|false|none|Only returned for transactions. For accounts, there is nothing returned.|
+|connectionIds|[DataIntegrityStatusDataIntegrityConnectionId](#schemadataintegritystatusdataintegrityconnectionid)|false|none|none|
+|dates|[DataIntegrityStatusDataIntegrityDates](#schemadataintegritystatusdataintegritydates)|false|none|Only returned for transactions. For accounts, there is nothing returned.|
+|statusInfo|[DataIntegrityStatusDataIntegrityStatusInfo](#schemadataintegritystatusdataintegritystatusinfo)|false|none|none|
 
 <h2 id="tocS_DataIntegritySummary">DataIntegritySummary</h2>
 <!-- backwards compatibility -->
@@ -6103,8 +6103,8 @@ For accounting platforms which do not provide an explicit currency rate, it is c
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |type|string|false|none|The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.|
-|byAmount|object|false|none|none|
-|byCount|object|false|none|none|
+|byAmount|[DataIntegritySummaryDataIntegrityByAmount](#schemadataintegritysummarydataintegritybyamount)|false|none|none|
+|byCount|[DataIntegritySummaryDataIntegrityByCount](#schemadataintegritysummarydataintegritybycount)|false|none|none|
 
 <h2 id="tocS_Details">Details</h2>
 <!-- backwards compatibility -->
@@ -6240,9 +6240,9 @@ For accounting platforms which do not provide an explicit currency rate, it is c
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|dataSources|[object]|false|none|none|
-|reportInfo|object|false|none|Report additional information, which is specific to Assess reports|
-|reportItems|[object]|false|none|none|
+|dataSources|[[EnhancedCashFlowTransactionsDataSource](#schemaenhancedcashflowtransactionsdatasource)]|false|none|none|
+|reportInfo|[EnhancedInvoicesReportReportInfo](#schemaenhancedinvoicesreportreportinfo)|false|none|Report additional information, which is specific to Assess reports|
+|reportItems|[[EnhancedCashFlowTransactionsEnhancedCashFlowItem](#schemaenhancedcashflowtransactionsenhancedcashflowitem)]|false|none|none|
 
 <h2 id="tocS_EnhancedInvoicesReport">EnhancedInvoicesReport</h2>
 <!-- backwards compatibility -->
@@ -6349,7 +6349,7 @@ The enhanced invoices report takes the key elements of the Invoices report verif
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|reportInfo|object|false|none|Report additional information, which is specific to Assess reports|
+|reportInfo|[EnhancedInvoicesReportReportInfo](#schemaenhancedinvoicesreportreportinfo)|false|none|Report additional information, which is specific to Assess reports|
 |reportItems|[object]|false|none|none|
 
 <h2 id="tocS_EnhancedReport">EnhancedReport</h2>
@@ -6438,7 +6438,7 @@ The enhanced invoices report takes the key elements of the Invoices report verif
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|reportInfo|object|false|none|none|
+|reportInfo|[EnhancedReportEnhancedReportInfo](#schemaenhancedreportenhancedreportinfo)|false|none|none|
 |reportItems|[object]|false|none|An array of report items.|
 
 <h2 id="tocS_ExcelStatus">ExcelStatus</h2>
@@ -6468,7 +6468,7 @@ The enhanced invoices report takes the key elements of the Invoices report verif
 |errorMessage|string|false|none|none|
 |fileSize|integer|false|none|none|
 |inProgress|boolean|false|none|none|
-|lastGenerated|string|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|lastGenerated|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
 |lastInvocationId|string|false|none|none|
 |queued|string|false|none|none|
 |reportType|string|false|none|none|
@@ -6543,8 +6543,8 @@ The enhanced invoices report takes the key elements of the Invoices report verif
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
 |currency|[Currency](#schemacurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
-|errors|[object]|false|none|If there are no errors, an empty array is returned.|
-|metrics|[object]|false|none|none|
+|errors|[[FinancialMetricsFinancialMetricError](#schemafinancialmetricsfinancialmetricerror)]|false|none|If there are no errors, an empty array is returned.|
+|metrics|[[FinancialMetricsFinancialMetric](#schemafinancialmetricsfinancialmetric)]|false|none|none|
 |periodUnit|string|false|none|none|
 
 #### Enumerated Values
@@ -6728,10 +6728,10 @@ Reports can be rendered as follows (ordering is implicit rather than explicit):
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|dimensions|[object]|false|none|none|
-|errors|[object]|false|none|none|
-|measures|[object]|false|none|none|
-|reportData|[[reportComponent](#schemareportcomponent)]|false|none|none|
+|dimensions|[[ReportReportDimension](#schemareportreportdimension)]|false|none|none|
+|errors|[[ReportReportError](#schemareportreporterror)]|false|none|none|
+|measures|[[ReportReportMeasure](#schemareportreportmeasure)]|false|none|none|
+|reportData|[[ReportReportComponent](#schemareportreportcomponent)]|false|none|none|
 |reportInfo|object|false|none|none|
 
 <h2 id="tocS_Status">Status</h2>
@@ -6819,12 +6819,1799 @@ Reports can be rendered as follows (ordering is implicit rather than explicit):
 |---|---|---|---|---|
 |summaries|[[DataIntegritySummary](#schemadataintegritysummary)]|false|none|none|
 
-<h2 id="tocS_reportComponent">reportComponent</h2>
+<h2 id="tocS_ExcelStatusLastGenerated">ExcelStatusLastGenerated</h2>
 <!-- backwards compatibility -->
-<a id="schemareportcomponent"></a>
-<a id="schema_reportComponent"></a>
-<a id="tocSreportcomponent"></a>
-<a id="tocsreportcomponent"></a>
+<a id="schemaexcelstatuslastgenerated"></a>
+<a id="schema_ExcelStatusLastGenerated"></a>
+<a id="tocSexcelstatuslastgenerated"></a>
+<a id="tocsexcelstatuslastgenerated"></a>
+
+```json
+"2022-10-23T00:00:00Z"
+```
+
+In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:
+
+```
+2020-10-08T22:40:50Z
+2021-01-01T00:00:00
+```
+
+
+
+When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:
+
+- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`
+- Unqualified local time: `2021-11-15T01:00:00`
+- UTC time offsets: `2021-11-15T01:00:00-05:00`
+
+> Time zones
+> 
+> Not all dates from Codat will contain information about time zones.  
+> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.
+
+<h2 id="tocS_CategorisedAccountAccountRef">CategorisedAccountAccountRef</h2>
+<!-- backwards compatibility -->
+<a id="schemacategorisedaccountaccountref"></a>
+<a id="schema_CategorisedAccountAccountRef"></a>
+<a id="tocScategorisedaccountaccountref"></a>
+<a id="tocscategorisedaccountaccountref"></a>
+
+```json
+{
+  "id": "string",
+  "name": "string"
+}
+```
+
+An object containing account reference data.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|id|string|false|none|'id' from the Accounts data type.|
+|name|string|false|none|'name' from the Accounts data type.|
+
+<h2 id="tocS_CategorisedAccountAccountCategoryDeprecated">CategorisedAccountAccountCategoryDeprecated</h2>
+<!-- backwards compatibility -->
+<a id="schemacategorisedaccountaccountcategorydeprecated"></a>
+<a id="schema_CategorisedAccountAccountCategoryDeprecated"></a>
+<a id="tocScategorisedaccountaccountcategorydeprecated"></a>
+<a id="tocscategorisedaccountaccountcategorydeprecated"></a>
+
+```json
+{
+  "detailType": "Cash",
+  "subtype": "Current",
+  "type": "Asset",
+  "modifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|detailType|string|false|none|Most granular chart of account type.|
+|subtype|string|false|none|The account subtype.|
+|type|string|false|none|The top level account type.|
+|modifiedDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date on which this record was last modified in Codat.|
+
+<h2 id="tocS_DataIntegrityDetailsDataIntegrityMatch">DataIntegrityDetailsDataIntegrityMatch</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritydetailsdataintegritymatch"></a>
+<a id="schema_DataIntegrityDetailsDataIntegrityMatch"></a>
+<a id="tocSdataintegritydetailsdataintegritymatch"></a>
+<a id="tocsdataintegritydetailsdataintegritymatch"></a>
+
+```json
+{
+  "amount": "string",
+  "connectionId": "497f6eca-6276-4993-bfeb-53cbbbba6f08",
+  "currency": "GBP",
+  "date": "string",
+  "description": "string",
+  "id": "string",
+  "type": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|string|false|none|The transaction value.|
+|connectionId|string(uuid)|false|none|ID GUID representing the connection of the accounting or banking platform.|
+|currency|[Currency](#schemacurrency)|false|none|The currency of the transaction.|
+|date|string|false|none|The date of the transaction.|
+|description|string|false|none|The transaction description.|
+|id|string|false|none|ID GUID of the transaction.|
+|type|string|false|none|The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.|
+
+<h2 id="tocS_DataIntegritySummaryDataIntegrityType">DataIntegritySummaryDataIntegrityType</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritysummarydataintegritytype"></a>
+<a id="schema_DataIntegritySummaryDataIntegrityType"></a>
+<a id="tocSdataintegritysummarydataintegritytype"></a>
+<a id="tocsdataintegritysummarydataintegritytype"></a>
+
+```json
+{
+  "type": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|type|string|false|none|The data type which the data type in the URL has been matched against. For example, if you've matched accountTransactions and banking-transactions, and you call this endpoint with accountTransactions in the URL, this property would be banking-transactions.|
+
+<h2 id="tocS_DataIntegrityStatusDataIntegrityAmounts">DataIntegrityStatusDataIntegrityAmounts</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritystatusdataintegrityamounts"></a>
+<a id="schema_DataIntegrityStatusDataIntegrityAmounts"></a>
+<a id="tocSdataintegritystatusdataintegrityamounts"></a>
+<a id="tocsdataintegritystatusdataintegrityamounts"></a>
+
+```json
+{
+  "currency": "GBP",
+  "max": 0,
+  "min": 0
+}
+```
+
+Only returned for transactions. For accounts, there is nothing returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|currency|[Currency](#schemacurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|max|number|false|none|Highest value of transaction set.|
+|min|number|false|none|Lowest value of transaction set.|
+
+<h2 id="tocS_DataIntegrityStatusDataIntegrityConnectionId">DataIntegrityStatusDataIntegrityConnectionId</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritystatusdataintegrityconnectionid"></a>
+<a id="schema_DataIntegrityStatusDataIntegrityConnectionId"></a>
+<a id="tocSdataintegritystatusdataintegrityconnectionid"></a>
+<a id="tocsdataintegritystatusdataintegrityconnectionid"></a>
+
+```json
+{
+  "source": [
+    "string"
+  ],
+  "target": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|source|[string]|false|none|An array of strings. The connection IDs for the type specified in the url.|
+|target|[string]|false|none|An array of strings. The connection IDs for the type being matched to.|
+
+<h2 id="tocS_DataIntegrityStatusDataIntegrityDates">DataIntegrityStatusDataIntegrityDates</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritystatusdataintegritydates"></a>
+<a id="schema_DataIntegrityStatusDataIntegrityDates"></a>
+<a id="tocSdataintegritystatusdataintegritydates"></a>
+<a id="tocsdataintegritystatusdataintegritydates"></a>
+
+```json
+{
+  "maxDate": "2022-10-23T00:00:00Z",
+  "maxOverlappingDate": "2022-10-23T00:00:00Z",
+  "minDate": "2022-10-23T00:00:00Z",
+  "minOverlappingDate": "2022-10-23T00:00:00Z"
+}
+```
+
+Only returned for transactions. For accounts, there is nothing returned.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|maxDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|Latest date of transaction set.|
+|maxOverlappingDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|Latest date where transactions exist in both account and banking platforms.|
+|minDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|Earliest date of transaction set.|
+|minOverlappingDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|Earliest date where transactions exist in both accounting and banking platforms.|
+
+<h2 id="tocS_DataIntegrityStatusDataIntegrityStatusInfo">DataIntegrityStatusDataIntegrityStatusInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritystatusdataintegritystatusinfo"></a>
+<a id="schema_DataIntegrityStatusDataIntegrityStatusInfo"></a>
+<a id="tocSdataintegritystatusdataintegritystatusinfo"></a>
+<a id="tocsdataintegritystatusdataintegritystatusinfo"></a>
+
+```json
+{
+  "currentStatus": "Unknown",
+  "lastMatched": "2022-10-23T00:00:00Z",
+  "statusMessage": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|currentStatus|[DataIntegrityStatusIntegrityStatus](#schemadataintegritystatusintegritystatus)|false|none|The current status of the most recently run matching algorithm.|
+|lastMatched|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date the matching algorithm last ran against the company’s data type specified.|
+|statusMessage|string|false|none|Detailed explanation supporting the status value.|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|currentStatus|Unknown|
+|currentStatus|DoesNotExist|
+|currentStatus|Error|
+|currentStatus|Complete|
+
+<h2 id="tocS_DataIntegrityStatusIntegrityStatus">DataIntegrityStatusIntegrityStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritystatusintegritystatus"></a>
+<a id="schema_DataIntegrityStatusIntegrityStatus"></a>
+<a id="tocSdataintegritystatusintegritystatus"></a>
+<a id="tocsdataintegritystatusintegritystatus"></a>
+
+```json
+"Unknown"
+```
+
+The current status of the most recently run matching algorithm.
+
+<h2 id="tocS_DataIntegritySummaryDataIntegrityByAmount">DataIntegritySummaryDataIntegrityByAmount</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritysummarydataintegritybyamount"></a>
+<a id="schema_DataIntegritySummaryDataIntegrityByAmount"></a>
+<a id="tocSdataintegritysummarydataintegritybyamount"></a>
+<a id="tocsdataintegritysummarydataintegritybyamount"></a>
+
+```json
+{
+  "currency": "GBP",
+  "matchPercentage": 0,
+  "matched": 0,
+  "total": 0,
+  "unmatched": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|currency|[Currency](#schemacurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|matchPercentage|number|false|none|The percentage of the absolute value of transactions of the type specified in the route which have a match.|
+|matched|number|false|none|The sum of the absolute value of transactions of the type specified in the route which have a match.|
+|total|number|false|none|The total of unmatched and matched.|
+|unmatched|number|false|none|The sum of the absolute value of transactions of the type specified in the route which don't have a match.|
+
+<h2 id="tocS_DataIntegritySummaryDataIntegrityByCount">DataIntegritySummaryDataIntegrityByCount</h2>
+<!-- backwards compatibility -->
+<a id="schemadataintegritysummarydataintegritybycount"></a>
+<a id="schema_DataIntegritySummaryDataIntegrityByCount"></a>
+<a id="tocSdataintegritysummarydataintegritybycount"></a>
+<a id="tocsdataintegritysummarydataintegritybycount"></a>
+
+```json
+{
+  "matchPercentage": 0,
+  "matched": 0,
+  "total": 0,
+  "unmatched": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|matchPercentage|number|false|none|The percentage of records of the type specified in the route which have a match.|
+|matched|number|false|none|The number of records of the type specified in the route which do have a match.|
+|total|number|false|none|The total of unmatched and matched.|
+|unmatched|number|false|none|The number of records of the type specified in the route which don't have a match.|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsSourceRef">EnhancedCashFlowTransactionsSourceRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionssourceref"></a>
+<a id="schema_EnhancedCashFlowTransactionsSourceRef"></a>
+<a id="tocSenhancedcashflowtransactionssourceref"></a>
+<a id="tocsenhancedcashflowtransactionssourceref"></a>
+
+```json
+{
+  "Example": {
+    "value": {
+      "sourceRef": {
+        "sourceType": "Banking"
+      }
+    }
+  }
+}
+```
+
+A source reference containing the `sourceType` object "Banking".
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|sourceType|string|false|none|none|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsAccounts">EnhancedCashFlowTransactionsAccounts</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionsaccounts"></a>
+<a id="schema_EnhancedCashFlowTransactionsAccounts"></a>
+<a id="tocSenhancedcashflowtransactionsaccounts"></a>
+<a id="tocsenhancedcashflowtransactionsaccounts"></a>
+
+```json
+{
+  "accountName": "string",
+  "accountProvider": "string",
+  "accountType": "string",
+  "currency": "GBP",
+  "currentBalance": 0,
+  "platformName": "string",
+  "sourceRef": {
+    "Example": {
+      "value": {
+        "sourceRef": {
+          "sourceType": "Banking"
+        }
+      }
+    }
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountName|string|false|none|The name of the account according to the provider.|
+|accountProvider|string|false|none|The bank or other financial institution providing the account.|
+|accountType|string|false|none|The type of banking account, e.g. credit or debit.|
+|currency|[Currency](#schemacurrency)|false|none|The currency code for the bank account.|
+|currentBalance|number|false|none|The balance of the bank account.|
+|platformName|string|false|none|Name of the banking data source, e.g. "Plaid".|
+|sourceRef|[EnhancedCashFlowTransactionsSourceRef](#schemaenhancedcashflowtransactionssourceref)|false|none|A source reference containing the `sourceType` object "Banking".|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsEnhancedCashFlowTransaction">EnhancedCashFlowTransactionsEnhancedCashFlowTransaction</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionsenhancedcashflowtransaction"></a>
+<a id="schema_EnhancedCashFlowTransactionsEnhancedCashFlowTransaction"></a>
+<a id="tocSenhancedcashflowtransactionsenhancedcashflowtransaction"></a>
+<a id="tocsenhancedcashflowtransactionsenhancedcashflowtransaction"></a>
+
+```json
+{
+  "amount": 0,
+  "currency": "string",
+  "date": "2022-10-23T00:00:00Z",
+  "description": "string",
+  "id": "string",
+  "sourceRef": {
+    "Example": {
+      "value": {
+        "sourceRef": {
+          "sourceType": "Banking"
+        }
+      }
+    }
+  },
+  "transactionCategory": {
+    "confidence": 0,
+    "levels": [
+      "string"
+    ]
+  }
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number|false|none|The bank transaction amount.|
+|currency|string|false|none|none|
+|date|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date the bank transaction was posted.|
+|description|string|false|none|The description of the bank transaction.|
+|id|string|false|none|The unique identifier of the bank transaction.|
+|sourceRef|[EnhancedCashFlowTransactionsSourceRef](#schemaenhancedcashflowtransactionssourceref)|false|none|A source reference containing the `sourceType` object "Banking".|
+|transactionCategory|[EnhancedCashFlowTransactionsTransactionCategory](#schemaenhancedcashflowtransactionstransactioncategory)|false|none|Contains an array of category levels.|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsTransactionCategory">EnhancedCashFlowTransactionsTransactionCategory</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionstransactioncategory"></a>
+<a id="schema_EnhancedCashFlowTransactionsTransactionCategory"></a>
+<a id="tocSenhancedcashflowtransactionstransactioncategory"></a>
+<a id="tocsenhancedcashflowtransactionstransactioncategory"></a>
+
+```json
+{
+  "confidence": 0,
+  "levels": [
+    "string"
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|confidence|number|false|none|Returns the confidence of the suggested category for the transaction.|
+|levels|[string]|false|none|An array of category levels against an individual transaction.|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsDataSource">EnhancedCashFlowTransactionsDataSource</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionsdatasource"></a>
+<a id="schema_EnhancedCashFlowTransactionsDataSource"></a>
+<a id="tocSenhancedcashflowtransactionsdatasource"></a>
+<a id="tocsenhancedcashflowtransactionsdatasource"></a>
+
+```json
+{
+  "accounts": [
+    {
+      "accountName": "string",
+      "accountProvider": "string",
+      "accountType": "string",
+      "currency": "GBP",
+      "currentBalance": 0,
+      "platformName": "string",
+      "sourceRef": {
+        "Example": {
+          "value": {
+            "sourceRef": {
+              "sourceType": "Banking"
+            }
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accounts|[[EnhancedCashFlowTransactionsAccounts](#schemaenhancedcashflowtransactionsaccounts)]|false|none|An array containing bank account data for each connected banking data source that have the following data types enabled: `banking-accounts`, `banking-transactions`.|
+
+<h2 id="tocS_EnhancedInvoicesReportReportInfo">EnhancedInvoicesReportReportInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportreportinfo"></a>
+<a id="schema_EnhancedInvoicesReportReportInfo"></a>
+<a id="tocSenhancedinvoicesreportreportinfo"></a>
+<a id="tocsenhancedinvoicesreportreportinfo"></a>
+
+```json
+{
+  "Example 1": {
+    "value": {
+      "companyName": "string",
+      "generatedDate": "2023-01-26T07:36:40.487Z",
+      "pageNumber": 0,
+      "pageSize": 0,
+      "reportName": "string",
+      "totalResults": 0
+    }
+  }
+}
+```
+
+Report additional information, which is specific to Assess reports
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|companyName|string|false|none|The name of the company being queried.|
+|generatedDate|string|false|none|Date the report was generated|
+|pageNumber|integer|false|none|The number of the page queried.|
+|pageSize|integer|false|none|The number of transactions returned per page.|
+|reportName|string|false|none|Name of the report|
+|totalResults|integer|false|none|The total number of transactions available for a company for the period specified in the query string.|
+
+<h2 id="tocS_EnhancedCashFlowTransactionsEnhancedCashFlowItem">EnhancedCashFlowTransactionsEnhancedCashFlowItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedcashflowtransactionsenhancedcashflowitem"></a>
+<a id="schema_EnhancedCashFlowTransactionsEnhancedCashFlowItem"></a>
+<a id="tocSenhancedcashflowtransactionsenhancedcashflowitem"></a>
+<a id="tocsenhancedcashflowtransactionsenhancedcashflowitem"></a>
+
+```json
+{
+  "transactions": [
+    {
+      "amount": 0,
+      "currency": "string",
+      "date": "2022-10-23T00:00:00Z",
+      "description": "string",
+      "id": "string",
+      "sourceRef": {
+        "Example": {
+          "value": {
+            "sourceRef": {
+              "sourceType": "Banking"
+            }
+          }
+        }
+      },
+      "transactionCategory": {
+        "confidence": 0,
+        "levels": [
+          "string"
+        ]
+      }
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|transactions|[[EnhancedCashFlowTransactionsEnhancedCashFlowTransaction](#schemaenhancedcashflowtransactionsenhancedcashflowtransaction)]|false|none|An array of transaction data.|
+
+<h2 id="tocS_EnhancedInvoicesReportCustomerRef">EnhancedInvoicesReportCustomerRef</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportcustomerref"></a>
+<a id="schema_EnhancedInvoicesReportCustomerRef"></a>
+<a id="tocSenhancedinvoicesreportcustomerref"></a>
+<a id="tocsenhancedinvoicesreportcustomerref"></a>
+
+```json
+{
+  "companyName": "string",
+  "id": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|companyName|string \| null|false|none|`customerName` from the Customer data type|
+|id|string|true|none|`id` from the Customers data type|
+
+<h2 id="tocS_EnhancedInvoicesReportPayment">EnhancedInvoicesReportPayment</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportpayment"></a>
+<a id="schema_EnhancedInvoicesReportPayment"></a>
+<a id="tocSenhancedinvoicesreportpayment"></a>
+<a id="tocsenhancedinvoicesreportpayment"></a>
+
+```json
+{
+  "accountRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "currency": "GBP",
+  "currencyRate": 0,
+  "customerRef": {
+    "companyName": "string",
+    "id": "string"
+  },
+  "date": "2022-10-23T00:00:00Z",
+  "id": "string",
+  "lines": [
+    {
+      "allocatedOnDate": "2022-10-23T00:00:00Z",
+      "amount": 0,
+      "links": [
+        {
+          "amount": 0,
+          "currencyRate": 0,
+          "id": "string",
+          "type": "Unknown"
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "isDeleted": true
+  },
+  "note": "string",
+  "paymentMethodRef": {
+    "id": "string",
+    "name": "string"
+  },
+  "reference": "string",
+  "supplementalData": {
+    "content": {
+      "property1": {
+        "property1": null,
+        "property2": null
+      },
+      "property2": {
+        "property1": null,
+        "property2": null
+      }
+    }
+  },
+  "totalAmount": 0,
+  "modifiedDate": "2022-10-23T00:00:00Z",
+  "sourceModifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+> **Payments or bill payments?**  
+> 
+>  In Codat, payments represent accounts receivable only. For accounts payable, see [bill payments](https://docs.codat.io/accounting-api#/schemas/BillPayment). These include [bills](https://docs.codat.io/accounting-api#/schemas/Bill) and credit notes against bills.
+
+> View the coverage for payments in the <a className="external" href="https://knowledge.codat.io/supported-features/accounting?view=tab-by-data-type&dataType=payments" target="_blank">Data coverage explorer</a>.
+
+## Overview
+
+Payments include all accounts receivable transaction data. This includes [invoices](https://docs.codat.io/accounting-api#/schemas/Invoice) and [credit notes](https://docs.codat.io/accounting-api#/schemas/CreditNote).
+
+A payment in Codat usually represents an allocation of money within any customer accounts receivable account. This includes, but is not strictly limited to: 
+
+- A payment made against an invoice, like a credit card, cheque, or cash payment.
+- An allocation of a customer's credit note, either to an invoice or maybe a refund.
+- A payment made directly to that accounts receivable account. This might be an overpayment or a prepayment. It might also be the refund of a payment made directly to an accounts receivable account.
+
+Depending on the payments allowed by the underlying accounting package, some payment types may be combined. Please see the example for more details.
+
+In Codat, a payment contains details of:
+
+- When the payment was recorded in the accounting system.
+- How much it is for and in what currency that amount is in.
+- Who the payment was _paid by_ – the _customer_.
+- The payment method used.
+- The breakdown of the types of payments – the _line items_.
+
+Payments is a child data type of [account transactions](https://docs.codat.io/accounting-api#/schemas/AccountTransaction).
+
+## Payment types
+
+## Payment of an invoice
+
+A payment paying a single invoice has one entry in its `lines` array. This **line** has the following properties:
+
+- An _amount_ that indicates the amount of the invoice that was paid. This is always positive.
+- A **links** array containing one element with the following properties:
+  - A **type** that indicates the type of **link**, in this case an `Invoice`.
+  - An **id** that contains the ID of the invoice that was paid.
+  - An **amount** for the link. The sum of the **line.amount** and the **links.amount** must equal `0`.
+
+The **amount** field on the **line** equals the **totalAmount** on the payment.
+
+## Payment of multiple invoices
+
+A single payment can pay multiple invoices. This can be represented in one of two formats depending on how the customer keeps their books:
+
+- The payment has multiple entries in its **lines** array, one for each invoice that is paid. Each line follows the example and rules described in [Payment of an invoice](#payment-of-an-invoice).
+- The payment has a line with multiple links to each invoice. This occurs when the proportion of the original payment allocated to each invoice is not available.
+
+Each **line** has the same properties as those described in [Payment of an invoice](#payment-of-an-invoice), with the **amount** indicating how much of the payment was allocated to the invoice. The sum of line amounts equals the **totalAmount** on the payment.
+
+## Payments and refunds on account
+
+A payment on account, that is a payment that doesn’t pay a specific invoice, has one entry in its lines array. The **line** has the following properties:
+
+- A **totalAmount** that indicates the amount paid by a customer or refunded to them by a company. A payment to the customer is always negative. A refund is always positive.
+- A **links** array containing one element with the following properties:
+- A **type** that indicates the type of link. For a payment this is `PaymentOnAccount`. For a refund this is `Refund`.
+- The **id** containing the ID of the customer.
+- The **amount** for the link is `0` – the **totalAmount** _or_ the amount of the payment or refund.
+
+It is possible to have a payment that is part _on account_ and part _allocated_ to an invoice. Each line should follow the examples above.
+
+## Using a credit note to pay an invoice
+
+The payment of an invoice using a credit note has one entry in its **lines** array. This **line** has the following properties:
+
+- An **amount** that indicates the amount of money moved, which in this case is `0`, as the credit note and invoice allocation must balance each other.
+- A **links** array containing two elements:
+  - The first **link** has:
+    - A **type** that indicates the type of **link**, in this case an `Invoice`.
+    - An **id** that contains the ID of the invoice that was paid.
+  - The second **link** has:
+    - A **type** that indicates the type of **link**, in this case a `CreditNote`.
+    - An **id** that contains the ID of the credit note used by this payment.
+
+The **amount** field on the **line** equals the **totalAmount** on the payment.
+
+## Refunding a credit note
+
+A payment refunding a credit note has one entry in its **lines** array. This **line** has the following properties:
+
+- An **amount** that indicates the amount of the credit note that was refunded. This is always negative for a refund.
+- A **links** array that contains one element with the following properties:
+  - A **type** that indicates the type of **link**, in this case a `CreditNote`.
+  - An **id** that contains the ID of the credit note that was refunded.
+
+The **totalAmount** field on the payment equals the **amount** field of the **line**. These are both negative, as this is money leaving accounts receivable.
+
+## Refunding a payment
+
+If a payment is refunded, for example, if a customer overpaid an invoice and the overpayment is returned to the customer, there are two payment records: 
+
+- One for the incoming over payment.
+- Another for the outgoing refund.
+
+The payment issuing the refund has a negative **totalAmount**. This payment also has one entry in its lines array with the following properties:
+
+- An **amount** that indicates the amount that was refunded. This is always negative.
+- A **links** array that contains one element with the following properties:
+  - A **type** that indicates the type of **link**, in this case a `Payment`.
+  - An **id** that contains the ID of the payment that was refunded.
+
+The **amount** field on the **line** equals the **totalAmount** on the payment and is negative, as this is money leaving accounts receivable.
+
+The payment that was refunded has a line where the **amount** is positive and the type of the link is `Refund`. This payment may have several entries in its **lines** array if it was used to partly pay an invoice. 
+
+For example: A £1,050 payment on a £1,000 invoice with a refund of £50 has two lines: 
+
+- One for £1,000 linked to the invoice that was paid.
+- Another for £50 linked to the payment that refunded the overpayment with a** type** of `Refund` and an ID that corresponds to the payment.
+
+The **line** linked to the payment has the following properties:
+
+- An **amount** that indicates the amount that was refunded. This is positive as its money that was added to accounts receivable. It's balanced out by the negative amount of the refund.
+- A **links** array containing one element with the following properties:
+  - A **type** that indicates the type of **link**, in this case a `Refund`.
+  - An **id** that contains the ID of the payment that refunded this line.
+
+> **Support for linked payments**
+> 
+> Not all accounting packages support linking payments in this way. In some platforms, you may see a payment on account and a refund on account.
+
+## Foreign currencies
+
+There are two types of currency rate that are included in the payments data type: 
+
+Payment currency rate: 
+
+- Base currency of the accounts receivable account.
+- Foreign currency of the payment.
+
+Payment line link currency rate: 
+
+- Base currency of the item the link represents.
+- Foreign currency of the payment.
+
+These two rates allow the calculation of currency loss or gain for any of the transactions affected by the payment lines. The second rate is used when a payment is applied to an item in a currency that doesn't match either:
+
+- The base currency for the accounts receivable account. 
+- The currency of the item.
+
+```json title="Currency rate example"
+{
+    "id": "123",
+    "note": ""
+    "totalAmount": 99.99,
+    "currency": "GBP",
+    "lines": [
+        {
+            "amount": 99.99,
+            "links": [
+                {
+                    "type": "Invoice",
+                    "id": "178",
+                    "amount": -50,
+                    "currencyRate":  1.9998,
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+## Example data
+
+> **Object properties**
+> 
+> For the sake of brevity, the examples here may omit properties from objects. For the full object definition, see [Payments](https://api.codat.io/swagger/index.html#/Payments).
+
+## Simple examples
+
+```json title="Payment for invoice"
+{
+    "totalAmount": 1000,
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Allocation of credit note"
+{
+    "totalAmount": 0,
+    "lines": [
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Payment of invoice and payment on account"
+{
+    "totalAmount": 2000,
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "PaymentOnAccount",
+                    "id" : "y",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Refund of credit note"
+{
+    "totalAmount": -1000,
+    "lines": [
+        {
+            "amount" : -1000,
+            "links" : [
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Refund on accounts receivable account"
+{
+    "totalAmount": -1000,
+    "lines": [
+        {
+            "amount" : -1000,
+            "links" : [
+                {
+                    "type" : "PaymentOnAccount",
+                    "id" : "y",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Linked refund on accounts receivable account"
+{
+    "id" : "payment-001",
+    "totalAmount": 1000,
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Refund",
+                    "id" : "refund-001",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+{
+    "id" : "refund-001",
+    "totalAmount": -1000,
+    "lines": [
+        {
+            "amount" : -1000,
+            "links" : [
+                {
+                    "type" : "Payment",
+                    "id" : "payment-001",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Using a credit note and cash to pay an invoice"
+{
+    "totalAmount": 250,
+    "lines": [
+        {
+            "amount": 0,
+            "links": [
+                {
+                    "type": "Invoice",
+                    "id": "x",
+                    "amount": -750
+                }, 
+                {
+                    "type": "CreditNote",
+                    "id": "y",
+                    "amount": 750
+                }
+            ]
+        },
+        {
+            "amount": 250,
+            "links": [
+                {
+                    "type": "Invoice",
+                    "id": "x",
+                    "amount": -250
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+## Complex examples
+
+```json title="Use two credit notes and 1000 in to "bank" (cash, cheque etc.) to pay invoice"
+{
+    "totalAmount": 1000,
+    "lines": [
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                }
+            ]
+        },
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "z",
+                    "amount" : 1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Pay an invoice with two credit notes and cash, with 1000 left 'on account'"
+{
+    "totalAmount": 2000,
+    "lines": [
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                }
+            ]
+        },
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "z",
+                    "amount" : 1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "PaymentOnAccount",
+                    "id" : "customer-001",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Two credit notes pay two invoices with no allocation amount specified"
+{
+    "totalAmount": 0,
+    "lines": [
+        {
+            "amount" : 0,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "w",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "z",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Two credit notes and cash pay three invoices with no allocation amount specified, and refund cash"
+{
+    "totalAmount": 2000,
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "w",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "Invoice",
+                    "id" : "x",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "Invoice",
+                    "id" : "u",
+                    "amount" : -1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "y",
+                    "amount" : 1000
+                },
+                {
+                    "type" : "CreditNote",
+                    "id" : "z",
+                    "amount" : 1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Refund",
+                    "id" : "refund-001",
+                    "amount" : -1000
+                }
+            ]
+        }
+    ]
+}
+{
+    "id" : "refund-001",
+    "totalAmount": -1000,
+    "lines": [
+        {
+            "amount" : -1000,
+            "links" : [
+                {
+                    "type" : "Payment",
+                    "id" : "payment-001",
+                    "amount" : 1000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+In this example, a payment on account is used to pay the same invoice in January and again in February.
+
+```json title="January"
+{
+    "id": "001",
+    "totalAmount": 5000,
+    "date" : "1901-01-01",
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "Invoice-x",
+                    "amount" : -1000
+                }
+            ]
+        },
+        {
+            "amount" : 4000,
+            "links" : [
+                {
+                    "type" : "PaymentOnAccount",
+                    "id" : "PaymentOnAccount-y",
+                    "amount" : -4000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="February"
+{
+    "id": "001",
+    "totalAmount": 5000,
+    "date" : "1901-02-01",
+    "lines": [
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "Invoice-x",
+                    "amount" : -1000
+                }
+            ]
+        },
+        {
+            "amount" : 1000,
+            "links" : [
+                {
+                    "type" : "Invoice",
+                    "id" : "Invoice-y",
+                    "amount" : -1000
+                }
+            ]
+        },
+        {
+            "amount" : 3000,
+            "links" : [
+                {
+                    "type" : "PaymentOnAccount",
+                    "id" : "PaymentOnAccount-y",
+                    "amount" : -3000
+                }
+            ]
+        }
+    ]
+}
+```
+
+
+
+```json title="Two credit notes and some cash pay two invoices with no allocations specified"
+{
+    "totalAmount": 500,
+    "lines": [
+        {
+            "amount": 500,
+            "links": [{
+                    "type": "Invoice",
+                    "id": "a",
+                    "amount": -1000
+                }, {
+                    "type": "Invoice",
+                    "id": "b",
+                    "amount": -1000
+                }, {
+                    "type": "CreditNote",
+                    "id": "y",
+                    "amount": 750
+                },{
+                    "type": "CreditNote",
+                    "id": "z",
+                    "amount": 750
+                }
+            ]
+        }
+    ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|accountRef|[CategorisedAccountAccountRef](#schemacategorisedaccountaccountref)|false|none|Account the payment is recorded against in the accounting platform.|
+|currency|[Currency](#schemacurrency)|false|none|ISO currency code recorded for the payment in the accounting platform.|
+|currencyRate|[CurrencyRate](#schemacurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|customerRef|[EnhancedInvoicesReportCustomerRef](#schemaenhancedinvoicesreportcustomerref)|false|none|Customer the payment is recorded against in the accounting platform.|
+|date|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|true|none|Date the payment was recorded in the accounting software.|
+|id|string|false|none|Identifier for the payment, unique to the company in the accounting platform.|
+|lines|[[EnhancedInvoicesReportPaymentPaymentLine](#schemaenhancedinvoicesreportpaymentpaymentline)]|false|none|An array of payment lines.|
+|metadata|object|false|none|none|
+|note|string \| null|false|none|Any additional information associated with the payment.|
+|paymentMethodRef|object|false|none|The Payment Method to which the payment is linked in the accounting platform.|
+|reference|string \| null|false|none|Friendly reference for the payment.|
+|supplementalData|object|false|none|Reference to a configured dynamic key value pair that is unique to the accounting platform. This feature is in private beta, contact us if you would like to learn more.|
+|totalAmount|number|false|none|Amount of the payment in the payment currency. This value should never change and represents the amount of money paid into the customer's account.|
+|modifiedDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date on which this record was last modified in Codat.|
+|sourceModifiedDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date on which this record was last modified in the originating system|
+
+<h2 id="tocS_EnhancedInvoicesReportInvoiceStatus">EnhancedInvoicesReportInvoiceStatus</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportinvoicestatus"></a>
+<a id="schema_EnhancedInvoicesReportInvoiceStatus"></a>
+<a id="tocSenhancedinvoicesreportinvoicestatus"></a>
+<a id="tocsenhancedinvoicesreportinvoicestatus"></a>
+
+```json
+"Unknown"
+```
+
+Current state of the invoice:
+
+- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.
+- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).
+- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).
+- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).
+- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.
+
+<h2 id="tocS_EnhancedInvoicesReportPaymentPaymentLine">EnhancedInvoicesReportPaymentPaymentLine</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportpaymentpaymentline"></a>
+<a id="schema_EnhancedInvoicesReportPaymentPaymentLine"></a>
+<a id="tocSenhancedinvoicesreportpaymentpaymentline"></a>
+<a id="tocsenhancedinvoicesreportpaymentpaymentline"></a>
+
+```json
+{
+  "allocatedOnDate": "2022-10-23T00:00:00Z",
+  "amount": 0,
+  "links": [
+    {
+      "amount": 0,
+      "currencyRate": 0,
+      "id": "string",
+      "type": "Unknown"
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|allocatedOnDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date the payment was allocated.|
+|amount|number|true|none|Amount in the payment currency.|
+|links|[[EnhancedInvoicesReportPaymentPaymentLineLink](#schemaenhancedinvoicesreportpaymentpaymentlinelink)]|false|none|none|
+
+<h2 id="tocS_CategorisedAccountAccountCategoryDeprecatedAllOf1">CategorisedAccountAccountCategoryDeprecatedAllOf1</h2>
+<!-- backwards compatibility -->
+<a id="schemacategorisedaccountaccountcategorydeprecatedallof1"></a>
+<a id="schema_CategorisedAccountAccountCategoryDeprecatedAllOf1"></a>
+<a id="tocScategorisedaccountaccountcategorydeprecatedallof1"></a>
+<a id="tocscategorisedaccountaccountcategorydeprecatedallof1"></a>
+
+```json
+{
+  "modifiedDate": "2022-10-23T00:00:00Z"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|modifiedDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|The date on which this record was last modified in Codat.|
+
+<h2 id="tocS_EnhancedInvoicesReportPaymentPaymentLineLink">EnhancedInvoicesReportPaymentPaymentLineLink</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportpaymentpaymentlinelink"></a>
+<a id="schema_EnhancedInvoicesReportPaymentPaymentLineLink"></a>
+<a id="tocSenhancedinvoicesreportpaymentpaymentlinelink"></a>
+<a id="tocsenhancedinvoicesreportpaymentpaymentlinelink"></a>
+
+```json
+{
+  "amount": 0,
+  "currencyRate": 0,
+  "id": "string",
+  "type": "Unknown"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amount|number \| null|false|none|Amount by which the balance of the linked entity is altered, in the currency of the linked entity.  <br>A negative link amount _reduces_ the outstanding amount on the accounts receivable account.  <br>A positive link amount _increases_ the outstanding amount on the accounts receivable account.|
+|currencyRate|[CurrencyRate](#schemacurrencyrate)|false|none|Rate to convert the total amount of the payment into the base currency for the company at the time of the payment.<br><br>Currency rates in Codat are implemented as the multiple of foreign currency units to each base currency unit.  <br><br>Where the currency rate is provided by the underlying accounting platform, it will be available from Codat with the same precision (up to a maximum of 9 decimal places). <br><br>For accounting platforms which do not provide an explicit currency rate, it is calculated as `baseCurrency / foreignCurrency` and will be returned to 9 decimal places.<br><br>## Examples with base currency of GBP<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (GBP) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **USD**          \| $20            \| 0.781         \| £15.62                     \|<br>\| **EUR**          \| €20            \| 0.885         \| £17.70                     \|<br>\| **RUB**          \| ₽20            \| 0.011         \| £0.22                      \|<br><br>## Examples with base currency of USD<br><br>\| Foreign Currency \| Foreign Amount \| Currency Rate \| Base Currency Amount (USD) \|<br>\| :--------------- \| :------------- \| :------------ \| :------------------------- \|<br>\| **GBP**          \| £20            \| 1.277         \| $25.54                     \|<br>\| **EUR**          \| €20            \| 1.134         \| $22.68                     \|<br>\| **RUB**          \| ₽20            \| 0.015         \| $0.30                      \||
+|id|string|false|none|Unique identifier of the transaction represented by the link.|
+|type|[EnhancedInvoicesReportPaymentPaymentLinkType](#schemaenhancedinvoicesreportpaymentpaymentlinktype)|true|none|Types of payment line links, either:  <br>`Unknown`  <br>`Unlinked` - Not used  <br>`Invoice` - ID refers to the invoice  <br>`CreditNote` - ID refers to the credit note  <br>`Refund` - ID refers to the sibling payment  <br>`Payment` - ID refers to the sibling payment  <br>`PaymentOnAccount` - ID refers to the customer  <br>`Other` - ID refers to the customer  <br>`Manual Journal`  <br>`Discount` - ID refers to the payment|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|Unknown|
+|type|Unlinked|
+|type|Invoice|
+|type|CreditNote|
+|type|Other|
+|type|Refund|
+|type|Payment|
+|type|PaymentOnAccount|
+|type|ManualJournal|
+|type|Discount|
+
+<h2 id="tocS_EnhancedInvoicesReportPaymentPaymentLinkType">EnhancedInvoicesReportPaymentPaymentLinkType</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportpaymentpaymentlinktype"></a>
+<a id="schema_EnhancedInvoicesReportPaymentPaymentLinkType"></a>
+<a id="tocSenhancedinvoicesreportpaymentpaymentlinktype"></a>
+<a id="tocsenhancedinvoicesreportpaymentpaymentlinktype"></a>
+
+```json
+"Unknown"
+```
+
+Types of payment line links, either:  
+`Unknown`  
+`Unlinked` - Not used  
+`Invoice` - ID refers to the invoice  
+`CreditNote` - ID refers to the credit note  
+`Refund` - ID refers to the sibling payment  
+`Payment` - ID refers to the sibling payment  
+`PaymentOnAccount` - ID refers to the customer  
+`Other` - ID refers to the customer  
+`Manual Journal`  
+`Discount` - ID refers to the payment
+
+<h2 id="tocS_EnhancedInvoicesReportEnhancedInvoiceReportItem">EnhancedInvoicesReportEnhancedInvoiceReportItem</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedinvoicesreportenhancedinvoicereportitem"></a>
+<a id="schema_EnhancedInvoicesReportEnhancedInvoiceReportItem"></a>
+<a id="tocSenhancedinvoicesreportenhancedinvoicereportitem"></a>
+<a id="tocsenhancedinvoicesreportenhancedinvoicereportitem"></a>
+
+```json
+{
+  "amountDue": 0,
+  "currency": "GBP",
+  "customerRef": {
+    "companyName": "string",
+    "id": "string"
+  },
+  "dueDate": "2022-10-23T00:00:00Z",
+  "id": "string",
+  "invoiceNumber": "string",
+  "issueDate": "2022-10-23T00:00:00Z",
+  "paidOnDate": "2022-10-23T00:00:00Z",
+  "payments": [
+    {
+      "accountRef": {
+        "id": "string",
+        "name": "string"
+      },
+      "currency": "GBP",
+      "currencyRate": 0,
+      "customerRef": {
+        "companyName": "string",
+        "id": "string"
+      },
+      "date": "2022-10-23T00:00:00Z",
+      "id": "string",
+      "lines": [
+        {
+          "allocatedOnDate": "2022-10-23T00:00:00Z",
+          "amount": 0,
+          "links": [
+            {
+              "amount": 0,
+              "currencyRate": 0,
+              "id": "string",
+              "type": "Unknown"
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "isDeleted": true
+      },
+      "note": "string",
+      "paymentMethodRef": {
+        "id": "string",
+        "name": "string"
+      },
+      "reference": "string",
+      "supplementalData": {
+        "content": {
+          "property1": {
+            "property1": null,
+            "property2": null
+          },
+          "property2": {
+            "property1": null,
+            "property2": null
+          }
+        }
+      },
+      "totalAmount": 0,
+      "modifiedDate": "2022-10-23T00:00:00Z",
+      "sourceModifiedDate": "2022-10-23T00:00:00Z"
+    }
+  ],
+  "status": "Unknown",
+  "totalAmount": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|amountDue|number|false|none|none|
+|currency|[Currency](#schemacurrency)|false|none|The currency data type in Codat is the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) currency code, e.g. _GBP_.<br><br>## Unknown currencies<br><br>In line with the ISO 4217 specification, the code _XXX_ is used when the data source does not return a currency for a transaction. <br><br>There are only a very small number of edge cases where this currency code is returned by the Codat system.|
+|customerRef|[EnhancedInvoicesReportCustomerRef](#schemaenhancedinvoicesreportcustomerref)|false|none|none|
+|dueDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|id|string|false|none|ID of the invoice, which may be a GUID but it may be something else depending on the accounting platdform|
+|invoiceNumber|string|false|none|none|
+|issueDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|paidOnDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|In Codat's data model, dates and times are represented using the <a class="external" href="https://en.wikipedia.org/wiki/ISO_8601" target="_blank">ISO 8601 standard</a>. Date and time fields are formatted as strings; for example:<br><br>```<br>2020-10-08T22:40:50Z<br>2021-01-01T00:00:00<br>```<br><br><br><br>When syncing data that contains `DateTime` fields from Codat, make sure you support the following cases when reading time information:<br><br>- Coordinated Universal Time (UTC): `2021-11-15T06:00:00Z`<br>- Unqualified local time: `2021-11-15T01:00:00`<br>- UTC time offsets: `2021-11-15T01:00:00-05:00`<br><br>> Time zones<br>> <br>> Not all dates from Codat will contain information about time zones.  <br>> Where it is not available from the underlying platform, Codat will return these as times local to the business whose data has been synced.|
+|payments|[[EnhancedInvoicesReportPayment](#schemaenhancedinvoicesreportpayment)]|false|none|none|
+|status|[EnhancedInvoicesReportInvoiceStatus](#schemaenhancedinvoicesreportinvoicestatus)|false|none|Current state of the invoice:<br><br>- `Draft` - Invoice hasn't been submitted to the supplier. It may be in a pending state or is scheduled for future submission, for example by email.<br>- `Submitted` - Invoice is no longer a draft. It has been processed and, or, sent to the customer. In this state, it will impact the ledger. It also has no payments made against it (amountDue == totalAmount).<br>- `PartiallyPaid` - The balance paid against the invoice is positive, but less than the total invoice amount (0 < amountDue < totalAmount).<br>- `Paid` - Invoice is paid in full. This includes if the invoice has been credited or overpaid (amountDue == 0).<br>- `Void` - An invoice can become Void when it's deleted, refunded, written off, or cancelled. A voided invoice may still be PartiallyPaid, and so all outstanding amounts on voided invoices are removed from the accounts receivable account.|
+|totalAmount|number|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|status|Unknown|
+|status|Draft|
+|status|Submitted|
+|status|PartiallyPaid|
+|status|Paid|
+|status|Void|
+
+<h2 id="tocS_EnhancedReportAccountCategoryLevel">EnhancedReportAccountCategoryLevel</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedreportaccountcategorylevel"></a>
+<a id="schema_EnhancedReportAccountCategoryLevel"></a>
+<a id="tocSenhancedreportaccountcategorylevel"></a>
+<a id="tocsenhancedreportaccountcategorylevel"></a>
+
+```json
+{
+  "confidence": 0,
+  "levelName": "string"
+}
+```
+
+An object containing an ordered list of account category levels.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|confidence|number|false|none|Confidence level of the category. This will only be populated where `status` is `Suggested`.|
+|levelName|string|false|none|Account category name.|
+
+<h2 id="tocS_EnhancedReportEnhancedReportInfo">EnhancedReportEnhancedReportInfo</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedreportenhancedreportinfo"></a>
+<a id="schema_EnhancedReportEnhancedReportInfo"></a>
+<a id="tocSenhancedreportenhancedreportinfo"></a>
+<a id="tocsenhancedreportenhancedreportinfo"></a>
+
+```json
+{
+  "companyName": "string",
+  "currency": "GBP",
+  "generatedDate": "2022-10-23T00:00:00Z",
+  "reportName": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|companyName|string|false|none|Name of the company queried.|
+|currency|[Currency](#schemacurrency)|false|none|Currency of the P&L/Balance sheet.|
+|generatedDate|[ExcelStatusLastGenerated](#schemaexcelstatuslastgenerated)|false|none|Returns the YYYY-MM-DD datetime of report generation.|
+|reportName|string|false|none|The name of the report.|
+
+<h2 id="tocS_EnhancedReportEnhancedReportAccountCategory">EnhancedReportEnhancedReportAccountCategory</h2>
+<!-- backwards compatibility -->
+<a id="schemaenhancedreportenhancedreportaccountcategory"></a>
+<a id="schema_EnhancedReportEnhancedReportAccountCategory"></a>
+<a id="tocSenhancedreportenhancedreportaccountcategory"></a>
+<a id="tocsenhancedreportenhancedreportaccountcategory"></a>
+
+```json
+{
+  "levels": [
+    {
+      "confidence": 0,
+      "levelName": "string"
+    }
+  ],
+  "status": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|levels|[[EnhancedReportAccountCategoryLevel](#schemaenhancedreportaccountcategorylevel)]|false|none|none|
+|status|string|false|none|Returns a status of "Suggested" or "Confirmed". If an account has a confirmed category, it will replace any suggested category returned.|
+
+<h2 id="tocS_FinancialMetricsAssessErrorDetails">FinancialMetricsAssessErrorDetails</h2>
+<!-- backwards compatibility -->
+<a id="schemafinancialmetricsassesserrordetails"></a>
+<a id="schema_FinancialMetricsAssessErrorDetails"></a>
+<a id="tocSfinancialmetricsassesserrordetails"></a>
+<a id="tocsfinancialmetricsassesserrordetails"></a>
+
+```json
+{
+  "missingData": [
+    "Expense.Operating.Interest",
+    "Expense.NonOperating.Interest"
+  ]
+}
+```
+
+Dictionary list outlining the missing properties or allowed values.
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|**additionalProperties**|[string]|false|none|none|
+
+<h2 id="tocS_FinancialMetricsFinancialMetricError">FinancialMetricsFinancialMetricError</h2>
+<!-- backwards compatibility -->
+<a id="schemafinancialmetricsfinancialmetricerror"></a>
+<a id="schema_FinancialMetricsFinancialMetricError"></a>
+<a id="tocSfinancialmetricsfinancialmetricerror"></a>
+<a id="tocsfinancialmetricsfinancialmetricerror"></a>
+
+```json
+{
+  "message": "Account categories data has not been synced",
+  "type": "DataNotSynced"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|message|string|false|none|none|
+|type|string|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|type|DataNotSynced|
+|type|DataNotSupported|
+|type|DataSyncFailed|
+|type|DataTypeNotEnabled|
+
+<h2 id="tocS_FinancialMetricsFinancialMetric">FinancialMetricsFinancialMetric</h2>
+<!-- backwards compatibility -->
+<a id="schemafinancialmetricsfinancialmetric"></a>
+<a id="schema_FinancialMetricsFinancialMetric"></a>
+<a id="tocSfinancialmetricsfinancialmetric"></a>
+<a id="tocsfinancialmetricsfinancialmetric"></a>
+
+```json
+{
+  "errors": [
+    {
+      "details": {
+        "missingData": [
+          "Expense.Operating.Interest",
+          "Expense.NonOperating.Interest"
+        ]
+      },
+      "message": "There are uncategorized accounts IDs, see details.",
+      "type": "UncategorizedAccounts"
+    }
+  ],
+  "key": "Unknown",
+  "metricUnit": "Ratio",
+  "name": "string",
+  "periods": [
+    {
+      "errors": [
+        {
+          "details": {
+            "missingData": [
+              "Expense.Operating.Interest",
+              "Expense.NonOperating.Interest"
+            ]
+          },
+          "massage": "Missing account data",
+          "type": "MissingAccountData"
+        }
+      ],
+      "fromDate": "1970-01-01",
+      "inputs": [
+        {
+          "name": "string",
+          "value": 0
+        }
+      ],
+      "toDate": "1970-01-01",
+      "value": 0
+    }
+  ]
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|errors|[object]|false|none|none|
+|key|string|false|none|none|
+|metricUnit|string|false|none|none|
+|name|string|false|none|Metric name.|
+|periods|[object]|false|none|none|
+
+#### Enumerated Values
+
+|Property|Value|
+|---|---|
+|key|Unknown|
+|key|EBITDA|
+|key|DebtServiceCoverageRatio|
+|key|CurrentRatio QuickRatio|
+|key|GrossProfitMargin|
+|key|FixedChargeCoverageRatio|
+|key|WorkingCapital|
+|key|FreeCashFlow|
+|key|NetProfitMargin|
+|key|ReturnOnAssetsRatio|
+|key|ReturnOnEquityRatio|
+|key|OperatingProfitMargin|
+|key|DeptToEquity|
+|key|DebtToAssets|
+|key|InterestCoverageRatio|
+|key|CashRatio|
+|key|InventoryTurnoverRatio|
+|key|AssetTurnoverRatio|
+|key|WorkingCapitalTurnoverRatio|
+|key|DaysSalesOutstanding|
+|key|DaysPayablesOutstanding|
+|metricUnit|Ratio|
+|metricUnit|Money|
+
+<h2 id="tocS_ReportReportComponent">ReportReportComponent</h2>
+<!-- backwards compatibility -->
+<a id="schemareportreportcomponent"></a>
+<a id="schema_ReportReportComponent"></a>
+<a id="tocSreportreportcomponent"></a>
+<a id="tocsreportreportcomponent"></a>
 
 ```json
 {
@@ -6864,9 +8651,116 @@ Reports can be rendered as follows (ordering is implicit rather than explicit):
 
 |Name|Type|Required|Restrictions|Description|
 |---|---|---|---|---|
-|components|[[reportComponent](#schemareportcomponent)]|false|none|none|
+|components|[[ReportReportComponent](#schemareportreportcomponent)]|false|none|none|
 |dimension|integer|false|none|none|
 |dimensionDisplayName|string|false|none|none|
 |item|integer|false|none|none|
 |itemDisplayName|string|false|none|none|
-|measures|[object]|false|none|none|
+|measures|[[ReportReportComponentMeasure](#schemareportreportcomponentmeasure)]|false|none|none|
+
+<h2 id="tocS_ReportReportComponentMeasure">ReportReportComponentMeasure</h2>
+<!-- backwards compatibility -->
+<a id="schemareportreportcomponentmeasure"></a>
+<a id="schema_ReportReportComponentMeasure"></a>
+<a id="tocSreportreportcomponentmeasure"></a>
+<a id="tocsreportreportcomponentmeasure"></a>
+
+```json
+{
+  "index": 0,
+  "measureDisplayName": "string",
+  "value": 0
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|index|integer|false|none|none|
+|measureDisplayName|string|false|none|none|
+|value|number|false|none|none|
+
+<h2 id="tocS_ReportReportDimension">ReportReportDimension</h2>
+<!-- backwards compatibility -->
+<a id="schemareportreportdimension"></a>
+<a id="schema_ReportReportDimension"></a>
+<a id="tocSreportreportdimension"></a>
+<a id="tocsreportreportdimension"></a>
+
+```json
+{
+  "displayName": "string",
+  "index": 0,
+  "items": [
+    {
+      "index": 0
+    }
+  ],
+  "type": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|displayName|string|false|none|none|
+|index|integer|false|none|none|
+|items|[object]|false|none|none|
+|type|string|false|none|none|
+
+<h2 id="tocS_ReportReportError">ReportReportError</h2>
+<!-- backwards compatibility -->
+<a id="schemareportreporterror"></a>
+<a id="schema_ReportReportError"></a>
+<a id="tocSreportreporterror"></a>
+<a id="tocsreportreporterror"></a>
+
+```json
+{
+  "details": {
+    "property1": [
+      "string"
+    ],
+    "property2": [
+      "string"
+    ]
+  },
+  "message": "string",
+  "type": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|details|object|false|none|none|
+|message|string|false|none|none|
+|type|string|false|none|none|
+
+<h2 id="tocS_ReportReportMeasure">ReportReportMeasure</h2>
+<!-- backwards compatibility -->
+<a id="schemareportreportmeasure"></a>
+<a id="schema_ReportReportMeasure"></a>
+<a id="tocSreportreportmeasure"></a>
+<a id="tocsreportreportmeasure"></a>
+
+```json
+{
+  "displayName": "string",
+  "index": 0,
+  "type": "string",
+  "units": "string"
+}
+```
+
+### Properties
+
+|Name|Type|Required|Restrictions|Description|
+|---|---|---|---|---|
+|displayName|string|false|none|none|
+|index|integer|false|none|none|
+|type|string|false|none|none|
+|units|string|false|none|none|

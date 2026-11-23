@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPlatformDocsRoute,
   getPlatformDocsSwaggerUiRoute,
   getPlatformPrivateAutocompleteRoute,
@@ -33,99 +33,186 @@ import {
   postPlatformPublicEvidenceRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlatformDocsRouteHandler: RouteHandler<typeof getPlatformDocsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const platformHandler = app
-  .openapi(getPlatformDocsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformDocsSwaggerUiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateAutocompleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateBesthitsearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateDiseaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateDiseaseDiseaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateDrugDRUGIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateEcoECOIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateEnrichmentTargetsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateQuicksearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateRelationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateRelationDiseaseDiseaseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateRelationTargetTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateTargetExpressionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPrivateTargetExpressionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPrivateTargetTargetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicAssociationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicAssociationFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPublicAssociationFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicEvidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPublicEvidenceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicEvidenceFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlatformPublicEvidenceFilterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicUtilsMetricsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicUtilsPingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicUtilsStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicUtilsTherapeuticareasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformPublicUtilsVersionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlatformSwaggerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPlatformDocsSwaggerUiRouteHandler: RouteHandler<
+  typeof getPlatformDocsSwaggerUiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateAutocompleteRouteHandler: RouteHandler<
+  typeof getPlatformPrivateAutocompleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateBesthitsearchRouteHandler: RouteHandler<
+  typeof postPlatformPrivateBesthitsearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateDiseaseRouteHandler: RouteHandler<
+  typeof postPlatformPrivateDiseaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateDiseaseDiseaseRouteHandler: RouteHandler<
+  typeof getPlatformPrivateDiseaseDiseaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateDrugDRUGIDRouteHandler: RouteHandler<
+  typeof getPlatformPrivateDrugDRUGIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateEcoECOIDRouteHandler: RouteHandler<
+  typeof getPlatformPrivateEcoECOIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateEnrichmentTargetsRouteHandler: RouteHandler<
+  typeof postPlatformPrivateEnrichmentTargetsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateQuicksearchRouteHandler: RouteHandler<
+  typeof getPlatformPrivateQuicksearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateRelationRouteHandler: RouteHandler<
+  typeof postPlatformPrivateRelationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateRelationDiseaseDiseaseRouteHandler: RouteHandler<
+  typeof getPlatformPrivateRelationDiseaseDiseaseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateRelationTargetTargetRouteHandler: RouteHandler<
+  typeof getPlatformPrivateRelationTargetTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateTargetRouteHandler: RouteHandler<
+  typeof postPlatformPrivateTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateTargetExpressionRouteHandler: RouteHandler<
+  typeof getPlatformPrivateTargetExpressionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPrivateTargetExpressionRouteHandler: RouteHandler<
+  typeof postPlatformPrivateTargetExpressionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPrivateTargetTargetRouteHandler: RouteHandler<
+  typeof getPlatformPrivateTargetTargetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicAssociationRouteHandler: RouteHandler<
+  typeof getPlatformPublicAssociationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicAssociationFilterRouteHandler: RouteHandler<
+  typeof getPlatformPublicAssociationFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPublicAssociationFilterRouteHandler: RouteHandler<
+  typeof postPlatformPublicAssociationFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicEvidenceRouteHandler: RouteHandler<
+  typeof getPlatformPublicEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPublicEvidenceRouteHandler: RouteHandler<
+  typeof postPlatformPublicEvidenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicEvidenceFilterRouteHandler: RouteHandler<
+  typeof getPlatformPublicEvidenceFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlatformPublicEvidenceFilterRouteHandler: RouteHandler<
+  typeof postPlatformPublicEvidenceFilterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicSearchRouteHandler: RouteHandler<
+  typeof getPlatformPublicSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicUtilsMetricsRouteHandler: RouteHandler<
+  typeof getPlatformPublicUtilsMetricsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicUtilsPingRouteHandler: RouteHandler<
+  typeof getPlatformPublicUtilsPingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicUtilsStatsRouteHandler: RouteHandler<
+  typeof getPlatformPublicUtilsStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicUtilsTherapeuticareasRouteHandler: RouteHandler<
+  typeof getPlatformPublicUtilsTherapeuticareasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformPublicUtilsVersionRouteHandler: RouteHandler<
+  typeof getPlatformPublicUtilsVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlatformSwaggerRouteHandler: RouteHandler<typeof getPlatformSwaggerRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getHealthAliveRoute, getHealthReadyRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getHealthAliveRoute, getHealthReadyRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getHealthAliveRouteHandler: RouteHandler<typeof getHealthAliveRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const healthHandler = app
-  .openapi(getHealthAliveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getHealthReadyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getHealthReadyRouteHandler: RouteHandler<typeof getHealthReadyRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

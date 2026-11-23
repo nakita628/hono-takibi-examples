@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRoute,
   deleteAdminDirectoryV1CustomerCustomerDomainsDomainNameRoute,
   deleteAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRoute,
@@ -125,378 +125,740 @@ import {
   putAdminDirectoryV1UsersUserKeyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAdminDirectoryV1CustomerCustomerIdDevicesChromeosRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdDevicesChromeosRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const adminHandler = app
-  .openapi(getAdminDirectoryV1CustomerCustomerIdDevicesChromeosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosMoveDevicesToOuRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdCommandsCommandIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdIssueCommandRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosResourceIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesChromeosBatchChangeStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdDevicesMobileRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdActionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdOrgunitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdOrgunitsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerIdSchemasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerDomainaliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerDomainaliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerDomainsDomainNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesBuildingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerResourcesBuildingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerResourcesCalendarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerResourcesFeaturesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerResourcesFeaturesOldNameRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerRoleassignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerRoleassignmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1CustomerCustomerRolesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerRolesALLPrivilegesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1CustomerCustomerRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomerCustomerRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomerCustomerRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomerCustomerRolesRoleIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1CustomersCustomerKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1CustomersCustomerKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1CustomersCustomerKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1GroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1GroupsGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1GroupsGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1GroupsGroupKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsGroupKeyAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1GroupsGroupKeyAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1GroupsGroupKeyAliasesAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsGroupKeyHasMemberMemberKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsGroupKeyMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1GroupsGroupKeyMembersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1UsersUserKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1UsersUserKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1UsersUserKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyAliasesWatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1UsersUserKeyAliasesAliasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyAspsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1UsersUserKeyAspsCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyAspsCodeIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyMakeAdminRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeySignOutRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyTokensRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1UsersUserKeyTokensClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyTokensClientIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyTwoStepVerificationTurnOffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyUndeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1UsersUserKeyVerificationCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyVerificationCodesGenerateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1UsersUserKeyVerificationCodesInvalidateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAdminDirectoryV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchAdminDirectoryV1NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1ParentChromePrintServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintServersBatchCreatePrintServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintServersBatchDeletePrintServersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1ParentChromePrintersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintersBatchCreatePrintersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ParentChromePrintersBatchDeletePrintersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAdminDirectoryV1ParentChromePrintersListPrinterModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAdminDirectoryV1ChannelsStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postAdminDirectoryV1CustomerCustomerIdDevicesChromeosMoveDevicesToOuRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdDevicesChromeosMoveDevicesToOuRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdCommandsCommandIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdCommandsCommandIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdIssueCommandRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdDevicesChromeosDeviceIdIssueCommandRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdDevicesChromeosResourceIdActionRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdDevicesChromeosResourceIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdDevicesChromeosBatchChangeStatusRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdDevicesChromeosBatchChangeStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdDevicesMobileRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdDevicesMobileRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdActionRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdDevicesMobileResourceIdActionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdOrgunitsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdOrgunitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdOrgunitsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdOrgunitsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerIdOrgunitsOrgUnitPathRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdSchemasRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerIdSchemasRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerIdSchemasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerIdSchemasSchemaKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerDomainaliasesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerDomainaliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerDomainaliasesRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerDomainaliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerDomainaliasesDomainAliasNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerDomainsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerDomainsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerDomainsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerDomainsDomainNameRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerDomainsDomainNameRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerDomainsDomainNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesBuildingsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesBuildingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerResourcesBuildingsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerResourcesBuildingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerResourcesBuildingsBuildingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesCalendarsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerResourcesCalendarsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerResourcesCalendarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerResourcesCalendarsCalendarResourceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesFeaturesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerResourcesFeaturesRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerResourcesFeaturesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerResourcesFeaturesFeatureKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerResourcesFeaturesOldNameRenameRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerResourcesFeaturesOldNameRenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerRoleassignmentsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerRoleassignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerRoleassignmentsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerRoleassignmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerRoleassignmentsRoleAssignmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerRolesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1CustomerCustomerRolesRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1CustomerCustomerRolesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerRolesALLPrivilegesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerRolesALLPrivilegesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1CustomerCustomerRolesRoleIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1CustomerCustomerRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomerCustomerRolesRoleIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomerCustomerRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomerCustomerRolesRoleIdRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomerCustomerRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomerCustomerRolesRoleIdRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomerCustomerRolesRoleIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1CustomersCustomerKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1CustomersCustomerKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1CustomersCustomerKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1CustomersCustomerKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1CustomersCustomerKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1CustomersCustomerKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1GroupsRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1GroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1GroupsGroupKeyRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1GroupsGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsGroupKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1GroupsGroupKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1GroupsGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1GroupsGroupKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1GroupsGroupKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsGroupKeyAliasesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsGroupKeyAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1GroupsGroupKeyAliasesRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1GroupsGroupKeyAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1GroupsGroupKeyAliasesAliasRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1GroupsGroupKeyAliasesAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsGroupKeyHasMemberMemberKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsGroupKeyHasMemberMemberKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsGroupKeyMembersRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsGroupKeyMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1GroupsGroupKeyMembersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1GroupsGroupKeyMembersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1GroupsGroupKeyMembersMemberKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersWatchRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1UsersUserKeyRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1UsersUserKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1UsersUserKeyRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1UsersUserKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1UsersUserKeyRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1UsersUserKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyAliasesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyAliasesRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyAliasesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyAliasesWatchRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyAliasesWatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1UsersUserKeyAliasesAliasRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1UsersUserKeyAliasesAliasRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyAspsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyAspsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1UsersUserKeyAspsCodeIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1UsersUserKeyAspsCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyAspsCodeIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyAspsCodeIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyMakeAdminRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyMakeAdminRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1UsersUserKeyPhotosThumbnailRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyPhotosThumbnailRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1UsersUserKeyPhotosThumbnailRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAdminDirectoryV1UsersUserKeyPhotosThumbnailRouteHandler: RouteHandler<
+  typeof putAdminDirectoryV1UsersUserKeyPhotosThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeySignOutRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeySignOutRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyTokensRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyTokensRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1UsersUserKeyTokensClientIdRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1UsersUserKeyTokensClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyTokensClientIdRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyTokensClientIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyTwoStepVerificationTurnOffRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyTwoStepVerificationTurnOffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyUndeleteRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyUndeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1UsersUserKeyVerificationCodesRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1UsersUserKeyVerificationCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyVerificationCodesGenerateRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyVerificationCodesGenerateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1UsersUserKeyVerificationCodesInvalidateRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1UsersUserKeyVerificationCodesInvalidateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAdminDirectoryV1NameRouteHandler: RouteHandler<
+  typeof deleteAdminDirectoryV1NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1NameRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchAdminDirectoryV1NameRouteHandler: RouteHandler<
+  typeof patchAdminDirectoryV1NameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1ParentChromePrintServersRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1ParentChromePrintServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintServersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintServersBatchCreatePrintServersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintServersBatchCreatePrintServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintServersBatchDeletePrintServersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintServersBatchDeletePrintServersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1ParentChromePrintersRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1ParentChromePrintersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintersBatchCreatePrintersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintersBatchCreatePrintersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ParentChromePrintersBatchDeletePrintersRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ParentChromePrintersBatchDeletePrintersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAdminDirectoryV1ParentChromePrintersListPrinterModelsRouteHandler: RouteHandler<
+  typeof getAdminDirectoryV1ParentChromePrintersListPrinterModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAdminDirectoryV1ChannelsStopRouteHandler: RouteHandler<
+  typeof postAdminDirectoryV1ChannelsStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

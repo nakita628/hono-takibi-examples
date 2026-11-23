@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/meraki.com/0.0.0-streaming/openapi.yaml',
   output: './src/meraki/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/meraki/types.ts' },
   client: { output: './src/meraki/client.ts', baseUrl: '/' },
   rpc: { output: './src/meraki/rpc.ts', parseResponse: true },

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getItemPricesItemPriceIdApplicableItemPricesRoute,
   getItemPricesItemPriceIdApplicableItemsRoute,
   getItemPricesItemPriceIdRoute,
@@ -10,30 +10,46 @@ import {
   postItemPricesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getItemPricesItemPriceIdRouteHandler: RouteHandler<
+  typeof getItemPricesItemPriceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const itemPricesHandler = app
-  .openapi(getItemPricesItemPriceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemPricesItemPriceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemPricesItemPriceIdDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemPricesItemPriceIdApplicableItemPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemPricesItemPriceIdApplicableItemsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getItemPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postItemPricesItemPriceIdDifferentialPricesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postItemPricesItemPriceIdRouteHandler: RouteHandler<
+  typeof postItemPricesItemPriceIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemPricesItemPriceIdDeleteRouteHandler: RouteHandler<
+  typeof postItemPricesItemPriceIdDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemPricesItemPriceIdApplicableItemPricesRouteHandler: RouteHandler<
+  typeof getItemPricesItemPriceIdApplicableItemPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemPricesItemPriceIdApplicableItemsRouteHandler: RouteHandler<
+  typeof getItemPricesItemPriceIdApplicableItemsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getItemPricesRouteHandler: RouteHandler<typeof getItemPricesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemPricesRouteHandler: RouteHandler<typeof postItemPricesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postItemPricesItemPriceIdDifferentialPricesRouteHandler: RouteHandler<
+  typeof postItemPricesItemPriceIdDifferentialPricesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

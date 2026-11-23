@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePolicyResourceArnIndexRoute,
   deletePolicyResourceArnStatementsStatementIdIndexRoute,
   getPolicyResourceArnIndexRoute,
@@ -8,24 +8,38 @@ import {
   putPolicyResourceArnIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postPolicyResourceArnIndexRouteHandler: RouteHandler<
+  typeof postPolicyResourceArnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const policyHandler = app
-  .openapi(postPolicyResourceArnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePolicyResourceArnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPolicyResourceArnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putPolicyResourceArnIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPolicyResourceArnStatementsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePolicyResourceArnStatementsStatementIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deletePolicyResourceArnIndexRouteHandler: RouteHandler<
+  typeof deletePolicyResourceArnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPolicyResourceArnIndexRouteHandler: RouteHandler<
+  typeof getPolicyResourceArnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putPolicyResourceArnIndexRouteHandler: RouteHandler<
+  typeof putPolicyResourceArnIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPolicyResourceArnStatementsIndexRouteHandler: RouteHandler<
+  typeof postPolicyResourceArnStatementsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePolicyResourceArnStatementsStatementIdIndexRouteHandler: RouteHandler<
+  typeof deletePolicyResourceArnStatementsStatementIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

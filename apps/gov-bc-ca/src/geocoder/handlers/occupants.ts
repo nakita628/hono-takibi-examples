@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getOccupantsAddressesOutputFormatRoute,
   getOccupantsNearestOutputFormatRoute,
   getOccupantsNearOutputFormatRoute,
@@ -7,21 +7,32 @@ import {
   getOccupantsWithinOutputFormatRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOccupantsAddressesOutputFormatRouteHandler: RouteHandler<
+  typeof getOccupantsAddressesOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const occupantsHandler = app
-  .openapi(getOccupantsAddressesOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOccupantsNearOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOccupantsNearestOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOccupantsWithinOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOccupantsOccupantIDOutputFormatRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOccupantsNearOutputFormatRouteHandler: RouteHandler<
+  typeof getOccupantsNearOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOccupantsNearestOutputFormatRouteHandler: RouteHandler<
+  typeof getOccupantsNearestOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOccupantsWithinOutputFormatRouteHandler: RouteHandler<
+  typeof getOccupantsWithinOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOccupantsOccupantIDOutputFormatRouteHandler: RouteHandler<
+  typeof getOccupantsOccupantIDOutputFormatRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

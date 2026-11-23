@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteCheckoutDomainsDomainIdRoute,
   getCheckoutDomainsDomainIdRoute,
   getCheckoutDomainsRoute,
   postCheckoutDomainsDomainIdVerifyPaymentMethodRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getCheckoutDomainsRouteHandler: RouteHandler<typeof getCheckoutDomainsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const checkoutDomainsHandler = app
-  .openapi(getCheckoutDomainsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getCheckoutDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteCheckoutDomainsDomainIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postCheckoutDomainsDomainIdVerifyPaymentMethodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getCheckoutDomainsDomainIdRouteHandler: RouteHandler<
+  typeof getCheckoutDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteCheckoutDomainsDomainIdRouteHandler: RouteHandler<
+  typeof deleteCheckoutDomainsDomainIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postCheckoutDomainsDomainIdVerifyPaymentMethodRouteHandler: RouteHandler<
+  typeof postCheckoutDomainsDomainIdVerifyPaymentMethodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

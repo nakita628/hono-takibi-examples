@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteCartMetaDataUnsetJsonRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { deleteCartMetaDataUnsetJsonRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const cartMetaDataUnsetJsonHandler = app.openapi(deleteCartMetaDataUnsetJsonRoute, (c) => {
+export const deleteCartMetaDataUnsetJsonRouteHandler: RouteHandler<
+  typeof deleteCartMetaDataUnsetJsonRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

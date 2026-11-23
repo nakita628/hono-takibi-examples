@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { travelHandler } from './handlers'
+import { postTravelTripParserRoute } from './routes'
+import { postTravelTripParserRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', travelHandler)
+export const api = app.openapi(postTravelTripParserRoute, postTravelTripParserRouteHandler)
 
 export default app

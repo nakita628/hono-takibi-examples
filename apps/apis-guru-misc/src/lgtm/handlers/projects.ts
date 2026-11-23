@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteProjectsProjectIdRoute,
   getProjectsProjectIdRoute,
   getProjectsProjectIdSettingsAnalysisConfigurationRoute,
@@ -9,27 +9,40 @@ import {
   putProjectsProjectIdSettingsAnalysisConfigurationRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getProjectsRouteHandler: RouteHandler<typeof getProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const projectsHandler = app
-  .openapi(getProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteProjectsProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProjectIdSettingsAnalysisConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putProjectsProjectIdSettingsAnalysisConfigurationRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getProjectsProviderOrgNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postProjectsRouteHandler: RouteHandler<typeof postProjectsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteProjectsProjectIdRouteHandler: RouteHandler<
+  typeof deleteProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProjectIdSettingsAnalysisConfigurationRouteHandler: RouteHandler<
+  typeof getProjectsProjectIdSettingsAnalysisConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putProjectsProjectIdSettingsAnalysisConfigurationRouteHandler: RouteHandler<
+  typeof putProjectsProjectIdSettingsAnalysisConfigurationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getProjectsProviderOrgNameRouteHandler: RouteHandler<
+  typeof getProjectsProviderOrgNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

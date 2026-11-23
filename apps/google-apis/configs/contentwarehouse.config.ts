@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/contentwarehouse/v1/openapi.yaml',
   output: './src/contentwarehouse/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/contentwarehouse/types.ts' },
   client: { output: './src/contentwarehouse/client.ts', baseUrl: '/' },
   rpc: { output: './src/contentwarehouse/rpc.ts', parseResponse: true },

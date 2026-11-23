@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getQuoteVersionsLagoIdRoute,
   postQuoteVersionsLagoIdApproveRoute,
   postQuoteVersionsLagoIdCloneRoute,
   postQuoteVersionsLagoIdVoidRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQuoteVersionsLagoIdRouteHandler: RouteHandler<
+  typeof getQuoteVersionsLagoIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const quoteVersionsHandler = app
-  .openapi(getQuoteVersionsLagoIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuoteVersionsLagoIdApproveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuoteVersionsLagoIdVoidRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQuoteVersionsLagoIdCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postQuoteVersionsLagoIdApproveRouteHandler: RouteHandler<
+  typeof postQuoteVersionsLagoIdApproveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuoteVersionsLagoIdVoidRouteHandler: RouteHandler<
+  typeof postQuoteVersionsLagoIdVoidRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQuoteVersionsLagoIdCloneRouteHandler: RouteHandler<
+  typeof postQuoteVersionsLagoIdCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

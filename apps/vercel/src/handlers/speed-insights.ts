@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postSpeedInsightsToggleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postSpeedInsightsToggleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const speedInsightsHandler = app.openapi(postSpeedInsightsToggleRoute, (c) => {
+export const postSpeedInsightsToggleRouteHandler: RouteHandler<
+  typeof postSpeedInsightsToggleRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

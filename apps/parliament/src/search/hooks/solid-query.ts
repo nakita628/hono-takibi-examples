@@ -94,7 +94,7 @@ export function getQueryQueryOptions<
   })
 }
 
-export function createQuery<
+export function createGetQuery<
   TData = Awaited<ReturnType<typeof parseResponse<Awaited<ReturnType<typeof client.query.$get>>>>>,
   TError = DefaultError,
 >(
@@ -122,26 +122,26 @@ export function createQuery<
 }
 
 export function getQueryExtensionQueryKey(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
 ) {
-  return ['query.:extension', '/query.:extension', args] as const
+  return ['query.{extension}', '/query.{extension}', args] as const
 }
 
 export function getQueryExtensionQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
       >
     >,
     TError,
@@ -151,7 +151,7 @@ export function getQueryExtensionQueryOptions<
     queryKey: getQueryExtensionQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['query.:extension'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['query.{extension}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -160,19 +160,21 @@ export function getQueryExtensionQueryOptions<
 export function createQueryExtension<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: () => InferRequestType<(typeof client)['query.:extension']['$get']>,
+  args: () => InferRequestType<(typeof client)['query.{extension}']['$get']>,
   options?: () => {
     query?: Omit<
       ReturnType<
         UndefinedInitialDataOptions<
           Awaited<
             ReturnType<
-              typeof parseResponse<Awaited<ReturnType<(typeof client)['query.:extension']['$get']>>>
+              typeof parseResponse<
+                Awaited<ReturnType<(typeof client)['query.{extension}']['$get']>>
+              >
             >
           >,
           TError,

@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getMailBatchBatchIdRoute, postMailBatchRoute, postMailSendRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getMailBatchBatchIdRoute, postMailBatchRoute, postMailSendRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postMailBatchRouteHandler: RouteHandler<typeof postMailBatchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const mailHandler = app
-  .openapi(postMailBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMailBatchBatchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMailSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMailBatchBatchIdRouteHandler: RouteHandler<
+  typeof getMailBatchBatchIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMailSendRouteHandler: RouteHandler<typeof postMailSendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

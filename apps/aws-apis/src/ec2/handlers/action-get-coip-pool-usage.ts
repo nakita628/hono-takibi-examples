@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionGetCoipPoolUsageRoute, postActionGetCoipPoolUsageRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionGetCoipPoolUsageRoute, postActionGetCoipPoolUsageRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionGetCoipPoolUsageRouteHandler: RouteHandler<
+  typeof getActionGetCoipPoolUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionGetCoipPoolUsageHandler = app
-  .openapi(getActionGetCoipPoolUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionGetCoipPoolUsageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionGetCoipPoolUsageRouteHandler: RouteHandler<
+  typeof postActionGetCoipPoolUsageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

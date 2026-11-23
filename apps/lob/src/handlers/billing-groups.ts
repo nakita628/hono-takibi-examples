@@ -1,23 +1,31 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBillingGroupsBgIdRoute,
   getBillingGroupsRoute,
   postBillingGroupsBgIdRoute,
   postBillingGroupsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getBillingGroupsBgIdRouteHandler: RouteHandler<
+  typeof getBillingGroupsBgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const billingGroupsHandler = app
-  .openapi(getBillingGroupsBgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupsBgIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBillingGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBillingGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBillingGroupsBgIdRouteHandler: RouteHandler<
+  typeof postBillingGroupsBgIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBillingGroupsRouteHandler: RouteHandler<typeof getBillingGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postBillingGroupsRouteHandler: RouteHandler<typeof postBillingGroupsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

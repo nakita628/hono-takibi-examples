@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFacesRoute,
   postFacesNameCreateRoute,
   postFacesNameDeleteRoute,
@@ -11,33 +11,54 @@ import {
   putFacesOldNameRenameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFacesRouteHandler: RouteHandler<typeof getFacesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const facesHandler = app
-  .openapi(getFacesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesReprocessRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesTrainNameClassifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesNameCreateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesNameRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesRecognizeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesNameReclassifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFacesNameDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putFacesOldNameRenameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFacesReprocessRouteHandler: RouteHandler<typeof postFacesReprocessRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesTrainNameClassifyRouteHandler: RouteHandler<
+  typeof postFacesTrainNameClassifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesNameCreateRouteHandler: RouteHandler<
+  typeof postFacesNameCreateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesNameRegisterRouteHandler: RouteHandler<
+  typeof postFacesNameRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesRecognizeRouteHandler: RouteHandler<typeof postFacesRecognizeRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesNameReclassifyRouteHandler: RouteHandler<
+  typeof postFacesNameReclassifyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postFacesNameDeleteRouteHandler: RouteHandler<
+  typeof postFacesNameDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putFacesOldNameRenameRouteHandler: RouteHandler<
+  typeof putFacesOldNameRenameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

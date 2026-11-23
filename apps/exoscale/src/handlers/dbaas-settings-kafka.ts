@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getDbaasSettingsKafkaRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getDbaasSettingsKafkaRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const dbaasSettingsKafkaHandler = app.openapi(getDbaasSettingsKafkaRoute, (c) => {
+export const getDbaasSettingsKafkaRouteHandler: RouteHandler<
+  typeof getDbaasSettingsKafkaRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

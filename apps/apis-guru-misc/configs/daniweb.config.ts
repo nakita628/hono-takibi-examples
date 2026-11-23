@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/daniweb.com/4/openapi.yaml',
   output: './src/daniweb/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/daniweb/types.ts' },
   client: { output: './src/daniweb/client.ts', baseUrl: '/' },
   rpc: { output: './src/daniweb/rpc.ts', parseResponse: true },

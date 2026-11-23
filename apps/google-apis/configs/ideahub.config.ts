@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/ideahub/v1alpha/openapi.yaml',
   output: './src/ideahub/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ideahub/types.ts' },
   client: { output: './src/ideahub/client.ts', baseUrl: '/' },
   rpc: { output: './src/ideahub/rpc.ts', parseResponse: true },

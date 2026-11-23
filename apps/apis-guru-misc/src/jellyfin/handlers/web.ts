@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWebConfigurationPageRoute, getWebConfigurationPagesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWebConfigurationPageRoute, getWebConfigurationPagesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWebConfigurationPageRouteHandler: RouteHandler<
+  typeof getWebConfigurationPageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const webHandler = app
-  .openapi(getWebConfigurationPageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWebConfigurationPagesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getWebConfigurationPagesRouteHandler: RouteHandler<
+  typeof getWebConfigurationPagesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

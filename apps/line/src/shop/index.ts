@@ -1,8 +1,9 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
-import { shopHandler } from './handlers'
+import { postShopV3MissionRoute } from './routes'
+import { postShopV3MissionRouteHandler } from './handlers'
 
 const app = new OpenAPIHono()
 
-export const api = app.route('/', shopHandler)
+export const api = app.openapi(postShopV3MissionRoute, postShopV3MissionRouteHandler)
 
 export default app

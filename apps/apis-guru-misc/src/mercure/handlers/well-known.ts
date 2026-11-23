@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getWellKnownMercureRoute,
   getWellKnownMercureSubscriptionsRoute,
   getWellKnownMercureSubscriptionsTopicRoute,
@@ -7,21 +7,32 @@ import {
   postWellKnownMercureRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getWellKnownMercureRouteHandler: RouteHandler<
+  typeof getWellKnownMercureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const wellKnownHandler = app
-  .openapi(getWellKnownMercureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postWellKnownMercureRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellKnownMercureSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellKnownMercureSubscriptionsTopicRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWellKnownMercureSubscriptionsTopicSubscriberRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postWellKnownMercureRouteHandler: RouteHandler<
+  typeof postWellKnownMercureRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWellKnownMercureSubscriptionsRouteHandler: RouteHandler<
+  typeof getWellKnownMercureSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWellKnownMercureSubscriptionsTopicRouteHandler: RouteHandler<
+  typeof getWellKnownMercureSubscriptionsTopicRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWellKnownMercureSubscriptionsTopicSubscriberRouteHandler: RouteHandler<
+  typeof getWellKnownMercureSubscriptionsTopicSubscriberRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

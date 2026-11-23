@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteWhatsappMediaWhatsappUserIdMediaIdRoute,
   getWhatsappMediaWhatsappUserIdMediaIdRoute,
   postWhatsappMediaRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postWhatsappMediaRouteHandler: RouteHandler<typeof postWhatsappMediaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const whatsappMediaHandler = app
-  .openapi(postWhatsappMediaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteWhatsappMediaWhatsappUserIdMediaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getWhatsappMediaWhatsappUserIdMediaIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteWhatsappMediaWhatsappUserIdMediaIdRouteHandler: RouteHandler<
+  typeof deleteWhatsappMediaWhatsappUserIdMediaIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getWhatsappMediaWhatsappUserIdMediaIdRouteHandler: RouteHandler<
+  typeof getWhatsappMediaWhatsappUserIdMediaIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

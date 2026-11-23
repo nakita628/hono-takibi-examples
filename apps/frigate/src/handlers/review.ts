@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteReviewReviewIdViewedRoute,
   getReviewActivityMotionRoute,
   getReviewEventEventIdRoute,
@@ -12,36 +12,60 @@ import {
   putReviewReviewIdRegenerateDescriptionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getReviewRouteHandler: RouteHandler<typeof getReviewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const reviewHandler = app
-  .openapi(getReviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewActivityMotionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewEventEventIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewReviewIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putReviewReviewIdRegenerateDescriptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteReviewReviewIdViewedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postReviewSummarizeStartStartTsEndEndTsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewReviewIdClipMp4Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getReviewEventIdPreviewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getReviewSummaryRouteHandler: RouteHandler<typeof getReviewSummaryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getReviewActivityMotionRouteHandler: RouteHandler<
+  typeof getReviewActivityMotionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReviewEventEventIdRouteHandler: RouteHandler<
+  typeof getReviewEventEventIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReviewReviewIdRouteHandler: RouteHandler<typeof getReviewReviewIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putReviewReviewIdRegenerateDescriptionRouteHandler: RouteHandler<
+  typeof putReviewReviewIdRegenerateDescriptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteReviewReviewIdViewedRouteHandler: RouteHandler<
+  typeof deleteReviewReviewIdViewedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postReviewSummarizeStartStartTsEndEndTsRouteHandler: RouteHandler<
+  typeof postReviewSummarizeStartStartTsEndEndTsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReviewReviewIdClipMp4RouteHandler: RouteHandler<
+  typeof getReviewReviewIdClipMp4Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getReviewEventIdPreviewRouteHandler: RouteHandler<
+  typeof getReviewEventIdPreviewRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

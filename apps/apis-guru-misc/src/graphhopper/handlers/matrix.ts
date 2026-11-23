@@ -1,23 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getMatrixRoute,
   getMatrixSolutionJobIdRoute,
   postMatrixCalculateRoute,
   postMatrixRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMatrixRouteHandler: RouteHandler<typeof getMatrixRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const matrixHandler = app
-  .openapi(getMatrixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMatrixRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMatrixCalculateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMatrixSolutionJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMatrixRouteHandler: RouteHandler<typeof postMatrixRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMatrixCalculateRouteHandler: RouteHandler<
+  typeof postMatrixCalculateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMatrixSolutionJobIdRouteHandler: RouteHandler<
+  typeof getMatrixSolutionJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

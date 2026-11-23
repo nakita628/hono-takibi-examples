@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiKeysApiKeyIDRoute,
   getApiKeysApiKeyIDRoute,
   getApiKeysApiKeyIDSecretRoute,
@@ -10,30 +10,46 @@ import {
   postApiKeysVerifyRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postApiKeysRouteHandler: RouteHandler<typeof postApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiKeysHandler = app
-  .openapi(postApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeysApiKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchApiKeysApiKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiKeysApiKeyIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiKeysApiKeyIDSecretRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeysApiKeyIDRevokeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiKeysVerifyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiKeysRouteHandler: RouteHandler<typeof getApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiKeysApiKeyIDRouteHandler: RouteHandler<typeof getApiKeysApiKeyIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const patchApiKeysApiKeyIDRouteHandler: RouteHandler<
+  typeof patchApiKeysApiKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiKeysApiKeyIDRouteHandler: RouteHandler<
+  typeof deleteApiKeysApiKeyIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiKeysApiKeyIDSecretRouteHandler: RouteHandler<
+  typeof getApiKeysApiKeyIDSecretRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiKeysApiKeyIDRevokeRouteHandler: RouteHandler<
+  typeof postApiKeysApiKeyIDRevokeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiKeysVerifyRouteHandler: RouteHandler<typeof postApiKeysVerifyRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

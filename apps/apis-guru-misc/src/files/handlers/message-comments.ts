@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMessageCommentsIdRoute,
   getMessageCommentsIdRoute,
   getMessageCommentsRoute,
@@ -7,21 +7,32 @@ import {
   postMessageCommentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getMessageCommentsRouteHandler: RouteHandler<typeof getMessageCommentsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const messageCommentsHandler = app
-  .openapi(getMessageCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMessageCommentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMessageCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMessageCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMessageCommentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMessageCommentsRouteHandler: RouteHandler<
+  typeof postMessageCommentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMessageCommentsIdRouteHandler: RouteHandler<
+  typeof deleteMessageCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMessageCommentsIdRouteHandler: RouteHandler<
+  typeof getMessageCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMessageCommentsIdRouteHandler: RouteHandler<
+  typeof patchMessageCommentsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

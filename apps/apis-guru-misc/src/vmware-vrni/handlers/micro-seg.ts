@@ -1,12 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postMicroSegRecommendedRulesNsxRoute, postMicroSegRecommendedRulesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  postMicroSegRecommendedRulesNsxRoute,
+  postMicroSegRecommendedRulesRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const postMicroSegRecommendedRulesRouteHandler: RouteHandler<
+  typeof postMicroSegRecommendedRulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const microSegHandler = app
-  .openapi(postMicroSegRecommendedRulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMicroSegRecommendedRulesNsxRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postMicroSegRecommendedRulesNsxRouteHandler: RouteHandler<
+  typeof postMicroSegRecommendedRulesNsxRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

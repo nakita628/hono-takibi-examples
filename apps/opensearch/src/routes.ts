@@ -38169,14 +38169,14 @@ const ClusterDeleteDecommissionAwareness_200Response = {
   content: { 'application/json': { schema: CommonAcknowledgedResponseBaseSchema } },
 }
 
-const ClusterDeleteVotingConfigExclusions_200Response = { description: '', content: {} }
+const ClusterDeleteVotingConfigExclusions_200Response = { description: '' }
 
 const ClusterDeleteWeightedRouting_200Response = {
   description: '',
   content: { 'application/json': { schema: CommonAcknowledgedResponseBaseSchema } },
 }
 
-const ClusterExistsComponentTemplate_200Response = { description: '', content: {} }
+const ClusterExistsComponentTemplate_200Response = { description: '' }
 
 const ClusterGetComponentTemplate_200Response = {
   description: '',
@@ -38242,7 +38242,7 @@ const ClusterPendingTasks_200Response = {
   },
 }
 
-const ClusterPostVotingConfigExclusions_200Response = { description: '', content: {} }
+const ClusterPostVotingConfigExclusions_200Response = { description: '' }
 
 const ClusterPutComponentTemplate_200Response = {
   description: '',
@@ -38477,13 +38477,13 @@ const Delete_404Response = {
   content: { 'application/json': { schema: CommonWriteResponseBaseSchema } },
 }
 
-const ExistsSource_200Response = { description: '', content: {} }
+const ExistsSource_200Response = { description: '' }
 
-const ExistsSource_404Response = { description: '', content: {} }
+const ExistsSource_404Response = { description: '' }
 
-const Exists_200Response = { description: '', content: {} }
+const Exists_200Response = { description: '' }
 
-const Exists_404Response = { description: '', content: {} }
+const Exists_404Response = { description: '' }
 
 const Explain_200Response = {
   description: '',
@@ -39093,17 +39093,17 @@ const IndicesDelete_404Response = {
   content: { 'application/json': { schema: CommonErrorResponseBaseSchema } },
 }
 
-const IndicesExistsAlias_200Response = { description: '', content: {} }
+const IndicesExistsAlias_200Response = { description: '' }
 
-const IndicesExistsAlias_404Response = { description: '', content: {} }
+const IndicesExistsAlias_404Response = { description: '' }
 
-const IndicesExistsIndexTemplate_200Response = { description: '', content: {} }
+const IndicesExistsIndexTemplate_200Response = { description: '' }
 
-const IndicesExistsTemplate_200Response = { description: '', content: {} }
+const IndicesExistsTemplate_200Response = { description: '' }
 
-const IndicesExists_200Response = { description: '', content: {} }
+const IndicesExists_200Response = { description: '' }
 
-const IndicesExists_404Response = { description: '', content: {} }
+const IndicesExists_404Response = { description: '' }
 
 const IndicesFlush_200Response = {
   description: '',
@@ -39138,7 +39138,7 @@ const IndicesGetAlias_200Response = {
   },
 }
 
-const IndicesGetAlias_404Response = { description: '', content: {} }
+const IndicesGetAlias_404Response = { description: '' }
 
 const IndicesGetDataStream_200Response = {
   description: '',
@@ -40538,7 +40538,7 @@ const NeuralStats_200Response = {
   content: { 'application/json': { schema: NeuralCommonNeuralStatsSchema } },
 }
 
-const NodesHotThreads_200Response = { description: '', content: {} }
+const NodesHotThreads_200Response = { description: '' }
 
 const NodesInfo_200Response = {
   description: '',
@@ -40802,7 +40802,7 @@ const ObservabilityUpdateObject_404Response = {
   content: { 'application/json': { schema: CommonErrorResponseBaseSchema } },
 }
 
-const Ping_200Response = { description: '', content: {} }
+const Ping_200Response = { description: '' }
 
 const PplExplain_200Response = {
   description: 'Returns the query execution plan.',

@@ -1,8 +1,6 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getPrioritiesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getPrioritiesRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const prioritiesHandler = app.openapi(getPrioritiesRoute, (c) => {
+export const getPrioritiesRouteHandler: RouteHandler<typeof getPrioritiesRoute> = async (c) => {
   throw new Error('Not implemented')
-})
+}

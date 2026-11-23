@@ -1,111 +1,317 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetLogs20140328AssociateKmsKeyHandler,
-  xAmzTargetLogs20140328CancelExportTaskHandler,
-  xAmzTargetLogs20140328CreateExportTaskHandler,
-  xAmzTargetLogs20140328CreateLogGroupHandler,
-  xAmzTargetLogs20140328CreateLogStreamHandler,
-  xAmzTargetLogs20140328DeleteAccountPolicyHandler,
-  xAmzTargetLogs20140328DeleteDataProtectionPolicyHandler,
-  xAmzTargetLogs20140328DeleteDestinationHandler,
-  xAmzTargetLogs20140328DeleteLogGroupHandler,
-  xAmzTargetLogs20140328DeleteLogStreamHandler,
-  xAmzTargetLogs20140328DeleteMetricFilterHandler,
-  xAmzTargetLogs20140328DeleteQueryDefinitionHandler,
-  xAmzTargetLogs20140328DeleteResourcePolicyHandler,
-  xAmzTargetLogs20140328DeleteRetentionPolicyHandler,
-  xAmzTargetLogs20140328DeleteSubscriptionFilterHandler,
-  xAmzTargetLogs20140328DescribeAccountPoliciesHandler,
-  xAmzTargetLogs20140328DescribeDestinationsHandler,
-  xAmzTargetLogs20140328DescribeExportTasksHandler,
-  xAmzTargetLogs20140328DescribeLogGroupsHandler,
-  xAmzTargetLogs20140328DescribeLogStreamsHandler,
-  xAmzTargetLogs20140328DescribeMetricFiltersHandler,
-  xAmzTargetLogs20140328DescribeQueriesHandler,
-  xAmzTargetLogs20140328DescribeQueryDefinitionsHandler,
-  xAmzTargetLogs20140328DescribeResourcePoliciesHandler,
-  xAmzTargetLogs20140328DescribeSubscriptionFiltersHandler,
-  xAmzTargetLogs20140328DisassociateKmsKeyHandler,
-  xAmzTargetLogs20140328FilterLogEventsHandler,
-  xAmzTargetLogs20140328GetDataProtectionPolicyHandler,
-  xAmzTargetLogs20140328GetLogEventsHandler,
-  xAmzTargetLogs20140328GetLogGroupFieldsHandler,
-  xAmzTargetLogs20140328GetLogRecordHandler,
-  xAmzTargetLogs20140328GetQueryResultsHandler,
-  xAmzTargetLogs20140328ListTagsForResourceHandler,
-  xAmzTargetLogs20140328ListTagsLogGroupHandler,
-  xAmzTargetLogs20140328PutAccountPolicyHandler,
-  xAmzTargetLogs20140328PutDataProtectionPolicyHandler,
-  xAmzTargetLogs20140328PutDestinationHandler,
-  xAmzTargetLogs20140328PutDestinationPolicyHandler,
-  xAmzTargetLogs20140328PutLogEventsHandler,
-  xAmzTargetLogs20140328PutMetricFilterHandler,
-  xAmzTargetLogs20140328PutQueryDefinitionHandler,
-  xAmzTargetLogs20140328PutResourcePolicyHandler,
-  xAmzTargetLogs20140328PutRetentionPolicyHandler,
-  xAmzTargetLogs20140328PutSubscriptionFilterHandler,
-  xAmzTargetLogs20140328StartQueryHandler,
-  xAmzTargetLogs20140328StopQueryHandler,
-  xAmzTargetLogs20140328TagLogGroupHandler,
-  xAmzTargetLogs20140328TagResourceHandler,
-  xAmzTargetLogs20140328TestMetricFilterHandler,
-  xAmzTargetLogs20140328UntagLogGroupHandler,
-  xAmzTargetLogs20140328UntagResourceHandler,
+  postXAmzTargetLogs20140328AssociateKmsKeyRoute,
+  postXAmzTargetLogs20140328CancelExportTaskRoute,
+  postXAmzTargetLogs20140328CreateExportTaskRoute,
+  postXAmzTargetLogs20140328CreateLogGroupRoute,
+  postXAmzTargetLogs20140328CreateLogStreamRoute,
+  postXAmzTargetLogs20140328DeleteAccountPolicyRoute,
+  postXAmzTargetLogs20140328DeleteDataProtectionPolicyRoute,
+  postXAmzTargetLogs20140328DeleteDestinationRoute,
+  postXAmzTargetLogs20140328DeleteLogGroupRoute,
+  postXAmzTargetLogs20140328DeleteLogStreamRoute,
+  postXAmzTargetLogs20140328DeleteMetricFilterRoute,
+  postXAmzTargetLogs20140328DeleteQueryDefinitionRoute,
+  postXAmzTargetLogs20140328DeleteResourcePolicyRoute,
+  postXAmzTargetLogs20140328DeleteRetentionPolicyRoute,
+  postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute,
+  postXAmzTargetLogs20140328DescribeAccountPoliciesRoute,
+  postXAmzTargetLogs20140328DescribeDestinationsRoute,
+  postXAmzTargetLogs20140328DescribeExportTasksRoute,
+  postXAmzTargetLogs20140328DescribeLogGroupsRoute,
+  postXAmzTargetLogs20140328DescribeLogStreamsRoute,
+  postXAmzTargetLogs20140328DescribeMetricFiltersRoute,
+  postXAmzTargetLogs20140328DescribeQueriesRoute,
+  postXAmzTargetLogs20140328DescribeQueryDefinitionsRoute,
+  postXAmzTargetLogs20140328DescribeResourcePoliciesRoute,
+  postXAmzTargetLogs20140328DescribeSubscriptionFiltersRoute,
+  postXAmzTargetLogs20140328DisassociateKmsKeyRoute,
+  postXAmzTargetLogs20140328FilterLogEventsRoute,
+  postXAmzTargetLogs20140328GetDataProtectionPolicyRoute,
+  postXAmzTargetLogs20140328GetLogEventsRoute,
+  postXAmzTargetLogs20140328GetLogGroupFieldsRoute,
+  postXAmzTargetLogs20140328GetLogRecordRoute,
+  postXAmzTargetLogs20140328GetQueryResultsRoute,
+  postXAmzTargetLogs20140328ListTagsForResourceRoute,
+  postXAmzTargetLogs20140328ListTagsLogGroupRoute,
+  postXAmzTargetLogs20140328PutAccountPolicyRoute,
+  postXAmzTargetLogs20140328PutDataProtectionPolicyRoute,
+  postXAmzTargetLogs20140328PutDestinationPolicyRoute,
+  postXAmzTargetLogs20140328PutDestinationRoute,
+  postXAmzTargetLogs20140328PutLogEventsRoute,
+  postXAmzTargetLogs20140328PutMetricFilterRoute,
+  postXAmzTargetLogs20140328PutQueryDefinitionRoute,
+  postXAmzTargetLogs20140328PutResourcePolicyRoute,
+  postXAmzTargetLogs20140328PutRetentionPolicyRoute,
+  postXAmzTargetLogs20140328PutSubscriptionFilterRoute,
+  postXAmzTargetLogs20140328StartQueryRoute,
+  postXAmzTargetLogs20140328StopQueryRoute,
+  postXAmzTargetLogs20140328TagLogGroupRoute,
+  postXAmzTargetLogs20140328TagResourceRoute,
+  postXAmzTargetLogs20140328TestMetricFilterRoute,
+  postXAmzTargetLogs20140328UntagLogGroupRoute,
+  postXAmzTargetLogs20140328UntagResourceRoute,
+} from './routes'
+import {
+  postXAmzTargetLogs20140328AssociateKmsKeyRouteHandler,
+  postXAmzTargetLogs20140328CancelExportTaskRouteHandler,
+  postXAmzTargetLogs20140328CreateExportTaskRouteHandler,
+  postXAmzTargetLogs20140328CreateLogGroupRouteHandler,
+  postXAmzTargetLogs20140328CreateLogStreamRouteHandler,
+  postXAmzTargetLogs20140328DeleteAccountPolicyRouteHandler,
+  postXAmzTargetLogs20140328DeleteDataProtectionPolicyRouteHandler,
+  postXAmzTargetLogs20140328DeleteDestinationRouteHandler,
+  postXAmzTargetLogs20140328DeleteLogGroupRouteHandler,
+  postXAmzTargetLogs20140328DeleteLogStreamRouteHandler,
+  postXAmzTargetLogs20140328DeleteMetricFilterRouteHandler,
+  postXAmzTargetLogs20140328DeleteQueryDefinitionRouteHandler,
+  postXAmzTargetLogs20140328DeleteResourcePolicyRouteHandler,
+  postXAmzTargetLogs20140328DeleteRetentionPolicyRouteHandler,
+  postXAmzTargetLogs20140328DeleteSubscriptionFilterRouteHandler,
+  postXAmzTargetLogs20140328DescribeAccountPoliciesRouteHandler,
+  postXAmzTargetLogs20140328DescribeDestinationsRouteHandler,
+  postXAmzTargetLogs20140328DescribeExportTasksRouteHandler,
+  postXAmzTargetLogs20140328DescribeLogGroupsRouteHandler,
+  postXAmzTargetLogs20140328DescribeLogStreamsRouteHandler,
+  postXAmzTargetLogs20140328DescribeMetricFiltersRouteHandler,
+  postXAmzTargetLogs20140328DescribeQueriesRouteHandler,
+  postXAmzTargetLogs20140328DescribeQueryDefinitionsRouteHandler,
+  postXAmzTargetLogs20140328DescribeResourcePoliciesRouteHandler,
+  postXAmzTargetLogs20140328DescribeSubscriptionFiltersRouteHandler,
+  postXAmzTargetLogs20140328DisassociateKmsKeyRouteHandler,
+  postXAmzTargetLogs20140328FilterLogEventsRouteHandler,
+  postXAmzTargetLogs20140328GetDataProtectionPolicyRouteHandler,
+  postXAmzTargetLogs20140328GetLogEventsRouteHandler,
+  postXAmzTargetLogs20140328GetLogGroupFieldsRouteHandler,
+  postXAmzTargetLogs20140328GetLogRecordRouteHandler,
+  postXAmzTargetLogs20140328GetQueryResultsRouteHandler,
+  postXAmzTargetLogs20140328ListTagsForResourceRouteHandler,
+  postXAmzTargetLogs20140328ListTagsLogGroupRouteHandler,
+  postXAmzTargetLogs20140328PutAccountPolicyRouteHandler,
+  postXAmzTargetLogs20140328PutDataProtectionPolicyRouteHandler,
+  postXAmzTargetLogs20140328PutDestinationPolicyRouteHandler,
+  postXAmzTargetLogs20140328PutDestinationRouteHandler,
+  postXAmzTargetLogs20140328PutLogEventsRouteHandler,
+  postXAmzTargetLogs20140328PutMetricFilterRouteHandler,
+  postXAmzTargetLogs20140328PutQueryDefinitionRouteHandler,
+  postXAmzTargetLogs20140328PutResourcePolicyRouteHandler,
+  postXAmzTargetLogs20140328PutRetentionPolicyRouteHandler,
+  postXAmzTargetLogs20140328PutSubscriptionFilterRouteHandler,
+  postXAmzTargetLogs20140328StartQueryRouteHandler,
+  postXAmzTargetLogs20140328StopQueryRouteHandler,
+  postXAmzTargetLogs20140328TagLogGroupRouteHandler,
+  postXAmzTargetLogs20140328TagResourceRouteHandler,
+  postXAmzTargetLogs20140328TestMetricFilterRouteHandler,
+  postXAmzTargetLogs20140328UntagLogGroupRouteHandler,
+  postXAmzTargetLogs20140328UntagResourceRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetLogs20140328AssociateKmsKeyHandler)
-  .route('/', xAmzTargetLogs20140328CancelExportTaskHandler)
-  .route('/', xAmzTargetLogs20140328CreateExportTaskHandler)
-  .route('/', xAmzTargetLogs20140328CreateLogGroupHandler)
-  .route('/', xAmzTargetLogs20140328CreateLogStreamHandler)
-  .route('/', xAmzTargetLogs20140328DeleteAccountPolicyHandler)
-  .route('/', xAmzTargetLogs20140328DeleteDataProtectionPolicyHandler)
-  .route('/', xAmzTargetLogs20140328DeleteDestinationHandler)
-  .route('/', xAmzTargetLogs20140328DeleteLogGroupHandler)
-  .route('/', xAmzTargetLogs20140328DeleteLogStreamHandler)
-  .route('/', xAmzTargetLogs20140328DeleteMetricFilterHandler)
-  .route('/', xAmzTargetLogs20140328DeleteQueryDefinitionHandler)
-  .route('/', xAmzTargetLogs20140328DeleteResourcePolicyHandler)
-  .route('/', xAmzTargetLogs20140328DeleteRetentionPolicyHandler)
-  .route('/', xAmzTargetLogs20140328DeleteSubscriptionFilterHandler)
-  .route('/', xAmzTargetLogs20140328DescribeAccountPoliciesHandler)
-  .route('/', xAmzTargetLogs20140328DescribeDestinationsHandler)
-  .route('/', xAmzTargetLogs20140328DescribeExportTasksHandler)
-  .route('/', xAmzTargetLogs20140328DescribeLogGroupsHandler)
-  .route('/', xAmzTargetLogs20140328DescribeLogStreamsHandler)
-  .route('/', xAmzTargetLogs20140328DescribeMetricFiltersHandler)
-  .route('/', xAmzTargetLogs20140328DescribeQueriesHandler)
-  .route('/', xAmzTargetLogs20140328DescribeQueryDefinitionsHandler)
-  .route('/', xAmzTargetLogs20140328DescribeResourcePoliciesHandler)
-  .route('/', xAmzTargetLogs20140328DescribeSubscriptionFiltersHandler)
-  .route('/', xAmzTargetLogs20140328DisassociateKmsKeyHandler)
-  .route('/', xAmzTargetLogs20140328FilterLogEventsHandler)
-  .route('/', xAmzTargetLogs20140328GetDataProtectionPolicyHandler)
-  .route('/', xAmzTargetLogs20140328GetLogEventsHandler)
-  .route('/', xAmzTargetLogs20140328GetLogGroupFieldsHandler)
-  .route('/', xAmzTargetLogs20140328GetLogRecordHandler)
-  .route('/', xAmzTargetLogs20140328GetQueryResultsHandler)
-  .route('/', xAmzTargetLogs20140328ListTagsForResourceHandler)
-  .route('/', xAmzTargetLogs20140328ListTagsLogGroupHandler)
-  .route('/', xAmzTargetLogs20140328PutAccountPolicyHandler)
-  .route('/', xAmzTargetLogs20140328PutDataProtectionPolicyHandler)
-  .route('/', xAmzTargetLogs20140328PutDestinationHandler)
-  .route('/', xAmzTargetLogs20140328PutDestinationPolicyHandler)
-  .route('/', xAmzTargetLogs20140328PutLogEventsHandler)
-  .route('/', xAmzTargetLogs20140328PutMetricFilterHandler)
-  .route('/', xAmzTargetLogs20140328PutQueryDefinitionHandler)
-  .route('/', xAmzTargetLogs20140328PutResourcePolicyHandler)
-  .route('/', xAmzTargetLogs20140328PutRetentionPolicyHandler)
-  .route('/', xAmzTargetLogs20140328PutSubscriptionFilterHandler)
-  .route('/', xAmzTargetLogs20140328StartQueryHandler)
-  .route('/', xAmzTargetLogs20140328StopQueryHandler)
-  .route('/', xAmzTargetLogs20140328TagLogGroupHandler)
-  .route('/', xAmzTargetLogs20140328TagResourceHandler)
-  .route('/', xAmzTargetLogs20140328TestMetricFilterHandler)
-  .route('/', xAmzTargetLogs20140328UntagLogGroupHandler)
-  .route('/', xAmzTargetLogs20140328UntagResourceHandler)
+  .openapi(
+    postXAmzTargetLogs20140328AssociateKmsKeyRoute,
+    postXAmzTargetLogs20140328AssociateKmsKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328CancelExportTaskRoute,
+    postXAmzTargetLogs20140328CancelExportTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328CreateExportTaskRoute,
+    postXAmzTargetLogs20140328CreateExportTaskRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328CreateLogGroupRoute,
+    postXAmzTargetLogs20140328CreateLogGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328CreateLogStreamRoute,
+    postXAmzTargetLogs20140328CreateLogStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteAccountPolicyRoute,
+    postXAmzTargetLogs20140328DeleteAccountPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteDataProtectionPolicyRoute,
+    postXAmzTargetLogs20140328DeleteDataProtectionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteDestinationRoute,
+    postXAmzTargetLogs20140328DeleteDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteLogGroupRoute,
+    postXAmzTargetLogs20140328DeleteLogGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteLogStreamRoute,
+    postXAmzTargetLogs20140328DeleteLogStreamRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteMetricFilterRoute,
+    postXAmzTargetLogs20140328DeleteMetricFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteQueryDefinitionRoute,
+    postXAmzTargetLogs20140328DeleteQueryDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteResourcePolicyRoute,
+    postXAmzTargetLogs20140328DeleteResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteRetentionPolicyRoute,
+    postXAmzTargetLogs20140328DeleteRetentionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DeleteSubscriptionFilterRoute,
+    postXAmzTargetLogs20140328DeleteSubscriptionFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeAccountPoliciesRoute,
+    postXAmzTargetLogs20140328DescribeAccountPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeDestinationsRoute,
+    postXAmzTargetLogs20140328DescribeDestinationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeExportTasksRoute,
+    postXAmzTargetLogs20140328DescribeExportTasksRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeLogGroupsRoute,
+    postXAmzTargetLogs20140328DescribeLogGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeLogStreamsRoute,
+    postXAmzTargetLogs20140328DescribeLogStreamsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeMetricFiltersRoute,
+    postXAmzTargetLogs20140328DescribeMetricFiltersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeQueriesRoute,
+    postXAmzTargetLogs20140328DescribeQueriesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeQueryDefinitionsRoute,
+    postXAmzTargetLogs20140328DescribeQueryDefinitionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeResourcePoliciesRoute,
+    postXAmzTargetLogs20140328DescribeResourcePoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DescribeSubscriptionFiltersRoute,
+    postXAmzTargetLogs20140328DescribeSubscriptionFiltersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328DisassociateKmsKeyRoute,
+    postXAmzTargetLogs20140328DisassociateKmsKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328FilterLogEventsRoute,
+    postXAmzTargetLogs20140328FilterLogEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328GetDataProtectionPolicyRoute,
+    postXAmzTargetLogs20140328GetDataProtectionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328GetLogEventsRoute,
+    postXAmzTargetLogs20140328GetLogEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328GetLogGroupFieldsRoute,
+    postXAmzTargetLogs20140328GetLogGroupFieldsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328GetLogRecordRoute,
+    postXAmzTargetLogs20140328GetLogRecordRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328GetQueryResultsRoute,
+    postXAmzTargetLogs20140328GetQueryResultsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328ListTagsForResourceRoute,
+    postXAmzTargetLogs20140328ListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328ListTagsLogGroupRoute,
+    postXAmzTargetLogs20140328ListTagsLogGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutAccountPolicyRoute,
+    postXAmzTargetLogs20140328PutAccountPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutDataProtectionPolicyRoute,
+    postXAmzTargetLogs20140328PutDataProtectionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutDestinationRoute,
+    postXAmzTargetLogs20140328PutDestinationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutDestinationPolicyRoute,
+    postXAmzTargetLogs20140328PutDestinationPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutLogEventsRoute,
+    postXAmzTargetLogs20140328PutLogEventsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutMetricFilterRoute,
+    postXAmzTargetLogs20140328PutMetricFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutQueryDefinitionRoute,
+    postXAmzTargetLogs20140328PutQueryDefinitionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutResourcePolicyRoute,
+    postXAmzTargetLogs20140328PutResourcePolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutRetentionPolicyRoute,
+    postXAmzTargetLogs20140328PutRetentionPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328PutSubscriptionFilterRoute,
+    postXAmzTargetLogs20140328PutSubscriptionFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328StartQueryRoute,
+    postXAmzTargetLogs20140328StartQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328StopQueryRoute,
+    postXAmzTargetLogs20140328StopQueryRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328TagLogGroupRoute,
+    postXAmzTargetLogs20140328TagLogGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328TagResourceRoute,
+    postXAmzTargetLogs20140328TagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328TestMetricFilterRoute,
+    postXAmzTargetLogs20140328TestMetricFilterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328UntagLogGroupRoute,
+    postXAmzTargetLogs20140328UntagLogGroupRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetLogs20140328UntagResourceRoute,
+    postXAmzTargetLogs20140328UntagResourceRouteHandler,
+  )
 
 export default app

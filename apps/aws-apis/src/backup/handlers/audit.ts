@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAuditFrameworksFrameworkNameRoute,
   deleteAuditReportPlansReportPlanNameRoute,
   getAuditFrameworksFrameworkNameRoute,
@@ -15,45 +15,80 @@ import {
   putAuditReportPlansReportPlanNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAuditFrameworksRouteHandler: RouteHandler<
+  typeof postAuditFrameworksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const auditHandler = app
-  .openapi(postAuditFrameworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditFrameworksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditReportPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditReportPlansRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuditFrameworksFrameworkNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditFrameworksFrameworkNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuditFrameworksFrameworkNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAuditReportPlansReportPlanNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditReportPlansReportPlanNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAuditReportPlansReportPlanNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditReportJobsReportJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAuditReportJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAuditReportJobsReportPlanNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAuditFrameworksRouteHandler: RouteHandler<typeof getAuditFrameworksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditReportPlansRouteHandler: RouteHandler<
+  typeof postAuditReportPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditReportPlansRouteHandler: RouteHandler<
+  typeof getAuditReportPlansRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuditFrameworksFrameworkNameRouteHandler: RouteHandler<
+  typeof deleteAuditFrameworksFrameworkNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditFrameworksFrameworkNameRouteHandler: RouteHandler<
+  typeof getAuditFrameworksFrameworkNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuditFrameworksFrameworkNameRouteHandler: RouteHandler<
+  typeof putAuditFrameworksFrameworkNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAuditReportPlansReportPlanNameRouteHandler: RouteHandler<
+  typeof deleteAuditReportPlansReportPlanNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditReportPlansReportPlanNameRouteHandler: RouteHandler<
+  typeof getAuditReportPlansReportPlanNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAuditReportPlansReportPlanNameRouteHandler: RouteHandler<
+  typeof putAuditReportPlansReportPlanNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditReportJobsReportJobIdRouteHandler: RouteHandler<
+  typeof getAuditReportJobsReportJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAuditReportJobsRouteHandler: RouteHandler<typeof getAuditReportJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postAuditReportJobsReportPlanNameRouteHandler: RouteHandler<
+  typeof postAuditReportJobsReportPlanNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute,
   deletePaymentDraftsPaymentDraftIdRoute,
   getPaymentDraftsPaymentDraftIdRoute,
@@ -10,30 +10,50 @@ import {
   postPaymentDraftsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPaymentDraftsRouteHandler: RouteHandler<typeof getPaymentDraftsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const paymentDraftsHandler = app
-  .openapi(getPaymentDraftsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDraftsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPaymentDraftsPaymentDraftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePaymentDraftsPaymentDraftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPaymentDraftsPaymentDraftIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPaymentDraftsPaymentDraftIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postPaymentDraftsRouteHandler: RouteHandler<typeof postPaymentDraftsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPaymentDraftsPaymentDraftIdRouteHandler: RouteHandler<
+  typeof getPaymentDraftsPaymentDraftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePaymentDraftsPaymentDraftIdRouteHandler: RouteHandler<
+  typeof deletePaymentDraftsPaymentDraftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPaymentDraftsPaymentDraftIdRouteHandler: RouteHandler<
+  typeof patchPaymentDraftsPaymentDraftIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPaymentDraftsPaymentDraftIdPaymentsRouteHandler: RouteHandler<
+  typeof postPaymentDraftsPaymentDraftIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof patchPaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRouteHandler: RouteHandler<
+  typeof deletePaymentDraftsPaymentDraftIdPaymentsPaymentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

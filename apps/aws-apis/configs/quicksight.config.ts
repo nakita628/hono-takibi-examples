@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/quicksight/2018-04-01/openapi.yaml',
   output: './src/quicksight/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/quicksight/types.ts' },
   client: { output: './src/quicksight/client.ts', baseUrl: '/' },
   rpc: { output: './src/quicksight/rpc.ts', parseResponse: true },

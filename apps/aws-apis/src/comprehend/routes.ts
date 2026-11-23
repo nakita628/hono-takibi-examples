@@ -131,8 +131,8 @@ const BatchItemErrorSchema = z
 const BatchItemErrorListSchema = z.array(BatchItemErrorSchema).openapi('BatchItemErrorList')
 
 type BatchDetectEntitiesResponseType = {
-  ResultList: z.infer<typeof ListOfDetectEntitiesResultSchema> & unknown
-  ErrorList: z.infer<typeof BatchItemErrorListSchema> & unknown
+  ResultList: z.infer<typeof ListOfDetectEntitiesResultSchema>
+  ErrorList: z.infer<typeof BatchItemErrorListSchema>
 }
 
 const ListOfDescriptiveMentionIndicesSchema = z
@@ -285,8 +285,8 @@ const ListOfDetectTargetedSentimentResultSchema: z.ZodType<ListOfDetectTargetedS
     .openapi('ListOfDetectTargetedSentimentResult')
 
 type BatchDetectTargetedSentimentResponseType = {
-  ResultList: z.infer<typeof ListOfDetectTargetedSentimentResultSchema> & unknown
-  ErrorList: z.infer<typeof BatchItemErrorListSchema> & unknown
+  ResultList: z.infer<typeof ListOfDetectTargetedSentimentResultSchema>
+  ErrorList: z.infer<typeof BatchItemErrorListSchema>
 }
 
 const DominantLanguageSchema = z

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getApiLocationBrowseLocationTypeLocationNameRoute,
   getApiLocationConstituencyIdElectionResultElectionIdRoute,
   getApiLocationConstituencyIdElectionResultLatestRoute,
@@ -45,135 +45,258 @@ import {
   getApiReferencePolicyInterestsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiLocationBrowseLocationTypeLocationNameRouteHandler: RouteHandler<
+  typeof getApiLocationBrowseLocationTypeLocationNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiLocationBrowseLocationTypeLocationNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencySearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdElectionResultLatestRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdElectionResultElectionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdElectionResultsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdGeometryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdRepresentationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLocationConstituencyIdSynopsisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLordsInterestsRegisterRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiLordsInterestsStaffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersHistoryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersSearchHistoricalRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdBiographyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdContactRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdContributionSummaryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdEdmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdExperienceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdFocusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdLatestElectionResultRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdPortraitRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdPortraitUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdRegisteredInterestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdStaffRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdSynopsisRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdThumbnailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdThumbnailUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdVotingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiMembersIdWrittenQuestionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPartiesGetActiveHouseRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPartiesLordsByTypeForDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPartiesStateOfThePartiesHouseForDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsDepartmentsTypeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsGovernmentPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsOppositionPostsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsSpeakerAndDeputiesForDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiPostsSpokespersonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReferenceAnsweringBodiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReferenceDepartmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReferenceDepartmentsIdLogoRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiReferencePolicyInterestsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getApiLocationConstituencySearchRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencySearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdElectionResultLatestRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdElectionResultLatestRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdElectionResultElectionIdRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdElectionResultElectionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdElectionResultsRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdElectionResultsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdGeometryRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdGeometryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdRepresentationsRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdRepresentationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLocationConstituencyIdSynopsisRouteHandler: RouteHandler<
+  typeof getApiLocationConstituencyIdSynopsisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLordsInterestsRegisterRouteHandler: RouteHandler<
+  typeof getApiLordsInterestsRegisterRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiLordsInterestsStaffRouteHandler: RouteHandler<
+  typeof getApiLordsInterestsStaffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersHistoryRouteHandler: RouteHandler<
+  typeof getApiMembersHistoryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersSearchRouteHandler: RouteHandler<
+  typeof getApiMembersSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersSearchHistoricalRouteHandler: RouteHandler<
+  typeof getApiMembersSearchHistoricalRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdRouteHandler: RouteHandler<typeof getApiMembersIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdBiographyRouteHandler: RouteHandler<
+  typeof getApiMembersIdBiographyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdContactRouteHandler: RouteHandler<
+  typeof getApiMembersIdContactRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdContributionSummaryRouteHandler: RouteHandler<
+  typeof getApiMembersIdContributionSummaryRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdEdmsRouteHandler: RouteHandler<
+  typeof getApiMembersIdEdmsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdExperienceRouteHandler: RouteHandler<
+  typeof getApiMembersIdExperienceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdFocusRouteHandler: RouteHandler<
+  typeof getApiMembersIdFocusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdLatestElectionResultRouteHandler: RouteHandler<
+  typeof getApiMembersIdLatestElectionResultRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdPortraitRouteHandler: RouteHandler<
+  typeof getApiMembersIdPortraitRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdPortraitUrlRouteHandler: RouteHandler<
+  typeof getApiMembersIdPortraitUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdRegisteredInterestsRouteHandler: RouteHandler<
+  typeof getApiMembersIdRegisteredInterestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdStaffRouteHandler: RouteHandler<
+  typeof getApiMembersIdStaffRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdSynopsisRouteHandler: RouteHandler<
+  typeof getApiMembersIdSynopsisRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdThumbnailRouteHandler: RouteHandler<
+  typeof getApiMembersIdThumbnailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdThumbnailUrlRouteHandler: RouteHandler<
+  typeof getApiMembersIdThumbnailUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdVotingRouteHandler: RouteHandler<
+  typeof getApiMembersIdVotingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiMembersIdWrittenQuestionsRouteHandler: RouteHandler<
+  typeof getApiMembersIdWrittenQuestionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPartiesGetActiveHouseRouteHandler: RouteHandler<
+  typeof getApiPartiesGetActiveHouseRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPartiesLordsByTypeForDateRouteHandler: RouteHandler<
+  typeof getApiPartiesLordsByTypeForDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPartiesStateOfThePartiesHouseForDateRouteHandler: RouteHandler<
+  typeof getApiPartiesStateOfThePartiesHouseForDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsDepartmentsTypeRouteHandler: RouteHandler<
+  typeof getApiPostsDepartmentsTypeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsGovernmentPostsRouteHandler: RouteHandler<
+  typeof getApiPostsGovernmentPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsOppositionPostsRouteHandler: RouteHandler<
+  typeof getApiPostsOppositionPostsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsSpeakerAndDeputiesForDateRouteHandler: RouteHandler<
+  typeof getApiPostsSpeakerAndDeputiesForDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiPostsSpokespersonsRouteHandler: RouteHandler<
+  typeof getApiPostsSpokespersonsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReferenceAnsweringBodiesRouteHandler: RouteHandler<
+  typeof getApiReferenceAnsweringBodiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReferenceDepartmentsRouteHandler: RouteHandler<
+  typeof getApiReferenceDepartmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReferenceDepartmentsIdLogoRouteHandler: RouteHandler<
+  typeof getApiReferenceDepartmentsIdLogoRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiReferencePolicyInterestsRouteHandler: RouteHandler<
+  typeof getApiReferencePolicyInterestsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

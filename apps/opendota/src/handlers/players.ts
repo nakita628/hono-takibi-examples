@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPlayersAccountIdCountsRoute,
   getPlayersAccountIdHeroesRoute,
   getPlayersAccountIdHistogramsFieldRoute,
@@ -17,51 +17,92 @@ import {
   postPlayersAccountIdRefreshRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlayersAccountIdRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const playersHandler = app
-  .openapi(getPlayersAccountIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdWlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdRecentMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdMatchesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdHeroesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdPeersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdProsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdTotalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdCountsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdHistogramsFieldRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdWardmapRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdWordcloudRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlayersAccountIdRankingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postPlayersAccountIdRefreshRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPlayersAccountIdWlRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdWlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdRecentMatchesRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdRecentMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdMatchesRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdMatchesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdHeroesRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdHeroesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdPeersRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdPeersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdProsRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdProsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdTotalsRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdTotalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdCountsRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdCountsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdHistogramsFieldRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdHistogramsFieldRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdWardmapRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdWardmapRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdWordcloudRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdWordcloudRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdRatingsRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlayersAccountIdRankingsRouteHandler: RouteHandler<
+  typeof getPlayersAccountIdRankingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postPlayersAccountIdRefreshRouteHandler: RouteHandler<
+  typeof postPlayersAccountIdRefreshRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

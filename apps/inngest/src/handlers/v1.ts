@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1CancellationsIdRoute,
   deleteV1RunsRunIDRoute,
   deleteV1WebhooksIdRoute,
@@ -17,51 +17,78 @@ import {
   putV1WebhooksIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV1EventsRouteHandler: RouteHandler<typeof getV1EventsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(getV1EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventsInternalIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1EventsInternalIDRunsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RunsRunIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1RunsRunIDRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1RunsRunIDJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1SignalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1CancellationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1CancellationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1CancellationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1WebhooksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1WebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putV1WebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteV1WebhooksIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1EventsInternalIDRouteHandler: RouteHandler<
+  typeof getV1EventsInternalIDRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1EventsInternalIDRunsRouteHandler: RouteHandler<
+  typeof getV1EventsInternalIDRunsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RunsRunIDRouteHandler: RouteHandler<typeof getV1RunsRunIDRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1RunsRunIDRouteHandler: RouteHandler<typeof deleteV1RunsRunIDRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1RunsRunIDJobsRouteHandler: RouteHandler<typeof getV1RunsRunIDJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1SignalsRouteHandler: RouteHandler<typeof postV1SignalsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1CancellationsRouteHandler: RouteHandler<typeof getV1CancellationsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1CancellationsRouteHandler: RouteHandler<
+  typeof postV1CancellationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1CancellationsIdRouteHandler: RouteHandler<
+  typeof deleteV1CancellationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1WebhooksRouteHandler: RouteHandler<typeof getV1WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1WebhooksRouteHandler: RouteHandler<typeof postV1WebhooksRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1WebhooksIdRouteHandler: RouteHandler<typeof getV1WebhooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putV1WebhooksIdRouteHandler: RouteHandler<typeof putV1WebhooksIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteV1WebhooksIdRouteHandler: RouteHandler<typeof deleteV1WebhooksIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

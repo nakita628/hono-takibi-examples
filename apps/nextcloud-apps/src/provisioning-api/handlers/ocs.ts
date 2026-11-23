@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute,
   deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRoute,
   deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRoute,
@@ -51,153 +51,296 @@ import {
   putOcsV2PhpCloudUsersUserIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getOcsV2PhpCloudAppsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const ocsHandler = app
-  .openapi(getOcsV2PhpCloudAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudAppsAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudAppsAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpCloudAppsAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsGroupIdSubadminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpCloudGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpCloudGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsGroupIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersRecentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersUserIdSubadminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersUserIdSubadminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpCloudUsersUserIdSubadminsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsGroupIdUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudGroupsGroupIdUsersDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersDisabledRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersSearchByPhoneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpCloudUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchOcsV2PhpCloudUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpCloudUsersUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUserFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUserFieldsUserIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUserAppsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpCloudUsersUserIdCollectionNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersUserIdWipeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpCloudUsersUserIdEnableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putOcsV2PhpCloudUsersUserIdDisableRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersUserIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersUserIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpCloudUsersUserIdGroupsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersUserIdGroupsDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getOcsV2PhpCloudUsersUserIdSubadminsDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpCloudUsersUserIdWelcomeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getOcsV2PhpCloudAppsAppRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudAppsAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudAppsAppRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudAppsAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpCloudAppsAppRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpCloudAppsAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsGroupIdSubadminsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsGroupIdSubadminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudGroupsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpCloudGroupsGroupIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpCloudGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpCloudGroupsGroupIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpCloudGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsGroupIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsGroupIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersRecentRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersRecentRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersUserIdSubadminsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersUserIdSubadminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersUserIdSubadminsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersUserIdSubadminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpCloudUsersUserIdSubadminsRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpCloudUsersUserIdSubadminsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRouteHandler: RouteHandler<
+  typeof getOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsProvisioningApiApiV1ConfigAppsAppKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsDetailsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsGroupIdUsersRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsGroupIdUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudGroupsGroupIdUsersDetailsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudGroupsGroupIdUsersDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersDetailsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersDisabledRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersDisabledRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersSearchByPhoneRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersSearchByPhoneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersUserIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpCloudUsersUserIdRouteHandler: RouteHandler<
+  typeof putOcsV2PhpCloudUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchOcsV2PhpCloudUsersUserIdRouteHandler: RouteHandler<
+  typeof patchOcsV2PhpCloudUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpCloudUsersUserIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpCloudUsersUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUserRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUserRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUserFieldsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUserFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUserFieldsUserIdRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUserFieldsUserIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUserAppsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUserAppsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpCloudUsersUserIdCollectionNameRouteHandler: RouteHandler<
+  typeof putOcsV2PhpCloudUsersUserIdCollectionNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersUserIdWipeRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersUserIdWipeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpCloudUsersUserIdEnableRouteHandler: RouteHandler<
+  typeof putOcsV2PhpCloudUsersUserIdEnableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putOcsV2PhpCloudUsersUserIdDisableRouteHandler: RouteHandler<
+  typeof putOcsV2PhpCloudUsersUserIdDisableRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersUserIdGroupsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersUserIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersUserIdGroupsRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersUserIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpCloudUsersUserIdGroupsRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpCloudUsersUserIdGroupsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersUserIdGroupsDetailsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersUserIdGroupsDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getOcsV2PhpCloudUsersUserIdSubadminsDetailsRouteHandler: RouteHandler<
+  typeof getOcsV2PhpCloudUsersUserIdSubadminsDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpCloudUsersUserIdWelcomeRouteHandler: RouteHandler<
+  typeof postOcsV2PhpCloudUsersUserIdWelcomeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdConfigKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRouteHandler: RouteHandler<
+  typeof postOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRouteHandler: RouteHandler<
+  typeof deleteOcsV2PhpAppsProvisioningApiApiV1ConfigUsersAppIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -214,6 +214,78 @@ const DCSchema: z.ZodType<DCType> = z
   .openapi({ description: '`DC`\n', required: [] })
   .openapi('DC')
 
+type MonsterAllOf3ActionsItemsType = {
+  action_options?: z.infer<typeof ChoiceSchema>
+  actions?: {
+    action_name?: string
+    count?: number
+    type?: 'melee' | 'ranged' | 'ability' | 'magic'
+  }[]
+  attack_bonus?: number
+  attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
+  damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
+  dc?: z.infer<typeof DCSchema>
+  desc?: string
+  multiattack_type?: string
+  name?: string
+  options?: z.infer<typeof ChoiceSchema>
+}
+
+const MonsterAllOf3ActionsItemsSchema: z.ZodType<MonsterAllOf3ActionsItemsType> = z
+  .object({
+    action_options: ChoiceSchema.exactOptional(),
+    actions: z
+      .array(
+        z
+          .object({
+            action_name: z.string().exactOptional(),
+            count: z.number().exactOptional(),
+            type: z.enum(['melee', 'ranged', 'ability', 'magic']).exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    attack_bonus: z.number().exactOptional(),
+    attacks: z
+      .array(
+        z
+          .object({
+            damage: z.any().exactOptional(),
+            dc: DCSchema.exactOptional(),
+            name: z.string().exactOptional(),
+          })
+          .openapi({ required: [] }),
+      )
+      .exactOptional(),
+    damage: z
+      .array(
+        z
+          .object({
+            damage_dice: z
+              .string()
+              .regex(/^\d+d\d+(\+\d+)?$/)
+              .exactOptional()
+              .openapi({ example: '2d6+5' }),
+            damage_type: APIReferenceSchema.exactOptional(),
+          })
+          .openapi({
+            description: 'Damage type and dice associated with a particular attack.',
+            required: [],
+          }),
+      )
+      .exactOptional(),
+    dc: DCSchema.exactOptional(),
+    desc: z.string().exactOptional(),
+    multiattack_type: z.string().exactOptional(),
+    name: z.string().exactOptional(),
+    options: ChoiceSchema.exactOptional(),
+  })
+  .openapi({
+    description: 'Action available to a `Monster` in addition to the standard creature actions.',
+    required: [],
+  })
+  .openapi('MonsterAllOf3ActionsItems')
+
 type MonsterType = z.infer<typeof APIReferenceSchema> &
   z.infer<typeof ResourceDescriptionSchema> & {
     charisma?: number
@@ -223,22 +295,7 @@ type MonsterType = z.infer<typeof APIReferenceSchema> &
     strength?: number
     wisdom?: number
   } & {
-    actions?: {
-      action_options?: z.infer<typeof ChoiceSchema>
-      actions?: {
-        action_name?: string
-        count?: number
-        type?: 'melee' | 'ranged' | 'ability' | 'magic'
-      }[]
-      attack_bonus?: number
-      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
-      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
-      dc?: z.infer<typeof DCSchema>
-      desc?: string
-      multiattack_type?: string
-      name?: string
-      options?: z.infer<typeof ChoiceSchema>
-    }[]
+    actions?: z.infer<typeof MonsterAllOf3ActionsItemsSchema>[]
     alignments?:
       | 'chaotic neutral'
       | 'chaotic evil'
@@ -284,39 +341,9 @@ type MonsterType = z.infer<typeof APIReferenceSchema> &
     hit_points_roll?: string
     image?: string
     languages?: string
-    legendary_actions?: {
-      action_options?: z.infer<typeof ChoiceSchema>
-      actions?: {
-        action_name?: string
-        count?: number
-        type?: 'melee' | 'ranged' | 'ability' | 'magic'
-      }[]
-      attack_bonus?: number
-      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
-      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
-      dc?: z.infer<typeof DCSchema>
-      desc?: string
-      multiattack_type?: string
-      name?: string
-      options?: z.infer<typeof ChoiceSchema>
-    }[]
+    legendary_actions?: z.infer<typeof MonsterAllOf3ActionsItemsSchema>[]
     proficiencies?: { proficiency?: z.infer<typeof APIReferenceSchema>; value?: number }[]
-    reactions?: {
-      action_options?: z.infer<typeof ChoiceSchema>
-      actions?: {
-        action_name?: string
-        count?: number
-        type?: 'melee' | 'ranged' | 'ability' | 'magic'
-      }[]
-      attack_bonus?: number
-      attacks?: { damage?: unknown; dc?: z.infer<typeof DCSchema>; name?: string }[]
-      damage?: { damage_dice?: string; damage_type?: z.infer<typeof APIReferenceSchema> }[]
-      dc?: z.infer<typeof DCSchema>
-      desc?: string
-      multiattack_type?: string
-      name?: string
-      options?: z.infer<typeof ChoiceSchema>
-    }[]
+    reactions?: z.infer<typeof MonsterAllOf3ActionsItemsSchema>[]
     senses?: {
       blindsight?: string
       darkvision?: string
@@ -1229,62 +1256,7 @@ const MonsterSchema: z.ZodType<MonsterType> = APIReferenceSchema.and(ResourceDes
     z
       .object({
         actions: z
-          .array(
-            z
-              .object({
-                action_options: ChoiceSchema.exactOptional(),
-                actions: z
-                  .array(
-                    z
-                      .object({
-                        action_name: z.string().exactOptional(),
-                        count: z.number().exactOptional(),
-                        type: z.enum(['melee', 'ranged', 'ability', 'magic']).exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                attack_bonus: z.number().exactOptional(),
-                attacks: z
-                  .array(
-                    z
-                      .object({
-                        damage: z.any().exactOptional(),
-                        dc: DCSchema.exactOptional(),
-                        name: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                damage: z
-                  .array(
-                    z
-                      .object({
-                        damage_dice: z
-                          .string()
-                          .regex(/^\d+d\d+(\+\d+)?$/)
-                          .exactOptional()
-                          .openapi({ example: '2d6+5' }),
-                        damage_type: APIReferenceSchema.exactOptional(),
-                      })
-                      .openapi({
-                        description: 'Damage type and dice associated with a particular attack.',
-                        required: [],
-                      }),
-                  )
-                  .exactOptional(),
-                dc: DCSchema.exactOptional(),
-                desc: z.string().exactOptional(),
-                multiattack_type: z.string().exactOptional(),
-                name: z.string().exactOptional(),
-                options: ChoiceSchema.exactOptional(),
-              })
-              .openapi({
-                description:
-                  'Action available to a `Monster` in addition to the standard creature actions.',
-                required: [],
-              }),
-          )
+          .array(MonsterAllOf3ActionsItemsSchema)
           .exactOptional()
           .openapi({
             description:
@@ -1420,62 +1392,7 @@ const MonsterSchema: z.ZodType<MonsterType> = APIReferenceSchema.and(ResourceDes
           .exactOptional()
           .openapi({ description: 'The languages a monster is able to speak.' }),
         legendary_actions: z
-          .array(
-            z
-              .object({
-                action_options: ChoiceSchema.exactOptional(),
-                actions: z
-                  .array(
-                    z
-                      .object({
-                        action_name: z.string().exactOptional(),
-                        count: z.number().exactOptional(),
-                        type: z.enum(['melee', 'ranged', 'ability', 'magic']).exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                attack_bonus: z.number().exactOptional(),
-                attacks: z
-                  .array(
-                    z
-                      .object({
-                        damage: z.any().exactOptional(),
-                        dc: DCSchema.exactOptional(),
-                        name: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                damage: z
-                  .array(
-                    z
-                      .object({
-                        damage_dice: z
-                          .string()
-                          .regex(/^\d+d\d+(\+\d+)?$/)
-                          .exactOptional()
-                          .openapi({ example: '2d6+5' }),
-                        damage_type: APIReferenceSchema.exactOptional(),
-                      })
-                      .openapi({
-                        description: 'Damage type and dice associated with a particular attack.',
-                        required: [],
-                      }),
-                  )
-                  .exactOptional(),
-                dc: DCSchema.exactOptional(),
-                desc: z.string().exactOptional(),
-                multiattack_type: z.string().exactOptional(),
-                name: z.string().exactOptional(),
-                options: ChoiceSchema.exactOptional(),
-              })
-              .openapi({
-                description:
-                  'Action available to a `Monster` in addition to the standard creature actions.',
-                required: [],
-              }),
-          )
+          .array(MonsterAllOf3ActionsItemsSchema)
           .exactOptional()
           .openapi({
             description:
@@ -1493,62 +1410,7 @@ const MonsterSchema: z.ZodType<MonsterType> = APIReferenceSchema.and(ResourceDes
           .exactOptional()
           .openapi({ description: 'A list of proficiencies of a monster.' }),
         reactions: z
-          .array(
-            z
-              .object({
-                action_options: ChoiceSchema.exactOptional(),
-                actions: z
-                  .array(
-                    z
-                      .object({
-                        action_name: z.string().exactOptional(),
-                        count: z.number().exactOptional(),
-                        type: z.enum(['melee', 'ranged', 'ability', 'magic']).exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                attack_bonus: z.number().exactOptional(),
-                attacks: z
-                  .array(
-                    z
-                      .object({
-                        damage: z.any().exactOptional(),
-                        dc: DCSchema.exactOptional(),
-                        name: z.string().exactOptional(),
-                      })
-                      .openapi({ required: [] }),
-                  )
-                  .exactOptional(),
-                damage: z
-                  .array(
-                    z
-                      .object({
-                        damage_dice: z
-                          .string()
-                          .regex(/^\d+d\d+(\+\d+)?$/)
-                          .exactOptional()
-                          .openapi({ example: '2d6+5' }),
-                        damage_type: APIReferenceSchema.exactOptional(),
-                      })
-                      .openapi({
-                        description: 'Damage type and dice associated with a particular attack.',
-                        required: [],
-                      }),
-                  )
-                  .exactOptional(),
-                dc: DCSchema.exactOptional(),
-                desc: z.string().exactOptional(),
-                multiattack_type: z.string().exactOptional(),
-                name: z.string().exactOptional(),
-                options: ChoiceSchema.exactOptional(),
-              })
-              .openapi({
-                description:
-                  'Action available to a `Monster` in addition to the standard creature actions.',
-                required: [],
-              }),
-          )
+          .array(MonsterAllOf3ActionsItemsSchema)
           .exactOptional()
           .openapi({
             description:

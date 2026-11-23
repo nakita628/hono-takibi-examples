@@ -1,15 +1,16 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAlbumsIdRoute, getAlbumsIdTracksRoute, getAlbumsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAlbumsIdRoute, getAlbumsIdTracksRoute, getAlbumsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getAlbumsRouteHandler: RouteHandler<typeof getAlbumsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const albumsHandler = app
-  .openapi(getAlbumsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAlbumsIdTracksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAlbumsIdRouteHandler: RouteHandler<typeof getAlbumsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAlbumsIdTracksRouteHandler: RouteHandler<typeof getAlbumsIdTracksRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

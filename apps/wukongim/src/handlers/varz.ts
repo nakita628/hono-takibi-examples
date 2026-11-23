@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getVarzRoute, getVarzSettingRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getVarzRoute, getVarzSettingRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getVarzRouteHandler: RouteHandler<typeof getVarzRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const varzHandler = app
-  .openapi(getVarzRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getVarzSettingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getVarzSettingRouteHandler: RouteHandler<typeof getVarzSettingRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

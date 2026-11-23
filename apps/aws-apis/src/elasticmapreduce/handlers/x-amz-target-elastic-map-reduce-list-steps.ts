@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetElasticMapReduceListStepsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetElasticMapReduceListStepsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetElasticMapReduceListStepsHandler = app.openapi(
-  postXAmzTargetElasticMapReduceListStepsRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetElasticMapReduceListStepsRouteHandler: RouteHandler<
+  typeof postXAmzTargetElasticMapReduceListStepsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

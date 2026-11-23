@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/bunq.com/1.0/openapi.yaml',
   output: './src/bunq/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/bunq/types.ts' },
   client: { output: './src/bunq/client.ts', baseUrl: '/' },
   rpc: { output: './src/bunq/rpc.ts', parseResponse: true },

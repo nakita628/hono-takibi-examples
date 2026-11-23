@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getGovernanceCommitteeCcIdVotesRoute,
   getGovernanceCommitteeRoute,
   getGovernanceCommitteeVotesRoute,
@@ -22,66 +22,122 @@ import {
   getGovernanceProposalsTxHashCertIndexWithdrawalsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGovernanceCommitteeRouteHandler: RouteHandler<
+  typeof getGovernanceCommitteeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const governanceHandler = app
-  .openapi(getGovernanceCommitteeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceCommitteeVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceCommitteeCcIdVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsDrepIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsDrepIdDelegatorsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsDrepIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsDrepIdUpdatesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceDrepsDrepIdVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsTxHashCertIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsTxHashCertIndexParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsTxHashCertIndexWithdrawalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsTxHashCertIndexVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsTxHashCertIndexMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsGovActionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsGovActionIdParametersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsGovActionIdWithdrawalsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsGovActionIdVotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGovernanceProposalsGovActionIdMetadataRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGovernanceCommitteeVotesRouteHandler: RouteHandler<
+  typeof getGovernanceCommitteeVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceCommitteeCcIdVotesRouteHandler: RouteHandler<
+  typeof getGovernanceCommitteeCcIdVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsRouteHandler: RouteHandler<typeof getGovernanceDrepsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsDrepIdRouteHandler: RouteHandler<
+  typeof getGovernanceDrepsDrepIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsDrepIdDelegatorsRouteHandler: RouteHandler<
+  typeof getGovernanceDrepsDrepIdDelegatorsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsDrepIdMetadataRouteHandler: RouteHandler<
+  typeof getGovernanceDrepsDrepIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsDrepIdUpdatesRouteHandler: RouteHandler<
+  typeof getGovernanceDrepsDrepIdUpdatesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceDrepsDrepIdVotesRouteHandler: RouteHandler<
+  typeof getGovernanceDrepsDrepIdVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsTxHashCertIndexRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsTxHashCertIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsTxHashCertIndexParametersRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsTxHashCertIndexParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsTxHashCertIndexWithdrawalsRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsTxHashCertIndexWithdrawalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsTxHashCertIndexVotesRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsTxHashCertIndexVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsTxHashCertIndexMetadataRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsTxHashCertIndexMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsGovActionIdRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsGovActionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsGovActionIdParametersRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsGovActionIdParametersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsGovActionIdWithdrawalsRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsGovActionIdWithdrawalsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsGovActionIdVotesRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsGovActionIdVotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getGovernanceProposalsGovActionIdMetadataRouteHandler: RouteHandler<
+  typeof getGovernanceProposalsGovActionIdMetadataRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

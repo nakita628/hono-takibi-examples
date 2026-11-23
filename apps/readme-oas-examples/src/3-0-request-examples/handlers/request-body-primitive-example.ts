@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   patchRequestBodyPrimitiveExampleRoute,
   postRequestBodyPrimitiveExampleRoute,
   putRequestBodyPrimitiveExampleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postRequestBodyPrimitiveExampleRouteHandler: RouteHandler<
+  typeof postRequestBodyPrimitiveExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const requestBodyPrimitiveExampleHandler = app
-  .openapi(postRequestBodyPrimitiveExampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchRequestBodyPrimitiveExampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putRequestBodyPrimitiveExampleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const patchRequestBodyPrimitiveExampleRouteHandler: RouteHandler<
+  typeof patchRequestBodyPrimitiveExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putRequestBodyPrimitiveExampleRouteHandler: RouteHandler<
+  typeof putRequestBodyPrimitiveExampleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

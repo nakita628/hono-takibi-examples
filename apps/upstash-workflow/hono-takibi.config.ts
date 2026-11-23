@@ -5,7 +5,7 @@ export default defineConfig({
   // https://github.com/upstash/docs/blob/ed6e86df2b81f57fcf32ed6a10b3544db19d0c89/workflow/openapi.yaml
   input: 'https://raw.githubusercontent.com/upstash/docs/main/workflow/openapi.yaml',
   output: './src/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/types.ts' },
   client: { output: './src/client.ts', baseUrl: '/' },
   rpc: { output: './src/rpc.ts', parseResponse: true },

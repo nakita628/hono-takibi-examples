@@ -1,115 +1,329 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetElasticMapReduceAddInstanceFleetHandler,
-  xAmzTargetElasticMapReduceAddInstanceGroupsHandler,
-  xAmzTargetElasticMapReduceAddJobFlowStepsHandler,
-  xAmzTargetElasticMapReduceAddTagsHandler,
-  xAmzTargetElasticMapReduceCancelStepsHandler,
-  xAmzTargetElasticMapReduceCreateSecurityConfigurationHandler,
-  xAmzTargetElasticMapReduceCreateStudioHandler,
-  xAmzTargetElasticMapReduceCreateStudioSessionMappingHandler,
-  xAmzTargetElasticMapReduceDeleteSecurityConfigurationHandler,
-  xAmzTargetElasticMapReduceDeleteStudioHandler,
-  xAmzTargetElasticMapReduceDeleteStudioSessionMappingHandler,
-  xAmzTargetElasticMapReduceDescribeClusterHandler,
-  xAmzTargetElasticMapReduceDescribeJobFlowsHandler,
-  xAmzTargetElasticMapReduceDescribeNotebookExecutionHandler,
-  xAmzTargetElasticMapReduceDescribeReleaseLabelHandler,
-  xAmzTargetElasticMapReduceDescribeSecurityConfigurationHandler,
-  xAmzTargetElasticMapReduceDescribeStepHandler,
-  xAmzTargetElasticMapReduceDescribeStudioHandler,
-  xAmzTargetElasticMapReduceGetAutoTerminationPolicyHandler,
-  xAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationHandler,
-  xAmzTargetElasticMapReduceGetClusterSessionCredentialsHandler,
-  xAmzTargetElasticMapReduceGetManagedScalingPolicyHandler,
-  xAmzTargetElasticMapReduceGetStudioSessionMappingHandler,
-  xAmzTargetElasticMapReduceListBootstrapActionsHandler,
-  xAmzTargetElasticMapReduceListClustersHandler,
-  xAmzTargetElasticMapReduceListInstanceFleetsHandler,
-  xAmzTargetElasticMapReduceListInstanceGroupsHandler,
-  xAmzTargetElasticMapReduceListInstancesHandler,
-  xAmzTargetElasticMapReduceListNotebookExecutionsHandler,
-  xAmzTargetElasticMapReduceListReleaseLabelsHandler,
-  xAmzTargetElasticMapReduceListSecurityConfigurationsHandler,
-  xAmzTargetElasticMapReduceListStepsHandler,
-  xAmzTargetElasticMapReduceListStudioSessionMappingsHandler,
-  xAmzTargetElasticMapReduceListStudiosHandler,
-  xAmzTargetElasticMapReduceModifyClusterHandler,
-  xAmzTargetElasticMapReduceModifyInstanceFleetHandler,
-  xAmzTargetElasticMapReduceModifyInstanceGroupsHandler,
-  xAmzTargetElasticMapReducePutAutoScalingPolicyHandler,
-  xAmzTargetElasticMapReducePutAutoTerminationPolicyHandler,
-  xAmzTargetElasticMapReducePutBlockPublicAccessConfigurationHandler,
-  xAmzTargetElasticMapReducePutManagedScalingPolicyHandler,
-  xAmzTargetElasticMapReduceRemoveAutoScalingPolicyHandler,
-  xAmzTargetElasticMapReduceRemoveAutoTerminationPolicyHandler,
-  xAmzTargetElasticMapReduceRemoveManagedScalingPolicyHandler,
-  xAmzTargetElasticMapReduceRemoveTagsHandler,
-  xAmzTargetElasticMapReduceRunJobFlowHandler,
-  xAmzTargetElasticMapReduceSetTerminationProtectionHandler,
-  xAmzTargetElasticMapReduceSetVisibleToAllUsersHandler,
-  xAmzTargetElasticMapReduceStartNotebookExecutionHandler,
-  xAmzTargetElasticMapReduceStopNotebookExecutionHandler,
-  xAmzTargetElasticMapReduceTerminateJobFlowsHandler,
-  xAmzTargetElasticMapReduceUpdateStudioHandler,
-  xAmzTargetElasticMapReduceUpdateStudioSessionMappingHandler,
+  postXAmzTargetElasticMapReduceAddInstanceFleetRoute,
+  postXAmzTargetElasticMapReduceAddInstanceGroupsRoute,
+  postXAmzTargetElasticMapReduceAddJobFlowStepsRoute,
+  postXAmzTargetElasticMapReduceAddTagsRoute,
+  postXAmzTargetElasticMapReduceCancelStepsRoute,
+  postXAmzTargetElasticMapReduceCreateSecurityConfigurationRoute,
+  postXAmzTargetElasticMapReduceCreateStudioRoute,
+  postXAmzTargetElasticMapReduceCreateStudioSessionMappingRoute,
+  postXAmzTargetElasticMapReduceDeleteSecurityConfigurationRoute,
+  postXAmzTargetElasticMapReduceDeleteStudioRoute,
+  postXAmzTargetElasticMapReduceDeleteStudioSessionMappingRoute,
+  postXAmzTargetElasticMapReduceDescribeClusterRoute,
+  postXAmzTargetElasticMapReduceDescribeJobFlowsRoute,
+  postXAmzTargetElasticMapReduceDescribeNotebookExecutionRoute,
+  postXAmzTargetElasticMapReduceDescribeReleaseLabelRoute,
+  postXAmzTargetElasticMapReduceDescribeSecurityConfigurationRoute,
+  postXAmzTargetElasticMapReduceDescribeStepRoute,
+  postXAmzTargetElasticMapReduceDescribeStudioRoute,
+  postXAmzTargetElasticMapReduceGetAutoTerminationPolicyRoute,
+  postXAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationRoute,
+  postXAmzTargetElasticMapReduceGetClusterSessionCredentialsRoute,
+  postXAmzTargetElasticMapReduceGetManagedScalingPolicyRoute,
+  postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute,
+  postXAmzTargetElasticMapReduceListBootstrapActionsRoute,
+  postXAmzTargetElasticMapReduceListClustersRoute,
+  postXAmzTargetElasticMapReduceListInstanceFleetsRoute,
+  postXAmzTargetElasticMapReduceListInstanceGroupsRoute,
+  postXAmzTargetElasticMapReduceListInstancesRoute,
+  postXAmzTargetElasticMapReduceListNotebookExecutionsRoute,
+  postXAmzTargetElasticMapReduceListReleaseLabelsRoute,
+  postXAmzTargetElasticMapReduceListSecurityConfigurationsRoute,
+  postXAmzTargetElasticMapReduceListStepsRoute,
+  postXAmzTargetElasticMapReduceListStudioSessionMappingsRoute,
+  postXAmzTargetElasticMapReduceListStudiosRoute,
+  postXAmzTargetElasticMapReduceModifyClusterRoute,
+  postXAmzTargetElasticMapReduceModifyInstanceFleetRoute,
+  postXAmzTargetElasticMapReduceModifyInstanceGroupsRoute,
+  postXAmzTargetElasticMapReducePutAutoScalingPolicyRoute,
+  postXAmzTargetElasticMapReducePutAutoTerminationPolicyRoute,
+  postXAmzTargetElasticMapReducePutBlockPublicAccessConfigurationRoute,
+  postXAmzTargetElasticMapReducePutManagedScalingPolicyRoute,
+  postXAmzTargetElasticMapReduceRemoveAutoScalingPolicyRoute,
+  postXAmzTargetElasticMapReduceRemoveAutoTerminationPolicyRoute,
+  postXAmzTargetElasticMapReduceRemoveManagedScalingPolicyRoute,
+  postXAmzTargetElasticMapReduceRemoveTagsRoute,
+  postXAmzTargetElasticMapReduceRunJobFlowRoute,
+  postXAmzTargetElasticMapReduceSetTerminationProtectionRoute,
+  postXAmzTargetElasticMapReduceSetVisibleToAllUsersRoute,
+  postXAmzTargetElasticMapReduceStartNotebookExecutionRoute,
+  postXAmzTargetElasticMapReduceStopNotebookExecutionRoute,
+  postXAmzTargetElasticMapReduceTerminateJobFlowsRoute,
+  postXAmzTargetElasticMapReduceUpdateStudioRoute,
+  postXAmzTargetElasticMapReduceUpdateStudioSessionMappingRoute,
+} from './routes'
+import {
+  postXAmzTargetElasticMapReduceAddInstanceFleetRouteHandler,
+  postXAmzTargetElasticMapReduceAddInstanceGroupsRouteHandler,
+  postXAmzTargetElasticMapReduceAddJobFlowStepsRouteHandler,
+  postXAmzTargetElasticMapReduceAddTagsRouteHandler,
+  postXAmzTargetElasticMapReduceCancelStepsRouteHandler,
+  postXAmzTargetElasticMapReduceCreateSecurityConfigurationRouteHandler,
+  postXAmzTargetElasticMapReduceCreateStudioRouteHandler,
+  postXAmzTargetElasticMapReduceCreateStudioSessionMappingRouteHandler,
+  postXAmzTargetElasticMapReduceDeleteSecurityConfigurationRouteHandler,
+  postXAmzTargetElasticMapReduceDeleteStudioRouteHandler,
+  postXAmzTargetElasticMapReduceDeleteStudioSessionMappingRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeClusterRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeJobFlowsRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeNotebookExecutionRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeReleaseLabelRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeSecurityConfigurationRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeStepRouteHandler,
+  postXAmzTargetElasticMapReduceDescribeStudioRouteHandler,
+  postXAmzTargetElasticMapReduceGetAutoTerminationPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationRouteHandler,
+  postXAmzTargetElasticMapReduceGetClusterSessionCredentialsRouteHandler,
+  postXAmzTargetElasticMapReduceGetManagedScalingPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceGetStudioSessionMappingRouteHandler,
+  postXAmzTargetElasticMapReduceListBootstrapActionsRouteHandler,
+  postXAmzTargetElasticMapReduceListClustersRouteHandler,
+  postXAmzTargetElasticMapReduceListInstanceFleetsRouteHandler,
+  postXAmzTargetElasticMapReduceListInstanceGroupsRouteHandler,
+  postXAmzTargetElasticMapReduceListInstancesRouteHandler,
+  postXAmzTargetElasticMapReduceListNotebookExecutionsRouteHandler,
+  postXAmzTargetElasticMapReduceListReleaseLabelsRouteHandler,
+  postXAmzTargetElasticMapReduceListSecurityConfigurationsRouteHandler,
+  postXAmzTargetElasticMapReduceListStepsRouteHandler,
+  postXAmzTargetElasticMapReduceListStudioSessionMappingsRouteHandler,
+  postXAmzTargetElasticMapReduceListStudiosRouteHandler,
+  postXAmzTargetElasticMapReduceModifyClusterRouteHandler,
+  postXAmzTargetElasticMapReduceModifyInstanceFleetRouteHandler,
+  postXAmzTargetElasticMapReduceModifyInstanceGroupsRouteHandler,
+  postXAmzTargetElasticMapReducePutAutoScalingPolicyRouteHandler,
+  postXAmzTargetElasticMapReducePutAutoTerminationPolicyRouteHandler,
+  postXAmzTargetElasticMapReducePutBlockPublicAccessConfigurationRouteHandler,
+  postXAmzTargetElasticMapReducePutManagedScalingPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceRemoveAutoScalingPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceRemoveAutoTerminationPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceRemoveManagedScalingPolicyRouteHandler,
+  postXAmzTargetElasticMapReduceRemoveTagsRouteHandler,
+  postXAmzTargetElasticMapReduceRunJobFlowRouteHandler,
+  postXAmzTargetElasticMapReduceSetTerminationProtectionRouteHandler,
+  postXAmzTargetElasticMapReduceSetVisibleToAllUsersRouteHandler,
+  postXAmzTargetElasticMapReduceStartNotebookExecutionRouteHandler,
+  postXAmzTargetElasticMapReduceStopNotebookExecutionRouteHandler,
+  postXAmzTargetElasticMapReduceTerminateJobFlowsRouteHandler,
+  postXAmzTargetElasticMapReduceUpdateStudioRouteHandler,
+  postXAmzTargetElasticMapReduceUpdateStudioSessionMappingRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetElasticMapReduceAddInstanceFleetHandler)
-  .route('/', xAmzTargetElasticMapReduceAddInstanceGroupsHandler)
-  .route('/', xAmzTargetElasticMapReduceAddJobFlowStepsHandler)
-  .route('/', xAmzTargetElasticMapReduceAddTagsHandler)
-  .route('/', xAmzTargetElasticMapReduceCancelStepsHandler)
-  .route('/', xAmzTargetElasticMapReduceCreateSecurityConfigurationHandler)
-  .route('/', xAmzTargetElasticMapReduceCreateStudioHandler)
-  .route('/', xAmzTargetElasticMapReduceCreateStudioSessionMappingHandler)
-  .route('/', xAmzTargetElasticMapReduceDeleteSecurityConfigurationHandler)
-  .route('/', xAmzTargetElasticMapReduceDeleteStudioHandler)
-  .route('/', xAmzTargetElasticMapReduceDeleteStudioSessionMappingHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeClusterHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeJobFlowsHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeNotebookExecutionHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeReleaseLabelHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeSecurityConfigurationHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeStepHandler)
-  .route('/', xAmzTargetElasticMapReduceDescribeStudioHandler)
-  .route('/', xAmzTargetElasticMapReduceGetAutoTerminationPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationHandler)
-  .route('/', xAmzTargetElasticMapReduceGetClusterSessionCredentialsHandler)
-  .route('/', xAmzTargetElasticMapReduceGetManagedScalingPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceGetStudioSessionMappingHandler)
-  .route('/', xAmzTargetElasticMapReduceListBootstrapActionsHandler)
-  .route('/', xAmzTargetElasticMapReduceListClustersHandler)
-  .route('/', xAmzTargetElasticMapReduceListInstanceFleetsHandler)
-  .route('/', xAmzTargetElasticMapReduceListInstanceGroupsHandler)
-  .route('/', xAmzTargetElasticMapReduceListInstancesHandler)
-  .route('/', xAmzTargetElasticMapReduceListNotebookExecutionsHandler)
-  .route('/', xAmzTargetElasticMapReduceListReleaseLabelsHandler)
-  .route('/', xAmzTargetElasticMapReduceListSecurityConfigurationsHandler)
-  .route('/', xAmzTargetElasticMapReduceListStepsHandler)
-  .route('/', xAmzTargetElasticMapReduceListStudioSessionMappingsHandler)
-  .route('/', xAmzTargetElasticMapReduceListStudiosHandler)
-  .route('/', xAmzTargetElasticMapReduceModifyClusterHandler)
-  .route('/', xAmzTargetElasticMapReduceModifyInstanceFleetHandler)
-  .route('/', xAmzTargetElasticMapReduceModifyInstanceGroupsHandler)
-  .route('/', xAmzTargetElasticMapReducePutAutoScalingPolicyHandler)
-  .route('/', xAmzTargetElasticMapReducePutAutoTerminationPolicyHandler)
-  .route('/', xAmzTargetElasticMapReducePutBlockPublicAccessConfigurationHandler)
-  .route('/', xAmzTargetElasticMapReducePutManagedScalingPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceRemoveAutoScalingPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceRemoveAutoTerminationPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceRemoveManagedScalingPolicyHandler)
-  .route('/', xAmzTargetElasticMapReduceRemoveTagsHandler)
-  .route('/', xAmzTargetElasticMapReduceRunJobFlowHandler)
-  .route('/', xAmzTargetElasticMapReduceSetTerminationProtectionHandler)
-  .route('/', xAmzTargetElasticMapReduceSetVisibleToAllUsersHandler)
-  .route('/', xAmzTargetElasticMapReduceStartNotebookExecutionHandler)
-  .route('/', xAmzTargetElasticMapReduceStopNotebookExecutionHandler)
-  .route('/', xAmzTargetElasticMapReduceTerminateJobFlowsHandler)
-  .route('/', xAmzTargetElasticMapReduceUpdateStudioHandler)
-  .route('/', xAmzTargetElasticMapReduceUpdateStudioSessionMappingHandler)
+  .openapi(
+    postXAmzTargetElasticMapReduceAddInstanceFleetRoute,
+    postXAmzTargetElasticMapReduceAddInstanceFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceAddInstanceGroupsRoute,
+    postXAmzTargetElasticMapReduceAddInstanceGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceAddJobFlowStepsRoute,
+    postXAmzTargetElasticMapReduceAddJobFlowStepsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceAddTagsRoute,
+    postXAmzTargetElasticMapReduceAddTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceCancelStepsRoute,
+    postXAmzTargetElasticMapReduceCancelStepsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceCreateSecurityConfigurationRoute,
+    postXAmzTargetElasticMapReduceCreateSecurityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceCreateStudioRoute,
+    postXAmzTargetElasticMapReduceCreateStudioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceCreateStudioSessionMappingRoute,
+    postXAmzTargetElasticMapReduceCreateStudioSessionMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDeleteSecurityConfigurationRoute,
+    postXAmzTargetElasticMapReduceDeleteSecurityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDeleteStudioRoute,
+    postXAmzTargetElasticMapReduceDeleteStudioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDeleteStudioSessionMappingRoute,
+    postXAmzTargetElasticMapReduceDeleteStudioSessionMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeClusterRoute,
+    postXAmzTargetElasticMapReduceDescribeClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeJobFlowsRoute,
+    postXAmzTargetElasticMapReduceDescribeJobFlowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeNotebookExecutionRoute,
+    postXAmzTargetElasticMapReduceDescribeNotebookExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeReleaseLabelRoute,
+    postXAmzTargetElasticMapReduceDescribeReleaseLabelRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeSecurityConfigurationRoute,
+    postXAmzTargetElasticMapReduceDescribeSecurityConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeStepRoute,
+    postXAmzTargetElasticMapReduceDescribeStepRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceDescribeStudioRoute,
+    postXAmzTargetElasticMapReduceDescribeStudioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceGetAutoTerminationPolicyRoute,
+    postXAmzTargetElasticMapReduceGetAutoTerminationPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationRoute,
+    postXAmzTargetElasticMapReduceGetBlockPublicAccessConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceGetClusterSessionCredentialsRoute,
+    postXAmzTargetElasticMapReduceGetClusterSessionCredentialsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceGetManagedScalingPolicyRoute,
+    postXAmzTargetElasticMapReduceGetManagedScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceGetStudioSessionMappingRoute,
+    postXAmzTargetElasticMapReduceGetStudioSessionMappingRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListBootstrapActionsRoute,
+    postXAmzTargetElasticMapReduceListBootstrapActionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListClustersRoute,
+    postXAmzTargetElasticMapReduceListClustersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListInstanceFleetsRoute,
+    postXAmzTargetElasticMapReduceListInstanceFleetsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListInstanceGroupsRoute,
+    postXAmzTargetElasticMapReduceListInstanceGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListInstancesRoute,
+    postXAmzTargetElasticMapReduceListInstancesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListNotebookExecutionsRoute,
+    postXAmzTargetElasticMapReduceListNotebookExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListReleaseLabelsRoute,
+    postXAmzTargetElasticMapReduceListReleaseLabelsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListSecurityConfigurationsRoute,
+    postXAmzTargetElasticMapReduceListSecurityConfigurationsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListStepsRoute,
+    postXAmzTargetElasticMapReduceListStepsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListStudioSessionMappingsRoute,
+    postXAmzTargetElasticMapReduceListStudioSessionMappingsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceListStudiosRoute,
+    postXAmzTargetElasticMapReduceListStudiosRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceModifyClusterRoute,
+    postXAmzTargetElasticMapReduceModifyClusterRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceModifyInstanceFleetRoute,
+    postXAmzTargetElasticMapReduceModifyInstanceFleetRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceModifyInstanceGroupsRoute,
+    postXAmzTargetElasticMapReduceModifyInstanceGroupsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReducePutAutoScalingPolicyRoute,
+    postXAmzTargetElasticMapReducePutAutoScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReducePutAutoTerminationPolicyRoute,
+    postXAmzTargetElasticMapReducePutAutoTerminationPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReducePutBlockPublicAccessConfigurationRoute,
+    postXAmzTargetElasticMapReducePutBlockPublicAccessConfigurationRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReducePutManagedScalingPolicyRoute,
+    postXAmzTargetElasticMapReducePutManagedScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceRemoveAutoScalingPolicyRoute,
+    postXAmzTargetElasticMapReduceRemoveAutoScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceRemoveAutoTerminationPolicyRoute,
+    postXAmzTargetElasticMapReduceRemoveAutoTerminationPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceRemoveManagedScalingPolicyRoute,
+    postXAmzTargetElasticMapReduceRemoveManagedScalingPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceRemoveTagsRoute,
+    postXAmzTargetElasticMapReduceRemoveTagsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceRunJobFlowRoute,
+    postXAmzTargetElasticMapReduceRunJobFlowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceSetTerminationProtectionRoute,
+    postXAmzTargetElasticMapReduceSetTerminationProtectionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceSetVisibleToAllUsersRoute,
+    postXAmzTargetElasticMapReduceSetVisibleToAllUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceStartNotebookExecutionRoute,
+    postXAmzTargetElasticMapReduceStartNotebookExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceStopNotebookExecutionRoute,
+    postXAmzTargetElasticMapReduceStopNotebookExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceTerminateJobFlowsRoute,
+    postXAmzTargetElasticMapReduceTerminateJobFlowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceUpdateStudioRoute,
+    postXAmzTargetElasticMapReduceUpdateStudioRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetElasticMapReduceUpdateStudioSessionMappingRoute,
+    postXAmzTargetElasticMapReduceUpdateStudioSessionMappingRouteHandler,
+  )
 
 export default app

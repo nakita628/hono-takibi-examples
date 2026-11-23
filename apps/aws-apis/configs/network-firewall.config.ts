@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/amazonaws.com/network-firewall/2020-11-12/openapi.yaml',
   output: './src/network-firewall/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/network-firewall/types.ts' },
   client: { output: './src/network-firewall/client.ts', baseUrl: '/' },
   rpc: { output: './src/network-firewall/rpc.ts', parseResponse: true },

@@ -3,8 +3,6 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/amazonaws.com/cloudfront/2020-05-31/openapi.yaml',
   output: './src/cloudfront/routes.ts',
-  // template: { routeHandler: true }: the default template exports each handler file under its first path
-  // segment, and one here starts with a digit, which is not an identifier (nakita628/hono-takibi#506).
   template: { routeHandler: true },
   type: { output: './src/cloudfront/types.ts' },
   client: { output: './src/cloudfront/client.ts', baseUrl: '/' },

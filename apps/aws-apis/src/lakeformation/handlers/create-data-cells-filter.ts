@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postCreateDataCellsFilterRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postCreateDataCellsFilterRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const createDataCellsFilterHandler = app.openapi(postCreateDataCellsFilterRoute, (c) => {
+export const postCreateDataCellsFilterRouteHandler: RouteHandler<
+  typeof postCreateDataCellsFilterRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

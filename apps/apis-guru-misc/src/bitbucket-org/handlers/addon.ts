@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteAddonLinkersLinkerKeyValuesRoute,
   deleteAddonLinkersLinkerKeyValuesValueIdRoute,
   deleteAddonRoute,
@@ -12,36 +12,56 @@ import {
   putAddonRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteAddonRouteHandler: RouteHandler<typeof deleteAddonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const addonHandler = app
-  .openapi(deleteAddonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAddonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonLinkersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonLinkersLinkerKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAddonLinkersLinkerKeyValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonLinkersLinkerKeyValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postAddonLinkersLinkerKeyValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putAddonLinkersLinkerKeyValuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteAddonLinkersLinkerKeyValuesValueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAddonLinkersLinkerKeyValuesValueIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putAddonRouteHandler: RouteHandler<typeof putAddonRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddonLinkersRouteHandler: RouteHandler<typeof getAddonLinkersRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddonLinkersLinkerKeyRouteHandler: RouteHandler<
+  typeof getAddonLinkersLinkerKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAddonLinkersLinkerKeyValuesRouteHandler: RouteHandler<
+  typeof deleteAddonLinkersLinkerKeyValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddonLinkersLinkerKeyValuesRouteHandler: RouteHandler<
+  typeof getAddonLinkersLinkerKeyValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postAddonLinkersLinkerKeyValuesRouteHandler: RouteHandler<
+  typeof postAddonLinkersLinkerKeyValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putAddonLinkersLinkerKeyValuesRouteHandler: RouteHandler<
+  typeof putAddonLinkersLinkerKeyValuesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteAddonLinkersLinkerKeyValuesValueIdRouteHandler: RouteHandler<
+  typeof deleteAddonLinkersLinkerKeyValuesValueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getAddonLinkersLinkerKeyValuesValueIdRouteHandler: RouteHandler<
+  typeof getAddonLinkersLinkerKeyValuesValueIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

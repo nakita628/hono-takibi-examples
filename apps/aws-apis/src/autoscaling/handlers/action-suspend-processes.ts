@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getActionSuspendProcessesRoute, postActionSuspendProcessesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getActionSuspendProcessesRoute, postActionSuspendProcessesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionSuspendProcessesRouteHandler: RouteHandler<
+  typeof getActionSuspendProcessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionSuspendProcessesHandler = app
-  .openapi(getActionSuspendProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionSuspendProcessesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionSuspendProcessesRouteHandler: RouteHandler<
+  typeof postActionSuspendProcessesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

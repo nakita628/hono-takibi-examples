@@ -306,8 +306,8 @@ export function usePutAccountNameVtexcommercestableComBrApiOrderIntegrationOrder
 
 export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersKey() {
   return [
-    ':accountName.:environment.com.br',
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders',
+    ':accountName.{environment}.com.br',
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders',
     'POST',
   ] as const
 }
@@ -321,7 +321,7 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+              (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
             >
           >
         >
@@ -330,7 +330,7 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
     TError,
     Key,
     InferRequestType<
-      (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+      (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -348,12 +348,12 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders']['$post']
+            (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders']['$post']
           >
         },
       ) =>
         parseResponse(
-          client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders.$post(
+          client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders.$post(
             arg,
             clientOptions,
           ),
@@ -365,8 +365,8 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrders<
 
 export function getPostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderIdFulfillKey() {
   return [
-    ':accountName.:environment.com.br',
-    '/:accountName.:environment.com.br/api/fulfillment/pvt/orders/:orderId/fulfill',
+    ':accountName.{environment}.com.br',
+    '/:accountName.{environment}.com.br/api/fulfillment/pvt/orders/:orderId/fulfill',
     'POST',
   ] as const
 }
@@ -380,7 +380,7 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
         typeof parseResponse<
           Awaited<
             ReturnType<
-              (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+              (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
             >
           >
         >
@@ -389,7 +389,7 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
     TError,
     Key,
     InferRequestType<
-      (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+      (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
     >
   > & { swrKey?: Key; throwOnError?: boolean }
   options?: ClientRequestOptions
@@ -408,12 +408,12 @@ export function usePostAccountNameEnvironmentComBrApiFulfillmentPvtOrdersOrderId
           arg,
         }: {
           arg: InferRequestType<
-            (typeof client)[':accountName.:environment.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
+            (typeof client)[':accountName.{environment}.com.br']['api']['fulfillment']['pvt']['orders'][':orderId']['fulfill']['$post']
           >
         },
       ) =>
         parseResponse(
-          client[':accountName.:environment.com.br'].api.fulfillment.pvt.orders[
+          client[':accountName.{environment}.com.br'].api.fulfillment.pvt.orders[
             ':orderId'
           ].fulfill.$post(arg, clientOptions),
         ),

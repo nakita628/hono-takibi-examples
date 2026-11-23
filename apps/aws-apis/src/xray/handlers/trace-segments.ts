@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTraceSegmentsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTraceSegmentsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const traceSegmentsHandler = app.openapi(postTraceSegmentsRoute, (c) => {
+export const postTraceSegmentsRouteHandler: RouteHandler<typeof postTraceSegmentsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

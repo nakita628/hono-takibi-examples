@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetBaldrApiServiceRestoreBackupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetBaldrApiServiceRestoreBackupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetBaldrApiServiceRestoreBackupHandler = app.openapi(
-  postXAmzTargetBaldrApiServiceRestoreBackupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetBaldrApiServiceRestoreBackupRouteHandler: RouteHandler<
+  typeof postXAmzTargetBaldrApiServiceRestoreBackupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

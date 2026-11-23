@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getGithubAuthProvidersIdRoute, getGithubAuthProvidersRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getGithubAuthProvidersIdRoute, getGithubAuthProvidersRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getGithubAuthProvidersIdRouteHandler: RouteHandler<
+  typeof getGithubAuthProvidersIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const githubAuthProvidersHandler = app
-  .openapi(getGithubAuthProvidersIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getGithubAuthProvidersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getGithubAuthProvidersRouteHandler: RouteHandler<
+  typeof getGithubAuthProvidersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdHandler =
-  app.openapi(
-    postV1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postV1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdRouteHandler: RouteHandler<
+  typeof postV1XAmznDataexchangeAssetIdXAmznDataexchangeDataSetIdXAmznDataexchangeRevisionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

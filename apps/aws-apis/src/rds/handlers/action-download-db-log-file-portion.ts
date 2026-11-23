@@ -1,15 +1,17 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getActionDownloadDBLogFilePortionRoute,
   postActionDownloadDBLogFilePortionRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getActionDownloadDBLogFilePortionRouteHandler: RouteHandler<
+  typeof getActionDownloadDBLogFilePortionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const actionDownloadDbLogFilePortionHandler = app
-  .openapi(getActionDownloadDBLogFilePortionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postActionDownloadDBLogFilePortionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postActionDownloadDBLogFilePortionRouteHandler: RouteHandler<
+  typeof postActionDownloadDBLogFilePortionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

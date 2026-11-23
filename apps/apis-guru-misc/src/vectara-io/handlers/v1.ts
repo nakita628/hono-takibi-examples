@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postV1CreateCorpusRoute,
   postV1DeleteCorpusRoute,
   postV1DeleteDocRoute,
@@ -11,33 +11,48 @@ import {
   postV1UploadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postV1CreateCorpusRouteHandler: RouteHandler<typeof postV1CreateCorpusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1Handler = app
-  .openapi(postV1CreateCorpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeleteCorpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1DeleteDocRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1IndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ListCorporaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1QueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1ResetCorpusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1StreamQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1UploadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postV1DeleteCorpusRouteHandler: RouteHandler<typeof postV1DeleteCorpusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1DeleteDocRouteHandler: RouteHandler<typeof postV1DeleteDocRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1IndexRouteHandler: RouteHandler<typeof postV1IndexRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ListCorporaRouteHandler: RouteHandler<typeof postV1ListCorporaRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1QueryRouteHandler: RouteHandler<typeof postV1QueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1ResetCorpusRouteHandler: RouteHandler<typeof postV1ResetCorpusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1StreamQueryRouteHandler: RouteHandler<typeof postV1StreamQueryRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1UploadRouteHandler: RouteHandler<typeof postV1UploadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

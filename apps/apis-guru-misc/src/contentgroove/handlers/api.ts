@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteApiV1ClipsIdRoute,
   deleteApiV1MediasIdRoute,
   deleteApiV1WebhookSubscriptionsIdRoute,
@@ -17,51 +17,80 @@ import {
   putApiV1MediasIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getApiV1ClipsRouteHandler: RouteHandler<typeof getApiV1ClipsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const apiHandler = app
-  .openapi(getApiV1ClipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1ClipsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV1ClipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1ClipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiV1ClipsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1DirectUploadsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MediasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1MediasRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV1MediasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1MediasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putApiV1MediasIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1WebhookSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postApiV1WebhookSubscriptionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteApiV1WebhookSubscriptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getApiV1WebhookSubscriptionsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postApiV1ClipsRouteHandler: RouteHandler<typeof postApiV1ClipsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV1ClipsIdRouteHandler: RouteHandler<typeof deleteApiV1ClipsIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1ClipsIdRouteHandler: RouteHandler<typeof getApiV1ClipsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV1ClipsIdRouteHandler: RouteHandler<typeof putApiV1ClipsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1DirectUploadsRouteHandler: RouteHandler<
+  typeof getApiV1DirectUploadsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MediasRouteHandler: RouteHandler<typeof getApiV1MediasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1MediasRouteHandler: RouteHandler<typeof postApiV1MediasRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV1MediasIdRouteHandler: RouteHandler<
+  typeof deleteApiV1MediasIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1MediasIdRouteHandler: RouteHandler<typeof getApiV1MediasIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putApiV1MediasIdRouteHandler: RouteHandler<typeof putApiV1MediasIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1WebhookSubscriptionsRouteHandler: RouteHandler<
+  typeof getApiV1WebhookSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postApiV1WebhookSubscriptionsRouteHandler: RouteHandler<
+  typeof postApiV1WebhookSubscriptionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteApiV1WebhookSubscriptionsIdRouteHandler: RouteHandler<
+  typeof deleteApiV1WebhookSubscriptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getApiV1WebhookSubscriptionsIdRouteHandler: RouteHandler<
+  typeof getApiV1WebhookSubscriptionsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

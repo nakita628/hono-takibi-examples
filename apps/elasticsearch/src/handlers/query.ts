@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQueryAsyncIdRoute,
   deleteQueryDatasetNameRoute,
   deleteQueryDataSourceNameRoute,
@@ -21,63 +21,104 @@ import {
   putQueryViewNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postQueryAsyncRouteHandler: RouteHandler<typeof postQueryAsyncRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queryHandler = app
-  .openapi(postQueryAsyncRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryAsyncIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryAsyncIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryAsyncIdStopRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryDataSourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueryDataSourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryDataSourceNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueryDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryDatasetNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryViewNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueryViewNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueryViewNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryDataSourceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryDatasetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryQueriesIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryViewRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueryQueriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postQueryRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQueryAsyncIdRouteHandler: RouteHandler<typeof getQueryAsyncIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryAsyncIdRouteHandler: RouteHandler<typeof deleteQueryAsyncIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueryAsyncIdStopRouteHandler: RouteHandler<
+  typeof postQueryAsyncIdStopRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryDataSourceNameRouteHandler: RouteHandler<
+  typeof getQueryDataSourceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQueryDataSourceNameRouteHandler: RouteHandler<
+  typeof putQueryDataSourceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryDataSourceNameRouteHandler: RouteHandler<
+  typeof deleteQueryDataSourceNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryDatasetNameRouteHandler: RouteHandler<
+  typeof getQueryDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQueryDatasetNameRouteHandler: RouteHandler<
+  typeof putQueryDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryDatasetNameRouteHandler: RouteHandler<
+  typeof deleteQueryDatasetNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryViewNameRouteHandler: RouteHandler<typeof getQueryViewNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const putQueryViewNameRouteHandler: RouteHandler<typeof putQueryViewNameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueryViewNameRouteHandler: RouteHandler<
+  typeof deleteQueryViewNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryDataSourceRouteHandler: RouteHandler<typeof getQueryDataSourceRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryDatasetRouteHandler: RouteHandler<typeof getQueryDatasetRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryQueriesIdRouteHandler: RouteHandler<typeof getQueryQueriesIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryViewRouteHandler: RouteHandler<typeof getQueryViewRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueryQueriesRouteHandler: RouteHandler<typeof getQueryQueriesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postQueryRouteHandler: RouteHandler<typeof postQueryRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteUserApiKeysIdRoute,
   deleteUserOtpAppRoute,
   deleteUserOtpSmsRoute,
@@ -15,45 +15,68 @@ import {
   putUserRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getUserRouteHandler: RouteHandler<typeof getUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const userHandler = app
-  .openapi(getUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putUserRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserApiKeysRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserApiKeysIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserOtpAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserOtpAppRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getUserOtpRecoveryCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserOtpRecoveryCodesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteUserOtpSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserOtpSmsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserOtpSmsReceiveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postUserOtpVerifyOtpRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const putUserRouteHandler: RouteHandler<typeof putUserRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserApiKeysRouteHandler: RouteHandler<typeof getUserApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserApiKeysRouteHandler: RouteHandler<typeof postUserApiKeysRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserApiKeysIdRouteHandler: RouteHandler<
+  typeof deleteUserApiKeysIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserOtpAppRouteHandler: RouteHandler<typeof deleteUserOtpAppRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserOtpAppRouteHandler: RouteHandler<typeof postUserOtpAppRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getUserOtpRecoveryCodesRouteHandler: RouteHandler<
+  typeof getUserOtpRecoveryCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserOtpRecoveryCodesRouteHandler: RouteHandler<
+  typeof postUserOtpRecoveryCodesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteUserOtpSmsRouteHandler: RouteHandler<typeof deleteUserOtpSmsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserOtpSmsRouteHandler: RouteHandler<typeof postUserOtpSmsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserOtpSmsReceiveRouteHandler: RouteHandler<
+  typeof postUserOtpSmsReceiveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postUserOtpVerifyOtpRouteHandler: RouteHandler<
+  typeof postUserOtpVerifyOtpRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

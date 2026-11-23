@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getBucketVersionsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getBucketVersionsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const bucketVersionsHandler = app.openapi(getBucketVersionsRoute, (c) => {
+export const getBucketVersionsRouteHandler: RouteHandler<typeof getBucketVersionsRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

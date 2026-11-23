@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/gov.bc.ca/open511/1.0.0/openapi.yaml',
   output: './src/open511/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/open511/types.ts' },
   client: { output: './src/open511/client.ts', baseUrl: '/' },
   rpc: { output: './src/open511/rpc.ts', parseResponse: true },

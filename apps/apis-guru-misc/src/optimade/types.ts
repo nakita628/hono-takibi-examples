@@ -596,7 +596,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 422 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 500 }
         | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 501 }
-        | { input: {}; output: ErrorResponse; outputFormat: 'json'; status: 553 }
     }
   } & {
     '/info/:entry': {
@@ -642,12 +641,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 501
-          }
-        | {
-            input: { param: { entry: string } }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
           }
     }
   } & {
@@ -807,28 +800,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 501
           }
-        | {
-            input: {
-              query: {
-                filter?: string | undefined
-                response_format?: string | undefined
-                email_address?: string | undefined
-                response_fields?: string | undefined
-                sort?: string | undefined
-                page_limit?: number | undefined
-                page_offset?: number | undefined
-                page_number?: number | undefined
-                page_cursor?: number | undefined
-                page_above?: number | undefined
-                page_below?: number | undefined
-                include?: string | undefined
-                api_hint?: string | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
-          }
     }
   } & {
     '/references': {
@@ -987,28 +958,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 501
           }
-        | {
-            input: {
-              query: {
-                filter?: string | undefined
-                response_format?: string | undefined
-                email_address?: string | undefined
-                response_fields?: string | undefined
-                sort?: string | undefined
-                page_limit?: number | undefined
-                page_offset?: number | undefined
-                page_number?: number | undefined
-                page_cursor?: number | undefined
-                page_above?: number | undefined
-                page_below?: number | undefined
-                include?: string | undefined
-                api_hint?: string | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
-          }
     }
   } & {
     '/references/:entry_id': {
@@ -1110,20 +1059,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 501
-          }
-        | {
-            input: { param: { entry_id: string } } & {
-              query: {
-                response_format?: string | undefined
-                email_address?: string | undefined
-                response_fields?: string | undefined
-                include?: string | undefined
-                api_hint?: string | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
           }
     }
   } & {
@@ -1283,28 +1218,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             outputFormat: 'json'
             status: 501
           }
-        | {
-            input: {
-              query: {
-                filter?: string | undefined
-                response_format?: string | undefined
-                email_address?: string | undefined
-                response_fields?: string | undefined
-                sort?: string | undefined
-                page_limit?: number | undefined
-                page_offset?: number | undefined
-                page_number?: number | undefined
-                page_cursor?: number | undefined
-                page_above?: number | undefined
-                page_below?: number | undefined
-                include?: string | undefined
-                api_hint?: string | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
-          }
     }
   } & {
     '/structures/:entry_id': {
@@ -1406,20 +1319,6 @@ declare const routes: import('@hono/zod-openapi').OpenAPIHono<
             output: ErrorResponse
             outputFormat: 'json'
             status: 501
-          }
-        | {
-            input: { param: { entry_id: string } } & {
-              query: {
-                response_format?: string | undefined
-                email_address?: string | undefined
-                response_fields?: string | undefined
-                include?: string | undefined
-                api_hint?: string | undefined
-              }
-            }
-            output: ErrorResponse
-            outputFormat: 'json'
-            status: 553
           }
     }
   } & { '/versions': { $get: { input: {}; output: string; outputFormat: 'text'; status: 200 } } },

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postV1ParentMessagesSendRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postV1ParentMessagesSendRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const v1Handler = app.openapi(postV1ParentMessagesSendRoute, (c) => {
+export const postV1ParentMessagesSendRouteHandler: RouteHandler<
+  typeof postV1ParentMessagesSendRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

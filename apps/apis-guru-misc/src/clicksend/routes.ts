@@ -447,7 +447,7 @@ export const getAccountRoute = createRoute({
   tags: ['Account'],
   summary: 'Get account',
   operationId: 'Get account',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAccountRoute = createRoute({
@@ -515,7 +515,7 @@ export const putAccountRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAccountRoute = createRoute({
@@ -566,7 +566,7 @@ export const postAccountRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAccountVerifySendRoute = createRoute({
@@ -593,7 +593,7 @@ export const putAccountVerifySendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -619,7 +619,7 @@ export const putAccountVerifyVerifyActivationTokenRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAccountUsageYearMonthTypeRoute = createRoute({
@@ -684,7 +684,7 @@ export const getAccountUsageYearMonthTypeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsEmailReceiptRoute = createRoute({
@@ -692,7 +692,7 @@ export const getAutomationsEmailReceiptRoute = createRoute({
   path: '/automations/email/receipt',
   tags: ['Automation Rules'],
   summary: 'List Rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsEmailReceiptRoute = createRoute({
@@ -726,7 +726,7 @@ export const postAutomationsEmailReceiptRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsEmailReceiptRuleIdRoute = createRoute({
@@ -758,7 +758,7 @@ export const getAutomationsEmailReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsEmailReceiptRuleIdRoute = createRoute({
@@ -820,7 +820,7 @@ export const putAutomationsEmailReceiptRuleIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsEmailReceiptRuleIdRoute = createRoute({
@@ -852,7 +852,7 @@ export const deleteAutomationsEmailReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsFaxInboundRoute = createRoute({
@@ -860,7 +860,7 @@ export const getAutomationsFaxInboundRoute = createRoute({
   path: '/automations/fax/inbound',
   tags: ['Automation Rules'],
   summary: 'List rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsFaxInboundRoute = createRoute({
@@ -869,7 +869,7 @@ export const postAutomationsFaxInboundRoute = createRoute({
   tags: ['Automation Rules'],
   summary: 'Create a new rule',
   request: { body: CreateANewRuleBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsFaxInboundInboundRuleIdRoute = createRoute({
@@ -901,7 +901,7 @@ export const getAutomationsFaxInboundInboundRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsFaxInboundInboundRuleIdRoute = createRoute({
@@ -934,7 +934,7 @@ export const putAutomationsFaxInboundInboundRuleIdRoute = createRoute({
     }),
     body: CreateANewRuleBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsFaxInboundInboundRuleIdRoute = createRoute({
@@ -966,7 +966,7 @@ export const deleteAutomationsFaxInboundInboundRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsFaxReceiptsRoute = createRoute({
@@ -975,7 +975,7 @@ export const getAutomationsFaxReceiptsRoute = createRoute({
   tags: ['Automation Rules'],
   summary: 'List Rules',
   operationId: 'List Rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsFaxReceiptsRoute = createRoute({
@@ -1010,7 +1010,7 @@ export const postAutomationsFaxReceiptsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsFaxReceiptsRuleIdRoute = createRoute({
@@ -1043,7 +1043,7 @@ export const getAutomationsFaxReceiptsRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsFaxReceiptsRuleIdRoute = createRoute({
@@ -1106,7 +1106,7 @@ export const putAutomationsFaxReceiptsRuleIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsFaxReceiptsRuleIdRoute = createRoute({
@@ -1139,7 +1139,7 @@ export const deleteAutomationsFaxReceiptsRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsSmsInboundRoute = createRoute({
@@ -1148,7 +1148,7 @@ export const getAutomationsSmsInboundRoute = createRoute({
   tags: ['Automation Rules'],
   summary: 'List rules',
   operationId: 'List rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsSmsInboundIndexRoute = createRoute({
@@ -1200,7 +1200,7 @@ export const postAutomationsSmsInboundIndexRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsSmsInboundInboundRuleIdRoute = createRoute({
@@ -1233,7 +1233,7 @@ export const getAutomationsSmsInboundInboundRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsSmsInboundInboundRuleIdRoute = createRoute({
@@ -1305,7 +1305,7 @@ export const putAutomationsSmsInboundInboundRuleIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsSmsInboundInboundRuleIdRoute = createRoute({
@@ -1338,7 +1338,7 @@ export const deleteAutomationsSmsInboundInboundRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsSmsReceiptsRoute = createRoute({
@@ -1346,7 +1346,7 @@ export const getAutomationsSmsReceiptsRoute = createRoute({
   path: '/automations/sms/receipts',
   tags: ['Automation Rules'],
   summary: 'List rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsSmsReceiptsRoute = createRoute({
@@ -1355,7 +1355,7 @@ export const postAutomationsSmsReceiptsRoute = createRoute({
   tags: ['Automation Rules'],
   summary: 'Create a new rule',
   request: { body: CreateANewRuleBody2RequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
@@ -1387,7 +1387,7 @@ export const getAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
@@ -1420,7 +1420,7 @@ export const putAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
     }),
     body: CreateANewRuleBody2RequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
@@ -1452,7 +1452,7 @@ export const deleteAutomationsSmsReceiptsReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsVoiceReceiptsRoute = createRoute({
@@ -1460,7 +1460,7 @@ export const getAutomationsVoiceReceiptsRoute = createRoute({
   path: '/automations/voice/receipts',
   tags: ['Automation Rules'],
   summary: 'List rules',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postAutomationsVoiceReceiptsRoute = createRoute({
@@ -1469,7 +1469,7 @@ export const postAutomationsVoiceReceiptsRoute = createRoute({
   tags: ['Automation Rules'],
   summary: 'Create a new rule',
   request: { body: CreateANewRuleBody2RequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
@@ -1501,7 +1501,7 @@ export const getAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
@@ -1534,7 +1534,7 @@ export const putAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
     }),
     body: CreateANewRuleBody2RequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
@@ -1566,7 +1566,7 @@ export const deleteAutomationsVoiceReceiptsReceiptRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getContactSuggestionsRoute = createRoute({
@@ -1575,7 +1575,7 @@ export const getContactSuggestionsRoute = createRoute({
   tags: ['Contact Suggestions'],
   summary: 'List Contact Suggestions',
   operationId: 'List Contact Suggestions',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getCountriesRoute = createRoute({
@@ -1584,7 +1584,7 @@ export const getCountriesRoute = createRoute({
   tags: ['Countries'],
   summary: 'Get all Countries',
   operationId: 'Get all Countries',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getDeliveryIssuesRoute = createRoute({
@@ -1593,7 +1593,7 @@ export const getDeliveryIssuesRoute = createRoute({
   tags: ['Delivery Issues'],
   summary: 'Get Delivery Issues',
   operationId: 'Get Delivery Issues',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postDeliveryIssuesRoute = createRoute({
@@ -1636,7 +1636,7 @@ export const postDeliveryIssuesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailCampaignsRoute = createRoute({
@@ -1645,7 +1645,7 @@ export const getEmailCampaignsRoute = createRoute({
   tags: ['Email Marketing'],
   summary: 'Get All Email Campaigns',
   operationId: 'Get All Email Campaigns',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailCampaignsPriceRoute = createRoute({
@@ -1655,7 +1655,7 @@ export const postEmailCampaignsPriceRoute = createRoute({
   summary: 'Calculate Price',
   operationId: 'Calculate Price',
   request: { body: CreateEmailCampaignBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailCampaignsSendRoute = createRoute({
@@ -1665,7 +1665,7 @@ export const postEmailCampaignsSendRoute = createRoute({
   summary: 'Create Email Campaign',
   operationId: 'Create Email Campaign',
   request: { body: CreateEmailCampaignBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailCampaignsCampaignIdHistoryRoute = createRoute({
@@ -1698,7 +1698,7 @@ export const getEmailCampaignsCampaignIdHistoryRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailCampaignsEmailCampaignIdRoute = createRoute({
@@ -1731,7 +1731,7 @@ export const getEmailCampaignsEmailCampaignIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putEmailCampaignsEmailCampaignIdRoute = createRoute({
@@ -1813,7 +1813,7 @@ export const putEmailCampaignsEmailCampaignIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putEmailCampaignsEmailCampaignIdCancelRoute = createRoute({
@@ -1846,7 +1846,7 @@ export const putEmailCampaignsEmailCampaignIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putEmailAddressVerifyEmailAddressIdSendRoute = createRoute({
@@ -1879,7 +1879,7 @@ export const putEmailAddressVerifyEmailAddressIdSendRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putEmailAddressVerifyEmailAddressIdVerifyActivationTokenRoute = createRoute({
@@ -1924,7 +1924,7 @@ export const putEmailAddressVerifyEmailAddressIdVerifyActivationTokenRoute = cre
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailAddressesRoute = createRoute({
@@ -1933,7 +1933,7 @@ export const getEmailAddressesRoute = createRoute({
   tags: ['Email Marketing'],
   summary: 'Get All Allowed Email Addresses',
   operationId: 'Get All Allowed Email Addresses',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailAddressesRoute = createRoute({
@@ -1962,7 +1962,7 @@ export const postEmailAddressesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailAddressesEmailAddressIdRoute = createRoute({
@@ -1995,7 +1995,7 @@ export const getEmailAddressesEmailAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteEmailAddressesEmailAddressIdRoute = createRoute({
@@ -2028,7 +2028,7 @@ export const deleteEmailAddressesEmailAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailHistoryRoute = createRoute({
@@ -2037,7 +2037,7 @@ export const getEmailHistoryRoute = createRoute({
   tags: ['Transactional Email'],
   summary: 'Email History',
   operationId: 'Email History',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailHistoryExportFilenameFilenameRoute = createRoute({
@@ -2062,7 +2062,7 @@ export const getEmailHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailMasterTemplatesRoute = createRoute({
@@ -2071,7 +2071,7 @@ export const getEmailMasterTemplatesRoute = createRoute({
   tags: ['Email Marketing'],
   summary: 'Get All Master Email Templates',
   operationId: 'Get All Master Email Templates',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailMasterTemplatesCategoriesRoute = createRoute({
@@ -2080,7 +2080,7 @@ export const getEmailMasterTemplatesCategoriesRoute = createRoute({
   tags: ['Email Marketing'],
   summary: 'Get All Master Template Categories',
   operationId: 'Get All Master Template Categories',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailMasterTemplatesCategoriesCategoryIdRoute = createRoute({
@@ -2105,7 +2105,7 @@ export const getEmailMasterTemplatesCategoriesCategoryIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailMasterTemplatesCategoriesCategoryIdMasterTemplatesRoute = createRoute({
@@ -2130,7 +2130,7 @@ export const getEmailMasterTemplatesCategoriesCategoryIdMasterTemplatesRoute = c
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailMasterTemplatesTemplateIdRoute = createRoute({
@@ -2155,7 +2155,7 @@ export const getEmailMasterTemplatesTemplateIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailPriceRoute = createRoute({
@@ -2227,7 +2227,7 @@ export const postEmailPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailReceiptsRoute = createRoute({
@@ -2236,7 +2236,7 @@ export const postEmailReceiptsRoute = createRoute({
   tags: ['Transactional Email'],
   summary: 'Add a Test Delivery Receipt',
   request: { body: AddATestDeliveryReceiptBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailSendRoute = createRoute({
@@ -2308,7 +2308,7 @@ export const postEmailSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailTemplatesRoute = createRoute({
@@ -2317,7 +2317,7 @@ export const getEmailTemplatesRoute = createRoute({
   tags: ['Email Marketing'],
   summary: 'Get All Email Templates',
   operationId: 'Get All Email Templates',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailTemplatesRoute = createRoute({
@@ -2347,7 +2347,7 @@ export const postEmailTemplatesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postEmailTemplatesImagesTemplateIdRoute = createRoute({
@@ -2393,7 +2393,7 @@ export const postEmailTemplatesImagesTemplateIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getEmailTemplatesTemplateIdRoute = createRoute({
@@ -2426,7 +2426,7 @@ export const getEmailTemplatesTemplateIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putEmailTemplatesTemplateIdRoute = createRoute({
@@ -2473,7 +2473,7 @@ export const putEmailTemplatesTemplateIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -2507,7 +2507,7 @@ export const deleteEmailTemplatesTemplateIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getFaxHistoryExportFilenameFilenameRoute = createRoute({
@@ -2532,7 +2532,7 @@ export const getFaxHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRoute = createRoute({
@@ -2610,7 +2610,7 @@ export const getFaxHistoryDateFromDateFromDateToDateToQQOrderByOrderByRoute = cr
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postFaxPriceRoute = createRoute({
@@ -2619,7 +2619,7 @@ export const postFaxPriceRoute = createRoute({
   tags: ['Fax'],
   summary: 'Calculate Price',
   request: { body: SendFaxBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getFaxReceiptsRoute = createRoute({
@@ -2628,7 +2628,7 @@ export const getFaxReceiptsRoute = createRoute({
   tags: ['Fax'],
   summary: 'List of Fax Delivery Receipts',
   operationId: 'List of Fax Delivery Receipts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postFaxReceiptsRoute = createRoute({
@@ -2638,7 +2638,7 @@ export const postFaxReceiptsRoute = createRoute({
   summary: 'Add a Test Delivery Receipt',
   operationId: 'Add a Test Delivery Receipt',
   request: { body: AddATestDeliveryReceiptBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putFaxReceiptsReadRoute = createRoute({
@@ -2666,7 +2666,7 @@ export const putFaxReceiptsReadRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getFaxReceiptsMessageIdRoute = createRoute({
@@ -2691,7 +2691,7 @@ export const getFaxReceiptsMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postFaxSendRoute = createRoute({
@@ -2703,7 +2703,7 @@ export const postFaxSendRoute = createRoute({
     '**Letter File Options**\n\n**Use existing URL**\n\nWith this option, you can use an existing URL to a PDF document. For example, you might generate the pdf on your server.\n\n**Upload File to Our Server**\n\nWith this option, you can use the `/uploads` endpoint to upload the document. The `/uploads` endpoint returns a URL that can be used in the `/fax/send` endpoint.',
   operationId: 'Send Fax',
   request: { body: SendFaxBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putForgotPasswordRoute = createRoute({
@@ -2723,7 +2723,7 @@ export const putForgotPasswordRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putForgotPasswordVerifyRoute = createRoute({
@@ -2754,7 +2754,7 @@ export const putForgotPasswordVerifyRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putForgotUsernameRoute = createRoute({
@@ -2794,7 +2794,7 @@ export const putForgotUsernameRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsRoute = createRoute({
@@ -2803,7 +2803,7 @@ export const getListsRoute = createRoute({
   tags: ['Contact Lists'],
   summary: 'Get all Contact Lists',
   operationId: 'Get all Contact Lists',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postListsRoute = createRoute({
@@ -2823,7 +2823,7 @@ export const postListsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -2898,7 +2898,7 @@ export const putListsFromListIdContactsContactIdToListIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsListIdRoute = createRoute({
@@ -2931,7 +2931,7 @@ export const getListsListIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putListsListIdRoute = createRoute({
@@ -2978,7 +2978,7 @@ export const putListsListIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -3012,7 +3012,7 @@ export const deleteListsListIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsListIdContactsRoute = createRoute({
@@ -3045,7 +3045,7 @@ export const getListsListIdContactsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postListsListIdContactsRoute = createRoute({
@@ -3158,7 +3158,7 @@ export const postListsListIdContactsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -3212,7 +3212,7 @@ export const getListsListIdContactsContactIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putListsListIdContactsContactIdRoute = createRoute({
@@ -3344,7 +3344,7 @@ export const putListsListIdContactsContactIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -3398,7 +3398,7 @@ export const deleteListsListIdContactsContactIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsListIdExportFilenameFilenameRoute = createRoute({
@@ -3434,7 +3434,7 @@ export const getListsListIdExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postListsListIdImportRoute = createRoute({
@@ -3504,7 +3504,7 @@ export const postListsListIdImportRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postListsListIdImportCsvPreviewRoute = createRoute({
@@ -3552,7 +3552,7 @@ export const postListsListIdImportCsvPreviewRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getListsListIdImportFieldsRoute = createRoute({
@@ -3576,7 +3576,7 @@ export const getListsListIdImportFieldsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putListsListIdRemoveDuplicatesRoute = createRoute({
@@ -3633,7 +3633,7 @@ export const putListsListIdRemoveDuplicatesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putListsListIdRemoveOptedOutContactsOptOutListIdRoute = createRoute({
@@ -3686,7 +3686,7 @@ export const putListsListIdRemoveOptedOutContactsOptOutListIdRoute = createRoute
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putMmsCancelAllRoute = createRoute({
@@ -3695,7 +3695,7 @@ export const putMmsCancelAllRoute = createRoute({
   tags: ['MMS'],
   summary: 'Cancel All MMS',
   operationId: 'Cancel All MMS',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMmsHistoryExportFilenameFilenameRoute = createRoute({
@@ -3720,7 +3720,7 @@ export const getMmsHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRoute = createRoute({
@@ -3783,7 +3783,7 @@ export const getMmsHistoryQQOrderByOrderByDateFromDateFromDateToDateToRoute = cr
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postMmsPriceRoute = createRoute({
@@ -3868,7 +3868,7 @@ export const postMmsPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -3878,7 +3878,7 @@ export const getMmsReceiptsRoute = createRoute({
   tags: ['MMS'],
   summary: 'Get all Delivery Receipts',
   operationId: 'Get all Delivery Receipts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putMmsReceiptsReadRoute = createRoute({
@@ -3887,7 +3887,7 @@ export const putMmsReceiptsReadRoute = createRoute({
   tags: ['MMS'],
   summary: 'Mark Receipts As Read',
   operationId: 'Mark Receipts As Read',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getMmsReceiptsMessageIdRoute = createRoute({
@@ -3912,7 +3912,7 @@ export const getMmsReceiptsMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postMmsSendRoute = createRoute({
@@ -3997,7 +3997,7 @@ export const postMmsSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -4023,7 +4023,7 @@ export const putMmsMessageIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getNumbersRoute = createRoute({
@@ -4032,7 +4032,7 @@ export const getNumbersRoute = createRoute({
   tags: ['Numbers'],
   summary: 'Get all Dedicated Numbers',
   operationId: 'Get all Dedicated Numbers',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postNumbersBuyDedicatedNumberRoute = createRoute({
@@ -4057,7 +4057,7 @@ export const postNumbersBuyDedicatedNumberRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getNumbersSearchCountrySearch1SearchType2Route = createRoute({
@@ -4115,7 +4115,7 @@ export const getNumbersSearchCountrySearch1SearchType2Route = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostDirectMailCampaignsRoute = createRoute({
@@ -4125,7 +4125,7 @@ export const getPostDirectMailCampaignsRoute = createRoute({
   summary: 'List Direct Mail Campaigns',
   description: 'Get list of direct mail campaigns.',
   operationId: 'List Direct Mail Campaigns',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostDirectMailCampaignsPriceRoute = createRoute({
@@ -4188,7 +4188,7 @@ export const postPostDirectMailCampaignsPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostDirectMailCampaignsSendRoute = createRoute({
@@ -4250,7 +4250,7 @@ export const postPostDirectMailCampaignsSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostDirectMailLocationsSearchCountryQQueryRoute = createRoute({
@@ -4287,7 +4287,7 @@ export const getPostDirectMailLocationsSearchCountryQQueryRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostLettersDetectAddressRoute = createRoute({
@@ -4325,7 +4325,7 @@ export const postPostLettersDetectAddressRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostLettersHistoryRoute = createRoute({
@@ -4334,7 +4334,7 @@ export const getPostLettersHistoryRoute = createRoute({
   tags: ['Post Letter'],
   summary: 'Get Post Letter History',
   operationId: 'Get Post Letter History',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostLettersHistoryExportFilenameFilenameRoute = createRoute({
@@ -4359,7 +4359,7 @@ export const getPostLettersHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostLettersPriceRoute = createRoute({
@@ -4420,7 +4420,7 @@ export const postPostLettersPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostLettersSendRoute = createRoute({
@@ -4490,7 +4490,7 @@ export const postPostLettersSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostPostcardsExportFilenameFilenameRoute = createRoute({
@@ -4515,7 +4515,7 @@ export const getPostPostcardsExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostPostcardsHistoryRoute = createRoute({
@@ -4524,7 +4524,7 @@ export const getPostPostcardsHistoryRoute = createRoute({
   tags: ['Postcards'],
   summary: 'Get Postcard History',
   operationId: 'Get Postcard History',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostPostcardsPriceRoute = createRoute({
@@ -4572,7 +4572,7 @@ export const postPostPostcardsPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostPostcardsSendRoute = createRoute({
@@ -4620,7 +4620,7 @@ export const postPostPostcardsSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostReturnAddressesRoute = createRoute({
@@ -4629,7 +4629,7 @@ export const getPostReturnAddressesRoute = createRoute({
   tags: ['Post Letter'],
   summary: 'Get List of Post Return Addresses',
   operationId: 'Get List of Post Return Addresses',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postPostReturnAddressesRoute = createRoute({
@@ -4639,7 +4639,7 @@ export const postPostReturnAddressesRoute = createRoute({
   summary: 'Create a Post Return Address',
   operationId: 'Create a Post Return Address',
   request: { body: CreateAPostReturnAddressBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPostReturnAddressesReturnAddressIdRoute = createRoute({
@@ -4672,7 +4672,7 @@ export const getPostReturnAddressesReturnAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putPostReturnAddressesReturnAddressIdRoute = createRoute({
@@ -4706,7 +4706,7 @@ export const putPostReturnAddressesReturnAddressIdRoute = createRoute({
     }),
     body: CreateAPostReturnAddressBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deletePostReturnAddressesReturnAddressIdRoute = createRoute({
@@ -4739,7 +4739,7 @@ export const deletePostReturnAddressesReturnAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getPricingCountryCurrencyCurrencyRoute = createRoute({
@@ -4776,7 +4776,7 @@ export const getPricingCountryCurrencyCurrencyRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRechargeCreditCardRoute = createRoute({
@@ -4785,7 +4785,7 @@ export const getRechargeCreditCardRoute = createRoute({
   tags: ['Account Recharge'],
   summary: 'Get Credit Card info',
   operationId: 'Get Credit Card info',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putRechargeCreditCardRoute = createRoute({
@@ -4827,7 +4827,7 @@ export const putRechargeCreditCardRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRechargePackagesCountryCountryRoute = createRoute({
@@ -4852,7 +4852,7 @@ export const getRechargePackagesCountryCountryRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putRechargePurchasePackageIdRoute = createRoute({
@@ -4885,7 +4885,7 @@ export const putRechargePurchasePackageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRechargeTransactionsRoute = createRoute({
@@ -4894,7 +4894,7 @@ export const getRechargeTransactionsRoute = createRoute({
   tags: ['Account Recharge'],
   summary: 'Get Transactions',
   operationId: 'Get Transactions',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getRechargeTransactionsTransactionIdRoute = createRoute({
@@ -4919,7 +4919,7 @@ export const getRechargeTransactionsTransactionIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getReferralAccountsRoute = createRoute({
@@ -4928,7 +4928,7 @@ export const getReferralAccountsRoute = createRoute({
   tags: ['Referral Accounts'],
   summary: 'Get List of Referral Accounts',
   operationId: 'Get List of Referral Accounts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getResellerRoute = createRoute({
@@ -4938,7 +4938,7 @@ export const getResellerRoute = createRoute({
   summary: 'Get Reseller Setting',
   description: 'Get reseller setting.',
   operationId: 'Get Reseller Setting',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putResellerRoute = createRoute({
@@ -4994,7 +4994,7 @@ export const putResellerRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getResellerAccountsRoute = createRoute({
@@ -5004,7 +5004,7 @@ export const getResellerAccountsRoute = createRoute({
   summary: 'List of Reseller Accounts',
   description: 'Get list of Reseller Accounts',
   operationId: 'List of Reseller Accounts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postResellerAccountsRoute = createRoute({
@@ -5014,7 +5014,7 @@ export const postResellerAccountsRoute = createRoute({
   summary: 'Create Reseller Account',
   operationId: 'Create Reseller Account',
   request: { body: CreateResellerAccountBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postResellerAccountsPublicRoute = createRoute({
@@ -5067,7 +5067,7 @@ export const postResellerAccountsPublicRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getResellerAccountsClientUserIdRoute = createRoute({
@@ -5101,7 +5101,7 @@ export const getResellerAccountsClientUserIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putResellerAccountsClientUserIdRoute = createRoute({
@@ -5135,7 +5135,7 @@ export const putResellerAccountsClientUserIdRoute = createRoute({
     }),
     body: CreateResellerAccountBodyRequestBody,
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putResellerTransferCreditRoute = createRoute({
@@ -5162,7 +5162,7 @@ export const putResellerTransferCreditRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -5189,7 +5189,7 @@ export const getResellerSubdomainRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSdkDownloadTypeRoute = createRoute({
@@ -5239,7 +5239,7 @@ export const getSearchContactsListsQQRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsCampaignsRoute = createRoute({
@@ -5248,7 +5248,7 @@ export const getSmsCampaignsRoute = createRoute({
   tags: ['SMS Campaigns'],
   summary: 'Get list of SMS Campaigns',
   operationId: 'Get list of SMS Campaigns',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsCampaignsPriceRoute = createRoute({
@@ -5287,7 +5287,7 @@ export const postSmsCampaignsPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsCampaignsSendRoute = createRoute({
@@ -5343,7 +5343,7 @@ export const postSmsCampaignsSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsCampaignsCampaignIdLinkExportFilenameFilenameRoute = createRoute({
@@ -5389,7 +5389,7 @@ export const getSmsCampaignsCampaignIdLinkExportFilenameFilenameRoute = createRo
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsCampaignsCampaignIdLinkStatisticsRoute = createRoute({
@@ -5424,7 +5424,7 @@ export const getSmsCampaignsCampaignIdLinkStatisticsRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsCampaignsCampaignIdLinkTrackingRoute = createRoute({
@@ -5459,7 +5459,7 @@ export const getSmsCampaignsCampaignIdLinkTrackingRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsCampaignsSmsCampaignIdRoute = createRoute({
@@ -5492,7 +5492,7 @@ export const getSmsCampaignsSmsCampaignIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsCampaignsSmsCampaignIdRoute = createRoute({
@@ -5561,7 +5561,7 @@ export const putSmsCampaignsSmsCampaignIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsCampaignsSmsCampaignIdCancelRoute = createRoute({
@@ -5594,7 +5594,7 @@ export const putSmsCampaignsSmsCampaignIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsCancelAllRoute = createRoute({
@@ -5603,7 +5603,7 @@ export const putSmsCancelAllRoute = createRoute({
   tags: ['SMS'],
   summary: 'Cancel all Scheduled Messages',
   operationId: 'Cancel all Scheduled Messages',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsEmailSmsRoute = createRoute({
@@ -5613,7 +5613,7 @@ export const getSmsEmailSmsRoute = createRoute({
   summary: 'List of Email-to-SMS Allowed Address',
   description: 'Get list of allowed email addresses.',
   operationId: 'List of Email-to-SMS Allowed Address',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsEmailSmsRoute = createRoute({
@@ -5646,7 +5646,7 @@ export const postSmsEmailSmsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -5656,7 +5656,7 @@ export const getSmsEmailSmsStrippedStringsRoute = createRoute({
   tags: ['Email-to-SMS Stripped Strings'],
   summary: 'List Stripped Strings',
   operationId: 'List Stripped Strings',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsEmailSmsStrippedStringsRoute = createRoute({
@@ -5682,7 +5682,7 @@ export const postSmsEmailSmsStrippedStringsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
@@ -5715,7 +5715,7 @@ export const getSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
@@ -5764,7 +5764,7 @@ export const putSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const deleteSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
@@ -5797,7 +5797,7 @@ export const deleteSmsEmailSmsStrippedStringsRuleIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsEmailSmsEmailAddressIdRoute = createRoute({
@@ -5831,7 +5831,7 @@ export const getSmsEmailSmsEmailAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsEmailSmsEmailAddressIdRoute = createRoute({
@@ -5886,7 +5886,7 @@ export const putSmsEmailSmsEmailAddressIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -5921,7 +5921,7 @@ export const deleteSmsEmailSmsEmailAddressIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsHistoryExportFilenameFilenameRoute = createRoute({
@@ -5946,7 +5946,7 @@ export const getSmsHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsHistoryDateFromDateFromDateToDateToRoute = createRoute({
@@ -5985,7 +5985,7 @@ export const getSmsHistoryDateFromDateFromDateToDateToRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsInboundRoute = createRoute({
@@ -5994,7 +5994,7 @@ export const getSmsInboundRoute = createRoute({
   tags: ['SMS'],
   summary: 'Get all Inbound SMS - Pull',
   operationId: 'Get all Inbound SMS - Pull',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsInboundRoute = createRoute({
@@ -6004,7 +6004,7 @@ export const postSmsInboundRoute = createRoute({
   summary: 'Add a Test Inbound SMS',
   operationId: 'Add a Test Inbound SMS',
   request: { body: AddATestDeliveryReceiptBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsInboundReadRoute = createRoute({
@@ -6031,7 +6031,7 @@ export const putSmsInboundReadRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsInboundReadMessageIdRoute = createRoute({
@@ -6056,7 +6056,7 @@ export const putSmsInboundReadMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsInboundOutboundMessageIdRoute = createRoute({
@@ -6082,7 +6082,7 @@ export const getSmsInboundOutboundMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsPriceRoute = createRoute({
@@ -6164,7 +6164,7 @@ export const postSmsPriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6173,7 +6173,7 @@ export const getSmsReceiptsRoute = createRoute({
   path: '/sms/receipts',
   tags: ['SMS'],
   summary: 'Get all Delivery Receipts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsReceiptsRoute = createRoute({
@@ -6182,7 +6182,7 @@ export const postSmsReceiptsRoute = createRoute({
   tags: ['SMS'],
   summary: 'Add a Test Delivery Receipt',
   request: { body: AddATestDeliveryReceiptBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsReceiptsReadRoute = createRoute({
@@ -6210,7 +6210,7 @@ export const putSmsReceiptsReadRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSmsReceiptsMessageIdRoute = createRoute({
@@ -6235,7 +6235,7 @@ export const getSmsReceiptsMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsSendRoute = createRoute({
@@ -6326,7 +6326,7 @@ export const postSmsSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6337,7 +6337,7 @@ export const getSmsTemplatesRoute = createRoute({
   summary: 'List of Templates',
   description: 'Get list of templates.',
   operationId: 'List of Templates',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSmsTemplatesRoute = createRoute({
@@ -6367,7 +6367,7 @@ export const postSmsTemplatesRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6411,7 +6411,7 @@ export const putSmsTemplatesTemplateIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6437,7 +6437,7 @@ export const deleteSmsTemplatesTemplateIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSmsMessageIdCancelRoute = createRoute({
@@ -6463,7 +6463,7 @@ export const putSmsMessageIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getStatisticsSmsRoute = createRoute({
@@ -6472,7 +6472,7 @@ export const getStatisticsSmsRoute = createRoute({
   tags: ['Statistics'],
   summary: 'Get SMS Statistics',
   operationId: 'Get SMS Statistics',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getStatisticsVoiceRoute = createRoute({
@@ -6481,7 +6481,7 @@ export const getStatisticsVoiceRoute = createRoute({
   tags: ['Statistics'],
   summary: 'Get Voice Statistics',
   operationId: 'Get Voice Statistics',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getSubaccountsRoute = createRoute({
@@ -6490,7 +6490,7 @@ export const getSubaccountsRoute = createRoute({
   tags: ['Subaccounts'],
   summary: 'Get all Subaccounts',
   operationId: 'Get all Subaccounts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postSubaccountsRoute = createRoute({
@@ -6560,7 +6560,7 @@ export const postSubaccountsRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6586,7 +6586,7 @@ export const getSubaccountsSubaccountIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSubaccountsSubaccountIdRoute = createRoute({
@@ -6684,7 +6684,7 @@ export const putSubaccountsSubaccountIdRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6718,7 +6718,7 @@ export const deleteSubaccountsSubaccountIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putSubaccountsSubaccountIdRegenApiKeyRoute = createRoute({
@@ -6751,7 +6751,7 @@ export const putSubaccountsSubaccountIdRegenApiKeyRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getTimezonesRoute = createRoute({
@@ -6761,7 +6761,7 @@ export const getTimezonesRoute = createRoute({
   summary: 'Get Timezones',
   description: 'Get supported list of timezones.',
   operationId: 'Get Timezones',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postUploadsConvertConvertRoute = createRoute({
@@ -6811,7 +6811,7 @@ export const postUploadsConvertConvertRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putVoiceCancelAllRoute = createRoute({
@@ -6820,7 +6820,7 @@ export const putVoiceCancelAllRoute = createRoute({
   tags: ['Voice'],
   summary: 'Cancel all Voice Calls',
   operationId: 'Cancel all Voice Calls',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getVoiceHistoryExportFilenameFilenameRoute = createRoute({
@@ -6845,7 +6845,7 @@ export const getVoiceHistoryExportFilenameFilenameRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getVoiceHistoryDateFromDateFromDateToDateToRoute = createRoute({
@@ -6882,7 +6882,7 @@ export const getVoiceHistoryDateFromDateFromDateToDateToRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getVoiceLangRoute = createRoute({
@@ -6891,7 +6891,7 @@ export const getVoiceLangRoute = createRoute({
   tags: ['Voice'],
   summary: 'Voice Languages',
   operationId: 'Voice Languages',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postVoicePriceRoute = createRoute({
@@ -6986,7 +6986,7 @@ export const postVoicePriceRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -6996,7 +6996,7 @@ export const getVoiceReceiptsRoute = createRoute({
   tags: ['Voice'],
   summary: 'Get Voice receipts',
   operationId: 'Get Voice receipts',
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postVoiceReceiptsRoute = createRoute({
@@ -7005,7 +7005,7 @@ export const postVoiceReceiptsRoute = createRoute({
   tags: ['Voice'],
   summary: 'Add a Test Delivery Receipt',
   request: { body: AddATestDeliveryReceiptBodyRequestBody },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const putVoiceReceiptsReadDateBeforeDateBeforeRoute = createRoute({
@@ -7039,7 +7039,7 @@ export const putVoiceReceiptsReadDateBeforeDateBeforeRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const getVoiceReceiptsMessageIdRoute = createRoute({
@@ -7065,7 +7065,7 @@ export const getVoiceReceiptsMessageIdRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })
 
 export const postVoiceSendRoute = createRoute({
@@ -7171,7 +7171,7 @@ export const postVoiceSendRoute = createRoute({
       },
     },
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
   security: [{ basic: [] }],
 })
 
@@ -7197,5 +7197,5 @@ export const putVoiceMessageIdCancelRoute = createRoute({
         }),
     }),
   },
-  responses: { 200: { description: 'OK', content: {}, headers: z.object({}) } },
+  responses: { 200: { description: 'OK', headers: z.object({}) } },
 })

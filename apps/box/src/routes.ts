@@ -2148,41 +2148,38 @@ const ItemsSchema: z.ZodType<ItemsType> = z
 type FolderType = z.infer<typeof FolderMiniSchema> & {
   created_at?: string | null
   modified_at?: string | null
-  description?: string & unknown
+  description?: string
   size?: bigint
-  path_collection?: { total_count: bigint; entries: z.infer<typeof FolderMiniSchema>[] } & unknown &
-    unknown
-  created_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
-  modified_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
+  path_collection?: { total_count: bigint; entries: z.infer<typeof FolderMiniSchema>[] }
+  created_by?: z.infer<typeof UserMiniSchema>
+  modified_by?: z.infer<typeof UserMiniSchema>
   trashed_at?: string | null
   purged_at?: string | null
   content_created_at?: string | null
   content_modified_at?: string | null
-  owned_by?: z.infer<typeof UserMiniSchema> & unknown & unknown
-  shared_link?:
-    | ({
-        url: string
-        download_url?: string | null
-        vanity_url?: string | null
-        vanity_name?: string | null
-        access?: 'open' | 'company' | 'collaborators'
-        effective_access: 'open' | 'company' | 'collaborators'
-        effective_permission: 'can_edit' | 'can_download' | 'can_preview' | 'no_access'
-        unshared_at?: string | null
-        is_password_enabled: boolean
-        permissions?: { can_download: boolean; can_preview: boolean; can_edit: boolean }
-        download_count: number
-        preview_count: number
-        one_time_passcode: {
-          mode: string
-          allowlist?: z.infer<typeof SharedLinkOtpAllowlistEntrySchema>[]
-        } & unknown
-      } & unknown)
-    | null
+  owned_by?: z.infer<typeof UserMiniSchema>
+  shared_link?: {
+    url: string
+    download_url?: string | null
+    vanity_url?: string | null
+    vanity_name?: string | null
+    access?: 'open' | 'company' | 'collaborators'
+    effective_access: 'open' | 'company' | 'collaborators'
+    effective_permission: 'can_edit' | 'can_download' | 'can_preview' | 'no_access'
+    unshared_at?: string | null
+    is_password_enabled: boolean
+    permissions?: { can_download: boolean; can_preview: boolean; can_edit: boolean }
+    download_count: number
+    preview_count: number
+    one_time_passcode: {
+      mode: string
+      allowlist?: z.infer<typeof SharedLinkOtpAllowlistEntrySchema>[]
+    }
+  } | null
   folder_upload_email?: { access?: 'open' | 'collaborators'; email?: string } | null
-  parent?: (z.infer<typeof FolderMiniSchema> & unknown) | null
+  parent?: z.infer<typeof FolderMiniSchema> | null
   item_status?: 'active' | 'trashed' | 'deleted'
-  item_collection?: z.infer<typeof ItemsSchema> & unknown & unknown
+  item_collection?: z.infer<typeof ItemsSchema>
 }
 
 const FolderSchema: z.ZodType<FolderType> = FolderMiniSchema.and(
@@ -2652,7 +2649,7 @@ type EventType = {
   created_at?: string
   recorded_at?: string
   event_id?: string
-  created_by?: z.infer<typeof UserMiniSchema> & unknown
+  created_by?: z.infer<typeof UserMiniSchema>
   event_type?:
     | 'ACCESS_GRANTED'
     | 'ACCESS_REVOKED'
@@ -2858,9 +2855,9 @@ type EventType = {
     | 'WATERMARK_LABEL_DELETE'
     | 'WORKFLOW_AUTOMATION_CREATE'
     | 'WORKFLOW_AUTOMATION_DELETE'
-    | ('WORKFLOW_AUTOMATION_UPDATE' & unknown)
+    | 'WORKFLOW_AUTOMATION_UPDATE'
   session_id?: string
-  source?: z.infer<typeof EventSourceResourceSchema> & unknown
+  source?: z.infer<typeof EventSourceResourceSchema>
   additional_details?: { [key: string]: unknown }
 }
 
@@ -3151,21 +3148,19 @@ type FilesType = { total_count?: bigint; entries?: z.infer<typeof FileFullSchema
 type FolderFullType = z.infer<typeof FolderSchema> & {
   sync_state?: 'synced' | 'not_synced' | 'partially_synced'
   has_collaborations?: boolean
-  permissions?: ({
+  permissions?: {
     can_delete: boolean
     can_download: boolean
     can_invite_collaborator: boolean
     can_rename: boolean
     can_set_share_access: boolean
     can_share: boolean
-  } & { can_upload?: boolean; can_apply_watermark?: boolean }) &
-    unknown &
-    unknown
-  tags?: string[] & unknown
-  can_non_owners_invite?: boolean & unknown
+  } & { can_upload?: boolean; can_apply_watermark?: boolean }
+  tags?: string[]
+  can_non_owners_invite?: boolean
   is_externally_owned?: boolean
-  metadata?: { [key: string]: { [key: string]: z.infer<typeof MetadataFullSchema> } } & unknown
-  is_collaboration_restricted_to_enterprise?: boolean & unknown
+  metadata?: { [key: string]: { [key: string]: z.infer<typeof MetadataFullSchema> } }
+  is_collaboration_restricted_to_enterprise?: boolean
   allowed_shared_link_access_levels?: ('open' | 'company' | 'collaborators')[]
   allowed_invitee_roles?: (
     | 'editor'
@@ -3180,12 +3175,10 @@ type FolderFullType = z.infer<typeof FolderSchema> & {
     is_watermarked?: boolean
     is_watermark_inherited?: boolean
     is_watermarked_by_access_policy?: boolean
-  } & unknown &
-    unknown
+  }
   is_accessible_via_shared_link?: boolean
   can_non_owners_view_collaborators?: boolean
-  classification?: { name?: string; definition?: string; color?: string } & unknown &
-    (unknown | null)
+  classification?: { name?: string; definition?: string; color?: string } | null
   is_associated_with_app_item?: boolean
   collections?: z.infer<typeof CollectionSchema>[]
 }
@@ -3544,7 +3537,7 @@ const RecentItemResourceSchema: z.ZodType<RecentItemResourceType> = z
 
 type RecentItemType = {
   type?: string
-  item?: z.infer<typeof RecentItemResourceSchema> & unknown
+  item?: z.infer<typeof RecentItemResourceSchema>
   interaction_type?: 'item_preview' | 'item_upload' | 'item_comment' | 'item_open' | 'item_modify'
   interacted_at?: string
   interaction_shared_link?: string
@@ -3723,7 +3716,7 @@ const SearchResultWithSharedLinkItemSchema: z.ZodType<SearchResultWithSharedLink
 
 type SearchResultWithSharedLinkType = {
   accessible_via_shared_link?: string
-  item?: z.infer<typeof SearchResultWithSharedLinkItemSchema> & unknown
+  item?: z.infer<typeof SearchResultWithSharedLinkItemSchema>
   type?: string
 }
 

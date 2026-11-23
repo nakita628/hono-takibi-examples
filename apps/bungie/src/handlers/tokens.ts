@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getTokensPartnerHistoryPartnerApplicationIdTargetBnetMembershipIdIndexRoute,
   getTokensPartnerHistoryTargetBnetMembershipIdApplicationPartnerApplicationIdIndexRoute,
   getTokensRewardsBungieRewardsIndexRoute,
@@ -10,36 +10,50 @@ import {
   postTokensPartnerForceDropsRepairIndexRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postTokensPartnerForceDropsRepairIndexRouteHandler: RouteHandler<
+  typeof postTokensPartnerForceDropsRepairIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const tokensHandler = app
-  .openapi(postTokensPartnerForceDropsRepairIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postTokensPartnerClaimOfferIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    postTokensPartnerApplyMissingOffersPartnerApplicationIdTargetBnetMembershipIdIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getTokensPartnerHistoryPartnerApplicationIdTargetBnetMembershipIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(
-    getTokensPartnerHistoryTargetBnetMembershipIdApplicationPartnerApplicationIdIndexRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
-  .openapi(getTokensRewardsGetRewardsForUserMembershipIdIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensRewardsGetRewardsForPlatformUserMembershipIdMembershipTypeIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getTokensRewardsBungieRewardsIndexRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postTokensPartnerClaimOfferIndexRouteHandler: RouteHandler<
+  typeof postTokensPartnerClaimOfferIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postTokensPartnerApplyMissingOffersPartnerApplicationIdTargetBnetMembershipIdIndexRouteHandler: RouteHandler<
+  typeof postTokensPartnerApplyMissingOffersPartnerApplicationIdTargetBnetMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensPartnerHistoryPartnerApplicationIdTargetBnetMembershipIdIndexRouteHandler: RouteHandler<
+  typeof getTokensPartnerHistoryPartnerApplicationIdTargetBnetMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensPartnerHistoryTargetBnetMembershipIdApplicationPartnerApplicationIdIndexRouteHandler: RouteHandler<
+  typeof getTokensPartnerHistoryTargetBnetMembershipIdApplicationPartnerApplicationIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensRewardsGetRewardsForUserMembershipIdIndexRouteHandler: RouteHandler<
+  typeof getTokensRewardsGetRewardsForUserMembershipIdIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensRewardsGetRewardsForPlatformUserMembershipIdMembershipTypeIndexRouteHandler: RouteHandler<
+  typeof getTokensRewardsGetRewardsForPlatformUserMembershipIdMembershipTypeIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getTokensRewardsBungieRewardsIndexRouteHandler: RouteHandler<
+  typeof getTokensRewardsBungieRewardsIndexRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

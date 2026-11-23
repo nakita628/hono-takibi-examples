@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getJourneyJourneyResultsFromToToRoute, getJourneyMetaModesRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getJourneyJourneyResultsFromToToRoute, getJourneyMetaModesRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getJourneyJourneyResultsFromToToRouteHandler: RouteHandler<
+  typeof getJourneyJourneyResultsFromToToRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const journeyHandler = app
-  .openapi(getJourneyJourneyResultsFromToToRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getJourneyMetaModesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getJourneyMetaModesRouteHandler: RouteHandler<
+  typeof getJourneyMetaModesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

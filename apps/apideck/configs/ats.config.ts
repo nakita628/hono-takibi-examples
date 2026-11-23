@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apideck.com/ats/9.3.0/openapi.yaml',
   output: './src/ats/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ats/types.ts' },
   client: { output: './src/ats/client.ts', baseUrl: '/' },
   rpc: { output: './src/ats/rpc.ts', parseResponse: true },

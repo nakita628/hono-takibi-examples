@@ -1,9 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsMigrationHubMultiAccountServiceCreateHomeRegionControlHandler =
-  app.openapi(postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSMigrationHubMultiAccountServiceCreateHomeRegionControlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

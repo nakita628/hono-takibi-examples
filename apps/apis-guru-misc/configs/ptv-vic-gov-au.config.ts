@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/ptv.vic.gov.au/v3/openapi.yaml',
   output: './src/ptv-vic-gov-au/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/ptv-vic-gov-au/types.ts' },
   client: { output: './src/ptv-vic-gov-au/client.ts', baseUrl: '/' },
   rpc: { output: './src/ptv-vic-gov-au/rpc.ts', parseResponse: true },

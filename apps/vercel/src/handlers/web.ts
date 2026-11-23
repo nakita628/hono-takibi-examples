@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postWebInsightsToggleRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postWebInsightsToggleRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const webHandler = app.openapi(postWebInsightsToggleRoute, (c) => {
+export const postWebInsightsToggleRouteHandler: RouteHandler<
+  typeof postWebInsightsToggleRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

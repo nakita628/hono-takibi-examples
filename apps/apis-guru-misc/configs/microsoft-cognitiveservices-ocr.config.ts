@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/microsoft.com/cognitiveservices-Ocr/2.1/openapi.yaml',
   output: './src/microsoft-cognitiveservices-ocr/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/microsoft-cognitiveservices-ocr/types.ts' },
   client: { output: './src/microsoft-cognitiveservices-ocr/client.ts', baseUrl: '/' },
   rpc: { output: './src/microsoft-cognitiveservices-ocr/rpc.ts', parseResponse: true },

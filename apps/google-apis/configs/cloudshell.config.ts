@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/cloudshell/v1/openapi.yaml',
   output: './src/cloudshell/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/cloudshell/types.ts' },
   client: { output: './src/cloudshell/client.ts', baseUrl: '/' },
   rpc: { output: './src/cloudshell/rpc.ts', parseResponse: true },

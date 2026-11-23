@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/sportsdata.io/lol-v3-scores/1.0/openapi.yaml',
   output: './src/lol-v3-scores/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/lol-v3-scores/types.ts' },
   client: { output: './src/lol-v3-scores/client.ts', baseUrl: '/' },
   rpc: { output: './src/lol-v3-scores/rpc.ts', parseResponse: true },

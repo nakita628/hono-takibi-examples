@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getFuturesV1AggsTickerRoute,
   getFuturesV1ContractsRoute,
   getFuturesV1ExchangesRoute,
@@ -11,33 +11,56 @@ import {
   getFuturesV1TradesTickerRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFuturesV1AggsTickerRouteHandler: RouteHandler<
+  typeof getFuturesV1AggsTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const futuresHandler = app
-  .openapi(getFuturesV1AggsTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1ContractsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1ExchangesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1MarketStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1ProductsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1QuotesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1SchedulesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1SnapshotRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getFuturesV1TradesTickerRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getFuturesV1ContractsRouteHandler: RouteHandler<
+  typeof getFuturesV1ContractsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1ExchangesRouteHandler: RouteHandler<
+  typeof getFuturesV1ExchangesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1MarketStatusRouteHandler: RouteHandler<
+  typeof getFuturesV1MarketStatusRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1ProductsRouteHandler: RouteHandler<
+  typeof getFuturesV1ProductsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1QuotesTickerRouteHandler: RouteHandler<
+  typeof getFuturesV1QuotesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1SchedulesRouteHandler: RouteHandler<
+  typeof getFuturesV1SchedulesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1SnapshotRouteHandler: RouteHandler<
+  typeof getFuturesV1SnapshotRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getFuturesV1TradesTickerRouteHandler: RouteHandler<
+  typeof getFuturesV1TradesTickerRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

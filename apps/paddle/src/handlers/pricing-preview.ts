@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPricingPreviewRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPricingPreviewRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pricingPreviewHandler = app.openapi(postPricingPreviewRoute, (c) => {
+export const postPricingPreviewRouteHandler: RouteHandler<typeof postPricingPreviewRoute> = async (
+  c,
+) => {
   throw new Error('Not implemented')
-})
+}

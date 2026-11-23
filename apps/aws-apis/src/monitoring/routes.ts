@@ -411,14 +411,12 @@ const MetricAlarmsSchema: z.ZodType<MetricAlarmsType> = z
 const NextTokenSchema = z.string().openapi('NextToken')
 
 type DescribeAlarmsOutputType = {
-  CompositeAlarms?: z.infer<typeof CompositeAlarmsSchema> & unknown
-  MetricAlarms?: z.infer<typeof MetricAlarmsSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  CompositeAlarms?: z.infer<typeof CompositeAlarmsSchema>
+  MetricAlarms?: z.infer<typeof MetricAlarmsSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
-type DescribeAlarmsForMetricOutputType = {
-  MetricAlarms?: z.infer<typeof MetricAlarmsSchema> & unknown
-}
+type DescribeAlarmsForMetricOutputType = { MetricAlarms?: z.infer<typeof MetricAlarmsSchema> }
 
 const AnomalyDetectorMetricStatSchema = z
   .string()
@@ -515,14 +513,14 @@ const MetricMathAnomalyDetectorSchema = z
   .openapi('MetricMathAnomalyDetector')
 
 type AnomalyDetectorType = {
-  Namespace?: z.infer<typeof NamespaceSchema> & unknown
-  MetricName?: z.infer<typeof MetricNameSchema> & unknown
-  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
-  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
-  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema> & unknown
-  StateValue?: z.infer<typeof AnomalyDetectorStateValueSchema> & unknown
-  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
-  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+  Namespace?: z.infer<typeof NamespaceSchema>
+  MetricName?: z.infer<typeof MetricNameSchema>
+  Dimensions?: z.infer<typeof DimensionsSchema>
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema>
+  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema>
+  StateValue?: z.infer<typeof AnomalyDetectorStateValueSchema>
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema>
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema>
 }
 
 const AnomalyDetectorSchema: z.ZodType<AnomalyDetectorType> = z
@@ -576,27 +574,27 @@ const AnomalyDetectorsSchema: z.ZodType<AnomalyDetectorsType> = z
   .openapi('AnomalyDetectors')
 
 type DescribeAnomalyDetectorsOutputType = {
-  AnomalyDetectors?: z.infer<typeof AnomalyDetectorsSchema> & unknown
-  NextToken?: z.infer<typeof NextTokenSchema> & unknown
+  AnomalyDetectors?: z.infer<typeof AnomalyDetectorsSchema>
+  NextToken?: z.infer<typeof NextTokenSchema>
 }
 
 type DeleteAnomalyDetectorInputType = {
-  Namespace?: z.infer<typeof NamespaceSchema> & unknown
-  MetricName?: z.infer<typeof MetricNameSchema> & unknown
-  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
-  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
-  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
-  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+  Namespace?: z.infer<typeof NamespaceSchema>
+  MetricName?: z.infer<typeof MetricNameSchema>
+  Dimensions?: z.infer<typeof DimensionsSchema>
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema>
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema>
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema>
 }
 
 type PutAnomalyDetectorInputType = {
-  Namespace?: z.infer<typeof NamespaceSchema> & unknown
-  MetricName?: z.infer<typeof MetricNameSchema> & unknown
-  Dimensions?: z.infer<typeof DimensionsSchema> & unknown
-  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema> & unknown
-  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema> & unknown
-  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema> & unknown
-  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema> & unknown
+  Namespace?: z.infer<typeof NamespaceSchema>
+  MetricName?: z.infer<typeof MetricNameSchema>
+  Dimensions?: z.infer<typeof DimensionsSchema>
+  Stat?: z.infer<typeof AnomalyDetectorMetricStatSchema>
+  Configuration?: z.infer<typeof AnomalyDetectorConfigurationSchema>
+  SingleMetricAnomalyDetector?: z.infer<typeof SingleMetricAnomalyDetectorSchema>
+  MetricMathAnomalyDetector?: z.infer<typeof MetricMathAnomalyDetectorSchema>
 }
 
 const ResourceNotFoundSchema = z.any().openapi('ResourceNotFound')

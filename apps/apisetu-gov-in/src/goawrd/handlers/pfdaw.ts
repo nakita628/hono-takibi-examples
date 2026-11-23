@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postPfdawCertificateRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postPfdawCertificateRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const pfdawHandler = app.openapi(postPfdawCertificateRoute, (c) => {
+export const postPfdawCertificateRouteHandler: RouteHandler<
+  typeof postPfdawCertificateRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

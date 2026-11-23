@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/apisetu.gov.in/meark/3.0.0/openapi.yaml',
   output: './src/meark/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/meark/types.ts' },
   client: { output: './src/meark/client.ts', baseUrl: '/' },
   rpc: { output: './src/meark/rpc.ts', parseResponse: true },

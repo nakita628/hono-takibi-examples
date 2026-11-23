@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShuttleSubjectMappingsShuttleSubjectMappingIdRoute,
   getShuttleSubjectMappingsRoute,
   getShuttleSubjectMappingsShuttleSubjectMappingIdRoute,
@@ -7,21 +7,32 @@ import {
   putShuttleSubjectMappingsShuttleSubjectMappingIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShuttleSubjectMappingsRouteHandler: RouteHandler<
+  typeof getShuttleSubjectMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const shuttleSubjectMappingsHandler = app
-  .openapi(getShuttleSubjectMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShuttleSubjectMappingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShuttleSubjectMappingsShuttleSubjectMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putShuttleSubjectMappingsShuttleSubjectMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShuttleSubjectMappingsShuttleSubjectMappingIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postShuttleSubjectMappingsRouteHandler: RouteHandler<
+  typeof postShuttleSubjectMappingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShuttleSubjectMappingsShuttleSubjectMappingIdRouteHandler: RouteHandler<
+  typeof getShuttleSubjectMappingsShuttleSubjectMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putShuttleSubjectMappingsShuttleSubjectMappingIdRouteHandler: RouteHandler<
+  typeof putShuttleSubjectMappingsShuttleSubjectMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShuttleSubjectMappingsShuttleSubjectMappingIdRouteHandler: RouteHandler<
+  typeof deleteShuttleSubjectMappingsShuttleSubjectMappingIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

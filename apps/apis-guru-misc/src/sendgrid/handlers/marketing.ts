@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteMarketingContactsRoute,
   deleteMarketingFieldDefinitionsCustomFieldIdRoute,
   deleteMarketingListsIdContactsRoute,
@@ -58,174 +58,338 @@ import {
   putMarketingSinglesendsIdScheduleRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteMarketingContactsRouteHandler: RouteHandler<
+  typeof deleteMarketingContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const marketingHandler = app
-  .openapi(deleteMarketingContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMarketingContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingContactsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingContactsExportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsExportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMarketingContactsImportsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsImportsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingContactsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingContactsSearchEmailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingContactsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingFieldDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingFieldDefinitionsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingFieldDefinitionsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingFieldDefinitionsCustomFieldIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingListsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingListsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingListsIdContactsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingListsIdContactsCountRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSegmentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSegments20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSegments20Route, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingSegments20SegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSegments20SegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingSegments20SegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSegmentsDeleteRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingSegmentsSegmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSendersRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingSinglesendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSinglesendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSinglesendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSinglesendsCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSinglesendsSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingSinglesendsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingSinglesendsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchMarketingSinglesendsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingSinglesendsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteMarketingSinglesendsIdScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putMarketingSinglesendsIdScheduleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsAutomationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsAutomationsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsAutomationsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsAutomationsIdLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsSinglesendsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsSinglesendsExportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsSinglesendsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getMarketingStatsSinglesendsIdLinksRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postMarketingTestSendEmailRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getMarketingContactsRouteHandler: RouteHandler<
+  typeof getMarketingContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMarketingContactsRouteHandler: RouteHandler<
+  typeof putMarketingContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingContactsBatchRouteHandler: RouteHandler<
+  typeof postMarketingContactsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingContactsCountRouteHandler: RouteHandler<
+  typeof getMarketingContactsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingContactsExportsRouteHandler: RouteHandler<
+  typeof getMarketingContactsExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingContactsExportsRouteHandler: RouteHandler<
+  typeof postMarketingContactsExportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingContactsExportsIdRouteHandler: RouteHandler<
+  typeof getMarketingContactsExportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMarketingContactsImportsRouteHandler: RouteHandler<
+  typeof putMarketingContactsImportsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingContactsImportsIdRouteHandler: RouteHandler<
+  typeof getMarketingContactsImportsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingContactsSearchRouteHandler: RouteHandler<
+  typeof postMarketingContactsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingContactsSearchEmailsRouteHandler: RouteHandler<
+  typeof postMarketingContactsSearchEmailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingContactsIdRouteHandler: RouteHandler<
+  typeof getMarketingContactsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingFieldDefinitionsRouteHandler: RouteHandler<
+  typeof getMarketingFieldDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingFieldDefinitionsRouteHandler: RouteHandler<
+  typeof postMarketingFieldDefinitionsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingFieldDefinitionsCustomFieldIdRouteHandler: RouteHandler<
+  typeof deleteMarketingFieldDefinitionsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingFieldDefinitionsCustomFieldIdRouteHandler: RouteHandler<
+  typeof patchMarketingFieldDefinitionsCustomFieldIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingListsRouteHandler: RouteHandler<typeof getMarketingListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingListsRouteHandler: RouteHandler<typeof postMarketingListsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingListsIdRouteHandler: RouteHandler<
+  typeof deleteMarketingListsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingListsIdRouteHandler: RouteHandler<
+  typeof getMarketingListsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingListsIdRouteHandler: RouteHandler<
+  typeof patchMarketingListsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingListsIdContactsRouteHandler: RouteHandler<
+  typeof deleteMarketingListsIdContactsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingListsIdContactsCountRouteHandler: RouteHandler<
+  typeof getMarketingListsIdContactsCountRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSegmentsRouteHandler: RouteHandler<
+  typeof getMarketingSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSegmentsRouteHandler: RouteHandler<
+  typeof postMarketingSegmentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSegments20RouteHandler: RouteHandler<
+  typeof getMarketingSegments20Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSegments20RouteHandler: RouteHandler<
+  typeof postMarketingSegments20Route
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingSegments20SegmentIdRouteHandler: RouteHandler<
+  typeof deleteMarketingSegments20SegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSegments20SegmentIdRouteHandler: RouteHandler<
+  typeof getMarketingSegments20SegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingSegments20SegmentIdRouteHandler: RouteHandler<
+  typeof patchMarketingSegments20SegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSegmentsDeleteRouteHandler: RouteHandler<
+  typeof postMarketingSegmentsDeleteRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof deleteMarketingSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof getMarketingSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingSegmentsSegmentIdRouteHandler: RouteHandler<
+  typeof patchMarketingSegmentsSegmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSendersRouteHandler: RouteHandler<
+  typeof postMarketingSendersRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingSinglesendsRouteHandler: RouteHandler<
+  typeof deleteMarketingSinglesendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSinglesendsRouteHandler: RouteHandler<
+  typeof getMarketingSinglesendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSinglesendsRouteHandler: RouteHandler<
+  typeof postMarketingSinglesendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSinglesendsCategoriesRouteHandler: RouteHandler<
+  typeof getMarketingSinglesendsCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSinglesendsSearchRouteHandler: RouteHandler<
+  typeof postMarketingSinglesendsSearchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingSinglesendsIdRouteHandler: RouteHandler<
+  typeof deleteMarketingSinglesendsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingSinglesendsIdRouteHandler: RouteHandler<
+  typeof getMarketingSinglesendsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchMarketingSinglesendsIdRouteHandler: RouteHandler<
+  typeof patchMarketingSinglesendsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingSinglesendsIdRouteHandler: RouteHandler<
+  typeof postMarketingSinglesendsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteMarketingSinglesendsIdScheduleRouteHandler: RouteHandler<
+  typeof deleteMarketingSinglesendsIdScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putMarketingSinglesendsIdScheduleRouteHandler: RouteHandler<
+  typeof putMarketingSinglesendsIdScheduleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsAutomationsRouteHandler: RouteHandler<
+  typeof getMarketingStatsAutomationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsAutomationsExportRouteHandler: RouteHandler<
+  typeof getMarketingStatsAutomationsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsAutomationsIdRouteHandler: RouteHandler<
+  typeof getMarketingStatsAutomationsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsAutomationsIdLinksRouteHandler: RouteHandler<
+  typeof getMarketingStatsAutomationsIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsSinglesendsRouteHandler: RouteHandler<
+  typeof getMarketingStatsSinglesendsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsSinglesendsExportRouteHandler: RouteHandler<
+  typeof getMarketingStatsSinglesendsExportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsSinglesendsIdRouteHandler: RouteHandler<
+  typeof getMarketingStatsSinglesendsIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getMarketingStatsSinglesendsIdLinksRouteHandler: RouteHandler<
+  typeof getMarketingStatsSinglesendsIdLinksRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postMarketingTestSendEmailRouteHandler: RouteHandler<
+  typeof postMarketingTestSendEmailRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

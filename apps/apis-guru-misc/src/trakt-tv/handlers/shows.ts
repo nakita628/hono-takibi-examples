@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteShowsIdProgressWatchedResetRoute,
   getShowsAnticipatedRoute,
   getShowsCollectedPeriodRoute,
@@ -46,138 +46,260 @@ import {
   postShowsIdProgressWatchedResetRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getShowsAnticipatedRouteHandler: RouteHandler<
+  typeof getShowsAnticipatedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const showsHandler = app
-  .openapi(getShowsAnticipatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsCollectedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsPlayedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsPopularRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsRecommendedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsTrendingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsUpdatesIdStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsUpdatesStartDateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsWatchedPeriodRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdAliasesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdCertificationsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdCommentsSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdLastEpisodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdListsTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdNextEpisodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdProgressCollectionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdProgressWatchedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteShowsIdProgressWatchedResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postShowsIdProgressWatchedResetRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdRelatedRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonCommentsSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeCommentsSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeListsTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodePeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeTranslationsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonEpisodesEpisodeWatchingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonListsTypeSortRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonPeopleRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonRatingsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonTranslationsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdSeasonsSeasonWatchingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdStatsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdStudiosRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdTranslationsLanguageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getShowsIdWatchingRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getShowsCollectedPeriodRouteHandler: RouteHandler<
+  typeof getShowsCollectedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsPlayedPeriodRouteHandler: RouteHandler<
+  typeof getShowsPlayedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsPopularRouteHandler: RouteHandler<typeof getShowsPopularRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsRecommendedPeriodRouteHandler: RouteHandler<
+  typeof getShowsRecommendedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsTrendingRouteHandler: RouteHandler<typeof getShowsTrendingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsUpdatesIdStartDateRouteHandler: RouteHandler<
+  typeof getShowsUpdatesIdStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsUpdatesStartDateRouteHandler: RouteHandler<
+  typeof getShowsUpdatesStartDateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsWatchedPeriodRouteHandler: RouteHandler<
+  typeof getShowsWatchedPeriodRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdRouteHandler: RouteHandler<typeof getShowsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdAliasesRouteHandler: RouteHandler<typeof getShowsIdAliasesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdCertificationsRouteHandler: RouteHandler<
+  typeof getShowsIdCertificationsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdCommentsSortRouteHandler: RouteHandler<
+  typeof getShowsIdCommentsSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdLastEpisodeRouteHandler: RouteHandler<
+  typeof getShowsIdLastEpisodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdListsTypeSortRouteHandler: RouteHandler<
+  typeof getShowsIdListsTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdNextEpisodeRouteHandler: RouteHandler<
+  typeof getShowsIdNextEpisodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdPeopleRouteHandler: RouteHandler<typeof getShowsIdPeopleRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdProgressCollectionRouteHandler: RouteHandler<
+  typeof getShowsIdProgressCollectionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdProgressWatchedRouteHandler: RouteHandler<
+  typeof getShowsIdProgressWatchedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteShowsIdProgressWatchedResetRouteHandler: RouteHandler<
+  typeof deleteShowsIdProgressWatchedResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postShowsIdProgressWatchedResetRouteHandler: RouteHandler<
+  typeof postShowsIdProgressWatchedResetRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdRatingsRouteHandler: RouteHandler<typeof getShowsIdRatingsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdRelatedRouteHandler: RouteHandler<typeof getShowsIdRelatedRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsRouteHandler: RouteHandler<typeof getShowsIdSeasonsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonCommentsSortRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonCommentsSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeCommentsSortRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeCommentsSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeListsTypeSortRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeListsTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodePeopleRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodePeopleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeRatingsRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeStatsRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeTranslationsLanguageRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeTranslationsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonEpisodesEpisodeWatchingRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonEpisodesEpisodeWatchingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonListsTypeSortRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonListsTypeSortRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonPeopleRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonPeopleRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonRatingsRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonRatingsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonStatsRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonStatsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonTranslationsLanguageRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonTranslationsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdSeasonsSeasonWatchingRouteHandler: RouteHandler<
+  typeof getShowsIdSeasonsSeasonWatchingRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdStatsRouteHandler: RouteHandler<typeof getShowsIdStatsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdStudiosRouteHandler: RouteHandler<typeof getShowsIdStudiosRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdTranslationsLanguageRouteHandler: RouteHandler<
+  typeof getShowsIdTranslationsLanguageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getShowsIdWatchingRouteHandler: RouteHandler<typeof getShowsIdWatchingRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

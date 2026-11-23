@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getSyncCommerceConfigUiTextRoute,
   patchSyncCommerceConfigUiAccountsPlatformCommerceKeyRoute,
   patchSyncCommerceConfigUiTextRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const patchSyncCommerceConfigUiAccountsPlatformCommerceKeyRouteHandler: RouteHandler<
+  typeof patchSyncCommerceConfigUiAccountsPlatformCommerceKeyRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const syncHandler = app
-  .openapi(patchSyncCommerceConfigUiAccountsPlatformCommerceKeyRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getSyncCommerceConfigUiTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchSyncCommerceConfigUiTextRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getSyncCommerceConfigUiTextRouteHandler: RouteHandler<
+  typeof getSyncCommerceConfigUiTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchSyncCommerceConfigUiTextRouteHandler: RouteHandler<
+  typeof patchSyncCommerceConfigUiTextRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

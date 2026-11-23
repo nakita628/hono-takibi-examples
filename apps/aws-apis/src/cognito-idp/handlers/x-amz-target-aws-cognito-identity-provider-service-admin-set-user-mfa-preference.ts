@@ -1,12 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityProviderServiceAdminSetUserMfaPreferenceHandler =
-  app.openapi(
-    postXAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceRoute,
-    (c) => {
-      throw new Error('Not implemented')
-    },
-  )
+export const postXAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityProviderServiceAdminSetUserMFAPreferenceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

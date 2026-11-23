@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postTestInternetDownloadSpeedRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postTestInternetDownloadSpeedRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const testInternetDownloadSpeedHandler = app.openapi(
-  postTestInternetDownloadSpeedRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postTestInternetDownloadSpeedRouteHandler: RouteHandler<
+  typeof postTestInternetDownloadSpeedRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

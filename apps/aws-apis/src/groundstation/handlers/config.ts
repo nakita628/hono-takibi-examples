@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteConfigConfigTypeConfigIdRoute,
   getConfigConfigTypeConfigIdRoute,
   getConfigRoute,
@@ -7,21 +7,28 @@ import {
   putConfigConfigTypeConfigIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postConfigRouteHandler: RouteHandler<typeof postConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const configHandler = app
-  .openapi(postConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteConfigConfigTypeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getConfigConfigTypeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putConfigConfigTypeConfigIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getConfigRouteHandler: RouteHandler<typeof getConfigRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteConfigConfigTypeConfigIdRouteHandler: RouteHandler<
+  typeof deleteConfigConfigTypeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getConfigConfigTypeConfigIdRouteHandler: RouteHandler<
+  typeof getConfigConfigTypeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putConfigConfigTypeConfigIdRouteHandler: RouteHandler<
+  typeof putConfigConfigTypeConfigIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

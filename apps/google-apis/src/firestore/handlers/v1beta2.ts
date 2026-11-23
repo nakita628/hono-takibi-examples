@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteV1beta2NameRoute,
   getV1beta2NameRoute,
   getV1beta2ParentFieldsRoute,
@@ -10,30 +10,48 @@ import {
   postV1beta2ParentIndexesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const deleteV1beta2NameRouteHandler: RouteHandler<typeof deleteV1beta2NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const v1beta2Handler = app
-  .openapi(deleteV1beta2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(patchV1beta2NameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta2NameExportDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta2NameImportDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta2ParentFieldsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV1beta2ParentIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postV1beta2ParentIndexesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV1beta2NameRouteHandler: RouteHandler<typeof getV1beta2NameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const patchV1beta2NameRouteHandler: RouteHandler<typeof patchV1beta2NameRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta2NameExportDocumentsRouteHandler: RouteHandler<
+  typeof postV1beta2NameExportDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta2NameImportDocumentsRouteHandler: RouteHandler<
+  typeof postV1beta2NameImportDocumentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta2ParentFieldsRouteHandler: RouteHandler<
+  typeof getV1beta2ParentFieldsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV1beta2ParentIndexesRouteHandler: RouteHandler<
+  typeof getV1beta2ParentIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postV1beta2ParentIndexesRouteHandler: RouteHandler<
+  typeof postV1beta2ParentIndexesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

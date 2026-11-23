@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetAwsCognitoIdentityProviderServiceRespondToAuthChallengeHandler = app.openapi(
-  postXAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeRouteHandler: RouteHandler<
+  typeof postXAmzTargetAWSCognitoIdentityProviderServiceRespondToAuthChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/XeroAPI/Xero-OpenAPI/master/xero-accountdata.yaml',
   output: './src/xero-accountdata/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/xero-accountdata/types.ts' },
   client: { output: './src/xero-accountdata/client.ts', baseUrl: '/' },
   rpc: { output: './src/xero-accountdata/rpc.ts', parseResponse: true },

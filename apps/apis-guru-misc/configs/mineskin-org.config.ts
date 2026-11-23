@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/mineskin.org/1.0.0/openapi.yaml',
   output: './src/mineskin-org/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/mineskin-org/types.ts' },
   client: { output: './src/mineskin-org/client.ts', baseUrl: '/' },
   rpc: { output: './src/mineskin-org/rpc.ts', parseResponse: true },

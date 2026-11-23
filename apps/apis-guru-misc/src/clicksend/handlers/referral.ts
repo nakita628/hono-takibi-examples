@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getReferralAccountsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getReferralAccountsRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const referralHandler = app.openapi(getReferralAccountsRoute, (c) => {
+export const getReferralAccountsRouteHandler: RouteHandler<
+  typeof getReferralAccountsRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

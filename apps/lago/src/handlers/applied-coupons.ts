@@ -1,12 +1,14 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getAppliedCouponsRoute, postAppliedCouponsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getAppliedCouponsRoute, postAppliedCouponsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const postAppliedCouponsRouteHandler: RouteHandler<typeof postAppliedCouponsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
 
-export const appliedCouponsHandler = app
-  .openapi(postAppliedCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getAppliedCouponsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getAppliedCouponsRouteHandler: RouteHandler<typeof getAppliedCouponsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

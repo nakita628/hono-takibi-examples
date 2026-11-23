@@ -1,12 +1,10 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getFieldCapsRoute, postFieldCapsRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getFieldCapsRoute, postFieldCapsRoute } from '../routes'
 
-const app = new OpenAPIHono()
+export const getFieldCapsRouteHandler: RouteHandler<typeof getFieldCapsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const fieldCapsHandler = app
-  .openapi(getFieldCapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postFieldCapsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postFieldCapsRouteHandler: RouteHandler<typeof postFieldCapsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}

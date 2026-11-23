@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerDeleteEndpointConfigRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerDeleteEndpointConfigRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerDeleteEndpointConfigHandler = app.openapi(
-  postXAmzTargetSageMakerDeleteEndpointConfigRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerDeleteEndpointConfigRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerDeleteEndpointConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

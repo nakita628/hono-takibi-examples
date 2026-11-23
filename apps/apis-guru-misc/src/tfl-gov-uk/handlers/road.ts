@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getRoadAllDisruptionDisruptionIdsRoute,
   getRoadAllStreetDisruptionRoute,
   getRoadIdsDisruptionRoute,
@@ -10,30 +10,46 @@ import {
   getRoadRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getRoadRouteHandler: RouteHandler<typeof getRoadRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const roadHandler = app
-  .openapi(getRoadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadMetaCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadMetaSeveritiesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadAllDisruptionDisruptionIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadAllStreetDisruptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadIdsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadIdsDisruptionRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getRoadIdsStatusRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getRoadMetaCategoriesRouteHandler: RouteHandler<
+  typeof getRoadMetaCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadMetaSeveritiesRouteHandler: RouteHandler<
+  typeof getRoadMetaSeveritiesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadAllDisruptionDisruptionIdsRouteHandler: RouteHandler<
+  typeof getRoadAllDisruptionDisruptionIdsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadAllStreetDisruptionRouteHandler: RouteHandler<
+  typeof getRoadAllStreetDisruptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadIdsRouteHandler: RouteHandler<typeof getRoadIdsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadIdsDisruptionRouteHandler: RouteHandler<
+  typeof getRoadIdsDisruptionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getRoadIdsStatusRouteHandler: RouteHandler<typeof getRoadIdsStatusRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

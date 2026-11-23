@@ -1,15 +1,22 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { deleteEqlSearchIdRoute, getEqlSearchIdRoute, getEqlSearchStatusIdRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
+  deleteEqlSearchIdRoute,
+  getEqlSearchIdRoute,
+  getEqlSearchStatusIdRoute,
+} from '../routes'
 
-const app = new OpenAPIHono()
+export const getEqlSearchIdRouteHandler: RouteHandler<typeof getEqlSearchIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const eqlHandler = app
-  .openapi(getEqlSearchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEqlSearchIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEqlSearchStatusIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const deleteEqlSearchIdRouteHandler: RouteHandler<typeof deleteEqlSearchIdRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getEqlSearchStatusIdRouteHandler: RouteHandler<
+  typeof getEqlSearchStatusIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getWorkerTracksIndexRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getWorkerTracksIndexRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const workerTracksHandler = app.openapi(getWorkerTracksIndexRoute, (c) => {
+export const getWorkerTracksIndexRouteHandler: RouteHandler<
+  typeof getWorkerTracksIndexRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

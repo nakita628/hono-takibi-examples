@@ -1,125 +1,359 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import {
-  xAmzTargetTransferServiceCreateAccessHandler,
-  xAmzTargetTransferServiceCreateAgreementHandler,
-  xAmzTargetTransferServiceCreateConnectorHandler,
-  xAmzTargetTransferServiceCreateProfileHandler,
-  xAmzTargetTransferServiceCreateServerHandler,
-  xAmzTargetTransferServiceCreateUserHandler,
-  xAmzTargetTransferServiceCreateWorkflowHandler,
-  xAmzTargetTransferServiceDeleteAccessHandler,
-  xAmzTargetTransferServiceDeleteAgreementHandler,
-  xAmzTargetTransferServiceDeleteCertificateHandler,
-  xAmzTargetTransferServiceDeleteConnectorHandler,
-  xAmzTargetTransferServiceDeleteHostKeyHandler,
-  xAmzTargetTransferServiceDeleteProfileHandler,
-  xAmzTargetTransferServiceDeleteServerHandler,
-  xAmzTargetTransferServiceDeleteSshPublicKeyHandler,
-  xAmzTargetTransferServiceDeleteUserHandler,
-  xAmzTargetTransferServiceDeleteWorkflowHandler,
-  xAmzTargetTransferServiceDescribeAccessHandler,
-  xAmzTargetTransferServiceDescribeAgreementHandler,
-  xAmzTargetTransferServiceDescribeCertificateHandler,
-  xAmzTargetTransferServiceDescribeConnectorHandler,
-  xAmzTargetTransferServiceDescribeExecutionHandler,
-  xAmzTargetTransferServiceDescribeHostKeyHandler,
-  xAmzTargetTransferServiceDescribeProfileHandler,
-  xAmzTargetTransferServiceDescribeSecurityPolicyHandler,
-  xAmzTargetTransferServiceDescribeServerHandler,
-  xAmzTargetTransferServiceDescribeUserHandler,
-  xAmzTargetTransferServiceDescribeWorkflowHandler,
-  xAmzTargetTransferServiceImportCertificateHandler,
-  xAmzTargetTransferServiceImportHostKeyHandler,
-  xAmzTargetTransferServiceImportSshPublicKeyHandler,
-  xAmzTargetTransferServiceListAccessesHandler,
-  xAmzTargetTransferServiceListAgreementsHandler,
-  xAmzTargetTransferServiceListCertificatesHandler,
-  xAmzTargetTransferServiceListConnectorsHandler,
-  xAmzTargetTransferServiceListExecutionsHandler,
-  xAmzTargetTransferServiceListHostKeysHandler,
-  xAmzTargetTransferServiceListProfilesHandler,
-  xAmzTargetTransferServiceListSecurityPoliciesHandler,
-  xAmzTargetTransferServiceListServersHandler,
-  xAmzTargetTransferServiceListTagsForResourceHandler,
-  xAmzTargetTransferServiceListUsersHandler,
-  xAmzTargetTransferServiceListWorkflowsHandler,
-  xAmzTargetTransferServiceSendWorkflowStepStateHandler,
-  xAmzTargetTransferServiceStartFileTransferHandler,
-  xAmzTargetTransferServiceStartServerHandler,
-  xAmzTargetTransferServiceStopServerHandler,
-  xAmzTargetTransferServiceTagResourceHandler,
-  xAmzTargetTransferServiceTestIdentityProviderHandler,
-  xAmzTargetTransferServiceUntagResourceHandler,
-  xAmzTargetTransferServiceUpdateAccessHandler,
-  xAmzTargetTransferServiceUpdateAgreementHandler,
-  xAmzTargetTransferServiceUpdateCertificateHandler,
-  xAmzTargetTransferServiceUpdateConnectorHandler,
-  xAmzTargetTransferServiceUpdateHostKeyHandler,
-  xAmzTargetTransferServiceUpdateProfileHandler,
-  xAmzTargetTransferServiceUpdateServerHandler,
-  xAmzTargetTransferServiceUpdateUserHandler,
+  postXAmzTargetTransferServiceCreateAccessRoute,
+  postXAmzTargetTransferServiceCreateAgreementRoute,
+  postXAmzTargetTransferServiceCreateConnectorRoute,
+  postXAmzTargetTransferServiceCreateProfileRoute,
+  postXAmzTargetTransferServiceCreateServerRoute,
+  postXAmzTargetTransferServiceCreateUserRoute,
+  postXAmzTargetTransferServiceCreateWorkflowRoute,
+  postXAmzTargetTransferServiceDeleteAccessRoute,
+  postXAmzTargetTransferServiceDeleteAgreementRoute,
+  postXAmzTargetTransferServiceDeleteCertificateRoute,
+  postXAmzTargetTransferServiceDeleteConnectorRoute,
+  postXAmzTargetTransferServiceDeleteHostKeyRoute,
+  postXAmzTargetTransferServiceDeleteProfileRoute,
+  postXAmzTargetTransferServiceDeleteServerRoute,
+  postXAmzTargetTransferServiceDeleteSshPublicKeyRoute,
+  postXAmzTargetTransferServiceDeleteUserRoute,
+  postXAmzTargetTransferServiceDeleteWorkflowRoute,
+  postXAmzTargetTransferServiceDescribeAccessRoute,
+  postXAmzTargetTransferServiceDescribeAgreementRoute,
+  postXAmzTargetTransferServiceDescribeCertificateRoute,
+  postXAmzTargetTransferServiceDescribeConnectorRoute,
+  postXAmzTargetTransferServiceDescribeExecutionRoute,
+  postXAmzTargetTransferServiceDescribeHostKeyRoute,
+  postXAmzTargetTransferServiceDescribeProfileRoute,
+  postXAmzTargetTransferServiceDescribeSecurityPolicyRoute,
+  postXAmzTargetTransferServiceDescribeServerRoute,
+  postXAmzTargetTransferServiceDescribeUserRoute,
+  postXAmzTargetTransferServiceDescribeWorkflowRoute,
+  postXAmzTargetTransferServiceImportCertificateRoute,
+  postXAmzTargetTransferServiceImportHostKeyRoute,
+  postXAmzTargetTransferServiceImportSshPublicKeyRoute,
+  postXAmzTargetTransferServiceListAccessesRoute,
+  postXAmzTargetTransferServiceListAgreementsRoute,
+  postXAmzTargetTransferServiceListCertificatesRoute,
+  postXAmzTargetTransferServiceListConnectorsRoute,
+  postXAmzTargetTransferServiceListExecutionsRoute,
+  postXAmzTargetTransferServiceListHostKeysRoute,
+  postXAmzTargetTransferServiceListProfilesRoute,
+  postXAmzTargetTransferServiceListSecurityPoliciesRoute,
+  postXAmzTargetTransferServiceListServersRoute,
+  postXAmzTargetTransferServiceListTagsForResourceRoute,
+  postXAmzTargetTransferServiceListUsersRoute,
+  postXAmzTargetTransferServiceListWorkflowsRoute,
+  postXAmzTargetTransferServiceSendWorkflowStepStateRoute,
+  postXAmzTargetTransferServiceStartFileTransferRoute,
+  postXAmzTargetTransferServiceStartServerRoute,
+  postXAmzTargetTransferServiceStopServerRoute,
+  postXAmzTargetTransferServiceTagResourceRoute,
+  postXAmzTargetTransferServiceTestIdentityProviderRoute,
+  postXAmzTargetTransferServiceUntagResourceRoute,
+  postXAmzTargetTransferServiceUpdateAccessRoute,
+  postXAmzTargetTransferServiceUpdateAgreementRoute,
+  postXAmzTargetTransferServiceUpdateCertificateRoute,
+  postXAmzTargetTransferServiceUpdateConnectorRoute,
+  postXAmzTargetTransferServiceUpdateHostKeyRoute,
+  postXAmzTargetTransferServiceUpdateProfileRoute,
+  postXAmzTargetTransferServiceUpdateServerRoute,
+  postXAmzTargetTransferServiceUpdateUserRoute,
+} from './routes'
+import {
+  postXAmzTargetTransferServiceCreateAccessRouteHandler,
+  postXAmzTargetTransferServiceCreateAgreementRouteHandler,
+  postXAmzTargetTransferServiceCreateConnectorRouteHandler,
+  postXAmzTargetTransferServiceCreateProfileRouteHandler,
+  postXAmzTargetTransferServiceCreateServerRouteHandler,
+  postXAmzTargetTransferServiceCreateUserRouteHandler,
+  postXAmzTargetTransferServiceCreateWorkflowRouteHandler,
+  postXAmzTargetTransferServiceDeleteAccessRouteHandler,
+  postXAmzTargetTransferServiceDeleteAgreementRouteHandler,
+  postXAmzTargetTransferServiceDeleteCertificateRouteHandler,
+  postXAmzTargetTransferServiceDeleteConnectorRouteHandler,
+  postXAmzTargetTransferServiceDeleteHostKeyRouteHandler,
+  postXAmzTargetTransferServiceDeleteProfileRouteHandler,
+  postXAmzTargetTransferServiceDeleteServerRouteHandler,
+  postXAmzTargetTransferServiceDeleteSshPublicKeyRouteHandler,
+  postXAmzTargetTransferServiceDeleteUserRouteHandler,
+  postXAmzTargetTransferServiceDeleteWorkflowRouteHandler,
+  postXAmzTargetTransferServiceDescribeAccessRouteHandler,
+  postXAmzTargetTransferServiceDescribeAgreementRouteHandler,
+  postXAmzTargetTransferServiceDescribeCertificateRouteHandler,
+  postXAmzTargetTransferServiceDescribeConnectorRouteHandler,
+  postXAmzTargetTransferServiceDescribeExecutionRouteHandler,
+  postXAmzTargetTransferServiceDescribeHostKeyRouteHandler,
+  postXAmzTargetTransferServiceDescribeProfileRouteHandler,
+  postXAmzTargetTransferServiceDescribeSecurityPolicyRouteHandler,
+  postXAmzTargetTransferServiceDescribeServerRouteHandler,
+  postXAmzTargetTransferServiceDescribeUserRouteHandler,
+  postXAmzTargetTransferServiceDescribeWorkflowRouteHandler,
+  postXAmzTargetTransferServiceImportCertificateRouteHandler,
+  postXAmzTargetTransferServiceImportHostKeyRouteHandler,
+  postXAmzTargetTransferServiceImportSshPublicKeyRouteHandler,
+  postXAmzTargetTransferServiceListAccessesRouteHandler,
+  postXAmzTargetTransferServiceListAgreementsRouteHandler,
+  postXAmzTargetTransferServiceListCertificatesRouteHandler,
+  postXAmzTargetTransferServiceListConnectorsRouteHandler,
+  postXAmzTargetTransferServiceListExecutionsRouteHandler,
+  postXAmzTargetTransferServiceListHostKeysRouteHandler,
+  postXAmzTargetTransferServiceListProfilesRouteHandler,
+  postXAmzTargetTransferServiceListSecurityPoliciesRouteHandler,
+  postXAmzTargetTransferServiceListServersRouteHandler,
+  postXAmzTargetTransferServiceListTagsForResourceRouteHandler,
+  postXAmzTargetTransferServiceListUsersRouteHandler,
+  postXAmzTargetTransferServiceListWorkflowsRouteHandler,
+  postXAmzTargetTransferServiceSendWorkflowStepStateRouteHandler,
+  postXAmzTargetTransferServiceStartFileTransferRouteHandler,
+  postXAmzTargetTransferServiceStartServerRouteHandler,
+  postXAmzTargetTransferServiceStopServerRouteHandler,
+  postXAmzTargetTransferServiceTagResourceRouteHandler,
+  postXAmzTargetTransferServiceTestIdentityProviderRouteHandler,
+  postXAmzTargetTransferServiceUntagResourceRouteHandler,
+  postXAmzTargetTransferServiceUpdateAccessRouteHandler,
+  postXAmzTargetTransferServiceUpdateAgreementRouteHandler,
+  postXAmzTargetTransferServiceUpdateCertificateRouteHandler,
+  postXAmzTargetTransferServiceUpdateConnectorRouteHandler,
+  postXAmzTargetTransferServiceUpdateHostKeyRouteHandler,
+  postXAmzTargetTransferServiceUpdateProfileRouteHandler,
+  postXAmzTargetTransferServiceUpdateServerRouteHandler,
+  postXAmzTargetTransferServiceUpdateUserRouteHandler,
 } from './handlers'
 
 const app = new OpenAPIHono()
 
 export const api = app
-  .route('/', xAmzTargetTransferServiceCreateAccessHandler)
-  .route('/', xAmzTargetTransferServiceCreateAgreementHandler)
-  .route('/', xAmzTargetTransferServiceCreateConnectorHandler)
-  .route('/', xAmzTargetTransferServiceCreateProfileHandler)
-  .route('/', xAmzTargetTransferServiceCreateServerHandler)
-  .route('/', xAmzTargetTransferServiceCreateUserHandler)
-  .route('/', xAmzTargetTransferServiceCreateWorkflowHandler)
-  .route('/', xAmzTargetTransferServiceDeleteAccessHandler)
-  .route('/', xAmzTargetTransferServiceDeleteAgreementHandler)
-  .route('/', xAmzTargetTransferServiceDeleteCertificateHandler)
-  .route('/', xAmzTargetTransferServiceDeleteConnectorHandler)
-  .route('/', xAmzTargetTransferServiceDeleteHostKeyHandler)
-  .route('/', xAmzTargetTransferServiceDeleteProfileHandler)
-  .route('/', xAmzTargetTransferServiceDeleteServerHandler)
-  .route('/', xAmzTargetTransferServiceDeleteSshPublicKeyHandler)
-  .route('/', xAmzTargetTransferServiceDeleteUserHandler)
-  .route('/', xAmzTargetTransferServiceDeleteWorkflowHandler)
-  .route('/', xAmzTargetTransferServiceDescribeAccessHandler)
-  .route('/', xAmzTargetTransferServiceDescribeAgreementHandler)
-  .route('/', xAmzTargetTransferServiceDescribeCertificateHandler)
-  .route('/', xAmzTargetTransferServiceDescribeConnectorHandler)
-  .route('/', xAmzTargetTransferServiceDescribeExecutionHandler)
-  .route('/', xAmzTargetTransferServiceDescribeHostKeyHandler)
-  .route('/', xAmzTargetTransferServiceDescribeProfileHandler)
-  .route('/', xAmzTargetTransferServiceDescribeSecurityPolicyHandler)
-  .route('/', xAmzTargetTransferServiceDescribeServerHandler)
-  .route('/', xAmzTargetTransferServiceDescribeUserHandler)
-  .route('/', xAmzTargetTransferServiceDescribeWorkflowHandler)
-  .route('/', xAmzTargetTransferServiceImportCertificateHandler)
-  .route('/', xAmzTargetTransferServiceImportHostKeyHandler)
-  .route('/', xAmzTargetTransferServiceImportSshPublicKeyHandler)
-  .route('/', xAmzTargetTransferServiceListAccessesHandler)
-  .route('/', xAmzTargetTransferServiceListAgreementsHandler)
-  .route('/', xAmzTargetTransferServiceListCertificatesHandler)
-  .route('/', xAmzTargetTransferServiceListConnectorsHandler)
-  .route('/', xAmzTargetTransferServiceListExecutionsHandler)
-  .route('/', xAmzTargetTransferServiceListHostKeysHandler)
-  .route('/', xAmzTargetTransferServiceListProfilesHandler)
-  .route('/', xAmzTargetTransferServiceListSecurityPoliciesHandler)
-  .route('/', xAmzTargetTransferServiceListServersHandler)
-  .route('/', xAmzTargetTransferServiceListTagsForResourceHandler)
-  .route('/', xAmzTargetTransferServiceListUsersHandler)
-  .route('/', xAmzTargetTransferServiceListWorkflowsHandler)
-  .route('/', xAmzTargetTransferServiceSendWorkflowStepStateHandler)
-  .route('/', xAmzTargetTransferServiceStartFileTransferHandler)
-  .route('/', xAmzTargetTransferServiceStartServerHandler)
-  .route('/', xAmzTargetTransferServiceStopServerHandler)
-  .route('/', xAmzTargetTransferServiceTagResourceHandler)
-  .route('/', xAmzTargetTransferServiceTestIdentityProviderHandler)
-  .route('/', xAmzTargetTransferServiceUntagResourceHandler)
-  .route('/', xAmzTargetTransferServiceUpdateAccessHandler)
-  .route('/', xAmzTargetTransferServiceUpdateAgreementHandler)
-  .route('/', xAmzTargetTransferServiceUpdateCertificateHandler)
-  .route('/', xAmzTargetTransferServiceUpdateConnectorHandler)
-  .route('/', xAmzTargetTransferServiceUpdateHostKeyHandler)
-  .route('/', xAmzTargetTransferServiceUpdateProfileHandler)
-  .route('/', xAmzTargetTransferServiceUpdateServerHandler)
-  .route('/', xAmzTargetTransferServiceUpdateUserHandler)
+  .openapi(
+    postXAmzTargetTransferServiceCreateAccessRoute,
+    postXAmzTargetTransferServiceCreateAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateAgreementRoute,
+    postXAmzTargetTransferServiceCreateAgreementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateConnectorRoute,
+    postXAmzTargetTransferServiceCreateConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateProfileRoute,
+    postXAmzTargetTransferServiceCreateProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateServerRoute,
+    postXAmzTargetTransferServiceCreateServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateUserRoute,
+    postXAmzTargetTransferServiceCreateUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceCreateWorkflowRoute,
+    postXAmzTargetTransferServiceCreateWorkflowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteAccessRoute,
+    postXAmzTargetTransferServiceDeleteAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteAgreementRoute,
+    postXAmzTargetTransferServiceDeleteAgreementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteCertificateRoute,
+    postXAmzTargetTransferServiceDeleteCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteConnectorRoute,
+    postXAmzTargetTransferServiceDeleteConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteHostKeyRoute,
+    postXAmzTargetTransferServiceDeleteHostKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteProfileRoute,
+    postXAmzTargetTransferServiceDeleteProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteServerRoute,
+    postXAmzTargetTransferServiceDeleteServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteSshPublicKeyRoute,
+    postXAmzTargetTransferServiceDeleteSshPublicKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteUserRoute,
+    postXAmzTargetTransferServiceDeleteUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDeleteWorkflowRoute,
+    postXAmzTargetTransferServiceDeleteWorkflowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeAccessRoute,
+    postXAmzTargetTransferServiceDescribeAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeAgreementRoute,
+    postXAmzTargetTransferServiceDescribeAgreementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeCertificateRoute,
+    postXAmzTargetTransferServiceDescribeCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeConnectorRoute,
+    postXAmzTargetTransferServiceDescribeConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeExecutionRoute,
+    postXAmzTargetTransferServiceDescribeExecutionRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeHostKeyRoute,
+    postXAmzTargetTransferServiceDescribeHostKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeProfileRoute,
+    postXAmzTargetTransferServiceDescribeProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeSecurityPolicyRoute,
+    postXAmzTargetTransferServiceDescribeSecurityPolicyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeServerRoute,
+    postXAmzTargetTransferServiceDescribeServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeUserRoute,
+    postXAmzTargetTransferServiceDescribeUserRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceDescribeWorkflowRoute,
+    postXAmzTargetTransferServiceDescribeWorkflowRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceImportCertificateRoute,
+    postXAmzTargetTransferServiceImportCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceImportHostKeyRoute,
+    postXAmzTargetTransferServiceImportHostKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceImportSshPublicKeyRoute,
+    postXAmzTargetTransferServiceImportSshPublicKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListAccessesRoute,
+    postXAmzTargetTransferServiceListAccessesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListAgreementsRoute,
+    postXAmzTargetTransferServiceListAgreementsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListCertificatesRoute,
+    postXAmzTargetTransferServiceListCertificatesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListConnectorsRoute,
+    postXAmzTargetTransferServiceListConnectorsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListExecutionsRoute,
+    postXAmzTargetTransferServiceListExecutionsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListHostKeysRoute,
+    postXAmzTargetTransferServiceListHostKeysRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListProfilesRoute,
+    postXAmzTargetTransferServiceListProfilesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListSecurityPoliciesRoute,
+    postXAmzTargetTransferServiceListSecurityPoliciesRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListServersRoute,
+    postXAmzTargetTransferServiceListServersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListTagsForResourceRoute,
+    postXAmzTargetTransferServiceListTagsForResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListUsersRoute,
+    postXAmzTargetTransferServiceListUsersRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceListWorkflowsRoute,
+    postXAmzTargetTransferServiceListWorkflowsRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceSendWorkflowStepStateRoute,
+    postXAmzTargetTransferServiceSendWorkflowStepStateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceStartFileTransferRoute,
+    postXAmzTargetTransferServiceStartFileTransferRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceStartServerRoute,
+    postXAmzTargetTransferServiceStartServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceStopServerRoute,
+    postXAmzTargetTransferServiceStopServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceTagResourceRoute,
+    postXAmzTargetTransferServiceTagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceTestIdentityProviderRoute,
+    postXAmzTargetTransferServiceTestIdentityProviderRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUntagResourceRoute,
+    postXAmzTargetTransferServiceUntagResourceRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateAccessRoute,
+    postXAmzTargetTransferServiceUpdateAccessRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateAgreementRoute,
+    postXAmzTargetTransferServiceUpdateAgreementRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateCertificateRoute,
+    postXAmzTargetTransferServiceUpdateCertificateRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateConnectorRoute,
+    postXAmzTargetTransferServiceUpdateConnectorRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateHostKeyRoute,
+    postXAmzTargetTransferServiceUpdateHostKeyRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateProfileRoute,
+    postXAmzTargetTransferServiceUpdateProfileRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateServerRoute,
+    postXAmzTargetTransferServiceUpdateServerRouteHandler,
+  )
+  .openapi(
+    postXAmzTargetTransferServiceUpdateUserRoute,
+    postXAmzTargetTransferServiceUpdateUserRouteHandler,
+  )
 
 export default app

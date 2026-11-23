@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postVerifyShopperTaxIdentificationRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postVerifyShopperTaxIdentificationRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const verifyShopperTaxIdentificationHandler = app.openapi(
-  postVerifyShopperTaxIdentificationRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postVerifyShopperTaxIdentificationRouteHandler: RouteHandler<
+  typeof postVerifyShopperTaxIdentificationRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

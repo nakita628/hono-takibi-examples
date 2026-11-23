@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerDeleteImageVersionRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerDeleteImageVersionRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerDeleteImageVersionHandler = app.openapi(
-  postXAmzTargetSageMakerDeleteImageVersionRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerDeleteImageVersionRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerDeleteImageVersionRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

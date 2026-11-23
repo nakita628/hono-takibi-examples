@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetSageMakerDescribeNotebookInstanceRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetSageMakerDescribeNotebookInstanceRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetSageMakerDescribeNotebookInstanceHandler = app.openapi(
-  postXAmzTargetSageMakerDescribeNotebookInstanceRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetSageMakerDescribeNotebookInstanceRouteHandler: RouteHandler<
+  typeof postXAmzTargetSageMakerDescribeNotebookInstanceRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

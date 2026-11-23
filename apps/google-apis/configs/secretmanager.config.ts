@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/googleapis.com/secretmanager/v1beta1/openapi.yaml',
   output: './src/secretmanager/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/secretmanager/types.ts' },
   client: { output: './src/secretmanager/client.ts', baseUrl: '/' },
   rpc: { output: './src/secretmanager/rpc.ts', parseResponse: true },

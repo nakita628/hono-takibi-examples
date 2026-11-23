@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteEnvironmentEnvironmentIdRoute,
   getEnvironmentEnvironmentIdRoute,
   getEnvironmentRoute,
@@ -7,21 +7,28 @@ import {
   putEnvironmentEnvironmentIdRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postEnvironmentRouteHandler: RouteHandler<typeof postEnvironmentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const environmentHandler = app
-  .openapi(postEnvironmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteEnvironmentEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getEnvironmentEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putEnvironmentEnvironmentIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getEnvironmentRouteHandler: RouteHandler<typeof getEnvironmentRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteEnvironmentEnvironmentIdRouteHandler: RouteHandler<
+  typeof deleteEnvironmentEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getEnvironmentEnvironmentIdRouteHandler: RouteHandler<
+  typeof getEnvironmentEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putEnvironmentEnvironmentIdRouteHandler: RouteHandler<
+  typeof putEnvironmentEnvironmentIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

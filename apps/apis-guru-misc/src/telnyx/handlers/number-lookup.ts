@@ -1,8 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { getNumberLookupPhoneNumberRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { getNumberLookupPhoneNumberRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const numberLookupHandler = app.openapi(getNumberLookupPhoneNumberRoute, (c) => {
+export const getNumberLookupPhoneNumberRouteHandler: RouteHandler<
+  typeof getNumberLookupPhoneNumberRoute
+> = async (c) => {
   throw new Error('Not implemented')
-})
+}

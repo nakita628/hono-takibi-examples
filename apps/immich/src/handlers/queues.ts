@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteQueuesNameJobsRoute,
   getQueuesNameJobsRoute,
   getQueuesNameRoute,
@@ -7,21 +7,26 @@ import {
   putQueuesNameRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getQueuesRouteHandler: RouteHandler<typeof getQueuesRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const queuesHandler = app
-  .openapi(getQueuesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putQueuesNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteQueuesNameJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getQueuesNameJobsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getQueuesNameRouteHandler: RouteHandler<typeof getQueuesNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putQueuesNameRouteHandler: RouteHandler<typeof putQueuesNameRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteQueuesNameJobsRouteHandler: RouteHandler<
+  typeof deleteQueuesNameJobsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getQueuesNameJobsRouteHandler: RouteHandler<typeof getQueuesNameJobsRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}

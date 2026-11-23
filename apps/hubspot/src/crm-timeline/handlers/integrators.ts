@@ -1,19 +1,24 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   postIntegratorsTimeline202609EventsBatchRoute,
   postIntegratorsTimeline202609EventsRoute,
   postIntegratorsTimeline202609TypesProjectsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postIntegratorsTimeline202609EventsRouteHandler: RouteHandler<
+  typeof postIntegratorsTimeline202609EventsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const integratorsHandler = app
-  .openapi(postIntegratorsTimeline202609EventsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegratorsTimeline202609EventsBatchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postIntegratorsTimeline202609TypesProjectsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postIntegratorsTimeline202609EventsBatchRouteHandler: RouteHandler<
+  typeof postIntegratorsTimeline202609EventsBatchRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postIntegratorsTimeline202609TypesProjectsRouteHandler: RouteHandler<
+  typeof postIntegratorsTimeline202609TypesProjectsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

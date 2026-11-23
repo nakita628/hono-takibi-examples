@@ -18,27 +18,27 @@ export function getRecordsFormatKey() {
 }
 
 export function getRecordsFormatQueryKey(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records.:format', '/records.:format', keyArgs] as const
+  return ['records.{format}', '/records.{format}', keyArgs] as const
 }
 
 export function getRecordsFormatQueryOptions<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
-        typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+        typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
       >
     >,
     TError,
@@ -48,7 +48,7 @@ export function getRecordsFormatQueryOptions<
     queryKey: getRecordsFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client['records.:format'].$get(args, { ...options, init: { ...options?.init, signal } }),
+        client['records.{format}'].$get(args, { ...options, init: { ...options?.init, signal } }),
       )
     },
   })
@@ -57,18 +57,18 @@ export function getRecordsFormatQueryOptions<
 export function useRecordsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
           >
         >,
         TError,
@@ -91,18 +91,18 @@ export function useRecordsFormat<
 export function useSuspenseRecordsFormat<
   TData = Awaited<
     ReturnType<
-      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+      typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client)['records.:format']['$get']>,
+  args: InferRequestType<(typeof client)['records.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
-            typeof parseResponse<Awaited<ReturnType<(typeof client)['records.:format']['$get']>>>
+            typeof parseResponse<Awaited<ReturnType<(typeof client)['records.{format}']['$get']>>>
           >
         >,
         TError,
@@ -123,30 +123,30 @@ export function useSuspenseRecordsFormat<
 }
 
 export function getRecordsRecordIdFormatQueryKey(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records', '/records/:record_id.:format', keyArgs] as const
+  return ['records', '/records/:record_id.{format}', keyArgs] as const
 }
 
 export function getRecordsRecordIdFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
     Awaited<
       ReturnType<
         typeof parseResponse<
-          Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+          Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
         >
       >
     >,
@@ -157,7 +157,7 @@ export function getRecordsRecordIdFormatQueryOptions<
     queryKey: getRecordsRecordIdFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.records[':record_id.:format'].$get(args, {
+        client.records[':record_id.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -170,20 +170,20 @@ export function useRecordsRecordIdFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
             >
           >
         >,
@@ -211,20 +211,20 @@ export function useSuspenseRecordsRecordIdFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+        Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
         Awaited<
           ReturnType<
             typeof parseResponse<
-              Awaited<ReturnType<(typeof client.records)[':record_id.:format']['$get']>>
+              Awaited<ReturnType<(typeof client.records)[':record_id.{format}']['$get']>>
             >
           >
         >,
@@ -249,23 +249,25 @@ export function useSuspenseRecordsRecordIdFormat<
 }
 
 export function getRecordsRecordIdMoreLikeThisFormatQueryKey(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
 ) {
   const { header: _, ...keyArgs } = args
-  return ['records', '/records/:record_id/more_like_this.:format', keyArgs] as const
+  return ['records', '/records/:record_id/more_like_this.{format}', keyArgs] as const
 }
 
 export function getRecordsRecordIdMoreLikeThisFormatQueryOptions<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
   options?: ClientRequestOptions,
 ) {
   return queryOptions<
@@ -273,7 +275,7 @@ export function getRecordsRecordIdMoreLikeThisFormatQueryOptions<
       ReturnType<
         typeof parseResponse<
           Awaited<
-            ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+            ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
           >
         >
       >
@@ -285,7 +287,7 @@ export function getRecordsRecordIdMoreLikeThisFormatQueryOptions<
     queryKey: getRecordsRecordIdMoreLikeThisFormatQueryKey(args),
     queryFn({ signal }) {
       return parseResponse(
-        client.records[':record_id']['more_like_this.:format'].$get(args, {
+        client.records[':record_id']['more_like_this.{format}'].$get(args, {
           ...options,
           init: { ...options?.init, signal },
         }),
@@ -298,13 +300,15 @@ export function useRecordsRecordIdMoreLikeThisFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseQueryOptions<
@@ -312,7 +316,7 @@ export function useRecordsRecordIdMoreLikeThisFormat<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+                ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
               >
             >
           >
@@ -341,13 +345,15 @@ export function useSuspenseRecordsRecordIdMoreLikeThisFormat<
   TData = Awaited<
     ReturnType<
       typeof parseResponse<
-        Awaited<ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>>
+        Awaited<
+          ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
+        >
       >
     >
   >,
   TError = DefaultError,
 >(
-  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>,
+  args: InferRequestType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>,
   options?: {
     query?: Omit<
       UseSuspenseQueryOptions<
@@ -355,7 +361,7 @@ export function useSuspenseRecordsRecordIdMoreLikeThisFormat<
           ReturnType<
             typeof parseResponse<
               Awaited<
-                ReturnType<(typeof client.records)[':record_id']['more_like_this.:format']['$get']>
+                ReturnType<(typeof client.records)[':record_id']['more_like_this.{format}']['$get']>
               >
             >
           >

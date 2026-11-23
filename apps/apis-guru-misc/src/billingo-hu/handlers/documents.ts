@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   deleteDocumentsIdPaymentsRoute,
   getDocumentsIdDownloadRoute,
   getDocumentsIdOnlineSzamlaRoute,
@@ -14,42 +14,68 @@ import {
   putDocumentsIdPaymentsRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getDocumentsRouteHandler: RouteHandler<typeof getDocumentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const documentsHandler = app
-  .openapi(getDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsIdCancelRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsIdCreateFromProformaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsIdDownloadRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsIdOnlineSzamlaRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(deleteDocumentsIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(putDocumentsIdPaymentsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getDocumentsIdPublicUrlRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postDocumentsIdSendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postDocumentsRouteHandler: RouteHandler<typeof postDocumentsRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsIdRouteHandler: RouteHandler<typeof getDocumentsIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsIdCancelRouteHandler: RouteHandler<
+  typeof postDocumentsIdCancelRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsIdCreateFromProformaRouteHandler: RouteHandler<
+  typeof postDocumentsIdCreateFromProformaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsIdDownloadRouteHandler: RouteHandler<
+  typeof getDocumentsIdDownloadRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsIdOnlineSzamlaRouteHandler: RouteHandler<
+  typeof getDocumentsIdOnlineSzamlaRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const deleteDocumentsIdPaymentsRouteHandler: RouteHandler<
+  typeof deleteDocumentsIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsIdPaymentsRouteHandler: RouteHandler<
+  typeof getDocumentsIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const putDocumentsIdPaymentsRouteHandler: RouteHandler<
+  typeof putDocumentsIdPaymentsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getDocumentsIdPublicUrlRouteHandler: RouteHandler<
+  typeof getDocumentsIdPublicUrlRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postDocumentsIdSendRouteHandler: RouteHandler<
+  typeof postDocumentsIdSendRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

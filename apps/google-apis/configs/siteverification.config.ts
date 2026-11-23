@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/googleapis.com/siteVerification/v1/openapi.yaml',
   output: './src/siteverification/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/siteverification/types.ts' },
   client: { output: './src/siteverification/client.ts', baseUrl: '/' },
   rpc: { output: './src/siteverification/rpc.ts', parseResponse: true },

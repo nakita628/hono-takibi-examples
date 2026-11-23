@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getV3StocksFeedBarsRoute,
   getV3StocksFeedLatestBarsRoute,
   getV3StocksFeedLatestQuotesRoute,
@@ -9,27 +9,44 @@ import {
   getV3StocksFeedTradesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getV3StocksFeedBarsRouteHandler: RouteHandler<
+  typeof getV3StocksFeedBarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const v3Handler = app
-  .openapi(getV3StocksFeedBarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedLatestBarsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedLatestQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedLatestTradesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedQuotesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedSnapshotsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getV3StocksFeedTradesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getV3StocksFeedLatestBarsRouteHandler: RouteHandler<
+  typeof getV3StocksFeedLatestBarsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3StocksFeedLatestQuotesRouteHandler: RouteHandler<
+  typeof getV3StocksFeedLatestQuotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3StocksFeedLatestTradesRouteHandler: RouteHandler<
+  typeof getV3StocksFeedLatestTradesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3StocksFeedQuotesRouteHandler: RouteHandler<
+  typeof getV3StocksFeedQuotesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3StocksFeedSnapshotsRouteHandler: RouteHandler<
+  typeof getV3StocksFeedSnapshotsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getV3StocksFeedTradesRouteHandler: RouteHandler<
+  typeof getV3StocksFeedTradesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

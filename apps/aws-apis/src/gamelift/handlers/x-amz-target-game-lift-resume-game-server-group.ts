@@ -1,11 +1,8 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { postXAmzTargetGameLiftResumeGameServerGroupRoute } from '../routes'
+import type { RouteHandler } from '@hono/zod-openapi'
+import type { postXAmzTargetGameLiftResumeGameServerGroupRoute } from '../routes'
 
-const app = new OpenAPIHono()
-
-export const xAmzTargetGameLiftResumeGameServerGroupHandler = app.openapi(
-  postXAmzTargetGameLiftResumeGameServerGroupRoute,
-  (c) => {
-    throw new Error('Not implemented')
-  },
-)
+export const postXAmzTargetGameLiftResumeGameServerGroupRouteHandler: RouteHandler<
+  typeof postXAmzTargetGameLiftResumeGameServerGroupRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

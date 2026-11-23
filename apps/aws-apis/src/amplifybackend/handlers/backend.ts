@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getBackendAppIdChallengeSessionIdRoute,
   getBackendAppIdJobBackendEnvironmentNameJobIdRoute,
   postBackendAppIdApiBackendEnvironmentNameDetailsRoute,
@@ -32,96 +32,180 @@ import {
   postBackendRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const postBackendAppIdEnvironmentsBackendEnvironmentNameCloneRouteHandler: RouteHandler<
+  typeof postBackendAppIdEnvironmentsBackendEnvironmentNameCloneRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const backendHandler = app
-  .openapi(postBackendAppIdEnvironmentsBackendEnvironmentNameCloneRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdAuthRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdConfigRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdStorageRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdChallengeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdEnvironmentsBackendEnvironmentNameRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiBackendEnvironmentNameRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdAuthBackendEnvironmentNameRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdStorageBackendEnvironmentNameRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdChallengeSessionIdRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiBackendEnvironmentNameGenerateModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiBackendEnvironmentNameDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiBackendEnvironmentNameGetModelsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdAuthBackendEnvironmentNameDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackendAppIdJobBackendEnvironmentNameJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdJobBackendEnvironmentNameJobIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdStorageBackendEnvironmentNameDetailsRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getBackendAppIdChallengeSessionIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdAuthBackendEnvironmentNameImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdStorageBackendEnvironmentNameImportRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdJobBackendEnvironmentNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdConfigRemoveRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdApiBackendEnvironmentNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdAuthBackendEnvironmentNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdConfigUpdateRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(postBackendAppIdStorageBackendEnvironmentNameRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const postBackendRouteHandler: RouteHandler<typeof postBackendRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdAuthRouteHandler: RouteHandler<
+  typeof postBackendAppIdAuthRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdConfigRouteHandler: RouteHandler<
+  typeof postBackendAppIdConfigRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdStorageRouteHandler: RouteHandler<
+  typeof postBackendAppIdStorageRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdChallengeRouteHandler: RouteHandler<
+  typeof postBackendAppIdChallengeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdEnvironmentsBackendEnvironmentNameRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdEnvironmentsBackendEnvironmentNameRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiBackendEnvironmentNameRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiBackendEnvironmentNameRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdAuthBackendEnvironmentNameRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdAuthBackendEnvironmentNameRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdStorageBackendEnvironmentNameRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdStorageBackendEnvironmentNameRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdChallengeSessionIdRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdChallengeSessionIdRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiBackendEnvironmentNameGenerateModelsRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiBackendEnvironmentNameGenerateModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdDetailsRouteHandler: RouteHandler<
+  typeof postBackendAppIdDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiBackendEnvironmentNameDetailsRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiBackendEnvironmentNameDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiBackendEnvironmentNameGetModelsRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiBackendEnvironmentNameGetModelsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdAuthBackendEnvironmentNameDetailsRouteHandler: RouteHandler<
+  typeof postBackendAppIdAuthBackendEnvironmentNameDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackendAppIdJobBackendEnvironmentNameJobIdRouteHandler: RouteHandler<
+  typeof getBackendAppIdJobBackendEnvironmentNameJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdJobBackendEnvironmentNameJobIdRouteHandler: RouteHandler<
+  typeof postBackendAppIdJobBackendEnvironmentNameJobIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdStorageBackendEnvironmentNameDetailsRouteHandler: RouteHandler<
+  typeof postBackendAppIdStorageBackendEnvironmentNameDetailsRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getBackendAppIdChallengeSessionIdRouteHandler: RouteHandler<
+  typeof getBackendAppIdChallengeSessionIdRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdAuthBackendEnvironmentNameImportRouteHandler: RouteHandler<
+  typeof postBackendAppIdAuthBackendEnvironmentNameImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdStorageBackendEnvironmentNameImportRouteHandler: RouteHandler<
+  typeof postBackendAppIdStorageBackendEnvironmentNameImportRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdJobBackendEnvironmentNameRouteHandler: RouteHandler<
+  typeof postBackendAppIdJobBackendEnvironmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdConfigRemoveRouteHandler: RouteHandler<
+  typeof postBackendAppIdConfigRemoveRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdApiBackendEnvironmentNameRouteHandler: RouteHandler<
+  typeof postBackendAppIdApiBackendEnvironmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdAuthBackendEnvironmentNameRouteHandler: RouteHandler<
+  typeof postBackendAppIdAuthBackendEnvironmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdConfigUpdateRouteHandler: RouteHandler<
+  typeof postBackendAppIdConfigUpdateRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const postBackendAppIdStorageBackendEnvironmentNameRouteHandler: RouteHandler<
+  typeof postBackendAppIdStorageBackendEnvironmentNameRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

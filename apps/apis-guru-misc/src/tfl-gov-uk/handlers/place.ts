@@ -1,5 +1,5 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import {
+import type { RouteHandler } from '@hono/zod-openapi'
+import type {
   getPlaceAddressStreetsPostcodeRoute,
   getPlaceIdRoute,
   getPlaceMetaCategoriesRoute,
@@ -11,33 +11,50 @@ import {
   getPlaceTypeTypesRoute,
 } from '../routes'
 
-const app = new OpenAPIHono()
+export const getPlaceRouteHandler: RouteHandler<typeof getPlaceRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
 
-export const placeHandler = app
-  .openapi(getPlaceRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceAddressStreetsPostcodeRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceMetaCategoriesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceMetaPlaceTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceSearchRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceTypeTypesRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceIdRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceTypeAtLatLonRoute, (c) => {
-    throw new Error('Not implemented')
-  })
-  .openapi(getPlaceTypeOverlayZLatLonWidthHeightRoute, (c) => {
-    throw new Error('Not implemented')
-  })
+export const getPlaceAddressStreetsPostcodeRouteHandler: RouteHandler<
+  typeof getPlaceAddressStreetsPostcodeRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceMetaCategoriesRouteHandler: RouteHandler<
+  typeof getPlaceMetaCategoriesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceMetaPlaceTypesRouteHandler: RouteHandler<
+  typeof getPlaceMetaPlaceTypesRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceSearchRouteHandler: RouteHandler<typeof getPlaceSearchRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceTypeTypesRouteHandler: RouteHandler<typeof getPlaceTypeTypesRoute> = async (
+  c,
+) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceIdRouteHandler: RouteHandler<typeof getPlaceIdRoute> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceTypeAtLatLonRouteHandler: RouteHandler<
+  typeof getPlaceTypeAtLatLonRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}
+
+export const getPlaceTypeOverlayZLatLonWidthHeightRouteHandler: RouteHandler<
+  typeof getPlaceTypeOverlayZLatLonWidthHeightRoute
+> = async (c) => {
+  throw new Error('Not implemented')
+}

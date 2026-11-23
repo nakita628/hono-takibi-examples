@@ -3,7 +3,7 @@ import { defineConfig } from 'hono-takibi'
 export default defineConfig({
   input: 'https://api.apis.guru/v2/specs/klarna.com/payments/1.0.0/openapi.yaml',
   output: './src/klarna-payments/routes.ts',
-  template: {},
+  template: { routeHandler: true },
   type: { output: './src/klarna-payments/types.ts' },
   client: { output: './src/klarna-payments/client.ts', baseUrl: '/' },
   rpc: { output: './src/klarna-payments/rpc.ts', parseResponse: true },
